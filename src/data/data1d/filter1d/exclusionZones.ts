@@ -1,5 +1,6 @@
 import { xySetYValue, zonesNormalize } from 'ml-spectra-processing';
-import { Datum1D } from './../../types/data1d/Datum1D';
+
+import { Datum1D } from "../../types/data1d/Datum1D";
 
 export const id = 'exclusionZones';
 export const name = 'Exclusion Zones';

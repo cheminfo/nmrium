@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 
+import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useScaleChecked } from '../context/ScaleContext';
 import { HighlightedSource, useHighlight } from '../highlight';
 

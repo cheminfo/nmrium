@@ -1,12 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { SvgNmrAddFilter, SvgNmrExportAsMatrix } from 'cheminfo-font';
 import { useCallback } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
-import { positions } from '../../elements/popup/Modal';
-import { useModal } from '../../elements/popup/Modal';
+import { positions, useModal } from '../../elements/popup/Modal';
 import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
@@ -56,7 +54,7 @@ function MatrixGenerationPanel() {
         </DefaultPanelHeader>
       }
 
-      <div className="inner-container"></div>
+      <div className="inner-container" />
     </div>
   );
 }

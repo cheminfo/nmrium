@@ -1,4 +1,4 @@
-import BaseLineZones from './tool/BaseLineZones';
+import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import PeakAnnotations from './PeakAnnotations';
@@ -7,7 +7,7 @@ import XAxis from './XAxis';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
-import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
+import BaseLineZones from './tool/BaseLineZones';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   return (

@@ -1,5 +1,6 @@
+import { Datum1D } from "../../data/types/data1d/Datum1D";
 import { Datum2D } from '../../data/types/data2d';
-import { Datum1D } from './../../data/types/data1d/Datum1D';
+
 import nucleusToString from './nucleusToString';
 
 export function getSpectraByNucleus(
@@ -7,6 +8,6 @@ export function getSpectraByNucleus(
   data: (Datum1D | Datum2D)[],
 ) {
   return data.filter(
-    (spectrum) => nucleusToString(spectrum.info.nucleus) == nucleus,
+    (spectrum) => nucleusToString(spectrum.info.nucleus) === nucleus,
   );
 }

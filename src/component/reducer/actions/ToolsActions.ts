@@ -3,8 +3,6 @@ import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import * as Filters from '../../../data/Filters';
-import * as FiltersManager from '../../../data/FiltersManager';
-
 import { Data1D, Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
@@ -19,11 +17,9 @@ import Zoom1DManager from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, SetDomainOptions, setMode } from './DomainActions';
-import { deleteFilter, resetSpectrumByFilter } from './FiltersActions';
+import { resetSpectrumByFilter } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
-import getRange from './../helper/getRange';
-import { filter } from 'smart-array-filter';
 
 function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;

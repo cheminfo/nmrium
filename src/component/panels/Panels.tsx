@@ -10,6 +10,7 @@ import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
+import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
 import MoleculePanel from './MoleculesPanel/MoleculePanel';
 import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
@@ -19,7 +20,6 @@ import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
-import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
 
 interface AccordionItem {
   title: string;

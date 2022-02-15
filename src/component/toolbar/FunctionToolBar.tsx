@@ -81,12 +81,7 @@ function FunctionToolBarInner({
     },
     [preferences],
   );
-  const isPanelVisible = useCallback(
-    (panelKey) => {
-      return !lodashGet(preferences, `display.panels.${panelKey}`);
-    },
-    [preferences],
-  );
+
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>

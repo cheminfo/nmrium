@@ -287,7 +287,7 @@ function KeysListenerTracker() {
         } else {
           if (['Delete', 'Backspace'].includes(e.key) && highlight.sourceData) {
             e.preventDefault();
-            deleteHandler(highlight.sourceData);
+            void deleteHandler(highlight.sourceData);
           } else {
             toolsListenerHandler(e);
           }

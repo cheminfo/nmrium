@@ -14,7 +14,6 @@ import { ModalStyles } from '../ModalStyle';
 
 import EquallySpacedFilter from './EquallySpacedFilter';
 import FromToFilter from './FromToFilter';
-import { options } from '../../toolbar/ToolTypes';
 
 const baseList: Array<{
   key: string | number;

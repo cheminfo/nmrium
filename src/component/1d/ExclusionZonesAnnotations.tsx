@@ -1,15 +1,15 @@
 import { memo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-
-import getVerticalShift from './utilities/getVerticalShift';
 import * as Filters from '../../data/Filters';
-import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
+import { Datum1D } from '../../data/types/data1d';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
-import useSpectraByActiveNucleus from './../hooks/useSpectraPerNucleus';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
+import { useChartData } from '../context/ChartContext';
+import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
 import { VerticalAlign } from '../reducer/Reducer';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
+
+import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
+import getVerticalShift from './utilities/getVerticalShift';
 
 interface ExclusionZonesAnnotationsInnerProps {
   displayerKey: string;
@@ -51,12 +51,12 @@ function ExclusionZonesAnnotationsInner({
 const MemoizedPeakAnnotations = memo(ExclusionZonesAnnotationsInner);
 
 function ExclusionZonesAnnotations() {
-  const { data, displayerKey, xDomains, displayerMode, verticalAlign } =
+  const { displayerKey, xDomains, displayerMode, verticalAlign } =
     useChartData();
 
-  if (displayerMode !== DISPLAYER_MODE.DM_1D) return null;
-
   const spectra = useSpectraByActiveNucleus() as Datum1D[];
+
+  if (displayerMode !== DISPLAYER_MODE.DM_1D) return null;
 
   return (
     <MemoizedPeakAnnotations
