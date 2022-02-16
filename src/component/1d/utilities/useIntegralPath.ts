@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { Data1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
+import { PathBuilder } from '../../utility/PathBuilder';
 
 import { getYScale, reScaleY } from './scale';
 
@@ -65,7 +66,7 @@ export default function useIntegralPath(integralOptions: {
     return { x: [], y: [] };
   }, [activeSpectrum, data, integralOptions]);
 
-  const path = useMemo(() => {
+  const paths = useMemo(() => {
     if (integral && scaleX) {
       const xySeries = xyReduce(integral, {
         from: xDomain[0],
@@ -74,17 +75,17 @@ export default function useIntegralPath(integralOptions: {
         optimize: true,
       });
 
-      let path = `M ${scaleX()(xySeries.x[0])} ${scaleY(xySeries.y[0])}`;
-      path += xySeries.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX()(point)} ${scaleY(xySeries.y[i + 1])}`;
-        return accumulator;
-      }, '');
+      const pathBuilder = new PathBuilder();
+      pathBuilder.moveTo(scaleX()(xySeries.x[0]), scaleY(xySeries.y[0]));
+      for (let i = 1; i < xySeries.x.length; i++) {
+        pathBuilder.lineTo(scaleX()(xySeries.x[i]), scaleY(xySeries.y[i]));
+      }
 
-      return path;
+      return pathBuilder.toString();
     } else {
       return '';
     }
   }, [integral, scaleX, scaleY, xDomain]);
 
-  return path;
+  return paths;
 }

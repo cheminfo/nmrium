@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
-import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
 
 import { Datum2D } from '../../../data/types/data2d';
@@ -234,11 +233,7 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
           />
         )}
         <div className="inner-container">
-          <ReactCardFlip
-            isFlipped={isFlipped}
-            infinite
-            containerStyle={{ overflow: 'hidden', height: '100%' }}
-          >
+          {!isFlipped ? (
             <div className="table-container">
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
@@ -255,8 +250,9 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
                 <NoTableData />
               )}
             </div>
+          ) : (
             <ZonesPreferences ref={settingRef} />
-          </ReactCardFlip>
+          )}
         </div>
       </div>
     </>
@@ -271,6 +267,7 @@ export default function ZonesPanel() {
   const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
   const { zones, info } = useSpectrum(emptyData) as Datum2D;
   const preferences = usePreferences();
+
   return (
     <MemoizedZonesPanel
       {...{

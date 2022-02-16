@@ -66,11 +66,7 @@ function Spectrum1DHistogram({
       }}
     >
       <div style={{ display: 'block' }}>
-        <Plot
-          width={180}
-          height={220}
-          margin={{ bottom: 40, left: 40, top: 50, right: 13 }}
-        >
+        <Plot width={180} height={220}>
           <Heading title="Sanplot" />
           <LineSeries
             data={processedData.sanPlot.positive}
@@ -105,25 +101,21 @@ function Spectrum1DHistogram({
             id="x"
             label="Pt"
             position="bottom"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.6rem' }}
           />
           <Axis
             id="y"
             label={`Intensity [Log${yLogBase}]`}
             position="left"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
           />
           <Legend position="embedded" bottom={5} right={60} />
         </Plot>
       </div>
       <div style={{ display: 'block', width: 180, height: 180 }}>
-        <Plot
-          width={180}
-          height={180}
-          margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
-        >
+        <Plot width={180} height={180}>
           <LineSeries
             data={processedData.sanPlot.negative}
             xAxis="x"
@@ -159,14 +151,14 @@ function Spectrum1DHistogram({
             id="x"
             label="Pt"
             position="bottom"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.5rem' }}
           />
           <Axis
             id="y"
             label={`Intensity [Log${yLogBase}]`}
             position="left"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
           />
           <Legend position="embedded" bottom={5} right={60} />

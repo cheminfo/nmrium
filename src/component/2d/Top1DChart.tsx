@@ -3,6 +3,7 @@ import { useMemo, memo } from 'react';
 import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
@@ -33,12 +34,13 @@ function Top1DChart({
       const { x, re: y } = spectrum.data;
       const pathPoints = xyReduce({ x, y });
 
-      let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
-      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX(point)} ${scaleY(pathPoints.y[i + 1])}`;
-        return accumulator;
-      }, '');
-      return path;
+      const pathBuilder = new PathBuilder();
+      pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
+      for (let i = 1; i < pathPoints.x.length; i++) {
+        pathBuilder.lineTo(scaleX(pathPoints.x[i]), scaleY(pathPoints.y[i]));
+      }
+
+      return pathBuilder.toString();
     } else {
       return undefined;
     }

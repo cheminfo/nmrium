@@ -58,7 +58,9 @@ function Spectrum2DHistogram({
 
   return (
     <div>
-      <span style={{ padding: '0 200px' }}>San Plot</span>
+      <div style={{ textAlign: 'center', paddingBottom: 5, paddingTop: 5 }}>
+        San Plot
+      </div>
 
       <div
         style={{
@@ -69,11 +71,7 @@ function Spectrum2DHistogram({
           flexDirection: 'row',
         }}
       >
-        <Plot
-          width={220}
-          height={180}
-          margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
-        >
+        <Plot width={220} height={180}>
           <LineSeries
             data={processedData.sanPlot.positive}
             xAxis="x"
@@ -107,24 +105,20 @@ function Spectrum2DHistogram({
             id="x"
             label="Pt"
             position="bottom"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.6rem' }}
           />
           <Axis
             id="y"
             label={`Intensity [Log ${yLogBase}]`}
             position="left"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
           />
           <Legend position="embedded" bottom={90} right={5} />
         </Plot>
 
-        <Plot
-          width={220}
-          height={180}
-          margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
-        >
+        <Plot width={220} height={180}>
           <LineSeries
             data={processedData.sanPlot.negative}
             xAxis="x"
@@ -160,13 +154,13 @@ function Spectrum2DHistogram({
             id="x"
             label="Pt"
             position="bottom"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.5rem' }}
           />
           <Axis
             id="y"
             position="left"
-            tickStyle={{ fontSize: '0.6rem' }}
+            tickLabelStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
           />
           <Legend position="embedded" bottom={90} right={5} />

@@ -1,5 +1,47 @@
 # Changelog
 
+### [0.19.1](https://www.github.com/cheminfo/nmrium/compare/v0.19.0...v0.19.1) (2022-01-24)
+
+
+### Bug Fixes
+
+* rescale the molecule according to available space ([#1339](https://www.github.com/cheminfo/nmrium/issues/1339)) ([72b6642](https://www.github.com/cheminfo/nmrium/commit/72b6642b25146bff10476f7a9f42a378cea8eb0e))
+
+## [0.19.0](https://www.github.com/cheminfo/nmrium/compare/v0.18.3...v0.19.0) (2022-01-24)
+
+
+### Features
+
+* complete database panel with filters ([1641d90](https://www.github.com/cheminfo/nmrium/commit/1641d909d03de0d0a2f667c33b9ec9a276f6c080)), closes [#1254](https://www.github.com/cheminfo/nmrium/issues/1254) [#1255](https://www.github.com/cheminfo/nmrium/issues/1255) [#1256](https://www.github.com/cheminfo/nmrium/issues/1256) [#1257](https://www.github.com/cheminfo/nmrium/issues/1257)
+* Display integrals for the ranges ([2644fae](https://www.github.com/cheminfo/nmrium/commit/2644faed147ed9339e8b993fe55b6f19421d65e9)), closes [#1225](https://www.github.com/cheminfo/nmrium/issues/1225)
+* Display spectra for each range when mouse enter over database record ([6b457f8](https://www.github.com/cheminfo/nmrium/commit/6b457f80ddcf4c13fe4a4c3e594ec693eb92de1e))
+* generate spectrum from publication string ([2b5d66a](https://www.github.com/cheminfo/nmrium/commit/2b5d66a90230d738c6a4c719f0de5502ffcb5a74))
+* improvements correlation table, i.e. allow movement of links ([#1268](https://www.github.com/cheminfo/nmrium/issues/1268)) ([2410e65](https://www.github.com/cheminfo/nmrium/commit/2410e65f036a90dd730c02c5cb8827eee7fa5925))
+* Integral scaling ([1f16152](https://www.github.com/cheminfo/nmrium/commit/1f1615204c9e98adec42ff8705ac1321e174b534))
+* J Graph ([#1311](https://www.github.com/cheminfo/nmrium/issues/1311)) ([cebc3c0](https://www.github.com/cheminfo/nmrium/commit/cebc3c02cf1aa862bc11743b8edc85330e5e68c4))
+* resurrect spectrum from database set ([cf6c8b0](https://www.github.com/cheminfo/nmrium/commit/cf6c8b0b5828c96a5d256efa8785ecf0aee9bec7)), closes [#1259](https://www.github.com/cheminfo/nmrium/issues/1259)
+* resurrect spectrum from database spectrum ([010129f](https://www.github.com/cheminfo/nmrium/commit/010129fef5d44dd5723678c11973949c6f911f8d)), closes [#1259](https://www.github.com/cheminfo/nmrium/issues/1259)
+* use nmr processing types ([#1310](https://www.github.com/cheminfo/nmrium/issues/1310)) ([fc576ef](https://www.github.com/cheminfo/nmrium/commit/fc576efad1ef78678e144e00193c5a350c2a3c88))
+
+
+### Bug Fixes
+
+* avoid enhanceSymmetry for manual zone detection ([e5be7ca](https://www.github.com/cheminfo/nmrium/commit/e5be7caa5834ba866dc67c046e5b14e89d2ce8da))
+* basic panel style import ([b46bdd4](https://www.github.com/cheminfo/nmrium/commit/b46bdd4fc8d59bacf38e2f05a034b08136f5b747))
+* Center and stacked function/icon for FID files ([0e22f8c](https://www.github.com/cheminfo/nmrium/commit/0e22f8ca19bfe896fd815735b855533de7aaee51))
+* crashes due to missing plural name of peak in nmr-correlation ([#1237](https://www.github.com/cheminfo/nmrium/issues/1237)) ([907ade3](https://www.github.com/cheminfo/nmrium/commit/907ade3e0a1f1e9535f3ddc7f60164c64ceab868))
+* increase default frequency cluster close [#1309](https://www.github.com/cheminfo/nmrium/issues/1309) ([e326ca4](https://www.github.com/cheminfo/nmrium/commit/e326ca4b58c1095e39d7b958d82bbf00711ba463))
+* nmredata importation ([#1292](https://www.github.com/cheminfo/nmrium/issues/1292)) ([8e252a3](https://www.github.com/cheminfo/nmrium/commit/8e252a3ea910990c779074cee07331b7872bf6db))
+* refactor nH parameter to integrationSum close [#1318](https://www.github.com/cheminfo/nmrium/issues/1318) ([#1319](https://www.github.com/cheminfo/nmrium/issues/1319)) ([1138d1d](https://www.github.com/cheminfo/nmrium/commit/1138d1d9b5b46015273df1a3fe84f4bc8675c987))
+* save preferences ([7c13cc9](https://www.github.com/cheminfo/nmrium/commit/7c13cc91bfc81878fd2d3754fc441ace59b38d98))
+* summary header styles ([#1296](https://www.github.com/cheminfo/nmrium/issues/1296)) ([ee1d0b9](https://www.github.com/cheminfo/nmrium/commit/ee1d0b9f82c7f44bae0b57eb819525ef2c4d895e))
+* summation field annotation when assigned ([5752608](https://www.github.com/cheminfo/nmrium/commit/575260855b15e1a899b80902ead493f31ca2df23))
+* table style when panel filp ([71702b9](https://www.github.com/cheminfo/nmrium/commit/71702b99d88c372f0f2da0af11f5a4fc69591d9e))
+* table style when panel flip ([51cd874](https://www.github.com/cheminfo/nmrium/commit/51cd874403d593ab851f309fe47dbb70b4d1c251))
+* Toolbar menu y transform when menu greater than screen height ([cf704d3](https://www.github.com/cheminfo/nmrium/commit/cf704d3fc6081bca7d81ffa726f8dc40a26d65b1))
+* update minor deps and remove react-card-flip ([#1321](https://www.github.com/cheminfo/nmrium/issues/1321)) ([54b7608](https://www.github.com/cheminfo/nmrium/commit/54b7608cf266b6f69f2776a8a6a7646ad7c7f1d4))
+* update nmr-processing to 3.3.1 ([eacea85](https://www.github.com/cheminfo/nmrium/commit/eacea85c68a203766a8abe6f1ee3b2a457c8be99))
+
 ### [0.18.3](https://www.github.com/cheminfo/nmrium/compare/v0.18.2...v0.18.3) (2021-09-05)
 
 

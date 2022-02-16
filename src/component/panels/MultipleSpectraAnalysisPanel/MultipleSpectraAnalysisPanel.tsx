@@ -6,7 +6,6 @@ import {
   SvgNmrExportAsMatrix,
 } from 'cheminfo-font';
 import { useCallback, useState, useRef, memo, useMemo } from 'react';
-import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
@@ -174,18 +173,15 @@ function MultipleSpectraAnalysisPanelInner({
         />
       )}
       <div className="inner-container">
-        <ReactCardFlip
-          isFlipped={isFlipped}
-          infinite
-          containerStyle={{ overflow: 'hidden', height: '100%' }}
-        >
+        {!isFlipped ? (
           <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
+        ) : (
           <MultipleSpectraAnalysisPreferences
             data={data}
             onAfterSave={afterSaveHandler}
             ref={settingRef}
           />
-        </ReactCardFlip>
+        )}
       </div>
     </div>
   );

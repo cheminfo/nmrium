@@ -4,7 +4,6 @@
     "react-color",
     "// TODO: Migrate to v6",
     "react-router-dom",
-    "react-table",
     "// TODO: Migrate out of reactstrap",
     "reactstrap"
   ]

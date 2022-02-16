@@ -2,6 +2,7 @@ import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
+import { PathBuilder } from '../../../utility/PathBuilder';
 import { get2DYScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
@@ -37,18 +38,18 @@ function VerticalSliceChart({
 
       const pathPoints = xyReduce({ x, y });
 
-      const lastXIndex = pathPoints.x.length - 1;
-      const lastYIndex = pathPoints.y.length - 1;
-      let path = `M  ${scaleY(pathPoints.y[lastYIndex])} ${scaleX(
-        lastXIndex,
-      )} `;
-      path += pathPoints.x
-        .slice(0, lastXIndex)
-        .reduceRight((accumulator, point, index) => {
-          accumulator += ` L  ${scaleY(pathPoints.y[index])} ${scaleX(point)}`;
-          return accumulator;
-        }, '');
-      return path;
+      const pathBuilder = new PathBuilder();
+
+      pathBuilder.moveTo(
+        scaleY(pathPoints.y[pathPoints.y.length - 1]),
+        scaleX(pathPoints.x.length - 1),
+      );
+
+      for (let i = pathPoints.x.length - 2; i >= 0; i--) {
+        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(pathPoints.x[i]));
+      }
+
+      return pathBuilder.toString();
     } else {
       return undefined;
     }

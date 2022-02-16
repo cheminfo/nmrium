@@ -269,8 +269,9 @@ function handleChangeRangeSum(draft: Draft<State>, options) {
     updateRangesRelativeValues(datum, true);
   }
 }
+
 function handleAddRange(draft: Draft<State>, action) {
-  const { startX, endX } = action;
+  const { startX, endX } = action.payload;
   const { activeSpectrum, activeTab: nucleus, molecules } = draft;
   const range = getRange(draft, { startX, endX });
 

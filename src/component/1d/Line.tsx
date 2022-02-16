@@ -5,6 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import getVerticalShift from './utilities/getVerticalShift';
 
@@ -40,15 +41,17 @@ function Line({ data, id, display, index }: LineProps) {
   const paths = useMemo(() => {
     const _scaleX = scaleX();
     const _scaleY = scaleY(id);
+
+    const pathBuilder = new PathBuilder();
     if (data?.x && data?.y && _scaleX(0)) {
       const pathPoints = xyReduce(data);
 
-      let path = `M ${_scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
-      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${_scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
-        return accumulator;
-      }, '');
-      return path;
+      pathBuilder.moveTo(_scaleX(pathPoints.x[0]), _scaleY(pathPoints.y[0]));
+      for (let i = 1; i < pathPoints.x.length; i++) {
+        pathBuilder.lineTo(_scaleX(pathPoints.x[i]), _scaleY(pathPoints.y[i]));
+      }
+
+      return pathBuilder.toString();
     } else {
       return '';
     }

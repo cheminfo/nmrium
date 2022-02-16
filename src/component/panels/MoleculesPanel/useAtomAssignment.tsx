@@ -138,18 +138,8 @@ export default function useAtomAssignment({
 
   const toggleAssignment = useCallback(
     (diaID, atomInformation) => {
-      // 1. one atom can only be assigned to one range/zone/signal
-      // 2. check whether an atom is already assigned to a range to allow toggling the assignment
-      if (
-        assignedDiaIDsMerged.some((_oclID) =>
-          atomInformation.oclIDs.includes(_oclID),
-        ) &&
-        !diaID.some((_oclID) => atomInformation.oclIDs.includes(_oclID))
-      ) {
-        alert.info('Atom is already assigned to another signal!');
-        return diaID;
-      }
-
+      // a previous version of the code prevented to assign many time the same atom
+      // see revision cc13abc18f77b6787b923e3c4edaef51750d9e90
       return toggleDiaIDs(diaID, atomInformation);
     },
     [alert, assignedDiaIDsMerged],

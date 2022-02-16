@@ -1,4 +1,4 @@
-import { Draft, original } from 'immer';
+import { Draft } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { Datum1D } from '../../../data/types/data1d';
@@ -69,7 +69,6 @@ function changeSpectrumVerticalAlignment(
 }
 
 function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
-  const state = original(draft) as State;
   const {
     activeTab,
     data,
@@ -83,7 +82,8 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     margin,
     displayerMode,
     tabActiveSpectrum,
-  } = state;
+  } = draft;
+
   if (activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
 
@@ -125,12 +125,10 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
 }
 
 function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
-  const state = original(draft) as State;
-
-  const preferences = state.keysPreferences[keyCode];
+  const preferences = draft.keysPreferences[keyCode];
   if (preferences) {
     draft.activeTab = preferences.activeTab;
-    (state.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
+    (draft.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
       if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
         draft.data[index].display = Object.assign(
           cloneDeep(datum.display),
@@ -155,7 +153,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       for (const datumID of Object.keys(preferences.level)) {
         const { levelPositive, levelNegative } = preferences.level[datumID];
-        const index = state.data.findIndex((datum) => datum.id === datumID);
+        const index = draft.data.findIndex((datum) => datum.id === datumID);
         const processController = (draft.data[index] as Datum2D)
           .processingController;
         processController.setLevel(levelPositive, levelNegative);

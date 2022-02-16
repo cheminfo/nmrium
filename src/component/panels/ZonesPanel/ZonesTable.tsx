@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useMemo, useCallback, useRef } from 'react';
+import { useMemo, useCallback, useRef, ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
@@ -174,21 +174,52 @@ function ZonesTable({
           </tr>
           <tr>
             <th id="tableMetaInfo.signal.x.delta" {...onSort}>
-              {nuclei[0]} {isSortedDesc('tableMetaInfo.signal.x.delta').content}
+              <SurroundedText text="F2">
+                {nuclei[0]}{' '}
+                {isSortedDesc('tableMetaInfo.signal.x.delta').content}
+              </SurroundedText>
             </th>
             <th id="tableMetaInfo.signal.y.delta" {...onSort}>
-              {nuclei[1]} {isSortedDesc('tableMetaInfo.signal.y.delta').content}
+              <SurroundedText text="F1">
+                {nuclei[1]}{' '}
+                {isSortedDesc('tableMetaInfo.signal.y.delta').content}
+              </SurroundedText>
             </th>
-            <th>{nuclei[0]}</th>
-            <th>{nuclei[1]}</th>
-            <th>{nuclei[0]}</th>
-            <th>{nuclei[1]}</th>
+            <th>
+              <SurroundedText text="F2">{nuclei[0]}</SurroundedText>
+            </th>
+            <th>
+              <SurroundedText text="F1">{nuclei[1]}</SurroundedText>
+            </th>
+            <th>
+              <SurroundedText text="F2">{nuclei[0]}</SurroundedText>
+            </th>
+            <th>
+              <SurroundedText text="F1">{nuclei[1]}</SurroundedText>
+            </th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
       </table>
       <ContextMenu ref={contextRef} context={context} />
     </div>
+  );
+}
+
+function SurroundedText(props: { text: 'F1' | 'F2'; children: ReactNode }) {
+  return (
+    <>
+      <div
+        style={{
+          position: 'absolute',
+          fontSize: 8,
+          color: '#3539E6',
+        }}
+      >
+        {props.text}
+      </div>
+      <div style={{ marginLeft: 5 }}>{props.children}</div>
+    </>
   );
 }
 

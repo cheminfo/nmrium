@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
-import ReactCardFlip from 'react-card-flip';
 import { ImLink } from 'react-icons/im';
 
 import { Datum1D, Info1D, Integrals } from '../../../data/types/data1d';
@@ -218,18 +217,15 @@ function IntegralPanelInner({
           />
         )}
         <div className="inner-container">
-          <ReactCardFlip
-            isFlipped={isFlipped}
-            infinite
-            containerStyle={{ overflow: 'hidden', height: '100%' }}
-          >
+          {!isFlipped ? (
             <IntegralTable
               data={filteredData}
               activeTab={activeTab}
               preferences={preferences}
             />
+          ) : (
             <IntegralsPreferences ref={settingRef} />
-          </ReactCardFlip>
+          )}
         </div>
       </div>
     </Fragment>
