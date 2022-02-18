@@ -12,6 +12,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   // Click on the "Add Molecule" button.
   await nmrium.page.click('data-test-id=panel-structures-button-add');
+
+  await nmrium.page.waitForSelector('#drawarea1');
+
   // Select the "aromatic ring" tool.
   await nmrium.page.click('canvas >> nth=0', {
     position: {
