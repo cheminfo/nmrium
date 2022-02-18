@@ -20,7 +20,13 @@ export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
   // detectSignal use the advance multiplet-analysis that can crash if too many points
-  const signal = detectSignal(x, re, from, to, datum.info.originFrequency);
+  const signal = detectSignal(
+    x as unknown as Float64Array,
+    re as unknown as Float64Array,
+    from,
+    to,
+    datum.info.originFrequency,
+  );
   if (!signal) return;
   try {
     const range = {
@@ -37,6 +43,7 @@ export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
       molecules,
       nucleus,
     });
+
     datum.ranges.values = datum.ranges.values.concat(mapRanges([range], datum));
     updateRangesRelativeValues(datum);
   } catch (e) {

@@ -120,8 +120,9 @@ export function BrushTracker({
   );
 
   useEffect(() => {
-    const { step, startX, endX } = state;
-    if (step === 'end' && Math.abs(startX - endX) > 5) {
+    const { step, startX, endX, startY, endY } = state;
+
+    if (step === 'end' && Math.hypot(endX - startX, endY - startY) > 5) {
       onBrush(state);
       dispatch({
         type: 'DONE',
