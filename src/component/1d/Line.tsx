@@ -1,9 +1,8 @@
-import get from 'lodash/get';
 import { CSSProperties, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
 import { useScaleChecked } from '../context/ScaleContext';
+import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
 
@@ -22,17 +21,10 @@ interface LineProps {
 }
 
 function Line({ data, id, display, index }: LineProps) {
-  const { activeSpectrum, verticalAlign } = useChartData();
-  const preferences = usePreferences();
+  const { verticalAlign } = useChartData();
   const { scaleX, scaleY } = useScaleChecked();
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
-  const isActive = useMemo(() => {
-    return activeSpectrum === null
-      ? true
-      : id === activeSpectrum.id
-      ? true
-      : false;
-  }, [activeSpectrum, id]);
+  const { opacity } = useActiveSpectrumStyleOptions(id);
 
   const vAlign = useMemo(() => {
     return getVerticalShift(verticalAlign, { index });
@@ -65,9 +57,7 @@ function Line({ data, id, display, index }: LineProps) {
       stroke={display.color}
       fill="none"
       style={{
-        opacity: isActive
-          ? 1
-          : get(preferences, 'controllers.dimmedSpectraTransparency', 0.1),
+        opacity,
       }}
       d={paths}
       transform={`translate(0,-${vAlign})`}

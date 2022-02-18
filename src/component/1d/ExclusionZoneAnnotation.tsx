@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useScaleChecked } from '../context/ScaleContext';
 import { HighlightedSource, useHighlight } from '../highlight';
+import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions';
 
 interface ExclusionZoneProps {
   zone: ExclusionZone;
@@ -23,6 +24,8 @@ function ExclusionZoneAnnotation({
     extra: { id: zone.id, spectrumID },
   });
 
+  const { opacity } = useActiveSpectrumStyleOptions(spectrumID);
+
   return (
     <g key={zone.id} transform={`translate(${scaleX()(zone.to)},0)`}>
       <rect
@@ -30,7 +33,10 @@ function ExclusionZoneAnnotation({
         transform={`translate(0,${scaleY()(0) - (vAlign + 5)})`}
         width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
         height="10px"
-        style={{ fill: highlight.isActive ? '#ff6f0057' : color }}
+        style={{
+          fill: highlight.isActive ? '#ff6f0057' : color,
+          opacity,
+        }}
         {...highlight.onHover}
       />
     </g>
