@@ -136,14 +136,11 @@ export default function useAtomAssignment({
     );
   }, [assignmentData, data, displayerMode, highlightData.highlight]);
 
-  const toggleAssignment = useCallback(
-    (diaID, atomInformation) => {
-      // a previous version of the code prevented to assign many time the same atom
-      // see revision cc13abc18f77b6787b923e3c4edaef51750d9e90
-      return toggleDiaIDs(diaID, atomInformation);
-    },
-    [alert, assignedDiaIDsMerged],
-  );
+  const toggleAssignment = useCallback((diaID, atomInformation) => {
+    // a previous version of the code prevented to assign many time the same atom
+    // see revision cc13abc18f77b6787b923e3c4edaef51750d9e90
+    return toggleDiaIDs(diaID, atomInformation);
+  }, []);
 
   const handleOnClickAtom = useCallback(
     (atom, event) => {

@@ -8,9 +8,12 @@ import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCor
 import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
+import generateID from '../../../data/utilities/generateID';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
 import { ActiveSpectrum, State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import getRange from '../helper/getRange';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
@@ -308,30 +311,82 @@ function filterSnapshotHandler(draft: Draft<State>, action) {
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
-  if (draft.data && draft.data.length > 0) {
-    for (let datum of draft.data) {
-      if (
-        datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab &&
-        Array.isArray(action.payload)
-      ) {
-        const filters = action.payload.map((filter) => {
-          if (filter.name === Filters.equallySpaced.id) {
-            const exclusions =
-              draft.toolOptions.data.exclusionZones[draft.activeTab] || [];
-            return {
-              ...filter,
-              options: { ...filter.options, exclusions },
-            };
-          }
-          return filter;
-        });
+  const spectra = getSpectraByNucleus(draft.activeTab, draft.data);
 
-        FiltersManager.applyFilter(datum, filters);
-      }
+  if (spectra && spectra.length > 0 && Array.isArray(action.payload)) {
+    const exclusions =
+      spectra[0].filters.find((f) => f.name === Filters.exclusionZones.id)
+        ?.value || [];
+
+    for (const spectrum of spectra) {
+      const filters = action.payload.map((filter) => {
+        if (filter.name === Filters.equallySpaced.id) {
+          return {
+            ...filter,
+            options: { ...filter.options, exclusions },
+          };
+        }
+        return filter;
+      });
+
+      FiltersManager.applyFilter(spectrum, filters);
     }
   }
   setDomain(draft);
+}
+
+function handleAddExclusionZone(draft: Draft<State>, action) {
+  const { from: startX, to: endX } = action.payload;
+  const range = getRange(draft, { startX, endX });
+
+  let spectra: Datum1D[];
+
+  if (draft.activeSpectrum?.id) {
+    const index = draft.activeSpectrum?.index;
+    spectra = [draft.data[index] as Datum1D];
+  } else {
+    spectra = getSpectraByNucleus(draft.activeTab, draft.data) as Datum1D[];
+  }
+
+  for (const spectrum of spectra) {
+    FiltersManager.applyFilter(spectrum, [
+      {
+        name: Filters.exclusionZones.id,
+        options: [
+          {
+            id: generateID(),
+            from: range[0],
+            to: range[1],
+          },
+        ],
+      },
+    ]);
+  }
+
+  setDomain(draft);
+}
+
+function handleDeleteExclusionZone(draft: Draft<State>, action) {
+  const { id, spectrumID } = action.payload;
+  const spectrumIndex = draft.data.findIndex(
+    (spectrum) => spectrum.id === spectrumID,
+  );
+  const exclusionZonesFilter = draft.data[spectrumIndex].filters.find(
+    (filter) => filter.name === Filters.exclusionZones.id,
+  );
+  if (exclusionZonesFilter) {
+    if (exclusionZonesFilter.value.length === 1) {
+      FiltersManager.deleteFilter(
+        draft.data[spectrumIndex],
+        exclusionZonesFilter.id,
+      );
+    } else {
+      exclusionZonesFilter.value = exclusionZonesFilter.value.filter(
+        (zone) => zone.id !== id,
+      );
+      FiltersManager.reapplyFilters(draft.data[spectrumIndex]);
+    }
+  }
 }
 
 export {
@@ -349,4 +404,6 @@ export {
   handleBaseLineCorrectionFilter,
   filterSnapshotHandler,
   resetSpectrumByFilter,
+  handleAddExclusionZone,
+  handleDeleteExclusionZone,
 };

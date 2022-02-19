@@ -4,6 +4,7 @@ import * as baselineCorrection from './data1d/filter1d/baselineCorrection';
 import * as centerMean from './data1d/filter1d/centerMean';
 import * as digitalFilter from './data1d/filter1d/digitalFilter';
 import * as equallySpaced from './data1d/filter1d/equallySpaced';
+import * as exclusionZones from './data1d/filter1d/exclusionZones';
 import * as fft from './data1d/filter1d/fft';
 import * as fromTo from './data1d/filter1d/fromTo';
 import * as lineBroadening from './data1d/filter1d/lineBroadening';
@@ -30,6 +31,7 @@ export {
   standardDeviation,
   centerMean,
   pareto,
+  exclusionZones,
   shift2DX,
   shift2DY,
 };

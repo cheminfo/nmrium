@@ -81,12 +81,7 @@ function FunctionToolBarInner({
     },
     [preferences],
   );
-  const isPanelVisible = useCallback(
-    (panelKey) => {
-      return !lodashGet(preferences, `display.panels.${panelKey}`);
-    },
-    [preferences],
-  );
+
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
@@ -240,12 +235,12 @@ function FunctionToolBarInner({
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideExclusionZonesTool') &&
-          isPanelVisible('hideMultipleSpectraAnalysisPanel') &&
-          !info?.isFid && (
+          !info?.isFid &&
+          ftCounter > 0 && (
             <ToggleButton
               key={options.exclusionZones.id}
               value={options.exclusionZones.id}
-              title={options.exclusionZones.label}
+              title={`${options.exclusionZones.label} ( Press e )`}
               id="exclusionZones"
             >
               <div style={{ fontSize: 18 }}>
