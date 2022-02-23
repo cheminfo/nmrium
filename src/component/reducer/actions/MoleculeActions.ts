@@ -19,9 +19,9 @@ function addMoleculeHandler(draft: Draft<State>, molfile) {
    *  if it's the first creation of a molecule after the molecules list was empty,
    * set the relative sum for ranges and integrals base on the first molecule
    */
+  const molecule = draft.molecules[0] || null;
 
-  if (isEmpty) {
-    const molecule = draft.molecules[0];
+  if (isEmpty && molecule) {
     changeSpectraRelativeSum(draft, molecule.key, molecule);
   }
 }
