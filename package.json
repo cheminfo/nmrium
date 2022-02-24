@@ -64,7 +64,7 @@
     "ml-array-xy-equally-spaced": "^1.2.1",
     "ml-baseline-correction-regression": "^1.0.0",
     "ml-conrec": "^3.2.1",
-    "ml-gsd": "^9.1.0",
+    "ml-gsd": "^10.1.1",
     "ml-spectra-processing": "^10.1.2",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^2.0.0",
