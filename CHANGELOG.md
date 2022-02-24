@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.20.1](https://www.github.com/cheminfo/nmrium/compare/v0.20.0...v0.20.1) (2022-02-24)
+
+
+### Bug Fixes
+
+* workaround duplicate cheminfo-types ([a2eb9d2](https://www.github.com/cheminfo/nmrium/commit/a2eb9d21c0e83761049f82fc64e822dd8d8302cd))
+
 ## [0.20.0](https://www.github.com/cheminfo/nmrium/compare/v0.19.1...v0.20.0) (2022-02-23)
 
 
