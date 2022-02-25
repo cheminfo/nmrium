@@ -3,8 +3,6 @@
   "reject": [
     "react-color",
     "// TODO: Migrate to v6",
-    "react-router-dom",
-    "// TODO: Migrate out of reactstrap",
-    "reactstrap"
+    "react-router-dom"
   ]
 }

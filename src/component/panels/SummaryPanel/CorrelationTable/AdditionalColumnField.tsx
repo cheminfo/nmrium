@@ -1,4 +1,4 @@
-import { buildLink, Types } from 'nmr-correlation';
+import { buildLink, Link, Correlation } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -68,7 +68,7 @@ function AdditionalColumnField({
   );
 
   const handleEditPseudoHSQC = useCallback(
-    (action: 'add' | 'remove', link?: Types.Link) => {
+    (action: 'add' | 'remove', link?: Link) => {
       const pseudoLinkCountHSQC = rowCorrelation.link.filter(
         (_link) =>
           (_link.experimentType === 'hsqc' ||
@@ -76,8 +76,8 @@ function AdditionalColumnField({
           _link.pseudo === true,
       ).length;
 
-      let _correlationDim1: Types.Correlation;
-      let _correlationDim2: Types.Correlation;
+      let _correlationDim1: Correlation;
+      let _correlationDim2: Correlation;
       if (action === 'add') {
         const commonPseudoLink = buildLink({
           experimentType: 'hsqc',
