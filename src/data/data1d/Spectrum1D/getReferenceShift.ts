@@ -1,6 +1,6 @@
 import type { DataXY } from 'cheminfo-types';
 import mean from 'ml-array-mean';
-import { Peak1D, gsd } from 'ml-gsd';
+import { gsd } from 'ml-gsd';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import { getRange } from '../../constants/References';
@@ -72,12 +72,12 @@ function xyCalibrate(
   };
 
   let peaks = gsd(sliceddata, gsdOptions)
-    .sort((a: Peak1D, b: Peak1D) => b.y - a.y)
+    .sort((a, b) => b.y - a.y)
     .slice(0, nbPeaks);
 
   if (peaks.length === 0) return 0;
 
-  const middle = mean(peaks.map((peak: Peak1D) => peak.x));
+  const middle = mean(peaks.map((peak) => peak.x));
 
   return targetX - middle;
 }

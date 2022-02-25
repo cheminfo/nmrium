@@ -6,7 +6,8 @@ import {
   buildLink,
   getLinkDim,
   removeLink,
-  Types,
+  Link,
+  Correlation,
 } from 'nmr-correlation';
 
 import { Datum2D } from '../../../data/types/data2d';
@@ -44,7 +45,7 @@ function getLabelColor(correlationData, correlation) {
 
 function findSignalMatch1D(
   spectrum: Datum2D,
-  link: Types.Link,
+  link: Link,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -64,7 +65,7 @@ function findSignalMatch1D(
 
 function findSignalMatch2D(
   spectrum: Datum2D,
-  link: Types.Link,
+  link: Link,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -85,7 +86,7 @@ function findSignalMatch2D(
   return false;
 }
 
-function getAbbreviation(link: Types.Link): string {
+function getAbbreviation(link: Link): string {
   if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
     return !link.signal || link.signal.sign === 0
       ? 'S'
@@ -120,7 +121,7 @@ function buildNewLink1D(link) {
   });
 }
 
-function buildNewLink2D(link: Types.Link, axis: 'x' | 'y') {
+function buildNewLink2D(link: Link, axis: 'x' | 'y') {
   const linkIDs = link.id.split('_');
   return buildLink({
     ...link,
@@ -135,11 +136,11 @@ function buildNewLink2D(link: Types.Link, axis: 'x' | 'y') {
 }
 
 function cloneCorrelationAndEditLink(
-  correlation: Types.Correlation,
-  link: Types.Link,
+  correlation: Correlation,
+  link: Link,
   axis: 'x' | 'y',
   action: 'add' | 'remove' | 'unmove',
-): Types.Correlation {
+): Correlation {
   const linkDim = getLinkDim(link);
   const _correlation = lodashCloneDeep(correlation);
   const split = link.id.split('_');
@@ -175,7 +176,7 @@ function getEditedCorrelations({
     correlationDim2 && selectedCorrelationDim2?.id !== correlationDim2?.id;
   const linkDim = getLinkDim(link);
 
-  const editedCorrelations: Types.Correlation[] = [];
+  const editedCorrelations: Correlation[] = [];
   const buildCorrelationDataOptions: {
     skipDataUpdate?: boolean;
   } = {};
@@ -190,7 +191,7 @@ function getEditedCorrelations({
         'remove',
       );
       // modify selected correlation
-      let newCorrelationDim1: Types.Correlation;
+      let newCorrelationDim1: Correlation;
       if (selectedCorrelationDim1) {
         newCorrelationDim1 = cloneCorrelationAndEditLink(
           hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,

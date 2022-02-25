@@ -1,6 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getLinkDelta, getLinkDim, Types } from 'nmr-correlation';
+import {
+  getLinkDelta,
+  getLinkDim,
+  Correlation,
+  Values as CorrelationValues,
+  Options as CorrelationOptions,
+  Link,
+} from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -95,7 +102,7 @@ function SummaryPanel() {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const filteredCorrelationsData = useMemo(() => {
-    const isInView = (correlation: Types.Correlation): boolean => {
+    const isInView = (correlation: Correlation): boolean => {
       if (correlation.pseudo === true) {
         return false;
       }
@@ -381,7 +388,7 @@ function SummaryPanel() {
   );
 
   const setCorrelationsHandler = useCallback(
-    (correlations: Types.Values, options?: Types.Options) => {
+    (correlations: CorrelationValues, options?: CorrelationOptions) => {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
@@ -394,7 +401,7 @@ function SummaryPanel() {
   );
 
   const deleteCorrelationHandler = useCallback(
-    (correlation: Types.Correlation) => {
+    (correlation: Correlation) => {
       dispatch({
         type: DELETE_CORRELATION,
         payload: {
@@ -407,7 +414,7 @@ function SummaryPanel() {
   );
 
   const deleteSignalHandler = useCallback(
-    (link: Types.Link) => {
+    (link: Link) => {
       // remove linking signal in spectrum
       const linkDim = getLinkDim(link);
       if (linkDim === 1) {
@@ -453,10 +460,10 @@ function SummaryPanel() {
 
   const editCorrelationTableCellHandler = useCallback(
     (
-      editedCorrelations: Types.Correlation[],
+      editedCorrelations: Correlation[],
       action: string,
-      link?: Types.Link,
-      options?: Types.Options,
+      link?: Link,
+      options?: CorrelationOptions,
     ) => {
       if (
         action === 'add' ||

@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { buildCorrelationData, Types } from 'nmr-correlation';
+import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
@@ -26,7 +26,7 @@ function setData(
     spectra: Spectra;
     molecules: Molecules;
     preferences: NMRiumPreferences;
-    correlations: Types.CorrelationData;
+    correlations: CorrelationData;
     usedColors: UsedColors;
   },
 ) {

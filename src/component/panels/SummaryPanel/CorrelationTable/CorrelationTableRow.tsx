@@ -3,7 +3,7 @@ import {
   getCorrelationDelta,
   getLabel,
   getLinkDim,
-  Types,
+  Link,
 } from 'nmr-correlation';
 import { CSSProperties, useCallback, useMemo, useRef } from 'react';
 
@@ -83,7 +83,7 @@ function CorrelationTableRow({
 
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation) => {
-      const commonLinks: Types.Link[] = [];
+      const commonLinks: Link[] = [];
       correlation.link.forEach((link) => {
         _correlation.link.forEach((_link) => {
           if (
