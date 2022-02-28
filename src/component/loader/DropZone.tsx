@@ -278,7 +278,7 @@ function DropZone(props) {
   return (
     <LoaderProvider value={open}>
       <div {...getRootProps()} role="none" css={containerStyle}>
-        <input {...getInputProps()} />
+        <input data-test-id="dropzone-input" {...getInputProps()} />
         {isDragActive && (
           <div
             css={style}
