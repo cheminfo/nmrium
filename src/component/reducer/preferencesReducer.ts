@@ -2,9 +2,9 @@ import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 
 import { NMRiumMode } from '../NMRium';
-import basic from '../nmriumMode/basic';
-import exercise1D from '../nmriumMode/exercise1D';
-import process1D from '../nmriumMode/process1D';
+import defaultPreferences from '../nmriumMode/basic';
+import exercise1DPreferences from '../nmriumMode/exercise1D';
+import process1DPreferences from '../nmriumMode/process1D';
 import {
   getLocalStorage,
   removeData,
@@ -15,16 +15,16 @@ export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
-const LOCAL_STORGAE_VERSION = '1.1';
+const LOCAL_STORAGE_VERSION = '1.5';
 
 function getPreferencesByMode(mode: NMRiumMode) {
   switch (mode) {
     case NMRiumMode.EXERCISE_1D:
-      return exercise1D;
+      return exercise1DPreferences;
     case NMRiumMode.PROCESS_1D:
-      return process1D;
+      return process1DPreferences;
     default:
-      return basic;
+      return defaultPreferences;
   }
 }
 
@@ -44,11 +44,12 @@ export interface PreferencesState {
     panels: any;
   };
   dispatch: any;
+  mode: string;
 }
 
 export const preferencesInitialState: PreferencesState = {
   basePreferences: {},
-  display: basic,
+  display: defaultPreferences.display,
   controllers: {
     mws: { low: 2, high: 20 },
     dimmedSpectraTransparency: 0.1,
@@ -66,7 +67,16 @@ export const preferencesInitialState: PreferencesState = {
     panels: {},
   },
   dispatch: null,
+  mode: 'default',
 };
+
+function getTruthyObjectValues(data: any) {
+  return JSON.parse(JSON.stringify(data), (key, value) => {
+    if (value) {
+      return value;
+    }
+  });
+}
 
 function mapNucleus(draft: Draft<PreferencesState>) {
   if (draft.formatting.nucleus && Array.isArray(draft.formatting.nucleus)) {
@@ -85,61 +95,92 @@ function handleInit(draft: Draft<PreferencesState>, action) {
     'nmr-local-storage-version',
     false,
   );
-  if (
-    !nmrLocalStorageVersion ||
-    nmrLocalStorageVersion !== LOCAL_STORGAE_VERSION
-  ) {
-    removeData('nmr-general-settings');
-    storeData('nmr-local-storage-version', LOCAL_STORGAE_VERSION);
+
+  let localData = getLocalStorage('nmr-general-settings');
+
+  // remove old nmr-local-storage-version key
+  if (nmrLocalStorageVersion && localData?.version) {
+    removeData('nmr-local-storage-version');
   }
 
-  const localData = getLocalStorage('nmr-general-settings');
+  if (!localData?.version || localData?.version !== LOCAL_STORAGE_VERSION) {
+    removeData('nmr-general-settings');
+  }
 
   if (action.payload) {
     const { dispatch, mode, ...resProps } = action.payload;
+    draft.mode = mode;
+    const modePreferences = getPreferencesByMode(mode);
+    if (
+      !localData ||
+      !localData?.modes[mode] ||
+      modePreferences.version !== localData?.modes[mode]?.version
+    ) {
+      localData = localData || {};
+      localData = {
+        version: LOCAL_STORAGE_VERSION,
+        modes: {
+          ...localData.modes,
+          [mode]: {
+            ...modePreferences,
+            controllers: draft.controllers,
+            formatting: draft.formatting,
+          },
+        },
+      };
+      storeData('nmr-general-settings', JSON.stringify(localData));
+    }
 
-    draft.basePreferences = lodashMerge(
-      {},
-      {
-        display: mode === NMRiumMode.DEFAULT ? {} : getPreferencesByMode(mode),
-      },
-      resProps,
+    draft.basePreferences = lodashMerge({}, modePreferences, resProps);
+
+    const hiddenModeFeatures = getTruthyObjectValues(
+      draft.basePreferences.display,
     );
 
-    const hiddenFeatures = JSON.parse(
-      JSON.stringify(draft.basePreferences.display),
-      (key, value) => {
-        if (value) {
-          return value;
-        }
-      },
-    );
+    let hiddenLocalStorageFeatures: any = {};
 
-    draft.display = lodashMerge(
-      {},
-      getPreferencesByMode(NMRiumMode.DEFAULT),
-      hiddenFeatures,
-    );
     draft.dispatch = dispatch;
-    if (localData) {
-      Object.entries(localData).forEach(([k, v]) => {
-        if (!['dispatch', 'basePreferences'].includes(k)) {
+    const localStorageModePreferences = localData?.modes[mode] || null;
+    if (localStorageModePreferences) {
+      Object.entries(localStorageModePreferences).forEach(([k, v]) => {
+        if (k === 'display') {
+          hiddenLocalStorageFeatures = getTruthyObjectValues(v);
+        } else if (!['dispatch', 'basePreferences'].includes(k)) {
           draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
         }
       });
       mapNucleus(draft);
     }
+    draft.display = lodashMerge(
+      {},
+      getPreferencesByMode(NMRiumMode.DEFAULT).display,
+      hiddenModeFeatures,
+      hiddenLocalStorageFeatures,
+    );
   }
 }
 
 function handleSetPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
-    const data = action.payload;
-    draft.controllers = data.controllers;
-    draft.formatting = data.formatting;
-    draft.display.panels = data.display.panels;
-    draft.display.hideExperimentalFeatures =
-      data.display.hideExperimentalFeatures;
+    const { controllers, formatting, display } = action.payload;
+
+    let localData = getLocalStorage('nmr-general-settings');
+    localData.modes = {
+      ...localData.modes,
+      [draft.mode]: {
+        ...localData.modes[draft.mode],
+        controllers,
+        formatting,
+        display,
+      },
+    };
+
+    storeData('nmr-general-settings', JSON.stringify(localData));
+
+    draft.controllers = controllers;
+    draft.formatting = formatting;
+    draft.display.panels = display.panels;
+    draft.display.hideExperimentalFeatures = display.hideExperimentalFeatures;
     mapNucleus(draft);
   }
 }

@@ -8,7 +8,6 @@ import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import FormikForm from '../../elements/formik/FormikForm';
 import { SET_PREFERENCES } from '../../reducer/preferencesReducer';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
@@ -150,7 +149,6 @@ interface GeneralSettingsProps {
 function GeneralSettings({ onClose, onSave }: GeneralSettingsProps) {
   const [activeTab, setActiveTab] = useState('controllers');
   const preferences = usePreferences();
-  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const refForm = useRef<any>();
 
   const handleSave = useCallback(() => {
@@ -159,12 +157,10 @@ function GeneralSettings({ onClose, onSave }: GeneralSettingsProps) {
 
   const submitHandler = useCallback(
     (values) => {
-      const { dispatch, basePreferences, ...resValues } = values;
-      setSettingsData(resValues);
       preferences.dispatch({ type: SET_PREFERENCES, payload: values });
       onSave?.();
     },
-    [onSave, preferences, setSettingsData],
+    [onSave, preferences],
   );
 
   const tabChangeHandler = useCallback((tab) => {

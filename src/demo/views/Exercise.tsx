@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import NMRium from '../../component/NMRium';
+import NMRium, { NMRiumMode } from '../../component/NMRium';
 
 let answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 
@@ -171,6 +171,7 @@ export default function Exercise(props) {
         >
           <NMRium
             data={data}
+            mode={NMRiumMode.EXERCISE_1D}
             preferences={{
               general: {
                 disableMultipletAnalysis: true,
