@@ -187,9 +187,12 @@ function MoleculePanelInner({
             ))
           ) : (
             <div
-              style={{ width: '100%', height: '100%' }}
+              css={styles.slider}
+              style={{ height: '100%' }}
               onClick={() => openMoleculeEditorHandler()}
-            />
+            >
+              <span>Click to draw molecule</span>
+            </div>
           )}
         </NextPrev>
       </div>
