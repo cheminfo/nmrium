@@ -5,6 +5,7 @@ export default {
     general: {
       disableMultipletAnalysis: true,
       hideSetSumFromMolecule: false,
+      hideGeneralSettings: true,
     },
 
     panels: {

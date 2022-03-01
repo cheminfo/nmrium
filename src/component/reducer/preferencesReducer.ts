@@ -15,7 +15,7 @@ export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
-const LOCAL_STORAGE_VERSION = '1.5';
+const LOCAL_STORAGE_VERSION = 2;
 
 function getPreferencesByMode(mode: NMRiumMode) {
   switch (mode) {

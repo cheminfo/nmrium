@@ -1,10 +1,11 @@
 export default {
-  version: 2,
+  version: 1,
   label: 'Default Mode',
   display: {
     general: {
       disableMultipletAnalysis: false,
       hideSetSumFromMolecule: false,
+      hideGeneralSettings: false,
     },
 
     panels: {
