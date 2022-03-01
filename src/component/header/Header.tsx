@@ -9,7 +9,7 @@ import {
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
-import { usePreferences } from "../context/PreferencesContext";
+import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal, positions } from '../elements/popup/Modal';
 import AboutUsModal from '../modal/AboutUsModal';
