@@ -7,10 +7,11 @@ const useValidation = () =>
       signals: Yup.array()
         .of(
           Yup.object().shape({
-            pathLength: Yup.object().shape({
-              min: Yup.number().required().positive().integer(),
-              max: Yup.number().required().positive().integer(),
-              source: Yup.string(),
+            j: Yup.object().shape({
+              pathLength: Yup.object().shape({
+                from: Yup.number().required().positive().integer(),
+                to: Yup.number().required().positive().integer(),
+              }),
             }),
           }),
         )

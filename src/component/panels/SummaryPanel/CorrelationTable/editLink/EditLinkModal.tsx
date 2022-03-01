@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getLinkDim, Types } from 'nmr-correlation';
+import { getLinkDim, Link } from 'nmr-correlation';
 import { useCallback, useMemo, useState } from 'react';
 
 import CloseButton from '../../../../elements/CloseButton';
@@ -102,7 +102,7 @@ export default function EditLinkModal({
       action: 'move' | 'remove' | 'unmove' | 'setPathLength',
       selectedCorrelationIdDim1: string | undefined,
       selectedCorrelationIdDim2: string | undefined,
-      editedLink?: Types.Link,
+      editedLink?: Link,
     ) => {
       const { editedCorrelations, buildCorrelationDataOptions } =
         getEditedCorrelations({

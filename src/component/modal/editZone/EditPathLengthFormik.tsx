@@ -71,45 +71,45 @@ function EditPathLengthFormik({ signalIndex }: InputProps) {
       <p>Setting of the minimum and maximum path length (J coupling).</p>
       <div className="input-container">
         <FormikNumberInput
-          name={`signals[${signalIndex}].pathLength.min`}
+          name={`signals[${signalIndex}].j.pathLength.from`}
           defaultValue={
-            values.signals[signalIndex].pathLength?.min ||
-            DefaultPathLengths[values.experimentType]?.min ||
+            values.signals[signalIndex].j?.pathLength?.from ||
+            DefaultPathLengths[values.experimentType]?.from ||
             1
           }
           label="Min: "
           style={{
             input: {
-              color: errors.signals?.[signalIndex]?.pathLength?.min
+              color: errors.signals?.[signalIndex].j?.pathLength?.from
                 ? 'red'
                 : 'black',
             },
           }}
           min={1}
           max={
-            values.signals[signalIndex].pathLength?.max ||
-            DefaultPathLengths[values.experimentType]?.max
+            values.signals[signalIndex].j?.pathLength?.to ||
+            DefaultPathLengths[values.experimentType]?.to
           }
           pattern="[1-9]+"
         />
         <FormikNumberInput
-          name={`signals[${signalIndex}].pathLength.max`}
+          name={`signals[${signalIndex}].j.pathLength.to`}
           defaultValue={
-            values.signals[signalIndex].pathLength?.max ||
-            DefaultPathLengths[values.experimentType]?.max ||
+            values.signals[signalIndex].j?.pathLength?.to ||
+            DefaultPathLengths[values.experimentType]?.to ||
             1
           }
           label="Max: "
           style={{
             input: {
-              color: errors.signals?.[signalIndex]?.pathLength?.max
+              color: errors.signals?.[signalIndex].j?.pathLength?.to
                 ? 'red'
                 : 'black',
             },
           }}
           min={
-            values.signals[signalIndex].pathLength?.min ||
-            DefaultPathLengths[values.experimentType]?.min ||
+            values.signals[signalIndex].j?.pathLength?.from ||
+            DefaultPathLengths[values.experimentType]?.from ||
             1
           }
           pattern="[1-9]+"

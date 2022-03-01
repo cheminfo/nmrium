@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { buildCorrelationData, Types } from 'nmr-correlation';
+import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
@@ -26,7 +26,7 @@ function setData(
     spectra: Spectra;
     molecules: Molecules;
     preferences: NMRiumPreferences;
-    correlations: Types.CorrelationData;
+    correlations: CorrelationData;
     exclusionZones: any;
     usedColors: UsedColors;
   },
@@ -64,8 +64,8 @@ function setData(
 }
 
 function convertHybridizationStringValuesInCorrelations(
-  correlations: Types.CorrelationData,
-): Types.CorrelationData {
+  correlations: CorrelationData,
+): CorrelationData {
   return {
     ...correlations,
     values: correlations.values.map((correlation) => {

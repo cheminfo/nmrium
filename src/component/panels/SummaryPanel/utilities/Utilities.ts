@@ -7,12 +7,12 @@ import {
   getLinkDelta,
   getLinkDim,
   removeLink,
-  Types,
+  Correlation,
+  Link,
 } from 'nmr-correlation';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
 import { Datum2D } from '../../../../data/types/data2d';
-import PathLength from '../../../../data/types/data2d/PathLength';
 import {
   findSignal2D,
   findSpectrum,
@@ -22,6 +22,7 @@ import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPat
 import { ActiveSpectrum } from '../../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
 import { ErrorColors } from '../CorrelationTable/Constants';
+import { FromTo } from 'cheminfo-types';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
@@ -53,7 +54,7 @@ function getLabelColor(correlationData, correlation) {
 
 function findSignalMatch1D(
   spectrum: Datum2D,
-  link: Types.Link,
+  link: Link,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -73,7 +74,7 @@ function findSignalMatch1D(
 
 function findSignalMatch2D(
   spectrum: Datum2D,
-  link: Types.Link,
+  link: Link,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -94,7 +95,7 @@ function findSignalMatch2D(
   return false;
 }
 
-function getAbbreviation(link: Types.Link): string {
+function getAbbreviation(link: Link): string {
   let abbreviation = 'X';
   if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
     abbreviation =
@@ -118,14 +119,14 @@ function getAbbreviation(link: Types.Link): string {
     abbreviation = 'A';
   }
 
-  const pathLength = link.signal.pathLength;
+  const pathLength: FromTo | undefined = link.signal.j?.pathLength;
   if (pathLength) {
     const isDefaultCorrelation =
       DefaultPathLengths[link.experimentType] &&
-      pathLength.min >= DefaultPathLengths[link.experimentType].min &&
-      pathLength.min <= DefaultPathLengths[link.experimentType].max &&
-      pathLength.max >= DefaultPathLengths[link.experimentType].min &&
-      pathLength.max <= DefaultPathLengths[link.experimentType].max;
+      pathLength.from >= DefaultPathLengths[link.experimentType].from &&
+      pathLength.from <= DefaultPathLengths[link.experimentType].to &&
+      pathLength.to >= DefaultPathLengths[link.experimentType].from &&
+      pathLength.to <= DefaultPathLengths[link.experimentType].to;
 
     return `${abbreviation}${isDefaultCorrelation ? '' : '*'}`;
   }
@@ -143,7 +144,7 @@ function buildNewLink1D(link) {
   });
 }
 
-function buildNewLink2D(link: Types.Link, axis: 'x' | 'y') {
+function buildNewLink2D(link: Link, axis: 'x' | 'y') {
   const linkIDs = link.id.split('_');
   return buildLink({
     ...link,
@@ -158,11 +159,11 @@ function buildNewLink2D(link: Types.Link, axis: 'x' | 'y') {
 }
 
 function cloneCorrelationAndEditLink(
-  correlation: Types.Correlation,
-  link: Types.Link,
+  correlation: Correlation,
+  link: Link,
   axis: 'x' | 'y',
   action: 'add' | 'remove' | 'unmove',
-): Types.Correlation {
+): Correlation {
   const linkDim = getLinkDim(link);
   const _correlation = lodashCloneDeep(correlation);
   const split = link.id.split('_');
@@ -187,13 +188,13 @@ function getEditedCorrelations({
   link,
   correlations,
 }: {
-  correlationDim1: Types.Correlation;
-  correlationDim2: Types.Correlation;
+  correlationDim1: Correlation;
+  correlationDim2: Correlation;
   action: 'move' | 'remove' | 'unmove' | 'setPathLength';
   selectedCorrelationIdDim1: string | undefined;
   selectedCorrelationIdDim2: string | undefined;
-  link: Types.Link;
-  correlations: Types.Correlation[];
+  link: Link;
+  correlations: Correlation[];
 }) {
   const selectedCorrelationDim1 = correlations.find(
     (correlation) => correlation.id === selectedCorrelationIdDim1,
@@ -206,7 +207,7 @@ function getEditedCorrelations({
     correlationDim2 && selectedCorrelationDim2?.id !== correlationDim2?.id;
   const linkDim = getLinkDim(link);
 
-  const editedCorrelations: Types.Correlation[] = [];
+  const editedCorrelations: Correlation[] = [];
   const buildCorrelationDataOptions: {
     skipDataUpdate?: boolean;
   } = {};
@@ -221,7 +222,7 @@ function getEditedCorrelations({
         'remove',
       );
       // modify selected correlation
-      let newCorrelationDim1: Types.Correlation;
+      let newCorrelationDim1: Correlation;
       if (selectedCorrelationDim1) {
         newCorrelationDim1 = cloneCorrelationAndEditLink(
           hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
@@ -389,23 +390,30 @@ function getEditedCorrelations({
 }
 
 function cloneCorrelationAndSetPathLength(
-  correlation: Types.Correlation,
-  editedLink: Types.Link,
+  correlation: Correlation,
+  editedLink: Link,
   axis: 'x' | 'y',
-): Types.Correlation {
+): Correlation {
   const _correlation = lodashCloneDeep(correlation);
   const linkDim = getLinkDim(editedLink);
   if (linkDim === 2) {
     const editedLinkID = editedLink.id.split('_')[axis === 'x' ? 0 : 1];
     const _link = _correlation.link.find((link) => link.id === editedLinkID);
     if (_link) {
-      const newPathLength = editedLink.signal.pathLength as PathLength;
+      const newPathLength: FromTo = editedLink.signal.j?.pathLength;
       // remove (previous) pathLength if it is same as default
       if (isDefaultPathLength(newPathLength, _link.experimentType)) {
-        delete _link.signal.pathLength;
+        delete _link.signal.j?.pathLength;
+        if (_link.signal.j && Object.keys(_link.signal.j).length === 0) {
+          delete _link.signal.j;
+        }
         delete _link.edited.pathLength;
       } else {
-        _link.signal.pathLength = newPathLength;
+        if (!_link.signal.j) {
+          _link.signal.j = { pathLength: newPathLength };
+        } else {
+          _link.signal.j.pathLength = newPathLength;
+        }
         _link.edited.pathLength = true;
       }
     }
@@ -455,7 +463,7 @@ function isInView(
   xDomain: number[],
   yDomain: number[],
   displayerMode: string,
-  correlation: Types.Correlation,
+  correlation: Correlation,
 ): boolean {
   if (correlation.pseudo === true) {
     return false;

@@ -1,4 +1,4 @@
-import { buildLink, Types } from 'nmr-correlation';
+import { buildLink, Correlation, Link } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -28,7 +28,7 @@ function AdditionalColumnField({
 
   const highlightIDsCommonLinks = useMemo(() => {
     const ids: Array<any> = [];
-    commonLinks.forEach((link) => {
+    commonLinks.forEach((link: Link) => {
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair'));
@@ -72,7 +72,7 @@ function AdditionalColumnField({
   );
 
   const handleEditPseudoHSQC = useCallback(
-    (action: 'add' | 'remove', link?: Types.Link) => {
+    (action: 'add' | 'remove', link?: Link) => {
       const pseudoLinkCountHSQC = rowCorrelation.link.filter(
         (_link) =>
           (_link.experimentType === 'hsqc' ||
@@ -80,8 +80,8 @@ function AdditionalColumnField({
           _link.pseudo === true,
       ).length;
 
-      let _correlationDim1: Types.Correlation;
-      let _correlationDim2: Types.Correlation;
+      let _correlationDim1: Correlation;
+      let _correlationDim2: Correlation;
       if (action === 'add') {
         const commonPseudoLink = buildLink({
           experimentType: 'hsqc',

@@ -1,3 +1,4 @@
+import { FromTo } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { setPathLength } from 'nmr-correlation';
@@ -14,7 +15,7 @@ import {
   detectZonesManual,
   updateShift,
 } from '../../../data/data2d/Spectrum2D';
-import { Datum2D } from '../../../data/types/data2d';
+import { Datum2D, Signal2D } from '../../../data/types/data2d';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -201,7 +202,10 @@ function handleSetSignalPathLength(draft: Draft<State>, action) {
       (_signal) => _signal.id === signal.id,
     );
     const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
-    _zone.signals[signalIndex].pathLength = pathLength;
+    _zone.signals[signalIndex].j = {
+      ..._zone.signals[signalIndex].j,
+      pathLength,
+    };
     datum2D.zones.values[zoneIndex] = _zone;
 
     handleOnChangeZonesData(draft);
@@ -265,7 +269,6 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
         _zone.signals[signalIndex][axis].nbAtoms,
       );
     }
-    // _zone[axis].nbAtoms = getNbAtoms(_zone, axis);
   }
 }
 
@@ -281,8 +284,12 @@ function handleSaveEditedZone(draft: Draft<State>, action) {
     (draft.data[index] as Datum2D).zones.values[zoneIndex] = editedRowData;
 
     if (editedRowData.signals) {
-      editedRowData.signals.forEach((signal) => {
-        setPathLength(draft.correlations.values, signal.id, signal.pathLength);
+      editedRowData.signals.forEach((signal: Signal2D) => {
+        setPathLength(
+          draft.correlations.values,
+          signal.id,
+          signal.j?.pathLength as FromTo,
+        );
       });
     }
 

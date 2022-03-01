@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getCorrelationDelta, Types } from 'nmr-correlation';
+import { getCorrelationDelta, Correlation, Link } from 'nmr-correlation';
 import { useCallback, useState } from 'react';
 
 import Select from '../../../../elements/Select';
@@ -38,10 +38,10 @@ const moveLinkStyles = css`
 `;
 
 interface MoveLinkProps {
-  correlationDim1: Types.Correlation;
-  correlationDim2: Types.Correlation;
-  link: Types.Link;
-  correlations: Types.Correlation[];
+  correlationDim1: Correlation;
+  correlationDim2: Correlation;
+  link: Link;
+  correlations: Correlation[];
   onEdit: (
     correlationIdDim1: string,
     correlationIdDim2: string | undefined,
@@ -60,13 +60,13 @@ function MoveLink({
   const [selectedCorrelationIdDim2, setSelectedCorrelationIdDim2] =
     useState<string>(correlationDim2?.id || undefined);
 
-  function getCorrelationLabel(correlation: Types.Correlation) {
+  function getCorrelationLabel(correlation: Correlation) {
     const delta = getCorrelationDelta(correlation);
     return `${delta ? delta.toFixed(2) : '?'}`;
   }
 
   const getSelection = useCallback(
-    (correlation: Types.Correlation, dim: 0 | 1) => {
+    (correlation: Correlation, dim: 0 | 1) => {
       const selectionData = correlations.reduce((arr, _correlation) => {
         if (
           _correlation.pseudo === false &&

@@ -1,6 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getLinkDim, Types } from 'nmr-correlation';
+import {
+  getLinkDim,
+  Correlation,
+  Link,
+  Options,
+  Values,
+} from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -207,7 +213,7 @@ function SummaryPanel() {
   }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
 
   const editEquivalencesSaveHandler = useCallback(
-    (correlation: Types.Correlation, value: number) => {
+    (correlation: Correlation, value: number) => {
       dispatch({
         type: SET_CORRELATION,
         payload: {
@@ -229,7 +235,7 @@ function SummaryPanel() {
       values,
       key,
     }: {
-      correlation: Types.Correlation;
+      correlation: Correlation;
       values: number[];
       key: 'hybridization' | 'protonsCount';
     }) => {
@@ -252,7 +258,7 @@ function SummaryPanel() {
   );
 
   const setCorrelationsHandler = useCallback(
-    (correlations: Types.Values, options?: Types.Options) => {
+    (correlations: Values, options?: Options) => {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
@@ -265,7 +271,7 @@ function SummaryPanel() {
   );
 
   const deleteCorrelationHandler = useCallback(
-    (correlation: Types.Correlation) => {
+    (correlation: Correlation) => {
       dispatch({
         type: DELETE_CORRELATION,
         payload: {
@@ -278,7 +284,7 @@ function SummaryPanel() {
   );
 
   const deleteSignalHandler = useCallback(
-    (link: Types.Link) => {
+    (link: Link) => {
       // remove linking signal in spectrum
       const linkDim = getLinkDim(link);
       if (linkDim === 1) {
@@ -323,7 +329,7 @@ function SummaryPanel() {
   );
 
   const changeSignalPathLengthHandler = useCallback(
-    (link: Types.Link) => {
+    (link: Link) => {
       const linkDim = getLinkDim(link);
       if (linkDim === 2) {
         const spectrum = findSpectrum(
@@ -340,7 +346,7 @@ function SummaryPanel() {
             spectrum,
             zone,
             signal,
-            pathLength: link.signal.pathLength,
+            pathLength: link.signal.j?.pathLength,
           },
         });
       }
@@ -350,10 +356,10 @@ function SummaryPanel() {
 
   const editCorrelationTableCellHandler = useCallback(
     (
-      editedCorrelations: Types.Correlation[],
+      editedCorrelations: Correlation[],
       action: string,
-      link?: Types.Link,
-      options?: Types.Options,
+      link?: Link,
+      options?: Options,
     ) => {
       if (
         action === 'add' ||

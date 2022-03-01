@@ -1,5 +1,5 @@
 import { Draft, produce } from 'immer';
-import { buildCorrelationData, Types } from 'nmr-correlation';
+import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
@@ -281,7 +281,7 @@ export interface State {
   /**
    * Correlation data
    */
-  correlations: Types.CorrelationData;
+  correlations: CorrelationData;
 
   /**
    * Zoom Manager for vertical scale for spectra, integral, And undo zoom in per tab (nucleus)

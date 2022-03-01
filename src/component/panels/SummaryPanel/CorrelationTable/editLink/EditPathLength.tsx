@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { FromTo } from 'cheminfo-types';
 import { useCallback, useEffect, useState } from 'react';
 
 import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths';
 import { Signal2D } from '../../../../../data/types/data2d';
-import PathLength from '../../../../../data/types/data2d/PathLength';
 import Button from '../../../../elements/Button';
 import Input from '../../../../elements/Input';
+import Label from '../../../../elements/Label';
+import isDefaultPathLength from '../../../../modal/editZone/validation/isDefaultPathLength';
 
 const editPathLengthsStyles = css`
   width: 100%;
@@ -53,50 +55,79 @@ interface InputProps {
 }
 
 function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
-  const [min, setMin] = useState<number>(
-    signal.pathLength?.min || DefaultPathLengths[experimentType]?.min || 0,
+  const [from, setFrom] = useState<number>(
+    signal.j?.pathLength !== undefined
+      ? (signal.j.pathLength as FromTo).from
+      : DefaultPathLengths[experimentType]?.from || 0,
   );
-  const [max, setMax] = useState<number>(
-    signal.pathLength?.max || DefaultPathLengths[experimentType]?.max || 0,
+  const [to, setTo] = useState<number>(
+    signal.j?.pathLength !== undefined
+      ? (signal.j.pathLength as FromTo).to
+      : DefaultPathLengths[experimentType]?.to || 0,
   );
   const [isError, setIsError] = useState<boolean>(false);
 
   const handleOnEdit = useCallback(() => {
-    const newPathLength: PathLength = {
-      min,
-      max,
-      source: 'manual',
+    const pathLength: FromTo = {
+      from,
+      to,
     };
-    const editedSignal = { ...signal, pathLength: newPathLength };
+    const editedSignal: Signal2D = {
+      ...signal,
+      j: {
+        ...signal.j,
+        pathLength,
+      },
+    };
 
     onEdit(editedSignal);
-  }, [max, min, onEdit, signal]);
+  }, [to, from, onEdit, signal]);
 
   useEffect(() => {
-    setIsError(min <= 0 || min > max);
-  }, [max, min]);
+    setIsError(from <= 0 || from > to);
+  }, [to, from]);
 
   return (
     <div css={editPathLengthsStyles}>
       <p>Setting of the minimum and maximum path length (J coupling).</p>
       <div className="input-container">
-        <Input
-          type="number"
-          value={min}
-          label="Min: "
-          onChange={(e) => {
-            setMin(Number(e.target.value));
+        <Label
+          title="Min:"
+          style={{
+            label: {
+              marginRight: '5px',
+              fontSize: '14px',
+              fontWeight: 'normal',
+            },
           }}
-          style={{ input: { color: isError ? 'red' : 'black' } }}
-        />
-        <Input
-          type="number"
-          value={max}
-          label="Max:"
-          onChange={(e) => {
-            setMax(Number(e.target.value));
+        >
+          <Input
+            type="number"
+            value={from}
+            onChange={(e) => {
+              setFrom(Number(e.target.value));
+            }}
+            style={{ input: { color: isError ? 'red' : 'black' } }}
+          />
+        </Label>
+        <Label
+          title="Max:"
+          style={{
+            label: {
+              marginRight: '5px',
+              fontSize: '14px',
+              fontWeight: 'normal',
+            },
           }}
-        />
+        >
+          <Input
+            type="number"
+            value={to}
+            onChange={(e) => {
+              setTo(Number(e.target.value));
+            }}
+          />
+        </Label>
       </div>
       {isError ? (
         <p className="warning">

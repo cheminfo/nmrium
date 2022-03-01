@@ -1,4 +1,4 @@
-import { Types } from 'nmr-correlation';
+import { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
@@ -6,7 +6,7 @@ import { useChartData } from '../../../context/ChartContext';
 import { isInView } from './Utilities';
 
 interface InputProps {
-  correlation: Types.Correlation;
+  correlation: Correlation;
 }
 
 function IsInView({ correlation }: InputProps) {

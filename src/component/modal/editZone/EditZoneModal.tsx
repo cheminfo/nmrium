@@ -12,6 +12,8 @@ import FormikForm from '../../elements/formik/FormikForm';
 import SignalsForm from './SignalsForm';
 import useRangeFormValidation from './validation/EditZoneValidation';
 import isDefaultPathLength from './validation/isDefaultPathLength';
+import { Signal2D } from '../../../data/types/data2d';
+import { FromTo } from 'cheminfo-types';
 
 const styles = css`
   width: 500px;
@@ -81,17 +83,19 @@ function EditZoneModal({
     async (formValues) => {
       const _rowData = {
         ...rowData,
-        signals: formValues.signals.map((signal) => {
+        signals: formValues.signals.map((signal: Signal2D) => {
           if (
             isDefaultPathLength(
-              signal.pathLength,
+              signal.j?.pathLength as FromTo,
               rowData.tableMetaInfo.experiment,
             )
           ) {
-            delete signal.pathLength;
-          } else {
-            signal.pathLength.source = 'manual';
+            delete signal.j?.pathLength;
+            if (signal.j && Object.keys(signal.j).length === 0) {
+              delete signal.j;
+            }
           }
+
           return signal;
         }),
       };
@@ -105,14 +109,17 @@ function EditZoneModal({
   const data = useMemo(() => {
     return {
       activeTab: '0',
-      signals: rowData.signals.map((signal) => {
+      signals: rowData.signals.map((signal: Signal2D): Signal2D => {
         return {
-          pathLength: {
-            min: DefaultPathLengths[rowData.tableMetaInfo.experiment].min || 1,
-            max: DefaultPathLengths[rowData.tableMetaInfo.experiment].max || 1,
-            source: 'default',
-          },
           ...signal,
+          j: {
+            pathLength: {
+              from:
+                DefaultPathLengths[rowData.tableMetaInfo.experiment]?.from || 1,
+              to: DefaultPathLengths[rowData.tableMetaInfo.experiment]?.to || 1,
+            },
+            ...signal.j,
+          },
         };
       }),
     };
@@ -130,7 +137,7 @@ function EditZoneModal({
           <Button onClick={handleOnZoom} className="zoom-button">
             <FaSearchPlus title="Set to default view on range in spectrum" />
           </Button>
-          <span>{` Zone and Signal edition`}</span>
+          <span>{`Zone and Signal edition`}</span>
           <SaveButton
             onClick={() => formRef.current.submitForm()}
             popupTitle="Save and exit"

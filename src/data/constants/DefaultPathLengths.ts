@@ -1,9 +1,15 @@
-const DefaultPathLengths = {
-  hmbc: { min: 2, max: 3 },
-  cosy: { min: 3, max: 4 },
-  hsqc: { min: 1, max: 1 },
-  hmqc: { min: 1, max: 1 },
-  inadequate: { min: 1, max: 1 },
+import { FromTo } from 'cheminfo-types';
+
+export interface DefaultPathLengthsInterface {
+  [key: string]: FromTo;
+}
+
+const DefaultPathLengths: DefaultPathLengthsInterface = {
+  hmbc: { from: 2, to: 3 },
+  cosy: { from: 3, to: 4 },
+  hsqc: { from: 1, to: 1 },
+  hmqc: { from: 1, to: 1 },
+  inadequate: { from: 1, to: 1 },
 };
 
 export default DefaultPathLengths;

@@ -1,11 +1,14 @@
+import { FromTo } from 'cheminfo-types';
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
-import PathLength from '../../../../data/types/data2d/PathLength';
 
-function isDefaultPathLength(pathLength: PathLength, experimentType: string) {
+function isDefaultPathLength(
+  pathLength: FromTo,
+  experimentType: string,
+): boolean {
   return (
     DefaultPathLengths[experimentType] &&
-    DefaultPathLengths[experimentType].min === pathLength.min &&
-    DefaultPathLengths[experimentType].max === pathLength.max
+    pathLength.from === DefaultPathLengths[experimentType].from &&
+    pathLength.to === DefaultPathLengths[experimentType].to
   );
 }
 
