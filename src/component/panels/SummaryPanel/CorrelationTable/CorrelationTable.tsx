@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { getLabelColor } from '../utilities/Utilities';
@@ -69,12 +70,12 @@ function CorrelationTable({
     }
 
     return filteredCorrelationsData.values
-      .filter((correlation) =>
+      .filter((correlation: Correlation) =>
         showProtonsAsRows
           ? correlation.atomType === 'H'
           : correlation.atomType !== 'H',
       )
-      .map((correlation) => (
+      .map((correlation: Correlation) => (
         <CorrelationTableRow
           additionalColumnData={additionalColumnData}
           correlations={correlationsData.values}
@@ -107,7 +108,7 @@ function CorrelationTable({
 
   const additionalColumnHeader = useMemo(
     () =>
-      additionalColumnData.map((correlation) => (
+      additionalColumnData.map((correlation: Correlation) => (
         <AdditionalColumnHeader
           key={`additionalCorrelationHeader_${correlation.id}`}
           spectraData={spectraData}
