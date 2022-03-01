@@ -10,6 +10,7 @@ import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
+import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
 import MoleculePanel from './MoleculesPanel/MoleculePanel';
 import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
@@ -80,6 +81,14 @@ const accordionItems: AccordionItem[] = [
     openWhen: [options.multipleSpectraAnalysis.id],
     hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
     mode: null,
+  },
+  {
+    title: 'Matrix Generation',
+    component: <MatrixGenerationPanel />,
+    openWhen: [],
+    hidePreferenceKey: '',
+    mode: null,
+    isExperimental: true,
   },
   {
     title: 'Zones',

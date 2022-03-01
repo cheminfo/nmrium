@@ -34,7 +34,6 @@ const styles: Record<
 };
 
 export interface NumberInputProps {
-  ref?: any;
   pattern?: string;
   label?: string;
   name?: string;

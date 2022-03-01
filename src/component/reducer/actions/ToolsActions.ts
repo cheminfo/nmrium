@@ -82,6 +82,7 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
   draft.toolOptions.data.baseLineZones = [];
+
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   }
@@ -534,41 +535,6 @@ function resetSpectraScale(draft: Draft<State>) {
   setZoom(draft, { scale: 0.8 });
 }
 
-function handleAddExclusionZone(draft: Draft<State>, action) {
-  const { from, to } = action.payload;
-  const scaleX = getXScale(draft);
-
-  const start = scaleX.invert(from);
-  const end = scaleX.invert(to);
-
-  let zone: any = [];
-  if (start > end) {
-    zone = [end, start];
-  } else {
-    zone = [start, end];
-  }
-  const newExclusionZone = {
-    id: generateID(),
-    from: zone[0],
-    to: zone[1],
-  };
-  if (draft.toolOptions.data.exclusionZones[draft.activeTab]) {
-    draft.toolOptions.data.exclusionZones[draft.activeTab].push(
-      newExclusionZone,
-    );
-  } else {
-    draft.toolOptions.data.exclusionZones[draft.activeTab] = [newExclusionZone];
-  }
-}
-
-function handleDeleteExclusionZone(draft: Draft<State>, action) {
-  const id = action.payload.id;
-  const index = draft.toolOptions.data.exclusionZones[
-    draft.activeTab
-  ].findIndex((zone) => zone.id === id);
-  draft.toolOptions.data.exclusionZones[draft.activeTab].splice(index, 1);
-}
-
 export {
   resetSelectedTool,
   setSelectedTool,
@@ -588,6 +554,4 @@ export {
   setTab,
   setSpectraSameTopHandler,
   resetSpectraScale,
-  handleAddExclusionZone,
-  handleDeleteExclusionZone,
 };

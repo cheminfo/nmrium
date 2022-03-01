@@ -22,7 +22,6 @@ function MoleculeStructureEditorModal(
 
   const [molfile, setMolfile] = useState<string | null>(null);
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (selectedMolecule) {
       setMolfile(selectedMolecule.molfile);
@@ -33,7 +32,12 @@ function MoleculeStructureEditorModal(
 
   const cb = useCallback(
     (newMolfile) => {
-      setMolfile(newMolfile);
+      const molText =
+        /(?<s>M {2}V30 BEGIN BOND)(?<mol>.*?)(?<e>M {2}V30 END BOND)/gs.exec(
+          newMolfile,
+        )?.groups?.mol;
+
+      setMolfile(molText?.trim() ? newMolfile : null);
     },
     [setMolfile],
   );
@@ -61,7 +65,12 @@ function MoleculeStructureEditorModal(
         onChange={cb}
       />
       <div className="footer-container">
-        <button type="button" className="btn" onClick={handleSave}>
+        <button
+          type="button"
+          className="btn"
+          onClick={handleSave}
+          disabled={!molfile}
+        >
           Save
         </button>
         <button type="button" className="btn" onClick={handleClose}>

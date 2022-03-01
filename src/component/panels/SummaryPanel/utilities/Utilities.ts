@@ -1,3 +1,4 @@
+import { FromTo } from 'cheminfo-types';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashGet from 'lodash/get';
 import {
@@ -22,7 +23,6 @@ import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPat
 import { ActiveSpectrum } from '../../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
 import { ErrorColors } from '../CorrelationTable/Constants';
-import { FromTo } from 'cheminfo-types';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];

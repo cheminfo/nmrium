@@ -32,11 +32,14 @@ export const ModalStyles = css`
   button:focus {
     outline: none;
   }
-  button:hover {
+  button:not([disabled]):hover {
     color: #007bff;
   }
-  .btn:hover {
+  .btn:not([disabled]):hover {
     background-color: #ffffff;
+  }
+  .btn:disabled {
+    opacity: 0.5;
   }
   .btn {
     border: none;

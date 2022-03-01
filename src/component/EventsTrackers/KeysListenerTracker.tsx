@@ -50,7 +50,7 @@ function KeysListenerTracker() {
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
-    (sourceData) => {
+    async (sourceData) => {
       const {
         type,
         extra: { id },
@@ -106,22 +106,28 @@ function KeysListenerTracker() {
           break;
         }
         case HighlightedSource.EXCLUSION_ZONE: {
+          const hideLoading = await alert.showLoading(
+            `Exclusion filter in progress`,
+          );
           dispatch({
             type: DELETE_EXCLUSION_ZONE,
             payload: {
               id,
+              spectrumID: sourceData.extra.spectrumID,
             },
           });
+          hideLoading();
           // remove keys from the highlighted list after delete
           remove();
 
           break;
         }
+
         default:
           break;
       }
     },
-    [assignmentData, dispatch, remove],
+    [assignmentData, dispatch, remove, alert],
   );
 
   const keysPreferencesListenerHandler = useCallback(
@@ -200,6 +206,12 @@ function KeysListenerTracker() {
             }
             break;
           }
+          case 'e': {
+            if (allow1DTool) {
+              handleChangeOption(options.exclusionZones.id);
+            }
+            break;
+          }
           default:
         }
       }
@@ -275,7 +287,7 @@ function KeysListenerTracker() {
         } else {
           if (['Delete', 'Backspace'].includes(e.key) && highlight.sourceData) {
             e.preventDefault();
-            deleteHandler(highlight.sourceData);
+            void deleteHandler(highlight.sourceData);
           } else {
             toolsListenerHandler(e);
           }

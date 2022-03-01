@@ -35,6 +35,7 @@ export interface InternalTabProps {
   }) => any;
 }
 
+/* eslint-disable react/no-unused-prop-types */
 export interface TabProps {
   tabid: string;
   tablabel?: string;
@@ -45,6 +46,7 @@ export interface TabProps {
   render?: () => ReactNode;
   className?: string;
 }
+/* eslint-enable react/no-unused-prop-types */
 
 export function InternalTab({
   tabid,

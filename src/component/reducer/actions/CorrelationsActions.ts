@@ -2,12 +2,12 @@ import { original, Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import {
   buildCorrelationData,
-  Correlation,
-  Options,
   setCorrelation,
-  Spectra,
   Tolerance,
-  Values,
+  Options as CorrelationOptions,
+  Correlation,
+  Spectra,
+  Values as CorrelationValues,
 } from 'nmr-correlation';
 
 import { Datum1D } from '../../../data/types/data1d';
@@ -65,7 +65,7 @@ function handleSetCorrelation(
   payload: {
     id: string;
     correlation: Correlation;
-    options: Options;
+    options: CorrelationOptions;
   },
 ) {
   const state = original(draft) as State;
@@ -84,8 +84,8 @@ function handleSetCorrelation(
 function handleSetCorrelations(
   draft: Draft<State>,
   payload: {
-    correlations: Values;
-    options: Options;
+    correlations: CorrelationValues;
+    options: CorrelationOptions;
   },
 ) {
   const { correlations, options } = payload;
