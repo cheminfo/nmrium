@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { FromTo } from 'cheminfo-types';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
+import { Signal2D } from '../../../data/types/data2d';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
@@ -12,8 +14,6 @@ import FormikForm from '../../elements/formik/FormikForm';
 import SignalsForm from './SignalsForm';
 import useRangeFormValidation from './validation/EditZoneValidation';
 import isDefaultPathLength from './validation/isDefaultPathLength';
-import { Signal2D } from '../../../data/types/data2d';
-import { FromTo } from 'cheminfo-types';
 
 const styles = css`
   width: 500px;
