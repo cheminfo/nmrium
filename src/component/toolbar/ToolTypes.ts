@@ -72,7 +72,7 @@ export const options: RecordOptions = {
   },
   rangesPicking: {
     id: 'rangesPicking',
-    label: 'Ranges Picking ( Press r )',
+    label: 'Ranges Picking',
     hasOptionPanel: true,
     isFilter: false,
   },
@@ -84,13 +84,13 @@ export const options: RecordOptions = {
   },
   phaseCorrection: {
     id: Filters.phaseCorrection.id,
-    label: `${Filters.phaseCorrection.name} ( Press a )`,
+    label: Filters.phaseCorrection.name,
     hasOptionPanel: true,
     isFilter: true,
   },
   baseLineCorrection: {
     id: 'baseLineCorrection',
-    label: 'baseline correction ( Press b )',
+    label: 'baseline correction',
     hasOptionPanel: true,
     isFilter: true,
   },

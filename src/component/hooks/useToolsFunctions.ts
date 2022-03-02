@@ -31,11 +31,10 @@ export default function useToolsFunctions() {
           options.peakPicking.id,
           options.integral.id,
           options.zone2D.id,
+          options.exclusionZones.id,
         ].includes(selectedTool)
       ) {
-        alert.show(
-          'Press Shift + Left Mouse button to select zone for integral and peak picking',
-        );
+        alert.show('Press Shift + Left Mouse button to select zone');
       }
 
       if (

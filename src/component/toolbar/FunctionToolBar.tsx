@@ -163,7 +163,7 @@ function FunctionToolBarInner({
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}
               isVisible={activeSpectrum && !info?.isFid ? true : false}
-              title={options.rangesPicking.label}
+              title={`${options.rangesPicking.label} ( Press r )`}
               id="ranges-pick"
             >
               <SvgNmrRangePicking />
@@ -200,7 +200,7 @@ function FunctionToolBarInner({
               key={options.phaseCorrection.id}
               value={options.phaseCorrection.id}
               id="phaseCorrection"
-              title={options.phaseCorrection.label}
+              title={`${options.phaseCorrection.label} ( Press a )`}
               isVisible={
                 activeSpectrum &&
                 info &&
@@ -220,7 +220,7 @@ function FunctionToolBarInner({
               key={options.baseLineCorrection.id}
               value={options.baseLineCorrection.id}
               id="baseLineCorrection"
-              title={options.baseLineCorrection.label}
+              title={`${options.baseLineCorrection.label} ( Press b )`}
               isVisible={
                 activeSpectrum &&
                 info &&
