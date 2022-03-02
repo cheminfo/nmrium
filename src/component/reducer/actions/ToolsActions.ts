@@ -221,7 +221,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
         break;
     }
     if (brushHistory) {
-      brushHistory.push({ xDomain: domainX, yDomain: domainY });
+      brushHistory.push({ xDomain: draft.xDomain, yDomain: draft.yDomain });
     }
   } else {
     draft.xDomain = domainX;
@@ -312,25 +312,10 @@ function zoomOut(draft: Draft<State>, action) {
       }
     } else {
       const { xDomain, yDomain, yDomains } = draft.originDomain;
+
       switch (trackID) {
-        case LAYOUT.TOP_1D: {
-          const activeSpectrum =
-            draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
-          draft.xDomain = xDomain;
-          if (activeSpectrum?.id) {
-            draft.yDomains[activeSpectrum.id] = yDomains[activeSpectrum.id];
-          }
-          break;
-        }
-        case LAYOUT.LEFT_1D: {
-          const activeSpectrum =
-            draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
-          draft.yDomain = yDomain;
-          if (activeSpectrum?.id) {
-            draft.yDomains[activeSpectrum.id] = yDomains[activeSpectrum.id];
-          }
-          break;
-        }
+        case LAYOUT.TOP_1D:
+        case LAYOUT.LEFT_1D:
         case LAYOUT.CENTER_2D: {
           const zoomValue = zoomHistory.pop();
           draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
