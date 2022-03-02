@@ -106,9 +106,6 @@ function IntegralPanelInner({
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
-    if (!isFlipped) {
-      settingRef.current.cancelSetting();
-    }
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {

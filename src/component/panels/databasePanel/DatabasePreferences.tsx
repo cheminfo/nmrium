@@ -12,10 +12,7 @@ import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatFie
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
-import {
-  useStateWithLocalStorage,
-  getValue as getValueByKeyPath,
-} from '../../utility/LocalStorage';
+import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { databaseDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
@@ -64,7 +61,6 @@ const styles: Record<
 function DatabasePreferences(props, ref) {
   const preferences = usePreferences();
   const alert = useAlert();
-  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const formRef = useRef<any>();
 
@@ -83,19 +79,13 @@ function DatabasePreferences(props, ref) {
     updateValues();
   }, [updateValues]);
 
-  const saveToLocalStorage = (values) => {
-    setSettingsData(values, 'formatting.panels.database');
-  };
-
   const saveHandler = useCallback(
-    (values, showMessage = false) => {
+    (values) => {
       preferences.dispatch({
         type: SET_PANELS_PREFERENCES,
         payload: { key: 'database', value: values },
       });
-      if (showMessage) {
-        alert.success('database preferences saved successfully');
-      }
+      alert.success('database preferences saved successfully');
     },
     [alert, preferences],
   );
@@ -104,19 +94,11 @@ function DatabasePreferences(props, ref) {
     saveSetting: () => {
       formRef.current.submitForm();
     },
-    cancelSetting: () => {
-      updateValues();
-    },
   }));
-
-  const handleSubmit = (values) => {
-    saveHandler(values, true);
-    saveToLocalStorage(values);
-  };
 
   return (
     <div style={styles.container}>
-      <FormikForm onSubmit={handleSubmit} ref={formRef}>
+      <FormikForm onSubmit={saveHandler} ref={formRef}>
         <div style={styles.groupContainer}>
           <FormikColumnFormatField
             label="Smiles"

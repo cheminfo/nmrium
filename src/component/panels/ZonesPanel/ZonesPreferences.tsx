@@ -15,10 +15,7 @@ import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
-import {
-  useStateWithLocalStorage,
-  getValue as getValueByKeyPath,
-} from '../../utility/LocalStorage';
+import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { zoneDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
@@ -101,7 +98,6 @@ function ZonesPreferencesInner({
   innerRef,
 }: ZonesPreferencesInnerProps) {
   const alert = useAlert();
-  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const preferences = usePreferences();
   const formRef = useRef<any>();
 
@@ -125,19 +121,13 @@ function ZonesPreferencesInner({
     updateValues();
   }, [updateValues]);
 
-  const saveToLocalStorgate = (values) => {
-    setSettingsData(values, 'formatting.panels.ranges');
-  };
-
   const saveHandler = useCallback(
-    (values, showMessage = false) => {
+    (values) => {
       preferences.dispatch({
         type: SET_PANELS_PREFERENCES,
         payload: { key: 'zones', value: values },
       });
-      if (showMessage) {
-        alert.success('zones preferences saved successfully');
-      }
+      alert.success('zones preferences saved successfully');
     },
     [alert, preferences],
   );
@@ -148,21 +138,13 @@ function ZonesPreferencesInner({
       saveSetting: () => {
         formRef.current.submitForm();
       },
-      cancelSetting: () => {
-        updateValues();
-      },
     }),
-    [updateValues],
+    [],
   );
-
-  const handleSubmit = (values) => {
-    saveHandler(values, true);
-    saveToLocalStorgate(values);
-  };
 
   return (
     <div style={styles.container}>
-      <FormikForm onSubmit={handleSubmit} ref={formRef}>
+      <FormikForm onSubmit={saveHandler} ref={formRef}>
         {nucleus?.map((nucleusLabel) => (
           <div key={nucleusLabel} style={styles.groupContainer}>
             <IsotopesViewer style={styles.header} value={nucleusLabel} />

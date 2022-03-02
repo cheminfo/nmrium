@@ -87,9 +87,6 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
-    if (!isFlipped) {
-      settingRef.current.cancelSetting();
-    }
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {

@@ -187,6 +187,9 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
 function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const { key, value } = action.payload;
+    let localData = getLocalStorage('nmr-general-settings');
+    localData.modes[draft.mode].formatting.panels[key] = value;
+    storeData('nmr-general-settings', JSON.stringify(localData));
     draft.formatting.panels[key] = value;
   }
 }

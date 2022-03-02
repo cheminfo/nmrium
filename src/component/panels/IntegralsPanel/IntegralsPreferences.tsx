@@ -17,10 +17,7 @@ import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
-import {
-  useStateWithLocalStorage,
-  getValue as getValueByKeyPath,
-} from '../../utility/LocalStorage';
+import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
@@ -94,7 +91,6 @@ function IntegralsPreferencesInner({
   innerRef,
 }: IntegralsPreferencesInnerProps) {
   const alert = useAlert();
-  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const formRef = useRef<any>();
 
@@ -123,19 +119,13 @@ function IntegralsPreferencesInner({
     updateValues();
   }, [updateValues]);
 
-  const saveToLocalStorgate = (values) => {
-    setSettingsData(values, 'formatting.panels.integrals');
-  };
-
   const saveHandler = useCallback(
-    (values, showMessage = false) => {
+    (values) => {
       preferences.dispatch({
         type: SET_PANELS_PREFERENCES,
         payload: { key: 'integrals', value: values },
       });
-      if (showMessage) {
-        alert.success('Integrals preferences saved successfully');
-      }
+      alert.success('Integrals preferences saved successfully');
     },
     [alert, preferences],
   );
@@ -144,19 +134,11 @@ function IntegralsPreferencesInner({
     saveSetting: () => {
       formRef.current.submitForm();
     },
-    cancelSetting: () => {
-      updateValues();
-    },
   }));
-
-  const handleSubmit = (values) => {
-    saveHandler(values, true);
-    saveToLocalStorgate(values);
-  };
 
   return (
     <div style={styles.container}>
-      <FormikForm onSubmit={handleSubmit} ref={formRef}>
+      <FormikForm onSubmit={saveHandler} ref={formRef}>
         <div style={styles.groupContainer}>
           <p style={styles.header}>General</p>
           <FormikColorInput name="color" />
