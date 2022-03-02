@@ -22,8 +22,13 @@ import {
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer, data } =
-    useChartData();
+  const {
+    keysPreferences,
+    displayerMode,
+    overDisplayer,
+    data,
+    activeSpectrum,
+  } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const openLoader = useLoader();
@@ -43,10 +48,6 @@ function KeysListenerTracker() {
   const assignmentData = useAssignmentData();
   const allow1DTool = useMemo(() => {
     return displayerMode === DISPLAYER_MODE.DM_1D && data && data.length > 0;
-  }, [data, displayerMode]);
-
-  const allow2DTool = useMemo(() => {
-    return displayerMode === DISPLAYER_MODE.DM_2D && data && data.length > 0;
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
@@ -164,109 +165,144 @@ function KeysListenerTracker() {
 
   const toolsListenerHandler = useCallback(
     (e) => {
-      if (!e.shiftKey && !e.metaKey) {
-        switch (e.key) {
-          case 'f':
-            handleFullZoomOut();
-            break;
-          case 'z':
-          case 'Escape':
-            handleChangeOption(options.zoom.id);
-            break;
-          case 'r': {
-            const toolID = allow2DTool
-              ? options.zone2D.id
-              : allow1DTool
-              ? options.rangesPicking.id
-              : '';
-            handleChangeOption(toolID);
-            break;
-          }
-          case 'a': {
-            if (allow1DTool) {
+      function check1DModeWithActiveSpectrum(
+        label: string,
+        checkSwitch = true,
+      ) {
+        if (displayerMode === DISPLAYER_MODE.DM_1D && !activeSpectrum) {
+          throw new Error(`Select a spectrum to proceed with ${label}`);
+        } else if (checkSwitch && displayerMode === DISPLAYER_MODE.DM_2D) {
+          throw new Error(
+            `Switch to 1D Mode and select a spectrum to proceed with ${label}`,
+          );
+        }
+      }
+      function check2DModeWithActiveSpectrum(
+        label: string,
+        checkSwitch = true,
+      ) {
+        if (displayerMode === DISPLAYER_MODE.DM_2D && !activeSpectrum) {
+          throw new Error(`Select a spectrum to proceed with ${label}`);
+        } else if (checkSwitch && displayerMode === DISPLAYER_MODE.DM_1D) {
+          throw new Error(
+            `Switch to 2D Mode and select a spectrum to proceed with ${label}`,
+          );
+        }
+      }
+
+      try {
+        if (!e.shiftKey && !e.metaKey) {
+          switch (e.key) {
+            case 'f':
+              handleFullZoomOut();
+              break;
+            case 'z':
+            case 'Escape':
+              handleChangeOption(options.zoom.id);
+              break;
+            case 'r': {
+              if (displayerMode === DISPLAYER_MODE.DM_2D) {
+                check2DModeWithActiveSpectrum(options.zone2D.label, false);
+                handleChangeOption(options.zone2D.id);
+              } else {
+                check1DModeWithActiveSpectrum(
+                  options.rangesPicking.label,
+                  false,
+                );
+                handleChangeOption(options.rangesPicking.id);
+              }
+              break;
+            }
+            case 'a': {
+              check1DModeWithActiveSpectrum(options.phaseCorrection.label);
               handleChangeOption(options.phaseCorrection.id);
+
+              break;
             }
-            break;
-          }
-          case 'b': {
-            if (allow1DTool) {
+            case 'b': {
+              check1DModeWithActiveSpectrum(options.baseLineCorrection.label);
               handleChangeOption(options.baseLineCorrection.id);
+
+              break;
             }
-            break;
-          }
-          case 'p': {
-            if (allow1DTool) {
+            case 'p': {
+              check1DModeWithActiveSpectrum(options.peakPicking.label);
               handleChangeOption(options.peakPicking.id);
+
+              break;
             }
-            break;
-          }
-          case 'i': {
-            if (allow1DTool) {
+            case 'i': {
+              check1DModeWithActiveSpectrum(options.integral.label);
               handleChangeOption(options.integral.id);
+
+              break;
             }
-            break;
-          }
-          case 'e': {
-            if (allow1DTool) {
+            case 'e': {
+              check1DModeWithActiveSpectrum(options.exclusionZones.label);
               handleChangeOption(options.exclusionZones.id);
-            }
-            break;
-          }
-          default:
-        }
-      }
 
-      if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
-        switch (e.key) {
-          case 'c': {
-            if (allow1DTool) {
-              alignSpectrumsVerticallyHandler();
+              break;
             }
-            break;
+            default:
           }
-          case 's': {
-            if (allow1DTool) {
-              changeDisplayViewModeHandler();
-            }
-            break;
-          }
-          default:
         }
-      }
 
-      if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
-        switch (e.key) {
-          case 'c':
-            void saveToClipboardHandler();
-            e.preventDefault();
-            break;
-          case 's':
-            void saveAsJSONHandler();
-            e.preventDefault();
-            break;
-          case 'o':
-            openLoader();
-            e.preventDefault();
-            break;
-          default:
+        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
+          switch (e.key) {
+            case 'c': {
+              if (allow1DTool) {
+                alignSpectrumsVerticallyHandler();
+              }
+              break;
+            }
+            case 's': {
+              if (allow1DTool) {
+                changeDisplayViewModeHandler();
+              }
+              break;
+            }
+            default:
+          }
         }
-      }
-      if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
-        switch (e.key) {
-          case 's':
-          case 'S':
-            void saveAsHandler();
-            e.preventDefault();
-            break;
-          default:
+
+        if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
+          switch (e.key) {
+            case 'c':
+              void saveToClipboardHandler();
+              e.preventDefault();
+              break;
+            case 's':
+              void saveAsJSONHandler();
+              e.preventDefault();
+              break;
+            case 'o':
+              openLoader();
+              e.preventDefault();
+              break;
+            default:
+          }
         }
+        if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
+          switch (e.key) {
+            case 's':
+            case 'S':
+              void saveAsHandler();
+              e.preventDefault();
+              break;
+            default:
+          }
+        }
+      } catch (e: any) {
+        alert.error(e.message);
       }
     },
     [
+      activeSpectrum,
+      alert,
       alignSpectrumsVerticallyHandler,
       allow1DTool,
-      allow2DTool,
       changeDisplayViewModeHandler,
+      displayerMode,
       handleChangeOption,
       handleFullZoomOut,
       openLoader,
