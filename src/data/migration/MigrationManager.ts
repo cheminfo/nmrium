@@ -14,5 +14,11 @@ export function migrate(data: any): any {
   ];
   let index = data?.version || 0;
 
+  if (index > CURRENT_EXPORT_VERSION) {
+    throw new Error(
+      'This file can not be imported using the current NMRium version, Please move to the new one !!! ',
+    );
+  }
+
   return migrationPipe(migrationsFuncs.slice(index))(data);
 }

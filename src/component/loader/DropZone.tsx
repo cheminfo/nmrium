@@ -4,10 +4,12 @@ import Zip from 'jszip';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
+import { File } from '../../data/types/common/File';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
+import { useAlert } from '../elements/popup/Alert';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
@@ -62,47 +64,53 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-  const loadsubFilesfromZip = useCallback(
-    (extractedfiles, uniqueFileExtensions) => {
+  const alert = useAlert();
+
+  const loadSubFilesFromZip = useCallback(
+    async (extractedfiles, uniqueFileExtensions) => {
       for (let extension of uniqueFileExtensions) {
         const selectedFilesByExtensions = extractedfiles.filter(
           (file) => getFileExtension(file.name) === extension,
         );
 
         switch (extension) {
-          case FILES_TYPES.MOL:
-            void loadFilesFromZip(selectedFilesByExtensions).then((files) =>
-              dispatch({ type: LOAD_MOL_FILE, files }),
-            );
+          case FILES_TYPES.MOL: {
+            const files = await loadFilesFromZip(selectedFilesByExtensions);
+            dispatch({ type: LOAD_MOL_FILE, files });
             break;
+          }
           case FILES_TYPES.NMRIUM:
-          case FILES_TYPES.JSON:
-            void loadFilesFromZip(selectedFilesByExtensions, {
+          case FILES_TYPES.JSON: {
+            const files = await loadFilesFromZip(selectedFilesByExtensions, {
               asBuffer: true,
-            }).then((files) => {
-              if (selectedFilesByExtensions.length === 1) {
-                const decoder = new TextDecoder('utf8');
-                files[0].binary = decoder.decode(files[0].binary);
-                dispatch({ type: LOAD_JSON_FILE, files });
-              } else {
-                dispatch({ type: SET_LOADING_FLAG, isLoading: false });
-                // eslint-disable-next-line no-alert
-                alert('You can add only one json file');
-              }
             });
-            break;
-          case FILES_TYPES.JDX:
-          case FILES_TYPES.DX:
-            void loadFilesFromZip(selectedFilesByExtensions, {
-              asBuffer: true,
-            }).then((files) => dispatch({ type: LOAD_JCAMP_FILE, files }));
+            if (selectedFilesByExtensions.length === 1) {
+              const decoder = new TextDecoder('utf8');
+              files[0].binary = decoder.decode(files[0].binary);
+
+              dispatch({ type: LOAD_JSON_FILE, files });
+            } else {
+              throw new Error('You can add only one json file');
+            }
 
             break;
-          case FILES_TYPES.JDF:
-            void loadFilesFromZip(selectedFilesByExtensions, {
+          }
+          case FILES_TYPES.JDX:
+          case FILES_TYPES.DX: {
+            const files = await loadFilesFromZip(selectedFilesByExtensions, {
               asBuffer: true,
-            }).then((files) => dispatch({ type: LOAD_JDF_FILE, files }));
+            });
+            dispatch({ type: LOAD_JCAMP_FILE, files });
+
             break;
+          }
+          case FILES_TYPES.JDF: {
+            const files = await loadFilesFromZip(selectedFilesByExtensions, {
+              asBuffer: true,
+            });
+            dispatch({ type: LOAD_JDF_FILE, files });
+            break;
+          }
           default:
             break;
         }
@@ -112,7 +120,7 @@ function DropZone(props) {
   );
 
   const loadFilesHandler = useCallback(
-    (files) => {
+    async (files) => {
       const uniqueFileExtensions = [
         ...new Set(files.map((file) => getFileExtension(file.name))),
       ];
@@ -121,142 +129,125 @@ function DropZone(props) {
         const selectedFilesByExtensions = files.filter(
           (file) => getFileExtension(file.name) === extension,
         );
-        switch (extension) {
-          case FILES_TYPES.MOL:
-            loadFiles(selectedFilesByExtensions).then(
-              (files) => {
-                dispatch({ type: LOAD_MOL_FILE, files });
-              },
-              (err) => {
-                // eslint-disable-next-line no-alert
-                alert(err);
-              },
-            );
-            break;
-          case FILES_TYPES.NMRIUM:
-          case FILES_TYPES.JSON:
-            if (selectedFilesByExtensions.length === 1) {
-              loadFiles<{ binary: any }>(selectedFilesByExtensions, {
-                asBuffer: true,
-              }).then(
-                async (files) => {
-                  // InputFileFormat
-                  const fileSignature = getFileSignature(files[0].binary);
-                  if (fileSignature === FILES_SIGNATURES.ZIP) {
-                    const unzipResult = await Zip.loadAsync(files[0].binary);
-                    loadsubFilesfromZip(Object.values(unzipResult.files), [
-                      FILES_TYPES.NMRIUM,
-                    ]);
-                  } else {
-                    const decoder = new TextDecoder('utf8');
-                    files[0].binary = decoder.decode(files[0].binary);
-                    dispatch({ type: LOAD_JSON_FILE, files });
-                  }
-                },
-                (err) => {
-                  // eslint-disable-next-line no-alert
-                  alert(err);
-                },
-              );
-            } else {
-              // eslint-disable-next-line no-alert
-              alert('You can add only one json file');
+        try {
+          switch (extension) {
+            case FILES_TYPES.MOL: {
+              const files = await loadFiles(selectedFilesByExtensions);
+              dispatch({ type: LOAD_MOL_FILE, files });
+
+              break;
             }
-
-            break;
-          case FILES_TYPES.JDX:
-          case FILES_TYPES.DX:
-            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
-              (files) => {
-                dispatch({ type: LOAD_JCAMP_FILE, files });
-              },
-              (err) => {
-                // eslint-disable-next-line no-alert
-                alert(err);
-              },
-            );
-            break;
-          case FILES_TYPES.JDF:
-            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
-              (files) => {
-                dispatch({ type: LOAD_JDF_FILE, files });
-              },
-              (err) => {
-                // eslint-disable-next-line no-alert
-                alert(err);
-              },
-            );
-            break;
-          case FILES_TYPES.ZIP:
-            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
-              async (files: Array<any>) => {
-                for (const zipFile of files) {
-                  const unzipResult = await Zip.loadAsync(zipFile.binary);
-
-                  const uniqueFileExtensions = [
-                    ...new Set(
-                      Object.values(unzipResult.files).map((file) =>
-                        getFileExtension(file.name),
-                      ),
-                    ),
-                  ];
-                  const isNotZip = uniqueFileExtensions.some(
-                    (ex) =>
-                      FILES_TYPES[ex.toUpperCase()] && ex !== FILES_TYPES.ZIP,
-                  );
-                  if (isNotZip) {
-                    const hasBruker = Object.keys(unzipResult.files).some(
-                      (path) => {
-                        return ['2rr', 'fid', '1r'].some((brukerFile) =>
-                          path.endsWith(brukerFile),
-                        );
-                      },
-                    );
-                    if (hasBruker) dispatch({ type: LOAD_ZIP_FILE, files });
-                    loadsubFilesfromZip(
-                      Object.values(unzipResult.files),
-                      uniqueFileExtensions,
-                    );
-                  } else {
-                    dispatch({ type: LOAD_ZIP_FILE, files });
-                  }
+            case FILES_TYPES.NMRIUM:
+            case FILES_TYPES.JSON:
+              if (selectedFilesByExtensions.length === 1) {
+                const files = await loadFiles<{ binary: any }>(
+                  selectedFilesByExtensions,
+                  {
+                    asBuffer: true,
+                  },
+                );
+                // InputFileFormat
+                const fileSignature = getFileSignature(files[0].binary);
+                if (fileSignature === FILES_SIGNATURES.ZIP) {
+                  const unzipResult = await Zip.loadAsync(files[0].binary);
+                  await loadSubFilesFromZip(Object.values(unzipResult.files), [
+                    FILES_TYPES.NMRIUM,
+                  ]);
+                } else {
+                  const decoder = new TextDecoder('utf8');
+                  files[0].binary = decoder.decode(files[0].binary);
+                  dispatch({ type: LOAD_JSON_FILE, files });
                 }
-              },
-              (err) => {
-                // eslint-disable-next-line no-alert
-                alert(err);
-              },
-            );
-            break;
-          case FILES_TYPES.NMREDATA:
-            void loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
-              async (files) => {
+              } else {
+                throw new Error('You can add only one json file');
+              }
+
+              break;
+            case FILES_TYPES.JDX:
+            case FILES_TYPES.DX: {
+              const files = await loadFiles(selectedFilesByExtensions, {
+                asBuffer: true,
+              });
+              dispatch({ type: LOAD_JCAMP_FILE, files });
+
+              break;
+            }
+            case FILES_TYPES.JDF: {
+              const files = await loadFiles(selectedFilesByExtensions, {
+                asBuffer: true,
+              });
+              dispatch({ type: LOAD_JDF_FILE, files });
+
+              break;
+            }
+            case FILES_TYPES.ZIP: {
+              const files: File[] = await loadFiles(selectedFilesByExtensions, {
+                asBuffer: true,
+              });
+              for (const zipFile of files) {
+                const unzipResult = await Zip.loadAsync(zipFile.binary);
+
+                const uniqueFileExtensions = [
+                  ...new Set(
+                    Object.values(unzipResult.files).map((file) =>
+                      getFileExtension(file.name),
+                    ),
+                  ),
+                ];
+                const isNotZip = uniqueFileExtensions.some(
+                  (ex) =>
+                    FILES_TYPES[ex.toUpperCase()] && ex !== FILES_TYPES.ZIP,
+                );
+                if (isNotZip) {
+                  const hasBruker = Object.keys(unzipResult.files).some(
+                    (path) => {
+                      return ['2rr', 'fid', '1r'].some((brukerFile) =>
+                        path.endsWith(brukerFile),
+                      );
+                    },
+                  );
+                  if (hasBruker) dispatch({ type: LOAD_ZIP_FILE, files });
+                  await loadSubFilesFromZip(
+                    Object.values(unzipResult.files),
+                    uniqueFileExtensions,
+                  );
+                } else {
+                  dispatch({ type: LOAD_ZIP_FILE, files });
+                }
+              }
+
+              break;
+            }
+            case FILES_TYPES.NMREDATA:
+              void loadFiles(selectedFilesByExtensions, {
+                asBuffer: true,
+              }).then(async (files) => {
                 for (const zipFile of files) {
                   dispatch({
                     type: LOAD_NMREDATA_FILE,
                     file: zipFile,
                   });
                 }
-              },
-            );
-            break;
-          default:
-            dispatch({ type: SET_LOADING_FLAG, isLoading: false });
-            // eslint-disable-next-line no-alert
-            alert(
-              'The file extension must be zip, dx, jdx, json, mol, nmredata or nmrium.',
-            );
-            break;
+              });
+              break;
+            default:
+              throw new Error(
+                'The file extension must be zip, dx, jdx, json, mol, nmredata or nmrium.',
+              );
+          }
+        } catch (e: any) {
+          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          alert.error(e.message);
         }
       }
     },
-    [dispatch, loadsubFilesfromZip],
+    [alert, dispatch, loadSubFilesFromZip],
   );
 
   const onDrop = useCallback(
     (droppedFiles) => {
       dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-      loadFilesHandler(droppedFiles);
+      void loadFilesHandler(droppedFiles);
     },
     [dispatch, loadFilesHandler],
   );
