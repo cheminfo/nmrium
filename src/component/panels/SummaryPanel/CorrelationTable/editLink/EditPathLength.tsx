@@ -8,7 +8,6 @@ import { Signal2D } from '../../../../../data/types/data2d';
 import Button from '../../../../elements/Button';
 import Input from '../../../../elements/Input';
 import Label from '../../../../elements/Label';
-import isDefaultPathLength from '../../../../modal/editZone/validation/isDefaultPathLength';
 
 const editPathLengthsStyles = css`
   width: 100%;
