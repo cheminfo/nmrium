@@ -105,7 +105,11 @@ export default function ChangeSumModal({
   }, []);
 
   useEffect(() => {
-    if (sumOptions.sumAuto) {
+    if (
+      sumOptions.sumAuto &&
+      !general.hideSetSumFromMolecule &&
+      !panels.hideStructuresPanel
+    ) {
       setActiveOption(SumSetOptions.Auto);
       const { mf, moleculeKey: key } = sumOptions;
       formRef.current.setValues({
@@ -116,7 +120,7 @@ export default function ChangeSumModal({
       setActiveOption(SumSetOptions.Manual);
       formRef.current.setValues({ sum: sumOptions.sum, molecule: null });
     }
-  }, [sumOptions]);
+  }, [general.hideSetSumFromMolecule, panels.hideStructuresPanel, sumOptions]);
 
   const saveHandler = useCallback(
     (values) => {
