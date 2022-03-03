@@ -165,6 +165,11 @@
         "file": "./exercises/ethylbenzene/1h.json",
         "title": "Exercise 2",
         "view": "Exercise"
+      },
+      {
+        "file": "./exercises/cytisine/hsqc_hmbc.json",
+        "title": "Exercise 3",
+        "view": "Exercise"
       }
     ]
   },
