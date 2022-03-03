@@ -5,8 +5,6 @@
 
 ### Features
 
-* add 2d HSQC and HMBC exercise ([bbfa841](https://www.github.com/cheminfo/nmrium/commit/bbfa841ae9bfdaf53b17c3298b4729bcfe56783a)), closes [#1398](https://www.github.com/cheminfo/nmrium/issues/1398)
-* add 2d HSQC and HMBC exercise ([c20153f](https://www.github.com/cheminfo/nmrium/commit/c20153f6d09ac4ba2d9b0f7139fc044f00dedc16)), closes [#1398](https://www.github.com/cheminfo/nmrium/issues/1398)
 * clear zoom history when pressing the "f" key ([fc1e457](https://www.github.com/cheminfo/nmrium/commit/fc1e457e8ea11354e4d097ef03e027abc56389d9)), closes [#1399](https://www.github.com/cheminfo/nmrium/issues/1399)
 * hide multiple spectra auto range picking when ranges picking tool not active ([1690c82](https://www.github.com/cheminfo/nmrium/commit/1690c82a18a171f1035f03aeb1ae4ab28359a36a)), closes [#1396](https://www.github.com/cheminfo/nmrium/issues/1396)
 * hide zones picking and slicing tool in exercise workspace ([c1f2c5d](https://www.github.com/cheminfo/nmrium/commit/c1f2c5d1215b173e8bc03599cae4c78d507d1fe3))
