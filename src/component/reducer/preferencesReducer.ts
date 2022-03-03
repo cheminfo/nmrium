@@ -1,30 +1,28 @@
 import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 
-import { NMRiumMode } from '../NMRium';
-import defaultPreferences from '../nmriumMode/basic';
-import exercise1DPreferences from '../nmriumMode/exercise1D';
-import process1DPreferences from '../nmriumMode/process1D';
+import { NMRiumWorkspaces } from '../NMRium';
 import {
   getLocalStorage,
   removeData,
   storeData,
 } from '../utility/LocalStorage';
+import workspaces from '../workspaces';
 
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
-const LOCAL_STORAGE_VERSION = 2;
+const LOCAL_STORAGE_VERSION = 3;
 
-function getPreferencesByMode(mode: NMRiumMode) {
-  switch (mode) {
-    case NMRiumMode.EXERCISE_1D:
-      return exercise1DPreferences;
-    case NMRiumMode.PROCESS_1D:
-      return process1DPreferences;
+function getPreferencesByWorkspace(workspace: NMRiumWorkspaces) {
+  switch (workspace) {
+    case NMRiumWorkspaces.EXERCISE_1D:
+      return workspaces.exercise1D;
+    case NMRiumWorkspaces.PROCESS_1D:
+      return workspaces.process1D;
     default:
-      return defaultPreferences;
+      return workspaces.basic;
   }
 }
 
@@ -44,12 +42,12 @@ export interface PreferencesState {
     panels: any;
   };
   dispatch: any;
-  mode: string;
+  workspace: string;
 }
 
 export const preferencesInitialState: PreferencesState = {
   basePreferences: {},
-  display: defaultPreferences.display,
+  display: workspaces.basic.display,
   controllers: {
     mws: { low: 2, high: 20 },
     dimmedSpectraTransparency: 0.1,
@@ -67,7 +65,7 @@ export const preferencesInitialState: PreferencesState = {
     panels: {},
   },
   dispatch: null,
-  mode: 'default',
+  workspace: 'default',
 };
 
 function getTruthyObjectValues(data: any) {
@@ -108,21 +106,21 @@ function handleInit(draft: Draft<PreferencesState>, action) {
   }
 
   if (action.payload) {
-    const { dispatch, mode, ...resProps } = action.payload;
-    draft.mode = mode;
-    const modePreferences = getPreferencesByMode(mode);
+    const { dispatch, workspace, ...resProps } = action.payload;
+    draft.workspace = workspace;
+    const workspacePreferences = getPreferencesByWorkspace(workspace);
     if (
       !localData ||
-      !localData?.modes[mode] ||
-      modePreferences.version !== localData?.modes[mode]?.version
+      !localData?.workspaces[workspace] ||
+      workspacePreferences.version !== localData?.workspaces[workspace]?.version
     ) {
       localData = localData || {};
       localData = {
         version: LOCAL_STORAGE_VERSION,
-        modes: {
-          ...localData.modes,
-          [mode]: {
-            ...modePreferences,
+        workspaces: {
+          ...localData.workspaces,
+          [workspace]: {
+            ...workspacePreferences,
             controllers: draft.controllers,
             formatting: draft.formatting,
           },
@@ -131,7 +129,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
       storeData('nmr-general-settings', JSON.stringify(localData));
     }
 
-    draft.basePreferences = lodashMerge({}, modePreferences, resProps);
+    draft.basePreferences = lodashMerge({}, workspacePreferences, resProps);
 
     const hiddenModeFeatures = getTruthyObjectValues(
       draft.basePreferences.display,
@@ -140,7 +138,8 @@ function handleInit(draft: Draft<PreferencesState>, action) {
     let hiddenLocalStorageFeatures: any = {};
 
     draft.dispatch = dispatch;
-    const localStorageModePreferences = localData?.modes[mode] || null;
+    const localStorageModePreferences =
+      localData?.workspaces[workspace] || null;
     if (localStorageModePreferences) {
       Object.entries(localStorageModePreferences).forEach(([k, v]) => {
         if (k === 'display') {
@@ -153,7 +152,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
     }
     draft.display = lodashMerge(
       {},
-      getPreferencesByMode(NMRiumMode.DEFAULT).display,
+      getPreferencesByWorkspace(NMRiumWorkspaces.DEFAULT).display,
       hiddenModeFeatures,
       hiddenLocalStorageFeatures,
     );
@@ -165,10 +164,10 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
     const { controllers, formatting, display } = action.payload;
 
     let localData = getLocalStorage('nmr-general-settings');
-    localData.modes = {
-      ...localData.modes,
-      [draft.mode]: {
-        ...localData.modes[draft.mode],
+    localData.workspaces = {
+      ...localData.workspaces,
+      [draft.workspace]: {
+        ...localData.workspaces[draft.workspace],
         controllers,
         formatting,
         display,
@@ -180,7 +179,8 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
     draft.controllers = controllers;
     draft.formatting = formatting;
     draft.display.panels = display.panels;
-    draft.display.hideExperimentalFeatures = display.hideExperimentalFeatures;
+    draft.display.general.hideExperimentalFeatures =
+      display.general.hideExperimentalFeatures;
     mapNucleus(draft);
   }
 }
@@ -188,7 +188,7 @@ function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const { key, value } = action.payload;
     let localData = getLocalStorage('nmr-general-settings');
-    localData.modes[draft.mode].formatting.panels[key] = value;
+    localData.workspaces[draft.workspace].formatting.panels[key] = value;
     storeData('nmr-general-settings', JSON.stringify(localData));
     draft.formatting.panels[key] = value;
   }

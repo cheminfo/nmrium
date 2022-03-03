@@ -1,11 +1,14 @@
-export default {
+import { Workspace } from './Workspace';
+
+export const exercise1D: Workspace = {
   version: 1,
-  label: 'Process 1D Mode',
+  label: 'Exercise 1D Mode',
   display: {
     general: {
       disableMultipletAnalysis: true,
       hideSetSumFromMolecule: false,
-      hideGeneralSettings: false,
+      hideGeneralSettings: true,
+      hideExperimentalFeatures: true,
     },
 
     panels: {
@@ -15,7 +18,7 @@ export default {
       hideIntegralsPanel: false,
       hideRangesPanel: true,
       hideStructuresPanel: false,
-      hideFiltersPanel: false,
+      hideFiltersPanel: true,
       hideZonesPanel: true,
       hideSummaryPanel: true,
       hideMultipleSpectraAnalysisPanel: true,
@@ -29,14 +32,14 @@ export default {
       hideExportAs: true,
       hideSpectraStackAlignments: false,
       hideSpectraCenterAlignments: false,
-      hideRealImaginary: false,
+      hideRealImaginary: true,
       hidePeakTool: false,
       hideIntegralTool: false,
       hideAutoRangesTool: true,
-      hideZeroFillingTool: false,
-      hidePhaseCorrectionTool: false,
-      hideBaseLineCorrectionTool: false,
-      hideFFTTool: false,
+      hideZeroFillingTool: true,
+      hidePhaseCorrectionTool: true,
+      hideBaseLineCorrectionTool: true,
+      hideFFTTool: true,
       hideMultipleSpectraAnalysisTool: true,
       hideExclusionZonesTool: true,
     },

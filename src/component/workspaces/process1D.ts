@@ -1,11 +1,14 @@
-export default {
+import { Workspace } from './Workspace';
+
+export const process1D: Workspace = {
   version: 1,
-  label: 'Default Mode',
+  label: 'Process 1D Mode',
   display: {
     general: {
-      disableMultipletAnalysis: false,
+      disableMultipletAnalysis: true,
       hideSetSumFromMolecule: false,
       hideGeneralSettings: false,
+      hideExperimentalFeatures: false,
     },
 
     panels: {
@@ -13,32 +16,32 @@ export default {
       hideInformationPanel: false,
       hidePeaksPanel: false,
       hideIntegralsPanel: false,
-      hideRangesPanel: false,
+      hideRangesPanel: true,
       hideStructuresPanel: false,
       hideFiltersPanel: false,
-      hideZonesPanel: false,
-      hideSummaryPanel: false,
-      hideMultipleSpectraAnalysisPanel: false,
+      hideZonesPanel: true,
+      hideSummaryPanel: true,
+      hideMultipleSpectraAnalysisPanel: true,
       hideDatabasePanel: false,
     },
 
     toolBarButtons: {
       hideZoomTool: false,
       hideZoomOutTool: false,
-      hideImport: false,
-      hideExportAs: false,
+      hideImport: true,
+      hideExportAs: true,
       hideSpectraStackAlignments: false,
       hideSpectraCenterAlignments: false,
       hideRealImaginary: false,
       hidePeakTool: false,
       hideIntegralTool: false,
-      hideAutoRangesTool: false,
+      hideAutoRangesTool: true,
       hideZeroFillingTool: false,
       hidePhaseCorrectionTool: false,
       hideBaseLineCorrectionTool: false,
       hideFFTTool: false,
-      hideMultipleSpectraAnalysisTool: false,
+      hideMultipleSpectraAnalysisTool: true,
+      hideExclusionZonesTool: true,
     },
-    hideExperimentalFeatures: true,
   },
 };
