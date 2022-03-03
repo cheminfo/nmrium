@@ -17,6 +17,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
@@ -39,6 +40,7 @@ interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   activeTab: string;
   activeSpectrum: ActiveSpectrum | null;
   displayerMode: string;
+  isAutomaticPickingVisible: boolean;
 }
 
 function SpectraPanelHeaderInner({
@@ -47,6 +49,7 @@ function SpectraPanelHeaderInner({
   activeTab,
   displayerMode,
   spectrums,
+  isAutomaticPickingVisible,
 }: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
   const alert = useAlert();
@@ -147,7 +150,7 @@ function SpectraPanelHeaderInner({
           </Button>
         </>
       )}
-      {data && data.length > 0 && (
+      {data && data.length > 0 && isAutomaticPickingVisible && (
         <Button
           popupTitle="Automatic Ranges/Zones picking for all spectra"
           onClick={automaticPickingHandler}
@@ -163,10 +166,18 @@ const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
 export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
   const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
-
+  const isToolVisible = useCheckToolsVisibility();
+  const isAutomaticPickingVisible = isToolVisible('hideAutoRangesTool');
   return (
     <MemoizedSpectraPanelHeader
-      {...{ data, activeSpectrum, activeTab, displayerMode, spectrums }}
+      {...{
+        data,
+        activeSpectrum,
+        activeTab,
+        displayerMode,
+        spectrums,
+        isAutomaticPickingVisible,
+      }}
     />
   );
 }

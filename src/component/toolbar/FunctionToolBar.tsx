@@ -9,7 +9,6 @@ import {
   SvgNmrRangePicking,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
-import lodashGet from 'lodash/get';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
@@ -18,9 +17,9 @@ import { Info1D, Data1D } from '../../data/types/data1d';
 import { Info2D, Data2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { usePreferences } from '../context/PreferencesContext';
 import ToggleButton from '../elements/toggle/ToggleButton';
 import ToggleButtonGroup from '../elements/toggle/ToggleButtonGroup';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { ActiveSpectrum } from '../reducer/Reducer';
@@ -49,7 +48,7 @@ function FunctionToolBarInner({
   mode,
 }: FunctionToolBarInnerProps) {
   const [option, setOption] = useState<string>('');
-  const preferences = usePreferences();
+  const isButtonVisible = useCheckToolsVisibility();
 
   const dispatch = useDispatch();
 
@@ -74,13 +73,6 @@ function FunctionToolBarInner({
     });
     dispatch({ type: SET_SELECTED_FILTER, selectedFilter: null });
   }, [dispatch]);
-
-  const isButtonVisible = useCallback(
-    (toolKey) => {
-      return !lodashGet(preferences, `display.toolBarButtons.${toolKey}`);
-    },
-    [preferences],
-  );
 
   return (
     <>
