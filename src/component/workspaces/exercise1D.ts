@@ -6,23 +6,23 @@ export const exercise1D: Workspace = {
   display: {
     general: {
       disableMultipletAnalysis: true,
-      hideSetSumFromMolecule: false,
+      hideSetSumFromMolecule: true,
       hideGeneralSettings: true,
       hideExperimentalFeatures: true,
     },
 
     panels: {
       hideSpectraPanel: false,
-      hideInformationPanel: false,
-      hidePeaksPanel: false,
+      hideInformationPanel: true,
+      hidePeaksPanel: true,
       hideIntegralsPanel: false,
       hideRangesPanel: true,
-      hideStructuresPanel: false,
+      hideStructuresPanel: true,
       hideFiltersPanel: true,
       hideZonesPanel: true,
       hideSummaryPanel: true,
       hideMultipleSpectraAnalysisPanel: true,
-      hideDatabasePanel: false,
+      hideDatabasePanel: true,
     },
 
     toolBarButtons: {
