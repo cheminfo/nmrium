@@ -50,7 +50,7 @@ const LIST: Array<{ label: string; name: string }> = [
   },
   {
     label: 'Experimental Features',
-    name: 'display.hideExperimentalFeatures',
+    name: 'display.general.hideExperimentalFeatures',
   },
 ];
 

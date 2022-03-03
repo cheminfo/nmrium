@@ -127,7 +127,7 @@ const containerStyles = css`
   }
 `;
 
-export enum NMRiumMode {
+export enum NMRiumWorkspaces {
   EXERCISE_1D = 'exercise1D',
   PROCESS_1D = 'process1D',
   DEFAULT = 'default',
@@ -136,7 +136,7 @@ export enum NMRiumMode {
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: State) => void;
-  mode?: NMRiumMode;
+  workspace?: NMRiumWorkspaces;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
@@ -149,6 +149,8 @@ export type NMRiumPreferences = Partial<{
   general: Partial<{
     disableMultipletAnalysis: boolean;
     hideSetSumFromMolecule: boolean;
+    hideGeneralSettings: boolean;
+    hideExperimentalFeatures: boolean;
   }>;
   panels: Partial<{
     hideSpectraPanel: boolean;
@@ -179,6 +181,7 @@ export type NMRiumPreferences = Partial<{
     hideBaseLineCorrectionTool: boolean;
     hideFFTTool: boolean;
     hideMultipleSpectraAnalysisTool: boolean;
+    hideExclusionZonesTool: boolean;
   }>;
 }>;
 
@@ -211,7 +214,7 @@ function NMRium(props: NMRiumProps) {
 
 function InnerNMRium({
   data: dataProp = defaultData,
-  mode = NMRiumMode.DEFAULT,
+  workspace = NMRiumWorkspaces.DEFAULT,
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
@@ -258,11 +261,11 @@ function InnerNMRium({
       type: INIT_PREFERENCES,
       payload: {
         display: preferences,
-        mode,
+        workspace,
         dispatch: dispatchPreferences,
       },
     });
-  }, [preferences, mode]);
+  }, [preferences, workspace]);
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });

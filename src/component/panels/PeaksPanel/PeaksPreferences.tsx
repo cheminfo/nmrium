@@ -15,10 +15,7 @@ import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
-import {
-  useStateWithLocalStorage,
-  getValue as getValueByKeyPath,
-} from '../../utility/LocalStorage';
+import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
@@ -114,7 +111,6 @@ function PeaksPreferencesInner({
   innerRef,
 }: PeaksPreferencesInnerProps) {
   const alert = useAlert();
-  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const formRef = useRef<any>(null);
 
   const updateValues = useCallback(() => {
@@ -138,12 +134,12 @@ function PeaksPreferencesInner({
   }, [updateValues]);
 
   const saveHandler = useCallback(
-    (values, showMessage = false) => {
+    (values) => {
       preferences.dispatch({
         type: SET_PANELS_PREFERENCES,
         payload: { key: 'peaks', value: values },
       });
-      if (showMessage) alert.success('Peaks preferences saved successfully');
+      alert.success('Peaks preferences saved successfully');
     },
     [alert, preferences],
   );
@@ -154,24 +150,13 @@ function PeaksPreferencesInner({
       saveSetting: () => {
         formRef.current.submitForm();
       },
-      cancelSetting: () => {
-        updateValues();
-      },
     }),
-    [updateValues],
-  );
-
-  const handleSubmit = useCallback(
-    (values) => {
-      saveHandler(values, true);
-      setSettingsData(values, 'formatting.panels.peaks');
-    },
-    [saveHandler, setSettingsData],
+    [],
   );
 
   return (
     <div style={styles.container}>
-      <FormikForm onSubmit={handleSubmit} ref={formRef}>
+      <FormikForm onSubmit={saveHandler} ref={formRef}>
         {nucleus?.map((nucleusLabel) => (
           <div key={nucleusLabel} style={styles.groupContainer}>
             <IsotopesViewer style={styles.header} value={nucleusLabel} />

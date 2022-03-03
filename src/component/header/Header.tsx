@@ -9,6 +9,7 @@ import {
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal, positions } from '../elements/popup/Modal';
 import AboutUsModal from '../modal/AboutUsModal';
@@ -26,10 +27,16 @@ interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
   selectedOptionPanel: string | null;
+  hideGeneralSettings: boolean;
 }
 
 function HeaderInner(props: HeaderInnerProps) {
-  const { isFullscreen, onMaximize = () => null, selectedOptionPanel } = props;
+  const {
+    isFullscreen,
+    onMaximize = () => null,
+    selectedOptionPanel,
+    hideGeneralSettings,
+  } = props;
 
   const alert = useAlert();
   const modal = useModal();
@@ -118,13 +125,15 @@ function HeaderInner(props: HeaderInnerProps) {
         >
           <FaQuestionCircle />
         </Toolbar.Item>
-        <Toolbar.Item
-          id="general-settings"
-          onClick={openGeneralSettingsHandler}
-          title="General settings"
-        >
-          <FaWrench />
-        </Toolbar.Item>
+        {!hideGeneralSettings && (
+          <Toolbar.Item
+            id="general-settings"
+            onClick={openGeneralSettingsHandler}
+            title="General settings"
+          >
+            <FaWrench />
+          </Toolbar.Item>
+        )}
 
         {!isFullscreen && (
           <Toolbar.Item
@@ -147,8 +156,18 @@ export default function HeaderWrapper({ isFullscreen, onMaximize }) {
   const {
     toolOptions: { selectedOptionPanel },
   } = useChartData();
+  const {
+    display: { general },
+  } = usePreferences();
 
   return (
-    <MemoizedHeader {...{ selectedOptionPanel, isFullscreen, onMaximize }} />
+    <MemoizedHeader
+      {...{
+        selectedOptionPanel,
+        isFullscreen,
+        onMaximize,
+        hideGeneralSettings: general?.hideGeneralSettings || false,
+      }}
+    />
   );
 }
