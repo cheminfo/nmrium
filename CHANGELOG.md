@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.21.0](https://www.github.com/cheminfo/nmrium/compare/v0.20.2...v0.21.0) (2022-03-03)
+
+
+### Features
+
+* clear zoom history when pressing the "f" key ([fc1e457](https://www.github.com/cheminfo/nmrium/commit/fc1e457e8ea11354e4d097ef03e027abc56389d9)), closes [#1399](https://www.github.com/cheminfo/nmrium/issues/1399)
+* hide multiple spectra auto range picking when ranges picking tool not active ([1690c82](https://www.github.com/cheminfo/nmrium/commit/1690c82a18a171f1035f03aeb1ae4ab28359a36a)), closes [#1396](https://www.github.com/cheminfo/nmrium/issues/1396)
+* hide zones picking and slicing tool in exercise workspace ([c1f2c5d](https://www.github.com/cheminfo/nmrium/commit/c1f2c5d1215b173e8bc03599cae4c78d507d1fe3))
+* save NMRium preferences by workspace ([#1393](https://www.github.com/cheminfo/nmrium/issues/1393)) ([83ddbc5](https://www.github.com/cheminfo/nmrium/commit/83ddbc5c26af990fd1ce662b0216b030eff1606b))
+* show only spectra and integral panels in exercise workspace ([43b6c65](https://www.github.com/cheminfo/nmrium/commit/43b6c65883600b5c3b8db4a71ad87ae63a1a7029)), closes [#1395](https://www.github.com/cheminfo/nmrium/issues/1395)
+
+
+### Bug Fixes
+
+* manual option of changing an integral sum not selected in the exercise mode ([70640e9](https://www.github.com/cheminfo/nmrium/commit/70640e9e33d338338c578d224625d7e185833aff)), closes [#1397](https://www.github.com/cheminfo/nmrium/issues/1397)
+* Processed file can not be loaded on dev.nmrium.org ([0a51dd5](https://www.github.com/cheminfo/nmrium/commit/0a51dd5f84891972b9b7fc17ca941bd66e4263e2)), closes [#1316](https://www.github.com/cheminfo/nmrium/issues/1316)
+* select tool by pressing its shortcut when no spectrum is selected ([61bd971](https://www.github.com/cheminfo/nmrium/commit/61bd9713083a0545a5b5b92a4ca7c0eb704677e9)), closes [#1373](https://www.github.com/cheminfo/nmrium/issues/1373)
+* zoom history in 2D ([c2c989a](https://www.github.com/cheminfo/nmrium/commit/c2c989ab64eb08ff5f4990328ee7c02d8b275807)), closes [#1371](https://www.github.com/cheminfo/nmrium/issues/1371)
+
 ### [0.20.2](https://www.github.com/cheminfo/nmrium/compare/v0.20.1...v0.20.2) (2022-02-28)
 
 
