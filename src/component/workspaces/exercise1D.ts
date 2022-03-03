@@ -35,6 +35,8 @@ export const exercise1D: Workspace = {
       hideRealImaginary: true,
       hidePeakTool: false,
       hideIntegralTool: false,
+      hideZonePickingTool: true,
+      hideSlicingTool: true,
       hideAutoRangesTool: true,
       hideZeroFillingTool: true,
       hidePhaseCorrectionTool: true,

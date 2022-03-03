@@ -127,7 +127,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D &&
-          isButtonVisible('hideIntegralTool') && (
+          isButtonVisible('hideZonePickingTool') && (
             <ToggleButton
               key={options.zone2D.id}
               value={options.zone2D.id}
@@ -138,17 +138,18 @@ function FunctionToolBarInner({
               <FaDiceFour />
             </ToggleButton>
           )}
-        {displayerMode === DISPLAYER_MODE.DM_2D && (
-          <ToggleButton
-            key={options.slicingTool.id}
-            value={options.slicingTool.id}
-            isVisible={activeSpectrum && !info?.isFid ? true : false}
-            id="slic"
-            title={`${options.slicingTool.label}`}
-          >
-            <p>Slic</p>
-          </ToggleButton>
-        )}
+        {displayerMode === DISPLAYER_MODE.DM_2D &&
+          isButtonVisible('hideSlicingTool') && (
+            <ToggleButton
+              key={options.slicingTool.id}
+              value={options.slicingTool.id}
+              isVisible={activeSpectrum && !info?.isFid ? true : false}
+              id="slic"
+              title={`${options.slicingTool.label}`}
+            >
+              <p>Slic</p>
+            </ToggleButton>
+          )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideAutoRangesTool') && (
             <ToggleButton

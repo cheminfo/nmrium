@@ -175,6 +175,8 @@ export type NMRiumPreferences = Partial<{
     hideRealImaginary: boolean;
     hidePeakTool: boolean;
     hideIntegralTool: boolean;
+    hideZonePickingTool: boolean;
+    hideSlicingTool: boolean;
     hideAutoRangesTool: boolean;
     hideZeroFillingTool: boolean;
     hidePhaseCorrectionTool: boolean;
