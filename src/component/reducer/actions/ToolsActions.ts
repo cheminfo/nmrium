@@ -291,6 +291,7 @@ function zoomOut(draft: Draft<State>, action) {
       switch (zoomType) {
         case ZoomType.HORIZONTAL: {
           draft.xDomain = draft.originDomain.xDomain;
+          zoomHistory.clear();
           break;
         }
         case ZoomType.VERTICAL:
@@ -313,20 +314,15 @@ function zoomOut(draft: Draft<State>, action) {
     } else {
       const { xDomain, yDomain, yDomains } = draft.originDomain;
 
-      switch (trackID) {
-        case LAYOUT.TOP_1D:
-        case LAYOUT.LEFT_1D:
-        case LAYOUT.CENTER_2D: {
-          const zoomValue = zoomHistory.pop();
-          draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
-          draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
-          break;
-        }
-        default:
-          draft.xDomain = xDomain;
-          draft.yDomain = yDomain;
-          draft.yDomains = yDomains;
-          break;
+      if ([LAYOUT.TOP_1D, LAYOUT.LEFT_1D, LAYOUT.CENTER_2D].includes(trackID)) {
+        const zoomValue = zoomHistory.pop();
+        draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
+        draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
+      } else {
+        zoomHistory.clear();
+        draft.xDomain = xDomain;
+        draft.yDomain = yDomain;
+        draft.yDomains = yDomains;
       }
     }
   }

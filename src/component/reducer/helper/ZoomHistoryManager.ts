@@ -11,6 +11,7 @@ interface ZoomHistoryManager {
   push: (value: HistoryItem) => void;
   pop: () => HistoryItem;
   getLast: () => HistoryItem;
+  clear: () => void;
 }
 
 export default function zoomHistoryManager(
@@ -24,7 +25,8 @@ export default function zoomHistoryManager(
   const push = preparePush(zoomHistory[nucleus]);
   const pop = preparePop(zoomHistory[nucleus]);
   const getLast = prepareGetLast(zoomHistory[nucleus]);
-  return { historyStack: zoomHistory[nucleus], push, pop, getLast };
+  const clear = () => (zoomHistory[nucleus] = []);
+  return { historyStack: zoomHistory[nucleus], push, pop, getLast, clear };
 }
 
 function preparePush(historyStack) {
