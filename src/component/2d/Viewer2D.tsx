@@ -13,7 +13,7 @@ import {
   FULL_ZOOM_OUT,
   SET_DIMENSIONS,
   SET_2D_LEVEL,
-  SET_ZOOM_FACTOR,
+  SET_ZOOM,
   ADD_2D_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
@@ -110,15 +110,15 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [DIMENSION, dispatch],
   );
 
-  const handleZoom = (wheelData) => {
-    const { x: startX, y: startY } = wheelData;
+  const handleZoom = (event) => {
+    const { x: startX, y: startY } = event;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
       if (trackID === 'CENTER_2D') {
-        dispatch({ type: SET_2D_LEVEL, ...wheelData });
+        dispatch({ type: SET_2D_LEVEL, ...event });
       } else {
-        dispatch({ type: SET_ZOOM_FACTOR, ...wheelData, trackID });
+        dispatch({ type: SET_ZOOM, event, trackID });
       }
     }
   };

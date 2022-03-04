@@ -581,7 +581,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
-    case types.SET_ZOOM_FACTOR:
+    case types.SET_ZOOM:
       return ToolsActions.handleZoom(draft, action);
     case types.SET_SPECTRA_SAME_TOP:
       return ToolsActions.setSpectraSameTopHandler(draft);

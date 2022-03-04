@@ -16,6 +16,22 @@ interface Zoom1DManager {
   getScale: (id: string) => number;
 }
 
+interface ZoomOptions {
+  factor?: number;
+  invert?: boolean;
+}
+export function wheelZoom(
+  event: WheelEvent,
+  domain: number[],
+  zoomOptions: ZoomOptions = {},
+): number[] {
+  const { factor = 1, invert = false } = zoomOptions;
+  const [min, max] = domain;
+  const delta = event.deltaY * (invert ? -0.001 : 0.001) * factor;
+  const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
+  return [min * ratio, max * ratio];
+}
+
 export function initZoom1D(): Zoom1D {
   const settings = getLocalStorage('nmr-general-settings');
   const _slowZoomStep = getValue(settings, 'general.controllers.mws.low');
