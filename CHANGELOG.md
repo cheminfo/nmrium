@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.21.1](https://www.github.com/cheminfo/nmrium/compare/v0.21.0...v0.21.1) (2022-03-04)
+
+
+### Bug Fixes
+
+* integral or Multiple Spectra Analysis panels do not open when selecting its tool ([a170519](https://www.github.com/cheminfo/nmrium/commit/a1705198f3c9db36c1821b0f5c37087f9ad0ddf0)), closes [#1407](https://www.github.com/cheminfo/nmrium/issues/1407)
+
 ## [0.21.0](https://www.github.com/cheminfo/nmrium/compare/v0.20.2...v0.21.0) (2022-03-03)
 
 
