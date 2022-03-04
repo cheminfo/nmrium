@@ -114,8 +114,8 @@ function RangesTablePanelInner({
           to,
         });
         const dataToClipboard = {
-          x: x.slice(fromIndex, toIndex),
-          y: re.slice(fromIndex, toIndex),
+          x: Array.from(x.slice(fromIndex, toIndex)),
+          y: Array.from(re.slice(fromIndex, toIndex)),
           ...value,
         };
 
