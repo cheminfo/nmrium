@@ -7,7 +7,11 @@ import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import FormikForm from '../../elements/formik/FormikForm';
-import { SET_PREFERENCES } from '../../reducer/preferencesReducer';
+import { useAlert } from '../../elements/popup/Alert';
+import {
+  SET_PREFERENCES,
+  RESET_PREFERENCES,
+} from '../../reducer/preferencesReducer';
 
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
@@ -143,24 +147,32 @@ const styles = css`
 
 interface GeneralSettingsProps {
   onClose?: () => void;
-  onSave?: () => void;
 }
 
-function GeneralSettings({ onClose, onSave }: GeneralSettingsProps) {
+function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const [activeTab, setActiveTab] = useState('controllers');
   const preferences = usePreferences();
+  const alert = useAlert();
+
   const refForm = useRef<any>();
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
+  const handleReset = useCallback(() => {
+    preferences.dispatch({ type: RESET_PREFERENCES });
+    alert.success('Settings saved successfully');
+    onClose?.();
+  }, [alert, onClose, preferences]);
 
   const submitHandler = useCallback(
     (values) => {
       preferences.dispatch({ type: SET_PREFERENCES, payload: values });
-      onSave?.();
+      alert.success('Settings saved successfully');
+
+      onClose?.();
     },
-    [onSave, preferences],
+    [alert, onClose, preferences],
   );
 
   const tabChangeHandler = useCallback((tab) => {
@@ -205,6 +217,9 @@ function GeneralSettings({ onClose, onSave }: GeneralSettingsProps) {
         </FormikForm>
       </div>
       <div className="footer-container">
+        <button type="button" onClick={handleReset} className="btn">
+          Reset
+        </button>
         <button type="button" onClick={handleSave} className="btn">
           Save
         </button>

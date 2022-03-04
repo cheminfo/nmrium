@@ -10,7 +10,6 @@ import {
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
 import { useModal, positions } from '../elements/popup/Modal';
 import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
@@ -38,7 +37,6 @@ function HeaderInner(props: HeaderInnerProps) {
     hideGeneralSettings,
   } = props;
 
-  const alert = useAlert();
   const modal = useModal();
 
   const selectedPanel = useMemo(() => {
@@ -61,20 +59,12 @@ function HeaderInner(props: HeaderInnerProps) {
   }, [selectedOptionPanel]);
 
   const openGeneralSettingsHandler = useCallback(() => {
-    modal.show(
-      <GeneralSettings
-        onSave={() => {
-          alert.success('Settings saved successfully');
-          modal.close();
-        }}
-      />,
-      {
-        position: positions.TOP_CENTER,
-        enableResizing: true,
-        width: 600,
-      },
-    );
-  }, [alert, modal]);
+    modal.show(<GeneralSettings />, {
+      position: positions.TOP_CENTER,
+      enableResizing: true,
+      width: 600,
+    });
+  }, [modal]);
 
   const openAboutUs = useCallback(() => {
     modal.show(<AboutUsModal />, {

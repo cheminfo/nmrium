@@ -11,11 +11,12 @@ import workspaces from '../workspaces';
 
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
+export const RESET_PREFERENCES = 'RESET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
 const LOCAL_STORAGE_VERSION = 3;
 
-function getPreferencesByWorkspace(workspace: NMRiumWorkspaces) {
+function getPreferencesByWorkspace(workspace: string) {
   switch (workspace) {
     case NMRiumWorkspaces.EXERCISE_1D:
       return workspaces.exercise1D;
@@ -193,6 +194,18 @@ function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
     draft.formatting.panels[key] = value;
   }
 }
+function handleResetPreferences(draft: Draft<PreferencesState>) {
+  let localData = getLocalStorage('nmr-general-settings');
+  const hiddenFeatures = getTruthyObjectValues(draft.basePreferences.display);
+  const workSpaceDisplayPreferences = lodashMerge(
+    {},
+    getPreferencesByWorkspace(draft.workspace).display,
+    hiddenFeatures,
+  );
+  localData.workspaces[draft.workspace].display = workSpaceDisplayPreferences;
+  draft.display = workSpaceDisplayPreferences;
+  storeData('nmr-general-settings', JSON.stringify(localData));
+}
 
 function innerPreferencesReducer(draft: Draft<PreferencesState>, action) {
   switch (action.type) {
@@ -202,6 +215,8 @@ function innerPreferencesReducer(draft: Draft<PreferencesState>, action) {
       return handleSetPreferences(draft, action);
     case SET_PANELS_PREFERENCES:
       return handleSetPanelsPreferences(draft, action);
+    case RESET_PREFERENCES:
+      return handleResetPreferences(draft);
     default:
       return draft;
   }

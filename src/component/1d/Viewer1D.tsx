@@ -230,7 +230,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     [
       scaleState,
       selectedTool,
-      general.disableMultipletAnalysis,
+      general?.disableMultipletAnalysis,
       modal,
       data,
       activeSpectrum,
