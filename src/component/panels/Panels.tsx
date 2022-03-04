@@ -6,7 +6,6 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
-import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
@@ -24,7 +23,6 @@ import FilterPanel from './filtersPanel/FilterPanel';
 interface AccordionItem {
   title: string;
   component: ReactElement;
-  openWhen: Array<string | number> | null;
   style?: CSSProperties;
   hidePreferenceKey: string;
   mode: '1D' | '2D' | null;
@@ -35,14 +33,12 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Spectra',
     component: <SpectrumListPanel />,
-    openWhen: null,
     hidePreferenceKey: 'hideSpectraPanel',
     mode: null,
   },
   {
     title: 'Information',
     component: <InformationPanel />,
-    openWhen: null,
     style: { overflow: 'hidden' },
     hidePreferenceKey: 'hideInformationPanel',
     mode: null,
@@ -50,42 +46,36 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Peaks',
     component: <PeaksPanel />,
-    openWhen: [options.peakPicking.id],
     hidePreferenceKey: 'hidePeaksPanel',
     mode: null,
   },
   {
     title: 'Filters',
     component: <FilterPanel />,
-    openWhen: null,
     hidePreferenceKey: 'hideFiltersPanel',
     mode: null,
   },
   {
     title: 'Integrals',
     component: <IntegralPanel />,
-    openWhen: [options.integral.id],
     hidePreferenceKey: 'hideIntegralsPanel',
     mode: null,
   },
   {
     title: 'Ranges',
     component: <RangesPanel />,
-    openWhen: [options.rangesPicking.id],
     hidePreferenceKey: 'hideRangesPanel',
     mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Multiple Spectra Analysis',
     component: <MultipleSpectraAnalysisPanel />,
-    openWhen: [options.multipleSpectraAnalysis.id],
     hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
     mode: null,
   },
   {
     title: 'Matrix Generation',
     component: <MatrixGenerationPanel />,
-    openWhen: [],
     hidePreferenceKey: '',
     mode: null,
     isExperimental: true,
@@ -93,39 +83,36 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Zones',
     component: <ZonesPanel />,
-    openWhen: [options.zone2D.id],
     hidePreferenceKey: 'hideZonesPanel',
     mode: DISPLAYER_MODE.DM_2D,
   },
   {
     title: 'Summary',
     component: <SummaryPanel />,
-    openWhen: [],
     hidePreferenceKey: 'hideSummaryPanel',
     mode: null,
   },
   {
     title: 'Structures',
     component: <MoleculePanel />,
-    openWhen: [options.rangesPicking.id],
     hidePreferenceKey: 'hideStructuresPanel',
     mode: null,
   },
   {
     title: 'Database',
     component: <DatabasePanel />,
-    openWhen: [],
     hidePreferenceKey: 'hideDatabasePanel',
     mode: null,
   },
 ];
 
-export const PANELS_ACCORDION: Record<string, string> = {
+export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
   null: 'Spectra',
   peakPicking: 'Peaks',
   integral: 'Integrals',
   rangesPicking: 'Ranges',
   zone2D: 'Zones',
+  multipleSpectraAnalysis: 'Multiple Spectra Analysis',
 };
 
 function PanelsInner({ displayerMode }) {

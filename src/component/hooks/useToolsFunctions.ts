@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
-import { PANELS_ACCORDION } from '../panels/Panels';
+import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
 import { ZoomType } from '../reducer/actions/Zoom';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
@@ -37,11 +37,8 @@ export default function useToolsFunctions() {
         alert.show('Press Shift + Left Mouse button to select zone');
       }
 
-      if (
-        options[selectedTool].hasOptionPanel &&
-        Object.keys(PANELS_ACCORDION).includes(selectedTool)
-      ) {
-        openPanel(PANELS_ACCORDION[selectedTool]);
+      if (Object.keys(TOOLS_PANELS_ACCORDION).includes(selectedTool)) {
+        openPanel(TOOLS_PANELS_ACCORDION[selectedTool]);
       }
 
       dispatch({
