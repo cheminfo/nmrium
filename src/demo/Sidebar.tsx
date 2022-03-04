@@ -120,12 +120,13 @@ function Sidebar(props) {
       <div css={sidebarWrapperCss} style={{ display: subDisplay }}>
         <Menu
           onClick={(e) => {
+            // console.log((e.item.props.view || '') + getKey(e.item.props.file));
             props.history.push(
               `/SamplesDashboard/${Math.random()
                 .toString(36)
                 .replace('0.', '')}/${
                 // @ts-expect-error This will be fixed by updating use of rc-menu
-                e.item.props.view + getKey(e.item.props.file)
+                (e.item.props.view || 'View') + getKey(e.item.props.file)
               }`,
             );
           }}

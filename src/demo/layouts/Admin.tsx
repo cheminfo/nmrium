@@ -65,7 +65,7 @@ export function Dashboard(props: DashboardProps) {
                 return (
                   <Route
                     path={`/SamplesDashboard/:id/${
-                      prop.view + getKey(prop.file)
+                      (prop.view || 'View') + getKey(prop.file)
                     }`}
                     render={(props) => (
                       <RenderView {...props} prop={prop} baseURL={baseURL} />
