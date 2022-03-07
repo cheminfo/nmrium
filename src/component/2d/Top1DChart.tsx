@@ -29,7 +29,6 @@ function Top1DChart({
   const paths = useMemo(() => {
     if (spectrum) {
       const scaleX = get2DXScale({ width, xDomain, margin: originMargin });
-
       const scaleY = get1DYScale(yDomains[spectrum.id], height, marginProps);
       const { x, re: y } = spectrum.data;
       const pathPoints = xyReduce({ x, y });

@@ -7,9 +7,9 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
+import { setZoom } from '../helper/Zoom1DManager';
 
 import { setDomain } from './DomainActions';
-import { setZoom } from './Zoom';
 
 interface AlignmentOptions {
   align?: VerticalAlignment | 'auto-check';

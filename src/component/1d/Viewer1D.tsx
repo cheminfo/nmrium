@@ -15,7 +15,7 @@ import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { ZoomType } from '../reducer/actions/Zoom';
+import { ZoomType } from '../reducer/helper/Zoom1DManager';
 import getRange from '../reducer/helper/getRange';
 import scaleReducer, {
   scaleInitialState,

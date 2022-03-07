@@ -14,13 +14,17 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
-import Zoom1DManager, { wheelZoom } from '../helper/Zoom1DManager';
+import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
-import { setDomain, SetDomainOptions, setMode } from './DomainActions';
+import {
+  setDomain,
+  SetDomainOptions,
+  setIntegralsYDomain,
+  setMode,
+} from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { setZoom, ZoomType } from './Zoom';
 
 function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
@@ -247,7 +251,7 @@ function getSpectrumID(draft: Draft<State>, index): string | null {
 }
 
 function handleZoom(draft: Draft<State>, action) {
-  const { event , trackID, selectedTool } = action;
+  const { event, trackID, selectedTool } = action;
   const {
     activeSpectrum,
     toolOptions: {
@@ -271,10 +275,8 @@ function handleZoom(draft: Draft<State>, action) {
         (showRangesIntegrals || selectedTool === options.integral.id) &&
         event.shiftKey
       ) {
-        Zoom1DManager(draft.zoom.integral).wheel(
-          event.deltaY,
-          activeSpectrum?.id,
-        );
+        const domain = draft.integralsYDomains[activeSpectrum?.id];
+        draft.integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
       } else {
         const domain = draft.yDomains[activeSpectrum?.id];
         draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
@@ -477,6 +479,7 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   Processing2DData(draft, dataGroupByNucleus);
 
   setDomain(draft, domainOptions);
+  setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
 
   const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
   const zoomValue = zoomHistory.getLast();

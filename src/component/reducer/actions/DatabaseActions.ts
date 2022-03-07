@@ -2,9 +2,9 @@ import { Draft } from 'immer';
 
 import { generateSpectrumFromRanges } from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
 import { State } from '../Reducer';
+import { setZoom } from '../helper/Zoom1DManager';
 
 import { setDomain } from './DomainActions';
-import { setZoom } from './Zoom';
 
 function handleRangeResurrecting(draft: Draft<State>, action) {
   const { ranges, info } = action.payload;
