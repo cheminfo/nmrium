@@ -31,10 +31,6 @@ export interface PreferencesState {
   basePreferences: any;
   display: any;
   controllers: {
-    mws: {
-      low: number;
-      high: number;
-    };
     dimmedSpectraTransparency: number;
   };
   formatting: {
@@ -50,7 +46,6 @@ export const preferencesInitialState: PreferencesState = {
   basePreferences: {},
   display: workspaces.basic.display,
   controllers: {
-    mws: { low: 2, high: 20 },
     dimmedSpectraTransparency: 0.1,
   },
   formatting: {

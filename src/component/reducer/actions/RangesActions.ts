@@ -27,7 +27,7 @@ import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
-import { setDomain } from './DomainActions';
+import { setDomain, setIntegralsYDomain } from './DomainActions';
 
 function handleAutoRangesDetection(draft: Draft<State>, options) {
   const {
@@ -63,6 +63,7 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
       nucleus,
     });
     handleOnChangeRangesData(draft);
+    setIntegralsYDomain(draft, datum);
   }
 }
 
@@ -280,6 +281,7 @@ function handleAddRange(draft: Draft<State>, action) {
     const [from, to] = range;
     addRange(draft.data[index] as Datum1D, { from, to, nucleus, molecules });
     handleOnChangeRangesData(draft);
+    setIntegralsYDomain(draft, draft.data[index] as Datum1D);
   }
 }
 

@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
-import { ZoomType } from '../reducer/actions/Zoom';
+import { ZoomType } from '../reducer/helper/Zoom1DManager';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   FULL_ZOOM_OUT,

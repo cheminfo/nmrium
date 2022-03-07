@@ -15,7 +15,7 @@ import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { ZoomType } from '../reducer/actions/Zoom';
+import { ZoomType } from '../reducer/helper/Zoom1DManager';
 import getRange from '../reducer/helper/getRange';
 import scaleReducer, {
   scaleInitialState,
@@ -27,7 +27,7 @@ import {
   ADD_BASE_LINE_ZONE,
   BRUSH_END,
   FULL_ZOOM_OUT,
-  SET_ZOOM_FACTOR,
+  SET_ZOOM,
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
   ADD_RANGE,
@@ -246,7 +246,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const handleZoom = useCallback(
     (event) => {
-      dispatch({ type: SET_ZOOM_FACTOR, ...event, selectedTool });
+      dispatch({ type: SET_ZOOM, event, selectedTool });
     },
     [dispatch, selectedTool],
   );

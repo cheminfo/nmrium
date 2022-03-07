@@ -40,7 +40,6 @@ import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
-import { initZoom1D, Zoom1D } from './helper/Zoom1DManager';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -73,6 +72,7 @@ export const initialState: State = {
     yDomains: {},
     shareYDomain: false,
   },
+  integralsYDomains: {},
   activeTab: '',
   width: 0,
   height: 0,
@@ -105,8 +105,6 @@ export const initialState: State = {
   displayerKey: '',
   zoom: {
     history: {} as ZoomHistory,
-    spectra: {} as Zoom1D,
-    integral: {} as Zoom1D,
   },
   overDisplayer: false,
   toolOptions: {
@@ -186,6 +184,12 @@ export interface State {
     yDomains: Record<string, Array<number>>;
     shareYDomain: boolean;
   };
+  /**
+   * y axis domain per spectrum for integrals
+   * value change when vertical scale change for the integrals
+   * @default {}
+   */
+  integralsYDomains: Record<string, Array<number>>;
 
   /**
    * current select tab (nucleus)
@@ -282,8 +286,6 @@ export interface State {
    */
   zoom: {
     history: ZoomHistory;
-    spectra: Zoom1D;
-    integral: Zoom1D;
   };
 
   /**
@@ -367,15 +369,11 @@ export function initState(state: State): State {
     tolerance: DefaultTolerance,
   });
 
-  const spectra = initZoom1D();
-  const integral = initZoom1D();
-
-  const zoom = { spectra, integral, history: {} };
   return {
     ...state,
     correlations,
     displayerKey,
-    zoom,
+    history: {},
   };
 }
 
@@ -581,7 +579,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
-    case types.SET_ZOOM_FACTOR:
+    case types.SET_ZOOM:
       return ToolsActions.handleZoom(draft, action);
     case types.SET_SPECTRA_SAME_TOP:
       return ToolsActions.setSpectraSameTopHandler(draft);

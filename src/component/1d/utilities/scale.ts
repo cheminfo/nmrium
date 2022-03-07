@@ -24,14 +24,18 @@ function getYScale(state, spectrumId: number | null | string = null) {
   return scaleLinear(domainY, [_height, margin.top]);
 }
 
-function getIntegralYScale(state, spectrumId) {
-  const { height, margin, verticalAlign, integralsYDomains } = state;
+function getIntegralYScale(state) {
+  const { height, margin, verticalAlign, integralsYDomains, activeSpectrum } =
+    state;
   const _height = verticalAlign.align === 'center' ? height / 2 : height;
-
-  return scaleLinear(integralsYDomains[spectrumId], [
-    _height - (margin.bottom + _height * 0.3),
-    margin.top,
-  ]);
+  return scaleLinear(
+    activeSpectrum?.id &&
+      integralsYDomains &&
+      integralsYDomains[activeSpectrum?.id]
+      ? integralsYDomains[activeSpectrum?.id]
+      : [0, 0],
+    [_height * 0.3, margin.top + _height * 0.1],
+  );
 }
 
 function reScaleY(scale: number, { domain, height, margin }) {

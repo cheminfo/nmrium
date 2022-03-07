@@ -15,6 +15,8 @@ import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
+import { setIntegralsYDomain } from './DomainActions';
+
 function handleChangeIntegralSum(draft: Draft<State>, options) {
   const { data, activeSpectrum, activeTab: nucleus } = draft;
   if (activeSpectrum?.id) {
@@ -52,6 +54,7 @@ function addIntegral(draft: Draft<State>, action) {
       nucleus,
     });
     updateIntegralsRelativeValues(datum);
+    setIntegralsYDomain(draft, datum);
   }
 }
 

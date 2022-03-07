@@ -1,5 +1,4 @@
-import { useChartData } from '../../context/ChartContext';
-import useIntegralPath from '../utilities/useIntegralPath';
+import useIntegralPath from '../../hooks/useIntegralPath';
 
 interface IntegralProps {
   range: { id: string; from: number; to: number; integral?: number };
@@ -7,7 +6,6 @@ interface IntegralProps {
 
 function RangeIntegral({ range }: IntegralProps) {
   const path = useIntegralPath(range);
-  const { height, margin } = useChartData();
 
   return (
     <path
@@ -15,9 +13,6 @@ function RangeIntegral({ range }: IntegralProps) {
       stroke="black"
       strokeWidth="1"
       fill="none"
-      style={{
-        transform: `translateY(-${margin.bottom + height * 0.3}px)`,
-      }}
       d={path}
     />
   );

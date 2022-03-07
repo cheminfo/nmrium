@@ -9,7 +9,6 @@ import { State, VerticalAlignment } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
-import { setZoom } from './Zoom';
 
 interface AlignmentOptions {
   align?: VerticalAlignment | 'auto-check';
@@ -162,7 +161,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       }
     } else {
       draft.zoom = preferences.zoom;
-      setZoom(draft);
     }
   }
 }

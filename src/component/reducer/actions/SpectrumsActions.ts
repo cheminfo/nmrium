@@ -12,11 +12,11 @@ import { Datum2D } from '../../../data/types/data2d';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
+import { setZoom } from '../helper/Zoom1DManager';
 
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab } from './ToolsActions';
-import { setZoom } from './Zoom';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (

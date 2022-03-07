@@ -11,15 +11,20 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
-import Zoom1DManager from '../helper/Zoom1DManager';
+import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
-import { setDomain, SetDomainOptions, setMode } from './DomainActions';
+import {
+  setDomain,
+  SetDomainOptions,
+  setIntegralsYDomain,
+  setMode,
+} from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
 function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
@@ -246,39 +251,46 @@ function getSpectrumID(draft: Draft<State>, index): string | null {
 }
 
 function handleZoom(draft: Draft<State>, action) {
-  const { deltaY, deltaMode, trackID, shiftKey, selectedTool } = action;
+  const { event, trackID, selectedTool } = action;
   const {
     activeSpectrum,
     toolOptions: {
       data: { showRangesIntegrals },
     },
+    displayerMode,
   } = draft;
-  if (trackID) {
-    switch (trackID) {
-      case LAYOUT.TOP_1D: {
-        const id = getSpectrumID(draft, 0);
-        wheel(deltaY, deltaMode, draft, id);
-        setZoom1D(draft, draft.margin.top, 10, 0);
-        break;
+  if (displayerMode === DISPLAYER_MODE.DM_2D) {
+    const index =
+      trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
+    if (index !== null) {
+      const id = getSpectrumID(draft, index);
+      if (id) {
+        const domain = draft.yDomains[id];
+        draft.yDomains[id] = wheelZoom(event, domain);
       }
-      case LAYOUT.LEFT_1D: {
-        const id = getSpectrumID(draft, 1);
-        wheel(deltaY, deltaMode, draft, id);
-        setZoom1D(draft, draft.margin.left, 10, 1);
-        break;
-      }
-      default:
-        break;
     }
-  } else if (
-    activeSpectrum?.id &&
-    shiftKey &&
-    (showRangesIntegrals || selectedTool === options.integral.id)
-  ) {
-    Zoom1DManager(draft.zoom.integral).wheel(deltaY, activeSpectrum?.id);
   } else {
-    wheel(deltaY, deltaMode, draft);
-    setZoom(draft);
+    if (activeSpectrum?.id) {
+      if (
+        (showRangesIntegrals || selectedTool === options.integral.id) &&
+        event.shiftKey
+      ) {
+        const domain = draft.integralsYDomains[activeSpectrum?.id];
+        draft.integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      } else {
+        const domain = draft.yDomains[activeSpectrum?.id];
+        draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      }
+    } else {
+      const spectra = getSpectraByNucleus(
+        draft.activeTab,
+        draft.data,
+      ) as Datum1D[];
+      for (const spectrum of spectra) {
+        const domain = draft.yDomains[spectrum.id];
+        draft.yDomains[spectrum.id] = wheelZoom(event, domain);
+      }
+    }
   }
 }
 
@@ -467,6 +479,7 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   Processing2DData(draft, dataGroupByNucleus);
 
   setDomain(draft, domainOptions);
+  setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
 
   const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
   const zoomValue = zoomHistory.getLast();

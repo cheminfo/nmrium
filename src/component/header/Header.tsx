@@ -63,6 +63,7 @@ function HeaderInner(props: HeaderInnerProps) {
       position: positions.TOP_CENTER,
       enableResizing: true,
       width: 600,
+      height: 400,
     });
   }, [modal]);
 
