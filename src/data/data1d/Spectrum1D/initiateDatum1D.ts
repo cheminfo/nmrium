@@ -1,10 +1,12 @@
-import merge from 'lodash/merge';
-
 import * as FiltersTypes from '../../Filters';
 import * as FiltersManager from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 import generateID from '../../utilities/generateID';
 import get1dColor from '../../utilities/getColor';
+
+import { initiateIntegrals } from './integrals/initiateIntegrals';
+import { initiatePeaks } from './peaks/initiatePeaks';
+import { initiateRanges } from './ranges/initiateRanges';
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: Partial<Datum1D> = {};
@@ -55,33 +57,15 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   );
   datum.originalData = datum.data;
 
-  datum.peaks = merge({ values: [], options: {} }, options.peaks);
+  datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
+
+  datum.peaks = initiatePeaks(options, datum as Datum1D);
+
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  datum.integrals = merge(
-    {
-      values: [],
-      options: {
-        sum: undefined,
-        isSumConstant: true,
-        sumAuto: true,
-      },
-    },
-    options.integrals,
-  ); // array of object (from: xIndex, to: xIndex)
-  datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
-  datum.ranges = merge(
-    {
-      values: [],
-      options: {
-        sum: undefined,
-        isSumConstant: true,
-        sumAuto: true,
-      },
-    },
-    options.ranges,
-  );
+  datum.integrals = initiateIntegrals(options); // array of object (from: xIndex, to: xIndex)
+  datum.ranges = initiateRanges(options, datum as Datum1D);
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(datum);

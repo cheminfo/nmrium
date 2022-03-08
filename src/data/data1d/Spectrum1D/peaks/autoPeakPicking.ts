@@ -2,8 +2,8 @@ import median from 'ml-array-median';
 import { xyAutoPeaksPicking } from 'nmr-processing';
 
 import { Datum1D, Peak } from '../../../types/data1d';
-import generateID from '../../../utilities/generateID';
-import { getShiftX } from '../shift/getShiftX';
+
+import { mapPeaks } from './mapPeaks';
 
 export function autoPeakPicking(datum1D: Datum1D, options) {
   const {
@@ -18,7 +18,6 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
   const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
   let { re, x } = datum1D.data;
-  let { values: currentPeaks = [] } = datum1D.peaks || {};
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {
     x = x.slice(windowFromIndex, windowToIndex);
@@ -39,26 +38,5 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
   peaks.sort((a, b) => b.y - a.y);
   if (maxNumberOfPeaks < peaks.length) peaks = peaks.slice(0, maxNumberOfPeaks);
 
-  const shiftX = getShiftX(datum1D);
-
-  const error = (x[x.length - 1] - x[0]) / 10000;
-
-  return peaks.reduce<Peak[]>((acc, newPeak) => {
-    // check if the peak is already exists
-    for (const { x } of currentPeaks) {
-      if (Math.abs(newPeak.x - x) < error) {
-        return acc;
-      }
-    }
-
-    acc.push({
-      id: generateID(),
-      originalX: newPeak.x - shiftX,
-      x: newPeak.x,
-      y: newPeak.y,
-      width: newPeak.width,
-    });
-
-    return acc;
-  }, []);
+  return mapPeaks(peaks as Peak[], datum1D);
 }
