@@ -72,7 +72,8 @@ export default ExclusionZonesAnnotations;
 
 function getExclusionZones(data: Datum1D): ExclusionZone[] {
   return (
-    data.filters.find((filter) => filter.name === Filters.exclusionZones.id)
-      ?.value || []
+    data.filters.find(
+      (filter) => filter.name === Filters.exclusionZones.id && filter.flag,
+    )?.value || []
   );
 }
