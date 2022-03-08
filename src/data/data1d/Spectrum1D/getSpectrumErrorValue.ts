@@ -1,4 +1,4 @@
-import { Datum1D } from "../../types/data1d/Datum1D";
+import { Datum1D } from '../../types/data1d/Datum1D';
 
 export function getSpectrumErrorValue(datum: Datum1D) {
   const { x } = datum.data;

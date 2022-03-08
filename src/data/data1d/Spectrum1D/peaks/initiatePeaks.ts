@@ -8,11 +8,7 @@ export function initiatePeaks(
   options: Partial<{ peaks: Peaks }>,
   datum: Datum1D,
 ) {
-  return merge(
-    { values: [], options: {} },
-    options.peaks,
-    {
-      values: mapPeaks(options?.peaks?.values || [], datum),
-    },
-  );
+  return merge({ values: [], options: {} }, options.peaks, {
+    values: mapPeaks(options?.peaks?.values || [], datum),
+  });
 }
