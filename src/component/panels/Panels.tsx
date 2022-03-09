@@ -7,6 +7,7 @@ import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
+import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment';
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
 import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
@@ -103,6 +104,13 @@ const accordionItems: AccordionItem[] = [
     component: <DatabasePanel />,
     hidePreferenceKey: 'hideDatabasePanel',
     mode: null,
+  },
+  {
+    title: 'Automatic Assignment',
+    component: <AutomaticAssignment />,
+    hidePreferenceKey: '',
+    mode: null,
+    isExperimental: true,
   },
 ];
 
