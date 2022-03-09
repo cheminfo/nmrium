@@ -19,9 +19,13 @@ function wheelZoom(
   zoomOptions: ZoomOptions = {},
 ): number[] {
   const { factor = 1, invert = false } = zoomOptions;
-  const [min, max] = domain;
-  const delta = event.deltaY * (invert ? -0.001 : 0.001) * factor;
+  const deltaY =
+    Math.abs(event.deltaY) < 100 ? event.deltaY * 100 : event.deltaY;
+  const delta = deltaY * (invert ? -0.001 : 0.001) * factor;
   const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
+
+  const [min, max] = domain;
+
   return [min * ratio, max * ratio];
 }
 
