@@ -104,7 +104,6 @@ function PeaksPanelInner({
               onSettingClick={open}
             />
             <PeaksTable
-              className="inner-container"
               data={filteredPeaks}
               activeTab={activeTab}
               preferences={preferences}
