@@ -1,16 +1,15 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { useCallback, useMemo, useState, useRef, memo } from 'react';
+import { useCallback, useMemo, useState, memo } from 'react';
 
 import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { EventContextProvider } from '../../context/EventContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import { SwitchContainer } from '../../elements/SwitchContainer';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
-import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -33,13 +32,10 @@ function PeaksPanelInner({
   preferences,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
-  const [isFlipped, setFlipStatus] = useState(false);
   const format = useFormatNumberByNucleus(info.nucleus);
 
   const dispatch = useDispatch();
   const modal = useModal();
-
-  const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_PEAK_NOTATION, data: null });
@@ -51,15 +47,6 @@ function PeaksPanelInner({
       buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
     });
   }, [modal, yesHandler]);
-
-  const settingsPanelHandler = useCallback(() => {
-    setFlipStatus(!isFlipped);
-  }, [isFlipped]);
-
-  const saveSettingHandler = useCallback(() => {
-    settingRef.current.saveSetting();
-    setFlipStatus(false);
-  }, []);
 
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
@@ -99,54 +86,52 @@ function PeaksPanelInner({
   }, [filterIsActive, format, info, peaks, xDomain]);
 
   return (
-    <div
-      css={[
-        tablePanelStyle,
-        isFlipped &&
-          css`
-            .table-container {
-              table,
-              th {
-                position: relative !important;
+    <SwitchContainer>
+      <SwitchContainer.Front>
+        {({ open }) => (
+          <>
+            <DefaultPanelHeader
+              counter={peaks?.values?.length}
+              onDelete={handleDeleteAll}
+              deleteToolTip="Delete All Peaks"
+              onFilter={handleOnFilter}
+              filterToolTip={
+                filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
               }
-            }
-          `,
-      ]}
-    >
-      {!isFlipped && (
-        <DefaultPanelHeader
-          counter={peaks?.values?.length}
-          onDelete={handleDeleteAll}
-          deleteToolTip="Delete All Peaks"
-          onFilter={handleOnFilter}
-          filterToolTip={
-            filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
-          }
-          filterIsActive={filterIsActive}
-          counterFiltered={filteredPeaks.length}
-          showSettingButton
-          onSettingClick={settingsPanelHandler}
-        />
-      )}
-      {isFlipped && (
-        <PreferencesHeader
-          onSave={saveSettingHandler}
-          onClose={settingsPanelHandler}
-        />
-      )}
-      <div className="inner-container">
-        {!isFlipped ? (
-          <PeaksTable
-            data={filteredPeaks}
-            activeTab={activeTab}
-            preferences={preferences}
-            info={info}
-          />
-        ) : (
-          <PeaksPreferences ref={settingRef} />
+              filterIsActive={filterIsActive}
+              counterFiltered={filteredPeaks.length}
+              showSettingButton
+              onSettingClick={open}
+            />
+            <PeaksTable
+              className="inner-container"
+              data={filteredPeaks}
+              activeTab={activeTab}
+              preferences={preferences}
+              info={info}
+            />
+          </>
         )}
-      </div>
-    </div>
+      </SwitchContainer.Front>
+
+      <SwitchContainer.Back>
+        <EventContextProvider>
+          {({ trigger }) => (
+            <>
+              <PreferencesHeader
+                onSave={() => {
+                  trigger('save');
+                }}
+                onClose={() => {
+                  trigger('close');
+                }}
+              />
+              <PeaksPreferences />
+            </>
+          )}
+        </EventContextProvider>
+      </SwitchContainer.Back>
+    </SwitchContainer>
   );
 }
 

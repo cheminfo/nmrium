@@ -1,15 +1,9 @@
-import {
-  useEffect,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  CSSProperties,
-  memo,
-  forwardRef,
-} from 'react';
+import { useEffect, useCallback, useRef, CSSProperties, memo } from 'react';
 
+import { useEventContext } from '../../context/EventContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
+import { useSwitchContext } from '../../elements/SwitchContainer/SwitchContainerContext';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
@@ -102,16 +96,16 @@ const formatFields: Array<{
 interface PeaksPreferencesInnerProps {
   nucleus: Array<string>;
   preferences: any;
-  innerRef: any;
 }
 
 function PeaksPreferencesInner({
   nucleus,
   preferences,
-  innerRef,
 }: PeaksPreferencesInnerProps) {
   const alert = useAlert();
   const formRef = useRef<any>(null);
+  const { clean, on } = useEventContext();
+  const { close } = useSwitchContext();
 
   const updateValues = useCallback(() => {
     if (nucleus) {
@@ -129,30 +123,33 @@ function PeaksPreferencesInner({
     }
   }, [nucleus, preferences]);
 
+  const saveHandler = useCallback(() => {
+    preferences.dispatch({
+      type: SET_PANELS_PREFERENCES,
+      payload: { key: 'peaks', value: formRef.current.values },
+    });
+    alert.success('Peaks preferences saved successfully');
+  }, [alert, preferences]);
+
   useEffect(() => {
     updateValues();
   }, [updateValues]);
 
-  const saveHandler = useCallback(
-    (values) => {
-      preferences.dispatch({
-        type: SET_PANELS_PREFERENCES,
-        payload: { key: 'peaks', value: values },
-      });
-      alert.success('Peaks preferences saved successfully');
-    },
-    [alert, preferences],
-  );
+  useEffect(() => {
+    on('save', () => {
+      saveHandler();
+      close();
+    });
+    on('close', () => {
+      close();
+    });
+  }, [close, on, saveHandler]);
 
-  useImperativeHandle(
-    innerRef,
-    () => ({
-      saveSetting: () => {
-        formRef.current.submitForm();
-      },
-    }),
-    [],
-  );
+  useEffect(() => {
+    return () => {
+      clean(['save', 'close']);
+    };
+  }, [clean]);
 
   return (
     <div style={styles.container}>
@@ -178,13 +175,10 @@ function PeaksPreferencesInner({
 
 const MemoizedPeaksPreferences = memo(PeaksPreferencesInner);
 
-// TODO: remove this hacky use of ref.
-function PeaksPreferences(props, ref: any) {
+function PeaksPreferences() {
   const nucleus = useNucleus();
   const preferences = usePreferences();
-  return (
-    <MemoizedPeaksPreferences innerRef={ref} {...{ nucleus, preferences }} />
-  );
+  return <MemoizedPeaksPreferences {...{ nucleus, preferences }} />;
 }
 
-export default forwardRef(PeaksPreferences);
+export default PeaksPreferences;

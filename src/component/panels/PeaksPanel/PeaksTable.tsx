@@ -25,9 +25,16 @@ interface PeaksTableProps {
   info: {
     nucleus: string;
   };
+  className?: string;
 }
 
-function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
+function PeaksTable({
+  activeTab,
+  preferences,
+  data,
+  info,
+  className,
+}: PeaksTableProps) {
   const dispatch = useDispatch();
   const format = useFormatNumberByNucleus(info.nucleus);
 
@@ -155,6 +162,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
 
   return data && data.length > 0 ? (
     <ReactTable
+      className={className}
       data={data}
       columns={tableColumns}
       approxItemHeight={20}
