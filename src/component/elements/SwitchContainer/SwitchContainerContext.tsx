@@ -9,8 +9,8 @@ import {
 
 export interface SwitchContext {
   isFlipped: boolean;
-  open: (event?) => void;
-  close: (event?, extra?: any) => void;
+  open: () => void;
+  close: () => void;
 }
 
 export const SwitchContainerContext = createContext<SwitchContext | null>(null);
