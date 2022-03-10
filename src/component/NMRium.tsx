@@ -128,16 +128,10 @@ const containerStyles = css`
   }
 `;
 
-export enum NMRiumWorkspaces {
-  EXERCISE_1D = 'exercise1D',
-  PROCESS_1D = 'process1D',
-  DEFAULT = 'default',
-}
-
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: State) => void;
-  workspace?: NMRiumWorkspaces;
+  workspace?: 'exercise1D' | 'process1D' | 'default';
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
@@ -218,7 +212,7 @@ function NMRium(props: NMRiumProps) {
 
 function InnerNMRium({
   data: dataProp = defaultData,
-  workspace = NMRiumWorkspaces.DEFAULT,
+  workspace = 'default',
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
