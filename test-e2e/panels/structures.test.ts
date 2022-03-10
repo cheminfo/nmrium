@@ -8,9 +8,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
   await nmrium.clickPanel('Structures');
 
   // The SVG container should not be rendered when there are no molecules.
-  await expect(nmrium.page.locator('.mol-svg-container')).toBeHidden();
+  await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
   // Click on the "Add Molecule" button.
-  await nmrium.page.click('data-test-id=panel-structures-button-add');
+  await nmrium.page.click('data-test-id=panel-structures-button-add >> nth=0');
 
   // Select the "aromatic ring" tool.
   await nmrium.page.click('canvas >> nth=0', {
@@ -35,8 +35,8 @@ test('should draw structure and display it with MF', async ({ page }) => {
   ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
   // The molecular formula should now be visible in the panel.
-  await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
+  await expect(nmrium.page.locator('text=C6H6 - 78.11 >> nth=0')).toBeVisible();
 
   // The number of molecules should now be visible in the panel.
-  await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+  await expect(nmrium.page.locator('text=1 / 1 >> nth=0')).toBeVisible();
 });
