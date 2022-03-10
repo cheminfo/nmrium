@@ -5,26 +5,19 @@ import {
   getLinkDim,
   Link,
 } from 'nmr-correlation';
-import { CSSProperties, useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import ContextMenu from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
-import Select from '../../../elements/Select';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
+import IsInView from '../utilities/IsInView';
+import { convertValuesString } from '../utilities/Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
-import { Hybridizations } from './Constants';
 import EditLinkModal from './editLink/EditLinkModal';
-
-const selectBoxStyle: CSSProperties = {
-  marginLeft: 2,
-  marginRight: 2,
-  border: 'none',
-  height: '20px',
-};
 
 function CorrelationTableRow({
   additionalColumnData,
@@ -33,8 +26,7 @@ function CorrelationTableRow({
   styleRow,
   styleLabel,
   onSaveEditEquivalences,
-  onChangeHybridization,
-  onSaveEditProtonsCount,
+  onSaveEditNumericValues,
   onEditCorrelationTableCellHandler,
   spectraData,
 }) {
@@ -74,11 +66,15 @@ function CorrelationTableRow({
     [correlation, onSaveEditEquivalences],
   );
 
-  const onSaveProtonsCountHandler = useCallback(
-    (e) => {
-      onSaveEditProtonsCount(correlation, e.target.value);
+  const onSaveEditNumericValuesHandler = useCallback(
+    (e, key: 'protonsCount' | 'hybridization') => {
+      onSaveEditNumericValues({
+        correlation,
+        values: convertValuesString(e.target.value, key),
+        key,
+      });
     },
-    [correlation, onSaveEditProtonsCount],
+    [correlation, onSaveEditNumericValues],
   );
 
   const additionalColumnFields = useMemo(() => {
@@ -130,13 +126,6 @@ function CorrelationTableRow({
     spectraData,
   ]);
 
-  const onChangeHybridizationHandler = useCallback(
-    (value) => {
-      onChangeHybridization(correlation, value);
-    },
-    [correlation, onChangeHybridization],
-  );
-
   const equivalenceCellStyle = useMemo(() => {
     return correlation.edited.equivalence
       ? { color: 'blue' }
@@ -160,11 +149,17 @@ function CorrelationTableRow({
     [highlightRow],
   );
 
+  const isInView = IsInView({ correlation });
+
   const tableDataProps = useMemo(() => {
     return {
       style: {
         ...styleRow,
-        backgroundColor: highlightRow.isActive ? '#ff6f0057' : 'inherit',
+        backgroundColor: highlightRow.isActive
+          ? '#ff6f0057'
+          : isInView
+          ? '#f5f5dc'
+          : 'inherit',
       },
       title:
         correlation.pseudo === false &&
@@ -187,6 +182,7 @@ function CorrelationTableRow({
     correlation.link,
     correlation.pseudo,
     highlightRow.isActive,
+    isInView,
     mouseEnterHandler,
     mouseLeaveHandler,
     styleRow,
@@ -309,7 +305,7 @@ function CorrelationTableRow({
             type="text"
             value={correlation.protonsCount.join(',')}
             style={correlation.edited.protonsCount ? { color: 'blue' } : {}}
-            onSave={onSaveProtonsCountHandler}
+            onSave={(e) => onSaveEditNumericValuesHandler(e, 'protonsCount')}
           />
         ) : (
           ''
@@ -323,18 +319,13 @@ function CorrelationTableRow({
         }}
       >
         {correlation.atomType !== 'H' ? (
-          <Select
-            onChange={onChangeHybridizationHandler}
-            data={Hybridizations}
-            defaultValue={correlation.hybridization}
-            style={{
-              ...selectBoxStyle,
-              color: correlation.edited.hybridization ? 'blue' : 'black',
-              backgroundColor: correlation.edited.hybridization
-                ? 'inherit'
-                : styleRow.backgroundColor,
-              width: '50px',
-            }}
+          <EditableColumn
+            type="text"
+            value={correlation.hybridization
+              .map((hybrid) => `sp${hybrid}`)
+              .join(',')}
+            style={correlation.edited.hybridization ? { color: 'blue' } : {}}
+            onSave={(e) => onSaveEditNumericValuesHandler(e, 'hybridization')}
           />
         ) : (
           ''

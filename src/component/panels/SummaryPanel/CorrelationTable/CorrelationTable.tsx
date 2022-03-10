@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
-import { getLabelColor } from '../Utilities';
+import { getLabelColor } from '../utilities/Utilities';
 
 import AdditionalColumnHeader from './AdditionalColumnHeader';
 import CorrelationTableRow from './CorrelationTableRow';
@@ -58,8 +59,7 @@ function CorrelationTable({
   filteredCorrelationsData,
   additionalColumnData,
   editEquivalencesSaveHandler,
-  changeHybridizationSaveHandler,
-  editProtonsCountSaveHandler,
+  onSaveEditNumericValues,
   onEditCorrelationTableCellHandler,
   showProtonsAsRows,
   spectraData,
@@ -70,12 +70,12 @@ function CorrelationTable({
     }
 
     return filteredCorrelationsData.values
-      .filter((correlation) =>
+      .filter((correlation: Correlation) =>
         showProtonsAsRows
           ? correlation.atomType === 'H'
           : correlation.atomType !== 'H',
       )
-      .map((correlation) => (
+      .map((correlation: Correlation) => (
         <CorrelationTableRow
           additionalColumnData={additionalColumnData}
           correlations={correlationsData.values}
@@ -90,8 +90,7 @@ function CorrelationTable({
               : {}
           }
           onSaveEditEquivalences={editEquivalencesSaveHandler}
-          onChangeHybridization={changeHybridizationSaveHandler}
-          onSaveEditProtonsCount={editProtonsCountSaveHandler}
+          onSaveEditNumericValues={onSaveEditNumericValues}
           onEditCorrelationTableCellHandler={onEditCorrelationTableCellHandler}
           spectraData={spectraData}
         />
@@ -102,15 +101,14 @@ function CorrelationTable({
     additionalColumnData,
     correlationsData,
     editEquivalencesSaveHandler,
-    changeHybridizationSaveHandler,
-    editProtonsCountSaveHandler,
+    onSaveEditNumericValues,
     onEditCorrelationTableCellHandler,
     spectraData,
   ]);
 
   const additionalColumnHeader = useMemo(
     () =>
-      additionalColumnData.map((correlation) => (
+      additionalColumnData.map((correlation: Correlation) => (
         <AdditionalColumnHeader
           key={`additionalCorrelationHeader_${correlation.id}`}
           spectraData={spectraData}
