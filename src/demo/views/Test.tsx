@@ -1,89 +1,104 @@
-import { useState, useEffect } from 'react';
+import { DropZone } from 'analysis-ui-components';
+import debounce from 'lodash/debounce';
+import { useState, useEffect, useCallback } from 'react';
+import { ObjectInspector } from 'react-inspector';
 
 import NMRium from '../../component/NMRium';
+import { loadFiles } from '../../component/utility/FileUtility';
 
-async function loadData(file) {
-  const response = await fetch(file);
-  checkStatus(response);
-  const data = await response.json();
-  return data;
-}
-
-function checkStatus(response) {
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+function searchDeep(obj, searchKey) {
+  let result: any = [];
+  function objectHelper(obj) {
+    Object.keys(obj).forEach((key) => {
+      if (searchKey === key) {
+        result.push({ [key]: obj[key] });
+      }
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach((object) => {
+          objectHelper(object);
+        });
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        objectHelper(obj[key]);
+      }
+    });
   }
-  return response;
+
+  objectHelper(obj);
+  return result;
 }
 
-export default function Test(props) {
-  const [data, setData] = useState<any>();
-  const { file, title } = props;
-
+function Inspector(data: any) {
+  const [filteredData, seData] = useState<any>();
+  const [key, setKey] = useState<string>('');
   useEffect(() => {
-    if (file) {
-      void loadData(file).then((d) => {
-        setData(d);
-      });
-    } else {
-      setData({});
-    }
-  }, [file, props]);
+    const result = searchDeep(data, key);
+    seData(key ? result : data);
+  }, [data, key]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSearch = useCallback(
+    debounce((e) => {
+      const key = e.target.value;
+      setKey(key);
+    }, 500),
+    [data],
+  );
 
   return (
     <div
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        marginLeft: 30,
-      }}
+      style={{ display: 'flex', flexDirection: 'column', paddingTop: '10px' }}
     >
-      <h5
-        style={{
-          fontWeight: 700,
-          fontSize: '1.5em',
-          lineHeight: '1.4em',
-          marginBottom: '15px',
-        }}
-      >
-        Display and process 1D NMR spectra from a JCAMP-DX file
-      </h5>
-      {title && (
-        <p
-          style={{
-            marginTop: '-10px',
-            marginBottom: '1rem',
-            fontWeight: 400,
-            color: '#9a9a9a',
-            fontSize: '0.7142em',
-          }}
-        >
-          {title}
-        </p>
-      )}
-      <NMRium
-        data={data}
-        preferences={{
-          panels: { hidePeaksPanel: true, hideStructuresPanel: true },
-        }}
+      <input
+        style={{ border: '1px solid gray', padding: '5px' }}
+        type="text"
+        placeholder="Search for key..."
+        onChange={handleSearch}
       />
+      <ObjectInspector data={filteredData} />;
+    </div>
+  );
+}
 
+export default function Test() {
+  const [data, setData] = useState<any>();
+  const [callBackData, setCallBackData] = useState<any>({});
+
+  const dropFileHandler = useCallback(async (dropfiles) => {
+    try {
+      const files = await loadFiles<{ binary: any }>(dropfiles, {
+        asBuffer: true,
+      });
+
+      const decoder = new TextDecoder('utf8');
+      const data = JSON.parse(decoder.decode(files[0].binary));
+      setData(data);
+    } catch (e) {
+      // eslint-disable-next-line no-alert
+      alert('Invalid JSON file');
+    }
+  }, []);
+  const dataChangeHandler = useCallback((data) => {
+    setCallBackData(data);
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <div style={{ flex: 9 }}>
+        <NMRium data={data} onDataChange={dataChangeHandler} />
+      </div>
       <div
         style={{
-          width: '100%',
-          height: '100px',
-          border: '1px dashed black',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          flexDirection: 'column',
+          padding: '10px',
+          flex: 3,
         }}
       >
-        <p>
-          You can add you component here or you can design your custom layout.
-          be sure to add view prop inside sample.json and value must match view
-          name under demo/components/views
-        </p>
+        <div style={{ flex: 3 }}>
+          <DropZone onDrop={dropFileHandler} color="gray" />
+        </div>
+        <div style={{ flex: 9 }}>
+          <Inspector data={callBackData} />
+        </div>
       </div>
     </div>
   );

@@ -13,8 +13,8 @@ import './demo/index.css';
 ReactDOM.render(
   <HashRouter>
     <Switch>
-      <Route path="/" render={(props) => <Main {...props} />} />
       <Route path="/test" component={TestRoutes} />
+      <Route path="/" render={(props) => <Main {...props} />} />
     </Switch>
   </HashRouter>,
   document.getElementById('root'),
