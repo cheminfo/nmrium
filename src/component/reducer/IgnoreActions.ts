@@ -29,6 +29,7 @@ const ignoreActions = [
   types.CHANGE_PEAKS_MARKERS_VISIBILITY,
   types.CHANGE_ACTIVE_SPECTRUM,
   types.CHANGE_SPECTRUM_COLOR,
+  types.SET_MOUSE_OVER_DISPLAYER,
 ];
 
 function checkActionType(type: string): boolean {
