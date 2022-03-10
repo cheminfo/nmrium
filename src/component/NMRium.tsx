@@ -2,6 +2,7 @@
 
 import { css } from '@emotion/react';
 import { RootLayout, SplitPane } from 'analysis-ui-components';
+import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
   useCallback,
@@ -198,6 +199,7 @@ type DeepPartial<T> = {
 export interface NMRiumData {
   molecules?: Molecules;
   spectra: DeepPartial<Spectra>;
+  correlations?: CorrelationData;
 }
 
 const defaultPreferences = {};

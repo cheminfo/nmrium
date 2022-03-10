@@ -6,6 +6,7 @@ import {
   Tolerance,
   Options as CorrelationOptions,
   Correlation,
+  Spectra,
   Values as CorrelationValues,
 } from 'nmr-correlation';
 
@@ -25,7 +26,7 @@ import { handleDeleteSignal as handleDeleteSignal2D } from './ZonesActions';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
-  draft.correlations = buildCorrelationData(spectra, {
+  draft.correlations = buildCorrelationData(spectra as Spectra, {
     ...correlations.options,
     values: lodashCloneDeep(correlations.values),
   });
@@ -37,7 +38,7 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
   const { mf } = payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = buildCorrelationData(spectra, {
+    draft.correlations = buildCorrelationData(spectra as Spectra, {
       ...correlations.options,
       mf,
       values: lodashCloneDeep(correlations.values),
@@ -52,7 +53,7 @@ function handleSetTolerance(
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = payload;
-  draft.correlations = buildCorrelationData(spectra, {
+  draft.correlations = buildCorrelationData(spectra as Spectra, {
     ...correlations.options,
     tolerance,
     values: lodashCloneDeep(correlations.values),

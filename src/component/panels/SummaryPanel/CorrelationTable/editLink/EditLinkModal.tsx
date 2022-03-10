@@ -1,25 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getLinkDim } from 'nmr-correlation';
+import { getLinkDim, Link } from 'nmr-correlation';
 import { useCallback, useMemo, useState } from 'react';
 
 import CloseButton from '../../../../elements/CloseButton';
-import Select from '../../../../elements/Select';
-import { getEditedCorrelations } from '../../Utilities';
-import { EditLinkActions } from '../Constants';
+import Tab from '../../../../elements/Tab/Tab';
+import Tabs, { PositionsEnum } from '../../../../elements/Tab/Tabs';
+import { getEditedCorrelations } from '../../utilities/Utilities';
 
 import EditLinkConfirmation from './Confirmation';
+import EditPathLength from './EditPathLength';
 import MoveLink from './MoveLink';
 
 const modalContainer = css`
-  overflow: auto;
-  width: 380px;
-  height: 230px;
+  width: 490px;
+  height: 220px;
   padding: 5px;
 
   button:focus {
     outline: none;
   }
+
   .header {
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
@@ -63,10 +64,11 @@ const modalContainer = css`
     background-color: gray;
   }
 
-  .select-action-container {
-    margin-top: 10px;
+  .tabs-container {
     width: 100%;
-    text-align: center;
+    flex: 1;
+    overflow: auto;
+    border: none;
   }
 `;
 
@@ -78,7 +80,7 @@ export default function EditLinkModal({
   onClose,
   onEdit,
 }) {
-  const [selectedAction, setSelectedActions] = useState<string>('-');
+  const [activeTab, setActiveTab] = useState<string>('move');
 
   const getLinkLabel = useCallback(() => {
     const linkDim = getLinkDim(link);
@@ -97,66 +99,93 @@ export default function EditLinkModal({
 
   const handleOnEdit = useCallback(
     (
-      action: string,
-      selectedCorrelationValueDim1,
-      selectedCorrelationValueDim2,
+      action: 'move' | 'remove' | 'unmove' | 'setPathLength',
+      selectedCorrelationIdDim1: string | undefined,
+      selectedCorrelationIdDim2: string | undefined,
+      editedLink?: Link,
     ) => {
       const { editedCorrelations, buildCorrelationDataOptions } =
         getEditedCorrelations({
           correlationDim1,
           correlationDim2,
-          selectedCorrelationValueDim1,
-          selectedCorrelationValueDim2,
+          selectedCorrelationIdDim1,
+          selectedCorrelationIdDim2,
           action,
-          link,
+          link: editedLink || link,
           correlations,
         });
-      onEdit(editedCorrelations, action, link, buildCorrelationDataOptions);
+      onEdit(
+        editedCorrelations,
+        action,
+        editedLink || link,
+        buildCorrelationDataOptions,
+      );
 
       onClose?.();
     },
     [correlationDim1, correlationDim2, correlations, link, onClose, onEdit],
   );
 
-  const component = useMemo(() => {
-    switch (selectedAction) {
-      case 'delete':
-        return (
-          <EditLinkConfirmation
-            description="Deletion of signal."
-            onConfirm={() => handleOnEdit('remove', undefined, undefined)}
-          />
-        );
-      case 'move':
-        return (
-          <MoveLink
-            correlationDim1={correlationDim1}
-            correlationDim2={correlationDim2}
-            link={link}
-            correlations={correlations}
-            onEdit={handleOnEdit}
-          />
-        );
-      case 'unmove':
-        return (
-          <EditLinkConfirmation
-            description="Movement of signal to its original place."
-            onConfirm={() =>
-              handleOnEdit('unmove', correlationDim1.id, correlationDim2.id)
-            }
-          />
-        );
-      default:
-        return null;
-    }
-  }, [
-    correlationDim1,
-    correlationDim2,
-    correlations,
-    link,
-    handleOnEdit,
-    selectedAction,
-  ]);
+  const tabsContainer = useMemo(
+    () => (
+      <div className="tabs-container">
+        <Tabs
+          position={PositionsEnum.TOP}
+          activeTab={activeTab}
+          onClick={(tab) => setActiveTab(tab.tabid)}
+        >
+          <Tab tablabel="Move" tabid={'move'}>
+            <MoveLink
+              correlationDim1={correlationDim1}
+              correlationDim2={correlationDim2}
+              link={link}
+              correlations={correlations}
+              onEdit={(correlationIdDim1, correlationIdDim2) =>
+                handleOnEdit('move', correlationIdDim1, correlationIdDim2)
+              }
+            />
+          </Tab>
+          <Tab tablabel="Unmove" tabid="unmove">
+            <EditLinkConfirmation
+              description="Movement of signal to its original place."
+              onConfirm={() =>
+                handleOnEdit('unmove', correlationDim1.id, correlationDim2.id)
+              }
+            />
+          </Tab>
+          <Tab tablabel="Remove" tabid={'remove'}>
+            <EditLinkConfirmation
+              description="Deletion of signal."
+              onConfirm={() => handleOnEdit('remove', undefined, undefined)}
+            />
+          </Tab>
+          <Tab tablabel="J Coupling" tabid={'setPathLength'}>
+            <EditPathLength
+              signal={link.signal}
+              experimentType={link.experimentType}
+              onEdit={(editedSignal) => {
+                const editedLink = { ...link, signal: editedSignal };
+                handleOnEdit(
+                  'setPathLength',
+                  correlationDim1,
+                  correlationDim2,
+                  editedLink,
+                );
+              }}
+            />
+          </Tab>
+        </Tabs>
+      </div>
+    ),
+    [
+      activeTab,
+      correlationDim1,
+      correlationDim2,
+      correlations,
+      handleOnEdit,
+      link,
+    ],
+  );
 
   return (
     <div css={modalContainer}>
@@ -164,16 +193,7 @@ export default function EditLinkModal({
         <CloseButton onClick={onClose} />
         <p className="header-info">{`${link.experimentType.toUpperCase()} signal at ${getLinkLabel()}`}</p>
       </div>
-      <div className="select-action-container">
-        <Select
-          data={EditLinkActions}
-          onChange={(action) => setSelectedActions(action)}
-          defaultValue={selectedAction}
-          style={{ width: 120, height: 25, margin: 0 }}
-        />
-      </div>
-      {component}
-      <div />
+      {tabsContainer}
     </div>
   );
 }

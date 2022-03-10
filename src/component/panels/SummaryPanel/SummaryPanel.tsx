@@ -31,6 +31,7 @@ import {
   DELETE_1D_SIGNAL,
   DELETE_2D_SIGNAL,
   DELETE_CORRELATION,
+  SET_2D_SIGNAL_PATH_LENGTH,
   SET_CORRELATION,
   SET_CORRELATIONS,
   SET_CORRELATIONS_MF,
@@ -42,7 +43,11 @@ import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 import SetShiftToleranceModal from './SetShiftTolerancesModal';
-import { findSignalMatch1D, findSignalMatch2D, getAtomType } from './Utilities';
+import {
+  findSignalMatch1D,
+  findSignalMatch2D,
+  getAtomType,
+} from './utilities/Utilities';
 
 const panelStyle = css`
   display: flex;
@@ -118,7 +123,7 @@ function SummaryPanel() {
 
       if (displayerMode === DISPLAYER_MODE.DM_1D) {
         const firstLink1D = correlation.link.find(
-          (link) => getLinkDim(link) === 1,
+          (link: Link) => getLinkDim(link) === 1,
         );
         if (!firstLink1D) {
           return false;
@@ -143,7 +148,7 @@ function SummaryPanel() {
         }
         // try to find a link which contains the belonging 2D signal in the spectra in view
         if (
-          correlation.link.some((link) => {
+          correlation.link.some((link: Link) => {
             const spectrum = findSpectrum(
               spectraData,
               link.experimentID,
@@ -165,7 +170,7 @@ function SummaryPanel() {
           return false;
         }
         const firstLink2D = correlation.link.find(
-          (link) => getLinkDim(link) === 2,
+          (link: Link) => getLinkDim(link) === 2,
         );
         if (!firstLink2D) {
           return false;
@@ -316,7 +321,7 @@ function SummaryPanel() {
   }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
 
   const editEquivalencesSaveHandler = useCallback(
-    (correlation, value) => {
+    (correlation: Correlation, value: number) => {
       dispatch({
         type: SET_CORRELATION,
         payload: {
@@ -324,7 +329,7 @@ function SummaryPanel() {
           correlation: {
             ...correlation,
             equivalence: value,
-            edited: { ...correlation.edited, equivalence: true },
+            edited: { ...correlation.edited, equivalence: value !== 1 },
           },
         },
       });
@@ -332,51 +337,24 @@ function SummaryPanel() {
     [dispatch],
   );
 
-  const editProtonsCountSaveHandler = useCallback(
-    (correlation, valuesString) => {
-      let values;
-      if (/^(?:[0-9],{0,1})+$/g.test(valuesString)) {
-        // allow digits followed by optional comma only
-        values = valuesString
-          .split(',')
-          .filter((char) => char.length > 0)
-          .map((char) => Number(char));
-      } else if (valuesString.trim().length === 0) {
-        // set values to default
-        values = [];
-      }
-
-      if (values) {
-        // ignore not supported text input
-        dispatch({
-          type: SET_CORRELATION,
-          payload: {
-            id: correlation.id,
-            correlation: {
-              ...correlation,
-              protonsCount: values,
-              edited: { ...correlation.edited, protonsCount: true },
-            },
-            options: {
-              skipDataUpdate: true,
-            },
-          },
-        });
-      }
-    },
-    [dispatch],
-  );
-
-  const changeHybridizationSaveHandler = useCallback(
-    (correlation, value) => {
+  const editNumericValuesSaveHandler = useCallback(
+    ({
+      correlation,
+      values,
+      key,
+    }: {
+      correlation: Correlation;
+      values: number[];
+      key: 'hybridization' | 'protonsCount';
+    }) => {
       dispatch({
         type: SET_CORRELATION,
         payload: {
           id: correlation.id,
           correlation: {
             ...correlation,
-            hybridization: value,
-            edited: { ...correlation.edited, hybridization: true },
+            [key]: values,
+            edited: { ...correlation.edited, [key]: true },
           },
           options: {
             skipDataUpdate: true,
@@ -458,6 +436,32 @@ function SummaryPanel() {
     [assignmentData, dispatch, spectraData],
   );
 
+  const changeSignalPathLengthHandler = useCallback(
+    (link: Link) => {
+      const linkDim = getLinkDim(link);
+      if (linkDim === 2) {
+        const spectrum = findSpectrum(
+          spectraData,
+          link.experimentID,
+          false,
+        ) as Datum2D;
+        const zone = findZone(spectrum, link.signal.id);
+        const signal = findSignal2D(spectrum, link.signal.id);
+
+        dispatch({
+          type: SET_2D_SIGNAL_PATH_LENGTH,
+          payload: {
+            spectrum,
+            zone,
+            signal,
+            pathLength: link.signal.j?.pathLength,
+          },
+        });
+      }
+    },
+    [dispatch, spectraData],
+  );
+
   const editCorrelationTableCellHandler = useCallback(
     (
       editedCorrelations: Correlation[],
@@ -469,17 +473,27 @@ function SummaryPanel() {
         action === 'add' ||
         action === 'move' ||
         action === 'remove' ||
-        action === 'unmove'
+        action === 'unmove' ||
+        action === 'setPathLength'
       ) {
-        if (action === 'remove' && link && link.pseudo === false) {
-          deleteSignalHandler(link);
+        if (link && link.pseudo === false) {
+          if (action === 'remove') {
+            deleteSignalHandler(link);
+          } else if (action === 'setPathLength') {
+            changeSignalPathLengthHandler(link);
+          }
         }
         setCorrelationsHandler(editedCorrelations, options);
       } else if (action === 'removeAll') {
         deleteCorrelationHandler(editedCorrelations[0]);
       }
     },
-    [deleteCorrelationHandler, deleteSignalHandler, setCorrelationsHandler],
+    [
+      changeSignalPathLengthHandler,
+      deleteCorrelationHandler,
+      deleteSignalHandler,
+      setCorrelationsHandler,
+    ],
   );
 
   const handleOnFilter = useCallback(() => {
@@ -547,8 +561,7 @@ function SummaryPanel() {
         filteredCorrelationsData={filteredCorrelationsData}
         additionalColumnData={additionalColumnData}
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
-        changeHybridizationSaveHandler={changeHybridizationSaveHandler}
-        editProtonsCountSaveHandler={editProtonsCountSaveHandler}
+        onSaveEditNumericValues={editNumericValuesSaveHandler}
         onEditCorrelationTableCellHandler={editCorrelationTableCellHandler}
         showProtonsAsRows={showProtonsAsRows}
         spectraData={spectraData}

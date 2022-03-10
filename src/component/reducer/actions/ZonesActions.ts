@@ -1,5 +1,7 @@
+import { FromTo } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
+import { setPathLength } from 'nmr-correlation';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -13,7 +15,7 @@ import {
   detectZonesManual,
   updateShift,
 } from '../../../data/data2d/Spectrum2D';
-import { Datum2D } from '../../../data/types/data2d';
+import { Datum2D, Signal2D } from '../../../data/types/data2d';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -187,6 +189,29 @@ function handleDeleteSignal(draft: Draft<State>, action) {
   }
 }
 
+function handleSetSignalPathLength(draft: Draft<State>, action) {
+  const { spectrum, zone, signal, pathLength } = action.payload;
+  if (spectrum && zone) {
+    const datum2D = draft.data.find(
+      (datum) => datum.id === spectrum.id,
+    ) as Datum2D;
+    const zoneIndex = datum2D.zones.values.findIndex(
+      (_zone) => _zone.id === zone.id,
+    );
+    const signalIndex = zone.signals.findIndex(
+      (_signal) => _signal.id === signal.id,
+    );
+    const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
+    _zone.signals[signalIndex].j = {
+      ..._zone.signals[signalIndex].j,
+      pathLength,
+    };
+    datum2D.zones.values[zoneIndex] = _zone;
+
+    handleOnChangeZonesData(draft);
+  }
+}
+
 function handleUnlinkZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
@@ -244,7 +269,31 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
         _zone.signals[signalIndex][axis].nbAtoms,
       );
     }
-    // _zone[axis].nbAtoms = getNbAtoms(_zone, axis);
+  }
+}
+
+function handleSaveEditedZone(draft: Draft<State>, action) {
+  const state = original(draft) as State;
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { editedRowData } = action.payload;
+
+    delete editedRowData.tableMetaInfo;
+
+    const zoneIndex = getZoneIndex(state, index, editedRowData.id);
+    (draft.data[index] as Datum2D).zones.values[zoneIndex] = editedRowData;
+
+    if (editedRowData.signals) {
+      editedRowData.signals.forEach((signal: Signal2D) => {
+        setPathLength(
+          draft.correlations.values,
+          signal.id,
+          signal.j?.pathLength as FromTo,
+        );
+      });
+    }
+
+    handleOnChangeZonesData(draft);
   }
 }
 
@@ -260,7 +309,9 @@ export {
   changeZoneSignalDelta,
   handleChangeZoneSignalKind,
   handleUnlinkZone,
+  handleSaveEditedZone,
   handleSetDiaIDZone,
+  handleSetSignalPathLength,
   changeZonesFactorHandler,
   handleAutoSpectraZonesDetection,
 };
