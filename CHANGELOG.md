@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.22.0](https://www.github.com/cheminfo/nmrium/compare/v0.21.0...v0.22.0) (2022-03-10)
+
+
+### Features
+
+* add possibility to reset preferences ([6334620](https://www.github.com/cheminfo/nmrium/commit/63346207be1177f96dc58c52436e72c9f1758b94))
+* create automatic assignment panel UI ([2307c82](https://www.github.com/cheminfo/nmrium/commit/2307c82b703526674578559b3322dbdbd56ee54d))
+
+
+### Bug Fixes
+
+* exclusion zone still visible when disabled its filter ([6b4d4cd](https://www.github.com/cheminfo/nmrium/commit/6b4d4cd9e3f9a53c2665357eefaf12666c198002)), closes [#1414](https://www.github.com/cheminfo/nmrium/issues/1414)
+* integral or Multiple Spectra Analysis panels do not open when selecting its tool ([a170519](https://www.github.com/cheminfo/nmrium/commit/a1705198f3c9db36c1821b0f5c37087f9ad0ddf0)), closes [#1407](https://www.github.com/cheminfo/nmrium/issues/1407)
+* nmrium crash when some keys not exists ([450decd](https://www.github.com/cheminfo/nmrium/commit/450decd8a274880a7332f519346bb85140179224)), closes [#1404](https://www.github.com/cheminfo/nmrium/issues/1404)
+* onDataChange triggered when mouse enter/leave the displayer ([0b271e9](https://www.github.com/cheminfo/nmrium/commit/0b271e9c977c09da1f1575e7425c49a9c0af519b))
+* vertical scroll on Firefox ([df4ad3b](https://www.github.com/cheminfo/nmrium/commit/df4ad3b58ef3a469dcbaedb902fe6258244c8ed2)), closes [#1418](https://www.github.com/cheminfo/nmrium/issues/1418)
+* vertical zoom for spectra and integrals  ([#1416](https://www.github.com/cheminfo/nmrium/issues/1416)) ([c2df1ec](https://www.github.com/cheminfo/nmrium/commit/c2df1ecdf503d063a31a969e3111078db65d687f))
+
 ## [0.21.0](https://www.github.com/cheminfo/nmrium/compare/v0.20.2...v0.21.0) (2022-03-03)
 
 
