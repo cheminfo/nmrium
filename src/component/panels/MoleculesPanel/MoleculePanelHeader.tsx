@@ -70,11 +70,19 @@ const MOL_EXPORT_MENU = [
   },
 ];
 
+export interface MoleculeHeaderActionsOptions {
+  hidePast?: boolean;
+  hideAdd?: boolean;
+  hideExport?: boolean;
+  hideDelete?: boolean;
+  hidePredict?: boolean;
+}
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: Array<any>;
   onMoleculeIndexChange: (index: number) => void;
   onOpenMoleculeEditor: () => void;
+  actionsOptions?: MoleculeHeaderActionsOptions;
 }
 
 export default function MoleculePanelHeader({
@@ -82,6 +90,7 @@ export default function MoleculePanelHeader({
   molecules,
   onMoleculeIndexChange = () => null,
   onOpenMoleculeEditor = () => null,
+  actionsOptions = {},
 }: MoleculePanelHeaderProps) {
   const alert = useAlert();
   const dispatch = useDispatch();
@@ -160,34 +169,42 @@ export default function MoleculePanelHeader({
 
   return (
     <div css={toolbarStyle}>
-      <MenuButton
-        component={<FaFileExport />}
-        toolTip="Export As"
-        items={MOL_EXPORT_MENU}
-        onClick={exportHandler}
-      />
+      {!actionsOptions.hideExport && (
+        <MenuButton
+          component={<FaFileExport />}
+          toolTip="Export As"
+          items={MOL_EXPORT_MENU}
+          onClick={exportHandler}
+        />
+      )}
 
-      <ToolTip title="Paste molfile" popupPlacement="left">
-        <button className="bar-button" type="button" onClick={handlePaste}>
-          <FaPaste />
-        </button>
-      </ToolTip>
-      <ToolTip title="Add Molecule" popupPlacement="left">
-        <button
-          className="bar-button"
-          type="button"
-          onClick={onOpenMoleculeEditor}
-          data-test-id="panel-structures-button-add"
-        >
-          <FaPlus />
-        </button>
-      </ToolTip>
-      <ToolTip title="Delete Molecule" popupPlacement="left">
-        <button className="bar-button" type="button" onClick={handleDelete}>
-          <FaRegTrashAlt />
-        </button>
-      </ToolTip>
-      {molecules && molecules.length > 0 && (
+      {!actionsOptions.hidePast && (
+        <ToolTip title="Paste molfile" popupPlacement="left">
+          <button className="bar-button" type="button" onClick={handlePaste}>
+            <FaPaste />
+          </button>
+        </ToolTip>
+      )}
+      {!actionsOptions.hideAdd && (
+        <ToolTip title="Add Molecule" popupPlacement="left">
+          <button
+            className="bar-button"
+            type="button"
+            onClick={onOpenMoleculeEditor}
+            data-test-id="panel-structures-button-add"
+          >
+            <FaPlus />
+          </button>
+        </ToolTip>
+      )}
+      {!actionsOptions.hideDelete && (
+        <ToolTip title="Delete Molecule" popupPlacement="left">
+          <button className="bar-button" type="button" onClick={handleDelete}>
+            <FaRegTrashAlt />
+          </button>
+        </ToolTip>
+      )}
+      {!actionsOptions.hidePredict && molecules && molecules.length > 0 && (
         <ButtonToolTip
           popupTitle="Predict Spectra"
           popupPlacement="left"

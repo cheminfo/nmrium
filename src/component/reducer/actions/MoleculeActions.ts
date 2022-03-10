@@ -71,7 +71,7 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   if (!data) {
     draft.isLoading = false;
   } else {
-    for (const spectrum of generateSpectra(data, options, draft.usedColors)) {
+    for (const spectrum of generateSpectra(data, options)) {
       draft.data.push(spectrum);
       draft.tabActiveSpectrum[nucleusToString(spectrum.info.nucleus)] = {
         id: spectrum.id,

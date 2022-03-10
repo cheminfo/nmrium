@@ -23,6 +23,7 @@ export const basic: Workspace = {
       hideSummaryPanel: false,
       hideMultipleSpectraAnalysisPanel: false,
       hideDatabasePanel: false,
+      hidePredictionPanel: false,
     },
 
     toolBarButtons: {

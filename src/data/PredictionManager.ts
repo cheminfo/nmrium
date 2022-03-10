@@ -1,9 +1,6 @@
 import { predictAll, signalsToXY, signals2DToZ } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
-import { PredictionProps } from '../component/modal/PredictSpectraModal';
-import { UsedColors } from '../types/UsedColors';
-
 import { DatumKind } from './constants/SignalsKinds';
 import {
   initiateDatum1D,
@@ -14,6 +11,60 @@ import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
 import { Datum2D, Signal2D, Zone } from './types/data2d';
 import generateID from './utilities/generateID';
+
+export interface PredictionOptions {
+  frequency: number;
+  '1d': {
+    '1H': { from: number; to: number };
+    '13C': { from: number; to: number };
+    nbPoints: number;
+    lineWidth: number;
+  };
+  '2d': {
+    nbPoints: { x: number; y: number };
+  };
+  spectra: {
+    proton: boolean;
+    carbon: boolean;
+    cosy: boolean;
+    hsqc: boolean;
+    hmbc: boolean;
+  };
+}
+
+export const defaultPredictionOptions: PredictionOptions = {
+  frequency: 400,
+  '1d': {
+    '1H': { from: -1, to: 12 },
+    '13C': { from: -5, to: 220 },
+    nbPoints: 2 ** 17,
+    lineWidth: 1,
+  },
+  '2d': {
+    nbPoints: { x: 1024, y: 1024 },
+  },
+  spectra: {
+    proton: true,
+    carbon: true,
+    cosy: true,
+    hsqc: true,
+    hmbc: true,
+  },
+};
+
+export const FREQUENCIES: Array<{ key: number; value: number; label: string }> =
+  [
+    { key: 1, value: 60, label: '60 MHz' },
+    { key: 2, value: 100, label: '100 MHz' },
+    { key: 3, value: 200, label: '200 MHz' },
+    { key: 4, value: 300, label: '300 MHz' },
+    { key: 5, value: 400, label: '400 MHz' },
+    { key: 6, value: 500, label: '500 MHz' },
+    { key: 7, value: 600, label: '600 MHz' },
+    { key: 8, value: 800, label: '800 MHz' },
+    { key: 9, value: 1000, label: '1000 MHz' },
+    { key: 10, value: 1200, label: '1200 MHz' },
+  ];
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
@@ -31,10 +82,10 @@ export async function predictSpectra(molfile: string): Promise<any> {
 
 export function generateSpectra(
   data: Record<string, any>,
-  inputOptions: PredictionProps,
-  usedColors: UsedColors,
+  inputOptions: PredictionOptions,
 ): Array<Datum1D | Datum2D> {
   const spectra: Array<Datum1D | Datum2D> = [];
+  const color = '#593315';
   for (const experiment in data) {
     if (inputOptions.spectra[experiment]) {
       const spectrum = data[experiment];
@@ -45,7 +96,7 @@ export function generateSpectra(
             spectrum,
             inputOptions,
             experiment,
-            usedColors,
+            color,
           });
           spectra.push(datum);
 
@@ -58,7 +109,7 @@ export function generateSpectra(
             spectrum,
             inputOptions,
             experiment,
-            usedColors,
+            color,
           });
           spectra.push(datum);
 
@@ -73,12 +124,12 @@ export function generateSpectra(
 }
 
 function generated1DSpectrum(params: {
-  inputOptions: PredictionProps;
+  inputOptions: PredictionOptions;
   spectrum: any;
   experiment: string;
-  usedColors: UsedColors;
+  color: string;
 }) {
-  const { spectrum, inputOptions, experiment, usedColors } = params;
+  const { spectrum, inputOptions, experiment, color } = params;
 
   const { signals, ranges, nucleus } = spectrum;
 
@@ -95,6 +146,9 @@ function generated1DSpectrum(params: {
   const datum = initiateDatum1D(
     {
       data: { x, im: null, re: y },
+      display: {
+        color,
+      },
       info: {
         nucleus,
         originFrequency: frequency,
@@ -105,7 +159,7 @@ function generated1DSpectrum(params: {
         isFt: true,
       },
     },
-    usedColors,
+    [],
   );
   datum.ranges.values = mapRanges(ranges, datum);
   updateIntegralsRelativeValues(datum);
@@ -141,12 +195,12 @@ function mapZones(zones: Array<Partial<Zone>>) {
 }
 
 function generated2DSpectrum(params: {
-  inputOptions: PredictionProps;
+  inputOptions: PredictionOptions;
   spectrum: any;
   experiment: string;
-  usedColors: UsedColors;
+  color: string;
 }) {
-  const { spectrum, inputOptions, experiment, usedColors } = params;
+  const { spectrum, inputOptions, experiment, color } = params;
   const { signals, zones, nuclei } = spectrum;
 
   const xOption = inputOptions['1d'][nuclei[0]];
@@ -168,6 +222,9 @@ function generated2DSpectrum(params: {
   const datum = initiateDatum2D(
     {
       data: { ...spectrumData, noise: 0.01 },
+      display: {
+        positiveColor: experiment === 'hmbc' ? '#e68337' : color,
+      },
       info: {
         nucleus: nuclei,
         originFrequency: frequency,
@@ -176,7 +233,7 @@ function generated2DSpectrum(params: {
         experiment: '2d',
       },
     },
-    usedColors,
+    [],
   );
   datum.zones.values = mapZones(zones);
   return datum;

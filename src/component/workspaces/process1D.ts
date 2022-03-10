@@ -23,6 +23,7 @@ export const process1D: Workspace = {
       hideSummaryPanel: true,
       hideMultipleSpectraAnalysisPanel: true,
       hideDatabasePanel: false,
+      hidePredictionPanel: false,
     },
 
     toolBarButtons: {

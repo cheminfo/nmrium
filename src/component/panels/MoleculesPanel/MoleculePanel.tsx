@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 import OCL from 'openchemlib/full';
-import { useState, useCallback, useEffect, memo } from 'react';
+import { useState, useCallback, useEffect, memo, ReactElement } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
@@ -18,25 +18,32 @@ import MoleculeStructureEditorModal from '../../modal/MoleculeStructureEditorMod
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_MOLECULE } from '../../reducer/types/Types';
 
-import MoleculePanelHeader from './MoleculePanelHeader';
+import MoleculePanelHeader, {
+  MoleculeHeaderActionsOptions,
+} from './MoleculePanelHeader';
 import useAtomAssignment from './useAtomAssignment';
 
 const styles: Record<
-  'panel' | 'molecule' | 'toolbar' | 'slider' | 'items',
+  'panel' | 'innerPanel' | 'molecule' | 'toolbar' | 'slider' | 'items',
   SerializedStyles
 > = {
   panel: css({
     display: 'flex',
+    overflow: 'auto',
     flexGrow: 1,
     width: '100%',
     height: '100%',
     flexDirection: 'column',
   }),
+  innerPanel: css({
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'auto',
+  }),
   molecule: css({
     display: 'flex',
-    flex: '1 1 0%',
-    flexDirection: 'column',
-    minHeight: 0,
+    flex: '1',
   }),
   toolbar: css({
     display: 'flex',
@@ -62,7 +69,7 @@ const styles: Record<
   }),
 };
 
-interface MoleculePanelInnerProps {
+interface MoleculePanelInnerProps extends MoleculePanelProps {
   zones: Zones;
   ranges: Ranges;
   molecules: Array<Molecule>;
@@ -76,6 +83,9 @@ function MoleculePanelInner({
   molecules: moleculesProp,
   activeTab,
   displayerMode,
+  onMoleculeChange,
+  actionsOptions,
+  children,
 }: MoleculePanelInnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<any>([]);
@@ -100,6 +110,10 @@ function MoleculePanelInner({
       });
     }
   }, [molecules.length, moleculesProp]);
+
+  useEffect(() => {
+    onMoleculeChange?.(molecules[currentIndex] || null);
+  }, [currentIndex, molecules, onMoleculeChange]);
 
   const handleReplaceMolecule = useCallback(
     (key, molfile) => {
@@ -130,71 +144,75 @@ function MoleculePanelInner({
         molecules={molecules}
         onOpenMoleculeEditor={() => openMoleculeEditorHandler()}
         onMoleculeIndexChange={moleculeIndexHandler}
+        actionsOptions={actionsOptions}
       />
-      <div css={styles.molecule}>
-        <NextPrev
-          onChange={(slideIndex) => setCurrentIndex(slideIndex)}
-          defaultIndex={currentIndex}
-        >
-          {molecules && molecules.length > 0 ? (
-            molecules.map((mol: Molecule, index) => (
-              <div key={mol.key} css={styles.items}>
-                <span css={styles.toolbar}>
-                  <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
-                </span>
-                <div
-                  css={styles.slider}
-                  className="mol-svg-container"
-                  onDoubleClick={() => openMoleculeEditorHandler(mol)}
-                  style={{
-                    backgroundColor:
-                      (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
-                  }}
-                >
-                  <ResponsiveChart>
-                    {({ height, width }) => {
-                      return (
-                        <OCLnmr
-                          OCL={OCL}
-                          id={`molSVG${index}`}
-                          width={width}
-                          height={height}
-                          molfile={mol.molfile || ''}
-                          setMolfile={(molfile) =>
-                            handleReplaceMolecule(mol.key, molfile)
-                          }
-                          setSelectedAtom={handleOnClickAtom}
-                          atomHighlightColor={
-                            currentDiaIDsToHighlight &&
-                            currentDiaIDsToHighlight.length > 0
-                              ? 'red'
-                              : '#FFD700'
-                          }
-                          atomHighlightOpacity={0.35}
-                          highlights={
-                            currentDiaIDsToHighlight &&
-                            currentDiaIDsToHighlight.length > 0
-                              ? currentDiaIDsToHighlight
-                              : assignedDiaIDsMerged
-                          }
-                          setHoverAtom={handleOnAtomHover}
-                        />
-                      );
+      <div css={styles.innerPanel}>
+        <div css={styles.molecule}>
+          <NextPrev
+            onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+            defaultIndex={currentIndex}
+          >
+            {molecules && molecules.length > 0 ? (
+              molecules.map((mol: Molecule, index) => (
+                <div key={mol.key} css={styles.items}>
+                  <span css={styles.toolbar}>
+                    <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
+                  </span>
+                  <div
+                    css={styles.slider}
+                    className="mol-svg-container"
+                    onDoubleClick={() => openMoleculeEditorHandler(mol)}
+                    style={{
+                      backgroundColor:
+                        (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
                     }}
-                  </ResponsiveChart>
+                  >
+                    <ResponsiveChart>
+                      {({ height, width }) => {
+                        return (
+                          <OCLnmr
+                            OCL={OCL}
+                            id={`molSVG${index}`}
+                            width={width}
+                            height={height}
+                            molfile={mol.molfile || ''}
+                            setMolfile={(molfile) =>
+                              handleReplaceMolecule(mol.key, molfile)
+                            }
+                            setSelectedAtom={handleOnClickAtom}
+                            atomHighlightColor={
+                              currentDiaIDsToHighlight &&
+                              currentDiaIDsToHighlight.length > 0
+                                ? 'red'
+                                : '#FFD700'
+                            }
+                            atomHighlightOpacity={0.35}
+                            highlights={
+                              currentDiaIDsToHighlight &&
+                              currentDiaIDsToHighlight.length > 0
+                                ? currentDiaIDsToHighlight
+                                : assignedDiaIDsMerged
+                            }
+                            setHoverAtom={handleOnAtomHover}
+                          />
+                        );
+                      }}
+                    </ResponsiveChart>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div
+                css={styles.slider}
+                style={{ height: '100%' }}
+                onClick={() => openMoleculeEditorHandler()}
+              >
+                <span>Click to draw molecule</span>
               </div>
-            ))
-          ) : (
-            <div
-              css={styles.slider}
-              style={{ height: '100%' }}
-              onClick={() => openMoleculeEditorHandler()}
-            >
-              <span>Click to draw molecule</span>
-            </div>
-          )}
-        </NextPrev>
+            )}
+          </NextPrev>
+        </div>
+        {children}
       </div>
     </div>
   );
@@ -203,7 +221,17 @@ function MoleculePanelInner({
 const MemoizedMoleculePanel = memo(MoleculePanelInner);
 const emptyData = { ranges: {}, zones: {} };
 
-export default function MoleculePanel() {
+interface MoleculePanelProps {
+  onMoleculeChange?: (molecule: Molecule) => void;
+  children?: ReactElement;
+  actionsOptions?: MoleculeHeaderActionsOptions;
+}
+
+export default function MoleculePanel({
+  onMoleculeChange,
+  children,
+  actionsOptions,
+}: MoleculePanelProps) {
   const { molecules, displayerMode, activeTab } = useChartData();
 
   const data = useSpectrum(emptyData);
@@ -218,7 +246,11 @@ export default function MoleculePanel() {
         activeTab,
         ranges,
         zones,
+        onMoleculeChange,
+        actionsOptions,
       }}
-    />
+    >
+      {children}
+    </MemoizedMoleculePanel>
   );
 }

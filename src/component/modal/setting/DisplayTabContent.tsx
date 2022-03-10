@@ -49,6 +49,10 @@ const LIST: Array<{ label: string; name: string }> = [
     name: 'display.panels.hideDatabasePanel',
   },
   {
+    label: 'Prediction Panel',
+    name: 'display.panels.hidePredictionPanel',
+  },
+  {
     label: 'Experimental Features',
     name: 'display.general.hideExperimentalFeatures',
   },

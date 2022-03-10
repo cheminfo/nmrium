@@ -23,6 +23,7 @@ export const exercise1D: Workspace = {
       hideSummaryPanel: true,
       hideMultipleSpectraAnalysisPanel: true,
       hideDatabasePanel: true,
+      hidePredictionPanel: false,
     },
 
     toolBarButtons: {

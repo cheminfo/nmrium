@@ -3,6 +3,10 @@ import { css } from '@emotion/react';
 import { useCallback, useRef, useState, useMemo } from 'react';
 import * as Yup from 'yup';
 
+import {
+  defaultPredictionOptions,
+  FREQUENCIES,
+} from '../../data/PredictionManager';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
@@ -19,26 +23,6 @@ import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
-
-export interface PredictionProps {
-  frequency: number;
-  '1d': {
-    '1H': { from: number; to: number };
-    '13C': { from: number; to: number };
-    nbPoints: number;
-    lineWidth: number;
-  };
-  '2d': {
-    nbPoints: { x: number; y: number };
-  };
-  spectra: {
-    proton: boolean;
-    carbon: boolean;
-    cosy: boolean;
-    hsqc: boolean;
-    hmbc: boolean;
-  };
-}
 
 const styles = css`
   .row {
@@ -100,43 +84,10 @@ const styles = css`
   }
 `;
 
-const FREQUENCIES: Array<{ key: number; value: number; label: string }> = [
-  { key: 1, value: 60, label: '60 MHz' },
-  { key: 2, value: 100, label: '100 MHz' },
-  { key: 3, value: 200, label: '200 MHz' },
-  { key: 4, value: 300, label: '300 MHz' },
-  { key: 5, value: 400, label: '400 MHz' },
-  { key: 6, value: 500, label: '500 MHz' },
-  { key: 7, value: 600, label: '600 MHz' },
-  { key: 8, value: 800, label: '800 MHz' },
-  { key: 9, value: 1000, label: '1000 MHz' },
-  { key: 10, value: 1200, label: '1200 MHz' },
-];
-
 const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
 const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
   format: (value) => value,
 });
-
-const INITIAL_VALUE: PredictionProps = {
-  frequency: 400,
-  '1d': {
-    '1H': { from: -1, to: 12 },
-    '13C': { from: -5, to: 220 },
-    nbPoints: 2 ** 17,
-    lineWidth: 1,
-  },
-  '2d': {
-    nbPoints: { x: 1024, y: 1024 },
-  },
-  spectra: {
-    proton: true,
-    carbon: false,
-    cosy: false,
-    hsqc: false,
-    hmbc: false,
-  },
-};
 
 const predictionFormValidation = Yup.object().shape({
   frequency: Yup.number().integer().required().label('Frequency'),
@@ -199,7 +150,7 @@ function PredictSpectraModal({
   const initValues = useMemo(() => {
     const { isApproved: isAgree, ...options } = predictionPreferences;
     setApproved(isAgree);
-    return Object.assign(INITIAL_VALUE, options);
+    return Object.assign(defaultPredictionOptions, options);
   }, [predictionPreferences]);
 
   const submitHandler = useCallback(
