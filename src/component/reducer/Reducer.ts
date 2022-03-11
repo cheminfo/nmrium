@@ -55,8 +55,7 @@ export interface Margin {
   bottom: number;
   left: number;
 }
-
-export const initialState: State = {
+export const getInitialState = (): State => ({
   actionType: '',
   data: [],
   contours: {} as Contours,
@@ -122,7 +121,9 @@ export const initialState: State = {
     },
   },
   usedColors: { '1d': [], '2d': [] },
-};
+});
+
+export const initialState = getInitialState();
 
 export type VerticalAlignment = 'bottom' | 'center' | 'stack';
 export interface VerticalAlign {
@@ -452,7 +453,10 @@ export function dispatchMiddleware(dispatch) {
 }
 
 function innerSpectrumReducer(draft: Draft<State>, action) {
-  draft.actionType = action.type;
+  if (![types.LOAD_JSON_FILE, types.LOAD_NMREDATA_FILE].includes(action.type)) {
+    draft.actionType = action.type;
+  }
+
   switch (action.type) {
     case types.INITIATE:
       return LoadActions.initiate(draft, action);

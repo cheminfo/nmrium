@@ -95,7 +95,7 @@ function FooterBannerInner({
 
   const getYValue = useCallback(
     (xPosition) => {
-      if (spectrum.data) {
+      if (spectrum) {
         const data = get1DDataXY(spectrum);
         const xIndex = xFindClosestIndex(data.x, scaleX().invert(xPosition));
         return data.y[xIndex];
@@ -192,11 +192,9 @@ function FooterBannerInner({
 
 const MemoizedFooterBanner = memo(FooterBannerInner);
 
-const emptyData = { info: {}, data: {} };
-
 export default function FooterBanner() {
   const { margin, width, height, activeSpectrum, activeTab } = useChartData();
-  const spectrum = useSpectrum(emptyData) as Datum1D;
+  const spectrum = useSpectrum(null) as Datum1D;
   return (
     <MemoizedFooterBanner
       {...{ margin, width, height, activeSpectrum, spectrum, activeTab }}

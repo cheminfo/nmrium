@@ -6,7 +6,8 @@ import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { UsedColors } from '../../../types/UsedColors';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
-import { State } from '../Reducer';
+import { getInitialState, State } from '../Reducer';
+import { LOAD_JSON_FILE, LOAD_NMREDATA_FILE } from '../types/Types';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
@@ -125,12 +126,18 @@ function loadJcampFile(draft: Draft<State>, actions) {
 }
 
 function handleLoadJsonFile(draft: Draft<State>, action) {
-  setData(draft, action.payload);
-  const preferences = action.payload?.preferences || {};
-  setActiveTab(draft, { tab: preferences?.activeTab || '' });
-  setPreferences(draft, preferences);
+  const state = getInitialState();
 
-  draft.isLoading = false;
+  setData(state, action.payload);
+  const preferences = action.payload?.preferences || {};
+  setActiveTab(state, { tab: preferences?.activeTab || '' });
+  setPreferences(state, preferences);
+
+  state.width = draft.width;
+  state.height = draft.height;
+  state.isLoading = false;
+  state.actionType = LOAD_JSON_FILE;
+  return state;
 }
 
 function handleLoadMOLFile(draft: Draft<State>, actions) {
@@ -153,10 +160,17 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
 }
 
 function handleLoadNmredata(draft: Draft<State>, action) {
-  setData(draft, action.payload);
-  setActiveTab(draft);
-  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
-  draft.isLoading = false;
+  const state = getInitialState();
+
+  setData(state, action.payload);
+  setActiveTab(state);
+  changeSpectrumVerticalAlignment(state, { align: 'auto-check' });
+  state.isLoading = false;
+  state.width = draft.width;
+  state.height = draft.height;
+  state.actionType = LOAD_NMREDATA_FILE;
+
+  return state;
 }
 
 export {
