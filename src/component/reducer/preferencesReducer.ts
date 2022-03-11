@@ -1,7 +1,6 @@
 import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 
-import { NMRiumWorkspaces } from '../NMRium';
 import {
   getLocalStorage,
   removeData,
@@ -18,9 +17,9 @@ const LOCAL_STORAGE_VERSION = 3;
 
 function getPreferencesByWorkspace(workspace: string) {
   switch (workspace) {
-    case NMRiumWorkspaces.EXERCISE_1D:
+    case 'exercise1D':
       return workspaces.exercise1D;
-    case NMRiumWorkspaces.PROCESS_1D:
+    case 'process1D':
       return workspaces.process1D;
     default:
       return workspaces.basic;
@@ -148,7 +147,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
     }
     draft.display = lodashMerge(
       {},
-      getPreferencesByWorkspace(NMRiumWorkspaces.DEFAULT).display,
+      getPreferencesByWorkspace('default').display,
       hiddenModeFeatures,
       hiddenLocalStorageFeatures,
     );
