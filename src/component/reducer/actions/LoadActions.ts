@@ -11,11 +11,6 @@ import { State } from '../Reducer';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
 
-function resetState(draft: Draft<State>) {
-  draft.activeSpectrum = null;
-  draft.activeTab = '';
-  draft.tabActiveSpectrum = {};
-}
 function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
 }
@@ -130,7 +125,6 @@ function loadJcampFile(draft: Draft<State>, actions) {
 }
 
 function handleLoadJsonFile(draft: Draft<State>, action) {
-  resetState(draft);
   setData(draft, action.payload);
   const preferences = action.payload?.preferences || {};
   setActiveTab(draft, { tab: preferences?.activeTab || '' });
@@ -159,7 +153,6 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
 }
 
 function handleLoadNmredata(draft: Draft<State>, action) {
-  resetState(draft);
   setData(draft, action.payload);
   setActiveTab(draft);
   changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
