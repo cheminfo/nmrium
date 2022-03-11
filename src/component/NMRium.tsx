@@ -128,10 +128,12 @@ const containerStyles = css`
   }
 `;
 
+export type NMRIumWorkspace = 'exercise1D' | 'process1D' | 'default';
+
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: State) => void;
-  workspace?: 'exercise1D' | 'process1D' | 'default';
+  workspace?: NMRIumWorkspace;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
