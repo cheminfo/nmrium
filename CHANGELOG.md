@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.23.0](https://www.github.com/cheminfo/nmrium/compare/v0.22.0...v0.23.0) (2022-03-11)
+
+
+### Features
+
+* create prediction panel ([3c96406](https://www.github.com/cheminfo/nmrium/commit/3c96406d50cc3a216c1cb4489bba064a13e6944c))
+
+
+### Bug Fixes
+
+* Bug when drag / drop second NMRium file ([08ada51](https://www.github.com/cheminfo/nmrium/commit/08ada516b698f7b540fa7c57683e79a54704feee)), closes [#1421](https://www.github.com/cheminfo/nmrium/issues/1421)
+* change enum to be a simple string ([#1422](https://www.github.com/cheminfo/nmrium/issues/1422)) ([38066dc](https://www.github.com/cheminfo/nmrium/commit/38066dc9eeeb4cd98408aa2f005578ec14de210d))
+
 ## [0.22.0](https://www.github.com/cheminfo/nmrium/compare/v0.21.0...v0.22.0) (2022-03-10)
 
 
