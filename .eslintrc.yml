@@ -6,6 +6,7 @@ rules:
   '@typescript-eslint/no-explicit-any': off
   '@typescript-eslint/naming-convention': off
   '@typescript-eslint/no-implied-eval': off
+  '@typescript-eslint/no-misused-promises': off
   no-new-func: off
   no-restricted-imports:
     - error

@@ -11,7 +11,7 @@ const config: PlaywrightTestConfig = {
   use: {
     browserName,
     headless: true,
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 1400, height: 900 },
     ignoreHTTPSErrors: true,
     // video: 'on-first-retry',
     launchOptions: {
