@@ -122,7 +122,7 @@ const containerStyles = css`
 
   .Resizer.vertical:hover {
     background-color: #dfdfdf !important;
-    border-left: 0.55px #bbbbbbimport preferencesReducer from './reducer/preferencesReducer';
+    border-left: 0.55px #bbbbbb;
  solid;
     border-right: 0.55px #bbbbbb solid;
   }
@@ -142,46 +142,48 @@ export interface NMRiumProps {
   getSpinner?: () => ReactElement;
 }
 
+type FeatureStatus = boolean | 'hide';
+
 export type NMRiumPreferences = Partial<{
   general: Partial<{
     disableMultipletAnalysis: boolean;
     hideSetSumFromMolecule: boolean;
     hideGeneralSettings: boolean;
-    hideExperimentalFeatures: boolean;
+    experimentalFeatures: FeatureStatus;
   }>;
   panels: Partial<{
-    hideSpectraPanel: boolean;
-    hideInformationPanel: boolean;
-    hidePeaksPanel: boolean;
-    hideIntegralsPanel: boolean;
-    hideRangesPanel: boolean;
-    hideStructuresPanel: boolean;
-    hideFiltersPanel: boolean;
-    hideZonesPanel: boolean;
-    hideSummaryPanel: boolean;
-    hideMultipleSpectraAnalysisPanel: boolean;
-    hideDatabasePanel: boolean;
-    hidePredictionPanel: boolean;
+    spectraPanel: FeatureStatus;
+    informationPanel: FeatureStatus;
+    peaksPanel: FeatureStatus;
+    integralsPanel: FeatureStatus;
+    rangesPanel: FeatureStatus;
+    structuresPanel: FeatureStatus;
+    filtersPanel: FeatureStatus;
+    zonesPanel: FeatureStatus;
+    summaryPanel: FeatureStatus;
+    multipleSpectraAnalysisPanel: FeatureStatus;
+    databasePanel: FeatureStatus;
+    predictionPanel: FeatureStatus;
   }>;
   toolBarButtons: Partial<{
-    hideZoomTool: boolean;
-    hideZoomOutTool: boolean;
-    hideImport: boolean;
-    hideExportAs: boolean;
-    hideSpectraStackAlignments: boolean;
-    hideSpectraCenterAlignments: boolean;
-    hideRealImaginary: boolean;
-    hidePeakTool: boolean;
-    hideIntegralTool: boolean;
-    hideZonePickingTool: boolean;
-    hideSlicingTool: boolean;
-    hideAutoRangesTool: boolean;
-    hideZeroFillingTool: boolean;
-    hidePhaseCorrectionTool: boolean;
-    hideBaseLineCorrectionTool: boolean;
-    hideFFTTool: boolean;
-    hideMultipleSpectraAnalysisTool: boolean;
-    hideExclusionZonesTool: boolean;
+    zoomTool: boolean;
+    zoomOutTool: boolean;
+    import: boolean;
+    exportAs: boolean;
+    spectraStackAlignments: boolean;
+    spectraCenterAlignments: boolean;
+    realImaginary: boolean;
+    peakTool: boolean;
+    integralTool: boolean;
+    zonePickingTool: boolean;
+    slicingTool: boolean;
+    autoRangesTool: boolean;
+    zeroFillingTool: boolean;
+    phaseCorrectionTool: boolean;
+    baseLineCorrectionTool: boolean;
+    FFTTool: boolean;
+    multipleSpectraAnalysisTool: boolean;
+    exclusionZonesTool: boolean;
   }>;
 }>;
 
@@ -215,7 +217,7 @@ function NMRium(props: NMRiumProps) {
 
 function InnerNMRium({
   data: dataProp = defaultData,
-  workspace = 'default',
+  workspace,
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
