@@ -31,24 +31,25 @@ async function phaseCorrectionFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('phaseCorrection');
   await nmrium.page.fill('data-test-id=input-ph1', '-100');
   await nmrium.page.fill('data-test-id=input-ph0', '-104');
+
+  // input debounce for 250ms
+  await nmrium.page.waitForTimeout(250);
+
   await nmrium.page.click('button >> text=Apply');
-  /* TODO: Find out why this is flaky.
   await expect(
     nmrium.page.locator('data-test-id=filters-table >> text=Phase correction'),
   ).toBeVisible();
-  */
 }
 
 async function baselineCorrectionFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('baseLineCorrection');
   await nmrium.page.click('button >> text=Apply');
-  /* TODO: Find out why this is flaky.
+
   await expect(
     nmrium.page.locator(
       'data-test-id=filters-table >> text=Baseline correction',
     ),
   ).toBeVisible();
-  */
 }
 
 test('process 1d FID 13c spectrum', async ({ page }) => {
