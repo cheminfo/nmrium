@@ -128,7 +128,11 @@ const containerStyles = css`
   }
 `;
 
-export type NMRIumWorkspace = 'exercise1D' | 'process1D' | 'default';
+export type NMRIumWorkspace =
+  | 'exercise1D'
+  | 'process1D'
+  | 'default'
+  | 'prediction';
 
 export interface NMRiumProps {
   data?: NMRiumData;
