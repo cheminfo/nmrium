@@ -178,14 +178,14 @@ export default function Exercise(props) {
                 hideSetSumFromMolecule: true,
               },
               panels: {
-                hidePeaksPanel: true,
-                hideInformationPanel: true,
-                hideRangesPanel: true,
-                hideStructuresPanel: true,
-                hideFiltersPanel: true,
-                hideZonesPanel: true,
-                hideSummaryPanel: true,
-                hideMultipleSpectraAnalysisPanel: true,
+                peaksPanel: true,
+                informationPanel: true,
+                rangesPanel: true,
+                structuresPanel: true,
+                filtersPanel: true,
+                zonesPanel: true,
+                summaryPanel: true,
+                multipleSpectraAnalysisPanel: true,
               },
             }}
           />

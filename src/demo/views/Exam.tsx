@@ -226,16 +226,19 @@ export default function Exam(props) {
               general: {
                 disableMultipletAnalysis: true,
                 hideSetSumFromMolecule: true,
+                experimentalFeatures: 'hide',
               },
               panels: {
-                hidePeaksPanel: true,
-                hideInformationPanel: true,
-                hideRangesPanel: true,
-                hideStructuresPanel: true,
-                hideFiltersPanel: true,
-                hideZonesPanel: true,
-                hideSummaryPanel: true,
-                hideMultipleSpectraAnalysisPanel: true,
+                peaksPanel: 'hide',
+                informationPanel: 'hide',
+                rangesPanel: 'hide',
+                structuresPanel: 'hide',
+                filtersPanel: 'hide',
+                zonesPanel: 'hide',
+                summaryPanel: 'hide',
+                multipleSpectraAnalysisPanel: 'hide',
+                databasePanel: 'hide',
+                predictionPanel: 'hide',
               },
             }}
           />
