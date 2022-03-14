@@ -91,8 +91,8 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
             <th>δ (ppm) </th>
 
             {isVisible('showRelative') ? (
-              <th id="integral" {...onSort}>
-                Rel. {element} {isSortedDesc('integral').content}
+              <th id="integration" {...onSort}>
+                Rel. {element} {isSortedDesc('integration').content}
               </th>
             ) : null}
             {isVisible('showAbsolute') ? <th>Absolute</th> : null}
