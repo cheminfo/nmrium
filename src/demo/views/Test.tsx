@@ -81,7 +81,7 @@ export default function Test() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex', height: '100vh', padding: '20px' }}>
       <div style={{ flex: 9 }}>
         <NMRium data={data} onDataChange={dataChangeHandler} />
       </div>

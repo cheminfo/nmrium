@@ -77,6 +77,10 @@ Link loading the default samples test cases
 
 https://dev.nmrium.org/?sampleURL=samples.json
 
+You can debug Data and onDataChange callback ;)
+
+https://dev.nmrium.org/#/test
+
 ### Install and test locally
 
 ```console
