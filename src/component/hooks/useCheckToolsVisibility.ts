@@ -6,5 +6,5 @@ export function useCheckToolsVisibility(): (toolKey: string) => boolean {
   const preferences = usePreferences();
 
   return (toolKey) =>
-    !lodashGet(preferences, `display.toolBarButtons.${toolKey}`, false);
+    lodashGet(preferences, `display.toolBarButtons.${toolKey}`, true);
 }

@@ -35,44 +35,44 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Spectra',
     component: <SpectrumListPanel />,
-    hidePreferenceKey: 'hideSpectraPanel',
+    hidePreferenceKey: 'spectraPanel',
     mode: null,
   },
   {
     title: 'Information',
     component: <InformationPanel />,
     style: { overflow: 'hidden' },
-    hidePreferenceKey: 'hideInformationPanel',
+    hidePreferenceKey: 'informationPanel',
     mode: null,
   },
   {
     title: 'Peaks',
     component: <PeaksPanel />,
-    hidePreferenceKey: 'hidePeaksPanel',
+    hidePreferenceKey: 'peaksPanel',
     mode: null,
   },
   {
     title: 'Filters',
     component: <FilterPanel />,
-    hidePreferenceKey: 'hideFiltersPanel',
+    hidePreferenceKey: 'filtersPanel',
     mode: null,
   },
   {
     title: 'Integrals',
     component: <IntegralPanel />,
-    hidePreferenceKey: 'hideIntegralsPanel',
+    hidePreferenceKey: 'integralsPanel',
     mode: null,
   },
   {
     title: 'Ranges',
     component: <RangesPanel />,
-    hidePreferenceKey: 'hideRangesPanel',
+    hidePreferenceKey: 'rangesPanel',
     mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Multiple Spectra Analysis',
     component: <MultipleSpectraAnalysisPanel />,
-    hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
+    hidePreferenceKey: 'multipleSpectraAnalysisPanel',
     mode: null,
   },
   {
@@ -85,25 +85,25 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Zones',
     component: <ZonesPanel />,
-    hidePreferenceKey: 'hideZonesPanel',
+    hidePreferenceKey: 'zonesPanel',
     mode: DISPLAYER_MODE.DM_2D,
   },
   {
     title: 'Summary',
     component: <SummaryPanel />,
-    hidePreferenceKey: 'hideSummaryPanel',
+    hidePreferenceKey: 'summaryPanel',
     mode: null,
   },
   {
     title: 'Structures',
     component: <MoleculePanel />,
-    hidePreferenceKey: 'hideStructuresPanel',
+    hidePreferenceKey: 'structuresPanel',
     mode: null,
   },
   {
     title: 'Database',
     component: <DatabasePanel />,
-    hidePreferenceKey: 'hideDatabasePanel',
+    hidePreferenceKey: 'databasePanel',
     mode: null,
   },
   {
@@ -116,7 +116,7 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Prediction',
     component: <PredictionPane />,
-    hidePreferenceKey: 'hidePredictionPanel',
+    hidePreferenceKey: 'predictionPanel',
     mode: null,
   },
 ];
@@ -136,7 +136,8 @@ function PanelsInner({ displayerMode }) {
   const check = useCallback(
     (item) => {
       return (
-        (!lodashGet(preferences, `display.panels.${item.hidePreferenceKey}`) &&
+        (lodashGet(preferences, `display.panels.${item.hidePreferenceKey}`) ===
+          true &&
           item.isExperimental === undefined &&
           (item.mode == null || item.mode === displayerMode)) ||
         (item.isExperimental && isExperimental)

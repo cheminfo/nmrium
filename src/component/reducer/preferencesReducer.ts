@@ -1,12 +1,14 @@
 import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 
+import { NMRIumWorkspace } from '../NMRium';
 import {
   getLocalStorage,
   removeData,
   storeData,
 } from '../utility/LocalStorage';
 import workspaces from '../workspaces';
+import { Workspace } from '../workspaces/Workspace';
 
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
@@ -15,19 +17,22 @@ export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
 const LOCAL_STORAGE_VERSION = 3;
 
-function getPreferencesByWorkspace(workspace: string) {
+function getPreferencesByWorkspace(workspace: NMRIumWorkspace) {
   switch (workspace) {
     case 'exercise1D':
       return workspaces.exercise1D;
     case 'process1D':
       return workspaces.process1D;
-    default:
+    case 'prediction':
+      return workspaces.prediction;
+    case 'default':
       return workspaces.basic;
+    default:
+      return {} as Workspace;
   }
 }
 
 export interface PreferencesState {
-  basePreferences: any;
   display: any;
   controllers: {
     dimmedSpectraTransparency: number;
@@ -38,11 +43,10 @@ export interface PreferencesState {
     panels: any;
   };
   dispatch: any;
-  workspace: string;
+  workspace: NMRIumWorkspace;
 }
 
 export const preferencesInitialState: PreferencesState = {
-  basePreferences: {},
   display: workspaces.basic.display,
   controllers: {
     dimmedSpectraTransparency: 0.1,
@@ -63,12 +67,21 @@ export const preferencesInitialState: PreferencesState = {
   workspace: 'default',
 };
 
-function getTruthyObjectValues(data: any) {
+function getBooleanObjectValues(data: any) {
   return JSON.parse(JSON.stringify(data), (key, value) => {
-    if (value) {
+    if (value !== 'hide') {
       return value;
     }
   });
+}
+function getKeysAsString(data: any) {
+  let result: string[] = [];
+  JSON.parse(JSON.stringify(data), (key, value) => {
+    if (value !== 'hide') {
+      result.push(key);
+    }
+  });
+  return result.join(',');
 }
 
 function mapNucleus(draft: Draft<PreferencesState>) {
@@ -102,20 +115,34 @@ function handleInit(draft: Draft<PreferencesState>, action) {
 
   if (action.payload) {
     const { dispatch, workspace, ...resProps } = action.payload;
-    draft.workspace = workspace;
-    const workspacePreferences = getPreferencesByWorkspace(workspace);
+    draft.workspace = workspace || 'default';
+    const workspacePreferences = lodashMerge(
+      {},
+      getPreferencesByWorkspace(draft.workspace).display,
+      resProps.display,
+    );
+
+    const newWorkSpace = {
+      display: getBooleanObjectValues(workspacePreferences),
+      controllers: draft.controllers,
+      formatting: draft.formatting,
+    };
+
     if (
       !localData ||
-      !localData?.workspaces[workspace] ||
-      workspacePreferences.version !== localData?.workspaces[workspace]?.version
+      !localData?.workspaces[draft.workspace] ||
+      workspacePreferences?.version !==
+        localData?.workspaces[draft.workspace]?.version ||
+      getKeysAsString(newWorkSpace?.display || {}) !==
+        getKeysAsString(localData?.workspaces[draft.workspace]?.display || {})
     ) {
       localData = localData || {};
       localData = {
         version: LOCAL_STORAGE_VERSION,
         workspaces: {
           ...localData.workspaces,
-          [workspace]: {
-            ...workspacePreferences,
+          [draft.workspace]: {
+            ...newWorkSpace,
             controllers: draft.controllers,
             formatting: draft.formatting,
           },
@@ -123,33 +150,12 @@ function handleInit(draft: Draft<PreferencesState>, action) {
       };
       storeData('nmr-general-settings', JSON.stringify(localData));
     }
-
-    draft.basePreferences = lodashMerge({}, workspacePreferences, resProps);
-
-    const hiddenModeFeatures = getTruthyObjectValues(
-      draft.basePreferences.display,
-    );
-
-    let hiddenLocalStorageFeatures: any = {};
-
     draft.dispatch = dispatch;
-    const localStorageModePreferences =
-      localData?.workspaces[workspace] || null;
-    if (localStorageModePreferences) {
-      Object.entries(localStorageModePreferences).forEach(([k, v]) => {
-        if (k === 'display') {
-          hiddenLocalStorageFeatures = getTruthyObjectValues(v);
-        } else if (!['dispatch', 'basePreferences'].includes(k)) {
-          draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
-        }
-      });
-      mapNucleus(draft);
-    }
+
     draft.display = lodashMerge(
       {},
-      getPreferencesByWorkspace('default').display,
-      hiddenModeFeatures,
-      hiddenLocalStorageFeatures,
+      workspacePreferences,
+      localData?.workspaces[draft.workspace]?.display,
     );
   }
 }
@@ -174,8 +180,8 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
     draft.controllers = controllers;
     draft.formatting = formatting;
     draft.display.panels = display.panels;
-    draft.display.general.hideExperimentalFeatures =
-      display.general.hideExperimentalFeatures;
+    draft.display.general.experimentalFeatures =
+      display.general.experimentalFeatures;
     mapNucleus(draft);
   }
 }
@@ -190,12 +196,10 @@ function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
 }
 function handleResetPreferences(draft: Draft<PreferencesState>) {
   let localData = getLocalStorage('nmr-general-settings');
-  const hiddenFeatures = getTruthyObjectValues(draft.basePreferences.display);
-  const workSpaceDisplayPreferences = lodashMerge(
-    {},
-    getPreferencesByWorkspace(draft.workspace).display,
-    hiddenFeatures,
-  );
+  // const hiddenFeatures = getTruthyObjectValues(draft.basePreferences.display);
+  const workSpaceDisplayPreferences = getPreferencesByWorkspace(
+    draft.workspace,
+  ).display;
   localData.workspaces[draft.workspace].display = workSpaceDisplayPreferences;
   draft.display = workSpaceDisplayPreferences;
   storeData('nmr-general-settings', JSON.stringify(localData));

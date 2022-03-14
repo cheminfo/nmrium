@@ -167,7 +167,7 @@ const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
   const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
   const isToolVisible = useCheckToolsVisibility();
-  const isAutomaticPickingVisible = isToolVisible('hideAutoRangesTool');
+  const isAutomaticPickingVisible = isToolVisible('autoRangesTool');
   return (
     <MemoizedSpectraPanelHeader
       {...{

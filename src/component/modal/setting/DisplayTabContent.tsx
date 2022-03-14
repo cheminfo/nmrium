@@ -6,55 +6,55 @@ import { PreferencesState } from '../../reducer/preferencesReducer';
 const LIST: Array<{ label: string; name: string }> = [
   {
     label: 'Spectra selection panel',
-    name: 'display.panels.hideSpectraPanel',
+    name: 'panels.spectraPanel',
   },
   {
     label: 'Spectra information Panel',
-    name: 'display.panels.hideInformationPanel',
+    name: 'panels.informationPanel',
   },
   {
     label: 'Peaks and peak picking',
-    name: 'display.panels.hidePeaksPanel',
+    name: 'panels.peaksPanel',
   },
   {
     label: 'Integration and integrals',
-    name: 'display.panels.hideIntegralsPanel',
+    name: 'panels.integralsPanel',
   },
   {
     label: '1D ranges peak picking',
-    name: 'display.panels.hideRangesPanel',
+    name: 'panels.rangesPanel',
   },
   {
     label: 'Chemical structure panel',
-    name: 'display.panels.hideStructuresPanel',
+    name: 'panels.structuresPanel',
   },
   {
     label: 'Filters Panel',
-    name: 'display.panels.hideFiltersPanel',
+    name: 'panels.filtersPanel',
   },
   {
     label: '2D zones peak picking',
-    name: 'display.panels.hideZonesPanel',
+    name: 'panels.zonesPanel',
   },
   {
     label: 'Assignment summary Panel',
-    name: 'display.panels.hideSummaryPanel',
+    name: 'panels.summaryPanel',
   },
   {
     label: 'Multiple Spectra Analysis Panel',
-    name: 'display.panels.hideMultipleSpectraAnalysisPanel',
+    name: 'panels.multipleSpectraAnalysisPanel',
   },
   {
     label: 'Database Panel',
-    name: 'display.panels.hideDatabasePanel',
+    name: 'panels.databasePanel',
   },
   {
     label: 'Prediction Panel',
-    name: 'display.panels.hidePredictionPanel',
+    name: 'panels.predictionPanel',
   },
   {
     label: 'Experimental Features',
-    name: 'display.general.hideExperimentalFeatures',
+    name: 'general.experimentalFeatures',
   },
 ];
 
@@ -68,13 +68,13 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
       <p className="section-header">Show / Hide Panels</p>
       {LIST.map(
         (item) =>
-          !lodashGet(preferences, `basePreferences.${item.name}`, false) && (
+          lodashGet(preferences, `display.${item.name}`) !== 'hide' && (
             <FormikCheckBox
-              key={item.name}
+              key={`display.${item.name}`}
               className="checkbox-element"
               label={item.label}
-              name={item.name}
-              reverse
+              name={`display.${item.name}`}
+              // reverse
             />
           ),
       )}
