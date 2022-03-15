@@ -30,6 +30,7 @@ function DropDownButton(props) {
     selectedKey,
     onSelect,
     formatSelectedValue = defaultFormatSelectedValue,
+    renderItem = null,
   } = props;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedKey);
@@ -68,10 +69,22 @@ function DropDownButton(props) {
 
   return (
     <div className="dropdown" ref={drop} css={styles}>
-      <button type="button" onClick={() => setOpen((open) => !open)}>
+      <button
+        type="button"
+        onClick={(event) => {
+          setOpen((open) => !open);
+          event.stopPropagation();
+        }}
+      >
         {!value ? <FaEllipsisH /> : formatSelectedValue(value)}
       </button>
-      {open && <DropDownList data={data} onSelect={selectHandler} />}
+      {open && (
+        <DropDownList
+          data={data}
+          onSelect={selectHandler}
+          renderItem={renderItem}
+        />
+      )}
     </div>
   );
 }
