@@ -1,4 +1,5 @@
 import { Workspace } from './Workspace';
+import { basic } from './basic';
 
 export const process1D: Workspace = {
   version: 1,
@@ -31,4 +32,6 @@ export const process1D: Workspace = {
       exclusionZonesTool: false,
     },
   },
+  controllers: basic.controllers,
+  formatting: basic.formatting,
 };

@@ -1,4 +1,5 @@
 import { Workspace } from './Workspace';
+import { basic } from './basic';
 
 export const exercise1D: Workspace = {
   version: 1,
@@ -46,4 +47,6 @@ export const exercise1D: Workspace = {
       exclusionZonesTool: false,
     },
   },
+  controllers: basic.controllers,
+  formatting: basic.formatting,
 };

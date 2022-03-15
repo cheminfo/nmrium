@@ -1,4 +1,5 @@
 import { Workspace } from './Workspace';
+import { basic } from './basic';
 
 export const prediction: Workspace = {
   version: 1,
@@ -22,4 +23,6 @@ export const prediction: Workspace = {
       databasePanel: false,
     },
   },
+  controllers: basic.controllers,
+  formatting: basic.formatting,
 };

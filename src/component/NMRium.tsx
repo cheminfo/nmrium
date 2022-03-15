@@ -50,6 +50,7 @@ import preferencesReducer, {
   preferencesInitialState,
   INIT_PREFERENCES,
   PreferencesState,
+  initPreferencesState,
 } from './reducer/preferencesReducer';
 import {
   INITIATE,
@@ -244,8 +245,9 @@ function InnerNMRium({
   );
 
   const [preferencesState, dispatchPreferences] = useReducer<
-    Reducer<PreferencesState, any>
-  >(preferencesReducer, preferencesInitialState);
+    Reducer<PreferencesState, any>,
+    PreferencesState
+  >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
   const { displayerMode, data: spectraData } = state;
 
