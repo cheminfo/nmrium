@@ -6,16 +6,19 @@ import { usePreferences } from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
+import DropDownButton from '../../elements/dropDownButton/DropDownButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import {
   SET_PREFERENCES,
   RESET_PREFERENCES,
+  WORKSPACES,
 } from '../../reducer/preferencesReducer';
 
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
+import WorkspaceItem from './WorkspaceItem';
 
 const styles = css`
   overflow: auto;
@@ -53,7 +56,7 @@ const styles = css`
     outline: none;
   }
   button:hover {
-    color: #007bff;
+    color: black;
   }
   .btn:hover {
     background-color: #ffffff;
@@ -143,8 +146,29 @@ const styles = css`
   .checkbox-element {
     margin-bottom: 5px;
   }
+
+  .workspace-container {
+    display: flex;
+    background-color: #f4f4f4;
+    align-items: center;
+    cursor: default;
+    padding: 0.5em;
+    .dropdown {
+      padding: 0.4em 1em;
+    }
+    & .label {
+      font-size: 0.8em;
+    }
+  }
 `;
 
+const workspacesList = [
+  ...WORKSPACES,
+  {
+    key: 'new',
+    label: 'Custom workspace',
+  },
+];
 interface GeneralSettingsProps {
   onClose?: () => void;
 }
@@ -178,12 +202,28 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const tabChangeHandler = useCallback((tab) => {
     setActiveTab(tab.tabid);
   }, []);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const ChangeWorkspaceHandler = useCallback((option) => {}, []);
+
+  const renderItem = useCallback((item) => {
+    return <WorkspaceItem item={item} />;
+  }, []);
 
   return (
     <div css={styles}>
       <div className="header handle">
         <span>General Settings</span>
         <CloseButton onClick={onClose} className="close-bt" />
+      </div>
+      <div className="workspace-container">
+        <span className="label">Workspace : </span>
+
+        <DropDownButton
+          data={workspacesList}
+          renderItem={renderItem}
+          selectedKey={preferences?.workspace}
+          onSelect={ChangeWorkspaceHandler}
+        />
       </div>
       <div className="main-content">
         <FormikForm
@@ -210,7 +250,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab tablabel="Display" tabid="display">
               <div className="inner-content">
-                <DisplayTabContent preferences={preferences} />
+                <DisplayTabContent preferences={preferences.display} />
               </div>
             </Tab>
           </Tabs>

@@ -1,7 +1,7 @@
 import lodashGet from 'lodash/get';
 
+import { NMRiumPreferences } from '../../NMRium';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import { PreferencesState } from '../../reducer/preferencesReducer';
 
 const LIST: Array<{ label: string; name: string }> = [
   {
@@ -59,7 +59,7 @@ const LIST: Array<{ label: string; name: string }> = [
 ];
 
 interface DisplayTabContentProps {
-  preferences: PreferencesState;
+  preferences: NMRiumPreferences;
 }
 
 function DisplayTabContent({ preferences }: DisplayTabContentProps) {
