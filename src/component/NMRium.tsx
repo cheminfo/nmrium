@@ -129,7 +129,7 @@ const containerStyles = css`
 `;
 
 export type NMRIumWorkspace =
-  | 'exercise1D'
+  | 'exercise'
   | 'process1D'
   | 'default'
   | 'prediction';

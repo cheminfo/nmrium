@@ -2,7 +2,7 @@ import { Workspace } from './Workspace';
 
 export const basic: Workspace = {
   version: 1,
-  label: 'Default Mode',
+  label: 'Default workspace',
   display: {
     general: {
       disableMultipletAnalysis: false,

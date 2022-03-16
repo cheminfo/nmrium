@@ -3,7 +3,7 @@ import { basic } from './basic';
 
 export const process1D: Workspace = {
   version: 1,
-  label: 'Process 1D Mode',
+  label: 'Process 1D workspace',
   display: {
     general: {
       disableMultipletAnalysis: true,

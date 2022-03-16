@@ -1,9 +1,9 @@
 import { Workspace } from './Workspace';
 import { basic } from './basic';
 
-export const exercise1D: Workspace = {
+export const exercise: Workspace = {
   version: 1,
-  label: 'Exercise 1D Mode',
+  label: 'Exercise workspace',
   display: {
     general: {
       disableMultipletAnalysis: true,
@@ -23,7 +23,7 @@ export const exercise1D: Workspace = {
       summaryPanel: 'hide',
       multipleSpectraAnalysisPanel: 'hide',
       databasePanel: 'hide',
-      predictionPanel: true,
+      predictionPanel: 'hide',
     },
 
     toolBarButtons: {

@@ -220,28 +220,7 @@ export default function Exam(props) {
           css={nmrContainer}
           style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
         >
-          <NMRium
-            data={data}
-            preferences={{
-              general: {
-                disableMultipletAnalysis: true,
-                hideSetSumFromMolecule: true,
-                experimentalFeatures: 'hide',
-              },
-              panels: {
-                peaksPanel: 'hide',
-                informationPanel: 'hide',
-                rangesPanel: 'hide',
-                structuresPanel: 'hide',
-                filtersPanel: 'hide',
-                zonesPanel: 'hide',
-                summaryPanel: 'hide',
-                multipleSpectraAnalysisPanel: 'hide',
-                databasePanel: 'hide',
-                predictionPanel: 'hide',
-              },
-            }}
-          />
+          <NMRium data={data} workspace="exercise" />
         </div>
         <button css={showButton} type="button" onClick={showAnswerAreaHander}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}

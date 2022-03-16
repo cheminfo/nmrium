@@ -169,26 +169,7 @@ export default function Exercise(props) {
         <div
           style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
         >
-          <NMRium
-            data={data}
-            workspace="exercise1D"
-            preferences={{
-              general: {
-                disableMultipletAnalysis: true,
-                hideSetSumFromMolecule: true,
-              },
-              panels: {
-                peaksPanel: true,
-                informationPanel: true,
-                rangesPanel: true,
-                structuresPanel: true,
-                filtersPanel: true,
-                zonesPanel: true,
-                summaryPanel: true,
-                multipleSpectraAnalysisPanel: true,
-              },
-            }}
-          />
+          <NMRium data={data} workspace="exercise" />
         </div>
         <button
           css={showButtonCss}

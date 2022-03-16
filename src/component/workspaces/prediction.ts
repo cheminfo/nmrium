@@ -3,7 +3,7 @@ import { basic } from './basic';
 
 export const prediction: Workspace = {
   version: 1,
-  label: 'Prediction Mode',
+  label: 'Prediction workspace',
   display: {
     general: {
       experimentalFeatures: false,

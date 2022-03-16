@@ -58,8 +58,8 @@ export const WORKSPACES: Array<{
     label: Workspaces.process1D.label,
   },
   {
-    key: 'exercise1D',
-    label: Workspaces.exercise1D.label,
+    key: 'exercise',
+    label: Workspaces.exercise.label,
   },
   {
     key: 'prediction',
@@ -69,8 +69,8 @@ export const WORKSPACES: Array<{
 
 function getPreferencesByWorkspace(workspace: NMRIumWorkspace) {
   switch (workspace) {
-    case 'exercise1D':
-      return Workspaces.exercise1D;
+    case 'exercise':
+      return Workspaces.exercise;
     case 'process1D':
       return Workspaces.process1D;
     case 'prediction':
