@@ -188,7 +188,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
      *
      */
     draft.currentWorkspace =
-      !workspace && localData.currentWorkspace
+      !workspace && localData?.currentWorkspace
         ? localData.currentWorkspace
         : workspace || 'default';
 
