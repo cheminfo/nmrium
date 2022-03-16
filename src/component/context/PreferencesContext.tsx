@@ -17,9 +17,10 @@ export function usePreferences() {
   }
 
   const { currentWorkspace, workspaces, dispatch } = context;
+
   return useMemo(() => {
     return {
-      ...(workspaces[currentWorkspace] || {}),
+      current: workspaces[currentWorkspace] || {},
       currentWorkspace,
       workspaces,
       dispatch,

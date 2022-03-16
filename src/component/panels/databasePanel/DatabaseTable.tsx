@@ -138,7 +138,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
 
   const tableColumns = useMemo(() => {
     const databasePreferences = getValue(
-      preferences,
+      preferences.current,
       'formatting.panels.database',
       databaseDefaultValues,
     );

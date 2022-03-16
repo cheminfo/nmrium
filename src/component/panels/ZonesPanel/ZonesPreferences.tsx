@@ -107,7 +107,7 @@ function ZonesPreferencesInner({
         return acc;
       }, {});
       const zonesPreferences = getValueByKeyPath(
-        preferences,
+        preferences.current,
         `formatting.panels.zones`,
       );
       formRef.current.setValues(

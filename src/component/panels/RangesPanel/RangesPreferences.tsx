@@ -109,7 +109,7 @@ function RangesPreferencesInner({
         return acc;
       }, {});
       const rangesPreferences = getValueByKeyPath(
-        preferences,
+        preferences.current,
         `formatting.panels.ranges`,
       );
       formRef.current.setValues(

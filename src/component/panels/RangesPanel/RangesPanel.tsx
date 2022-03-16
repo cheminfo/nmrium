@@ -135,8 +135,10 @@ function RangesTablePanelInner({
 
   const rangesPreferences = useMemo(() => {
     const _preferences =
-      lodashGet(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
-      getRangeDefaultValues(activeTab);
+      lodashGet(
+        preferences.current,
+        `formatting.panels.ranges.[${activeTab}]`,
+      ) || getRangeDefaultValues(activeTab);
 
     return _preferences;
   }, [activeTab, preferences]);

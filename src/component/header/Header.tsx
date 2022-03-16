@@ -148,7 +148,9 @@ export default function HeaderWrapper({ isFullscreen, onMaximize }) {
     toolOptions: { selectedOptionPanel },
   } = useChartData();
   const {
-    display: { general },
+    current: {
+      display: { general },
+    },
   } = usePreferences();
 
   return (

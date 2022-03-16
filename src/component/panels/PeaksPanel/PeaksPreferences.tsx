@@ -119,7 +119,7 @@ function PeaksPreferencesInner({
         return acc;
       }, {});
       const peaksPreferences = getValueByKeyPath(
-        preferences,
+        preferences.current,
         `formatting.panels.peaks`,
       );
       formRef.current.setValues(

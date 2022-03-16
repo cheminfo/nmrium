@@ -174,7 +174,7 @@ function BasicToolBarInner({
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodashGet(preferences, `display.toolBarButtons.${key}`);
+      return !lodashGet(preferences.current, `display.toolBarButtons.${key}`);
     },
     [preferences],
   );

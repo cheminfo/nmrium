@@ -21,10 +21,14 @@ export function useFormatNumberByNucleus(
 export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
 export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
   const preferences = usePreferences();
-  const nucleusByKey = lodashGet(preferences, `formatting.nucleusByKey`, {
-    ppm: '0.0',
-    hz: '0.0',
-  });
+  const nucleusByKey = lodashGet(
+    preferences.current,
+    `formatting.nucleusByKey`,
+    {
+      ppm: '0.0',
+      hz: '0.0',
+    },
+  );
 
   return useMemo(() => {
     function formatFun(n: string) {

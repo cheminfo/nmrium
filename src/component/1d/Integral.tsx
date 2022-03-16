@@ -20,7 +20,7 @@ function Integral({ integral, isActive }: IntegralProps) {
     let {
       color = integralDefaultValues.color,
       strokeWidth = integralDefaultValues.strokeWidth,
-    } = getValue(preferences, 'formatting.panels.integrals') || {};
+    } = getValue(preferences.current, 'formatting.panels.integrals') || {};
     return { color, strokeWidth };
   }, [preferences]);
 

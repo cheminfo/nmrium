@@ -7,7 +7,6 @@ import { Datum2D } from '../../../data/types/data2d';
 import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
@@ -263,7 +262,6 @@ const emptyData = { zones: {} };
 export default function ZonesPanel() {
   const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
   const { zones, info } = useSpectrum(emptyData) as Datum2D;
-  const preferences = usePreferences();
 
   return (
     <MemoizedZonesPanel
@@ -272,7 +270,6 @@ export default function ZonesPanel() {
         yDomain,
         activeTab,
         displayerKey,
-        preferences,
         zones,
         experiment: info.experiment,
       }}

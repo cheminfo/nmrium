@@ -7,8 +7,11 @@ export default function useCheckExperimentalFeature(): boolean {
   const preferences = usePreferences();
   return useMemo(() => {
     return (
-      lodashGet(preferences, 'display.general.experimentalFeatures', false) ===
-      true
+      lodashGet(
+        preferences.current,
+        'display.general.experimentalFeatures',
+        false,
+      ) === true
     );
   }, [preferences]);
 }

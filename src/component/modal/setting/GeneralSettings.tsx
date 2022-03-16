@@ -217,9 +217,9 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       </div>
       <div className="main-content">
         <FormikForm
-          key={JSON.stringify(preferences)}
+          key={JSON.stringify(preferences.current)}
           ref={refForm}
-          initialValues={preferences}
+          initialValues={preferences.current}
           onSubmit={submitHandler}
         >
           <Tabs
@@ -241,7 +241,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab tablabel="Display" tabid="display">
               <div className="inner-content">
-                <DisplayTabContent preferences={preferences.display} />
+                <DisplayTabContent preferences={preferences.current.display} />
               </div>
             </Tab>
           </Tabs>

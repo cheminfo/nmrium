@@ -136,8 +136,10 @@ function PanelsInner({ displayerMode }) {
   const check = useCallback(
     (item) => {
       return (
-        (lodashGet(preferences, `display.panels.${item.hidePreferenceKey}`) ===
-          true &&
+        (lodashGet(
+          preferences.current,
+          `display.panels.${item.hidePreferenceKey}`,
+        ) === true &&
           item.isExperimental === undefined &&
           (item.mode == null || item.mode === displayerMode)) ||
         (item.isExperimental && isExperimental)

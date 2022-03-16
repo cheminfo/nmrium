@@ -65,7 +65,7 @@ function DatabasePreferences(props, ref) {
 
   const updateValues = useCallback(() => {
     const databasePreferences = getValueByKeyPath(
-      preferences,
+      preferences.current,
       `formatting.panels.database`,
     );
 

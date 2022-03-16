@@ -98,7 +98,7 @@ function IntegralsPreferencesInner({
       const { color, strokeWidth, ...restProps } = integralDefaultValues;
 
       const integralPreferences = getValueByKeyPath(
-        preferences,
+        preferences.current,
         `formatting.panels.integrals`,
       );
 

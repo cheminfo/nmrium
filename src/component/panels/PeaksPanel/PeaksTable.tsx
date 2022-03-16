@@ -47,7 +47,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
   const peaksPreferences = useMemo(
     () =>
       getValue(
-        preferences,
+        preferences.current,
         `formatting.panels.peaks.[${activeTab}]`,
         peaksDefaultValues,
       ),
