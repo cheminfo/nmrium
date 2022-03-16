@@ -1,7 +1,8 @@
 import { Draft, produce, original } from 'immer';
 import lodashMerge from 'lodash/merge';
 
-import { NMRIumWorkspace } from '../NMRium';
+import generateID from '../../data/utilities/generateID';
+import { NMRIumWorkspace, NMRiumPreferences } from '../NMRium';
 import {
   getLocalStorage,
   removeData,
@@ -10,10 +11,37 @@ import {
 import workspaces from '../workspaces';
 import { Workspace } from '../workspaces/Workspace';
 
-export const INIT_PREFERENCES = 'INIT_PREFERENCES';
-export const SET_PREFERENCES = 'SET_PREFERENCES';
-export const RESET_PREFERENCES = 'RESET_PREFERENCES';
-export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
+import { ActionType } from './types/Types';
+
+type InitPreferencesAction = ActionType<
+  'INIT_PREFERENCES',
+  { display: NMRiumPreferences; workspace: NMRIumWorkspace; dispatch: any }
+>;
+type SetPreferencesAction = ActionType<
+  'SET_PREFERENCES',
+  Omit<Workspace, 'version' | 'label'>
+>;
+type SetPanelsPreferencesAction = ActionType<
+  'SET_PANELS_PREFERENCES',
+  { key: string; value: string }
+>;
+
+type WorkspaceAction = ActionType<
+  'SET_WORKSPACE' | 'REMOVE_WORKSPACE',
+  { workspace: string }
+>;
+type AddWorkspaceAction = ActionType<
+  'ADD_WORKSPACE',
+  { workspace: string; data: Omit<Workspace, 'version' | 'label'> }
+>;
+
+type PreferencesActions =
+  | InitPreferencesAction
+  | SetPreferencesAction
+  | ActionType<'RESET_PREFERENCES'>
+  | SetPanelsPreferencesAction
+  | WorkspaceAction
+  | AddWorkspaceAction;
 
 const LOCAL_STORAGE_VERSION = 3;
 
@@ -57,22 +85,22 @@ function getPreferencesByWorkspace(workspace: NMRIumWorkspace) {
 export interface PreferencesState {
   version: number;
   workspaces: Record<string, Workspace>;
-  dispatch: any;
-  workspace: NMRIumWorkspace;
+  dispatch: (action?: PreferencesActions) => void;
+  currentWorkspace: NMRIumWorkspace;
 }
 
 function getActiveWorkspace(draft: Draft<PreferencesState>) {
-  return draft.workspaces[draft.workspace || 'default'];
+  return draft.workspaces[draft.currentWorkspace || 'default'];
 }
 
 export const preferencesInitialState: PreferencesState = {
   version: LOCAL_STORAGE_VERSION,
   workspaces: {},
-  dispatch: null,
-  workspace: 'default',
+  dispatch: () => null,
+  currentWorkspace: 'default',
 };
 
-function getBooleanObjectValues(data: any) {
+function filterObject(data: any) {
   return JSON.parse(JSON.stringify(data), (key, value) => {
     if (value !== 'hide') {
       return value;
@@ -151,41 +179,61 @@ export function initPreferencesState(
 
 function handleInit(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
+    const localData = getLocalStorage('nmr-general-settings');
+
     const { dispatch, workspace, ...resProps } = action.payload;
-    draft.workspace = workspace || 'default';
+    /**
+     * set the current workspace what the user-defined in the setting if the workspace is not defined at the level of component, otherwise
+     * use the default workspace
+     *
+     */
+    draft.currentWorkspace =
+      !workspace && localData.currentWorkspace
+        ? localData.currentWorkspace
+        : workspace || 'default';
+
     const workspacePreferences = lodashMerge(
       {},
-      getPreferencesByWorkspace(draft.workspace),
+      getPreferencesByWorkspace(draft.currentWorkspace),
       resProps,
     );
     const activeWorkspace = getActiveWorkspace(draft);
 
-    const localData = getLocalStorage('nmr-general-settings');
+    /**
+     * Update the local storage general preferences
+     * 1- if local storage is empty.
+     * 2- if predefine workspaces.
+     * 3- a) if the local setting version != current settings version number
+     *    b) if workspace not exists in the local storage
+     *    c) if the local setting workspace version != current workspace version number
+     *    d) if hard code workspace parameters !=  current workspace parameters
+     */
 
     if (
-      LOCAL_STORAGE_VERSION !== draft.version ||
-      !activeWorkspace ||
-      workspacePreferences?.version !== activeWorkspace?.version ||
-      !checkKeysExists(
-        workspacePreferences.display,
-        activeWorkspace?.display,
-      ) ||
+      (workspaces[draft.currentWorkspace] &&
+        (LOCAL_STORAGE_VERSION !== draft.version ||
+          !activeWorkspace ||
+          workspacePreferences?.version !== activeWorkspace?.version ||
+          !checkKeysExists(
+            workspacePreferences.display,
+            activeWorkspace?.display,
+          ))) ||
       !localData
     ) {
       const { workspaces, version } = original(draft) || {};
-      const display = getBooleanObjectValues(workspacePreferences.display);
+      const display = filterObject(workspacePreferences.display);
 
       const data = {
         version,
         workspaces: {
           ...workspaces,
-          [draft.workspace]: {
+          [draft.currentWorkspace]: {
             ...workspacePreferences,
             display,
           },
         },
       };
-      draft.workspaces[draft.workspace] = lodashMerge(
+      draft.workspaces[draft.currentWorkspace] = lodashMerge(
         {},
         activeWorkspace,
         workspacePreferences,
@@ -210,10 +258,11 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
     const { controllers, formatting, display } = action.payload;
 
     let localData = getLocalStorage('nmr-general-settings');
+    localData.currentWorkspace = draft.currentWorkspace;
     localData.workspaces = {
       ...localData.workspaces,
-      [draft.workspace]: {
-        ...localData.workspaces[draft.workspace],
+      [draft.currentWorkspace]: {
+        ...localData.workspaces[draft.currentWorkspace],
         controllers,
         formatting,
         display,
@@ -241,7 +290,7 @@ function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
 
     const { key, value } = action.payload;
     let localData = getLocalStorage('nmr-general-settings');
-    localData.workspaces[draft.workspace].formatting.panels[key] = value;
+    localData.workspaces[draft.currentWorkspace].formatting.panels[key] = value;
     storeData('nmr-general-settings', JSON.stringify(localData));
     workspace.formatting.panels[key] = value;
   }
@@ -249,25 +298,93 @@ function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
 function handleResetPreferences(draft: Draft<PreferencesState>) {
   const workspace = getActiveWorkspace(draft);
   let localData = getLocalStorage('nmr-general-settings');
-  // const hiddenFeatures = getTruthyObjectValues(draft.basePreferences.display);
+
   const workSpaceDisplayPreferences = getPreferencesByWorkspace(
-    draft.workspace,
+    draft.currentWorkspace,
   ).display;
-  localData.workspaces[draft.workspace].display = workSpaceDisplayPreferences;
+  localData.workspaces[draft.currentWorkspace].display =
+    workSpaceDisplayPreferences;
   workspace.display = workSpaceDisplayPreferences;
   storeData('nmr-general-settings', JSON.stringify(localData));
 }
+function handleSetWorkspace(
+  draft: Draft<PreferencesState>,
+  action: WorkspaceAction,
+) {
+  const workspaceKey = action.payload.workspace;
+  if (!draft.workspaces[workspaceKey]) {
+    draft.workspaces[workspaceKey] = getPreferencesByWorkspace(
+      workspaceKey as NMRIumWorkspace,
+    );
+  }
 
-function innerPreferencesReducer(draft: Draft<PreferencesState>, action) {
+  draft.currentWorkspace = workspaceKey as NMRIumWorkspace;
+}
+function handleAddWorkspace(
+  draft: Draft<PreferencesState>,
+  action: AddWorkspaceAction,
+) {
+  const {
+    workspace: workspaceName,
+    data: { display, controllers, formatting },
+  } = action.payload;
+  const newWorkSpace = {
+    version: 1,
+    label: workspaceName,
+    display,
+    controllers,
+    formatting,
+  };
+  const newWorkspaceKey = generateID();
+  const localData = getLocalStorage('nmr-general-settings');
+
+  localData.workspaces[newWorkspaceKey] = newWorkSpace;
+  storeData('nmr-general-settings', JSON.stringify(localData));
+  draft.workspaces[newWorkspaceKey] = newWorkSpace;
+  draft.currentWorkspace = newWorkspaceKey as any;
+}
+function handleRemoveWorkspace(
+  draft: Draft<PreferencesState>,
+  action: WorkspaceAction,
+) {
+  const { workspace } = action.payload;
+
+  if (workspace === draft.currentWorkspace) {
+    draft.currentWorkspace = 'default';
+  }
+
+  let localData = getLocalStorage('nmr-general-settings');
+  const storedWorkspaces = original(draft)?.workspaces || {};
+  const workspaces = Object.keys(storedWorkspaces).reduce((acc, key) => {
+    if (key !== workspace) {
+      acc[key] = storedWorkspaces[key];
+    }
+    return acc;
+  }, {});
+  draft.workspaces = workspaces;
+  localData.workspaces = filterObject(workspaces);
+  storeData('nmr-general-settings', JSON.stringify(localData));
+}
+
+function innerPreferencesReducer(
+  draft: Draft<PreferencesState>,
+  action: PreferencesActions,
+) {
   switch (action.type) {
-    case INIT_PREFERENCES:
+    case 'INIT_PREFERENCES':
       return handleInit(draft, action);
-    case SET_PREFERENCES:
+    case 'SET_PREFERENCES':
       return handleSetPreferences(draft, action);
-    case SET_PANELS_PREFERENCES:
+    case 'SET_PANELS_PREFERENCES':
       return handleSetPanelsPreferences(draft, action);
-    case RESET_PREFERENCES:
+    case 'RESET_PREFERENCES':
       return handleResetPreferences(draft);
+    case 'SET_WORKSPACE':
+      return handleSetWorkspace(draft, action);
+    case 'ADD_WORKSPACE':
+      return handleAddWorkspace(draft, action);
+    case 'REMOVE_WORKSPACE':
+      return handleRemoveWorkspace(draft, action);
     default:
       return draft;
   }

@@ -16,7 +16,6 @@ import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -126,7 +125,7 @@ function RangesPreferencesInner({
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
-        type: SET_PANELS_PREFERENCES,
+        type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'ranges', value: values },
       });
       alert.success('ranges preferences saved successfully');

@@ -69,9 +69,7 @@ function MultipleSpectraAnalysisTable({
         <ColumnHeader
           charLabel={columnKey}
           data={columnData}
-          onColumnFilter={(valueKey) =>
-            columnFilterHandler(columnKey, valueKey)
-          }
+          onColumnFilter={(item) => columnFilterHandler(columnKey, item.key)}
           rangeLabel={
             columnData.from && columnData.to
               ? `${format(columnData.from)} - ${format(columnData.to)}`

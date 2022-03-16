@@ -11,7 +11,6 @@ import { usePreferences } from '../../context/PreferencesContext';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { databaseDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -82,7 +81,7 @@ function DatabasePreferences(props, ref) {
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
-        type: SET_PANELS_PREFERENCES,
+        type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'database', value: values },
       });
       alert.success('database preferences saved successfully');

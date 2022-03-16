@@ -68,7 +68,7 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
       <p className="section-header">Show / Hide Panels</p>
       {LIST.map(
         (item) =>
-          lodashGet(preferences, `display.${item.name}`) !== 'hide' && (
+          lodashGet(preferences, `${item.name}`) !== 'hide' && (
             <FormikCheckBox
               key={`display.${item.name}`}
               className="checkbox-element"

@@ -42,9 +42,24 @@ const styles = css`
   }
 `;
 
-const WorkspaceItem = ({ item }) => {
+const WorkspaceItem = ({ item, onSave, onDelete }) => {
   const [name, setName] = useState<string>('');
-  const addWorkspaceHandler = useCallback(() => {}, []);
+  const addWorkspaceHandler = useCallback(
+    (e) => {
+      e.stopPropagation();
+      onSave(name);
+    },
+    [name, onSave],
+  );
+
+  const deleteWorkspaceHandler = useCallback(
+    (e) => {
+      e.stopPropagation();
+      onDelete(item.key);
+    },
+    [item.key, onDelete],
+  );
+
   const onTextChange = useCallback((e) => {
     setName(e.target.value);
   }, []);
@@ -71,7 +86,11 @@ const WorkspaceItem = ({ item }) => {
         <div className="container">
           <span>{item.label}</span>
           {!workspaces[item.key] && (
-            <button type="button" className="delete-button">
+            <button
+              type="button"
+              className="delete-button"
+              onClick={deleteWorkspaceHandler}
+            >
               Delete
             </button>
           )}

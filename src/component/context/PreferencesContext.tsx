@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import {
   preferencesInitialState,
@@ -16,6 +16,13 @@ export function usePreferences() {
     throw new Error('Preferences context was not found');
   }
 
-  const { workspace, workspaces, dispatch } = context;
-  return { ...(workspaces[workspace] || {}), workspace, dispatch };
+  const { currentWorkspace, workspaces, dispatch } = context;
+  return useMemo(() => {
+    return {
+      ...(workspaces[currentWorkspace] || {}),
+      currentWorkspace,
+      workspaces,
+      dispatch,
+    };
+  }, [dispatch, currentWorkspace, workspaces]);
 }

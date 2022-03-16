@@ -48,7 +48,6 @@ import {
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
-  INIT_PREFERENCES,
   PreferencesState,
   initPreferencesState,
 } from './reducer/preferencesReducer';
@@ -267,7 +266,7 @@ function InnerNMRium({
 
   useEffect(() => {
     dispatchPreferences({
-      type: INIT_PREFERENCES,
+      type: 'INIT_PREFERENCES',
       payload: {
         display: preferences,
         workspace,

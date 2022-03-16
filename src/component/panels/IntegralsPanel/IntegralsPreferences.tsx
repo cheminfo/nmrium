@@ -16,7 +16,6 @@ import FormikForm from '../../elements/formik/FormikForm';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -122,7 +121,7 @@ function IntegralsPreferencesInner({
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
-        type: SET_PANELS_PREFERENCES,
+        type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'integrals', value: values },
       });
       alert.success('Integrals preferences saved successfully');

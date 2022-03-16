@@ -14,7 +14,6 @@ import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatFie
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -136,7 +135,7 @@ function PeaksPreferencesInner({
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
-        type: SET_PANELS_PREFERENCES,
+        type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'peaks', value: values },
       });
       alert.success('Peaks preferences saved successfully');
