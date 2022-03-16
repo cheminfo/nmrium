@@ -47,6 +47,7 @@ const WorkspaceItem = ({ item, onSave, onDelete }) => {
   const addWorkspaceHandler = useCallback(
     (e) => {
       e.stopPropagation();
+      setName('');
       onSave(name);
     },
     [name, onSave],
@@ -69,6 +70,7 @@ const WorkspaceItem = ({ item, onSave, onDelete }) => {
       {item.key === 'new' ? (
         <div className="new-container">
           <input
+            value={name}
             placeholder="Custom workspace"
             onClick={(e) => e.stopPropagation()}
             onChange={onTextChange}
