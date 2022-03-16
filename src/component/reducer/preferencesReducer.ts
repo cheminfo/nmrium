@@ -8,7 +8,7 @@ import {
   removeData,
   storeData,
 } from '../utility/LocalStorage';
-import workspaces from '../workspaces';
+import Workspaces from '../workspaces';
 import { Workspace } from '../workspaces/Workspace';
 
 import { ActionType } from './types/Types';
@@ -51,32 +51,32 @@ export const WORKSPACES: Array<{
 }> = [
   {
     key: 'default',
-    label: workspaces.default.label,
+    label: Workspaces.default.label,
   },
   {
     key: 'process1D',
-    label: workspaces.process1D.label,
+    label: Workspaces.process1D.label,
   },
   {
     key: 'exercise1D',
-    label: workspaces.exercise1D.label,
+    label: Workspaces.exercise1D.label,
   },
   {
     key: 'prediction',
-    label: workspaces.prediction.label,
+    label: Workspaces.prediction.label,
   },
 ];
 
 function getPreferencesByWorkspace(workspace: NMRIumWorkspace) {
   switch (workspace) {
     case 'exercise1D':
-      return workspaces.exercise1D;
+      return Workspaces.exercise1D;
     case 'process1D':
-      return workspaces.process1D;
+      return Workspaces.process1D;
     case 'prediction':
-      return workspaces.prediction;
+      return Workspaces.prediction;
     case 'default':
-      return workspaces.default;
+      return Workspaces.default;
     default:
       return {} as Workspace;
   }
@@ -173,7 +173,7 @@ export function initPreferencesState(
   return {
     ...state,
     version: localData?.version || LOCAL_STORAGE_VERSION,
-    workspaces: localData?.workspaces || { default: workspaces.default },
+    workspaces: localData?.workspaces || { default: Workspaces.default },
   };
 }
 
@@ -203,22 +203,22 @@ function handleInit(draft: Draft<PreferencesState>, action) {
      * Update the local storage general preferences
      * 1- if local storage is empty.
      * 2- if predefine workspaces.
-     * 3- a) if the local setting version != current settings version number
-     *    b) if workspace not exists in the local storage
+     * 3- b) if workspace not exists in the local storage
      *    c) if the local setting workspace version != current workspace version number
      *    d) if hard code workspace parameters !=  current workspace parameters
+     * 4- if the local setting version != current settings version number
      */
 
     if (
-      (workspaces[draft.currentWorkspace] &&
+      (Workspaces[draft.currentWorkspace] &&
         (LOCAL_STORAGE_VERSION !== draft.version ||
           !activeWorkspace ||
-          workspacePreferences?.version !== activeWorkspace?.version ||
           !checkKeysExists(
             workspacePreferences.display,
             activeWorkspace?.display,
           ))) ||
-      !localData
+      !localData ||
+      workspacePreferences?.version !== activeWorkspace?.version
     ) {
       const { workspaces, version } = original(draft) || {};
       const display = filterObject(workspacePreferences.display);
