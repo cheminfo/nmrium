@@ -32,11 +32,7 @@
         "acquisitionMode": 0,
         "expno": 4,
         "date": "2010-04-10T05:47:20.000Z"
-      },
-      "peaks": [],
-      "integrals": [],
-      "signals": [],
-      "filters": []
+      }
     }
   ],
   "molecules": [
