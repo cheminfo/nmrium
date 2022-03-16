@@ -43,7 +43,7 @@ type PreferencesActions =
   | WorkspaceAction
   | AddWorkspaceAction;
 
-const LOCAL_STORAGE_VERSION = 3;
+const LOCAL_STORAGE_VERSION = 4;
 
 export const WORKSPACES: Array<{
   key: NMRIumWorkspace;
