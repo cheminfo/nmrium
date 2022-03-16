@@ -173,7 +173,7 @@ export function initPreferencesState(
   return {
     ...state,
     version: localData?.version || LOCAL_STORAGE_VERSION,
-    workspaces: localData?.workspaces || { default: workspaces.default },
+    workspaces: lodashMerge({}, localData?.workspaces),
   };
 }
 
@@ -203,22 +203,22 @@ function handleInit(draft: Draft<PreferencesState>, action) {
      * Update the local storage general preferences
      * 1- if local storage is empty.
      * 2- if predefine workspaces.
-     * 3- a) if the local setting version != current settings version number
-     *    b) if workspace not exists in the local storage
+     * 3- b) if workspace not exists in the local storage
      *    c) if the local setting workspace version != current workspace version number
      *    d) if hard code workspace parameters !=  current workspace parameters
+     * 4- if the local setting version != current settings version number
      */
 
     if (
       (workspaces[draft.currentWorkspace] &&
         (LOCAL_STORAGE_VERSION !== draft.version ||
           !activeWorkspace ||
-          workspacePreferences?.version !== activeWorkspace?.version ||
           !checkKeysExists(
             workspacePreferences.display,
             activeWorkspace?.display,
           ))) ||
-      !localData
+      !localData ||
+      workspacePreferences?.version !== activeWorkspace?.version
     ) {
       const { workspaces, version } = original(draft) || {};
       const display = filterObject(workspacePreferences.display);
