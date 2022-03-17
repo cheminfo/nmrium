@@ -82,6 +82,7 @@ function ContoursPaths({
   return (
     <path
       fill="none"
+      data-test-id="spectrum-line"
       stroke={color}
       strokeWidth="1"
       style={{
@@ -132,7 +133,7 @@ export default function Contours() {
   const { data: spectra, displayerKey } = useChartData();
   const data = useMemo<Array<Datum2D>>(() => {
     return spectra.filter(
-      (datum) => datum.info.dimension === 2,
+      (datum) => datum.info.dimension === 2 && datum.info.isFt,
     ) as Array<Datum2D>;
   }, [spectra]);
 

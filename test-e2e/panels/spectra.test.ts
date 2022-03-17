@@ -88,3 +88,21 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
   // The line should now be white.
   await expect(whiteSpectrumLine).toBeVisible();
 });
+
+test('Should 2d deactivate spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.open2D();
+
+  const spectrumButtonLocator = nmrium.page.locator(
+    'data-test-id=activate-deactivate-spectrum-button >> nth=1',
+  );
+  const spectrumLineLocator = nmrium.page.locator(
+    'data-test-id=spectrum-line >> nth=0',
+  );
+
+  // deactivate spectrum
+  await spectrumButtonLocator.click();
+
+  // should spectra still visible
+  await expect(spectrumLineLocator).toBeVisible();
+});
