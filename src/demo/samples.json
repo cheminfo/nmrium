@@ -178,8 +178,7 @@
       },
       {
         "title": "Prediction",
-        "view": "View",
-        "workspace": "prediction"
+        "view": "Prediction"
       }
     ]
   }
