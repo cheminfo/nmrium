@@ -151,15 +151,18 @@ export default function HeaderWrapper({ isFullscreen, onMaximize }) {
     current: {
       display: { general },
     },
+    workspace: { base },
   } = usePreferences();
 
+  const hideGeneralSettings =
+    general?.hideGeneralSettings && base ? true : false;
   return (
     <MemoizedHeader
       {...{
         selectedOptionPanel,
         isFullscreen,
         onMaximize,
-        hideGeneralSettings: general?.hideGeneralSettings || false,
+        hideGeneralSettings,
       }}
     />
   );

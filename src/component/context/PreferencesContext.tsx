@@ -16,14 +16,14 @@ export function usePreferences() {
     throw new Error('Preferences context was not found');
   }
 
-  const { currentWorkspace, workspaces, dispatch } = context;
+  const { workspace, workspaces, dispatch } = context;
 
   return useMemo(() => {
     return {
-      current: workspaces[currentWorkspace] || {},
-      currentWorkspace,
+      current: workspaces[workspace.current] || {},
+      workspace,
       workspaces,
       dispatch,
     };
-  }, [dispatch, currentWorkspace, workspaces]);
+  }, [dispatch, workspace, workspaces]);
 }

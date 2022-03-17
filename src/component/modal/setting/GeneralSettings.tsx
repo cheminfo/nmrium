@@ -211,7 +211,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         <DropDownButton
           data={workspacesList}
           renderItem={renderItem}
-          selectedKey={preferences?.currentWorkspace}
+          selectedKey={preferences?.workspace.current}
           onSelect={ChangeWorkspaceHandler}
         />
       </div>
