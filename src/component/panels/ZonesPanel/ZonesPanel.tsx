@@ -258,13 +258,12 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
 
 const MemoizedZonesPanel = memo(ZonesPanelInner);
 
-const emptyData = { zones: {} };
+const emptyData = { zones: {}, info: {} };
 
 export default function ZonesPanel() {
   const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
   const { zones, info } = useSpectrum(emptyData) as Datum2D;
   const preferences = usePreferences();
-
   return (
     <MemoizedZonesPanel
       {...{
