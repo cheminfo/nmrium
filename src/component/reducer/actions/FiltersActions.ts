@@ -60,7 +60,7 @@ function applyFFTFilter(draft: Draft<State>) {
     resetSelectedTool(draft);
     changeSpectrumVerticalAlignment(draft, { align: 'bottom' });
 
-    setDomain(draft);
+    setDomain(draft, { yDomain: { isChanged: true } });
     setMode(draft);
   }
 }
