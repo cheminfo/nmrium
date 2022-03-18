@@ -2,6 +2,7 @@ import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import { useCallback, memo, ReactElement, CSSProperties } from 'react';
 
+import { NMRIumWorkspace } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
@@ -22,7 +23,7 @@ import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
 
-interface AccordionItem {
+interface BaseAccordionItem {
   title: string;
   component: ReactElement;
   style?: CSSProperties;
@@ -31,12 +32,25 @@ interface AccordionItem {
   isExperimental?: boolean;
 }
 
+interface PreventOpenOptions extends BaseAccordionItem {
+  isOpen: true;
+  preventOpenWhen?: (null | NMRIumWorkspace)[];
+  openWhen?: (null | NMRIumWorkspace)[];
+}
+interface OpenOptions extends BaseAccordionItem {
+  isOpen?: false;
+}
+
+type AccordionItem = PreventOpenOptions | OpenOptions;
+
 const accordionItems: AccordionItem[] = [
   {
     title: 'Spectra',
     component: <SpectrumListPanel />,
     hidePreferenceKey: 'spectraPanel',
     mode: null,
+    isOpen: true,
+    preventOpenWhen: ['prediction'],
   },
   {
     title: 'Information',
@@ -118,6 +132,8 @@ const accordionItems: AccordionItem[] = [
     component: <PredictionPane />,
     hidePreferenceKey: 'predictionPanel',
     mode: null,
+    isOpen: true,
+    openWhen: ['prediction'],
   },
 ];
 
@@ -148,16 +164,32 @@ function PanelsInner({ displayerMode }) {
     [displayerMode, isExperimental, preferences],
   );
 
+  const isOpened = useCallback(
+    (item: AccordionItem) => {
+      if (
+        item?.isOpen &&
+        !item?.preventOpenWhen?.includes(preferences?.workspace?.base) &&
+        (!item?.openWhen ||
+          item.openWhen?.includes(preferences?.workspace?.base))
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [preferences?.workspace?.base],
+  );
+
   return (
     <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
       <Accordion>
-        {accordionItems.map((item, index) => {
+        {accordionItems.map((item) => {
           return (
             check(item) && (
               <Accordion.Item
                 key={item.title}
                 title={item.title}
-                defaultOpened={index === 0}
+                defaultOpened={isOpened(item)}
               >
                 {item.component}
               </Accordion.Item>
