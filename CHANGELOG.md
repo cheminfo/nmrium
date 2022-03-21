@@ -1,5 +1,15 @@
 # Changelog
 
+### [0.23.1](https://www.github.com/cheminfo/nmrium/compare/v0.23.0...v0.23.1) (2022-03-21)
+
+
+### Bug Fixes
+
+* bug when drag / drop second NMRium file ([fe64cb1](https://www.github.com/cheminfo/nmrium/commit/fe64cb166b020b80d9665d4547cda30c3b8b69f7)), closes [#1421](https://www.github.com/cheminfo/nmrium/issues/1421)
+* crash when unselect 2d spectrum ([790b27c](https://www.github.com/cheminfo/nmrium/commit/790b27c370918ce74e217c032e40a3431807a9b4)), closes [#1434](https://www.github.com/cheminfo/nmrium/issues/1434)
+* sorting columns in ranges table ([67e850a](https://www.github.com/cheminfo/nmrium/commit/67e850a89bc4f6dc5e458a6e814857282d61433a))
+* y scale was not refreshed after applying FFT Filter ([011ef72](https://www.github.com/cheminfo/nmrium/commit/011ef724265a90ed4c774d338749e1cb8fe4692c)), closes [#1430](https://www.github.com/cheminfo/nmrium/issues/1430)
+
 ## [0.23.0](https://www.github.com/cheminfo/nmrium/compare/v0.22.0...v0.23.0) (2022-03-11)
 
 
