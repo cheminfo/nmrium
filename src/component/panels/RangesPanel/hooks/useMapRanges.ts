@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 
-import generateID from '../../../data/utilities/generateID';
+import { Range } from '../../../../data/types/data1d';
+import generateID from '../../../../data/utilities/generateID';
 
-interface RangeDataProps {
+export interface RangeData extends Range {
   rowKey: string;
   tableMetaInfo: any;
 }
 
 function useMapRanges(data) {
   return useMemo(() => {
-    const _rangesData: Array<RangeDataProps> = [];
+    const _rangesData: Array<RangeData> = [];
     data.forEach((range, i) => {
       if (range.signals.length === 1) {
         _rangesData.push({

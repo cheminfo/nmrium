@@ -148,7 +148,7 @@ function CouplingsTable({
                   onFocus={onFocus}
                   onBlur={onBlur}
                   style={{
-                    inputWrapper: {
+                    input: {
                       width: '100%',
                       height: '26px',
                     },

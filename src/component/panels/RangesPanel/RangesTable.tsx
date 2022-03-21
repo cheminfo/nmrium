@@ -9,7 +9,7 @@ import ContextMenu from '../../elements/ContextMenu';
 import useTableSortBy from '../../hooks/useTableSortBy';
 
 import RangesTableRow from './RangesTableRow';
-import useMapRanges from './useMapRanges';
+import useMapRanges from './hooks/useMapRanges';
 
 const tableStyle = css`
   border-spacing: 0;

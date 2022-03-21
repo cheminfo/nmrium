@@ -12,35 +12,31 @@ import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
-const AddSignalFormTabStyle = css`
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  padding: 0.4rem;
-
-  .info-text {
-    padding: 10px;
-    font-size: 13px;
-  }
-  .input-notes {
+const styles = {
+  container: css`
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.4rem;
+  `,
+  inputInfo: css`
     font-size: 10px;
     color: black;
     font-weight: bold;
-  }
+  `,
+  infoText: css`
+    padding: 10px;
+    font-size: 13px;
+  `,
 
-  input {
-    background-color: transparent;
+  signalContainer: css`
     border: 0.55px solid #dedede;
-    width: 50%;
-    text-align: center;
-    outline: none;
-  }
-
-  .add-signal-container {
-    border: 0.55px solid #dedede;
-  }
-
-  .addSignalButton {
+  `,
+  inputContainer: css`
+    display: flex;
+    justify-content: center;
+  `,
+  addSignalBtn: css`
     margin-top: 15px;
     margin-top: 20px;
     width: 100%;
@@ -51,11 +47,12 @@ const AddSignalFormTabStyle = css`
     display: flex;
     padding: 0.4rem;
     font-size: 12px;
-  }
-  .addSignalButton:disabled {
-    opacity: 0.6;
-  }
-`;
+
+    & :disabled {
+      opacity: 0.6;
+    }
+  `,
+};
 
 interface AddSignalFormTabProps {
   onFocus: (element: any) => void;
@@ -111,9 +108,9 @@ function AddSignalFormTab(
   }, [ref]);
 
   return (
-    <div css={AddSignalFormTabStyle}>
-      <div className="add-signal-container">
-        <p className="info-text">
+    <div css={styles.container}>
+      <div>
+        <p css={styles.infoText}>
           Edit or select a delta value of new signal (ppm):
         </p>
         <FormikForm
@@ -124,28 +121,27 @@ function AddSignalFormTab(
           }}
           onSubmit={saveHandler}
         >
-          <FormikInput
-            name="newSignalDelta"
-            type="number"
-            placeholder={`𝛅 (ppm)`}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            style={{
-              inputWrapper: {
-                width: '250px',
-                height: '30px',
-              },
-              // container: {
-              //   justifyContent: 'center',
-              // },
-            }}
-            checkErrorAfterInputTouched={false}
-          />
-          <p className="input-notes">
+          <div css={styles.inputContainer}>
+            <FormikInput
+              name="newSignalDelta"
+              type="number"
+              placeholder={`𝛅 (ppm)`}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              style={{
+                input: {
+                  width: '250px',
+                  height: '30px',
+                },
+              }}
+              checkErrorAfterInputTouched={false}
+            />
+          </div>
+          <p css={styles.inputInfo}>
             [ {`${format(range.from)} ppm - ${format(range.to)} ppm`} ]
           </p>
 
-          <Button className="addSignalButton" onClick={triggerSubmitHandler}>
+          <Button css={styles.addSignalBtn} onClick={triggerSubmitHandler}>
             <FaPlus title="Add new signal" />
           </Button>
         </FormikForm>
