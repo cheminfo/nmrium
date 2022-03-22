@@ -170,13 +170,12 @@ export function initPreferencesState(
     removeData('nmr-local-storage-version');
   }
 
+  //  if the local setting version != current settings version number
   if (!localData?.version || localData?.version !== LOCAL_STORAGE_VERSION) {
     removeData('nmr-general-settings');
   }
-
   return {
     ...state,
-    version: localData?.version || LOCAL_STORAGE_VERSION,
     workspaces: localData?.workspaces || { default: Workspaces.default },
   };
 }
@@ -210,7 +209,6 @@ function handleInit(draft: Draft<PreferencesState>, action) {
      * 3- b) if workspace not exists in the local storage
      *    c) if the local setting workspace version != current workspace version number
      *    d) if hard code workspace parameters !=  current workspace parameters
-     * 4- if the local setting version != current settings version number
      */
     if (
       (Workspaces[draft.workspace.current] &&
@@ -221,10 +219,9 @@ function handleInit(draft: Draft<PreferencesState>, action) {
             workspacePreferences.display,
             currentWorkspacePreferences?.display,
           ))) ||
-      !localData ||
-      LOCAL_STORAGE_VERSION !== draft.version
+      !localData
     ) {
-      const { workspaces, version } = original(draft) || {};
+      const { workspaces, version } = draft || {};
       const display = filterObject(workspacePreferences.display);
 
       const data = {
