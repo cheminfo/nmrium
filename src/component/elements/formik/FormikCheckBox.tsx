@@ -9,7 +9,11 @@ interface FormikCheckBoxProps extends Omit<CheckBoxProps, 'style'> {
   label?: string;
   className?: string;
   reverse?: boolean;
-  style?: { label?: CSSProperties; checkbox?: CSSProperties };
+  style?: {
+    container?: CSSProperties;
+    label?: CSSProperties;
+    checkbox?: CSSProperties;
+  };
 }
 
 function FormikCheckBox(props: FormikCheckBoxProps) {
@@ -19,7 +23,7 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
     onChange = () => null,
     className = 'checkbox',
     reverse = false,
-    style = { label: {}, checkbox: {} },
+    style = { container: {}, label: {}, checkbox: {} },
     ...resProps
   } = props;
 
@@ -36,14 +40,19 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
   );
 
   return (
-    <div className={`${className} check-${value}`}>
-      <label
-        htmlFor={name}
-        className="checkbox-label"
-        style={style.label ? style.label : {}}
-      >
-        {label}
-      </label>
+    <div
+      className={`${className} check-${value}`}
+      style={style.container ? style.container : {}}
+    >
+      {label && (
+        <label
+          htmlFor={name}
+          className="checkbox-label"
+          style={style.label ? style.label : {}}
+        >
+          {label}
+        </label>
+      )}
       <CheckBox
         {...resProps}
         name={name}
