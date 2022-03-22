@@ -100,14 +100,14 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
       },
       {
         index: 2,
-        Header: 'Display',
+        Header: 'Active',
         Cell: ({ row }) => (
           <CheckBoxCell name={`display.${row.original.name}.display`} />
         ),
       },
       {
         index: 3,
-        Header: 'Open',
+        Header: 'Load',
         Cell: ({ row }) =>
           !row.original.hideOpenOption ? (
             <CheckBoxCell name={`display.${row.original.name}.open`} />
