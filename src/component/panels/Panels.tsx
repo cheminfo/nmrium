@@ -67,7 +67,7 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Ranges',
     component: <RangesPanel />,
-    hidePreferenceKey: 'ranges',
+    hidePreferenceKey: 'rangesPanel',
     mode: DISPLAYER_MODE.DM_1D,
   },
   {
