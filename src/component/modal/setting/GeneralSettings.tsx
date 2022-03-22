@@ -78,9 +78,9 @@ const styles = css`
       width: 260px;
     }
   }
-  .checkbox-element {
-    margin-bottom: 5px;
-  }
+  // .checkbox-element {
+  //   margin-bottom: 5px;
+  // }
 
   .workspace-container {
     display: flex;

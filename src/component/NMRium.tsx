@@ -20,6 +20,7 @@ import { useToggle, useFullscreen } from 'react-use';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
+import { PanelPreferencesType } from '../types/PanelPreferencesType';
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
@@ -146,28 +147,26 @@ export interface NMRiumProps {
   getSpinner?: () => ReactElement;
 }
 
-type FeatureStatus = boolean | 'hide';
-
 export type NMRiumPreferences = Partial<{
   general: Partial<{
     disableMultipletAnalysis: boolean;
     hideSetSumFromMolecule: boolean;
     hideGeneralSettings: boolean;
-    experimentalFeatures: FeatureStatus;
+    experimentalFeatures: PanelPreferencesType;
   }>;
   panels: Partial<{
-    spectraPanel: FeatureStatus;
-    informationPanel: FeatureStatus;
-    peaksPanel: FeatureStatus;
-    integralsPanel: FeatureStatus;
-    rangesPanel: FeatureStatus;
-    structuresPanel: FeatureStatus;
-    filtersPanel: FeatureStatus;
-    zonesPanel: FeatureStatus;
-    summaryPanel: FeatureStatus;
-    multipleSpectraAnalysisPanel: FeatureStatus;
-    databasePanel: FeatureStatus;
-    predictionPanel: FeatureStatus;
+    spectraPanel: PanelPreferencesType;
+    informationPanel: PanelPreferencesType;
+    peaksPanel: PanelPreferencesType;
+    integralsPanel: PanelPreferencesType;
+    rangesPanel: PanelPreferencesType;
+    structuresPanel: PanelPreferencesType;
+    filtersPanel: PanelPreferencesType;
+    zonesPanel: PanelPreferencesType;
+    summaryPanel: PanelPreferencesType;
+    multipleSpectraAnalysisPanel: PanelPreferencesType;
+    databasePanel: PanelPreferencesType;
+    predictionPanel: PanelPreferencesType;
   }>;
   toolBarButtons: Partial<{
     zoomTool: boolean;

@@ -1,9 +1,17 @@
 import lodashGet from 'lodash/get';
+import { useMemo } from 'react';
 
 import { NMRiumPreferences } from '../../NMRium';
+import ReactTable from '../../elements/ReactTable/ReactTable';
+import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 
-const LIST: Array<{ label: string; name: string }> = [
+interface ListItem {
+  label: string;
+  name: string;
+  hideOpenOption?: boolean;
+}
+const LIST: ListItem[] = [
   {
     label: 'Spectra selection panel',
     name: 'panels.spectraPanel',
@@ -55,6 +63,7 @@ const LIST: Array<{ label: string; name: string }> = [
   {
     label: 'Experimental Features',
     name: 'general.experimentalFeatures',
+    hideOpenOption: true,
   },
 ];
 
@@ -62,22 +71,68 @@ interface DisplayTabContentProps {
   preferences: NMRiumPreferences;
 }
 
+function CheckBoxCell(props) {
+  return (
+    <FormikCheckBox
+      style={{
+        container: { display: 'block', margin: '0 auto', width: 'fit-content' },
+      }}
+      key={props.name}
+      className="checkbox-element"
+      name={props.name}
+    />
+  );
+}
+
 function DisplayTabContent({ preferences }: DisplayTabContentProps) {
+  const COLUMNS: CustomColumn[] = useMemo(
+    () => [
+      {
+        index: 1,
+        Header: '#',
+        Cell: ({ row }) => row.index + 1,
+      },
+      {
+        index: 1,
+        Header: 'Panel Name',
+        accessor: 'label',
+        style: { width: '80%' },
+      },
+      {
+        index: 2,
+        Header: 'Display',
+        Cell: ({ row }) => (
+          <CheckBoxCell name={`display.${row.original.name}.display`} />
+        ),
+      },
+      {
+        index: 3,
+        Header: 'Open',
+        Cell: ({ row }) =>
+          !row.original.hideOpenOption ? (
+            <CheckBoxCell name={`display.${row.original.name}.open`} />
+          ) : (
+            <div />
+          ),
+      },
+    ],
+    [],
+  );
+
+  const data = useMemo(() => {
+    return LIST.filter(
+      (item) => lodashGet(preferences, `${item.name}.hidden`) !== true,
+    );
+  }, [preferences]);
+
   return (
     <>
-      <p className="section-header">Show / Hide Panels</p>
-      {LIST.map(
-        (item) =>
-          lodashGet(preferences, `${item.name}`) !== 'hide' && (
-            <FormikCheckBox
-              key={`display.${item.name}`}
-              className="checkbox-element"
-              label={item.label}
-              name={`display.${item.name}`}
-              // reverse
-            />
-          ),
-      )}
+      <div>
+        <p className="section-header">Show / Hide Panels</p>
+      </div>
+      <div style={{ width: '100%', overflow: 'hidden' }}>
+        <ReactTable columns={COLUMNS} data={data} />
+      </div>
     </>
   );
 }

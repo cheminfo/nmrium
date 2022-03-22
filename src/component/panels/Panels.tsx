@@ -2,7 +2,7 @@ import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import { useCallback, memo, ReactElement, CSSProperties } from 'react';
 
-import { NMRIumWorkspace } from '../NMRium';
+import { PanelPreferencesType } from '../../types/PanelPreferencesType';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
@@ -23,7 +23,7 @@ import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
 
-interface BaseAccordionItem {
+interface AccordionItem {
   title: string;
   component: ReactElement;
   style?: CSSProperties;
@@ -32,25 +32,12 @@ interface BaseAccordionItem {
   isExperimental?: boolean;
 }
 
-interface PreventOpenOptions extends BaseAccordionItem {
-  isOpen: true;
-  preventOpenWhen?: (null | NMRIumWorkspace)[];
-  openWhen?: (null | NMRIumWorkspace)[];
-}
-interface OpenOptions extends BaseAccordionItem {
-  isOpen?: false;
-}
-
-type AccordionItem = PreventOpenOptions | OpenOptions;
-
 const accordionItems: AccordionItem[] = [
   {
     title: 'Spectra',
     component: <SpectrumListPanel />,
     hidePreferenceKey: 'spectraPanel',
     mode: null,
-    isOpen: true,
-    preventOpenWhen: ['prediction'],
   },
   {
     title: 'Information',
@@ -80,7 +67,7 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Ranges',
     component: <RangesPanel />,
-    hidePreferenceKey: 'rangesPanel',
+    hidePreferenceKey: 'ranges',
     mode: DISPLAYER_MODE.DM_1D,
   },
   {
@@ -132,8 +119,6 @@ const accordionItems: AccordionItem[] = [
     component: <PredictionPane />,
     hidePreferenceKey: 'predictionPanel',
     mode: null,
-    isOpen: true,
-    openWhen: ['prediction'],
   },
 ];
 
@@ -146,38 +131,43 @@ export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
   multipleSpectraAnalysis: 'Multiple Spectra Analysis',
 };
 
-function PanelsInner({ displayerMode }) {
+function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
   const preferences = usePreferences();
+
+  return useCallback(
+    (item: AccordionItem) => {
+      return lodashGet(
+        preferences.current,
+        `display.panels.${item.hidePreferenceKey}`,
+      );
+    },
+    [preferences],
+  );
+}
+
+function PanelsInner({ displayerMode: displayedMode }) {
+  const getPanelPreferences = usePanelPreferences();
   const isExperimental = useCheckExperimentalFeature();
   const check = useCallback(
     (item) => {
+      const panelOptions = getPanelPreferences(item);
       return (
-        (lodashGet(
-          preferences.current,
-          `display.panels.${item.hidePreferenceKey}`,
-        ) === true &&
+        (panelOptions?.hidden !== true &&
+          panelOptions?.display === true &&
           item.isExperimental === undefined &&
-          (item.mode == null || item.mode === displayerMode)) ||
+          (item.mode == null || item.mode === displayedMode)) ||
         (item.isExperimental && isExperimental)
       );
     },
-    [displayerMode, isExperimental, preferences],
+    [displayedMode, getPanelPreferences, isExperimental],
   );
 
   const isOpened = useCallback(
     (item: AccordionItem) => {
-      if (
-        item?.isOpen &&
-        !item?.preventOpenWhen?.includes(preferences?.workspace?.base) &&
-        (!item?.openWhen ||
-          item.openWhen?.includes(preferences?.workspace?.base))
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      const panelOptions = getPanelPreferences(item);
+      return panelOptions?.hidden !== true && panelOptions?.open;
     },
-    [preferences?.workspace?.base],
+    [getPanelPreferences],
   );
 
   return (

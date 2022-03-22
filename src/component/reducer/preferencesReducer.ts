@@ -108,7 +108,7 @@ export const preferencesInitialState: PreferencesState = {
 
 function filterObject(data: any) {
   return JSON.parse(JSON.stringify(data), (key, value) => {
-    if (value !== 'hide') {
+    if (value?.hidden !== true) {
       return value;
     }
   });
@@ -116,7 +116,7 @@ function filterObject(data: any) {
 function FlatObject(data: any) {
   let result = {};
   JSON.parse(JSON.stringify(data), (key, value) => {
-    if (value !== 'hide' && key) {
+    if (value?.hidden !== true && key) {
       result[key] = result[key]++ || 1;
     }
   });
