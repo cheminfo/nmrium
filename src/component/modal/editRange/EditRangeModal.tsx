@@ -77,7 +77,7 @@ interface EditRangeModalProps {
   onSaveEditRangeModal: (value: any) => Promise<void> | null | void;
   onCloseEditRangeModal: () => void;
   onZoomEditRangeModal: (value: any) => void;
-  range: any;
+  // range: any;
   automaticZoom?: boolean;
 }
 
@@ -90,11 +90,16 @@ function EditRangeModal({
   onSaveEditRangeModal = () => null,
   onCloseEditRangeModal = () => null,
   onZoomEditRangeModal = () => null,
-  range,
+  // range,
   automaticZoom = true,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
-  const { activeTab } = useChartData();
+  const {
+    activeTab,
+    toolOptions: {
+      data: { tempRange: range },
+    },
+  } = useChartData();
   const dispatch = useDispatch();
   const format = useFormatNumberByNucleus(activeTab);
   const validation = useRangeFormValidation();
@@ -153,38 +158,50 @@ function EditRangeModal({
   );
 
   const data = useMemo(() => {
-    const signals = range.signals.map((signal) => {
-      // counter within j array to access to right j values
+    if (range) {
+      const signals = range.signals.map((signal: any) => {
+        // counter within j array to access to right j values
 
-      let counterJ = 0;
-      const couplings: Array<Coupling> = [];
-      signal.multiplicity.split('').forEach((_multiplicity) => {
-        let coupling: Coupling = {
-          multiplicity: _multiplicity,
-          coupling: '',
-        };
+        let counterJ = 0;
+        const couplings: Array<Coupling> = [];
+        signal.multiplicity.split('').forEach((_multiplicity) => {
+          let coupling: Coupling = {
+            multiplicity: _multiplicity,
+            coupling: '',
+          };
 
-        if (hasCouplingConstant(_multiplicity)) {
-          coupling = { ...signal.js[counterJ] };
-          coupling.coupling = Number(format(coupling.coupling));
-          counterJ++;
-        }
-        coupling.multiplicity = translateMultiplet(coupling.multiplicity);
-        couplings.push(coupling);
+          if (hasCouplingConstant(_multiplicity)) {
+            coupling = { ...signal.js[counterJ] };
+            coupling.coupling = Number(format(coupling.coupling));
+            counterJ++;
+          }
+          coupling.multiplicity = translateMultiplet(coupling.multiplicity);
+          couplings.push(coupling);
+        });
+
+        return { ...signal, js: couplings };
       });
 
-      return { ...signal, js: couplings };
-    });
-    return { activeTab: '0', signals };
+      return { activeTab: '0', signals };
+    }
   }, [format, range]);
 
   const changeHandler = useCallback(
     (values) => {
       const signals = getSignals(values.signals);
-      dispatch({
-        type: CHANGE_TEMP_RANGE,
-        payload: { tempRange: Object.assign({}, range, { signals }) },
-      });
+      if (
+        JSON.stringify(range?.signals, (key, value) => {
+          if (key !== 'id') return value;
+        }) !==
+        JSON.stringify(signals, (key, value) => {
+          if (key !== 'id') return value;
+        })
+      ) {
+        dispatch({
+          type: CHANGE_TEMP_RANGE,
+          payload: { signals },
+        });
+      }
     },
     [dispatch, getSignals, range],
   );
@@ -202,8 +219,8 @@ function EditRangeModal({
             <FaSearchPlus title="Set to default view on range in spectrum" />
           </Button>
           <span>
-            {` Range and Signal edition: ${format(range.from)} ppm to ${format(
-              range.to,
+            {` Range and Signal edition: ${format(range?.from)} ppm to ${format(
+              range?.to,
             )} ppm`}
           </span>
           <SaveButton
@@ -213,7 +230,7 @@ function EditRangeModal({
 
           <CloseButton onClick={handleOnClose} />
         </div>
-        <SignalsForm range={range} />
+        {range && <SignalsForm range={range} />}
         <FormikOnChange onChange={changeHandler} />
       </FormikForm>
     </div>

@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, memo, useMemo } from 'react';
 
-import { Signal1D } from '../../../data/types/data1d';
+import { Range as RangType } from '../../../data/types/data1d';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
   filterForIDsWithAssignment,
@@ -17,6 +17,7 @@ import { options } from '../../toolbar/ToolTypes';
 import Resizable from '../Resizable';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
+// import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -48,18 +49,10 @@ const stylesHighlighted = css`
   }
 `;
 
-export interface RangeData {
-  id: string;
-  from: number;
-  to: number;
-  integration: number;
-  signals: Signal1D[];
-}
-
 interface RangeProps {
   showMultiplicityTrees: boolean;
   selectedTool: string;
-  rangeData: RangeData;
+  rangeData: RangType;
   startEditMode: boolean;
 }
 
@@ -70,17 +63,42 @@ function Range({
   startEditMode,
 }: RangeProps) {
   const { id, from: rangeFrom, to: rangeTo, integration, signals } = rangeData;
+
   const assignmentData = useAssignmentData();
-  const assignmentRange = useAssignment(id);
-  const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(
-      filterForIDsWithAssignment(
-        assignmentData,
-        signals.map((_signal) => _signal.id),
+  const {
+    id: assignmentRangeID,
+    assigned,
+    onMouseEnter,
+    onMouseLeave,
+    onClick,
+    isActive: isAssignmentActive,
+  } = useAssignment(id);
+  const highlightId = useMemo(
+    () =>
+      [assignmentRangeID].concat(assigned.x || []).concat(
+        filterForIDsWithAssignment(
+          assignmentData,
+          signals.map((_signal) => _signal.id),
+        ),
       ),
-    ),
-    { type: HighlightedSource.RANGE, extra: { id } },
+    [assignmentRangeID, assigned.x, assignmentData, signals],
   );
+  const { show, hide, isActive } = useHighlight(
+    highlightId,
+    useMemo(() => ({ type: HighlightedSource.RANGE, extra: { id } }), [id]),
+  );
+  // useWhatChanged(
+  //   [
+  //     show,
+  //     hide,
+  //     isActive,
+  //     highlightId,
+  //     assignmentRangeID,
+  //     assigned,
+  //     assignmentData,
+  //   ],
+  //   'show, hide, isActive,highlightId,assignmentRange,assignmentData',
+  // );
   const [rangeBoundary, setRangeBoundary] = useState({
     from: rangeFrom,
     to: rangeTo,
@@ -122,14 +140,18 @@ function Range({
   );
 
   const mouseEnterHandler = useCallback(() => {
-    assignmentRange.onMouseEnter('x');
-    highlightRange.show();
-  }, [assignmentRange, highlightRange]);
+    if (!isBlockedByEditing) {
+      onMouseEnter('x');
+      show();
+    }
+  }, [isBlockedByEditing, onMouseEnter, show]);
 
   const mouseLeaveHandler = useCallback(() => {
-    assignmentRange.onMouseLeave('x');
-    highlightRange.hide();
-  }, [assignmentRange, highlightRange]);
+    if (!isBlockedByEditing) {
+      onMouseLeave('x');
+      hide();
+    }
+  }, [hide, isBlockedByEditing, onMouseLeave]);
 
   const assignHandler = useCallback(
     (e) => {
@@ -138,10 +160,10 @@ function Range({
         e.shiftKey &&
         !isBlockedByEditing
       ) {
-        assignmentRange.onClick('x');
+        onClick('x');
       }
     },
-    [assignmentRange, isBlockedByEditing, selectedTool],
+    [isBlockedByEditing, onClick, selectedTool],
   );
 
   const dragHandler = useCallback((boundary) => {
@@ -155,9 +177,7 @@ function Range({
       data-test-id="range"
       style={{ outline: 'none' }}
       css={
-        isBlockedByEditing ||
-        highlightRange.isActive ||
-        assignmentRange.isActive
+        isBlockedByEditing || isActive || isAssignmentActive
           ? stylesHighlighted
           : stylesOnHover
       }
@@ -174,11 +194,7 @@ function Range({
           className="range-area"
           fill="green"
           fillOpacity={
-            !reduceOpacity ||
-            highlightRange.isActive ||
-            assignmentRange.isActive
-              ? 1
-              : 0.4
+            !reduceOpacity || isActive || isAssignmentActive ? 1 : 0.4
           }
         />
         <text
@@ -188,11 +204,7 @@ function Range({
           fontSize="10"
           fill="red"
           fillOpacity={
-            !reduceOpacity ||
-            highlightRange.isActive ||
-            assignmentRange.isActive
-              ? 1
-              : 0.6
+            !reduceOpacity || isActive || isAssignmentActive ? 1 : 0.6
           }
         >
           {integration !== undefined ? integration.toFixed(2) : ''}
@@ -223,4 +235,4 @@ function Range({
   );
 }
 
-export default Range;
+export default memo(Range);

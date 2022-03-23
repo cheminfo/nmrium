@@ -34,7 +34,7 @@ function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
 }
 
 function translateMultiplet(multiplet) {
-  return multiplet.length === 1
+  return multiplet?.length === 1
     ? Multiplets.find((_multiplet) => _multiplet.value === multiplet)?.label
     : Multiplets.find((_multiplet) => _multiplet.label === multiplet)?.value;
 }

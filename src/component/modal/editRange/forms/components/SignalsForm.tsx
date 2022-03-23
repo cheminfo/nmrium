@@ -43,7 +43,7 @@ const tabStyles = css`
 `;
 
 interface SignalsFormProps {
-  range: number;
+  range: any;
 }
 
 function SignalsForm({ range }: SignalsFormProps) {

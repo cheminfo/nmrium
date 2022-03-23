@@ -1,6 +1,10 @@
 import { Fragment, memo } from 'react';
 
-import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
+import {
+  Datum1D,
+  Range as RangProps,
+  Ranges as RangesProps,
+} from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 
@@ -11,7 +15,7 @@ interface RangesInnerProps {
   displayerKey: string;
   selectedTool: string;
   ranges: RangesProps;
-  editRangeID: string;
+  tempRange: RangProps | null;
   showMultiplicityTrees: boolean;
   showRangesIntegrals: boolean;
 }
@@ -20,7 +24,7 @@ function RangesInner({
   ranges,
   displayerKey,
   selectedTool,
-  editRangeID,
+  tempRange,
   showMultiplicityTrees,
   showRangesIntegrals,
 }: RangesInnerProps) {
@@ -28,17 +32,28 @@ function RangesInner({
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges?.values?.map((range) => (
         <Fragment key={range.id}>
-          <Range
-            rangeData={range}
-            selectedTool={selectedTool}
-            showMultiplicityTrees={showMultiplicityTrees}
-            startEditMode={
-              editRangeID && editRangeID === range.id ? true : false
-            }
-          />
+          {tempRange?.id !== range.id && (
+            <Range
+              rangeData={range}
+              selectedTool={selectedTool}
+              showMultiplicityTrees={showMultiplicityTrees}
+              startEditMode={
+                false
+                // tempRange && tempRange?.id === range.id ? true : false
+              }
+            />
+          )}
           {showRangesIntegrals && <RangeIntegral range={range} />}
         </Fragment>
       ))}
+      {tempRange && (
+        <Range
+          rangeData={tempRange}
+          selectedTool={selectedTool}
+          showMultiplicityTrees={showMultiplicityTrees}
+          startEditMode
+        />
+      )}
     </g>
   );
 }
@@ -66,7 +81,7 @@ export default function Ranges() {
         showRangesIntegrals,
         selectedTool,
         displayerKey,
-        editRangeID: tempRange?.id || '',
+        tempRange: tempRange,
       }}
     />
   );

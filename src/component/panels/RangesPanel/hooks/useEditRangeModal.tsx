@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useModal } from '../../../elements/popup/Modal';
-import { positions, transitions } from '../../../elements/popup/options';
+import { positions } from '../../../elements/popup/options';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   CHANGE_RANGE_SIGNAL_KIND,
@@ -21,7 +21,6 @@ export default function useEditRangeModal(range: RangeData) {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
-
   const zoomRange = useCallback(() => {
     const margin = Math.abs(range.from - range.to);
     dispatch({
@@ -79,11 +78,11 @@ export default function useEditRangeModal(range: RangeData) {
         onCloseEditRangeModal={closeEditRangeHandler}
         onSaveEditRangeModal={saveEditRangeHandler}
         onZoomEditRangeModal={zoomRange}
-        range={range}
+        // range={range}
       />,
       {
         position: positions.MIDDLE_RIGHT,
-        transition: transitions.SCALE,
+        // transition: transitions.SCALE,
         isBackgroundBlur: false,
       },
     );

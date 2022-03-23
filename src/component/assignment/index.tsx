@@ -97,9 +97,17 @@ function assignmentReducer(state, action) {
     case 'SET_IS_ON_HOVER': {
       return {
         ...state,
-        isOnHover: action.payload.id !== undefined,
-        onHoverID: action.payload.id,
-        onHoverAxis: action.payload.axis,
+        ...(action.payload?.id
+          ? {
+              isOnHover: true,
+              onHoverID: action.payload.id,
+              onHoverAxis: action.payload.axis,
+            }
+          : {
+              isOnHover: false,
+              onHoverID: undefined,
+              onHoverAxis: undefined,
+            }),
       };
     }
     case 'DELETE_RECORD': {
@@ -227,7 +235,7 @@ export function useAssignmentData() {
 }
 
 export function useAssignment(key) {
-  const context = useAssignmentData();
+  const { dispatch, assignment } = useAssignmentData();
 
   if ((typeof key !== 'string' && typeof key !== 'number') || key === '') {
     throw new Error(`assignment key must be a non-empty string or number`);
@@ -235,55 +243,53 @@ export function useAssignment(key) {
   const id = String(key);
 
   const isActive = useMemo(() => {
-    return context.assignment.isActive && context.assignment.activeID === id;
-  }, [context.assignment.activeID, context.assignment.isActive, id]);
+    return assignment.isActive && assignment.activeID === id;
+  }, [assignment.activeID, assignment.isActive, id]);
 
   const activeAxis = useMemo(() => {
-    return isActive ? context.assignment.activeAxis : undefined;
-  }, [context.assignment.activeAxis, isActive]);
+    return isActive ? assignment.activeAxis : undefined;
+  }, [assignment.activeAxis, isActive]);
 
   const assigned = useMemo(() => {
-    return context.assignment.assignment[id]
-      ? context.assignment.assignment[id]
-      : [];
-  }, [context.assignment.assignment, id]);
+    return assignment.assignment[id] ? assignment.assignment[id] : [];
+  }, [assignment.assignment, id]);
 
   const isOnHover = useMemo(() => {
-    return context.assignment.isOnHover && context.assignment.onHoverID === id;
-  }, [context.assignment.isOnHover, context.assignment.onHoverID, id]);
+    return assignment.isOnHover && assignment.onHoverID === id;
+  }, [assignment.isOnHover, assignment.onHoverID, id]);
 
   const onHoverAxis = useMemo(() => {
-    return isOnHover ? context.assignment.onHoverAxis : undefined;
-  }, [context.assignment.onHoverAxis, isOnHover]);
+    return isOnHover ? assignment.onHoverAxis : undefined;
+  }, [assignment.onHoverAxis, isOnHover]);
 
   const add = useCallback(
     (_id) => {
-      context.dispatch({
+      dispatch({
         type: 'ADD',
         payload: { id: [id, _id], axis: activeAxis },
       });
     },
-    [activeAxis, context, id],
+    [activeAxis, dispatch, id],
   );
 
   const remove = useCallback(
     (_id) => {
-      context.dispatch({
+      dispatch({
         type: 'REMOVE',
         payload: { id: [id, _id], axis: activeAxis },
       });
     },
-    [activeAxis, context, id],
+    [activeAxis, dispatch, id],
   );
 
   const removeAll = useCallback(
     (axis) => {
-      context.dispatch({
+      dispatch({
         type: 'REMOVE_ALL',
         payload: { id: [id], axis },
       });
     },
-    [context, id],
+    [dispatch, id],
   );
 
   const toggle = useCallback(
@@ -302,15 +308,15 @@ export function useAssignment(key) {
 
   // totally deletion of a record from assignment storage
   const deleteRecord = useCallback(() => {
-    context.dispatch({
+    dispatch({
       type: 'DELETE_RECORD',
       payload: { id },
     });
-  }, [context, id]);
+  }, [dispatch, id]);
 
   const onClick = useCallback(
     (axis) => {
-      context.dispatch({
+      dispatch({
         type: 'SET_IS_ACTIVE',
         payload: {
           id: !isActive ? id : undefined,
@@ -318,13 +324,13 @@ export function useAssignment(key) {
         },
       });
     },
-    [context, id, isActive],
+    [dispatch, id, isActive],
   );
 
   const setIsOnHover = useCallback(
     (action, axis) => {
       if (action === 'enter') {
-        context.dispatch({
+        dispatch({
           type: 'SET_IS_ON_HOVER',
           payload: {
             id: id,
@@ -332,13 +338,13 @@ export function useAssignment(key) {
           },
         });
       } else if (action === 'leave') {
-        context.dispatch({
+        dispatch({
           type: 'SET_IS_ON_HOVER',
           payload: {},
         });
       }
     },
-    [context, id],
+    [dispatch, id],
   );
 
   const onMouseEnter = useCallback(
@@ -350,7 +356,25 @@ export function useAssignment(key) {
     (axis) => setIsOnHover('leave', axis),
     [setIsOnHover],
   );
-
+  // useWhatChanged(
+  //   [
+  //     id,
+  //     isActive,
+  //     activeAxis,
+  //     assigned,
+  //     add,
+  //     remove,
+  //     removeAll,
+  //     toggle,
+  //     deleteRecord,
+  //     onClick,
+  //     isOnHover,
+  //     onHoverAxis,
+  //     onMouseEnter,
+  //     onMouseLeave,
+  //   ],
+  //   '  id,isActive,activeAxis,assigned,add,remove,removeAll,toggle,deleteRecord,onClick,isOnHover,onHoverAxis,onMouseEnter,onMouseLeave,',
+  // );
   return {
     id,
     isActive,

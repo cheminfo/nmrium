@@ -18,7 +18,7 @@ import {
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import { setSumOptions } from '../../../data/data1d/Spectrum1D/SumManager';
-import { Datum1D } from '../../../data/types/data1d';
+import { Datum1D, Range } from '../../../data/types/data1d';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -255,7 +255,12 @@ function handleSetDiaIDRange(draft: Draft<State>, action) {
 }
 
 function handleResizeRange(draft: Draft<State>, action) {
+  const tempRange = draft.toolOptions.data.tempRange;
   if (draft.activeSpectrum?.id) {
+    if (tempRange?.id === action.data.id) {
+      const { from, to } = action.data;
+      draft.toolOptions.data.tempRange = { ...tempRange, from, to } as Range;
+    }
     const { index } = draft.activeSpectrum;
     changeRange(draft.data[index] as Datum1D, action.data);
   }
@@ -327,7 +332,11 @@ function handleChangeRangesSumFlag(draft, action) {
 }
 
 function handleChangeTempRange(draft: Draft<State>, action) {
-  draft.toolOptions.data.tempRange = action.payload.tempRange;
+  if (draft.toolOptions.data.tempRange) {
+    draft.toolOptions.data.tempRange.signals = action.payload.signals;
+  } else {
+    draft.toolOptions.data.tempRange = action.payload.tempRange;
+  }
 }
 
 function handleShowMultiplicityTrees(draft: Draft<State>) {

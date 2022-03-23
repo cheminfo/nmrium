@@ -113,15 +113,15 @@ function setSelectedTool(draft: Draft<State>, action) {
 
   if (draft?.data.length > 0) {
     if (selectedTool) {
+      if (selectedTool !== draft.toolOptions.selectedTool) {
+        resetTool(draft, false);
+      }
+
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
         draft.toolOptions.data.tempRange = action.payload.tempRange;
       } else {
         draft.toolOptions.data.tempRange = null;
-      }
-
-      if (selectedTool !== draft.toolOptions.selectedTool) {
-        resetTool(draft, false);
       }
 
       draft.toolOptions.selectedTool = selectedTool;
