@@ -9,10 +9,8 @@ const styles = css`
   align-items: center;
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.25);
-  height: 100%;
   flex-direction: column;
   user-select: none;
-  position: absolute;
   width: 100%;
   height: 100%;
   outline: 10px dashed rgba(0, 0, 0, 0.3);

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 export enum SortType {
   ASCENDING = 'asc',
   DESCENDING = 'desc',
+  ORIGINAL = 'original',
 }
 
 interface SortConfig {
@@ -32,37 +33,51 @@ export default function useTableSortBy(items, config = null) {
     return sortableItems;
   }, [items, sortConfig]);
 
-  const sorthandler = useCallback(
+  const sortHandler = useCallback(
     (event) => {
+      const key = event.currentTarget?.id;
       let direction = SortType.ASCENDING;
-      if (event.target.id) {
-        const key = event.target.id;
-        if (
-          sortConfig &&
-          sortConfig.key === key &&
-          sortConfig.direction === SortType.ASCENDING
-        ) {
-          direction = SortType.DESCENDING;
+      if (key && sortConfig && sortConfig.key === key) {
+        switch (sortConfig.direction) {
+          case SortType.ASCENDING:
+            direction = SortType.DESCENDING;
+
+            break;
+          case SortType.DESCENDING:
+            direction = SortType.ORIGINAL;
+
+            break;
+          default:
+            direction = SortType.ASCENDING;
+
+            break;
         }
-        setSortConfig({ key, direction });
       }
+      setSortConfig({ key, direction });
     },
     [sortConfig],
   );
 
   const isSortedDesc = useCallback(
     (columnName): { flag: boolean | null; content: string } => {
-      if (!sortConfig) {
-        return { flag: null, content: ' ' };
+      const defaultContent = { flag: null, content: ' ' };
+
+      if (!sortConfig || sortConfig.key !== columnName) {
+        return defaultContent;
       }
-      return sortConfig.key === columnName
-        ? sortConfig.direction === SortType.DESCENDING
-          ? { flag: true, content: ' ▼' }
-          : { flag: false, content: ' ▲' }
-        : { flag: null, content: ' ' };
+      switch (sortConfig.direction) {
+        case SortType.DESCENDING:
+          return { flag: true, content: ' ▼' };
+
+        case SortType.ASCENDING:
+          return { flag: false, content: ' ▲' };
+
+        default:
+          return defaultContent;
+      }
     },
     [sortConfig],
   );
 
-  return { items: sortedItems, isSortedDesc, onSort: { onClick: sorthandler } };
+  return { items: sortedItems, isSortedDesc, onSort: { onClick: sortHandler } };
 }

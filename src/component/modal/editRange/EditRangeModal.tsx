@@ -78,6 +78,7 @@ interface EditRangeModalProps {
   onCloseEditRangeModal: () => void;
   onZoomEditRangeModal: (value: any) => void;
   range: any;
+  automaticZoom?: boolean;
 }
 
 interface Coupling {
@@ -90,6 +91,7 @@ function EditRangeModal({
   onCloseEditRangeModal = () => null,
   onZoomEditRangeModal = () => null,
   range,
+  automaticZoom = true,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
   const { activeTab } = useChartData();
@@ -102,8 +104,10 @@ function EditRangeModal({
   }, [onZoomEditRangeModal, range]);
 
   useEffect(() => {
-    handleOnZoom();
-  }, [handleOnZoom]);
+    if (automaticZoom) {
+      handleOnZoom();
+    }
+  }, [automaticZoom, handleOnZoom]);
 
   const handleOnClose = useCallback(() => {
     onCloseEditRangeModal();

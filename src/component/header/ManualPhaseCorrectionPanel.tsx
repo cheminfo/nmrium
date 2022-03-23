@@ -208,7 +208,7 @@ function ManualPhaseCorrectionPanelInner({
               onChange={handleInput}
               value={value.ph0}
               type="number"
-              debounceTime={500}
+              debounceTime={250}
             />
           </Label>
           <Label title="PH1 :">
@@ -218,7 +218,7 @@ function ManualPhaseCorrectionPanelInner({
               onChange={handleInput}
               value={value.ph1}
               type="number"
-              debounceTime={500}
+              debounceTime={250}
             />
           </Label>
           <InputRange

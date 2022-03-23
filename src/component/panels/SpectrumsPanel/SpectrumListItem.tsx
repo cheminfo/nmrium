@@ -77,7 +77,11 @@ function SpectrumListItem({
         style={styles.button}
       />
 
-      <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
+      <div
+        data-test-id="activate-deactivate-spectrum-button"
+        style={styles.name}
+        onClick={() => onChangeActiveSpectrum(data)}
+      >
         <div style={{ ...styles.icon, width: '16px' }}>
           {data.info.isFid ? (
             <SvgNmrFid />
