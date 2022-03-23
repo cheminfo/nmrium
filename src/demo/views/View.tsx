@@ -115,7 +115,11 @@ export default function View(props) {
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
-            <NMRium data={data} onDataChange={changeHandler} />
+            <NMRium
+              data={data}
+              onDataChange={changeHandler}
+              workspace={props.workspace || null}
+            />
           </div>
           {process.env.NODE_ENV !== 'production' && (
             <div

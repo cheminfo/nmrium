@@ -1,33 +1,49 @@
 import { Workspace } from './Workspace';
 import { basic } from './basic';
 
-export const process1D: Workspace = {
+export const exercise: Workspace = {
   version: 1,
-  label: 'Process 1D workspace',
+  label: 'Exercise workspace',
   display: {
     general: {
       disableMultipletAnalysis: true,
+      hideSetSumFromMolecule: true,
+      hideGeneralSettings: true,
+      experimentalFeatures: { hidden: true },
     },
 
     panels: {
-      zonesPanel: { display: true },
-      summaryPanel: { display: true },
-      multipleSpectraAnalysisPanel: { display: true, open: true },
       spectraPanel: { display: true, open: true },
       informationPanel: { hidden: true },
       peaksPanel: { hidden: true },
-      integralsPanel: { hidden: true },
+      integralsPanel: { display: true },
       rangesPanel: { hidden: true },
       structuresPanel: { hidden: true },
       filtersPanel: { hidden: true },
+      zonesPanel: { hidden: true },
+      summaryPanel: { hidden: true },
+      multipleSpectraAnalysisPanel: { hidden: true },
       databasePanel: { hidden: true },
       predictionPanel: { hidden: true },
     },
 
     toolBarButtons: {
+      zoomTool: true,
+      zoomOutTool: true,
       import: false,
       exportAs: false,
+      spectraStackAlignments: true,
+      spectraCenterAlignments: true,
+      realImaginary: false,
+      peakTool: true,
+      integralTool: true,
+      zonePickingTool: false,
+      slicingTool: false,
       autoRangesTool: false,
+      zeroFillingTool: false,
+      phaseCorrectionTool: false,
+      baseLineCorrectionTool: false,
+      FFTTool: false,
       multipleSpectraAnalysisTool: false,
       exclusionZonesTool: false,
     },

@@ -6,7 +6,6 @@ import {
   SvgNmrAlignBottom,
   SvgNmrAlignCenter,
 } from 'cheminfo-font';
-import lodashGet from 'lodash/get';
 import { Fragment, useCallback, memo, useMemo } from 'react';
 import {
   FaDownload,
@@ -23,11 +22,11 @@ import { Info2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
-import { usePreferences } from '../context/PreferencesContext';
 import ToolbarMenu from '../elements/ToolbarMenu';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
@@ -108,12 +107,12 @@ function BasicToolBarInner({
   activeSpectrum,
 }: BasicToolBarInnerProps) {
   const dispatch = useDispatch();
-  const preferences = usePreferences();
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
 
   const isExperimentalFeature = useCheckExperimentalFeature();
+  const isButtonVisible = useCheckToolsVisibility();
 
   const importMenu = useMemo(() => {
     return isExperimentalFeature
@@ -172,13 +171,6 @@ function BasicToolBarInner({
     );
   }, [modal]);
 
-  const isButtonVisible = useCallback(
-    (key) => {
-      return !lodashGet(preferences, `display.toolBarButtons.${key}`);
-    },
-    [preferences],
-  );
-
   const importHandler = useCallback(
     ({ id }) => {
       switch (id) {
@@ -236,7 +228,7 @@ function BasicToolBarInner({
 
   return (
     <Fragment>
-      {isButtonVisible('hideImport') && (
+      {isButtonVisible('import') && (
         <ToolbarMenu
           component={<FaFileImport />}
           toolTip="Import"
@@ -247,7 +239,7 @@ function BasicToolBarInner({
           items={importMenu}
         />
       )}
-      {isButtonVisible('hideExportAs') && (
+      {isButtonVisible('exportAs') && (
         <ToolbarMenu
           component={<FaFileExport />}
           toolTip="Export As"
@@ -260,7 +252,7 @@ function BasicToolBarInner({
       )}
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideSpectraStackAlignments') &&
+        isButtonVisible('spectraStackAlignments') &&
         ftCounter > 1 &&
         (info?.isFt || !activeSpectrum) && (
           <Toolbar.Item
@@ -277,7 +269,7 @@ function BasicToolBarInner({
           </Toolbar.Item>
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideRealImaginary') &&
+        isButtonVisible('realImaginary') &&
         info.isComplex && (
           <Toolbar.Item
             id="display"
@@ -289,7 +281,7 @@ function BasicToolBarInner({
           </Toolbar.Item>
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideSpectraCenterAlignments') &&
+        isButtonVisible('spectraCenterAlignments') &&
         (ftCounter > 0 || fidCounter > 0) && (
           <Toolbar.Item
             id="baseline-position"

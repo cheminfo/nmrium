@@ -20,6 +20,7 @@ import { useToggle, useFullscreen } from 'react-use';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
+import { PanelPreferencesType } from '../types/PanelPreferencesType';
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
@@ -48,8 +49,8 @@ import {
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
-  INIT_PREFERENCES,
   PreferencesState,
+  initPreferencesState,
 } from './reducer/preferencesReducer';
 import {
   INITIATE,
@@ -122,13 +123,17 @@ const containerStyles = css`
 
   .Resizer.vertical:hover {
     background-color: #dfdfdf !important;
-    border-left: 0.55px #bbbbbbimport preferencesReducer from './reducer/preferencesReducer';
+    border-left: 0.55px #bbbbbb;
  solid;
     border-right: 0.55px #bbbbbb solid;
   }
 `;
 
-export type NMRIumWorkspace = 'exercise1D' | 'process1D' | 'default';
+export type NMRIumWorkspace =
+  | 'exercise'
+  | 'process1D'
+  | 'default'
+  | 'prediction';
 
 export interface NMRiumProps {
   data?: NMRiumData;
@@ -147,41 +152,41 @@ export type NMRiumPreferences = Partial<{
     disableMultipletAnalysis: boolean;
     hideSetSumFromMolecule: boolean;
     hideGeneralSettings: boolean;
-    hideExperimentalFeatures: boolean;
+    experimentalFeatures: PanelPreferencesType;
   }>;
   panels: Partial<{
-    hideSpectraPanel: boolean;
-    hideInformationPanel: boolean;
-    hidePeaksPanel: boolean;
-    hideIntegralsPanel: boolean;
-    hideRangesPanel: boolean;
-    hideStructuresPanel: boolean;
-    hideFiltersPanel: boolean;
-    hideZonesPanel: boolean;
-    hideSummaryPanel: boolean;
-    hideMultipleSpectraAnalysisPanel: boolean;
-    hideDatabasePanel: boolean;
-    hidePredictionPanel: boolean;
+    spectraPanel: PanelPreferencesType;
+    informationPanel: PanelPreferencesType;
+    peaksPanel: PanelPreferencesType;
+    integralsPanel: PanelPreferencesType;
+    rangesPanel: PanelPreferencesType;
+    structuresPanel: PanelPreferencesType;
+    filtersPanel: PanelPreferencesType;
+    zonesPanel: PanelPreferencesType;
+    summaryPanel: PanelPreferencesType;
+    multipleSpectraAnalysisPanel: PanelPreferencesType;
+    databasePanel: PanelPreferencesType;
+    predictionPanel: PanelPreferencesType;
   }>;
   toolBarButtons: Partial<{
-    hideZoomTool: boolean;
-    hideZoomOutTool: boolean;
-    hideImport: boolean;
-    hideExportAs: boolean;
-    hideSpectraStackAlignments: boolean;
-    hideSpectraCenterAlignments: boolean;
-    hideRealImaginary: boolean;
-    hidePeakTool: boolean;
-    hideIntegralTool: boolean;
-    hideZonePickingTool: boolean;
-    hideSlicingTool: boolean;
-    hideAutoRangesTool: boolean;
-    hideZeroFillingTool: boolean;
-    hidePhaseCorrectionTool: boolean;
-    hideBaseLineCorrectionTool: boolean;
-    hideFFTTool: boolean;
-    hideMultipleSpectraAnalysisTool: boolean;
-    hideExclusionZonesTool: boolean;
+    zoomTool: boolean;
+    zoomOutTool: boolean;
+    import: boolean;
+    exportAs: boolean;
+    spectraStackAlignments: boolean;
+    spectraCenterAlignments: boolean;
+    realImaginary: boolean;
+    peakTool: boolean;
+    integralTool: boolean;
+    zonePickingTool: boolean;
+    slicingTool: boolean;
+    autoRangesTool: boolean;
+    zeroFillingTool: boolean;
+    phaseCorrectionTool: boolean;
+    baseLineCorrectionTool: boolean;
+    FFTTool: boolean;
+    multipleSpectraAnalysisTool: boolean;
+    exclusionZonesTool: boolean;
   }>;
 }>;
 
@@ -215,7 +220,7 @@ function NMRium(props: NMRiumProps) {
 
 function InnerNMRium({
   data: dataProp = defaultData,
-  workspace = 'default',
+  workspace,
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
@@ -238,8 +243,9 @@ function InnerNMRium({
   );
 
   const [preferencesState, dispatchPreferences] = useReducer<
-    Reducer<PreferencesState, any>
-  >(preferencesReducer, preferencesInitialState);
+    Reducer<PreferencesState, any>,
+    PreferencesState
+  >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
   const { displayerMode, data: spectraData } = state;
 
@@ -259,7 +265,7 @@ function InnerNMRium({
 
   useEffect(() => {
     dispatchPreferences({
-      type: INIT_PREFERENCES,
+      type: 'INIT_PREFERENCES',
       payload: {
         display: preferences,
         workspace,

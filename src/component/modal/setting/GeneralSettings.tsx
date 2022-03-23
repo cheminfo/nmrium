@@ -1,37 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
+import DropDownButton, {
+  DropDownListItem,
+} from '../../elements/dropDownButton/DropDownButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import {
-  SET_PREFERENCES,
-  RESET_PREFERENCES,
-} from '../../reducer/preferencesReducer';
+import { WORKSPACES } from '../../reducer/preferencesReducer';
+import workspaces from '../../workspaces';
+import { ModalStyles } from '../ModalStyle';
 
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
+import WorkspaceItem from './WorkspaceItem';
 
 const styles = css`
-  overflow: auto;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .header {
-    text-align: center;
-    padding: 10px 0 10px 0px;
-    margin: 0px;
-    color: #005d9e;
-    place-items: normal;
-    text-transform: none;
-    background-color: #fcfcfc;
-  }
   .main-content {
     width: 100%;
     flex: 1;
@@ -41,57 +30,6 @@ const styles = css`
 
   .tab-content {
     width: 100%;
-  }
-
-  .inner-content {
-    padding: 15px 30px;
-    width: 100%;
-    overflow: auto;
-  }
-
-  button:focus {
-    outline: none;
-  }
-  button:hover {
-    color: #007bff;
-  }
-  .btn:hover {
-    background-color: #ffffff;
-  }
-  .btn {
-    border: none;
-    padding: 0 15px;
-    background-color: #ffffff5e;
-    border-radius: 5px;
-    height: 25px;
-  }
-
-  .footer-container {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    background: rgb(242, 242, 242);
-    background: -moz-linear-gradient(
-      0deg,
-      rgba(242, 242, 242, 1) 0%,
-      rgba(245, 245, 245, 1) 37%,
-      rgba(255, 255, 255, 1) 90%
-    );
-    background: -webkit-linear-gradient(
-      0deg,
-      rgba(242, 242, 242, 1) 0%,
-      rgba(245, 245, 245, 1) 37%,
-      rgba(255, 255, 255, 1) 90%
-    );
-    background: linear-gradient(
-      0deg,
-      rgba(242, 242, 242, 1) 0%,
-      rgba(245, 245, 245, 1) 37%,
-      rgba(255, 255, 255, 1) 90%
-    );
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f2f2f2",endColorstr="#ffffff",GradientType=1);
-    padding: 6px 15px;
-    height: 55px;
   }
 
   .section-header {
@@ -140,8 +78,19 @@ const styles = css`
       width: 260px;
     }
   }
-  .checkbox-element {
-    margin-bottom: 5px;
+
+  .workspace-container {
+    display: flex;
+    background-color: #f4f4f4;
+    align-items: center;
+    cursor: default;
+    padding: 0.5em;
+    .dropdown {
+      padding: 0.4em 1em;
+    }
+    & .label {
+      font-size: 0.8em;
+    }
   }
 `;
 
@@ -151,44 +100,123 @@ interface GeneralSettingsProps {
 
 function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const [activeTab, setActiveTab] = useState('controllers');
-  const preferences = usePreferences();
+  const { dispatch, ...preferences } = usePreferences();
   const alert = useAlert();
-
   const refForm = useRef<any>();
+
+  const workspacesList = useMemo(() => {
+    const currentWorkspaces = Object.keys(preferences.workspaces).reduce<
+      { key: string; label: string }[]
+    >((acc, key) => {
+      if (!workspaces[key]) {
+        acc.push({ key, label: preferences.workspaces[key].label });
+      }
+      return acc;
+    }, []);
+
+    return [
+      ...WORKSPACES,
+      ...currentWorkspaces,
+      {
+        key: 'new',
+        label: 'Custom workspace',
+      },
+    ];
+  }, [preferences.workspaces]);
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
   const handleReset = useCallback(() => {
-    preferences.dispatch({ type: RESET_PREFERENCES });
+    dispatch({ type: 'RESET_PREFERENCES' });
     alert.success('Settings saved successfully');
     onClose?.();
-  }, [alert, onClose, preferences]);
+  }, [alert, dispatch, onClose]);
 
   const submitHandler = useCallback(
     (values) => {
-      preferences.dispatch({ type: SET_PREFERENCES, payload: values });
+      dispatch({ type: 'SET_PREFERENCES', payload: values });
       alert.success('Settings saved successfully');
 
       onClose?.();
     },
-    [alert, onClose, preferences],
+    [alert, dispatch, onClose],
   );
 
   const tabChangeHandler = useCallback((tab) => {
     setActiveTab(tab.tabid);
   }, []);
 
+  const addWorkSpaceHandler = useCallback(
+    (name) => {
+      dispatch({
+        type: 'ADD_WORKSPACE',
+        payload: {
+          workspace: name,
+          data: refForm.current.values,
+        },
+      });
+    },
+    [dispatch],
+  );
+  const deleteWorkSpaceHandler = useCallback(
+    (key) => {
+      dispatch({
+        type: 'REMOVE_WORKSPACE',
+        payload: {
+          workspace: key,
+        },
+      });
+    },
+    [dispatch],
+  );
+
+  const ChangeWorkspaceHandler = useCallback(
+    (option: DropDownListItem) => {
+      dispatch({
+        type: 'SET_WORKSPACE',
+        payload: {
+          workspace: option.key,
+        },
+      });
+    },
+    [dispatch],
+  );
+
+  const renderItem = useCallback(
+    (item) => {
+      return (
+        <WorkspaceItem
+          item={item}
+          onSave={addWorkSpaceHandler}
+          onDelete={deleteWorkSpaceHandler}
+        />
+      );
+    },
+    [addWorkSpaceHandler, deleteWorkSpaceHandler],
+  );
+
   return (
-    <div css={styles}>
+    <div css={[ModalStyles, styles]}>
       <div className="header handle">
         <span>General Settings</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
+      <div className="workspace-container">
+        <span className="label">Workspace : </span>
+
+        <DropDownButton
+          data={workspacesList}
+          renderItem={renderItem}
+          selectedKey={preferences?.workspace.current}
+          onSelect={ChangeWorkspaceHandler}
+        />
+      </div>
       <div className="main-content">
         <FormikForm
+          key={JSON.stringify(preferences.current)}
           ref={refForm}
-          initialValues={preferences}
+          initialValues={preferences.current}
           onSubmit={submitHandler}
         >
           <Tabs
@@ -210,18 +238,18 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab tablabel="Display" tabid="display">
               <div className="inner-content">
-                <DisplayTabContent preferences={preferences} />
+                <DisplayTabContent preferences={preferences.current.display} />
               </div>
             </Tab>
           </Tabs>
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleReset} className="btn">
-          Reset
-        </button>
         <button type="button" onClick={handleSave} className="btn">
           Save
+        </button>
+        <button type="button" onClick={handleReset} className="btn">
+          Reset
         </button>
       </div>
     </div>

@@ -84,9 +84,7 @@ function ColumnHeader({
           <div className="dropDown-container">
             <DropDownButton
               data={columnsFilters}
-              formatSelectedValue={(value) =>
-                value ? value.substr(0, 3) : value
-              }
+              formatSelectedValue={(item) => item.label.substring(0, 3)}
               selectedKey={data.valueKey}
               onSelect={onColumnFilter}
             />

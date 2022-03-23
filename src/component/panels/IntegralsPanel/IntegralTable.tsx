@@ -125,7 +125,7 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
   const integralsPreferences = useMemo(
     () =>
       getValue(
-        preferences,
+        preferences.current,
         `formatting.panels.integrals.[${activeTab}]`,
         integralDefaultValues,
       ),

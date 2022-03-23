@@ -14,7 +14,6 @@ import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatFie
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
 import { zoneDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -108,7 +107,7 @@ function ZonesPreferencesInner({
         return acc;
       }, {});
       const zonesPreferences = getValueByKeyPath(
-        preferences,
+        preferences.current,
         `formatting.panels.zones`,
       );
       formRef.current.setValues(
@@ -124,7 +123,7 @@ function ZonesPreferencesInner({
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
-        type: SET_PANELS_PREFERENCES,
+        type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'zones', value: values },
       });
       alert.success('zones preferences saved successfully');

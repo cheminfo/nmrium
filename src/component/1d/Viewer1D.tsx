@@ -52,7 +52,9 @@ interface Viewer1DProps {
 
 function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const {
-    display: { general },
+    current: {
+      display: { general },
+    },
   } = usePreferences();
   const state = useChartData();
 
@@ -128,7 +130,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       if (brushData.altKey) {
         switch (selectedTool) {
           case options.rangesPicking.id: {
-            if (!general.disableMultipletAnalysis) {
+            if (!general?.disableMultipletAnalysis) {
               modal.show(
                 <MultipletAnalysisModal
                   data={data}

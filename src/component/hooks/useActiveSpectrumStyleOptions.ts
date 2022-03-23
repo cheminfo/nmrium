@@ -20,7 +20,7 @@ export default function useActiveSpectrumStyleOptions(
       activeSpectrum === null ? true : id === activeSpectrum.id ? true : false;
     const opacity = isActive
       ? 1
-      : get(preferences, 'controllers.dimmedSpectraTransparency', 0.1);
+      : get(preferences.current, 'controllers.dimmedSpectraTransparency', 0.1);
     return { isActive, opacity };
   }, [activeSpectrum, id, preferences]);
 }

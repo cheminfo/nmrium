@@ -1,3 +1,7 @@
+export type ActionType<Action, Payload = void> = Payload extends void
+  ? { type: Action }
+  : { type: Action; payload: Payload };
+
 export const INITIATE = 'INITIATE';
 export const SAVE_DATA_AS_JSON = 'SAVE_DATA_AS_JSON';
 export const LOAD_JSON_FILE = 'LOAD_JSON_FILE';

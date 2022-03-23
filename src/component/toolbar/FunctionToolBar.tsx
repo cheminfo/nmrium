@@ -77,7 +77,7 @@ function FunctionToolBarInner({
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
-        {isButtonVisible('hideZoomTool') && (
+        {isButtonVisible('zoomTool') && (
           <ToggleButton
             key={options.zoom.id}
             value={options.zoom.id}
@@ -90,7 +90,7 @@ function FunctionToolBarInner({
           </ToggleButton>
         )}
 
-        {isButtonVisible('hideZoomOutTool') && (
+        {isButtonVisible('zoomOutTool') && (
           <Toolbar.Item
             id="zoom-out"
             onClick={handleFullZoomOut}
@@ -102,20 +102,19 @@ function FunctionToolBarInner({
           </Toolbar.Item>
         )}
 
+        {displayerMode === DISPLAYER_MODE.DM_1D && isButtonVisible('peakTool') && (
+          <ToggleButton
+            key={options.peakPicking.id}
+            value={options.peakPicking.id}
+            title={`${options.peakPicking.label} ( Press p )`}
+            isVisible={activeSpectrum && !info?.isFid ? true : false}
+            id="peakPicking"
+          >
+            <SvgNmrPeakPicking />
+          </ToggleButton>
+        )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hidePeakTool') && (
-            <ToggleButton
-              key={options.peakPicking.id}
-              value={options.peakPicking.id}
-              title={`${options.peakPicking.label} ( Press p )`}
-              isVisible={activeSpectrum && !info?.isFid ? true : false}
-              id="peakPicking"
-            >
-              <SvgNmrPeakPicking />
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideIntegralTool') && (
+          isButtonVisible('integralTool') && (
             <ToggleButton
               key={options.integral.id}
               value={options.integral.id}
@@ -127,7 +126,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D &&
-          isButtonVisible('hideZonePickingTool') && (
+          isButtonVisible('zonePickingTool') && (
             <ToggleButton
               key={options.zone2D.id}
               value={options.zone2D.id}
@@ -139,7 +138,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D &&
-          isButtonVisible('hideSlicingTool') && (
+          isButtonVisible('slicingTool') && (
             <ToggleButton
               key={options.slicingTool.id}
               value={options.slicingTool.id}
@@ -151,7 +150,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideAutoRangesTool') && (
+          isButtonVisible('autoRangesTool') && (
             <ToggleButton
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}
@@ -163,7 +162,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideMultipleSpectraAnalysisTool') &&
+          isButtonVisible('multipleSpectraAnalysisTool') &&
           ftCounter > 1 &&
           mode === 'RTL' && (
             <ToggleButton
@@ -176,7 +175,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideZeroFillingTool') && (
+          isButtonVisible('zeroFillingTool') && (
             <ToggleButton
               key={options.zeroFilling.id}
               value={options.zeroFilling.id}
@@ -188,7 +187,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hidePhaseCorrectionTool') && (
+          isButtonVisible('phaseCorrectionTool') && (
             <ToggleButton
               key={options.phaseCorrection.id}
               value={options.phaseCorrection.id}
@@ -208,7 +207,7 @@ function FunctionToolBarInner({
           )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideBaseLineCorrectionTool') && (
+          isButtonVisible('baseLineCorrectionTool') && (
             <ToggleButton
               key={options.baseLineCorrection.id}
               value={options.baseLineCorrection.id}
@@ -227,7 +226,7 @@ function FunctionToolBarInner({
           )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideExclusionZonesTool') &&
+          isButtonVisible('exclusionZonesTool') &&
           !info?.isFid &&
           ftCounter > 0 && (
             <ToggleButton
@@ -244,7 +243,7 @@ function FunctionToolBarInner({
       </ToggleButtonGroup>
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideFFTTool') &&
+        isButtonVisible('FFTTool') &&
         info &&
         Filters.fft.isApplicable({ info }) && (
           <Toolbar.Item

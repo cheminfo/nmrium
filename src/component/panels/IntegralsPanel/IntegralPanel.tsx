@@ -245,7 +245,7 @@ export default function IntegralPanel() {
       {...{
         integrals,
         info,
-        preferences,
+        preferences: preferences.current,
         xDomain,
         activeTab,
       }}

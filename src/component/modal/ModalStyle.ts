@@ -33,7 +33,7 @@ export const ModalStyles = css`
     outline: none;
   }
   button:not([disabled]):hover {
-    color: #007bff;
+    color: black;
   }
   .btn:not([disabled]):hover {
     background-color: #ffffff;

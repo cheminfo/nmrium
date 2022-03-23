@@ -88,7 +88,9 @@ export default function ChangeSumModal({
   sumOptions,
 }: ChangeSumModalProps) {
   const {
-    display: { general, panels },
+    current: {
+      display: { general, panels },
+    },
   } = usePreferences();
 
   const [setOption, setActiveOption] = useState(SumSetOptions.Auto);
@@ -107,8 +109,8 @@ export default function ChangeSumModal({
   useEffect(() => {
     if (
       sumOptions.sumAuto &&
-      !general.hideSetSumFromMolecule &&
-      !panels.hideStructuresPanel
+      !general?.hideSetSumFromMolecule &&
+      !panels?.structuresPanel
     ) {
       setActiveOption(SumSetOptions.Auto);
       const { mf, moleculeKey: key } = sumOptions;
@@ -120,7 +122,7 @@ export default function ChangeSumModal({
       setActiveOption(SumSetOptions.Manual);
       formRef.current.setValues({ sum: sumOptions.sum, molecule: null });
     }
-  }, [general.hideSetSumFromMolecule, panels.hideStructuresPanel, sumOptions]);
+  }, [general?.hideSetSumFromMolecule, panels?.structuresPanel, sumOptions]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -179,7 +181,7 @@ export default function ChangeSumModal({
           validationSchema={validationSchema}
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
-            {!general.hideSetSumFromMolecule && !panels.hideStructuresPanel && (
+            {!general?.hideSetSumFromMolecule && !panels?.structuresPanel && (
               <Tab tablabel="Auto" tabid={SumSetOptions.Auto}>
                 <SelectMolecule name="molecule" />
               </Tab>

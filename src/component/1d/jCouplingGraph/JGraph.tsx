@@ -55,8 +55,10 @@ export default function JGraph() {
 
   const jGraphTolerance = useMemo(() => {
     const _preferences =
-      lodashGet(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
-      getRangeDefaultValues(activeTab);
+      lodashGet(
+        preferences.current,
+        `formatting.panels.ranges.[${activeTab}]`,
+      ) || getRangeDefaultValues(activeTab);
 
     return _preferences.jGraphTolerance;
   }, [activeTab, preferences]);

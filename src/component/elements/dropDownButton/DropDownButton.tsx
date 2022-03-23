@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { FaEllipsisH } from 'react-icons/fa';
 
 import { useGlobal } from '../../context/GlobalContext';
@@ -15,27 +15,49 @@ const styles = css`
   border: 0.55px solid lightgray;
   font-size: 10px;
 
-  button {
-    text-transform: Capitalize;
-  }
+  // button {
+  //   text-transform: Capitalize;
+  // }
 `;
 
-function defaultFormatSelectedValue(val) {
-  return val;
+export interface DropDownListItem {
+  key: string;
+  label: string;
+  index?: number;
 }
 
-function DropDownButton(props) {
+export interface DropDownListProps {
+  data: Array<DropDownListItem>;
+  onSelect: (index: number) => void;
+  renderItem?: ((item: DropDownListItem) => ReactNode) | null;
+}
+
+interface DropDownButtonProps extends Omit<DropDownListProps, 'onSelect'> {
+  selectedKey?: string;
+  onSelect?: (item: DropDownListItem) => void;
+  formatSelectedValue?: (Item: DropDownListItem) => string;
+}
+
+function DropDownButton(props: DropDownButtonProps) {
   const {
-    data = null,
+    data,
     selectedKey,
     onSelect,
-    formatSelectedValue = defaultFormatSelectedValue,
+    formatSelectedValue = (item) => item.label,
+    renderItem = null,
   } = props;
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(selectedKey);
+  const [item, setItem] = useState<DropDownListItem | null>();
   const { rootRef } = useGlobal();
 
   const drop = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedKey) {
+      const item = data.find((i) => i.key === selectedKey) || null;
+      setItem(item);
+    }
+  }, [selectedKey, data]);
 
   const handleClick = useCallback(
     (e) => {
@@ -60,18 +82,30 @@ function DropDownButton(props) {
 
   const selectHandler = useCallback(
     (index) => {
-      setValue(data[index].label);
-      onSelect(data[index].key);
+      setItem(data[index]);
+      onSelect?.(data[index]);
     },
     [data, onSelect],
   );
 
   return (
     <div className="dropdown" ref={drop} css={styles}>
-      <button type="button" onClick={() => setOpen((open) => !open)}>
-        {!value ? <FaEllipsisH /> : formatSelectedValue(value)}
+      <button
+        type="button"
+        onClick={(event) => {
+          setOpen((open) => !open);
+          event.stopPropagation();
+        }}
+      >
+        {!item ? <FaEllipsisH /> : formatSelectedValue(item)}
       </button>
-      {open && <DropDownList data={data} onSelect={selectHandler} />}
+      {open && (
+        <DropDownList
+          data={data}
+          onSelect={selectHandler}
+          renderItem={renderItem}
+        />
+      )}
     </div>
   );
 }

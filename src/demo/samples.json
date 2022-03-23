@@ -154,7 +154,7 @@
     ]
   },
   {
-    "groupName": "Exercises",
+    "groupName": "Workspaces",
     "children": [
       {
         "file": "./exercises/ethylvinylether/1h.json",
@@ -170,16 +170,15 @@
         "file": "./exercises/cytisine/hsqc_hmbc.json",
         "title": "Exercise 3",
         "view": "Exercise"
-      }
-    ]
-  },
-  {
-    "groupName": "Exam",
-    "children": [
+      },
       {
         "file": "./exercises/ethylvinylether/1h.json",
         "title": "Exam 1",
         "view": "Exam"
+      },
+      {
+        "title": "Prediction",
+        "view": "Prediction"
       }
     ]
   },

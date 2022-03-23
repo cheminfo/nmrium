@@ -1,15 +1,29 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import {
   preferencesInitialState,
   PreferencesState,
 } from '../reducer/preferencesReducer';
 
-export const PreferencesConext = createContext<PreferencesState>(
+export const PreferencesContext = createContext<PreferencesState>(
   preferencesInitialState,
 );
-export const PreferencesProvider = PreferencesConext.Provider;
+export const PreferencesProvider = PreferencesContext.Provider;
 
 export function usePreferences() {
-  return useContext(PreferencesConext);
+  const context = useContext(PreferencesContext);
+  if (!context) {
+    throw new Error('Preferences context was not found');
+  }
+
+  const { workspace, workspaces, dispatch } = context;
+
+  return useMemo(() => {
+    return {
+      current: workspaces[workspace.current] || {},
+      workspace,
+      workspaces,
+      dispatch,
+    };
+  }, [dispatch, workspace, workspaces]);
 }

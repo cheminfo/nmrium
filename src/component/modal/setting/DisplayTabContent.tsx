@@ -1,84 +1,134 @@
 import lodashGet from 'lodash/get';
+import { useMemo } from 'react';
 
+import { NMRiumPreferences } from '../../NMRium';
+import ReactTable from '../../elements/ReactTable/ReactTable';
+import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import { PreferencesState } from '../../reducer/preferencesReducer';
 
-const LIST: Array<{ label: string; name: string }> = [
+interface ListItem {
+  label: string;
+  name: string;
+  hideOpenOption?: boolean;
+}
+const LIST: ListItem[] = [
   {
     label: 'Spectra selection panel',
-    name: 'display.panels.hideSpectraPanel',
+    name: 'panels.spectraPanel',
   },
   {
     label: 'Spectra information Panel',
-    name: 'display.panels.hideInformationPanel',
+    name: 'panels.informationPanel',
   },
   {
     label: 'Peaks and peak picking',
-    name: 'display.panels.hidePeaksPanel',
+    name: 'panels.peaksPanel',
   },
   {
     label: 'Integration and integrals',
-    name: 'display.panels.hideIntegralsPanel',
+    name: 'panels.integralsPanel',
   },
   {
     label: '1D ranges peak picking',
-    name: 'display.panels.hideRangesPanel',
+    name: 'panels.rangesPanel',
   },
   {
     label: 'Chemical structure panel',
-    name: 'display.panels.hideStructuresPanel',
+    name: 'panels.structuresPanel',
   },
   {
     label: 'Filters Panel',
-    name: 'display.panels.hideFiltersPanel',
+    name: 'panels.filtersPanel',
   },
   {
     label: '2D zones peak picking',
-    name: 'display.panels.hideZonesPanel',
+    name: 'panels.zonesPanel',
   },
   {
     label: 'Assignment summary Panel',
-    name: 'display.panels.hideSummaryPanel',
+    name: 'panels.summaryPanel',
   },
   {
     label: 'Multiple Spectra Analysis Panel',
-    name: 'display.panels.hideMultipleSpectraAnalysisPanel',
+    name: 'panels.multipleSpectraAnalysisPanel',
   },
   {
     label: 'Database Panel',
-    name: 'display.panels.hideDatabasePanel',
+    name: 'panels.databasePanel',
   },
   {
     label: 'Prediction Panel',
-    name: 'display.panels.hidePredictionPanel',
+    name: 'panels.predictionPanel',
   },
   {
     label: 'Experimental Features',
-    name: 'display.general.hideExperimentalFeatures',
+    name: 'general.experimentalFeatures',
+    hideOpenOption: true,
   },
 ];
 
 interface DisplayTabContentProps {
-  preferences: PreferencesState;
+  preferences: NMRiumPreferences;
+}
+
+function CheckBoxCell(props) {
+  return (
+    <FormikCheckBox
+      style={{
+        container: { display: 'block', margin: '0 auto', width: 'fit-content' },
+      }}
+      key={props.name}
+      className="checkbox-element"
+      name={props.name}
+    />
+  );
 }
 
 function DisplayTabContent({ preferences }: DisplayTabContentProps) {
-  return (
-    <>
-      <p className="section-header">Show / Hide Panels</p>
-      {LIST.map(
-        (item) =>
-          !lodashGet(preferences, `basePreferences.${item.name}`, false) && (
-            <FormikCheckBox
-              key={item.name}
-              className="checkbox-element"
-              label={item.label}
-              name={item.name}
-              reverse
-            />
+  const COLUMNS: CustomColumn[] = useMemo(
+    () => [
+      {
+        index: 1,
+        Header: '#',
+        Cell: ({ row }) => row.index + 1,
+      },
+      {
+        index: 1,
+        Header: 'Feature',
+        accessor: 'label',
+        style: { width: '60%' },
+      },
+      {
+        index: 2,
+        Header: 'Active',
+        Cell: ({ row }) => (
+          <CheckBoxCell name={`display.${row.original.name}.display`} />
+        ),
+      },
+      {
+        index: 3,
+        Header: 'Open on load',
+        Cell: ({ row }) =>
+          !row.original.hideOpenOption ? (
+            <CheckBoxCell name={`display.${row.original.name}.open`} />
+          ) : (
+            <div />
           ),
-      )}
-    </>
+      },
+    ],
+    [],
+  );
+
+  const data = useMemo(() => {
+    return LIST.filter(
+      (item) => lodashGet(preferences, `${item.name}.hidden`) !== true,
+    );
+  }, [preferences]);
+
+  return (
+    <div style={{ width: '100%', overflow: 'hidden' }}>
+      <ReactTable columns={COLUMNS} data={data} />
+    </div>
   );
 }
 
