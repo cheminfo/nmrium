@@ -94,9 +94,9 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
       },
       {
         index: 1,
-        Header: 'Panel Name',
+        Header: 'Feature',
         accessor: 'label',
-        style: { width: '80%' },
+        style: { width: '60%' },
       },
       {
         index: 2,
@@ -107,7 +107,7 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
       },
       {
         index: 3,
-        Header: 'Load',
+        Header: 'Open on load',
         Cell: ({ row }) =>
           !row.original.hideOpenOption ? (
             <CheckBoxCell name={`display.${row.original.name}.open`} />
@@ -126,14 +126,9 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
   }, [preferences]);
 
   return (
-    <>
-      <div>
-        <p className="section-header">Show / Hide Panels</p>
-      </div>
-      <div style={{ width: '100%', overflow: 'hidden' }}>
-        <ReactTable columns={COLUMNS} data={data} />
-      </div>
-    </>
+    <div style={{ width: '100%', overflow: 'hidden' }}>
+      <ReactTable columns={COLUMNS} data={data} />
+    </div>
   );
 }
 
