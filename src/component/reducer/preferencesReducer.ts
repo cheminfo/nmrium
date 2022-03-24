@@ -2,7 +2,7 @@ import { Draft, produce, original } from 'immer';
 import lodashMerge from 'lodash/merge';
 
 import generateID from '../../data/utilities/generateID';
-import { NMRIumWorkspace, NMRiumPreferences } from '../NMRium';
+import { NMRiumWorkspace, NMRiumPreferences } from '../NMRium';
 import {
   getLocalStorage,
   removeData,
@@ -15,7 +15,7 @@ import { ActionType } from './types/Types';
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
-  { display: NMRiumPreferences; workspace: NMRIumWorkspace; dispatch: any }
+  { display: NMRiumPreferences; workspace: NMRiumWorkspace; dispatch: any }
 >;
 type SetPreferencesAction = ActionType<
   'SET_PREFERENCES',
@@ -46,7 +46,7 @@ type PreferencesActions =
 const LOCAL_STORAGE_VERSION = 5;
 
 export const WORKSPACES: Array<{
-  key: NMRIumWorkspace;
+  key: NMRiumWorkspace;
   label: string;
 }> = [
   {
@@ -67,7 +67,7 @@ export const WORKSPACES: Array<{
   },
 ];
 
-function getPreferencesByWorkspace(workspace: NMRIumWorkspace) {
+function getPreferencesByWorkspace(workspace: NMRiumWorkspace) {
   switch (workspace) {
     case 'exercise':
       return Workspaces.exercise;
@@ -87,8 +87,8 @@ export interface PreferencesState {
   workspaces: Record<string, Workspace>;
   dispatch: (action?: PreferencesActions) => void;
   workspace: {
-    current: NMRIumWorkspace;
-    base: NMRIumWorkspace | null;
+    current: NMRiumWorkspace;
+    base: NMRiumWorkspace | null;
   };
 }
 
@@ -318,11 +318,11 @@ function handleSetWorkspace(
   const workspaceKey = action.payload.workspace;
   if (!draft.workspaces[workspaceKey]) {
     draft.workspaces[workspaceKey] = getPreferencesByWorkspace(
-      workspaceKey as NMRIumWorkspace,
+      workspaceKey as NMRiumWorkspace,
     );
   }
 
-  draft.workspace.current = workspaceKey as NMRIumWorkspace;
+  draft.workspace.current = workspaceKey as NMRiumWorkspace;
 }
 function handleAddWorkspace(
   draft: Draft<PreferencesState>,
