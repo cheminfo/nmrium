@@ -110,7 +110,8 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
           className="empty"
           style={{ color: errors[props.name] ? 'red' : 'black' }}
         >
-          Add a molecule first from Structure panel to select as a reference!
+          You have to Select a spectrum and Add a molecule from the Structure
+          panel to select as a reference!
         </p>
       )}
     </div>
