@@ -300,14 +300,16 @@ function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
 function handleResetPreferences(draft: Draft<PreferencesState>) {
   const currentWorkspacePreferences = getActiveWorkspace(draft);
   let localData = getLocalStorage('nmr-general-settings');
-
   const workSpaceDisplayPreferences = getPreferencesByWorkspace(
     draft.workspace.current,
   ).display;
-  localData.workspaces[draft.workspace.current].display =
-    workSpaceDisplayPreferences;
+
+  if (localData.workspaces[draft.workspace.current]) {
+    localData.workspaces[draft.workspace.current].display =
+      workSpaceDisplayPreferences;
+    storeData('nmr-general-settings', JSON.stringify(localData));
+  }
   currentWorkspacePreferences.display = workSpaceDisplayPreferences;
-  storeData('nmr-general-settings', JSON.stringify(localData));
 }
 function handleSetWorkspace(
   draft: Draft<PreferencesState>,
