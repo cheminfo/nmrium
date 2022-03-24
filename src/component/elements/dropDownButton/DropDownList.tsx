@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useLayoutEffect, useRef } from 'react';
 
 import { DropDownListProps } from './DropDownButton';
 
@@ -24,7 +25,7 @@ const styles = {
     color: black;
     border-bottom: 0.55px solid #f9f9f9;
     min-width: 150px;
-
+    width: fit-content;
     &:last-of-type {
       border-bottom: none;
     }
@@ -35,7 +36,7 @@ const styles = {
     }
   `,
   label: css`
-    padding: 10px 30px;
+    padding: 5px 20px;
     display: block;
   `,
 };
@@ -45,8 +46,19 @@ function DropDownList({
   onSelect,
   renderItem = null,
 }: DropDownListProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (ref.current) {
+      const containerRect = ref.current?.getBoundingClientRect();
+      if (containerRect.right > window.innerWidth) {
+        ref.current.style.right = `${
+          containerRect.right - window.innerWidth
+        }px`;
+      }
+    }
+  }, []);
   return (
-    <div css={styles.container}>
+    <div css={styles.container} ref={ref}>
       <ul css={styles.ul}>
         {data.map((item, index) => (
           <li css={styles.li} key={item.key} onClick={() => onSelect(index)}>
