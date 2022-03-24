@@ -321,7 +321,6 @@ function handleSetWorkspace(
       workspaceKey as NMRiumWorkspace,
     );
   }
-
   draft.workspace.current = workspaceKey as NMRiumWorkspace;
 }
 function handleAddWorkspace(
