@@ -76,14 +76,16 @@ function MultipleSpectraAnalysisPanelInner({
     });
   }, [activeTab, modal, dispatch]);
 
-  const copyToClipboardHandler = useCallback(async () => {
-    const data = getDataAsString(spectraAnalysis, activeTab);
-    const success = await copyTextToClipboard(data);
-    if (success) {
-      alert.success('Data copied to clipboard');
-    } else {
-      alert.error('copy to clipboard failed');
-    }
+  const copyToClipboardHandler = useCallback(() => {
+    void (async () => {
+      const data = getDataAsString(spectraAnalysis, activeTab);
+      const success = await copyTextToClipboard(data);
+      if (success) {
+        alert.success('Data copied to clipboard');
+      } else {
+        alert.error('copy to clipboard failed');
+      }
+    })();
   }, [activeTab, alert, spectraAnalysis]);
 
   return (

@@ -154,33 +154,35 @@ function PredictSpectraModal({
   }, [predictionPreferences]);
 
   const submitHandler = useCallback(
-    async (values) => {
-      setPredictionPreferences({ ...values, isApproved });
-      dispatch({
-        type: SET_LOADING_FLAG,
-        isLoading: true,
-      });
+    (values) => {
+      void (async () => {
+        setPredictionPreferences({ ...values, isApproved });
+        dispatch({
+          type: SET_LOADING_FLAG,
+          isLoading: true,
+        });
 
-      const predictedSpectra = Object.entries(values.spectra)
-        .reduce<Array<string>>((acc, [key, value]) => {
-          if (value) {
-            acc.push(key);
-          }
-          return acc;
-        }, [])
-        .join(' , ');
+        const predictedSpectra = Object.entries(values.spectra)
+          .reduce<Array<string>>((acc, [key, value]) => {
+            if (value) {
+              acc.push(key);
+            }
+            return acc;
+          }, [])
+          .join(' , ');
 
-      const hideLoading = await alert.showLoading(
-        `Predict ${predictedSpectra} in progress`,
-      );
+        const hideLoading = await alert.showLoading(
+          `Predict ${predictedSpectra} in progress`,
+        );
 
-      dispatch({
-        type: PREDICT_SPECTRA,
-        payload: { mol: molfile, options: values },
-      });
+        dispatch({
+          type: PREDICT_SPECTRA,
+          payload: { mol: molfile, options: values },
+        });
 
-      hideLoading();
-      onClose();
+        hideLoading();
+        onClose();
+      })();
     },
     [alert, dispatch, isApproved, molfile, onClose, setPredictionPreferences],
   );

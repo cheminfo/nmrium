@@ -109,15 +109,17 @@ function SpectraPanelHeaderInner({
     dispatch({ type: RESET_SPECTRA_SCALE });
   }, [dispatch]);
 
-  const automaticPickingHandler = useCallback(async () => {
-    const hideLoading = await alert.showLoading(
-      'Automatic Ranges/Zones detection for all spectra in progress',
-    );
-    setTimeout(() => {
-      dispatch({ type: AUTO_RANGES_SPECTRA_PICKING });
-      dispatch({ type: AUTO_ZONES_SPECTRA_PICKING });
-      hideLoading();
-    }, 0);
+  const automaticPickingHandler = useCallback(() => {
+    void (async () => {
+      const hideLoading = await alert.showLoading(
+        'Automatic Ranges/Zones detection for all spectra in progress',
+      );
+      setTimeout(() => {
+        dispatch({ type: AUTO_RANGES_SPECTRA_PICKING });
+        dispatch({ type: AUTO_ZONES_SPECTRA_PICKING });
+        hideLoading();
+      }, 0);
+    })();
   }, [dispatch, alert]);
 
   return (

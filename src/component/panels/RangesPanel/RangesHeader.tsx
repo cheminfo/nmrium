@@ -132,13 +132,15 @@ function RangesHeader({
   }, [dispatch]);
 
   const saveToClipboardHandler = useCallback(
-    async (value) => {
-      const success = await copyHTMLToClipboard(value);
-      if (success) {
-        alert.success('Data copied to clipboard');
-      } else {
-        alert.error('copy to clipboard failed');
-      }
+    (value) => {
+      void (async () => {
+        const success = await copyHTMLToClipboard(value);
+        if (success) {
+          alert.success('Data copied to clipboard');
+        } else {
+          alert.error('copy to clipboard failed');
+        }
+      })();
     },
     [alert],
   );

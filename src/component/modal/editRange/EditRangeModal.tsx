@@ -143,11 +143,13 @@ function EditRangeModal({
   );
 
   const handleOnSave = useCallback(
-    async (formValues) => {
-      const _range = { ...range };
-      _range.signals = getSignals(formValues.signals);
-      await onSaveEditRangeModal(_range);
-      handleOnClose();
+    (formValues) => {
+      void (async () => {
+        const _range = { ...range };
+        _range.signals = getSignals(formValues.signals);
+        await onSaveEditRangeModal(_range);
+        handleOnClose();
+      })();
     },
     [getSignals, handleOnClose, onSaveEditRangeModal, range],
   );

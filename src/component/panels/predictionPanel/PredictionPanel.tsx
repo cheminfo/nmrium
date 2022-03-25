@@ -18,26 +18,28 @@ export default function PredictionPane() {
   const alert = useAlert();
 
   const predictHandler = useCallback(
-    async (values) => {
-      if (molecule) {
-        dispatch({
-          type: SET_LOADING_FLAG,
-          isLoading: true,
-        });
+    (values) => {
+      void (async () => {
+        if (molecule) {
+          dispatch({
+            type: SET_LOADING_FLAG,
+            isLoading: true,
+          });
 
-        const hideLoading = await alert.showLoading(
-          `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
-        );
+          const hideLoading = await alert.showLoading(
+            `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
+          );
 
-        dispatch({
-          type: PREDICT_SPECTRA,
-          payload: { mol: molecule, options: values },
-        });
+          dispatch({
+            type: PREDICT_SPECTRA,
+            payload: { mol: molecule, options: values },
+          });
 
-        hideLoading();
-      } else {
-        alert.error('No Molecule selected');
-      }
+          hideLoading();
+        } else {
+          alert.error('No Molecule selected');
+        }
+      })();
     },
     [alert, dispatch, molecule],
   );

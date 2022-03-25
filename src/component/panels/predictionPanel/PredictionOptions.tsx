@@ -94,8 +94,10 @@ function PredictionOptions({ onPredict = () => null }: PredictionOptionsProps) {
   }, []);
 
   const submitHandler = useCallback(
-    async (values) => {
-      onPredict(values);
+    (values) => {
+      void (async () => {
+        onPredict(values);
+      })();
     },
     [onPredict],
   );
