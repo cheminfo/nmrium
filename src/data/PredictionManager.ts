@@ -222,6 +222,7 @@ function generated2DSpectrum(params: {
       y: inputOptions['2d'].nbPoints.y,
     },
     width,
+    factor: 3,
   });
 
   const datum = initiateDatum2D(
@@ -252,7 +253,6 @@ function calculateFrequency(
   nucleus: string | string[],
   inputFrequency: number,
 ): number | string {
-
   if (typeof nucleus === 'string') {
     return getFrequency(nucleus, inputFrequency);
   } else {
