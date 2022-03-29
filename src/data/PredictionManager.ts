@@ -1,4 +1,3 @@
-import { AnyKindOfDictionary } from 'lodash';
 import {
   predictAll,
   signalsToXY,
@@ -143,7 +142,6 @@ function generated1DSpectrum(params: {
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
-  console.log(`nucleus: ${nucleus}, freq: ${freq}`);
   const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
