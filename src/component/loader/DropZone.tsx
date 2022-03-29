@@ -4,8 +4,8 @@ import Zip from 'jszip';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
-import { File } from '../../data/types/common/File';
 
+import { File } from '../../data/types/common/File';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
