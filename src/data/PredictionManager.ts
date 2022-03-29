@@ -1,4 +1,9 @@
-import { predictAll, signalsToXY, signals2DToZ } from 'nmr-processing';
+import {
+  predictAll,
+  signalsToXY,
+  signals2DToZ,
+  getFrequency,
+} from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import { DatumKind } from './constants/SignalsKinds';
@@ -140,7 +145,7 @@ function generated1DSpectrum(params: {
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
-  const frequency = getFrequency(nucleus, freq);
+  const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
     frequency,
@@ -211,7 +216,7 @@ function generated2DSpectrum(params: {
   const yOption = inputOptions['1d'][nuclei[1]];
 
   const width = get2DWidth(nuclei);
-  const frequency = getFrequency(nuclei, inputOptions.frequency);
+  const frequency = calculateFrequency(nuclei, inputOptions.frequency);
 
   const spectrumData = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
@@ -221,6 +226,7 @@ function generated2DSpectrum(params: {
       y: inputOptions['2d'].nbPoints.y,
     },
     width,
+    factor: 3,
   });
 
   const datum = initiateDatum2D(
@@ -245,22 +251,23 @@ function generated2DSpectrum(params: {
 }
 
 function get2DWidth(nucleus: string[]) {
-  return nucleus[0] === nucleus[1] ? 0.03 : { x: 0.03, y: 0.32 };
+  return nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.2133 };
 }
 
-function getFrequency(
+function calculateFrequency(
   nucleus: string | string[],
-  inputFrequency: number,
+  frequency: number,
 ): number | string {
-  const ration13C = 0.25;
-
   if (typeof nucleus === 'string') {
-    return nucleus === '13C' ? inputFrequency * ration13C : inputFrequency;
+    return getFrequency(nucleus, { nucleus: '1H', frequency });
   } else {
     if (nucleus[0] === nucleus[1]) {
-      return `${inputFrequency},${inputFrequency}`;
+      return `${frequency},${frequency}`;
     } else {
-      return `${inputFrequency},${inputFrequency * ration13C}`;
+      return `${frequency},${getFrequency(nucleus[1], {
+        nucleus: nucleus[0],
+        frequency,
+      })}`;
     }
   }
 }
