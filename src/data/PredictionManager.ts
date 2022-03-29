@@ -1,3 +1,4 @@
+import { AnyKindOfDictionary } from 'lodash';
 import {
   predictAll,
   signalsToXY,
@@ -142,6 +143,7 @@ function generated1DSpectrum(params: {
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
+  console.log(`nucleus: ${nucleus}, freq: ${freq}`);
   const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
@@ -246,20 +248,23 @@ function generated2DSpectrum(params: {
 }
 
 function get2DWidth(nucleus: string[]) {
-  return nucleus[0] === nucleus[1] ? 0.03 : { x: 0.03, y: 0.32 };
+  return nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.2133 };
 }
 
 function calculateFrequency(
   nucleus: string | string[],
-  inputFrequency: number,
+  frequency: number,
 ): number | string {
   if (typeof nucleus === 'string') {
-    return getFrequency(nucleus, inputFrequency);
+    return getFrequency(nucleus, { nucleus: '1H', frequency });
   } else {
     if (nucleus[0] === nucleus[1]) {
-      return `${inputFrequency},${inputFrequency}`;
+      return `${frequency},${frequency}`;
     } else {
-      return `${inputFrequency},${getFrequency(nucleus[1], inputFrequency)}`;
+      return `${frequency},${getFrequency(nucleus[1], {
+        nucleus: nucleus[0],
+        frequency,
+      })}`;
     }
   }
 }
