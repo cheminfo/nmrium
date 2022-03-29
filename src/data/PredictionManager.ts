@@ -16,6 +16,7 @@ import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
 import { Datum2D, Signal2D, Zone } from './types/data2d';
 import generateID from './utilities/generateID';
+import { adjustAlpha } from './utilities/getColor';
 
 export interface PredictionOptions {
   name: string;
@@ -90,9 +91,9 @@ export async function predictSpectra(molfile: string): Promise<any> {
 export function generateSpectra(
   data: Record<string, any>,
   inputOptions: PredictionOptions,
+  color: string,
 ): Array<Datum1D | Datum2D> {
   const spectra: Array<Datum1D | Datum2D> = [];
-  const color = '#593315';
   for (const experiment in data) {
     if (inputOptions.spectra[experiment]) {
       const spectrum = data[experiment];
@@ -234,7 +235,8 @@ function generated2DSpectrum(params: {
       data: { ...spectrumData, noise: 0.01 },
       display: {
         name: inputOptions.name,
-        positiveColor: experiment === 'hmbc' ? '#e68337' : color,
+        positiveColor: color,
+        negativeColor: adjustAlpha(color, 40),
       },
       info: {
         nucleus: nuclei,

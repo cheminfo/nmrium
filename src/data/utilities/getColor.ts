@@ -51,7 +51,7 @@ function percentToHex(p: number): string {
   return percent === 100 ? '' : hexValue.padStart(2, '0');
 }
 
-function adjustAlpha(color: string, factor: number): string {
+export function adjustAlpha(color: string, factor: number): string {
   return color + percentToHex(factor);
 }
 
