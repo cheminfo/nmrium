@@ -79,7 +79,7 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
       };
     }
   }
-
+  draft.toolOptions.data.predictionIndex++;
   setActiveTab(draft);
   draft.isLoading = false;
 }

@@ -13,6 +13,7 @@ import { Datum2D, Signal2D, Zone } from './types/data2d';
 import generateID from './utilities/generateID';
 
 export interface PredictionOptions {
+  name: string;
   frequency: number;
   '1d': {
     '1H': { from: number; to: number };
@@ -33,6 +34,7 @@ export interface PredictionOptions {
 }
 
 export const defaultPredictionOptions: PredictionOptions = {
+  name: '',
   frequency: 400,
   '1d': {
     '1H': { from: -1, to: 12 },
@@ -134,6 +136,7 @@ function generated1DSpectrum(params: {
   const { signals, ranges, nucleus } = spectrum;
 
   const {
+    name,
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
@@ -147,6 +150,7 @@ function generated1DSpectrum(params: {
     {
       data: { x, im: null, re: y },
       display: {
+        name,
         color,
       },
       info: {
@@ -223,6 +227,7 @@ function generated2DSpectrum(params: {
     {
       data: { ...spectrumData, noise: 0.01 },
       display: {
+        name: inputOptions.name,
         positiveColor: experiment === 'hmbc' ? '#e68337' : color,
       },
       info: {

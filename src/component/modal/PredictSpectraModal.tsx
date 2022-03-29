@@ -8,6 +8,7 @@ import {
   FREQUENCIES,
 } from '../../data/PredictionManager';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
@@ -90,6 +91,7 @@ const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
 });
 
 const predictionFormValidation = Yup.object().shape({
+  name: Yup.string().required().label('Name'),
   frequency: Yup.number().integer().required().label('Frequency'),
   '1d': Yup.object({
     '1H': Yup.object({
@@ -143,6 +145,12 @@ function PredictSpectraModal({
   const [predictionPreferences, setPredictionPreferences] =
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
+  const {
+    toolOptions: {
+      data: { predictionIndex },
+    },
+  } = useChartData();
+
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
@@ -150,8 +158,10 @@ function PredictSpectraModal({
   const initValues = useMemo(() => {
     const { isApproved: isAgree, ...options } = predictionPreferences;
     setApproved(isAgree);
-    return Object.assign(defaultPredictionOptions, options);
-  }, [predictionPreferences]);
+    return Object.assign(defaultPredictionOptions, options, {
+      name: `Prediction ${predictionIndex + 1}`,
+    });
+  }, [predictionPreferences, predictionIndex]);
 
   const submitHandler = useCallback(
     (values) => {
@@ -205,6 +215,13 @@ function PredictSpectraModal({
           onSubmit={submitHandler}
         >
           <FormikErrorsSummary />
+          <div className="row margin-10">
+            <span className="custom-label">Name :</span>
+            <FormikInput
+              name="name"
+              style={{ input: { width: '200px', textAlign: 'left' } }}
+            />
+          </div>
           <div className="row margin-10">
             <span className="custom-label">Spectrometer Frequency :</span>
 
