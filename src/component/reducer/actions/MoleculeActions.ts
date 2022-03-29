@@ -3,6 +3,7 @@ import { Draft } from 'immer';
 import { generateSpectra } from '../../../data/PredictionManager';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import getColor from '../../../data/utilities/getColor';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -71,13 +72,15 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   if (!data) {
     draft.isLoading = false;
   } else {
-    for (const spectrum of generateSpectra(data, options)) {
+    const color = getColor(false, draft.usedColors['1d']);
+    for (const spectrum of generateSpectra(data, options, color)) {
       draft.data.push(spectrum);
       draft.tabActiveSpectrum[nucleusToString(spectrum.info.nucleus)] = {
         id: spectrum.id,
         index: draft.data.length - 1,
       };
     }
+    draft.usedColors['1d'].push(color);
   }
   draft.toolOptions.data.predictionIndex++;
   setActiveTab(draft);

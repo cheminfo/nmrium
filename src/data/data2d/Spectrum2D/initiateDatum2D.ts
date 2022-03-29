@@ -69,9 +69,8 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
 function getColor(options, usedColors) {
   let color = { positiveColor: 'red', negativeColor: 'blue' };
   if (
-    options.display === undefined ||
-    options.display.negativeColor === undefined ||
-    options.display.positiveColor === undefined
+    options?.display.negativeColor === undefined ||
+    options?.display?.positiveColor === undefined
   ) {
     color = get2DColor(options.info.experiment, usedColors['2d'] || []);
   }
