@@ -21,7 +21,6 @@ function mapSpectra(data: (Datum1D | Datum2D)[]) {
     const { id, info } = spectrum;
     const dimension = spectrum.info.dimension;
     if (dimension === 1) {
-      console.log('spectrum2', spectrum);
       const ranges = (spectrum as Datum1D).ranges.values;
       acc.push({ id, info, ranges });
     } else if (dimension === 2) {
