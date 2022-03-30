@@ -129,7 +129,7 @@ const containerStyles = css`
   }
 `;
 
-export type NMRIumWorkspace =
+export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
   | 'default'
@@ -138,7 +138,7 @@ export type NMRIumWorkspace =
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: State) => void;
-  workspace?: NMRIumWorkspace;
+  workspace?: NMRiumWorkspace;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**

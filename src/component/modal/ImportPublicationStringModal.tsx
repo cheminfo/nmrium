@@ -47,18 +47,20 @@ function ImportPublicationStringModal({
   const dispatch = useDispatch();
   const alert = useAlert();
   const publicationStringHandler = useCallback(
-    async (values) => {
-      const hideLoading = await alert.showLoading(
-        'Generate spectrum from publication string in progress',
-      );
-      setTimeout(() => {
-        dispatch({
-          type: GENERATE_SPECTRUM_FROM_PUBLICATION_STRING,
-          payload: values,
+    (values) => {
+      void (async () => {
+        const hideLoading = await alert.showLoading(
+          'Generate spectrum from publication string in progress',
+        );
+        setTimeout(() => {
+          dispatch({
+            type: GENERATE_SPECTRUM_FROM_PUBLICATION_STRING,
+            payload: values,
+          });
+          hideLoading();
         });
-        hideLoading();
-      });
-      onClose();
+        onClose();
+      })();
     },
     [alert, dispatch, onClose],
   );

@@ -143,12 +143,14 @@ const styles = css`
 const CopyButton = ({ result }) => {
   const [isCopied, setCopyFlag] = useState(false);
 
-  const saveToClipboardHandler = useCallback(async () => {
-    const success = await copyTextToClipboard(result);
-    setCopyFlag(success);
-    setTimeout(() => {
-      setCopyFlag(false);
-    }, 1000);
+  const saveToClipboardHandler = useCallback(() => {
+    void (async () => {
+      const success = await copyTextToClipboard(result);
+      setCopyFlag(success);
+      setTimeout(() => {
+        setCopyFlag(false);
+      }, 1000);
+    })();
   }, [result]);
 
   return (

@@ -62,19 +62,21 @@ export default function Test() {
   const [data, setData] = useState<any>();
   const [callBackData, setCallBackData] = useState<any>({});
 
-  const dropFileHandler = useCallback(async (dropfiles) => {
-    try {
-      const files = await loadFiles<{ binary: any }>(dropfiles, {
-        asBuffer: true,
-      });
+  const dropFileHandler = useCallback((dropfiles) => {
+    void (async () => {
+      try {
+        const files = await loadFiles<{ binary: any }>(dropfiles, {
+          asBuffer: true,
+        });
 
-      const decoder = new TextDecoder('utf8');
-      const data = JSON.parse(decoder.decode(files[0].binary));
-      setData(data);
-    } catch (e) {
-      // eslint-disable-next-line no-alert
-      alert('Invalid JSON file');
-    }
+        const decoder = new TextDecoder('utf8');
+        const data = JSON.parse(decoder.decode(files[0].binary));
+        setData(data);
+      } catch (e) {
+        // eslint-disable-next-line no-alert
+        alert('Invalid JSON file');
+      }
+    })();
   }, []);
   const dataChangeHandler = useCallback((data) => {
     setCallBackData(data);

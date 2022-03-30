@@ -2,7 +2,10 @@
 import { css } from '@emotion/react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { usePreferences } from '../../context/PreferencesContext';
+import {
+  usePreferences,
+  useWorkspacesList,
+} from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
@@ -11,8 +14,6 @@ import DropDownButton, {
 } from '../../elements/dropDownButton/DropDownButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import { WORKSPACES } from '../../reducer/preferencesReducer';
-import workspaces from '../../workspaces';
 import { ModalStyles } from '../ModalStyle';
 
 import ControllersTabContent from './ControllersTabContent';
@@ -103,26 +104,16 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const { dispatch, ...preferences } = usePreferences();
   const alert = useAlert();
   const refForm = useRef<any>();
+  const workspaces = useWorkspacesList();
 
   const workspacesList = useMemo(() => {
-    const currentWorkspaces = Object.keys(preferences.workspaces).reduce<
-      { key: string; label: string }[]
-    >((acc, key) => {
-      if (!workspaces[key]) {
-        acc.push({ key, label: preferences.workspaces[key].label });
-      }
-      return acc;
-    }, []);
-
-    return [
-      ...WORKSPACES,
-      ...currentWorkspaces,
+    return workspaces.concat([
       {
         key: 'new',
         label: 'Custom workspace',
       },
-    ];
-  }, [preferences.workspaces]);
+    ]);
+  }, [workspaces]);
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();

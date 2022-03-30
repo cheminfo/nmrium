@@ -117,17 +117,19 @@ function SpectrumsTabsInner({
     () => [
       {
         label: 'Copy to Clipboard',
-        onClick: async (spectrumData) => {
-          const { x, y, info } = spectrumData;
-          const success = await copyTextToClipboard(
-            JSON.stringify({ x, y, info }, undefined, 2),
-          );
+        onClick: (spectrumData) => {
+          void (async () => {
+            const { x, y, info } = spectrumData;
+            const success = await copyTextToClipboard(
+              JSON.stringify({ x, y, info }, undefined, 2),
+            );
 
-          if (success) {
-            alert.success('Data copied to clipboard');
-          } else {
-            alert.error('Copy to clipboard failed');
-          }
+            if (success) {
+              alert.success('Data copied to clipboard');
+            } else {
+              alert.error('Copy to clipboard failed');
+            }
+          })();
         },
       },
       {

@@ -1,4 +1,9 @@
-import { predictAll, signalsToXY, signals2DToZ } from 'nmr-processing';
+import {
+  predictAll,
+  signalsToXY,
+  signals2DToZ,
+  getFrequency,
+} from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import { DatumKind } from './constants/SignalsKinds';
@@ -11,8 +16,10 @@ import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
 import { Datum2D, Signal2D, Zone } from './types/data2d';
 import generateID from './utilities/generateID';
+import { adjustAlpha } from './utilities/getColor';
 
 export interface PredictionOptions {
+  name: string;
   frequency: number;
   '1d': {
     '1H': { from: number; to: number };
@@ -33,6 +40,7 @@ export interface PredictionOptions {
 }
 
 export const defaultPredictionOptions: PredictionOptions = {
+  name: '',
   frequency: 400,
   '1d': {
     '1H': { from: -1, to: 12 },
@@ -83,9 +91,9 @@ export async function predictSpectra(molfile: string): Promise<any> {
 export function generateSpectra(
   data: Record<string, any>,
   inputOptions: PredictionOptions,
+  color: string,
 ): Array<Datum1D | Datum2D> {
   const spectra: Array<Datum1D | Datum2D> = [];
-  const color = '#593315';
   for (const experiment in data) {
     if (inputOptions.spectra[experiment]) {
       const spectrum = data[experiment];
@@ -134,10 +142,11 @@ function generated1DSpectrum(params: {
   const { signals, ranges, nucleus } = spectrum;
 
   const {
+    name,
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
-  const frequency = getFrequency(nucleus, freq);
+  const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
     frequency,
@@ -147,6 +156,7 @@ function generated1DSpectrum(params: {
     {
       data: { x, im: null, re: y },
       display: {
+        name,
         color,
       },
       info: {
@@ -207,7 +217,7 @@ function generated2DSpectrum(params: {
   const yOption = inputOptions['1d'][nuclei[1]];
 
   const width = get2DWidth(nuclei);
-  const frequency = getFrequency(nuclei, inputOptions.frequency);
+  const frequency = calculateFrequency(nuclei, inputOptions.frequency);
 
   const spectrumData = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
@@ -217,13 +227,16 @@ function generated2DSpectrum(params: {
       y: inputOptions['2d'].nbPoints.y,
     },
     width,
+    factor: 3,
   });
 
   const datum = initiateDatum2D(
     {
       data: { ...spectrumData, noise: 0.01 },
       display: {
-        positiveColor: experiment === 'hmbc' ? '#e68337' : color,
+        name: inputOptions.name,
+        positiveColor: color,
+        negativeColor: adjustAlpha(color, 40),
       },
       info: {
         nucleus: nuclei,
@@ -240,22 +253,23 @@ function generated2DSpectrum(params: {
 }
 
 function get2DWidth(nucleus: string[]) {
-  return nucleus[0] === nucleus[1] ? 0.03 : { x: 0.03, y: 0.32 };
+  return nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.2133 };
 }
 
-function getFrequency(
+function calculateFrequency(
   nucleus: string | string[],
-  inputFrequency: number,
+  frequency: number,
 ): number | string {
-  const ration13C = 0.25;
-
   if (typeof nucleus === 'string') {
-    return nucleus === '13C' ? inputFrequency * ration13C : inputFrequency;
+    return getFrequency(nucleus, { nucleus: '1H', frequency });
   } else {
     if (nucleus[0] === nucleus[1]) {
-      return `${inputFrequency},${inputFrequency}`;
+      return `${frequency},${frequency}`;
     } else {
-      return `${inputFrequency},${inputFrequency * ration13C}`;
+      return `${frequency},${getFrequency(nucleus[1], {
+        nucleus: nucleus[0],
+        frequency,
+      })}`;
     }
   }
 }

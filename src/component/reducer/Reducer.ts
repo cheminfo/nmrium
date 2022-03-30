@@ -118,6 +118,7 @@ export const getInitialState = (): State => ({
       showMultiplicityTrees: false,
       showRangesIntegrals: true,
       showJGraph: false,
+      predictionIndex: 0,
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -358,6 +359,12 @@ export interface State {
        */
 
       showJGraph: boolean;
+
+      /**
+       * prediction Index
+       * @default 0
+       */
+      predictionIndex: number;
     };
   };
 

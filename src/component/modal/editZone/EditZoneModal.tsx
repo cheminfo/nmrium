@@ -80,28 +80,30 @@ function EditZoneModal({
   }, [onCloseEditZoneModal]);
 
   const handleOnSave = useCallback(
-    async (formValues) => {
-      const _rowData = {
-        ...rowData,
-        signals: formValues.signals.map((signal: Signal2D) => {
-          if (
-            isDefaultPathLength(
-              signal.j?.pathLength as FromTo,
-              rowData.tableMetaInfo.experiment,
-            )
-          ) {
-            delete signal.j?.pathLength;
-            if (signal.j && Object.keys(signal.j).length === 0) {
-              delete signal.j;
+    (formValues) => {
+      void (async () => {
+        const _rowData = {
+          ...rowData,
+          signals: formValues.signals.map((signal: Signal2D) => {
+            if (
+              isDefaultPathLength(
+                signal.j?.pathLength as FromTo,
+                rowData.tableMetaInfo.experiment,
+              )
+            ) {
+              delete signal.j?.pathLength;
+              if (signal.j && Object.keys(signal.j).length === 0) {
+                delete signal.j;
+              }
             }
-          }
 
-          return signal;
-        }),
-      };
+            return signal;
+          }),
+        };
 
-      await onSaveEditZoneModal(_rowData);
-      handleOnClose();
+        await onSaveEditZoneModal(_rowData);
+        handleOnClose();
+      })();
     },
     [handleOnClose, onSaveEditZoneModal, rowData],
   );

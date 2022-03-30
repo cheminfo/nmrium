@@ -76,8 +76,10 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
 
 function getColor(options, usedColors) {
   let color = 'black';
-  if (options.display === undefined || options.display.color === undefined) {
+  if (options?.display?.color === undefined) {
     color = get1dColor(false, usedColors['1d'] || []);
+  } else {
+    color = options.display.color;
   }
 
   if (usedColors['1d']) {

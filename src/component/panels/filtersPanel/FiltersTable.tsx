@@ -41,14 +41,16 @@ function FiltersTableInner({
   });
 
   const handelFilterCheck = useCallback(
-    async (id, checked) => {
-      const hideLoading = await alert.showLoading(
-        `${checked ? 'Enable' : 'Disable'} filter in progress`,
-      );
-      setTimeout(() => {
-        dispatch({ type: ENABLE_FILTER, id, checked });
-        hideLoading();
-      }, 0);
+    (id, checked) => {
+      void (async () => {
+        const hideLoading = await alert.showLoading(
+          `${checked ? 'Enable' : 'Disable'} filter in progress`,
+        );
+        setTimeout(() => {
+          dispatch({ type: ENABLE_FILTER, id, checked });
+          hideLoading();
+        }, 0);
+      })();
     },
     [alert, dispatch],
   );
@@ -92,14 +94,16 @@ function FiltersTableInner({
     [alert, dispatch, modal, spectraCounter],
   );
   const filterSnapShotHandler = useCallback(
-    async (newID) => {
-      const hideLoading = await alert.showLoading(
-        'Filter snapshot process in progress',
-      );
-      setTimeout(() => {
-        dispatch({ type: SET_FILTER_SNAPSHOT, id: newID });
-        hideLoading();
-      }, 0);
+    (newID) => {
+      void (async () => {
+        const hideLoading = await alert.showLoading(
+          'Filter snapshot process in progress',
+        );
+        setTimeout(() => {
+          dispatch({ type: SET_FILTER_SNAPSHOT, id: newID });
+          hideLoading();
+        }, 0);
+      })();
     },
     [alert, dispatch],
   );

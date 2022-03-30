@@ -105,21 +105,23 @@ export default function useExport() {
   }, [alert, state.data]);
 
   const saveHandler = useCallback(
-    async (options) => {
-      const { name, pretty, compressed, dataExportOption } = options;
-      const hideLoading = await alert.showLoading(
-        `Exporting as ${name}.nmrium process in progress`,
-      );
-      setTimeout(() => {
-        async function handle() {
-          const exportedData = toJSON(state, dataExportOption);
-          const spaceIndent = pretty ? 2 : 0;
-          await exportAsJSON(exportedData, name, spaceIndent, compressed);
-          hideLoading();
-        }
+    (options) => {
+      async function handler() {
+        const { name, pretty, compressed, dataExportOption } = options;
+        const hideLoading = await alert.showLoading(
+          `Exporting as ${name}.nmrium process in progress`,
+        );
+        setTimeout(() => {
+          void (async () => {
+            const exportedData = toJSON(state, dataExportOption);
+            const spaceIndent = pretty ? 2 : 0;
+            await exportAsJSON(exportedData, name, spaceIndent, compressed);
+            hideLoading();
+          })();
+        }, 0);
+      }
 
-        void handle();
-      }, 0);
+      void handler();
     },
     [alert, state],
   );

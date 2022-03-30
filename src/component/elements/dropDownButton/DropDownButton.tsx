@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, CSSObject } from '@emotion/react';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { FaEllipsisH } from 'react-icons/fa';
 
-import { useGlobal } from '../../context/GlobalContext';
-
 import DropDownList from './DropDownList';
 
-const styles = css`
-  padding: 2px;
-  border-radius: 10px;
-  width: auto;
-  display: inline-block;
-  border: 0.55px solid lightgray;
-  font-size: 10px;
-
-  // button {
-  //   text-transform: Capitalize;
-  // }
-`;
+const styles = {
+  container: css`
+    position: relative;
+    padding: 2px;
+    border-radius: 10px;
+    width: max-content;
+    display: inline-block;
+    border: 0.55px solid lightgray;
+    font-size: 10px;
+  `,
+  button: css`
+    width: 100%;
+  `,
+};
 
 export interface DropDownListItem {
   key: string;
@@ -36,6 +36,7 @@ interface DropDownButtonProps extends Omit<DropDownListProps, 'onSelect'> {
   selectedKey?: string;
   onSelect?: (item: DropDownListItem) => void;
   formatSelectedValue?: (Item: DropDownListItem) => string;
+  style?: CSSObject;
 }
 
 function DropDownButton(props: DropDownButtonProps) {
@@ -45,10 +46,10 @@ function DropDownButton(props: DropDownButtonProps) {
     onSelect,
     formatSelectedValue = (item) => item.label,
     renderItem = null,
+    style,
   } = props;
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<DropDownListItem | null>();
-  const { rootRef } = useGlobal();
 
   const drop = useRef<HTMLDivElement>(null);
 
@@ -59,26 +60,13 @@ function DropDownButton(props: DropDownButtonProps) {
     }
   }, [selectedKey, data]);
 
-  const handleClick = useCallback(
-    (e) => {
-      if (
-        drop.current &&
-        !e.target.closest(`.${drop.current.className}`) &&
-        open
-      ) {
-        setTimeout(() => {
-          setOpen(false);
-        }, 0);
-      }
-    },
-    [open],
-  );
   useEffect(() => {
-    if (rootRef) {
-      rootRef.addEventListener('click', handleClick);
+    function handleClick() {
+      setOpen(false);
     }
-    return () => rootRef.removeEventListener('click', handleClick);
-  }, [handleClick, open, rootRef]);
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, []);
 
   const selectHandler = useCallback(
     (index) => {
@@ -89,8 +77,9 @@ function DropDownButton(props: DropDownButtonProps) {
   );
 
   return (
-    <div className="dropdown" ref={drop} css={styles}>
+    <div className="dropdown" ref={drop} css={[styles.container, style]}>
       <button
+        css={styles.button}
         type="button"
         onClick={(event) => {
           setOpen((open) => !open);

@@ -9,7 +9,13 @@ import {
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
+import {
+  usePreferences,
+  useWorkspacesList,
+} from '../context/PreferencesContext';
+import DropDownButton, {
+  DropDownListItem,
+} from '../elements/dropDownButton/DropDownButton';
 import { useModal, positions } from '../elements/popup/Modal';
 import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
@@ -26,18 +32,23 @@ interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
   selectedOptionPanel: string | null;
-  hideGeneralSettings: boolean;
 }
 
 function HeaderInner(props: HeaderInnerProps) {
-  const {
-    isFullscreen,
-    onMaximize = () => null,
-    selectedOptionPanel,
-    hideGeneralSettings,
-  } = props;
+  const { isFullscreen, onMaximize = () => null, selectedOptionPanel } = props;
 
   const modal = useModal();
+  const {
+    current: {
+      display: { general },
+    },
+    workspace,
+    dispatch,
+  } = usePreferences();
+
+  const workspacesList = useWorkspacesList();
+  const hideGeneralSettings =
+    general?.hideGeneralSettings && workspace.base ? true : false;
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
@@ -76,6 +87,18 @@ function HeaderInner(props: HeaderInnerProps) {
     });
   }, [modal]);
 
+  const changeWorkspaceHandler = useCallback(
+    (option: DropDownListItem) => {
+      dispatch({
+        type: 'SET_WORKSPACE',
+        payload: {
+          workspace: option.key,
+        },
+      });
+    },
+    [dispatch],
+  );
+
   return (
     <Header>
       <div
@@ -107,36 +130,52 @@ function HeaderInner(props: HeaderInnerProps) {
         </div>
         <div className="toolOptionsPanel">{selectedPanel}</div>
       </div>
-
-      <Toolbar orientation="horizontal">
-        <Toolbar.Item
-          id="user-manual"
-          title="User manual"
-          onClick={() => window.open(docsBaseUrl, '_blank')}
-        >
-          <FaQuestionCircle />
-        </Toolbar.Item>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
         {!hideGeneralSettings && (
-          <Toolbar.Item
-            id="general-settings"
-            onClick={openGeneralSettingsHandler}
-            title="General settings"
-          >
-            <FaWrench />
-          </Toolbar.Item>
+          <DropDownButton
+            data={workspacesList}
+            selectedKey={workspace.current}
+            onSelect={changeWorkspaceHandler}
+          />
         )}
+        <div>
+          <Toolbar orientation="horizontal">
+            <Toolbar.Item
+              id="user-manual"
+              title="User manual"
+              onClick={() => window.open(docsBaseUrl, '_blank')}
+            >
+              <FaQuestionCircle />
+            </Toolbar.Item>
+            {!hideGeneralSettings && (
+              <Toolbar.Item
+                id="general-settings"
+                onClick={openGeneralSettingsHandler}
+                title="General settings"
+              >
+                <FaWrench />
+              </Toolbar.Item>
+            )}
 
-        {!isFullscreen && (
-          <Toolbar.Item
-            id="full-screen"
-            onClick={onMaximize}
-            title="Full Screen"
-            className="windowButton"
-          >
-            <FaRegWindowMaximize />
-          </Toolbar.Item>
-        )}
-      </Toolbar>
+            {!isFullscreen && (
+              <Toolbar.Item
+                id="full-screen"
+                onClick={onMaximize}
+                title="Full Screen"
+                className="windowButton"
+              >
+                <FaRegWindowMaximize />
+              </Toolbar.Item>
+            )}
+          </Toolbar>
+        </div>
+      </div>
     </Header>
   );
 }
@@ -147,22 +186,12 @@ export default function HeaderWrapper({ isFullscreen, onMaximize }) {
   const {
     toolOptions: { selectedOptionPanel },
   } = useChartData();
-  const {
-    current: {
-      display: { general },
-    },
-    workspace: { base },
-  } = usePreferences();
-
-  const hideGeneralSettings =
-    general?.hideGeneralSettings && base ? true : false;
   return (
     <MemoizedHeader
       {...{
         selectedOptionPanel,
         isFullscreen,
         onMaximize,
-        hideGeneralSettings,
       }}
     />
   );
