@@ -21,6 +21,7 @@ function mapSpectra(data: (Datum1D | Datum2D)[]) {
     const { id, info } = spectrum;
     const dimension = spectrum.info.dimension;
     if (dimension === 1) {
+      console.log('spectrum2', spectrum);
       const ranges = (spectrum as Datum1D).ranges.values;
       acc.push({ id, info, ranges });
     } else if (dimension === 2) {
@@ -41,11 +42,13 @@ export function useGetAssignments() {
       const hideLoading = await alert.showLoading('Auto Assignments');
       const molecule = OCL.Molecule.fromMolfile(molecules[0]?.molfile || '');
       const spectra = mapSpectra(data);
-      const result = await getAssignmentsData({
-        spectra,
-        molecule,
-      });
-
+      const result = await getAssignmentsData(
+        {
+          spectra,
+          molecule,
+        },
+        { minScore: 0 },
+      );
       hideLoading();
       setAssignments(result);
     })();
