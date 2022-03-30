@@ -5,8 +5,10 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
 import NoTableData from '../extra/placeholder/NoTableData';
 
+import { AutoAssignmentsData } from './useGetAssignments';
+
 interface AutomaticAssignmentTableProps {
-  data: any;
+  data: AutoAssignmentsData[];
 }
 
 function PeaksTable({ data }: AutomaticAssignmentTableProps) {
@@ -28,6 +30,7 @@ function PeaksTable({ data }: AutomaticAssignmentTableProps) {
       {
         index: 2,
         Header: 'Score',
+        accessor: 'score',
       },
       {
         index: 3,

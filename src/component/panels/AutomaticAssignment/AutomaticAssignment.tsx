@@ -1,29 +1,28 @@
 /** @jsxImportSource @emotion/react */
 import { SvgNmrAssignment2 } from 'cheminfo-font';
-import { useCallback } from 'react';
 
 import Button from '../../elements/ButtonToolTip';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-function AutomaticAssignment() {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const automaticAssignmentHandler = useCallback(() => {}, []);
+import AutomaticAssignmentTable from './AutomaticAssignmentTable';
+import { useGetAssignments } from './useGetAssignments';
 
+function AutomaticAssignment() {
+  const { getAssignments, assignments } = useGetAssignments();
   return (
     <div css={tablePanelStyle}>
       {
         <DefaultPanelHeader showSettingButton={false} canDelete={false}>
-          <Button
-            popupTitle="automatic assignment"
-            onClick={automaticAssignmentHandler}
-          >
+          <Button popupTitle="automatic assignment" onClick={getAssignments}>
             <SvgNmrAssignment2 style={{ fontSize: '18px' }} />
           </Button>
         </DefaultPanelHeader>
       }
 
-      <div className="inner-container" />
+      <div className="inner-container">
+        <AutomaticAssignmentTable data={assignments} />
+      </div>
     </div>
   );
 }
