@@ -286,11 +286,25 @@ function InnerNMRium({
       e.preventDefault();
     }
   }, []);
-  const mouseEnterHandler = useCallback(() => {
-    dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
-  }, [dispatchMiddleWare]);
-  const mouseLeaveHandler = useCallback(() => {
-    dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+
+  const mainDivRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const div = mainDivRef.current;
+    if (!div) {
+      return;
+    }
+    function mouseEnterHandler() {
+      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
+    }
+    function mouseLeaveHandler() {
+      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+    }
+    div.addEventListener('mouseenter', mouseEnterHandler);
+    div.addEventListener('mouseleave', mouseLeaveHandler);
+    return () => {
+      div.removeEventListener('mouseenter', mouseEnterHandler);
+      div.removeEventListener('mouseleave', mouseLeaveHandler);
+    };
   }, [dispatchMiddleWare]);
 
   return (
@@ -301,11 +315,7 @@ function InnerNMRium({
       }}
     >
       <PreferencesProvider value={preferencesState}>
-        <div
-          onMouseEnter={mouseEnterHandler}
-          onMouseLeave={mouseLeaveHandler}
-          style={{ height: '100%', position: 'relative' }}
-        >
+        <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
           <AlertProvider wrapperRef={elementsWraperRef.current}>
             <DispatchProvider value={dispatchMiddleWare}>
               <ChartDataProvider value={state}>
