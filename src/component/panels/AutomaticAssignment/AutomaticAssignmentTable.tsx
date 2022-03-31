@@ -1,8 +1,10 @@
 import { SvgNmrAssignment } from 'cheminfo-font';
 import { useCallback, useMemo, memo } from 'react';
 
+import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
+import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { AutoAssignmentsData } from './useGetAssignments';
@@ -12,12 +14,20 @@ interface AutomaticAssignmentTableProps {
 }
 
 function PeaksTable({ data }: AutomaticAssignmentTableProps) {
-  const assignHandler = useCallback((e, row) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const params = row.original;
-  }, []);
+  const dispatch = useDispatch();
+
+  const assignHandler = useCallback(
+    (e, row) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const assignments = row.original.assignment;
+      dispatch({
+        type: SET_AUTOMATIC_ASSIGNMENTS,
+        payload: { assignments },
+      });
+    },
+    [dispatch],
+  );
 
   const COLUMNS: CustomColumn[] = useMemo(
     () => [

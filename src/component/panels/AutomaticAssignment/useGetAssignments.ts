@@ -1,7 +1,8 @@
 import {
-  SpectraDataWithIds,
   getAssignments as getAssignmentsData,
   SpectraData,
+  SpectraData1D,
+  SpectraData2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useMemo, useState } from 'react';
@@ -13,7 +14,7 @@ import { useAlert } from '../../elements/popup/Alert';
 
 export interface AutoAssignmentsData {
   score: number;
-  assignment: SpectraDataWithIds[];
+  assignment: (SpectraData1D | SpectraData2D)[];
 }
 
 function mapSpectra(data: (Datum1D | Datum2D)[]) {
@@ -48,7 +49,6 @@ export function useGetAssignments() {
         },
         { minScore: 0 },
       );
-      console.log('result', result);
       hideLoading();
       setAssignments(result);
     })();
