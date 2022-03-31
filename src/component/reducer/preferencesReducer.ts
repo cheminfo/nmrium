@@ -221,20 +221,28 @@ function handleInit(draft: Draft<PreferencesState>, action) {
           ))) ||
       !localData
     ) {
-      const { workspaces, version } = draft || {};
+      const {
+        workspaces,
+        version,
+        workspace: { current },
+      } = draft || {};
       const display = filterObject(workspacePreferences.display);
 
       const data = {
         version,
+        ...(localData?.currentWorkspace && {
+          currentWorkspace: localData?.currentWorkspace,
+        }),
         workspaces: {
           ...workspaces,
-          [draft.workspace.current]: {
+          [current]: {
             ...workspacePreferences,
             display,
           },
         },
       };
-      draft.workspaces[draft.workspace.current] = lodashMerge(
+
+      draft.workspaces[current] = lodashMerge(
         {},
         currentWorkspacePreferences,
         workspacePreferences,
