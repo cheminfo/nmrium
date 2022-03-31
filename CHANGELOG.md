@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.24.0](https://www.github.com/cheminfo/nmrium/compare/v0.23.0...v0.24.0) (2022-03-29)
+
+
+### Features
+
+* add name for predicted spectra ([e032417](https://www.github.com/cheminfo/nmrium/commit/e0324177cdea7bd27751d95dcbc669a0468f5c68)), closes [#1452](https://www.github.com/cheminfo/nmrium/issues/1452)
+* distinguish predicted spectra color per sample ([f2b5acb](https://www.github.com/cheminfo/nmrium/commit/f2b5acba7d8cc2608db5821e4d830154b0368680))
+* NMRium workspaces ([#1431](https://www.github.com/cheminfo/nmrium/issues/1431)) ([cd0ccbd](https://www.github.com/cheminfo/nmrium/commit/cd0ccbd3eae286de7f55dd84367b6e39130d9156))
+* quick workspace change ([a1808a7](https://www.github.com/cheminfo/nmrium/commit/a1808a7da86c70616c4cb7c5ce4ba54ae94a8bd7)), closes [#1446](https://www.github.com/cheminfo/nmrium/issues/1446)
+
+
+### Bug Fixes
+
+* bug when drag / drop second NMRium file ([fe64cb1](https://www.github.com/cheminfo/nmrium/commit/fe64cb166b020b80d9665d4547cda30c3b8b69f7)), closes [#1421](https://www.github.com/cheminfo/nmrium/issues/1421)
+* change integral sum option by selecting a molecule is hidden ([64c4887](https://www.github.com/cheminfo/nmrium/commit/64c4887cff1759b3b0502cacbb59185786373147))
+* crash when unselect 2d spectrum ([790b27c](https://www.github.com/cheminfo/nmrium/commit/790b27c370918ce74e217c032e40a3431807a9b4)), closes [#1434](https://www.github.com/cheminfo/nmrium/issues/1434)
+* generateSpectrum2D n getFrequency function ([#1450](https://www.github.com/cheminfo/nmrium/issues/1450)) ([ce8eb1b](https://www.github.com/cheminfo/nmrium/commit/ce8eb1b88c27cd37902d73d7202076af1dd59117))
+* Reset workspace crash ([c2481d1](https://www.github.com/cheminfo/nmrium/commit/c2481d14a89ebb471c48f13697fede2781b81633)), closes [#1448](https://www.github.com/cheminfo/nmrium/issues/1448)
+* sorting columns in ranges table ([67e850a](https://www.github.com/cheminfo/nmrium/commit/67e850a89bc4f6dc5e458a6e814857282d61433a))
+* y scale was not refreshed after applying FFT Filter ([011ef72](https://www.github.com/cheminfo/nmrium/commit/011ef724265a90ed4c774d338749e1cb8fe4692c)), closes [#1430](https://www.github.com/cheminfo/nmrium/issues/1430)
+
 ## [0.23.0](https://www.github.com/cheminfo/nmrium/compare/v0.22.0...v0.23.0) (2022-03-11)
 
 
