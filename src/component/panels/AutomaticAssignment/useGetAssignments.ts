@@ -1,8 +1,8 @@
 import {
+  SpectraDataWithIds,
   getAssignments as getAssignmentsData,
   SpectraData,
 } from 'nmr-processing';
-import { SpectraDataWithIds } from 'nmr-processing/lib/assignment/utils/getAssignment/checkIDs';
 import OCL from 'openchemlib/full';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -21,7 +21,6 @@ function mapSpectra(data: (Datum1D | Datum2D)[]) {
     const { id, info } = spectrum;
     const dimension = spectrum.info.dimension;
     if (dimension === 1) {
-      console.log('spectrum2', spectrum);
       const ranges = (spectrum as Datum1D).ranges.values;
       acc.push({ id, info, ranges });
     } else if (dimension === 2) {
@@ -49,6 +48,7 @@ export function useGetAssignments() {
         },
         { minScore: 0 },
       );
+      console.log('result', result);
       hideLoading();
       setAssignments(result);
     })();
