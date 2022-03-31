@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.24.1](https://www.github.com/cheminfo/nmrium/compare/v0.24.0...v0.24.1) (2022-03-31)
+
+
+### Bug Fixes
+
+* full ethyl benzene sample crash ([b8626de](https://www.github.com/cheminfo/nmrium/commit/b8626de6f96c35874acb2e769620bf94bfb13a39))
+* reload NMRium with the last selected workspace ([cb52cdc](https://www.github.com/cheminfo/nmrium/commit/cb52cdc8f1c1c1d7c217eb80f4259dda58c3577c)), closes [#1453](https://www.github.com/cheminfo/nmrium/issues/1453)
+
 ## [0.24.0](https://www.github.com/cheminfo/nmrium/compare/v0.23.0...v0.24.0) (2022-03-29)
 
 
