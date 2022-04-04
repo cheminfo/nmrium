@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
+import { useGlobal } from '../context/GlobalContext';
 import { useAlert } from '../elements/popup/Alert';
 import { positions, useModal } from '../elements/popup/Modal';
 import SaveAsModal from '../modal/SaveAsModal';
@@ -15,22 +16,23 @@ import {
 import { nmriumToNmredata } from '../utility/nmriumToNmredata';
 
 export default function useExport() {
+  const { rootRef } = useGlobal();
   const modal = useModal();
   const alert = useAlert();
   const state = useChartData();
 
   const saveToClipboardHandler = useCallback(async () => {
-    if (state.data.length > 0) {
+    if (state.data.length > 0 && rootRef) {
       const hideLoading = await alert.showLoading(
         'Exporting as NMRium process in progress',
       );
       setTimeout(() => {
-        copyPNGToClipboard('nmrSVG');
+        copyPNGToClipboard(rootRef, 'nmrSVG');
         hideLoading();
         alert.success('Image copied to clipboard');
       }, 0);
     }
-  }, [alert, state]);
+  }, [rootRef, alert, state]);
 
   const saveAsJSONHandler = useCallback(
     async (spaceIndent = 0, isCompressed = true) => {
@@ -79,30 +81,30 @@ export default function useExport() {
   }, [alert, state]);
 
   const saveAsSVGHandler = useCallback(async () => {
-    if (state.data.length > 0) {
+    if (state.data.length > 0 && rootRef) {
       const hideLoading = await alert.showLoading(
         'Exporting as SVG process in progress',
       );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
-        exportAsSVG('nmrSVG', fileName);
+        exportAsSVG(rootRef, 'nmrSVG', fileName);
         hideLoading();
       }, 0);
     }
-  }, [alert, state.data]);
+  }, [rootRef, alert, state.data]);
 
   const saveAsPNGHandler = useCallback(async () => {
-    if (state.data.length > 0) {
+    if (state.data.length > 0 && rootRef) {
       const hideLoading = await alert.showLoading(
         'Exporting as PNG process in progress',
       );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
-        exportAsPng('nmrSVG', fileName);
+        exportAsPng(rootRef, 'nmrSVG', fileName);
         hideLoading();
       }, 0);
     }
-  }, [alert, state.data]);
+  }, [rootRef, alert, state.data]);
 
   const saveHandler = useCallback(
     (options) => {

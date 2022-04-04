@@ -137,6 +137,7 @@ function ToolTip({
         {children}
       </div>
       {show &&
+        elementsWrapperRef &&
         createPortal(
           <div
             ref={refContent}
