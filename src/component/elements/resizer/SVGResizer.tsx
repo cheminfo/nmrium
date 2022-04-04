@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, useEffect } from 'react';
+import { CSSProperties, useEffect, MouseEventHandler } from 'react';
 
 import { Position, ResizerProps } from './Resizer';
 import useDraggable from './useDraggable';
@@ -79,19 +79,25 @@ export default function SVGResizer(props: ResizerProps) {
       }}
     >
       {typeof children === 'function'
-        ? children?.(left.position.x, right.position.x)
+        ? children(left.position.x, right.position.x)
         : children}
-      <g
+      <SVGResizerHandle onMouseDown={left.onMouseDown} position={0} />
+      <SVGResizerHandle
         onMouseDown={right.onMouseDown}
-        css={styles.container(right.position.x - left.position.x)}
-      >
-        <rect x="-5px" css={styles.innerContainer} />
-        <rect x="-2.5px" style={anchorStyle} />
-      </g>
-      <g onMouseDown={left.onMouseDown} css={styles.container(0)}>
-        <rect x="-5px" css={styles.innerContainer} />
-        <rect x="-2.5px" style={anchorStyle} />
-      </g>
+        position={right.position.x - left.position.x}
+      />
+    </g>
+  );
+}
+
+function SVGResizerHandle(props: {
+  onMouseDown: MouseEventHandler<SVGGElement>;
+  position: number;
+}) {
+  return (
+    <g onMouseDown={props.onMouseDown} css={styles.container(props.position)}>
+      <rect x="-5px" css={styles.innerContainer} />
+      <rect x="-2.5px" style={anchorStyle} />
     </g>
   );
 }

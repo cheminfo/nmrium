@@ -19,7 +19,7 @@ async function addRange(
 
 async function resizeRange(nmrium: NmriumPage) {
   const rightResizer = nmrium.page.locator(
-    'data-test-id=range >> nth=0 >> .handle >> nth=0',
+    'data-test-id=range >> nth=0 >> _react=SVGResizerHandle >> nth=1',
   );
 
   const { x, height } = (await rightResizer.boundingBox()) as BoundingBox;
