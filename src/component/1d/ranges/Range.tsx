@@ -137,19 +137,6 @@ function Range({
     [assignmentRange, isBlockedByEditing, selectedTool],
   );
 
-  // const dragHandler = useCallback(
-  //   (position) => {
-  //     setRangeBoundary((range) => ({
-  //       ...range,
-  //       from: scaleX().invert(position.x2),
-  //       to: scaleX().invert(position.x1),
-  //     }));
-  //   },
-  //   [scaleX],
-  // );
-
-  // const { from, to } = rangeBoundary;
-
   return (
     <g
       data-test-id="range"
@@ -176,7 +163,7 @@ function Range({
           <g transform={`translate(0,10)`}>
             <rect
               x="0"
-              width={Math.abs(x2 - x1)}
+              width={x2 - x1}
               height="6"
               className="range-area"
               fill="green"
@@ -190,7 +177,7 @@ function Range({
             />
             <text
               textAnchor="middle"
-              x={Math.abs(x2 - x1) / 2}
+              x={(x2 - x1) / 2}
               y="20"
               fontSize="10"
               fill="red"

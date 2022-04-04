@@ -98,7 +98,7 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
             <rect
               x="0"
               y="0"
-              width={`${x2 - x1}`}
+              width={x2 - x1}
               height={height - margin.bottom}
               className="highlight"
             />
