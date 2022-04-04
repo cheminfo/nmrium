@@ -227,7 +227,7 @@ function InnerNMRium({
   emptyText,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const elementsWraperRef = useRef<HTMLDivElement>(null);
+  const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
   const isFullscreen = useFullscreen(rootRef, show, {
@@ -311,15 +311,15 @@ function InnerNMRium({
     <GlobalProvider
       value={{
         rootRef: rootRef.current,
-        elementsWraperRef: elementsWraperRef.current,
+        elementsWrapperRef: elementsWrapperRef.current,
       }}
     >
       <PreferencesProvider value={preferencesState}>
         <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
-          <AlertProvider wrapperRef={elementsWraperRef.current}>
+          <AlertProvider wrapperRef={elementsWrapperRef.current}>
             <DispatchProvider value={dispatchMiddleWare}>
               <ChartDataProvider value={state}>
-                <ModalProvider wrapperRef={elementsWraperRef.current}>
+                <ModalProvider wrapperRef={elementsWrapperRef.current}>
                   <HighlightProvider>
                     <AssignmentProvider spectraData={spectraData}>
                       <SpinnerProvider value={getSpinner}>
@@ -378,7 +378,7 @@ function InnerNMRium({
                                 </SplitPane>
 
                                 <div
-                                  ref={elementsWraperRef}
+                                  ref={elementsWrapperRef}
                                   key={String(isFullscreen)}
                                   id="main-wrapper"
                                   style={{
