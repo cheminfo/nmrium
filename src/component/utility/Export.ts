@@ -134,13 +134,21 @@ function exportAsMol(data, fileName = 'mol') {
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
-function exportAsSVG(elementID, fileName = 'experiment') {
-  const { blob } = getBlob(elementID);
+function exportAsSVG(
+  rootRef: HTMLDivElement,
+  elementID: string,
+  fileName = 'experiment',
+) {
+  const { blob } = getBlob(rootRef, elementID);
   saveAs(blob, `${fileName}.svg`);
 }
 
-function exportAsPng(elementID, fileName = 'experiment') {
-  const { blob, width, height } = getBlob(elementID);
+function exportAsPng(
+  rootRef: HTMLDivElement,
+  elementID: string,
+  fileName = 'experiment',
+) {
+  const { blob, width, height } = getBlob(rootRef, elementID);
   try {
     let canvas = document.createElement('canvas');
     canvas.width = width;
@@ -202,8 +210,8 @@ function copyBlobToCliboard(canvas) {
   });
 }
 
-function copyPNGToClipboard(elementID) {
-  const { blob, width, height } = getBlob(elementID);
+function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
+  const { blob, width, height } = getBlob(rootRef, elementID);
   try {
     let canvas = document.createElement('canvas');
     canvas.width = width;
@@ -243,9 +251,10 @@ function copyPNGToClipboard(elementID) {
   }
 }
 
-function getBlob(elementID) {
-  // nmrSVG
-  let _svg: any = document.getElementById(elementID)?.cloneNode(true);
+function getBlob(rootRef: HTMLDivElement, elementID: string) {
+  let _svg: any = (rootRef.getRootNode() as Document)
+    .getElementById(elementID)
+    ?.cloneNode(true);
   const width = _svg?.getAttribute('width').replace('px', '');
   const height = _svg?.getAttribute('height').replace('px', '');
   _svg

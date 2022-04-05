@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import analyze from 'rollup-plugin-analyzer';
-import { AliasOptions, defineConfig } from 'vite';
+import { AliasOptions, defineConfig, splitVendorChunkPlugin } from 'vite';
 
 // https://vitejs.dev/config/
 export default () => {
@@ -28,7 +28,7 @@ export default () => {
       },
       minify: process.env.NO_MINIFY ? false : 'esbuild',
     },
-    plugins: [react()],
+    plugins: [react(), splitVendorChunkPlugin()],
     resolve: {
       alias: resolveAliases,
     },

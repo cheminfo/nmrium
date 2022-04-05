@@ -26,7 +26,7 @@ async function addIntegral(
 
 async function resizeIntegral(nmrium: NmriumPage) {
   const rightResizer = nmrium.page.locator(
-    '_react=Integral >> nth=0 >> .handle >> nth=0',
+    '_react=Integral >> nth=0 >> _react=SVGResizerHandle >> nth=1',
   );
 
   const { x, height } = (await rightResizer.boundingBox()) as BoundingBox;

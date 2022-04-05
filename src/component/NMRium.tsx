@@ -227,7 +227,7 @@ function InnerNMRium({
   emptyText,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const elementsWraperRef = useRef<HTMLDivElement>(null);
+  const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
   const isFullscreen = useFullscreen(rootRef, show, {
@@ -286,30 +286,40 @@ function InnerNMRium({
       e.preventDefault();
     }
   }, []);
-  const mouseEnterHandler = useCallback(() => {
-    dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
-  }, [dispatchMiddleWare]);
-  const mouseLeaveHandler = useCallback(() => {
-    dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+
+  const mainDivRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const div = mainDivRef.current;
+    if (!div) {
+      return;
+    }
+    function mouseEnterHandler() {
+      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
+    }
+    function mouseLeaveHandler() {
+      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+    }
+    div.addEventListener('mouseenter', mouseEnterHandler);
+    div.addEventListener('mouseleave', mouseLeaveHandler);
+    return () => {
+      div.removeEventListener('mouseenter', mouseEnterHandler);
+      div.removeEventListener('mouseleave', mouseLeaveHandler);
+    };
   }, [dispatchMiddleWare]);
 
   return (
     <GlobalProvider
       value={{
         rootRef: rootRef.current,
-        elementsWraperRef: elementsWraperRef.current,
+        elementsWrapperRef: elementsWrapperRef.current,
       }}
     >
       <PreferencesProvider value={preferencesState}>
-        <div
-          onMouseEnter={mouseEnterHandler}
-          onMouseLeave={mouseLeaveHandler}
-          style={{ height: '100%', position: 'relative' }}
-        >
-          <AlertProvider wrapperRef={elementsWraperRef.current}>
+        <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
+          <AlertProvider wrapperRef={elementsWrapperRef.current}>
             <DispatchProvider value={dispatchMiddleWare}>
               <ChartDataProvider value={state}>
-                <ModalProvider wrapperRef={elementsWraperRef.current}>
+                <ModalProvider wrapperRef={elementsWrapperRef.current}>
                   <HighlightProvider>
                     <AssignmentProvider spectraData={spectraData}>
                       <SpinnerProvider value={getSpinner}>
@@ -368,7 +378,7 @@ function InnerNMRium({
                                 </SplitPane>
 
                                 <div
-                                  ref={elementsWraperRef}
+                                  ref={elementsWrapperRef}
                                   key={String(isFullscreen)}
                                   id="main-wrapper"
                                   style={{
