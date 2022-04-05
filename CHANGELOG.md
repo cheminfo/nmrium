@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.24.2](https://www.github.com/cheminfo/nmrium/compare/v0.24.1...v0.24.2) (2022-04-05)
+
+
+### Bug Fixes
+
+* update dependencies ([#1428](https://www.github.com/cheminfo/nmrium/issues/1428)) ([21ffc50](https://www.github.com/cheminfo/nmrium/commit/21ffc501a5fb359fde7a0918c5cb4951425898fc))
+
 ### [0.24.1](https://www.github.com/cheminfo/nmrium/compare/v0.24.0...v0.24.1) (2022-03-31)
 
 
