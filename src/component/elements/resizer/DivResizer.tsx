@@ -16,7 +16,6 @@ const styles = {
   container: (position: number) => css`
     position: absolute;
     height: 100%;
-    // background-color: red;
     width: 10px;
     left: -5px;
     cursor: e-resize;
@@ -118,6 +117,7 @@ export default function DivResizer(props: ResizerProps) {
   return (
     <>
       <div
+        data-no-export="true"
         onMouseDown={right.onMouseDown}
         css={styles.container(right.position.x)}
       >
@@ -129,6 +129,7 @@ export default function DivResizer(props: ResizerProps) {
           : children}
       </div>
       <div
+        data-no-export="true"
         onMouseDown={left.onMouseDown}
         css={styles.container(left.position.x)}
       >

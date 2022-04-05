@@ -91,7 +91,6 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
         tag="svg"
         initialPosition={{ x1: x1, x2: x0 }}
         onEnd={handleOnStopResizing}
-        data-no-export="true"
       >
         {(x1, x2) => (
           <g>
@@ -101,6 +100,7 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
               width={x2 - x1}
               height={height - margin.bottom}
               className="highlight"
+              data-no-export="true"
             />
             <text
               x={0}

@@ -157,11 +157,11 @@ function Range({
         tag="svg"
         initialPosition={{ x1: scaleX()(to), x2: scaleX()(from) }}
         onEnd={handleOnStopResizing}
-        data-no-export="true"
       >
         {(x1, x2) => (
           <g transform={`translate(0,10)`}>
             <rect
+              data-no-export="true"
               x="0"
               width={x2 - x1}
               height="6"

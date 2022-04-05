@@ -95,7 +95,11 @@ function SVGResizerHandle(props: {
   position: number;
 }) {
   return (
-    <g onMouseDown={props.onMouseDown} css={styles.container(props.position)}>
+    <g
+      onMouseDown={props.onMouseDown}
+      css={styles.container(props.position)}
+      data-no-export="true"
+    >
       <rect x="-5px" css={styles.innerContainer} />
       <rect x="-2.5px" style={anchorStyle} />
     </g>
