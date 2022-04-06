@@ -99,7 +99,11 @@ function AutoPeakPickingOptionPanel() {
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </div>
 
-      <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
+      <ActionButtons
+        onDone={handleApplyFilter}
+        onCancel={handleCancelFilter}
+        cancelLabel="done"
+      />
     </div>
   );
 }

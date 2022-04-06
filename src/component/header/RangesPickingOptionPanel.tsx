@@ -93,6 +93,7 @@ function RangesPickingOptionPanel() {
         onDone={handleApplyFilter}
         doneLabel="Auto ranges picking"
         onCancel={handleCancelFilter}
+        cancelLabel="done"
       />
       <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
