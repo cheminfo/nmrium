@@ -144,13 +144,17 @@ const styles: Style = {
     const fillStyle = getFillStyle(props);
 
     const colorStyle = css`
-      &:hover {
+      &:not([disabled]):hover {
         background-color: ${backgroundColor.hover};
         color: ${color.hover};
       }
-      &:active {
+      &:not([disabled]):active {
         background-color: ${backgroundColor?.active || backgroundColor.hover};
         color: ${color?.active || color.hover};
+      }
+
+      &:disabled {
+        opacity: 0.25;
       }
     `;
     const { fontSize, padding } = sizeConfig[size];
@@ -175,6 +179,7 @@ const Button = (props: ButtonProps) => {
     fill,
     borderRadius = 0,
     style = {},
+    ...restProps
   } = props;
 
   return (
@@ -192,6 +197,7 @@ const Button = (props: ButtonProps) => {
         }),
         style,
       ]}
+      {...restProps}
     >
       {props.children}
     </button>
