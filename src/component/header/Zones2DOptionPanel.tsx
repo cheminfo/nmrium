@@ -8,8 +8,10 @@ import {
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
 
+import HeaderActionButtons from './HeaderActionButtons';
+
 const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton',
+  'container' | 'input' | 'inputContainer' | 'label',
   CSSProperties
 > = {
   container: {
@@ -26,13 +28,6 @@ const styles: Record<
   },
   label: {
     flex: '5',
-  },
-  actionButton: {
-    height: '100%',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
   },
 };
 
@@ -78,20 +73,10 @@ function Zones2DOptionPanel() {
         defaultValue={1}
         onChange={handleInput}
       />
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
-        Auto Zones Picking
-      </button>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      <HeaderActionButtons
+        onApply={handleApplyFilter}
+        onCancel={handleCancelFilter}
+      />
     </div>
   );
 }

@@ -10,10 +10,9 @@ import {
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'actionButton' | 'label',
-  CSSProperties
-> = {
+import HeaderActionButtons from './HeaderActionButtons';
+
+const styles: Record<'container' | 'input' | 'label', CSSProperties> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -28,14 +27,7 @@ const styles: Record<
     margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
-  actionButton: {
-    height: '100%',
-    width: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
-  },
+
   label: {
     lineHeight: 2,
     userSelect: 'none',
@@ -109,22 +101,10 @@ function ZeroFillingOptionsPanel() {
         pattern="^\d*(\.\d{0,2})?$"
         step="any"
       />
-
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
-        Apply
-      </button>
-
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      <HeaderActionButtons
+        onApply={handleApplyFilter}
+        onCancel={handleCancelFilter}
+      />
     </div>
   );
 }

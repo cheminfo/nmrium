@@ -5,14 +5,17 @@ import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
 
+import HeaderActionButtons from './HeaderActionButtons';
+
 const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton',
+  'container' | 'input' | 'inputContainer' | 'label',
   CSSProperties
 > = {
   container: {
     height: '100%',
     display: 'flex',
     fontSize: '12px',
+    alignItems: 'center',
   },
   input: {
     width: '50px',
@@ -22,14 +25,6 @@ const styles: Record<
   },
   label: {
     flex: '5',
-  },
-  actionButton: {
-    height: '100%',
-    width: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
   },
 };
 
@@ -104,21 +99,10 @@ function AutoPeakPickingOptionPanel() {
         </label>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </div>
-
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
-        Apply
-      </button>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      <HeaderActionButtons
+        onApply={handleApplyFilter}
+        onCancel={handleCancelFilter}
+      />
     </div>
   );
 }

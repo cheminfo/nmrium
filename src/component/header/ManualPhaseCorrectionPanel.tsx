@@ -26,10 +26,9 @@ import {
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'actionButton' | 'select',
-  CSSProperties
-> = {
+import HeaderActionButtons from './HeaderActionButtons';
+
+const styles: Record<'container' | 'input' | 'select', CSSProperties> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -37,14 +36,6 @@ const styles: Record<
   },
   input: {
     width: '100px',
-  },
-  actionButton: {
-    height: '100%',
-    width: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
   },
   select: {
     marginLeft: '5px',
@@ -238,27 +229,10 @@ function ManualPhaseCorrectionPanelInner({
         </>
       )}
 
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
-        Apply
-      </button>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
-      {/* <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleAutoFilter}
-      >
-        Auto
-      </button> */}
+      <HeaderActionButtons
+        onApply={handleApplyFilter}
+        onCancel={handleCancelFilter}
+      />
     </div>
   );
 }
