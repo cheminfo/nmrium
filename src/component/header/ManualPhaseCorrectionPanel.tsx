@@ -13,6 +13,7 @@ import { Filter } from '../../data/FiltersManager';
 import { Data1D, Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
@@ -25,8 +26,6 @@ import {
   RESET_SELECTED_TOOL,
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
-
-import HeaderActionButtons from './HeaderActionButtons';
 
 const styles: Record<'container' | 'input' | 'select', CSSProperties> = {
   container: {
@@ -229,10 +228,7 @@ function ManualPhaseCorrectionPanelInner({
         </>
       )}
 
-      <HeaderActionButtons
-        onApply={handleApplyFilter}
-        onCancel={handleCancelFilter}
-      />
+      <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </div>
   );
 }

@@ -1,14 +1,13 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import NumberInput from '../elements/NumberInput';
 import {
   RESET_SELECTED_TOOL,
   AUTO_ZONES_DETECTION,
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
-
-import HeaderActionButtons from './HeaderActionButtons';
 
 const styles: Record<
   'container' | 'input' | 'inputContainer' | 'label',
@@ -73,9 +72,10 @@ function Zones2DOptionPanel() {
         defaultValue={1}
         onChange={handleInput}
       />
-      <HeaderActionButtons
-        onApply={handleApplyFilter}
-        applyLabel="Auto Zones Picking"
+
+      <ActionButtons
+        onDone={handleApplyFilter}
+        doneLabel="Auto Zones Picking"
         onCancel={handleCancelFilter}
       />
     </div>

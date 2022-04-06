@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
@@ -65,17 +66,12 @@ function MoleculeStructureEditorModal(
         onChange={cb}
       />
       <div className="footer-container">
-        <button
-          type="button"
-          className="btn"
-          onClick={handleSave}
-          disabled={!molfile}
-        >
-          Save
-        </button>
-        <button type="button" className="btn" onClick={handleClose}>
-          Close
-        </button>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={handleClose}
+        />
       </div>
     </div>
   );

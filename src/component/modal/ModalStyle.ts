@@ -29,34 +29,36 @@ export const ModalStyles = css`
     overflow: auto;
   }
 
-  button:focus {
-    outline: none;
-  }
-  button:not([disabled]):hover {
-    color: black;
-  }
-  .btn:not([disabled]):hover {
-    background-color: #ffffff;
-  }
-  .btn:disabled {
-    opacity: 0.5;
-  }
-  .btn {
-    border: none;
-    padding: 0 15px;
-    background-color: #ffffff5e;
-    border-radius: 5px;
-    height: 25px;
-  }
+  // button:focus {
+  //   outline: none;
+  // }
+  // button:not([disabled]):hover {
+  //   color: black;
+  // }
+  // .btn:not([disabled]):hover {
+  //   background-color: #ffffff;
+  // }
+  // .btn:disabled {
+  //   opacity: 0.5;
+  // }
+  // .btn {
+  //   border: none;
+  //   padding: 0 15px;
+  //   background-color: #ffffff5e;
+  //   border-radius: 5px;
+  //   height: 25px;
+  // }
 
-  .primary {
-    background-color: #e2e2e2;
-  }
+  // .primary {
+  //   background-color: #e2e2e2;
+  // }
 
   .footer-container {
     display: flex;
-    flex-direction: row-reverse;
-    align-items: flex-end;
+    flex-direction: row;
+    align-items: end;
+    justify-content: end;
+
     background: rgb(242, 242, 242);
     background: -moz-linear-gradient(
       0deg,

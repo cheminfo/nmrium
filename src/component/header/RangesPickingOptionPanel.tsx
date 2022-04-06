@@ -1,14 +1,13 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
 import {
   AUTO_RANGES_DETECTION,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
-
-import HeaderActionButtons from './HeaderActionButtons';
 
 const styles: Record<
   'container' | 'input' | 'inputContainer' | 'label' | 'hint',
@@ -90,11 +89,10 @@ function RangesPickingOptionPanel() {
         step="0.01"
       />
 
-      <HeaderActionButtons
-        onApply={handleApplyFilter}
-        applyLabel="Auto ranges picking"
+      <ActionButtons
+        onDone={handleApplyFilter}
+        doneLabel="Auto ranges picking"
         onCancel={handleCancelFilter}
-        applyDataTestId="auto-ranges-detection-btn"
       />
       <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking

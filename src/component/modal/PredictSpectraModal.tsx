@@ -24,6 +24,7 @@ import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
+import Button from '../elements/Button';
 
 const styles = css`
   .row {
@@ -329,14 +330,9 @@ function PredictSpectraModal({
         </div>
       </div>
       <div className="footer-container">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="btn"
-          disabled={!isApproved}
-        >
+        <Button.Done onClick={handleSave} disabled={!isApproved}>
           Predict spectrum
-        </button>
+        </Button.Done>
       </div>
     </div>
   );

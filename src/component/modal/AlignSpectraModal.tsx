@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { REFERENCES } from '../../data/constants/References';
 import { useDispatch } from '../context/DispatchContext';
+import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
@@ -121,9 +122,7 @@ function AlignSpectraModal({
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn">
-          Done
-        </button>
+        <Button.Done onClick={handleSave}>Done</Button.Done>
       </div>
     </div>
   );

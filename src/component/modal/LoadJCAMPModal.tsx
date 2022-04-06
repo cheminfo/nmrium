@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { useRef, useCallback } from 'react';
 
+import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';
 
@@ -34,12 +35,13 @@ const styles = css`
   .container {
     display: flex;
     margin: 30px 5px;
-    input,
-    button {
+    align-items: center;
+    height: 36px;
+
+    input {
       padding: 5px;
       border: 1px solid gray;
       border-radius: 5px;
-      height: 36px;
       margin: 2px;
     }
     input {
@@ -47,8 +49,7 @@ const styles = css`
     }
     button {
       flex: 2;
-      color: white;
-      background-color: gray;
+      height: 100%;
     }
   }
 `;
@@ -98,9 +99,7 @@ export default function LoadJCAMPModal({
           type="text"
           placeholder="Enter URL to JCAMP-DX file"
         />
-        <button type="button" onClick={loadJCAMPHandler}>
-          Load
-        </button>
+        <Button.Done onClick={loadJCAMPHandler}>Load</Button.Done>
       </div>
     </div>
   );

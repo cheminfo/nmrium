@@ -12,7 +12,7 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
 
-import HeaderActionButtons from './HeaderActionButtons';
+import ActionButtons from '../elements/ActionButtons';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
@@ -144,8 +144,8 @@ function BaseLineCorrectionPanel() {
         )}
       </FormikForm>
 
-      <HeaderActionButtons
-        onApply={() => formRef.current.submitForm()}
+      <ActionButtons
+        onDone={() => formRef.current.submitForm()}
         onCancel={handleCancelFilter}
       />
     </div>

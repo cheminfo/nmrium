@@ -1,11 +1,10 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
-
-import HeaderActionButtons from './HeaderActionButtons';
 
 const styles: Record<
   'container' | 'input' | 'inputContainer' | 'label',
@@ -99,10 +98,8 @@ function AutoPeakPickingOptionPanel() {
         </label>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </div>
-      <HeaderActionButtons
-        onApply={handleApplyFilter}
-        onCancel={handleCancelFilter}
-      />
+
+      <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </div>
   );
 }
