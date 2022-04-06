@@ -260,6 +260,7 @@ function DropZone(props) {
   } = useDropzone({
     onDrop,
     noClick: true,
+    noKeyboard: true,
   });
 
   const open = useCallback(() => {
