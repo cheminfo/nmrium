@@ -75,6 +75,7 @@ function Zones2DOptionPanel() {
       />
       <HeaderActionButtons
         onApply={handleApplyFilter}
+        applyLabel="Auto Zones Picking"
         onCancel={handleCancelFilter}
       />
     </div>
