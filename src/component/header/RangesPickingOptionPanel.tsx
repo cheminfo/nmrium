@@ -92,7 +92,9 @@ function RangesPickingOptionPanel() {
 
       <HeaderActionButtons
         onApply={handleApplyFilter}
+        applyLabel="Auto ranges picking"
         onCancel={handleCancelFilter}
+        applyDataTestId="auto-ranges-detection-btn"
       />
       <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
