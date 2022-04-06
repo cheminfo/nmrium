@@ -10,6 +10,7 @@ import {
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import IsotopesViewer from '../elements/IsotopesViewer';
@@ -24,7 +25,6 @@ import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
-import Button from '../elements/Button';
 
 const styles = css`
   .row {
@@ -64,12 +64,6 @@ const styles = css`
     input {
       margin: 5px 5px 5px 0;
     }
-  }
-
-  button[disabled],
-  button[disabled]:hover {
-    opacity: 0.5;
-    color: black;
   }
 
   .middle-x {
