@@ -60,23 +60,27 @@ const colorPalettes: ColorPalettes = {
 
 const sizeConfig: Record<
   Size,
-  Pick<CSSProperties, 'fontSize' | 'padding' | 'borderWidth'>
+  Pick<CSSProperties, 'fontSize' | 'padding' | 'borderRadius'>
 > = {
   xSmall: {
     fontSize: '0.75rem',
     padding: '0.15rem 0.3rem',
+    borderRadius: '0.15rem',
   },
   small: {
     fontSize: '0.8rem',
     padding: '0.25rem 0.5rem',
+    borderRadius: '0.2rem',
   },
   medium: {
     fontSize: '1rem',
     padding: '0.375rem 0.75rem',
+    borderRadius: '0.25rem',
   },
   large: {
     fontSize: '1.25rem',
     padding: '0.5rem 1rem',
+    borderRadius: '0.3rem',
   },
 };
 
@@ -137,8 +141,8 @@ const styles: Style = {
     const basic = css`
       display: flex;
       flex-direction: row;
-      border-radius: ${borderRadius};
       border-width: 1px;
+      align-items: center;
     `;
 
     const fillStyle = getFillStyle(props);
@@ -157,8 +161,13 @@ const styles: Style = {
         opacity: 0.25;
       }
     `;
-    const { fontSize, padding } = sizeConfig[size];
-    return css([{ fontSize, padding }, fillStyle, colorStyle, basic]);
+    return css([
+      basic,
+      sizeConfig[size],
+      fillStyle,
+      colorStyle,
+      { borderRadius },
+    ]);
   },
 };
 
@@ -177,7 +186,7 @@ const Button = (props: ButtonProps) => {
     backgroundColor = { base: 'white', hover: 'black', active: 'black' },
     borderColor = 'transparent',
     fill,
-    borderRadius = 0,
+    borderRadius,
     style = {},
     ...restProps
   } = props;
@@ -199,7 +208,7 @@ const Button = (props: ButtonProps) => {
       ]}
       {...restProps}
     >
-      {props.children}
+      <span style={{ flex: 1 }}> {props.children}</span>
     </button>
   );
 };
