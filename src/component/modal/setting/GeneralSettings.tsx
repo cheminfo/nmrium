@@ -6,6 +6,7 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../../context/PreferencesContext';
+import ActionButtons from '../../elements/ActionButtons';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
@@ -236,12 +237,13 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn">
-          Save
-        </button>
-        <button type="button" onClick={handleReset} className="btn">
-          Reset
-        </button>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={handleReset}
+          cancelLabel="Reset"
+        />
       </div>
     </div>
   );

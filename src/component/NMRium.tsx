@@ -81,7 +81,6 @@ const containerStyles = css`
 
   button {
     cursor: pointer;
-    color: black;
     &:disabled {
       cursor: default;
     }
@@ -107,25 +106,6 @@ const containerStyles = css`
 
   .SplitPane {
     height: 100%;
-  }
-
-  .Resizer.vertical:after {
-    content: '\\22EE';
-    top: 50%;
-    color: black;
-    position: absolute;
-    font-size: 14px;
-  }
-
-  .Resizer.vertical {
-    padding: 2px;
-  }
-
-  .Resizer.vertical:hover {
-    background-color: #dfdfdf !important;
-    border-left: 0.55px #bbbbbb;
- solid;
-    border-right: 0.55px #bbbbbb solid;
   }
 `;
 

@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import Label from '../elements/Label';
 import FormikForm from '../elements/formik/FormikForm';
@@ -77,9 +78,7 @@ function ExportAsMatrixModal({
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn">
-          Export Now
-        </button>
+        <Button.Done onClick={handleSave}>Export Now</Button.Done>
       </div>
     </div>
   );

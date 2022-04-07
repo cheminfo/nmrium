@@ -10,6 +10,7 @@ import {
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import IsotopesViewer from '../elements/IsotopesViewer';
@@ -63,12 +64,6 @@ const styles = css`
     input {
       margin: 5px 5px 5px 0;
     }
-  }
-
-  button[disabled],
-  button[disabled]:hover {
-    opacity: 0.5;
-    color: black;
   }
 
   .middle-x {
@@ -329,14 +324,9 @@ function PredictSpectraModal({
         </div>
       </div>
       <div className="footer-container">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="btn"
-          disabled={!isApproved}
-        >
+        <Button.Done onClick={handleSave} disabled={!isApproved}>
           Predict spectrum
-        </button>
+        </Button.Done>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Filters from '../../../data/Filters';
 import { REFERENCES } from '../../../data/constants/References';
 import { useDispatch } from '../../context/DispatchContext';
+import ActionButtons from '../../elements/ActionButtons';
 import CloseButton from '../../elements/CloseButton';
 import Select from '../../elements/Select';
 import FormikForm from '../../elements/formik/FormikForm';
@@ -175,12 +176,13 @@ function MultipleSpectraFiltersModal({
         {filterOptions}
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn primary">
-          Apply
-        </button>
-        <button type="button" onClick={onClose} className="btn">
-          Close
-        </button>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={onClose}
+          cancelLabel="Close"
+        />
       </div>
     </div>
   );

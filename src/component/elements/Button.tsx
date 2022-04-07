@@ -1,8 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { css, SerializedStyles } from '@emotion/react';
-import { ReactNode, ButtonHTMLAttributes, CSSProperties } from 'react';
+import { css, CSSObject, SerializedStyles } from '@emotion/react';
+import {
+  ReactNode,
+  ButtonHTMLAttributes,
+  CSSProperties,
+  MouseEvent,
+} from 'react';
 
-type Size = 'small' | 'medium' | 'large';
+type Size = 'xSmall' | 'small' | 'medium' | 'large';
 
 type Color = CSSProperties['color'];
 
@@ -55,22 +60,27 @@ const colorPalettes: ColorPalettes = {
 
 const sizeConfig: Record<
   Size,
-  Pick<CSSProperties, 'fontSize' | 'padding' | 'borderWidth'>
+  Pick<CSSProperties, 'fontSize' | 'padding' | 'borderRadius'>
 > = {
+  xSmall: {
+    fontSize: '0.75rem',
+    padding: '0.15rem 0.3rem',
+    borderRadius: '0.15rem',
+  },
   small: {
-    fontSize: 'small',
-    padding: '0.5rem 1rem',
-    borderWidth: '1px',
+    fontSize: '0.8rem',
+    padding: '0.25rem 0.5rem',
+    borderRadius: '0.2rem',
   },
   medium: {
-    fontSize: 'medium',
-    padding: '0.6rem 1.2rem',
-    borderWidth: '2px',
+    fontSize: '1rem',
+    padding: '0.375rem 0.75rem',
+    borderRadius: '0.25rem',
   },
   large: {
-    fontSize: 'large',
-    padding: '0.7rem 1.4rem',
-    borderWidth: '3px',
+    fontSize: '1.25rem',
+    padding: '0.5rem 1rem',
+    borderRadius: '0.3rem',
   },
 };
 
@@ -81,6 +91,7 @@ interface ButtonStyle {
   backgroundColor: BaseColor;
   borderRadius?: CSSProperties['borderRadius'];
   fill?: Fill;
+  style?: CSSObject;
 }
 
 interface Style {
@@ -88,32 +99,30 @@ interface Style {
 }
 
 function getFillStyle(props: ButtonStyle) {
-  const { borderColor, fill, size, backgroundColor, color } = props;
+  const { borderColor, fill, backgroundColor, color } = props;
 
   switch (fill) {
     case 'solid': {
       return css`
         border-color: transparent;
-        border-width: ${sizeConfig[size].borderWidth};
         background-color: ${backgroundColor.base};
-        color: ${color.base};
+        color: ${color.hover};
       `;
     }
     case 'outline': {
       return css`
         border-style: solid;
         border-color: ${backgroundColor.base};
-        border-width: ${sizeConfig[size].borderWidth}px;
         background-color: transparent;
-        color: ${backgroundColor.base};
+        color: ${color.base};
       `;
     }
 
     case 'clear': {
       return css`
-        border: none;
+        border-color: transparent;
         background-color: transparent;
-        color: ${backgroundColor.base};
+        color: ${color.base};
       `;
     }
     default:
@@ -132,30 +141,40 @@ const styles: Style = {
     const basic = css`
       display: flex;
       flex-direction: row;
-      border-radius: ${borderRadius};
+      border-width: 1px;
+      align-items: center;
     `;
 
     const fillStyle = getFillStyle(props);
 
     const colorStyle = css`
-      &:hover {
+      &:not([disabled]):hover {
         background-color: ${backgroundColor.hover};
         color: ${color.hover};
       }
-      &:active {
+      &:not([disabled]):active {
         background-color: ${backgroundColor?.active || backgroundColor.hover};
         color: ${color?.active || color.hover};
       }
+
+      &:disabled {
+        opacity: 0.25;
+      }
     `;
-    const { fontSize, padding } = sizeConfig[size];
-    return css([{ fontSize, padding }, fillStyle, colorStyle, basic]);
+    return css([
+      basic,
+      sizeConfig[size],
+      fillStyle,
+      colorStyle,
+      { borderRadius },
+    ]);
   },
 };
 
 interface ButtonProps
   extends Partial<ButtonStyle>,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
-  onClick?: () => void;
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
+  onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
 }
 
@@ -167,23 +186,29 @@ const Button = (props: ButtonProps) => {
     backgroundColor = { base: 'white', hover: 'black', active: 'black' },
     borderColor = 'transparent',
     fill,
-    borderRadius = 0,
+    borderRadius,
+    style = {},
+    ...restProps
   } = props;
 
   return (
     <button
       type="button"
       onClick={onClick}
-      css={styles.button({
-        size,
-        backgroundColor,
-        color,
-        borderColor,
-        fill,
-        borderRadius,
-      })}
+      css={[
+        styles.button({
+          size,
+          backgroundColor,
+          color,
+          borderColor,
+          fill,
+          borderRadius,
+        }),
+        style,
+      ]}
+      {...restProps}
     >
-      {props.children}
+      <span style={{ flex: 1 }}> {props.children}</span>
     </button>
   );
 };
@@ -192,15 +217,16 @@ function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
   const { base, shade, tint } = colorPalettes[props.colorTheme];
 
   const {
-    color = { base: 'white', hover: 'white' },
+    color = { base: shade, hover: 'white' },
     backgroundColor = {
       base: base,
       hover: shade,
       active: tint,
     },
+    fill = 'solid',
     ...restProps
   } = props;
-  return <Button {...{ ...restProps, backgroundColor, color }} />;
+  return <Button {...{ fill, ...restProps, backgroundColor, color }} />;
 }
 
 Button.Done = (props: ButtonProps) => {
