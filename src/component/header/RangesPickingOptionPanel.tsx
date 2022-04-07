@@ -1,13 +1,10 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import ActionButtons from '../elements/ActionButtons';
+import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
-import {
-  AUTO_RANGES_DETECTION,
-  RESET_SELECTED_TOOL,
-} from '../reducer/types/Types';
+import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
 const styles: Record<
   'container' | 'input' | 'inputContainer' | 'label' | 'hint',
@@ -59,12 +56,6 @@ function RangesPickingOptionPanel() {
     });
   }, [dispatch]);
 
-  const handleCancelFilter = useCallback(() => {
-    dispatch({
-      type: RESET_SELECTED_TOOL,
-    });
-  }, [dispatch]);
-
   return (
     <div style={styles.container}>
       <div style={{ justifyItems: 'baseline', margin: '0 10px' }}>
@@ -89,12 +80,9 @@ function RangesPickingOptionPanel() {
         step="0.01"
       />
 
-      <ActionButtons
-        onDone={handleApplyFilter}
-        doneLabel="Auto ranges picking"
-        onCancel={handleCancelFilter}
-        cancelLabel="Done"
-      />
+      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
+        Auto ranges picking
+      </Button.Done>
       <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
       </span>

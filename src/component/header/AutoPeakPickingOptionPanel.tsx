@@ -1,10 +1,10 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import ActionButtons from '../elements/ActionButtons';
+import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
-import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
+import { AUTO_PEAK_PICKING } from '../reducer/types/Types';
 
 const styles: Record<
   'container' | 'input' | 'inputContainer' | 'label',
@@ -43,12 +43,6 @@ function AutoPeakPickingOptionPanel() {
         noiseFactor: noiseFactor.current.value,
         lookNegative: lookNegativeRef.current.checked,
       },
-    });
-  }, [dispatch]);
-
-  const handleCancelFilter = useCallback(() => {
-    dispatch({
-      type: RESET_SELECTED_TOOL,
     });
   }, [dispatch]);
 
@@ -98,12 +92,9 @@ function AutoPeakPickingOptionPanel() {
         </label>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </div>
-
-      <ActionButtons
-        onDone={handleApplyFilter}
-        onCancel={handleCancelFilter}
-        cancelLabel="Done"
-      />
+      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
+        Apply
+      </Button.Done>
     </div>
   );
 }

@@ -1,10 +1,9 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import ActionButtons from '../elements/ActionButtons';
+import Button from '../elements/Button';
 import NumberInput from '../elements/NumberInput';
 import {
-  RESET_SELECTED_TOOL,
   AUTO_ZONES_DETECTION,
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
@@ -43,12 +42,6 @@ function Zones2DOptionPanel() {
     });
   }, [dispatch]);
 
-  const handleCancelFilter = useCallback(() => {
-    dispatch({
-      type: RESET_SELECTED_TOOL,
-    });
-  }, [dispatch]);
-
   const handleInput = useCallback(
     (e) => {
       if (e.target) {
@@ -72,13 +65,9 @@ function Zones2DOptionPanel() {
         defaultValue={1}
         onChange={handleInput}
       />
-
-      <ActionButtons
-        onDone={handleApplyFilter}
-        doneLabel="Auto Zones Picking"
-        onCancel={handleCancelFilter}
-        cancelLabel="Done"
-      />
+      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
+        Auto Zones Picking
+      </Button.Done>
     </div>
   );
 }
