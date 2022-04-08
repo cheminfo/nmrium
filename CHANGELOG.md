@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.25.0](https://www.github.com/cheminfo/nmrium/compare/v0.24.1...v0.25.0) (2022-04-07)
+
+
+### Features
+
+* Button component ([44fd565](https://www.github.com/cheminfo/nmrium/commit/44fd565bea14a7650eb7af41d9d86211f537b850))
+
+
+### Bug Fixes
+
+* pressing "Enter" in NMRium triggers the file selector dialog ([012e28b](https://www.github.com/cheminfo/nmrium/commit/012e28bb0a24cb8f750167de3207487a1aa77875)), closes [#1460](https://www.github.com/cheminfo/nmrium/issues/1460)
+* update dependencies ([#1428](https://www.github.com/cheminfo/nmrium/issues/1428)) ([21ffc50](https://www.github.com/cheminfo/nmrium/commit/21ffc501a5fb359fde7a0918c5cb4951425898fc))
+
 ### [0.24.1](https://www.github.com/cheminfo/nmrium/compare/v0.24.0...v0.24.1) (2022-03-31)
 
 
