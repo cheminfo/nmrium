@@ -1,5 +1,5 @@
 export interface Source {
   jcampURL: string;
-  jcampSpectrumIndex:number;
+  jcampSpectrumIndex: number;
   file: File;
 }
