@@ -1,4 +1,4 @@
-import { AssignmentState, Axis } from '..';
+import { AssignmentState, Axis } from '../AssignmentsContext';
 
 interface AddAction {
   id: string;

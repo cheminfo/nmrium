@@ -1,4 +1,5 @@
-import { AssignmentState, SetActiveAction } from '..';
+import { AssignmentState } from '../AssignmentsContext';
+import { SetActiveAction } from '../AssignmentsReducer';
 
 export default function setActiveAssignment(
   state: AssignmentState,
