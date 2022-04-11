@@ -255,7 +255,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
         currentWorkspacePreferences.display,
       );
     }
-
+    mapNucleus(draft);
     draft.dispatch = dispatch;
   }
 }
