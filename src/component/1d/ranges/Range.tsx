@@ -5,10 +5,10 @@ import { useCallback, useState, useEffect } from 'react';
 import { Signal1D } from '../../../data/types/data1d';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
-  filterForIDsWithAssignment,
   useAssignment,
   useAssignmentData,
-} from '../../assignment';
+} from '../../assignment/AssignmentsContext';
+import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightedSource, useHighlight } from '../../highlight';
@@ -73,7 +73,7 @@ function Range({
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(
+    [assignmentRange.id].concat(assignmentRange.assigned?.x || []).concat(
       filterForIDsWithAssignment(
         assignmentData,
         signals.map((_signal) => _signal.id),
@@ -122,12 +122,12 @@ function Range({
   );
 
   const mouseEnterHandler = useCallback(() => {
-    assignmentRange.onMouseEnter('x');
+    assignmentRange.show('x');
     highlightRange.show();
   }, [assignmentRange, highlightRange]);
 
   const mouseLeaveHandler = useCallback(() => {
-    assignmentRange.onMouseLeave('x');
+    assignmentRange.hide();
     highlightRange.hide();
   }, [assignmentRange, highlightRange]);
 
@@ -138,7 +138,7 @@ function Range({
         e.shiftKey &&
         !isBlockedByEditing
       ) {
-        assignmentRange.onClick('x');
+        assignmentRange.setActive('x');
       }
     },
     [assignmentRange, isBlockedByEditing, selectedTool],

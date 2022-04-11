@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 
 import { Datum2D } from '../../../data/types/data2d';
-import { useAssignmentData } from '../../assignment';
+import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ToggleButton from '../../elements/ToggleButton';

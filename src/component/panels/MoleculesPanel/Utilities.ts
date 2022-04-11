@@ -1,8 +1,9 @@
+import { Axis } from '../../assignment/AssignmentsContext';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 
-export function extractFromAtom(atom, elements, activeAxis) {
+export function extractFromAtom(atom, elements, axis: Axis | null) {
   if (elements.length > 0 && Object.keys(atom).length > 0) {
-    const dim = activeAxis === 'x' ? 0 : activeAxis === 'y' ? 1 : undefined;
+    const dim = axis === 'x' ? 0 : axis === 'y' ? 1 : undefined;
     if (dim !== undefined) {
       if (elements[dim] === atom.atomLabel) {
         // take always oclID if atom type is same as element of activeTab)

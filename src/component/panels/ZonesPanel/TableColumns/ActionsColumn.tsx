@@ -2,7 +2,7 @@ import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../../data/constants/SignalsKinds';
-import { useAssignmentData } from '../../../assignment';
+import { useAssignmentData } from '../../../assignment/AssignmentsContext';
 import { useDispatch } from '../../../context/DispatchContext';
 import Select from '../../../elements/Select';
 import {

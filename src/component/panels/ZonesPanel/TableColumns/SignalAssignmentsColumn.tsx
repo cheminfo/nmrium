@@ -1,14 +1,17 @@
 import lodashGet from 'lodash/get';
 import { FaMinusCircle } from 'react-icons/fa';
 
+import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+
 import { RowDataProps } from './ActionsColumn';
 
 export interface SignalAssignmentsColumnProps {
   rowData: RowDataProps;
-  assignment: {
-    isActive: any;
-    activeAxis: any;
-  };
+  assignment: AssignmentsData;
+  // assignment: {
+  //   isActive: any;
+  //   activeAxis: any;
+  // };
   highlight: {
     isActive: any;
   };
@@ -37,7 +40,7 @@ function SignalAssignmentsColumn({
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
       style={
         highlight.isActive ||
-        (assignment.isActive && assignment.activeAxis === axis)
+        (assignment.isActive && assignment.activated?.axis === axis)
           ? {
               color: 'red',
               fontWeight: 'bold',
@@ -66,7 +69,7 @@ function SignalAssignmentsColumn({
             </button>
           </sup>
         </div>
-      ) : assignment.isActive && assignment.activeAxis === axis ? (
+      ) : assignment.isActive && assignment.activated?.axis === axis ? (
         '0'
       ) : (
         ''

@@ -3,10 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import {
-  filterForIDsWithAssignment,
   useAssignment,
   useAssignmentData,
-} from '../../assignment';
+} from '../../assignment/AssignmentsContext';
+import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightedSource, useHighlightData } from '../../highlight';
@@ -33,8 +33,8 @@ export default function useAtomAssignment({
   const assignmentData = useAssignmentData();
 
   const activeAssignment = useAssignment(
-    assignmentData.assignment.activeID !== undefined
-      ? assignmentData.assignment.activeID
+    assignmentData.assignment.activated
+      ? assignmentData.assignment.activated.id
       : ConcatenationString, // dummy value
   );
 
@@ -144,13 +144,10 @@ export default function useAtomAssignment({
 
   const handleOnClickAtom = useCallback(
     (atom, event) => {
-      if (!checkModifierKeyActivated(event)) {
-        if (activeAssignment.isActive) {
-          const atomInformation = extractFromAtom(
-            atom,
-            elements,
-            activeAssignment.activeAxis,
-          );
+      if (!checkModifierKeyActivated(event) && activeAssignment.activated) {
+        const { axis, id } = activeAssignment.activated;
+        if (id && axis) {
+          const atomInformation = extractFromAtom(atom, elements, axis);
           if (atomInformation.nbAtoms > 0) {
             // save assignment in assignment hook
             atomInformation.oclIDs.forEach((_oclID) => {
@@ -174,7 +171,7 @@ export default function useAtomAssignment({
                   );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                   [_diaID, nbAtoms] = toggleAssignment(
-                    datum[activeAssignment.activeAxis].diaIDs || [],
+                    datum[axis].diaIDs || [],
                     atomInformation,
                   );
                 }
@@ -187,8 +184,7 @@ export default function useAtomAssignment({
                   );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                   [_diaID, nbAtoms] = toggleAssignment(
-                    datum.signals[signalIndex][activeAssignment.activeAxis]
-                      .diaIDs || [],
+                    datum.signals[signalIndex][axis].diaIDs || [],
                     atomInformation,
                   );
                 }
@@ -210,13 +206,13 @@ export default function useAtomAssignment({
                     nbAtoms,
                     zoneData: datum,
                     diaIDs: _diaID,
-                    axis: activeAssignment.activeAxis,
+                    axis: axis,
                     signalIndex,
                   },
                 });
               }
             }
-            activeAssignment.onClick(activeAssignment.activeAxis);
+            activeAssignment.setActive(axis);
           } else {
             alert.info(
               'Not assigned! Different atom type or no attached hydrogens found!',
@@ -238,23 +234,23 @@ export default function useAtomAssignment({
 
   const handleOnAtomHover = useCallback(
     (atom) => {
-      const oclIDs = extractFromAtom(
-        atom,
-        elements,
-        activeAssignment.activeAxis,
-      ).oclIDs;
-      // on enter the atom
-      if (oclIDs.length > 0) {
-        // set all IDs to highlight when hovering over an atom from assignment data
-        const highlights = getHighlightsOnHover(assignmentData, oclIDs, data);
-        setOnAtomHoverHighlights(highlights);
-        setOnAtomHoverAction('show');
-      } else {
-        // on leave the atom
-        setOnAtomHoverAction('hide');
+      if (activeAssignment.activated) {
+        const { axis } = activeAssignment.activated;
+
+        const oclIDs = extractFromAtom(atom, elements, axis).oclIDs;
+        // on enter the atom
+        if (oclIDs.length > 0) {
+          // set all IDs to highlight when hovering over an atom from assignment data
+          const highlights = getHighlightsOnHover(assignmentData, oclIDs, data);
+          setOnAtomHoverHighlights(highlights);
+          setOnAtomHoverAction('show');
+        } else {
+          // on leave the atom
+          setOnAtomHoverAction('hide');
+        }
       }
     },
-    [activeAssignment.activeAxis, assignmentData, data, elements],
+    [activeAssignment, assignmentData, data, elements],
   );
 
   return {

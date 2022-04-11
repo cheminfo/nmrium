@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 
+import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+
 import { RowDataProps } from './ActionsColumn';
 import SignalAssignmentsColumn from './SignalAssignmentsColumn';
 
@@ -19,12 +21,7 @@ interface SignalAssignmentsColumnsProps {
   highlightSignalY: {
     isActive: any;
   };
-  assignmentSignal: {
-    activeAxis: any;
-    onHoverAxis: any;
-    isActive: boolean;
-    isOnHover: boolean;
-  };
+  assignmentSignal: AssignmentsData;
 }
 
 function SignalAssignmentsColumns({

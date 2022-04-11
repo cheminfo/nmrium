@@ -4,7 +4,7 @@ import { memo, useState, useEffect, useCallback } from 'react';
 
 import { Signal2D } from '../../../data/types/data2d';
 import { buildID } from '../../../data/utilities/Concatenation';
-import { useAssignment } from '../../assignment';
+import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
@@ -59,11 +59,11 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
     <g
       className="zone-signal"
       onMouseEnter={() => {
-        assignment.onMouseEnter(undefined);
+        assignment.show();
         highlight.show();
       }}
       onMouseLeave={() => {
-        assignment.onMouseLeave(undefined);
+        assignment.hide();
         highlight.hide();
       }}
     >
