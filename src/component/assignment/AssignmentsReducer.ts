@@ -3,16 +3,19 @@ import { Data2D } from '../../data/types/data2d';
 import { ActionType } from '../reducer/types/Types';
 
 import { AssignmentState, Axis } from './AssignmentsContext';
-import addAssignment from './actions/addAssignment';
 import initAssignment from './actions/initAssignment';
-import removeAssignment from './actions/removeAssignment';
+import removeAssignments from './actions/removeAssignment';
 import setActiveAssignment from './actions/setActiveAssignment';
+import toggleAssignment from './actions/toggleAssignment';
 
 export type InitiateAction = ActionType<
   'INITIATE_ASSIGNMENTS',
   { spectra: (Data1D | Data2D)[] }
 >;
-export type ToggleAction = ActionType<'TOGGLE', { atomID: string; id: string }>;
+export type ToggleAction = ActionType<
+  'TOGGLE',
+  { atomIDs: string[]; id: string }
+>;
 export type AddAction = ActionType<
   'ADD',
   { id: string; atomID: string; axis: Axis }
@@ -42,31 +45,14 @@ export default function assignmentReducer(
 ): AssignmentState {
   switch (action.type) {
     case 'INITIATE_ASSIGNMENTS': {
-      return initAssignment(state, action);
-    }
-    case 'ADD': {
-      return addAssignment(state, action.payload);
+      return initAssignment(action);
     }
     case 'REMOVE': {
       const { axis, ids, atomID } = action.payload;
-      return removeAssignment(state, { axis, ids, atomID });
+      return removeAssignments(state, { axis, ids, atomID });
     }
     case 'TOGGLE': {
-      const { id, atomID } = action.payload;
-      const axis = state.activated?.axis;
-      if (axis) {
-        const atomIDs = state.assignment?.[id]?.[axis] || [];
-        if (!atomIDs.includes(id)) {
-          const { id } = action.payload;
-
-          return addAssignment(state, { axis, id, atomID });
-        } else {
-          const { id, atomID } = action.payload;
-
-          return removeAssignment(state, { atomID, axis, ids: [id] });
-        }
-      }
-      return state;
+      return toggleAssignment(state, action);
     }
     case 'SET_ACTIVE': {
       return setActiveAssignment(state, action);

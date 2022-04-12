@@ -1,5 +1,10 @@
-export function filterForIDsWithAssignment(assignmentData, ids) {
+import { AssignmentContext } from '../AssignmentsContext';
+
+export function filterForIDsWithAssignment(
+  assignmentData: AssignmentContext,
+  ids: string[],
+) {
   return ids.filter((id) =>
-    Object.keys(assignmentData.assignment).filter((_id) => _id === id),
+    Object.keys(assignmentData.data).filter((_id) => _id === id),
   );
 }

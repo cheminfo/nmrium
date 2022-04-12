@@ -3,19 +3,20 @@ import { createContext, useCallback, useContext, useMemo } from 'react';
 import { AssignmentsActions } from './AssignmentsReducer';
 
 export type Axis = 'x' | 'y';
-export type Assignments = Record<string, Record<Axis, string[]>>;
+export type Assignment = Record<Axis, string[]>;
+export type Assignments = Record<string, Assignment>;
 
-interface AssignmentItem {
+export interface AssignmentAction {
   id: string;
   axis: Axis | null;
 }
 export interface AssignmentState {
-  assignment: Assignments;
-  activated: AssignmentItem | null;
-  highlighted: AssignmentItem | null;
+  assignments: Assignments;
+  activated: AssignmentAction | null;
+  highlighted: AssignmentAction | null;
 }
 export interface AssignmentContext {
-  assignment: AssignmentState;
+  data: AssignmentState;
   dispatch: (action: AssignmentsActions) => void;
 }
 
@@ -26,20 +27,20 @@ export interface AssignmentsData
   isOver: boolean;
   assigned: Record<Axis, string[]>;
   removeAll: (axis: Axis) => void;
-  toggle: (atomID: string) => void;
+  toggle: (atomIDs: string[]) => void;
   setActive: (axis: Axis) => void;
   show: (axis?: Axis) => void;
   hide: () => void;
 }
 
 export const assignmentState: AssignmentState = {
-  assignment: {},
+  assignments: {},
   activated: null,
   highlighted: null,
 };
 
 export const assignmentContext = createContext<AssignmentContext>({
-  assignment: assignmentState,
+  data: assignmentState,
   dispatch: () => null,
 });
 
@@ -58,7 +59,7 @@ export function useAssignmentData() {
 // key can be signal id,range id or zone id
 export function useAssignment(key): AssignmentsData {
   const {
-    assignment: { activated, highlighted, assignment },
+    data: { activated, highlighted, assignments },
     dispatch,
   } = useAssignmentData();
 
@@ -75,11 +76,11 @@ export function useAssignment(key): AssignmentsData {
   }, [highlighted?.id, id]);
 
   const assigned = useMemo(() => {
-    return assignment[id] || null;
-  }, [assignment, id]);
+    return assignments[id] || null;
+  }, [assignments, id]);
 
   const removeAll = useCallback(
-    (axis) => {
+    (axis: Axis) => {
       dispatch({
         type: 'REMOVE',
         payload: { ids: [id], axis },
@@ -89,10 +90,10 @@ export function useAssignment(key): AssignmentsData {
   );
 
   const toggle = useCallback(
-    (atomID) => {
+    (atomIDs: string[]) => {
       dispatch({
         type: 'TOGGLE',
-        payload: { atomID, id },
+        payload: { atomIDs, id },
       });
     },
     [dispatch, id],

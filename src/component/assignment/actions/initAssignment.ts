@@ -4,7 +4,7 @@ import { Ranges } from '../../../data/types/data1d/Ranges';
 import { Datum2D, Zones } from '../../../data/types/data2d';
 import { assignmentState, AssignmentState, Axis } from '../AssignmentsContext';
 
-export default function initAssignment(state: AssignmentState, action) {
+export default function initAssignment(action) {
   const newState = {
     ...assignmentState,
   };
@@ -64,11 +64,11 @@ function setZonesAssignments(state: AssignmentState, zones: Zones) {
 
 function setAssignment(state: AssignmentState, id, axis: Axis, diaID: string) {
   if (
-    Array.isArray(state.assignment?.[id]?.[axis]) &&
-    state.assignment[id][axis].includes(diaID)
+    Array.isArray(state.assignments?.[id]?.[axis]) &&
+    state.assignments[id][axis].includes(diaID)
   ) {
-    state.assignment[id][axis].push();
+    state.assignments[id][axis].push();
   } else {
-    state.assignment = { ...state.assignment, [id]: { [axis]: [diaID] } };
+    state.assignments = { ...state.assignments, [id]: { [axis]: [diaID] } };
   }
 }

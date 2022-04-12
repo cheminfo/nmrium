@@ -6,7 +6,29 @@ interface RemoveAction {
   axis: Axis;
 }
 
-export default function removeAssignment(
+interface AssignmentRemoveOptions extends Omit<RemoveAction, 'ids'> {
+  id: string;
+}
+
+export function removeAssignment(
+  state: AssignmentState,
+  options: AssignmentRemoveOptions,
+) {
+  const { id, atomID = '', axis } = options;
+
+  const atomIDs = state.assignments?.[id]?.[axis] || null;
+
+  if (atomIDs) {
+    if (atomID) {
+      atomIDs.filter((id) => id !== atomID);
+      state.assignments[id][axis] = atomIDs;
+    } else {
+      state.assignments[id][axis] = [];
+    }
+  }
+}
+
+export default function removeAssignments(
   state: AssignmentState,
   action: RemoveAction,
 ) {
@@ -16,16 +38,7 @@ export default function removeAssignment(
   // signal id
   const { ids, atomID = '', axis } = action;
   for (const id of ids) {
-    const atomIDs = state.assignment?.[id]?.[axis] || null;
-
-    if (atomIDs) {
-      if (atomID) {
-        atomIDs.filter((id) => id !== atomID);
-        newState.assignment[id][axis] = atomIDs;
-      } else {
-        newState.assignment[id][axis] = [];
-      }
-    }
+    removeAssignment(newState, { id, atomID, axis });
   }
   return newState;
 }

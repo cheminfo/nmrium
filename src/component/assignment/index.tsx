@@ -10,14 +10,11 @@ import assignmentReducer, { AssignmentsActions } from './AssignmentsReducer';
 
 export function AssignmentProvider(props) {
   const { spectraData: spectra } = props;
-  const [assignment, dispatch] = useReducer<
+  const [data, dispatch] = useReducer<
     Reducer<AssignmentState, AssignmentsActions>
   >(assignmentReducer, assignmentState);
 
-  const state = useMemo<AssignmentContext>(
-    () => ({ assignment, dispatch }),
-    [assignment],
-  );
+  const state = useMemo<AssignmentContext>(() => ({ data, dispatch }), [data]);
 
   useEffect(() => {
     if (spectra) {
