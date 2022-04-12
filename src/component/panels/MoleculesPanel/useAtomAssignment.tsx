@@ -124,13 +124,10 @@ export default function useAtomAssignment({
         }
       }
     });
-    return getCurrentDiaIDsToHighlight(assignments, displayerMode).concat(
-      highlights,
-    );
+    return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
   }, [
     assignments,
     data,
-    displayerMode,
     highlightData.highlight.highlighted,
     highlightData.highlight.sourceData?.type,
   ]);
@@ -149,8 +146,10 @@ export default function useAtomAssignment({
           const atomInformation = extractFromAtom(atom, nucleus, axis);
           if (atomInformation.nbAtoms > 0) {
             // save assignment in assignment hook
-
-            activeAssignment.toggle(atomInformation.oclIDs);
+            const dimension =
+              displayerMode === DISPLAYER_MODE.DM_1D ? '1D' : '2D';
+            activeAssignment.toggle(atomInformation.oclIDs, dimension);
+            // console.log(activeAssignment);
             // save assignment (diaIDs) in range/zone data
             const { datum, signalIndex } = findDatumAndSignalIndex(
               data,
@@ -158,7 +157,7 @@ export default function useAtomAssignment({
             );
             if (datum) {
               // determine the level of setting the diaIDs array (range vs. signal level) and save there
-              let nbAtoms = 0;
+              // let nbAtoms = 0;
               // on range/zone level
 
               if (displayerMode === DISPLAYER_MODE.DM_1D) {
@@ -190,13 +189,16 @@ export default function useAtomAssignment({
                 } else {
                   _diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
                 }
-
+                const [_diaID, nbAtoms] = toggleAssignment(
+                  _diaIDs,
+                  atomInformation,
+                );
                 dispatch({
                   type: SET_DIAID_ZONE,
                   payload: {
                     nbAtoms,
                     zoneData: datum,
-                    diaIDs: _diaIDs,
+                    diaIDs: _diaID,
                     axis: axis,
                     signalIndex,
                   },
@@ -225,10 +227,6 @@ export default function useAtomAssignment({
 
   const handleOnAtomHover = useCallback(
     (atom) => {
-      // console.log(atom, activeAssignment.highlighted);
-
-      // if (activeAssignment.highlighted) {
-      // const { axis } = activeAssignment.highlighted;
       const { oclIDs } = extractFromAtom(atom, nucleus);
 
       // on enter the atom

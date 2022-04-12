@@ -69,6 +69,9 @@ function setAssignment(state: AssignmentState, id, axis: Axis, diaID: string) {
   ) {
     state.assignments[id][axis].push();
   } else {
-    state.assignments = { ...state.assignments, [id]: { [axis]: [diaID] } };
+    state.assignments = {
+      ...state.assignments,
+      [id]: { ...state.assignments[id], [axis]: [diaID] },
+    };
   }
 }

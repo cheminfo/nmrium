@@ -2,7 +2,11 @@ import { Data1D } from '../../data/types/data1d';
 import { Data2D } from '../../data/types/data2d';
 import { ActionType } from '../reducer/types/Types';
 
-import { AssignmentState, Axis } from './AssignmentsContext';
+import {
+  AssignmentDimension,
+  AssignmentState,
+  Axis,
+} from './AssignmentsContext';
 import initAssignment from './actions/initAssignment';
 import removeAssignments from './actions/removeAssignment';
 import setActiveAssignment from './actions/setActiveAssignment';
@@ -14,7 +18,7 @@ export type InitiateAction = ActionType<
 >;
 export type ToggleAction = ActionType<
   'TOGGLE',
-  { atomIDs: string[]; id: string }
+  { atomIDs: string[]; id: string; dimension: AssignmentDimension }
 >;
 export type AddAction = ActionType<
   'ADD',

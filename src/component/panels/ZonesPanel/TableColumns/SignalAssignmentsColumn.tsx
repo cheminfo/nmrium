@@ -1,7 +1,7 @@
 import lodashGet from 'lodash/get';
 import { FaMinusCircle } from 'react-icons/fa';
 
-import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
 
 import { RowDataProps } from './ActionsColumn';
 
@@ -16,10 +16,10 @@ export interface SignalAssignmentsColumnProps {
     isActive: any;
   };
   onHover: () => void;
-  onClick: (a: any, b: any, c: any) => void;
-  onUnlink: (a: any, b: any, c: any) => void;
+  onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
+  onUnlink: (event: any, flag: boolean, axis: Axis) => void;
   showUnlinkButton: boolean;
-  axis: any;
+  axis: Axis;
   setShowUnlinkButton: (element: boolean) => void;
 }
 

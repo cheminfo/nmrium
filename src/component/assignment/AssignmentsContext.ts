@@ -6,6 +6,7 @@ export type Axis = 'x' | 'y';
 export type Assignment = Record<Axis, string[]>;
 export type Assignments = Record<string, Assignment>;
 
+export type AssignmentDimension = '1D' | '2D';
 export interface AssignmentAction {
   id: string;
   axis: Axis | null;
@@ -27,7 +28,7 @@ export interface AssignmentsData
   isOver: boolean;
   assigned: Record<Axis, string[]>;
   removeAll: (axis: Axis) => void;
-  toggle: (atomIDs: string[]) => void;
+  toggle: (atomIDs: string[], dimension: AssignmentDimension) => void;
   setActive: (axis: Axis) => void;
   show: (axis?: Axis) => void;
   hide: () => void;
@@ -90,10 +91,10 @@ export function useAssignment(key): AssignmentsData {
   );
 
   const toggle = useCallback(
-    (atomIDs: string[]) => {
+    (atomIDs: string[], dimension: AssignmentDimension) => {
       dispatch({
         type: 'TOGGLE',
-        payload: { atomIDs, id },
+        payload: { atomIDs, id, dimension },
       });
     },
     [dispatch, id],

@@ -1,7 +1,6 @@
 import { Range } from '../../../data/types/data1d';
 import { Zone } from '../../../data/types/data2d';
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 
 interface Atom {
   oclID: string;
@@ -106,27 +105,15 @@ export function getHighlightsOnHover(
   return highlights;
 }
 
-export function getCurrentDiaIDsToHighlight(
-  assignmentData: AssignmentContext,
-  displayerMode: DISPLAYER_MODE,
-) {
+export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
   const { highlighted, assignments } = assignmentData.data;
   const assignment = highlighted ? assignments[highlighted.id] : null;
   const axisHover = highlighted ? highlighted.axis : null;
 
-  if (displayerMode === DISPLAYER_MODE.DM_1D) {
-    return assignment?.x || [];
+  if (axisHover && assignment && assignment[axisHover]) {
+    return assignment[axisHover];
   } else {
-    switch (axisHover) {
-      case 'x':
-        return assignment?.y || [];
-
-      case 'y':
-        return assignment?.y || [];
-
-      default:
-        return (assignment?.x || []).concat(assignment?.y || []);
-    }
+    return (assignment?.x || []).concat(assignment?.y || []);
   }
 }
 

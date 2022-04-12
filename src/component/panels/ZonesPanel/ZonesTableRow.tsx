@@ -1,10 +1,20 @@
 /** @jsxImportSource @emotion/react */
 
 import lodashGet from 'lodash/get';
-import { CSSProperties, useMemo, useCallback, useState } from 'react';
+import {
+  CSSProperties,
+  useMemo,
+  useCallback,
+  useState,
+  MouseEvent,
+} from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';
-import { useAssignment } from '../../assignment/AssignmentsContext';
+import {
+  Axis,
+  useAssignment,
+  AssignmentsData,
+} from '../../assignment/AssignmentsContext';
 import { useHighlight } from '../../highlight';
 
 import ActionsColumn, { RowDataProps } from './TableColumns/ActionsColumn';
@@ -18,7 +28,12 @@ const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
 interface ZonesTableRowProps {
   rowData: RowDataProps;
-  onUnlink: (a: any, b: any, c: any, d: any) => void;
+  onUnlink: (
+    rowData: RowDataProps,
+    isOnZoneLevel: boolean,
+    signalIndex: any,
+    axis: Axis,
+  ) => void;
   onContextMenu: (a: any, rowData: RowDataProps) => void;
   rowIndex: number;
 }
@@ -69,10 +84,10 @@ function ZonesTableRow({
   }, [rowData]);
 
   const unlinkHandler = useCallback(
-    (e, isOnZoneLevel, axis) => {
+    (event: MouseEvent, isOnZoneLevel: boolean, axis: Axis) => {
       // event handling here in case of unlink button clicked
-      if (e) {
-        e.stopPropagation();
+      if (event) {
+        event.stopPropagation();
       }
       onUnlink(rowData, isOnZoneLevel, rowData.tableMetaInfo.signalIndex, axis);
       if (axis === 'x') {
@@ -115,10 +130,13 @@ function ZonesTableRow({
     [assignmentSignal, assignmentZone, onUnlink, rowData],
   );
 
-  const clickHandler = useCallback((e, assignment, axis) => {
-    e.stopPropagation();
-    assignment.onClick(axis);
-  }, []);
+  const clickHandler = useCallback(
+    (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => {
+      event.stopPropagation();
+      assignment.setActive(axis);
+    },
+    [],
+  );
 
   const onHoverZoneX = useMemo(() => {
     return {

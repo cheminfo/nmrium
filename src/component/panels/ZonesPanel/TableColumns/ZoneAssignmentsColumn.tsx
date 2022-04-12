@@ -1,7 +1,8 @@
 import lodashGet from 'lodash/get';
+import { MouseEvent } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
-import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
 
 import { RowDataProps } from './ActionsColumn';
 
@@ -9,8 +10,8 @@ export interface ZoneAssignmentColumnProps {
   rowData: RowDataProps;
   axis: any;
   onHover: () => void;
-  onClick: (a: any, b: any, c: any) => void;
-  onUnlink: (a: any, b: any, c: any) => void;
+  onClick: (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => void;
+  onUnlink: (event: MouseEvent, flag: boolean, axis: Axis) => void;
   highlight: {
     isActive: any;
   };
