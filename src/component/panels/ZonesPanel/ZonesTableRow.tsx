@@ -36,7 +36,7 @@ function ZonesTableRow({
   );
 
   const highlightZoneY = useHighlight(
-    [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned.y || []),
+    [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned?.y || []),
   );
 
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
@@ -48,7 +48,7 @@ function ZonesTableRow({
   );
   const highlightSignalY = useHighlight(
     [buildID(assignmentSignal.id, 'Y')].concat(
-      assignmentSignal.assigned.y || [],
+      assignmentSignal.assigned?.y || [],
       buildID(assignmentSignal.id, 'Crosshair'),
     ),
   );
