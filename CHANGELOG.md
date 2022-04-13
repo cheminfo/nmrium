@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.25.1](https://www.github.com/cheminfo/nmrium/compare/v0.25.0...v0.25.1) (2022-04-13)
+
+
+### Bug Fixes
+
+* leaving a zone is not always detected ([cd6d86e](https://www.github.com/cheminfo/nmrium/commit/cd6d86e5976ff281f7db2f5aa1e6407a7df38b36)), closes [#1474](https://www.github.com/cheminfo/nmrium/issues/1474)
+* Nuclei formatting in general settings ([42a20a1](https://www.github.com/cheminfo/nmrium/commit/42a20a1e1b6f2f576a25e2e28a1c4e1fd6f789b0)), closes [#1471](https://www.github.com/cheminfo/nmrium/issues/1471) [#1473](https://www.github.com/cheminfo/nmrium/issues/1473)
+
 ## [0.25.0](https://www.github.com/cheminfo/nmrium/compare/v0.24.1...v0.25.0) (2022-04-07)
 
 
