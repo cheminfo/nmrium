@@ -31,15 +31,14 @@ export const basic: Workspace = {
     dimmedSpectraTransparency: 0.1,
   },
   formatting: {
-    nucleus: [
-      { key: '1H', name: '1H', ppm: '0.00', hz: '0.00' },
-      { key: '13C', name: '13C', ppm: '0.00', hz: '0.00' },
-      { key: '15N', name: '15N', ppm: '0.00', hz: '0.00' },
-      { key: '19F', name: '19F', ppm: '0.00', hz: '0.00' },
-      { key: '29Si', name: '29Si', ppm: '0.00', hz: '0.00' },
-      { key: '31P', name: '31P', ppm: '0.00', hz: '0.00' },
-    ],
-    nucleusByKey: {},
+    nuclei: {
+      '1h': { name: '1H', ppm: '0.00', hz: '0.00' },
+      '13c': { name: '13C', ppm: '0.00', hz: '0.00' },
+      '15n': { name: '15N', ppm: '0.00', hz: '0.00' },
+      '19f': { name: '19F', ppm: '0.00', hz: '0.00' },
+      '29si': { name: '29Si', ppm: '0.00', hz: '0.00' },
+      '31p': { name: '31P', ppm: '0.00', hz: '0.00' },
+    },
     panels: {},
   },
 };

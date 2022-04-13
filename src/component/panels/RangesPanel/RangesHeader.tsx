@@ -149,7 +149,8 @@ function RangesHeader({
     const { originFrequency: observedFrequency, nucleus } = info;
     const format = lodashGet(
       preferences.current,
-      `formatting.nucleusByKey[${nucleus.toLowerCase()}]`,
+      `formatting.nuclei[${nucleus.toLowerCase()}]`,
+      '0.0',
     );
     const nbDecimalDelta = getNumberOfDecimals(format.ppm);
     const nbDecimalJ = getNumberOfDecimals(format.hz);

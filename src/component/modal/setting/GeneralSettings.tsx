@@ -21,6 +21,7 @@ import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
 import WorkspaceItem from './WorkspaceItem';
+import { validation } from './settingsValidation';
 
 const styles = css`
   .main-content {
@@ -209,6 +210,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           key={JSON.stringify(preferences.current)}
           ref={refForm}
           initialValues={preferences.current}
+          validationSchema={validation}
           onSubmit={submitHandler}
         >
           <Tabs
