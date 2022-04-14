@@ -12,7 +12,7 @@ import {
   FaRegTrashAlt,
 } from 'react-icons/fa';
 
-import { useAssignmentData } from '../../assignment';
+import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import ButtonToolTip from '../../elements/ButtonToolTip';

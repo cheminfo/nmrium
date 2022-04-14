@@ -1,5 +1,8 @@
 import lodashGet from 'lodash/get';
+import { MouseEvent } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
+
+import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
 
 import { RowDataProps } from './ActionsColumn';
 
@@ -7,17 +10,13 @@ export interface ZoneAssignmentColumnProps {
   rowData: RowDataProps;
   axis: any;
   onHover: () => void;
-  onClick: (a: any, b: any, c: any) => void;
-  onUnlink: (a: any, b: any, c: any) => void;
+  onClick: (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => void;
+  onUnlink: (event: MouseEvent, flag: boolean, axis: Axis) => void;
   highlight: {
     isActive: any;
   };
-  assignment: {
-    activeAxis: any;
-    onHoverAxis: any;
-    isActive: boolean;
-    isOnHover: boolean;
-  };
+
+  assignment: AssignmentsData;
   showUnlinkButton: boolean;
   setShowUnlinkButton: (element: boolean) => void;
   rowSpanTags: any;
@@ -50,8 +49,8 @@ function ZoneAssignmentColumn({
             {rowData[axis].nbAtoms} {`(`}
             <span
               style={
-                (assignment.isActive && assignment.activeAxis === axis) ||
-                (assignment.isOnHover && assignment.onHoverAxis === axis) ||
+                (assignment.isActive && assignment.activated?.axis === axis) ||
+                (assignment.isOver && assignment.highlighted?.axis === axis) ||
                 highlight.isActive
                   ? {
                       color: 'red',
@@ -77,7 +76,7 @@ function ZoneAssignmentColumn({
               </button>
             </sup>
           </div>
-        ) : assignment.isActive && assignment.activeAxis === axis ? (
+        ) : assignment.isActive && assignment.activated?.axis === axis ? (
           <div>
             {`${lodashGet(rowData, `${axis}.nbAtoms`, '')} (`}
             <span
@@ -93,7 +92,7 @@ function ZoneAssignmentColumn({
         ) : (
           rowData[axis].nbAtoms
         )
-      ) : assignment.isActive && assignment.activeAxis === axis ? (
+      ) : assignment.isActive && assignment.activated?.axis === axis ? (
         <div>
           {'0 ('}
           <span style={{ color: 'red', fontWeight: 'bold' }}>0</span>

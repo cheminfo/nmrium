@@ -15,6 +15,7 @@ import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Consta
 import { options } from '../toolbar/ToolTypes';
 import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
+import * as AssignmentsActions from './actions/AssignmentsActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import * as DatabaseActions from './actions/DatabaseActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
@@ -734,6 +735,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.RESURRECTING_SPECTRUM_FROM_RANGES:
       return DatabaseActions.handleRangeResurrecting(draft, action);
+
+    case types.SET_AUTOMATIC_ASSIGNMENTS:
+      return AssignmentsActions.setAutomaticAssignmentsHandler(draft, action);
 
     case UNDO:
       return handleHistoryUndo(draft);

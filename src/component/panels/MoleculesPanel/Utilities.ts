@@ -1,41 +1,67 @@
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+import { Range } from '../../../data/types/data1d';
+import { Zone } from '../../../data/types/data2d';
+import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 
-export function extractFromAtom(atom, elements, activeAxis) {
+interface Atom {
+  oclID: string;
+  atomLabel: string;
+  nbAtoms: number;
+  nbHydrogens: number;
+  hydrogenOCLIDs: string[];
+}
+export interface AtomData {
+  oclIDs: string[];
+  nbAtoms: number;
+}
+
+function getElements(activeTab: string) {
+  const nuclei = activeTab.split(',');
+  return nuclei.map((nucleus) => nucleus.replace(/[0-9]/g, ''));
+}
+
+export function extractFromAtom(
+  atom: Atom,
+  activeTab: string,
+  axis?: Axis | null,
+): AtomData {
+  const elements = getElements(activeTab);
+
   if (elements.length > 0 && Object.keys(atom).length > 0) {
-    const dim = activeAxis === 'x' ? 0 : activeAxis === 'y' ? 1 : undefined;
-    if (dim !== undefined) {
-      if (elements[dim] === atom.atomLabel) {
+    const dim = axis === 'x' ? 0 : axis === 'y' ? 1 : null;
+
+    switch (dim !== null && elements[dim]) {
+      case atom.atomLabel: {
         // take always oclID if atom type is same as element of activeTab)
         return { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms };
       }
-      if (elements[dim] === 'H') {
+      case 'H': {
         // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
         return {
           oclIDs: atom.hydrogenOCLIDs,
           nbAtoms: atom.nbAtoms * atom.nbHydrogens,
         };
       }
-    } else {
-      return {
-        oclIDs: [atom.oclID].concat(atom.hydrogenOCLIDs),
-        nbAtoms: atom.nbAtoms + atom.nbAtoms * atom.nbHydrogens,
-      };
+      default:
+        return {
+          oclIDs: [atom.oclID].concat(atom.hydrogenOCLIDs),
+          nbAtoms: atom.nbAtoms + atom.nbAtoms * atom.nbHydrogens,
+        };
     }
   }
 
   return { oclIDs: [], nbAtoms: 0 };
 }
 
-export function findDatumAndSignalIndex(spectraData, id) {
+export function findDatumAndSignalIndex(data: (Range | Zone)[], id: string) {
   // if datum could be found then the id is on range/zone level
-  let datum = spectraData.find((_datum) => _datum.id === id);
+  let datum = data.find((_datum) => _datum.id === id);
   let signalIndex;
   if (!datum) {
     // figure out the datum via id
-    for (const data of spectraData) {
-      signalIndex = data.signals.findIndex((signal) => signal.id === id);
+    for (const record of data) {
+      signalIndex = record.signals.findIndex((signal) => signal.id === id);
       if (signalIndex >= 0) {
-        datum = data;
+        datum = record;
         break;
       }
     }
@@ -44,86 +70,64 @@ export function findDatumAndSignalIndex(spectraData, id) {
   return { datum, signalIndex };
 }
 
-export function getHighlightsOnHover(assignmentData, oclIDs, data) {
+export function getHighlightsOnHover(
+  assignments: AssignmentContext,
+  oclIDs,
+  data,
+) {
   // set all IDs to highlight when hovering over an atom from assignment data
-  let highlights: Array<number> = [];
-  for (let key in assignmentData.assignment.assignment) {
-    let datum, signalIndex;
-    let stop = false;
-    if (
-      (assignmentData.assignment.assignment[key].x || []).some((_assigned) =>
-        oclIDs.includes(_assigned),
-      )
-    ) {
-      highlights = highlights.concat(
-        assignmentData.assignment.assignment[key].x,
-      );
-      const result = findDatumAndSignalIndex(data, key);
-      datum = result.datum;
-      signalIndex = result.signalIndex;
-      stop = true;
-    }
-    if (
-      (assignmentData.assignment.assignment[key].y || []).some((_assigned) =>
-        oclIDs.includes(_assigned),
-      )
-    ) {
-      highlights = highlights.concat(
-        assignmentData.assignment.assignment[key].y,
-      );
-      const result = findDatumAndSignalIndex(data, key);
-      datum = result.datum;
-      signalIndex = result.signalIndex;
-      stop = true;
-    }
-    if (datum) {
-      highlights.push(datum.id);
-      if (signalIndex !== undefined) {
-        highlights.push(datum.signals[signalIndex].id);
+  let highlights: string[] = [];
+  const assignmentsByKey = assignments.data.assignments;
+  for (const key in assignmentsByKey) {
+    const assignments = assignmentsByKey[key];
+    let isFound = false;
+
+    for (const axis in assignments) {
+      if (assignments[axis]?.some((oclKey) => oclIDs.includes(oclKey))) {
+        highlights = highlights.concat(assignments[axis]);
+        const { datum, signalIndex } = findDatumAndSignalIndex(data, key);
+
+        if (datum) {
+          highlights.push(datum.id);
+          if (signalIndex !== undefined) {
+            highlights.push(datum.signals[signalIndex].id);
+          }
+          isFound = true;
+          break;
+        }
       }
     }
-    if (stop) {
+    if (isFound) {
       break;
     }
   }
+
   return highlights;
 }
 
-export function getCurrentDiaIDsToHighlight(assignmentData, displayerMode) {
-  const assignmentOnHover = assignmentData.assignment.isOnHover
-    ? assignmentData.assignment.assignment[assignmentData.assignment.onHoverID]
-    : null;
+export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
+  const { highlighted, assignments } = assignmentData.data;
+  const assignment = highlighted ? assignments[highlighted.id] : null;
+  const axisHover = highlighted ? highlighted.axis : null;
 
-  const axisOnHover = assignmentData.assignment.isOnHover
-    ? assignmentData.assignment.onHoverAxis
-    : null;
-
-  return assignmentOnHover
-    ? displayerMode === DISPLAYER_MODE.DM_1D
-      ? assignmentOnHover.x || []
-      : displayerMode === DISPLAYER_MODE.DM_2D
-      ? axisOnHover
-        ? axisOnHover === 'x'
-          ? assignmentOnHover.x || []
-          : axisOnHover === 'y'
-          ? assignmentOnHover.y || []
-          : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
-        : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
-      : []
-    : [];
+  if (axisHover && assignment && assignment[axisHover]) {
+    return assignment[axisHover];
+  } else {
+    return (assignment?.x || []).concat(assignment?.y || []);
+  }
 }
 
-export function toggleDiaIDs(diaID, atomInformation) {
-  let _diaID = diaID ? diaID.slice() : [];
+export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
+  let _diaIDs = diaIDs ? diaIDs.slice() : [];
   const { nbAtoms, oclIDs } = atomInformation;
   let tempNbAtoms = nbAtoms;
   oclIDs.forEach((_oclID) => {
-    if (_diaID.includes(_oclID)) {
+    if (_diaIDs.includes(_oclID)) {
       tempNbAtoms *= -1;
-      _diaID = _diaID.filter((_id) => _id !== _oclID);
+      _diaIDs = _diaIDs.filter((_id) => _id !== _oclID);
     } else {
-      _diaID.push(_oclID);
+      _diaIDs.push(_oclID);
     }
   });
-  return [_diaID, tempNbAtoms];
+  return [_diaIDs, tempNbAtoms];
 }

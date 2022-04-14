@@ -1,5 +1,10 @@
-import { protonImpurities, carbonImpurities, Jcoupling } from 'nmr-processing';
-import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
+import {
+  protonImpurities,
+  carbonImpurities,
+  Jcoupling,
+  DatabaseNMREntry,
+} from 'nmr-processing';
+
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useAccordionContext } from 'analysis-ui-components';
-import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
+import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';

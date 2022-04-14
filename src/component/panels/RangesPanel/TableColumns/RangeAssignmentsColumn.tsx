@@ -2,12 +2,31 @@ import lodashGet from 'lodash/get';
 import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
+import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import { HighlightedSource } from '../../../highlight';
 
 const spanStyle: CSSProperties = {
   color: 'red',
   fontWeight: 'bold',
 };
+
+interface RangAssignmentColumnProps {
+  rowData: any;
+  onHover: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+  assignment: AssignmentsData;
+  highlight: {
+    isActive: boolean;
+  };
+  onUnlinkVisibilityChange?: (element: any) => void;
+  unlinkVisibility: boolean;
+  onLink?: (a: any, b: any) => void;
+  onUnlink?: (element: any, b: boolean) => void;
+  rowSpanTags: any;
+  highlightData: any;
+}
 
 function RangeAssignmentsColumn({
   rowData,
@@ -20,7 +39,7 @@ function RangeAssignmentsColumn({
   rowSpanTags,
   onHover,
   highlightData,
-}) {
+}: RangAssignmentColumnProps) {
   const diaIDs = useMemo(() => {
     return lodashGet(rowData, 'diaIDs', 0);
   }, [rowData]);
@@ -35,7 +54,7 @@ function RangeAssignmentsColumn({
   const spanCss: CSSProperties = useMemo(() => {
     const flag =
       assignment.isActive ||
-      assignment.isOnHover ||
+      assignment.isOver ||
       (highlight.isActive &&
         highlightData.highlight.sourceData?.type !== HighlightedSource.SIGNAL);
     return flag
@@ -46,7 +65,7 @@ function RangeAssignmentsColumn({
       : { color: 'black', fontWeight: 'normal' };
   }, [
     assignment.isActive,
-    assignment.isOnHover,
+    assignment.isOver,
     highlight.isActive,
     highlightData.highlight.sourceData?.type,
   ]);

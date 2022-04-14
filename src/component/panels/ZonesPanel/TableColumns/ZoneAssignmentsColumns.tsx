@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 
+import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
+
 import { RowDataProps } from './ActionsColumn';
 import ZoneAssignmentColumn from './ZoneAssignmentsColumn';
 
@@ -7,19 +9,14 @@ interface ZoneAssignmentsColumnsProps {
   rowData: RowDataProps;
   onHoverZoneX: any;
   onHoverZoneY: any;
-  onClick: (a: any, b: any, c: any) => void;
-  onUnlink: (a: any, b: any, c: any) => void;
+  onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
+  onUnlink: (event: any, flag: boolean, axis: Axis) => void;
   rowSpanTags: any;
   showUnlinkButtonZoneX: boolean;
   showUnlinkButtonZoneY: boolean;
   setShowUnlinkButtonZoneX: (element: boolean) => void;
   setShowUnlinkButtonZoneY: (element: boolean) => void;
-  assignmentZone: {
-    activeAxis: any;
-    onHoverAxis: any;
-    isActive: boolean;
-    isOnHover: boolean;
-  };
+  assignmentZone: AssignmentsData;
   highlightZoneX: {
     isActive: any;
   };

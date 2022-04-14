@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import { Zone as ZoneDataProps } from '../../../data/types/data2d';
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
-import { useAssignment } from '../../assignment';
+import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { HighlightedSource, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
@@ -76,11 +76,11 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
       }
       key={id}
       onMouseEnter={() => {
-        assignmentZone.onMouseEnter(undefined);
+        assignmentZone.show();
         highlightZone.show();
       }}
       onMouseLeave={() => {
-        assignmentZone.onMouseLeave(undefined);
+        assignmentZone.hide();
         highlightZone.hide();
       }}
     >

@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 
+import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
+
 import { RowDataProps } from './ActionsColumn';
 import SignalAssignmentsColumn from './SignalAssignmentsColumn';
 
@@ -11,20 +13,15 @@ interface SignalAssignmentsColumnsProps {
   showUnlinkButtonSignalY: boolean;
   setShowUnlinkButtonSignalX: (element: boolean) => void;
   setShowUnlinkButtonSignalY: (element: boolean) => void;
-  onClick: (a: any, b: any, c: any) => void;
-  onUnlink: (a: any, b: any, c: any) => void;
+  onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
+  onUnlink: (event: any, flag: boolean, axis: Axis) => void;
   highlightSignalX: {
     isActive: any;
   };
   highlightSignalY: {
     isActive: any;
   };
-  assignmentSignal: {
-    activeAxis: any;
-    onHoverAxis: any;
-    isActive: boolean;
-    isOnHover: boolean;
-  };
+  assignmentSignal: AssignmentsData;
 }
 
 function SignalAssignmentsColumns({
@@ -50,7 +47,7 @@ function SignalAssignmentsColumns({
         onHover={onHoverSignalX}
         onClick={onClick}
         onUnlink={onUnlink}
-        axis={'x'}
+        axis="x"
         showUnlinkButton={showUnlinkButtonSignalX}
         setShowUnlinkButton={setShowUnlinkButtonSignalX}
       />
@@ -61,7 +58,7 @@ function SignalAssignmentsColumns({
         onHover={onHoverSignalY}
         onClick={onClick}
         onUnlink={onUnlink}
-        axis={'y'}
+        axis="y"
         showUnlinkButton={showUnlinkButtonSignalY}
         setShowUnlinkButton={setShowUnlinkButtonSignalY}
       />

@@ -20,7 +20,7 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities';
-import { useAssignmentData } from '../../assignment';
+import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
