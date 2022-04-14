@@ -1,10 +1,20 @@
 /** @jsxImportSource @emotion/react */
 
 import lodashGet from 'lodash/get';
-import { CSSProperties, useMemo, useCallback, useState } from 'react';
+import {
+  CSSProperties,
+  useMemo,
+  useCallback,
+  useState,
+  MouseEvent,
+} from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';
-import { useAssignment } from '../../assignment';
+import {
+  Axis,
+  useAssignment,
+  AssignmentsData,
+} from '../../assignment/AssignmentsContext';
 import { useHighlight } from '../../highlight';
 
 import ActionsColumn, { RowDataProps } from './TableColumns/ActionsColumn';
@@ -18,7 +28,12 @@ const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
 interface ZonesTableRowProps {
   rowData: RowDataProps;
-  onUnlink: (a: any, b: any, c: any, d: any) => void;
+  onUnlink: (
+    rowData: RowDataProps,
+    isOnZoneLevel: boolean,
+    signalIndex: any,
+    axis: Axis,
+  ) => void;
   onContextMenu: (a: any, rowData: RowDataProps) => void;
   rowIndex: number;
 }
@@ -32,23 +47,23 @@ function ZonesTableRow({
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
   const highlightZoneX = useHighlight(
-    [buildID(assignmentZone.id, 'X')].concat(assignmentZone.assigned.x || []),
+    [buildID(assignmentZone.id, 'X')].concat(assignmentZone.assigned?.x || []),
   );
 
   const highlightZoneY = useHighlight(
-    [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned.y || []),
+    [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned?.y || []),
   );
 
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignalX = useHighlight(
     [buildID(assignmentSignal.id, 'X')].concat(
-      assignmentSignal.assigned.x || [],
+      assignmentSignal.assigned?.x || [],
       buildID(assignmentSignal.id, 'Crosshair'),
     ),
   );
   const highlightSignalY = useHighlight(
     [buildID(assignmentSignal.id, 'Y')].concat(
-      assignmentSignal.assigned.y || [],
+      assignmentSignal.assigned?.y || [],
       buildID(assignmentSignal.id, 'Crosshair'),
     ),
   );
@@ -69,10 +84,10 @@ function ZonesTableRow({
   }, [rowData]);
 
   const unlinkHandler = useCallback(
-    (e, isOnZoneLevel, axis) => {
+    (event: MouseEvent, isOnZoneLevel: boolean, axis: Axis) => {
       // event handling here in case of unlink button clicked
-      if (e) {
-        e.stopPropagation();
+      if (event) {
+        event.stopPropagation();
       }
       onUnlink(rowData, isOnZoneLevel, rowData.tableMetaInfo.signalIndex, axis);
       if (axis === 'x') {
@@ -115,19 +130,22 @@ function ZonesTableRow({
     [assignmentSignal, assignmentZone, onUnlink, rowData],
   );
 
-  const clickHandler = useCallback((e, assignment, axis) => {
-    e.stopPropagation();
-    assignment.onClick(axis);
-  }, []);
+  const clickHandler = useCallback(
+    (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => {
+      event.stopPropagation();
+      assignment.setActive(axis);
+    },
+    [],
+  );
 
   const onHoverZoneX = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentZone.onMouseEnter('x');
+        assignmentZone.show('x');
         highlightZoneX.show();
       },
       onMouseLeave: () => {
-        assignmentZone.onMouseLeave('x');
+        assignmentZone.hide();
         highlightZoneX.hide();
       },
     };
@@ -136,11 +154,11 @@ function ZonesTableRow({
   const onHoverZoneY = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentZone.onMouseEnter('y');
+        assignmentZone.show('y');
         highlightZoneY.show();
       },
       onMouseLeave: () => {
-        assignmentZone.onMouseLeave('y');
+        assignmentZone.hide();
         highlightZoneY.hide();
       },
     };
@@ -149,11 +167,11 @@ function ZonesTableRow({
   const onHoverSignalX = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentSignal.onMouseEnter('x');
+        assignmentSignal.show('x');
         highlightSignalX.show();
       },
       onMouseLeave: () => {
-        assignmentSignal.onMouseLeave('x');
+        assignmentSignal.hide();
         highlightSignalX.hide();
       },
     };
@@ -162,11 +180,11 @@ function ZonesTableRow({
   const onHoverSignalY = useMemo(() => {
     return {
       onMouseEnter: () => {
-        assignmentSignal.onMouseEnter('y');
+        assignmentSignal.show('y');
         highlightSignalY.show();
       },
       onMouseLeave: () => {
-        assignmentSignal.onMouseLeave('y');
+        assignmentSignal.hide();
         highlightSignalY.hide();
       },
     };

@@ -2,15 +2,15 @@ import lodashGet from 'lodash/get';
 import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
+import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+
 interface SignalAssignmentsColumnProps {
   rowData: any;
   onHover: {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   };
-  assignment: {
-    isActive: boolean;
-  };
+  assignment: AssignmentsData;
   highlight: {
     isActive: boolean;
   };

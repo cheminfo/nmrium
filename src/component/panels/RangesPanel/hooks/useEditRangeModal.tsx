@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { useAssignmentData } from '../../../assignment';
+import { useAssignmentData } from '../../../assignment/AssignmentsContext';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useModal } from '../../../elements/popup/Modal';
 import { positions, transitions } from '../../../elements/popup/options';

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
-import { useAssignmentData } from '../assignment';
+import { useAssignmentData } from '../assignment/AssignmentsContext';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';

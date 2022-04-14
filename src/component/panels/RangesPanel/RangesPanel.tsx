@@ -6,7 +6,7 @@ import { useCallback, useMemo, memo, useState, useRef } from 'react';
 
 import { Molecule } from '../../../data/molecules/Molecule';
 import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
-import { useAssignmentData } from '../../assignment';
+import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';

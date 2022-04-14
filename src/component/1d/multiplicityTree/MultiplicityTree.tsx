@@ -3,7 +3,7 @@ import lodashGet from 'lodash/get';
 import { useMemo, useState, useEffect, CSSProperties } from 'react';
 
 import { Signal1D } from '../../../data/types/data1d';
-import { useAssignment } from '../../assignment';
+import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightedSource, useHighlight } from '../../highlight';
@@ -41,7 +41,7 @@ interface MultiplicityTreeProps {
 }
 
 function extractID(assignment) {
-  return [assignment.id].concat(assignment.assigned.x || []);
+  return [assignment.id].concat(assignment.assigned?.x || []);
 }
 
 function MultiplicityTree({
@@ -273,11 +273,11 @@ function MultiplicityTree({
       }
       {...{
         onMouseEnter: () => {
-          assignment.onMouseEnter('x');
+          assignment.show('x');
           highlight.show();
         },
         onMouseLeave: () => {
-          assignment.onMouseLeave('x');
+          assignment.hide();
           highlight.hide();
         },
       }}
@@ -290,7 +290,7 @@ function MultiplicityTree({
             : (e) => {
                 if (e.shiftKey) {
                   e.stopPropagation();
-                  assignment.onClick('x');
+                  assignment.setActive('x');
                 }
               },
       }}

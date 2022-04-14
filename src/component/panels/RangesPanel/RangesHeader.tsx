@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
-import { useAssignmentData } from '../../assignment';
+import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/ButtonToolTip';

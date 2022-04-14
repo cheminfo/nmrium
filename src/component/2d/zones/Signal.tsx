@@ -4,7 +4,7 @@ import { memo, useState, useEffect, useCallback } from 'react';
 
 import { Signal2D } from '../../../data/types/data2d';
 import { buildID } from '../../../data/utilities/Concatenation';
-import { useAssignment } from '../../assignment';
+import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
@@ -56,30 +56,28 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
   if (!signal) return null;
 
   return (
-    <g
-      className="zone-signal"
-      onMouseEnter={() => {
-        assignment.onMouseEnter(undefined);
-        highlight.show();
-      }}
-      onMouseLeave={() => {
-        assignment.onMouseLeave(undefined);
-        highlight.hide();
-      }}
-    >
+    <g className="zone-signal">
       {isVisible.signals && (
         <g>
+          <SignalCrosshair signal={signal} />
           <circle
+            onMouseEnter={() => {
+              assignment.show();
+              highlight.show();
+            }}
+            onMouseLeave={() => {
+              assignment.hide();
+              highlight.hide();
+            }}
             key={signal.id}
             cx={scaleX(signal.x.delta || 0)}
             cy={scaleY(signal.y.delta || 0)}
             r={isHighlighted ? 6 : 4}
             fill={isHighlighted ? 'green' : 'darkgreen'}
           />
-          <SignalCrosshair signal={signal} />
         </g>
       )}
-      <g className="zone-signal-peak">
+      <g className="zone-signal-peak" style={{ pointerEvents: 'none' }}>
         {isVisible.peaks &&
           signal.peaks &&
           signal.peaks.map((peak, i) => (
