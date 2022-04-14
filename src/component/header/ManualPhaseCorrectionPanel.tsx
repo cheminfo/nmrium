@@ -13,6 +13,7 @@ import { Filter } from '../../data/FiltersManager';
 import { Data1D, Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
@@ -26,10 +27,7 @@ import {
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'actionButton' | 'select',
-  CSSProperties
-> = {
+const styles: Record<'container' | 'input' | 'select', CSSProperties> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -37,14 +35,6 @@ const styles: Record<
   },
   input: {
     width: '100px',
-  },
-  actionButton: {
-    height: '100%',
-    width: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
   },
   select: {
     marginLeft: '5px',
@@ -238,27 +228,7 @@ function ManualPhaseCorrectionPanelInner({
         </>
       )}
 
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
-        Apply
-      </button>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
-      {/* <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleAutoFilter}
-      >
-        Auto
-      </button> */}
+      <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </div>
   );
 }

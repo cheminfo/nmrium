@@ -49,33 +49,40 @@ const styles = css`
 
 function FormattingTabContent() {
   const { values, setFieldValue } = useFormikContext();
-  const nucleuses = useMemo(
-    () => lodashGet(values, 'formatting.nucleus', []),
+  const nuclei = useMemo(
+    () => lodashGet(values, 'formatting.nuclei', {}),
     [values],
   );
 
   const deleteHandler = useCallback(
-    (index) => {
-      const nucleusesObject = nucleuses.splice(0, index);
-      setFieldValue('formatting.nucleus', nucleusesObject);
+    (key: string) => {
+      let _nuclei = {};
+      for (const nucleus in nuclei) {
+        if (nucleus !== key) {
+          _nuclei[nucleus] = nuclei[nucleus];
+        }
+      }
+      setFieldValue('formatting.nuclei', _nuclei);
     },
-    [nucleuses, setFieldValue],
+    [nuclei, setFieldValue],
   );
 
   const addNewNucleusFormatHandler = useCallback(() => {
     const newFormat = {
-      key: generateID(),
       name: '',
       ppm: '0.00',
       hz: '0.00',
     };
-    const newNucleuses = [...nucleuses, newFormat];
-    setFieldValue('formatting.nucleus', newNucleuses);
-  }, [nucleuses, setFieldValue]);
+    const key = generateID();
+    const newNuclei = { ...nuclei, [key]: newFormat };
+    setFieldValue('formatting.nuclei', newNuclei);
+  }, [nuclei, setFieldValue]);
+
+  const nucleiList = Object.keys(nuclei);
 
   return (
     <Fragment>
-      <p className="section-header">Formating according to Nucleus</p>
+      <p className="section-header">Nuclei Formatting</p>
       <div css={styles}>
         <table>
           <thead>
@@ -88,38 +95,39 @@ function FormattingTabContent() {
             </tr>
           </thead>
           <tbody>
-            {nucleuses?.map((nucleus, index) => {
+            {nucleiList?.map((key, index) => {
               const num = index + 1;
               return (
-                <tr key={`${nucleus.key}`}>
+                <tr key={`${key}`}>
                   <td className="counter-col">
                     <span>{num} - </span>{' '}
                   </td>
                   <td className="nucleus-label-col">
                     <FormikInput
-                      name={`formatting.nucleus.${index}.name`}
+                      name={`formatting.nuclei.${key}.name`}
+                      className="width-100"
+                      checkErrorAfterInputTouched={false}
+                    />
+                  </td>
+                  <td className="nucleus-format-input-col">
+                    <FormikInput
+                      name={`formatting.nuclei.${key}.ppm`}
                       className="width-100"
                     />
                   </td>
                   <td className="nucleus-format-input-col">
                     <FormikInput
-                      name={`formatting.nucleus.${index}.ppm`}
-                      className="width-100"
-                    />
-                  </td>
-                  <td className="nucleus-format-input-col">
-                    <FormikInput
-                      name={`formatting.nucleus.${index}.hz`}
+                      name={`formatting.nuclei.${key}.hz`}
                       className="width-100"
                     />
                   </td>
                   <td className="operation-container">
                     <CloseButton
-                      onClick={() => deleteHandler(index)}
-                      popupTitle={`remove ${nucleus.name}`}
+                      onClick={() => deleteHandler(key)}
+                      popupTitle={`remove ${nuclei[key].name}`}
                       popupPlacement="right"
                     />
-                    {nucleuses.length === index + 1 && (
+                    {nucleiList.length === index + 1 && (
                       <button
                         className="add"
                         type="button"

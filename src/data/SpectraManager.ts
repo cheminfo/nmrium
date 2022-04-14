@@ -34,25 +34,47 @@ export function addJcamp(spectra, jcamp, options, usedColors) {
   });
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case
-  for (let entry of entries) {
-    let { dependentVariables } = entry;
-    if (
-      dependentVariables[0].components &&
-      (dependentVariables[0].components.length > 0 ||
-        dependentVariables[0].components.z.length)
-    ) {
-      addJcampSS(spectra, entry, options, usedColors);
+  for (let index = 0; index < entries.length; index++) {
+    let entry = entries[index];
+
+    const components = entry.dependentVariables?.[0]?.components;
+    if (components && (components.length > 0 || components.z)) {
+      addJcampSS(spectra, { index, entry }, options, usedColors);
     }
   }
 }
 
-function addJcampSS(spectra, entry, options, usedColors) {
-  const dimension = entry.info.dimension;
-  if (dimension === 1) {
-    spectra.push(Data1DManager.fromParsedJcamp(entry, options, usedColors));
-  }
-  if (dimension === 2) {
-    spectra.push(Data2DManager.fromParsedJcamp(entry, options, usedColors));
+function addJcampSS(spectra, jcampDatum, options, usedColors) {
+  const source = options?.source || {};
+
+  if (
+    !('jcampSpectrumIndex' in source) ||
+    source.jcampSpectrumIndex === jcampDatum.index
+  ) {
+    const dimension = jcampDatum.entry.info.dimension;
+
+    if (dimension === 1) {
+      spectra.push(
+        Data1DManager.fromParsedJcamp(
+          jcampDatum.entry,
+          options,
+          usedColors,
+          jcampDatum.index,
+        ),
+      );
+    }
+    if (dimension === 2) {
+      // console.log(options, jcampDatum.entry);
+
+      spectra.push(
+        Data2DManager.fromParsedJcamp(
+          jcampDatum.entry,
+          options,
+          usedColors,
+          jcampDatum.index,
+        ),
+      );
+    }
   }
 }
 

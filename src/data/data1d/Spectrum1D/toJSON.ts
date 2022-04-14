@@ -22,6 +22,7 @@ export function toJSON(
       : {
           source: {
             jcampURL: datum1D.source.jcampURL,
+            jcampSpectrumIndex: datum1D.source.jcampSpectrumIndex,
           },
         }),
     peaks: datum1D.peaks,

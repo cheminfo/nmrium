@@ -9,7 +9,7 @@ import {
   storeData,
 } from '../utility/LocalStorage';
 import Workspaces from '../workspaces';
-import { Workspace } from '../workspaces/Workspace';
+import { Formatting, Workspace } from '../workspaces/Workspace';
 
 import { ActionType } from './types/Types';
 
@@ -43,7 +43,7 @@ type PreferencesActions =
   | WorkspaceAction
   | AddWorkspaceAction;
 
-const LOCAL_STORAGE_VERSION = 5;
+const LOCAL_STORAGE_VERSION = 6;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -140,19 +140,13 @@ function checkKeysExists(sourceObject, targetObject) {
   return true;
 }
 
-function mapNucleus(draft: Draft<PreferencesState>) {
-  const currentWorkspacePreferences = getActiveWorkspace(draft);
-
-  if (
-    currentWorkspacePreferences.formatting.nucleus &&
-    Array.isArray(currentWorkspacePreferences.formatting.nucleus)
-  ) {
-    currentWorkspacePreferences.formatting.nucleusByKey =
-      currentWorkspacePreferences.formatting.nucleus.reduce((acc, item) => {
-        acc[item.name.toLowerCase()] = item;
-        return { ...acc };
-      }, {});
-  }
+function mapNucleiFormatting(formatting: Formatting) {
+  const { nuclei, ...res } = formatting;
+  const _nuclei = Object.keys(nuclei).reduce((nucleusFormatting, key) => {
+    nucleusFormatting[nuclei[key].name.trim().toLowerCase()] = nuclei[key];
+    return nucleusFormatting;
+  }, {});
+  return { nuclei: _nuclei, ...res };
 }
 
 export function initPreferencesState(
@@ -221,20 +215,28 @@ function handleInit(draft: Draft<PreferencesState>, action) {
           ))) ||
       !localData
     ) {
-      const { workspaces, version } = draft || {};
+      const {
+        workspaces,
+        version,
+        workspace: { current },
+      } = draft || {};
       const display = filterObject(workspacePreferences.display);
 
       const data = {
         version,
+        ...(localData?.currentWorkspace && {
+          currentWorkspace: localData?.currentWorkspace,
+        }),
         workspaces: {
           ...workspaces,
-          [draft.workspace.current]: {
+          [current]: {
             ...workspacePreferences,
             display,
           },
         },
       };
-      draft.workspaces[draft.workspace.current] = lodashMerge(
+
+      draft.workspaces[current] = lodashMerge(
         {},
         currentWorkspacePreferences,
         workspacePreferences,
@@ -256,8 +258,8 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
-    const { controllers, formatting, display } = action.payload;
-
+    let { controllers, formatting, display } = action.payload;
+    formatting = mapNucleiFormatting(formatting);
     let localData = getLocalStorage('nmr-general-settings');
     localData.currentWorkspace = draft.workspace.current;
     localData.workspaces = {
@@ -282,7 +284,6 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
         experimentalFeatures: display.general.experimentalFeatures,
       },
     };
-    mapNucleus(draft);
   }
 }
 function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {

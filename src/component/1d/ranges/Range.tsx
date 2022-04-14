@@ -11,10 +11,10 @@ import {
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import Resizer from '../../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
-import Resizable from '../Resizable';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
 
@@ -69,7 +69,7 @@ function Range({
   selectedTool,
   startEditMode,
 }: RangeProps) {
-  const { id, from: rangeFrom, to: rangeTo, integration, signals } = rangeData;
+  const { id, from, to, integration, signals } = rangeData;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -81,23 +81,12 @@ function Range({
     ),
     { type: HighlightedSource.RANGE, extra: { id } },
   );
-  const [rangeBoundary, setRangeBoundary] = useState({
-    from: rangeFrom,
-    to: rangeTo,
-  });
 
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
   const [isBlockedByEditing, setIsBlockedByEditing] = useState(false);
-
-  useEffect(() => {
-    setRangeBoundary({
-      from: rangeFrom,
-      to: rangeTo,
-    });
-  }, [rangeFrom, rangeTo]);
 
   useEffect(() => {
     if (selectedTool && selectedTool === options.editRange.id) {
@@ -112,13 +101,17 @@ function Range({
   }, [rangeData]);
 
   const handleOnStopResizing = useCallback(
-    (resized) => {
+    (position) => {
       dispatch({
         type: RESIZE_RANGE,
-        data: { ...rangeData, ...resized },
+        data: {
+          ...rangeData,
+          from: scaleX().invert(position.x2),
+          to: scaleX().invert(position.x1),
+        },
       });
     },
-    [dispatch, rangeData],
+    [dispatch, rangeData, scaleX],
   );
 
   const mouseEnterHandler = useCallback(() => {
@@ -144,12 +137,6 @@ function Range({
     [assignmentRange, isBlockedByEditing, selectedTool],
   );
 
-  const dragHandler = useCallback((boundary) => {
-    setRangeBoundary((range) => ({ ...range, ...boundary }));
-  }, []);
-
-  const { from, to } = rangeBoundary;
-
   return (
     <g
       data-test-id="range"
@@ -166,44 +153,48 @@ function Range({
       onMouseLeave={mouseLeaveHandler}
       onClick={assignHandler}
     >
-      <g transform={`translate(${scaleX()(to)},10)`}>
-        <rect
-          x="0"
-          width={Math.abs(scaleX()(from) - scaleX()(to))}
-          height="6"
-          className="range-area"
-          fill="green"
-          fillOpacity={
-            !reduceOpacity ||
-            highlightRange.isActive ||
-            assignmentRange.isActive
-              ? 1
-              : 0.4
-          }
-        />
-        <text
-          textAnchor="middle"
-          x={Math.abs(scaleX()(from) - scaleX()(to)) / 2}
-          y="20"
-          fontSize="10"
-          fill="red"
-          fillOpacity={
-            !reduceOpacity ||
-            highlightRange.isActive ||
-            assignmentRange.isActive
-              ? 1
-              : 0.6
-          }
-        >
-          {integration !== undefined ? integration.toFixed(2) : ''}
-        </text>
-      </g>
-      <Resizable
-        from={rangeData.from}
-        to={rangeData.to}
-        onDrop={handleOnStopResizing}
-        onDrag={dragHandler}
-      />
+      <Resizer
+        tag="svg"
+        initialPosition={{ x1: scaleX()(to), x2: scaleX()(from) }}
+        onEnd={handleOnStopResizing}
+      >
+        {(x1, x2) => (
+          <g transform={`translate(0,10)`}>
+            <rect
+              data-no-export="true"
+              x="0"
+              width={x2 - x1}
+              height="6"
+              className="range-area"
+              fill="green"
+              fillOpacity={
+                !reduceOpacity ||
+                highlightRange.isActive ||
+                assignmentRange.isActive
+                  ? 1
+                  : 0.4
+              }
+            />
+            <text
+              textAnchor="middle"
+              x={(x2 - x1) / 2}
+              y="20"
+              fontSize="10"
+              fill="red"
+              fillOpacity={
+                !reduceOpacity ||
+                highlightRange.isActive ||
+                assignmentRange.isActive
+                  ? 1
+                  : 0.6
+              }
+            >
+              {integration !== undefined ? integration.toFixed(2) : ''}
+            </text>
+          </g>
+        )}
+      </Resizer>
+
       {startEditMode ? (
         <TempMultiplicityTree />
       ) : (

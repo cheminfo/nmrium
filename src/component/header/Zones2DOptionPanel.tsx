@@ -1,15 +1,15 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import Button from '../elements/Button';
 import NumberInput from '../elements/NumberInput';
 import {
-  RESET_SELECTED_TOOL,
   AUTO_ZONES_DETECTION,
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
 
 const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton',
+  'container' | 'input' | 'inputContainer' | 'label',
   CSSProperties
 > = {
   container: {
@@ -27,13 +27,6 @@ const styles: Record<
   label: {
     flex: '5',
   },
-  actionButton: {
-    height: '100%',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
-  },
 };
 
 function Zones2DOptionPanel() {
@@ -46,12 +39,6 @@ function Zones2DOptionPanel() {
       options: {
         thresholdFactor: thresholdFactor.current.value,
       },
-    });
-  }, [dispatch]);
-
-  const handleCancelFilter = useCallback(() => {
-    dispatch({
-      type: RESET_SELECTED_TOOL,
     });
   }, [dispatch]);
 
@@ -78,20 +65,9 @@ function Zones2DOptionPanel() {
         defaultValue={1}
         onChange={handleInput}
       />
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
+      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
         Auto Zones Picking
-      </button>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      </Button.Done>
     </div>
   );
 }

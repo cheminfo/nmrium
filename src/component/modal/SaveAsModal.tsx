@@ -4,6 +4,7 @@ import { Field } from 'formik';
 import { useCallback, useRef } from 'react';
 
 import { DataExportOptions } from '../../data/SpectraManager';
+import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
@@ -50,7 +51,7 @@ const INITIAL_VALUE = {
 };
 
 interface SaveAsModalProps {
-  onClose?: (element?: any) => void;
+  onClose?: (event?: MouseEvent) => void;
   onSave: (element: any) => void;
   name: string;
 }
@@ -125,12 +126,12 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn primary">
-          Save
-        </button>
-        <button type="button" onClick={onClose} className="btn">
-          Close
-        </button>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={() => onClose?.()}
+        />
       </div>
     </div>
   );

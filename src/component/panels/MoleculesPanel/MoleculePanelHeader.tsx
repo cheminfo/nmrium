@@ -14,6 +14,7 @@ import {
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useGlobal } from '../../context/GlobalContext';
 import ButtonToolTip from '../../elements/ButtonToolTip';
 import MenuButton from '../../elements/MenuButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
@@ -92,19 +93,22 @@ export default function MoleculePanelHeader({
   onOpenMoleculeEditor = () => null,
   actionsOptions = {},
 }: MoleculePanelHeaderProps) {
+  const { rootRef } = useGlobal();
   const alert = useAlert();
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
 
   const saveAsSVGHandler = useCallback(() => {
-    exportAsSVG(`molSVG${currentIndex}`, 'molFile');
-  }, [currentIndex]);
+    if (!rootRef) return;
+    exportAsSVG(rootRef, `molSVG${currentIndex}`, 'molFile');
+  }, [rootRef, currentIndex]);
 
   const saveAsPNGHandler = useCallback(() => {
-    copyPNGToClipboard(`molSVG${currentIndex}`);
+    if (!rootRef) return;
+    copyPNGToClipboard(rootRef, `molSVG${currentIndex}`);
     alert.success('MOL copied as PNG to clipboard');
-  }, [alert, currentIndex]);
+  }, [rootRef, alert, currentIndex]);
 
   const saveAsMolHandler = useCallback(() => {
     if (molecules[currentIndex]) {

@@ -1,15 +1,13 @@
 import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
-import {
-  AUTO_RANGES_DETECTION,
-  RESET_SELECTED_TOOL,
-} from '../reducer/types/Types';
+import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
 const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton' | 'hint',
+  'container' | 'input' | 'inputContainer' | 'label' | 'hint',
   CSSProperties
 > = {
   container: {
@@ -33,15 +31,7 @@ const styles: Record<
   label: {
     flex: 5,
   },
-  actionButton: {
-    height: '100%',
-    minWidth: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
-    padding: '3px',
-  },
+
   hint: {
     lineHeight: 2,
     userSelect: 'none',
@@ -63,12 +53,6 @@ function RangesPickingOptionPanel() {
           lookNegative: lookNegativeRef.current.checked,
         },
       },
-    });
-  }, [dispatch]);
-
-  const handleCancelFilter = useCallback(() => {
-    dispatch({
-      type: RESET_SELECTED_TOOL,
     });
   }, [dispatch]);
 
@@ -95,21 +79,10 @@ function RangesPickingOptionPanel() {
         defaultValue={0.05}
         step="0.01"
       />
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-        data-test-id="auto-ranges-detection-btn"
-      >
+
+      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
         Auto ranges picking
-      </button>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      </Button.Done>
       <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
       </span>

@@ -19,7 +19,7 @@ async function addRange(
 
 async function resizeRange(nmrium: NmriumPage) {
   const rightResizer = nmrium.page.locator(
-    'data-test-id=range >> nth=0 >> .handle >> nth=0',
+    'data-test-id=range >> nth=0 >> _react=SVGResizerHandle >> nth=1',
   );
 
   const { x, height } = (await rightResizer.boundingBox()) as BoundingBox;
@@ -78,7 +78,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
   await nmrium.clickTool('ranges-pick');
 
   //apply auto ranges detection
-  await nmrium.page.click('data-test-id=auto-ranges-detection-btn');
+  await nmrium.page.click('text=Auto ranges picking');
 
   expect(
     await nmrium.page.locator('data-test-id=range').count(),

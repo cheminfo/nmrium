@@ -22,6 +22,7 @@ export function toJSON(
       : {
           source: {
             jcampURL: datum.source.jcampURL,
+            jcampSpectrumIndex: datum.source.jcampSpectrumIndex,
           },
         }),
     zones: datum.zones,

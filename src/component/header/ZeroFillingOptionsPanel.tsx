@@ -4,16 +4,14 @@ import { Data1D } from '../../data/types/data1d';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import Select from '../elements/Select';
 import {
   APPLY_ZERO_FILLING_FILTER,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'actionButton' | 'label',
-  CSSProperties
-> = {
+const styles: Record<'container' | 'input' | 'label', CSSProperties> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -28,14 +26,7 @@ const styles: Record<
     margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
-  actionButton: {
-    height: '100%',
-    width: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
-    userSelect: 'none',
-  },
+
   label: {
     lineHeight: 2,
     userSelect: 'none',
@@ -109,22 +100,7 @@ function ZeroFillingOptionsPanel() {
         pattern="^\d*(\.\d{0,2})?$"
         step="any"
       />
-
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleApplyFilter}
-      >
-        Apply
-      </button>
-
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </div>
   );
 }

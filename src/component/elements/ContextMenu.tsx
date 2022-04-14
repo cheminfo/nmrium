@@ -56,7 +56,7 @@ function ContextMenu({ context }, ref: any) {
     left: 0,
     top: 0,
   });
-  const { rootRef, elementsWraperRef } = useGlobal();
+  const { rootRef, elementsWrapperRef } = useGlobal();
   const [data, setData] = useState();
   const [isVisible, show] = useState<boolean>();
   const [sourceElement, setSourceElement] = useState(null);
@@ -64,15 +64,15 @@ function ContextMenu({ context }, ref: any) {
 
   useEffect(() => {
     root.current = document.createElement('div');
-    if (elementsWraperRef) {
-      elementsWraperRef.appendChild(root.current);
+    if (elementsWrapperRef) {
+      elementsWrapperRef.appendChild(root.current);
     }
     return () => {
-      if (root.current && elementsWraperRef) {
-        elementsWraperRef.removeChild(root.current);
+      if (root.current && elementsWrapperRef) {
+        elementsWrapperRef.removeChild(root.current);
       }
     };
-  }, [elementsWraperRef]);
+  }, [elementsWrapperRef]);
 
   const contextMenuHandler = (event) => {
     event.preventDefault();

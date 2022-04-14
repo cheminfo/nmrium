@@ -75,14 +75,19 @@ export function fromCSD(result, options = {}, usedColors = {}) {
   return datum1D;
 }
 
-export function fromParsedJcamp(parsedJcamp, options, usedColors) {
+export function fromParsedJcamp(
+  parsedJcamp,
+  options,
+  usedColors,
+  jcampSpectrumIndex: number,
+) {
   const { dependentVariables, info, meta } = parsedJcamp;
   let data = getData(dependentVariables[0].components);
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
-
   const datum1D = initiateDatum1D(
     {
       ...options,
+      source: { ...options.source, jcampSpectrumIndex },
       info,
       meta,
       data,

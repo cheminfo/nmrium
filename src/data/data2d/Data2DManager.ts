@@ -1,11 +1,17 @@
 import { initiateDatum2D } from './Spectrum2D';
 
-export function fromParsedJcamp(parsedJcamp, options, usedColors) {
+export function fromParsedJcamp(
+  parsedJcamp,
+  options,
+  usedColors,
+  jcampSpectrumIndex: number,
+) {
   const { dependentVariables, info, meta } = parsedJcamp;
   let data = dependentVariables[0].components;
   const ob = initiateDatum2D(
     {
       ...options,
+      source: { ...options?.source, jcampSpectrumIndex },
       info,
       meta,
       data,

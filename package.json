@@ -1,7 +1,7 @@
 {
   "name": "nmrium",
   "description": "React component to display and process nuclear magnetic resonance (NMR) spectra.",
-  "version": "0.23.0",
+  "version": "0.25.0",
   "license": "MIT",
   "main": "lib-cjs/component/NMRium.js",
   "module": "lib/component/NMRium.js",
@@ -38,7 +38,7 @@
     "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "volta": {
-    "node": "16.14.0"
+    "node": "16.14.2"
   },
   "peerDependencies": {
     "react": ">=16.0.0",
@@ -46,17 +46,17 @@
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
-    "analysis-ui-components": "^0.10.3",
+    "analysis-ui-components": "^0.11.1",
     "cheminfo-font": "^1.8.1",
     "cheminfo-types": "^1.1.0",
-    "d3": "^7.3.0",
+    "d3": "^7.4.2",
     "eventemitter3": "^4.0.7",
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "immer": "^9.0.12",
-    "jszip": "^3.7.1",
+    "jszip": "^3.8.0",
     "lodash": "^4.17.21",
-    "mf-parser": "^1.4.5",
+    "mf-parser": "^1.4.6",
     "ml-airpls": "^1.0.0",
     "ml-array-max": "^1.2.4",
     "ml-array-mean": "^1.1.6",
@@ -65,7 +65,7 @@
     "ml-baseline-correction-regression": "^1.0.0",
     "ml-conrec": "^3.2.1",
     "ml-gsd": "^10.2.0",
-    "ml-spectra-processing": "^11.1.0",
+    "ml-spectra-processing": "^11.2.0",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^2.0.0",
     "nmr-correlation": "^2.2.5",
@@ -78,7 +78,6 @@
     "re-resizable": "^6.9.5",
     "react-color": "2.17.2",
     "react-d3-utils": "^0.5.0",
-    "react-draggable": "^4.4.4",
     "react-dropzone": "^12.0.4",
     "react-error-boundary": "^3.1.4",
     "react-icons": "^4.3.1",
@@ -88,7 +87,7 @@
     "react-ocl-nmr": "^1.1.0",
     "react-plot": "^0.16.0",
     "react-rnd": "^10.3.5",
-    "react-slider": "^1.3.1",
+    "react-slider": "^2.0.0",
     "react-table": "^7.7.0",
     "react-transition-group": "^4.4.2",
     "react-use": "^17.3.2",
@@ -99,7 +98,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.17.7",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@playwright/test": "^1.20.1",
+    "@playwright/test": "^1.20.2",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.1.0",
     "@types/jest": "^27.4.1",
@@ -107,14 +106,14 @@
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "@types/react-router-dom": "^5.3.3",
-    "@vitejs/plugin-react": "^1.2.0",
+    "@vitejs/plugin-react": "^1.3.0",
     "@zakodium/eslint-config": "^5.1.1",
     "cross-env": "^7.0.3",
-    "eslint": "^8.11.0",
+    "eslint": "^8.12.0",
     "jest": "^27.5.1",
     "modern-normalize": "^1.1.0",
-    "prettier": "^2.6.1",
-    "rc-menu": "^9.5.1",
+    "prettier": "^2.6.2",
+    "rc-menu": "^9.5.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.3.0",
@@ -122,6 +121,6 @@
     "rollup-plugin-analyzer": "^4.0.0",
     "serve": "^13.0.2",
     "typescript": "~4.6.3",
-    "vite": "^2.8.6"
+    "vite": "^2.9.1"
   }
 }

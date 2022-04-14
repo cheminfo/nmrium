@@ -51,7 +51,7 @@ function ToolTip({
 
   const [placement, setPlacement] = useState({ x: 0, y: 0 });
   const [show, showToolTip] = useState(false);
-  const { elementsWraperRef } = useGlobal();
+  const { elementsWrapperRef } = useGlobal();
 
   useLayoutEffect(() => {
     const getPopupPlacement = () => {
@@ -137,6 +137,7 @@ function ToolTip({
         {children}
       </div>
       {show &&
+        elementsWrapperRef &&
         createPortal(
           <div
             ref={refContent}
@@ -152,7 +153,7 @@ function ToolTip({
           >
             <span style={{ pointerEvents: 'none' }}>{title}</span>
           </div>,
-          elementsWraperRef,
+          elementsWrapperRef,
         )}
     </Fragment>
   );

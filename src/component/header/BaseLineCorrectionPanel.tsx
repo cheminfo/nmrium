@@ -12,7 +12,9 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
 
-const styles: Record<'container' | 'label' | 'actionButton', CSSProperties> = {
+import ActionButtons from '../elements/ActionButtons';
+
+const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -21,14 +23,6 @@ const styles: Record<'container' | 'label' | 'actionButton', CSSProperties> = {
   },
   label: {
     lineHeight: 2,
-    userSelect: 'none',
-  },
-  actionButton: {
-    height: '100%',
-    width: '60px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px',
     userSelect: 'none',
   },
 };
@@ -149,21 +143,11 @@ function BaseLineCorrectionPanel() {
           </Label>
         )}
       </FormikForm>
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={() => formRef.current.submitForm()}
-      >
-        Apply
-      </button>
 
-      <button
-        type="button"
-        style={styles.actionButton}
-        onClick={handleCancelFilter}
-      >
-        Cancel
-      </button>
+      <ActionButtons
+        onDone={() => formRef.current.submitForm()}
+        onCancel={handleCancelFilter}
+      />
     </div>
   );
 }

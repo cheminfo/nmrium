@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react';
 import * as yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
+import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikTextarea from '../elements/formik/FormikTextarea';
@@ -89,13 +90,9 @@ function ImportPublicationStringModal({
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button
-          type="button"
-          onClick={() => formRef.current.submitForm()}
-          className="btn primary"
-        >
+        <Button.Done onClick={() => formRef.current.submitForm()}>
           Import
-        </button>
+        </Button.Done>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {
   defaultPredictionOptions,
   FREQUENCIES,
 } from '../../../data/PredictionManager';
+import Button from '../../elements/Button';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Label from '../../elements/Label';
 import FormikErrorsSummary from '../../elements/formik/FormikErrorsSummary';
@@ -37,23 +38,6 @@ const styles = css`
     display: flex;
     flex-direction: row-reverse;
     align-items: flex-end;
-  }
-
-  .btn:not([disabled]):hover {
-    background-color: #ffffff;
-  }
-  .btn:hover {
-    background-color: #f2f2f2 !important;
-  }
-  .btn:disabled {
-    opacity: 0.5;
-  }
-  .btn {
-    border: none;
-    padding: 0 15px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    height: 25px;
   }
 
   .input {
@@ -151,9 +135,7 @@ function PredictionOptions({ onPredict = () => null }: PredictionOptionsProps) {
         </FormikForm>
       </div>
       <div>
-        <button type="button" onClick={handleSave} className="btn">
-          Predict spectrum
-        </button>
+        <Button.Done onClick={handleSave}>Predict spectrum</Button.Done>
       </div>
     </div>
   );

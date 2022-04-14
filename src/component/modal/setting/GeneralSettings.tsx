@@ -6,6 +6,7 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../../context/PreferencesContext';
+import ActionButtons from '../../elements/ActionButtons';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
@@ -20,6 +21,7 @@ import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
 import WorkspaceItem from './WorkspaceItem';
+import { validation } from './settingsValidation';
 
 const styles = css`
   .main-content {
@@ -208,6 +210,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           key={JSON.stringify(preferences.current)}
           ref={refForm}
           initialValues={preferences.current}
+          validationSchema={validation}
           onSubmit={submitHandler}
         >
           <Tabs
@@ -236,12 +239,13 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn">
-          Save
-        </button>
-        <button type="button" onClick={handleReset} className="btn">
-          Reset
-        </button>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={handleReset}
+          cancelLabel="Reset"
+        />
       </div>
     </div>
   );
