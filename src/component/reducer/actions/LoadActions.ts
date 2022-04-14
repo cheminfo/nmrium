@@ -7,7 +7,7 @@ import { UsedColors } from '../../../types/UsedColors';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { getInitialState, State } from '../Reducer';
-import { LOAD_JSON_FILE, LOAD_NMREDATA_FILE } from '../types/Types';
+import { INITIATE, LOAD_JSON_FILE, LOAD_NMREDATA_FILE } from '../types/Types';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
@@ -38,6 +38,7 @@ function setData(
     multipleAnalysis: {},
     exclusionZones: [],
   };
+
   setColors(draft, usedColors);
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
@@ -94,11 +95,17 @@ function setPreferences(draft: Draft<State>, data) {
 }
 
 function initiate(draft: Draft<State>, action) {
-  setData(draft, action.payload);
+  const state = getInitialState();
+
+  setData(state, action.payload);
   const preferences = action.payload?.preferences || {};
-  setActiveTab(draft, { tab: preferences?.activeTab || '' });
-  setPreferences(draft, action.payload);
-  draft.isLoading = false;
+  setActiveTab(state, { tab: preferences?.activeTab || '' });
+  setPreferences(state, action.payload);
+  state.width = draft.width;
+  state.height = draft.height;
+  state.isLoading = false;
+  state.actionType = INITIATE;
+  return state;
 }
 
 function loadJDFFile(draft: Draft<State>, actions) {

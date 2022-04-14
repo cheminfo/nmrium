@@ -461,7 +461,11 @@ export function dispatchMiddleware(dispatch) {
 }
 
 function innerSpectrumReducer(draft: Draft<State>, action) {
-  if (![types.LOAD_JSON_FILE, types.LOAD_NMREDATA_FILE].includes(action.type)) {
+  if (
+    ![types.LOAD_JSON_FILE, types.LOAD_NMREDATA_FILE, types.INITIATE].includes(
+      action.type,
+    )
+  ) {
     draft.actionType = action.type;
   }
 
