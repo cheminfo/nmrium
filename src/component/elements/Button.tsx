@@ -214,6 +214,7 @@ const Button = (props: ButtonProps) => {
 };
 
 function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
+  const { colorTheme, ...buttonProps } = props;
   const { base, shade, tint } = colorPalettes[props.colorTheme];
 
   const {
@@ -225,7 +226,7 @@ function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
     },
     fill = 'solid',
     ...restProps
-  } = props;
+  } = buttonProps;
   return <Button {...{ fill, ...restProps, backgroundColor, color }} />;
 }
 
