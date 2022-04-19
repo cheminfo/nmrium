@@ -1,8 +1,4 @@
-import {
-  SvgNmrSameTop,
-  SvgNmrResetScale,
-  SvgNmrRangePicking,
-} from 'cheminfo-font';
+import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
 import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
@@ -17,7 +13,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
@@ -26,10 +21,9 @@ import {
   DELETE_SPECTRA,
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
-  AUTO_RANGES_SPECTRA_PICKING,
-  AUTO_ZONES_SPECTRA_PICKING,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
 interface SpectraPanelHeaderProps {
   spectrums: Array<Datum1D | Datum2D>;
@@ -40,7 +34,6 @@ interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   activeTab: string;
   activeSpectrum: ActiveSpectrum | null;
   displayerMode: string;
-  isAutomaticPickingVisible: boolean;
 }
 
 function SpectraPanelHeaderInner({
@@ -49,7 +42,6 @@ function SpectraPanelHeaderInner({
   activeTab,
   displayerMode,
   spectrums,
-  isAutomaticPickingVisible,
 }: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
   const alert = useAlert();
@@ -109,19 +101,6 @@ function SpectraPanelHeaderInner({
     dispatch({ type: RESET_SPECTRA_SCALE });
   }, [dispatch]);
 
-  const automaticPickingHandler = useCallback(() => {
-    void (async () => {
-      const hideLoading = await alert.showLoading(
-        'Automatic Ranges/Zones detection for all spectra in progress',
-      );
-      setTimeout(() => {
-        dispatch({ type: AUTO_RANGES_SPECTRA_PICKING });
-        dispatch({ type: AUTO_ZONES_SPECTRA_PICKING });
-        hideLoading();
-      }, 0);
-    })();
-  }, [dispatch, alert]);
-
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
@@ -152,14 +131,7 @@ function SpectraPanelHeaderInner({
           </Button>
         </>
       )}
-      {data && data.length > 0 && isAutomaticPickingVisible && (
-        <Button
-          popupTitle="Automatic Ranges/Zones picking for all spectra"
-          onClick={automaticPickingHandler}
-        >
-          <SvgNmrRangePicking />
-        </Button>
-      )}
+      <SpectraAutomaticPickingButton />
     </DefaultPanelHeader>
   );
 }
@@ -168,8 +140,6 @@ const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
 export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
   const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
-  const isToolVisible = useCheckToolsVisibility();
-  const isAutomaticPickingVisible = isToolVisible('autoRangesTool');
   return (
     <MemoizedSpectraPanelHeader
       {...{
@@ -178,7 +148,6 @@ export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
         activeTab,
         displayerMode,
         spectrums,
-        isAutomaticPickingVisible,
       }}
     />
   );

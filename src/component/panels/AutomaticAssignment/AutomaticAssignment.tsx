@@ -4,6 +4,7 @@ import { SvgNmrAssignment2 } from 'cheminfo-font';
 import Button from '../../elements/ButtonToolTip';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
 import AutomaticAssignmentTable from './AutomaticAssignmentTable';
 import { useGetAssignments } from './useGetAssignments';
@@ -17,6 +18,7 @@ function AutomaticAssignment() {
           <Button popupTitle="automatic assignment" onClick={getAssignments}>
             <SvgNmrAssignment2 style={{ fontSize: '18px' }} />
           </Button>
+          <SpectraAutomaticPickingButton />
         </DefaultPanelHeader>
       }
 
