@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikForm from '../elements/formik/FormikForm';
@@ -12,7 +13,6 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
 
-import ActionButtons from '../elements/ActionButtons';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {

@@ -4,7 +4,6 @@ import {
   Jcoupling,
   DatabaseNMREntry,
 } from 'nmr-processing';
-
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';
