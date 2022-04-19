@@ -10,7 +10,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d/Datum2D';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
+import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
 
 export interface AutoAssignmentsData {
   score: number;
@@ -33,6 +35,7 @@ function mapSpectra(data: (Datum1D | Datum2D)[]) {
 }
 
 export function useGetAssignments() {
+  const dispatch = useDispatch();
   const { data, molecules } = useChartData();
   const alert = useAlert();
   const [assignments, setAssignments] = useState<AutoAssignmentsData[]>([]);
@@ -49,10 +52,15 @@ export function useGetAssignments() {
         },
         { minScore: 0 },
       );
+      dispatch({
+        type: SET_AUTOMATIC_ASSIGNMENTS,
+        payload: { assignments: result[0].assignment },
+      });
+
       hideLoading();
       setAssignments(result);
     })();
-  }, [alert, data, molecules]);
+  }, [alert, data, dispatch, molecules]);
 
   return useMemo(
     () => ({
