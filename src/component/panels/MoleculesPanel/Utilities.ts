@@ -28,7 +28,6 @@ export function extractFromAtom(
 
   if (elements.length > 0 && Object.keys(atom).length > 0) {
     const dim = axis === 'x' ? 0 : axis === 'y' ? 1 : null;
-
     switch (dim !== null && elements[dim]) {
       case atom.atomLabel: {
         // take always oclID if atom type is same as element of activeTab)
@@ -78,9 +77,9 @@ export function getHighlightsOnHover(
   // set all IDs to highlight when hovering over an atom from assignment data
   let highlights: string[] = [];
   const assignmentsByKey = assignments.data.assignments;
+
   for (const key in assignmentsByKey) {
     const assignments = assignmentsByKey[key];
-    let isFound = false;
 
     for (const axis in assignments) {
       if (assignments[axis]?.some((oclKey) => oclIDs.includes(oclKey))) {
@@ -92,13 +91,8 @@ export function getHighlightsOnHover(
           if (signalIndex !== undefined) {
             highlights.push(datum.signals[signalIndex].id);
           }
-          isFound = true;
-          break;
         }
       }
-    }
-    if (isFound) {
-      break;
     }
   }
 
