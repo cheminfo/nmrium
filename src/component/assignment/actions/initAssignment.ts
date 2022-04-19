@@ -17,7 +17,6 @@ export default function initAssignment(action) {
       setZonesAssignments(newState, spectrum.zones);
     }
   }
-
   return newState;
 }
 
@@ -65,9 +64,9 @@ function setZonesAssignments(state: AssignmentState, zones: Zones) {
 function setAssignment(state: AssignmentState, id, axis: Axis, diaID: string) {
   if (
     Array.isArray(state.assignments?.[id]?.[axis]) &&
-    state.assignments[id][axis].includes(diaID)
+    !state.assignments[id][axis].includes(diaID)
   ) {
-    state.assignments[id][axis].push();
+    state.assignments[id][axis].push(diaID);
   } else {
     state.assignments = {
       ...state.assignments,
