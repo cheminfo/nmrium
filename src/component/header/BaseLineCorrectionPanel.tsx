@@ -13,7 +13,6 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
 
-
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
     padding: '5px',
