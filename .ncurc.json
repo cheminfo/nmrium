@@ -6,6 +6,8 @@
     "react-router-dom",
     "// TODO: Migrate to v18",
     "react",
-    "react-dom"
+    "react-dom",
+    "@types/react",
+    "@types/react-dom"
   ]
 }
