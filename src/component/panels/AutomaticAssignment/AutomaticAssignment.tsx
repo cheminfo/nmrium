@@ -15,10 +15,10 @@ function AutomaticAssignment() {
     <div css={tablePanelStyle}>
       {
         <DefaultPanelHeader showSettingButton={false} canDelete={false}>
+          <SpectraAutomaticPickingButton />
           <Button popupTitle="automatic assignment" onClick={getAssignments}>
             <SvgNmrAssignment2 style={{ fontSize: '18px' }} />
           </Button>
-          <SpectraAutomaticPickingButton />
         </DefaultPanelHeader>
       }
 
