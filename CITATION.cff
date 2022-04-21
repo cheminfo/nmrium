@@ -1,7 +1,7 @@
 cff-version: 1.2.0
-message: 'ReactJS component to display and process NMR spectra'
-title: 'Software that allows to visualize and process 1D and 2D NMR spectra. Visit https://www.nmrium.org or https://docs.nmrium.org to get more information.'
-abstract: 'This package allows to convert a JCAMP-DX file to a JSON that can be further processed in javascript'
+message: 'If you use this software, please cite it as below.'
+title: 'ReactJS component to display and process NMR spectra'
+abstract: 'Software that allows to visualize and process 1D and 2D NMR spectra. Visit https://www.nmrium.org or https://docs.nmrium.org to get more information.'
 repository-artifact: http://cheminfo.github.io/jcampconverter/
 repository-code: https://github.com/cheminfo/jcampconverter
 authors:
