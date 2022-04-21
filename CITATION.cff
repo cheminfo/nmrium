@@ -1,6 +1,5 @@
 cff-version: 1.2.0
-message: 'If you use this software, please cite it as below.'
-title: 'ReactJS component to display and process NMR spectra'
+title: 'NMRium: ReactJS component to display and process NMR spectra'
 abstract: 'Software that allows to visualize and process 1D and 2D NMR spectra. Visit https://www.nmrium.org or https://docs.nmrium.org to get more information.'
 repository-artifact: http://cheminfo.github.io/jcampconverter/
 repository-code: https://github.com/cheminfo/jcampconverter
