@@ -26,6 +26,8 @@ authors:
     given-names: 'Wenk'
   - family-names: 'Ahkrin'
     given-names: 'Sébastien'
+    affiliation: 'Zakodium Sàrl, Switzerland'
+    orcid: 'https://orcid.org/0000-0002-3750-4152'
   - family-names: 'Jeannerat'
     given-names: 'Damien'
   - family-names: 'Ziegler'
