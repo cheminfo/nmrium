@@ -39,7 +39,7 @@ authors:
     given-names: 'Julien'
     affiliation: 'Universidad del Valle, Cali, Colombia'
     orcid: 'https://orcid.org/0000-0002-3416-2572'
-license: MIT License
+license: MIT
 keywords:
   - JCAMP-DX
   - Nuclear magnetic resonance
