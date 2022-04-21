@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.26.0](https://www.github.com/cheminfo/nmrium/compare/v0.25.0...v0.26.0) (2022-04-21)
+
+
+### Features
+
+* add .zenodo.json ([a904dae](https://www.github.com/cheminfo/nmrium/commit/a904daefd5d076d2b2dec6111712f671ec608b95))
+* auto assignments ([#1456](https://www.github.com/cheminfo/nmrium/issues/1456)) ([1024c2e](https://www.github.com/cheminfo/nmrium/commit/1024c2e81febaeef916fbedfd0a9fe6ef3aa1921))
+* auto-assignment by clicking on the row of the table ([132afb1](https://www.github.com/cheminfo/nmrium/commit/132afb17be12175503ad1c999b0bb5c8ecb3cc16))
+* automatically assign the first result of the assignments ([d3d8ad1](https://www.github.com/cheminfo/nmrium/commit/d3d8ad164f8bcd7bac959511724692b4ce3ec4bc)), closes [#1477](https://www.github.com/cheminfo/nmrium/issues/1477)
+* highlight clicked row in auto-assignments table ([b988f7d](https://www.github.com/cheminfo/nmrium/commit/b988f7de8c97f91c8bed36c16563e187b968de12)), closes [#1486](https://www.github.com/cheminfo/nmrium/issues/1486)
+* read jcamp raw data ([def0ee8](https://www.github.com/cheminfo/nmrium/commit/def0ee817549dfe64ae415143cac273f0be780c0)), closes [#1481](https://www.github.com/cheminfo/nmrium/issues/1481)
+* replicate spectra Peak picking function in automatic assignment panel ([d8e6180](https://www.github.com/cheminfo/nmrium/commit/d8e6180d5c12126bb62a3b2274b52343cac86ead)), closes [#1480](https://www.github.com/cheminfo/nmrium/issues/1480)
+* reset automatic assignments ([1441c5c](https://www.github.com/cheminfo/nmrium/commit/1441c5c248c68987ddb0880629e934e2276874ba)), closes [#1488](https://www.github.com/cheminfo/nmrium/issues/1488)
+
+
+### Bug Fixes
+
+* assignment tool not assign all diaIDs ([3ae5cd3](https://www.github.com/cheminfo/nmrium/commit/3ae5cd3235646775324addebde9022b126b8c85a)), closes [#1478](https://www.github.com/cheminfo/nmrium/issues/1478)
+* data change does not re-initiate the state ([1b96235](https://www.github.com/cheminfo/nmrium/commit/1b9623589997ce007ace2e0c46a2a2109b670609))
+* difference of assignment with and without 'explode' protons ([fd365f3](https://www.github.com/cheminfo/nmrium/commit/fd365f3e9fae8a9a9fa548b1591d5abcd06c30bd)), closes [#1479](https://www.github.com/cheminfo/nmrium/issues/1479)
+* highlight in some assignment ([a736e7d](https://www.github.com/cheminfo/nmrium/commit/a736e7da2f25041e290ee0227c8184bf66b03a72)), closes [#1490](https://www.github.com/cheminfo/nmrium/issues/1490)
+* leaving a zone is not always detected ([cd6d86e](https://www.github.com/cheminfo/nmrium/commit/cd6d86e5976ff281f7db2f5aa1e6407a7df38b36)), closes [#1474](https://www.github.com/cheminfo/nmrium/issues/1474)
+* Nuclei formatting in general settings ([42a20a1](https://www.github.com/cheminfo/nmrium/commit/42a20a1e1b6f2f576a25e2e28a1c4e1fd6f789b0)), closes [#1471](https://www.github.com/cheminfo/nmrium/issues/1471) [#1473](https://www.github.com/cheminfo/nmrium/issues/1473)
+* use CITATION.cff ([bfd9c69](https://www.github.com/cheminfo/nmrium/commit/bfd9c69ae4abee8d1132ea54037f6caeab0d07e2))
+
 ## [0.25.0](https://www.github.com/cheminfo/nmrium/compare/v0.24.1...v0.25.0) (2022-04-07)
 
 
