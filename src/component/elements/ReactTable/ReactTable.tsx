@@ -18,7 +18,7 @@ import useCombinedRefs from '../../hooks/useCombinedRefs';
 import ContextMenu from '../ContextMenu';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
-import ReactTableRow from './Elements/ReactTableRow';
+import ReactTableRow, { ClickEvent } from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 import {
   ReactTableProvider,
@@ -26,7 +26,7 @@ import {
 } from './utility/ReactTableContext';
 import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
 
-interface ReactTableProps {
+interface ReactTableProps extends ClickEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightedSource;
@@ -61,6 +61,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     approxItemHeight = 40,
     enableVirtualScroll = false,
     groupKey,
+    onClick,
   } = props;
 
   const contextRef = useRef<any>(null);
@@ -138,6 +139,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                 row={row}
                 {...row.getRowProps()}
                 onContextMenu={(e) => contextMenuHandler(e, row)}
+                onClick={onClick}
                 highlightedSource={highlightedSource}
               />
             );

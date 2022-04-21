@@ -1,11 +1,33 @@
 /** @jsxImportSource @emotion/react */
 
-import { useMemo, forwardRef, useEffect } from 'react';
+import { css, CSSObject } from '@emotion/react';
+import { useMemo, forwardRef, useEffect, useCallback } from 'react';
 
 import { HighlightedSource, useHighlight } from '../../../highlight/index';
-import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';
 
-interface ReactTableRowProps {
+function highlightStyle(isActive: boolean, row): CSSObject {
+  if (isActive) {
+    return { backgroundColor: '#ff6f0057' };
+  } else if (row.original?.isConstantlyHighlighted === true) {
+    return { backgroundColor: '#f5f5dc' };
+  }
+  return {};
+}
+
+const rowCss = css`
+  &:hover {
+    background-color: #ff6f0091 !important;
+  }
+
+  &:active {
+    background-color: #ff6f0070 !important;
+  }
+`;
+
+export interface ClickEvent {
+  onClick?: (event: Event, data: unknown) => void;
+}
+interface ReactTableRowProps extends ClickEvent {
   row: any;
   highlightedSource?: HighlightedSource;
   onContextMenu: () => void;
@@ -28,6 +50,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
     row,
     highlightedSource = HighlightedSource.UNKNOWN,
     onContextMenu,
+    onClick,
   } = props;
   const data = useMemo(
     () => ({
@@ -45,22 +68,20 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const clickHandler = useCallback(
+    (event: Event) => {
+      onClick?.(event, row);
+    },
+    [onClick, row],
+  );
+
   return useMemo(() => {
     return (
       <tr
         ref={ref}
         onContextMenu={onContextMenu}
         key={row.getRowProps().key}
-        css={
-          highlight.isActive
-            ? HighlightedRowStyle
-            : Object.prototype.hasOwnProperty.call(
-                row.original,
-                'isConstantlyHighlighted',
-              ) && row.original.isConstantlyHighlighted === true
-            ? ConstantlyHighlightedRowStyle
-            : null
-        }
+        css={[highlightStyle(highlight.isActive, row), onClick && rowCss]}
         {...row.getRowProps()}
         {...highlight.onHover}
       >
@@ -81,6 +102,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
                   return false;
                 }}
                 style={{ padding, ...style }}
+                onClick={clickHandler}
               >
                 {cell.render('Cell')}
               </td>
@@ -89,7 +111,15 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
         })}
       </tr>
     );
-  }, [highlight.isActive, highlight.onHover, onContextMenu, ref, row]);
+  }, [
+    clickHandler,
+    highlight.isActive,
+    highlight.onHover,
+    onClick,
+    onContextMenu,
+    ref,
+    row,
+  ]);
 }
 
 export default forwardRef(ReactTableRow);

@@ -66,7 +66,7 @@ function PeaksTable({ data }: AutomaticAssignmentTableProps) {
   );
 
   return data && data.length > 0 ? (
-    <ReactTable data={data} columns={COLUMNS} />
+    <ReactTable data={data} columns={COLUMNS} onClick={assignHandler} />
   ) : (
     <NoTableData />
   );
