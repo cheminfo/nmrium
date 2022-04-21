@@ -34,6 +34,7 @@ interface ReactTableProps extends ClickEvent {
   approxItemHeight?: number;
   groupKey?: string;
   enableVirtualScroll?: boolean;
+  highlightActiveRow?: boolean;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -62,10 +63,12 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     enableVirtualScroll = false,
     groupKey,
     onClick,
+    highlightActiveRow = false,
   } = props;
 
   const contextRef = useRef<any>(null);
   const { index: indexBoundary } = useReactTableContext();
+  const [rowIndex, setRowIndex] = useState<number>();
 
   const {
     getTableProps,
@@ -95,6 +98,14 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   const rowsData = enableVirtualScroll
     ? rows.slice(indexBoundary.start, indexBoundary.end)
     : rows;
+
+  const clickHandler = useCallback(
+    (event, row) => {
+      setRowIndex(row.index);
+      onClick?.(event, row);
+    },
+    [onClick],
+  );
 
   return (
     <div
@@ -139,8 +150,9 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                 row={row}
                 {...row.getRowProps()}
                 onContextMenu={(e) => contextMenuHandler(e, row)}
-                onClick={onClick}
+                onClick={highlightActiveRow ? clickHandler : onClick}
                 highlightedSource={highlightedSource}
+                isRowActive={rowIndex === index}
               />
             );
           })}

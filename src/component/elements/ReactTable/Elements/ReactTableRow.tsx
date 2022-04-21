@@ -32,6 +32,7 @@ interface ReactTableRowProps extends ClickEvent {
   highlightedSource?: HighlightedSource;
   onContextMenu: () => void;
   isVisible: boolean;
+  isRowActive: boolean;
 }
 
 function getIDs(row: any): string[] {
@@ -51,6 +52,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
     highlightedSource = HighlightedSource.UNKNOWN,
     onContextMenu,
     onClick,
+    isRowActive = false,
   } = props;
   const data = useMemo(
     () => ({
@@ -81,7 +83,10 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
         ref={ref}
         onContextMenu={onContextMenu}
         key={row.getRowProps().key}
-        css={[highlightStyle(highlight.isActive, row), onClick && rowCss]}
+        css={[
+          highlightStyle(highlight.isActive || isRowActive, row),
+          onClick && rowCss,
+        ]}
         {...row.getRowProps()}
         {...highlight.onHover}
       >
