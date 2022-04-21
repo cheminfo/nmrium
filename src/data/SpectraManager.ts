@@ -143,10 +143,11 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
   let promises: any[] = [];
 
   for (let datum of data) {
-    if (datum?.source?.jcampURL != null) {
-      promises.push(
-        addJcampFromURL(spectra, datum.source.jcampURL, datum, usedColors),
-      );
+    const { jcamp, jcampURL } = datum?.source || {};
+    if (jcamp != null) {
+      addJcamp(spectra, jcamp, datum, usedColors);
+    } else if (jcampURL != null) {
+      promises.push(addJcampFromURL(spectra, jcampURL, datum, usedColors));
     } else {
       addData(spectra, datum, usedColors);
     }
