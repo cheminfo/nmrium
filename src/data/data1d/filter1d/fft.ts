@@ -51,7 +51,7 @@ function generateXAxis(datum1D) {
   let nbPoints = datum1D.data.x.length;
   let firstPoint = offset - spectralHalfWidth;
   let dx = spectralWidth / (nbPoints - 1);
-  const xAxis = new Array(nbPoints);
+  const xAxis = new Float32Array(nbPoints);
   for (let i = 0; i < nbPoints; i++) {
     xAxis[i] = firstPoint;
     firstPoint += dx;
