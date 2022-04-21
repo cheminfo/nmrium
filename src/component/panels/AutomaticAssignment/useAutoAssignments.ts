@@ -5,7 +5,7 @@ import {
   SpectraData2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d/Datum2D';
@@ -34,17 +34,30 @@ function mapSpectra(data: (Datum1D | Datum2D)[]) {
   }, []);
 }
 
-export function useGetAssignments() {
+export function useAutoAssignments() {
   const dispatch = useDispatch();
   const { data, molecules } = useChartData();
+  const originData = useRef<SpectraData[]>();
   const alert = useAlert();
   const [assignments, setAssignments] = useState<AutoAssignmentsData[]>([]);
+
+  const restAssignments = useCallback(() => {
+    dispatch({
+      type: SET_AUTOMATIC_ASSIGNMENTS,
+      payload: { assignments: originData.current },
+    });
+  }, [dispatch]);
 
   const getAssignments = useCallback(() => {
     void (async () => {
       const hideLoading = await alert.showLoading('Auto Assignments');
       const molecule = OCL.Molecule.fromMolfile(molecules[0]?.molfile || '');
       const spectra = mapSpectra(data);
+
+      if (!originData.current) {
+        originData.current = spectra;
+      }
+
       const result = await getAssignmentsData(
         {
           spectra,
@@ -66,8 +79,9 @@ export function useGetAssignments() {
     () => ({
       getAssignments,
       assignments,
+      restAssignments,
     }),
 
-    [assignments, getAssignments],
+    [assignments, getAssignments, restAssignments],
   );
 }
