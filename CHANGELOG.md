@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.26.1](https://www.github.com/cheminfo/nmrium/compare/v0.26.0...v0.26.1) (2022-04-22)
+
+
+### Bug Fixes
+
+* manual 1D ranges detection crash after processing spectrum FID to FTT ([dd470ce](https://www.github.com/cheminfo/nmrium/commit/dd470ce0a0015f60689b110c5225689c83acbeb6)), closes [#1465](https://www.github.com/cheminfo/nmrium/issues/1465)
+* spectra stack alignment does not work when load .nmrium ([33ce29b](https://www.github.com/cheminfo/nmrium/commit/33ce29b40b25cb04e986066565ecddd3086fe0f0)), closes [#1495](https://www.github.com/cheminfo/nmrium/issues/1495)
+
 ## [0.26.0](https://www.github.com/cheminfo/nmrium/compare/v0.25.0...v0.26.0) (2022-04-21)
 
 
