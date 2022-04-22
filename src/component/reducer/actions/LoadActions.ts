@@ -100,9 +100,9 @@ function initiate(draft: Draft<State>, action) {
   setData(state, action.payload);
   const preferences = action.payload?.preferences || {};
   setActiveTab(state, { tab: preferences?.activeTab || '' });
-  setPreferences(state, action.payload);
   state.width = draft.width;
   state.height = draft.height;
+  setPreferences(state, action.payload);
   state.isLoading = false;
   state.actionType = INITIATE;
   return state;
@@ -138,10 +138,9 @@ function handleLoadJsonFile(draft: Draft<State>, action) {
   setData(state, action.payload);
   const preferences = action.payload?.preferences || {};
   setActiveTab(state, { tab: preferences?.activeTab || '' });
-  setPreferences(state, preferences);
-
   state.width = draft.width;
   state.height = draft.height;
+  setPreferences(state, preferences);
   state.isLoading = false;
   state.actionType = LOAD_JSON_FILE;
   return state;
