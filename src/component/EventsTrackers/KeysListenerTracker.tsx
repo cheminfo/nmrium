@@ -340,9 +340,9 @@ function KeysListenerTracker() {
   );
 
   useEffect(() => {
-    document.addEventListener('keydown', handleOnKeyDown, true);
+    document.addEventListener('keydown', handleOnKeyDown);
 
-    return () => document.removeEventListener('keydown', handleOnKeyDown, true);
+    return () => document.removeEventListener('keydown', handleOnKeyDown);
   }, [handleOnKeyDown]);
 
   return null;
