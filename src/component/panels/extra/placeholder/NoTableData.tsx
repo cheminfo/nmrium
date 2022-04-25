@@ -15,10 +15,10 @@ const styles: Record<'label' | 'container', CSSProperties> = {
 };
 
 // placeholder for empty tables if no data is available to show (e.g. peaks, integrals, ranges)
-function NoTableData() {
+function NoTableData({ text = 'No Data' }) {
   return (
     <div style={styles.container}>
-      <p style={styles.label}>No Data</p>
+      <p style={styles.label}>{text}</p>
     </div>
   );
 }
