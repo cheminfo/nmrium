@@ -53,7 +53,7 @@ const LIST: ListItem[] = [
     name: 'panels.multipleSpectraAnalysisPanel',
   },
   {
-    label: 'Database Panel',
+    label: 'Databases Panel',
     name: 'panels.databasePanel',
   },
   {

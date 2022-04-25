@@ -10,7 +10,6 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightedSource } from '../../highlight';
 import { getValue } from '../../utility/LocalStorage';
-import NoTableData from '../extra/placeholder/NoTableData';
 import { databaseDefaultValues } from '../extra/preferences/defaultValues';
 
 interface DatabaseTableProps {
@@ -154,7 +153,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [initialColumns, preferences]);
 
-  return data && data.length > 0 ? (
+  return (
     <ReactTable
       data={data}
       columns={tableColumns}
@@ -163,8 +162,6 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       approxItemHeight={30}
       enableVirtualScroll
     />
-  ) : (
-    <NoTableData />
   );
 }
 
