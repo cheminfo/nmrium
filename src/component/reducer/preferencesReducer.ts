@@ -258,7 +258,7 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
-    let { controllers, formatting, display } = action.payload;
+    let { controllers, formatting, display, databases } = action.payload;
     formatting = mapNucleiFormatting(formatting);
     let localData = getLocalStorage('nmr-general-settings');
     localData.currentWorkspace = draft.workspace.current;
@@ -269,6 +269,7 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
         controllers,
         formatting,
         display,
+        databases,
       },
     };
 
@@ -276,6 +277,7 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
 
     currentWorkspacePreferences.controllers = controllers;
     currentWorkspacePreferences.formatting = formatting;
+    currentWorkspacePreferences.databases = databases;
     currentWorkspacePreferences.display = {
       ...currentWorkspacePreferences.display,
       panels: display.panels,
