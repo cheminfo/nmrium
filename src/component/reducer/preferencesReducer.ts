@@ -332,7 +332,7 @@ function handleAddWorkspace(
 ) {
   const {
     workspace: workspaceName,
-    data: { display, controllers, formatting },
+    data: { display, controllers, formatting, databases },
   } = action.payload;
   const newWorkSpace = {
     version: 1,
@@ -340,6 +340,7 @@ function handleAddWorkspace(
     display,
     controllers,
     formatting,
+    databases,
   };
   const newWorkspaceKey = generateID();
   const localData = getLocalStorage('nmr-general-settings');
