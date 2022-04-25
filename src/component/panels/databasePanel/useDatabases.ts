@@ -8,6 +8,6 @@ export function useDatabases() {
 
   return useMemo(() => {
     const data = current.databases || [];
-    return databases.concat(data);
+    return databases.concat(data.filter((datum) => datum.enabled));
   }, [current.databases]);
 }
