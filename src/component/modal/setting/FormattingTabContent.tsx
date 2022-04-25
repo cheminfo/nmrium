@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { Fragment, useCallback, useMemo } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import generateID from '../../../data/utilities/generateID';
-import CloseButton from '../../elements/CloseButton';
+import Button from '../../elements/Button';
 import FormikInput from '../../elements/formik/FormikInput';
 
 const styles = css`
@@ -19,7 +19,7 @@ const styles = css`
     width: 80px;
   }
 
-  .width-100 {
+  .input {
     width: 100% !important;
     margin: 0px !important;
   }
@@ -105,36 +105,38 @@ function FormattingTabContent() {
                   <td className="nucleus-label-col">
                     <FormikInput
                       name={`formatting.nuclei.${key}.name`}
-                      className="width-100"
+                      className="input"
                       checkErrorAfterInputTouched={false}
                     />
                   </td>
                   <td className="nucleus-format-input-col">
                     <FormikInput
                       name={`formatting.nuclei.${key}.ppm`}
-                      className="width-100"
+                      className="input"
                     />
                   </td>
                   <td className="nucleus-format-input-col">
                     <FormikInput
                       name={`formatting.nuclei.${key}.hz`}
-                      className="width-100"
+                      className="input"
                     />
                   </td>
                   <td className="operation-container">
-                    <CloseButton
+                    <Button.Danger
+                      style={{ fontSize: '14px' }}
+                      fill="clear"
                       onClick={() => deleteHandler(key)}
-                      popupTitle={`remove ${nuclei[key].name}`}
-                      popupPlacement="right"
-                    />
+                    >
+                      <FaTimes />
+                    </Button.Danger>
                     {nucleiList.length === index + 1 && (
-                      <button
-                        className="add"
-                        type="button"
+                      <Button.Done
+                        fill="clear"
+                        style={{ fontSize: '14px' }}
                         onClick={addNewNucleusFormatHandler}
                       >
                         <FaPlus />
-                      </button>
+                      </Button.Done>
                     )}
                   </td>
                 </tr>
