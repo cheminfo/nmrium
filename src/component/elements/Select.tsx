@@ -17,6 +17,7 @@ export interface SelectProps {
   defaultValue?: string | number;
   name?: string;
   className?: string;
+  placeholder?: string;
 }
 
 const Select = forwardRef(function Select(
@@ -30,6 +31,7 @@ const Select = forwardRef(function Select(
     defaultValue,
     name = '',
     className = '',
+    placeholder = '',
   } = props;
 
   const handleOnChanged = useCallback(
@@ -61,6 +63,10 @@ const Select = forwardRef(function Select(
     input:focus {
       outline: none;
     }
+
+    &:required:invalid {
+      color: #666;
+    }
   `;
 
   return (
@@ -72,7 +78,14 @@ const Select = forwardRef(function Select(
       defaultValue={defaultValue}
       className={className}
       style={style}
+      required
     >
+      {placeholder && (
+        <option value="" disabled selected>
+          {placeholder}
+        </option>
+      )}
+
       {data.map((d) => (
         <option key={`${d.key}`} value={d.value}>
           {d.label}
