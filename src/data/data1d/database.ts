@@ -91,7 +91,7 @@ export function prepareData(
   let index = 0;
   for (const item of data) {
     let ids: string[] = [];
-    const { ranges, ...restItemKeys } = item;
+    const { ranges = [], ...restItemKeys } = item;
 
     for (const range of ranges) {
       ids.push(range.id || generateID());
