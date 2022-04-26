@@ -239,7 +239,9 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab tablabel="Databases" tabid="databases">
               <div className="inner-content">
-                <DatabasesTabContent />
+                <DatabasesTabContent
+                  currentWorkspace={preferences.workspace.current}
+                />
               </div>
             </Tab>
           </Tabs>

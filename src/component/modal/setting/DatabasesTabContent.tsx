@@ -5,9 +5,11 @@ import lodashGet from 'lodash/get';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
+import { NMRiumWorkspace } from '../../NMRium';
 import Button from '../../elements/Button';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
+import Workspaces from '../../workspaces';
 
 const style = {
   addButton: css`
@@ -32,9 +34,16 @@ const style = {
   labelCol: {
     width: '30%',
   },
+  serialCol: {
+    width: '5%',
+  },
 };
 
-function DatabasesTabContent() {
+interface DatabasesTabContentProps {
+  currentWorkspace: NMRiumWorkspace;
+}
+
+function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   const { values, setFieldValue } = useFormikContext();
 
   const databases = useMemo(() => lodashGet(values, 'databases', []), [values]);
@@ -47,7 +56,7 @@ function DatabasesTabContent() {
     },
     [databases, setFieldValue],
   );
-  const addNewNucleusFormatHandler = useCallback(() => {
+  const addNewDatabaseHandler = useCallback(() => {
     const newDatabase = {
       label: '',
       url: '',
@@ -55,10 +64,35 @@ function DatabasesTabContent() {
     };
     setFieldValue('databases', [...databases, newDatabase]);
   }, [databases, setFieldValue]);
+  const resetDatabaseHandler = useCallback(() => {
+    const database =
+      Workspaces?.[currentWorkspace]?.databases || Workspaces.default.databases;
+
+    setFieldValue('databases', database);
+  }, [currentWorkspace, setFieldValue]);
 
   return (
     <>
-      <p className="section-header">Databases</p>
+      <div className="section-header" style={{ display: 'flex' }}>
+        <p style={{ flex: 1 }}>Databases</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button.Danger
+            fill="clear"
+            size="xSmall"
+            onClick={resetDatabaseHandler}
+            style={{ margin: '0 5px' }}
+          >
+            Reset Databases
+          </Button.Danger>
+          <Button.Done
+            fill="outline"
+            size="xSmall"
+            onClick={addNewDatabaseHandler}
+          >
+            Add Database
+          </Button.Done>
+        </div>
+      </div>
       <div>
         <table style={style.table}>
           <thead>
@@ -76,7 +110,7 @@ function DatabasesTabContent() {
               return (
                 // eslint-disable-next-line react/no-array-index-key
                 <tr key={`${index}`} style={{ height: '33px' }}>
-                  <td className="counter-col">
+                  <td style={style.serialCol}>
                     <span>{num}</span>{' '}
                   </td>
                   <td style={style.labelCol}>
@@ -125,7 +159,7 @@ function DatabasesTabContent() {
                         <Button.Done
                           fill="clear"
                           style={{ fontSize: '14px' }}
-                          onClick={addNewNucleusFormatHandler}
+                          onClick={addNewDatabaseHandler}
                         >
                           <FaPlus />
                         </Button.Done>
