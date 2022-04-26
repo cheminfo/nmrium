@@ -87,7 +87,7 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
   {
     showWhen: 'showSmiles',
     index: 8,
-    Header: 'Smiles',
+    Header: 'structure',
     accessor: 'index',
     enableRowSpan: true,
     Cell: ({ row }) => (
