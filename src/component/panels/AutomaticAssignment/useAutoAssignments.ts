@@ -65,13 +65,20 @@ export function useAutoAssignments() {
         },
         { minScore: 0 },
       );
-      dispatch({
-        type: SET_AUTOMATIC_ASSIGNMENTS,
-        payload: { assignments: result[0].assignment },
-      });
 
-      hideLoading();
+      if (result[0]?.assignment) {
+        dispatch({
+          type: SET_AUTOMATIC_ASSIGNMENTS,
+          payload: { assignments: result[0].assignment },
+        });
+      } else {
+        alert.error(
+          'Could not assign molecule, please check that all the ranges are defined correctly',
+        );
+      }
+
       setAssignments(result);
+      hideLoading();
     })();
   }, [alert, data, dispatch, molecules]);
 
