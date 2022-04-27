@@ -133,6 +133,7 @@ export type NMRiumPreferences = Partial<{
     hideSetSumFromMolecule: boolean;
     hideGeneralSettings: boolean;
     experimentalFeatures: PanelPreferencesType;
+    hidePanelOnLoad: boolean;
   }>;
   panels: Partial<{
     spectraPanel: PanelPreferencesType;
@@ -336,6 +337,10 @@ function InnerNMRium({
                                   initialSeparation="590px"
                                   orientation="horizontal"
                                   sideSeparation="end"
+                                  initialClosed={
+                                    preferences?.general?.hidePanelOnLoad ||
+                                    false
+                                  }
                                 >
                                   <div css={viewerContainerStyle}>
                                     <KeysListenerTracker />
