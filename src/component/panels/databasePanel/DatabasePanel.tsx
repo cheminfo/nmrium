@@ -22,13 +22,13 @@ import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
 import DatabaseTable from './DatabaseTable';
 import { useDatabases } from './useDatabases';
-import NoTableData from '../extra/placeholder/NoTableData';
 
 const style = css`
   .header {
