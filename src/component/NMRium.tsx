@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { RootLayout, SplitPane } from 'analysis-ui-components';
+import { RootLayout } from 'analysis-ui-components';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -26,6 +26,7 @@ import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
 import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
+import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { AssignmentProvider } from './assignment';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
@@ -113,7 +114,8 @@ export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
   | 'default'
-  | 'prediction';
+  | 'prediction'
+  | 'embedded';
 
 export interface NMRiumProps {
   data?: NMRiumData;
@@ -333,15 +335,7 @@ function InnerNMRium({
                                 }}
                               >
                                 <ToolBar />
-                                <SplitPane
-                                  initialSeparation="590px"
-                                  orientation="horizontal"
-                                  sideSeparation="end"
-                                  initialClosed={
-                                    preferences?.general?.hidePanelOnLoad ||
-                                    false
-                                  }
-                                >
+                                <SplitPaneWrapper>
                                   <div css={viewerContainerStyle}>
                                     <KeysListenerTracker />
                                     <div
@@ -360,7 +354,7 @@ function InnerNMRium({
                                     </div>
                                   </div>
                                   <Panels />
-                                </SplitPane>
+                                </SplitPaneWrapper>
 
                                 <div
                                   ref={elementsWrapperRef}

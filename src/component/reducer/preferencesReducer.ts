@@ -65,21 +65,14 @@ export const WORKSPACES: Array<{
     key: 'prediction',
     label: Workspaces.prediction.label,
   },
+  {
+    key: 'embedded',
+    label: Workspaces.embedded.label,
+  },
 ];
 
 function getPreferencesByWorkspace(workspace: NMRiumWorkspace) {
-  switch (workspace) {
-    case 'exercise':
-      return Workspaces.exercise;
-    case 'process1D':
-      return Workspaces.process1D;
-    case 'prediction':
-      return Workspaces.prediction;
-    case 'default':
-      return Workspaces.default;
-    default:
-      return {} as Workspace;
-  }
+  return Workspaces?.[workspace] || {};
 }
 
 export interface PreferencesState {
