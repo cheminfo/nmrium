@@ -118,12 +118,12 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           );
           setResult((prevResult) => ({ ...prevResult, data, solvents }));
         } else {
-          const values = [...searchKeywords.split(',')];
+          const values = [...searchKeywords.split(' ')];
           if (solvent !== '-1') {
             values.unshift(`solvent:${solvent}`);
           }
 
-          const data = databaseInstance.current.search(values);
+          const data = databaseInstance.current.search(values.join(' '));
           setResult((prevResult) => ({ ...prevResult, data }));
         }
       }
@@ -135,13 +135,13 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
       if (selectedTool === options.databaseRangesSelection.id) {
         setKeywords((prevState) => {
           const oldKeywords = prevState.searchKeywords
-            ? prevState.searchKeywords.split(',')
+            ? prevState.searchKeywords.split(' ')
             : [];
           const [from, to] = event.range;
           const searchKeywords = [
             ...oldKeywords,
             `delta:${format(from)}..${format(to)}`,
-          ].join(',');
+          ].join(' ');
           return { ...prevState, searchKeywords };
         });
       }

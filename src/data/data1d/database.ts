@@ -35,7 +35,7 @@ export const databases: DataBase = [
 export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
-  search: (keywords?: string[]) => DatabaseNMREntry[];
+  search: (keywords?: string | string[]) => DatabaseNMREntry[];
 }
 
 export function initiateDatabase(
