@@ -1,4 +1,4 @@
-import { xNoiseSanPlot } from 'ml-spectra-processing';
+import { xNoiseSanPlot, xyReduce } from 'ml-spectra-processing';
 
 import { Data1D } from '../../../../../data/types/data1d';
 import { Data2D } from '../../../../../data/types/data2d';
@@ -17,7 +17,7 @@ export function processSnapPlot<T extends '1D' | '2D'>(
   const sanPlot: any = {};
   const lines: any = {};
   for (let plotKey in sanResult.sanplot) {
-    const { x, y } = sanResult.sanplot[plotKey];
+    const { x, y } = xyReduce(sanResult.sanplot[plotKey]);
     let result = new Array(x.length);
     for (let i = 0; i < x.length; i++) {
       result[i] = { x: x[i], y: y[i] };
