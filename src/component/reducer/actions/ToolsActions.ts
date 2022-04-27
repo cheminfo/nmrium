@@ -470,7 +470,7 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   } = options || {};
 
   const groupByNucleus = GroupByInfoKey('nucleus');
-  const dataGroupByNucleus = groupByNucleus(draft.data);
+  const dataGroupByNucleus = groupByNucleus(draft.data, true);
   const tabs = Object.keys(dataGroupByNucleus);
   const currentTab = !tab || !tabs.includes(tab || '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
