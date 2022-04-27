@@ -311,12 +311,18 @@ function KeysListenerTracker() {
       saveToClipboardHandler,
     ],
   );
+
+  function checkNotInputField(e: Event) {
+    const tags = ['input', 'textarea'];
+    const tagName = (e.composedPath()[0] as HTMLElement).tagName.toLowerCase();
+    if (!tags.includes(tagName)) return true;
+
+    return false;
+  }
+
   const handleOnKeyDown = useCallback(
     (e) => {
-      if (
-        !['input', 'textarea'].includes(e.target.localName) &&
-        overDisplayer
-      ) {
+      if (checkNotInputField(e) && overDisplayer) {
         const num = Number(e.code.substr(e.code.length - 1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
