@@ -76,7 +76,10 @@ function ConfirmationDialog({
   message,
 }: ConfirmationDialogProps) {
   const optionsHandler = useCallback(
-    (e, { handler = () => null }) => {
+    (
+      e: React.MouseEvent,
+      { handler = () => null }: { handler: (e: React.MouseEvent) => void },
+    ) => {
       handler(e);
       onClose();
     },

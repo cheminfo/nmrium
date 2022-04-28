@@ -123,8 +123,8 @@ function MoleculePanelInner({
   );
 
   const openMoleculeEditorHandler = useCallback(
-    (moleclue = null) => {
-      modal.show(<MoleculeStructureEditorModal selectedMolecule={moleclue} />, {
+    (molecule?: Molecule) => {
+      modal.show(<MoleculeStructureEditorModal selectedMolecule={molecule} />, {
         position: positions.TOP_CENTER,
         width: 700,
         height: 500,

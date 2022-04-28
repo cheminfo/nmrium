@@ -83,7 +83,7 @@ function Provider({
   }, []);
 
   const show = useCallback(
-    (message = '', options = {}) => {
+    (message = '', options: any = {}) => {
       const id = Math.random().toString(36).substr(2, 9);
 
       const alertOptions = {
@@ -122,7 +122,7 @@ function Provider({
   );
 
   const success = useCallback(
-    (message = '', options = {}) => {
+    (message = '', options: any = {}) => {
       options.type = types.SUCCESS;
       options = { backgroundColor: '#28ba62', color: 'white', ...options };
 
@@ -132,7 +132,7 @@ function Provider({
   );
 
   const error = useCallback(
-    (message = '', options = {}) => {
+    (message = '', options: any = {}) => {
       options.type = types.ERROR;
       options = { backgroundColor: '#cf3c4f', color: 'white', ...options };
       return show(message, options);
@@ -141,7 +141,7 @@ function Provider({
   );
 
   const info = useCallback(
-    (message = '', options = {}) => {
+    (message = '', options: any = {}) => {
       options.type = types.INFO;
       options.color = '#28ba62';
       return show(message, options);
@@ -150,7 +150,7 @@ function Provider({
   );
 
   const showLoading = useCallback(
-    (message = 'Process in progress', options = {}) => {
+    (message = 'Process in progress', options: any = {}) => {
       options.type = types.PROGRESS_INDICATOR;
       options.timeout = 0;
       options.backgroundColor = '#232323';

@@ -10,7 +10,7 @@ import { ModalStyles } from './ModalStyle';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
-  selectedMolecule: {
+  selectedMolecule?: {
     key: any;
     molfile: string;
   };

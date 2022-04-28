@@ -51,9 +51,10 @@ function EditableColumn(props: EditableColumnProps, ref: any) {
     }
   }, []);
 
+  // TODO: refactor this to not mix mouse and keyboard events.
   const editModeHandler = useCallback(
-    (flag, event = null) => {
-      if (!flag) {
+    (flag, event?: React.KeyboardEvent) => {
+      if (!flag && event) {
         // when press Enter or Tab
         if (['Enter', 'Tab'].includes(event.key)) {
           onSave(event);
@@ -76,7 +77,7 @@ function EditableColumn(props: EditableColumnProps, ref: any) {
   return (
     <div
       style={{ display: 'table', width: '100%', height: '100%', ...style }}
-      onDoubleClick={(event) => editModeHandler(true, event)}
+      onDoubleClick={() => editModeHandler(true)}
     >
       {!enabled && (
         <span style={{ display: 'table-cell', verticalAlign: 'middle' }}>
