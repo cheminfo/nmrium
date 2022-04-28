@@ -22,7 +22,7 @@ jobs:
           SHA=$(git rev-parse HEAD)
           echo "export default { version: 'git-$SHA' };" > src/versionInfo.ts
       - name: Build
-        run: npm run build-with-profiling
+        run: NO_MINIFY=true npm run build-with-profiling
       - name: Copy samples.json
         run: |
           cp src/demo/samples.json build/
