@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useMemo, memo, CSSProperties } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import { SmilesSvgRenderer } from 'react-ocl/full';
+import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
@@ -90,20 +90,27 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     Header: 'structure',
     accessor: 'index',
     enableRowSpan: true,
-    Cell: ({ row }) => (
-      <div
-        className="smiles-container"
-        style={{ width: '100px', display: 'block', overflow: 'hidden' }}
-      >
-        {row?.original.smiles && (
-          <SmilesSvgRenderer
-            height={60}
-            width={60}
-            smiles={row.original.smiles}
-          />
-        )}
-      </div>
-    ),
+    Cell: ({ row }) => {
+      const { idCode, coordinates } = row.original?.ocl || {};
+      const smiles = row.original?.smiles;
+      return (
+        <div
+          className="smiles-container"
+          style={{ width: '100px', display: 'block', overflow: 'hidden' }}
+        >
+          {idCode && coordinates ? (
+            <IdcodeSvgRenderer
+              height={60}
+              width={60}
+              idcode={idCode}
+              coordinates={coordinates}
+            />
+          ) : smiles ? (
+            <SmilesSvgRenderer height={60} width={60} smiles={smiles} />
+          ) : null}
+        </div>
+      );
+    },
   },
 ];
 
@@ -152,7 +159,6 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
 
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [initialColumns, preferences]);
-
   return (
     <ReactTable
       data={data}
