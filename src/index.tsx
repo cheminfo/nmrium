@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import Main from './demo/layouts/Main';
@@ -10,12 +10,17 @@ import './demo/preflight.css';
 
 import './demo/index.css';
 
-ReactDOM.render(
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('#root element not found');
+}
+
+const root = createRoot(rootElement);
+root.render(
   <HashRouter>
     <Switch>
       <Route path="/test" component={TestRoutes} />
       <Route path="/" render={(props) => <Main {...props} />} />
     </Switch>
   </HashRouter>,
-  document.getElementById('root'),
 );

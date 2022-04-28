@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { Suspense, StrictMode, useMemo, useState, useCallback } from 'react';
+import { Suspense, useMemo, useState, useCallback } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
@@ -58,38 +58,38 @@ export function Dashboard(props: DashboardProps) {
           menuIsClosed ? mainPanelClosedCss : mainPanelOpenCss,
         )}
       >
-        <StrictMode>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Switch>
-              {routesList.map((prop) => {
-                return (
-                  <Route
-                    path={`/SamplesDashboard/:id/${
-                      (prop.view || 'View') + getKey(prop.file)
-                    }`}
-                    render={(props) => (
-                      <RenderView {...props} prop={prop} baseURL={baseURL} />
-                    )}
-                    key={getKey(prop.file)}
-                  />
-                );
-              })}
-
-              {routesList.length > 0 && (
+        {/* <StrictMode> */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            {routesList.map((prop) => {
+              return (
                 <Route
-                  path="/"
-                  render={() => {
-                    const routeProp = routesList[0];
-                    const viewName = routeProp.view ? routeProp.view : 'View';
-                    const RenderedView = possibleViews[viewName];
-                    return <RenderedView {...routeProp[0]} />;
-                  }}
-                  key={getKey(routesList[0].file)}
+                  path={`/SamplesDashboard/:id/${
+                    (prop.view || 'View') + getKey(prop.file)
+                  }`}
+                  render={(props) => (
+                    <RenderView {...props} prop={prop} baseURL={baseURL} />
+                  )}
+                  key={getKey(prop.file)}
                 />
-              )}
-            </Switch>
-          </Suspense>
-        </StrictMode>
+              );
+            })}
+
+            {routesList.length > 0 && (
+              <Route
+                path="/"
+                render={() => {
+                  const routeProp = routesList[0];
+                  const viewName = routeProp.view ? routeProp.view : 'View';
+                  const RenderedView = possibleViews[viewName];
+                  return <RenderedView {...routeProp[0]} />;
+                }}
+                key={getKey(routesList[0].file)}
+              />
+            )}
+          </Switch>
+        </Suspense>
+        {/* </StrictMode> */}
       </div>
     </div>
   );
