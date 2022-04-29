@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.27.0](https://www.github.com/cheminfo/nmrium/compare/v0.26.0...v0.27.0) (2022-04-29)
+
+
+### Features
+
+* databases management ([#1505](https://www.github.com/cheminfo/nmrium/issues/1505)) ([e283960](https://www.github.com/cheminfo/nmrium/commit/e283960c6bf176c48436234b05daf78a4001d588))
+* default displayed name when import jcamp ([b451ab9](https://www.github.com/cheminfo/nmrium/commit/b451ab973bd1e8c5d2d8947108ed14afcd903afe)), closes [#1493](https://www.github.com/cheminfo/nmrium/issues/1493)
+* embedded workspace ([cc3ad59](https://www.github.com/cheminfo/nmrium/commit/cc3ad59f6431899a32537e393aad5b6c03b6fd4d))
+* specify whether the split pane is initially closed or not ([ecc7b86](https://www.github.com/cheminfo/nmrium/commit/ecc7b86f77a67aad9a53d2d598874d6bf90e5af1)), closes [#1494](https://www.github.com/cheminfo/nmrium/issues/1494)
+
+
+### Bug Fixes
+
+* manual 1D ranges detection crash after processing spectrum FID to FTT ([dd470ce](https://www.github.com/cheminfo/nmrium/commit/dd470ce0a0015f60689b110c5225689c83acbeb6)), closes [#1465](https://www.github.com/cheminfo/nmrium/issues/1465)
+* spectra stack alignment does not work when load .nmrium ([33ce29b](https://www.github.com/cheminfo/nmrium/commit/33ce29b40b25cb04e986066565ecddd3086fe0f0)), closes [#1495](https://www.github.com/cheminfo/nmrium/issues/1495)
+
 ## [0.26.0](https://www.github.com/cheminfo/nmrium/compare/v0.25.0...v0.26.0) (2022-04-21)
 
 
