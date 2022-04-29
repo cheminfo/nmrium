@@ -30,4 +30,5 @@ export const embedded: Workspace = {
   },
   controllers: basic.controllers,
   formatting: basic.formatting,
+  databases: basic.databases,
 };
