@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useMemo, memo, CSSProperties } from 'react';
+import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
@@ -89,26 +90,36 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     index: 8,
     Header: 'structure',
     accessor: 'index',
+    style: { height: 0 },
     enableRowSpan: true,
     Cell: ({ row }) => {
       const { idCode, coordinates } = row.original?.ocl || {};
       const smiles = row.original?.smiles;
       return (
-        <div
-          className="smiles-container"
-          style={{ width: '100px', display: 'block', overflow: 'hidden' }}
-        >
-          {idCode && coordinates ? (
-            <IdcodeSvgRenderer
-              height={60}
-              width={60}
-              idcode={idCode}
-              coordinates={coordinates}
-            />
-          ) : smiles ? (
-            <SmilesSvgRenderer height={60} width={60} smiles={smiles} />
-          ) : null}
-        </div>
+        <ResponsiveChart>
+          {({ width, height }) => {
+            if (idCode && coordinates) {
+              return (
+                <IdcodeSvgRenderer
+                  height={height}
+                  width={width}
+                  idcode={idCode}
+                  coordinates={coordinates}
+                />
+              );
+            } else if (smiles) {
+              return (
+                <SmilesSvgRenderer
+                  height={height}
+                  width={width}
+                  smiles={smiles}
+                />
+              );
+            } else {
+              return null;
+            }
+          }}
+        </ResponsiveChart>
       );
     },
   },
