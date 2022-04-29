@@ -100,7 +100,7 @@ function DatabasePreferences(props, ref) {
       <FormikForm onSubmit={saveHandler} ref={formRef}>
         <div style={styles.groupContainer}>
           <FormikColumnFormatField
-            label="Smiles"
+            label="structure"
             checkControllerName="showSmiles"
             hideFormat
           />

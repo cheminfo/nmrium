@@ -102,7 +102,7 @@ const accordionItems: AccordionItem[] = [
     mode: null,
   },
   {
-    title: 'Database',
+    title: 'Databases',
     component: <DatabasePanel />,
     hidePreferenceKey: 'databasePanel',
     mode: null,

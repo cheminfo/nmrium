@@ -34,4 +34,5 @@ export const process1D: Workspace = {
   },
   controllers: basic.controllers,
   formatting: basic.formatting,
+  databases: basic.databases,
 };

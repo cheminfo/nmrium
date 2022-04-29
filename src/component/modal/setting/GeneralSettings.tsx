@@ -18,6 +18,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { ModalStyles } from '../ModalStyle';
 
 import ControllersTabContent from './ControllersTabContent';
+import DatabasesTabContent from './DatabasesTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
 import WorkspaceItem from './WorkspaceItem';
@@ -233,6 +234,14 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             <Tab tablabel="Display" tabid="display">
               <div className="inner-content">
                 <DisplayTabContent preferences={preferences.current.display} />
+              </div>
+            </Tab>
+
+            <Tab tablabel="Databases" tabid="databases">
+              <div className="inner-content">
+                <DatabasesTabContent
+                  currentWorkspace={preferences.workspace.current}
+                />
               </div>
             </Tab>
           </Tabs>

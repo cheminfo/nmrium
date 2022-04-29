@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useMemo, memo, CSSProperties } from 'react';
+import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
-import { SmilesSvgRenderer } from 'react-ocl/full';
+import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
@@ -10,7 +11,6 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightedSource } from '../../highlight';
 import { getValue } from '../../utility/LocalStorage';
-import NoTableData from '../extra/placeholder/NoTableData';
 import { databaseDefaultValues } from '../extra/preferences/defaultValues';
 
 interface DatabaseTableProps {
@@ -88,23 +88,40 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
   {
     showWhen: 'showSmiles',
     index: 8,
-    Header: 'Smiles',
+    Header: 'structure',
     accessor: 'index',
+    style: { height: 0 },
     enableRowSpan: true,
-    Cell: ({ row }) => (
-      <div
-        className="smiles-container"
-        style={{ width: '100px', display: 'block', overflow: 'hidden' }}
-      >
-        {row?.original.smiles && (
-          <SmilesSvgRenderer
-            height={60}
-            width={60}
-            smiles={row.original.smiles}
-          />
-        )}
-      </div>
-    ),
+    Cell: ({ row }) => {
+      const { idCode, coordinates } = row.original?.ocl || {};
+      const smiles = row.original?.smiles;
+      return (
+        <ResponsiveChart>
+          {({ width, height }) => {
+            if (idCode && coordinates) {
+              return (
+                <IdcodeSvgRenderer
+                  height={height}
+                  width={width}
+                  idcode={idCode}
+                  coordinates={coordinates}
+                />
+              );
+            } else if (smiles) {
+              return (
+                <SmilesSvgRenderer
+                  height={height}
+                  width={width}
+                  smiles={smiles}
+                />
+              );
+            } else {
+              return null;
+            }
+          }}
+        </ResponsiveChart>
+      );
+    },
   },
 ];
 
@@ -153,8 +170,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
 
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [initialColumns, preferences]);
-
-  return data && data.length > 0 ? (
+  return (
     <ReactTable
       data={data}
       columns={tableColumns}
@@ -163,8 +179,6 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       approxItemHeight={30}
       enableVirtualScroll
     />
-  ) : (
-    <NoTableData />
   );
 }
 

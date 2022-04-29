@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { FaICursor } from 'react-icons/fa';
@@ -8,7 +7,6 @@ import { IoSearchOutline } from 'react-icons/io5';
 
 import {
   initiateDatabase,
-  getDatabasesNames,
   InitiateDatabaseResult,
   prepareData,
 } from '../../../data/data1d/database';
@@ -17,17 +15,20 @@ import { useDispatch } from '../../context/DispatchContext';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
 import ToggleButton from '../../elements/ToggleButton';
+import { useAlert } from '../../elements/popup/Alert';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
 import DatabaseTable from './DatabaseTable';
+import { useDatabases } from './useDatabases';
 
 const style = css`
   .header {
@@ -43,10 +44,6 @@ const style = css`
     border: 0.55px solid gray;
     padding: 0 5px;
     outline: none;
-  }
-  .smiles-container svg {
-    display: block;
-    margin: 0 auto;
   }
 `;
 
@@ -68,9 +65,10 @@ const emptyKeywords = {
 
 function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   const dispatch = useDispatch();
+  const alert = useAlert();
   const { handleChangeOption } = useToolsFunctions();
   const format = useFormatNumberByNucleus(nucleus);
-
+  const databases = useDatabases();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
   const [keywords, setKeywords] = useState<{
@@ -83,7 +81,6 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     databases: [],
     solvents: [],
   });
-  const { item } = useAccordionContext('Database');
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -107,21 +104,6 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   }, []);
 
   useEffect(() => {
-    if (item?.isOpen) {
-      setTimeout(() => {
-        const databases = mapDatabasesToSelect(getDatabasesNames());
-        databaseInstance.current = initiateDatabase(databases[0].key, nucleus);
-        const data = databaseInstance.current.data;
-        const solvents = mapSolventsToSelect(
-          databaseInstance.current.getSolvents(),
-        );
-
-        setResult({ data, databases, solvents });
-      });
-    }
-  }, [item?.isOpen, nucleus]);
-
-  useEffect(() => {
     const { solvent, searchKeywords } = keywords;
     setTimeout(() => {
       if (databaseInstance.current) {
@@ -132,12 +114,12 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           );
           setResult((prevResult) => ({ ...prevResult, data, solvents }));
         } else {
-          const values = [...searchKeywords.split(',')];
+          const values = [...searchKeywords.split(' ')];
           if (solvent !== '-1') {
             values.unshift(`solvent:${solvent}`);
           }
 
-          const data = databaseInstance.current.search(values);
+          const data = databaseInstance.current.search(values.join(' '));
           setResult((prevResult) => ({ ...prevResult, data }));
         }
       }
@@ -149,13 +131,13 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
       if (selectedTool === options.databaseRangesSelection.id) {
         setKeywords((prevState) => {
           const oldKeywords = prevState.searchKeywords
-            ? prevState.searchKeywords.split(',')
+            ? prevState.searchKeywords.split(' ')
             : [];
           const [from, to] = event.range;
           const searchKeywords = [
             ...oldKeywords,
             `delta:${format(from)}..${format(to)}`,
-          ].join(',');
+          ].join(' ');
           return { ...prevState, searchKeywords };
         });
       }
@@ -169,11 +151,28 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   }, [format, selectedTool]);
 
   const handleChangeDatabase = useCallback(
-    (databaseKey) => {
-      databaseInstance.current = initiateDatabase(databaseKey, nucleus);
-      setKeywords(emptyKeywords);
+    (databaseIndex) => {
+      void (async () => {
+        let _database: DatabaseNMREntry[] = [];
+        const { url, label, value } = databases[databaseIndex];
+        if (url) {
+          const hideLoading = await alert.showLoading(`load ${label} database`);
+
+          try {
+            _database = await fetch(url).then((response) => response.json());
+          } catch (e) {
+            alert.error(`Failed to load ${url}`);
+          } finally {
+            hideLoading();
+          }
+        } else {
+          _database = value as DatabaseNMREntry[];
+        }
+        databaseInstance.current = initiateDatabase(_database, nucleus);
+        setKeywords({ ...emptyKeywords });
+      })();
     },
-    [nucleus],
+    [alert, databases, nucleus],
   );
 
   const tableData = useMemo(() => {
@@ -244,12 +243,14 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           </ToggleButton>
           <Select
             style={{ flex: 2 }}
-            data={result.databases}
+            data={mapDatabasesToSelect(databases)}
             onChange={handleChangeDatabase}
+            placeholder="Select database"
           />
           <Select
             style={{ flex: 1 }}
             data={result.solvents}
+            placeholder="Solvent"
             onChange={handleSearch}
           />
           <Input
@@ -274,7 +275,17 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <DatabaseTable data={tableData} onAdd={resurrectHandler} />
+          tableData && tableData.length > 0 ? (
+            <DatabaseTable data={tableData} onAdd={resurrectHandler} />
+          ) : (
+            <NoTableData
+              text={
+                databases && databases.length > 0
+                  ? 'Please select a database'
+                  : 'Please add databases URL in the general preferences'
+              }
+            />
+          )
         ) : (
           <DatabasePreferences ref={settingRef} />
         )}
@@ -309,9 +320,9 @@ function mapSolventsToSelect(solvents: string[]) {
 }
 
 function mapDatabasesToSelect(databases) {
-  return databases.map(({ id, name }) => ({
-    key: id,
-    value: id,
-    label: name,
+  return databases.map(({ label }, index) => ({
+    key: index,
+    value: index,
+    label,
   }));
 }
