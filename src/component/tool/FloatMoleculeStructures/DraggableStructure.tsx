@@ -9,7 +9,7 @@ import { Ranges } from '../../../data/types/data1d';
 import { Zones } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import SVGDraggable from '../../elements/draggble/SVGDRaggable';
+import SVGDraggable from '../../elements/draggble/SVGDraggable';
 import useAtomAssignment from '../../panels/MoleculesPanel/useAtomAssignment';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { FLOAT_MOLECULE_OVER_SPECTRUM } from '../../reducer/types/Types';
