@@ -10,7 +10,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useRootElement } from '../../context/RootContext';
+import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../../highlight';
@@ -70,7 +70,7 @@ function Range({
   selectedTool,
   startEditMode,
 }: RangeProps) {
-  const rootElement = useRootElement();
+  const { viewerRef } = useGlobal();
   const { id, integration, signals } = rangeData;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
@@ -153,7 +153,7 @@ function Range({
         tag="svg"
         initialPosition={{ x1: to, x2: from }}
         onEnd={handleOnStopResizing}
-        parentElement={rootElement}
+        parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
       >
         {({ x1, x2 }, isActive) => (

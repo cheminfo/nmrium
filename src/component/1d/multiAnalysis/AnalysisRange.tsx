@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useRootElement } from '../../context/RootContext';
+import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import DeleteButton from '../../elements/DeleteButton';
 import Resizer from '../../elements/resizer/Resizer';
@@ -50,7 +50,7 @@ function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
   const highlight = useHighlight([columnKey]);
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
-  const rootElement = useRootElement();
+  const { viewerRef } = useGlobal();
   const deleteHandler = useCallback(() => {
     dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey: columnKey });
   }, [columnKey, dispatch]);
@@ -74,7 +74,7 @@ function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
         tag="svg"
         onEnd={resizeEndHandler}
         initialPosition={{ x2: from, x1: to }}
-        parentElement={rootElement}
+        parentElement={viewerRef}
         key={`${columnKey}_${to}_${from}`}
       >
         {({ x1, x2 }, isActive) => (

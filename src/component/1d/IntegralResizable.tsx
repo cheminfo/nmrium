@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { useRootElement } from '../context/RootContext';
+import { useGlobal } from '../context/GlobalContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import Resizer from '../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../highlight/index';
@@ -47,7 +47,7 @@ interface IntegralResizableProps {
 
 function IntegralResizable({ integralData }: IntegralResizableProps) {
   const { height, margin } = useChartData();
-  const parentElement = useRootElement();
+  const { viewerRef } = useGlobal();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
   const { id, integral } = integralData;
@@ -92,7 +92,7 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
         tag="svg"
         initialPosition={{ x1: to, x2: from }}
         onEnd={handleOnStopResizing}
-        parentElement={parentElement}
+        parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
       >
         {({ x1, x2 }, isActive) => (
