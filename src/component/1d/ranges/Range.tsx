@@ -10,6 +10,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
+import { useRootElement } from '../../context/RootContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../../highlight';
@@ -69,7 +70,8 @@ function Range({
   selectedTool,
   startEditMode,
 }: RangeProps) {
-  const { id, from, to, integration, signals } = rangeData;
+  const rootElement = useRootElement();
+  const { id, integration, signals } = rangeData;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -136,18 +138,12 @@ function Range({
     },
     [assignmentRange, isBlockedByEditing, selectedTool],
   );
-
+  const from = scaleX()(rangeData.from);
+  const to = scaleX()(rangeData.to);
   return (
     <g
       data-test-id="range"
       style={{ outline: 'none' }}
-      css={
-        isBlockedByEditing ||
-        highlightRange.isActive ||
-        assignmentRange.isActive
-          ? stylesHighlighted
-          : stylesOnHover
-      }
       key={id}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
@@ -155,11 +151,23 @@ function Range({
     >
       <Resizer
         tag="svg"
-        initialPosition={{ x1: scaleX()(to), x2: scaleX()(from) }}
+        initialPosition={{ x1: to, x2: from }}
         onEnd={handleOnStopResizing}
+        parentElement={rootElement}
+        key={`${id}_${to}_${from}`}
       >
-        {(x1, x2) => (
-          <g transform={`translate(0,10)`}>
+        {({ x1, x2 }, isActive) => (
+          <g
+            transform={`translate(0,10)`}
+            css={
+              isBlockedByEditing ||
+              highlightRange.isActive ||
+              assignmentRange.isActive ||
+              isActive
+                ? stylesHighlighted
+                : stylesOnHover
+            }
+          >
             <rect
               data-no-export="true"
               x="0"

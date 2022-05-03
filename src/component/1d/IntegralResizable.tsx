@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useRootElement } from '../context/RootContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import Resizer from '../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../highlight/index';
@@ -46,9 +47,10 @@ interface IntegralResizableProps {
 
 function IntegralResizable({ integralData }: IntegralResizableProps) {
   const { height, margin } = useChartData();
+  const parentElement = useRootElement();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
-  const { id, from, to, integral } = integralData;
+  const { id, integral } = integralData;
   const highlight = useHighlight([id], {
     type: HighlightedSource.INTEGRAL,
     extra: { id },
@@ -78,22 +80,27 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
     highlight.hide();
   }, [highlight]);
 
-  const x0 = from ? scaleX()(from) : 0;
-  const x1 = to ? scaleX()(to) : 0;
+  const from = integralData.from ? scaleX()(integralData.from) : 0;
+  const to = integralData.to ? scaleX()(integralData.to) : 0;
 
   return (
     <g
-      css={highlight.isActive ? stylesHighlighted : stylesOnHover}
       onMouseEnter={handleOnEnterNotation}
       onMouseLeave={handleOnMouseLeaveNotation}
     >
       <Resizer
         tag="svg"
-        initialPosition={{ x1: x1, x2: x0 }}
+        initialPosition={{ x1: to, x2: from }}
         onEnd={handleOnStopResizing}
+        parentElement={parentElement}
+        key={`${id}_${to}_${from}`}
       >
-        {(x1, x2) => (
-          <g>
+        {({ x1, x2 }, isActive) => (
+          <g
+            css={
+              highlight.isActive || isActive ? stylesHighlighted : stylesOnHover
+            }
+          >
             <rect
               x="0"
               y="0"

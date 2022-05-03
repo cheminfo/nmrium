@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
+import { useRootElement } from '../../context/RootContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import DeleteButton from '../../elements/DeleteButton';
 import Resizer from '../../elements/resizer/Resizer';
@@ -46,11 +47,10 @@ interface AnalysisRangeProps {
 }
 
 function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
-  const { from, to } = rangeData;
   const highlight = useHighlight([columnKey]);
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
-
+  const rootElement = useRootElement();
   const deleteHandler = useCallback(() => {
     dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey: columnKey });
   }, [columnKey, dispatch]);
@@ -65,22 +65,29 @@ function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
     [columnKey, dispatch, rangeData],
   );
 
+  const from = scaleX()(rangeData.from);
+  const to = scaleX()(rangeData.to);
+
   return (
-    <g
-      {...highlight.onHover}
-      css={[
-        styles.common,
-        highlight.isActive ? styles.Highlighted : styles.hover,
-      ]}
-    >
+    <g {...highlight.onHover}>
       <Resizer
         tag="svg"
         onEnd={resizeEndHandler}
-        initialPosition={{ x2: scaleX()(from), x1: scaleX()(to) }}
+        initialPosition={{ x2: from, x1: to }}
+        parentElement={rootElement}
+        key={`${columnKey}_${to}_${from}`}
       >
-        {(x1, x2) => (
+        {({ x1, x2 }, isActive) => (
           <>
-            <g transform={`translate(0,25)`}>
+            <g
+              transform={`translate(0,25)`}
+              css={[
+                styles.common,
+                highlight.isActive || isActive
+                  ? styles.Highlighted
+                  : styles.hover,
+              ]}
+            >
               <rect
                 x="0"
                 width={x2 - x1}

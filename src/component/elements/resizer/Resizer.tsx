@@ -16,13 +16,15 @@ type ChildType =
   | null;
 
 export interface ResizerProps {
-  children?: ChildType | ((x1: number, x2: number) => ChildType);
+  children?: ChildType | ((position: Position, isActive: boolean) => ChildType);
   initialPosition?: Position;
   position?: Position;
   onStart?: PositionChangeHandler;
   onMove?: PositionChangeHandler;
   onEnd?: PositionChangeHandler;
   tag?: 'div' | 'svg';
+  parentElement?: HTMLElement | null;
+  dragHandleClassName?: string;
 }
 
 type PositionChangeHandler = (data: Position) => void;

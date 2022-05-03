@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, useEffect } from 'react';
+import { CSSProperties } from 'react';
 
-import { Position, ResizerProps } from './Resizer';
-import useDraggable, { Anchor, Draggable } from './useDraggable';
+import { Draggable } from '../draggble/useDraggable';
+
+import { ResizerProps, Position } from './Resizer';
+import useResizer from './useResizer';
 
 const anchorStyle: CSSProperties = {
   marginLeft: '5px',
@@ -30,8 +32,8 @@ const styles = {
     }
   `,
 
-  content: (anchorSide: Anchor | '', left: Draggable, right: Draggable) => {
-    const width = right.previousPosition - left.previousPosition;
+  content: (left: Draggable, right: Draggable, prevPosition: Position) => {
+    const width = prevPosition.x2 - prevPosition.x1;
 
     const baseCss = css`
       position: absolute;
@@ -39,29 +41,19 @@ const styles = {
       overflow: hidden;
     `;
     if (right.position.action === 'move' || left.position.action === 'move') {
-      const scale = (right.position.x - left.position.x) / width;
-      if (anchorSide === 'RIGHT') {
-        return [
-          baseCss,
-          css`
-            transform: translateX(${left.position.x}px) scaleX(${scale});
-            transform-origin: left center;
-          `,
-        ];
-      } else if (anchorSide === 'LEFT') {
-        return css([
-          baseCss,
-          css`
-            transform: translateX(${left.position.x}px) scaleX(${scale});
-            transform-origin: left center;
-          `,
-        ]);
-      }
+      const scale = (right.position.value.x - left.position.value.x) / width;
+      return [
+        baseCss,
+        css`
+          transform: translateX(${left.position.value.x}px) scaleX(${scale});
+          transform-origin: left center;
+        `,
+      ];
     } else {
       return css([
         baseCss,
         css`
-          transform: translateX(${left.position.x}px);
+          transform: translateX(${left.position.value.x}px);
         `,
       ]);
     }
@@ -69,69 +61,28 @@ const styles = {
 };
 
 export default function DivResizer(props: ResizerProps) {
-  const {
-    children,
-    initialPosition = { x1: 10, x2: 40 },
-    onStart,
-    onMove,
-    onEnd,
-  } = props;
-
-  const right = useDraggable({
-    x: initialPosition.x2,
-    anchor: 'RIGHT',
-  });
-  const left = useDraggable({
-    x: initialPosition.x1,
-    anchor: 'LEFT',
-  });
-
-  const anchor = left.isActive
-    ? left.anchor
-    : right.isActive
-    ? right.anchor
-    : '';
-
-  useEffect(() => {
-    const position: Position = { x1: left.position.x, x2: right.position.x };
-    const status = left.isActive
-      ? left.position.action
-      : right.isActive
-      ? right.position.action
-      : '';
-    switch (status) {
-      case 'start':
-        onStart?.(position);
-        break;
-      case 'move':
-        onMove?.(position);
-        break;
-      case 'end':
-        onEnd?.(position);
-        break;
-      default:
-        break;
-    }
-  }, [left, onEnd, onMove, onStart, right]);
+  const { children } = props;
+  const { left, right, prevPosition, currentPosition, isActive } =
+    useResizer(props);
 
   return (
     <>
       <div
         data-no-export="true"
         onMouseDown={right.onMouseDown}
-        css={styles.container(right.position.x)}
+        css={styles.container(right.position.value.x)}
       >
         <div style={anchorStyle} />
       </div>
-      <div css={styles.content(anchor, left, right)}>
+      <div css={styles.content(left, right, prevPosition)}>
         {typeof children === 'function'
-          ? children?.(left.position.x, right.position.x)
+          ? children?.(currentPosition, isActive)
           : children}
       </div>
       <div
         data-no-export="true"
         onMouseDown={left.onMouseDown}
-        css={styles.container(left.position.x)}
+        css={styles.container(left.position.value.x)}
       >
         <div style={anchorStyle} />
       </div>
