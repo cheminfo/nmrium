@@ -86,10 +86,19 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   setActiveTab(draft);
   draft.isLoading = false;
 }
+function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
+  const { key } = action.payload;
+  const moleculeIndex = draft.molecules.findIndex(
+    (molecule) => molecule.key === key,
+  );
+  draft.molecules[moleculeIndex].isFloat =
+    !draft.molecules[moleculeIndex].isFloat;
+}
 
 export {
   addMoleculeHandler,
   setMoleculeHandler,
   deleteMoleculeHandler,
   predictSpectraFromMoleculeHandler,
+  floatMoleculeOverSpectrum,
 };

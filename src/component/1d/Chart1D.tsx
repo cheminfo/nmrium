@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
 import { RootProvider } from '../context/RootContext';
-import FloatMoleculeStructures from '../elements/FloatMoleculeStructures';
+import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import IntegralsSeries from './IntegralsSeries';
@@ -49,7 +49,6 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis showGrid mode={mode} />
         </g>
-
         <FloatMoleculeStructures />
       </svg>
     </RootProvider>

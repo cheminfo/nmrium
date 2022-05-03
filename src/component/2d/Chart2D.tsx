@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { Margin } from '../reducer/Reducer';
+import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 
 import Contours from './Contours';
 import Left1DChart from './Left1DChart';
@@ -67,6 +68,7 @@ function chart2DInner({
         <XAxis />
         <YAxis />
       </g>
+      <FloatMoleculeStructures />
     </svg>
   );
 }
