@@ -104,7 +104,7 @@ export default function useDraggable(props: UseDraggable): Draggable {
         }
       }
     },
-    [dragHandleClassName, fromEdge, parentElement, x, y],
+    [dragHandleClassName, fromEdge, parentElement],
   );
 
   return useMemo(
