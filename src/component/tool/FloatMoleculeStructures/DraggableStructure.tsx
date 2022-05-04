@@ -83,13 +83,11 @@ export function DraggableStructure(props: DraggableStructureProps) {
             molfile={molecule.molfile}
             setSelectedAtom={handleOnClickAtom}
             atomHighlightColor={
-              currentDiaIDsToHighlight && currentDiaIDsToHighlight.length > 0
-                ? 'red'
-                : '#FFD700'
+              currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
             }
             atomHighlightOpacity={0.35}
             highlights={
-              currentDiaIDsToHighlight && currentDiaIDsToHighlight.length > 0
+              currentDiaIDsToHighlight?.length > 0
                 ? currentDiaIDsToHighlight
                 : assignedDiaIDsMerged
             }
