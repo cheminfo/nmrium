@@ -18,7 +18,7 @@ import useCombinedRefs from '../../hooks/useCombinedRefs';
 import ContextMenu from '../ContextMenu';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
-import ReactTableRow from './Elements/ReactTableRow';
+import ReactTableRow, { ClickEvent } from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 import {
   ReactTableProvider,
@@ -26,7 +26,7 @@ import {
 } from './utility/ReactTableContext';
 import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
 
-interface ReactTableProps {
+interface ReactTableProps extends ClickEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightedSource;
@@ -34,6 +34,7 @@ interface ReactTableProps {
   approxItemHeight?: number;
   groupKey?: string;
   enableVirtualScroll?: boolean;
+  highlightActiveRow?: boolean;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -61,10 +62,13 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     approxItemHeight = 40,
     enableVirtualScroll = false,
     groupKey,
+    onClick,
+    highlightActiveRow = false,
   } = props;
 
   const contextRef = useRef<any>(null);
   const { index: indexBoundary } = useReactTableContext();
+  const [rowIndex, setRowIndex] = useState<number>();
 
   const {
     getTableProps,
@@ -94,6 +98,14 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   const rowsData = enableVirtualScroll
     ? rows.slice(indexBoundary.start, indexBoundary.end)
     : rows;
+
+  const clickHandler = useCallback(
+    (event, row) => {
+      setRowIndex(row.index);
+      onClick?.(event, row);
+    },
+    [onClick],
+  );
 
   return (
     <div
@@ -138,7 +150,9 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                 row={row}
                 {...row.getRowProps()}
                 onContextMenu={(e) => contextMenuHandler(e, row)}
+                onClick={highlightActiveRow ? clickHandler : onClick}
                 highlightedSource={highlightedSource}
+                isRowActive={rowIndex === index}
               />
             );
           })}

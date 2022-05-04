@@ -12,6 +12,10 @@ export function fromParsedJcamp(
     {
       ...options,
       source: { ...options?.source, jcampSpectrumIndex },
+      display: {
+        ...options.display,
+        name: options?.display?.name ? options.display.name : info?.title,
+      },
       info,
       meta,
       data,

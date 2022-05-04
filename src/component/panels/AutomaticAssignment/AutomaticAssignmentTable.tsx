@@ -7,13 +7,13 @@ import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn'
 import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
 import NoTableData from '../extra/placeholder/NoTableData';
 
-import { AutoAssignmentsData } from './useGetAssignments';
+import { AutoAssignmentsData } from './useAutoAssignments';
 
 interface AutomaticAssignmentTableProps {
   data: AutoAssignmentsData[];
 }
 
-function PeaksTable({ data }: AutomaticAssignmentTableProps) {
+function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
   const dispatch = useDispatch();
 
   const assignHandler = useCallback(
@@ -66,10 +66,15 @@ function PeaksTable({ data }: AutomaticAssignmentTableProps) {
   );
 
   return data && data.length > 0 ? (
-    <ReactTable data={data} columns={COLUMNS} />
+    <ReactTable
+      data={data}
+      columns={COLUMNS}
+      onClick={assignHandler}
+      highlightActiveRow
+    />
   ) : (
     <NoTableData />
   );
 }
 
-export default memo(PeaksTable);
+export default memo(AutomaticAssignmentTable);

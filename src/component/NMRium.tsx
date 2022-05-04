@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { RootLayout, SplitPane } from 'analysis-ui-components';
+import { RootLayout } from 'analysis-ui-components';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -26,6 +26,7 @@ import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
 import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
+import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { AssignmentProvider } from './assignment';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
@@ -113,7 +114,8 @@ export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
   | 'default'
-  | 'prediction';
+  | 'prediction'
+  | 'embedded';
 
 export interface NMRiumProps {
   data?: NMRiumData;
@@ -133,6 +135,7 @@ export type NMRiumPreferences = Partial<{
     hideSetSumFromMolecule: boolean;
     hideGeneralSettings: boolean;
     experimentalFeatures: PanelPreferencesType;
+    hidePanelOnLoad: boolean;
   }>;
   panels: Partial<{
     spectraPanel: PanelPreferencesType;
@@ -208,6 +211,7 @@ function InnerNMRium({
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
+  const viewerRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
   const isFullscreen = useFullscreen(rootRef, show, {
@@ -292,6 +296,7 @@ function InnerNMRium({
       value={{
         rootRef: rootRef.current,
         elementsWrapperRef: elementsWrapperRef.current,
+        viewerRef: viewerRef.current,
       }}
     >
       <PreferencesProvider value={preferencesState}>
@@ -332,15 +337,12 @@ function InnerNMRium({
                                 }}
                               >
                                 <ToolBar />
-                                <SplitPane
-                                  initialSeparation="590px"
-                                  orientation="horizontal"
-                                  sideSeparation="end"
-                                >
+                                <SplitPaneWrapper>
                                   <div css={viewerContainerStyle}>
                                     <KeysListenerTracker />
                                     <div
                                       data-test-id="viewer"
+                                      ref={viewerRef}
                                       style={{
                                         width: '100%',
                                         height: '100%',
@@ -355,7 +357,7 @@ function InnerNMRium({
                                     </div>
                                   </div>
                                   <Panels />
-                                </SplitPane>
+                                </SplitPaneWrapper>
 
                                 <div
                                   ref={elementsWrapperRef}

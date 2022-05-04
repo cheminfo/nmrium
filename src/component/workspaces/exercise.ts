@@ -50,4 +50,5 @@ export const exercise: Workspace = {
   },
   controllers: basic.controllers,
   formatting: basic.formatting,
+  databases: basic.databases,
 };

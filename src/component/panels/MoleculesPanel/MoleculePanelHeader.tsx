@@ -11,17 +11,23 @@ import {
   FaPlus,
   FaRegTrashAlt,
 } from 'react-icons/fa';
+import { IoOpenOutline } from 'react-icons/io5';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import ButtonToolTip from '../../elements/ButtonToolTip';
 import MenuButton from '../../elements/MenuButton';
+import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { positions, useModal } from '../../elements/popup/Modal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
-import { ADD_MOLECULE, DELETE_MOLECULE } from '../../reducer/types/Types';
+import {
+  ADD_MOLECULE,
+  DELETE_MOLECULE,
+  FLOAT_MOLECULE_OVER_SPECTRUM,
+} from '../../reducer/types/Types';
 import {
   copyPNGToClipboard,
   copyTextToClipboard,
@@ -171,6 +177,13 @@ export default function MoleculePanelHeader({
     });
   }, [modal, molecules, currentIndex]);
 
+  const floatMoleculeHandler = useCallback(() => {
+    dispatch({
+      type: FLOAT_MOLECULE_OVER_SPECTRUM,
+      payload: { key: molecules[currentIndex].key },
+    });
+  }, [currentIndex, dispatch, molecules]);
+
   return (
     <div css={toolbarStyle}>
       {!actionsOptions.hideExport && (
@@ -216,6 +229,18 @@ export default function MoleculePanelHeader({
         >
           <SvgNmrFt />
         </ButtonToolTip>
+      )}
+
+      {molecules?.[currentIndex] && (
+        <ToggleButton
+          key={molecules[currentIndex].isFloat}
+          defaultValue={molecules[currentIndex].isFloat}
+          popupTitle="Float Molecule"
+          popupPlacement="left"
+          onClick={floatMoleculeHandler}
+        >
+          <IoOpenOutline />
+        </ToggleButton>
       )}
       <p>
         {molecules &&

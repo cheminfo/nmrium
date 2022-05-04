@@ -3,9 +3,6 @@
   "reject": [
     "react-color",
     "// TODO: Migrate to v6",
-    "react-router-dom",
-    "// TODO: Migrate to v18",
-    "react",
-    "react-dom"
+    "react-router-dom"
   ]
 }

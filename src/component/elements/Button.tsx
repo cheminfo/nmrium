@@ -208,7 +208,7 @@ const Button = (props: ButtonProps) => {
       ]}
       {...restProps}
     >
-      <span style={{ flex: 1 }}> {props.children}</span>
+      <span style={{ flex: 1, pointerEvents: 'none' }}> {props.children}</span>
     </button>
   );
 };

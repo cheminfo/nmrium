@@ -1,3 +1,5 @@
+import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
+
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
@@ -41,6 +43,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
       </g>
+      <FloatMoleculeStructures />
     </svg>
   );
 }

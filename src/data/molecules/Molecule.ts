@@ -13,6 +13,7 @@ export interface Molecule extends MoleculeInnerProps {
   mw: number;
   svg: string;
   atoms: Record<string, number>;
+  isFloat: boolean;
 }
 
 export function initMolecule(
@@ -32,6 +33,7 @@ export function initMolecule(
     mw: mfInfo.relativeWeight,
     svg: mol.toSVG(50, 50),
     atoms: getAtomsFromMF(mfInfo.formula),
+    isFloat: false,
   };
 }
 

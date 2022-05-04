@@ -25,4 +25,5 @@ export const prediction: Workspace = {
   },
   controllers: basic.controllers,
   formatting: basic.formatting,
+  databases: basic.databases,
 };

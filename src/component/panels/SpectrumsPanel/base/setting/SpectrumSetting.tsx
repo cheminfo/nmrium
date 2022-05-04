@@ -107,8 +107,8 @@ function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
       <div
         className="inner-conatiner"
         style={{
-          left: info.dimension === 2 ? x - 450 : x - 240,
-          width: info.dimension === 2 ? 450 : 240,
+          left: info.dimension === 2 ? x - 460 : x - 240,
+          width: info.dimension === 2 ? 460 : 240,
           padding: info.dimension === 2 ? '10px 0' : '',
           top: y,
         }}

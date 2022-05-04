@@ -260,6 +260,12 @@ function getBlob(rootRef: HTMLDivElement, elementID: string) {
   _svg
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
+  _svg
+    .querySelectorAll('[data-replace-float-structure="true"]')
+    .forEach((element: Element) => {
+      element.replaceWith(element.childNodes[0].childNodes[0]);
+      return element;
+    });
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;

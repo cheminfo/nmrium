@@ -621,6 +621,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.PREDICT_SPECTRA:
       return MoleculeActions.predictSpectraFromMoleculeHandler(draft, action);
 
+    case types.FLOAT_MOLECULE_OVER_SPECTRUM:
+      return MoleculeActions.floatMoleculeOverSpectrum(draft, action);
+
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);
 

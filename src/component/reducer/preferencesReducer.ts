@@ -43,7 +43,7 @@ type PreferencesActions =
   | WorkspaceAction
   | AddWorkspaceAction;
 
-const LOCAL_STORAGE_VERSION = 6;
+const LOCAL_STORAGE_VERSION = 7;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -65,21 +65,14 @@ export const WORKSPACES: Array<{
     key: 'prediction',
     label: Workspaces.prediction.label,
   },
+  {
+    key: 'embedded',
+    label: Workspaces.embedded.label,
+  },
 ];
 
 function getPreferencesByWorkspace(workspace: NMRiumWorkspace) {
-  switch (workspace) {
-    case 'exercise':
-      return Workspaces.exercise;
-    case 'process1D':
-      return Workspaces.process1D;
-    case 'prediction':
-      return Workspaces.prediction;
-    case 'default':
-      return Workspaces.default;
-    default:
-      return {} as Workspace;
-  }
+  return Workspaces?.[workspace] || {};
 }
 
 export interface PreferencesState {
@@ -258,7 +251,7 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
-    let { controllers, formatting, display } = action.payload;
+    let { controllers, formatting, display, databases } = action.payload;
     formatting = mapNucleiFormatting(formatting);
     let localData = getLocalStorage('nmr-general-settings');
     localData.currentWorkspace = draft.workspace.current;
@@ -269,6 +262,7 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
         controllers,
         formatting,
         display,
+        databases,
       },
     };
 
@@ -276,6 +270,7 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
 
     currentWorkspacePreferences.controllers = controllers;
     currentWorkspacePreferences.formatting = formatting;
+    currentWorkspacePreferences.databases = databases;
     currentWorkspacePreferences.display = {
       ...currentWorkspacePreferences.display,
       panels: display.panels,
@@ -330,7 +325,7 @@ function handleAddWorkspace(
 ) {
   const {
     workspace: workspaceName,
-    data: { display, controllers, formatting },
+    data: { display, controllers, formatting, databases },
   } = action.payload;
   const newWorkSpace = {
     version: 1,
@@ -338,6 +333,7 @@ function handleAddWorkspace(
     display,
     controllers,
     formatting,
+    databases,
   };
   const newWorkspaceKey = generateID();
   const localData = getLocalStorage('nmr-general-settings');

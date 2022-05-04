@@ -4,7 +4,6 @@ import {
   Jcoupling,
   DatabaseNMREntry,
 } from 'nmr-processing';
-
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';
@@ -20,40 +19,30 @@ export interface DataBaseRange {
   signals: Array<DataBaseSignal>;
 }
 
-export interface DataBase {
-  data: Record<
-    string,
-    {
-      description: string;
-      value: Array<DatabaseNMREntry>;
-    }
-  >;
-}
+export type DataBase = {
+  label: string;
+  url?: string;
+  value?: Array<DatabaseNMREntry>;
+}[];
 
-export const database: DataBase = {
-  data: {
-    solvent: {
-      description: 'Solvent database',
-      value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
-    },
+export const databases: DataBase = [
+  {
+    label: 'Solvent database',
+    value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
   },
-};
+];
 
 export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
-  search: (keywords?: string[]) => DatabaseNMREntry[];
+  search: (keywords?: string | string[]) => DatabaseNMREntry[];
 }
 
 export function initiateDatabase(
-  databaseKey: string,
+  databases: DatabaseNMREntry[],
   nucleus: string,
 ): InitiateDatabaseResult {
-  const databaseData = database.data[databaseKey]
-    ? database.data[databaseKey].value
-    : [];
-
-  const data = databaseData.filter((datum) => datum.nucleus === nucleus);
+  const data = databases.filter((datum) => datum.nucleus === nucleus);
 
   const getSolvents = () => prepareGetSolvents(data);
   const search = (keywords: string | string[] = []) =>
@@ -74,12 +63,12 @@ function prepareGetSolvents(data) {
   return result;
 }
 
-export function getDatabasesNames() {
-  return Object.keys(database.data).map((key) => {
-    const { description } = database.data[key];
-    return { id: key, name: description };
-  });
-}
+// export function getDatabasesNames() {
+//   return databases.map((database, index) => {
+//     const { label } = database;
+//     return { id: index, name: label };
+//   });
+// }
 
 function prepareDataBase(array: Array<DatabaseNMREntry>) {
   return array.map((item) => {
@@ -102,7 +91,7 @@ export function prepareData(
   let index = 0;
   for (const item of data) {
     let ids: string[] = [];
-    const { ranges, ...restItemKeys } = item;
+    const { ranges = [], ...restItemKeys } = item;
 
     for (const range of ranges) {
       ids.push(range.id || generateID());

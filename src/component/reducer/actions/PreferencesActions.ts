@@ -55,8 +55,10 @@ function changeSpectrumVerticalAlignment(
         const visibleSpectra = dataPerNucleus.filter(
           (datum) => datum.display.isVisible === true,
         );
-        draft.verticalAlign.verticalShift = Math.floor(
-          (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
+        draft.verticalAlign.verticalShift = Math.abs(
+          Math.floor(
+            (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
+          ),
         );
         break;
       }

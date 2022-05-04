@@ -7,7 +7,7 @@ export default () => {
   let resolveAliases: AliasOptions = [];
   if (process.env.WITH_PROFILING) {
     resolveAliases = [
-      { find: /react-dom$/, replacement: 'react-dom/profiling' },
+      { find: 'react-dom/client', replacement: 'react-dom/profiling' },
       { find: 'scheduler/tracing', replacement: 'scheduler/tracing-profiling' },
     ];
   }
@@ -16,10 +16,6 @@ export default () => {
     base: './',
     esbuild: {
       sourcemap: true,
-    },
-    define: {
-      // TODO: https://github.com/Wildhoney/ReactShadow/pull/121
-      global: 'globalThis',
     },
     build: {
       sourcemap: true,
