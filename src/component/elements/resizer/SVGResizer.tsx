@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, useEffect, MouseEventHandler } from 'react';
+import { CSSProperties, MouseEventHandler } from 'react';
 
-import { Position, ResizerProps } from './Resizer';
-import useDraggable from './useDraggable';
+import { ResizerProps } from './Resizer';
+import useResizer from './useResizer';
 
 const anchorStyle: CSSProperties = {
   width: '2px',
@@ -14,7 +14,6 @@ const anchorStyle: CSSProperties = {
 const styles = {
   container: (position: number) => css`
     transform: translateX(${position}px);
-
     &:hover {
       rect:last-child {
         fill: red !important;
@@ -33,58 +32,22 @@ const styles = {
 };
 
 export default function SVGResizer(props: ResizerProps) {
-  const {
-    children,
-    initialPosition = { x1: 10, x2: 40 },
-    onStart,
-    onMove,
-    onEnd,
-  } = props;
-
-  const right = useDraggable({
-    x: initialPosition.x2,
-    anchor: 'RIGHT',
-  });
-  const left = useDraggable({
-    x: initialPosition.x1,
-    anchor: 'LEFT',
-  });
-
-  useEffect(() => {
-    const position: Position = { x1: left.position.x, x2: right.position.x };
-    const status = left.isActive
-      ? left.position.action
-      : right.isActive
-      ? right.position.action
-      : '';
-    switch (status) {
-      case 'start':
-        onStart?.(position);
-        break;
-      case 'move':
-        onMove?.(position);
-        break;
-      case 'end':
-        onEnd?.(position);
-        break;
-      default:
-        break;
-    }
-  }, [left, onEnd, onMove, onStart, right]);
+  const { children } = props;
+  const { left, right, currentPosition, isActive } = useResizer(props);
 
   return (
     <g
       style={{
-        transform: `translateX(${left.position.x}px)`,
+        transform: `translateX(${currentPosition.x1}px)`,
       }}
     >
       {typeof children === 'function'
-        ? children(left.position.x, right.position.x)
+        ? children(currentPosition, isActive)
         : children}
       <SVGResizerHandle onMouseDown={left.onMouseDown} position={0} />
       <SVGResizerHandle
         onMouseDown={right.onMouseDown}
-        position={right.position.x - left.position.x}
+        position={Math.ceil(currentPosition.x2 - currentPosition.x1)}
       />
     </g>
   );

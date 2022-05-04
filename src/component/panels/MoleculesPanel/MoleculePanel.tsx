@@ -155,9 +155,11 @@ function MoleculePanelInner({
             {molecules && molecules.length > 0 ? (
               molecules.map((mol: Molecule, index) => (
                 <div key={mol.key} css={styles.items}>
-                  <span css={styles.toolbar}>
-                    <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
-                  </span>
+                  <div css={styles.toolbar}>
+                    <span>
+                      <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
+                    </span>
+                  </div>
                   <div
                     css={styles.slider}
                     className="mol-svg-container"

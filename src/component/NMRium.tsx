@@ -211,6 +211,7 @@ function InnerNMRium({
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
+  const viewerRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
   const isFullscreen = useFullscreen(rootRef, show, {
@@ -295,6 +296,7 @@ function InnerNMRium({
       value={{
         rootRef: rootRef.current,
         elementsWrapperRef: elementsWrapperRef.current,
+        viewerRef: viewerRef.current,
       }}
     >
       <PreferencesProvider value={preferencesState}>
@@ -340,6 +342,7 @@ function InnerNMRium({
                                     <KeysListenerTracker />
                                     <div
                                       data-test-id="viewer"
+                                      ref={viewerRef}
                                       style={{
                                         width: '100%',
                                         height: '100%',
