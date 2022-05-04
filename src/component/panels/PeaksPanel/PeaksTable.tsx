@@ -108,7 +108,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
       {
         showWhen: 'showPeakWidth',
         index: 6,
-        Header: 'Peak Width',
+        Header: 'Width (Hz)',
         accessor: (row) =>
           formatNumber(row.peakWidth, peaksPreferences.peakWidthFormat),
       },
