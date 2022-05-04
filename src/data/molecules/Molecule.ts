@@ -6,6 +6,7 @@ import getAtomsFromMF from '../utilities/getAtomsFromMF';
 interface MoleculeInnerProps {
   key: string;
   molfile: string;
+  isFloat: boolean;
 }
 export interface Molecule extends MoleculeInnerProps {
   mf: string;
@@ -13,7 +14,6 @@ export interface Molecule extends MoleculeInnerProps {
   mw: number;
   svg: string;
   atoms: Record<string, number>;
-  isFloat: boolean;
 }
 
 export function initMolecule(
@@ -21,6 +21,8 @@ export function initMolecule(
 ): Molecule {
   const key = options.key || generateID();
   const molfile = options.molfile || '';
+  const isFloat =
+    typeof options?.isFloat === 'boolean' ? options.isFloat : false;
 
   const mol = OCLMolecule.fromMolfile(molfile);
   const mfInfo = mol.getMolecularFormula();
@@ -33,7 +35,7 @@ export function initMolecule(
     mw: mfInfo.relativeWeight,
     svg: mol.toSVG(50, 50),
     atoms: getAtomsFromMF(mfInfo.formula),
-    isFloat: false,
+    isFloat,
   };
 }
 
