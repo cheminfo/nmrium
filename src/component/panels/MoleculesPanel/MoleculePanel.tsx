@@ -49,7 +49,7 @@ const styles: Record<
     display: 'flex',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
     padding: '0px 10px',
-    justifyContent: 'space-between',
+    justifyContent: 'end',
     height: 22,
   }),
   slider: css({
