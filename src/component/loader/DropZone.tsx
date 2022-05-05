@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import Zip from 'jszip';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useErrorHandler } from 'react-error-boundary';
 import { FaUpload } from 'react-icons/fa';
 
 import { File } from '../../data/types/common/File';
@@ -10,6 +11,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
+import { useAsyncError } from '../hooks/useAsyncError';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
@@ -65,6 +67,9 @@ function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const throwError = useAsyncError();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleError = useErrorHandler();
 
   const loadSubFilesFromZip = useCallback(
     async (extractedfiles, uniqueFileExtensions) => {
@@ -235,13 +240,18 @@ function DropZone(props) {
                 'The file extension must be zip, dx, jdx, json, mol, nmredata or nmrium.',
               );
           }
-        } catch (e: any) {
+        } catch (error: any) {
+          alert.error(error.message);
+          // custom hook to throw an error
+          throwError(error);
+          // or you use the hook from ErrorBoundary
+          // handleError(error);
+        } finally {
           dispatch({ type: SET_LOADING_FLAG, isLoading: false });
-          alert.error(e.message);
         }
       }
     },
-    [alert, dispatch, loadSubFilesFromZip],
+    [alert, dispatch, loadSubFilesFromZip, throwError],
   );
 
   const onDrop = useCallback(

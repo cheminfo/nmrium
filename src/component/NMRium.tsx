@@ -14,7 +14,7 @@ import {
   ReactElement,
   ReactNode,
 } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary, ErrorBoundaryProps } from 'react-error-boundary';
 import { useToggle, useFullscreen } from 'react-use';
 
 import { Datum1D } from '../data/types/data1d';
@@ -117,7 +117,7 @@ export type NMRiumWorkspace =
   | 'prediction'
   | 'embedded';
 
-export interface NMRiumProps {
+export interface NMRiumProps extends Pick<ErrorBoundaryProps, 'onError'> {
   data?: NMRiumData;
   onDataChange?: (data: State) => void;
   workspace?: NMRiumWorkspace;
@@ -194,7 +194,7 @@ const defaultData: NMRiumData = {
 function NMRium(props: NMRiumProps) {
   return (
     <RootLayout style={{ width: '100%' }}>
-      <ErrorBoundary FallbackComponent={ErrorOverlay}>
+      <ErrorBoundary FallbackComponent={ErrorOverlay} onError={props?.onError}>
         <InnerNMRium {...props} />
       </ErrorBoundary>
     </RootLayout>

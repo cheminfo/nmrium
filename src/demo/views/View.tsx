@@ -119,6 +119,8 @@ export default function View(props) {
               data={data}
               onDataChange={changeHandler}
               workspace={props.workspace || null}
+              // eslint-disable-next-line no-console
+              onError={(e) => console.log('onError Triggered', e)}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (
