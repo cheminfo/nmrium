@@ -10,6 +10,7 @@ import { Zones } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import SVGDraggable from '../../elements/draggble/SVGDraggable';
+import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../panels/MoleculesPanel/useAtomAssignment';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { FLOAT_MOLECULE_OVER_SPECTRUM } from '../../reducer/types/Types';
@@ -43,6 +44,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   const { zones, ranges, molecule, activeTab, displayerMode, index } = props;
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
+  const openMoleculeEditor = useMoleculeEditor();
 
   const {
     currentDiaIDsToHighlight,
@@ -72,6 +74,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
           height={height + 30}
           data-replace-float-structure="true"
           css={style}
+          onDoubleClick={() => openMoleculeEditor(molecule)}
         >
           <ActionsButton onFloatBtnClick={floatMoleculeHandler} />
           <OCLnmr

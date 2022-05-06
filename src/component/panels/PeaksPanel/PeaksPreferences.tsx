@@ -87,7 +87,7 @@ const formatFields: Array<{
   },
   {
     id: 5,
-    label: 'Peak Width',
+    label: 'Peak Width (Hz)',
     checkController: 'showPeakWidth',
     formatController: 'peakWidthFormat',
   },

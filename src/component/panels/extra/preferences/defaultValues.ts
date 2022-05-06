@@ -40,7 +40,7 @@ const peaksDefaultValues = {
   showDeltaHz: false,
   deltaHzFormat: '0.00',
   showPeakWidth: false,
-  peakWidthFormat: '00.0000',
+  peakWidthFormat: '0.00',
   showIntensity: true,
   intensityFormat: '0.00',
 };
