@@ -2,8 +2,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { StructureEditor } from 'react-ocl/full';
 
+import { Molecule } from '../../data/molecules/Molecule';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
+import { useModal } from '../elements/popup/Modal';
+import { positions } from '../elements/popup/options';
 import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
@@ -74,6 +77,20 @@ function MoleculeStructureEditorModal(
         />
       </div>
     </div>
+  );
+}
+
+export function useMoleculeEditor(): (molecule?: Molecule) => void {
+  const modal = useModal();
+  return useCallback(
+    (molecule?: Molecule) => {
+      modal.show(<MoleculeStructureEditorModal selectedMolecule={molecule} />, {
+        position: positions.TOP_CENTER,
+        width: 700,
+        height: 500,
+      });
+    },
+    [modal],
   );
 }
 

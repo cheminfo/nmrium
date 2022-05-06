@@ -53,6 +53,7 @@ export function setMolfile(molecules, molfile, key) {
   } else if (fragments.length === 1) {
     const fragment = fragments[0];
     const _mol = initMolecule({
+      isFloat: true,
       molfile: fragment.toMolfileV3(),
       key: key,
     });

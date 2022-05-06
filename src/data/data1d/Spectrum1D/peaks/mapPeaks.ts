@@ -27,7 +27,7 @@ export function mapPeaks(peaks: Peak[], datum: Datum1D) {
       originalX: newPeak.x - shiftX,
       x: newPeak.x,
       y: newPeak.y,
-      width: newPeak.width,
+      width: newPeak.width * datum.info.originFrequency,
     });
 
     return acc;

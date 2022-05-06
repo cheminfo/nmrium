@@ -12,9 +12,8 @@ import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import NextPrev from '../../elements/NextPrev';
-import { positions, useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
-import MoleculeStructureEditorModal from '../../modal/MoleculeStructureEditorModal';
+import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_MOLECULE } from '../../reducer/types/Types';
 
@@ -91,7 +90,7 @@ function MoleculePanelInner({
   const [molecules, setMolecules] = useState<any>([]);
 
   const dispatch = useDispatch();
-  const modal = useModal();
+  const openMoleculeEditor = useMoleculeEditor();
 
   const {
     currentDiaIDsToHighlight,
@@ -122,17 +121,6 @@ function MoleculePanelInner({
     [dispatch],
   );
 
-  const openMoleculeEditorHandler = useCallback(
-    (molecule?: Molecule) => {
-      modal.show(<MoleculeStructureEditorModal selectedMolecule={molecule} />, {
-        position: positions.TOP_CENTER,
-        width: 700,
-        height: 500,
-      });
-    },
-    [modal],
-  );
-
   const moleculeIndexHandler = useCallback((index) => {
     setCurrentIndex(index);
   }, []);
@@ -142,7 +130,7 @@ function MoleculePanelInner({
       <MoleculePanelHeader
         currentIndex={currentIndex}
         molecules={molecules}
-        onOpenMoleculeEditor={() => openMoleculeEditorHandler()}
+        onOpenMoleculeEditor={() => openMoleculeEditor()}
         onMoleculeIndexChange={moleculeIndexHandler}
         actionsOptions={actionsOptions}
       />
@@ -163,7 +151,7 @@ function MoleculePanelInner({
                   <div
                     css={styles.slider}
                     className="mol-svg-container"
-                    onDoubleClick={() => openMoleculeEditorHandler(mol)}
+                    onDoubleClick={() => openMoleculeEditor(mol)}
                     style={{
                       backgroundColor:
                         (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
@@ -207,7 +195,7 @@ function MoleculePanelInner({
               <div
                 css={styles.slider}
                 style={{ height: '100%' }}
-                onClick={() => openMoleculeEditorHandler()}
+                onClick={() => openMoleculeEditor()}
               >
                 <span>Click to draw molecule</span>
               </div>
