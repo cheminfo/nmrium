@@ -19,6 +19,17 @@ function getElements(activeTab: string) {
   return nuclei.map((nucleus) => nucleus.replace(/[0-9]/g, ''));
 }
 
+/**
+ * Returns the OCL id(s) and number of atoms of an atom when hovering over
+ * or clicking on it. This is depending on an optional given axis.
+ * In case of an heavy atom with bonded hydrogens the OCL id(s)
+ * and number of these hydrogens are added as well.
+ *
+ * @param {Atom} atom - atom returned by OCLnmr component
+ * @param {string} activeTab - active tab
+ * @param {Axis} axis - current axis
+ *
+ */
 export function extractFromAtom(
   atom: Atom,
   activeTab: string,
