@@ -38,6 +38,7 @@ authors:
     given-names: 'Johannes'
   - family-names: 'Schloerer'
     given-names: 'Nils'
+    orcid: 'https://orcid.org/0000-0002-0990-9582'
   - family-names: 'Wist'
     given-names: 'Julien'
     affiliation: 'Universidad del Valle, Cali, Colombia'
