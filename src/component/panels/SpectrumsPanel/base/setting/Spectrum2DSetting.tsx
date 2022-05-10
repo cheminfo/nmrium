@@ -24,21 +24,6 @@ function Spectrum2DSetting({
   data: SpectrumData,
   onSubmit,
 }: Spectrum2DSettingProps) {
-  // const style = css`
-  //   .positive {
-  //     display: inline-block;
-  //     .track-1 {
-  //       background-color: ${SpectrumData.display.positiveColor} !important;
-  //     }
-  //   }
-  //   .negative {
-  //     display: inline-block;
-
-  //     .track-1 {
-  //       background-color: ${SpectrumData.display.negativeColor} !important;
-  //     }
-  //   }
-  // `;
   const { positiveColor, negativeColor } = SpectrumData.display;
   return (
     <FormikForm initialValues={SpectrumData.display} onSubmit={onSubmit}>
