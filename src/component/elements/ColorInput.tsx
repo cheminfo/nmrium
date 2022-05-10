@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { ColorPicker } from 'analysis-ui-components';
 import { useCallback, memo, useState, useEffect } from 'react';
-import { ChromePicker } from 'react-color';
 
 const style = css`
   display: flex;
@@ -117,7 +117,7 @@ function ColorInput(props: ColorInputProps) {
         {displayColorPicker ? (
           <div className="color-popover">
             <div className="cover" onClick={handleClose} />
-            <ChromePicker
+            <ColorPicker
               color={{ hex: selectedColor }}
               onChangeComplete={handleOnColorChanged}
             />
