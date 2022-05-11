@@ -6,19 +6,28 @@ import ReactSlider from 'react-slider';
 interface FormikSliderProps {
   name: string;
   onAfterChange?: (element: any) => void;
+  triggerSubmit?: boolean;
 }
 
 function FormikSlider(props: FormikSliderProps) {
-  const { onAfterChange = () => null, name, ...sliderProps } = props;
+  const {
+    onAfterChange = () => null,
+    name,
+    triggerSubmit = false,
+    ...sliderProps
+  } = props;
 
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue, submitForm } = useFormikContext();
 
   const changeHandler = useCallback(
     (value) => {
       onAfterChange(value);
       setFieldValue(name, value);
+      if (triggerSubmit) {
+        setTimeout(submitForm, 1);
+      }
     },
-    [name, onAfterChange, setFieldValue],
+    [name, onAfterChange, setFieldValue, submitForm, triggerSubmit],
   );
 
   return (

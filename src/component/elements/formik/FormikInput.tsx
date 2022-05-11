@@ -7,6 +7,7 @@ import Input, { InputProps } from '../Input';
 interface FormikInputProps extends InputProps {
   name: string;
   checkErrorAfterInputTouched?: boolean;
+  triggerSubmit?: boolean;
 }
 
 function FormikInput(props: FormikInputProps) {
@@ -20,10 +21,11 @@ function FormikInput(props: FormikInputProps) {
     value = null,
     format = () => (value) => value,
     checkErrorAfterInputTouched = true,
+    triggerSubmit = false,
     ...resProps
   } = props;
 
-  const { values, handleChange, setFieldValue, errors, touched } =
+  const { values, handleChange, setFieldValue, errors, touched, submitForm } =
     useFormikContext();
 
   const changeHandler = useCallback(
@@ -37,8 +39,11 @@ function FormikInput(props: FormikInputProps) {
   useEffect(() => {
     if (value) {
       setFieldValue(name, value);
+      if (triggerSubmit) {
+        setTimeout(submitForm, 1);
+      }
     }
-  }, [name, setFieldValue, value]);
+  }, [name, setFieldValue, submitForm, triggerSubmit, value]);
 
   const isInvalid = useMemo(() => {
     if (checkErrorAfterInputTouched) {

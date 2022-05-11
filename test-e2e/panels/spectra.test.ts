@@ -29,7 +29,7 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
 
-  const sketchPicker = nmrium.page.locator('.sketch-picker');
+  const sketchPicker = nmrium.page.locator('_react=ColorPicker');
 
   await expect(sketchPicker).toHaveCount(0);
   await nmrium.page.click('_react=ColorIndicator >> nth=0');
@@ -81,7 +81,7 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
   await nmrium.page.click('_react=ColorIndicator');
 
   // Click on the top-left of the color picker (white)
-  await nmrium.page.click('.sketch-picker > div >> nth=0', {
+  await nmrium.page.click('_react=ColorPicker >> div >> nth=0', {
     position: { x: 0, y: 0 },
   });
 
