@@ -24,6 +24,7 @@ export const basic: Workspace = {
       multipleSpectraAnalysisPanel: { display: false, open: false },
       databasePanel: { display: false, open: false },
       predictionPanel: { display: false, open: false },
+      automaticAssignmentPanel: { display: false, open: false },
     },
   },
 

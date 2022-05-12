@@ -61,6 +61,10 @@ const LIST: ListItem[] = [
     name: 'panels.predictionPanel',
   },
   {
+    label: 'Automatic Assignment Panel',
+    name: 'panels.automaticAssignmentPanel',
+  },
+  {
     label: 'Experimental Features',
     name: 'general.experimentalFeatures',
     hideOpenOption: true,
