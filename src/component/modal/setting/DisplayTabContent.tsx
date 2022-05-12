@@ -17,7 +17,7 @@ const LIST: ListItem[] = [
     name: 'panels.spectraPanel',
   },
   {
-    label: 'Spectra information Panel',
+    label: 'Spectra information panel',
     name: 'panels.informationPanel',
   },
   {
@@ -37,7 +37,7 @@ const LIST: ListItem[] = [
     name: 'panels.structuresPanel',
   },
   {
-    label: 'Filters Panel',
+    label: 'Filters panel',
     name: 'panels.filtersPanel',
   },
   {
@@ -45,27 +45,27 @@ const LIST: ListItem[] = [
     name: 'panels.zonesPanel',
   },
   {
-    label: 'Assignment summary Panel',
+    label: 'Assignment summary panel',
     name: 'panels.summaryPanel',
   },
   {
-    label: 'Multiple Spectra Analysis Panel',
+    label: 'Multiple spectra analysis panel',
     name: 'panels.multipleSpectraAnalysisPanel',
   },
   {
-    label: 'Databases Panel',
+    label: 'Databases panel',
     name: 'panels.databasePanel',
   },
   {
-    label: 'Prediction Panel',
+    label: 'Prediction panel',
     name: 'panels.predictionPanel',
   },
   {
-    label: 'Automatic Assignment Panel',
+    label: 'Automatic assignment panel',
     name: 'panels.automaticAssignmentPanel',
   },
   {
-    label: 'Experimental Features',
+    label: 'Experimental features',
     name: 'general.experimentalFeatures',
     hideOpenOption: true,
   },
