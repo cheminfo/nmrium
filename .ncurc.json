@@ -1,8 +1,4 @@
 {
   "dep": "prod,dev",
-  "reject": [
-    "react-color",
-    "// TODO: Migrate to v6",
-    "react-router-dom"
-  ]
+  "reject": []
 }
