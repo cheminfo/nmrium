@@ -9,11 +9,11 @@ import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
@@ -58,14 +58,15 @@ function RangesHeader({
   showMultiplicityTrees,
   showJGraph,
   showRangesIntegrals,
+  activeTab,
 }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
-  const preferences = usePreferences();
   const assignmentData = useAssignmentData();
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const changeRangesSumHandler = useCallback(
     (value) => {
@@ -147,13 +148,11 @@ function RangesHeader({
 
   const saveAsHTMLHandler = useCallback(() => {
     const { originFrequency: observedFrequency, nucleus } = info;
-    const format = lodashGet(
-      preferences.current,
-      `formatting.nuclei[${nucleus.toLowerCase()}]`,
-      '0.0',
+
+    const nbDecimalDelta = getNumberOfDecimals(
+      rangesPreferences.deltaPPMFormat,
     );
-    const nbDecimalDelta = getNumberOfDecimals(format.ppm);
-    const nbDecimalJ = getNumberOfDecimals(format.hz);
+    const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHzFormat);
 
     const result = rangesToACS(ranges.values, {
       nucleus, // '19f'
@@ -169,7 +168,14 @@ function RangesHeader({
       />,
       {},
     );
-  }, [info, modal, preferences, ranges.values, saveToClipboardHandler]);
+  }, [
+    info,
+    modal,
+    ranges.values,
+    rangesPreferences.deltaHzFormat,
+    rangesPreferences.deltaPPMFormat,
+    saveToClipboardHandler,
+  ]);
 
   const changeSumConstantFlagHandler = useCallback(
     (flag) => {
