@@ -9,9 +9,75 @@ interface Controllers {
   dimmedSpectraTransparency: number;
 }
 
+export interface IntegralsPanelPreferences {
+  showAbsolute: boolean;
+  absoluteFormat: string;
+  showRelative: boolean;
+  relativeFormat: string;
+  color: string;
+  strokeWidth: number;
+}
+
+export interface ZonesPanelPreferences {
+  showFrom: boolean;
+  fromFormat: string;
+  showTo: boolean;
+  toFormat: string;
+  showAbsolute: boolean;
+  absoluteFormat: string;
+  showRelative: boolean;
+  relativeFormat: string;
+}
+
+export interface RangesPanelPreferences {
+  showFrom: boolean;
+  fromFormat: string;
+  showTo: boolean;
+  toFormat: string;
+  showAbsolute: boolean;
+  absoluteFormat: string;
+  showRelative: true;
+  relativeFormat: string;
+  jGraphTolerance: number;
+}
+
+export interface PeaksPanelPreferences {
+  showPeakNumber: boolean;
+  peakNumberFormat: string;
+  showPeakIndex: boolean;
+  peakIndexFormat: string;
+  showDeltaPPM: boolean;
+  deltaPPMFormat: string;
+  showDeltaHz: boolean;
+  deltaHzFormat: string;
+  showPeakWidth: boolean;
+  peakWidthFormat: string;
+  showIntensity: boolean;
+  intensityFormat: string;
+}
+
+export interface DatabasePanelPreferences {
+  showSmiles: boolean;
+  showSolvent: boolean;
+  showNames: boolean;
+  showRange: boolean;
+  showDelta: boolean;
+  showAssignment: boolean;
+  showCoupling: boolean;
+  showMultiplicity: boolean;
+}
+
+interface Panels {
+  peaks?: Record<string, PeaksPanelPreferences>;
+  integrals?: Record<string, IntegralsPanelPreferences>;
+  ranges?: Record<string, RangesPanelPreferences>;
+  zones?: Record<string, ZonesPanelPreferences>;
+  database?: DatabasePanelPreferences;
+}
+
 export interface Formatting {
   nuclei: Record<string, NucleusFormat>;
-  panels: any;
+  panels: Panels;
 }
 
 export interface Database {
