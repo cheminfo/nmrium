@@ -20,7 +20,7 @@ import {
 
 type Panel = 'peaks' | 'integrals' | 'zones' | 'ranges' | 'database';
 
-function getDefaultPreferences(panelKey: Panel, nucleus: string) {
+function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
     case 'peaks':
       return peaksDefaultValues;
@@ -38,12 +38,13 @@ function getDefaultPreferences(panelKey: Panel, nucleus: string) {
   }
 }
 
-function getKeyPath(panelKey: Panel, nucleus: string) {
+function getKeyPath(panelKey: Panel, nucleus?: string) {
   if (panelKey === 'database') {
     return `formatting.panels.${panelKey}`;
+  } else if (nucleus) {
+    return `formatting.panels.${panelKey}.[${nucleus}]`;
   }
-
-  return `formatting.panels.${panelKey}.[${nucleus}]`;
+  return {};
 }
 
 interface PreferencesReturnType {
@@ -57,6 +58,11 @@ interface PreferencesReturnType {
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus: string,
+);
+export function usePanelPreferences<T extends 'database'>(panelKey: T);
+export function usePanelPreferences<T extends Panel>(
+  panelKey: T,
+  nucleus?: string,
 ): PreferencesReturnType[T] {
   const { current } = usePreferences();
 
