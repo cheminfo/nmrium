@@ -71,7 +71,7 @@ export interface DatabasePanelPreferences {
   showMultiplicity: boolean;
 }
 
-interface Panels {
+export interface Panels {
   peaks?: Record<string, PeaksPanelPreferences>;
   integrals?: Record<string, IntegralsPanelPreferences>;
   ranges?: Record<string, RangesPanelPreferences>;
