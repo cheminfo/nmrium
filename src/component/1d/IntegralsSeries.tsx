@@ -41,7 +41,7 @@ function IntegralsSeries() {
             )}
       </g>
     );
-  }, [activeSpectrum, data, xDomains]);
+  }, [activeSpectrum, data, nucleus, xDomains]);
 
   return <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>{Integrals}</g>;
 }
