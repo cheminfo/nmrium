@@ -284,19 +284,15 @@ function CorrelationTableRow({
           : ''}
       </td>
       <td title={t} {...otherTableDataProps}>
-        {correlation.pseudo === false ? (
-          correlation.atomType !== 'H' ? (
-            <EditableColumn
-              type="number"
-              value={correlation.equivalence}
-              style={equivalenceCellStyle}
-              onSave={onSaveEquivalencesHandler}
-            />
-          ) : (
-            <text style={equivalenceCellStyle}>{correlation.equivalence}</text>
-          )
+        {correlation.atomType !== 'H' ? (
+          <EditableColumn
+            type="number"
+            value={correlation.equivalence}
+            style={equivalenceCellStyle}
+            onSave={onSaveEquivalencesHandler}
+          />
         ) : (
-          ''
+          <text style={equivalenceCellStyle}>{correlation.equivalence}</text>
         )}
       </td>
       <td title={t} {...otherTableDataProps}>
