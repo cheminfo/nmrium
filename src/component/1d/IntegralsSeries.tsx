@@ -6,7 +6,13 @@ import { useChartData } from '../context/ChartContext';
 import Integral from './Integral';
 
 function IntegralsSeries() {
-  const { xDomains, activeSpectrum, data, displayerKey } = useChartData();
+  const {
+    xDomains,
+    activeSpectrum,
+    data,
+    displayerKey,
+    activeTab: nucleus,
+  } = useChartData();
 
   const Integrals = useMemo(() => {
     const isActive = (id) => {
@@ -26,6 +32,7 @@ function IntegralsSeries() {
             .map((spectrum) =>
               spectrum.integrals.values.map((integral) => (
                 <Integral
+                  nucleus={nucleus}
                   key={integral.id}
                   integral={integral}
                   isActive={isActive(spectrum.id)}

@@ -9,6 +9,7 @@ import { useScaleChecked } from '../context/ScaleContext';
 import Resizer from '../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL } from '../reducer/types/Types';
+import FormatNumber from '../utility/FormatNumber';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -43,9 +44,13 @@ interface IntegralResizableProps {
     to: number;
     integral?: number;
   };
+  integralFormat: string;
 }
 
-function IntegralResizable({ integralData }: IntegralResizableProps) {
+function IntegralResizable({
+  integralData,
+  integralFormat,
+}: IntegralResizableProps) {
   const { height, margin } = useChartData();
   const { viewerRef } = useGlobal();
   const { scaleX } = useScaleChecked();
@@ -115,7 +120,9 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
               fill="black"
               style={{ fontSize: '12px', fontWeight: 'bold' }}
             >
-              {integral !== undefined ? integral.toFixed(2) : ''}
+              {integral !== undefined
+                ? FormatNumber(integral, integralFormat)
+                : ''}
             </text>
           </g>
         )}
