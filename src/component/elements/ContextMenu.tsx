@@ -55,7 +55,7 @@ interface ContextMenuItem {
 }
 
 export interface ContextMenuProps {
-  context: ContextMenuItem[];
+  context: ContextMenuItem[] | null;
 }
 // TODO: remove this hacky ref usage.
 function ContextMenu({ context }: ContextMenuProps, ref: any) {
