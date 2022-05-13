@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { Suspense, useMemo, useState, useCallback } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
@@ -25,8 +25,8 @@ const mainPanelClosedCss = css`
 `;
 
 interface DashboardProps {
-  routes: any[];
-  baseURL: string;
+  routes?: any[];
+  baseURL?: string;
 }
 
 export function Dashboard(props: DashboardProps) {
@@ -37,6 +37,20 @@ export function Dashboard(props: DashboardProps) {
     () => setMenuIsClosed(!menuIsClosed),
     [menuIsClosed],
   );
+
+  let rootRoute: JSX.Element | null = null;
+  if (routesList.length > 0) {
+    const route = routesList[0];
+    const viewName = route.view ? route.view : 'View';
+    const RenderedView = possibleViews[viewName];
+    rootRoute = (
+      <Route
+        path="/"
+        element={<RenderedView {...route[0]} />}
+        key={getKey(routesList[0].file)}
+      />
+    );
+  }
 
   return (
     <div
@@ -60,34 +74,21 @@ export function Dashboard(props: DashboardProps) {
       >
         {/* <StrictMode> */}
         <Suspense fallback={<div>Loading...</div>}>
-          <Switch>
+          <Routes>
             {routesList.map((prop) => {
               return (
                 <Route
                   path={`/SamplesDashboard/:id/${
                     (prop.view || 'View') + getKey(prop.file)
                   }`}
-                  render={(props) => (
-                    <RenderView {...props} prop={prop} baseURL={baseURL} />
-                  )}
+                  element={<RenderView prop={prop} baseURL={baseURL} />}
                   key={getKey(prop.file)}
                 />
               );
             })}
 
-            {routesList.length > 0 && (
-              <Route
-                path="/"
-                render={() => {
-                  const routeProp = routesList[0];
-                  const viewName = routeProp.view ? routeProp.view : 'View';
-                  const RenderedView = possibleViews[viewName];
-                  return <RenderedView {...routeProp[0]} />;
-                }}
-                key={getKey(routesList[0].file)}
-              />
-            )}
-          </Switch>
+            {rootRoute}
+          </Routes>
         </Suspense>
         {/* </StrictMode> */}
       </div>
@@ -96,18 +97,10 @@ export function Dashboard(props: DashboardProps) {
 }
 
 function RenderView(props) {
-  const {
-    match: {
-      params: { id },
-    },
-    prop,
-    baseURL,
-  } = props;
+  const { prop, baseURL } = props;
   const viewName = prop.view ? prop.view : 'View';
   const RenderedView = possibleViews[viewName];
-  return (
-    <RenderedView key={id} {...prop} id={getKey(prop.file)} baseURL={baseURL} />
-  );
+  return <RenderedView {...prop} id={getKey(prop.file)} baseURL={baseURL} />;
 }
 
 export default Dashboard;

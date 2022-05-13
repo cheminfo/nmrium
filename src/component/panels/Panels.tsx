@@ -110,9 +110,8 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Automatic Assignment',
     component: <AutomaticAssignment />,
-    hidePreferenceKey: '',
+    hidePreferenceKey: 'automaticAssignmentPanel',
     mode: null,
-    isExperimental: true,
   },
   {
     title: 'Prediction',

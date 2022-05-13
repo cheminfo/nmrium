@@ -150,6 +150,7 @@ export type NMRiumPreferences = Partial<{
     multipleSpectraAnalysisPanel: PanelPreferencesType;
     databasePanel: PanelPreferencesType;
     predictionPanel: PanelPreferencesType;
+    automaticAssignmentPanel: PanelPreferencesType;
   }>;
   toolBarButtons: Partial<{
     zoomTool: boolean;

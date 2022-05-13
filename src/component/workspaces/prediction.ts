@@ -21,6 +21,7 @@ export const prediction: Workspace = {
       summaryPanel: { display: false },
       multipleSpectraAnalysisPanel: { display: false },
       databasePanel: { display: false },
+      automaticAssignmentPanel: { display: false },
     },
   },
   controllers: basic.controllers,

@@ -1,18 +1,19 @@
 import { Suspense } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { getKey } from '../utility/menu';
 import { possibleViews } from '../views';
 
 interface SingleDisplayerLayoutProps {
-  view: any;
-  patrh: any;
   path: any;
 }
 
 export default function SingleDisplayerLayout(
   props: SingleDisplayerLayoutProps,
 ) {
+  const viewName = 'SingleView';
+
+  const RenderedView = possibleViews[viewName];
   return (
     <div
       style={{
@@ -33,26 +34,13 @@ export default function SingleDisplayerLayout(
         }}
       >
         <Suspense fallback={<div>Loading...</div>}>
-          <Switch>
+          <Routes>
             <Route
               path="/"
-              render={(routeProps: any) => {
-                const {
-                  match: {
-                    params: { id },
-                  },
-                } = routeProps;
-                const viewName = props.view ? props.view : 'SingleView';
-
-                const RenderedView = possibleViews[viewName];
-
-                return (
-                  <RenderedView key={id} {...props} id={getKey(props.patrh)} />
-                );
-              }}
+              element={<RenderedView {...props} />}
               key={getKey(props.path)}
             />
-          </Switch>
+          </Routes>
         </Suspense>
       </div>
     </div>

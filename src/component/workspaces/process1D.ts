@@ -22,6 +22,7 @@ export const process1D: Workspace = {
       filtersPanel: { hidden: true },
       databasePanel: { hidden: true },
       predictionPanel: { hidden: true },
+      automaticAssignmentPanel: { hidden: true },
     },
 
     toolBarButtons: {
