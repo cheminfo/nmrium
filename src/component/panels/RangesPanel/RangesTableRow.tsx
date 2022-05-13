@@ -14,7 +14,7 @@ import {
   useHighlight,
   useHighlightData,
 } from '../../highlight';
-import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
+import { RangesPanelPreferences } from '../../workspaces/Workspace';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
 import ActionsColumn from './TableColumns/ActionsColumn';
@@ -38,7 +38,7 @@ interface RangesTableRowProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
   onContextMenu: (element: any, data: any) => void;
-  preferences: string;
+  preferences: RangesPanelPreferences;
 }
 
 function RangesTableRow({
@@ -169,39 +169,40 @@ function RangesTableRow({
         {rowData.tableMetaInfo.rowIndex + 1}
       </td>
 
-      {isColumnVisible(preferences, 'showFrom') && (
+      {preferences.showFrom && (
         <RangeColumn
           value={rowData.from}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('showFrom', undefined)}
+          format={preferences.fromFormat}
         />
       )}
-      {isColumnVisible(preferences, 'showTo') && (
+      {preferences.showTo && (
         <RangeColumn
           value={rowData.to}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('toFormat', undefined)}
+          format={preferences.toFormat}
         />
       )}
 
       <SignalDeltaColumn
         rowData={rowData}
         onHoverSignal={onHoverSignal}
-        preferences={preferences}
+        toFormat={preferences.toFormat}
+        fromFormat={preferences.fromFormat}
       />
 
-      {isColumnVisible(preferences, 'showRelative') && (
+      {preferences.showRelative && (
         <RelativeColumn
           rowData={rowData}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('relativeFormat', undefined)}
+          format={preferences.relativeFormat}
         />
       )}
 
-      {isColumnVisible(preferences, 'showAbsolute') && (
+      {preferences.showAbsolute && (
         <AbsoluteColumn
           value={rowData.absolute}
           rowSpanTags={rowSpanTags}

@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodashGet from 'lodash/get';
 import { Fragment, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import ContextMenu from '../../elements/ContextMenu';
+import ContextMenu, { ContextMenuProps } from '../../elements/ContextMenu';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import { RangesPanelPreferences } from '../../workspaces/Workspace';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './hooks/useMapRanges';
@@ -50,16 +50,25 @@ const tableStyle = css`
     }
   }
 `;
+interface RangesTableProps {
+  onUnlink: (a: any, b?: any) => void;
+  preferences: RangesPanelPreferences;
+  tableData: any;
+  context: ContextMenuProps['context'];
+  activeTab: string;
+}
 
-function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
+function RangesTable({
+  tableData,
+  onUnlink,
+  context,
+  activeTab,
+  preferences,
+}: RangesTableProps) {
   const element = activeTab?.replace(/[0-9]/g, '');
   const contextRef = useRef<any>();
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
-
-  const isVisible = (key) => {
-    return lodashGet(preferences, key, false);
-  };
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
@@ -77,25 +86,25 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
         <thead>
           <tr>
             <th>#</th>
-            {isVisible('showFrom') ? (
+            {preferences.showFrom ? (
               <th id="from" {...onSort}>
                 From
                 {isSortedDesc('from').content}
               </th>
             ) : null}
-            {isVisible('showTo') ? (
+            {preferences.showTo ? (
               <th id="to" {...onSort}>
                 To {isSortedDesc('to').content}
               </th>
             ) : null}
             <th>δ (ppm) </th>
 
-            {isVisible('showRelative') ? (
+            {preferences.showRelative ? (
               <th id="integration" {...onSort}>
                 Rel. {element} {isSortedDesc('integration').content}
               </th>
             ) : null}
-            {isVisible('showAbsolute') ? <th>Absolute</th> : null}
+            {preferences.showAbsolute ? <th>Absolute</th> : null}
             <th>Mult.</th>
             <th>J (Hz)</th>
             <th>

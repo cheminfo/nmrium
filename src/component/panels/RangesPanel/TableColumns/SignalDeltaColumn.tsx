@@ -3,9 +3,8 @@ import { useCallback } from 'react';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_RANGE_SIGNAL_VALUE } from '../../../reducer/types/Types';
+import FormatNumber from '../../../utility/FormatNumber';
 import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
-
-import useFormat from './format';
 
 interface SignalDeltaColumnProps {
   rowData: any;
@@ -13,17 +12,18 @@ interface SignalDeltaColumnProps {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   };
-  preferences: string;
+  fromFormat: string;
+  toFormat: string;
 }
 
 function SignalDeltaColumn({
   rowData,
   onHoverSignal,
-  preferences,
+  fromFormat,
+  toFormat,
 }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
   const signal = rowData.tableMetaInfo.signal;
-  const format = useFormat(preferences);
 
   const saveHandler = useCallback(
     (event) => {
@@ -44,9 +44,9 @@ function SignalDeltaColumn({
   return (
     <td {...onHoverSignal}>
       {!checkMultiplicity(signal.multiplicity, ['m']) ? (
-        `${format(rowData.from, 'fromFormat')} - ${format(
+        `${FormatNumber(rowData.from, fromFormat)} - ${FormatNumber(
           rowData.to,
-          'toFormat',
+          toFormat,
         )}`
       ) : (
         <EditableColumn

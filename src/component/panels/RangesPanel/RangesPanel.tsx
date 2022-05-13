@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodashGet from 'lodash/get';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 
@@ -9,14 +8,14 @@ import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
 import { useAlert } from '../../elements/popup/Alert';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
+import { RangesPanelPreferences } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';
@@ -33,7 +32,7 @@ interface RangesTablePanelInnerProps {
   showMultiplicityTrees: boolean;
   showJGraph: boolean;
   showRangesIntegrals: boolean;
-  preferences: any;
+  preferences: RangesPanelPreferences;
 }
 
 function RangesTablePanelInner({
@@ -133,16 +132,6 @@ function RangesTablePanelInner({
     [data, alert],
   );
 
-  const rangesPreferences = useMemo(() => {
-    const _preferences =
-      lodashGet(
-        preferences.current,
-        `formatting.panels.ranges.[${activeTab}]`,
-      ) || getRangeDefaultValues(activeTab);
-
-    return _preferences;
-  }, [activeTab, preferences]);
-
   const contextMenu = useMemo(
     () => [
       {
@@ -212,7 +201,7 @@ function RangesTablePanelInner({
                   tableData={rangesData}
                   onUnlink={unlinkRangeHandler}
                   context={contextMenu}
-                  preferences={rangesPreferences}
+                  preferences={preferences}
                 />
               ) : (
                 <NoTableData />
@@ -244,7 +233,7 @@ export default function RangesTablePanel() {
   } = useChartData();
 
   const { ranges, data, info } = useSpectrum(emptyData) as Datum1D;
-  const preferences = usePreferences();
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   return (
     <MemoizedRangesTablePanel
@@ -257,7 +246,7 @@ export default function RangesTablePanel() {
         showRangesIntegrals,
         selectedTool,
         displayerKey,
-        preferences,
+        preferences: rangesPreferences,
         xDomain,
         activeTab,
         molecules,

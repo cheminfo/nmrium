@@ -6,6 +6,7 @@ import {
   memo,
   CSSProperties,
   forwardRef,
+  useMemo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
@@ -16,8 +17,8 @@ import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
 
 const styles: Record<
   | 'container'
@@ -88,39 +89,17 @@ const formatFields = [
   },
 ];
 
-interface RangesPreferencesInnerProps {
-  nucleus: Array<string>;
-  preferences: any;
-  innerRef: any;
-}
-
-function RangesPreferencesInner({
-  nucleus,
-  preferences,
-  innerRef,
-}: RangesPreferencesInnerProps) {
+function RangesPreferences(props, ref) {
   const alert = useAlert();
   const formRef = useRef<any>();
-
-  const updateValues = useCallback(() => {
-    if (nucleus) {
-      const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = getRangeDefaultValues(nucleusLabel);
-        return acc;
-      }, {});
-      const rangesPreferences = getValueByKeyPath(
-        preferences.current,
-        `formatting.panels.ranges`,
-      );
-      formRef.current.setValues(
-        rangesPreferences ? rangesPreferences : defaultValues,
-      );
-    }
-  }, [nucleus, preferences]);
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(preferencesByNuclei);
+  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -134,7 +113,7 @@ function RangesPreferencesInner({
   );
 
   useImperativeHandle(
-    innerRef,
+    ref,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -146,49 +125,34 @@ function RangesPreferencesInner({
   return (
     <div style={styles.container}>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nucleus?.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <IsotopesViewer style={styles.header} value={nucleusLabel} />
-            {formatFields.map((field) => (
-              <FormikColumnFormatField
-                key={field.id}
-                label={field.label}
-                checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                formatControllerName={`${nucleusLabel}.${field.formatController}`}
-              />
-            ))}
-            <Label
-              title="J Graph tolerance (Hz) :"
-              style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
-            >
-              <FormikInput
-                name={`${nucleusLabel}.jGraphTolerance`}
-                type="number"
-              />
-            </Label>
-          </div>
+        {nuclei?.map((n) => (
+          <NucleusPreferences key={n} nucleus={n} />
         ))}
       </FormikForm>
     </div>
   );
 }
 
-const MemoizedRangesPreferences = memo(RangesPreferencesInner);
-
-// TODO: remove this hacky use of ref.
-function RangesPreferences(prop, ref: any) {
-  const nucleus = useNucleus();
-
-  const preferences = usePreferences();
+const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
   return (
-    <MemoizedRangesPreferences
-      innerRef={ref}
-      {...{
-        preferences,
-        nucleus,
-      }}
-    />
+    <div key={nucleus} style={styles.groupContainer}>
+      <IsotopesViewer style={styles.header} value={nucleus} />
+      {formatFields.map((field) => (
+        <FormikColumnFormatField
+          key={field.id}
+          label={field.label}
+          checkControllerName={`${nucleus}.${field.checkController}`}
+          formatControllerName={`${nucleus}.${field.formatController}`}
+        />
+      ))}
+      <Label
+        title="J Graph tolerance (Hz) :"
+        style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
+      >
+        <FormikInput name={`${nucleus}.jGraphTolerance`} type="number" />
+      </Label>
+    </div>
   );
-}
+};
 
-export default forwardRef(RangesPreferences);
+export default memo(forwardRef(RangesPreferences));
