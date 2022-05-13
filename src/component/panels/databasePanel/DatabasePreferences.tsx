@@ -11,8 +11,8 @@ import { usePreferences } from '../../context/PreferencesContext';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
+import { databaseDefaultValues } from '../../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { databaseDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
   | 'container'

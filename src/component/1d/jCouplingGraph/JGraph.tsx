@@ -10,7 +10,7 @@ import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import useSpectrum from '../../hooks/useSpectrum';
-import { getRangeDefaultValues } from '../../panels/extra/preferences/defaultValues';
+import { getRangeDefaultValues } from '../../reducer/preferences/panelsPreferencesDefaultValues';
 
 import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';

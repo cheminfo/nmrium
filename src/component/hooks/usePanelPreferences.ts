@@ -7,7 +7,7 @@ import {
   zoneDefaultValues,
   getRangeDefaultValues,
   databaseDefaultValues,
-} from '../panels/extra/preferences/defaultValues';
+} from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 import {
   DatabasePanelPreferences,

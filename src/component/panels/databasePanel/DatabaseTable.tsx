@@ -10,8 +10,8 @@ import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightedSource } from '../../highlight';
+import { databaseDefaultValues } from '../../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../../utility/LocalStorage';
-import { databaseDefaultValues } from '../extra/preferences/defaultValues';
 
 interface DatabaseTableProps {
   data: any;
