@@ -1,5 +1,4 @@
 import { scaleLinear } from 'd3';
-import lodashGet from 'lodash/get';
 import { memo, useMemo } from 'react';
 
 import generateJGraphData, {
@@ -8,9 +7,8 @@ import generateJGraphData, {
 import { Signal1D } from '../../../data/types/data1d';
 import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
-import { usePreferences } from '../../context/PreferencesContext';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { getRangeDefaultValues } from '../../reducer/preferences/panelsPreferencesDefaultValues';
 
 import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
@@ -39,8 +37,6 @@ const emptyData = { ranges: {} };
 const MemoizedJGraph = memo(InnerJGraph);
 
 export default function JGraph() {
-  const preferences = usePreferences();
-
   const {
     height,
     toolOptions: {
@@ -48,20 +44,11 @@ export default function JGraph() {
     },
     activeTab,
   } = useChartData();
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const graphHeight = height / 4;
 
   const { ranges } = useSpectrum(emptyData) as Datum1D;
-
-  const jGraphTolerance = useMemo(() => {
-    const _preferences =
-      lodashGet(
-        preferences.current,
-        `formatting.panels.ranges.[${activeTab}]`,
-      ) || getRangeDefaultValues(activeTab);
-
-    return _preferences.jGraphTolerance;
-  }, [activeTab, preferences]);
 
   const {
     signals,
@@ -69,12 +56,12 @@ export default function JGraph() {
     links,
   } = useMemo(
     () =>
-      generateJGraphData(ranges.values, jGraphTolerance) || {
+      generateJGraphData(ranges.values, rangesPreferences.jGraphTolerance) || {
         signals: [],
         jCouplingMax: 0,
         links: [],
       },
-    [jGraphTolerance, ranges.values],
+    [rangesPreferences.jGraphTolerance, ranges.values],
   );
 
   const scaleY = useMemo(() => {
