@@ -6,6 +6,7 @@ import {
   CSSProperties,
   memo,
   forwardRef,
+  useMemo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
@@ -14,8 +15,8 @@ import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatFie
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { peaksDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPerferences';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
 
 const styles: Record<
   'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
@@ -98,39 +99,18 @@ const formatFields: Array<{
     formatController: 'intensityFormat',
   },
 ];
-interface PeaksPreferencesInnerProps {
-  nucleus: Array<string>;
-  preferences: any;
-  innerRef: any;
-}
 
-function PeaksPreferencesInner({
-  nucleus,
-  preferences,
-  innerRef,
-}: PeaksPreferencesInnerProps) {
+function PeaksPreferences(props, ref: any) {
   const alert = useAlert();
   const formRef = useRef<any>(null);
-
-  const updateValues = useCallback(() => {
-    if (nucleus) {
-      const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = peaksDefaultValues;
-        return acc;
-      }, {});
-      const peaksPreferences = getValueByKeyPath(
-        preferences.current,
-        `formatting.panels.peaks`,
-      );
-      formRef.current.setValues(
-        peaksPreferences ? peaksPreferences : defaultValues,
-      );
-    }
-  }, [nucleus, preferences]);
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('peaks', nuclei);
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(preferencesByNuclei);
+  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -144,7 +124,7 @@ function PeaksPreferencesInner({
   );
 
   useImperativeHandle(
-    innerRef,
+    ref,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -156,34 +136,28 @@ function PeaksPreferencesInner({
   return (
     <div style={styles.container}>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nucleus?.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <IsotopesViewer style={styles.header} value={nucleusLabel} />
-            {formatFields.map((field) => (
-              <FormikColumnFormatField
-                key={field.id}
-                label={field.label}
-                checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                formatControllerName={`${nucleusLabel}.${field.formatController}`}
-                hideFormat={field.formatController === 'deltaPPMFormat'}
-              />
-            ))}
-          </div>
+        {nuclei?.map((n) => (
+          <NucleusPreferences key={n} nucleus={n} />
         ))}
       </FormikForm>
     </div>
   );
 }
 
-const MemoizedPeaksPreferences = memo(PeaksPreferencesInner);
-
-// TODO: remove this hacky use of ref.
-function PeaksPreferences(props, ref: any) {
-  const nucleus = useNucleus();
-  const preferences = usePreferences();
+const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
   return (
-    <MemoizedPeaksPreferences innerRef={ref} {...{ nucleus, preferences }} />
+    <div style={styles.groupContainer}>
+      <IsotopesViewer style={styles.header} value={nucleus} />
+      {formatFields.map((field) => (
+        <FormikColumnFormatField
+          key={field.id}
+          label={field.label}
+          checkControllerName={`${nucleus}.${field.checkController}`}
+          formatControllerName={`${nucleus}.${field.formatController}`}
+        />
+      ))}
+    </div>
   );
-}
+};
 
-export default forwardRef(PeaksPreferences);
+export default memo(forwardRef(PeaksPreferences));

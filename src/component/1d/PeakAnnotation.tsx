@@ -11,8 +11,9 @@ import {
 
 import { useDispatch } from '../context/DispatchContext';
 import { HighlightedSource, useHighlight } from '../highlight';
+import { usePanelPreferences } from '../hooks/usePanelPerferences';
 import { SHIFT_SPECTRUM } from '../reducer/types/Types';
-import { useFormatNumberByNucleus } from '../utility/FormatNumber';
+import FormatNumber from '../utility/FormatNumber';
 
 const styles = css`
   input {
@@ -77,7 +78,7 @@ function PeakAnnotation({
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const format = useFormatNumberByNucleus(nucleus);
+  const { deltaPPMFormat } = usePanelPreferences('peaks', nucleus);
   const highlight = useHighlight([id], {
     type: HighlightedSource.PEAK,
     extra: { id },
@@ -147,12 +148,12 @@ function PeakAnnotation({
   }, [highlight]);
 
   const newValue = useMemo(
-    () => (isSelected ? value : format(value)),
-    [format, isSelected, value],
+    () => (isSelected ? value : FormatNumber(value, deltaPPMFormat)),
+    [deltaPPMFormat, isSelected, value],
   );
   const oldValue = useMemo(
-    () => (isSelected ? _value : format(_value)),
-    [_value, format, isSelected],
+    () => (isSelected ? _value : FormatNumber(_value, deltaPPMFormat)),
+    [_value, deltaPPMFormat, isSelected],
   );
 
   return (

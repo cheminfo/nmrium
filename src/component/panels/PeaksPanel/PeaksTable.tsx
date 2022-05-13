@@ -7,29 +7,21 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
+import { usePanelPreferences } from '../../hooks/usePanelPerferences';
 import {
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
 } from '../../reducer/types/Types';
-import formatNumber, {
-  useFormatNumberByNucleus,
-} from '../../utility/FormatNumber';
-import { getValue } from '../../utility/LocalStorage';
+import formatNumber from '../../utility/FormatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
 interface PeaksTableProps {
   activeTab: string;
-  preferences: any;
   data: any;
-  info: {
-    nucleus: string;
-  };
 }
 
-function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
+function PeaksTable({ activeTab, data }: PeaksTableProps) {
   const dispatch = useDispatch();
-  const format = useFormatNumberByNucleus(info.nucleus);
 
   const deletePeakHandler = useCallback(
     (e, row) => {
@@ -43,16 +35,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
     },
     [dispatch],
   );
-
-  const peaksPreferences = useMemo(
-    () =>
-      getValue(
-        preferences.current,
-        `formatting.panels.peaks.[${activeTab}]`,
-        peaksDefaultValues,
-      ),
-    [activeTab, preferences],
-  );
+  const peaksPreferences = usePanelPreferences('peaks', activeTab);
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
@@ -81,10 +64,14 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
         showWhen: 'showDeltaPPM',
         index: 3,
         Header: 'δ (ppm)',
-        accessor: (row) => format(row.value),
+        accessor: (row) =>
+          formatNumber(row.value, peaksPreferences.deltaPPMFormat),
         Cell: ({ row }) => (
           <EditableColumn
-            value={format(row.original.value)}
+            value={formatNumber(
+              row.original.value,
+              peaksPreferences.deltaPPMFormat,
+            )}
             onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
             type="number"
           />
@@ -113,7 +100,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
           formatNumber(row.peakWidth, peaksPreferences.peakWidthFormat),
       },
     ],
-    [format, peaksPreferences, saveDeltaPPMRefsHandler],
+    [peaksPreferences, saveDeltaPPMRefsHandler],
   );
 
   const initialColumns: CustomColumn[] = useMemo(
