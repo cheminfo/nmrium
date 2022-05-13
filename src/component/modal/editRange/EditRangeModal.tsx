@@ -11,12 +11,13 @@ import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
   hasCouplingConstant,
   translateMultiplet,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
+import FormatNumber from '../../utility/FormatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
 import useRangeFormValidation from './forms/validation/EditRangeValidation';
@@ -96,8 +97,13 @@ function EditRangeModal({
   const formRef = useRef<any>(null);
   const { activeTab } = useChartData();
   const dispatch = useDispatch();
-  const format = useFormatNumberByNucleus(activeTab);
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const validation = useRangeFormValidation();
+
+  const format = useCallback(
+    (value) => FormatNumber(value, rangesPreferences.relativeFormat),
+    [rangesPreferences.relativeFormat],
+  );
 
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(range);
@@ -178,7 +184,7 @@ function EditRangeModal({
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
-  }, [format, range]);
+  }, [format, range.signals]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -215,7 +221,7 @@ function EditRangeModal({
 
           <CloseButton onClick={handleOnClose} />
         </div>
-        <SignalsForm range={range} />
+        <SignalsForm range={range} format={format} />
         <FormikOnChange onChange={changeHandler} />
       </FormikForm>
     </div>

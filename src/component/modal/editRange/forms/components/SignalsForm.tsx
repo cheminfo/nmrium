@@ -3,12 +3,10 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 
-import { useChartData } from '../../../../context/ChartContext';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
-import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
@@ -44,9 +42,10 @@ const tabStyles = css`
 
 interface SignalsFormProps {
   range: number;
+  format: (value: number) => string;
 }
 
-function SignalsForm({ range }: SignalsFormProps) {
+function SignalsForm({ range, format }: SignalsFormProps) {
   const newSignalFormRef = useRef<any>();
   const [activeField, setActiveField] = useState<string | null>(null);
 
@@ -64,9 +63,7 @@ function SignalsForm({ range }: SignalsFormProps) {
     errors: any;
   } = useFormikContext<any>();
 
-  const { activeTab } = useChartData();
   const { info }: { info: any } = useSpectrum({ info: {} });
-  const format = useFormatNumberByNucleus(activeTab);
 
   useEffect(() => {
     function handle(event) {
@@ -191,12 +188,13 @@ function SignalsForm({ range }: SignalsFormProps) {
           onFocus={handleOnFocus}
           range={range}
           ref={newSignalFormRef}
+          format={format}
         />
       </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [handleOnFocus, range, tabContainsErrors, values.signals]);
+  }, [format, handleOnFocus, range, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">

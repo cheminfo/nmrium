@@ -5,12 +5,10 @@ import { forwardRef, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
-import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 const styles = {
   container: css`
@@ -58,16 +56,15 @@ interface AddSignalFormTabProps {
   onFocus: (element: any) => void;
   onBlur?: () => void;
   range: any;
+  format: (value: number) => string;
 }
 
 // TODO: this seems to be a hacky use of ref.
 function AddSignalFormTab(
-  { onFocus, onBlur, range }: AddSignalFormTabProps,
+  { onFocus, onBlur, range, format }: AddSignalFormTabProps,
   ref: any,
 ) {
   const { values, setFieldValue } = useFormikContext<any>();
-  const { activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab);
 
   const saveHandler = useCallback(
     (val) => {
