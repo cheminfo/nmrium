@@ -11,7 +11,7 @@ import {
 
 import { useDispatch } from '../context/DispatchContext';
 import { HighlightedSource, useHighlight } from '../highlight';
-import { usePanelPreferences } from '../hooks/usePanelPerferences';
+import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import { SHIFT_SPECTRUM } from '../reducer/types/Types';
 import FormatNumber from '../utility/FormatNumber';
 

@@ -7,7 +7,7 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
-import { usePanelPreferences } from '../../hooks/usePanelPerferences';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,

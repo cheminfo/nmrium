@@ -15,7 +15,7 @@ import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatFie
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPerferences';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
 
 const styles: Record<
