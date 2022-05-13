@@ -77,7 +77,7 @@ function checkStatus(response) {
   return response;
 }
 
-const Main = (props) => {
+const Main = () => {
   const [data, setRoutes] = useState<{
     isLoaded: boolean;
     status: number;
@@ -104,11 +104,9 @@ const Main = (props) => {
   useEffect(() => {
     const qs = new URL(href).searchParams;
     if (qs.has('sampleURL')) {
-      const sampleURL = qs.get('sampleURL');
-      if (!sampleURL) return;
-
-      const extention = getFileExtension(sampleURL).toLowerCase();
-      switch (extention) {
+      const sampleURL = qs.get('sampleURL') as string;
+      const extension = getFileExtension(sampleURL).toLowerCase();
+      switch (extension) {
         case 'json': {
           setDashBoardType('multi');
           void loadData(sampleURL).then((remoteRoutes) => {
@@ -183,9 +181,9 @@ const Main = (props) => {
       </div>
     </div>
   ) : dashBoardType && dashBoardType === 'single' ? (
-    <SingleDisplayerLayout {...props} path={data.path} />
+    <SingleDisplayerLayout path={data.path} />
   ) : (
-    <AdminLayout {...props} routes={data.routes} baseURL={data.baseURL} />
+    <AdminLayout routes={data.routes} baseURL={data.baseURL} />
   );
 };
 

@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
+import { useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
 import Menu from 'rc-menu';
 import { memo, useMemo } from 'react';
 import 'rc-menu/assets/index.css';
 import { FaBars } from 'react-icons/fa';
-import { withRouter } from 'react-router-dom';
 
 import { buildMenu, getKey } from './utility/menu';
 
@@ -96,6 +96,7 @@ const sidebarWrapperCss = css`
 `;
 
 function Sidebar(props) {
+  const navigate = useNavigate();
   const routes = useMemo(() => {
     return buildMenu(props.routes);
   }, [props.routes]);
@@ -120,8 +121,7 @@ function Sidebar(props) {
       <div css={sidebarWrapperCss} style={{ display: subDisplay }}>
         <Menu
           onClick={(e) => {
-            // console.log((e.item.props.view || '') + getKey(e.item.props.file));
-            props.history.push(
+            navigate(
               `/SamplesDashboard/${Math.random()
                 .toString(36)
                 .replace('0.', '')}/${
@@ -139,4 +139,4 @@ function Sidebar(props) {
   );
 }
 
-export default withRouter(memo(Sidebar));
+export default memo(Sidebar);

@@ -1,8 +1,9 @@
 import { createRoot } from 'react-dom/client';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 import Main from './demo/layouts/Main';
-import TestRoutes from './demo/test/TestRoutes';
+import TestHighlight from './demo/test/TestHighlight';
+import Test from './demo/views/Test';
 
 // Reset styles so they do not affect development of the React component.
 import 'modern-normalize/modern-normalize.css';
@@ -18,9 +19,12 @@ if (!rootElement) {
 const root = createRoot(rootElement);
 root.render(
   <HashRouter>
-    <Switch>
-      <Route path="/test" component={TestRoutes} />
-      <Route path="/" render={(props) => <Main {...props} />} />
-    </Switch>
+    <Routes>
+      <Route path="test">
+        <Route path="" element={<Test />} />
+        <Route path="highlight" element={<TestHighlight />} />
+      </Route>
+      <Route path="*" element={<Main />} />
+    </Routes>
   </HashRouter>,
 );

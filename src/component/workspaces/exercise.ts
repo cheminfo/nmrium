@@ -25,6 +25,7 @@ export const exercise: Workspace = {
       multipleSpectraAnalysisPanel: { hidden: true },
       databasePanel: { hidden: true },
       predictionPanel: { hidden: true },
+      automaticAssignmentPanel: { hidden: true },
     },
 
     toolBarButtons: {
