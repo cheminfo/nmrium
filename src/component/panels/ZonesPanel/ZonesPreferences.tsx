@@ -3,9 +3,10 @@ import {
   useCallback,
   useImperativeHandle,
   useRef,
-  memo,
   CSSProperties,
   forwardRef,
+  useMemo,
+  memo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
@@ -14,8 +15,8 @@ import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatFie
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { zoneDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
 
 const styles: Record<
   'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
@@ -87,38 +88,18 @@ const formatFields: Array<{
   },
 ];
 
-interface ZonesPreferencesInnerProps {
-  nucleus: Array<string>;
-  innerRef: any;
-}
-
-function ZonesPreferencesInner({
-  nucleus,
-  innerRef,
-}: ZonesPreferencesInnerProps) {
+function ZonesPreferences(props, ref) {
   const alert = useAlert();
-  const preferences = usePreferences();
   const formRef = useRef<any>();
 
-  const updateValues = useCallback(() => {
-    if (nucleus) {
-      const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = zoneDefaultValues;
-        return acc;
-      }, {});
-      const zonesPreferences = getValueByKeyPath(
-        preferences.current,
-        `formatting.panels.zones`,
-      );
-      formRef.current.setValues(
-        zonesPreferences ? zonesPreferences : defaultValues,
-      );
-    }
-  }, [nucleus, preferences]);
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('zones', nuclei);
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(preferencesByNuclei);
+  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -132,7 +113,7 @@ function ZonesPreferencesInner({
   );
 
   useImperativeHandle(
-    innerRef,
+    ref,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -144,30 +125,28 @@ function ZonesPreferencesInner({
   return (
     <div style={styles.container}>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nucleus?.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <IsotopesViewer style={styles.header} value={nucleusLabel} />
-            {formatFields.map((field) => (
-              <FormikColumnFormatField
-                key={field.id}
-                label={field.label}
-                checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                formatControllerName={`${nucleusLabel}.${field.formatController}`}
-              />
-            ))}
-          </div>
+        {nuclei?.map((n) => (
+          <NucleusPreferences key={n} nucleus={n} />
         ))}
       </FormikForm>
     </div>
   );
 }
 
-const MemoizedZonesPreferences = memo(ZonesPreferencesInner);
+const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
+  return (
+    <div key={nucleus} style={styles.groupContainer}>
+      <IsotopesViewer style={styles.header} value={nucleus} />
+      {formatFields.map((field) => (
+        <FormikColumnFormatField
+          key={field.id}
+          label={field.label}
+          checkControllerName={`${nucleus}.${field.checkController}`}
+          formatControllerName={`${nucleus}.${field.formatController}`}
+        />
+      ))}
+    </div>
+  );
+};
 
-// TODO: remove this hacky use of ref.
-function ZonesPreferences(props, ref: any) {
-  const nucleus = useNucleus();
-  return <MemoizedZonesPreferences innerRef={ref} {...{ nucleus }} />;
-}
-
-export default forwardRef(ZonesPreferences);
+export default memo(forwardRef(ZonesPreferences));
