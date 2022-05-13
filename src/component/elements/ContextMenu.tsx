@@ -49,9 +49,16 @@ const styles = css`
     border: none;
   }
 `;
+interface ContextMenuItem {
+  onClick: <T>(data: T) => void;
+  label: string;
+}
 
+export interface ContextMenuProps {
+  context: ContextMenuItem[];
+}
 // TODO: remove this hacky ref usage.
-function ContextMenu({ context }, ref: any) {
+function ContextMenu({ context }: ContextMenuProps, ref: any) {
   const [position, setPosition] = useState<{ left: any; top: any }>({
     left: 0,
     top: 0,
