@@ -14,6 +14,8 @@ import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
 
+const LOCAL_STORAGE_VERSION = 8;
+
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
   { display: NMRiumPreferences; workspace: NMRiumWorkspace; dispatch: any }
@@ -43,8 +45,6 @@ type PreferencesActions =
   | SetPanelsPreferencesAction
   | WorkspaceAction
   | AddWorkspaceAction;
-
-const LOCAL_STORAGE_VERSION = 7;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
