@@ -14,6 +14,7 @@ interface SignalDeltaColumnProps {
   };
   fromFormat: string;
   toFormat: string;
+  deltaPPMFormat: string;
 }
 
 function SignalDeltaColumn({
@@ -21,6 +22,7 @@ function SignalDeltaColumn({
   onHoverSignal,
   fromFormat,
   toFormat,
+  deltaPPMFormat,
 }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
   const signal = rowData.tableMetaInfo.signal;
@@ -50,7 +52,7 @@ function SignalDeltaColumn({
         )}`
       ) : (
         <EditableColumn
-          value={signal.delta.toFixed(3)}
+          value={FormatNumber(signal.delta, deltaPPMFormat)}
           onSave={saveHandler}
           type="number"
           style={{ padding: '0.1rem 0.4rem' }}

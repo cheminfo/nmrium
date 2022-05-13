@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
+import { Info1D } from '../../../data/types/data1d';
 import {
   AssignmentsData,
   useAssignment,
@@ -24,6 +25,7 @@ import RangeColumn from './TableColumns/RangeColumn';
 import RelativeColumn from './TableColumns/RelativeColumn';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
+import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
 import useFormat from './TableColumns/format';
 
 const HighlightedRowStyle = css`
@@ -39,6 +41,7 @@ interface RangesTableRowProps {
   onUnlink: (a: any, b?: any) => void;
   onContextMenu: (element: any, data: any) => void;
   preferences: RangesPanelPreferences;
+  info: Info1D;
 }
 
 function RangesTableRow({
@@ -46,6 +49,7 @@ function RangesTableRow({
   onUnlink,
   onContextMenu,
   preferences,
+  info,
 }: RangesTableRowProps) {
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
@@ -186,12 +190,25 @@ function RangesTableRow({
         />
       )}
 
-      <SignalDeltaColumn
-        rowData={rowData}
-        onHoverSignal={onHoverSignal}
-        toFormat={preferences.toFormat}
-        fromFormat={preferences.fromFormat}
-      />
+      {preferences.showDeltaPPM && (
+        <SignalDeltaColumn
+          rowData={rowData}
+          onHoverSignal={onHoverSignal}
+          toFormat={preferences.toFormat}
+          fromFormat={preferences.fromFormat}
+          deltaPPMFormat={preferences.deltaPPMFormat}
+        />
+      )}
+      {preferences.showDeltaHz && (
+        <SignalDeltaHzColumn
+          rowData={rowData}
+          onHoverSignal={onHoverSignal}
+          toFormat={preferences.toFormat}
+          fromFormat={preferences.fromFormat}
+          deltaHzFormat={preferences.deltaHzFormat}
+          info={info}
+        />
+      )}
 
       {preferences.showRelative && (
         <RelativeColumn

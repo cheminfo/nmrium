@@ -87,6 +87,18 @@ const formatFields = [
     checkController: 'showRelative',
     formatController: 'relativeFormat',
   },
+  {
+    id: 5,
+    label: 'δ (ppm) :',
+    checkController: 'showDeltaPPM',
+    formatController: 'deltaPPMFormat',
+  },
+  {
+    id: 6,
+    label: 'δ (Hz) :',
+    checkController: 'showDeltaHz',
+    formatController: 'deltaHzFormat',
+  },
 ];
 
 function RangesPreferences(props, ref) {

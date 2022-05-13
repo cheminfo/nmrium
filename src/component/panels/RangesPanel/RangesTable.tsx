@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { Fragment, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
+import { Info1D } from '../../../data/types/data1d/Info1D';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu, { ContextMenuProps } from '../../elements/ContextMenu';
 import useTableSortBy from '../../hooks/useTableSortBy';
@@ -56,6 +57,7 @@ interface RangesTableProps {
   tableData: any;
   context: ContextMenuProps['context'];
   activeTab: string;
+  info: Info1D;
 }
 
 function RangesTable({
@@ -64,6 +66,7 @@ function RangesTable({
   context,
   activeTab,
   preferences,
+  info,
 }: RangesTableProps) {
   const element = activeTab?.replace(/[0-9]/g, '');
   const contextRef = useRef<any>();
@@ -97,7 +100,8 @@ function RangesTable({
                 To {isSortedDesc('to').content}
               </th>
             ) : null}
-            <th>δ (ppm) </th>
+            {preferences.showDeltaPPM ? <th>δ (ppm) </th> : null}
+            {preferences.showDeltaHz ? <th>δ (Hz) </th> : null}
 
             {preferences.showRelative ? (
               <th id="integration" {...onSort}>
@@ -124,6 +128,7 @@ function RangesTable({
                 onUnlink={onUnlink}
                 onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                 preferences={preferences}
+                info={info}
               />
             );
           })}

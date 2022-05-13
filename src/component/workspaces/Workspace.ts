@@ -36,8 +36,12 @@ export interface RangesPanelPreferences {
   toFormat: string;
   showAbsolute: boolean;
   absoluteFormat: string;
-  showRelative: true;
+  showRelative: boolean;
   relativeFormat: string;
+  showDeltaPPM: boolean;
+  deltaPPMFormat: string;
+  showDeltaHz: boolean;
+  deltaHzFormat: string;
   jGraphTolerance: number;
 }
 

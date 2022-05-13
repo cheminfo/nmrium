@@ -26,6 +26,10 @@ const getRangeDefaultValues = (nucleus?: string) => ({
   showAbsolute: false,
   absoluteFormat: '0.00',
   showRelative: true,
+  showDeltaPPM: true,
+  deltaPPMFormat: '0.00',
+  showDeltaHz: false,
+  deltaHzFormat: '0.00',
   relativeFormat: '0.00',
   jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
 });

@@ -75,7 +75,6 @@ function RangesTablePanelInner({
       const _ranges = isFilterActive
         ? getFilteredRanges(ranges.values)
         : ranges.values;
-
       return _ranges.map((range) => {
         return {
           ...range,
@@ -202,6 +201,7 @@ function RangesTablePanelInner({
                   onUnlink={unlinkRangeHandler}
                   context={contextMenu}
                   preferences={preferences}
+                  info={info}
                 />
               ) : (
                 <NoTableData />
