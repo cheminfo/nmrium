@@ -54,12 +54,14 @@ interface PreferencesReturnType {
   ranges: RangesPanelPreferences;
   database: DatabasePanelPreferences;
 }
-
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus: string,
-);
-export function usePanelPreferences<T extends 'database'>(panelKey: T);
+): PreferencesReturnType[T];
+export function usePanelPreferences<T extends 'database'>(
+  panelKey: T,
+): PreferencesReturnType['database'];
+
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus?: string,
