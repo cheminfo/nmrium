@@ -4,14 +4,12 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
-import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightedSource } from '../../highlight';
-import { databaseDefaultValues } from '../../reducer/preferences/panelsPreferencesDefaultValues';
-import { getValue } from '../../utility/LocalStorage';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 interface DatabaseTableProps {
   data: any;
@@ -126,7 +124,7 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
 ];
 
 function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
-  const preferences = usePreferences();
+  const databasePreferences = usePanelPreferences('database');
 
   const initialColumns = useMemo(
     () => [
@@ -154,12 +152,6 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
   );
 
   const tableColumns = useMemo(() => {
-    const databasePreferences = getValue(
-      preferences.current,
-      'formatting.panels.database',
-      databaseDefaultValues,
-    );
-
     let columns = [...initialColumns];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
@@ -169,7 +161,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
     }
 
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [initialColumns, preferences]);
+  }, [databasePreferences, initialColumns]);
   return (
     <ReactTable
       data={data}

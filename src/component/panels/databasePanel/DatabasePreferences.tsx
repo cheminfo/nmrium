@@ -11,8 +11,7 @@ import { usePreferences } from '../../context/PreferencesContext';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import { databaseDefaultValues } from '../../reducer/preferences/panelsPreferencesDefaultValues';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 const styles: Record<
   | 'container'
@@ -62,21 +61,11 @@ function DatabasePreferences(props, ref) {
   const alert = useAlert();
 
   const formRef = useRef<any>();
-
-  const updateValues = useCallback(() => {
-    const databasePreferences = getValueByKeyPath(
-      preferences.current,
-      `formatting.panels.database`,
-    );
-
-    formRef.current.setValues(
-      databasePreferences ? databasePreferences : databaseDefaultValues,
-    );
-  }, [preferences]);
+  const databasePreferences = usePanelPreferences('database');
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(databasePreferences);
+  }, [databasePreferences]);
 
   const saveHandler = useCallback(
     (values) => {
