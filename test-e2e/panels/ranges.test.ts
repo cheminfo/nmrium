@@ -90,3 +90,19 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await nmrium.page.locator('data-test-id=range').count(),
   ).toBeGreaterThanOrEqual(10);
 });
+test('Multiplicity should be visible', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.open1D();
+
+  //select range tool
+  await nmrium.clickTool('ranges-pick');
+
+  //apply auto ranges detection
+  await nmrium.page.click('text=Auto ranges picking');
+  //show multiplicity trees
+  await nmrium.page.click('data-test-id=toggle-multiplicity-tree-btn');
+
+  expect(
+    await nmrium.page.locator('_react=MultiplicityTree').count(),
+  ).toBeGreaterThan(0);
+});
