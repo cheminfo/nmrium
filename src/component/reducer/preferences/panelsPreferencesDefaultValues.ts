@@ -2,6 +2,7 @@ import {
   IntegralsPanelPreferences,
   PeaksPanelPreferences,
   RangesPanelPreferences,
+  ZonesPanelPreferences,
 } from '../../workspaces/Workspace';
 
 const integralDefaultValues: IntegralsPanelPreferences = {
@@ -10,15 +11,11 @@ const integralDefaultValues: IntegralsPanelPreferences = {
   color: '#000000',
   strokeWidth: 1,
 };
-const zoneDefaultValues = {
-  showFrom: false,
-  fromFormat: '0.00',
-  showTo: false,
-  toFormat: '0.00',
-  showAbsolute: false,
-  absoluteFormat: '0.00',
-  showRelative: true,
-  relativeFormat: '0.00',
+const zoneDefaultValues: ZonesPanelPreferences = {
+  from: { show: false, format: '0.00' },
+  to: { show: false, format: '0.00' },
+  absolute: { show: false, format: '0.00' },
+  relative: { show: true, format: '0.00' },
 };
 
 const getRangeDefaultValues = (nucleus?: string): RangesPanelPreferences => ({

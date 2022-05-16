@@ -22,14 +22,10 @@ export interface IntegralsPanelPreferences {
 }
 
 export interface ZonesPanelPreferences {
-  showFrom: boolean;
-  fromFormat: string;
-  showTo: boolean;
-  toFormat: string;
-  showAbsolute: boolean;
-  absoluteFormat: string;
-  showRelative: boolean;
-  relativeFormat: string;
+  from: ColumnPreferences;
+  to: ColumnPreferences;
+  absolute: ColumnPreferences;
+  relative: ColumnPreferences;
 }
 
 export interface RangesPanelPreferences {

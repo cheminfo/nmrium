@@ -65,26 +65,26 @@ const formatFields: Array<{
   {
     id: 1,
     label: 'From :',
-    checkController: 'showFrom',
-    formatController: 'fromFormat',
+    checkController: 'from.show',
+    formatController: 'from.format',
   },
   {
     id: 2,
     label: 'To :',
-    checkController: 'showTo',
-    formatController: 'toFormat',
+    checkController: 'to.show',
+    formatController: 'to.format',
   },
   {
     id: 3,
     label: 'Absolute :',
-    checkController: 'showAbsolute',
-    formatController: 'absoluteFormat',
+    checkController: 'absolute.show',
+    formatController: 'absolute.format',
   },
   {
     id: 4,
     label: 'Relative :',
-    checkController: 'showRelative',
-    formatController: 'relativeFormat',
+    checkController: 'relative.show',
+    formatController: 'relative.format',
   },
 ];
 
