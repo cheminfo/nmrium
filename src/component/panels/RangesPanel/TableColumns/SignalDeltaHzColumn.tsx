@@ -25,14 +25,13 @@ function SignalDeltaHzColumn({
   const signal = rowData.tableMetaInfo.signal;
 
   if (!signal) return <td>{''}</td>;
-
   return (
     <td {...onHoverSignal}>
       {!checkMultiplicity(signal.multiplicity, ['m'])
-        ? `${FormatNumber(rowData.from, fromFormat)} - ${FormatNumber(
-            rowData.to,
-            toFormat,
-          )}`
+        ? `${FormatNumber(
+            rowData.from * info.originFrequency,
+            fromFormat,
+          )} - ${FormatNumber(rowData.to * info.originFrequency, toFormat)}`
         : info?.originFrequency
         ? FormatNumber(signal.delta * info.originFrequency, deltaHzFormat)
         : ''}
