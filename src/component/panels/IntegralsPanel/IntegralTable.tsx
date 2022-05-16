@@ -17,7 +17,7 @@ import {
   CHANGE_INTEGRAL_DATA,
   CHANGE_INTEGRAL_RELATIVE,
 } from '../../reducer/types/Types';
-import formatNumber from '../../utility/FormatNumber';
+import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';

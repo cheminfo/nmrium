@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 
-function FormatNumber(value, format, prefix = '', suffix = '') {
+export function formatNumber(value, format, prefix = '', suffix = '') {
   return prefix + Numeral(value).format(format) + suffix;
 }
 
@@ -58,5 +58,3 @@ export function getNumberOfDecimals(value: number | string) {
   const lastIndex = value.lastIndexOf('.');
   return lastIndex > 0 ? value.substr(lastIndex).split('').length - 1 : 0;
 }
-
-export default FormatNumber;

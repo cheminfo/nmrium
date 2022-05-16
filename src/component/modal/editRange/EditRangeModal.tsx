@@ -17,7 +17,7 @@ import {
   translateMultiplet,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
-import FormatNumber from '../../utility/FormatNumber';
+import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
 import useRangeFormValidation from './forms/validation/EditRangeValidation';
@@ -170,7 +170,7 @@ function EditRangeModal({
         if (hasCouplingConstant(_multiplicity)) {
           coupling = { ...signal.js[counterJ] };
           coupling.coupling = Number(
-            FormatNumber(coupling.coupling, rangesPreferences.couplingFormat),
+            formatNumber(coupling.coupling, rangesPreferences.couplingFormat),
           );
           counterJ++;
         }
@@ -207,10 +207,10 @@ function EditRangeModal({
             <FaSearchPlus title="Set to default view on range in spectrum" />
           </Button>
           <span>
-            {` Range and Signal edition: ${FormatNumber(
+            {` Range and Signal edition: ${formatNumber(
               range.from,
               rangesPreferences.fromFormat,
-            )} ppm to ${FormatNumber(
+            )} ppm to ${formatNumber(
               range.to,
               rangesPreferences.toFormat,
             )} ppm`}

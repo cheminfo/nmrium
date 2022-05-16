@@ -13,7 +13,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { HighlightedSource, useHighlight } from '../highlight';
 import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import { SHIFT_SPECTRUM } from '../reducer/types/Types';
-import FormatNumber from '../utility/FormatNumber';
+import { formatNumber } from '../utility/formatNumber';
 
 const styles = css`
   input {
@@ -148,11 +148,11 @@ function PeakAnnotation({
   }, [highlight]);
 
   const newValue = useMemo(
-    () => (isSelected ? value : FormatNumber(value, deltaPPMFormat)),
+    () => (isSelected ? value : formatNumber(value, deltaPPMFormat)),
     [deltaPPMFormat, isSelected, value],
   );
   const oldValue = useMemo(
-    () => (isSelected ? _value : FormatNumber(_value, deltaPPMFormat)),
+    () => (isSelected ? _value : formatNumber(_value, deltaPPMFormat)),
     [_value, deltaPPMFormat, isSelected],
   );
 

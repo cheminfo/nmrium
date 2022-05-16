@@ -9,7 +9,7 @@ import { useScaleChecked } from '../context/ScaleContext';
 import Resizer from '../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL } from '../reducer/types/Types';
-import FormatNumber from '../utility/FormatNumber';
+import { formatNumber } from '../utility/formatNumber';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -121,7 +121,7 @@ function IntegralResizable({
               style={{ fontSize: '12px', fontWeight: 'bold' }}
             >
               {integral !== undefined
-                ? FormatNumber(integral, integralFormat)
+                ? formatNumber(integral, integralFormat)
                 : ''}
             </text>
           </g>

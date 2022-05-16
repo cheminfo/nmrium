@@ -12,7 +12,7 @@ import {
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
 } from '../../reducer/types/Types';
-import formatNumber from '../../utility/FormatNumber';
+import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 interface PeaksTableProps {

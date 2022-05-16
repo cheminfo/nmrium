@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
 
-import FormatNumber from '../../../utility/FormatNumber';
+import { formatNumber } from '../../../utility/formatNumber';
 
 interface CouplingColumnProps {
   rowData: {
@@ -27,7 +27,7 @@ function CouplingColumn({
       {result
         ?.map((coupling) =>
           !isNaN(coupling.coupling)
-            ? FormatNumber(coupling.coupling, format)
+            ? formatNumber(coupling.coupling, format)
             : '',
         )
         .join(',')}

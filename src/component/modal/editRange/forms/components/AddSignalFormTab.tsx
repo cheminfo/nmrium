@@ -9,7 +9,7 @@ import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
-import FormatNumber from '../../../../utility/FormatNumber';
+import { formatNumber } from '../../../../utility/formatNumber';
 import { RangesPanelPreferences } from '../../../../workspaces/Workspace';
 
 const styles = {
@@ -138,10 +138,10 @@ function AddSignalFormTab(
           </div>
           <p css={styles.inputInfo}>
             [
-            {`${FormatNumber(
+            {`${formatNumber(
               range.from,
               preferences.fromFormat,
-            )} ppm - ${FormatNumber(range.to, preferences.toFormat)} ppm`}
+            )} ppm - ${formatNumber(range.to, preferences.toFormat)} ppm`}
             ]
           </p>
 

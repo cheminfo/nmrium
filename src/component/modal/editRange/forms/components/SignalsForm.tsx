@@ -7,7 +7,7 @@ import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
-import FormatNumber from '../../../../utility/FormatNumber';
+import { formatNumber } from '../../../../utility/formatNumber';
 import { RangesPanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
@@ -82,7 +82,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
           );
         } else {
           const value = Number(
-            FormatNumber(
+            formatNumber(
               Math.abs(event.range[0] - event.range[1]) * info.originFrequency,
               preferences.deltaHzFormat,
             ),

@@ -3,7 +3,7 @@ import { useContext, useMemo, CSSProperties } from 'react';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
+import { useFormatNumberByNucleus } from '../../utility/formatNumber';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
 import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
 

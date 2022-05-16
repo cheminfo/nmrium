@@ -8,7 +8,7 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { FILTER_SPECTRA_COLUMN } from '../../reducer/types/Types';
 import Eval from '../../utility/Evaluate';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
+import { useFormatNumberByNucleus } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import ColumnHeader from './ColumnHeader';

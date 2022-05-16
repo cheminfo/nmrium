@@ -20,7 +20,7 @@ import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
+import { useFormatNumberByNucleus } from '../../utility/formatNumber';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';

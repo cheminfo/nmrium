@@ -13,7 +13,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
-import { useFormatNumberByNucleus } from '../utility/FormatNumber';
+import { useFormatNumberByNucleus } from '../utility/formatNumber';
 
 const styles = css`
   display: flex;

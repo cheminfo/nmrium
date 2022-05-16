@@ -25,7 +25,7 @@ import {
   SHOW_RANGES_INTEGRALS,
 } from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/Export';
-import { getNumberOfDecimals } from '../../utility/FormatNumber';
+import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 const style = css`

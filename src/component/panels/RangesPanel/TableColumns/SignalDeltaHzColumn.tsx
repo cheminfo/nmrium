@@ -1,5 +1,5 @@
 import { Info1D } from '../../../../data/types/data1d';
-import FormatNumber from '../../../utility/FormatNumber';
+import { formatNumber } from '../../../utility/formatNumber';
 import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 
 interface SignalDeltaHzColumnProps {
@@ -28,12 +28,12 @@ function SignalDeltaHzColumn({
   return (
     <td {...onHoverSignal}>
       {!checkMultiplicity(signal.multiplicity, ['m'])
-        ? `${FormatNumber(
+        ? `${formatNumber(
             rowData.from * info.originFrequency,
             fromFormat,
-          )} - ${FormatNumber(rowData.to * info.originFrequency, toFormat)}`
+          )} - ${formatNumber(rowData.to * info.originFrequency, toFormat)}`
         : info?.originFrequency
-        ? FormatNumber(signal.delta * info.originFrequency, deltaHzFormat)
+        ? formatNumber(signal.delta * info.originFrequency, deltaHzFormat)
         : ''}
     </td>
   );

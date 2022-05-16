@@ -9,7 +9,7 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
-import { useFormatNumberByNucleus } from '../utility/FormatNumber';
+import { useFormatNumberByNucleus } from '../utility/formatNumber';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
 import { get2DXScale, get1DYScale, get2DYScale } from './utilities/scale';

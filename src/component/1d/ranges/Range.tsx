@@ -16,7 +16,7 @@ import Resizer from '../../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
-import FormatNumber from '../../utility/FormatNumber';
+import { formatNumber } from '../../utility/formatNumber';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
 
@@ -201,7 +201,7 @@ function Range({
               }
             >
               {integration !== undefined
-                ? FormatNumber(integration, relativeFormat)
+                ? formatNumber(integration, relativeFormat)
                 : ''}
             </text>
           </g>
