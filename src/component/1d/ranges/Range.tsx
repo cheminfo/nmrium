@@ -211,8 +211,8 @@ function Range({
         signals.length > 0 &&
         signals.map((_signal) => (
           <MultiplicityTree
-            rangeFrom={from}
-            rangeTo={to}
+            rangeFrom={rangeData.from}
+            rangeTo={rangeData.to}
             signal={_signal}
             key={_signal.id}
           />
