@@ -8,8 +8,8 @@ import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
 import { options } from '../toolbar/ToolTypes';
-import { useFormatNumberByNucleus } from '../utility/formatNumber';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
 import { get2DXScale, get1DYScale, get2DYScale } from './utilities/scale';

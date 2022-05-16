@@ -5,7 +5,7 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useFormatNumberByNucleus } from '../../utility/formatNumber';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 
 const style: CSSProperties = {
   cursor: 'crosshair',
