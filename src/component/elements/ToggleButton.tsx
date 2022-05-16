@@ -51,12 +51,9 @@ function ToggleButton({
     Toggle(!flag);
   }, [onClick, flag]);
   return (
-    <ToolTip
-      title={popupTitle}
-      popupPlacement={popupPlacement}
-      data-test-id={testID}
-    >
+    <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
       <button
+        data-test-id={testID}
         disabled={disabled}
         css={styles}
         style={style}
