@@ -73,7 +73,7 @@ export default function Ranges() {
         selectedTool,
         displayerKey,
         editRangeID: tempRange?.id || '',
-        relativeFormat: rangesPreferences.relativeFormat,
+        relativeFormat: rangesPreferences.relative.format,
       }}
     />
   );

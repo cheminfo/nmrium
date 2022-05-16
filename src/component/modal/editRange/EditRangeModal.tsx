@@ -170,7 +170,7 @@ function EditRangeModal({
         if (hasCouplingConstant(_multiplicity)) {
           coupling = { ...signal.js[counterJ] };
           coupling.coupling = Number(
-            formatNumber(coupling.coupling, rangesPreferences.couplingFormat),
+            formatNumber(coupling.coupling, rangesPreferences.coupling.format),
           );
           counterJ++;
         }
@@ -181,7 +181,7 @@ function EditRangeModal({
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
-  }, [range.signals, rangesPreferences.couplingFormat]);
+  }, [range.signals, rangesPreferences.coupling.format]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -209,10 +209,10 @@ function EditRangeModal({
           <span>
             {` Range and Signal edition: ${formatNumber(
               range.from,
-              rangesPreferences.fromFormat,
+              rangesPreferences.from.format,
             )} ppm to ${formatNumber(
               range.to,
-              rangesPreferences.toFormat,
+              rangesPreferences.to.format,
             )} ppm`}
           </span>
           <SaveButton

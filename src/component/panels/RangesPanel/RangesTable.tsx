@@ -89,28 +89,28 @@ function RangesTable({
         <thead>
           <tr>
             <th>#</th>
-            {preferences.showFrom && (
+            {preferences.from.show && (
               <th id="from" {...onSort}>
                 From
                 {isSortedDesc('from').content}
               </th>
             )}
-            {preferences.showTo && (
+            {preferences.to.show && (
               <th id="to" {...onSort}>
                 To {isSortedDesc('to').content}
               </th>
             )}
-            {preferences.showDeltaPPM && <th>δ (ppm) </th>}
-            {preferences.showDeltaHz && <th>δ (Hz) </th>}
+            {preferences.deltaPPM.show && <th>δ (ppm) </th>}
+            {preferences.deltaHz.show && <th>δ (Hz) </th>}
 
-            {preferences.showRelative && (
+            {preferences.relative.show && (
               <th id="integration" {...onSort}>
                 Rel. {element} {isSortedDesc('integration').content}
               </th>
             )}
-            {preferences.showAbsolute && <th>Absolute</th>}
+            {preferences.absolute.show && <th>Absolute</th>}
             <th>Mult.</th>
-            {preferences.showCoupling && <th>J (Hz)</th>}
+            {preferences.coupling.show && <th>J (Hz)</th>}
             <th>
               <FaLink style={{ fontSize: 10 }} />
             </th>

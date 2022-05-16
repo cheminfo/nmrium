@@ -84,7 +84,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
           const value = Number(
             formatNumber(
               Math.abs(event.range[0] - event.range[1]) * info.originFrequency,
-              preferences.deltaHzFormat,
+              preferences.deltaHz.format,
             ),
           );
           setFieldValue(activeField, value);
@@ -104,7 +104,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
     setFieldValue,
     values.activeTab,
     info,
-    preferences.deltaHzFormat,
+    preferences?.deltaHz?.format,
   ]);
 
   useEffect(() => {

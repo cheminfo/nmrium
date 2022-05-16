@@ -150,9 +150,9 @@ function RangesHeader({
     const { originFrequency: observedFrequency, nucleus } = info;
 
     const nbDecimalDelta = getNumberOfDecimals(
-      rangesPreferences.deltaPPMFormat,
+      rangesPreferences.deltaPPM.format,
     );
-    const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHzFormat);
+    const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
 
     const result = rangesToACS(ranges.values, {
       nucleus, // '19f'
@@ -172,8 +172,8 @@ function RangesHeader({
     info,
     modal,
     ranges.values,
-    rangesPreferences.deltaHzFormat,
-    rangesPreferences.deltaPPMFormat,
+    rangesPreferences?.deltaHz?.format,
+    rangesPreferences?.deltaPPM?.format,
     saveToClipboardHandler,
   ]);
 

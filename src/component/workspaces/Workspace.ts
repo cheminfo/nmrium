@@ -33,21 +33,14 @@ export interface ZonesPanelPreferences {
 }
 
 export interface RangesPanelPreferences {
-  showFrom: boolean;
-  fromFormat: string;
-  showTo: boolean;
-  toFormat: string;
-  showAbsolute: boolean;
-  absoluteFormat: string;
-  showRelative: boolean;
-  relativeFormat: string;
-  showDeltaPPM: boolean;
-  deltaPPMFormat: string;
-  showDeltaHz: boolean;
-  deltaHzFormat: string;
+  from: ColumnPreferences;
+  to: ColumnPreferences;
+  absolute: ColumnPreferences;
+  relative: ColumnPreferences;
+  deltaPPM: ColumnPreferences;
+  deltaHz: ColumnPreferences;
+  coupling: ColumnPreferences;
   jGraphTolerance: number;
-  couplingFormat: string;
-  showCoupling: boolean;
 }
 
 export interface PeaksPanelPreferences {

@@ -140,8 +140,8 @@ function AddSignalFormTab(
             [
             {`${formatNumber(
               range.from,
-              preferences.fromFormat,
-            )} ppm - ${formatNumber(range.to, preferences.toFormat)} ppm`}
+              preferences.from.format,
+            )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
             ]
           </p>
 

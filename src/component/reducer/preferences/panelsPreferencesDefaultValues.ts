@@ -1,6 +1,7 @@
 import {
   IntegralsPanelPreferences,
   PeaksPanelPreferences,
+  RangesPanelPreferences,
 } from '../../workspaces/Workspace';
 
 const integralDefaultValues: IntegralsPanelPreferences = {
@@ -20,22 +21,15 @@ const zoneDefaultValues = {
   relativeFormat: '0.00',
 };
 
-const getRangeDefaultValues = (nucleus?: string) => ({
-  showFrom: false,
-  fromFormat: '0.00',
-  showTo: false,
-  toFormat: '0.00',
-  showAbsolute: false,
-  absoluteFormat: '0.00',
-  showRelative: true,
-  showDeltaPPM: true,
-  deltaPPMFormat: '0.00',
-  showDeltaHz: false,
-  deltaHzFormat: '0.00',
-  relativeFormat: '0.00',
+const getRangeDefaultValues = (nucleus?: string): RangesPanelPreferences => ({
+  from: { show: false, format: '0.00' },
+  to: { show: false, format: '0.00' },
+  absolute: { show: false, format: '0.00' },
+  relative: { show: true, format: '0.00' },
+  deltaPPM: { show: true, format: '0.00' },
+  deltaHz: { show: false, format: '0.00' },
+  coupling: { show: true, format: '0.00' },
   jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
-  couplingFormat: '0.0',
-  showCoupling: true,
 });
 
 const peaksDefaultValues: PeaksPanelPreferences = {

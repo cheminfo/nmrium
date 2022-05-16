@@ -173,53 +173,53 @@ function RangesTableRow({
         {rowData.tableMetaInfo.rowIndex + 1}
       </td>
 
-      {preferences.showFrom && (
+      {preferences.from.show && (
         <RangeColumn
           value={rowData.from}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={preferences.fromFormat}
+          format={preferences.from.format}
         />
       )}
-      {preferences.showTo && (
+      {preferences.to.show && (
         <RangeColumn
           value={rowData.to}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={preferences.toFormat}
+          format={preferences.to.format}
         />
       )}
 
-      {preferences.showDeltaPPM && (
+      {preferences.deltaPPM.show && (
         <SignalDeltaColumn
           rowData={rowData}
           onHoverSignal={onHoverSignal}
-          toFormat={preferences.toFormat}
-          fromFormat={preferences.fromFormat}
-          deltaPPMFormat={preferences.deltaPPMFormat}
+          toFormat={preferences.to.format}
+          fromFormat={preferences.from.format}
+          deltaPPMFormat={preferences.deltaPPM.format}
         />
       )}
-      {preferences.showDeltaHz && (
+      {preferences.deltaHz.show && (
         <SignalDeltaHzColumn
           rowData={rowData}
           onHoverSignal={onHoverSignal}
-          toFormat={preferences.toFormat}
-          fromFormat={preferences.fromFormat}
-          deltaHzFormat={preferences.deltaHzFormat}
+          toFormat={preferences.to.format}
+          fromFormat={preferences.from.format}
+          deltaHzFormat={preferences.deltaHz.format}
           info={info}
         />
       )}
 
-      {preferences.showRelative && (
+      {preferences.relative.show && (
         <RelativeColumn
           rowData={rowData}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={preferences.relativeFormat}
+          format={preferences.relative.format}
         />
       )}
 
-      {preferences.showAbsolute && (
+      {preferences.absolute.show && (
         <AbsoluteColumn
           value={rowData.absolute}
           rowSpanTags={rowSpanTags}
@@ -232,11 +232,11 @@ function RangesTableRow({
         {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
       </td>
 
-      {preferences.showCoupling && (
+      {preferences.coupling.show && (
         <CouplingColumn
           rowData={rowData}
           onHoverSignal={onHoverSignal}
-          format={preferences.couplingFormat}
+          format={preferences.coupling.format}
         />
       )}
 
