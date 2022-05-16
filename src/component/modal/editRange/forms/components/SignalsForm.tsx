@@ -7,6 +7,8 @@ import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
+import FormatNumber from '../../../../utility/FormatNumber';
+import { RangesPanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
@@ -42,10 +44,10 @@ const tabStyles = css`
 
 interface SignalsFormProps {
   range: number;
-  format: (value: number) => string;
+  preferences: RangesPanelPreferences;
 }
 
-function SignalsForm({ range, format }: SignalsFormProps) {
+function SignalsForm({ range, preferences }: SignalsFormProps) {
   const newSignalFormRef = useRef<any>();
   const [activeField, setActiveField] = useState<string | null>(null);
 
@@ -80,8 +82,9 @@ function SignalsForm({ range, format }: SignalsFormProps) {
           );
         } else {
           const value = Number(
-            format(
+            FormatNumber(
               Math.abs(event.range[0] - event.range[1]) * info.originFrequency,
+              preferences.deltaHzFormat,
             ),
           );
           setFieldValue(activeField, value);
@@ -96,7 +99,13 @@ function SignalsForm({ range, format }: SignalsFormProps) {
     return () => {
       Events.off('brushEnd', handle);
     };
-  }, [activeField, setFieldValue, values.activeTab, format, info]);
+  }, [
+    activeField,
+    setFieldValue,
+    values.activeTab,
+    info,
+    preferences.deltaHzFormat,
+  ]);
 
   useEffect(() => {
     function handle(event) {
@@ -188,13 +197,13 @@ function SignalsForm({ range, format }: SignalsFormProps) {
           onFocus={handleOnFocus}
           range={range}
           ref={newSignalFormRef}
-          format={format}
+          preferences={preferences}
         />
       </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [format, handleOnFocus, range, tabContainsErrors, values.signals]);
+  }, [handleOnFocus, preferences, range, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">

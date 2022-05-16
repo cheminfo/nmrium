@@ -100,11 +100,6 @@ function EditRangeModal({
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const validation = useRangeFormValidation();
 
-  const format = useCallback(
-    (value) => FormatNumber(value, rangesPreferences.relativeFormat),
-    [rangesPreferences.relativeFormat],
-  );
-
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(range);
   }, [onZoomEditRangeModal, range]);
@@ -174,7 +169,9 @@ function EditRangeModal({
 
         if (hasCouplingConstant(_multiplicity)) {
           coupling = { ...signal.js[counterJ] };
-          coupling.coupling = Number(format(coupling.coupling));
+          coupling.coupling = Number(
+            FormatNumber(coupling.coupling, rangesPreferences.couplingFormat),
+          );
           counterJ++;
         }
         coupling.multiplicity = translateMultiplet(coupling.multiplicity);
@@ -184,7 +181,7 @@ function EditRangeModal({
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
-  }, [format, range.signals]);
+  }, [range.signals, rangesPreferences.couplingFormat]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -210,8 +207,12 @@ function EditRangeModal({
             <FaSearchPlus title="Set to default view on range in spectrum" />
           </Button>
           <span>
-            {` Range and Signal edition: ${format(range.from)} ppm to ${format(
+            {` Range and Signal edition: ${FormatNumber(
+              range.from,
+              rangesPreferences.fromFormat,
+            )} ppm to ${FormatNumber(
               range.to,
+              rangesPreferences.toFormat,
             )} ppm`}
           </span>
           <SaveButton
@@ -221,7 +222,7 @@ function EditRangeModal({
 
           <CloseButton onClick={handleOnClose} />
         </div>
-        <SignalsForm range={range} format={format} />
+        <SignalsForm range={range} preferences={rangesPreferences} />
         <FormikOnChange onChange={changeHandler} />
       </FormikForm>
     </div>

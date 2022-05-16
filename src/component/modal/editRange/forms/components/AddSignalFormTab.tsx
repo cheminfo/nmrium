@@ -9,6 +9,8 @@ import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
+import FormatNumber from '../../../../utility/FormatNumber';
+import { RangesPanelPreferences } from '../../../../workspaces/Workspace';
 
 const styles = {
   container: css`
@@ -56,12 +58,12 @@ interface AddSignalFormTabProps {
   onFocus: (element: any) => void;
   onBlur?: () => void;
   range: any;
-  format: (value: number) => string;
+  preferences: RangesPanelPreferences;
 }
 
 // TODO: this seems to be a hacky use of ref.
 function AddSignalFormTab(
-  { onFocus, onBlur, range, format }: AddSignalFormTabProps,
+  { onFocus, onBlur, range, preferences }: AddSignalFormTabProps,
   ref: any,
 ) {
   const { values, setFieldValue } = useFormikContext<any>();
@@ -135,7 +137,12 @@ function AddSignalFormTab(
             />
           </div>
           <p css={styles.inputInfo}>
-            [ {`${format(range.from)} ppm - ${format(range.to)} ppm`} ]
+            [
+            {`${FormatNumber(
+              range.from,
+              preferences.fromFormat,
+            )} ppm - ${FormatNumber(range.to, preferences.toFormat)} ppm`}
+            ]
           </p>
 
           <Button css={styles.addSignalBtn} onClick={triggerSubmitHandler}>
