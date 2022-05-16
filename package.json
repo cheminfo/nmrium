@@ -27,7 +27,7 @@
     "start": "npm run dev",
     "test": "npm run test-only && npm run build-no-minify && npm run test-e2e && npm run eslint && npm run prettier && npm run check-types",
     "test-only": "jest --coverage",
-    "test-e2e": "playwright test",
+    "test-e2e": "playwright test --project chromium",
     "test-e2e-server": "serve -l tcp://localhost:3000 build"
   },
   "bugs": {

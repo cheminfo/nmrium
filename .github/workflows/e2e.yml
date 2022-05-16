@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [chromium, firefox, webkit]
+        project: [chromium, firefox, webkit]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -22,8 +22,6 @@ jobs:
         run: npx playwright install --with-deps
       - name: Build test application
         run: npm run build-no-minify
-      - name: Run E2E tests on ${{ matrix.browser }}
-        run: npm run test-e2e
-        continue-on-error: ${{ matrix.browser == 'webkit' }}
-        env:
-          BROWSER: ${{ matrix.browser }}
+      - name: Run E2E tests on ${{ matrix.project }}
+        run: npx playwright test --project ${{ matrix.project }}
+        continue-on-error: ${{ matrix.project == 'webkit' }}
