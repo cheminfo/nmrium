@@ -32,6 +32,8 @@ const getRangeDefaultValues = (nucleus?: string) => ({
   deltaHzFormat: '0.00',
   relativeFormat: '0.00',
   jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
+  couplingFormat: '0.0',
+  showCoupling: true,
 });
 
 const peaksDefaultValues = {

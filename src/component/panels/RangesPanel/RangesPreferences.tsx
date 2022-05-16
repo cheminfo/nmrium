@@ -99,6 +99,12 @@ const formatFields = [
     checkController: 'showDeltaHz',
     formatController: 'deltaHzFormat',
   },
+  {
+    id: 7,
+    label: 'Coupling (Hz) :',
+    checkController: 'showCoupling',
+    formatController: 'couplingFormat',
+  },
 ];
 
 function RangesPreferences(props, ref) {

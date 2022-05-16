@@ -1,5 +1,7 @@
 import lodashGet from 'lodash/get';
 
+import FormatNumber from '../../../utility/FormatNumber';
+
 interface CouplingColumnProps {
   rowData: {
     id: number;
@@ -11,15 +13,22 @@ interface CouplingColumnProps {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   };
+  format: string;
 }
 
-function CouplingColumn({ rowData, onHoverSignal }: CouplingColumnProps) {
+function CouplingColumn({
+  rowData,
+  onHoverSignal,
+  format,
+}: CouplingColumnProps) {
   const result = lodashGet(rowData, 'tableMetaInfo.signal.js');
   return (
     <td {...onHoverSignal}>
       {result
         ?.map((coupling) =>
-          !isNaN(coupling.coupling) ? coupling.coupling.toFixed(1) : '',
+          !isNaN(coupling.coupling)
+            ? FormatNumber(coupling.coupling, format)
+            : '',
         )
         .join(',')}
     </td>

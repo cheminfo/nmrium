@@ -43,6 +43,8 @@ export interface RangesPanelPreferences {
   showDeltaHz: boolean;
   deltaHzFormat: string;
   jGraphTolerance: number;
+  couplingFormat: string;
+  showCoupling: boolean;
 }
 
 export interface PeaksPanelPreferences {

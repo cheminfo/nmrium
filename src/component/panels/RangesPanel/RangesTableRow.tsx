@@ -232,7 +232,13 @@ function RangesTableRow({
         {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
       </td>
 
-      <CouplingColumn rowData={rowData} onHoverSignal={onHoverSignal} />
+      {preferences.showCoupling && (
+        <CouplingColumn
+          rowData={rowData}
+          onHoverSignal={onHoverSignal}
+          format={preferences.couplingFormat}
+        />
+      )}
 
       <SignalAssignmentsColumn
         rowData={rowData}
