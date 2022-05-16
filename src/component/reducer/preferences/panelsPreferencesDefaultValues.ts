@@ -1,4 +1,7 @@
-import { IntegralsPanelPreferences } from '../../workspaces/Workspace';
+import {
+  IntegralsPanelPreferences,
+  PeaksPanelPreferences,
+} from '../../workspaces/Workspace';
 
 const integralDefaultValues: IntegralsPanelPreferences = {
   absolute: { show: false, format: '0.00' },
@@ -35,17 +38,12 @@ const getRangeDefaultValues = (nucleus?: string) => ({
   showCoupling: true,
 });
 
-const peaksDefaultValues = {
-  showPeakNumber: true,
-  peakNumberFormat: '0',
-  showDeltaPPM: true,
-  deltaPPMFormat: '0.00',
-  showDeltaHz: false,
-  deltaHzFormat: '0.00',
-  showPeakWidth: false,
-  peakWidthFormat: '0.00',
-  showIntensity: true,
-  intensityFormat: '0.00',
+const peaksDefaultValues: PeaksPanelPreferences = {
+  peakNumber: { show: true, format: '0' },
+  deltaPPM: { show: true, format: '0.00' },
+  deltaHz: { show: false, format: '0.00' },
+  peakWidth: { show: false, format: '0.00' },
+  intensity: { show: true, format: '0.00' },
 };
 
 const databaseDefaultValues = {

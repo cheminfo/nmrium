@@ -51,16 +51,11 @@ export interface RangesPanelPreferences {
 }
 
 export interface PeaksPanelPreferences {
-  showPeakNumber: boolean;
-  peakNumberFormat: string;
-  showDeltaPPM: boolean;
-  deltaPPMFormat: string;
-  showDeltaHz: boolean;
-  deltaHzFormat: string;
-  showPeakWidth: boolean;
-  peakWidthFormat: string;
-  showIntensity: boolean;
-  intensityFormat: string;
+  peakNumber: ColumnPreferences;
+  deltaPPM: ColumnPreferences;
+  deltaHz: ColumnPreferences;
+  peakWidth: ColumnPreferences;
+  intensity: ColumnPreferences;
 }
 
 export interface DatabasePanelPreferences {

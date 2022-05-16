@@ -78,7 +78,7 @@ function PeakAnnotation({
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const { deltaPPMFormat } = usePanelPreferences('peaks', nucleus);
+  const { deltaPPM } = usePanelPreferences('peaks', nucleus);
   const highlight = useHighlight([id], {
     type: HighlightedSource.PEAK,
     extra: { id },
@@ -148,12 +148,12 @@ function PeakAnnotation({
   }, [highlight]);
 
   const newValue = useMemo(
-    () => (isSelected ? value : formatNumber(value, deltaPPMFormat)),
-    [deltaPPMFormat, isSelected, value],
+    () => (isSelected ? value : formatNumber(value, deltaPPM.format)),
+    [deltaPPM.format, isSelected, value],
   );
   const oldValue = useMemo(
-    () => (isSelected ? _value : formatNumber(_value, deltaPPMFormat)),
-    [_value, deltaPPMFormat, isSelected],
+    () => (isSelected ? _value : formatNumber(_value, deltaPPM.format)),
+    [_value, deltaPPM.format, isSelected],
   );
 
   return (
