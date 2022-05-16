@@ -1,12 +1,11 @@
-const integralDefaultValues = {
-  showAbsolute: false,
-  absoluteFormat: '0.00',
-  showRelative: true,
-  relativeFormat: '0.00',
+import { IntegralsPanelPreferences } from '../../workspaces/Workspace';
+
+const integralDefaultValues: IntegralsPanelPreferences = {
+  absolute: { show: false, format: '0.00' },
+  relative: { show: true, format: '0.00' },
   color: '#000000',
   strokeWidth: 1,
 };
-
 const zoneDefaultValues = {
   showFrom: false,
   fromFormat: '0.00',

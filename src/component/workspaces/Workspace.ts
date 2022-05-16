@@ -9,11 +9,14 @@ interface Controllers {
   dimmedSpectraTransparency: number;
 }
 
+export interface ColumnPreferences {
+  show: boolean;
+  format: string;
+}
+
 export interface IntegralsPanelPreferences {
-  showAbsolute: boolean;
-  absoluteFormat: string;
-  showRelative: boolean;
-  relativeFormat: string;
+  absolute: ColumnPreferences;
+  relative: ColumnPreferences;
   color: string;
   strokeWidth: number;
 }

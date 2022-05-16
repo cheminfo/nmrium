@@ -70,14 +70,14 @@ const formatFields = [
   {
     id: 1,
     label: 'Absolute :',
-    checkController: 'showAbsolute',
-    formatController: 'absoluteFormat',
+    checkController: 'absolute.show',
+    formatController: 'absolute.format',
   },
   {
     id: 2,
     label: 'Relative :',
-    checkController: 'showRelative',
-    formatController: 'relativeFormat',
+    checkController: 'relative.show',
+    formatController: 'relative.format',
   },
 ];
 

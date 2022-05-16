@@ -28,7 +28,7 @@ function Integral({ integral, isActive, nucleus }: IntegralProps) {
 
       <IntegralResizable
         integralData={integral}
-        integralFormat={integralPreferences.relativeFormat}
+        integralFormat={integralPreferences.relative.format}
       />
     </g>
   );

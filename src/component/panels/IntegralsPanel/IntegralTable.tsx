@@ -1,3 +1,4 @@
+import lodashGet from 'lodash/get';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -121,17 +122,19 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
   );
   const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const COLUMNS: (CustomColumn & { showWhen: string })[] = useMemo(
+  const COLUMNS: (CustomColumn & {
+    showWhen: string;
+  })[] = useMemo(
     () => [
       {
-        showWhen: 'showAbsolute',
+        showWhen: 'absolute.show',
         index: 4,
         Header: 'Absolute',
         accessor: (row) =>
-          formatNumber(row.absolute, integralsPreferences.absoluteFormat),
+          formatNumber(row.absolute, integralsPreferences.absolute.format),
       },
       {
-        showWhen: 'showRelative',
+        showWhen: 'relative.show',
         index: 5,
         id: 'relative',
         Header: () => {
@@ -141,13 +144,13 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         accessor: (row) => {
           return formatNumber(
             row.integral,
-            integralsPreferences.relativeFormat,
+            integralsPreferences.relative.format,
           );
         },
         Cell: ({ row }) => {
           const value = formatNumber(
             row.original.integral,
-            integralsPreferences.relativeFormat,
+            integralsPreferences.relative.format,
           );
           const flag = checkIntegralKind(row.original);
           const integral = flag ? value : `[ ${value} ]`;
@@ -169,7 +172,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     let columns = [...initialColumns];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
-      if (integralsPreferences[showWhen]) {
+      if (lodashGet(integralsPreferences, showWhen)) {
         addCustomColumn(columns, colParams);
       }
     }
