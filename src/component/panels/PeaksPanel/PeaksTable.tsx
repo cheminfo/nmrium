@@ -54,13 +54,6 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
       },
       {
-        showWhen: 'showPeakIndex',
-        index: 2,
-        Header: 'index',
-        accessor: (row) =>
-          formatNumber(row.xIndex, peaksPreferences.peakIndexFormat),
-      },
-      {
         showWhen: 'showDeltaPPM',
         index: 3,
         Header: 'δ (ppm)',

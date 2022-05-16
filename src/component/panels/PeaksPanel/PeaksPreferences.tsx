@@ -70,30 +70,24 @@ const formatFields: Array<{
   },
   {
     id: 2,
-    label: 'Peak Index : ',
-    checkController: 'showPeakIndex',
-    formatController: 'peakIndexFormat',
-  },
-  {
-    id: 3,
     label: 'δ (ppm) :',
     checkController: 'showDeltaPPM',
     formatController: 'deltaPPMFormat',
   },
   {
-    id: 4,
+    id: 3,
     label: 'δ (Hz) :',
     checkController: 'showDeltaHz',
     formatController: 'deltaHzFormat',
   },
   {
-    id: 5,
+    id: 4,
     label: 'Peak Width (Hz)',
     checkController: 'showPeakWidth',
     formatController: 'peakWidthFormat',
   },
   {
-    id: 6,
+    id: 5,
     label: 'Intensity :',
     checkController: 'showIntensity',
     formatController: 'intensityFormat',

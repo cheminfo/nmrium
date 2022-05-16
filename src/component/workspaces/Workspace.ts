@@ -48,8 +48,6 @@ export interface RangesPanelPreferences {
 export interface PeaksPanelPreferences {
   showPeakNumber: boolean;
   peakNumberFormat: string;
-  showPeakIndex: boolean;
-  peakIndexFormat: string;
   showDeltaPPM: boolean;
   deltaPPMFormat: string;
   showDeltaHz: boolean;

@@ -37,8 +37,6 @@ const getRangeDefaultValues = (nucleus?: string) => ({
 const peaksDefaultValues = {
   showPeakNumber: true,
   peakNumberFormat: '0',
-  showPeakIndex: false,
-  peakIndexFormat: '0.00',
   showDeltaPPM: true,
   deltaPPMFormat: '0.00',
   showDeltaHz: false,
