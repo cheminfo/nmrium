@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { Suspense, useMemo, useState, useCallback } from 'react';
+import { Suspense, useMemo, useState, useCallback, StrictMode } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
@@ -72,25 +72,25 @@ export function Dashboard(props: DashboardProps) {
           menuIsClosed ? mainPanelClosedCss : mainPanelOpenCss,
         )}
       >
-        {/* <StrictMode> */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            {routesList.map((prop) => {
-              return (
-                <Route
-                  path={`/SamplesDashboard/:id/${
-                    (prop.view || 'View') + getKey(prop.file)
-                  }`}
-                  element={<RenderView prop={prop} baseURL={baseURL} />}
-                  key={getKey(prop.file)}
-                />
-              );
-            })}
+        <StrictMode>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              {routesList.map((prop) => {
+                return (
+                  <Route
+                    path={`/SamplesDashboard/:id/${
+                      (prop.view || 'View') + getKey(prop.file)
+                    }`}
+                    element={<RenderView prop={prop} baseURL={baseURL} />}
+                    key={getKey(prop.file)}
+                  />
+                );
+              })}
 
-            {rootRoute}
-          </Routes>
-        </Suspense>
-        {/* </StrictMode> */}
+              {rootRoute}
+            </Routes>
+          </Suspense>
+        </StrictMode>
       </div>
     </div>
   );

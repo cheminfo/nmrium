@@ -80,7 +80,7 @@
     "openchemlib": "^7.4.3",
     "openchemlib-utils": "^1.11.0",
     "re-resizable": "^6.9.9",
-    "react-d3-utils": "^0.5.0",
+    "react-d3-utils": "^0.5.1",
     "react-dropzone": "^14.2.1",
     "react-error-boundary": "^3.1.4",
     "react-icons": "^4.3.1",

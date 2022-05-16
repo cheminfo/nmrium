@@ -20,7 +20,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
     },
   });
   // Draw the aromatic ring.
-  await nmrium.page.click('#drawarea1 canvas', {
+  await nmrium.page.click('canvas >> nth=1', {
     position: {
       x: 50,
       y: 50,
