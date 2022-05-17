@@ -4,7 +4,9 @@ function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
 }
 
-const getIntegralDefaultValues = (nucleus?: string): PanelsPreferences['integrals'] => {
+const getIntegralDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['integrals'] => {
   const preferences = {
     absolute: { show: false, format: '0.00' },
     relative: { show: true, format: '0.00' },
@@ -14,13 +16,17 @@ const getIntegralDefaultValues = (nucleus?: string): PanelsPreferences['integral
   return getPreferences(preferences, nucleus);
 };
 
-const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => ({
+const getZoneDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['zones'] => ({
   absolute: { show: false, format: '0.00' },
   relative: { show: true, format: '0.00' },
   ...getPreferences({ deltaPPM: { show: true, format: '0.00' } }, nucleus),
 });
 
-const getRangeDefaultValues = (nucleus?: string): PanelsPreferences['ranges'] => {
+const getRangeDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['ranges'] => {
   const preferences = {
     from: { show: false, format: '0.00' },
     to: { show: false, format: '0.00' },
@@ -34,7 +40,9 @@ const getRangeDefaultValues = (nucleus?: string): PanelsPreferences['ranges'] =>
 
   return getPreferences(preferences, nucleus);
 };
-const getPeaksDefaultValues = (nucleus?: string): PanelsPreferences['peaks'] => {
+const getPeaksDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['peaks'] => {
   const preferences = {
     peakNumber: { show: true, format: '0' },
     deltaPPM: { show: true, format: '0.00' },
