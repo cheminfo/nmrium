@@ -8,8 +8,6 @@ interface SignalDeltaHzColumnProps {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   };
-  fromFormat: string;
-  toFormat: string;
   deltaHzFormat: string;
   info: Info1D;
 }
@@ -17,8 +15,6 @@ interface SignalDeltaHzColumnProps {
 function SignalDeltaHzColumn({
   rowData,
   onHoverSignal,
-  fromFormat,
-  toFormat,
   deltaHzFormat,
   info,
 }: SignalDeltaHzColumnProps) {
@@ -30,8 +26,11 @@ function SignalDeltaHzColumn({
       {!checkMultiplicity(signal.multiplicity, ['m'])
         ? `${formatNumber(
             rowData.from * info.originFrequency,
-            fromFormat,
-          )} - ${formatNumber(rowData.to * info.originFrequency, toFormat)}`
+            deltaHzFormat,
+          )} - ${formatNumber(
+            rowData.to * info.originFrequency,
+            deltaHzFormat,
+          )}`
         : info?.originFrequency
         ? formatNumber(signal.delta * info.originFrequency, deltaHzFormat)
         : ''}

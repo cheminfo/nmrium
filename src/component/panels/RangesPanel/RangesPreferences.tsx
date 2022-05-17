@@ -65,25 +65,25 @@ const styles: Record<
 const formatFields = [
   {
     id: 1,
-    label: 'From :',
+    label: 'From (ppm) :',
     checkController: 'from.show',
     formatController: 'from.format',
   },
   {
     id: 2,
-    label: 'To :',
+    label: 'To (ppm) :',
     checkController: 'to.show',
     formatController: 'to.format',
   },
   {
     id: 3,
-    label: 'Absolute :',
+    label: 'Absolute integration :',
     checkController: 'absolute.show',
     formatController: 'absolute.format',
   },
   {
     id: 4,
-    label: 'Relative :',
+    label: 'Relative integration :',
     checkController: 'relative.show',
     formatController: 'relative.format',
   },
