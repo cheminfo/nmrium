@@ -203,8 +203,6 @@ function RangesTableRow({
         <SignalDeltaHzColumn
           rowData={rowData}
           onHoverSignal={onHoverSignal}
-          toFormat={preferences.to.format}
-          fromFormat={preferences.from.format}
           deltaHzFormat={preferences.deltaHz.format}
           info={info}
         />
