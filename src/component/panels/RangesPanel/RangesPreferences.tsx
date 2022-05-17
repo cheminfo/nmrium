@@ -159,15 +159,15 @@ const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
         <FormikColumnFormatField
           key={field.id}
           label={field.label}
-          checkControllerName={`${nucleus}.${field.checkController}`}
-          formatControllerName={`${nucleus}.${field.formatController}`}
+          checkControllerName={`nuclei.${nucleus}.${field.checkController}`}
+          formatControllerName={`nuclei.${nucleus}.${field.formatController}`}
         />
       ))}
       <Label
         title="J Graph tolerance (Hz) :"
         style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
       >
-        <FormikInput name={`${nucleus}.jGraphTolerance`} type="number" />
+        <FormikInput name={`nuclei.${nucleus}.jGraphTolerance`} type="number" />
       </Label>
     </div>
   );

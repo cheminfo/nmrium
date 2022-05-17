@@ -168,7 +168,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       columns={tableColumns}
       highlightedSource={HighlightedSource.DATABASE}
       groupKey="index"
-      approxItemHeight={30}
+      approxItemHeight={24}
       enableVirtualScroll
     />
   );

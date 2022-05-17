@@ -144,8 +144,8 @@ function ZonesTable({
   }, [experiment, nuclei, tableData]);
 
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
-  const { relative: relativeX } = usePanelPreferences('zones', nuclei[0]);
-  const { relative: relativeY } = usePanelPreferences('zones', nuclei[1]);
+  const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
+  const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);
 
   const rows = useMemo(
     () =>
@@ -156,16 +156,10 @@ function ZonesTable({
           rowData={rowData}
           onUnlink={onUnlink}
           onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
-          format={{ x: relativeX.format, y: relativeY.format }}
+          format={{ x: deltaX.format, y: deltaY.format }}
         />
       )),
-    [
-      sortedData,
-      onUnlink,
-      relativeX.format,
-      relativeY.format,
-      contextMenuHandler,
-    ],
+    [sortedData, onUnlink, deltaX.format, deltaY.format, contextMenuHandler],
   );
 
   return (

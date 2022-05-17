@@ -129,9 +129,9 @@ const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
         <MF mf={nucleus} />
       </p>
 
-      <FormikColorInput name={`${nucleus}.color`} />
+      <FormikColorInput name={`nuclei.${nucleus}.color`} />
       <FormikNumberInput
-        name={`${nucleus}.strokeWidth`}
+        name={`nuclei.${nucleus}.strokeWidth`}
         label="stroke width :"
         style={{
           label: {
@@ -153,8 +153,8 @@ const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
         <FormikColumnFormatField
           key={field.id}
           label={field.label}
-          checkControllerName={`${nucleus}.${field.checkController}`}
-          formatControllerName={`${nucleus}.${field.formatController}`}
+          checkControllerName={`nuclei.${nucleus}.${field.checkController}`}
+          formatControllerName={`nuclei.${nucleus}.${field.formatController}`}
         />
       ))}
     </div>

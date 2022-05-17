@@ -13,7 +13,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
-import { RangesPanelPreferences } from '../../workspaces/Workspace';
+import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -32,7 +32,7 @@ interface RangesTablePanelInnerProps {
   showMultiplicityTrees: boolean;
   showJGraph: boolean;
   showRangesIntegrals: boolean;
-  preferences: RangesPanelPreferences;
+  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
 function RangesTablePanelInner({

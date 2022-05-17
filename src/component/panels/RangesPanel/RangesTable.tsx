@@ -7,7 +7,7 @@ import { Info1D } from '../../../data/types/data1d/Info1D';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu, { ContextMenuProps } from '../../elements/ContextMenu';
 import useTableSortBy from '../../hooks/useTableSortBy';
-import { RangesPanelPreferences } from '../../workspaces/Workspace';
+import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './hooks/useMapRanges';
@@ -53,7 +53,7 @@ const tableStyle = css`
 `;
 interface RangesTableProps {
   onUnlink: (a: any, b?: any) => void;
-  preferences: RangesPanelPreferences;
+  preferences: WorkSpacePanelPreferences['ranges'];
   tableData: any;
   context: ContextMenuProps['context'];
   activeTab: string;

@@ -15,7 +15,7 @@ import {
   useHighlight,
   useHighlightData,
 } from '../../highlight';
-import { RangesPanelPreferences } from '../../workspaces/Workspace';
+import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
 import ActionsColumn from './TableColumns/ActionsColumn';
@@ -40,7 +40,7 @@ interface RangesTableRowProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
   onContextMenu: (element: any, data: any) => void;
-  preferences: RangesPanelPreferences;
+  preferences: WorkSpacePanelPreferences['ranges'];
   info: Info1D;
 }
 

@@ -91,42 +91,42 @@ function DatabasePreferences(props, ref) {
           <FormikColumnFormatField
             label="structure"
             checkControllerName="showSmiles"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Solvent"
             checkControllerName="showSolvent"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Names"
             checkControllerName="showNames"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Range"
             checkControllerName="showRange"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="δ (ppm)"
             checkControllerName="showDelta"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Assignment"
             checkControllerName="showAssignment"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="J (Hz)"
             checkControllerName="showCoupling"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Multiplicity"
             checkControllerName="showMultiplicity"
-            hideFormat
+            hideFormatField
           />
         </div>
       </FormikForm>

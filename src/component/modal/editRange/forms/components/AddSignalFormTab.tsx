@@ -10,7 +10,7 @@ import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../../../utility/formatNumber';
-import { RangesPanelPreferences } from '../../../../workspaces/Workspace';
+import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 const styles = {
   container: css`
@@ -58,7 +58,7 @@ interface AddSignalFormTabProps {
   onFocus: (element: any) => void;
   onBlur?: () => void;
   range: any;
-  preferences: RangesPanelPreferences;
+  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
 // TODO: this seems to be a hacky use of ref.

@@ -146,8 +146,8 @@ const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
         <FormikColumnFormatField
           key={field.id}
           label={field.label}
-          checkControllerName={`${nucleus}.${field.checkController}`}
-          formatControllerName={`${nucleus}.${field.formatController}`}
+          checkControllerName={`nuclei.${nucleus}.${field.checkController}`}
+          formatControllerName={`nuclei.${nucleus}.${field.formatController}`}
         />
       ))}
     </div>

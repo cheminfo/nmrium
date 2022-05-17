@@ -1,35 +1,35 @@
+import lodashMerge from 'lodash/merge';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 import {
-  integralDefaultValues,
-  peaksDefaultValues,
-  zoneDefaultValues,
+  getIntegralDefaultValues,
+  getPeaksDefaultValues,
+  getZoneDefaultValues,
   getRangeDefaultValues,
   databaseDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 import {
-  DatabasePanelPreferences,
-  IntegralsPanelPreferences,
-  PeaksPanelPreferences,
-  RangesPanelPreferences,
+  PanelsPreferences,
   Workspace,
-  ZonesPanelPreferences,
+  WorkSpacePanelPreferences,
 } from '../workspaces/Workspace';
+
+const basePath = 'formatting.panels';
 
 type Panel = 'peaks' | 'integrals' | 'zones' | 'ranges' | 'database';
 
 function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
     case 'peaks':
-      return peaksDefaultValues;
+      return getPeaksDefaultValues(nucleus);
     case 'integrals':
-      return integralDefaultValues;
+      return getIntegralDefaultValues(nucleus);
     case 'ranges':
       return getRangeDefaultValues(nucleus);
     case 'zones':
-      return zoneDefaultValues;
+      return getZoneDefaultValues(nucleus);
     case 'database':
       return databaseDefaultValues;
 
@@ -38,75 +38,99 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   }
 }
 
-function getKeyPath(panelKey: Panel, nucleus?: string) {
-  if (panelKey === 'database') {
-    return `formatting.panels.${panelKey}`;
-  } else if (nucleus) {
-    return `formatting.panels.${panelKey}.[${nucleus}]`;
+function joinWithNucleusPreferences<T extends Exclude<Panel, 'database'>>(
+  data: PanelsPreferences[T],
+  nucleus: string,
+  returnOnlyNucleusPreferences = false,
+) {
+  const { nuclei = {}, ...rest } = data;
+
+  if (returnOnlyNucleusPreferences) {
+    return nuclei?.[nucleus];
   }
-  return {};
+
+  return { ...nuclei[nucleus], ...rest };
 }
 
-interface PreferencesReturnType {
-  peaks: PeaksPanelPreferences;
-  integrals: IntegralsPanelPreferences;
-  zones: ZonesPanelPreferences;
-  ranges: RangesPanelPreferences;
-  database: DatabasePanelPreferences;
+function getPanelPreferences(
+  preferences: Workspace,
+  panelKey: Panel,
+  nucleus?: string,
+  returnOnlyNucleusPreferences = false,
+) {
+  const panelPreferences = lodashMerge(
+    {},
+    getDefaultPreferences(panelKey, nucleus),
+    getValue(preferences, `${basePath}.${panelKey}`, {}),
+  );
+
+  if (panelKey !== 'database' && nucleus) {
+    return joinWithNucleusPreferences(
+      panelPreferences,
+      nucleus,
+      returnOnlyNucleusPreferences,
+    );
+  }
+
+  return panelPreferences;
 }
+
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus: string,
-): PreferencesReturnType[T];
+): WorkSpacePanelPreferences[T];
 export function usePanelPreferences<T extends 'database'>(
   panelKey: T,
-): PreferencesReturnType['database'];
+): WorkSpacePanelPreferences['database'];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus?: string,
-): PreferencesReturnType[T] {
+): WorkSpacePanelPreferences[T] {
   const { current } = usePreferences();
 
-  return useMemo(
-    () =>
-      getValue(
-        current,
-        getKeyPath(panelKey, nucleus),
-        getDefaultPreferences(panelKey, nucleus),
-      ),
-    [current, nucleus, panelKey],
-  );
+  return useMemo(() => {
+    return getPanelPreferences(current, panelKey, nucleus);
+  }, [current, nucleus, panelKey]);
 }
-export function getPanelPreferences(
-  preferences: Workspace,
-  panelKey: Panel,
-  nucleus: string,
-) {
-  return getValue(
-    preferences,
-    getKeyPath(panelKey, nucleus),
-    getDefaultPreferences(panelKey, nucleus),
-  );
-}
+
+export type UsePanelPreferencesByNucleiResult<T extends Panel> =
+  T extends 'peaks'
+    ? PanelsPreferences['peaks']
+    : T extends 'integrals'
+    ? PanelsPreferences['integrals']
+    : T extends 'zones'
+    ? PanelsPreferences['zones']
+    : T extends 'ranges'
+    ? PanelsPreferences['ranges']
+    : void;
 
 export function usePanelPreferencesByNuclei<T extends Panel>(
   panelKey: T,
   nuclei: string[],
-): Record<string, PreferencesReturnType[T]> {
+): UsePanelPreferencesByNucleiResult<T> {
   const { current } = usePreferences();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { nuclei: omitNuclei = null, ...restPreferences } = getPanelPreferences(
+    current,
+    panelKey,
+  );
+
   return useMemo(
-    () =>
-      nuclei.reduce((acc, nucleusLabel) => {
+    () => ({
+      nuclei: nuclei.reduce((acc, nucleusLabel) => {
         acc[nucleusLabel] = getPanelPreferences(
           current,
           panelKey,
           nucleusLabel,
+          true,
         );
         return acc;
       }, {}),
+      ...restPreferences,
+    }),
 
-    [current, nuclei, panelKey],
+    [current, nuclei, panelKey, restPreferences],
   );
 }

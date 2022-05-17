@@ -64,27 +64,9 @@ const formatFields: Array<{
 }> = [
   {
     id: 1,
-    label: 'From :',
-    checkController: 'from.show',
-    formatController: 'from.format',
-  },
-  {
-    id: 2,
-    label: 'To :',
-    checkController: 'to.show',
-    formatController: 'to.format',
-  },
-  {
-    id: 3,
-    label: 'Absolute :',
-    checkController: 'absolute.show',
-    formatController: 'absolute.format',
-  },
-  {
-    id: 4,
-    label: 'Relative :',
-    checkController: 'relative.show',
-    formatController: 'relative.format',
+    label: 'δ (ppm) :',
+    checkController: 'deltaPPM.show',
+    formatController: 'deltaPPM.format',
   },
 ];
 
@@ -95,11 +77,11 @@ function ZonesPreferences(props, ref) {
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
-  const preferencesByNuclei = usePanelPreferencesByNuclei('zones', nuclei);
+  const zonesPreferences = usePanelPreferencesByNuclei('zones', nuclei);
 
   useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
+    formRef.current.setValues(zonesPreferences);
+  }, [zonesPreferences]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -125,6 +107,21 @@ function ZonesPreferences(props, ref) {
   return (
     <div style={styles.container}>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
+        <div style={styles.groupContainer}>
+          <FormikColumnFormatField
+            label="Absolute integration"
+            checkControllerName={`absolute.show`}
+            formatControllerName="absolute.format"
+            hideCheckField
+          />
+          <FormikColumnFormatField
+            label="Relative integration"
+            checkControllerName="relative.show"
+            formatControllerName="relative.format"
+            hideCheckField
+          />
+        </div>
+
         {nuclei?.map((n) => (
           <NucleusPreferences key={n} nucleus={n} />
         ))}
@@ -141,8 +138,9 @@ const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
         <FormikColumnFormatField
           key={field.id}
           label={field.label}
-          checkControllerName={`${nucleus}.${field.checkController}`}
-          formatControllerName={`${nucleus}.${field.formatController}`}
+          checkControllerName={`nuclei.${nucleus}.${field.checkController}`}
+          formatControllerName={`nuclei.${nucleus}.${field.formatController}`}
+          hideCheckField
         />
       ))}
     </div>

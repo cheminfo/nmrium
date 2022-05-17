@@ -8,7 +8,7 @@ import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
 import { formatNumber } from '../../../../utility/formatNumber';
-import { RangesPanelPreferences } from '../../../../workspaces/Workspace';
+import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
@@ -44,7 +44,7 @@ const tabStyles = css`
 
 interface SignalsFormProps {
   range: number;
-  preferences: RangesPanelPreferences;
+  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
 function SignalsForm({ range, preferences }: SignalsFormProps) {

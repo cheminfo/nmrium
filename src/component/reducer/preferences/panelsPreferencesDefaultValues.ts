@@ -1,43 +1,52 @@
-import {
-  IntegralsPanelPreferences,
-  PeaksPanelPreferences,
-  RangesPanelPreferences,
-  ZonesPanelPreferences,
-} from '../../workspaces/Workspace';
+import { PanelsPreferences } from '../../workspaces/Workspace';
 
-const integralDefaultValues: IntegralsPanelPreferences = {
-  absolute: { show: false, format: '0.00' },
-  relative: { show: true, format: '0.00' },
-  color: '#000000',
-  strokeWidth: 1,
-};
-const zoneDefaultValues: ZonesPanelPreferences = {
-  from: { show: false, format: '0.00' },
-  to: { show: false, format: '0.00' },
-  absolute: { show: false, format: '0.00' },
-  relative: { show: true, format: '0.00' },
+function getPreferences<T>(data: T, nucleus?: string) {
+  return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
+}
+
+const getIntegralDefaultValues = (nucleus?: string): PanelsPreferences['integrals'] => {
+  const preferences = {
+    absolute: { show: false, format: '0.00' },
+    relative: { show: true, format: '0.00' },
+    color: '#000000',
+    strokeWidth: 1,
+  };
+  return getPreferences(preferences, nucleus);
 };
 
-const getRangeDefaultValues = (nucleus?: string): RangesPanelPreferences => ({
-  from: { show: false, format: '0.00' },
-  to: { show: false, format: '0.00' },
+const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => ({
   absolute: { show: false, format: '0.00' },
   relative: { show: true, format: '0.00' },
-  deltaPPM: { show: true, format: '0.00' },
-  deltaHz: { show: false, format: '0.00' },
-  coupling: { show: true, format: '0.00' },
-  jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
+  ...getPreferences({ deltaPPM: { show: true, format: '0.00' } }, nucleus),
 });
 
-const peaksDefaultValues: PeaksPanelPreferences = {
-  peakNumber: { show: true, format: '0' },
-  deltaPPM: { show: true, format: '0.00' },
-  deltaHz: { show: false, format: '0.00' },
-  peakWidth: { show: false, format: '0.00' },
-  intensity: { show: true, format: '0.00' },
+const getRangeDefaultValues = (nucleus?: string): PanelsPreferences['ranges'] => {
+  const preferences = {
+    from: { show: false, format: '0.00' },
+    to: { show: false, format: '0.00' },
+    absolute: { show: false, format: '0.00' },
+    relative: { show: true, format: '0.00' },
+    deltaPPM: { show: true, format: '0.00' },
+    deltaHz: { show: false, format: '0.00' },
+    coupling: { show: true, format: '0.00' },
+    jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
+  };
+
+  return getPreferences(preferences, nucleus);
+};
+const getPeaksDefaultValues = (nucleus?: string): PanelsPreferences['peaks'] => {
+  const preferences = {
+    peakNumber: { show: true, format: '0' },
+    deltaPPM: { show: true, format: '0.00' },
+    deltaHz: { show: false, format: '0.00' },
+    peakWidth: { show: false, format: '0.00' },
+    intensity: { show: true, format: '0.00' },
+  };
+
+  return getPreferences(preferences, nucleus);
 };
 
-const databaseDefaultValues = {
+const databaseDefaultValues: PanelsPreferences['database'] = {
   showSmiles: true,
   showSolvent: false,
   showNames: true,
@@ -49,9 +58,9 @@ const databaseDefaultValues = {
 };
 
 export {
-  peaksDefaultValues,
-  integralDefaultValues,
+  getPeaksDefaultValues,
+  getIntegralDefaultValues,
   getRangeDefaultValues,
-  zoneDefaultValues,
+  getZoneDefaultValues,
   databaseDefaultValues,
 };

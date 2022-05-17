@@ -9,26 +9,31 @@ interface Controllers {
   dimmedSpectraTransparency: number;
 }
 
-export interface ColumnPreferences {
+interface ColumnPreferences {
   show: boolean;
   format: string;
 }
 
-export interface IntegralsPanelPreferences {
+interface IntegralsNucleusPreferences {
   absolute: ColumnPreferences;
   relative: ColumnPreferences;
   color: string;
   strokeWidth: number;
 }
 
-export interface ZonesPanelPreferences {
-  from: ColumnPreferences;
-  to: ColumnPreferences;
+interface ZonesNucleusPreferences {
+  deltaPPM: ColumnPreferences;
+}
+interface ZonesGeneralPanelPreferences {
   absolute: ColumnPreferences;
   relative: ColumnPreferences;
 }
 
-export interface RangesPanelPreferences {
+interface NucleusPreferences<T> {
+  nuclei: Record<string, T>;
+}
+
+interface RangesNucleusPreferences {
   from: ColumnPreferences;
   to: ColumnPreferences;
   absolute: ColumnPreferences;
@@ -39,7 +44,7 @@ export interface RangesPanelPreferences {
   jGraphTolerance: number;
 }
 
-export interface PeaksPanelPreferences {
+interface PeaksNucleusPreferences {
   peakNumber: ColumnPreferences;
   deltaPPM: ColumnPreferences;
   deltaHz: ColumnPreferences;
@@ -58,17 +63,26 @@ export interface DatabasePanelPreferences {
   showMultiplicity: boolean;
 }
 
-export interface Panels {
-  peaks?: Record<string, PeaksPanelPreferences>;
-  integrals?: Record<string, IntegralsPanelPreferences>;
-  ranges?: Record<string, RangesPanelPreferences>;
-  zones?: Record<string, ZonesPanelPreferences>;
-  database?: DatabasePanelPreferences;
+export interface WorkSpacePanelPreferences {
+  peaks: PeaksNucleusPreferences;
+  integrals: IntegralsNucleusPreferences;
+  ranges: RangesNucleusPreferences;
+  zones: ZonesNucleusPreferences & ZonesGeneralPanelPreferences;
+  database: DatabasePanelPreferences;
+}
+
+export interface PanelsPreferences {
+  peaks: NucleusPreferences<PeaksNucleusPreferences>;
+  integrals: NucleusPreferences<IntegralsNucleusPreferences>;
+  ranges: NucleusPreferences<RangesNucleusPreferences>;
+  zones: NucleusPreferences<ZonesNucleusPreferences> &
+    ZonesGeneralPanelPreferences;
+  database: DatabasePanelPreferences;
 }
 
 export interface Formatting {
   nuclei: Record<string, NucleusFormat>;
-  panels: Panels;
+  panels: Partial<PanelsPreferences>;
 }
 
 export interface Database {
