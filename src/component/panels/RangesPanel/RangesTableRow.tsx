@@ -194,8 +194,6 @@ function RangesTableRow({
         <SignalDeltaColumn
           rowData={rowData}
           onHoverSignal={onHoverSignal}
-          toFormat={preferences.to.format}
-          fromFormat={preferences.from.format}
           deltaPPMFormat={preferences.deltaPPM.format}
         />
       )}

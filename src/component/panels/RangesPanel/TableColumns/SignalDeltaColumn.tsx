@@ -12,16 +12,12 @@ interface SignalDeltaColumnProps {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   };
-  fromFormat: string;
-  toFormat: string;
   deltaPPMFormat: string;
 }
 
 function SignalDeltaColumn({
   rowData,
   onHoverSignal,
-  fromFormat,
-  toFormat,
   deltaPPMFormat,
 }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
@@ -46,9 +42,9 @@ function SignalDeltaColumn({
   return (
     <td {...onHoverSignal}>
       {!checkMultiplicity(signal.multiplicity, ['m']) ? (
-        `${formatNumber(rowData.from, fromFormat)} - ${formatNumber(
+        `${formatNumber(rowData.from, deltaPPMFormat)} - ${formatNumber(
           rowData.to,
-          toFormat,
+          deltaPPMFormat,
         )}`
       ) : (
         <EditableColumn
