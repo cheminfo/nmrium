@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodashGet from 'lodash/get';
 import { Fragment, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
+import { Info1D } from '../../../data/types/data1d/Info1D';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import ContextMenu from '../../elements/ContextMenu';
+import ContextMenu, { ContextMenuProps } from '../../elements/ContextMenu';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './hooks/useMapRanges';
@@ -50,16 +51,27 @@ const tableStyle = css`
     }
   }
 `;
+interface RangesTableProps {
+  onUnlink: (a: any, b?: any) => void;
+  preferences: WorkSpacePanelPreferences['ranges'];
+  tableData: any;
+  context: ContextMenuProps['context'];
+  activeTab: string;
+  info: Info1D;
+}
 
-function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
+function RangesTable({
+  tableData,
+  onUnlink,
+  context,
+  activeTab,
+  preferences,
+  info,
+}: RangesTableProps) {
   const element = activeTab?.replace(/[0-9]/g, '');
   const contextRef = useRef<any>();
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
-
-  const isVisible = (key) => {
-    return lodashGet(preferences, key, false);
-  };
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
@@ -77,27 +89,28 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
         <thead>
           <tr>
             <th>#</th>
-            {isVisible('showFrom') ? (
+            {preferences.from.show && (
               <th id="from" {...onSort}>
                 From
                 {isSortedDesc('from').content}
               </th>
-            ) : null}
-            {isVisible('showTo') ? (
+            )}
+            {preferences.to.show && (
               <th id="to" {...onSort}>
                 To {isSortedDesc('to').content}
               </th>
-            ) : null}
-            <th>δ (ppm) </th>
+            )}
+            {preferences.deltaPPM.show && <th>δ (ppm) </th>}
+            {preferences.deltaHz.show && <th>δ (Hz) </th>}
 
-            {isVisible('showRelative') ? (
+            {preferences.relative.show && (
               <th id="integration" {...onSort}>
                 Rel. {element} {isSortedDesc('integration').content}
               </th>
-            ) : null}
-            {isVisible('showAbsolute') ? <th>Absolute</th> : null}
+            )}
+            {preferences.absolute.show && <th>Absolute</th>}
             <th>Mult.</th>
-            <th>J (Hz)</th>
+            {preferences.coupling.show && <th>J (Hz)</th>}
             <th>
               <FaLink style={{ fontSize: 10 }} />
             </th>
@@ -115,6 +128,7 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
                 onUnlink={onUnlink}
                 onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                 preferences={preferences}
+                info={info}
               />
             );
           })}

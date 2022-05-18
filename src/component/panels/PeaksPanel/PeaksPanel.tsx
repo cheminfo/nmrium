@@ -7,9 +7,9 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useModal } from '../../elements/popup/Modal';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -21,7 +21,6 @@ interface PeaksPanelInnerProps {
   peaks: Peaks;
   xDomain: number[];
   activeTab: string;
-  preferences: any;
   info: Info1D;
 }
 
@@ -30,7 +29,6 @@ function PeaksPanelInner({
   info,
   xDomain,
   activeTab,
-  preferences,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -136,12 +134,7 @@ function PeaksPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <PeaksTable
-            data={filteredPeaks}
-            activeTab={activeTab}
-            preferences={preferences}
-            info={info}
-          />
+          <PeaksTable data={filteredPeaks} activeTab={activeTab} />
         ) : (
           <PeaksPreferences ref={settingRef} />
         )}

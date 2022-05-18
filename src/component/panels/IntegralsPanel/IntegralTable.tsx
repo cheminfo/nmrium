@@ -12,26 +12,25 @@ import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import Select from '../../elements/Select';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
   CHANGE_INTEGRAL_RELATIVE,
 } from '../../reducer/types/Types';
-import formatNumber from '../../utility/FormatNumber';
-import { getValue } from '../../utility/LocalStorage';
+import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';
 
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 interface IntegralTableProps
-  extends Pick<IntegralPanelInnerProps, 'activeTab' | 'preferences'> {
+  extends Pick<IntegralPanelInnerProps, 'activeTab'> {
   data: Array<Integral>;
 }
 
-function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
+function IntegralTable({ activeTab, data }: IntegralTableProps) {
   const dispatch = useDispatch();
   const deleteIntegralHandler = useCallback(
     (e, row) => {
@@ -121,35 +120,21 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
     },
     [dispatch],
   );
+  const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const integralsPreferences = useMemo(
-    () =>
-      getValue(
-        preferences.current,
-        `formatting.panels.integrals.[${activeTab}]`,
-        integralDefaultValues,
-      ),
-    [activeTab, preferences],
-  );
-
-  const COLUMNS: (CustomColumn & { showWhen: string })[] = useMemo(
+  const COLUMNS: (CustomColumn & {
+    showWhen: string;
+  })[] = useMemo(
     () => [
       {
-        showWhen: 'showAbsolute',
+        showWhen: 'absolute.show',
         index: 4,
         Header: 'Absolute',
         accessor: (row) =>
-          formatNumber(
-            row.absolute,
-            lodashGet(
-              integralsPreferences,
-              'absoluteFormat',
-              integralDefaultValues.absoluteFormat,
-            ),
-          ),
+          formatNumber(row.absolute, integralsPreferences.absolute.format),
       },
       {
-        showWhen: 'showRelative',
+        showWhen: 'relative.show',
         index: 5,
         id: 'relative',
         Header: () => {
@@ -159,21 +144,13 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
         accessor: (row) => {
           return formatNumber(
             row.integral,
-            lodashGet(
-              integralsPreferences,
-              'relativeFormat',
-              integralDefaultValues.relativeFormat,
-            ),
+            integralsPreferences.relative.format,
           );
         },
         Cell: ({ row }) => {
           const value = formatNumber(
             row.original.integral,
-            lodashGet(
-              integralsPreferences,
-              'relativeFormat',
-              integralDefaultValues.relativeFormat,
-            ),
+            integralsPreferences.relative.format,
           );
           const flag = checkIntegralKind(row.original);
           const integral = flag ? value : `[ ${value} ]`;
@@ -195,7 +172,7 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
     let columns = [...initialColumns];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
-      if (integralsPreferences[showWhen]) {
+      if (lodashGet(integralsPreferences, showWhen)) {
         addCustomColumn(columns, colParams);
       }
     }

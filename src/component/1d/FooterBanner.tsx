@@ -11,9 +11,9 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
+import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
-import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
   display: flex;

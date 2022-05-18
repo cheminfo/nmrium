@@ -22,21 +22,23 @@ const styles: Record<'row' | 'inputLabel' | 'input', CSSProperties> = {
   },
 };
 
-interface FormikColumnFormatFieldProps {
+export interface ColumnFormatField {
   label: string;
-  checkControllerName: string;
+  checkControllerName?: string;
   formatControllerName?: string;
   disableFormat?: boolean;
-  hideFormat?: boolean;
+  hideFormatField?: boolean;
+  hideCheckField?: boolean;
 }
 
-function FormikColumnFormatField(props: FormikColumnFormatFieldProps) {
+function FormikColumnFormatField(props: ColumnFormatField) {
   const {
     label,
     checkControllerName,
     formatControllerName,
     disableFormat = false,
-    hideFormat = false,
+    hideFormatField = false,
+    hideCheckField = false,
   } = props;
 
   const { values, handleChange, setFieldValue } = useFormikContext();
@@ -66,14 +68,16 @@ function FormikColumnFormatField(props: FormikColumnFormatFieldProps) {
           alignItems: 'center',
         }}
       >
-        <input
-          type="checkbox"
-          style={{ margin: '0px 5px' }}
-          name={checkControllerName}
-          onChange={checkChangeHandler}
-          checked={lodashGet(values, checkControllerName, false)}
-        />
-        {!hideFormat && formatControllerName && (
+        {!hideCheckField && checkControllerName && (
+          <input
+            type="checkbox"
+            style={{ margin: '0px 5px' }}
+            name={checkControllerName}
+            onChange={checkChangeHandler}
+            checked={lodashGet(values, checkControllerName, false)}
+          />
+        )}
+        {!hideFormatField && formatControllerName && (
           <Input
             style={{ inputWrapper: styles.input }}
             name={formatControllerName}

@@ -36,6 +36,7 @@ interface ZonesTableRowProps {
   ) => void;
   onContextMenu: (a: any, rowData: RowDataProps) => void;
   rowIndex: number;
+  format: { x: string; y: string };
 }
 
 function ZonesTableRow({
@@ -43,6 +44,7 @@ function ZonesTableRow({
   onUnlink,
   onContextMenu,
   rowIndex,
+  format,
 }: ZonesTableRowProps) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
@@ -211,6 +213,7 @@ function ZonesTableRow({
         rowData={rowData}
         onHoverSignalX={onHoverSignalX}
         onHoverSignalY={onHoverSignalY}
+        format={format}
       />
       <SignalAssignmentsColumns
         rowData={rowData}

@@ -8,7 +8,6 @@ import { ImLink } from 'react-icons/im';
 import { Datum1D, Info1D, Integrals } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { usePreferences } from '../../context/PreferencesContext';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
@@ -47,7 +46,6 @@ export interface IntegralPanelInnerProps {
   info: Info1D;
   activeTab: string;
   xDomain: Array<number>;
-  preferences: any;
 }
 
 function IntegralPanelInner({
@@ -55,7 +53,6 @@ function IntegralPanelInner({
   info,
   activeTab,
   xDomain,
-  preferences,
 }: IntegralPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -215,11 +212,7 @@ function IntegralPanelInner({
         )}
         <div className="inner-container">
           {!isFlipped ? (
-            <IntegralTable
-              data={filteredData}
-              activeTab={activeTab}
-              preferences={preferences}
-            />
+            <IntegralTable data={filteredData} activeTab={activeTab} />
           ) : (
             <IntegralsPreferences ref={settingRef} />
           )}
@@ -236,8 +229,6 @@ const emptyData = { integrals: {}, info: {} };
 export default function IntegralPanel() {
   const { xDomain, activeTab } = useChartData();
 
-  const preferences = usePreferences();
-
   const { integrals, info } = useSpectrum(emptyData) as Datum1D;
 
   return (
@@ -245,7 +236,6 @@ export default function IntegralPanel() {
       {...{
         integrals,
         info,
-        preferences: preferences.current,
         xDomain,
         activeTab,
       }}

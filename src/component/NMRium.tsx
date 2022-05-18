@@ -52,7 +52,7 @@ import preferencesReducer, {
   preferencesInitialState,
   PreferencesState,
   initPreferencesState,
-} from './reducer/preferencesReducer';
+} from './reducer/preferences/preferencesReducer';
 import {
   INITIATE,
   SET_LOADING_FLAG,

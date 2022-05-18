@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import FormatNumber from '../../../utility/FormatNumber';
+import { formatNumber } from '../../../utility/formatNumber';
 
 interface AbsoluteColumnProps {
   value: any;
@@ -23,7 +23,7 @@ function AbsoluteColumn({
 }: AbsoluteColumnProps) {
   return (
     <td {...rowSpanTags} {...onHoverRange}>
-      {FormatNumber(value, format)}
+      {formatNumber(value, format)}
     </td>
   );
 }

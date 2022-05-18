@@ -1,6 +1,6 @@
 import { CSSProperties, memo } from 'react';
 
-import FormatNumber from '../../../utility/FormatNumber';
+import { formatNumber } from '../../../utility/formatNumber';
 
 interface RangeColumnProps {
   value: any;
@@ -23,7 +23,7 @@ function RangeColumn({
 }: RangeColumnProps) {
   return (
     <td {...rowSpanTags} {...onHoverRange}>
-      {FormatNumber(value, format)}
+      {formatNumber(value, format)}
     </td>
   );
 }

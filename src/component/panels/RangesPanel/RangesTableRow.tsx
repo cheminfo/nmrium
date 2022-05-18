@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
+import { Info1D } from '../../../data/types/data1d';
 import {
   AssignmentsData,
   useAssignment,
@@ -14,7 +15,7 @@ import {
   useHighlight,
   useHighlightData,
 } from '../../highlight';
-import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
+import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
 import ActionsColumn from './TableColumns/ActionsColumn';
@@ -24,6 +25,7 @@ import RangeColumn from './TableColumns/RangeColumn';
 import RelativeColumn from './TableColumns/RelativeColumn';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
+import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
 import useFormat from './TableColumns/format';
 
 const HighlightedRowStyle = css`
@@ -38,7 +40,8 @@ interface RangesTableRowProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
   onContextMenu: (element: any, data: any) => void;
-  preferences: string;
+  preferences: WorkSpacePanelPreferences['ranges'];
+  info: Info1D;
 }
 
 function RangesTableRow({
@@ -46,6 +49,7 @@ function RangesTableRow({
   onUnlink,
   onContextMenu,
   preferences,
+  info,
 }: RangesTableRowProps) {
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
@@ -169,39 +173,49 @@ function RangesTableRow({
         {rowData.tableMetaInfo.rowIndex + 1}
       </td>
 
-      {isColumnVisible(preferences, 'showFrom') && (
+      {preferences.from.show && (
         <RangeColumn
           value={rowData.from}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('showFrom', undefined)}
+          format={preferences.from.format}
         />
       )}
-      {isColumnVisible(preferences, 'showTo') && (
+      {preferences.to.show && (
         <RangeColumn
           value={rowData.to}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('toFormat', undefined)}
+          format={preferences.to.format}
         />
       )}
 
-      <SignalDeltaColumn
-        rowData={rowData}
-        onHoverSignal={onHoverSignal}
-        preferences={preferences}
-      />
+      {preferences.deltaPPM.show && (
+        <SignalDeltaColumn
+          rowData={rowData}
+          onHoverSignal={onHoverSignal}
+          deltaPPMFormat={preferences.deltaPPM.format}
+        />
+      )}
+      {preferences.deltaHz.show && (
+        <SignalDeltaHzColumn
+          rowData={rowData}
+          onHoverSignal={onHoverSignal}
+          deltaHzFormat={preferences.deltaHz.format}
+          info={info}
+        />
+      )}
 
-      {isColumnVisible(preferences, 'showRelative') && (
+      {preferences.relative.show && (
         <RelativeColumn
           rowData={rowData}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('relativeFormat', undefined)}
+          format={preferences.relative.format}
         />
       )}
 
-      {isColumnVisible(preferences, 'showAbsolute') && (
+      {preferences.absolute.show && (
         <AbsoluteColumn
           value={rowData.absolute}
           rowSpanTags={rowSpanTags}
@@ -214,7 +228,13 @@ function RangesTableRow({
         {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
       </td>
 
-      <CouplingColumn rowData={rowData} onHoverSignal={onHoverSignal} />
+      {preferences.coupling.show && (
+        <CouplingColumn
+          rowData={rowData}
+          onHoverSignal={onHoverSignal}
+          format={preferences.coupling.format}
+        />
+      )}
 
       <SignalAssignmentsColumn
         rowData={rowData}

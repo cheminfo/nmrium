@@ -4,7 +4,7 @@ import {
   preferencesInitialState,
   PreferencesState,
   WORKSPACES,
-} from '../reducer/preferencesReducer';
+} from '../reducer/preferences/preferencesReducer';
 import Workspaces from '../workspaces';
 
 export const PreferencesContext = createContext<PreferencesState>(

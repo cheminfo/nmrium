@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
 
-import FormatNumber from '../../../utility/FormatNumber';
+import { formatNumber } from '../../../utility/formatNumber';
 
 export default class ColumnsHelper {
   private preferences: any;
@@ -61,14 +61,14 @@ export default class ColumnsHelper {
         } = options;
 
         if (showPrefixSuffixCallback(row)) {
-          return FormatNumber(
+          return formatNumber(
             row.original[columnKey],
             format,
             formatPrefix,
             formatSuffix,
           );
         } else {
-          return FormatNumber(row.original[columnKey], format, '', '');
+          return formatNumber(row.original[columnKey], format, '', '');
         }
       });
     }

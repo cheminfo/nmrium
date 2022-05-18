@@ -2,6 +2,7 @@ import { Fragment, memo } from 'react';
 
 import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 
 import Range from './Range';
@@ -14,6 +15,7 @@ interface RangesInnerProps {
   editRangeID: string;
   showMultiplicityTrees: boolean;
   showRangesIntegrals: boolean;
+  relativeFormat: string;
 }
 
 function RangesInner({
@@ -23,6 +25,7 @@ function RangesInner({
   editRangeID,
   showMultiplicityTrees,
   showRangesIntegrals,
+  relativeFormat,
 }: RangesInnerProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
@@ -35,6 +38,7 @@ function RangesInner({
             startEditMode={
               editRangeID && editRangeID === range.id ? true : false
             }
+            relativeFormat={relativeFormat}
           />
           {showRangesIntegrals && <RangeIntegral range={range} />}
         </Fragment>
@@ -54,9 +58,11 @@ export default function Ranges() {
       selectedTool,
       data: { tempRange, showMultiplicityTrees, showRangesIntegrals },
     },
+    activeTab,
   } = useChartData();
 
   const { ranges } = useSpectrum(empyData) as Datum1D;
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   return (
     <MemoizedRanges
@@ -67,6 +73,7 @@ export default function Ranges() {
         selectedTool,
         displayerKey,
         editRangeID: tempRange?.id || '',
+        relativeFormat: rangesPreferences.relative.format,
       }}
     />
   );

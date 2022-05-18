@@ -3,12 +3,12 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 
-import { useChartData } from '../../../../context/ChartContext';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
-import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
+import { formatNumber } from '../../../../utility/formatNumber';
+import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
@@ -44,9 +44,10 @@ const tabStyles = css`
 
 interface SignalsFormProps {
   range: number;
+  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
-function SignalsForm({ range }: SignalsFormProps) {
+function SignalsForm({ range, preferences }: SignalsFormProps) {
   const newSignalFormRef = useRef<any>();
   const [activeField, setActiveField] = useState<string | null>(null);
 
@@ -64,9 +65,7 @@ function SignalsForm({ range }: SignalsFormProps) {
     errors: any;
   } = useFormikContext<any>();
 
-  const { activeTab } = useChartData();
   const { info }: { info: any } = useSpectrum({ info: {} });
-  const format = useFormatNumberByNucleus(activeTab);
 
   useEffect(() => {
     function handle(event) {
@@ -83,8 +82,9 @@ function SignalsForm({ range }: SignalsFormProps) {
           );
         } else {
           const value = Number(
-            format(
+            formatNumber(
               Math.abs(event.range[0] - event.range[1]) * info.originFrequency,
+              preferences.deltaHz.format,
             ),
           );
           setFieldValue(activeField, value);
@@ -99,7 +99,13 @@ function SignalsForm({ range }: SignalsFormProps) {
     return () => {
       Events.off('brushEnd', handle);
     };
-  }, [activeField, setFieldValue, values.activeTab, format, info]);
+  }, [
+    activeField,
+    setFieldValue,
+    values.activeTab,
+    info,
+    preferences?.deltaHz?.format,
+  ]);
 
   useEffect(() => {
     function handle(event) {
@@ -191,12 +197,13 @@ function SignalsForm({ range }: SignalsFormProps) {
           onFocus={handleOnFocus}
           range={range}
           ref={newSignalFormRef}
+          preferences={preferences}
         />
       </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [handleOnFocus, range, tabContainsErrors, values.signals]);
+  }, [handleOnFocus, preferences, range, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">

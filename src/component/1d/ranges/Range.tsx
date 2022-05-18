@@ -16,6 +16,7 @@ import Resizer from '../../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
+import { formatNumber } from '../../utility/formatNumber';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
 
@@ -62,6 +63,7 @@ interface RangeProps {
   selectedTool: string;
   rangeData: RangeData;
   startEditMode: boolean;
+  relativeFormat: string;
 }
 
 function Range({
@@ -69,6 +71,7 @@ function Range({
   showMultiplicityTrees,
   selectedTool,
   startEditMode,
+  relativeFormat,
 }: RangeProps) {
   const { viewerRef } = useGlobal();
   const { id, integration, signals } = rangeData;
@@ -197,7 +200,9 @@ function Range({
                   : 0.6
               }
             >
-              {integration !== undefined ? integration.toFixed(2) : ''}
+              {integration !== undefined
+                ? formatNumber(integration, relativeFormat)
+                : ''}
             </text>
           </g>
         )}

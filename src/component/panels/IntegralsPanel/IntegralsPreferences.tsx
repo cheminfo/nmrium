@@ -3,120 +3,52 @@ import {
   useCallback,
   useImperativeHandle,
   useRef,
-  CSSProperties,
   memo,
   forwardRef,
+  useMemo,
 } from 'react';
-import { MF } from 'react-mf';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
-import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { integralDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
+import {
+  NucleusPreferenceField,
+  NucleusPreferences,
+} from '../extra/preferences/NucleusPreferences';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
-const styles: Record<
-  | 'container'
-  | 'groupContainer'
-  | 'row'
-  | 'header'
-  | 'inputLabel'
-  | 'input'
-  | 'inputLabel',
-  CSSProperties
-> = {
-  container: {
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-    height: '100%',
-    overflowY: 'auto',
-  },
-  groupContainer: {
-    padding: '5px',
-    borderRadius: '5px',
-    margin: '10px 0px',
-    backgroundColor: 'white',
-  },
-  row: {
-    display: 'flex',
-    margin: '5px 0px',
-  },
-  header: {
-    borderBottom: '1px solid #e8e8e8',
-    paddingBottom: '5px',
-    fontWeight: 'bold',
-    color: '#4a4a4a',
-  },
-  inputLabel: {
-    flex: 2,
-    fontSize: '11px',
-    fontWeight: 'bold',
-    color: '#232323',
-  },
-  input: {
-    width: '30%',
-    textAlign: 'center',
-  },
-};
-
-const formatFields = [
+const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'Absolute :',
-    checkController: 'showAbsolute',
-    formatController: 'absoluteFormat',
+    checkControllerName: 'absolute.show',
+    formatControllerName: 'absolute.format',
   },
   {
     id: 2,
     label: 'Relative :',
-    checkController: 'showRelative',
-    formatController: 'relativeFormat',
+    checkControllerName: 'relative.show',
+    formatControllerName: 'relative.format',
   },
 ];
 
-interface IntegralsPreferencesInnerProps {
-  nucleus: Array<string>;
-  preferences: any;
-  innerRef: any;
-}
-
-function IntegralsPreferencesInner({
-  nucleus,
-  preferences,
-  innerRef,
-}: IntegralsPreferencesInnerProps) {
+function IntegralsPreferences(props, ref) {
   const alert = useAlert();
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
 
   const formRef = useRef<any>();
 
-  const updateValues = useCallback(() => {
-    if (nucleus) {
-      const { color, strokeWidth, ...restProps } = integralDefaultValues;
-
-      const integralPreferences = getValueByKeyPath(
-        preferences.current,
-        `formatting.panels.integrals`,
-      );
-
-      let defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = restProps;
-        return acc;
-      }, {});
-      defaultValues = Object.assign(defaultValues, { color, strokeWidth });
-
-      formRef.current.setValues(
-        integralPreferences ? integralPreferences : defaultValues,
-      );
-    }
-  }, [nucleus, preferences]);
-
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(preferencesByNuclei);
+  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -129,71 +61,49 @@ function IntegralsPreferencesInner({
     [alert, preferences],
   );
 
-  useImperativeHandle(innerRef, () => ({
+  useImperativeHandle(ref, () => ({
     saveSetting: () => {
       formRef.current.submitForm();
     },
   }));
 
   return (
-    <div style={styles.container}>
+    <PreferencesContainer>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        <div style={styles.groupContainer}>
-          <p style={styles.header}>General</p>
-          <FormikColorInput name="color" />
-          <FormikNumberInput
-            name="strokeWidth"
-            label="stroke width :"
-            style={{
-              label: { fontSize: '11px', fontWeight: 'bold', color: '#232323' },
-              input: {
-                width: '60%',
-                textAlign: 'center',
-                borderRadius: '5px',
-              },
-            }}
-            min={1}
-            max={9}
-            pattern="[1-9]+"
+        {nuclei?.map((n) => (
+          <NucleusPreferences
+            key={n}
+            nucleus={n}
+            fields={formatFields}
+            renderTop={() => (
+              <>
+                <FormikColorInput name={`nuclei.${n}.color`} />
+                <FormikNumberInput
+                  name={`nuclei.${n}.strokeWidth`}
+                  label="stroke width :"
+                  style={{
+                    label: {
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      color: '#232323',
+                    },
+                    input: {
+                      width: '60%',
+                      textAlign: 'center',
+                      borderRadius: '5px',
+                    },
+                  }}
+                  min={1}
+                  max={9}
+                  pattern="[1-9]+"
+                />
+              </>
+            )}
           />
-        </div>
-
-        {nucleus?.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <p style={styles.header}>
-              <MF mf={nucleusLabel} />
-            </p>
-            {formatFields.map((field) => (
-              <FormikColumnFormatField
-                key={field.id}
-                label={field.label}
-                checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                formatControllerName={`${nucleusLabel}.${field.formatController}`}
-              />
-            ))}
-          </div>
         ))}
       </FormikForm>
-    </div>
+    </PreferencesContainer>
   );
 }
 
-const MemoizedIntegralsPreferences = memo(IntegralsPreferencesInner);
-
-// TODO: remove this hacky use of ref.
-function IntegralsPreferences(props, ref) {
-  const preferences = usePreferences();
-  const nucleus = useNucleus();
-
-  return (
-    <MemoizedIntegralsPreferences
-      innerRef={ref}
-      {...{
-        nucleus,
-        preferences,
-      }}
-    />
-  );
-}
-
-export default forwardRef(IntegralsPreferences);
+export default memo(forwardRef(IntegralsPreferences));

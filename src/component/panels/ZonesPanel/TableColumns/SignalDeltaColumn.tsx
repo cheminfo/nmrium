@@ -4,6 +4,7 @@ import { Fragment, useCallback } from 'react';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_ZONE_SIGNAL_VALUE } from '../../../reducer/types/Types';
+import { formatNumber } from '../../../utility/formatNumber';
 
 import { RowDataProps } from './ActionsColumn';
 
@@ -11,12 +12,14 @@ interface SignalDeltaColumnProps {
   rowData: RowDataProps;
   onHoverSignalX: any;
   onHoverSignalY: any;
+  format: { x: string; y: string };
 }
 
 function SignalDeltaColumn({
   rowData,
   onHoverSignalX,
   onHoverSignalY,
+  format,
 }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
 
@@ -56,7 +59,7 @@ function SignalDeltaColumn({
       <td {...onHoverSignalX}>
         {signalDeltaX !== null ? (
           <EditableColumn
-            value={signalDeltaX.toFixed(2)}
+            value={formatNumber(signalDeltaX, format.x)}
             onSave={saveXHandler}
             type="number"
             style={{ padding: '0.1rem 0.4rem' }}
@@ -68,7 +71,7 @@ function SignalDeltaColumn({
       <td {...onHoverSignalY}>
         {signalDeltaY !== null ? (
           <EditableColumn
-            value={signalDeltaY.toFixed(2)}
+            value={formatNumber(signalDeltaY, format.y)}
             onSave={saveYHandler}
             type="number"
             style={{ padding: '0.1rem 0.4rem' }}

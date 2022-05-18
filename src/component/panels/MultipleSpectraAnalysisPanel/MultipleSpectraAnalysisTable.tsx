@@ -6,9 +6,9 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
+import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import { FILTER_SPECTRA_COLUMN } from '../../reducer/types/Types';
 import Eval from '../../utility/Evaluate';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import ColumnHeader from './ColumnHeader';
