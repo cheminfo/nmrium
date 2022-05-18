@@ -3,70 +3,30 @@ import {
   useCallback,
   useImperativeHandle,
   useRef,
-  CSSProperties,
   forwardRef,
   useMemo,
   memo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import IsotopesViewer from '../../elements/IsotopesViewer';
-import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
+import {
+  NucleusPreferences,
+  NucleusPreferenceField,
+} from '../extra/preferences/NucleusPreferences';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
-const styles: Record<
-  'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
-  CSSProperties
-> = {
-  container: {
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-    height: '100%',
-    overflowY: 'auto',
-  },
-  groupContainer: {
-    padding: '5px',
-    borderRadius: '5px',
-    margin: '10px 0px',
-    backgroundColor: 'white',
-  },
-  row: {
-    display: 'flex',
-    margin: '5px 0px',
-  },
-  header: {
-    borderBottom: '1px solid #e8e8e8',
-    paddingBottom: '5px',
-    fontWeight: 'bold',
-    color: '#4a4a4a',
-  },
-  inputLabel: {
-    flex: 2,
-    fontSize: '11px',
-    fontWeight: 'bold',
-    color: '#232323',
-  },
-  input: {
-    width: '30%',
-    textAlign: 'center',
-  },
-};
-
-const formatFields: Array<{
-  id: number;
-  label: string;
-  checkController: string;
-  formatController: string;
-}> = [
+const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'δ (ppm) :',
-    checkController: 'deltaPPM.show',
-    formatController: 'deltaPPM.format',
+    checkControllerName: 'deltaPPM.show',
+    formatControllerName: 'deltaPPM.format',
+    hideCheckField: true,
   },
 ];
 
@@ -105,46 +65,14 @@ function ZonesPreferences(props, ref) {
   );
 
   return (
-    <div style={styles.container}>
+    <PreferencesContainer>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        <div style={styles.groupContainer}>
-          <FormikColumnFormatField
-            label="Absolute integration"
-            checkControllerName={`absolute.show`}
-            formatControllerName="absolute.format"
-            hideCheckField
-          />
-          <FormikColumnFormatField
-            label="Relative integration"
-            checkControllerName="relative.show"
-            formatControllerName="relative.format"
-            hideCheckField
-          />
-        </div>
-
         {nuclei?.map((n) => (
-          <NucleusPreferences key={n} nucleus={n} />
+          <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
         ))}
       </FormikForm>
-    </div>
+    </PreferencesContainer>
   );
 }
-
-const NucleusPreferences = ({ nucleus }: { nucleus: string }) => {
-  return (
-    <div key={nucleus} style={styles.groupContainer}>
-      <IsotopesViewer style={styles.header} value={nucleus} />
-      {formatFields.map((field) => (
-        <FormikColumnFormatField
-          key={field.id}
-          label={field.label}
-          checkControllerName={`nuclei.${nucleus}.${field.checkController}`}
-          formatControllerName={`nuclei.${nucleus}.${field.formatController}`}
-          hideCheckField
-        />
-      ))}
-    </div>
-  );
-};
 
 export default memo(forwardRef(ZonesPreferences));
