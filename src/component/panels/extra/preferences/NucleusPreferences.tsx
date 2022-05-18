@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import IsotopesViewer from '../../../elements/IsotopesViewer';
 import FormikColumnFormatField, {
@@ -12,8 +12,8 @@ export type NucleusPreferenceField = ColumnFormatField & {
 interface NucleusPreferencesProps {
   nucleus: string;
   fields: NucleusPreferenceField[];
-  renderTop?: () => React.ReactNode;
-  renderBottom?: () => React.ReactNode;
+  renderTop?: () => ReactNode;
+  renderBottom?: () => ReactNode;
 }
 
 const styles = {
@@ -45,10 +45,17 @@ export function NucleusPreferences({
         <FormikColumnFormatField
           key={field.id}
           label={field.label}
-          checkControllerName={`nuclei.${nucleus}.${field.checkControllerName}`}
-          formatControllerName={`nuclei.${nucleus}.${field.formatControllerName}`}
+          checkControllerName={
+            field.checkControllerName &&
+            `nuclei.${nucleus}.${field.checkControllerName}`
+          }
+          formatControllerName={
+            field.formatControllerName &&
+            `nuclei.${nucleus}.${field.formatControllerName}`
+          }
           hideCheckField={field.hideCheckField}
           hideFormatField={field.hideFormatField}
+          disableFormat={field.disableFormat}
         />
       ))}
       {renderBottom?.()}

@@ -68,20 +68,20 @@ function FormikColumnFormatField(props: ColumnFormatField) {
           alignItems: 'center',
         }}
       >
-        {!hideCheckField && (
+        {!hideCheckField && checkControllerName && (
           <input
             type="checkbox"
             style={{ margin: '0px 5px' }}
             name={checkControllerName}
             onChange={checkChangeHandler}
-            checked={lodashGet(values, checkControllerName || '', false)}
+            checked={lodashGet(values, checkControllerName, false)}
           />
         )}
-        {!hideFormatField && (
+        {!hideFormatField && formatControllerName && (
           <Input
             style={{ inputWrapper: styles.input }}
             name={formatControllerName}
-            value={lodashGet(values, formatControllerName || '', '')}
+            value={lodashGet(values, formatControllerName, '')}
             onChange={changeHandler}
             type="text"
             disabled={disableFormat}
