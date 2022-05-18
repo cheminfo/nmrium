@@ -2,6 +2,8 @@ import airPLS from 'ml-airpls';
 import equallySpaced from 'ml-array-xy-equally-spaced';
 import baselineRegression from 'ml-baseline-correction-regression';
 
+import { Datum1D } from '../../types/data1d/Datum1D';
+
 export const id = 'baselineCorrection';
 export const name = 'Baseline correction';
 
@@ -15,7 +17,7 @@ export const baselineAlgorithms = {
   polynomial: 'Polynomial',
 };
 
-export function apply(datum1D, options: any = {}) {
+export function apply(datum1D: Datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }
@@ -52,7 +54,7 @@ export function apply(datum1D, options: any = {}) {
   Object.assign(datum1D.data, { re: corrected });
 }
 
-export function isApplicable(datum1D) {
+export function isApplicable(datum1D: Datum1D) {
   if (!datum1D.info.isFid) return true;
   return false;
 }

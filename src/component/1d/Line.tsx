@@ -10,8 +10,8 @@ import getVerticalShift from './utilities/getVerticalShift';
 
 interface LineProps {
   data?: {
-    x: Array<number>;
-    y: Array<number>;
+    x: Float64Array;
+    y: Float64Array;
   };
   id: string;
   display: {

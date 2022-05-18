@@ -95,7 +95,7 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
-    const { ph0, ph1 } = autoPhaseCorrection(draft.data[index]);
+    const { ph0, ph1 } = autoPhaseCorrection(draft.data[index] as Datum1D);
 
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
@@ -117,7 +117,7 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
 
     const { ph0, ph1 } = filterOptions;
     let _data = { data: { x: x, re: re, im }, info };
-    phaseCorrection(_data, { ph0, ph1 });
+    phaseCorrection(_data as Datum1D, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
     draft.tempData[index].data.im = newIm;
     draft.tempData[index].data.re = newRe;

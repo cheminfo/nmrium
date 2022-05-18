@@ -7,4 +7,5 @@ export interface Info1D {
   experiment?: any;
   originFrequency: number;
   solvent?: string;
+  digitalFilter?: number;
 }

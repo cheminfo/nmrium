@@ -15,10 +15,10 @@ export function apply(datum1D: Datum1D, zones = []) {
     throw new Error('Exclusion Zones filter not applicable on this data');
   }
   const { x, re, im } = datum1D.data;
-  datum1D.data.re = xySetYValue({ x, y: re }, { zones }).y as number[];
-  datum1D.data.im = (im
-    ? xySetYValue({ x, y: re }, { zones })
-    : im) as unknown as number[];
+  datum1D.data.re = Float64Array.from(xySetYValue({ x, y: re }, { zones }).y);
+  datum1D.data.im = im
+    ? Float64Array.from(xySetYValue({ x, y: re }, { zones }).y)
+    : im;
 }
 
 export function isApplicable(datum1D: Datum1D) {

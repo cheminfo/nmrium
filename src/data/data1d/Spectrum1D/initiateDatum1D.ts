@@ -4,6 +4,7 @@ import { Datum1D } from '../../types/data1d/Datum1D';
 import generateID from '../../utilities/generateID';
 import get1dColor from '../../utilities/getColor';
 
+import { convertDataToFloat64Array } from './convertDataToFloat64Array';
 import { initiateIntegrals } from './integrals/initiateIntegrals';
 import { initiatePeaks } from './peaks/initiatePeaks';
 import { initiateRanges } from './ranges/initiateRanges';
@@ -53,7 +54,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
       re: [],
       im: [],
     },
-    options.data,
+    convertDataToFloat64Array(options.data),
   );
   datum.originalData = datum.data;
 

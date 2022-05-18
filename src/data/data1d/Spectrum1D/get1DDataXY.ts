@@ -13,8 +13,8 @@ import { Datum1D } from '../../types/data1d';
  */
 
 export function get1DDataXY(spectrum: Datum1D): {
-  x: number[];
-  y: number[];
+  x: Float64Array;
+  y: Float64Array;
 } {
   const {
     display: { isRealSpectrumVisible },

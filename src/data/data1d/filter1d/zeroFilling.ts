@@ -1,3 +1,5 @@
+import { Datum1D } from '../../types/data1d';
+
 export const id = 'zeroFilling';
 export const name = 'Zero Filling';
 /**
@@ -5,7 +7,7 @@ export const name = 'Zero Filling';
  * @param {Datum1d} datum1d
  * @param {Object} [size]
  */
-export function apply(datum1D, size) {
+export function apply(datum1D: Datum1D, size) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not applicable on this data');
   }
@@ -14,7 +16,7 @@ export function apply(datum1D, size) {
     (e) => e.name === 'digitalFilter' && e.flag,
   );
 
-  let grpdly = datum1D.info.digitalFilter;
+  let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0 && digitalFilterApplied) {
     pointsToShift = Math.floor(grpdly);
@@ -49,7 +51,7 @@ export function apply(datum1D, size) {
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
 }
 
-export function isApplicable(datum1D) {
+export function isApplicable(datum1D: Datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }

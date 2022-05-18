@@ -35,7 +35,7 @@ function getLeftXScale(
   };
 }
 
-function getYScale(height: number, y: Array<number>, margin = 10) {
+function getYScale(height: number, y: Float64Array, margin = 10) {
   return scaleLinear(extent(y) as number[], [height - margin, margin]);
 }
 

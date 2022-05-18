@@ -37,8 +37,8 @@ const styles: Record<
 
 interface YTrackerProps {
   datum: {
-    x: Array<number>;
-    y: Array<number>;
+    x: Float64Array;
+    y: Float64Array;
   };
 }
 

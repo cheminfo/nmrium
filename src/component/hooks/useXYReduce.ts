@@ -13,11 +13,11 @@ type XYReducerDomainAxisType = keyof typeof XYReducerDomainAxis;
 
 export default function useXYReduce(
   domainAxis: XYReducerDomainAxisType,
-): (data: { x: number[]; y: number[] }) => DataXY<DoubleArray> {
+): (data: { x: Float64Array; y: Float64Array }) => DataXY<DoubleArray> {
   const { width, xDomain, yDomain } = useChartData();
 
   return useCallback(
-    (data: { x: number[]; y: number[] }) => {
+    (data: { x: Float64Array; y: Float64Array }) => {
       const { x, y } = data;
       const [from, to] =
         domainAxis === XYReducerDomainAxis.XAxis ? xDomain : yDomain;

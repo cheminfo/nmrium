@@ -1,5 +1,7 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 
+import { Datum1D } from '../../types/data1d/Datum1D';
+
 export const id = 'fromTo';
 export const name = 'From/To';
 
@@ -8,7 +10,7 @@ export const name = 'From/To';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D, options: any = {}) {
+export function apply(datum1D: Datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('From/To filter not applicable on this data');
   }
@@ -23,7 +25,7 @@ export function apply(datum1D, options: any = {}) {
   }
 }
 
-export function isApplicable(datum1D) {
+export function isApplicable(datum1D: Datum1D) {
   if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
   return false;
 }

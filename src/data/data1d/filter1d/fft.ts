@@ -1,5 +1,7 @@
 import { reimFFT, reimPhaseCorrection } from 'ml-spectra-processing';
 
+import { Datum1D } from '../../types/data1d/Datum1D';
+
 export const id = 'fft';
 export const name = 'FFT';
 
@@ -8,7 +10,7 @@ export const name = 'FFT';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D) {
+export function apply(datum1D: Datum1D) {
   if (!isApplicable(datum1D)) {
     throw new Error('fft not applicable on this data');
   }
@@ -20,7 +22,7 @@ export function apply(datum1D) {
   Object.assign(datum1D.data, reimFFT(datum1D.data, { applyZeroShift: true }));
 
   if (digitalFilterApplied) {
-    let { digitalFilter } = datum1D.info;
+    let { digitalFilter = 0 } = datum1D.info;
     let ph1 = (digitalFilter - Math.floor(digitalFilter)) * Math.PI * 2;
     Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, 0, ph1));
   }
@@ -29,7 +31,7 @@ export function apply(datum1D) {
   datum1D.info = { ...datum1D.info, isFid: false, isFt: true };
 }
 
-export function isApplicable(datum1D) {
+export function isApplicable(datum1D: Datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }
@@ -51,7 +53,7 @@ function generateXAxis(datum1D) {
   let nbPoints = datum1D.data.x.length;
   let firstPoint = offset - spectralHalfWidth;
   let dx = spectralWidth / (nbPoints - 1);
-  const xAxis = new Float32Array(nbPoints);
+  const xAxis = new Float64Array(nbPoints);
   for (let i = 0; i < nbPoints; i++) {
     xAxis[i] = firstPoint;
     firstPoint += dx;

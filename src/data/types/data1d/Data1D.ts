@@ -1,5 +1,5 @@
 export interface Data1D {
-  x: Array<number>;
-  re: Array<number>;
-  im: Array<number>;
+  x: Float64Array;
+  re: Float64Array;
+  im: Float64Array;
 }

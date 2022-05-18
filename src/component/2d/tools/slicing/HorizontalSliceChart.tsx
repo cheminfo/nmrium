@@ -10,8 +10,8 @@ import { getYScale } from './SliceScale';
 interface HorizontalSliceChartProps {
   margin?: number;
   data: {
-    x: Array<number>;
-    re: Array<number>;
+    x: Float64Array;
+    re: Float64Array;
   };
 }
 

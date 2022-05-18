@@ -1,3 +1,5 @@
+import { Datum1D } from '../../types/data1d/Datum1D';
+
 export const id = 'lineBroadening';
 export const name = 'Line broadening';
 
@@ -7,12 +9,12 @@ export const name = 'Line broadening';
  * @param {Object} [value]
  */
 
-export function apply(datum1D, value) {
+export function apply(datum1D: Datum1D, value) {
   if (!isApplicable(datum1D)) {
     throw new Error('lineBroadening not applicable on this data');
   }
 
-  let grpdly = datum1D.info.digitalFilter;
+  let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0) {
     pointsToShift = Math.floor(grpdly);
@@ -50,7 +52,7 @@ export function apply(datum1D, value) {
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM } };
   //}
 }
-export function isApplicable(datum1D) {
+export function isApplicable(datum1D: Datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }

@@ -1,5 +1,7 @@
 import { mean } from 'ml-stat/array';
 
+import { Datum1D } from '../../types/data1d/Datum1D';
+
 export const id = 'centerMean';
 export const name = 'Center Mean';
 
@@ -8,7 +10,7 @@ export const name = 'Center Mean';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D) {
+export function apply(datum1D: Datum1D) {
   if (!isApplicable(datum1D)) {
     throw new Error('Center Mean is not applicable on this data');
   }
@@ -33,7 +35,7 @@ export function apply(datum1D) {
   }
 }
 
-export function isApplicable(datum1D) {
+export function isApplicable(datum1D: Datum1D) {
   if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
   return false;
 }

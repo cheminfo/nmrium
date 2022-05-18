@@ -14,6 +14,7 @@ import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import * as Filters from '../../data/Filters';
 import { Info1D, Data1D } from '../../data/types/data1d';
+import { Datum1D } from '../../data/types/data1d/Datum1D';
 import { Info2D, Data2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -179,7 +180,7 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.zeroFilling.id}
               value={options.zeroFilling.id}
-              isVisible={Filters.zeroFilling.isApplicable({ info })}
+              isVisible={Filters.zeroFilling.isApplicable({ info } as Datum1D)}
               id="zeroFilling"
               title={options.zeroFilling.label}
             >
@@ -196,7 +197,7 @@ function FunctionToolBarInner({
               isVisible={
                 activeSpectrum &&
                 info &&
-                Filters.phaseCorrection.isApplicable({ info }) &&
+                Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
                 (datum as Data1D).im
                   ? true
                   : false
@@ -216,7 +217,7 @@ function FunctionToolBarInner({
               isVisible={
                 activeSpectrum &&
                 info &&
-                Filters.baselineCorrection.isApplicable({ info })
+                Filters.baselineCorrection.isApplicable({ info } as Datum1D)
                   ? true
                   : false
               }
@@ -245,7 +246,7 @@ function FunctionToolBarInner({
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('FFTTool') &&
         info &&
-        Filters.fft.isApplicable({ info }) && (
+        Filters.fft.isApplicable({ info } as Datum1D) && (
           <Toolbar.Item
             id="fft-filter"
             className="cheminfo"
