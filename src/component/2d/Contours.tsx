@@ -40,7 +40,6 @@ function ContoursPaths({
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
     const path = new PathBuilder();
-
     for (const element of data) {
       if (element.lines) {
         const lines = element.lines;
@@ -78,6 +77,9 @@ function ContoursPaths({
   const data = useMemo(() => {
     return get(contours, `${spectrumID}.${sign}`, []);
   }, [contours, sign, spectrumID]);
+  const path = buildContourPath(data);
+
+  if (!path) return null;
 
   return (
     <path
@@ -94,7 +96,7 @@ function ContoursPaths({
               0.1,
             ),
       }}
-      d={buildContourPath(data)}
+      d={path}
     />
   );
 }
