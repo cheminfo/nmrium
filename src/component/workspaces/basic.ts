@@ -8,7 +8,7 @@ export const basic: Workspace = {
       disableMultipletAnalysis: false,
       hideSetSumFromMolecule: false,
       hideGeneralSettings: false,
-      experimentalFeatures: { display: true },
+      experimentalFeatures: { display: false },
     },
 
     panels: {
