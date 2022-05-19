@@ -3,134 +3,67 @@ import {
   useCallback,
   useImperativeHandle,
   useRef,
-  CSSProperties,
   memo,
   forwardRef,
+  useMemo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import IsotopesViewer from '../../elements/IsotopesViewer';
-import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { peaksDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
+import {
+  NucleusPreferences,
+  NucleusPreferenceField,
+} from '../extra/preferences/NucleusPreferences';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
-const styles: Record<
-  'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
-  CSSProperties
-> = {
-  container: {
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-    height: '100%',
-    overflowY: 'auto',
-  },
-  groupContainer: {
-    padding: '5px',
-    borderRadius: '5px',
-    margin: '10px 0px',
-    backgroundColor: 'white',
-  },
-  row: {
-    display: 'flex',
-    margin: '5px 0px',
-  },
-  header: {
-    borderBottom: '1px solid #e8e8e8',
-    paddingBottom: '5px',
-    fontWeight: 'bold',
-    color: '#4a4a4a',
-  },
-  inputLabel: {
-    flex: 2,
-    fontSize: '11px',
-    fontWeight: 'bold',
-    color: '#232323',
-  },
-  input: {
-    width: '30%',
-    textAlign: 'center',
-  },
-};
-
-const formatFields: Array<{
-  id: number;
-  label: string;
-  checkController: string;
-  formatController: string;
-}> = [
+const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
     label: 'Peak Number :',
-    checkController: 'showPeakNumber',
-    formatController: 'peakNumberFormat',
+    checkControllerName: 'peakNumber.show',
+    formatControllerName: 'peakNumber.format',
   },
   {
     id: 2,
-    label: 'Peak Index : ',
-    checkController: 'showPeakIndex',
-    formatController: 'peakIndexFormat',
+    label: 'δ (ppm) :',
+    checkControllerName: 'deltaPPM.show',
+    formatControllerName: 'deltaPPM.format',
   },
   {
     id: 3,
-    label: 'δ (ppm) :',
-    checkController: 'showDeltaPPM',
-    formatController: 'deltaPPMFormat',
+    label: 'δ (Hz) :',
+    checkControllerName: 'deltaHz.show',
+    formatControllerName: 'deltaHz.format',
   },
   {
     id: 4,
-    label: 'δ (Hz) :',
-    checkController: 'showDeltaHz',
-    formatController: 'deltaHzFormat',
+    label: 'Peak Width (Hz)',
+    checkControllerName: 'peakWidth.show',
+    formatControllerName: 'peakWidth.format',
   },
   {
     id: 5,
-    label: 'Peak Width (Hz)',
-    checkController: 'showPeakWidth',
-    formatController: 'peakWidthFormat',
-  },
-  {
-    id: 6,
     label: 'Intensity :',
-    checkController: 'showIntensity',
-    formatController: 'intensityFormat',
+    checkControllerName: 'intensity.show',
+    formatControllerName: 'intensity.format',
   },
 ];
-interface PeaksPreferencesInnerProps {
-  nucleus: Array<string>;
-  preferences: any;
-  innerRef: any;
-}
 
-function PeaksPreferencesInner({
-  nucleus,
-  preferences,
-  innerRef,
-}: PeaksPreferencesInnerProps) {
+function PeaksPreferences(props, ref: any) {
   const alert = useAlert();
   const formRef = useRef<any>(null);
-
-  const updateValues = useCallback(() => {
-    if (nucleus) {
-      const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = peaksDefaultValues;
-        return acc;
-      }, {});
-      const peaksPreferences = getValueByKeyPath(
-        preferences.current,
-        `formatting.panels.peaks`,
-      );
-      formRef.current.setValues(
-        peaksPreferences ? peaksPreferences : defaultValues,
-      );
-    }
-  }, [nucleus, preferences]);
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('peaks', nuclei);
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(preferencesByNuclei);
+  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -144,7 +77,7 @@ function PeaksPreferencesInner({
   );
 
   useImperativeHandle(
-    innerRef,
+    ref,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -154,36 +87,14 @@ function PeaksPreferencesInner({
   );
 
   return (
-    <div style={styles.container}>
+    <PreferencesContainer>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nucleus?.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <IsotopesViewer style={styles.header} value={nucleusLabel} />
-            {formatFields.map((field) => (
-              <FormikColumnFormatField
-                key={field.id}
-                label={field.label}
-                checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                formatControllerName={`${nucleusLabel}.${field.formatController}`}
-                hideFormat={field.formatController === 'deltaPPMFormat'}
-              />
-            ))}
-          </div>
+        {nuclei?.map((n) => (
+          <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
         ))}
       </FormikForm>
-    </div>
+    </PreferencesContainer>
   );
 }
 
-const MemoizedPeaksPreferences = memo(PeaksPreferencesInner);
-
-// TODO: remove this hacky use of ref.
-function PeaksPreferences(props, ref: any) {
-  const nucleus = useNucleus();
-  const preferences = usePreferences();
-  return (
-    <MemoizedPeaksPreferences innerRef={ref} {...{ nucleus, preferences }} />
-  );
-}
-
-export default forwardRef(PeaksPreferences);
+export default memo(forwardRef(PeaksPreferences));

@@ -4,14 +4,14 @@ import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_RANGE_RELATIVE } from '../../../reducer/types/Types';
-import FormatNumber from '../../../utility/FormatNumber';
+import { formatNumber } from '../../../utility/formatNumber';
 
 function RelativeColumn({ rowData, rowSpanTags, onHoverRange, format }) {
   const dispatch = useDispatch();
 
   const integralVal = useMemo(() => {
     const flag = checkRangeKind(rowData);
-    const formattedValue = FormatNumber(rowData.integration, format);
+    const formattedValue = formatNumber(rowData.integration, format);
     return flag ? formattedValue : `[ ${formattedValue} ]`;
   }, [format, rowData]);
 

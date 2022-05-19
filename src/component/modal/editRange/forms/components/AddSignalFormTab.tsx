@@ -5,12 +5,12 @@ import { forwardRef, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
-import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
+import { formatNumber } from '../../../../utility/formatNumber';
+import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 const styles = {
   container: css`
@@ -58,16 +58,15 @@ interface AddSignalFormTabProps {
   onFocus: (element: any) => void;
   onBlur?: () => void;
   range: any;
+  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
 // TODO: this seems to be a hacky use of ref.
 function AddSignalFormTab(
-  { onFocus, onBlur, range }: AddSignalFormTabProps,
+  { onFocus, onBlur, range, preferences }: AddSignalFormTabProps,
   ref: any,
 ) {
   const { values, setFieldValue } = useFormikContext<any>();
-  const { activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab);
 
   const saveHandler = useCallback(
     (val) => {
@@ -138,7 +137,12 @@ function AddSignalFormTab(
             />
           </div>
           <p css={styles.inputInfo}>
-            [ {`${format(range.from)} ppm - ${format(range.to)} ppm`} ]
+            [
+            {`${formatNumber(
+              range.from,
+              preferences.from.format,
+            )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
+            ]
           </p>
 
           <Button css={styles.addSignalBtn} onClick={triggerSubmitHandler}>

@@ -6,54 +6,27 @@ import {
   memo,
   CSSProperties,
   forwardRef,
+  useMemo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import IsotopesViewer from '../../elements/IsotopesViewer';
 import Label from '../../elements/Label';
-import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
+import {
+  NucleusPreferenceField,
+  NucleusPreferences,
+} from '../extra/preferences/NucleusPreferences';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
-const styles: Record<
-  | 'container'
-  | 'groupContainer'
-  | 'row'
-  | 'header'
-  | 'inputLabel'
-  | 'inputWrapper',
-  CSSProperties
-> = {
-  container: {
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-    height: '100%',
-    overflowY: 'auto',
-  },
-  groupContainer: {
-    padding: '5px',
-    borderRadius: '5px',
-    margin: '10px 0px',
-    backgroundColor: 'white',
-  },
-  row: {
-    display: 'flex',
-    margin: '5px 0px',
-  },
-  header: {
-    borderBottom: '1px solid #e8e8e8',
-    paddingBottom: '5px',
-    fontWeight: 'bold',
-    color: '#4a4a4a',
-  },
+const styles: Record<'inputLabel' | 'inputWrapper', CSSProperties> = {
   inputLabel: {
     flex: 2,
   },
-
   inputWrapper: {
     width: '100px',
     flex: '4',
@@ -61,66 +34,62 @@ const styles: Record<
   },
 };
 
-const formatFields = [
+const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
-    label: 'From :',
-    checkController: 'showFrom',
-    formatController: 'fromFormat',
+    label: 'From (ppm) :',
+    checkControllerName: 'from.show',
+    formatControllerName: 'from.format',
   },
   {
     id: 2,
-    label: 'To :',
-    checkController: 'showTo',
-    formatController: 'toFormat',
+    label: 'To (ppm) :',
+    checkControllerName: 'to.show',
+    formatControllerName: 'to.format',
   },
   {
     id: 3,
-    label: 'Absolute :',
-    checkController: 'showAbsolute',
-    formatController: 'absoluteFormat',
+    label: 'Absolute integration :',
+    checkControllerName: 'absolute.show',
+    formatControllerName: 'absolute.format',
   },
   {
     id: 4,
-    label: 'Relative :',
-    checkController: 'showRelative',
-    formatController: 'relativeFormat',
+    label: 'Relative integration :',
+    checkControllerName: 'relative.show',
+    formatControllerName: 'relative.format',
+  },
+  {
+    id: 5,
+    label: 'δ (ppm) :',
+    checkControllerName: 'deltaPPM.show',
+    formatControllerName: 'deltaPPM.format',
+  },
+  {
+    id: 6,
+    label: 'δ (Hz) :',
+    checkControllerName: 'deltaHz.show',
+    formatControllerName: 'deltaHz.format',
+  },
+  {
+    id: 7,
+    label: 'Coupling (Hz) :',
+    checkControllerName: 'coupling.show',
+    formatControllerName: 'coupling.format',
   },
 ];
 
-interface RangesPreferencesInnerProps {
-  nucleus: Array<string>;
-  preferences: any;
-  innerRef: any;
-}
-
-function RangesPreferencesInner({
-  nucleus,
-  preferences,
-  innerRef,
-}: RangesPreferencesInnerProps) {
+function RangesPreferences(props, ref) {
   const alert = useAlert();
   const formRef = useRef<any>();
-
-  const updateValues = useCallback(() => {
-    if (nucleus) {
-      const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = getRangeDefaultValues(nucleusLabel);
-        return acc;
-      }, {});
-      const rangesPreferences = getValueByKeyPath(
-        preferences.current,
-        `formatting.panels.ranges`,
-      );
-      formRef.current.setValues(
-        rangesPreferences ? rangesPreferences : defaultValues,
-      );
-    }
-  }, [nucleus, preferences]);
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+  const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
+  const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(preferencesByNuclei);
+  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -134,7 +103,7 @@ function RangesPreferencesInner({
   );
 
   useImperativeHandle(
-    innerRef,
+    ref,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -144,51 +113,32 @@ function RangesPreferencesInner({
   );
 
   return (
-    <div style={styles.container}>
+    <PreferencesContainer>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nucleus?.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <IsotopesViewer style={styles.header} value={nucleusLabel} />
-            {formatFields.map((field) => (
-              <FormikColumnFormatField
-                key={field.id}
-                label={field.label}
-                checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                formatControllerName={`${nucleusLabel}.${field.formatController}`}
-              />
-            ))}
-            <Label
-              title="J Graph tolerance (Hz) :"
-              style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
-            >
-              <FormikInput
-                name={`${nucleusLabel}.jGraphTolerance`}
-                type="number"
-              />
-            </Label>
-          </div>
+        {nuclei?.map((n) => (
+          <NucleusPreferences
+            key={n}
+            nucleus={n}
+            fields={formatFields}
+            renderBottom={() => (
+              <Label
+                title="J Graph tolerance (Hz) :"
+                style={{
+                  label: styles.inputLabel,
+                  wrapper: styles.inputWrapper,
+                }}
+              >
+                <FormikInput
+                  name={`nuclei.${n}.jGraphTolerance`}
+                  type="number"
+                />
+              </Label>
+            )}
+          />
         ))}
       </FormikForm>
-    </div>
+    </PreferencesContainer>
   );
 }
 
-const MemoizedRangesPreferences = memo(RangesPreferencesInner);
-
-// TODO: remove this hacky use of ref.
-function RangesPreferences(prop, ref: any) {
-  const nucleus = useNucleus();
-
-  const preferences = usePreferences();
-  return (
-    <MemoizedRangesPreferences
-      innerRef={ref}
-      {...{
-        preferences,
-        nucleus,
-      }}
-    />
-  );
-}
-
-export default forwardRef(RangesPreferences);
+export default memo(forwardRef(RangesPreferences));

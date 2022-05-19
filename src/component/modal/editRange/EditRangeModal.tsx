@@ -11,12 +11,13 @@ import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
   hasCouplingConstant,
   translateMultiplet,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
-import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
+import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
 import useRangeFormValidation from './forms/validation/EditRangeValidation';
@@ -96,7 +97,7 @@ function EditRangeModal({
   const formRef = useRef<any>(null);
   const { activeTab } = useChartData();
   const dispatch = useDispatch();
-  const format = useFormatNumberByNucleus(activeTab);
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const validation = useRangeFormValidation();
 
   const handleOnZoom = useCallback(() => {
@@ -168,7 +169,9 @@ function EditRangeModal({
 
         if (hasCouplingConstant(_multiplicity)) {
           coupling = { ...signal.js[counterJ] };
-          coupling.coupling = Number(format(coupling.coupling));
+          coupling.coupling = Number(
+            formatNumber(coupling.coupling, rangesPreferences.coupling.format),
+          );
           counterJ++;
         }
         coupling.multiplicity = translateMultiplet(coupling.multiplicity);
@@ -178,7 +181,7 @@ function EditRangeModal({
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
-  }, [format, range]);
+  }, [range.signals, rangesPreferences.coupling.format]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -204,8 +207,12 @@ function EditRangeModal({
             <FaSearchPlus title="Set to default view on range in spectrum" />
           </Button>
           <span>
-            {` Range and Signal edition: ${format(range.from)} ppm to ${format(
+            {` Range and Signal edition: ${formatNumber(
+              range.from,
+              rangesPreferences.from.format,
+            )} ppm to ${formatNumber(
               range.to,
+              rangesPreferences.to.format,
             )} ppm`}
           </span>
           <SaveButton
@@ -215,7 +222,7 @@ function EditRangeModal({
 
           <CloseButton onClick={handleOnClose} />
         </div>
-        <SignalsForm range={range} />
+        <SignalsForm range={range} preferences={rangesPreferences} />
         <FormikOnChange onChange={changeHandler} />
       </FormikForm>
     </div>

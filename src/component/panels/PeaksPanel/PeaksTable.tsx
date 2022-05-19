@@ -1,3 +1,4 @@
+import lodashGet from 'lodash/get';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -7,29 +8,21 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
 } from '../../reducer/types/Types';
-import formatNumber, {
-  useFormatNumberByNucleus,
-} from '../../utility/FormatNumber';
-import { getValue } from '../../utility/LocalStorage';
+import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
 interface PeaksTableProps {
   activeTab: string;
-  preferences: any;
   data: any;
-  info: {
-    nucleus: string;
-  };
 }
 
-function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
+function PeaksTable({ activeTab, data }: PeaksTableProps) {
   const dispatch = useDispatch();
-  const format = useFormatNumberByNucleus(info.nucleus);
 
   const deletePeakHandler = useCallback(
     (e, row) => {
@@ -43,16 +36,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
     },
     [dispatch],
   );
-
-  const peaksPreferences = useMemo(
-    () =>
-      getValue(
-        preferences.current,
-        `formatting.panels.peaks.[${activeTab}]`,
-        peaksDefaultValues,
-      ),
-    [activeTab, preferences],
-  );
+  const peaksPreferences = usePanelPreferences('peaks', activeTab);
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
@@ -64,56 +48,53 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
   const COLUMNS: (CustomColumn & { showWhen: string })[] = useMemo(
     () => [
       {
-        showWhen: 'showPeakNumber',
+        showWhen: 'peakNumber.show',
         index: 1,
         Header: '#',
         Cell: ({ row }) => row.index + 1,
         style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
       },
       {
-        showWhen: 'showPeakIndex',
-        index: 2,
-        Header: 'index',
-        accessor: (row) =>
-          formatNumber(row.xIndex, peaksPreferences.peakIndexFormat),
-      },
-      {
-        showWhen: 'showDeltaPPM',
+        showWhen: 'deltaPPM.show',
         index: 3,
         Header: 'δ (ppm)',
-        accessor: (row) => format(row.value),
+        accessor: (row) =>
+          formatNumber(row.value, peaksPreferences.deltaPPM.format),
         Cell: ({ row }) => (
           <EditableColumn
-            value={format(row.original.value)}
+            value={formatNumber(
+              row.original.value,
+              peaksPreferences.deltaPPM.format,
+            )}
             onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
             type="number"
           />
         ),
       },
       {
-        showWhen: 'showDeltaHz',
+        showWhen: 'deltaHz.show',
         index: 4,
         Header: 'δ (Hz)',
         accessor: (row) =>
-          formatNumber(row.valueHz, peaksPreferences.deltaHzFormat),
+          formatNumber(row.valueHz, peaksPreferences.deltaHz.format),
       },
       {
-        showWhen: 'showIntensity',
+        showWhen: 'intensity.show',
         index: 5,
         Header: 'Intensity',
         style: { maxWidth: '80px' },
         accessor: (row) =>
-          formatNumber(row.intensity, peaksPreferences.intensityFormat),
+          formatNumber(row.intensity, peaksPreferences.intensity.format),
       },
       {
-        showWhen: 'showPeakWidth',
+        showWhen: 'peakWidth.show',
         index: 6,
         Header: 'Width (Hz)',
         accessor: (row) =>
-          formatNumber(row.peakWidth, peaksPreferences.peakWidthFormat),
+          formatNumber(row.peakWidth, peaksPreferences.peakWidth.format),
       },
     ],
-    [format, peaksPreferences, saveDeltaPPMRefsHandler],
+    [peaksPreferences, saveDeltaPPMRefsHandler],
   );
 
   const initialColumns: CustomColumn[] = useMemo(
@@ -145,7 +126,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
     let columns = [...initialColumns];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
-      if (peaksPreferences[showWhen]) {
+      if (lodashGet(peaksPreferences, showWhen)) {
         addCustomColumn(columns, colParams);
       }
     }

@@ -11,8 +11,7 @@ import { usePreferences } from '../../context/PreferencesContext';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import { getValue as getValueByKeyPath } from '../../utility/LocalStorage';
-import { databaseDefaultValues } from '../extra/preferences/defaultValues';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 const styles: Record<
   | 'container'
@@ -62,21 +61,11 @@ function DatabasePreferences(props, ref) {
   const alert = useAlert();
 
   const formRef = useRef<any>();
-
-  const updateValues = useCallback(() => {
-    const databasePreferences = getValueByKeyPath(
-      preferences.current,
-      `formatting.panels.database`,
-    );
-
-    formRef.current.setValues(
-      databasePreferences ? databasePreferences : databaseDefaultValues,
-    );
-  }, [preferences]);
+  const databasePreferences = usePanelPreferences('database');
 
   useEffect(() => {
-    updateValues();
-  }, [updateValues]);
+    formRef.current.setValues(databasePreferences);
+  }, [databasePreferences]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -102,42 +91,42 @@ function DatabasePreferences(props, ref) {
           <FormikColumnFormatField
             label="structure"
             checkControllerName="showSmiles"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Solvent"
             checkControllerName="showSolvent"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Names"
             checkControllerName="showNames"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Range"
             checkControllerName="showRange"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="δ (ppm)"
             checkControllerName="showDelta"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Assignment"
             checkControllerName="showAssignment"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="J (Hz)"
             checkControllerName="showCoupling"
-            hideFormat
+            hideFormatField
           />
           <FormikColumnFormatField
             label="Multiplicity"
             checkControllerName="showMultiplicity"
-            hideFormat
+            hideFormatField
           />
         </div>
       </FormikForm>

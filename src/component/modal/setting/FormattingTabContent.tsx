@@ -82,7 +82,9 @@ function FormattingTabContent() {
 
   return (
     <Fragment>
-      <p className="section-header">Nuclei Formatting</p>
+      <p className="section-header">
+        Number formatting for crosshair and info line
+      </p>
       <div css={styles}>
         <table>
           <thead>

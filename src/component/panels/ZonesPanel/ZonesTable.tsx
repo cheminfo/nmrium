@@ -5,6 +5,7 @@ import { FaLink } from 'react-icons/fa';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu from '../../elements/ContextMenu';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useTableSortBy from '../../hooks/useTableSortBy';
 
 import ZonesTableRow from './ZonesTableRow';
@@ -143,6 +144,8 @@ function ZonesTable({
   }, [experiment, nuclei, tableData]);
 
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
+  const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
+  const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);
 
   const rows = useMemo(
     () =>
@@ -153,9 +156,10 @@ function ZonesTable({
           rowData={rowData}
           onUnlink={onUnlink}
           onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
+          format={{ x: deltaX.format, y: deltaY.format }}
         />
       )),
-    [contextMenuHandler, sortedData, onUnlink],
+    [sortedData, onUnlink, deltaX.format, deltaY.format, contextMenuHandler],
   );
 
   return (

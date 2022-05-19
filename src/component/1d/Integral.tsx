@@ -1,35 +1,24 @@
-import { useMemo } from 'react';
-
-import { usePreferences } from '../context/PreferencesContext';
 import useIntegralPath from '../hooks/useIntegralPath';
-import { integralDefaultValues } from '../panels/extra/preferences/defaultValues';
-import { getValue } from '../utility/LocalStorage';
+import { usePanelPreferences } from '../hooks/usePanelPreferences';
 
 import IntegralResizable from './IntegralResizable';
 
 interface IntegralProps {
   integral: { id: string; from: number; to: number; integral?: number };
   isActive: boolean;
+  nucleus: string;
 }
 
-function Integral({ integral, isActive }: IntegralProps) {
-  const preferences = usePreferences();
+function Integral({ integral, isActive, nucleus }: IntegralProps) {
   const path = useIntegralPath(integral);
-
-  const integralSettings = useMemo(() => {
-    let {
-      color = integralDefaultValues.color,
-      strokeWidth = integralDefaultValues.strokeWidth,
-    } = getValue(preferences.current, 'formatting.panels.integrals') || {};
-    return { color, strokeWidth };
-  }, [preferences]);
+  const integralPreferences = usePanelPreferences('integrals', nucleus);
 
   return (
     <g>
       <path
         className="line"
-        stroke={integralSettings.color}
-        strokeWidth={integralSettings.strokeWidth}
+        stroke={integralPreferences.color}
+        strokeWidth={integralPreferences.strokeWidth}
         fill="none"
         style={{
           opacity: isActive ? 1 : 0.2,
@@ -37,7 +26,10 @@ function Integral({ integral, isActive }: IntegralProps) {
         d={path}
       />
 
-      <IntegralResizable integralData={integral} />
+      <IntegralResizable
+        integralData={integral}
+        integralFormat={integralPreferences.relative.format}
+      />
     </g>
   );
 }
