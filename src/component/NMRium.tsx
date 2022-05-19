@@ -2,6 +2,7 @@
 
 import { css } from '@emotion/react';
 import { RootLayout } from 'analysis-ui-components';
+import { InitialSeparation } from 'analysis-ui-components/lib-esm/layout/SplitPane';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -136,6 +137,7 @@ export type NMRiumPreferences = Partial<{
     hideGeneralSettings: boolean;
     experimentalFeatures: PanelPreferencesType;
     hidePanelOnLoad: boolean;
+    initialPanelWidth?: InitialSeparation;
   }>;
   panels: Partial<{
     spectraPanel: PanelPreferencesType;

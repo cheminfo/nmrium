@@ -4,13 +4,13 @@ import { usePreferences } from './context/PreferencesContext';
 
 export function SplitPaneWrapper({ children }) {
   const { current } = usePreferences();
+  const general = current?.display?.general || {};
   return (
     <SplitPane
-      key={current?.display?.general?.hidePanelOnLoad ? 'true' : 'false'}
-      initialSeparation="590px"
+      initialSeparation={general?.initialPanelWidth || '560px'}
       orientation="horizontal"
       sideSeparation="end"
-      initialClosed={current?.display?.general?.hidePanelOnLoad || false}
+      initialClosed={general?.hidePanelOnLoad || false}
     >
       {children}
     </SplitPane>
