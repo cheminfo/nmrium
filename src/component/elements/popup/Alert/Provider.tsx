@@ -84,7 +84,7 @@ function Provider({
 
   const show = useCallback(
     (message = '', options: any = {}) => {
-      const id = Math.random().toString(36).substr(2, 9);
+      const id = Math.random().toString(36).substring(2, 9);
 
       const alertOptions = {
         position: options.position || position,
