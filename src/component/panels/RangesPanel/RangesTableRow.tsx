@@ -265,6 +265,7 @@ function RangesTableRow({
         onHoverSignal={onHoverSignal}
         onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}
+        showKind={preferences.showKind}
       />
     </tr>
   );

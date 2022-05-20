@@ -77,6 +77,12 @@ const formatFields: NucleusPreferenceField[] = [
     checkControllerName: 'coupling.show',
     formatControllerName: 'coupling.format',
   },
+  {
+    id: 8,
+    label: 'Kind :',
+    checkControllerName: 'showKind',
+    hideFormatField: true,
+  },
 ];
 
 function RangesPreferences(props, ref) {

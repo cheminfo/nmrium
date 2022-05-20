@@ -42,6 +42,7 @@ interface RangesNucleusPreferences {
   deltaHz: ColumnPreferences;
   coupling: ColumnPreferences;
   jGraphTolerance: number;
+  showKind: boolean;
 }
 
 interface PeaksNucleusPreferences {
