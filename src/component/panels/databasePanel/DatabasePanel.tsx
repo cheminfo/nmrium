@@ -159,7 +159,14 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           const hideLoading = await alert.showLoading(`load ${label} database`);
 
           try {
-            _database = await fetch(url).then((response) => response.json());
+            _database = await fetch(url)
+              .then((response) => response.json())
+              .then((databaseRecords) =>
+                databaseRecords.map((record) => ({
+                  ...record,
+                  baseURL: url,
+                })),
+              );
           } catch (e) {
             alert.error(`Failed to load ${url}`);
           } finally {

@@ -1,13 +1,12 @@
 import { extent } from 'd3';
 import { rangesToXY } from 'nmr-processing';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import { HighlightedSource, useHighlightData } from '../highlight';
-import useSpectrum from '../hooks/useSpectrum';
-
-import { getYScale } from './utilities/scale';
+import { Datum1D } from '../../../data/types/data1d';
+import { useChartData } from '../../context/ChartContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import { HighlightedSource, useHighlightData } from '../../highlight';
+import useSpectrum from '../../hooks/useSpectrum';
+import { getYScale } from '../utilities/scale';
 
 const emptyData = { info: { originFrequency: 400 } };
 
