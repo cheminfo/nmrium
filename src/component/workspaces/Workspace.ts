@@ -53,6 +53,7 @@ interface PeaksNucleusPreferences {
 }
 
 export interface DatabasePanelPreferences {
+  previewJcamp: boolean;
   showSmiles: boolean;
   showSolvent: boolean;
   showNames: boolean;

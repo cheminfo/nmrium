@@ -89,7 +89,12 @@ function DatabasePreferences(props, ref) {
       <FormikForm onSubmit={saveHandler} ref={formRef}>
         <div style={styles.groupContainer}>
           <FormikColumnFormatField
-            label="structure"
+            label="Preview jcamp"
+            checkControllerName="previewJcamp"
+            hideFormatField
+          />
+          <FormikColumnFormatField
+            label="Structure"
             checkControllerName="showSmiles"
             hideFormatField
           />
