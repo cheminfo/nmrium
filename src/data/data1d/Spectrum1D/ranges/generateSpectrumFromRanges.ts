@@ -1,4 +1,4 @@
-import { rangesToXY } from 'nmr-processing';
+import { NMRRange, rangesToXY } from 'nmr-processing';
 
 import { UsedColors } from '../../../../types/UsedColors';
 import { Datum1D, Range } from '../../../types/data1d';
@@ -18,7 +18,9 @@ export function generateSpectrumFromRanges(
   usedColors: UsedColors,
 ): Datum1D {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
+
   const { x, y } = rangesToXY(ranges, {
+    ...getFromTo(ranges),
     frequency,
     nbPoints: 524288,
   });
@@ -41,4 +43,16 @@ export function generateSpectrumFromRanges(
   datum.ranges.values = mapRanges(ranges, datum);
 
   return datum;
+}
+
+function getFromTo(ranges: NMRRange[]) {
+  let from = Number.MAX_SAFE_INTEGER;
+  let to = Number.MIN_SAFE_INTEGER;
+  for (const range of ranges) {
+    for (const signal of range.signals || []) {
+      if (from > signal.delta) from = signal.delta;
+      if (to < signal.delta) to = signal.delta;
+    }
+  }
+  return { from: from - 0.5, to: to + 0.5 };
 }
