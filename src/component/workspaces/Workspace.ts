@@ -62,6 +62,8 @@ export interface DatabasePanelPreferences {
   showAssignment: boolean;
   showCoupling: boolean;
   showMultiplicity: boolean;
+  color: string;
+  marginBottom: number;
 }
 
 export interface WorkSpacePanelPreferences {

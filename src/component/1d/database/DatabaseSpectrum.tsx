@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { addJcamp } from '../../../data/SpectraManager';
 import { Datum1D } from '../../../data/types/data1d';
@@ -6,26 +6,41 @@ import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightedSource, useHighlightData } from '../../highlight';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { spinnerContext } from '../../loader/SpinnerContext';
 import { loadFile } from '../../utility/FileUtility';
+import { getYScale } from '../utilities/scale';
 
 function DatabaseSpectrum() {
-  const { displayerKey } = useChartData();
+  const { displayerKey, height, verticalAlign, yDomain, margin } =
+    useChartData();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();
-  const { scaleX, scaleY } = useScaleChecked();
+  const { scaleX } = useScaleChecked();
   const alert = useAlert();
-
+  const { color, marginBottom } = usePanelPreferences('database');
   const { jcampURL: jcampRelativeURL, baseURL } =
     highlight?.sourceData?.extra || [];
   const getSpinner = useContext(spinnerContext);
 
+  const scaleY = useCallback(
+    () =>
+      getYScale({
+        height: height,
+        margin: { top: margin.top, bottom: margin.bottom + marginBottom },
+        verticalAlign,
+        yDomain,
+      }),
+    [height, margin, marginBottom, verticalAlign, yDomain],
+  );
+
   useEffect(() => {
     void (async () => {
       try {
-        const jcampURL = new URL(jcampRelativeURL, baseURL);
         setLoading(true);
+
+        const jcampURL = new URL(jcampRelativeURL, baseURL);
         const result = await loadFile(jcampURL);
         const spectra = [];
         addJcamp(spectra, result, {}, {});
@@ -58,10 +73,8 @@ function DatabaseSpectrum() {
     <g
       clipPath={`url(#${displayerKey}clip-chart-1d)`}
       className="database-spectrum"
-      width="100%"
-      height="100%"
     >
-      <path stroke="black" fill="none" d={path} />
+      <path stroke={color} fill="none" d={path} />
     </g>
   );
 }

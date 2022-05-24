@@ -64,6 +64,8 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   showAssignment: false,
   showCoupling: true,
   showMultiplicity: true,
+  color: 'black',
+  marginBottom: 30,
 };
 
 export {

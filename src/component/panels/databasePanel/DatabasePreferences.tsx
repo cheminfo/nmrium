@@ -3,58 +3,19 @@ import {
   useCallback,
   useImperativeHandle,
   useRef,
-  CSSProperties,
   forwardRef,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
+import Label from '../../elements/Label';
+import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
+import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-
-const styles: Record<
-  | 'container'
-  | 'groupContainer'
-  | 'header'
-  | 'inputContainer'
-  | 'input'
-  | 'inputLabel',
-  CSSProperties
-> = {
-  container: {
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-    height: '100%',
-    overflowY: 'auto',
-  },
-  groupContainer: {
-    padding: '5px',
-    borderRadius: '5px',
-    margin: '10px 0px',
-    backgroundColor: 'white',
-  },
-
-  header: {
-    borderBottom: '1px solid #e8e8e8',
-    paddingBottom: '5px',
-    fontWeight: 'bold',
-    color: '#4a4a4a',
-  },
-  inputContainer: {
-    flex: 4,
-    borderRadius: '5px',
-  },
-  inputLabel: {
-    flex: 2,
-    fontSize: '11px',
-    fontWeight: 'bold',
-    color: '#232323',
-  },
-  input: {
-    width: '100px',
-  },
-};
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import { PreferencesGroup } from '../extra/preferences/PreferencesGroup';
 
 function DatabasePreferences(props, ref) {
   const preferences = usePreferences();
@@ -85,14 +46,23 @@ function DatabasePreferences(props, ref) {
   }));
 
   return (
-    <div style={styles.container}>
+    <PreferencesContainer>
       <FormikForm onSubmit={saveHandler} ref={formRef}>
-        <div style={styles.groupContainer}>
+        <PreferencesGroup>
           <FormikColumnFormatField
             label="Preview jcamp"
             checkControllerName="previewJcamp"
             hideFormatField
           />
+          <FormikColorInput name="color" />
+          <Label
+            title="Margin bottom (px) :"
+            style={{ label: { padding: 0, flex: 4 }, wrapper: { flex: 8 } }}
+          >
+            <FormikInput name="marginBottom" type="number" />
+          </Label>
+        </PreferencesGroup>
+        <PreferencesGroup header="Table Preferences">
           <FormikColumnFormatField
             label="Structure"
             checkControllerName="showSmiles"
@@ -133,9 +103,9 @@ function DatabasePreferences(props, ref) {
             checkControllerName="showMultiplicity"
             hideFormatField
           />
-        </div>
+        </PreferencesGroup>
       </FormikForm>
-    </div>
+    </PreferencesContainer>
   );
 }
 
