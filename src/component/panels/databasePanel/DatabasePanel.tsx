@@ -18,9 +18,13 @@ import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
-import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
+import {
+  LOAD_JCAMP_FILE,
+  RESURRECTING_SPECTRUM_FROM_RANGES,
+} from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
+import { loadFile } from '../../utility/FileUtility';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -188,14 +192,33 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
 
   const resurrectHandler = useCallback(
     (row) => {
-      const { index } = row.original;
-      const { ranges, solvent, names = [] } = result.data[index];
-      dispatch({
-        type: RESURRECTING_SPECTRUM_FROM_RANGES,
-        payload: { ranges, info: { solvent, nucleus, name: names[0] } },
-      });
+      const { index, baseURL, jcampURL: jcampRelativeURL } = row.original;
+      if (jcampRelativeURL) {
+        void (async () => {
+          const hideLoading = await alert.showLoading(
+            `load jcamp in progress...`,
+          );
+
+          try {
+            const jcampURL = new URL(jcampRelativeURL, baseURL);
+
+            const result = await loadFile(jcampURL);
+            dispatch({ type: LOAD_JCAMP_FILE, files: [{ binary: result }] });
+          } catch (e) {
+            alert.error(`Failed to load Jcamp`);
+          } finally {
+            hideLoading();
+          }
+        })();
+      } else {
+        const { ranges, solvent, names = [] } = result.data[index];
+        dispatch({
+          type: RESURRECTING_SPECTRUM_FROM_RANGES,
+          payload: { ranges, info: { solvent, nucleus, name: names[0] } },
+        });
+      }
     },
-    [dispatch, nucleus, result.data],
+    [alert, dispatch, nucleus, result.data],
   );
 
   const clearHandler = useCallback(() => {
