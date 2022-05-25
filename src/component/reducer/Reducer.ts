@@ -6,7 +6,6 @@ import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { migrate } from '../../data/migration/MigrationManager';
 import { Molecule } from '../../data/molecules/Molecule';
-import { Range } from '../../data/types/data1d';
 import { Contours } from '../../data/types/data2d/Contours';
 import generateID from '../../data/utilities/generateID';
 import { UsedColors } from '../../types/UsedColors';
