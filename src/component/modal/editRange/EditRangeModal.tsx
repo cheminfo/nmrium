@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
+import { Datum1D, Range } from '../../../data/types/data1d';
 import generateID from '../../../data/utilities/generateID';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -12,11 +13,12 @@ import SaveButton from '../../elements/SaveButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import useSpectrum from '../../hooks/useSpectrum';
 import {
   hasCouplingConstant,
   translateMultiplet,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
-import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
+import { UPDATE_RANGE } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
@@ -91,14 +93,15 @@ function EditRangeModal({
   onSaveEditRangeModal = () => null,
   onCloseEditRangeModal = () => null,
   onZoomEditRangeModal = () => null,
-  range,
   automaticZoom = true,
+  range: originRange,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
   const { activeTab } = useChartData();
   const dispatch = useDispatch();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const validation = useRangeFormValidation();
+  const range = useRange(originRange);
 
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(range);
@@ -136,7 +139,7 @@ function EditRangeModal({
           multiplicity: signal.js
             .map((_coupling) => translateMultiplet(_coupling.multiplicity))
             .join(''),
-          js: getCouplings(signal.js),
+          js: getCouplings(signal?.js || []),
         };
       });
     },
@@ -161,23 +164,24 @@ function EditRangeModal({
 
       let counterJ = 0;
       const couplings: Array<Coupling> = [];
-      signal.multiplicity.split('').forEach((_multiplicity) => {
-        let coupling: Coupling = {
-          multiplicity: _multiplicity,
-          coupling: '',
-        };
+      if (signal.multiplicity) {
+        signal.multiplicity.split('').forEach((_multiplicity) => {
+          let js: Coupling = {
+            multiplicity: _multiplicity,
+            coupling: '',
+          };
 
-        if (hasCouplingConstant(_multiplicity)) {
-          coupling = { ...signal.js[counterJ] };
-          coupling.coupling = Number(
-            formatNumber(coupling.coupling, rangesPreferences.coupling.format),
-          );
-          counterJ++;
-        }
-        coupling.multiplicity = translateMultiplet(coupling.multiplicity);
-        couplings.push(coupling);
-      });
-
+          if (hasCouplingConstant(_multiplicity) && signal?.js) {
+            js = { ...signal.js[counterJ] } as Coupling;
+            js.coupling = Number(
+              formatNumber(js.coupling, rangesPreferences.coupling.format),
+            );
+            counterJ++;
+          }
+          js.multiplicity = translateMultiplet(js.multiplicity || '');
+          couplings.push(js);
+        });
+      }
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
@@ -186,10 +190,20 @@ function EditRangeModal({
   const changeHandler = useCallback(
     (values) => {
       const signals = getSignals(values.signals);
-      dispatch({
-        type: CHANGE_TEMP_RANGE,
-        payload: { tempRange: Object.assign({}, range, { signals }) },
-      });
+
+      if (
+        JSON.stringify(range?.signals, (key, value) => {
+          if (key !== 'id') return value;
+        }) !==
+        JSON.stringify(signals, (key, value) => {
+          if (key !== 'id') return value;
+        })
+      ) {
+        dispatch({
+          type: UPDATE_RANGE,
+          payload: { range: { ...range, signals } },
+        });
+      }
     },
     [dispatch, getSignals, range],
   );
@@ -227,6 +241,16 @@ function EditRangeModal({
       </FormikForm>
     </div>
   );
+}
+
+function useRange(range: Range) {
+  const { ranges } = useSpectrum({
+    ranges: { values: [] },
+  }) as Datum1D;
+  const index = ranges.values.findIndex(
+    (rangeRecord) => rangeRecord.id === range.id,
+  );
+  return ranges.values[index];
 }
 
 export default EditRangeModal;

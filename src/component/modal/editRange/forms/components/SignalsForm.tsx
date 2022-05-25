@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
+import { Range } from '../../../../../data/types/data1d';
 
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
@@ -43,7 +44,7 @@ const tabStyles = css`
 `;
 
 interface SignalsFormProps {
-  range: number;
+  range: Range;
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 

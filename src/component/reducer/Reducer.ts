@@ -115,7 +115,6 @@ export const getInitialState = (): State => ({
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
-      tempRange: null,
       showMultiplicityTrees: false,
       showRangesIntegrals: true,
       showJGraph: false,
@@ -338,11 +337,6 @@ export interface State {
        * @default null
        */
       activeFilterID: string | null;
-
-      /**
-       * copy of the range that the user start editing for multiplicity tree live updating
-       */
-      tempRange: Range | null;
       /**
        * boolean indicator to hide/show multiplicity tree
        * @default false
@@ -680,8 +674,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleUnlinkRange(draft, action);
     case types.SET_DIAID_RANGE:
       return RangesActions.handleSetDiaIDRange(draft, action);
-    case types.CHANGE_TEMP_RANGE:
-      return RangesActions.handleChangeTempRange(draft, action);
+    case types.UPDATE_RANGE:
+      return RangesActions.handleUpdateRange(draft, action);
     case types.SHOW_MULTIPLICTY_TREES:
       return RangesActions.handleShowMultiplicityTrees(draft);
     case types.SHOW_RANGES_INTEGRALS:

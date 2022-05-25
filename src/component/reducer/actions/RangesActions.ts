@@ -134,9 +134,6 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
 
-    // reset temp range
-    draft.toolOptions.data.tempRange = null;
-
     // remove assignments in global state
 
     const _editedRowData: any = unlink(editedRowData);
@@ -326,8 +323,15 @@ function handleChangeRangesSumFlag(draft, action) {
   }
 }
 
-function handleChangeTempRange(draft: Draft<State>, action) {
-  draft.toolOptions.data.tempRange = action.payload.tempRange;
+function handleUpdateRange(draft: Draft<State>, action) {
+  const { range } = action.payload;
+  if (draft.activeSpectrum?.id && range.id) {
+    const datum = draft.data[draft.activeSpectrum?.index] as Datum1D;
+    const index = datum.ranges.values.findIndex(
+      (_range) => _range.id === range.id,
+    );
+    datum.ranges.values[index] = range;
+  }
 }
 
 function handleShowMultiplicityTrees(draft: Draft<State>) {
@@ -358,7 +362,7 @@ export {
   handleUnlinkRange,
   handleSetDiaIDRange,
   handleChangeRangesSumFlag,
-  handleChangeTempRange,
+  handleUpdateRange,
   handleShowMultiplicityTrees,
   handleShowRangesIntegrals,
   handleAutoSpectraRangesDetection,

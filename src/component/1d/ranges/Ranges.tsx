@@ -12,7 +12,6 @@ interface RangesInnerProps {
   displayerKey: string;
   selectedTool: string;
   ranges: RangesProps;
-  editRangeID: string;
   showMultiplicityTrees: boolean;
   showRangesIntegrals: boolean;
   relativeFormat: string;
@@ -22,7 +21,6 @@ function RangesInner({
   ranges,
   displayerKey,
   selectedTool,
-  editRangeID,
   showMultiplicityTrees,
   showRangesIntegrals,
   relativeFormat,
@@ -35,9 +33,6 @@ function RangesInner({
             rangeData={range}
             selectedTool={selectedTool}
             showMultiplicityTrees={showMultiplicityTrees}
-            startEditMode={
-              editRangeID && editRangeID === range.id ? true : false
-            }
             relativeFormat={relativeFormat}
           />
           {showRangesIntegrals && <RangeIntegral range={range} />}
@@ -56,7 +51,7 @@ export default function Ranges() {
     displayerKey,
     toolOptions: {
       selectedTool,
-      data: { tempRange, showMultiplicityTrees, showRangesIntegrals },
+      data: { showMultiplicityTrees, showRangesIntegrals },
     },
     activeTab,
   } = useChartData();
@@ -72,7 +67,6 @@ export default function Ranges() {
         showRangesIntegrals,
         selectedTool,
         displayerKey,
-        editRangeID: tempRange?.id || '',
         relativeFormat: rangesPreferences.relative.format,
       }}
     />

@@ -72,7 +72,7 @@ export default function useEditRangeModal(range: RangeData) {
   const editRange = useCallback(() => {
     dispatch({
       type: SET_SELECTED_TOOL,
-      payload: { selectedTool: options.editRange.id, tempRange: range },
+      payload: { selectedTool: options.editRange.id },
     });
     modal.show(
       <EditRangeModal

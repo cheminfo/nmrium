@@ -18,7 +18,6 @@ import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { formatNumber } from '../../utility/formatNumber';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
-import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -62,7 +61,6 @@ interface RangeProps {
   showMultiplicityTrees: boolean;
   selectedTool: string;
   rangeData: RangeData;
-  startEditMode: boolean;
   relativeFormat: string;
 }
 
@@ -70,7 +68,6 @@ function Range({
   rangeData,
   showMultiplicityTrees,
   selectedTool,
-  startEditMode,
   relativeFormat,
 }: RangeProps) {
   const { viewerRef } = useGlobal();
@@ -208,10 +205,7 @@ function Range({
         )}
       </Resizer>
 
-      {startEditMode ? (
-        <TempMultiplicityTree />
-      ) : (
-        showMultiplicityTrees &&
+      {showMultiplicityTrees &&
         signals &&
         signals.length > 0 &&
         signals.map((_signal) => (
@@ -221,8 +215,7 @@ function Range({
             signal={_signal}
             key={_signal.id}
           />
-        ))
-      )}
+        ))}
     </g>
   );
 }
