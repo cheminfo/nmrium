@@ -9,11 +9,11 @@ import { mapRanges } from './mapRanges';
 const defaultFromTo = (nucleus: string) => {
   switch (nucleus.toUpperCase()) {
     case '13C':
-      return { from: -5, to: 206 }
+      return { from: -5, to: 206 };
     default:
-      return { from: -0.5, to: 10.5 }
+      return { from: -0.5, to: 10.5 };
   }
-}
+};
 
 export function generateSpectrumFromRanges(
   ranges: Range[],
@@ -54,7 +54,7 @@ export function generateSpectrumFromRanges(
   return datum;
 }
 
-function getFromTo(ranges: NMRRange[], fromTo: { from: number, to: number }) {
+function getFromTo(ranges: NMRRange[], fromTo: { from: number; to: number }) {
   let from = Number.MAX_SAFE_INTEGER;
   let to = Number.MIN_SAFE_INTEGER;
   for (const range of ranges) {
@@ -66,6 +66,6 @@ function getFromTo(ranges: NMRRange[], fromTo: { from: number, to: number }) {
 
   return {
     from: Math.min(from - 0.5, fromTo.from),
-    to: Math.max(to + 0.5, fromTo.to)
+    to: Math.max(to + 0.5, fromTo.to),
   };
 }
