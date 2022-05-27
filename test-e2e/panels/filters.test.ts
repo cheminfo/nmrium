@@ -54,13 +54,19 @@ async function baselineCorrectionFilter(nmrium: NmriumPage) {
 
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-
   await open13CFidSpectrum(nmrium);
-
   await nmrium.clickPanel('Filters');
 
-  await zeroFillingFilter(nmrium);
-  await fourierTransformFilter(nmrium);
-  await phaseCorrectionFilter(nmrium);
-  await baselineCorrectionFilter(nmrium);
+  await test.step('Apply Zero filling filter', async () => {
+    await zeroFillingFilter(nmrium);
+  });
+  await test.step('Apply fourier Transform filter', async () => {
+    await fourierTransformFilter(nmrium);
+  });
+  await test.step('Apply phase correction filter', async () => {
+    await phaseCorrectionFilter(nmrium);
+  });
+  await test.step('Apply baseline correction filter', async () => {
+    await baselineCorrectionFilter(nmrium);
+  });
 });

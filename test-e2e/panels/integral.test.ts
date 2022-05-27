@@ -73,20 +73,21 @@ async function deleteIntegral(nmrium: NmriumPage) {
 test('Should Integrals Add/resize/delete', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-
-  // Select integral tool
   await nmrium.clickTool('integralPicking');
 
-  // Test add two integrals
-  await addIntegral(nmrium, 50, 70, 0);
-  // await nmrium.page.waitForTimeout(10000);
+  await test.step('Add integrals ', async () => {
+    // Test add two integrals
+    await addIntegral(nmrium, 50, 70, 0);
+    await addIntegral(nmrium, 110, 130, 1);
+  });
 
-  await addIntegral(nmrium, 110, 130, 1);
-  // await nmrium.page.waitForTimeout(10000);
+  await test.step('Resize one of the integrals ', async () => {
+    // Test resize the first integral
+    await resizeIntegral(nmrium);
+  });
 
-  // Test resize the first integral
-  await resizeIntegral(nmrium);
-
-  // Test delete the first integral
-  await deleteIntegral(nmrium);
+  await test.step('Delete one of the integrals ', async () => {
+    // Test delete the first integral
+    await deleteIntegral(nmrium);
+  });
 });
