@@ -1,13 +1,13 @@
 import { extent } from 'd3';
 import { rangesToXY } from 'nmr-processing';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import { HighlightedSource, useHighlightData } from '../highlight';
-import useSpectrum from '../hooks/useSpectrum';
-
-import { getYScale } from './utilities/scale';
+import { Datum1D } from '../../../data/types/data1d';
+import { useChartData } from '../../context/ChartContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import { HighlightedSource, useHighlightData } from '../../highlight';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import useSpectrum from '../../hooks/useSpectrum';
+import { getYScale } from '../utilities/scale';
 
 const emptyData = { info: { originFrequency: 400 } };
 
@@ -16,6 +16,7 @@ function ResurrectedDatabaseRanges() {
   const { info } = useSpectrum(emptyData) as Datum1D;
   const { highlight } = useHighlightData();
   const { scaleX } = useScaleChecked();
+  const { color, marginBottom } = usePanelPreferences('database');
 
   if (highlight.sourceData?.type !== HighlightedSource.DATABASE) {
     return null;
@@ -23,6 +24,7 @@ function ResurrectedDatabaseRanges() {
 
   const fullHeight = height - margin.bottom;
   const blockHight = fullHeight / 4;
+  const translateY = fullHeight - blockHight - marginBottom;
 
   const { ranges } = highlight.sourceData.extra || [];
 
@@ -82,8 +84,8 @@ function ResurrectedDatabaseRanges() {
             />
           </g>
           <path
-            transform={`translate(0,${fullHeight - blockHight * 2})`}
-            stroke="black"
+            transform={`translate(0,${translateY})`}
+            stroke={color}
             fill="none"
             d={path}
           />

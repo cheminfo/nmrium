@@ -56,6 +56,7 @@ const getPeaksDefaultValues = (
 };
 
 const databaseDefaultValues: PanelsPreferences['database'] = {
+  previewJcamp: true,
   showSmiles: true,
   showSolvent: false,
   showNames: true,
@@ -64,6 +65,8 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   showAssignment: false,
   showCoupling: true,
   showMultiplicity: true,
+  color: 'black',
+  marginBottom: 30,
 };
 
 export {

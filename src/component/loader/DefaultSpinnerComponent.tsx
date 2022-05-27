@@ -35,7 +35,9 @@ const styles = css`
   }
 `;
 
-export default function DefaultSpinnerComponent() {
+export default function DefaultSpinnerComponent({
+  loadingText = 'Loading ...',
+}) {
   return (
     <div css={styles}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3">
@@ -44,7 +46,7 @@ export default function DefaultSpinnerComponent() {
           <path d="M520.5 78.1z" />
         </g>
       </svg>
-      <p>Loading ...</p>
+      <p>{loadingText}</p>
     </div>
   );
 }
