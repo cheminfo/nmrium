@@ -17,36 +17,50 @@ import { options } from '../../../toolbar/ToolTypes';
 
 import { RangeData } from './useMapRanges';
 
-export default function useEditRangeModal(range: RangeData) {
+export default function useEditRangeModal(range?: RangeData) {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
 
-  const zoomRange = useCallback(() => {
-    const margin = Math.abs(range.from - range.to);
-    dispatch({
-      type: SET_X_DOMAIN,
-      xDomain: [range.from - margin, range.to + margin],
-    });
-  }, [dispatch, range.from, range.to]);
+  const zoomRange = useCallback(
+    (modalRange?: RangeData) => {
+      const _range = modalRange ? modalRange : range;
+      if (_range) {
+        const { from, to } = _range;
+        const margin = Math.abs(from - to);
+        dispatch({
+          type: SET_X_DOMAIN,
+          xDomain: [from - margin, to + margin],
+        });
+      }
+    },
+    [dispatch, range],
+  );
 
-  const deleteRange = useCallback(() => {
-    dispatch({
-      type: DELETE_RANGE,
-      payload: {
-        data: { id: range.id, assignmentData },
-      },
-    });
-  }, [assignmentData, dispatch, range.id]);
+  const deleteRange = useCallback(
+    (id?: string) => {
+      if (range || id) {
+        dispatch({
+          type: DELETE_RANGE,
+          payload: {
+            data: { id: id ? id : range?.id, assignmentData },
+          },
+        });
+      }
+    },
+    [assignmentData, dispatch, range],
+  );
 
   const changeRangeSignalKind = useCallback(
     (value) => {
-      dispatch({
-        type: CHANGE_RANGE_SIGNAL_KIND,
-        payload: {
-          data: { rowData: range, value },
-        },
-      });
+      if (range) {
+        dispatch({
+          type: CHANGE_RANGE_SIGNAL_KIND,
+          payload: {
+            data: { rowData: range, value },
+          },
+        });
+      }
     },
     [dispatch, range],
   );
@@ -60,41 +74,57 @@ export default function useEditRangeModal(range: RangeData) {
           assignmentData,
         },
       });
+      dispatch({ type: RESET_SELECTED_TOOL });
+
+      modal.close();
     },
-    [assignmentData, dispatch],
+    [assignmentData, dispatch, modal],
   );
 
-  const closeEditRangeHandler = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
-    modal.close();
-  }, [dispatch, modal]);
+  const closeEditRangeHandler = useCallback(
+    (range: Partial<{ id: string }>) => {
+      if (range.id === 'new') {
+        deleteRange(range.id);
+      }
+      dispatch({ type: RESET_SELECTED_TOOL });
+      modal.close();
+    },
+    [deleteRange, dispatch, modal],
+  );
 
-  const editRange = useCallback(() => {
-    dispatch({
-      type: SET_SELECTED_TOOL,
-      payload: { selectedTool: options.editRange.id },
-    });
-    modal.show(
-      <EditRangeModal
-        onCloseEditRangeModal={closeEditRangeHandler}
-        onSaveEditRangeModal={saveEditRangeHandler}
-        onZoomEditRangeModal={zoomRange}
-        range={range}
-      />,
-      {
-        position: positions.MIDDLE_RIGHT,
-        transition: transitions.SCALE,
-        isBackgroundBlur: false,
-      },
-    );
-  }, [
-    closeEditRangeHandler,
-    dispatch,
-    modal,
-    range,
-    saveEditRangeHandler,
-    zoomRange,
-  ]);
+  const editRange = useCallback(
+    (isManual = false) => {
+      dispatch({
+        type: SET_SELECTED_TOOL,
+        payload: { selectedTool: options.editRange.id },
+      });
+
+      modal.show(
+        <EditRangeModal
+          onCloseEditRangeModal={closeEditRangeHandler}
+          onSaveEditRangeModal={saveEditRangeHandler}
+          onZoomEditRangeModal={zoomRange}
+          range={isManual ? {} : range}
+          manualRange={isManual}
+        />,
+        {
+          position: positions.MIDDLE_RIGHT,
+          transition: transitions.SCALE,
+          isBackgroundBlur: false,
+        },
+      );
+
+      zoomRange();
+    },
+    [
+      closeEditRangeHandler,
+      dispatch,
+      modal,
+      range,
+      saveEditRangeHandler,
+      zoomRange,
+    ],
+  );
 
   return useMemo(
     () => ({

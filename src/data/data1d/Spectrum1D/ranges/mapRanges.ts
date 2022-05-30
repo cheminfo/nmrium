@@ -23,7 +23,7 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
   const shiftX = getShiftX(datum);
   const error = getSpectrumErrorValue(datum);
   return ranges.reduce<Array<Range>>((acc, newRange) => {
-    if (checkRange(newRange, datum, error)) return acc;
+    if (checkRange(newRange, datum, error) && newRange.id !== 'new') return acc;
 
     const absolute = xyIntegration(
       { x, y: re },

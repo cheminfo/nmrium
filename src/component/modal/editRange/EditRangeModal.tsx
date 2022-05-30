@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useMemo, useCallback, useEffect, useRef } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { Datum1D, Range } from '../../../data/types/data1d';
@@ -78,10 +78,10 @@ const styles = css`
 
 interface EditRangeModalProps {
   onSaveEditRangeModal: (value: any) => Promise<void> | null | void;
-  onCloseEditRangeModal: () => void;
+  onCloseEditRangeModal: (value: any) => void;
   onZoomEditRangeModal: (value: any) => void;
   range: any;
-  automaticZoom?: boolean;
+  manualRange?: boolean;
 }
 
 interface Coupling {
@@ -93,7 +93,7 @@ function EditRangeModal({
   onSaveEditRangeModal = () => null,
   onCloseEditRangeModal = () => null,
   onZoomEditRangeModal = () => null,
-  automaticZoom = true,
+  manualRange = false,
   range: originRange,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
@@ -101,21 +101,15 @@ function EditRangeModal({
   const dispatch = useDispatch();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const validation = useRangeFormValidation();
-  const range = useRange(originRange);
+  const range = useRange(originRange, manualRange);
 
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(range);
   }, [onZoomEditRangeModal, range]);
 
-  useEffect(() => {
-    if (automaticZoom) {
-      handleOnZoom();
-    }
-  }, [automaticZoom, handleOnZoom]);
-
   const handleOnClose = useCallback(() => {
-    onCloseEditRangeModal();
-  }, [onCloseEditRangeModal]);
+    onCloseEditRangeModal(range);
+  }, [onCloseEditRangeModal, range]);
 
   const getCouplings = useCallback(
     (couplings) =>
@@ -152,10 +146,9 @@ function EditRangeModal({
         const _range = { ...range };
         _range.signals = getSignals(formValues.signals);
         await onSaveEditRangeModal(_range);
-        handleOnClose();
       })();
     },
-    [getSignals, handleOnClose, onSaveEditRangeModal, range],
+    [getSignals, onSaveEditRangeModal, range],
   );
 
   const data = useMemo(() => {
@@ -243,13 +236,13 @@ function EditRangeModal({
   );
 }
 
-function useRange(range: Range) {
+function useRange(range: Range, isNew: boolean) {
   const { ranges } = useSpectrum({
     ranges: { values: [] },
   }) as Datum1D;
-  const index = ranges.values.findIndex(
-    (rangeRecord) => rangeRecord.id === range.id,
-  );
+
+  const id = isNew ? 'new' : range.id;
+  const index = ranges.values.findIndex((rangeRecord) => rangeRecord.id === id);
   return ranges.values[index];
 }
 

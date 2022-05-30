@@ -23,6 +23,7 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
+import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
@@ -143,8 +144,18 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     // remove assignments in assignment hook data
     // for now: clear all assignments for this range because signals or levels to store might have changed
     unlinkInAssignmentData(assignmentData, [_editedRowData]);
+
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
-    (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
+
+    if (_editedRowData.id === 'new') {
+      _editedRowData.id = generateID();
+    }
+
+    (draft.data[index] as Datum1D).ranges.values.splice(
+      rangeIndex,
+      1,
+      _editedRowData,
+    );
     updateRangesRelativeValues(draft.data[index] as Datum1D);
     handleOnChangeRangesData(draft);
   }
@@ -268,17 +279,38 @@ function handleChangeRangeSum(draft: Draft<State>, options) {
   }
 }
 
-function handleAddRange(draft: Draft<State>, action) {
-  const { startX, endX } = action.payload;
-  const { activeSpectrum, activeTab: nucleus, molecules } = draft;
+function addNewRange(
+  draft: Draft<State>,
+  props: { startX: number; endX: number; id?: string },
+) {
+  const { startX, endX, id } = props;
   const range = getRange(draft, { startX, endX });
+  const { activeSpectrum, activeTab: nucleus, molecules } = draft;
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    addRange(draft.data[index] as Datum1D, { from, to, nucleus, molecules });
+    addRange(draft.data[index] as Datum1D, {
+      from,
+      to,
+      id,
+      nucleus,
+      molecules,
+    });
     handleOnChangeRangesData(draft);
     setIntegralsYDomain(draft, draft.data[index] as Datum1D);
+  }
+}
+
+function handleAddRange(draft: Draft<State>, action) {
+  const { startX, endX, id } = action.payload;
+  if (id === 'new') {
+    const { width } = draft;
+    const startX = width / 3;
+    const endX = startX + 10;
+    addNewRange(draft, { startX, endX, id: 'new' });
+  } else {
+    addNewRange(draft, { startX, endX });
   }
 }
 

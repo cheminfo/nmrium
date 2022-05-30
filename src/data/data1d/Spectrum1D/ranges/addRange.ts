@@ -12,10 +12,11 @@ import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 interface AddRangeOptions {
   from: number;
   to: number;
+  id?: string;
 }
 
 export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
-  const { from, to, molecules, nucleus } = options;
+  const { from, to, id, molecules, nucleus } = options;
   const { x, re } = datum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
@@ -30,7 +31,7 @@ export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
   if (!signal) return;
   try {
     const range = {
-      id: generateID(),
+      id: id ? id : generateID(),
       from,
       to,
       absolute, // the real value,
