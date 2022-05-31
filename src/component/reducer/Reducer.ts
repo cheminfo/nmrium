@@ -609,11 +609,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return MoleculeActions.addMoleculeHandler(draft, action.molfile);
 
     case types.SET_MOLECULE:
-      return MoleculeActions.setMoleculeHandler(
-        draft,
-        action.molfile,
-        action.key,
-      );
+      return MoleculeActions.setMoleculeHandler(draft, action);
+    case types.CHANGE_MOLECULE_LABEL:
+      return MoleculeActions.changeMoleculeLabel(draft, action);
 
     case types.DELETE_MOLECULE:
       return MoleculeActions.deleteMoleculeHandler(draft, action);

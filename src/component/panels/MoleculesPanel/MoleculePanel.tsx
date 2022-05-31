@@ -3,7 +3,6 @@ import { css, SerializedStyles } from '@emotion/react';
 import OCL from 'openchemlib/full';
 import { useState, useCallback, useEffect, memo, ReactElement } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 
 import { Molecule } from '../../../data/molecules/Molecule';
@@ -17,6 +16,7 @@ import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_MOLECULE } from '../../reducer/types/Types';
 
+import MoleculeHeader from './MoleculeHeader';
 import MoleculePanelHeader, {
   MoleculeHeaderActionsOptions,
 } from './MoleculePanelHeader';
@@ -47,9 +47,9 @@ const styles: Record<
   toolbar: css({
     display: 'flex',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
-    padding: '0px 10px',
-    justifyContent: 'end',
-    height: 22,
+    padding: '5px 10px',
+    justifyContent: 'space-between',
+    height: '35px',
   }),
   slider: css({
     display: 'flex',
@@ -115,8 +115,12 @@ function MoleculePanelInner({
   }, [currentIndex, molecules, onMoleculeChange]);
 
   const handleReplaceMolecule = useCallback(
-    (key, molfile) => {
-      dispatch({ type: SET_MOLECULE, molfile, key });
+    (molecule, molfile) => {
+      const { key, label, isFloat } = molecule;
+      dispatch({
+        type: SET_MOLECULE,
+        payload: { molfile, key, label, isFloat },
+      });
     },
     [dispatch],
   );
@@ -143,11 +147,7 @@ function MoleculePanelInner({
             {molecules && molecules.length > 0 ? (
               molecules.map((mol: Molecule, index) => (
                 <div key={mol.key} css={styles.items}>
-                  <div css={styles.toolbar}>
-                    <span>
-                      <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
-                    </span>
-                  </div>
+                  <MoleculeHeader currentMolecule={mol} molecules={molecules} />
                   <div
                     css={styles.slider}
                     className="mol-svg-container"
@@ -167,7 +167,7 @@ function MoleculePanelInner({
                             height={height}
                             molfile={mol.molfile || ''}
                             setMolfile={(molfile) =>
-                              handleReplaceMolecule(mol.key, molfile)
+                              handleReplaceMolecule(mol, molfile)
                             }
                             setSelectedAtom={handleOnClickAtom}
                             atomHighlightColor={

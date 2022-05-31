@@ -13,10 +13,7 @@ import { ModalStyles } from './ModalStyle';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
-  selectedMolecule?: {
-    key: any;
-    molfile: string;
-  };
+  selectedMolecule?: Molecule;
 }
 
 function MoleculeStructureEditorModal(
@@ -52,7 +49,16 @@ function MoleculeStructureEditorModal(
 
   const handleSave = useCallback(() => {
     if (selectedMolecule) {
-      dispatch({ type: SET_MOLECULE, molfile, key: selectedMolecule.key });
+      const { key, isFloat, label } = selectedMolecule;
+      dispatch({
+        type: SET_MOLECULE,
+        payload: {
+          molfile,
+          key,
+          isFloat,
+          label,
+        },
+      });
       onClose('replace');
     } else {
       dispatch({ type: ADD_MOLECULE, molfile });
