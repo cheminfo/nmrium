@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import Input from './Input';
+import Input, { InputKeyboardEvent } from './Input';
 
 interface EditableColumnProps {
   onSave?: (element: any) => void;
@@ -16,10 +16,13 @@ interface EditableColumnProps {
   editStatus?: boolean;
   value: string | number;
   style?: CSSProperties;
+  validate?: (value?: any) => boolean;
 }
 
-// TODO: remove this hacky ref usage.
-function EditableColumn(props: EditableColumnProps, ref: any) {
+const EditableColumn = forwardRef(function EditableColumn(
+  props: EditableColumnProps,
+  ref: any,
+) {
   const {
     onSave = () => null,
     value,
@@ -27,9 +30,11 @@ function EditableColumn(props: EditableColumnProps, ref: any) {
     style,
     onEditStart = () => null,
     editStatus = false,
+    validate = () => true,
   } = props;
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
+  const [isValid, setValid] = useState<boolean>(true);
 
   useEffect(() => {
     enableEdit(editStatus);
@@ -51,33 +56,37 @@ function EditableColumn(props: EditableColumnProps, ref: any) {
     }
   }, []);
 
-  // TODO: refactor this to not mix mouse and keyboard events.
-  const editModeHandler = useCallback(
-    (flag, event?: React.KeyboardEvent) => {
-      if (!flag && event) {
-        // when press Enter or Tab
+  const startEditHandler = useCallback(() => {
+    window.addEventListener('mousedown', mouseClickCallback);
+    onEditStart(true);
+    enableEdit(true);
+  }, [mouseClickCallback, onEditStart]);
+
+  const editHandler = useCallback(
+    (event: InputKeyboardEvent) => {
+      const valid = validate(event?.target.value);
+      setValid(valid);
+
+      // when press Enter or Tab
+      if (valid) {
         if (['Enter', 'Tab'].includes(event.key)) {
           onSave(event);
+          enableEdit(false);
         }
-        // close edit mode if press Enter, Tab or Escape
-        if (['Enter', 'Tab', 'Escape'].includes(event.key)) {
-          enableEdit(flag);
-          window.removeEventListener('mousedown', mouseClickCallback);
-        }
-      } else {
-        // start edit mode and add mouse listener to handle mouse click outside the input to finish the mode
-        window.addEventListener('mousedown', mouseClickCallback);
-        onEditStart(event);
-        enableEdit(flag);
+      }
+      // close edit mode if press Enter, Tab or Escape
+      if (['Escape'].includes(event.key)) {
+        enableEdit(false);
+        window.removeEventListener('mousedown', mouseClickCallback);
       }
     },
-    [mouseClickCallback, onEditStart, onSave],
+    [mouseClickCallback, onSave, validate],
   );
 
   return (
     <div
       style={{ display: 'table', width: '100%', height: '100%', ...style }}
-      onDoubleClick={() => editModeHandler(true)}
+      onDoubleClick={startEditHandler}
     >
       {!enabled && (
         <span style={{ display: 'table-cell', verticalAlign: 'middle' }}>
@@ -87,16 +96,22 @@ function EditableColumn(props: EditableColumnProps, ref: any) {
       {enabled && (
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
           <Input
+            style={{
+              inputWrapper: {
+                width: '100%',
+                ...(!isValid && { borderColor: 'red' }),
+              },
+            }}
             enableAutoSelect
             className="editable-column"
             value={value}
             type={type}
-            onKeyDown={(e) => editModeHandler(false, e)}
+            onKeyUp={editHandler}
           />
         </div>
       )}
     </div>
   );
-}
+});
 
-export default forwardRef(EditableColumn);
+export default EditableColumn;

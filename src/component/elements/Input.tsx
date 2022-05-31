@@ -51,8 +51,14 @@ const styles: Record<
   },
 };
 
+export type InputKeyboardEvent = React.KeyboardEvent & {
+  target: { name: string; value: string | number };
+};
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'style'> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'style' | 'onKeyDown' | 'onKeyUp'
+  > {
   style?: {
     input?: CSSProperties;
     inputWrapper?: CSSProperties;
@@ -64,6 +70,8 @@ export interface InputProps
   renderIcon?: (() => ReactElement) | null;
   canClear?: boolean;
   onClear?: () => void;
+  onKeyDown?: (event: InputKeyboardEvent) => void;
+  onKeyUp?: (event: InputKeyboardEvent) => void;
 }
 
 const Input = forwardRef(
@@ -78,6 +86,7 @@ const Input = forwardRef(
       onChange = () => null,
       debounceTime = 0,
       onKeyDown = () => null,
+      onKeyUp = () => null,
       checkValue = () => true,
       type = 'text',
       enableAutoSelect = false,
@@ -93,6 +102,7 @@ const Input = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const [val, setVal] = useState(value);
+    const valueRef = useRef(value);
     const localRef = useRef<any>();
     const combinedRef = useCombinedRefs([ref, localRef]);
 
@@ -147,7 +157,7 @@ const Input = forwardRef(
           const formatValue = format();
 
           setVal(formatValue(_value));
-
+          valueRef.current = _value;
           const val = {
             ...e,
             target: { name: e.target.name, value: getValue(_value) },
@@ -173,13 +183,27 @@ const Input = forwardRef(
 
     const handleKeyDown = useCallback(
       (event) => {
-        event.persist();
         onKeyDown({
           ...event,
-          target: { name: event.target.name, value: getValue(val) },
+          target: {
+            name: event.target.name,
+            value: getValue(valueRef.current),
+          },
         });
       },
-      [getValue, onKeyDown, val],
+      [getValue, onKeyDown],
+    );
+    const handleKeyUp = useCallback(
+      (event) => {
+        onKeyUp({
+          ...event,
+          target: {
+            name: event.target.name,
+            value: getValue(valueRef.current),
+          },
+        });
+      },
+      [getValue, onKeyUp],
     );
     const preventPropagate = useCallback((event) => {
       event.stopPropagation();
@@ -212,6 +236,7 @@ const Input = forwardRef(
           value={val}
           onChange={onChangeHandler}
           onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
           onKeyPress={preventPropagate}
           onDoubleClick={(e) => e.stopPropagation()}
           onFocus={onFocus}
