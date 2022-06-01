@@ -23,7 +23,7 @@ import MoleculePanelHeader, {
 import useAtomAssignment from './useAtomAssignment';
 
 const styles: Record<
-  'panel' | 'innerPanel' | 'molecule' | 'toolbar' | 'slider' | 'items',
+  'panel' | 'innerPanel' | 'molecule' | 'slider' | 'items',
   SerializedStyles
 > = {
   panel: css({
@@ -43,13 +43,6 @@ const styles: Record<
   molecule: css({
     display: 'flex',
     flex: '1',
-  }),
-  toolbar: css({
-    display: 'flex',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-    padding: '5px 10px',
-    justifyContent: 'space-between',
-    height: '35px',
   }),
   slider: css({
     display: 'flex',
