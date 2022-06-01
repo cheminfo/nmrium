@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { RootLayout } from 'analysis-ui-components';
-import { InitialSeparation } from 'analysis-ui-components/lib-esm/layout/SplitPane';
+import { InitialSeparation } from 'analysis-ui-components/lib-esm/components/SplitPane';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
