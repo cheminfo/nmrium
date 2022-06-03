@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.27.0](https://github.com/cheminfo/nmrium/compare/v0.26.0...v0.27.0) (2022-06-03)
+
+
+### Features
+
+* add automatic assignment panel to general preferences ([31e14d1](https://github.com/cheminfo/nmrium/commit/31e14d146b167f24d25528f6782b51a1c063d838)), closes [#1461](https://github.com/cheminfo/nmrium/issues/1461)
+* allow edition of equivalence for hetero atoms ([#1550](https://github.com/cheminfo/nmrium/issues/1550)) ([b0453fb](https://github.com/cheminfo/nmrium/commit/b0453fb881f0f9457a1971f503332a65aec0d9e3))
+* customize the initial width of the side panel ([9a2be39](https://github.com/cheminfo/nmrium/commit/9a2be39ef132c828d68c3c9a469a3ab5eb3682e5)), closes [#1558](https://github.com/cheminfo/nmrium/issues/1558)
+* databases management ([#1505](https://github.com/cheminfo/nmrium/issues/1505)) ([e283960](https://github.com/cheminfo/nmrium/commit/e283960c6bf176c48436234b05daf78a4001d588))
+* default displayed name when import jcamp ([b451ab9](https://github.com/cheminfo/nmrium/commit/b451ab973bd1e8c5d2d8947108ed14afcd903afe)), closes [#1493](https://github.com/cheminfo/nmrium/issues/1493)
+* edit molecule by double-click on the floating molecule structure ([c071f5a](https://github.com/cheminfo/nmrium/commit/c071f5ad9143be406a8cb19e743e2fb03444a40e)), closes [#1529](https://github.com/cheminfo/nmrium/issues/1529)
+* embedded workspace ([cc3ad59](https://github.com/cheminfo/nmrium/commit/cc3ad59f6431899a32537e393aad5b6c03b6fd4d))
+* float molecule structures over the spectrum ([#1525](https://github.com/cheminfo/nmrium/issues/1525)) ([843173d](https://github.com/cheminfo/nmrium/commit/843173d9456f3007a0ceb71583844572b822c5b7))
+* improve panels and general preferences ([#1547](https://github.com/cheminfo/nmrium/issues/1547)) ([88eee3c](https://github.com/cheminfo/nmrium/commit/88eee3c2758b66c0556e52f8933e8f9fa6d5b849))
+* keep Molecule structure floating over the spectrum when editing it ([64fd971](https://github.com/cheminfo/nmrium/commit/64fd971d746f8690534bba8606595dde045eaa60)), closes [#1528](https://github.com/cheminfo/nmrium/issues/1528)
+* label the molecule ([907d09a](https://github.com/cheminfo/nmrium/commit/907d09a974143434efdd1117027549432a0169fa)), closes [#1342](https://github.com/cheminfo/nmrium/issues/1342)
+* preview spectrum from database  ([#1561](https://github.com/cheminfo/nmrium/issues/1561)) ([24174cc](https://github.com/cheminfo/nmrium/commit/24174cc729d9fa0dcbd59b82a35c57f77a81ad01))
+* show/hide kind column in ranges panels ([6c3899b](https://github.com/cheminfo/nmrium/commit/6c3899bd2fe76919b302d01ea6930433769237d5)), closes [#1562](https://github.com/cheminfo/nmrium/issues/1562)
+* specify whether the split pane is initially closed or not ([ecc7b86](https://github.com/cheminfo/nmrium/commit/ecc7b86f77a67aad9a53d2d598874d6bf90e5af1)), closes [#1494](https://github.com/cheminfo/nmrium/issues/1494)
+
+
+### Bug Fixes
+
+* 1d data not converted to typed array ([7472a77](https://github.com/cheminfo/nmrium/commit/7472a7702321d0cae6db1d4342399048b4e59087)), closes [#1555](https://github.com/cheminfo/nmrium/issues/1555)
+* coupling tree not working ([4c660c1](https://github.com/cheminfo/nmrium/commit/4c660c19e46272f7065675197f5f2408c431313a)), closes [#1544](https://github.com/cheminfo/nmrium/issues/1544)
+* manual 1D ranges detection crash after processing spectrum FID to FTT ([dd470ce](https://github.com/cheminfo/nmrium/commit/dd470ce0a0015f60689b110c5225689c83acbeb6)), closes [#1465](https://github.com/cheminfo/nmrium/issues/1465)
+* Peak width is given in Hz and correctly formatted ([43d6c3b](https://github.com/cheminfo/nmrium/commit/43d6c3b82c7bb015e420906ddc65004bf237f34d))
+* ranges notations do not exist when exported as SVG or jpeg ([109f900](https://github.com/cheminfo/nmrium/commit/109f900996efc95efef0c690887a7c1f24d27654)), closes [#1567](https://github.com/cheminfo/nmrium/issues/1567)
+* resurrect spectrum from ranges crash ([#1565](https://github.com/cheminfo/nmrium/issues/1565)) ([2ebdeb1](https://github.com/cheminfo/nmrium/commit/2ebdeb1316841ee5254273f995b8008c1efe9f22))
+* spectra stack alignment does not work when load .nmrium ([33ce29b](https://github.com/cheminfo/nmrium/commit/33ce29b40b25cb04e986066565ecddd3086fe0f0)), closes [#1495](https://github.com/cheminfo/nmrium/issues/1495)
+* wrong SVG generated in 2D ([b1f8ae1](https://github.com/cheminfo/nmrium/commit/b1f8ae14be802d2fd041b5af46cbe9a65724ae1b)), closes [#1551](https://github.com/cheminfo/nmrium/issues/1551)
+
 ## [0.26.0](https://www.github.com/cheminfo/nmrium/compare/v0.25.0...v0.26.0) (2022-04-21)
 
 
