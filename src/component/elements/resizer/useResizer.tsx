@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import useDraggable, { Draggable } from '../draggble/useDraggable';
 
@@ -87,14 +87,11 @@ export default function useResizer(props: ResizerProps): UseResizer {
     triggerEvent.current(position, action);
   }, [right.position]);
 
-  return useMemo(
-    () => ({
-      left,
-      right,
-      prevPosition: prevPosition.current,
-      currentPosition: currentPosition.current,
-      isActive: activeRef.current,
-    }),
-    [left, right],
-  );
+  return {
+    left,
+    right,
+    prevPosition: prevPosition.current,
+    currentPosition: currentPosition.current,
+    isActive: activeRef.current,
+  };
 }
