@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import throttle from 'lodash/throttle';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { addJcamp } from '../../../data/SpectraManager';
 import { Datum1D } from '../../../data/types/data1d';
@@ -35,11 +36,10 @@ function DatabaseSpectrum() {
     [height, margin, marginBottom, verticalAlign, yDomain],
   );
 
-  useEffect(() => {
-    void (async () => {
+  const loadSpectrum = useRef(
+    throttle(async (baseURL: string, jcampRelativeURL: string) => {
       try {
         setLoading(true);
-
         const jcampURL = new URL(jcampRelativeURL, baseURL);
         const result = await loadFile(jcampURL);
         const spectra = [];
@@ -58,8 +58,12 @@ function DatabaseSpectrum() {
       } catch (e) {
         alert.error('Failed to Load spectrum');
       }
-    })();
-  }, [alert, baseURL, jcampRelativeURL, scaleX, scaleY]);
+    }, 250),
+  );
+
+  useEffect(() => {
+    void loadSpectrum.current(baseURL, jcampRelativeURL);
+  }, [baseURL, jcampRelativeURL, loadSpectrum]);
 
   if (highlight.sourceData?.type !== HighlightedSource.DATABASE) {
     return null;
