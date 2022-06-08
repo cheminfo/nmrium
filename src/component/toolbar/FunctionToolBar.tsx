@@ -195,10 +195,12 @@ function FunctionToolBarInner({
               id="phaseCorrection"
               title={`${options.phaseCorrection.label} ( Press a )`}
               isVisible={
-                !!(activeSpectrum &&
-                info &&
-                Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
-                (datum as Data1D).im)
+                !!(
+                  activeSpectrum &&
+                  info &&
+                  Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
+                  (datum as Data1D).im
+                )
               }
             >
               <SvgNmrPhaseCorrection />
@@ -213,9 +215,11 @@ function FunctionToolBarInner({
               id="baseLineCorrection"
               title={`${options.baseLineCorrection.label} ( Press b )`}
               isVisible={
-                !!(activeSpectrum &&
-                info &&
-                Filters.baselineCorrection.isApplicable({ info } as Datum1D))
+                !!(
+                  activeSpectrum &&
+                  info &&
+                  Filters.baselineCorrection.isApplicable({ info } as Datum1D)
+                )
               }
             >
               <SvgNmrBaselineCorrection />

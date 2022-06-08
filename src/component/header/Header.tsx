@@ -47,8 +47,9 @@ function HeaderInner(props: HeaderInnerProps) {
   } = usePreferences();
 
   const workspacesList = useWorkspacesList();
-  const hideGeneralSettings =
-    !!(general?.hideGeneralSettings && workspace.base);
+  const hideGeneralSettings = !!(
+    general?.hideGeneralSettings && workspace.base
+  );
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {

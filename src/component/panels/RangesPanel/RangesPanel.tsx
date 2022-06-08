@@ -156,61 +156,61 @@ function RangesTablePanelInner({
 
   return (
     <div
-        css={[
-          tablePanelStyle,
-          isFlipped &&
-            css`
-              th {
-                position: relative;
-              }
-            `,
-        ]}
-      >
-        {!isFlipped && (
-          <RangesHeader
-            {...{
-              ranges,
-              info,
-              activeTab,
-              molecules,
-              showRangesIntegrals,
-              showMultiplicityTrees,
-              showJGraph,
-              isFilterActive,
-            }}
-            onUnlink={unlinkRangeHandler}
-            onFilterActivated={filterHandler}
-            onSettingClick={settingsPanelHandler}
-            filterCounter={rangesData.length}
-          />
+      css={[
+        tablePanelStyle,
+        isFlipped &&
+          css`
+            th {
+              position: relative;
+            }
+          `,
+      ]}
+    >
+      {!isFlipped && (
+        <RangesHeader
+          {...{
+            ranges,
+            info,
+            activeTab,
+            molecules,
+            showRangesIntegrals,
+            showMultiplicityTrees,
+            showJGraph,
+            isFilterActive,
+          }}
+          onUnlink={unlinkRangeHandler}
+          onFilterActivated={filterHandler}
+          onSettingClick={settingsPanelHandler}
+          filterCounter={rangesData.length}
+        />
+      )}
+      {isFlipped && (
+        <PreferencesHeader
+          onSave={saveSettingHandler}
+          onClose={settingsPanelHandler}
+        />
+      )}
+      <div className="inner-container">
+        {!isFlipped ? (
+          <div className="table-container">
+            {rangesData && rangesData.length > 0 ? (
+              <RangesTable
+                activeTab={activeTab}
+                tableData={rangesData}
+                onUnlink={unlinkRangeHandler}
+                context={contextMenu}
+                preferences={preferences}
+                info={info}
+              />
+            ) : (
+              <NoTableData />
+            )}
+          </div>
+        ) : (
+          <RangesPreferences ref={settingRef} />
         )}
-        {isFlipped && (
-          <PreferencesHeader
-            onSave={saveSettingHandler}
-            onClose={settingsPanelHandler}
-          />
-        )}
-        <div className="inner-container">
-          {!isFlipped ? (
-            <div className="table-container">
-              {rangesData && rangesData.length > 0 ? (
-                <RangesTable
-                  activeTab={activeTab}
-                  tableData={rangesData}
-                  onUnlink={unlinkRangeHandler}
-                  context={contextMenu}
-                  preferences={preferences}
-                  info={info}
-                />
-              ) : (
-                <NoTableData />
-              )}
-            </div>
-          ) : (
-            <RangesPreferences ref={settingRef} />
-          )}
-        </div>
       </div>
+    </div>
   );
 }
 

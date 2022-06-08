@@ -12,10 +12,11 @@ export default class ColumnsHelper {
   }
 
   public checkPreferences(preferencesToCheck, key) {
-    const val =
-      !!(preferencesToCheck === undefined ||
+    const val = !!(
+      preferencesToCheck === undefined ||
       Object.keys(preferencesToCheck).length === 0 ||
-      (preferencesToCheck && preferencesToCheck[key] === true));
+      (preferencesToCheck && preferencesToCheck[key] === true)
+    );
 
     return val;
   }

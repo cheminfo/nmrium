@@ -16,9 +16,7 @@ function IntegralsSeries() {
 
   const Integrals = useMemo(() => {
     const isActive = (id) => {
-      return activeSpectrum === null
-        ? true
-        : id === activeSpectrum.id;
+      return activeSpectrum === null ? true : id === activeSpectrum.id;
     };
 
     return (

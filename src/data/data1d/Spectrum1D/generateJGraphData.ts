@@ -107,16 +107,16 @@ function createLinks(ranges: Range[], jGraphTolerance = 0) {
 
       end++;
     } else if (
-        Math.abs(couplings[end - 1].coupling - nextCoupling.coupling) <
-        jGraphTolerance
-      ) {
-        start = end - 1;
-      } else {
-        index++;
-        links[index] = initLink(couplings[end]);
-        start = end;
-        end = end + 1;
-      }
+      Math.abs(couplings[end - 1].coupling - nextCoupling.coupling) <
+      jGraphTolerance
+    ) {
+      start = end - 1;
+    } else {
+      index++;
+      links[index] = initLink(couplings[end]);
+      start = end;
+      end = end + 1;
+    }
   }
 
   return links;

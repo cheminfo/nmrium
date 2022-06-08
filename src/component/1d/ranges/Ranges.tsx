@@ -35,9 +35,7 @@ function RangesInner({
             rangeData={range}
             selectedTool={selectedTool}
             showMultiplicityTrees={showMultiplicityTrees}
-            startEditMode={
-              !!(editRangeID && editRangeID === range.id)
-            }
+            startEditMode={!!(editRangeID && editRangeID === range.id)}
             relativeFormat={relativeFormat}
           />
           {showRangesIntegrals && <RangeIntegral range={range} />}

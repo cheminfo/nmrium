@@ -96,9 +96,7 @@ function DefaultPanelHeader({
       {counter !== undefined && (
         <p className="counter-label">
           [{' '}
-          {filterIsActive &&
-          filterIsActive &&
-          counterFiltered !== undefined
+          {filterIsActive && filterIsActive && counterFiltered !== undefined
             ? `${counterFiltered}/${counter}`
             : counter}{' '}
           ]

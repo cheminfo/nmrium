@@ -41,8 +41,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
       const ranges = data
         .filter(
           (_datum) =>
-            _datum.display.isVisible &&
-            _datum.info.nucleus === nucleus,
+            _datum.display.isVisible && _datum.info.nucleus === nucleus,
         )
         .filter(isSpectrum1D)
         .map((_datum) => _datum.ranges.values)

@@ -29,9 +29,7 @@ function ContoursPaths({
   const { xShift, yShift } = getShift(datum);
 
   const isActive = useMemo(() => {
-    return activeSpectrum === null
-      ? true
-      : spectrumID === activeSpectrum.id;
+    return activeSpectrum === null ? true : spectrumID === activeSpectrum.id;
   }, [activeSpectrum, spectrumID]);
 
   function buildContourPath(data) {
