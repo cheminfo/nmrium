@@ -21,6 +21,7 @@ const topStyles = css`
     border-bottom: 1px solid #ccc;
     padding-left: 0;
     margin: 0;
+    display: inline-flex;
   }
 
   .tab-list li:first-of-type {
@@ -32,7 +33,7 @@ const topStyles = css`
   }
 
   .tab-list-item {
-    display: inline-block;
+    display: inline-flex;
     list-style: none;
     padding: 0.5rem 2rem;
   }
