@@ -8,11 +8,7 @@ function findSpectrum(
   checkIsVisible: boolean,
 ): Datum1D | Datum2D | undefined {
   const spectrum = spectraData.find((_spectrum) => _spectrum.id === spectrumID);
-  if (
-    spectrum &&
-    checkIsVisible === true &&
-    spectrum.display.isVisible === false
-  ) {
+  if (spectrum && checkIsVisible && !spectrum.display.isVisible) {
     return undefined;
   }
 

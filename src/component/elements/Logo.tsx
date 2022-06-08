@@ -6,7 +6,7 @@ interface LogoProps {
 export default function Logo({ width = 100, height = 100 }: LogoProps) {
   return (
     <svg
-      style={{ width: width, height: height }}
+      style={{ width, height }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 752.34 221.73"
     >

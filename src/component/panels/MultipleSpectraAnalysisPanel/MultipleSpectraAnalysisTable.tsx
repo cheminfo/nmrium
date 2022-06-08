@@ -8,7 +8,7 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import { FILTER_SPECTRA_COLUMN } from '../../reducer/types/Types';
-import Eval from '../../utility/Evaluate';
+import evaluate from '../../utility/Evaluate';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import ColumnHeader from './ColumnHeader';
@@ -26,7 +26,7 @@ function MultipleSpectraAnalysisTable({
 
   const codeEvaluation = useMemo(() => {
     const code = lodashGet(data, 'code', '');
-    return Eval(code, data);
+    return evaluate(code, data);
   }, [data]);
 
   const dispatch = useDispatch();

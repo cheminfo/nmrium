@@ -9,7 +9,7 @@ interface InputProps {
   correlation: Correlation;
 }
 
-function IsInView({ correlation }: InputProps) {
+function useInView({ correlation }: InputProps) {
   const {
     data: spectraData,
     xDomain,
@@ -42,4 +42,4 @@ function IsInView({ correlation }: InputProps) {
   );
 }
 
-export default IsInView;
+export default useInView;

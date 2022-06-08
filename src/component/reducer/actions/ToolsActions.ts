@@ -10,7 +10,7 @@ import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
@@ -35,7 +35,7 @@ function getStrongestPeak(draft: Draft<State>) {
     return {
       xValue: activeData.x[index],
       yValue: strongestPeakValue,
-      index: index,
+      index,
     };
   }
 }
@@ -66,15 +66,13 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
     };
 
     draft.toolOptions.data.pivot = { value: xValue, index };
-  } else {
-    if (draft.toolOptions.selectedTool === options.phaseCorrection.id) {
-      draft.toolOptions.data.activeFilterID = null;
-      const spectrumIndex = draft.data.findIndex(
-        (spectrum) => spectrum.id === activeSpectrumId,
-      );
+  } else if (draft.toolOptions.selectedTool === options.phaseCorrection.id) {
+    draft.toolOptions.data.activeFilterID = null;
+    const spectrumIndex = draft.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
 
-      draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
-    }
+    draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
   }
 }
 
@@ -265,27 +263,25 @@ function handleZoom(draft: Draft<State>, action) {
         draft.yDomains[id] = wheelZoom(event, domain);
       }
     }
-  } else {
-    if (activeSpectrum?.id) {
-      if (
-        (showRangesIntegrals || selectedTool === options.integral.id) &&
-        event.shiftKey
-      ) {
-        const domain = draft.integralsYDomains[activeSpectrum?.id];
-        draft.integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
-      } else {
-        const domain = draft.yDomains[activeSpectrum?.id];
-        draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
-      }
+  } else if (activeSpectrum?.id) {
+    if (
+      (showRangesIntegrals || selectedTool === options.integral.id) &&
+      event.shiftKey
+    ) {
+      const domain = draft.integralsYDomains[activeSpectrum?.id];
+      draft.integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
     } else {
-      const spectra = getSpectraByNucleus(
-        draft.activeTab,
-        draft.data,
-      ) as Datum1D[];
-      for (const spectrum of spectra) {
-        const domain = draft.yDomains[spectrum.id];
-        draft.yDomains[spectrum.id] = wheelZoom(event, domain);
-      }
+      const domain = draft.yDomains[activeSpectrum?.id];
+      draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+    }
+  } else {
+    const spectra = getSpectraByNucleus(
+      draft.activeTab,
+      draft.data,
+    ) as Datum1D[];
+    for (const spectrum of spectra) {
+      const domain = draft.yDomains[spectrum.id];
+      draft.yDomains[spectrum.id] = wheelZoom(event, domain);
     }
   }
 }
@@ -364,7 +360,7 @@ function setMargin(draft: Draft<State>) {
   }
 }
 
-function Processing2DData(draft: Draft<State>, data) {
+function processing2DData(draft: Draft<State>, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
@@ -465,14 +461,14 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
     domainOptions = {},
   } = options || {};
 
-  const groupByNucleus = GroupByInfoKey('nucleus');
+  const groupByNucleus = groupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data, true);
   const tabs = Object.keys(dataGroupByNucleus);
   const currentTab = !tab || !tabs.includes(tab || '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
   resetTool(draft);
 
-  Processing2DData(draft, dataGroupByNucleus);
+  processing2DData(draft, dataGroupByNucleus);
 
   setDomain(draft, domainOptions);
   setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);

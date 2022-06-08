@@ -67,9 +67,17 @@ test('add/shift/delete peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  await addPeaks(nmrium);
-  await shiftX(nmrium);
-  await deletePeak(nmrium);
+  await test.step('Add Peaks', async () => {
+    await addPeaks(nmrium);
+  });
+
+  await test.step('Shift spectrum over X axis', async () => {
+    await shiftX(nmrium);
+  });
+
+  await test.step('Delete peak', async () => {
+    await deletePeak(nmrium);
+  });
 });
 
 test('Automatic peak picking should work', async ({ page }) => {

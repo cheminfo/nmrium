@@ -5,29 +5,31 @@ import { CSSProperties, MouseEventHandler } from 'react';
 import { ResizerProps } from './Resizer';
 import useResizer from './useResizer';
 
-const anchorStyle: CSSProperties = {
-  width: '2px',
-  height: '100%',
-  pointerEvents: 'none',
-  fill: 'transparent',
+const style: Record<'anchor' | 'innerContainer', CSSProperties> = {
+  anchor: {
+    width: '2px',
+    height: '100%',
+    pointerEvents: 'none',
+    fill: 'transparent',
+  },
+  innerContainer: {
+    position: 'absolute',
+    height: '100%',
+    fill: 'transparent',
+    width: '10px',
+    cursor: 'e-resize',
+    userSelect: 'none',
+    zIndex: 99999999,
+  },
 };
+
 const styles = {
-  container: (position: number) => css`
-    transform: translateX(${position}px);
+  container: css`
     &:hover {
       rect:last-child {
         fill: red !important;
       }
     }
-  `,
-  innerContainer: css`
-    position: absolute;
-    height: 100%;
-    fill: transparent;
-    width: 10px;
-    cursor: e-resize;
-    user-select: none;
-    z-index: 99999999;
   `,
 };
 
@@ -60,11 +62,12 @@ function SVGResizerHandle(props: {
   return (
     <g
       onMouseDown={props.onMouseDown}
-      css={styles.container(props.position)}
+      css={styles.container}
+      style={{ transform: `translateX(${props.position}px)` }}
       data-no-export="true"
     >
-      <rect x="-5px" css={styles.innerContainer} />
-      <rect x="-2.5px" style={anchorStyle} />
+      <rect x="-5px" style={style.innerContainer} />
+      <rect x="-2.5px" style={style.anchor} />
     </g>
   );
 }

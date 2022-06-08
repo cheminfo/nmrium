@@ -108,7 +108,7 @@ function FunctionToolBarInner({
             key={options.peakPicking.id}
             value={options.peakPicking.id}
             title={`${options.peakPicking.label} ( Press p )`}
-            isVisible={activeSpectrum && !info?.isFid ? true : false}
+            isVisible={!!(activeSpectrum && !info?.isFid)}
             id="peakPicking"
           >
             <SvgNmrPeakPicking />
@@ -119,7 +119,7 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.integral.id}
               value={options.integral.id}
-              isVisible={activeSpectrum && !info?.isFid ? true : false}
+              isVisible={!!(activeSpectrum && !info?.isFid)}
               id="integralPicking"
               title={`${options.integral.label} ( Press i )`}
             >
@@ -132,7 +132,7 @@ function FunctionToolBarInner({
               key={options.zone2D.id}
               value={options.zone2D.id}
               id="zone2d"
-              isVisible={activeSpectrum && !info?.isFid ? true : false}
+              isVisible={!!(activeSpectrum && !info?.isFid)}
               title={`${options.zone2D.label} ( Press r )`}
             >
               <FaDiceFour />
@@ -143,7 +143,7 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.slicingTool.id}
               value={options.slicingTool.id}
-              isVisible={activeSpectrum && !info?.isFid ? true : false}
+              isVisible={!!(activeSpectrum && !info?.isFid)}
               id="slic"
               title={`${options.slicingTool.label}`}
             >
@@ -155,7 +155,7 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}
-              isVisible={activeSpectrum && !info?.isFid ? true : false}
+              isVisible={!!(activeSpectrum && !info?.isFid)}
               title={`${options.rangesPicking.label} ( Press r )`}
               id="ranges-pick"
             >
@@ -195,12 +195,12 @@ function FunctionToolBarInner({
               id="phaseCorrection"
               title={`${options.phaseCorrection.label} ( Press a )`}
               isVisible={
-                activeSpectrum &&
-                info &&
-                Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
-                (datum as Data1D).im
-                  ? true
-                  : false
+                !!(
+                  activeSpectrum &&
+                  info &&
+                  Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
+                  (datum as Data1D).im
+                )
               }
             >
               <SvgNmrPhaseCorrection />
@@ -215,11 +215,11 @@ function FunctionToolBarInner({
               id="baseLineCorrection"
               title={`${options.baseLineCorrection.label} ( Press b )`}
               isVisible={
-                activeSpectrum &&
-                info &&
-                Filters.baselineCorrection.isApplicable({ info } as Datum1D)
-                  ? true
-                  : false
+                !!(
+                  activeSpectrum &&
+                  info &&
+                  Filters.baselineCorrection.isApplicable({ info } as Datum1D)
+                )
               }
             >
               <SvgNmrBaselineCorrection />

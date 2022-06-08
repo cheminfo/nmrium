@@ -15,7 +15,7 @@ const ModalContent = ({ modal, onClose, onLayout }) => {
       >
         {cloneElement(modal.component, {
           ...modal.options,
-          onClose: onClose,
+          onClose,
           style: { cursor: 'default' },
         })}
       </div>

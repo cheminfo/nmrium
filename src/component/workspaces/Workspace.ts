@@ -42,6 +42,7 @@ interface RangesNucleusPreferences {
   deltaHz: ColumnPreferences;
   coupling: ColumnPreferences;
   jGraphTolerance: number;
+  showKind: boolean;
 }
 
 interface PeaksNucleusPreferences {
@@ -53,6 +54,7 @@ interface PeaksNucleusPreferences {
 }
 
 export interface DatabasePanelPreferences {
+  previewJcamp: boolean;
   showSmiles: boolean;
   showSolvent: boolean;
   showNames: boolean;
@@ -61,6 +63,8 @@ export interface DatabasePanelPreferences {
   showAssignment: boolean;
   showCoupling: boolean;
   showMultiplicity: boolean;
+  color: string;
+  marginBottom: number;
 }
 
 export interface WorkSpacePanelPreferences {

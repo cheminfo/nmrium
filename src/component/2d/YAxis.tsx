@@ -65,25 +65,23 @@ function YAxis(props: YAxisProps) {
   }
 
   return (
-    <>
-      <g
-        className="y"
-        css={axisStyles}
-        transform={`translate(${width - marginProps.right})`}
-        ref={refAxis}
+    <g
+      className="y"
+      css={axisStyles}
+      transform={`translate(${width - marginProps.right})`}
+      ref={refAxis}
+    >
+      <text
+        fill="#000"
+        x={-marginProps.top}
+        y={-(marginProps.right - 5)}
+        dy="0.71em"
+        transform="rotate(-90)"
+        textAnchor="end"
       >
-        <text
-          fill="#000"
-          x={-marginProps.top}
-          y={-(marginProps.right - 5)}
-          dy="0.71em"
-          transform="rotate(-90)"
-          textAnchor="end"
-        >
-          {label}
-        </text>
-      </g>
-    </>
+        {label}
+      </text>
+    </g>
   );
 }
 

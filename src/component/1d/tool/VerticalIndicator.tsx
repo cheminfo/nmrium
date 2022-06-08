@@ -29,7 +29,7 @@ function VerticalIndicator() {
       style={{
         ...styles,
         transform: `translate(${scaleX()(pivot.value)}px, 0px)`,
-        height: height,
+        height,
       }}
     />
   );

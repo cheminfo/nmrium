@@ -115,7 +115,7 @@ function RangesTable({
               <FaLink style={{ fontSize: 10 }} />
             </th>
             <th>Σ</th>
-            <th>Kind</th>
+            {preferences.showKind && <th>Kind</th>}
             <th>{''}</th>
           </tr>
         </thead>

@@ -19,7 +19,7 @@ import { getRange } from '../../constants/References';
 export function getReferenceShift(datum1D, options) {
   let { from, to, nbPeaks, targetX, reference } = options;
   if (reference) {
-    let data = getRange({ reference: reference, nucleus: datum1D.nucleus });
+    let data = getRange({ reference, nucleus: datum1D.nucleus });
     from = data.from;
     to = data.to;
     nbPeaks = data.nbPeaks;

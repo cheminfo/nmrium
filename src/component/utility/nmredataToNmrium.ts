@@ -75,8 +75,7 @@ async function getSpectra(
       );
     default:
       if (!jcampURL) {
-        new Error('file extension is not supported');
-        return;
+        throw new Error('file extension is not supported');
       }
   }
 }

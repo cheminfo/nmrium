@@ -262,14 +262,12 @@ function calculateFrequency(
 ): number | string {
   if (typeof nucleus === 'string') {
     return getFrequency(nucleus, { nucleus: '1H', frequency });
+  } else if (nucleus[0] === nucleus[1]) {
+    return `${frequency},${frequency}`;
   } else {
-    if (nucleus[0] === nucleus[1]) {
-      return `${frequency},${frequency}`;
-    } else {
-      return `${frequency},${getFrequency(nucleus[1], {
-        nucleus: nucleus[0],
-        frequency,
-      })}`;
-    }
+    return `${frequency},${getFrequency(nucleus[1], {
+      nucleus: nucleus[0],
+      frequency,
+    })}`;
   }
 }

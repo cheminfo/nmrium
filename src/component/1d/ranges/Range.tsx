@@ -169,7 +169,6 @@ function Range({
             }
           >
             <rect
-              data-no-export="true"
               x="0"
               width={x2 - x1}
               height="6"

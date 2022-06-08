@@ -27,8 +27,9 @@ function addMoleculeHandler(draft: Draft<State>, molfile) {
   }
 }
 
-function setMoleculeHandler(draft: Draft<State>, molfile, key) {
-  MoleculeManager.setMolfile(draft.molecules, molfile, key);
+function setMoleculeHandler(draft: Draft<State>, action) {
+  const { key, label, molfile, isFloat } = action.payload;
+  MoleculeManager.setMolfile(draft.molecules, { key, label, molfile, isFloat });
 
   /**
    * update all spectra that its sum was based on this molecule with the new molecule
@@ -94,6 +95,13 @@ function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
   draft.molecules[moleculeIndex].isFloat =
     !draft.molecules[moleculeIndex].isFloat;
 }
+function changeMoleculeLabel(draft: Draft<State>, action) {
+  const { key, label } = action.payload;
+  const moleculeIndex = draft.molecules.findIndex(
+    (molecule) => molecule.key === key,
+  );
+  draft.molecules[moleculeIndex].label = label;
+}
 
 export {
   addMoleculeHandler,
@@ -101,4 +109,5 @@ export {
   deleteMoleculeHandler,
   predictSpectraFromMoleculeHandler,
   floatMoleculeOverSpectrum,
+  changeMoleculeLabel,
 };

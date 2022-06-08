@@ -1,7 +1,7 @@
 import { PlaywrightTestConfig, devices, ViewportSize } from '@playwright/test';
 
 const viewportOverride: ViewportSize = {
-  width: 1400,
+  width: 1600,
   height: 900,
 };
 

@@ -7,8 +7,8 @@ import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import ContextMenu from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import IsInView from '../utilities/IsInView';
 import { getLabelColor } from '../utilities/Utilities';
+import useInView from '../utilities/useInView';
 
 import EditLinkModal from './editLink/EditLinkModal';
 
@@ -61,7 +61,7 @@ function AdditionalColumnHeader({
     [highlightAdditionalColumn],
   );
 
-  const isInView = IsInView({ correlation });
+  const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
     return {

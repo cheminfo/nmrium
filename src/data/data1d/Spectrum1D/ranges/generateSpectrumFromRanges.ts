@@ -18,9 +18,11 @@ export function generateSpectrumFromRanges(
   usedColors: UsedColors,
 ): Datum1D {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
+
   const { x, y } = rangesToXY(ranges, {
+    nucleus,
     frequency,
-    nbPoints: 524288,
+    nbPoints: 2 ** 17,
   });
 
   const datum = initiateDatum1D(

@@ -184,7 +184,6 @@ function BasicToolBarInner({
           openImportPublicationStringModal();
           break;
         default:
-          return;
       }
     },
     [openLoader, importJCAMPFile, openImportPublicationStringModal],

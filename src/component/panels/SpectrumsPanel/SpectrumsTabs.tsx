@@ -18,7 +18,7 @@ import {
   DELETE_SPECTRA,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import SpectrumListItem from './SpectrumListItem';
 import SpectrumSetting from './base/setting/SpectrumSetting';
@@ -62,7 +62,7 @@ function SpectrumsTabsInner({
       const visibleMarkers = data.reduce((acc: any, datum) => {
         if (
           datum.info.dimension === 1 &&
-          (datum as Datum1D).display.isPeaksMarkersVisible === true
+          (datum as Datum1D).display.isPeaksMarkersVisible
         ) {
           acc.push({ id: datum.id });
         }
@@ -75,7 +75,7 @@ function SpectrumsTabsInner({
 
   const spectrumsGroupByNucleus = useMemo(() => {
     if (!data) return [];
-    const groupByNucleus = GroupByInfoKey('nucleus');
+    const groupByNucleus = groupByInfoKey('nucleus');
     return groupByNucleus(data, true);
   }, [data]);
 

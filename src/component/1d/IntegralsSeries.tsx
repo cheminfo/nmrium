@@ -16,18 +16,14 @@ function IntegralsSeries() {
 
   const Integrals = useMemo(() => {
     const isActive = (id) => {
-      return activeSpectrum === null
-        ? true
-        : id === activeSpectrum.id
-        ? true
-        : false;
+      return activeSpectrum === null ? true : id === activeSpectrum.id;
     };
 
     return (
       <g className="integrals">
         {data?.[0] &&
           data
-            .filter((d) => d.display.isVisible === true && xDomains[d.id])
+            .filter((d) => d.display.isVisible && xDomains[d.id])
             .filter(isSpectrum1D)
             .map((spectrum) =>
               spectrum.integrals.values.map((integral) => (

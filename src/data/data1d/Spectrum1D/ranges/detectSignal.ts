@@ -11,8 +11,8 @@ export default function detectSignal(
   frequency,
 ) {
   const { fromIndex, toIndex } = xGetFromToIndex(x, {
-    from: from,
-    to: to,
+    from,
+    to,
   });
 
   if (toIndex - fromIndex <= MAX_LENGTH) {
@@ -22,7 +22,7 @@ export default function detectSignal(
     };
 
     const result = analyseMultiplet(data, {
-      frequency: frequency,
+      frequency,
       takeBestPartMultiplet: true,
       symmetrizeEachStep: true,
     });

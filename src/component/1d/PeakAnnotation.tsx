@@ -114,7 +114,7 @@ function PeakAnnotation({
             id,
             value: newValue,
             oldValue: value,
-            shiftValue: shiftValue,
+            shiftValue,
           });
 
           event.currentTarget.blur();
@@ -213,7 +213,7 @@ function PeakAnnotation({
               border: isSelected ? `1px solid ${color}` : `0`,
               opacity: isActive ? 1 : 0.2,
               userSelect: 'none',
-              color: color,
+              color,
             }}
             value={oldValue}
             onKeyDown={handleKeyDown}

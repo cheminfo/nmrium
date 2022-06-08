@@ -80,7 +80,7 @@ function PeaksPanelInner({
         .map((peak) => {
           const value = Number(format(peak.x));
           return {
-            value: value,
+            value,
             valueHz: info?.originFrequency
               ? Number(value) * info.originFrequency
               : '',

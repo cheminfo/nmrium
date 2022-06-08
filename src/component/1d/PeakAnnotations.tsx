@@ -34,7 +34,7 @@ function PeakAnnotations() {
     return (
       data &&
       reSortData()
-        .filter((d) => d.display.isVisible === true && xDomains[d.id])
+        .filter((d) => d.display.isVisible && xDomains[d.id])
         .filter(isSpectrum1D)
         .map((d) => {
           return (
@@ -58,8 +58,6 @@ function PeakAnnotations() {
                       activeSpectrum == null
                         ? false
                         : activeSpectrum.id === d.id
-                        ? true
-                        : false
                     }
                   />
                 ))}

@@ -26,7 +26,7 @@ export default function ShowHideMarkersButton({
   style,
 }: ShowHideMarkersButtonProps) {
   const isMarkerVisible = (id) => {
-    return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
+    return markersVisible.findIndex((v) => v.id === id) !== -1;
   };
 
   return (

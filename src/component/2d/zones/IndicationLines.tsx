@@ -41,8 +41,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
       const ranges = data
         .filter(
           (_datum) =>
-            _datum.display.isVisible === true &&
-            _datum.info.nucleus === nucleus,
+            _datum.display.isVisible && _datum.info.nucleus === nucleus,
         )
         .filter(isSpectrum1D)
         .map((_datum) => _datum.ranges.values)
@@ -64,7 +63,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
   }, [activeTab, axis, data, displayerMode]);
 
   const indicationLines = useMemo(() => {
-    if (show === true && deltas1D.length > 0) {
+    if (show && deltas1D.length > 0) {
       const lines = deltas1D.map((_delta, i) => {
         return axis === 'X' ? (
           <line

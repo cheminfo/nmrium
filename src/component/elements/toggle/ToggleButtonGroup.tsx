@@ -28,7 +28,7 @@ export default function ToggleButtonGroup({
       const toggles = _toggles.map((toggle) => {
         return {
           value: toggle.value,
-          isActive: toggle.value === val ? true : false,
+          isActive: toggle.value === val,
         };
       });
 
@@ -62,7 +62,7 @@ export default function ToggleButtonGroup({
       if (child && child.type === ToggleButton) {
         return {
           value: child.props.value,
-          isActive: child.props.value === value ? true : false,
+          isActive: child.props.value === value,
         };
       }
     });

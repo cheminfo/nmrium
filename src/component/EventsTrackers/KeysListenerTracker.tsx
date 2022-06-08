@@ -140,22 +140,20 @@ function KeysListenerTracker() {
             keyCode: num,
           });
           alert.show(`Configuration Reset, press '${num}' again to reload it.`);
-        } else {
-          if (!checkModifierKeyActivated(e)) {
-            if (keysPreferences?.[num]) {
-              dispatch({
-                type: APPLY_KEY_PREFERENCES,
-                keyCode: num,
-              });
-            } else {
-              dispatch({
-                type: SET_KEY_PREFERENCES,
-                keyCode: num,
-              });
-              alert.show(
-                `Configuration saved, press '${num}' again to reload it.`,
-              );
-            }
+        } else if (!checkModifierKeyActivated(e)) {
+          if (keysPreferences?.[num]) {
+            dispatch({
+              type: APPLY_KEY_PREFERENCES,
+              keyCode: num,
+            });
+          } else {
+            dispatch({
+              type: SET_KEY_PREFERENCES,
+              keyCode: num,
+            });
+            alert.show(
+              `Configuration saved, press '${num}' again to reload it.`,
+            );
           }
         }
       }
@@ -326,13 +324,14 @@ function KeysListenerTracker() {
         const num = Number(e.code.substr(e.code.length - 1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
+        } else if (
+          ['Delete', 'Backspace'].includes(e.key) &&
+          highlight.sourceData
+        ) {
+          e.preventDefault();
+          void deleteHandler(highlight.sourceData);
         } else {
-          if (['Delete', 'Backspace'].includes(e.key) && highlight.sourceData) {
-            e.preventDefault();
-            void deleteHandler(highlight.sourceData);
-          } else {
-            toolsListenerHandler(e);
-          }
+          toolsListenerHandler(e);
         }
       }
     },

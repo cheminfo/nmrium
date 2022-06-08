@@ -24,7 +24,7 @@ function SignalDeltaLine({ delta, axis, show }: SignalDeltaLineProps) {
   const scaleY = get2DYScale({ margin, height, yDomain });
 
   const line = useMemo(() => {
-    return show === true ? (
+    return show ? (
       axis === 'X' ? (
         <line
           css={lineStyle}

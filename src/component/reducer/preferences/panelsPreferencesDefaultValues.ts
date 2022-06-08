@@ -36,6 +36,7 @@ const getRangeDefaultValues = (
     deltaHz: { show: false, format: '0.00' },
     coupling: { show: true, format: '0.00' },
     jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
+    showKind: true,
   };
 
   return getPreferences(preferences, nucleus);
@@ -55,6 +56,7 @@ const getPeaksDefaultValues = (
 };
 
 const databaseDefaultValues: PanelsPreferences['database'] = {
+  previewJcamp: true,
   showSmiles: true,
   showSolvent: false,
   showNames: true,
@@ -63,6 +65,8 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   showAssignment: false,
   showCoupling: true,
   showMultiplicity: true,
+  color: 'black',
+  marginBottom: 30,
 };
 
 export {

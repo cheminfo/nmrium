@@ -44,26 +44,30 @@ interface ActionsColumnProps {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   };
+  showKind: boolean;
 }
 
 function ActionsColumn({
   rowData,
   onHoverSignal,
   rowSpanTags,
+  showKind,
 }: ActionsColumnProps) {
   const { editRange, deleteRange, changeRangeSignalKind, zoomRange } =
     useEditRangeModal(rowData);
 
   return (
     <Fragment>
-      <td {...onHoverSignal}>
-        <Select
-          onChange={changeRangeSignalKind}
-          data={SignalKinds}
-          defaultValue={rowData.tableMetaInfo.signal.kind}
-          style={selectBoxStyle}
-        />
-      </td>
+      {showKind && (
+        <td {...onHoverSignal}>
+          <Select
+            onChange={changeRangeSignalKind}
+            data={SignalKinds}
+            defaultValue={rowData.tableMetaInfo.signal.kind}
+            style={selectBoxStyle}
+          />
+        </td>
+      )}
       <td {...rowSpanTags} css={styles}>
         <button
           type="button"

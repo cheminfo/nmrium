@@ -159,99 +159,97 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
   }, []);
 
   return (
-    <>
-      <div
-        css={[
-          tablePanelStyle,
-          style,
-          isFlipped &&
-            css`
-              th {
-                position: relative;
-              }
-            `,
-        ]}
-      >
-        {!isFlipped && (
-          <DefaultPanelHeader
-            counter={zones.values ? zones.values.length : 0}
-            onDelete={handleDeleteAll}
-            deleteToolTip="Delete All Zones"
-            onFilter={handleOnFilter}
-            filterToolTip={
-              filterIsActive ? 'Show all zones' : 'Hide zones out of view'
+    <div
+      css={[
+        tablePanelStyle,
+        style,
+        isFlipped &&
+          css`
+            th {
+              position: relative;
             }
-            filterIsActive={filterIsActive}
-            counterFiltered={tableData?.length}
-            showSettingButton
-            onSettingClick={settingsPanelHandler}
+          `,
+      ]}
+    >
+      {!isFlipped && (
+        <DefaultPanelHeader
+          counter={zones.values ? zones.values.length : 0}
+          onDelete={handleDeleteAll}
+          deleteToolTip="Delete All Zones"
+          onFilter={handleOnFilter}
+          filterToolTip={
+            filterIsActive ? 'Show all zones' : 'Hide zones out of view'
+          }
+          filterIsActive={filterIsActive}
+          counterFiltered={tableData?.length}
+          showSettingButton
+          onSettingClick={settingsPanelHandler}
+        >
+          <ToolTip title={`Remove all Assignments`} popupPlacement="right">
+            <button
+              className="remove-assignments-btn"
+              type="button"
+              onClick={handleOnRemoveAssignments}
+              disabled={!zones.values || zones.values.length === 0}
+            >
+              <FaUnlink />
+            </button>
+          </ToolTip>
+          <ToggleButton
+            popupTitle="show/hide zones"
+            popupPlacement="right"
+            defaultValue
+            onClick={() => visibilityHandler('zones')}
           >
-            <ToolTip title={`Remove all Assignments`} popupPlacement="right">
-              <button
-                className="remove-assignments-btn"
-                type="button"
-                onClick={handleOnRemoveAssignments}
-                disabled={!zones.values || zones.values.length === 0}
-              >
-                <FaUnlink />
-              </button>
-            </ToolTip>
-            <ToggleButton
-              popupTitle="show/hide zones"
-              popupPlacement="right"
-              defaultValue
-              onClick={() => visibilityHandler('zones')}
-            >
-              <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
-            </ToggleButton>
-            <ToggleButton
-              popupTitle="show/hide signals"
-              popupPlacement="right"
-              defaultValue
-              onClick={() => visibilityHandler('signals')}
-            >
-              <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
-            </ToggleButton>
-            <ToggleButton
-              popupTitle="show/hide peaks"
-              popupPlacement="right"
-              defaultValue
-              onClick={() => visibilityHandler('peaks')}
-            >
-              <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
-            </ToggleButton>
-          </DefaultPanelHeader>
+            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
+          </ToggleButton>
+          <ToggleButton
+            popupTitle="show/hide signals"
+            popupPlacement="right"
+            defaultValue
+            onClick={() => visibilityHandler('signals')}
+          >
+            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
+          </ToggleButton>
+          <ToggleButton
+            popupTitle="show/hide peaks"
+            popupPlacement="right"
+            defaultValue
+            onClick={() => visibilityHandler('peaks')}
+          >
+            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
+          </ToggleButton>
+        </DefaultPanelHeader>
+      )}
+      {isFlipped && (
+        <PreferencesHeader
+          onSave={saveSettingHandler}
+          onClose={settingsPanelHandler}
+        />
+      )}
+      <div className="inner-container">
+        {!isFlipped ? (
+          <div className="table-container">
+            {tableData && tableData.length > 0 ? (
+              <ZonesTable
+                tableData={tableData}
+                onUnlink={unlinkZoneHandler}
+                nuclei={
+                  activeTab && activeTab.split(',').length === 2
+                    ? activeTab.split(',')
+                    : ['?', '?']
+                }
+                experiment={experiment}
+              />
+            ) : (
+              <NoTableData />
+            )}
+          </div>
+        ) : (
+          <ZonesPreferences ref={settingRef} />
         )}
-        {isFlipped && (
-          <PreferencesHeader
-            onSave={saveSettingHandler}
-            onClose={settingsPanelHandler}
-          />
-        )}
-        <div className="inner-container">
-          {!isFlipped ? (
-            <div className="table-container">
-              {tableData && tableData.length > 0 ? (
-                <ZonesTable
-                  tableData={tableData}
-                  onUnlink={unlinkZoneHandler}
-                  nuclei={
-                    activeTab && activeTab.split(',').length === 2
-                      ? activeTab.split(',')
-                      : ['?', '?']
-                  }
-                  experiment={experiment}
-                />
-              ) : (
-                <NoTableData />
-              )}
-            </div>
-          ) : (
-            <ZonesPreferences ref={settingRef} />
-          )}
-        </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -61,19 +61,24 @@ async function deleteRange(nmrium: NmriumPage) {
 test('Should ranges Add/resize/delete', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-
   //select range tool
   await nmrium.clickTool('ranges-pick');
 
-  //add two ranges
-  await addRange(nmrium, 50, 60, 1);
-  await addRange(nmrium, 110, 120, 2);
+  await test.step('Add ranges', async () => {
+    //add two ranges
+    await addRange(nmrium, 50, 60, 1);
+    await addRange(nmrium, 110, 120, 2);
+  });
 
-  //test resize the first range
-  await resizeRange(nmrium);
+  await test.step('resize one of the ranges', async () => {
+    //test resize the first range
+    await resizeRange(nmrium);
+  });
 
-  // test delete the second range
-  await deleteRange(nmrium);
+  await test.step('delete one of the ranges', async () => {
+    // test delete the second range
+    await deleteRange(nmrium);
+  });
 });
 
 test('Automatic ranges detection should work', async ({ page }) => {

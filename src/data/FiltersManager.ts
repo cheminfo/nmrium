@@ -146,7 +146,7 @@ function addFilter(datum, filter, isDeleteAllow = true) {
   delete filter.isSnapshot;
   datum.filters.push({
     ...filter,
-    id: id,
+    id,
     flag: true,
     isDeleteAllow,
   });
