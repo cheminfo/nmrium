@@ -21,6 +21,4 @@ export function getSpectrum(state: Draft<State>, value?: number | string) {
   if (typeof value === 'string') {
     return state.data.find((spectrum) => spectrum.id === value);
   }
-
-  return;
 }
