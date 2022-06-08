@@ -36,7 +36,7 @@ const styles = css`
     border-bottom: 1px solid #f0f0f0;
     display: flex;
     align-items: center;
-    span {
+    .title {
       color: #464646;
       font-size: 15px;
       flex: 1;
@@ -52,26 +52,6 @@ const styles = css`
       svg {
         height: 16px;
       }
-    }
-  }
-  .container {
-    display: flex;
-    margin: 30px 5px;
-    input,
-    button {
-      padding: 5px;
-      border: 1px solid gray;
-      border-radius: 5px;
-      height: 36px;
-      margin: 2px;
-    }
-    input {
-      flex: 10;
-    }
-    button {
-      flex: 2;
-      color: white;
-      background-color: gray;
     }
   }
 `;
@@ -210,10 +190,15 @@ function EditRangeModal({
         onSubmit={handleOnSave}
       >
         <div className="header handle">
-          <Button onClick={handleOnZoom} className="zoom-button">
+          <Button.Action
+            onClick={handleOnZoom}
+            fill="outline"
+            style={{ fontSize: '14' }}
+            color={{ base: '#5f5f5f', hover: 'white' }}
+          >
             <FaSearchPlus title="Set to default view on range in spectrum" />
-          </Button>
-          <span>
+          </Button.Action>
+          <span className="title">
             {` Range and Signal edition: ${formatNumber(
               range.from,
               rangesPreferences.from.format,

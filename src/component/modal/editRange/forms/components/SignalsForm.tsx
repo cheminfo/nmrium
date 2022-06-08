@@ -2,8 +2,9 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
-import { Range } from '../../../../../data/types/data1d';
+import { FaPlus } from 'react-icons/fa';
 
+import { Range } from '../../../../../data/types/data1d';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
@@ -38,9 +39,12 @@ const tabStylesAddition = css`
   color: red;
 `;
 const tabStyles = css`
-  display: inline-grid;
-  list-style: none;
-  padding: 0.5rem 1.5rem;
+  padding: 0 1.5rem !important;
+  height: 40px;
+`;
+const newTabStyles = css`
+  padding: 0 !important;
+  height: 40px;
 `;
 
 interface SignalsFormProps {
@@ -168,7 +172,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
   );
 
   const signalFormTabs = useMemo(() => {
-    const signalTabs =
+    const signalTabs: any[] =
       values.signals.length > 0
         ? values.signals.map((signal, i) => (
             <Tab
@@ -188,11 +192,24 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
 
     const addSignalTab = (
       <Tab
-        tablabel="+"
         tabid="addSignalTab"
         canDelete={false}
         key="addSignalTab"
-        className="add-signal-tab"
+        tabstyles={newTabStyles}
+        render={() => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 1.5rem',
+              fontSize: '12px',
+              color: '#28ba62',
+            }}
+          >
+            <FaPlus style={{ display: 'inline-block' }} />
+            <span style={{ display: 'inline-block' }}>New Signal</span>
+          </div>
+        )}
       >
         <AddSignalFormTab
           onFocus={handleOnFocus}
@@ -203,7 +220,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
       </Tab>
     );
 
-    return signalTabs.concat(addSignalTab);
+    return [...signalTabs, addSignalTab];
   }, [handleOnFocus, preferences, range, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (

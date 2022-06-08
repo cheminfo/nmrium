@@ -36,22 +36,6 @@ const styles = {
     display: flex;
     justify-content: center;
   `,
-  addSignalBtn: css`
-    margin-top: 15px;
-    margin-top: 20px;
-    width: 100%;
-    background-color: #fcfcfc;
-    border-top: 0.55px solid #dedede;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    padding: 0.4rem;
-    font-size: 12px;
-
-    & :disabled {
-      opacity: 0.6;
-    }
-  `,
 };
 
 interface AddSignalFormTabProps {
@@ -135,6 +119,15 @@ function AddSignalFormTab(
               }}
               checkErrorAfterInputTouched={false}
             />
+            <Button.Done
+              style={{
+                marginLeft: '5px',
+                padding: '0 15px',
+              }}
+              onClick={triggerSubmitHandler}
+            >
+              <FaPlus title="Add new signal" />
+            </Button.Done>
           </div>
           <p css={styles.inputInfo}>
             [
@@ -144,10 +137,6 @@ function AddSignalFormTab(
             )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
             ]
           </p>
-
-          <Button css={styles.addSignalBtn} onClick={triggerSubmitHandler}>
-            <FaPlus title="Add new signal" />
-          </Button>
         </FormikForm>
       </div>
     </div>
