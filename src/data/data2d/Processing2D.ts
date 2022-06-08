@@ -150,7 +150,7 @@ export default class Processing2D {
       contours = this.conrec.drawContour({
         contourDrawer: 'basic', // shape or basic
         levels: _range,
-        timeout: timeout,
+        timeout,
       });
     } catch (e) {
       // eslint-disable-next-line no-console

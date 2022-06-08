@@ -36,7 +36,7 @@ export async function addSource(nmrRecord, options: addSourceOptions = {}) {
       break;
     default:
       if (!jcampURL) break;
-      void (await fetch(jcampURL).then(async (jcamp) => {
+      (await fetch(jcampURL).then(async (jcamp) => {
         if (!jcamp) return;
         let name = jcampURL.split('/').slice(-1);
         const path = `jcamp/${dimension}/${name}`;

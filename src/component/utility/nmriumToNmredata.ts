@@ -1,4 +1,4 @@
-import jszip from 'jszip';
+import Jszip from 'jszip';
 import { getGroupedDiastereotopicAtomIDs } from 'openchemlib-utils';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
@@ -24,7 +24,7 @@ export async function nmriumToNmredata(state, options = {}) {
     molecules: [],
   };
 
-  let nmrRecord = new jszip();
+  let nmrRecord = new Jszip();
 
   for (const molecule of molecules) {
     await addNMReDATA(data, nmrRecord, {

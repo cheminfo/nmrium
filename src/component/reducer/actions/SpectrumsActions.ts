@@ -10,7 +10,7 @@ import { getMissingProjection } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { options } from '../../toolbar/ToolTypes';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 
@@ -19,10 +19,7 @@ import { resetSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab } from './ToolsActions';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
-  if (
-    datum.display.isPositiveVisible === false &&
-    datum.display.isNegativeVisible === false
-  ) {
+  if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;
   }
   return true;
@@ -95,10 +92,8 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
 
       if (oldIndex !== -1) {
         refreshDomain =
-          (draft.data[oldIndex] as Datum1D | Datum2D).info.isFid ===
-          newActiveSpectrum.info.isFid
-            ? false
-            : true;
+          (draft.data[oldIndex] as Datum1D | Datum2D).info.isFid !==
+          newActiveSpectrum.info.isFid;
       } else {
         refreshDomain = newActiveSpectrum.info.isFid || false;
       }
@@ -176,7 +171,7 @@ function addMissingProjectionHandler(draft, action) {
       );
       draft.data.push(datum1D);
     }
-    const groupByNucleus = GroupByInfoKey('nucleus');
+    const groupByNucleus = groupByInfoKey('nucleus');
     const dataGroupByNucleus = groupByNucleus(draft.data);
     setTab(draft, dataGroupByNucleus, draft.activeTab, true);
     setDomain(draft);

@@ -115,7 +115,7 @@ export function addJDF(spectra, jdf, options: any = {}, usedColors: any = {}) {
           {
             ...options,
             display: { ...options.display },
-            info: info,
+            info,
             meta: metadata,
           },
           usedColors,

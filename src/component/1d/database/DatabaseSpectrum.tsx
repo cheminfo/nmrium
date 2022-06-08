@@ -28,7 +28,7 @@ function DatabaseSpectrum() {
   const scaleY = useCallback(
     () =>
       getYScale({
-        height: height,
+        height,
         margin: { top: margin.top, bottom: margin.bottom + marginBottom },
         verticalAlign,
         yDomain,
@@ -47,7 +47,7 @@ function DatabaseSpectrum() {
         setLoading(false);
         const spectrum = spectra?.[0] || null;
         if (spectrum) {
-          const { x, re: y } = (spectrum as Datum1D)?.data;
+          const { x, re: y } = (spectrum as Datum1D).data;
           let path = `M ${scaleX()(x[0])} ${scaleY()(y[0])} `;
           path += x.slice(1).reduce((accumulator, point, i) => {
             accumulator += ` L ${scaleX()(point)} ${scaleY()(y[i + 1])}`;

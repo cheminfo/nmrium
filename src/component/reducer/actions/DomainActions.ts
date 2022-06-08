@@ -25,7 +25,7 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
       data = data.filter((datum) => datum.info.isFid === isFid);
     }
   } else {
-    data = data.filter((datum) => datum.info.isFid === false);
+    data = data.filter((datum) => !datum.info.isFid);
   }
 
   return data as Array<Datum1D>;

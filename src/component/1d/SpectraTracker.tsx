@@ -57,11 +57,11 @@ function YTracker({ datum }: YTrackerProps) {
 
 function SpectraTracker() {
   const { data, activeTab, xDomains } = useChartData();
-  const [isVisible, ToggleVisibility] = useState(false);
+  const [isVisible, toggleVisibility] = useState(false);
 
   useEffect(() => {
     function handler(flag) {
-      ToggleVisibility(flag);
+      toggleVisibility(flag);
     }
 
     Events.on('showYSpectraTrackers', handler);

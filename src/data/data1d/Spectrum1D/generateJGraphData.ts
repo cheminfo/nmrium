@@ -106,8 +106,7 @@ function createLinks(ranges: Range[], jGraphTolerance = 0) {
       }
 
       end++;
-    } else {
-      if (
+    } else if (
         Math.abs(couplings[end - 1].coupling - nextCoupling.coupling) <
         jGraphTolerance
       ) {
@@ -118,7 +117,6 @@ function createLinks(ranges: Range[], jGraphTolerance = 0) {
         start = end;
         end = end + 1;
       }
-    }
   }
 
   return links;

@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
-import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
+import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
 
 import { Datum1D, Info1D, Integrals } from '../../../data/types/data1d';
@@ -149,76 +149,72 @@ function IntegralPanelInner({
   }, [filterIsActive, info.dimension, integrals, xDomain]);
 
   return (
-    <Fragment>
-      <div
-        css={[
-          tablePanelStyle,
-          style,
-          isFlipped &&
-            css`
-              th {
-                position: relative;
-              }
-            `,
-        ]}
-      >
-        {!isFlipped && (
-          <DefaultPanelHeader
-            counter={integrals?.values?.length}
-            onDelete={handleDeleteAll}
-            deleteToolTip="Delete All Integrals"
-            onFilter={handleOnFilter}
-            filterToolTip={
-              filterIsActive
-                ? 'Show all integrals'
-                : 'Hide integrals out of view'
+    <div
+      css={[
+        tablePanelStyle,
+        style,
+        isFlipped &&
+          css`
+            th {
+              position: relative;
             }
-            filterIsActive={filterIsActive}
-            counterFiltered={filteredData.length}
-            showSettingButton
-            onSettingClick={settingsPanelHandler}
+          `,
+      ]}
+    >
+      {!isFlipped && (
+        <DefaultPanelHeader
+          counter={integrals?.values?.length}
+          onDelete={handleDeleteAll}
+          deleteToolTip="Delete All Integrals"
+          onFilter={handleOnFilter}
+          filterToolTip={
+            filterIsActive ? 'Show all integrals' : 'Hide integrals out of view'
+          }
+          filterIsActive={filterIsActive}
+          counterFiltered={filteredData.length}
+          showSettingButton
+          onSettingClick={settingsPanelHandler}
+        >
+          <ToolTip
+            title={
+              currentSum
+                ? `Change Integrals Sum (${Number(currentSum).toFixed(2)})`
+                : 'Change Integrals Sum'
+            }
+            popupPlacement="right"
           >
-            <ToolTip
-              title={
-                currentSum
-                  ? `Change Integrals Sum (${Number(currentSum).toFixed(2)})`
-                  : 'Change Integrals Sum'
-              }
-              popupPlacement="right"
+            <button
+              className="sum-button"
+              type="button"
+              onClick={showChangeIntegralSumModal}
             >
-              <button
-                className="sum-button"
-                type="button"
-                onClick={showChangeIntegralSumModal}
-              >
-                <SvgNmrSum />
-              </button>
-            </ToolTip>
-            <ToggleButton
-              className="fix-integral-toggle-btn"
-              popupTitle="fix integral values"
-              popupPlacement="right"
-              onClick={toggleConstantSumHandler}
-            >
-              <ImLink />
-            </ToggleButton>
-          </DefaultPanelHeader>
+              <SvgNmrSum />
+            </button>
+          </ToolTip>
+          <ToggleButton
+            className="fix-integral-toggle-btn"
+            popupTitle="fix integral values"
+            popupPlacement="right"
+            onClick={toggleConstantSumHandler}
+          >
+            <ImLink />
+          </ToggleButton>
+        </DefaultPanelHeader>
+      )}
+      {isFlipped && (
+        <PreferencesHeader
+          onSave={saveSettingHandler}
+          onClose={settingsPanelHandler}
+        />
+      )}
+      <div className="inner-container">
+        {!isFlipped ? (
+          <IntegralTable data={filteredData} activeTab={activeTab} />
+        ) : (
+          <IntegralsPreferences ref={settingRef} />
         )}
-        {isFlipped && (
-          <PreferencesHeader
-            onSave={saveSettingHandler}
-            onClose={settingsPanelHandler}
-          />
-        )}
-        <div className="inner-container">
-          {!isFlipped ? (
-            <IntegralTable data={filteredData} activeTab={activeTab} />
-          ) : (
-            <IntegralsPreferences ref={settingRef} />
-          )}
-        </div>
       </div>
-    </Fragment>
+    </div>
   );
 }
 

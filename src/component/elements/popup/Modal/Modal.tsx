@@ -47,7 +47,7 @@ const Modal = ({
   );
 
   useEffect(() => {
-    if (open === false) {
+    if (!open) {
       handleClose();
     }
   }, [handleClose, open]);

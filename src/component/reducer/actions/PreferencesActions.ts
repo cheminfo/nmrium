@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import groupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
@@ -38,7 +38,7 @@ function changeSpectrumVerticalAlignment(
           options.align === 'center' ||
           (options.align === 'auto-check' &&
             dataPerNucleus[0]?.info.isFid &&
-            !dataPerNucleus.some((d) => d.info.isFid === false))
+            !dataPerNucleus.some((d) => !d.info.isFid))
         ) {
           const YAxisShift = draft.height / 2;
           draft.verticalAlign.align = 'center';
@@ -53,7 +53,7 @@ function changeSpectrumVerticalAlignment(
       case 'stack': {
         draft.verticalAlign.align = 'stack';
         const visibleSpectra = dataPerNucleus.filter(
-          (datum) => datum.display.isVisible === true,
+          (datum) => datum.display.isVisible,
         );
         draft.verticalAlign.verticalShift = Math.abs(
           Math.floor(
@@ -64,7 +64,6 @@ function changeSpectrumVerticalAlignment(
       }
 
       default:
-        return;
     }
   }
 }
@@ -86,7 +85,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   } = draft;
 
   if (activeTab) {
-    const groupByNucleus = GroupByInfoKey('nucleus');
+    const groupByNucleus = groupByInfoKey('nucleus');
 
     const spectrumsGroupsList = groupByNucleus(data);
 

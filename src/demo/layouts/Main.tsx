@@ -93,7 +93,7 @@ const Main = () => {
   const [dashBoardType, setDashBoardType] = useState('');
 
   const loadHandler = useCallback(() => {
-    setRoutes({ isLoaded: true, status: 200, routes: routes });
+    setRoutes({ isLoaded: true, status: 200, routes });
   }, []);
 
   const getFileExtension = (url = '') => {
@@ -148,7 +148,7 @@ const Main = () => {
       }
     } else {
       setDashBoardType('multi');
-      setRoutes({ isLoaded: true, status: 200, routes: routes, baseURL: './' });
+      setRoutes({ isLoaded: true, status: 200, routes, baseURL: './' });
     }
   }, [href]);
 

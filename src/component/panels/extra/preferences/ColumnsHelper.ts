@@ -13,11 +13,9 @@ export default class ColumnsHelper {
 
   public checkPreferences(preferencesToCheck, key) {
     const val =
-      preferencesToCheck === undefined ||
+      !!(preferencesToCheck === undefined ||
       Object.keys(preferencesToCheck).length === 0 ||
-      (preferencesToCheck && preferencesToCheck[key] === true)
-        ? true
-        : false;
+      (preferencesToCheck && preferencesToCheck[key] === true));
 
     return val;
   }

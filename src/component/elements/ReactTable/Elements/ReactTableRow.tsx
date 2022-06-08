@@ -120,6 +120,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
     clickHandler,
     highlight.isActive,
     highlight.onHover,
+    isRowActive,
     onClick,
     onContextMenu,
     ref,

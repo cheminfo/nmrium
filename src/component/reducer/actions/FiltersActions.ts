@@ -116,7 +116,7 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
     } = draft.data[index] as Datum1D;
 
     const { ph0, ph1 } = filterOptions;
-    let _data = { data: { x: x, re: re, im }, info };
+    let _data = { data: { x, re, im }, info };
     phaseCorrection(_data as Datum1D, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
     draft.tempData[index].data.im = newIm;

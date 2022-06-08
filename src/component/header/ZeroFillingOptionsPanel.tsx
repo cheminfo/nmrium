@@ -46,7 +46,7 @@ function ZeroFillingOptionsPanel() {
       type: APPLY_ZERO_FILLING_FILTER,
       value: {
         zeroFillingSize: Number(sizeTextInputRef.current.value),
-        lineBroadeningValue: lineBroadeningValue,
+        lineBroadeningValue,
       },
     });
   }, [dispatch, lineBroadeningValue]);

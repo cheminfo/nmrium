@@ -43,12 +43,12 @@ function ToggleButton({
   className = '',
   testID,
 }: ToggleButtonProps) {
-  const [flag, Toggle] = useState<boolean>(defaultValue);
+  const [flag, toggle] = useState<boolean>(defaultValue);
 
   const toggleHandler = useCallback(() => {
     onClick(!flag);
 
-    Toggle(!flag);
+    toggle(!flag);
   }, [onClick, flag]);
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>

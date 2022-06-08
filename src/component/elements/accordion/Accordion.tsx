@@ -41,7 +41,7 @@ function Accordion({ children, defaultOpenIndex = 0 }: AccordionProps) {
           i === index && alwaysOpenIndexRef.current !== index ? !e : e,
         );
       } else {
-        el = el.map((e, i) => (i === index ? true : false));
+        el = el.map((e, i) => (i === index));
         if (trigger.shiftKey) {
           if (alwaysOpenIndexRef.current === index) {
             alwaysOpenIndexRef.current = null;
@@ -79,8 +79,6 @@ function Accordion({ children, defaultOpenIndex = 0 }: AccordionProps) {
           return prevState.map((e, i) =>
             !forcedOpenedElementsRef.current[i]
               ? i === defaultOpenIndex
-                ? true
-                : false
               : e,
           );
         }

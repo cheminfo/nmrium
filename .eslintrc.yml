@@ -7,6 +7,10 @@ rules:
   '@typescript-eslint/naming-convention': off
   '@typescript-eslint/no-implied-eval': off
   '@typescript-eslint/no-misused-promises': off
+  '@typescript-eslint/restrict-plus-operands': off
+  'jest/no-standalone-expect': off
+  'prefer-object-spread': off
+  'react/no-unstable-nested-components': off
   no-new-func: off
   no-restricted-imports:
     - error

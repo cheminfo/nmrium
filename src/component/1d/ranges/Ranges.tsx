@@ -36,7 +36,7 @@ function RangesInner({
             selectedTool={selectedTool}
             showMultiplicityTrees={showMultiplicityTrees}
             startEditMode={
-              editRangeID && editRangeID === range.id ? true : false
+              !!(editRangeID && editRangeID === range.id)
             }
             relativeFormat={relativeFormat}
           />

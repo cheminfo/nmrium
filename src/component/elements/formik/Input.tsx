@@ -27,9 +27,7 @@ function Input(props: InputProps) {
         onFocus={() => onFocus(field.name)}
         onBlur={() => onBlur(field.name)}
       />
-      {enableErrorMessage && enableErrorMessage === true ? (
-        <ErrorMessage {...inputProps} />
-      ) : null}
+      {enableErrorMessage ? <ErrorMessage {...inputProps} /> : null}
     </div>
   );
 }

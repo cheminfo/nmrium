@@ -757,7 +757,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return GlobalActions.setIsOverDisplayer(draft, action);
 
     default:
-      return;
+
   }
 }
 

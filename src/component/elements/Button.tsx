@@ -220,7 +220,7 @@ function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
   const {
     color = { base: shade, hover: 'white' },
     backgroundColor = {
-      base: base,
+      base,
       hover: shade,
       active: tint,
     },

@@ -54,7 +54,7 @@ export function unlink(
   axis?: string,
 ): Zone {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
-    if (isOnZoneLevel === true) {
+    if (isOnZoneLevel) {
       delete zone[axis].diaIDs;
       delete zone[axis].nbAtoms;
     } else if (

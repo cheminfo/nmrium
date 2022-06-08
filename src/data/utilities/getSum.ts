@@ -12,8 +12,6 @@ export function getSum<Type>(
   check: ((value: Type) => boolean) | null = null,
 ) {
   return values.reduce((sum, current) => {
-    return check && check(current) === true
-      ? (sum += Math.abs(current[key as string]))
-      : sum;
+    return check?.(current) ? (sum += Math.abs(current[key as string])) : sum;
   }, 0);
 }

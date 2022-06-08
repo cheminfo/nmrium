@@ -31,9 +31,7 @@ function ContoursPaths({
   const isActive = useMemo(() => {
     return activeSpectrum === null
       ? true
-      : spectrumID === activeSpectrum.id
-      ? true
-      : false;
+      : spectrumID === activeSpectrum.id;
   }, [activeSpectrum, spectrumID]);
 
   function buildContourPath(data) {

@@ -65,8 +65,7 @@ function YAxis(props: YAxisProps) {
   }
 
   return (
-    <>
-      <g
+    <g
         className="y"
         css={axisStyles}
         transform={`translate(${width - marginProps.right})`}
@@ -83,7 +82,6 @@ function YAxis(props: YAxisProps) {
           {label}
         </text>
       </g>
-    </>
   );
 }
 

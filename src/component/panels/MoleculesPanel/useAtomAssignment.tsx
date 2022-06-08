@@ -199,7 +199,7 @@ export default function useAtomAssignment({
                     nbAtoms,
                     zoneData: datum,
                     diaIDs: _diaID,
-                    axis: axis,
+                    axis,
                     signalIndex,
                   },
                 });

@@ -10,8 +10,8 @@ function findSpectrum(
   const spectrum = spectraData.find((_spectrum) => _spectrum.id === spectrumID);
   if (
     spectrum &&
-    checkIsVisible === true &&
-    spectrum.display.isVisible === false
+    checkIsVisible &&
+    !spectrum.display.isVisible
   ) {
     return undefined;
   }

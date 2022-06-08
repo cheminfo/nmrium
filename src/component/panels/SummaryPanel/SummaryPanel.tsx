@@ -193,28 +193,27 @@ function SummaryPanel() {
           )
         ) {
           return true;
-        } else {
-          // try to find a link which contains the belonging 2D signal in the spectra in view
-          if (
-            correlation.link.some((link) => {
-              const spectrum = findSpectrum(
-                spectraData,
-                link.experimentID,
-                true,
-              ) as Datum2D;
-              return findSignalMatch2D(
-                spectrum,
-                link,
-                factor,
-                xDomain0,
-                xDomain1,
-                yDomain0,
-                yDomain1,
-              );
-            })
-          ) {
-            return true;
-          }
+        }
+        // try to find a link which contains the belonging 2D signal in the spectra in view
+        else if (
+          correlation.link.some((link) => {
+            const spectrum = findSpectrum(
+              spectraData,
+              link.experimentID,
+              true,
+            ) as Datum2D;
+            return findSignalMatch2D(
+              spectrum,
+              link,
+              factor,
+              xDomain0,
+              xDomain1,
+              yDomain0,
+              yDomain1,
+            );
+          })
+        ) {
+          return true;
         }
       }
       // do not show correlation

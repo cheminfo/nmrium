@@ -7,11 +7,11 @@ import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import IsInView from '../utilities/IsInView';
 import {
   cloneCorrelationAndEditLink,
   getAbbreviation,
 } from '../utilities/Utilities';
+import useInView from '../utilities/useInView';
 
 import EditLinkModal from './editLink/EditLinkModal';
 
@@ -234,8 +234,8 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
-  const isInViewRow = IsInView({ correlation: rowCorrelation });
-  const isInViewColumn = IsInView({ correlation: columnCorrelation });
+  const isInViewRow = useInView({ correlation: rowCorrelation });
+  const isInViewColumn = useInView({ correlation: columnCorrelation });
 
   return (
     <td

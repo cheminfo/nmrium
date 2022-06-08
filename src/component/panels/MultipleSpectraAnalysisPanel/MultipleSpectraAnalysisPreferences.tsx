@@ -152,7 +152,7 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
           type: 'FORMULA',
           valueKey: 'value',
           formula: '',
-          index: index,
+          index,
         },
       };
     });

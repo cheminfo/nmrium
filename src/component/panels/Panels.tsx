@@ -152,7 +152,7 @@ function PanelsInner({ displayerMode: displayedMode }) {
       const panelOptions = getPanelPreferences(item);
       return (
         (panelOptions?.hidden !== true &&
-          panelOptions?.display === true &&
+          panelOptions?.display &&
           item.isExperimental === undefined &&
           (item.mode == null || item.mode === displayedMode)) ||
         (item.isExperimental && isExperimental)

@@ -155,8 +155,7 @@ function RangesTablePanelInner({
   }, []);
 
   return (
-    <>
-      <div
+    <div
         css={[
           tablePanelStyle,
           isFlipped &&
@@ -212,7 +211,6 @@ function RangesTablePanelInner({
           )}
         </div>
       </div>
-    </>
   );
 }
 

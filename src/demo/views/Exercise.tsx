@@ -218,7 +218,7 @@ export default function Exercise(props) {
               >
                 {resultFlag == null ? (
                   <p>Result</p>
-                ) : resultFlag === true ? (
+                ) : resultFlag ? (
                   <p>Right Molecule</p>
                 ) : (
                   <p>Wrong Molecule !!</p>

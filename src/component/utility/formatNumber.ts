@@ -1,7 +1,7 @@
-import Numeral from 'numeral';
+import numeral from 'numeral';
 
 function formatNumber(value, format, prefix = '', suffix = '') {
-  return prefix + Numeral(value).format(format) + suffix;
+  return prefix + numeral(value).format(format) + suffix;
 }
 
 function getNumberOfDecimals(value: number | string) {

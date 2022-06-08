@@ -159,8 +159,7 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
   }, []);
 
   return (
-    <>
-      <div
+    <div
         css={[
           tablePanelStyle,
           style,
@@ -251,7 +250,6 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
           )}
         </div>
       </div>
-    </>
   );
 }
 

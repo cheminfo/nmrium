@@ -17,7 +17,7 @@ export default function useActiveSpectrumStyleOptions(
 
   return useMemo(() => {
     const isActive =
-      activeSpectrum === null ? true : id === activeSpectrum.id ? true : false;
+      activeSpectrum === null ? true : id === activeSpectrum.id;
     const opacity = isActive
       ? 1
       : get(preferences.current, 'controllers.dimmedSpectraTransparency', 0.1);

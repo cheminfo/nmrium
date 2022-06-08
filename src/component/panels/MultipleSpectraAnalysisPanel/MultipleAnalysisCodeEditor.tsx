@@ -2,7 +2,7 @@
 import { useFormikContext } from 'formik';
 import { memo, useEffect, useState } from 'react';
 
-import Eval from '../../utility/Evaluate';
+import evaluate from '../../utility/Evaluate';
 
 const initCode = `function run(data) {
 
@@ -21,7 +21,7 @@ function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
   const [result, setResult] = useState('');
 
   useEffect(() => {
-    const evalResult = Eval(code, data);
+    const evalResult = evaluate(code, data);
     if (evalResult instanceof Error) {
       setResult(evalResult.message);
     } else {
