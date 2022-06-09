@@ -296,7 +296,7 @@ function addNewRange(
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    const result = addRange(draft.data[index] as Datum1D, {
+    addRange(draft.data[index] as Datum1D, {
       from,
       to,
       id,
