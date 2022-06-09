@@ -8,7 +8,6 @@ import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   CHANGE_RANGE_SIGNAL_KIND,
   DELETE_RANGE,
-  RESET_SELECTED_TOOL,
   SAVE_EDITED_RANGE,
   SET_SELECTED_TOOL,
   SET_X_DOMAIN,
@@ -38,12 +37,12 @@ export default function useEditRangeModal(range?: RangeData) {
   );
 
   const deleteRange = useCallback(
-    (id?: string) => {
+    (id?: string, resetSelectTool = false) => {
       if (range || id) {
         dispatch({
           type: DELETE_RANGE,
           payload: {
-            data: { id: id ? id : range?.id, assignmentData },
+            data: { id: id ? id : range?.id, assignmentData, resetSelectTool },
           },
         });
       }
@@ -74,8 +73,6 @@ export default function useEditRangeModal(range?: RangeData) {
           assignmentData,
         },
       });
-      dispatch({ type: RESET_SELECTED_TOOL });
-
       modal.close();
     },
     [assignmentData, dispatch, modal],
@@ -84,12 +81,11 @@ export default function useEditRangeModal(range?: RangeData) {
   const closeEditRangeHandler = useCallback(
     (range: Partial<{ id: string }>) => {
       if (range.id === 'new') {
-        deleteRange(range.id);
+        deleteRange(range.id, true);
       }
-      dispatch({ type: RESET_SELECTED_TOOL });
       modal.close();
     },
-    [deleteRange, dispatch, modal],
+    [deleteRange, modal],
   );
 
   const editRange = useCallback(

@@ -29,6 +29,7 @@ import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain, setIntegralsYDomain } from './DomainActions';
+import { resetSelectedTool } from './ToolsActions';
 
 function handleAutoRangesDetection(draft: Draft<State>, options) {
   const {
@@ -96,7 +97,8 @@ function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
 function handleDeleteRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    const { id = null, assignmentData } = action.payload.data;
+    const { data, resetSelectTool = false } = action.payload;
+    const { id = null, assignmentData } = data;
     const datum = draft.data[index] as Datum1D;
     if (id) {
       const rangeIndex = getRangeIndex(draft, index, id);
@@ -108,6 +110,9 @@ function handleDeleteRange(draft: Draft<State>, action) {
     }
     updateRangesRelativeValues(datum);
     handleOnChangeRangesData(draft);
+    if (resetSelectTool) {
+      resetSelectedTool(draft);
+    }
   }
 }
 
@@ -158,6 +163,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     );
     updateRangesRelativeValues(draft.data[index] as Datum1D);
     handleOnChangeRangesData(draft);
+    resetSelectedTool(draft);
   }
 }
 
@@ -290,7 +296,7 @@ function addNewRange(
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    addRange(draft.data[index] as Datum1D, {
+    const result = addRange(draft.data[index] as Datum1D, {
       from,
       to,
       id,
