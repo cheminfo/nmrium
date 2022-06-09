@@ -88,8 +88,12 @@ function EditRangeModal({
   }, [onZoomEditRangeModal, range]);
 
   const handleOnClose = useCallback(() => {
+    dispatch({
+      type: UPDATE_RANGE,
+      payload: { range: originRange },
+    });
     onCloseEditRangeModal(range);
-  }, [onCloseEditRangeModal, range]);
+  }, [dispatch, onCloseEditRangeModal, originRange, range]);
 
   const getCouplings = useCallback(
     (couplings) =>
@@ -132,7 +136,7 @@ function EditRangeModal({
   );
 
   const data = useMemo(() => {
-    const signals = range.signals.map((signal) => {
+    const signals = range?.signals.map((signal) => {
       // counter within j array to access to right j values
 
       let counterJ = 0;
@@ -158,7 +162,7 @@ function EditRangeModal({
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
-  }, [range.signals, rangesPreferences.coupling.format]);
+  }, [range?.signals, rangesPreferences.coupling.format]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -183,37 +187,37 @@ function EditRangeModal({
 
   return (
     <div css={styles}>
+      <div className="header handle">
+        <Button.Action
+          onClick={handleOnZoom}
+          fill="outline"
+          style={{ fontSize: '14' }}
+          color={{ base: '#5f5f5f', hover: 'white' }}
+        >
+          <FaSearchPlus title="Set to default view on range in spectrum" />
+        </Button.Action>
+        <span className="title">
+          {` Range and Signal edition: ${formatNumber(
+            range?.from,
+            rangesPreferences.from.format,
+          )} ppm to ${formatNumber(
+            range?.to,
+            rangesPreferences.to.format,
+          )} ppm`}
+        </span>
+        <SaveButton
+          onClick={() => formRef.current.submitForm()}
+          popupTitle="Save and exit"
+        />
+
+        <CloseButton onClick={handleOnClose} />
+      </div>
       <FormikForm
         ref={formRef}
         initialValues={data}
         validationSchema={validation}
         onSubmit={handleOnSave}
       >
-        <div className="header handle">
-          <Button.Action
-            onClick={handleOnZoom}
-            fill="outline"
-            style={{ fontSize: '14' }}
-            color={{ base: '#5f5f5f', hover: 'white' }}
-          >
-            <FaSearchPlus title="Set to default view on range in spectrum" />
-          </Button.Action>
-          <span className="title">
-            {` Range and Signal edition: ${formatNumber(
-              range.from,
-              rangesPreferences.from.format,
-            )} ppm to ${formatNumber(
-              range.to,
-              rangesPreferences.to.format,
-            )} ppm`}
-          </span>
-          <SaveButton
-            onClick={() => formRef.current.submitForm()}
-            popupTitle="Save and exit"
-          />
-
-          <CloseButton onClick={handleOnClose} />
-        </div>
         <SignalsForm range={range} preferences={rangesPreferences} />
         <FormikOnChange onChange={changeHandler} />
       </FormikForm>
