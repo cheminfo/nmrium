@@ -11,7 +11,6 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
@@ -275,13 +274,9 @@ function handleZoom(draft: Draft<State>, action) {
       draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
     }
   } else {
-    const spectra = getSpectraByNucleus(
-      draft.activeTab,
-      draft.data,
-    ) as Datum1D[];
-    for (const spectrum of spectra) {
-      const domain = draft.yDomains[spectrum.id];
-      draft.yDomains[spectrum.id] = wheelZoom(event, domain);
+    for (const key of Object.keys(draft.yDomains)) {
+      const domain = draft.yDomains[key];
+      draft.yDomains[key] = wheelZoom(event, domain);
     }
   }
 }
