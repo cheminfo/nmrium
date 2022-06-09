@@ -4,7 +4,13 @@ import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback } from 'react';
-import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
+import {
+  FaFileExport,
+  FaUnlink,
+  FaSitemap,
+  FaChartBar,
+  FaPlus,
+} from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
@@ -17,6 +23,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
+  ADD_RANGE,
   CHANGE_RANGES_SUM_FLAG,
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
@@ -27,6 +34,8 @@ import {
 import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
+
+import useEditRangeModal from './hooks/useEditRangeModal';
 
 const style = css`
   .btn {
@@ -186,6 +195,15 @@ function RangesHeader({
     },
     [dispatch],
   );
+  const { editRange } = useEditRangeModal();
+  const addRangeHandler = useCallback(() => {
+    dispatch({
+      type: ADD_RANGE,
+      payload: { id: 'new' },
+    });
+
+    editRange(true);
+  }, [dispatch, editRange]);
 
   return (
     <div css={style}>
@@ -272,6 +290,14 @@ function RangesHeader({
         >
           <ImLink />
         </ToggleButton>
+        <Button
+          popupTitle="Add range"
+          popupPlacement="right"
+          onClick={addRangeHandler}
+          className="btn icon"
+        >
+          <FaPlus />
+        </Button>
       </DefaultPanelHeader>
     </div>
   );

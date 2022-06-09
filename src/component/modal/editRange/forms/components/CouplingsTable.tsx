@@ -28,39 +28,6 @@ const CouplingsTableStyle = css`
     padding: 0.3rem;
     border-bottom: 1px solid #f5f5f5;
 
-    button {
-      background-color: transparent;
-      border: none;
-    }
-
-    .add-button {
-      color: blue;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .delete-button {
-      border-radius: 25%;
-      padding: 0;
-      padding-left: 0.3rem;
-      padding-right: 0.3rem;
-    }
-    .delete-button:hover {
-      .icon {
-        color: red;
-      }
-    }
-
-    input {
-      background-color: transparent;
-      border: 0.5px solid #dedede;
-      height: 100%;
-      width: 100%;
-      text-align: center;
-    }
     .selectBox {
       background-color: transparent;
       border: 0.5px solid #dedede;
@@ -68,12 +35,6 @@ const CouplingsTableStyle = css`
       width: 100% !important;
       text-align: center;
       margin: 0;
-    }
-  }
-
-  tr {
-    :last-child {
-      background-color: #fcfcfc;
     }
   }
 `;
@@ -110,17 +71,39 @@ function CouplingsTable({
     }));
   }, []);
 
+  const couplingsList = lodashGet(
+    values,
+    `signals[${values.activeTab}].js`,
+    [],
+  );
+
   return (
-    <table css={CouplingsTableStyle}>
-      <tbody>
-        <tr>
-          <th>#</th>
-          <th>Multiplicity</th>
-          <th>J (Hz)</th>
-          <th>{''}</th>
-        </tr>
-        {lodashGet(values, `signals[${values.activeTab}].js`, []).map(
-          (_coupling, i) => (
+    <div>
+      <Button.Done
+        fill="outline"
+        style={{ marginBottom: '10px' }}
+        onClick={() =>
+          push({
+            multiplicity: translateMultiplet('m'),
+            coupling: '',
+          })
+        }
+      >
+        <FaPlus title="Add new coupling" style={{ display: 'inline-block' }} />
+        <span style={{ display: 'inline-block', paddingLeft: '5px' }}>
+          Add New Coupling
+        </span>
+      </Button.Done>
+
+      <table css={CouplingsTableStyle}>
+        <tbody>
+          <tr>
+            <th>#</th>
+            <th>Multiplicity</th>
+            <th>J (Hz)</th>
+            <th>{''}</th>
+          </tr>
+          {couplingsList.map((_coupling, i) => (
             <tr
               // eslint-disable-next-line react/no-array-index-key
               key={`editCouplings${values.activeTab}${i}`}
@@ -157,36 +140,22 @@ function CouplingsTable({
                 />
               </td>
               <td>
-                <Button
-                  className="delete-button"
-                  onClick={() => {
-                    remove(i);
-                  }}
-                >
-                  <FaRegTrashAlt className="icon" title="Delete coupling" />
-                </Button>
+                <div style={{ display: 'flex' }}>
+                  <Button.Danger
+                    fill="clear"
+                    onClick={() => {
+                      remove(i);
+                    }}
+                  >
+                    <FaRegTrashAlt title="Delete coupling" />
+                  </Button.Danger>
+                </div>
               </td>
             </tr>
-          ),
-        )}
-        <tr />
-        <tr>
-          <td colSpan={4}>
-            <Button
-              className="add-button"
-              onClick={() =>
-                push({
-                  multiplicity: translateMultiplet('m'),
-                  coupling: '',
-                })
-              }
-            >
-              <FaPlus title="Add new coupling" />
-            </Button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

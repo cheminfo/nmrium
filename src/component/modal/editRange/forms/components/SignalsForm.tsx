@@ -2,7 +2,9 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
+import { FaPlus } from 'react-icons/fa';
 
+import { Range } from '../../../../../data/types/data1d';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
@@ -12,38 +14,23 @@ import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
+import { SignalFormInfo } from './SignalFormInfo';
 import SignalFormTab from './SignalFormTab';
-
-const textStyles = css`
-  text-align: center;
-  width: 100%;
-
-  .errorText {
-    color: red;
-  }
-
-  .infoText {
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 14px;
-    text-align: left;
-    color: white;
-    background-color: #5f5f5f;
-    border-radius: 5px;
-  }
-`;
 
 const tabStylesAddition = css`
   color: red;
 `;
 const tabStyles = css`
-  display: inline-grid;
-  list-style: none;
-  padding: 0.5rem 1.5rem;
+  padding: 0 1.5rem !important;
+  height: 40px;
+`;
+const newTabStyles = css`
+  padding: 0 !important;
+  height: 40px;
 `;
 
 interface SignalsFormProps {
-  range: number;
+  range: Range;
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 
@@ -167,7 +154,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
   );
 
   const signalFormTabs = useMemo(() => {
-    const signalTabs =
+    const signalTabs: any[] =
       values.signals.length > 0
         ? values.signals.map((signal, i) => (
             <Tab
@@ -187,11 +174,24 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
 
     const addSignalTab = (
       <Tab
-        tablabel="+"
         tabid="addSignalTab"
         canDelete={false}
         key="addSignalTab"
-        className="add-signal-tab"
+        tabstyles={newTabStyles}
+        render={() => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 1.5rem',
+              fontSize: '12px',
+              color: '#28ba62',
+            }}
+          >
+            <FaPlus style={{ display: 'inline-block' }} />
+            <span style={{ display: 'inline-block' }}>New Signal</span>
+          </div>
+        )}
       >
         <AddSignalFormTab
           onFocus={handleOnFocus}
@@ -202,41 +202,12 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
       </Tab>
     );
 
-    return signalTabs.concat(addSignalTab);
+    return [...signalTabs, addSignalTab];
   }, [handleOnFocus, preferences, range, tabContainsErrors, values.signals]);
-
-  const editSignalInfoText = (
-    <p className="infoText">
-      Focus on an input field and press Shift + Drag &#38; Drop to draw a
-      coupling constant in spectrum view.
-    </p>
-  );
-
-  const addSignalInfoText = (
-    <p className="infoText">
-      Focus on the input field and press Shift + Left mouse click to select new
-      signal delta value in spectrum view.
-    </p>
-  );
 
   return (
     <div>
-      <div css={textStyles}>
-        {errors.signals &&
-        (errors.signals.noSignals || errors.signals.noCouplings) ? (
-          <div>
-            <p className="errorText">
-              {errors.signals.noSignals ||
-                errors.signals.noCouplings[0].message}
-            </p>
-            {errors.signals.noSignals ? addSignalInfoText : null}
-          </div>
-        ) : values.activeTab === 'addSignalTab' ? (
-          addSignalInfoText
-        ) : (
-          editSignalInfoText
-        )}
-      </div>
+      <SignalFormInfo />
       <Tabs
         activeTab={values.activeTab}
         onClick={tapClickHandler}

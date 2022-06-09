@@ -116,7 +116,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const openEditZoneHandler = useCallback(() => {
     dispatch({
       type: SET_SELECTED_TOOL,
-      payload: { selectedTool: options.editRange.id, tempRange: rowData },
+      payload: { selectedTool: options.editRange.id },
     });
     modal.show(
       <EditZoneModal

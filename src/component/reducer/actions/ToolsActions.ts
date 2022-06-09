@@ -78,8 +78,6 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
 
 function resetTool(draft: Draft<State>, setDefaultTool = true) {
   // reset temp range
-  draft.toolOptions.data.tempRange = null;
-
   setSelectedOptionPanel(draft, null);
   if (setDefaultTool) {
     draft.toolOptions.selectedTool = options.zoom.id;
@@ -113,9 +111,7 @@ function setSelectedTool(draft: Draft<State>, action) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
-        draft.toolOptions.data.tempRange = action.payload.tempRange;
-      } else {
-        draft.toolOptions.data.tempRange = null;
+        draft.toolOptions.data.showMultiplicityTrees = true;
       }
 
       if (selectedTool !== draft.toolOptions.selectedTool) {

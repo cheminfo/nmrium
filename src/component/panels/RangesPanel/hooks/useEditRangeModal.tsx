@@ -8,7 +8,6 @@ import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   CHANGE_RANGE_SIGNAL_KIND,
   DELETE_RANGE,
-  RESET_SELECTED_TOOL,
   SAVE_EDITED_RANGE,
   SET_SELECTED_TOOL,
   SET_X_DOMAIN,
@@ -17,42 +16,57 @@ import { options } from '../../../toolbar/ToolTypes';
 
 import { RangeData } from './useMapRanges';
 
-export default function useEditRangeModal(range: RangeData) {
+export default function useEditRangeModal(range?: RangeData) {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
 
-  const zoomRange = useCallback(() => {
-    const margin = Math.abs(range.from - range.to);
-    dispatch({
-      type: SET_X_DOMAIN,
-      xDomain: [range.from - margin, range.to + margin],
-    });
-  }, [dispatch, range.from, range.to]);
+  const zoomRange = useCallback(
+    (modalRange?: RangeData) => {
+      const _range = modalRange ? modalRange : range;
+      if (_range) {
+        const { from, to } = _range;
+        const margin = Math.abs(from - to);
+        dispatch({
+          type: SET_X_DOMAIN,
+          xDomain: [from - margin, to + margin],
+        });
+      }
+    },
+    [dispatch, range],
+  );
 
-  const deleteRange = useCallback(() => {
-    dispatch({
-      type: DELETE_RANGE,
-      payload: {
-        data: { id: range.id, assignmentData },
-      },
-    });
-  }, [assignmentData, dispatch, range.id]);
+  const deleteRange = useCallback(
+    (id?: string, resetSelectTool = false) => {
+      if (range || id) {
+        dispatch({
+          type: DELETE_RANGE,
+          payload: {
+            data: { id: id ? id : range?.id, assignmentData },
+            resetSelectTool,
+          },
+        });
+      }
+    },
+    [assignmentData, dispatch, range],
+  );
 
   const changeRangeSignalKind = useCallback(
     (value) => {
-      dispatch({
-        type: CHANGE_RANGE_SIGNAL_KIND,
-        payload: {
-          data: { rowData: range, value },
-        },
-      });
+      if (range) {
+        dispatch({
+          type: CHANGE_RANGE_SIGNAL_KIND,
+          payload: {
+            data: { rowData: range, value },
+          },
+        });
+      }
     },
     [dispatch, range],
   );
 
   const saveEditRangeHandler = useCallback(
-    (editedRowData) => {
+    (editedRowData, automaticCloseModal = true) => {
       dispatch({
         type: SAVE_EDITED_RANGE,
         payload: {
@@ -60,41 +74,58 @@ export default function useEditRangeModal(range: RangeData) {
           assignmentData,
         },
       });
+      if (automaticCloseModal) {
+        modal.close();
+      }
     },
-    [assignmentData, dispatch],
+    [assignmentData, dispatch, modal],
   );
 
-  const closeEditRangeHandler = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
-    modal.close();
-  }, [dispatch, modal]);
+  const closeEditRangeHandler = useCallback(
+    (range: Partial<{ id: string }>, originalRange) => {
+      if (range.id === 'new') {
+        deleteRange(range.id, true);
+      } else {
+        saveEditRangeHandler(originalRange, false);
+      }
+      modal.close();
+    },
+    [deleteRange, modal, saveEditRangeHandler],
+  );
 
-  const editRange = useCallback(() => {
-    dispatch({
-      type: SET_SELECTED_TOOL,
-      payload: { selectedTool: options.editRange.id, tempRange: range },
-    });
-    modal.show(
-      <EditRangeModal
-        onCloseEditRangeModal={closeEditRangeHandler}
-        onSaveEditRangeModal={saveEditRangeHandler}
-        onZoomEditRangeModal={zoomRange}
-        range={range}
-      />,
-      {
-        position: positions.MIDDLE_RIGHT,
-        transition: transitions.SCALE,
-        isBackgroundBlur: false,
-      },
-    );
-  }, [
-    closeEditRangeHandler,
-    dispatch,
-    modal,
-    range,
-    saveEditRangeHandler,
-    zoomRange,
-  ]);
+  const editRange = useCallback(
+    (isManual = false) => {
+      dispatch({
+        type: SET_SELECTED_TOOL,
+        payload: { selectedTool: options.editRange.id },
+      });
+
+      modal.show(
+        <EditRangeModal
+          onCloseEditRangeModal={closeEditRangeHandler}
+          onSaveEditRangeModal={saveEditRangeHandler}
+          onZoomEditRangeModal={zoomRange}
+          range={isManual ? {} : range}
+          manualRange={isManual}
+        />,
+        {
+          position: positions.MIDDLE_RIGHT,
+          transition: transitions.SCALE,
+          isBackgroundBlur: false,
+        },
+      );
+
+      zoomRange();
+    },
+    [
+      closeEditRangeHandler,
+      dispatch,
+      modal,
+      range,
+      saveEditRangeHandler,
+      zoomRange,
+    ],
+  );
 
   return useMemo(
     () => ({

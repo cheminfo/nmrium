@@ -69,13 +69,25 @@ function ActionsColumn({
         </td>
       )}
       <td {...rowSpanTags} css={styles}>
-        <button type="button" className="delete-button" onClick={deleteRange}>
+        <button
+          type="button"
+          className="delete-button"
+          onClick={() => deleteRange()}
+        >
           <FaRegTrashAlt />
         </button>
-        <button type="button" className="zoom-button" onClick={zoomRange}>
+        <button
+          type="button"
+          className="zoom-button"
+          onClick={() => zoomRange()}
+        >
           <FaSearchPlus title="Zoom to range in spectrum" />
         </button>
-        <button type="button" className="edit-button" onClick={editRange}>
+        <button
+          type="button"
+          className="edit-button"
+          onClick={() => editRange()}
+        >
           <FaEdit color="blue" />
         </button>
       </td>
