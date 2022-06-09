@@ -58,7 +58,7 @@ const styles = css`
 
 interface EditRangeModalProps {
   onSaveEditRangeModal: (value: any) => Promise<void> | null | void;
-  onCloseEditRangeModal: (value: any) => void;
+  onCloseEditRangeModal: (range: any, originalRange: any) => void;
   onZoomEditRangeModal: (value: any) => void;
   range: any;
   manualRange?: boolean;
@@ -88,12 +88,8 @@ function EditRangeModal({
   }, [onZoomEditRangeModal, range]);
 
   const handleOnClose = useCallback(() => {
-    dispatch({
-      type: UPDATE_RANGE,
-      payload: { range: originRange, resetSelectTool: true },
-    });
-    onCloseEditRangeModal(range);
-  }, [dispatch, onCloseEditRangeModal, originRange, range]);
+    onCloseEditRangeModal(range, originRange);
+  }, [onCloseEditRangeModal, originRange, range]);
 
   const getCouplings = useCallback(
     (couplings) =>

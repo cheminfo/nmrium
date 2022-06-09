@@ -42,7 +42,8 @@ export default function useEditRangeModal(range?: RangeData) {
         dispatch({
           type: DELETE_RANGE,
           payload: {
-            data: { id: id ? id : range?.id, assignmentData, resetSelectTool },
+            data: { id: id ? id : range?.id, assignmentData },
+            resetSelectTool,
           },
         });
       }
@@ -65,7 +66,7 @@ export default function useEditRangeModal(range?: RangeData) {
   );
 
   const saveEditRangeHandler = useCallback(
-    (editedRowData) => {
+    (editedRowData, automaticCloseModal = true) => {
       dispatch({
         type: SAVE_EDITED_RANGE,
         payload: {
@@ -73,19 +74,23 @@ export default function useEditRangeModal(range?: RangeData) {
           assignmentData,
         },
       });
-      modal.close();
+      if (automaticCloseModal) {
+        modal.close();
+      }
     },
     [assignmentData, dispatch, modal],
   );
 
   const closeEditRangeHandler = useCallback(
-    (range: Partial<{ id: string }>) => {
+    (range: Partial<{ id: string }>, originalRange) => {
       if (range.id === 'new') {
         deleteRange(range.id, true);
+      } else {
+        saveEditRangeHandler(originalRange, false);
       }
       modal.close();
     },
-    [deleteRange, modal],
+    [deleteRange, modal, saveEditRangeHandler],
   );
 
   const editRange = useCallback(
