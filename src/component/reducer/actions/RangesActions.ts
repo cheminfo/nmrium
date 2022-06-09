@@ -362,13 +362,16 @@ function handleChangeRangesSumFlag(draft, action) {
 }
 
 function handleUpdateRange(draft: Draft<State>, action) {
-  const { range } = action.payload;
+  const { range, resetSelectTool = false } = action.payload;
   if (draft.activeSpectrum?.id && range.id) {
     const datum = draft.data[draft.activeSpectrum?.index] as Datum1D;
     const index = datum.ranges.values.findIndex(
       (_range) => _range.id === range.id,
     );
     datum.ranges.values[index] = range;
+  }
+  if (resetSelectTool) {
+    resetSelectedTool(draft);
   }
 }
 

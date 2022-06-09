@@ -90,7 +90,7 @@ function EditRangeModal({
   const handleOnClose = useCallback(() => {
     dispatch({
       type: UPDATE_RANGE,
-      payload: { range: originRange },
+      payload: { range: originRange, resetSelectTool: true },
     });
     onCloseEditRangeModal(range);
   }, [dispatch, onCloseEditRangeModal, originRange, range]);
