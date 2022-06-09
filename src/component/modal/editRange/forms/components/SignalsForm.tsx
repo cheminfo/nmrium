@@ -14,26 +14,8 @@ import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
+import { SignalFormInfo } from './SignalFormInfo';
 import SignalFormTab from './SignalFormTab';
-
-const textStyles = css`
-  text-align: center;
-  width: 100%;
-
-  .errorText {
-    color: red;
-  }
-
-  .infoText {
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 14px;
-    text-align: left;
-    color: white;
-    background-color: #5f5f5f;
-    border-radius: 5px;
-  }
-`;
 
 const tabStylesAddition = css`
   color: red;
@@ -223,38 +205,9 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
     return [...signalTabs, addSignalTab];
   }, [handleOnFocus, preferences, range, tabContainsErrors, values.signals]);
 
-  const editSignalInfoText = (
-    <p className="infoText">
-      Focus on an input field and press Shift + Drag &#38; Drop to draw a
-      coupling constant in spectrum view.
-    </p>
-  );
-
-  const addSignalInfoText = (
-    <p className="infoText">
-      Focus on the input field and press Shift + Left mouse click to select new
-      signal delta value in spectrum view.
-    </p>
-  );
-
   return (
     <div>
-      <div css={textStyles}>
-        {errors.signals &&
-        (errors.signals.noSignals || errors.signals.noCouplings) ? (
-          <div>
-            <p className="errorText">
-              {errors.signals.noSignals ||
-                errors.signals.noCouplings[0].message}
-            </p>
-            {errors.signals.noSignals ? addSignalInfoText : null}
-          </div>
-        ) : values.activeTab === 'addSignalTab' ? (
-          addSignalInfoText
-        ) : (
-          editSignalInfoText
-        )}
-      </div>
+      <SignalFormInfo />
       <Tabs
         activeTab={values.activeTab}
         onClick={tapClickHandler}
