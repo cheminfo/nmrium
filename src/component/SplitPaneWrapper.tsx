@@ -12,7 +12,7 @@ export function SplitPaneWrapper({ children }) {
       initialSeparation={initialPanelWidth}
       orientation="horizontal"
       sideSeparation="end"
-      initialClosed={hidePanelOnLoad || false}
+      initialClosed={hidePanelOnLoad}
       minimumSize={600}
     >
       {children}
