@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import OCL from 'openchemlib/full';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import OCLnmr from 'react-ocl-nmr';
 
 import { Molecule } from '../../../data/molecules/Molecule';
@@ -42,6 +42,7 @@ const style = css`
 `;
 export function DraggableStructure(props: DraggableStructureProps) {
   const { zones, ranges, molecule, activeTab, displayerMode, index } = props;
+  const [molfile, setMolFile] = useState(molecule.molfile);
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();
@@ -83,7 +84,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
             id={`molSVG${index || ''}`}
             width={width - 20}
             height={height}
-            molfile={molecule.molfile}
+            molfile={molfile}
             setSelectedAtom={handleOnClickAtom}
             atomHighlightColor={
               currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
@@ -95,7 +96,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 : assignedDiaIDsMerged
             }
             setHoverAtom={handleOnAtomHover}
-            setMolfile={() => null}
+            setMolfile={setMolFile}
           />
         </foreignObject>
       )}
