@@ -20,14 +20,16 @@ function changeSpectrumVerticalAlignment(
   draft: Draft<State>,
   options: AlignmentOptions,
 ) {
-  function stack(Spectra: Datum1D[] = []) {
-    draft.verticalAlign.align = 'stack';
-    const visibleSpectra = Spectra.filter((datum) => datum.display.isVisible);
-    draft.verticalAlign.verticalShift = Math.abs(
-      Math.floor(
-        (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
-      ),
-    );
+  function stack(spectra: Datum1D[] = []) {
+    if (spectra.length > 1) {
+      draft.verticalAlign.align = 'stack';
+      const visibleSpectra = spectra.filter((datum) => datum.display.isVisible);
+      draft.verticalAlign.verticalShift = Math.abs(
+        Math.floor(
+          (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
+        ),
+      );
+    }
   }
 
   function center() {
