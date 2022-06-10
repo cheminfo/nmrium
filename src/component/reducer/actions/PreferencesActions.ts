@@ -20,6 +20,27 @@ function changeSpectrumVerticalAlignment(
   draft: Draft<State>,
   options: AlignmentOptions,
 ) {
+  function stack(Spectra: Datum1D[] = []) {
+    draft.verticalAlign.align = 'stack';
+    const visibleSpectra = Spectra.filter((datum) => datum.display.isVisible);
+    draft.verticalAlign.verticalShift = Math.abs(
+      Math.floor(
+        (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
+      ),
+    );
+  }
+
+  function center() {
+    const YAxisShift = draft.height / 2;
+    draft.verticalAlign.align = 'center';
+    draft.verticalAlign.verticalShift = YAxisShift;
+  }
+
+  function bottom() {
+    draft.verticalAlign.align = 'bottom';
+    draft.verticalAlign.verticalShift = DEFAULT_YAXIS_SHIFT_VALUE;
+  }
+
   if (draft.data && draft.data.length > 0) {
     let dataPerNucleus: Datum1D[] = [];
     if (['auto-check', 'stack'].includes(options.align || '')) {
@@ -31,36 +52,26 @@ function changeSpectrumVerticalAlignment(
     }
 
     switch (options.align) {
-      case 'auto-check':
-      case 'bottom':
-      case 'center': {
-        if (
-          options.align === 'center' ||
-          (options.align === 'auto-check' &&
-            dataPerNucleus[0]?.info.isFid &&
-            !dataPerNucleus.some((d) => !d.info.isFid))
-        ) {
-          const YAxisShift = draft.height / 2;
-          draft.verticalAlign.align = 'center';
-          draft.verticalAlign.verticalShift = YAxisShift;
-        } else {
-          draft.verticalAlign.align = 'bottom';
-          draft.verticalAlign.verticalShift = DEFAULT_YAXIS_SHIFT_VALUE;
+      case 'auto-check': {
+        const isFid =
+          dataPerNucleus[0]?.info.isFid &&
+          !dataPerNucleus.some((d) => !d.info.isFid);
+        if (isFid) {
+          center();
+        } else if (dataPerNucleus.length > 1) {
+          stack(dataPerNucleus);
         }
         break;
       }
+      case 'bottom': {
+        return bottom();
+      }
+      case 'center': {
+        return center();
+      }
 
       case 'stack': {
-        draft.verticalAlign.align = 'stack';
-        const visibleSpectra = dataPerNucleus.filter(
-          (datum) => datum.display.isVisible,
-        );
-        draft.verticalAlign.verticalShift = Math.abs(
-          Math.floor(
-            (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
-          ),
-        );
-        break;
+        return stack(dataPerNucleus);
       }
 
       default:
