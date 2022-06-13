@@ -19,7 +19,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import {
-  LOAD_JCAMP_FILE,
+  RESURRECTING_SPECTRUM_FROM_JCAMP,
   RESURRECTING_SPECTRUM_FROM_RANGES,
 } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
@@ -193,6 +193,8 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   const resurrectHandler = useCallback(
     (row) => {
       const { index, baseURL, jcampURL: jcampRelativeURL } = row.original;
+      const { ranges, solvent, names = [] } = result.data[index];
+
       if (jcampRelativeURL) {
         void (async () => {
           const hideLoading = await alert.showLoading(
@@ -203,7 +205,10 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             const jcampURL = new URL(jcampRelativeURL, baseURL);
 
             const result = await loadFile(jcampURL);
-            dispatch({ type: LOAD_JCAMP_FILE, files: [{ binary: result }] });
+            dispatch({
+              type: RESURRECTING_SPECTRUM_FROM_JCAMP,
+              payload: { file: result, ranges, jcampURL },
+            });
           } catch (e) {
             alert.error(`Failed to load Jcamp`);
           } finally {
@@ -211,7 +216,6 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           }
         })();
       } else {
-        const { ranges, solvent, names = [] } = result.data[index];
         dispatch({
           type: RESURRECTING_SPECTRUM_FROM_RANGES,
           payload: { ranges, info: { solvent, nucleus, name: names[0] } },

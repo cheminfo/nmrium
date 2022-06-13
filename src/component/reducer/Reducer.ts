@@ -732,7 +732,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return SpectraAnalysisActions.handleFilterColumn(draft, action);
 
     case types.RESURRECTING_SPECTRUM_FROM_RANGES:
-      return DatabaseActions.handleRangeResurrecting(draft, action);
+      return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);
+    case types.RESURRECTING_SPECTRUM_FROM_JCAMP:
+      return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
 
     case types.SET_AUTOMATIC_ASSIGNMENTS:
       return AssignmentsActions.setAutomaticAssignmentsHandler(draft, action);
