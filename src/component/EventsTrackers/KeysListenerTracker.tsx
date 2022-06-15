@@ -7,6 +7,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
 import { HighlightedSource, useHighlightData } from '../highlight/index';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
@@ -42,6 +43,7 @@ function KeysListenerTracker() {
 
   const { saveToClipboardHandler, saveAsJSONHandler, saveAsHandler } =
     useExport();
+  const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
 
@@ -192,52 +194,69 @@ function KeysListenerTracker() {
         if (!e.shiftKey && !e.metaKey) {
           switch (e.key) {
             case 'f':
-              handleFullZoomOut();
+              if (isToolVisible('zoomOutTool')) {
+                handleFullZoomOut();
+              }
               break;
             case 'z':
             case 'Escape':
-              handleChangeOption(options.zoom.id);
+              if (isToolVisible('zoomTool')) {
+                handleChangeOption(options.zoom.id);
+              }
               break;
             case 'r': {
               if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                check2DModeWithActiveSpectrum(options.zone2D.label, false);
-                handleChangeOption(options.zone2D.id);
-              } else {
+                if (isToolVisible('zonePickingTool')) {
+                  check2DModeWithActiveSpectrum(options.zone2D.label, false);
+                  handleChangeOption(options.zone2D.id);
+                }
+              } else if (isToolVisible('autoRangesTool')) {
                 check1DModeWithActiveSpectrum(
                   options.rangesPicking.label,
                   false,
                 );
                 handleChangeOption(options.rangesPicking.id);
               }
+
               break;
             }
             case 'a': {
-              check1DModeWithActiveSpectrum(options.phaseCorrection.label);
-              handleChangeOption(options.phaseCorrection.id);
+              if (isToolVisible('phaseCorrectionTool')) {
+                check1DModeWithActiveSpectrum(options.phaseCorrection.label);
+                handleChangeOption(options.phaseCorrection.id);
+              }
 
               break;
             }
             case 'b': {
-              check1DModeWithActiveSpectrum(options.baseLineCorrection.label);
-              handleChangeOption(options.baseLineCorrection.id);
+              if (isToolVisible('baseLineCorrectionTool')) {
+                check1DModeWithActiveSpectrum(options.baseLineCorrection.label);
+                handleChangeOption(options.baseLineCorrection.id);
+              }
 
               break;
             }
             case 'p': {
-              check1DModeWithActiveSpectrum(options.peakPicking.label);
-              handleChangeOption(options.peakPicking.id);
+              if (isToolVisible('peakTool')) {
+                check1DModeWithActiveSpectrum(options.peakPicking.label);
+                handleChangeOption(options.peakPicking.id);
+              }
 
               break;
             }
             case 'i': {
-              check1DModeWithActiveSpectrum(options.integral.label);
-              handleChangeOption(options.integral.id);
+              if (isToolVisible('integralTool')) {
+                check1DModeWithActiveSpectrum(options.integral.label);
+                handleChangeOption(options.integral.id);
+              }
 
               break;
             }
             case 'e': {
-              check1DModeWithActiveSpectrum(options.exclusionZones.label);
-              handleChangeOption(options.exclusionZones.id);
+              if (isToolVisible('exclusionZonesTool')) {
+                check1DModeWithActiveSpectrum(options.exclusionZones.label);
+                handleChangeOption(options.exclusionZones.id);
+              }
 
               break;
             }
@@ -248,13 +267,13 @@ function KeysListenerTracker() {
         if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
           switch (e.key) {
             case 'c': {
-              if (allow1DTool) {
+              if (allow1DTool && isToolVisible('spectraCenterAlignments')) {
                 alignSpectrumsVerticallyHandler();
               }
               break;
             }
             case 's': {
-              if (allow1DTool) {
+              if (allow1DTool && isToolVisible('spectraStackAlignments')) {
                 changeDisplayViewModeHandler();
               }
               break;
@@ -270,8 +289,10 @@ function KeysListenerTracker() {
               e.preventDefault();
               break;
             case 's':
-              void saveAsJSONHandler();
-              e.preventDefault();
+              if (isToolVisible('exportAs')) {
+                void saveAsJSONHandler();
+                e.preventDefault();
+              }
               break;
             case 'o':
               openLoader();
@@ -303,6 +324,7 @@ function KeysListenerTracker() {
       displayerMode,
       handleChangeOption,
       handleFullZoomOut,
+      isToolVisible,
       openLoader,
       saveAsHandler,
       saveAsJSONHandler,

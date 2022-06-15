@@ -1,8 +1,11 @@
 import lodashGet from 'lodash/get';
 
+import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 import { usePreferences } from '../context/PreferencesContext';
 
-export function useCheckToolsVisibility(): (toolKey: string) => boolean {
+export function useCheckToolsVisibility(): (
+  toolKey: keyof NMRiumToolBarPreferences,
+) => boolean {
   const preferences = usePreferences();
 
   return (toolKey) =>
