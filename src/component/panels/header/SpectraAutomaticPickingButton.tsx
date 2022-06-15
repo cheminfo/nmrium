@@ -32,7 +32,7 @@ export function SpectraAutomaticPickingButton() {
 
   if (
     (Array.isArray(data) && data.length === 0) ||
-    !isToolVisible('autoRangesTool')
+    !isToolVisible('rangePickingTool')
   ) {
     return null;
   }

@@ -151,7 +151,7 @@ function FunctionToolBarInner({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('autoRangesTool') && (
+          isButtonVisible('rangePickingTool') && (
             <ToggleButton
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}

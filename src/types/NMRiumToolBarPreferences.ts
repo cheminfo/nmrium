@@ -10,7 +10,7 @@ export interface NMRiumToolBarPreferences {
   integralTool: boolean;
   zonePickingTool: boolean;
   slicingTool: boolean;
-  autoRangesTool: boolean;
+  rangePickingTool: boolean;
   zeroFillingTool: boolean;
   phaseCorrectionTool: boolean;
   baseLineCorrectionTool: boolean;

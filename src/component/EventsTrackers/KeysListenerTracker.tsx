@@ -210,7 +210,7 @@ function KeysListenerTracker() {
                   check2DModeWithActiveSpectrum(options.zone2D.label, false);
                   handleChangeOption(options.zone2D.id);
                 }
-              } else if (isToolVisible('autoRangesTool')) {
+              } else if (isToolVisible('rangePickingTool')) {
                 check1DModeWithActiveSpectrum(
                   options.rangesPicking.label,
                   false,

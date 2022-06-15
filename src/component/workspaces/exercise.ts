@@ -40,7 +40,7 @@ export const exercise: Workspace = {
       integralTool: true,
       zonePickingTool: false,
       slicingTool: false,
-      autoRangesTool: false,
+      rangePickingTool: false,
       zeroFillingTool: false,
       phaseCorrectionTool: false,
       baseLineCorrectionTool: false,
