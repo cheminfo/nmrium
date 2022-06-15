@@ -2,7 +2,6 @@
 
 import { css } from '@emotion/react';
 import { RootLayout } from 'analysis-ui-components';
-import { InitialSeparation } from 'analysis-ui-components/lib-esm/components/SplitPane';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -21,7 +20,9 @@ import { useToggle, useFullscreen } from 'react-use';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
-import { PanelPreferencesType } from '../types/PanelPreferencesType';
+import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
+import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
+import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
@@ -95,6 +96,7 @@ const containerStyles = css`
   button {
     outline: none !important;
   }
+
   * {
     -webkit-user-drag: none;
     -moz-user-drag: none;
@@ -131,49 +133,9 @@ export interface NMRiumProps {
 }
 
 export type NMRiumPreferences = Partial<{
-  general: Partial<{
-    disableMultipletAnalysis: boolean;
-    hideSetSumFromMolecule: boolean;
-    hideGeneralSettings: boolean;
-    experimentalFeatures: PanelPreferencesType;
-    hidePanelOnLoad: boolean;
-    initialPanelWidth?: InitialSeparation;
-  }>;
-  panels: Partial<{
-    spectraPanel: PanelPreferencesType;
-    informationPanel: PanelPreferencesType;
-    peaksPanel: PanelPreferencesType;
-    integralsPanel: PanelPreferencesType;
-    rangesPanel: PanelPreferencesType;
-    structuresPanel: PanelPreferencesType;
-    filtersPanel: PanelPreferencesType;
-    zonesPanel: PanelPreferencesType;
-    summaryPanel: PanelPreferencesType;
-    multipleSpectraAnalysisPanel: PanelPreferencesType;
-    databasePanel: PanelPreferencesType;
-    predictionPanel: PanelPreferencesType;
-    automaticAssignmentPanel: PanelPreferencesType;
-  }>;
-  toolBarButtons: Partial<{
-    zoomTool: boolean;
-    zoomOutTool: boolean;
-    import: boolean;
-    exportAs: boolean;
-    spectraStackAlignments: boolean;
-    spectraCenterAlignments: boolean;
-    realImaginary: boolean;
-    peakTool: boolean;
-    integralTool: boolean;
-    zonePickingTool: boolean;
-    slicingTool: boolean;
-    autoRangesTool: boolean;
-    zeroFillingTool: boolean;
-    phaseCorrectionTool: boolean;
-    baseLineCorrectionTool: boolean;
-    FFTTool: boolean;
-    multipleSpectraAnalysisTool: boolean;
-    exclusionZonesTool: boolean;
-  }>;
+  general: Partial<NMRiumGeneralPreferences>;
+  panels: Partial<NMRiumPanelPreferences>;
+  toolBarButtons: Partial<NMRiumToolBarPreferences>;
 }>;
 
 export type Molecules = Array<{ molfile: string }>;
