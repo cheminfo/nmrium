@@ -14,13 +14,15 @@ function highlightStyle(isActive: boolean, row): CSSObject {
   return {};
 }
 
-const rowCss = css`
-  &:hover {
-    background-color: #ff6f0091 !important;
-  }
+const rowCss = (key) => css`
+  &.row${key} {
+    &:hover {
+      background-color: #ff6f0057 !important;
+    }
 
-  &:active {
-    background-color: #ff6f0070 !important;
+    &:active {
+      background-color: #ff6f0070 !important;
+    }
   }
 `;
 
@@ -33,6 +35,7 @@ interface ReactTableRowProps extends ClickEvent {
   onContextMenu: () => void;
   isVisible: boolean;
   isRowActive: boolean;
+  activeKey: string;
 }
 
 function getIDs(row: any): string[] {
@@ -53,7 +56,9 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
     onContextMenu,
     onClick,
     isRowActive = false,
+    activeKey,
   } = props;
+
   const data = useMemo(
     () => ({
       type: highlightedSource,
@@ -83,9 +88,10 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
         ref={ref}
         onContextMenu={onContextMenu}
         key={row.getRowProps().key}
+        className={`row${activeKey}`}
         css={[
           highlightStyle(highlight.isActive || isRowActive, row),
-          onClick && rowCss,
+          onClick && rowCss(activeKey),
         ]}
         {...row.getRowProps()}
         {...highlight.onHover}
@@ -117,6 +123,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
       </tr>
     );
   }, [
+    activeKey,
     clickHandler,
     highlight.isActive,
     highlight.onHover,

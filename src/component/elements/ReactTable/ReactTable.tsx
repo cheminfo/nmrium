@@ -35,6 +35,7 @@ interface ReactTableProps extends ClickEvent {
   groupKey?: string;
   enableVirtualScroll?: boolean;
   highlightActiveRow?: boolean;
+  SelectionMode?: 'single' | 'multiple';
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -64,11 +65,12 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     groupKey,
     onClick,
     highlightActiveRow = false,
+    SelectionMode = 'single',
   } = props;
 
   const contextRef = useRef<any>(null);
   const { index: indexBoundary } = useReactTableContext();
-  const [rowIndex, setRowIndex] = useState<number>();
+  const [rowIndexes, setRowIndexes] = useState<number[]>([]);
 
   const {
     getTableProps,
@@ -94,17 +96,29 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     },
     [contextRef],
   );
-
   const rowsData = enableVirtualScroll
     ? rows.slice(indexBoundary.start, indexBoundary.end)
     : rows;
 
   const clickHandler = useCallback(
     (event, row) => {
-      setRowIndex(row.index);
+      const id = groupKey ? row.original[groupKey] : row.index;
+      if (SelectionMode === 'single') {
+        setRowIndexes([id]);
+      } else {
+        setRowIndexes((prevIndexes) => {
+          const index = prevIndexes.findIndex((_id) => _id === id);
+          if (index !== -1) {
+            prevIndexes.splice(index, 1);
+          } else {
+            prevIndexes.push(id);
+          }
+          return [...prevIndexes];
+        });
+      }
       onClick?.(event, row);
     },
-    [onClick],
+    [SelectionMode, groupKey, onClick],
   );
 
   return (
@@ -143,7 +157,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
               rowSpanHeaders,
               groupKey,
             );
-
+            const activeKey = groupKey ? row.original[groupKey] : index;
+            const isRowActive = rowIndexes.includes(activeKey);
             return (
               <ReactTableRow
                 key={row.key}
@@ -152,7 +167,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                 onContextMenu={(e) => contextMenuHandler(e, row)}
                 onClick={highlightActiveRow ? clickHandler : onClick}
                 highlightedSource={highlightedSource}
-                isRowActive={rowIndex === index}
+                isRowActive={isRowActive}
+                activeKey={activeKey}
               />
             );
           })}
