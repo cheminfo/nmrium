@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Zip from 'jszip';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
@@ -10,6 +10,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
@@ -65,6 +66,7 @@ function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const isToolEnabled = useCheckToolsVisibility();
 
   const loadSubFilesFromZip = useCallback(
     async (extractedfiles, uniqueFileExtensions) => {
@@ -252,6 +254,10 @@ function DropZone(props) {
     [dispatch, loadFilesHandler],
   );
 
+  const isImportEnabled = useMemo(() => {
+    return isToolEnabled('import');
+  }, [isToolEnabled]);
+
   const {
     getRootProps,
     getInputProps,
@@ -261,11 +267,14 @@ function DropZone(props) {
     onDrop,
     noClick: true,
     noKeyboard: true,
+    noDrag: !isImportEnabled,
   });
 
   const open = useCallback(() => {
-    openImportDialog();
-  }, [openImportDialog]);
+    if (isImportEnabled) {
+      openImportDialog();
+    }
+  }, [isImportEnabled, openImportDialog]);
 
   return (
     <LoaderProvider value={open}>
