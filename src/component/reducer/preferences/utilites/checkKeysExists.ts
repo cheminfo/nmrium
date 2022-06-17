@@ -9,13 +9,10 @@ export function checkKeysExists(sourceObject, targetObject) {
   }
 
   for (const [key, value] of Object.entries(source)) {
-    if (
-      !target[key] ||
-      target[key] !== value ||
-      sourceObject[key] !== targetObject[key]
-    ) {
+    if (!target[key] || target[key] !== value) {
       return false;
     }
   }
+
   return true;
 }
