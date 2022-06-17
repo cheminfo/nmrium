@@ -17,9 +17,11 @@ import {
 import { ErrorBoundary } from 'react-error-boundary';
 import { useToggle, useFullscreen } from 'react-use';
 
+import { toJSON } from '../data/SpectraManager';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
+import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
 import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
 import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
@@ -113,6 +115,8 @@ const containerStyles = css`
   }
 `;
 
+export type { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+
 export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
@@ -122,7 +126,7 @@ export type NMRiumWorkspace =
 
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: State) => void;
+  onDataChange?: (data: NMRiumDataReturn) => void;
   workspace?: NMRiumWorkspace;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
@@ -200,7 +204,7 @@ function InnerNMRium({
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
-      onDataChange?.(state);
+      onDataChange?.(toJSON(state));
     }
   }, [onDataChange, state]);
 

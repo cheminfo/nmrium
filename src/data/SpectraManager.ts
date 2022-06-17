@@ -1,6 +1,8 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
+import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+import { Preferences } from '../types/Preferences';
 
 import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Spectrum1D';
@@ -255,7 +257,7 @@ export function addJcamps(files, usedColors) {
   return spectra;
 }
 
-function getPreferences(state) {
+function getPreferences(state): Preferences {
   const {
     activeTab,
     verticalAlign: { align },
@@ -272,24 +274,22 @@ function getPreferences(state) {
  *
  * @param {object} state
  */
+
 export function toJSON(
   state,
   dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
-) {
+): NMRiumDataReturn {
   const {
     data,
     molecules: mols,
     correlations,
     multipleAnalysis,
-    toolOptions: {
-      data: { exclusionZones },
-    },
   } = state || {
     data: [],
     molecules: [],
     correlations: {},
     multipleAnalysis: {},
-    exclusionZones: {},
+    actionType: '',
   };
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1
@@ -301,12 +301,11 @@ export function toJSON(
   const molecules = mols.map((mol) => Molecule.toJSON(mol));
 
   return {
+    version: CURRENT_EXPORT_VERSION,
     spectra,
     molecules,
     correlations,
     multipleAnalysis,
-    exclusionZones,
-    version: CURRENT_EXPORT_VERSION,
     preferences,
   };
 }
