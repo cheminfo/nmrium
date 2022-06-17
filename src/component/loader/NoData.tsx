@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { ReactNode } from 'react';
 
 import { useLoader } from '../context/LoaderContext';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 
 const styles = css`
   display: flex;
@@ -42,6 +43,7 @@ function NoData({
   canOpenLoader = true,
 }: NoDataProps) {
   const openLoader = useLoader();
+  const isToolEnabled = useCheckToolsVisibility();
 
   if (!isEmpty) {
     return null;
@@ -49,7 +51,11 @@ function NoData({
 
   return (
     <div css={styles} {...(canOpenLoader && { onClick: openLoader })}>
-      <p>{emptyText}</p>
+      <p>
+        {isToolEnabled('import')
+          ? emptyText
+          : 'Importation feature has been disabled'}
+      </p>
     </div>
   );
 }

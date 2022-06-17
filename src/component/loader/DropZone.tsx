@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Zip from 'jszip';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
@@ -254,9 +254,7 @@ function DropZone(props) {
     [dispatch, loadFilesHandler],
   );
 
-  const isImportEnabled = useMemo(() => {
-    return isToolEnabled('import');
-  }, [isToolEnabled]);
+  const isImportEnabled = isToolEnabled('import');
 
   const {
     getRootProps,
