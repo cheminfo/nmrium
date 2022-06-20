@@ -16,6 +16,7 @@ export function generateSpectrumFromRanges(
     color?: string;
   },
   usedColors: UsedColors,
+  id?: string,
 ): Datum1D {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
 
@@ -27,6 +28,7 @@ export function generateSpectrumFromRanges(
 
   const datum = initiateDatum1D(
     {
+      id,
       data: { x, im: null, re: y },
       display: { name },
       info: {

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useMemo, memo, CSSProperties } from 'react';
+import { useMemo, memo, CSSProperties, useCallback } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
@@ -13,7 +13,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 interface DatabaseTableProps {
   data: any;
-  onAdd: (row: any) => void;
+  onAdd: (row: any, toggle?: boolean) => void;
 }
 
 const overFlowStyle: CSSProperties = {
@@ -141,7 +141,10 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
           <button
             type="button"
             className="add-button"
-            onClick={() => onAdd(row)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAdd(row);
+            }}
           >
             <FaPlus />
           </button>
@@ -162,6 +165,14 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
 
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [databasePreferences, initialColumns]);
+
+  const toggleDatabaseRow = useCallback(
+    (e, row) => {
+      onAdd(row, true);
+    },
+    [onAdd],
+  );
+
   return (
     <ReactTable
       data={data}
@@ -170,6 +181,9 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       groupKey="index"
       approxItemHeight={24}
       enableVirtualScroll
+      highlightActiveRow
+      SelectionMode="multiple"
+      onClick={toggleDatabaseRow}
     />
   );
 }
