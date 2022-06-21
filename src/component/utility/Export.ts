@@ -134,6 +134,7 @@ function exportAsMol(data, fileName = 'mol') {
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
+
 function exportAsSVG(
   rootRef: HTMLDivElement,
   elementID: string,
@@ -251,12 +252,18 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
   }
 }
 
-function getBlob(rootRef: HTMLDivElement, elementID: string) {
+export interface BlobObject {
+  blob: Blob;
+  width: number;
+  height: number;
+}
+
+function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   let _svg: any = (rootRef.getRootNode() as Document)
     .getElementById(elementID)
     ?.cloneNode(true);
-  const width = _svg?.getAttribute('width').replace('px', '');
-  const height = _svg?.getAttribute('height').replace('px', '');
+  const width = Number(_svg?.getAttribute('width').replace('px', ''));
+  const height = Number(_svg?.getAttribute('height').replace('px', ''));
   _svg
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
@@ -295,4 +302,5 @@ export {
   copyHTMLToClipboard,
   exportAsMol,
   exportAsMatrix,
+  getBlob,
 };
