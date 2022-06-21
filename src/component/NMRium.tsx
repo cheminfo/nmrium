@@ -13,6 +13,9 @@ import {
   Reducer,
   ReactElement,
   ReactNode,
+  forwardRef,
+  useImperativeHandle,
+  ForwardedRef,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useToggle, useFullscreen } from 'react-use';
@@ -63,6 +66,7 @@ import {
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
+import { BlobObject, getBlob } from './utility/Export';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -160,15 +164,19 @@ const defaultData: NMRiumData = {
   spectra: [],
 };
 
-function NMRium(props: NMRiumProps) {
+export interface NMRiumRef {
+  generateBlob: () => BlobObject | null;
+}
+
+const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
   return (
     <RootLayout style={{ width: '100%' }}>
       <ErrorBoundary FallbackComponent={ErrorOverlay}>
-        <InnerNMRium {...props} />
+        <InnerNMRium {...props} innerRef={ref} />
       </ErrorBoundary>
     </RootLayout>
   );
-}
+});
 
 function InnerNMRium({
   data: dataProp = defaultData,
@@ -177,7 +185,8 @@ function InnerNMRium({
   getSpinner = defaultGetSpinner,
   onDataChange,
   emptyText,
-}: NMRiumProps) {
+  innerRef,
+}: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
@@ -226,6 +235,16 @@ function InnerNMRium({
       },
     });
   }, [preferences, workspace]);
+
+  useImperativeHandle(
+    innerRef,
+    () => ({
+      generateBlob: () => {
+        return rootRef?.current ? getBlob(rootRef.current, 'nmrSVG') : null;
+      },
+    }),
+    [],
+  );
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
