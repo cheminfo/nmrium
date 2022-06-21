@@ -3,12 +3,13 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { useCallback, useMemo } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
 import { NMRiumWorkspace } from '../../NMRium';
 import Button from '../../elements/Button';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
+import { isGoogleDocument } from '../../utility/isGoogleDocument';
 import Workspaces from '../../workspaces';
 
 const style = {
@@ -163,6 +164,15 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
                         >
                           <FaPlus />
                         </Button.Done>
+                      )}
+                      {isGoogleDocument(item.url) && (
+                        <Button.Action
+                          style={{ fontSize: '13px' }}
+                          fill="clear"
+                          onClick={() => window.open(item.url, '_blank')}
+                        >
+                          <FaLink />
+                        </Button.Action>
                       )}
                     </div>
                   </td>
