@@ -165,7 +165,7 @@ const defaultData: NMRiumData = {
 };
 
 export interface NMRiumRef {
-  generateBlob: () => BlobObject | null;
+  getSpectraViewerAsBlob: () => BlobObject | null;
 }
 
 const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
@@ -239,7 +239,7 @@ function InnerNMRium({
   useImperativeHandle(
     innerRef,
     () => ({
-      generateBlob: () => {
+      getSpectraViewerAsBlob: () => {
         return rootRef?.current ? getBlob(rootRef.current, 'nmrSVG') : null;
       },
     }),
