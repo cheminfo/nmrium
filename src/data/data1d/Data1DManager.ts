@@ -2,7 +2,16 @@ import { initiateDatum1D } from './Spectrum1D';
 
 export function fromBruker(result, options = {}, usedColors = {}) {
   const { dependentVariables, info, meta, source } = result;
-  let data = getData(dependentVariables[0].components);
+
+  let { data } = dependentVariables[0].components[0];
+
+  const { x, re, im } = data;
+  if (x[0] > x[1]) {
+    x.reverse();
+    re.reverse();
+    if (im) im.reverse();
+  }
+
   if (data.im) info.isComplex = true;
 
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
