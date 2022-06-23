@@ -161,9 +161,9 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
 export async function addBruker(options, data, usedColors) {
   const spectra: any[] = [];
   let result = await fromBruker(data, {
-    xy: true,
-    noContours: true,
-    keepOriginal: true,
+    converter: {
+      xy: true,
+    },
   });
   let entries = result;
   for (let entry of entries) {
