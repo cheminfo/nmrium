@@ -58,10 +58,10 @@ export interface DatabasePanelPreferences {
   showSmiles: boolean;
   showSolvent: boolean;
   showNames: boolean;
-  showRange: boolean;
-  showDelta: boolean;
+  range: ColumnPreferences;
+  delta: ColumnPreferences;
   showAssignment: boolean;
-  showCoupling: boolean;
+  coupling: ColumnPreferences;
   showMultiplicity: boolean;
   color: string;
   marginBottom: number;
