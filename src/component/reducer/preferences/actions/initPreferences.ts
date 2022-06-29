@@ -78,10 +78,10 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
       );
       storeData('nmr-general-settings', JSON.stringify(data));
     } else {
-      currentWorkspacePreferences.display = lodashMerge(
+      draft.workspaces[draft.workspace.current] = lodashMerge(
         {},
-        workspacePreferences.display,
-        currentWorkspacePreferences.display,
+        currentWorkspacePreferences,
+        resProps,
       );
     }
 
