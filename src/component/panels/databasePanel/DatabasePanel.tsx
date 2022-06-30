@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
+import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 
@@ -10,12 +11,15 @@ import {
   InitiateDatabaseResult,
   prepareData,
 } from '../../../data/data1d/database';
+import { isMolFileEmpty } from '../../../data/utilities/isMolFileEmpty';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
+import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import {
@@ -30,6 +34,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
+import { DatabaseStructureSearchModal } from './DataBaseStructureSearchModal';
 import DatabasePreferences from './DatabasePreferences';
 import DatabaseTable from './DatabaseTable';
 import { useDatabases } from './useDatabases';
@@ -70,6 +75,8 @@ const emptyKeywords = {
 function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
+  const modal = useModal();
+
   const { handleChangeOption } = useToolsFunctions();
   const format = useFormatNumberByNucleus(nucleus);
   const databases = useDatabases();
@@ -85,6 +92,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     databases: [],
     solvents: [],
   });
+  const [moleFile, setMolFile] = useState<string>('');
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -237,6 +245,27 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     [handleChangeOption],
   );
 
+  const searchByStructureHandler = (molfile: string) => {
+    const data = databaseInstance.current?.searchByStructure(molfile) || [];
+    setResult((prevResult) => ({ ...prevResult, data }));
+
+    setMolFile(molfile);
+  };
+
+  const openSearchByStructure = () => {
+    modal.show(
+      <DatabaseStructureSearchModal
+        onChange={searchByStructureHandler}
+        molfile={moleFile}
+      />,
+      {
+        position: positions.MIDDLE,
+        transition: transitions.SCALE,
+        isBackgroundBlur: false,
+      },
+    );
+  };
+
   return (
     <div
       css={[
@@ -299,6 +328,25 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             onClear={clearHandler}
             canClear
           />
+          <Button.Done
+            fill="clear"
+            onClick={openSearchByStructure}
+            style={{ marginLeft: '5px' }}
+          >
+            {!isMolFileEmpty(moleFile) ? (
+              <BsHexagonFill
+                style={{
+                  fontSize: '14px',
+                }}
+              />
+            ) : (
+              <BsHexagon
+                style={{
+                  fontSize: '14px',
+                }}
+              />
+            )}
+          </Button.Done>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
