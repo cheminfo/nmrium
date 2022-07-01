@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { StructureEditor } from 'react-ocl/full';
 
 import { Molecule } from '../../data/molecules/Molecule';
+import { isMolFileEmpty } from '../../data/utilities/isMolFileEmpty';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import { useModal } from '../elements/popup/Modal';
@@ -33,12 +34,7 @@ function MoleculeStructureEditorModal(
 
   const cb = useCallback(
     (newMolfile) => {
-      const molText =
-        /(?<s>M {2}V30 BEGIN BOND)(?<mol>.*?)(?<e>M {2}V30 END BOND)/gs.exec(
-          newMolfile,
-        )?.groups?.mol;
-
-      setMolfile(molText?.trim() ? newMolfile : null);
+      setMolfile(isMolFileEmpty(newMolfile) ? null : newMolfile);
     },
     [setMolfile],
   );

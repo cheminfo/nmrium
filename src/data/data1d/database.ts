@@ -4,6 +4,8 @@ import {
   Jcoupling,
   DatabaseNMREntry,
 } from 'nmr-processing';
+import { MoleculesDB } from 'openchemlib-utils';
+import OCL, { Molecule } from 'openchemlib/full';
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';
@@ -36,6 +38,7 @@ export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
   search: (keywords?: string | string[]) => DatabaseNMREntry[];
+  searchByStructure: (molecule: Molecule) => DatabaseNMREntry[];
 }
 
 export function initiateDatabase(
@@ -43,12 +46,23 @@ export function initiateDatabase(
   nucleus: string,
 ): InitiateDatabaseResult {
   const data = databases.filter((datum) => datum.nucleus === nucleus);
+  const moleculesDB = prepareMoleculesDB(data);
 
   const getSolvents = () => prepareGetSolvents(data);
   const search = (keywords: string | string[] = []) =>
     filter(data, { keywords });
+  const searchByStructure = (molecule: Molecule) =>
+    processSearchByStructure(moleculesDB, molecule);
 
-  return { data, getSolvents, search };
+  return { searchByStructure, data, getSolvents, search };
+}
+
+function processSearchByStructure(
+  moleculesDB: MoleculesDB,
+  molecule: Molecule,
+): DatabaseNMREntry[] {
+  const result = moleculesDB.search(molecule);
+  return result.map((entry) => entry.data, []);
 }
 
 function prepareGetSolvents(data) {
@@ -69,6 +83,17 @@ function prepareGetSolvents(data) {
 //     return { id: index, name: label };
 //   });
 // }
+
+function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
+  let moleculesDB = new MoleculesDB(OCL);
+  for (let entry of array) {
+    if (entry.smiles) {
+      const molecule = OCL.Molecule.fromSmiles(entry.smiles);
+      moleculesDB.pushEntry(molecule, entry);
+    }
+  }
+  return moleculesDB;
+}
 
 function prepareDataBase(array: Array<DatabaseNMREntry>) {
   return array.map((item) => {

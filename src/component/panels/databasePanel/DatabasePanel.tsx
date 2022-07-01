@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { DatabaseNMREntry } from 'nmr-processing';
+import { Molecule } from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
+import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 
@@ -12,10 +14,12 @@ import {
 } from '../../../data/data1d/database';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
+import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import {
@@ -31,6 +35,7 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
+import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
 import { useDatabases } from './useDatabases';
 
@@ -70,6 +75,8 @@ const emptyKeywords = {
 function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
+  const modal = useModal();
+
   const { handleChangeOption } = useToolsFunctions();
   const format = useFormatNumberByNucleus(nucleus);
   const databases = useDatabases();
@@ -85,6 +92,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     databases: [],
     solvents: [],
   });
+  const [molecule, setMolecule] = useState<Molecule>();
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -237,6 +245,27 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     [handleChangeOption],
   );
 
+  const searchByStructureHandler = (molecule: Molecule) => {
+    const data = databaseInstance.current?.searchByStructure(molecule) || [];
+    setResult((prevResult) => ({ ...prevResult, data }));
+
+    setMolecule(molecule);
+  };
+
+  const openSearchByStructure = () => {
+    modal.show(
+      <DatabaseStructureSearchModal
+        onChange={searchByStructureHandler}
+        molecule={molecule}
+      />,
+      {
+        position: positions.MIDDLE,
+        transition: transitions.SCALE,
+        isBackgroundBlur: false,
+      },
+    );
+  };
+
   return (
     <div
       css={[
@@ -299,6 +328,25 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             onClear={clearHandler}
             canClear
           />
+          <Button.Done
+            fill="clear"
+            onClick={openSearchByStructure}
+            style={{ marginLeft: '5px' }}
+          >
+            {molecule?.getAllAtoms() !== 0 ? (
+              <BsHexagonFill
+                style={{
+                  fontSize: '14px',
+                }}
+              />
+            ) : (
+              <BsHexagon
+                style={{
+                  fontSize: '14px',
+                }}
+              />
+            )}
+          </Button.Done>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
