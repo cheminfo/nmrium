@@ -14,7 +14,7 @@ export const basic: Workspace = {
     panels: {
       spectraPanel: { display: true, open: true },
       informationPanel: { display: true, open: false },
-      peaksPanel: { display: true, open: false },
+      peaksPanel: { display: false, open: false },
       integralsPanel: { display: true, open: false },
       rangesPanel: { display: true, open: false },
       structuresPanel: { display: true, open: false },
@@ -25,6 +25,9 @@ export const basic: Workspace = {
       databasePanel: { display: false, open: false },
       predictionPanel: { display: false, open: false },
       automaticAssignmentPanel: { display: false, open: false },
+    },
+    toolBarButtons: {
+      peakTool: false,
     },
   },
 
