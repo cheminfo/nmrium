@@ -25,7 +25,7 @@ export function DatabaseStructureSearchModal({
 
       <div className="main-content">
         <StructureEditor
-          initialMolfile={molecule?.toSmiles()}
+          initialMolfile={molecule?.toMolfileV3()}
           svgMenu
           fragment
           onChange={(mplFile, molecule) => onChange(molecule)}
