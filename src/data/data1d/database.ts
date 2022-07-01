@@ -63,10 +63,7 @@ function prepareSearchByStructure(
 ): DatabaseNMREntry[] {
   const molecule = OCL.Molecule.fromMolfile(molFile);
   const result = moleculesDB.search(molecule) || [];
-  return result.reduce(
-    (data, entry) => (data = data.concat(entry.data)),
-    [],
-  ) as DatabaseNMREntry[];
+  return result.map((entry) => entry.data, []);
 }
 
 function prepareGetSolvents(data) {
