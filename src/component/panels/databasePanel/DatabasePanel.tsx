@@ -333,14 +333,14 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             onClick={openSearchByStructure}
             style={{ marginLeft: '5px' }}
           >
-            {molecule?.getAllAtoms() !== 0 ? (
-              <BsHexagonFill
+            {!molecule || molecule?.getAllAtoms() === 0 ? (
+              <BsHexagon
                 style={{
                   fontSize: '14px',
                 }}
               />
             ) : (
-              <BsHexagon
+              <BsHexagonFill
                 style={{
                   fontSize: '14px',
                 }}
