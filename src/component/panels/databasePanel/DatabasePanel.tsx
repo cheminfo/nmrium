@@ -34,8 +34,8 @@ import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
-import { DatabaseStructureSearchModal } from './DataBaseStructureSearchModal';
 import DatabasePreferences from './DatabasePreferences';
+import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
 import { useDatabases } from './useDatabases';
 
