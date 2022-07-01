@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { DatabaseNMREntry } from 'nmr-processing';
+import { Molecule } from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
@@ -11,7 +12,6 @@ import {
   InitiateDatabaseResult,
   prepareData,
 } from '../../../data/data1d/database';
-import { isMolFileEmpty } from '../../../data/utilities/isMolFileEmpty';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
@@ -92,7 +92,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     databases: [],
     solvents: [],
   });
-  const [moleFile, setMolFile] = useState<string>('');
+  const [molecule, setMolecule] = useState<Molecule>();
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -245,18 +245,18 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     [handleChangeOption],
   );
 
-  const searchByStructureHandler = (molfile: string) => {
-    const data = databaseInstance.current?.searchByStructure(molfile) || [];
+  const searchByStructureHandler = (molecule: Molecule) => {
+    const data = databaseInstance.current?.searchByStructure(molecule) || [];
     setResult((prevResult) => ({ ...prevResult, data }));
 
-    setMolFile(molfile);
+    setMolecule(molecule);
   };
 
   const openSearchByStructure = () => {
     modal.show(
       <DatabaseStructureSearchModal
         onChange={searchByStructureHandler}
-        molfile={moleFile}
+        molecule={molecule}
       />,
       {
         position: positions.MIDDLE,
@@ -333,7 +333,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             onClick={openSearchByStructure}
             style={{ marginLeft: '5px' }}
           >
-            {!isMolFileEmpty(moleFile) ? (
+            {molecule?.getAllAtoms() !== 0 ? (
               <BsHexagonFill
                 style={{
                   fontSize: '14px',

@@ -5,7 +5,7 @@ import {
   DatabaseNMREntry,
 } from 'nmr-processing';
 import { MoleculesDB } from 'openchemlib-utils';
-import OCL from 'openchemlib/full';
+import OCL, { Molecule } from 'openchemlib/full';
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';
@@ -38,7 +38,7 @@ export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
   search: (keywords?: string | string[]) => DatabaseNMREntry[];
-  searchByStructure: (molfile: string) => DatabaseNMREntry[];
+  searchByStructure: (molecule: Molecule) => DatabaseNMREntry[];
 }
 
 export function initiateDatabase(
@@ -51,18 +51,17 @@ export function initiateDatabase(
   const getSolvents = () => prepareGetSolvents(data);
   const search = (keywords: string | string[] = []) =>
     filter(data, { keywords });
-  const searchByStructure = (molfile: string) =>
-    prepareSearchByStructure(moleculesDB, molfile);
+  const searchByStructure = (molecule: Molecule) =>
+    processSearchByStructure(moleculesDB, molecule);
 
   return { searchByStructure, data, getSolvents, search };
 }
 
-function prepareSearchByStructure(
+function processSearchByStructure(
   moleculesDB: MoleculesDB,
-  molFile: string,
+  molecule: Molecule,
 ): DatabaseNMREntry[] {
-  const molecule = OCL.Molecule.fromMolfile(molFile);
-  const result = moleculesDB.search(molecule) || [];
+  const result = moleculesDB.search(molecule);
   return result.map((entry) => entry.data, []);
 }
 
