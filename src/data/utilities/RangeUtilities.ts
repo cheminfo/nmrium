@@ -1,5 +1,8 @@
+import omit from 'lodash/omit';
+
 import { DatumKind } from '../constants/SignalsKinds';
 import { Range } from '../types/data1d';
+import { Signal1D } from '../types/data1d/Signal1D';
 
 export function getDiaIDs(range: Range): string[] {
   return ([] as string[]).concat(
@@ -31,13 +34,11 @@ export function setNbAtoms(range: Range, signalIndex?: number): void {
 }
 
 export function resetDiaIDs(range: Range): void {
-  delete range.diaIDs;
-  delete range.nbAtoms;
-  range.signals.forEach((_signal) => {
-    delete _signal.diaIDs;
-    delete _signal.nbAtoms;
+  const deletedKeys = ['diaIDs', 'nbAtoms'];
+  range = omit(range, deletedKeys) as Range;
+  range.signals = range.signals.map((signal) => {
+    return omit(signal, deletedKeys) as Signal1D;
   });
-  delete range.nbAtoms;
 }
 
 /**
