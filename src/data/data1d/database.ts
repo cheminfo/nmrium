@@ -87,9 +87,44 @@ function prepareGetSolvents(data) {
 function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
   let moleculesDB = new MoleculesDB(OCL);
   for (let entry of array) {
-    if (entry.smiles) {
-      const molecule = OCL.Molecule.fromSmiles(entry.smiles);
-      moleculesDB.pushEntry(molecule, entry);
+    //@ts-expect-error property will be defined in next release of nmr-processing
+    if (entry.ocl) {
+      try {
+        const molecule = OCL.Molecule.fromIDCode(
+          //@ts-expect-error property will be defined in next release of nmr-processing
+          entry.ocl.idCode,
+          //@ts-expect-error property will be defined in next release of nmr-processing
+          entry.ocl.coordinates,
+        );
+        moleculesDB.pushEntry(
+          molecule,
+          entry,
+          {},
+          {
+            //@ts-expect-error property will be defined in next release of nmr-processing
+            idCode: entry.ocl.idCode,
+            //@ts-expect-error property will be defined in next release of nmr-processing
+            index: entry.ocl.index,
+          },
+        );
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `Could not parse idCode: ${JSON.stringify(
+            //@ts-expect-error property will be defined in next release of nmr-processing
+            entry.ocl,
+          )}`,
+          e,
+        );
+      }
+    } else if (entry.smiles) {
+      try {
+        const molecule = OCL.Molecule.fromSmiles(entry.smiles);
+        moleculesDB.pushEntry(molecule, entry);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(`Could not parse smiles: ${entry.smiles}`, e);
+      }
     }
   }
   return moleculesDB;
