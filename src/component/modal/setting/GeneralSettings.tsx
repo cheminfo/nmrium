@@ -23,6 +23,7 @@ import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
 import WorkspaceItem from './WorkspaceItem';
 import { validation } from './settingsValidation';
+import ToolsTabContent from './ToolsTabContent';
 
 const styles = css`
   .main-content {
@@ -234,6 +235,11 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             <Tab tablabel="Display" tabid="display">
               <div className="inner-content">
                 <DisplayTabContent preferences={preferences.current.display} />
+              </div>
+            </Tab>
+            <Tab tablabel="Tools" tabid="tools">
+              <div className="inner-content">
+                <ToolsTabContent preferences={preferences.current.display} />
               </div>
             </Tab>
 
