@@ -48,7 +48,7 @@ export const basic: Workspace = {
     },
   },
 
-  controllers: {
+  general: {
     dimmedSpectraTransparency: 0.1,
   },
   formatting: {

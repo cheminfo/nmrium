@@ -5,7 +5,7 @@ interface NucleusFormat {
   ppm: string;
   hz: string;
 }
-interface Controllers {
+interface GeneralPreferences {
   dimmedSpectraTransparency: number;
 }
 
@@ -98,7 +98,7 @@ export interface Workspace {
   version: number;
   label: string;
   display: NMRiumPreferences;
-  controllers: Controllers;
+  general: GeneralPreferences;
   formatting: Formatting;
   databases: Database[];
 }

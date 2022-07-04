@@ -10,13 +10,13 @@ export function addWorkspace(
 ) {
   const {
     workspace: workspaceName,
-    data: { display, controllers, formatting, databases },
+    data: { display, general, formatting, databases },
   } = action.payload;
   const newWorkSpace = {
     version: 1,
     label: workspaceName,
     display,
-    controllers,
+    general,
     formatting,
     databases,
   };

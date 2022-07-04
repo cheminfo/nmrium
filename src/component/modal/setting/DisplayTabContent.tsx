@@ -2,9 +2,9 @@ import lodashGet from 'lodash/get';
 import { useMemo } from 'react';
 
 import { NMRiumPreferences } from '../../NMRium';
+import { CheckBoxCell } from '../../elements/CheckBoxCell';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
-import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 
 interface ListItem {
   label: string;
@@ -73,19 +73,6 @@ const LIST: ListItem[] = [
 
 interface DisplayTabContentProps {
   preferences: NMRiumPreferences;
-}
-
-function CheckBoxCell(props) {
-  return (
-    <FormikCheckBox
-      style={{
-        container: { display: 'block', margin: '0 auto', width: 'fit-content' },
-      }}
-      key={props.name}
-      className="checkbox-element"
-      name={props.name}
-    />
-  );
 }
 
 function DisplayTabContent({ preferences }: DisplayTabContentProps) {

@@ -24,7 +24,7 @@ export const prediction: Workspace = {
       automaticAssignmentPanel: { display: false },
     },
   },
-  controllers: basic.controllers,
+  general: basic.general,
   formatting: basic.formatting,
   databases: basic.databases,
 };

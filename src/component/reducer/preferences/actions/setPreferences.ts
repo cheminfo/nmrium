@@ -10,7 +10,7 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     let currentWorkspacePreferences = getActiveWorkspace(draft);
 
-    let { controllers, formatting, display, databases } = action.payload;
+    let { general, formatting, display, databases } = action.payload;
     formatting = mapNucleiFormatting(formatting);
     let localData = getLocalStorage('nmr-general-settings');
     localData.currentWorkspace = draft.workspace.current;
@@ -18,7 +18,7 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
       ...localData.workspaces,
       [draft.workspace.current]: {
         ...localData.workspaces[draft.workspace.current],
-        controllers,
+        general,
         formatting,
         display,
         databases,
@@ -29,7 +29,7 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     currentWorkspacePreferences = lodashMerge(currentWorkspacePreferences, {
-      controllers,
+      general,
       formatting,
       databases,
       display,

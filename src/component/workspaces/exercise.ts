@@ -49,7 +49,7 @@ export const exercise: Workspace = {
       exclusionZonesTool: false,
     },
   },
-  controllers: basic.controllers,
+  general: basic.general,
   formatting: basic.formatting,
   databases: basic.databases,
 };

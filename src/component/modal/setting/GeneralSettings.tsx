@@ -17,13 +17,13 @@ import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import { ModalStyles } from '../ModalStyle';
 
-import ControllersTabContent from './ControllersTabContent';
 import DatabasesTabContent from './DatabasesTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
+import GeneralTabContent from './GeneralTabContent';
+import ToolsTabContent from './ToolsTabContent';
 import WorkspaceItem from './WorkspaceItem';
 import { validation } from './settingsValidation';
-import ToolsTabContent from './ToolsTabContent';
 
 const styles = css`
   .main-content {
@@ -104,7 +104,7 @@ interface GeneralSettingsProps {
 }
 
 function GeneralSettings({ onClose }: GeneralSettingsProps) {
-  const [activeTab, setActiveTab] = useState('controllers');
+  const [activeTab, setActiveTab] = useState('general');
   const { dispatch, ...preferences } = usePreferences();
   const alert = useAlert();
   const refForm = useRef<any>();
@@ -220,9 +220,9 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             activeTab={activeTab}
             onClick={tabChangeHandler}
           >
-            <Tab tablabel="Controllers" tabid="controllers">
+            <Tab tablabel="General" tabid="general">
               <div className="inner-content">
-                <ControllersTabContent />
+                <GeneralTabContent />
               </div>
             </Tab>
 
