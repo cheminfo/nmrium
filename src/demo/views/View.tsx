@@ -119,6 +119,7 @@ export default function View(props) {
               data={data}
               onDataChange={changeHandler}
               workspace={props.workspace || null}
+              preferences={{ toolBarButtons: { peakTool: true } }}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (
