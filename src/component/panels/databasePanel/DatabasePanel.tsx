@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
@@ -10,9 +11,12 @@ import {
   initiateDatabase,
   InitiateDatabaseResult,
   prepareData,
+  DATA_BASES,
+  LocalDatabase,
 } from '../../../data/data1d/database';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
@@ -28,6 +32,7 @@ import {
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { loadFile } from '../../utility/FileUtility';
+import { Database } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -36,7 +41,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import DatabasePreferences from './DatabasePreferences';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
-import { useDatabases } from './useDatabases';
 
 const style = css`
   .header {
@@ -58,6 +62,8 @@ const style = css`
 export interface DatabaseInnerProps {
   nucleus: string;
   selectedTool: string;
+  databases: (LocalDatabase | Database)[];
+  defaultDatabase: string;
 }
 
 interface ResultEntry {
@@ -71,14 +77,19 @@ const emptyKeywords = {
   searchKeywords: '',
 };
 
-function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
+function DatabasePanelInner({
+  nucleus,
+  selectedTool,
+  databases,
+  defaultDatabase,
+}: DatabaseInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
   const modal = useModal();
+  const { item } = useAccordionContext('Databases');
 
   const { handleChangeOption } = useToolsFunctions();
   const format = useFormatNumberByNucleus(nucleus);
-  const databases = useDatabases();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
   const [keywords, setKeywords] = useState<{
@@ -162,11 +173,13 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   }, [format, selectedTool]);
 
   const handleChangeDatabase = useCallback(
-    (databaseIndex) => {
+    (databaseKey) => {
+      const database = databases.find((item) => item.key === databaseKey);
       void (async () => {
         let _database: DatabaseNMREntry[] = [];
-        const { url, label, value } = databases[databaseIndex];
-        if (url) {
+        if (database?.url) {
+          const { url, label } = database;
+
           const hideLoading = await alert.showLoading(`load ${label} database`);
 
           try {
@@ -184,7 +197,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             hideLoading();
           }
         } else {
-          _database = value as DatabaseNMREntry[];
+          _database = (database as LocalDatabase)?.value as DatabaseNMREntry[];
         }
         databaseInstance.current = initiateDatabase(_database, nucleus);
         setKeywords({ ...emptyKeywords });
@@ -192,6 +205,12 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     },
     [alert, databases, nucleus],
   );
+
+  useEffect(() => {
+    if (item?.isOpen && defaultDatabase && !databaseInstance.current) {
+      handleChangeDatabase(defaultDatabase);
+    }
+  }, [databases, defaultDatabase, handleChangeDatabase, item?.isOpen]);
 
   const tableData = useMemo(() => {
     return prepareData(result.data);
@@ -306,6 +325,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             data={mapDatabasesToSelect(databases)}
             onChange={handleChangeDatabase}
             placeholder="Select database"
+            defaultValue={defaultDatabase}
           />
           <Select
             style={{ flex: 1 }}
@@ -330,7 +350,6 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             onClick={openSearchByStructure}
             style={{ marginLeft: '5px' }}
           >
-            {/*TODO: Correctly check whether idCode whether it is empty or not */}
             {!idCode ? (
               <BsHexagon
                 style={{
@@ -360,7 +379,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           ) : (
             <NoTableData
               text={
-                databases && databases.length > 0
+                databases && databases?.length > 0
                   ? 'Please select a database'
                   : 'Please add databases URL in the general preferences'
               }
@@ -381,9 +400,20 @@ export default function PeaksPanel() {
     activeTab,
     toolOptions: { selectedTool },
   } = useChartData();
+  const { current } = usePreferences();
+  const { data, defaultDatabase } = current.databases;
+  const databases = DATA_BASES.concat(
+    data.filter((datum) => datum.enabled),
+  ) as (Database | LocalDatabase)[];
+
   if (!activeTab) return <div />;
   return (
-    <MemoizedDatabasePanel nucleus={activeTab} selectedTool={selectedTool} />
+    <MemoizedDatabasePanel
+      nucleus={activeTab}
+      selectedTool={selectedTool}
+      databases={databases}
+      defaultDatabase={defaultDatabase}
+    />
   );
 }
 
@@ -400,9 +430,9 @@ function mapSolventsToSelect(solvents: string[]) {
 }
 
 function mapDatabasesToSelect(databases) {
-  return databases.map(({ label }, index) => ({
-    key: index,
-    value: index,
+  return databases.map(({ label, key }) => ({
+    key,
+    value: key,
     label,
   }));
 }
