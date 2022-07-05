@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { DatabaseNMREntry } from 'nmr-processing';
-import { Molecule } from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
@@ -92,7 +91,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     databases: [],
     solvents: [],
   });
-  const [molecule, setMolecule] = useState<Molecule>();
+  const [idCode, setIdCode] = useState<string>();
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -245,18 +244,16 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
     [handleChangeOption],
   );
 
-  const searchByStructureHandler = (molecule: Molecule) => {
-    const data = databaseInstance.current?.searchByStructure(molecule) || [];
+  const searchByStructureHandler = (idCodeValue: string) => {
+    const data = databaseInstance.current?.searchByStructure(idCodeValue) || [];
     setResult((prevResult) => ({ ...prevResult, data }));
-
-    setMolecule(molecule);
+    setIdCode(idCodeValue);
   };
-
   const openSearchByStructure = () => {
     modal.show(
       <DatabaseStructureSearchModal
         onChange={searchByStructureHandler}
-        molecule={molecule}
+        idCode={idCode}
       />,
       {
         position: positions.MIDDLE,
@@ -333,7 +330,8 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
             onClick={openSearchByStructure}
             style={{ marginLeft: '5px' }}
           >
-            {!molecule || molecule?.getAllAtoms() === 0 ? (
+            {/*TODO: Correctly check whether idCode whether it is empty or not */}
+            {!idCode ? (
               <BsHexagon
                 style={{
                   fontSize: '14px',

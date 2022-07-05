@@ -1,19 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import { Molecule } from 'openchemlib/full';
 import { StructureEditor } from 'react-ocl/full';
 
 import CloseButton from '../../elements/CloseButton';
 import { ModalStyles } from '../../modal/ModalStyle';
 
 interface DatabaseStructureSearchModalProps {
-  onChange: (molecule: Molecule) => void;
-  molecule: Molecule | undefined;
+  onChange: (idCode: string) => void;
+  idCode: string | undefined;
   onClose?: () => void;
 }
 
 export function DatabaseStructureSearchModal({
   onChange,
-  molecule,
+  idCode,
   onClose,
 }: DatabaseStructureSearchModalProps) {
   return (
@@ -25,10 +24,10 @@ export function DatabaseStructureSearchModal({
 
       <div className="main-content">
         <StructureEditor
-          initialMolfile={molecule?.toMolfileV3()}
+          initialIDCode={idCode}
           svgMenu
           fragment
-          onChange={(mplFile, molecule) => onChange(molecule)}
+          onChange={(mplFile, molecule, idCode) => onChange(idCode)}
         />
       </div>
     </div>
