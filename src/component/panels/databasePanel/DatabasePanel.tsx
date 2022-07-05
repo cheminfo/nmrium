@@ -293,8 +293,7 @@ function DatabasePanelInner({
               table,
               th {
                 position: relative !important;
-              }import { useAccordionContext } from 'analysis-ui-components';
-
+              }
             }
           `,
       ]}
