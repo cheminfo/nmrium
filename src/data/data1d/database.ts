@@ -63,7 +63,9 @@ function processSearchByStructure(
 ): DatabaseNMREntry[] {
   // default format { format: 'idCode' }
   // https://github.com/cheminfo/openchemlib-utils/blob/ef3a9c30be7efe225a24de04ea9cefc9299674aa/src/db/MoleculesDB.js#L102-L115
-  const result = moleculesDB.search(idCode);
+
+  // todo: idCode may be null and the current version of search requires a string or molecule. `|| ''` will become useless in next release of openchemlib-util
+  const result = moleculesDB.search(idCode || '');
   return result.map((entry) => entry.data, []);
 }
 
