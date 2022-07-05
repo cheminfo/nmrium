@@ -21,14 +21,16 @@ export interface DataBaseRange {
   signals: Array<DataBaseSignal>;
 }
 
-export type DataBase = {
+export type LocalDatabase = {
+  key: string;
   label: string;
   url?: string;
   value?: Array<DatabaseNMREntry>;
-}[];
+};
 
-export const databases: DataBase = [
+export const DATA_BASES: LocalDatabase[] = [
   {
+    key: 'local_solvent',
     label: 'Solvent database',
     value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
   },
