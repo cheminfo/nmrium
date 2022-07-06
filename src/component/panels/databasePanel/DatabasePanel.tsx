@@ -97,6 +97,7 @@ function DatabasePanelInner({
     searchKeywords: string;
   }>(emptyKeywords);
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
+  const databaseDataRef = useRef<DatabaseNMREntry[]>([]);
   const [result, setResult] = useState<ResultEntry>({
     data: [],
     databases: [],
@@ -127,8 +128,10 @@ function DatabasePanelInner({
 
   useEffect(() => {
     const { solvent, searchKeywords } = keywords;
-    setTimeout(() => {
+    setTimeout(async () => {
       if (databaseInstance.current) {
+        const hideLoading = await alert.showLoading(`Preparing of the Result`);
+
         if (!solvent && !searchKeywords) {
           const data = databaseInstance.current.data;
           const solvents = mapSolventsToSelect(
@@ -144,9 +147,10 @@ function DatabasePanelInner({
           const data = databaseInstance.current.search(values.join(' '));
           setResult((prevResult) => ({ ...prevResult, data }));
         }
+        hideLoading();
       }
-    });
-  }, [keywords]);
+    }, 0);
+  }, [alert, keywords]);
 
   useEffect(() => {
     function handle(event) {
@@ -175,15 +179,14 @@ function DatabasePanelInner({
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
       const database = databases.find((item) => item.key === databaseKey);
-      void (async () => {
-        let _database: DatabaseNMREntry[] = [];
+      setTimeout(async () => {
         if (database?.url) {
           const { url, label } = database;
 
           const hideLoading = await alert.showLoading(`load ${label} database`);
 
           try {
-            _database = await fetch(url)
+            databaseDataRef.current = await fetch(url)
               .then((response) => response.json())
               .then((databaseRecords) =>
                 databaseRecords.map((record) => ({
@@ -197,20 +200,47 @@ function DatabasePanelInner({
             hideLoading();
           }
         } else {
-          _database = (database as LocalDatabase)?.value as DatabaseNMREntry[];
+          databaseDataRef.current = (database as LocalDatabase)
+            ?.value as DatabaseNMREntry[];
         }
-        databaseInstance.current = initiateDatabase(_database, nucleus);
+
+        const hideLoading = await alert.showLoading(
+          `loading / preparing of the database`,
+        );
+
+        databaseInstance.current = initiateDatabase(
+          databaseDataRef.current,
+          nucleus,
+        );
         setKeywords({ ...emptyKeywords });
-      })();
+        hideLoading();
+      }, 0);
     },
     [alert, databases, nucleus],
   );
 
   useEffect(() => {
+    setTimeout(async () => {
+      if (databaseInstance.current) {
+        const hideLoading = await alert.showLoading(
+          `loading / preparing of the database`,
+        );
+
+        databaseInstance.current = initiateDatabase(
+          databaseDataRef.current,
+          nucleus,
+        );
+        hideLoading();
+        setKeywords({ ...emptyKeywords });
+      }
+    }, 0);
+  }, [alert, nucleus]);
+
+  useEffect(() => {
     if (item?.isOpen && defaultDatabase && !databaseInstance.current) {
       handleChangeDatabase(defaultDatabase);
     }
-  }, [databases, defaultDatabase, handleChangeDatabase, item?.isOpen]);
+  }, [databases, defaultDatabase, handleChangeDatabase, item?.isOpen, nucleus]);
 
   const tableData = useMemo(() => {
     return prepareData(result.data);
@@ -222,7 +252,7 @@ function DatabasePanelInner({
       const { ranges, solvent, names = [] } = result.data[index];
 
       if (jcampRelativeURL) {
-        void (async () => {
+        setTimeout(async () => {
           const hideLoading = await alert.showLoading(
             `load jcamp in progress...`,
           );
@@ -231,6 +261,7 @@ function DatabasePanelInner({
             const jcampURL = new URL(jcampRelativeURL, baseURL);
 
             const result = await loadFile(jcampURL);
+
             dispatch({
               type: RESURRECTING_SPECTRUM_FROM_JCAMP,
               payload: { file: result, ranges, jcampURL },
@@ -240,7 +271,7 @@ function DatabasePanelInner({
           } finally {
             hideLoading();
           }
-        })();
+        }, 0);
       } else {
         dispatch({
           type: RESURRECTING_SPECTRUM_FROM_RANGES,
@@ -264,9 +295,14 @@ function DatabasePanelInner({
   );
 
   const searchByStructureHandler = (idCodeValue: string) => {
-    const data = databaseInstance.current?.searchByStructure(idCodeValue) || [];
-    setResult((prevResult) => ({ ...prevResult, data }));
-    setIdCode(idCodeValue);
+    setTimeout(async () => {
+      const hideLoading = await alert.showLoading(`Searching in progress...`);
+      const data =
+        databaseInstance.current?.searchByStructure(idCodeValue) || [];
+      setResult((prevResult) => ({ ...prevResult, data }));
+      setIdCode(idCodeValue);
+      hideLoading();
+    }, 0);
   };
   const openSearchByStructure = () => {
     modal.show(
