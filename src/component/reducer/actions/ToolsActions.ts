@@ -2,7 +2,6 @@ import { max } from 'd3';
 import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import * as Filters from '../../../data/Filters';
 import { Data1D, Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
@@ -39,33 +38,41 @@ function getStrongestPeak(draft: Draft<State>) {
   }
 }
 
-function setFilterChanges(draft: Draft<State>, selectedFilter) {
+function checkFilterHasTempData(selectedToolId: string) {
+  return [options.phaseCorrection.id, options.baseLineCorrection.id].includes(
+    selectedToolId,
+  );
+}
+
+function setFilterChanges(draft: Draft<State>, selectedFilterID) {
   const activeSpectrumId = draft.activeSpectrum?.id;
 
-  //save reduced snapshot
-  //select the equalizer tool when you enable manual phase correction filter
-  if (selectedFilter === Filters.phaseCorrection.id) {
-    const datumAfterPhaseCorrection = resetSpectrumByFilter(
-      draft,
-      Filters.phaseCorrection.id,
-      {
-        rollback: true,
-        searchBy: 'name',
-        returnCurrentDatum: true,
-      },
-    );
-    draft.tempData = current(draft).data;
-    if (datumAfterPhaseCorrection) {
-      draft.tempData[datumAfterPhaseCorrection?.index] =
-        datumAfterPhaseCorrection?.datum;
-    }
-    const { xValue, index } = getStrongestPeak(draft) || {
-      xValue: 0,
-      index: 0,
-    };
+  // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
+  if (checkFilterHasTempData(selectedFilterID)) {
+    //return back the spectra data to point of time before applying a specific filter
+    const dataSavePoint = resetSpectrumByFilter(draft, selectedFilterID, {
+      rollback: true,
+      searchBy: 'name',
+      returnCurrentDatum: true,
+    });
 
-    draft.toolOptions.data.pivot = { value: xValue, index };
-  } else if (draft.toolOptions.selectedTool === options.phaseCorrection.id) {
+    // create a temporary clone of the data
+    draft.tempData = current(draft).data;
+
+    if (dataSavePoint) {
+      draft.tempData[dataSavePoint?.index] = dataSavePoint?.datum;
+    }
+
+    if (options.phaseCorrection.id === selectedFilterID) {
+      // look for the strongest peak to set it as a pivot
+      const { xValue, index } = getStrongestPeak(draft) || {
+        xValue: 0,
+        index: 0,
+      };
+
+      draft.toolOptions.data.pivot = { value: xValue, index };
+    }
+  } else if (checkFilterHasTempData(draft.toolOptions.selectedTool)) {
     draft.toolOptions.data.activeFilterID = null;
     const spectrumIndex = draft.data.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
@@ -174,9 +181,7 @@ function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
 function handleDeleteBaseLineZone(draft: Draft<State>, id) {
   const state = original(draft) as State;
   draft.toolOptions.data.baseLineZones =
-    state.toolOptions.data.baseLineZones.baseLineZones.filter(
-      (zone) => zone.id !== id,
-    );
+    state.toolOptions.data.baseLineZones.filter((zone) => zone.id !== id);
 }
 
 function handleToggleRealImaginaryVisibility(draft) {

@@ -5,6 +5,7 @@ import * as FiltersManager from '../../../data/FiltersManager';
 import { updateXShift } from '../../../data/data1d/Spectrum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
+import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
 import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -107,6 +108,21 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   }
 }
 
+function calculateBaseLineCorrection(draft: Draft<State>, action) {
+  if (draft.activeSpectrum) {
+    const { index } = draft.activeSpectrum;
+    const {
+      data: { x, re, im },
+      info,
+    } = draft.data[index] as Datum1D;
+
+    let _data = { data: { x, re, im }, info };
+    baselineCorrection(_data as Datum1D, action.options);
+    const { im: newIm, re: newRe } = _data.data;
+    draft.tempData[index].data.im = newIm;
+    draft.tempData[index].data.re = newRe;
+  }
+}
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum) {
     const { index } = draft.activeSpectrum;
@@ -397,6 +413,7 @@ export {
   applyAutoPhaseCorrectionFilter,
   applyAbsoluteFilter,
   calculateManualPhaseCorrection,
+  calculateBaseLineCorrection,
   handleMultipleSpectraFilter,
   enableFilter,
   deleteFilter,
