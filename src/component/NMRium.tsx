@@ -213,7 +213,7 @@ function InnerNMRium({
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
-      onDataChange?.(toJSON(state));
+      onDataChange?.(toJSON(state, 'onDataChange'));
     }
   }, [onDataChange, state]);
 

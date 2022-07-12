@@ -275,8 +275,11 @@ function getPreferences(state): Preferences {
  * @param {object} state
  */
 
+type JSONTarget = 'nmrium' | 'onDataChange';
+
 export function toJSON(
   state,
+  target: JSONTarget,
   dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
 ): NMRiumDataReturn {
   const {
@@ -284,6 +287,7 @@ export function toJSON(
     molecules: mols,
     correlations,
     multipleAnalysis,
+    actionType,
   } = state || {
     data: [],
     molecules: [],
@@ -301,6 +305,7 @@ export function toJSON(
   const molecules = mols.map((mol) => Molecule.toJSON(mol));
 
   return {
+    ...(target === 'onDataChange' ? { actionType } : {}),
     version: CURRENT_EXPORT_VERSION,
     spectra,
     molecules,
