@@ -1,7 +1,9 @@
 import numeral from 'numeral';
 
 function formatNumber(value, format, prefix = '', suffix = '') {
-  return prefix + numeral(value).format(format) + suffix;
+  return (value || value === 0) && !isNaN(value)
+    ? prefix + numeral(value).format(format) + suffix
+    : value;
 }
 
 function getNumberOfDecimals(value: number | string) {
