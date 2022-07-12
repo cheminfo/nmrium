@@ -187,7 +187,7 @@ function mapJs(js: Jcoupling[]) {
   if (js && js.length > 0) {
     const { coupling, multiplicity } = js.reduce<any>(
       (acc, { coupling, multiplicity }) => {
-        acc.coupling.push(coupling.toFixed(1));
+        acc.coupling.push(coupling);
         acc.multiplicity += multiplicity;
         return acc;
       },
