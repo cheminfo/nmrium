@@ -195,6 +195,6 @@ function mapJs(js: Jcoupling[]) {
     );
     return { multiplicity, coupling: coupling.join(',') };
   } else {
-    return { multiplicity: 's', coupling: '' };
+    return { multiplicity: '', coupling: '' };
   }
 }
