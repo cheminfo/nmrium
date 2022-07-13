@@ -42,7 +42,7 @@ async function phaseCorrectionFilter(nmrium: NmriumPage) {
 }
 
 async function baselineCorrectionFilter(nmrium: NmriumPage) {
-  await nmrium.clickTool('baseLineCorrection');
+  await nmrium.clickTool('baselineCorrection');
   await nmrium.page.click('button >> text=Apply');
 
   await expect(

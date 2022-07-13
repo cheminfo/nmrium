@@ -18,7 +18,7 @@ type RecordOptions = Record<
   | 'rangesPicking'
   | 'zeroFilling'
   | 'phaseCorrection'
-  | 'baseLineCorrection'
+  | 'baselineCorrection'
   | 'generalSelector'
   | 'editRange'
   | 'multipleSpectraAnalysis'
@@ -88,9 +88,9 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
   },
-  baseLineCorrection: {
-    id: 'baseLineCorrection',
-    label: 'baseline correction',
+  baselineCorrection: {
+    id: Filters.baselineCorrection.id,
+    label: Filters.baselineCorrection.name,
     hasOptionPanel: true,
     isFilter: true,
   },

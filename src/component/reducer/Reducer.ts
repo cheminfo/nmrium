@@ -110,7 +110,10 @@ export const getInitialState = (): State => ({
     selectedTool: options.zoom.id,
     selectedOptionPanel: null,
     data: {
-      baseLineZones: [],
+      baselineCorrection: {
+        options: {},
+        zones: [],
+      },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -319,7 +322,10 @@ export interface State {
       /**
        * list of zones for Baseline correction filter
        */
-      baseLineZones: any;
+      baselineCorrection: {
+        zones: any[];
+        options: any;
+      };
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}

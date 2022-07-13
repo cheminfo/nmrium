@@ -230,8 +230,8 @@ function KeysListenerTracker() {
             }
             case 'b': {
               if (isToolVisible('baseLineCorrectionTool')) {
-                check1DModeWithActiveSpectrum(options.baseLineCorrection.label);
-                handleChangeOption(options.baseLineCorrection.id);
+                check1DModeWithActiveSpectrum(options.baselineCorrection.label);
+                handleChangeOption(options.baselineCorrection.id);
               }
 
               break;

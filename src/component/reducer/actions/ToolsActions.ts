@@ -21,7 +21,10 @@ import {
   setIntegralsYDomain,
   setMode,
 } from './DomainActions';
-import { resetSpectrumByFilter } from './FiltersActions';
+import {
+  calculateBaseLineCorrection,
+  resetSpectrumByFilter,
+} from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
 function getStrongestPeak(draft: Draft<State>) {
@@ -39,7 +42,7 @@ function getStrongestPeak(draft: Draft<State>) {
 }
 
 function checkFilterHasTempData(selectedToolId: string) {
-  return [options.phaseCorrection.id, options.baseLineCorrection.id].includes(
+  return [options.phaseCorrection.id, options.baselineCorrection.id].includes(
     selectedToolId,
   );
 }
@@ -63,14 +66,34 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
       draft.tempData[dataSavePoint?.index] = dataSavePoint?.datum;
     }
 
-    if (options.phaseCorrection.id === selectedFilterID) {
-      // look for the strongest peak to set it as a pivot
-      const { xValue, index } = getStrongestPeak(draft) || {
-        xValue: 0,
-        index: 0,
-      };
+    switch (selectedFilterID) {
+      case options.phaseCorrection.id: {
+        // look for the strongest peak to set it as a pivot
+        const { xValue, index } = getStrongestPeak(draft) || {
+          xValue: 0,
+          index: 0,
+        };
 
-      draft.toolOptions.data.pivot = { value: xValue, index };
+        draft.toolOptions.data.pivot = { value: xValue, index };
+
+        break;
+      }
+      case options.baselineCorrection.id: {
+        if (draft.activeSpectrum?.id) {
+          const baselineCorrectionFilter: any = draft.data[
+            draft.activeSpectrum.index
+          ].filters.find(
+            (filter) => filter.name === options.baselineCorrection.id,
+          );
+
+          draft.toolOptions.data.baselineCorrection.zones =
+            baselineCorrectionFilter ? baselineCorrectionFilter.zones : [];
+        }
+        break;
+      }
+
+      default:
+        break;
     }
   } else if (checkFilterHasTempData(draft.toolOptions.selectedTool)) {
     draft.toolOptions.data.activeFilterID = null;
@@ -88,7 +111,7 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
   if (setDefaultTool) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
-  draft.toolOptions.data.baseLineZones = [];
+  draft.toolOptions.data.baselineCorrection = { zones: [], options: [] };
 
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
@@ -168,20 +191,24 @@ function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
   } else {
     zone = [start, end];
   }
-
-  const zones = draft.toolOptions.data.baseLineZones.slice();
+  const zones = draft.toolOptions.data.baselineCorrection.zones;
   zones.push({
     id: generateID(),
     from: zone[0],
     to: zone[1],
   });
-  draft.toolOptions.data.baseLineZones = zones;
+  draft.toolOptions.data.baselineCorrection.zones = zones.slice();
+
+  calculateBaseLineCorrection(draft);
 }
 
 function handleDeleteBaseLineZone(draft: Draft<State>, id) {
   const state = original(draft) as State;
-  draft.toolOptions.data.baseLineZones =
-    state.toolOptions.data.baseLineZones.filter((zone) => zone.id !== id);
+  draft.toolOptions.data.baselineCorrection.zones =
+    state.toolOptions.data.baselineCorrection.zones.filter(
+      (zone) => zone.id !== id,
+    );
+  calculateBaseLineCorrection(draft);
 }
 
 function handleToggleRealImaginaryVisibility(draft) {

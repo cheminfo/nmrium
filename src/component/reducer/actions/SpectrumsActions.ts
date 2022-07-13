@@ -116,7 +116,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
 
   if (options[draft.toolOptions.selectedTool].isFilter) {
     draft.toolOptions.selectedTool = options.zoom.id;
-    draft.toolOptions.data.baseLineZones = [];
+    draft.toolOptions.data.baselineCorrection = { zones: [], options: {} };
     draft.toolOptions.selectedOptionPanel = null;
     draft.tempData = null;
   }

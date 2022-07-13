@@ -54,7 +54,6 @@ function BaseLineCorrectionPanel() {
         default:
           break;
       }
-
       dispatch({
         type: liveUpdate
           ? CALCULATE_BASE_LINE_CORRECTION_FILTER
