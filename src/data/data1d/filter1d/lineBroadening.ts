@@ -38,13 +38,13 @@ export function apply(datum1D: Datum1D, value) {
 
   const coefExp = Math.exp(em * dw);
   let curFactor = Math.exp(em * t[0]); // in case does not start at zero
-  for (let i = 0; i < length - pointsToShift; i++) {
+  for (let i = 0; i < length - pointsToShift - 1; i++) {
     newRE[i] = re[i] * curFactor;
     newIM[i] = im[i] * curFactor;
     curFactor = curFactor * coefExp;
   }
   curFactor = Math.exp(em * t[0]);
-  for (let i = length; i > length - pointsToShift; i--) {
+  for (let i = length - 1; i > length - pointsToShift -1; i--) {
     newRE[i] = re[i] * curFactor;
     newIM[i] = im[i] * curFactor;
     curFactor = curFactor * coefExp;
