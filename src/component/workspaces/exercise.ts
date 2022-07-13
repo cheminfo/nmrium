@@ -43,7 +43,7 @@ export const exercise: Workspace = {
       rangePickingTool: false,
       zeroFillingTool: false,
       phaseCorrectionTool: false,
-      baseLineCorrectionTool: false,
+      baselineCorrectionTool: false,
       FFTTool: false,
       multipleSpectraAnalysisTool: false,
       exclusionZonesTool: false,
