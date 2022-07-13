@@ -80,14 +80,16 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
       }
       case options.baselineCorrection.id: {
         if (draft.activeSpectrum?.id) {
-          const baselineCorrectionFilter: any = draft.data[
+          const baselineCorrectionFilter: any = current(draft).data[
             draft.activeSpectrum.index
           ].filters.find(
             (filter) => filter.name === options.baselineCorrection.id,
           );
 
           draft.toolOptions.data.baselineCorrection.zones =
-            baselineCorrectionFilter ? baselineCorrectionFilter.zones : [];
+            baselineCorrectionFilter
+              ? baselineCorrectionFilter.value.zones
+              : [];
         }
         break;
       }
