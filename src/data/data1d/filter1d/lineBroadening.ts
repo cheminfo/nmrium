@@ -44,7 +44,7 @@ export function apply(datum1D: Datum1D, value) {
     curFactor = curFactor * coefExp;
   }
   curFactor = Math.exp(em * t[0]);
-  for (let i = length - 1; i > length - pointsToShift -1; i--) {
+  for (let i = length - 1; i > length - pointsToShift - 1; i--) {
     newRE[i] = re[i] * curFactor;
     newIM[i] = im[i] * curFactor;
     curFactor = curFactor * coefExp;
