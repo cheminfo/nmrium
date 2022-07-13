@@ -54,6 +54,7 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
   if (checkFilterHasTempData(selectedFilterID)) {
     //return back the spectra data to point of time before applying a specific filter
     const dataSavePoint = resetSpectrumByFilter(draft, selectedFilterID, {
+      updateDomain: false,
       rollback: true,
       searchBy: 'name',
       returnCurrentDatum: true,
