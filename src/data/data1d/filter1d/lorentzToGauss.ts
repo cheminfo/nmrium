@@ -8,7 +8,7 @@ export function apply(datum1D: Datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('LG not applicable on this data');
   }
-  const { center = 0, GB: gaussHz = 0, LB: expHz = 0 } = options;
+  const { center = 0, gaussHz = 0, expHz = 0 } = options;
 
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
