@@ -27,27 +27,11 @@ export function apply(datum1D: Datum1D, value) {
   const t = datum1D.data.x;
 
   const length = re.length;
-
-  const newRE = new Float64Array(length); // I don't think we need a new array... here
-  const newIM = new Float64Array(length);
-  //if (value !== 0) {// is it OK to skip this line if "value" is zero?
-  //please check this test of zero is correct !== or != ...
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
-  // convert line broadening in Hz into exponential coefficient:
-  const em = -value * Math.exp(1);
-  const coefExp = Math.exp(em * dw);
-  let curFactor = Math.exp(em * t[0]); // in case does not start at zero
-  for (let i = 0; i < length - pointsToShift; i++) {
-    newRE[i] = re[i] * curFactor;
-    newIM[i] = im[i] * curFactor;
-    curFactor = curFactor * coefExp;
-  }
-  curFactor = Math.exp(em * t[0]);
-  for (let i = length - 1; i > length - pointsToShift - 1; i--) {
-    newRE[i] = re[i] * curFactor;
-    newIM[i] = im[i] * curFactor;
-    curFactor = curFactor * coefExp;
-  }
+
+  const newRE = appyWindow(re, lorentToGauss, { center: 0, gaussHz: 0, expHz: -value, dw })
+  const newIM = appyWindow(im, lorentToGauss, { center: 0, gaussHz: 0, expHz: -value, dw })
+
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM } };
 }
 export function isApplicable(datum1D: Datum1D) {
@@ -60,4 +44,31 @@ export function reduce(previousValue, newValue) {
     once: true,
     reduce: newValue,
   };
+}
+
+function appyWindow(data, func, options) {
+  const { length = data.length, start = 0 } = options;
+
+  if (start + length > data.length) {
+    throw new RangeError(
+      'the size of the window function should not greater than data length',
+    );
+  }
+
+  const result = new Float64Array(data);
+  const generator = func({ ...options, length });
+  for (let i = start; i < length; i++) {
+    result[i] *= generator(i);
+  }
+
+  return result;
+}
+
+function lorentToGauss(options) {
+  const { dw, length, gaussHz = 0, expHz = 0, center = 0 } = options;
+  const C5 = Math.pow(0.6 * Math.PI * gaussHz * dw, 2);
+  const C2 = center * (length - 1);
+  const C6 = Math.PI * dw * expHz;
+
+  return (i) => Math.exp(i * C6 - Math.pow(C2 - i, 2) * C5);
 }
