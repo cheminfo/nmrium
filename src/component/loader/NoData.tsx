@@ -1,46 +1,45 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 import { useLoader } from '../context/LoaderContext';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 
-const styles = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.25);
-  flex-direction: column;
-  user-select: none;
-  width: 100%;
-  height: 100%;
-  outline: 10px dashed rgba(0, 0, 0, 0.3);
-  outline-offset: -10px;
-  padding-left: 20px;
-  padding-right: 20px;
-
-  p {
-    padding: 15px 30px;
-    background-color:rgba(0, 0, 0, 0.5);
-    border-radius: 39px;
-    color: white;
-    font-size: x-large;
-    font-weight: bold;
-
-  }
-}
-`;
+const styles: Record<'container' | 'text', CSSProperties> = {
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ' rgba(255, 255, 255, 0.25)',
+    flexDirection: 'column',
+    userSelect: 'none',
+    width: '100%',
+    height: '100%',
+    outline: '10px dashed rgba(0, 0, 0, 0.3)',
+    outlineOffset: -'10px',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+  },
+  text: {
+    padding: '15px 30px',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: '39px',
+    color: 'white',
+    fontSize: 'x-large',
+    fontWeight: 'bold',
+  },
+};
 
 interface NoDataProps {
   isEmpty?: boolean;
   canOpenLoader?: boolean;
   emptyText?: ReactNode;
+  style?: CSSProperties;
 }
 
 function NoData({
   isEmpty = true,
   emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
   canOpenLoader = true,
+  style,
 }: NoDataProps) {
   const openLoader = useLoader();
   const isToolEnabled = useCheckToolsVisibility();
@@ -50,8 +49,11 @@ function NoData({
   }
 
   return (
-    <div css={styles} {...(canOpenLoader && { onClick: openLoader })}>
-      <p>
+    <div
+      style={{ ...styles.container, ...style }}
+      {...(canOpenLoader && { onClick: openLoader })}
+    >
+      <p style={styles.text}>
         {isToolEnabled('import')
           ? emptyText
           : 'Importation feature has been disabled'}
