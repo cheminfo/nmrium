@@ -14,7 +14,7 @@ const styles: Record<'container' | 'text', CSSProperties> = {
     width: '100%',
     height: '100%',
     outline: '10px dashed rgba(0, 0, 0, 0.3)',
-    outlineOffset: -'10px',
+    outlineOffset: '-10px',
     paddingLeft: '20px',
     paddingRight: '20px',
   },
