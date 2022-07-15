@@ -110,7 +110,10 @@ export const getInitialState = (): State => ({
     selectedTool: options.zoom.id,
     selectedOptionPanel: null,
     data: {
-      baseLineZones: [],
+      baselineCorrection: {
+        options: {},
+        zones: [],
+      },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -319,7 +322,10 @@ export interface State {
       /**
        * list of zones for Baseline correction filter
        */
-      baseLineZones: any;
+      baselineCorrection: {
+        zones: any[];
+        options: any;
+      };
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}
@@ -559,6 +565,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.handleAddExclusionZone(draft, action);
     case types.DELETE_EXCLUSION_ZONE:
       return FiltersActions.handleDeleteExclusionZone(draft, action);
+    case types.APPLY_BASE_LINE_CORRECTION_FILTER:
+      return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
+    case types.CALCULATE_BASE_LINE_CORRECTION_FILTER:
+      return FiltersActions.calculateBaseLineCorrection(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
@@ -689,8 +699,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.DELETE_BASE_LINE_ZONE:
       return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
 
-    case types.APPLY_BASE_LINE_CORRECTION_FILTER:
-      return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
     case types.SET_KEY_PREFERENCES:
       return setKeyPreferencesHandler(draft, action.keyCode);
     case types.APPLY_KEY_PREFERENCES:

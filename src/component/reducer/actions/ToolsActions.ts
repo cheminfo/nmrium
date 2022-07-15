@@ -2,7 +2,6 @@ import { max } from 'd3';
 import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import * as Filters from '../../../data/Filters';
 import { Data1D, Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
@@ -22,7 +21,10 @@ import {
   setIntegralsYDomain,
   setMode,
 } from './DomainActions';
-import { resetSpectrumByFilter } from './FiltersActions';
+import {
+  calculateBaseLineCorrection,
+  resetSpectrumByFilter,
+} from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
 function getStrongestPeak(draft: Draft<State>) {
@@ -39,33 +41,64 @@ function getStrongestPeak(draft: Draft<State>) {
   }
 }
 
-function setFilterChanges(draft: Draft<State>, selectedFilter) {
+function checkFilterHasTempData(selectedToolId: string) {
+  return [options.phaseCorrection.id, options.baselineCorrection.id].includes(
+    selectedToolId,
+  );
+}
+
+function setFilterChanges(draft: Draft<State>, selectedFilterID) {
   const activeSpectrumId = draft.activeSpectrum?.id;
 
-  //save reduced snapshot
-  //select the equalizer tool when you enable manual phase correction filter
-  if (selectedFilter === Filters.phaseCorrection.id) {
-    const datumAfterPhaseCorrection = resetSpectrumByFilter(
-      draft,
-      Filters.phaseCorrection.id,
-      {
-        rollback: true,
-        searchBy: 'name',
-        returnCurrentDatum: true,
-      },
-    );
-    draft.tempData = current(draft).data;
-    if (datumAfterPhaseCorrection) {
-      draft.tempData[datumAfterPhaseCorrection?.index] =
-        datumAfterPhaseCorrection?.datum;
-    }
-    const { xValue, index } = getStrongestPeak(draft) || {
-      xValue: 0,
-      index: 0,
-    };
+  // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
+  if (checkFilterHasTempData(selectedFilterID)) {
+    //return back the spectra data to point of time before applying a specific filter
+    const dataSavePoint = resetSpectrumByFilter(draft, selectedFilterID, {
+      updateDomain: false,
+      rollback: true,
+      searchBy: 'name',
+      returnCurrentDatum: true,
+    });
 
-    draft.toolOptions.data.pivot = { value: xValue, index };
-  } else if (draft.toolOptions.selectedTool === options.phaseCorrection.id) {
+    // create a temporary clone of the data
+    draft.tempData = current(draft).data;
+
+    if (dataSavePoint) {
+      draft.tempData[dataSavePoint?.index] = dataSavePoint?.datum;
+    }
+
+    switch (selectedFilterID) {
+      case options.phaseCorrection.id: {
+        // look for the strongest peak to set it as a pivot
+        const { xValue, index } = getStrongestPeak(draft) || {
+          xValue: 0,
+          index: 0,
+        };
+
+        draft.toolOptions.data.pivot = { value: xValue, index };
+
+        break;
+      }
+      case options.baselineCorrection.id: {
+        if (draft.activeSpectrum?.id) {
+          const baselineCorrectionFilter: any = current(draft).data[
+            draft.activeSpectrum.index
+          ].filters.find(
+            (filter) => filter.name === options.baselineCorrection.id,
+          );
+
+          draft.toolOptions.data.baselineCorrection.zones =
+            baselineCorrectionFilter
+              ? baselineCorrectionFilter.value.zones
+              : [];
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  } else if (checkFilterHasTempData(draft.toolOptions.selectedTool)) {
     draft.toolOptions.data.activeFilterID = null;
     const spectrumIndex = draft.data.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
@@ -81,7 +114,7 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
   if (setDefaultTool) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
-  draft.toolOptions.data.baseLineZones = [];
+  draft.toolOptions.data.baselineCorrection = { zones: [], options: [] };
 
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
@@ -161,22 +194,24 @@ function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
   } else {
     zone = [start, end];
   }
-
-  const zones = draft.toolOptions.data.baseLineZones.slice();
+  const zones = draft.toolOptions.data.baselineCorrection.zones;
   zones.push({
     id: generateID(),
     from: zone[0],
     to: zone[1],
   });
-  draft.toolOptions.data.baseLineZones = zones;
+  draft.toolOptions.data.baselineCorrection.zones = zones.slice();
+
+  calculateBaseLineCorrection(draft);
 }
 
 function handleDeleteBaseLineZone(draft: Draft<State>, id) {
   const state = original(draft) as State;
-  draft.toolOptions.data.baseLineZones =
-    state.toolOptions.data.baseLineZones.baseLineZones.filter(
+  draft.toolOptions.data.baselineCorrection.zones =
+    state.toolOptions.data.baselineCorrection.zones.filter(
       (zone) => zone.id !== id,
     );
+  calculateBaseLineCorrection(draft);
 }
 
 function handleToggleRealImaginaryVisibility(draft) {

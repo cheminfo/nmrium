@@ -4,6 +4,7 @@ import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
 import { updateXShift } from '../../../data/data1d/Spectrum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
+import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
@@ -107,6 +108,30 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   }
 }
 
+function calculateBaseLineCorrection(draft: Draft<State>, action?) {
+  if (draft.activeSpectrum) {
+    const { index } = draft.activeSpectrum;
+    const {
+      data: { x, re, im },
+      info,
+    } = draft.data[index] as Datum1D;
+    // save the baseline options temporary
+    draft.toolOptions.data.baselineCorrection = {
+      ...draft.toolOptions.data.baselineCorrection,
+      ...(action?.options ? { options: action.options } : {}),
+    };
+
+    const { zones, options } = draft.toolOptions.data.baselineCorrection;
+    let _data = { data: { x, re, im }, info };
+    baselineCorrection(_data as Datum1D, {
+      zones,
+      ...options,
+    });
+    const { im: newIm, re: newRe } = _data.data;
+    draft.tempData[index].data.im = newIm;
+    draft.tempData[index].data.re = newRe;
+  }
+}
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum) {
     const { index } = draft.activeSpectrum;
@@ -199,17 +224,18 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
+    const { zones } = draft.toolOptions.data.baselineCorrection;
+
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.baselineCorrection.id,
         options: {
-          zones: draft.toolOptions.data.baseLineZones,
+          zones,
           ...action.options,
         },
       },
     ]);
 
-    draft.toolOptions.data.baseLineZones = [];
     const xDomainSnapshot = draft.xDomain.slice();
 
     resetSelectedTool(draft);
@@ -397,6 +423,7 @@ export {
   applyAutoPhaseCorrectionFilter,
   applyAbsoluteFilter,
   calculateManualPhaseCorrection,
+  calculateBaseLineCorrection,
   handleMultipleSpectraFilter,
   enableFilter,
   deleteFilter,
