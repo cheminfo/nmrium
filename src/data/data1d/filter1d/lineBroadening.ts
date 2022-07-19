@@ -1,4 +1,7 @@
+import { compose } from 'apodization';
+
 import { Datum1D } from '../../types/data1d/Datum1D';
+
 
 export const id = 'lineBroadening';
 export const name = 'Line broadening';
@@ -27,27 +30,36 @@ export function apply(datum1D: Datum1D, value) {
   const t = datum1D.data.x;
 
   const length = re.length;
-
-  const newRE = new Float64Array(length); // I don't think we need a new array... here
-  const newIM = new Float64Array(length);
-  //if (value !== 0) {// is it OK to skip this line if "value" is zero?
-  //please check this test of zero is correct !== or != ...
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
-  // convert line broadening in Hz into exponential coefficient:
-  const em = -value * Math.exp(1);
-  const coefExp = Math.exp(em * dw);
-  let curFactor = Math.exp(em * t[0]); // in case does not start at zero
+
+  const windowFunction = compose({
+    length,
+    shapes: [
+      {
+        start: 0,
+        shape: {
+          kind: 'exponential',
+          options: {
+            dw,
+            lb: value,
+          },
+        },
+      },
+    ],
+  });
+
+  const newRE = new Float64Array(length);
+  const newIM = new Float64Array(length);
   for (let i = 0; i < length - pointsToShift; i++) {
-    newRE[i] = re[i] * curFactor;
-    newIM[i] = im[i] * curFactor;
-    curFactor = curFactor * coefExp;
+    newRE[i] = re[i] * windowFunction[i];
+    newIM[i] = im[i] * windowFunction[i];
   }
-  curFactor = Math.exp(em * t[0]);
-  for (let i = length - 1; i > length - pointsToShift - 1; i--) {
-    newRE[i] = re[i] * curFactor;
-    newIM[i] = im[i] * curFactor;
-    curFactor = curFactor * coefExp;
+
+  for (let i = length - 1, j = 0; i > length - pointsToShift - 1; i--, j++) {
+    newRE[i] = re[i] * windowFunction[j];
+    newIM[i] = im[i] * windowFunction[j];
   }
+
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM } };
 }
 export function isApplicable(datum1D: Datum1D) {
