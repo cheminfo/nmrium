@@ -122,14 +122,17 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
     };
 
     const { zones, options } = draft.toolOptions.data.baselineCorrection;
-    let _data = { data: { x, re, im }, info };
-    baselineCorrection(_data as Datum1D, {
-      zones,
-      ...options,
-    });
-    const { im: newIm, re: newRe } = _data.data;
-    draft.tempData[index].data.im = newIm;
-    draft.tempData[index].data.re = newRe;
+    const { livePreview, ...filterOptions } = options;
+    if (livePreview) {
+      let _data = { data: { x, re, im }, info };
+      baselineCorrection(_data as Datum1D, {
+        zones,
+        ...filterOptions,
+      });
+      const { im: newIm, re: newRe } = _data.data;
+      draft.tempData[index].data.im = newIm;
+      draft.tempData[index].data.re = newRe;
+    }
   }
 }
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {

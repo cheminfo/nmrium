@@ -6,6 +6,7 @@ import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
+import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
@@ -36,8 +37,9 @@ function BaseLineCorrectionPanel() {
   const [algorithm, setAlgorithm] = useState('polynomial');
 
   const handleApplyFilter = useCallback(
-    (values, liveUpdate = false) => {
+    (values, triggerSource: 'apply' | 'onChange' = 'apply') => {
       let options = {};
+
       switch (algorithm) {
         case 'airpls':
           options = {
@@ -54,10 +56,12 @@ function BaseLineCorrectionPanel() {
         default:
           break;
       }
+
       dispatch({
-        type: liveUpdate
-          ? CALCULATE_BASE_LINE_CORRECTION_FILTER
-          : APPLY_BASE_LINE_CORRECTION_FILTER,
+        type:
+          triggerSource === 'onChange'
+            ? CALCULATE_BASE_LINE_CORRECTION_FILTER
+            : APPLY_BASE_LINE_CORRECTION_FILTER,
         options,
       });
     },
@@ -98,10 +102,10 @@ function BaseLineCorrectionPanel() {
           degree: Yup.number().integer().min(1).max(6).required(),
         });
 
-        return { validation, initialValue: { degree: 3 } };
+        return { livePreview: true, validation, initialValue: { degree: 3 } };
       }
       default:
-        return { validation: {}, initialValue: {} };
+        return { livePreview: true, validation: {}, initialValue: {} };
     }
   }, [algorithm]);
 
@@ -120,7 +124,7 @@ function BaseLineCorrectionPanel() {
         ref={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
         key={JSON.stringify(formData.initialValue)}
-        initialValues={formData.initialValue}
+        initialValues={{ ...formData.initialValue, livePreview: true }}
         validationSchema={formData.validation}
       >
         {algorithm && algorithm === 'airpls' && (
@@ -150,8 +154,13 @@ function BaseLineCorrectionPanel() {
             />
           </Label>
         )}
+
+        <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
+          <FormikCheckBox name="livePreview" />
+        </Label>
+
         <FormikOnChange
-          onChange={(values) => handleApplyFilter(values, true)}
+          onChange={(values) => handleApplyFilter(values, 'onChange')}
         />
       </FormikForm>
 
