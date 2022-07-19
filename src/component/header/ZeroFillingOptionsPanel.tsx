@@ -40,16 +40,19 @@ function ZeroFillingOptionsPanel() {
   const { data, activeSpectrum } = useChartData();
   const sizeTextInputRef = useRef<any>();
   const [lineBroadeningValue, setLineBroadeningValue] = useState(1);
-
+  const [gaussBroadeningValue, setGaussBroadeningValue] = useState(0);
+  const [centerValue, setCenterValue] = useState(0);
   const handleApplyFilter = useCallback(() => {
     dispatch({
       type: APPLY_ZERO_FILLING_FILTER,
       value: {
         zeroFillingSize: Number(sizeTextInputRef.current.value),
         lineBroadeningValue,
+        gaussBroadeningValue,
+        centerValue,
       },
     });
-  }, [dispatch, lineBroadeningValue]);
+  }, [dispatch, lineBroadeningValue, gaussBroadeningValue, centerValue]);
 
   const getDefaultValue = useCallback(() => {
     if (data && activeSpectrum?.id) {
@@ -66,13 +69,20 @@ function ZeroFillingOptionsPanel() {
   const handleInput = useCallback(
     (e) => {
       if (e.target) {
+        const inputLabel = e.target.name;
+        const [currentValue, setter] =
+          inputLabel === 'exponentialHz'
+            ? [lineBroadeningValue, setLineBroadeningValue]
+            : inputLabel === 'gaussianHz'
+            ? [gaussBroadeningValue, setGaussBroadeningValue]
+            : [centerValue, setCenterValue];
         const _value = e.target.validity.valid
           ? Number(e.target.value)
-          : lineBroadeningValue;
-        setLineBroadeningValue(_value);
+          : currentValue;
+        setter(_value);
       }
     },
-    [lineBroadeningValue],
+    [lineBroadeningValue, centerValue, gaussBroadeningValue],
   );
 
   const handleCancelFilter = useCallback(() => {
@@ -90,12 +100,32 @@ function ZeroFillingOptionsPanel() {
         style={{ marginLeft: 10, marginRight: 10 }}
         defaultValue={getDefaultValue()}
       />
-      <span style={styles.label}>Line Broadening: </span>
+      <span style={styles.label}>LB: </span>
       <input
-        name="line-broadening"
+        name="exponentialHz"
         style={styles.input}
         type="number"
         defaultValue={lineBroadeningValue}
+        onInput={handleInput}
+        pattern="^\d*(\.\d{0,2})?$"
+        step="any"
+      />
+      <span style={styles.label}>GB: </span>
+      <input
+        name="gaussianHz"
+        style={styles.input}
+        type="number"
+        defaultValue={gaussBroadeningValue}
+        onInput={handleInput}
+        pattern="^\d*(\.\d{0,2})?$"
+        step="any"
+      />
+      <span style={styles.label}>GF: </span>
+      <input
+        name="line-broadening-center"
+        style={styles.input}
+        type="number"
+        defaultValue={centerValue}
         onInput={handleInput}
         pattern="^\d*(\.\d{0,2})?$"
         step="any"

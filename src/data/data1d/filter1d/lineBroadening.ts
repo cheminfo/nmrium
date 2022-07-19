@@ -2,7 +2,6 @@ import { compose } from 'apodization';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
 
-
 export const id = 'lineBroadening';
 export const name = 'Line broadening';
 
@@ -17,6 +16,7 @@ export function apply(datum1D: Datum1D, value) {
     throw new Error('lineBroadening not applicable on this data');
   }
 
+  const { lineBroadeningValue, gaussBroadeningValue, centerValue } = value;
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0) {
@@ -31,17 +31,22 @@ export function apply(datum1D: Datum1D, value) {
 
   const length = re.length;
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
-
   const windowFunction = compose({
     length,
     shapes: [
       {
         start: 0,
         shape: {
-          kind: 'exponential',
+          kind: 'lorentzToGauss',
           options: {
+            length,
             dw,
-            lb: value,
+            exponentialHz:
+              gaussBroadeningValue > 0
+                ? lineBroadeningValue
+                : -lineBroadeningValue,
+            gaussianHz: gaussBroadeningValue,
+            center: centerValue,
           },
         },
       },
