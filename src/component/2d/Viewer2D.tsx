@@ -5,8 +5,6 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import useSpectrum from '../hooks/useSpectrum';
-import NoData from '../loader/NoData';
 import Spinner from '../loader/Spinner';
 import {
   BRUSH_END,
@@ -42,8 +40,6 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   } = state;
 
   const dispatch = useDispatch();
-  const { info } = useSpectrum({ info: {} });
-  const isVisible = info.isFt || !('isFt' in info);
 
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
@@ -134,16 +130,6 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     },
     [selectedTool],
   );
-
-  if (!isVisible) {
-    return (
-      <NoData
-        emptyText="2D FID spectra can not be displayed yet"
-        canOpenLoader={false}
-        style={{ outline: 'none' }}
-      />
-    );
-  }
 
   return (
     <ResponsiveChart>

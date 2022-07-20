@@ -6,6 +6,7 @@ import { Margin } from '../reducer/Reducer';
 import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 
 import Contours from './Contours';
+import { FidCanvas } from './FidCanvas';
 import Left1DChart from './Left1DChart';
 import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
@@ -60,6 +61,7 @@ function chart2DInner({
       {spectra?.[0] && <Top1DChart data={spectra[0]} />}
       {spectra?.[1] && <Left1DChart data={spectra[1]} />}
       <Contours />
+      <FidCanvas />
       <Zones />
       <IndicationLines axis="X" show />
       <IndicationLines axis="Y" show />

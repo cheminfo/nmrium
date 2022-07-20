@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
+import { ScaleLinear } from 'd3';
 import { useEffect, useRef, memo } from 'react';
 
+import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
+import useSpectrum from '../hooks/useSpectrum';
 
 import { get2DXScale } from './utilities/scale';
 
@@ -24,7 +27,6 @@ const defaultMargin = { right: 100, top: 0, left: 0, bottom: 0 };
 
 interface XAxisProps {
   show?: boolean;
-  label?: string;
   margin?: {
     top: number;
     right: number;
@@ -34,21 +36,38 @@ interface XAxisProps {
 }
 
 function XAxis(props: XAxisProps) {
-  const {
-    show = true,
-    label = 'δ [ppm]',
-    margin: marginProps = defaultMargin,
-  } = props;
+  const { show = true, margin: marginProps = defaultMargin } = props;
 
   const state = useChartData();
   const { xDomain, height, width, margin, tabActiveSpectrum, activeTab } =
     state;
+  const spectrum = useSpectrum({}) as Datum2D;
 
   const refAxis = useRef<SVGGElement>(null);
 
   useEffect(() => {
     if (!show) return;
-    const scaleX = get2DXScale({ width, margin, xDomain });
+
+    let scaleX: ScaleLinear<number, number, never> | null = null;
+
+    if (spectrum.info.isFid) {
+      const { minX, maxX } = spectrum.data;
+      scaleX = get2DXScale(
+        {
+          width,
+          margin,
+          xDomain: [minX, maxX],
+        },
+        true,
+      );
+    } else {
+      scaleX = get2DXScale({
+        width,
+        margin,
+        xDomain,
+      });
+    }
+
     const xAxis = d3.axisBottom(scaleX).ticks(8).tickFormat(d3.format('0'));
 
     // @ts-expect-error actually well typed
@@ -57,11 +76,8 @@ function XAxis(props: XAxisProps) {
     activeTab,
     height,
     margin,
-    margin.bottom,
-    margin.left,
-    margin.right,
-    margin.top,
     show,
+    spectrum,
     tabActiveSpectrum,
     width,
     xDomain,
@@ -83,7 +99,7 @@ function XAxis(props: XAxisProps) {
           ref={refAxis}
         >
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
-            {label}
+            {spectrum?.info.isFid ? 'Time [sec]' : 'δ [ppm]'}
           </text>
         </g>
       )}
