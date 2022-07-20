@@ -5,6 +5,7 @@ import { getShift } from '../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import useSpectrum from '../hooks/useSpectrum';
 import { useActiveSpectrum } from '../reducer/Reducer';
 import { PathBuilder } from '../utility/PathBuilder';
 
@@ -130,11 +131,16 @@ const MemoizedContours = memo(ContoursInner);
 
 export default function Contours() {
   const { data: spectra, displayerKey } = useChartData();
+  const activeSpectrum = useSpectrum({});
   const data = useMemo<Array<Datum2D>>(() => {
     return spectra.filter(
       (datum) => datum.info.dimension === 2 && datum.info.isFt,
     ) as Array<Datum2D>;
   }, [spectra]);
+
+  if (activeSpectrum?.info.isFid) {
+    return null;
+  }
 
   return <MemoizedContours {...{ data, displayerKey }} />;
 }
