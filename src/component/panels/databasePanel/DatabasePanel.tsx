@@ -204,9 +204,7 @@ function DatabasePanelInner({
             ?.value as DatabaseNMREntry[];
         }
 
-        const hideLoading = await alert.showLoading(
-          `loading / preparing of the database`,
-        );
+        const hideLoading = await alert.showLoading(`Loading the database`);
 
         databaseInstance.current = initiateDatabase(
           databaseDataRef.current,
@@ -222,9 +220,7 @@ function DatabasePanelInner({
   useEffect(() => {
     setTimeout(async () => {
       if (databaseInstance.current) {
-        const hideLoading = await alert.showLoading(
-          `loading / preparing of the database`,
-        );
+        const hideLoading = await alert.showLoading(`Loading the database`);
 
         databaseInstance.current = initiateDatabase(
           databaseDataRef.current,
