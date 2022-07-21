@@ -182,21 +182,17 @@ export async function addBruker(options, data, usedColors) {
         );
       }
     } else if (info.dimension === 2) {
-      if (info.isFt) {
-        spectra.push(
-          Data2DManager.fromBruker(
-            entry,
-            {
-              ...options,
-              info,
-              display: { ...options.display },
-            },
-            usedColors,
-          ),
-        );
-      } else {
-        // in case of 2D FID spectrum
-      }
+      spectra.push(
+        Data2DManager.fromBruker(
+          entry,
+          {
+            ...options,
+            info,
+            display: { ...options.display },
+          },
+          usedColors,
+        ),
+      );
     }
   }
   return spectra;
@@ -275,8 +271,11 @@ function getPreferences(state): Preferences {
  * @param {object} state
  */
 
+type JSONTarget = 'nmrium' | 'onDataChange';
+
 export function toJSON(
   state,
+  target: JSONTarget,
   dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
 ): NMRiumDataReturn {
   const {
@@ -284,6 +283,7 @@ export function toJSON(
     molecules: mols,
     correlations,
     multipleAnalysis,
+    actionType,
   } = state || {
     data: [],
     molecules: [],
@@ -301,6 +301,7 @@ export function toJSON(
   const molecules = mols.map((mol) => Molecule.toJSON(mol));
 
   return {
+    ...(target === 'onDataChange' ? { actionType } : {}),
     version: CURRENT_EXPORT_VERSION,
     spectra,
     molecules,

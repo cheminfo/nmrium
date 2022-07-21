@@ -90,6 +90,7 @@ export interface Formatting {
 }
 
 export interface Database {
+  key: string;
   label: string;
   url: string;
   enabled: boolean;
@@ -99,12 +100,16 @@ export interface WorkspaceMeta {
   version: number;
   label: string;
 }
+export interface Databases {
+  data: Database[];
+  defaultDatabase: string;
+}
 
 export interface WorkspaceData {
   display?: NMRiumPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
-  databases?: Database[];
+  databases?: Databases;
 }
 
 export type InnerWorkspace = WorkspaceMeta & WorkspaceData;

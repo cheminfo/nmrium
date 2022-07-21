@@ -61,11 +61,15 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
     },
     panels: {},
   },
-  databases: [
-    {
-      label: 'Toc',
-      url: 'https://data.cheminfo.org/nmr/database/toc.json',
-      enabled: true,
-    },
-  ],
+  databases: {
+    defaultDatabase: '',
+    data: [
+      {
+        key: 'toc',
+        label: 'Toc',
+        url: 'https://data.cheminfo.org/nmr/database/toc.json',
+        enabled: true,
+      },
+    ],
+  },
 };

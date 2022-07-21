@@ -8,6 +8,7 @@ import { Datum2D } from '../data/types/data2d';
 import { Preferences } from './Preferences';
 
 export interface NMRiumDataReturn {
+  actionType?: string;
   version: number;
   spectra: (Datum1D | Datum2D)[];
   molecules: Molecule[];

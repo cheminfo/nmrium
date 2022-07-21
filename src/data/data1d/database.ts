@@ -5,7 +5,7 @@ import {
   DatabaseNMREntry,
 } from 'nmr-processing';
 import { MoleculesDB } from 'openchemlib-utils';
-import OCL, { Molecule } from 'openchemlib/full';
+import OCL from 'openchemlib/full';
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';
@@ -21,14 +21,16 @@ export interface DataBaseRange {
   signals: Array<DataBaseSignal>;
 }
 
-export type DataBase = {
+export type LocalDatabase = {
+  key: string;
   label: string;
   url?: string;
   value?: Array<DatabaseNMREntry>;
-}[];
+};
 
-export const databases: DataBase = [
+export const DATA_BASES: LocalDatabase[] = [
   {
+    key: 'local_solvent',
     label: 'Solvent database',
     value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
   },
@@ -38,7 +40,7 @@ export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
   search: (keywords?: string | string[]) => DatabaseNMREntry[];
-  searchByStructure: (molecule: Molecule) => DatabaseNMREntry[];
+  searchByStructure: (idCode: string) => DatabaseNMREntry[];
 }
 
 export function initiateDatabase(
@@ -51,17 +53,21 @@ export function initiateDatabase(
   const getSolvents = () => prepareGetSolvents(data);
   const search = (keywords: string | string[] = []) =>
     filter(data, { keywords });
-  const searchByStructure = (molecule: Molecule) =>
-    processSearchByStructure(moleculesDB, molecule);
+  const searchByStructure = (idCode: string) =>
+    processSearchByStructure(moleculesDB, idCode);
 
   return { searchByStructure, data, getSolvents, search };
 }
 
 function processSearchByStructure(
   moleculesDB: MoleculesDB,
-  molecule: Molecule,
+  idCode: string,
 ): DatabaseNMREntry[] {
-  const result = moleculesDB.search(molecule);
+  // default format { format: 'idCode' }
+  // https://github.com/cheminfo/openchemlib-utils/blob/ef3a9c30be7efe225a24de04ea9cefc9299674aa/src/db/MoleculesDB.js#L102-L115
+
+  // todo: idCode may be null and the current version of search requires a string or molecule. `|| ''` will become useless in next release of openchemlib-util
+  const result = moleculesDB.search(idCode || '');
   return result.map((entry) => entry.data, []);
 }
 
@@ -181,7 +187,7 @@ function mapJs(js: Jcoupling[]) {
   if (js && js.length > 0) {
     const { coupling, multiplicity } = js.reduce<any>(
       (acc, { coupling, multiplicity }) => {
-        acc.coupling.push(coupling.toFixed(1));
+        acc.coupling.push(coupling);
         acc.multiplicity += multiplicity;
         return acc;
       },
@@ -189,6 +195,6 @@ function mapJs(js: Jcoupling[]) {
     );
     return { multiplicity, coupling: coupling.join(',') };
   } else {
-    return { multiplicity: 's', coupling: '' };
+    return { multiplicity: '', coupling: '' };
   }
 }

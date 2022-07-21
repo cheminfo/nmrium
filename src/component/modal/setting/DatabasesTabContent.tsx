@@ -1,10 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { useFormikContext } from 'formik';
+import { Field, useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { useCallback, useMemo } from 'react';
+import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
+import generateID from '../../../data/utilities/generateID';
 import { NMRiumWorkspace } from '../../NMRium';
 import Button from '../../elements/Button';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
@@ -12,17 +11,10 @@ import FormikInput from '../../elements/formik/FormikInput';
 import { isGoogleDocument } from '../../utility/isGoogleDocument';
 import Workspaces from '../../workspaces';
 
-const style = {
-  addButton: css`
-    background-color: transparent;
-    border: 0;
-    outline: none;
-    margin-left: 5px;
-    svg {
-      font-size: 14px;
-      fill: green;
-    }
-  `,
+const style: Record<
+  'table' | 'th' | 'input' | 'labelCol' | 'serialCol' | 'checkbox',
+  CSSProperties
+> = {
   table: {
     width: '100%',
   },
@@ -30,13 +22,18 @@ const style = {
     fontSize: '12px',
   },
   input: {
-    input: { width: '100%' },
+    width: '100%',
   },
   labelCol: {
     width: '30%',
   },
   serialCol: {
     width: '5%',
+  },
+  checkbox: {
+    display: 'block',
+    margin: '0 auto',
+    width: 'fit-content',
   },
 };
 
@@ -51,29 +48,39 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
 
   const deleteHandler = useCallback(
     (index: number) => {
-      const _database = databases.slice();
+      const _database = databases.data.slice();
       _database.splice(index, 1);
-      setFieldValue('databases', _database);
+      setFieldValue('databases.data', _database);
     },
     [databases, setFieldValue],
   );
   const addNewDatabaseHandler = useCallback(() => {
     const newDatabase = {
+      key: generateID(),
       label: '',
       url: '',
       enabled: true,
     };
-    setFieldValue('databases', [...databases, newDatabase]);
+    setFieldValue('databases.data', [...databases.data, newDatabase]);
   }, [databases, setFieldValue]);
+
   const resetDatabaseHandler = useCallback(() => {
     const database =
-      Workspaces?.[currentWorkspace]?.databases || Workspaces.default.databases;
+      Workspaces?.[currentWorkspace]?.databases?.data ||
+      Workspaces.default?.databases?.data;
 
-    setFieldValue('databases', database);
+    setFieldValue('databases.data', database);
   }, [currentWorkspace, setFieldValue]);
 
   return (
-    <>
+    <fieldset
+      onClick={(e: any) => {
+        if (e.target.checked) {
+          e.target.checked = false;
+          setFieldValue('databases.defaultDatabase', '');
+        }
+      }}
+    >
       <div className="section-header" style={{ display: 'flex' }}>
         <p style={{ flex: 1 }}>Databases</p>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -102,11 +109,12 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
               <th style={style.th}>Label </th>
               <th style={style.th}>URL</th>
               <th style={style.th}>Enabled</th>
+              <th style={style.th}>Auto Load</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {databases?.map((item, index) => {
+            {databases?.data.map((item, index) => {
               const num = index + 1;
               return (
                 // eslint-disable-next-line react/no-array-index-key
@@ -116,29 +124,33 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
                   </td>
                   <td style={style.labelCol}>
                     <FormikInput
-                      style={style.input}
-                      name={`databases.${index}.label`}
+                      style={{ input: style.input }}
+                      name={`databases.data.${index}.label`}
                       checkErrorAfterInputTouched={false}
                     />
                   </td>
                   <td>
                     <FormikInput
-                      style={style.input}
-                      name={`databases.${index}.url`}
+                      style={{ input: style.input }}
+                      name={`databases.data.${index}.url`}
                       checkErrorAfterInputTouched={false}
                     />
                   </td>
                   <td>
                     <FormikCheckBox
                       style={{
-                        container: {
-                          display: 'block',
-                          margin: '0 auto',
-                          width: 'fit-content',
-                        },
+                        container: style.checkbox,
                       }}
                       className="checkbox-element"
-                      name={`databases.${index}.enabled`}
+                      name={`databases.data.${index}.enabled`}
+                    />
+                  </td>
+                  <td>
+                    <Field
+                      style={style.checkbox}
+                      type="radio"
+                      name="databases.defaultDatabase"
+                      value={item.key}
                     />
                   </td>
                   <td>
@@ -182,7 +194,7 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
           </tbody>
         </table>
       </div>
-    </>
+    </fieldset>
   );
 }
 

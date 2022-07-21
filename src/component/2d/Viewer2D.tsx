@@ -138,8 +138,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   if (!isVisible) {
     return (
       <NoData
-        emptyText="Currently FID can not be displayed for 2D spectra"
+        emptyText="2D FID spectra can not be displayed yet"
         canOpenLoader={false}
+        style={{ outline: 'none' }}
       />
     );
   }

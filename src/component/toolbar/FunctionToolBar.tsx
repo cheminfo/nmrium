@@ -210,10 +210,10 @@ function FunctionToolBarInner({
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('baselineCorrectionTool') && (
             <ToggleButton
-              key={options.baseLineCorrection.id}
-              value={options.baseLineCorrection.id}
-              id="baseLineCorrection"
-              title={`${options.baseLineCorrection.label} ( Press b )`}
+              key={options.baselineCorrection.id}
+              value={options.baselineCorrection.id}
+              id="baselineCorrection"
+              title={`${options.baselineCorrection.label} ( Press b )`}
               isVisible={
                 !!(
                   activeSpectrum &&
