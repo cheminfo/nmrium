@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -34,16 +33,11 @@ function BaseLineZones() {
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
-  const deleteRangeHandler = useCallback(
-    (id) => {
-      dispatch({ type: DELETE_BASE_LINE_ZONE, id });
-    },
-    [dispatch],
-  );
+  const deleteRangeHandler = (id) => {
+    dispatch({ type: DELETE_BASE_LINE_ZONE, id });
+  };
 
-  const baseLineZones = useMemo(() => {
-    return toolOptions.data.baseLineZones;
-  }, [toolOptions]);
+  const baseLineZones = toolOptions.data.baselineCorrection.zones;
 
   return (
     <>

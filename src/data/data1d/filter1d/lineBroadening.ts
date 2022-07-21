@@ -60,6 +60,6 @@ export function isApplicable(datum1D: Datum1D) {
 export function reduce(previousValue, newValue) {
   return {
     once: true,
-    reduce: previousValue + newValue,
+    reduce: newValue,
   };
 }

@@ -28,7 +28,7 @@ export const process1D: Workspace = {
     toolBarButtons: {
       import: false,
       exportAs: false,
-      autoRangesTool: false,
+      rangePickingTool: false,
       multipleSpectraAnalysisTool: false,
       exclusionZonesTool: false,
     },

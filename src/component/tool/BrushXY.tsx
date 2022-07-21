@@ -20,7 +20,7 @@ const allowTools: Array<string | number> = [
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,
-  options.baseLineCorrection.id,
+  options.baselineCorrection.id,
   options.rangesPicking.id,
   options.zone2D.id,
   options.slicingTool.id,

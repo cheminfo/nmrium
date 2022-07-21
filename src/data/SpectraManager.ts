@@ -1,6 +1,8 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
+import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+import { Preferences } from '../types/Preferences';
 
 import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Spectrum1D';
@@ -159,9 +161,9 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
 export async function addBruker(options, data, usedColors) {
   const spectra: any[] = [];
   let result = await fromBruker(data, {
-    xy: true,
-    noContours: true,
-    keepOriginal: true,
+    converter: {
+      xy: true,
+    },
   });
   let entries = result;
   for (let entry of entries) {
@@ -180,21 +182,17 @@ export async function addBruker(options, data, usedColors) {
         );
       }
     } else if (info.dimension === 2) {
-      if (info.isFt) {
-        spectra.push(
-          Data2DManager.fromBruker(
-            entry,
-            {
-              ...options,
-              info,
-              display: { ...options.display },
-            },
-            usedColors,
-          ),
-        );
-      } else {
-        // in case of 2D FID spectrum
-      }
+      spectra.push(
+        Data2DManager.fromBruker(
+          entry,
+          {
+            ...options,
+            info,
+            display: { ...options.display },
+          },
+          usedColors,
+        ),
+      );
     }
   }
   return spectra;
@@ -255,7 +253,7 @@ export function addJcamps(files, usedColors) {
   return spectra;
 }
 
-function getPreferences(state) {
+function getPreferences(state): Preferences {
   const {
     activeTab,
     verticalAlign: { align },
@@ -272,24 +270,26 @@ function getPreferences(state) {
  *
  * @param {object} state
  */
+
+type JSONTarget = 'nmrium' | 'onDataChange';
+
 export function toJSON(
   state,
+  target: JSONTarget,
   dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
-) {
+): NMRiumDataReturn {
   const {
     data,
     molecules: mols,
     correlations,
     multipleAnalysis,
-    toolOptions: {
-      data: { exclusionZones },
-    },
+    actionType,
   } = state || {
     data: [],
     molecules: [],
     correlations: {},
     multipleAnalysis: {},
-    exclusionZones: {},
+    actionType: '',
   };
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1
@@ -301,12 +301,12 @@ export function toJSON(
   const molecules = mols.map((mol) => Molecule.toJSON(mol));
 
   return {
+    ...(target === 'onDataChange' ? { actionType } : {}),
+    version: CURRENT_EXPORT_VERSION,
     spectra,
     molecules,
     correlations,
     multipleAnalysis,
-    exclusionZones,
-    version: CURRENT_EXPORT_VERSION,
     preferences,
   };
 }

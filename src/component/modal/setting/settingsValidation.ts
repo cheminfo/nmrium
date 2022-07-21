@@ -59,12 +59,14 @@ const formattingValidation = (obj: Workspace) =>
       ),
   });
 
-const databasesValidation = Yup.array().of(
-  Yup.object().shape({
-    label: Yup.string().trim().required('Label is a required field'),
-    url: Yup.string().trim().url().required('URL is a required field'),
-  }),
-);
+const databasesValidation = Yup.object().shape({
+  data: Yup.array().of(
+    Yup.object().shape({
+      label: Yup.string().trim().required('Label is a required field'),
+      url: Yup.string().trim().url().required('URL is a required field'),
+    }),
+  ),
+});
 
 export const validation = Yup.lazy((obj: Workspace) =>
   Yup.object().shape({

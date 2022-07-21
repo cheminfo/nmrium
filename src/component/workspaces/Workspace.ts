@@ -58,10 +58,10 @@ export interface DatabasePanelPreferences {
   showSmiles: boolean;
   showSolvent: boolean;
   showNames: boolean;
-  showRange: boolean;
-  showDelta: boolean;
+  range: ColumnPreferences;
+  delta: ColumnPreferences;
   showAssignment: boolean;
-  showCoupling: boolean;
+  coupling: ColumnPreferences;
   showMultiplicity: boolean;
   color: string;
   marginBottom: number;
@@ -90,9 +90,15 @@ export interface Formatting {
 }
 
 export interface Database {
+  key: string;
   label: string;
   url: string;
   enabled: boolean;
+}
+
+export interface Databases {
+  data: Database[];
+  defaultDatabase: string;
 }
 export interface Workspace {
   version: number;
@@ -100,5 +106,5 @@ export interface Workspace {
   display: NMRiumPreferences;
   controllers: Controllers;
   formatting: Formatting;
-  databases: Database[];
+  databases: Databases;
 }

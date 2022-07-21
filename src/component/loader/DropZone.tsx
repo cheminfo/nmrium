@@ -10,6 +10,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
+import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
@@ -65,6 +66,7 @@ function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const isToolEnabled = useCheckToolsVisibility();
 
   const loadSubFilesFromZip = useCallback(
     async (extractedfiles, uniqueFileExtensions) => {
@@ -252,6 +254,8 @@ function DropZone(props) {
     [dispatch, loadFilesHandler],
   );
 
+  const isImportEnabled = isToolEnabled('import');
+
   const {
     getRootProps,
     getInputProps,
@@ -261,11 +265,14 @@ function DropZone(props) {
     onDrop,
     noClick: true,
     noKeyboard: true,
+    noDrag: !isImportEnabled,
   });
 
   const open = useCallback(() => {
-    openImportDialog();
-  }, [openImportDialog]);
+    if (isImportEnabled) {
+      openImportDialog();
+    }
+  }, [isImportEnabled, openImportDialog]);
 
   return (
     <LoaderProvider value={open}>

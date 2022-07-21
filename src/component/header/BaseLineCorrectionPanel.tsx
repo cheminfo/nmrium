@@ -6,11 +6,14 @@ import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
+import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
+import FormikOnChange from '../elements/formik/FormikOnChange';
 import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
+  CALCULATE_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
@@ -34,8 +37,9 @@ function BaseLineCorrectionPanel() {
   const [algorithm, setAlgorithm] = useState('polynomial');
 
   const handleApplyFilter = useCallback(
-    (values) => {
+    (values, triggerSource: 'apply' | 'onChange' = 'apply') => {
       let options = {};
+
       switch (algorithm) {
         case 'airpls':
           options = {
@@ -52,8 +56,12 @@ function BaseLineCorrectionPanel() {
         default:
           break;
       }
+
       dispatch({
-        type: APPLY_BASE_LINE_CORRECTION_FILTER,
+        type:
+          triggerSource === 'onChange'
+            ? CALCULATE_BASE_LINE_CORRECTION_FILTER
+            : APPLY_BASE_LINE_CORRECTION_FILTER,
         options,
       });
     },
@@ -94,10 +102,10 @@ function BaseLineCorrectionPanel() {
           degree: Yup.number().integer().min(1).max(6).required(),
         });
 
-        return { validation, initialValue: { degree: 3 } };
+        return { livePreview: true, validation, initialValue: { degree: 3 } };
       }
       default:
-        return { validation: {}, initialValue: {} };
+        return { livePreview: true, validation: {}, initialValue: {} };
     }
   }, [algorithm]);
 
@@ -108,24 +116,28 @@ function BaseLineCorrectionPanel() {
         ref={algorithmRef}
         data={getAlgorithmsList()}
         style={{ marginLeft: 10, marginRight: 10 }}
-        onChange={changeAlgorithmHandler}
         defaultValue="polynomial"
+        onChange={changeAlgorithmHandler}
       />
 
       <FormikForm
         ref={formRef}
-        onSubmit={handleApplyFilter}
+        onSubmit={(values) => handleApplyFilter(values)}
         key={JSON.stringify(formData.initialValue)}
-        initialValues={formData.initialValue}
+        initialValues={{ ...formData.initialValue, livePreview: true }}
         validationSchema={formData.validation}
       >
         {algorithm && algorithm === 'airpls' && (
           <div style={{ display: 'flex' }}>
             <Label title="maxIterations:">
-              <FormikInput type="number" name="maxIterations" />
+              <FormikInput
+                type="number"
+                name="maxIterations"
+                debounceTime={250}
+              />
             </Label>
             <Label title="tolerance:" style={{ label: { padding: '0 5px' } }}>
-              <FormikInput type="number" name="tolerance" />
+              <FormikInput type="number" name="tolerance" debounceTime={250} />
             </Label>
           </div>
         )}
@@ -138,9 +150,18 @@ function BaseLineCorrectionPanel() {
               min={1}
               max={6}
               style={{ inputWrapper: { height: '100%' } }}
+              debounceTime={250}
             />
           </Label>
         )}
+
+        <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
+          <FormikCheckBox name="livePreview" />
+        </Label>
+
+        <FormikOnChange
+          onChange={(values) => handleApplyFilter(values, 'onChange')}
+        />
       </FormikForm>
 
       <ActionButtons

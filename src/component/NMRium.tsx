@@ -2,7 +2,6 @@
 
 import { css } from '@emotion/react';
 import { RootLayout } from 'analysis-ui-components';
-import { InitialSeparation } from 'analysis-ui-components/lib-esm/components/SplitPane';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -14,14 +13,21 @@ import {
   Reducer,
   ReactElement,
   ReactNode,
+  forwardRef,
+  useImperativeHandle,
+  ForwardedRef,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useToggle, useFullscreen } from 'react-use';
 
+import { toJSON } from '../data/SpectraManager';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
-import { PanelPreferencesType } from '../types/PanelPreferencesType';
+import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
+import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
+import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
@@ -60,6 +66,7 @@ import {
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
+import { BlobObject, getBlob } from './utility/Export';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -95,6 +102,7 @@ const containerStyles = css`
   button {
     outline: none !important;
   }
+
   * {
     -webkit-user-drag: none;
     -moz-user-drag: none;
@@ -111,6 +119,8 @@ const containerStyles = css`
   }
 `;
 
+export type { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+
 export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
@@ -120,7 +130,7 @@ export type NMRiumWorkspace =
 
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: State) => void;
+  onDataChange?: (data: NMRiumDataReturn) => void;
   workspace?: NMRiumWorkspace;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
@@ -131,49 +141,9 @@ export interface NMRiumProps {
 }
 
 export type NMRiumPreferences = Partial<{
-  general: Partial<{
-    disableMultipletAnalysis: boolean;
-    hideSetSumFromMolecule: boolean;
-    hideGeneralSettings: boolean;
-    experimentalFeatures: PanelPreferencesType;
-    hidePanelOnLoad: boolean;
-    initialPanelWidth?: InitialSeparation;
-  }>;
-  panels: Partial<{
-    spectraPanel: PanelPreferencesType;
-    informationPanel: PanelPreferencesType;
-    peaksPanel: PanelPreferencesType;
-    integralsPanel: PanelPreferencesType;
-    rangesPanel: PanelPreferencesType;
-    structuresPanel: PanelPreferencesType;
-    filtersPanel: PanelPreferencesType;
-    zonesPanel: PanelPreferencesType;
-    summaryPanel: PanelPreferencesType;
-    multipleSpectraAnalysisPanel: PanelPreferencesType;
-    databasePanel: PanelPreferencesType;
-    predictionPanel: PanelPreferencesType;
-    automaticAssignmentPanel: PanelPreferencesType;
-  }>;
-  toolBarButtons: Partial<{
-    zoomTool: boolean;
-    zoomOutTool: boolean;
-    import: boolean;
-    exportAs: boolean;
-    spectraStackAlignments: boolean;
-    spectraCenterAlignments: boolean;
-    realImaginary: boolean;
-    peakTool: boolean;
-    integralTool: boolean;
-    zonePickingTool: boolean;
-    slicingTool: boolean;
-    autoRangesTool: boolean;
-    zeroFillingTool: boolean;
-    phaseCorrectionTool: boolean;
-    baseLineCorrectionTool: boolean;
-    FFTTool: boolean;
-    multipleSpectraAnalysisTool: boolean;
-    exclusionZonesTool: boolean;
-  }>;
+  general: Partial<NMRiumGeneralPreferences>;
+  panels: Partial<NMRiumPanelPreferences>;
+  toolBarButtons: Partial<NMRiumToolBarPreferences>;
 }>;
 
 export type Molecules = Array<{ molfile: string }>;
@@ -194,15 +164,19 @@ const defaultData: NMRiumData = {
   spectra: [],
 };
 
-function NMRium(props: NMRiumProps) {
+export interface NMRiumRef {
+  getSpectraViewerAsBlob: () => BlobObject | null;
+}
+
+const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
   return (
     <RootLayout style={{ width: '100%' }}>
       <ErrorBoundary FallbackComponent={ErrorOverlay}>
-        <InnerNMRium {...props} />
+        <InnerNMRium {...props} innerRef={ref} />
       </ErrorBoundary>
     </RootLayout>
   );
-}
+});
 
 function InnerNMRium({
   data: dataProp = defaultData,
@@ -211,7 +185,8 @@ function InnerNMRium({
   getSpinner = defaultGetSpinner,
   onDataChange,
   emptyText,
-}: NMRiumProps) {
+  innerRef,
+}: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
@@ -238,7 +213,7 @@ function InnerNMRium({
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
-      onDataChange?.(state);
+      onDataChange?.(toJSON(state, 'onDataChange'));
     }
   }, [onDataChange, state]);
 
@@ -260,6 +235,16 @@ function InnerNMRium({
       },
     });
   }, [preferences, workspace]);
+
+  useImperativeHandle(
+    innerRef,
+    () => ({
+      getSpectraViewerAsBlob: () => {
+        return rootRef?.current ? getBlob(rootRef.current, 'nmrSVG') : null;
+      },
+    }),
+    [],
+  );
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { useMemo, memo, CSSProperties, useCallback } from 'react';
+import lodashGet from 'lodash/get';
+import { useMemo, memo, CSSProperties } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
@@ -10,6 +11,7 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightedSource } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { formatNumber } from '../../utility/formatNumber';
 
 interface DatabaseTableProps {
   data: any;
@@ -22,7 +24,9 @@ const overFlowStyle: CSSProperties = {
   textOverflow: 'ellipsis',
 };
 
-const COLUMNS: (CustomColumn & { showWhen: string })[] = [
+const databaseTableColumns = (
+  databasePreferences,
+): (CustomColumn & { showWhen: string })[] => [
   {
     showWhen: 'showNames',
     index: 1,
@@ -37,18 +41,26 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     },
   },
   {
-    showWhen: 'showRange',
+    showWhen: 'range.show',
     index: 2,
     Header: 'From - To',
-    accessor: (row) => `${row.from.toFixed(2)} - ${row.to.toFixed(2)}`,
+    accessor: (row) => {
+      const rangeFormat = databasePreferences.range.format;
+      return `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
+        row.to,
+        rangeFormat,
+      )}`;
+    },
     enableRowSpan: true,
   },
   {
-    showWhen: 'showDelta',
+    showWhen: 'delta.show',
     index: 3,
     Header: 'δ (ppm)',
-    accessor: 'delta',
+    accessor: (row) =>
+      `${formatNumber(row.delta, databasePreferences.delta.format)}`,
   },
+
   {
     showWhen: 'showAssignment',
     index: 4,
@@ -61,11 +73,13 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     Header: 'Multi.',
     accessor: 'multiplicity',
   },
+
   {
-    showWhen: 'showCoupling',
+    showWhen: 'coupling.show',
     index: 6,
     Header: 'J (Hz)',
-    accessor: 'coupling',
+    accessor: (row) =>
+      `${formatNumber(row.coupling, databasePreferences.coupling.format)}`,
     style: {
       width: '60px',
       minWidth: '60px',
@@ -156,9 +170,9 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
 
   const tableColumns = useMemo(() => {
     let columns = [...initialColumns];
-    for (const col of COLUMNS) {
+    for (const col of databaseTableColumns(databasePreferences)) {
       const { showWhen, ...colParams } = col;
-      if (databasePreferences[showWhen]) {
+      if (lodashGet(databasePreferences, showWhen, false)) {
         addCustomColumn(columns, colParams);
       }
     }
