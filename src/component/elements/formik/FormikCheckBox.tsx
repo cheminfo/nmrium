@@ -4,7 +4,7 @@ import { CSSProperties, useCallback } from 'react';
 
 import CheckBox, { CheckBoxProps } from '../CheckBox';
 
-interface FormikCheckBoxProps extends Omit<CheckBoxProps, 'style'> {
+export interface FormikCheckBoxProps extends Omit<CheckBoxProps, 'style'> {
   name: string;
   label?: string;
   className?: string;
@@ -14,6 +14,7 @@ interface FormikCheckBoxProps extends Omit<CheckBoxProps, 'style'> {
     label?: CSSProperties;
     checkbox?: CSSProperties;
   };
+  defaultValue?: any;
 }
 
 function FormikCheckBox(props: FormikCheckBoxProps) {
@@ -24,11 +25,14 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
     className = 'checkbox',
     reverse = false,
     style = { container: {}, label: {}, checkbox: {} },
+    defaultValue,
     ...resProps
   } = props;
 
   const { values, setFieldValue } = useFormikContext();
-  const value = reverse ? !lodashGet(values, name) : lodashGet(values, name);
+  const value = reverse
+    ? !lodashGet(values, name, defaultValue)
+    : lodashGet(values, name, defaultValue);
 
   const changeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

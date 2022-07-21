@@ -234,12 +234,12 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab tablabel="Display" tabid="display">
               <div className="inner-content">
-                <DisplayTabContent preferences={preferences.current.display} />
+                <DisplayTabContent />
               </div>
             </Tab>
             <Tab tablabel="Tools" tabid="tools">
               <div className="inner-content">
-                <ToolsTabContent preferences={preferences.current.display} />
+                <ToolsTabContent />
               </div>
             </Tab>
 

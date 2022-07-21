@@ -1,6 +1,7 @@
-import FormikCheckBox from './formik/FormikCheckBox';
+import FormikCheckBox, { FormikCheckBoxProps } from './formik/FormikCheckBox';
 
-export function CheckBoxCell(props) {
+export function CheckBoxCell(props: FormikCheckBoxProps) {
+  const { name, ...otherProps } = props;
   return (
     <FormikCheckBox
       style={{
@@ -8,6 +9,7 @@ export function CheckBoxCell(props) {
       }}
       key={props.name}
       name={props.name}
+      {...otherProps}
     />
   );
 }

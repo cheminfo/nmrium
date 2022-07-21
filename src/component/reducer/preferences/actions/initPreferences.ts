@@ -12,7 +12,6 @@ import { getPreferencesByWorkspace } from '../utilites/getPreferencesByWorkspace
 export function initPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const localData = getLocalStorage('nmr-general-settings');
-
     const { dispatch, workspace, ...resProps } = action.payload;
     /**
      * set the current workspace what the user-defined in the setting if the workspace is not defined at the level of component, otherwise
@@ -29,6 +28,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
       getPreferencesByWorkspace(draft.workspace.current),
       resProps,
     );
+
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
     /**

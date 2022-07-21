@@ -208,7 +208,7 @@ function FunctionToolBarInner({
           )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('baseLineCorrectionTool') && (
+          isButtonVisible('baselineCorrectionTool') && (
             <ToggleButton
               key={options.baseLineCorrection.id}
               value={options.baseLineCorrection.id}

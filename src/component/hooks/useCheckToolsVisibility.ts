@@ -11,7 +11,11 @@ export function useCheckToolsVisibility(): (
 
   return useCallback(
     (toolKey) =>
-      lodashGet(preferences.current, `display.toolBarButtons.${toolKey}`, true),
+      lodashGet(
+        preferences.current,
+        `display.toolBarButtons.${toolKey}`,
+        false,
+      ),
     [preferences],
   );
 }

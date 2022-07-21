@@ -94,11 +94,19 @@ export interface Database {
   url: string;
   enabled: boolean;
 }
-export interface Workspace {
+
+export interface WorkspaceMeta {
   version: number;
   label: string;
-  display: NMRiumPreferences;
-  general: GeneralPreferences;
-  formatting: Formatting;
-  databases: Database[];
 }
+
+export interface WorkspaceData {
+  display?: NMRiumPreferences;
+  general?: GeneralPreferences;
+  formatting?: Formatting;
+  databases?: Database[];
+}
+
+export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
+
+export type Workspace = WorkspaceMeta & Required<WorkspaceData>;

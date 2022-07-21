@@ -1,14 +1,10 @@
-import { Workspace } from './Workspace';
-import { basic } from './basic';
+import { InnerWorkspace } from './Workspace';
 
-export const embedded: Workspace = {
+export const embedded: InnerWorkspace = {
   version: 1,
   label: 'Embedded workspace',
   display: {
     general: {
-      disableMultipletAnalysis: false,
-      hideSetSumFromMolecule: false,
-      hideGeneralSettings: false,
       experimentalFeatures: { display: true },
       hidePanelOnLoad: true,
     },
@@ -22,14 +18,25 @@ export const embedded: Workspace = {
       structuresPanel: { display: true, open: false },
       filtersPanel: { display: true, open: false },
       zonesPanel: { display: true, open: false },
-      summaryPanel: { display: false, open: false },
-      multipleSpectraAnalysisPanel: { display: false, open: false },
-      databasePanel: { display: false, open: false },
-      predictionPanel: { display: false, open: false },
-      automaticAssignmentPanel: { display: false, open: false },
+    },
+    toolBarButtons: {
+      baselineCorrectionTool: true,
+      exclusionZonesTool: true,
+      exportAs: true,
+      FFTTool: true,
+      import: true,
+      integralTool: true,
+      multipleSpectraAnalysisTool: true,
+      phaseCorrectionTool: true,
+      rangePickingTool: true,
+      realImaginary: true,
+      slicingTool: true,
+      spectraCenterAlignments: true,
+      spectraStackAlignments: true,
+      zeroFillingTool: true,
+      zonePickingTool: true,
+      zoomOutTool: true,
+      zoomTool: true,
     },
   },
-  general: basic.general,
-  formatting: basic.formatting,
-  databases: basic.databases,
 };

@@ -135,9 +135,15 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
 
   return useCallback(
     (item: AccordionItem) => {
+      const defaultValue: PanelPreferencesType = {
+        display: false,
+        open: false,
+      };
+
       return lodashGet(
         preferences.current,
         `display.panels.${item.hidePreferenceKey}`,
+        defaultValue,
       );
     },
     [preferences],
@@ -150,9 +156,9 @@ function PanelsInner({ displayerMode: displayedMode }) {
   const check = useCallback(
     (item) => {
       const panelOptions = getPanelPreferences(item);
+
       return (
-        (panelOptions?.hidden !== true &&
-          panelOptions?.display &&
+        (panelOptions?.display &&
           item.isExperimental === undefined &&
           (item.mode == null || item.mode === displayedMode)) ||
         (item.isExperimental && isExperimental)
@@ -164,7 +170,7 @@ function PanelsInner({ displayerMode: displayedMode }) {
   const isOpened = useCallback(
     (item: AccordionItem) => {
       const panelOptions = getPanelPreferences(item);
-      return panelOptions?.hidden !== true && panelOptions?.open;
+      return panelOptions?.display && panelOptions?.open;
     },
     [getPanelPreferences],
   );

@@ -1,7 +1,5 @@
-import lodashGet from 'lodash/get';
 import { useMemo } from 'react';
 
-import { NMRiumPreferences } from '../../NMRium';
 import { CheckBoxCell } from '../../elements/CheckBoxCell';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
@@ -72,6 +70,10 @@ const LIST: ListItem[] = [
     name: 'toolBarButtons.phaseCorrectionTool',
   },
   {
+    label: 'Baseline correction',
+    name: 'toolBarButtons.baselineCorrectionTool',
+  },
+  {
     label: 'Exclusion zoon',
     name: 'toolBarButtons.exclusionZonesTool',
   },
@@ -81,11 +83,7 @@ const LIST: ListItem[] = [
   },
 ];
 
-interface ToolsTabContentProps {
-  preferences: NMRiumPreferences;
-}
-
-function ToolsTabContent({ preferences }: ToolsTabContentProps) {
+function ToolsTabContent() {
   const COLUMNS: CustomColumn[] = useMemo(
     () => [
       {
@@ -103,22 +101,19 @@ function ToolsTabContent({ preferences }: ToolsTabContentProps) {
         index: 2,
         Header: 'Active',
         Cell: ({ row }) => (
-          <CheckBoxCell name={`display.${row.original.name}`} />
+          <CheckBoxCell
+            name={`display.${row.original.name}`}
+            defaultValue={false}
+          />
         ),
       },
     ],
     [],
   );
 
-  const data = useMemo(() => {
-    return LIST.filter(
-      (item) => lodashGet(preferences, `${item.name}.hidden`) !== true,
-    );
-  }, [preferences]);
-
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <ReactTable columns={COLUMNS} data={data} />
+      <ReactTable columns={COLUMNS} data={LIST} />
     </div>
   );
 }

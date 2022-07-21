@@ -1,7 +1,5 @@
-import lodashGet from 'lodash/get';
 import { useMemo } from 'react';
 
-import { NMRiumPreferences } from '../../NMRium';
 import { CheckBoxCell } from '../../elements/CheckBoxCell';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
@@ -71,11 +69,7 @@ const LIST: ListItem[] = [
   },
 ];
 
-interface DisplayTabContentProps {
-  preferences: NMRiumPreferences;
-}
-
-function DisplayTabContent({ preferences }: DisplayTabContentProps) {
+function DisplayTabContent() {
   const COLUMNS: CustomColumn[] = useMemo(
     () => [
       {
@@ -93,7 +87,10 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
         index: 2,
         Header: 'Active',
         Cell: ({ row }) => (
-          <CheckBoxCell name={`display.${row.original.name}.display`} />
+          <CheckBoxCell
+            name={`display.${row.original.name}.display`}
+            defaultValue={false}
+          />
         ),
       },
       {
@@ -101,7 +98,10 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
         Header: 'Open on load',
         Cell: ({ row }) =>
           !row.original.hideOpenOption ? (
-            <CheckBoxCell name={`display.${row.original.name}.open`} />
+            <CheckBoxCell
+              name={`display.${row.original.name}.open`}
+              defaultValue={false}
+            />
           ) : (
             <div />
           ),
@@ -110,15 +110,9 @@ function DisplayTabContent({ preferences }: DisplayTabContentProps) {
     [],
   );
 
-  const data = useMemo(() => {
-    return LIST.filter(
-      (item) => lodashGet(preferences, `${item.name}.hidden`) !== true,
-    );
-  }, [preferences]);
-
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <ReactTable columns={COLUMNS} data={data} />
+      <ReactTable columns={COLUMNS} data={LIST} />
     </div>
   );
 }

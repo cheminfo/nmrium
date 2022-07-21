@@ -229,7 +229,7 @@ function KeysListenerTracker() {
               break;
             }
             case 'b': {
-              if (isToolVisible('baseLineCorrectionTool')) {
+              if (isToolVisible('baselineCorrectionTool')) {
                 check1DModeWithActiveSpectrum(options.baseLineCorrection.label);
                 handleChangeOption(options.baseLineCorrection.id);
               }

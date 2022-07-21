@@ -13,7 +13,7 @@ export interface NMRiumToolBarPreferences {
   rangePickingTool: boolean;
   zeroFillingTool: boolean;
   phaseCorrectionTool: boolean;
-  baseLineCorrectionTool: boolean;
+  baselineCorrectionTool: boolean;
   FFTTool: boolean;
   multipleSpectraAnalysisTool: boolean;
   exclusionZonesTool: boolean;
