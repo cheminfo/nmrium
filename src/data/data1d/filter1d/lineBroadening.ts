@@ -1,4 +1,4 @@
-import { compose } from 'apodization';
+import { apodization } from 'nmr-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
 
@@ -11,12 +11,8 @@ export const name = 'Line broadening';
  * @param {Object} [value]
  */
 
-export function apply(datum1D: Datum1D, value) {
-  if (!isApplicable(datum1D)) {
-    throw new Error('lineBroadening not applicable on this data');
-  }
-
-  const { lineBroadeningValue, gaussBroadeningValue, centerValue } = value;
+export function apply(datum1D: Datum1D, options) {
+  const { lineBroadeningValue, gaussBroadeningValue, centerValue } = options;
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0) {
@@ -31,41 +27,39 @@ export function apply(datum1D: Datum1D, value) {
 
   const length = re.length;
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
-  const windowFunction = compose({
-    length,
-    shapes: [
-      {
-        start: 0,
-        shape: {
-          kind: 'lorentzToGauss',
-          options: {
-            length,
-            dw,
-            exponentialHz:
-              gaussBroadeningValue > 0
-                ? lineBroadeningValue
-                : -lineBroadeningValue,
-            gaussianHz: gaussBroadeningValue,
-            center: centerValue,
+
+  const newData = apodization(
+    { re, im },
+    {
+      pointsToShift,
+      compose: {
+        length,
+        shapes: [
+          {
+            start: 0,
+            shape: {
+              kind: 'lorentzToGauss',
+              options: {
+                length,
+                dw,
+                exponentialHz:
+                  gaussBroadeningValue > 0
+                    ? lineBroadeningValue
+                    : -lineBroadeningValue,
+                gaussianHz: gaussBroadeningValue,
+                center: centerValue,
+              },
+            },
           },
-        },
+        ],
       },
-    ],
-  });
+    },
+  );
 
-  const newRE = new Float64Array(length);
-  const newIM = new Float64Array(length);
-  for (let i = 0; i < length - pointsToShift; i++) {
-    newRE[i] = re[i] * windowFunction[i];
-    newIM[i] = im[i] * windowFunction[i];
-  }
-
-  for (let i = length - 1, j = 0; i > length - pointsToShift - 1; i--, j++) {
-    newRE[i] = re[i] * windowFunction[j];
-    newIM[i] = im[i] * windowFunction[j];
-  }
-
-  datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM } };
+  datum1D.data = {
+    ...datum1D.data,
+    ...{ re: newData.re as Float64Array, im: newData.im as Float64Array },
+  };
 }
 export function isApplicable(datum1D: Datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;

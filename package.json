@@ -51,7 +51,6 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "analysis-ui-components": "^0.15.2",
-    "apodization": "^2.0.0",
     "cheminfo-font": "^1.8.1",
     "cheminfo-types": "^1.2.0",
     "d3": "^7.6.1",
@@ -75,7 +74,7 @@
     "multiplet-analysis": "^2.0.0",
     "nmr-correlation": "^2.3.2",
     "nmr-parser": "^1.9.0",
-    "nmr-processing": "^8.2.0",
+    "nmr-processing": "^8.3.0",
     "nmredata": "^0.6.1",
     "numeral": "^2.0.6",
     "openchemlib": "^7.4.3",

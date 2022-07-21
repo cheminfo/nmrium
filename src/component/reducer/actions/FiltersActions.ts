@@ -36,18 +36,12 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
 function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
-    const {
-      lineBroadeningValue,
-      gaussBroadeningValue,
-      centerValue,
-      zeroFillingSize,
-    } = filterOptions;
+    const { apodization, zeroFilling } = filterOptions;
     const filters = [
       {
-        name: Filters.lineBroadening.id,
-        options: { lineBroadeningValue, gaussBroadeningValue, centerValue },
+        name: Filters.zeroFillingAndApodization.id,
+        options: { apodization, zeroFilling },
       },
-      { name: Filters.zeroFilling.id, options: zeroFillingSize },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
     resetSelectedTool(draft);

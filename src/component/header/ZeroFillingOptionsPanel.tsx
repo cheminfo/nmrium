@@ -46,10 +46,14 @@ function ZeroFillingOptionsPanel() {
     dispatch({
       type: APPLY_ZERO_FILLING_FILTER,
       value: {
-        zeroFillingSize: Number(sizeTextInputRef.current.value),
-        lineBroadeningValue,
-        gaussBroadeningValue,
-        centerValue,
+        zeroFilling: {
+          size: Number(sizeTextInputRef.current.value),
+        },
+        apodization: {
+          lineBroadeningValue,
+          gaussBroadeningValue,
+          centerValue,
+        },
       },
     });
   }, [dispatch, lineBroadeningValue, gaussBroadeningValue, centerValue]);
