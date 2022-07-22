@@ -42,12 +42,8 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   datum.originalInfo = datum.info;
 
   datum.meta = { ...options.meta };
-  datum.data = {
-    x: [],
-    re: [],
-    im: [],
-    ...convertDataToFloat64Array(options.data),
-  };
+  datum.data = convertDataToFloat64Array(options.data);
+
   datum.originalData = datum.data;
 
   datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
