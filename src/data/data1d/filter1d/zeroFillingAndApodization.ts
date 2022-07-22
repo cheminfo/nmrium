@@ -1,6 +1,6 @@
 import { Datum1D } from '../../types/data1d';
 
-import { apply as applyApodization } from './lineBroadening';
+import { apply as applyApodization } from './apodization';
 import { apply as applyZeroFilling } from './zeroFilling';
 
 export const id = 'zeroFillingAndApodization';
