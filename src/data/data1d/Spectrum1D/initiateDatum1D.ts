@@ -14,38 +14,38 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   datum.id = options.id || generateID();
   datum.source = {
     jcampURL: null,
-      file: {
-        binary: null,
-        name: '',
-        extension: '',
-      },
+    file: {
+      binary: null,
+      name: '',
+      extension: '',
+    },
     ...options.source,
   };
 
   datum.display = {
     name: options.display?.name ? options.display.name : generateID(),
-      ...getColor(options, usedColors),
-      isVisible: true,
-      isPeaksMarkersVisible: true,
-      isRealSpectrumVisible: true,
+    ...getColor(options, usedColors),
+    isVisible: true,
+    isPeaksMarkersVisible: true,
+    isRealSpectrumVisible: true,
     ...options.display,
   };
 
   datum.info = {
     nucleus: '1H', // 1H, 13C, 19F, ...
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-      dimension: 1,
+    isFid: false,
+    isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+    dimension: 1,
     ...options.info,
   };
 
   datum.originalInfo = datum.info;
 
-  datum.meta = { ...options.meta};
+  datum.meta = { ...options.meta };
   datum.data = {
     x: [],
-      re: [],
-      im: [],
+    re: [],
+    im: [],
     ...convertDataToFloat64Array(options.data),
   };
   datum.originalData = datum.data;
