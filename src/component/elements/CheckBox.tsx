@@ -42,7 +42,7 @@ const CheckBox = forwardRef(
         name={name}
         id={name}
         onChange={handleCheck}
-        defaultChecked={checkProps}
+        checked={checkProps}
         disabled={disabled}
         style={style}
       />
