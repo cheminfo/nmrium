@@ -4,10 +4,10 @@ import lodashMerge from 'lodash/merge';
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import Workspaces from '../../../workspaces';
 import { PreferencesState } from '../preferencesReducer';
-import { checkKeysExists } from '../utilites/checkKeysExists';
-import { filterObject } from '../utilites/filterObject';
-import { getActiveWorkspace } from '../utilites/getActiveWorkspace';
-import { getPreferencesByWorkspace } from '../utilites/getPreferencesByWorkspace';
+import { checkKeysExists } from '../utilities/checkKeysExists';
+import { filterObject } from '../utilities/filterObject';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
 
 export function initPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {

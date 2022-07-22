@@ -3,8 +3,8 @@ import lodashMerge from 'lodash/merge';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState } from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilites/getActiveWorkspace';
-import { mapNucleiFormatting } from '../utilites/mapNucleiFormatting';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+import { mapNucleiFormatting } from '../utilities/mapNucleiFormatting';
 
 export function setPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {

@@ -2,7 +2,7 @@ import { Draft } from 'immer';
 
 import { NMRiumWorkspace } from '../../../NMRium';
 import { PreferencesState, WorkspaceAction } from '../preferencesReducer';
-import { getPreferencesByWorkspace } from '../utilites/getPreferencesByWorkspace';
+import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
 
 export function setWorkspace(
   draft: Draft<PreferencesState>,

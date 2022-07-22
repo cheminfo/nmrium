@@ -16,7 +16,7 @@ import DropDownButton, {
 } from '../../elements/dropDownButton/DropDownButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import { getPreferencesByWorkspace } from '../../reducer/preferences/utilites/getPreferencesByWorkspace';
+import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { ModalStyles } from '../ModalStyle';
 
 import DatabasesTabContent from './DatabasesTabContent';
