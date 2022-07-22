@@ -7,6 +7,7 @@ import {
   useWorkspacesList,
 } from '../../context/PreferencesContext';
 import ActionButtons from '../../elements/ActionButtons';
+import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
@@ -15,6 +16,7 @@ import DropDownButton, {
 } from '../../elements/dropDownButton/DropDownButton';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
+import { getPreferencesByWorkspace } from '../../reducer/preferences/utilites/getPreferencesByWorkspace';
 import { ModalStyles } from '../ModalStyle';
 
 import DatabasesTabContent from './DatabasesTabContent';
@@ -105,7 +107,11 @@ interface GeneralSettingsProps {
 
 function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const [activeTab, setActiveTab] = useState('general');
-  const { dispatch, ...preferences } = usePreferences();
+  const {
+    dispatch,
+    current: currentWorkspace,
+    ...preferences
+  } = usePreferences();
   const alert = useAlert();
   const refForm = useRef<any>();
   const workspaces = useWorkspacesList();
@@ -119,24 +125,27 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     ]);
   }, [workspaces]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = () => {
     refForm.current.submitForm();
-  }, []);
-  const handleReset = useCallback(() => {
-    dispatch({ type: 'RESET_PREFERENCES' });
-    alert.success('Settings saved successfully');
+  };
+
+  const handleReset = () => {
+    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
+      preferences.workspace.current,
+    );
+    refForm.current.setValues(workSpaceDisplayPreferences);
+  };
+
+  const handleClose = () => {
     onClose?.();
-  }, [alert, dispatch, onClose]);
+  };
 
-  const submitHandler = useCallback(
-    (values) => {
-      dispatch({ type: 'SET_PREFERENCES', payload: values });
-      alert.success('Settings saved successfully');
+  const submitHandler = (values) => {
+    dispatch({ type: 'SET_PREFERENCES', payload: values });
+    alert.success('Settings saved successfully');
 
-      onClose?.();
-    },
-    [alert, dispatch, onClose],
-  );
+    onClose?.();
+  };
 
   const tabChangeHandler = useCallback((tab) => {
     setActiveTab(tab.tabid);
@@ -206,12 +215,23 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           selectedKey={preferences?.workspace.current}
           onSelect={ChangeWorkspaceHandler}
         />
+
+        <Button.Danger
+          fill="outline"
+          size="xSmall"
+          onClick={handleReset}
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          Reset workspace settings
+        </Button.Danger>
       </div>
       <div className="main-content">
         <FormikForm
-          key={JSON.stringify(preferences.current)}
+          key={JSON.stringify(currentWorkspace)}
           ref={refForm}
-          initialValues={preferences.current}
+          initialValues={currentWorkspace}
           validationSchema={validation}
           onSubmit={submitHandler}
         >
@@ -258,8 +278,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           style={{ flexDirection: 'row-reverse', margin: 0 }}
           onDone={handleSave}
           doneLabel="Save"
-          onCancel={handleReset}
-          cancelLabel="Reset"
+          onCancel={handleClose}
         />
       </div>
     </div>
