@@ -35,30 +35,30 @@ function ContoursPaths({
   function buildContourPath(data) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
-    const path = new PathBuilder();
+    const pathBuilder = new PathBuilder();
     for (const element of data) {
       if (element.lines) {
         const lines = element.lines;
         if (lines.length < 1e6) {
           for (let i = 0; i < lines.length; i += 4) {
-            path.moveTo(
+            pathBuilder.moveTo(
               _scaleX(lines[i] + xShift),
               _scaleY(lines[i + 1] + yShift),
             );
-            path.lineTo(
+            pathBuilder.lineTo(
               _scaleX(lines[i + 2] + xShift),
               _scaleY(lines[i + 3] + yShift),
             );
           }
         }
       } else {
-        path.moveTo(
+        pathBuilder.moveTo(
           _scaleX(element[0].x + xShift),
           _scaleY(element[0].y + yShift),
         );
 
         for (let j = 1; j < element.length; j++) {
-          path.lineTo(
+          pathBuilder.lineTo(
             _scaleX(element[j].x + xShift),
             _scaleY(element[j].y + yShift),
           );
@@ -66,8 +66,8 @@ function ContoursPaths({
       }
     }
 
-    path.closePath();
-    return path.toString();
+    pathBuilder.closePath();
+    return pathBuilder.toString();
   }
 
   const data = useMemo(() => {
