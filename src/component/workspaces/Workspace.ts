@@ -5,7 +5,7 @@ interface NucleusFormat {
   ppm: string;
   hz: string;
 }
-interface Controllers {
+interface GeneralPreferences {
   dimmedSpectraTransparency: number;
 }
 
@@ -96,15 +96,22 @@ export interface Database {
   enabled: boolean;
 }
 
+export interface WorkspaceMeta {
+  version: number;
+  label: string;
+}
 export interface Databases {
   data: Database[];
   defaultDatabase: string;
 }
-export interface Workspace {
-  version: number;
-  label: string;
-  display: NMRiumPreferences;
-  controllers: Controllers;
-  formatting: Formatting;
-  databases: Databases;
+
+export interface WorkspaceData {
+  display?: NMRiumPreferences;
+  general?: GeneralPreferences;
+  formatting?: Formatting;
+  databases?: Databases;
 }
+
+export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
+
+export type Workspace = WorkspaceMeta & Required<WorkspaceData>;

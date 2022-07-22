@@ -1,7 +1,6 @@
-import { Workspace } from './Workspace';
-import { basic } from './basic';
+import { InnerWorkspace } from './Workspace';
 
-export const process1D: Workspace = {
+export const process1D: InnerWorkspace = {
   version: 1,
   label: 'Process 1D workspace',
   display: {
@@ -14,26 +13,21 @@ export const process1D: Workspace = {
       summaryPanel: { display: true },
       multipleSpectraAnalysisPanel: { display: true, open: true },
       spectraPanel: { display: true, open: true },
-      informationPanel: { hidden: true },
-      peaksPanel: { hidden: true },
-      integralsPanel: { hidden: true },
-      rangesPanel: { hidden: true },
-      structuresPanel: { hidden: true },
-      filtersPanel: { hidden: true },
-      databasePanel: { hidden: true },
-      predictionPanel: { hidden: true },
-      automaticAssignmentPanel: { hidden: true },
     },
 
     toolBarButtons: {
-      import: false,
-      exportAs: false,
-      rangePickingTool: false,
-      multipleSpectraAnalysisTool: false,
-      exclusionZonesTool: false,
+      baselineCorrectionTool: true,
+      FFTTool: true,
+      integralTool: true,
+      phaseCorrectionTool: true,
+      realImaginary: true,
+      slicingTool: true,
+      spectraCenterAlignments: true,
+      spectraStackAlignments: true,
+      zeroFillingTool: true,
+      zonePickingTool: true,
+      zoomOutTool: true,
+      zoomTool: true,
     },
   },
-  controllers: basic.controllers,
-  formatting: basic.formatting,
-  databases: basic.databases,
 };

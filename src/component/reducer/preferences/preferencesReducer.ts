@@ -9,7 +9,6 @@ import { ActionType } from '../types/Types';
 import { addWorkspace } from './actions/addWorkspace';
 import { initPreferences } from './actions/initPreferences';
 import { removeWorkspace } from './actions/removeWorkspace';
-import { resetPreferences } from './actions/resetPreferences';
 import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
@@ -41,7 +40,6 @@ export type AddWorkspaceAction = ActionType<
 type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
-  | ActionType<'RESET_PREFERENCES'>
   | SetPanelsPreferencesAction
   | WorkspaceAction
   | AddWorkspaceAction;
@@ -111,6 +109,7 @@ export function initPreferencesState(
   if (!localData?.version || localData?.version !== LOCAL_STORAGE_VERSION) {
     removeData('nmr-general-settings');
   }
+
   return {
     ...state,
     workspaces: localData?.workspaces || { default: Workspaces.default },
@@ -128,8 +127,6 @@ function innerPreferencesReducer(
       return setPreferences(draft, action);
     case 'SET_PANELS_PREFERENCES':
       return setPanelsPreferences(draft, action);
-    case 'RESET_PREFERENCES':
-      return resetPreferences(draft);
     case 'SET_WORKSPACE':
       return setWorkspace(draft, action);
     case 'ADD_WORKSPACE':

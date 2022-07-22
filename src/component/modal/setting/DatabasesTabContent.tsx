@@ -66,8 +66,8 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
 
   const resetDatabaseHandler = useCallback(() => {
     const database =
-      Workspaces?.[currentWorkspace]?.databases.data ||
-      Workspaces.default.databases.data;
+      Workspaces?.[currentWorkspace]?.databases?.data ||
+      Workspaces.default?.databases?.data;
 
     setFieldValue('databases.data', database);
   }, [currentWorkspace, setFieldValue]);
