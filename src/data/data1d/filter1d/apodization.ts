@@ -11,7 +11,13 @@ export const name = 'Apodization';
  * @param {Object} [value]
  */
 
-export function apply(datum1D: Datum1D, options) {
+interface ApodizationOptions {
+  lineBroadening: number;
+  gaussBroadening: number;
+  lineBroadeningCenter: number;
+}
+
+export function apply(datum1D: Datum1D, options: ApodizationOptions) {
   const { lineBroadening, gaussBroadening, lineBroadeningCenter } = options;
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;

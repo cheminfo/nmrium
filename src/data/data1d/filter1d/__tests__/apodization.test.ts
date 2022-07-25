@@ -14,10 +14,11 @@ describe('lineBroadening', () => {
       },
     };
     apply(spectrum, {
-      lineBroadeningValue: 0.1,
-      gaussBroadeningValue: 0,
-      centerValue: 0,
+      lineBroadening: 0.1,
+      gaussBroadening: 0,
+      lineBroadeningCenter: 0,
     });
+
     expect(spectrum.data).toStrictEqual({
       re: new Float64Array([
         1, 0.08642783652754452, 0.0056023281951239675, 0.0003227980702812185,
