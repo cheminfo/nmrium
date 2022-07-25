@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.29.0](https://github.com/cheminfo/nmrium/compare/v0.28.0...v0.29.0) (2022-07-25)
+
+
+### Features
+
+* activate/deactivate baseline correction live preview ([e835290](https://github.com/cheminfo/nmrium/commit/e835290f2281fac5ef9476c08cf2dfe922c28780))
+* improve general settings ([#1611](https://github.com/cheminfo/nmrium/issues/1611)) ([92d1c93](https://github.com/cheminfo/nmrium/commit/92d1c938562ba4f5004b6bf41bf62e4216e48079))
+
+
+### Bug Fixes
+
+* resetting database ([23fa7b5](https://github.com/cheminfo/nmrium/commit/23fa7b5e7849ba892cc95dcbd432bee25686b33b)), closes [#1638](https://github.com/cheminfo/nmrium/issues/1638)
+
 ## [0.28.0](https://github.com/cheminfo/nmrium/compare/v0.27.0...v0.28.0) (2022-07-15)
 
 
