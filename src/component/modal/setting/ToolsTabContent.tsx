@@ -46,7 +46,7 @@ const LIST: ListItem[] = [
     name: 'toolBarButtons.integralTool',
   },
   {
-    label: 'Zoon Picking',
+    label: 'Zone Picking',
     name: 'toolBarButtons.zonePickingTool',
   },
   {
