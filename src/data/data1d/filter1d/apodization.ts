@@ -49,7 +49,7 @@ export function apply(datum1D: Datum1D, options: ApodizationOptions) {
                 length,
                 dw,
                 exponentialHz:
-                  lineBroadening > 0 ? lineBroadening : -lineBroadening,
+                  gaussBroadening > 0 ? lineBroadening : -lineBroadening,
                 gaussianHz: gaussBroadening,
                 center: lineBroadeningCenter,
               },
