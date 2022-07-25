@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useRef, useState } from 'react';
+import { CSSProperties, useCallback, useRef } from 'react';
 
 import { Data1D } from '../../data/types/data1d';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
@@ -39,24 +39,15 @@ function ZeroFillingOptionsPanel() {
   const dispatch = useDispatch();
   const { data, activeSpectrum } = useChartData();
   const sizeTextInputRef = useRef<any>();
-  const [lineBroadeningValue, setLineBroadeningValue] = useState(1);
-  const [gaussBroadeningValue, setGaussBroadeningValue] = useState(0);
-  const [centerValue, setCenterValue] = useState(0);
+
   const handleApplyFilter = useCallback(() => {
     dispatch({
       type: APPLY_ZERO_FILLING_FILTER,
-      value: {
-        zeroFilling: {
-          size: Number(sizeTextInputRef.current.value),
-        },
-        apodization: {
-          lineBroadeningValue,
-          gaussBroadeningValue,
-          centerValue,
-        },
+      payload: {
+        size: Number(sizeTextInputRef.current.value),
       },
     });
-  }, [dispatch, lineBroadeningValue, gaussBroadeningValue, centerValue]);
+  }, [dispatch]);
 
   const getDefaultValue = useCallback(() => {
     if (data && activeSpectrum?.id) {
@@ -69,25 +60,6 @@ function ZeroFillingOptionsPanel() {
     }
     return '';
   }, [activeSpectrum, data]);
-
-  const handleInput = useCallback(
-    (e) => {
-      if (e.target) {
-        const inputLabel = e.target.name;
-        const [currentValue, setter] =
-          inputLabel === 'exponentialHz'
-            ? [lineBroadeningValue, setLineBroadeningValue]
-            : inputLabel === 'gaussianHz'
-            ? [gaussBroadeningValue, setGaussBroadeningValue]
-            : [centerValue, setCenterValue];
-        const _value = e.target.validity.valid
-          ? Number(e.target.value)
-          : currentValue;
-        setter(_value);
-      }
-    },
-    [lineBroadeningValue, centerValue, gaussBroadeningValue],
-  );
 
   const handleCancelFilter = useCallback(() => {
     dispatch({
@@ -103,36 +75,6 @@ function ZeroFillingOptionsPanel() {
         data={Sizes}
         style={{ marginLeft: 10, marginRight: 10 }}
         defaultValue={getDefaultValue()}
-      />
-      <span style={styles.label}>LB: </span>
-      <input
-        name="exponentialHz"
-        style={styles.input}
-        type="number"
-        defaultValue={lineBroadeningValue}
-        onInput={handleInput}
-        pattern="^\d*(\.\d{0,2})?$"
-        step="any"
-      />
-      <span style={styles.label}>GB: </span>
-      <input
-        name="gaussianHz"
-        style={styles.input}
-        type="number"
-        defaultValue={gaussBroadeningValue}
-        onInput={handleInput}
-        pattern="^\d*(\.\d{0,2})?$"
-        step="any"
-      />
-      <span style={styles.label}>GF: </span>
-      <input
-        name="line-broadening-center"
-        style={styles.input}
-        type="number"
-        defaultValue={centerValue}
-        onInput={handleInput}
-        pattern="^\d*(\.\d{0,2})?$"
-        step="any"
       />
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </div>

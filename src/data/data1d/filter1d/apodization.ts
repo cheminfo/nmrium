@@ -2,8 +2,8 @@ import { apodization } from 'nmr-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
 
-export const id = 'lineBroadening';
-export const name = 'Line broadening';
+export const id = 'apodization';
+export const name = 'Apodization';
 
 /**
  *
@@ -12,7 +12,7 @@ export const name = 'Line broadening';
  */
 
 export function apply(datum1D: Datum1D, options) {
-  const { lineBroadeningValue, gaussBroadeningValue, centerValue } = options;
+  const { lineBroadening, gaussBroadening, lineBroadeningCenter } = options;
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0) {
@@ -43,11 +43,9 @@ export function apply(datum1D: Datum1D, options) {
                 length,
                 dw,
                 exponentialHz:
-                  gaussBroadeningValue > 0
-                    ? lineBroadeningValue
-                    : -lineBroadeningValue,
-                gaussianHz: gaussBroadeningValue,
-                center: centerValue,
+                  lineBroadening > 0 ? lineBroadening : -lineBroadening,
+                gaussianHz: gaussBroadening,
+                center: lineBroadeningCenter,
               },
             },
           },

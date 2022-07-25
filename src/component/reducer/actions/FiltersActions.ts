@@ -33,14 +33,30 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   }
 }
 
-function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
+function applyZeroFillingFilter(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
-    const { apodization, zeroFilling } = filterOptions;
+    const { size } = action.payload;
     const filters = [
       {
-        name: Filters.zeroFillingAndApodization.id,
-        options: { apodization, zeroFilling },
+        name: Filters.zeroFilling.id,
+        options: size,
+      },
+    ];
+    FiltersManager.applyFilter(draft.data[index], filters);
+    resetSelectedTool(draft);
+    setDomain(draft);
+    setMode(draft);
+  }
+}
+function applyApodizationFilter(draft: Draft<State>, action) {
+  if (draft.activeSpectrum?.id) {
+    const index = draft.activeSpectrum.index;
+    const options = action.payload;
+    const filters = [
+      {
+        name: Filters.apodization.id,
+        options,
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
@@ -392,6 +408,7 @@ function handleDeleteExclusionZone(draft: Draft<State>, action) {
 export {
   shiftSpectrumAlongXAxis,
   applyZeroFillingFilter,
+  applyApodizationFilter,
   applyFFTFilter,
   applyManualPhaseCorrectionFilter,
   applyAutoPhaseCorrectionFilter,

@@ -13,7 +13,6 @@ import * as phaseCorrection from './data1d/filter1d/phaseCorrection';
 import * as shiftX from './data1d/filter1d/shiftX';
 import * as standardDeviation from './data1d/filter1d/standardDeviation';
 import * as zeroFilling from './data1d/filter1d/zeroFilling';
-import * as zeroFillingAndApodization from './data1d/filter1d/zeroFillingAndApodization';
 import * as shift2DX from './data2d/filter2d/shiftX';
 import * as shift2DY from './data2d/filter2d/shiftY';
 
@@ -21,7 +20,6 @@ export {
   absolute,
   baselineCorrection,
   apodization,
-  zeroFillingAndApodization,
   fft,
   phaseCorrection,
   autoPhaseCorrection,

@@ -51,7 +51,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "analysis-ui-components": "^0.15.2",
-    "cheminfo-font": "^1.8.1",
+    "cheminfo-font": "^1.9.0",
     "cheminfo-types": "^1.2.0",
     "d3": "^7.6.1",
     "eventemitter3": "^4.0.7",

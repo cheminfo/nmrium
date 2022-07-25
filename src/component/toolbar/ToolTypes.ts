@@ -16,6 +16,7 @@ type RecordOptions = Record<
   | 'HMove'
   | 'equalizerTool'
   | 'rangesPicking'
+  | 'apodization'
   | 'zeroFilling'
   | 'phaseCorrection'
   | 'baseLineCorrection'
@@ -75,6 +76,12 @@ export const options: RecordOptions = {
     label: 'Ranges Picking',
     hasOptionPanel: true,
     isFilter: false,
+  },
+  apodization: {
+    id: Filters.apodization.id,
+    label: Filters.apodization.name,
+    hasOptionPanel: true,
+    isFilter: true,
   },
   zeroFilling: {
     id: Filters.zeroFilling.id,
