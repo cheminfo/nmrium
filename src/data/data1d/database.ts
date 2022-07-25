@@ -93,11 +93,10 @@ function prepareGetSolvents(data) {
 function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
   let moleculesDB = new MoleculesDB(OCL);
   for (let entry of array) {
-    //@ts-expect-error property will be defined in next release of nmr-processing
+
     if (entry.ocl) {
       try {
         const molecule = OCL.Molecule.fromIDCode(
-          //@ts-expect-error property will be defined in next release of nmr-processing
           entry.ocl.idCode,
           //@ts-expect-error property will be defined in next release of nmr-processing
           entry.ocl.coordinates,
@@ -107,9 +106,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
           entry,
           {},
           {
-            //@ts-expect-error property will be defined in next release of nmr-processing
             idCode: entry.ocl.idCode,
-            //@ts-expect-error property will be defined in next release of nmr-processing
             index: entry.ocl.index,
           },
         );
@@ -117,7 +114,6 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
         // eslint-disable-next-line no-console
         console.log(
           `Could not parse idCode: ${JSON.stringify(
-            //@ts-expect-error property will be defined in next release of nmr-processing
             entry.ocl,
           )}`,
           e,
