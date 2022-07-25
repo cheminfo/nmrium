@@ -93,7 +93,6 @@ function prepareGetSolvents(data) {
 function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
   let moleculesDB = new MoleculesDB(OCL);
   for (let entry of array) {
-
     if (entry.ocl) {
       try {
         const molecule = OCL.Molecule.fromIDCode(
@@ -112,12 +111,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
         );
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.log(
-          `Could not parse idCode: ${JSON.stringify(
-            entry.ocl,
-          )}`,
-          e,
-        );
+        console.log(`Could not parse idCode: ${JSON.stringify(entry.ocl)}`, e);
       }
     } else if (entry.smiles) {
       try {
