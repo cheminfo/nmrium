@@ -7,15 +7,21 @@ async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=13C Spectrum >> nth=0');
 }
 
+async function apodizationFilter(nmrium: NmriumPage) {
+  await nmrium.clickTool('apodization');
+  await nmrium.page.click('button >> text=Apply');
+
+  await expect(
+    nmrium.page.locator('data-test-id=filters-table >> text=Apodization'),
+  ).toBeVisible();
+}
+
 async function zeroFillingFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('zeroFilling');
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
     nmrium.page.locator('data-test-id=filters-table >> text=Zero Filling'),
-  ).toBeVisible();
-  await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Line broadening'),
   ).toBeVisible();
 }
 
@@ -57,6 +63,9 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
   await open13CFidSpectrum(nmrium);
   await nmrium.clickPanel('Filters');
 
+  await test.step('Apply Apodization filter', async () => {
+    await apodizationFilter(nmrium);
+  });
   await test.step('Apply Zero filling filter', async () => {
     await zeroFillingFilter(nmrium);
   });
