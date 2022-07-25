@@ -1,11 +1,13 @@
-import { CSSProperties, useCallback, useRef } from 'react';
+import { CSSProperties, useEffect, useRef } from 'react';
 import * as Yup from 'yup';
 
+import * as Filters from '../../data/Filters';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
+import { useFilter } from '../hooks/useFilter';
 import {
   APPLY_APODIZATION_FILTER,
   RESET_SELECTED_TOOL,
@@ -56,21 +58,26 @@ const validationSchema = Yup.object().shape({
 function ApodizationOptionsPanel() {
   const dispatch = useDispatch();
   const formRef = useRef<any>();
-  const handleApplyFilter = useCallback(
-    (values) => {
-      dispatch({
-        type: APPLY_APODIZATION_FILTER,
-        payload: values,
-      });
-    },
-    [dispatch],
-  );
+  const filter = useFilter(Filters.apodization.id);
 
-  const handleCancelFilter = useCallback(() => {
+  const handleApplyFilter = (values) => {
+    dispatch({
+      type: APPLY_APODIZATION_FILTER,
+      payload: values,
+    });
+  };
+
+  const handleCancelFilter = () => {
     dispatch({
       type: RESET_SELECTED_TOOL,
     });
-  }, [dispatch]);
+  };
+
+  useEffect(() => {
+    if (filter) {
+      formRef.current.setValues(filter.value);
+    }
+  }, [filter]);
 
   return (
     <div style={styles.container}>
