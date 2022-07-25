@@ -8,8 +8,8 @@ import { NMRiumWorkspace } from '../../NMRium';
 import Button from '../../elements/Button';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
+import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { isGoogleDocument } from '../../utility/isGoogleDocument';
-import Workspaces from '../../workspaces';
 
 const style: Record<
   'table' | 'th' | 'input' | 'labelCol' | 'serialCol' | 'checkbox',
@@ -65,9 +65,9 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   }, [databases, setFieldValue]);
 
   const resetDatabaseHandler = useCallback(() => {
-    const database =
-      Workspaces?.[currentWorkspace]?.databases?.data ||
-      Workspaces.default?.databases?.data;
+    const workSpaceDisplayPreferences =
+      getPreferencesByWorkspace(currentWorkspace);
+    const database = workSpaceDisplayPreferences.databases.data;
 
     setFieldValue('databases.data', database);
   }, [currentWorkspace, setFieldValue]);
