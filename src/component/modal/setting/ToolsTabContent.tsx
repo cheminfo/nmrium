@@ -74,7 +74,7 @@ const LIST: ListItem[] = [
     name: 'toolBarButtons.baselineCorrectionTool',
   },
   {
-    label: 'Exclusion zoon',
+    label: 'Exclusion zones',
     name: 'toolBarButtons.exclusionZonesTool',
   },
   {
