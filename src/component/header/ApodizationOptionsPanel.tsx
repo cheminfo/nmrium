@@ -1,15 +1,19 @@
-import { CSSProperties, useEffect, useRef } from 'react';
+import { CSSProperties, useEffect, useRef, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
+import { Filter } from '../../data/FiltersManager';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
+import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
+import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
 import {
   APPLY_APODIZATION_FILTER,
+  CALCULATE_APODIZATION_FILTER,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
@@ -55,16 +59,38 @@ const validationSchema = Yup.object().shape({
   lineBroadeningCenter: Yup.number().required().min(0).max(1),
 });
 
-function ApodizationOptionsPanel() {
+const initialValues = {
+  lineBroadening: 1,
+  gaussBroadening: 0,
+  lineBroadeningCenter: 0,
+  livePreview: true,
+};
+
+interface ApodizationOptionsInnerPanelProps {
+  filter: Filter | null;
+}
+
+function ApodizationOptionsInnerPanel(
+  props: ApodizationOptionsInnerPanelProps,
+) {
   const dispatch = useDispatch();
   const formRef = useRef<any>();
-  const filter = useFilter(Filters.apodization.id);
-
-  const handleApplyFilter = (values) => {
-    dispatch({
-      type: APPLY_APODIZATION_FILTER,
-      payload: values,
-    });
+  const handleApplyFilter = (
+    values,
+    triggerSource: 'apply' | 'onChange' = 'apply',
+  ) => {
+    const { livePreview, ...filterOptions } = values;
+    if (livePreview && triggerSource === 'onChange') {
+      dispatch({
+        type: CALCULATE_APODIZATION_FILTER,
+        payload: filterOptions,
+      });
+    } else if (triggerSource === 'apply') {
+      dispatch({
+        type: APPLY_APODIZATION_FILTER,
+        payload: filterOptions,
+      });
+    }
   };
 
   const handleCancelFilter = () => {
@@ -74,21 +100,17 @@ function ApodizationOptionsPanel() {
   };
 
   useEffect(() => {
-    if (filter) {
-      formRef.current.setValues(filter.value);
+    if (props.filter) {
+      formRef.current.setValues({ ...props.filter.value, livePreview: true });
     }
-  }, [filter]);
+  }, [props?.filter]);
 
   return (
     <div style={styles.container}>
       <FormikForm
         ref={formRef}
-        onSubmit={handleApplyFilter}
-        initialValues={{
-          lineBroadening: 1,
-          gaussBroadening: 0,
-          lineBroadeningCenter: 0,
-        }}
+        onSubmit={(values) => handleApplyFilter(values)}
+        initialValues={initialValues}
         validationSchema={validationSchema}
       >
         <Label title="Line broadening : " style={labelStyle}>
@@ -98,6 +120,7 @@ function ApodizationOptionsPanel() {
             min={0}
             max={1}
             style={inputStyle}
+            debounceTime={250}
           />
         </Label>
         <Label title="Gauss broadening :" style={labelStyle}>
@@ -107,6 +130,7 @@ function ApodizationOptionsPanel() {
             min={0}
             max={1}
             style={inputStyle}
+            debounceTime={250}
           />
         </Label>
         <Label title="lineBroadeningCenter [0 - 1] : " style={labelStyle}>
@@ -116,8 +140,17 @@ function ApodizationOptionsPanel() {
             min={0}
             max={1}
             style={inputStyle}
+            debounceTime={250}
           />
         </Label>
+        <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
+          <FormikCheckBox name="livePreview" />
+        </Label>
+
+        <FormikOnChange
+          onChange={(values) => handleApplyFilter(values, 'onChange')}
+          enableValidation
+        />
       </FormikForm>
 
       <ActionButtons
@@ -128,4 +161,9 @@ function ApodizationOptionsPanel() {
   );
 }
 
-export default ApodizationOptionsPanel;
+const MemoziedApodizationPanel = memo(ApodizationOptionsInnerPanel);
+
+export default function ApodizationOptionsPanel() {
+  const filter = useFilter(Filters.apodization.id);
+  return <MemoziedApodizationPanel filter={filter} />;
+}

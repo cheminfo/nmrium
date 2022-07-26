@@ -5,6 +5,7 @@ import * as FiltersManager from '../../../data/FiltersManager';
 import { updateXShift } from '../../../data/data1d/Spectrum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
+import { apply as apodization } from '../../../data/data1d/filter1d/apodization';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
@@ -64,6 +65,23 @@ function applyApodizationFilter(draft: Draft<State>, action) {
     resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
+  }
+}
+
+function calculateApodizationFilter(draft: Draft<State>, action) {
+  if (draft.activeSpectrum) {
+    const index = draft.activeSpectrum.index;
+    const options = action.payload;
+    const {
+      data: { x, re, im },
+      info,
+    } = draft.data[index] as Datum1D;
+
+    let _data = { data: { x, re, im }, info };
+    apodization(_data as Datum1D, options);
+    const { im: newIm, re: newRe } = _data.data;
+    draft.tempData[index].data.im = newIm;
+    draft.tempData[index].data.re = newRe;
   }
 }
 function applyFFTFilter(draft: Draft<State>) {
@@ -444,6 +462,7 @@ export {
   applyAbsoluteFilter,
   calculateManualPhaseCorrection,
   calculateBaseLineCorrection,
+  calculateApodizationFilter,
   handleMultipleSpectraFilter,
   enableFilter,
   deleteFilter,

@@ -538,6 +538,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.shiftSpectrumAlongXAxis(draft, action.shiftValue);
     case types.APPLY_APODIZATION_FILTER:
       return FiltersActions.applyApodizationFilter(draft, action);
+    case types.CALCULATE_APODIZATION_FILTER:
+      return FiltersActions.calculateApodizationFilter(draft, action);
     case types.APPLY_ZERO_FILLING_FILTER:
       return FiltersActions.applyZeroFillingFilter(draft, action);
     case types.APPLY_FFT_FILTER:

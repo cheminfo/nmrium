@@ -16,6 +16,7 @@ const styles: Record<'container', CSSProperties> = {
 
 const allowTools: Array<string | number> = [
   options.zoom.id,
+  options.apodization.id,
   options.zeroFilling.id,
   options.peakPicking.id,
   options.integral.id,

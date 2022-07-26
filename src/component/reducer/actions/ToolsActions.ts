@@ -42,9 +42,11 @@ function getStrongestPeak(draft: Draft<State>) {
 }
 
 function checkFilterHasTempData(selectedToolId: string) {
-  return [options.phaseCorrection.id, options.baselineCorrection.id].includes(
-    selectedToolId,
-  );
+  return [
+    options.phaseCorrection.id,
+    options.baselineCorrection.id,
+    options.apodization.id,
+  ].includes(selectedToolId);
 }
 
 function setFilterChanges(draft: Draft<State>, selectedFilterID) {
