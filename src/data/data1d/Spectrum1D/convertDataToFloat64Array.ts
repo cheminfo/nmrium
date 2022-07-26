@@ -1,6 +1,6 @@
 import { Data1D } from '../../types/data1d';
 
-function convert(value: Float64Array | number[]): Float64Array {
+function convert(value: Float64Array | number[] = []): Float64Array {
   return !ArrayBuffer.isView(value) && value ? Float64Array.from(value) : value;
 }
 

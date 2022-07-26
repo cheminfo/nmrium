@@ -2,7 +2,7 @@ import { Draft, original } from 'immer';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState, WorkspaceAction } from '../preferencesReducer';
-import { filterObject } from '../utilites/filterObject';
+import { filterObject } from '../utilities/filterObject';
 
 export function removeWorkspace(
   draft: Draft<PreferencesState>,

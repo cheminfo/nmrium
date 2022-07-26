@@ -8,52 +8,44 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || generateID();
-  datum.source = Object.assign(
-    {
-      jcampURL: null,
-    },
-    options.source,
-  );
-  datum.display = Object.assign(
-    {
-      name: options.display?.name ? options.display.name : generateID(),
-      ...getColor(options, usedColors),
-      isPositiveVisible: true,
-      isNegativeVisible: true,
-      isVisible: true,
-      contourOptions: defaultContourOptions,
-      dimension: 2,
-    },
-    options.display,
-  );
+  datum.source = {
+    jcampURL: null,
+    ...options.source,
+  };
+  datum.display = {
+    name: options.display?.name ? options.display.name : generateID(),
+    ...getColor(options, usedColors),
+    isPositiveVisible: true,
+    isNegativeVisible: true,
+    isVisible: true,
+    contourOptions: defaultContourOptions,
+    dimension: 2,
+    ...options.display,
+  };
 
-  datum.info = Object.assign(
-    {
-      nucleus: ['1H', '1H'],
-      isFt: true,
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-      dimension: 2,
-    },
-    options.info,
-  );
+  datum.info = {
+    nucleus: ['1H', '1H'],
+    isFt: true,
+    isFid: false,
+    isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+    dimension: 2,
+    ...options.info,
+  };
 
   datum.originalInfo = datum.info;
-  datum.meta = Object.assign({}, options.meta);
-  datum.data = Object.assign(
-    {
-      z: [],
-      minX: 0,
-      minY: 0,
-      maxX: 0,
-      maxY: 0,
-    },
-    options.data,
-  );
+  datum.meta = { ...options.meta };
+  datum.data = {
+    z: [],
+    minX: 0,
+    minY: 0,
+    maxX: 0,
+    maxY: 0,
+    ...options.data,
+  };
   datum.originalData = datum.data;
   datum.filters = Object.assign([], options.filters);
 
-  datum.zones = Object.assign({ values: [], options: {} }, options.zones);
+  datum.zones = { values: [], options: {}, ...options.zones };
 
   datum.processingController = new Processing2D(
     datum.data,

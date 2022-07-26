@@ -12,50 +12,38 @@ import { initiateRanges } from './ranges/initiateRanges';
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: Partial<Datum1D> = {};
   datum.id = options.id || generateID();
-  datum.source = Object.assign(
-    {
-      jcampURL: null,
-      file: {
-        binary: null,
-        name: '',
-        extension: '',
-      },
+  datum.source = {
+    jcampURL: null,
+    file: {
+      binary: null,
+      name: '',
+      extension: '',
     },
-    options.source,
-  );
+    ...options.source,
+  };
 
-  datum.display = Object.assign(
-    {
-      name: options.display?.name ? options.display.name : generateID(),
-      ...getColor(options, usedColors),
-      isVisible: true,
-      isPeaksMarkersVisible: true,
-      isRealSpectrumVisible: true,
-    },
-    options.display,
-  );
+  datum.display = {
+    name: options.display?.name ? options.display.name : generateID(),
+    ...getColor(options, usedColors),
+    isVisible: true,
+    isPeaksMarkersVisible: true,
+    isRealSpectrumVisible: true,
+    ...options.display,
+  };
 
-  datum.info = Object.assign(
-    {
-      nucleus: '1H', // 1H, 13C, 19F, ...
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-      dimension: 1,
-    },
-    options.info,
-  );
+  datum.info = {
+    nucleus: '1H', // 1H, 13C, 19F, ...
+    isFid: false,
+    isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+    dimension: 1,
+    ...options.info,
+  };
 
   datum.originalInfo = datum.info;
 
-  datum.meta = Object.assign({}, options.meta);
-  datum.data = Object.assign(
-    {
-      x: [],
-      re: [],
-      im: [],
-    },
-    convertDataToFloat64Array(options.data),
-  );
+  datum.meta = { ...options.meta };
+  datum.data = convertDataToFloat64Array(options.data);
+
   datum.originalData = datum.data;
 
   datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }

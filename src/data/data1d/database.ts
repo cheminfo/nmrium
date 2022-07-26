@@ -97,7 +97,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
       try {
         const molecule = OCL.Molecule.fromIDCode(
           entry.ocl.idCode,
-          //@ts-expect-error property will be defined in next release of nmr-processing
+          //@ts-expect-error types will be fixed in next release of openchemlib
           entry.ocl.coordinates,
         );
         moleculesDB.pushEntry(
@@ -185,6 +185,6 @@ function mapJs(js: Jcoupling[]) {
     );
     return { multiplicity, coupling: coupling.join(',') };
   } else {
-    return { multiplicity: 's', coupling: '' };
+    return { multiplicity: '', coupling: '' };
   }
 }

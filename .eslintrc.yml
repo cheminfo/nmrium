@@ -9,9 +9,11 @@ rules:
   '@typescript-eslint/no-misused-promises': off
   '@typescript-eslint/restrict-plus-operands': off
   'jest/no-standalone-expect': off
-  'prefer-object-spread': off
   'react/no-unstable-nested-components': off
-  no-new-func: off
+  no-restricted-properties:
+    - warn
+    - property: reduce
+      message: 'array.reduce should be avoided. Use another array method like map, forEach, or a for loop.'
   no-restricted-imports:
     - error
     - name: lodash

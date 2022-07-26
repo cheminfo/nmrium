@@ -14,7 +14,7 @@ export interface NMRiumToolBarPreferences {
   zeroFillingTool: boolean;
   apodizationTool: boolean;
   phaseCorrectionTool: boolean;
-  baseLineCorrectionTool: boolean;
+  baselineCorrectionTool: boolean;
   FFTTool: boolean;
   multipleSpectraAnalysisTool: boolean;
   exclusionZonesTool: boolean;

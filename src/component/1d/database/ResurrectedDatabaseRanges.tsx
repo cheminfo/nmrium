@@ -7,6 +7,7 @@ import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightedSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
 const emptyData = { info: { originFrequency: 400 } };
@@ -56,13 +57,15 @@ function ResurrectedDatabaseRanges() {
     yDomain,
   });
 
+  const finalScaleX = scaleX();
+
   const paths = spectra.map(({ data: { x, y }, from, to }) => {
-    let path = `M ${scaleX()(x[0])} ${scaleY(y[0])} `;
-    path += x.slice(1).reduce((accumulator, point, i) => {
-      accumulator += ` L ${scaleX()(point)} ${scaleY(y[i + 1])}`;
-      return accumulator;
-    }, '');
-    return { path, from, to };
+    const pathBuilder = new PathBuilder();
+    pathBuilder.moveTo(finalScaleX(x[0]), scaleY(y[0]));
+    for (let i = 1; i < x.length; i++) {
+      pathBuilder.lineTo(finalScaleX(x[i]), scaleY(y[i]));
+    }
+    return { path: pathBuilder.toString(), from, to };
   }, []);
 
   return (

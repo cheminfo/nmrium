@@ -2,7 +2,7 @@ import { Draft } from 'immer';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState } from '../preferencesReducer';
-import { getActiveWorkspace } from '../utilites/getActiveWorkspace';
+import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
 
 export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {

@@ -1,30 +1,33 @@
-import { Workspace } from './Workspace';
-import { basic } from './basic';
+import { InnerWorkspace } from './Workspace';
 
-export const prediction: Workspace = {
+export const prediction: InnerWorkspace = {
   version: 1,
   label: 'Prediction workspace',
   display: {
-    general: {
-      experimentalFeatures: { display: false },
-    },
     panels: {
       spectraPanel: { display: true },
       rangesPanel: { display: true },
       zonesPanel: { display: true },
       predictionPanel: { display: true, open: true },
-      informationPanel: { display: false },
-      peaksPanel: { display: false },
-      integralsPanel: { display: false },
-      structuresPanel: { display: false },
-      filtersPanel: { display: false },
-      summaryPanel: { display: false },
-      multipleSpectraAnalysisPanel: { display: false },
-      databasePanel: { display: false },
-      automaticAssignmentPanel: { display: false },
+    },
+    toolBarButtons: {
+      baselineCorrectionTool: true,
+      exclusionZonesTool: true,
+      exportAs: true,
+      FFTTool: true,
+      import: true,
+      integralTool: true,
+      multipleSpectraAnalysisTool: true,
+      phaseCorrectionTool: true,
+      rangePickingTool: true,
+      realImaginary: true,
+      slicingTool: true,
+      spectraCenterAlignments: true,
+      spectraStackAlignments: true,
+      zeroFillingTool: true,
+      zonePickingTool: true,
+      zoomOutTool: true,
+      zoomTool: true,
     },
   },
-  controllers: basic.controllers,
-  formatting: basic.formatting,
-  databases: basic.databases,
 };

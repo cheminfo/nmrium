@@ -312,6 +312,7 @@ function calculate(columns: Columns, data: AnalysisRow, formula = '') {
 
   let result;
   try {
+    // eslint-disable-next-line no-new-func
     result = new Function(...variables, `return ${formula}`)(...params);
   } catch (e) {
     // eslint-disable-next-line no-console

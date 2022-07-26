@@ -64,7 +64,7 @@ function HeaderInner(props: HeaderInnerProps) {
         return <AutoPeakPickingOptionPanel />;
       case options.rangesPicking.id:
         return <RangesPickingOptionPanel />;
-      case options.baseLineCorrection.id:
+      case options.baselineCorrection.id:
         return <BaseLineCorrectionPanel />;
       case options.zone2D.id:
         return <Zones2DOptionPanel />;

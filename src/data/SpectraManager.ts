@@ -182,21 +182,17 @@ export async function addBruker(options, data, usedColors) {
         );
       }
     } else if (info.dimension === 2) {
-      if (info.isFt) {
-        spectra.push(
-          Data2DManager.fromBruker(
-            entry,
-            {
-              ...options,
-              info,
-              display: { ...options.display },
-            },
-            usedColors,
-          ),
-        );
-      } else {
-        // in case of 2D FID spectrum
-      }
+      spectra.push(
+        Data2DManager.fromBruker(
+          entry,
+          {
+            ...options,
+            info,
+            display: { ...options.display },
+          },
+          usedColors,
+        ),
+      );
     }
   }
   return spectra;

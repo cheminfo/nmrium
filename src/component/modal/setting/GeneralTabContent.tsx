@@ -1,7 +1,7 @@
 import Label from '../../elements/Label';
 import FormikInput from '../../elements/formik/FormikInput';
 
-function ControllersTabContent() {
+function GeneralTabContent() {
   return (
     <>
       <p className="section-header">Spectra</p>
@@ -10,7 +10,7 @@ function ControllersTabContent() {
         // style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
       >
         <FormikInput
-          name="controllers.dimmedSpectraTransparency"
+          name="general.dimmedSpectraTransparency"
           checkValue={(value) => value >= 0 && value <= 1}
           type="number"
         />
@@ -19,4 +19,4 @@ function ControllersTabContent() {
   );
 }
 
-export default ControllersTabContent;
+export default GeneralTabContent;

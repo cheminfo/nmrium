@@ -201,7 +201,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             });
             break;
 
-          case options.baseLineCorrection.id:
+          case options.baselineCorrection.id:
             dispatch({
               type: ADD_BASE_LINE_ZONE,
               zone: { from: brushData.startX, to: brushData.endX },

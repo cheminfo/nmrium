@@ -1,7 +1,7 @@
 {
   "name": "nmrium",
   "description": "React component to display and process nuclear magnetic resonance (NMR) spectra.",
-  "version": "0.27.0",
+  "version": "0.29.0",
   "license": "MIT",
   "main": "lib-cjs/component/NMRium.js",
   "module": "lib/component/NMRium.js",
@@ -38,7 +38,8 @@
     "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "volta": {
-    "node": "16.15.1"
+    "node": "16.16.0",
+    "npm": "8.15.0"
   },
   "overrides": {
     "react": "$react",

@@ -10,6 +10,7 @@ import { HighlightedSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { spinnerContext } from '../../loader/SpinnerContext';
 import { loadFile } from '../../utility/FileUtility';
+import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
 function DatabaseSpectrum() {
@@ -47,13 +48,15 @@ function DatabaseSpectrum() {
         setLoading(false);
         const spectrum = spectra?.[0] || null;
         if (spectrum) {
+          const pathBuilder = new PathBuilder();
+          const finalScaleX = scaleX();
+          const finalScaleY = scaleY();
           const { x, re: y } = (spectrum as Datum1D).data;
-          let path = `M ${scaleX()(x[0])} ${scaleY()(y[0])} `;
-          path += x.slice(1).reduce((accumulator, point, i) => {
-            accumulator += ` L ${scaleX()(point)} ${scaleY()(y[i + 1])}`;
-            return accumulator;
-          }, '');
-          setPath(path);
+          pathBuilder.moveTo(finalScaleX(x[0]), finalScaleY(y[0]));
+          for (let i = 1; i < x.length; i++) {
+            pathBuilder.lineTo(finalScaleX(x[i]), finalScaleY(y[i]));
+          }
+          setPath(pathBuilder.toString());
         }
       } catch (e) {
         alert.error('Failed to Load spectrum');

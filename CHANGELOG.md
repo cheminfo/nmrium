@@ -1,5 +1,59 @@
 # Changelog
 
+## [0.29.0](https://github.com/cheminfo/nmrium/compare/v0.28.0...v0.29.0) (2022-07-25)
+
+
+### Features
+
+* activate/deactivate baseline correction live preview ([e835290](https://github.com/cheminfo/nmrium/commit/e835290f2281fac5ef9476c08cf2dfe922c28780))
+* improve general settings ([#1611](https://github.com/cheminfo/nmrium/issues/1611)) ([92d1c93](https://github.com/cheminfo/nmrium/commit/92d1c938562ba4f5004b6bf41bf62e4216e48079))
+
+
+### Bug Fixes
+
+* resetting database ([23fa7b5](https://github.com/cheminfo/nmrium/commit/23fa7b5e7849ba892cc95dcbd432bee25686b33b)), closes [#1638](https://github.com/cheminfo/nmrium/issues/1638)
+
+## [0.28.0](https://github.com/cheminfo/nmrium/compare/v0.27.0...v0.28.0) (2022-07-15)
+
+
+### Features
+
+* add hyperlink to database record in preferences if google docs ([abfaa6a](https://github.com/cheminfo/nmrium/commit/abfaa6a21dad2f6d28cb4d7d176f49f20faade54)), closes [#1499](https://github.com/cheminfo/nmrium/issues/1499)
+* add ranges when adding jcamp from the database ([8a4bd63](https://github.com/cheminfo/nmrium/commit/8a4bd639a502b938a64608a01610cbaefa6f539a)), closes [#1571](https://github.com/cheminfo/nmrium/issues/1571)
+* automatically close the right side of the split ([d94cc68](https://github.com/cheminfo/nmrium/commit/d94cc6895b25170c791ec3a3b6b87cbc68a96f8c)), closes [#1570](https://github.com/cheminfo/nmrium/issues/1570)
+* automatically load the default database when open its panel ([#1612](https://github.com/cheminfo/nmrium/issues/1612)) ([d61c0aa](https://github.com/cheminfo/nmrium/commit/d61c0aa5c1bec89dd938257d1e25cbc8ad9fc932)), closes [#1608](https://github.com/cheminfo/nmrium/issues/1608)
+* database advanced search by molecule structure ([#1602](https://github.com/cheminfo/nmrium/issues/1602)) ([fed6872](https://github.com/cheminfo/nmrium/commit/fed6872c382050b30a17ec0e6eac5443b5bc06e0))
+* database can have `ocl` property that will be used index if available ([9afad9b](https://github.com/cheminfo/nmrium/commit/9afad9b033f8439ff394797e79048bb36b002ee6))
+* disable drag and drop ([503f1c0](https://github.com/cheminfo/nmrium/commit/503f1c0cf026af2a5ca760fadaf77e1103c8bffb)), closes [#1582](https://github.com/cheminfo/nmrium/issues/1582)
+* expanded hydrogens in the floating molecule ([7dd5e9c](https://github.com/cheminfo/nmrium/commit/7dd5e9cc27e309ee633761e03d4311b9048f8ac0)), closes [#1572](https://github.com/cheminfo/nmrium/issues/1572)
+* force component preferences over local storage preferences ([0c9b63d](https://github.com/cheminfo/nmrium/commit/0c9b63df9b64091161a89e124670019ddae7d236))
+* force SplitPanel re-render when hidePanelOnLoad value change ([9f01e7f](https://github.com/cheminfo/nmrium/commit/9f01e7f97b1e18a5274adf4d444c23a453e6e5ef))
+* format the decimal fields in database panel ([4700745](https://github.com/cheminfo/nmrium/commit/470074583328838c22613b1773b3423a0d8a6675)), closes [#1592](https://github.com/cheminfo/nmrium/issues/1592)
+* generate spectra viewer as blob from outside component ([#1589](https://github.com/cheminfo/nmrium/issues/1589)) ([d64597c](https://github.com/cheminfo/nmrium/commit/d64597cc648fd3753dca0bd821a1dcf9cb51cd24))
+* improve loading database ([#1615](https://github.com/cheminfo/nmrium/issues/1615)) ([288e4b0](https://github.com/cheminfo/nmrium/commit/288e4b03720d4428759f5fbcbc3f79d9caf63a44)), closes [#1614](https://github.com/cheminfo/nmrium/issues/1614)
+* live preview for baseline correction ([#1621](https://github.com/cheminfo/nmrium/issues/1621)) ([1993aa3](https://github.com/cheminfo/nmrium/commit/1993aa3ca13efdbab6be33f9bc285c3663b219b4))
+* reapply the line broadening filter should take the last value and not the sum ([c083073](https://github.com/cheminfo/nmrium/commit/c0830737d48158e233552232ebbdbcbf99a9898e)), closes [#1618](https://github.com/cheminfo/nmrium/issues/1618)
+* return .nmrium format when trigger onDataChange ([bf97af0](https://github.com/cheminfo/nmrium/commit/bf97af01799992191b3eabd369d7143fc149279b)), closes [#1584](https://github.com/cheminfo/nmrium/issues/1584)
+* set default alignment 'stack' when loading many spectra ([72599ea](https://github.com/cheminfo/nmrium/commit/72599ea2a327860357cc1127b24950471b492fa9)), closes [#1577](https://github.com/cheminfo/nmrium/issues/1577)
+* show a message if the import is disabled ([581d587](https://github.com/cheminfo/nmrium/commit/581d587895c2961f7dacc433d9ad21c231e14ccc)), closes [#1586](https://github.com/cheminfo/nmrium/issues/1586)
+* throttling to display jcamp from database ([99c7c34](https://github.com/cheminfo/nmrium/commit/99c7c3457055301d38cd6fe78626dcf4a2d70441)), closes [#1575](https://github.com/cheminfo/nmrium/issues/1575)
+* use idCode in database lookup ([#1609](https://github.com/cheminfo/nmrium/issues/1609)) ([f2f631e](https://github.com/cheminfo/nmrium/commit/f2f631e3d66d35232b833d79408dc9d02841f674))
+
+
+### Bug Fixes
+
+* database numberic column format ([5353842](https://github.com/cheminfo/nmrium/commit/5353842fbb36c20c3f13792b6686fe19212c8d01))
+* database numeric column format ([057976e](https://github.com/cheminfo/nmrium/commit/057976e20d01c8f38d638bc09d76bc9163710c20))
+* edition of range after automatic assignment crash ([a4357bf](https://github.com/cheminfo/nmrium/commit/a4357bf5225ad5e0fd16bb784b3619eae5cca5c6)), closes [#1597](https://github.com/cheminfo/nmrium/issues/1597)
+* Ignoring of wobble curve does not work  ([#1590](https://github.com/cheminfo/nmrium/issues/1590)) ([ec2607d](https://github.com/cheminfo/nmrium/commit/ec2607ded131243d73cbd59a900952cd15a3f0f5)), closes [#1581](https://github.com/cheminfo/nmrium/issues/1581)
+* molecule panel resizing ([d06c992](https://github.com/cheminfo/nmrium/commit/d06c992121142f6ea6e9af579930c6531b98e964)), closes [#1574](https://github.com/cheminfo/nmrium/issues/1574)
+* pressing 's' when having one spectrum affects the other vertical alignment options ([6b2792c](https://github.com/cheminfo/nmrium/commit/6b2792c48474fe447ca22dc7191824276300d9b6))
+* side panel not initially closed when hidePanelOnLoad is true ([9ddcbe7](https://github.com/cheminfo/nmrium/commit/9ddcbe7159c90748c78ba855a7b76f2978f7e7e4))
+* update local storage when NMRium preference changed ([43dd395](https://github.com/cheminfo/nmrium/commit/43dd3955c6e46defb34cf5edaa377b79d231240e))
+* wheel zoom ([5017036](https://github.com/cheminfo/nmrium/commit/50170363a6a08560970aaf262c1cda2f674b8a83))
+* when tool button is not available shortcut should not be available neither ([4c08578](https://github.com/cheminfo/nmrium/commit/4c08578e6345ef1998f30a0a99a6c190a6523a46)), closes [#1504](https://github.com/cheminfo/nmrium/issues/1504)
+* wrong "search by structure" button status ([8c84764](https://github.com/cheminfo/nmrium/commit/8c847647aa51de1733a9d3b957bff37f4cc2abfa)), closes [#1603](https://github.com/cheminfo/nmrium/issues/1603)
+
 ## [0.27.0](https://github.com/cheminfo/nmrium/compare/v0.26.0...v0.27.0) (2022-06-03)
 
 

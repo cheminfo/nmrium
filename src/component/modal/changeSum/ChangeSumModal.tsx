@@ -110,7 +110,7 @@ export default function ChangeSumModal({
     if (
       sumOptions?.sumAuto &&
       !general?.hideSetSumFromMolecule &&
-      !panels?.structuresPanel?.hidden
+      !panels?.structuresPanel?.display
     ) {
       setActiveOption(SumSetOptions.Auto);
       const { mf, moleculeKey: key } = sumOptions;
@@ -182,7 +182,7 @@ export default function ChangeSumModal({
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
             {!general?.hideSetSumFromMolecule &&
-              !panels?.structuresPanel?.hidden && (
+              !panels?.structuresPanel?.display && (
                 <Tab tablabel="Auto" tabid={SumSetOptions.Auto}>
                   <SelectMolecule name="molecule" />
                 </Tab>
