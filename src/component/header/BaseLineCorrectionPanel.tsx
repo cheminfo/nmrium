@@ -1,7 +1,16 @@
-import { useCallback, useRef, useState, CSSProperties, useMemo } from 'react';
+import {
+  useCallback,
+  useRef,
+  useState,
+  CSSProperties,
+  useMemo,
+  useEffect,
+  memo,
+} from 'react';
 import * as Yup from 'yup';
 
-import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
+import * as Filters from '../../data/Filters';
+import { Filter } from '../../data/FiltersManager';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
@@ -10,6 +19,7 @@ import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
+import { useFilter } from '../hooks/useFilter';
 import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
@@ -29,7 +39,21 @@ const styles: Record<'container' | 'label', CSSProperties> = {
   },
 };
 
-function BaseLineCorrectionPanel() {
+interface BaseLineCorrectionInnerPanelProps {
+  filter: Filter | null;
+}
+
+const getAlgorithmsList = () => {
+  return ['airPLS', 'Polynomial'].map((val) => ({
+    key: val.toLowerCase(),
+    label: val,
+    value: val.toLowerCase(),
+  }));
+};
+
+function BaseLineCorrectionInnerPanel(
+  props: BaseLineCorrectionInnerPanelProps,
+) {
   const dispatch = useDispatch();
   const formRef = useRef<any>();
   const algorithmRef = useRef<any>();
@@ -74,16 +98,6 @@ function BaseLineCorrectionPanel() {
     });
   }, [dispatch]);
 
-  const getAlgorithmsList = useCallback(() => {
-    return Object.keys(baselineAlgorithms).map((val) => {
-      return { key: val, label: baselineAlgorithms[val], value: val };
-    });
-  }, []);
-
-  const changeAlgorithmHandler = useCallback((val) => {
-    setAlgorithm(val);
-  }, []);
-
   const formData = useMemo(() => {
     switch (algorithm) {
       case 'airpls': {
@@ -109,6 +123,14 @@ function BaseLineCorrectionPanel() {
     }
   }, [algorithm]);
 
+  useEffect(() => {
+    if (props.filter) {
+      const { algorithm, ...values } = props.filter.value;
+      formRef.current.setValues({ ...values, livePreview: true });
+      setAlgorithm(algorithm);
+    }
+  }, [props?.filter]);
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>Algorithm: </span>
@@ -116,8 +138,8 @@ function BaseLineCorrectionPanel() {
         ref={algorithmRef}
         data={getAlgorithmsList()}
         style={{ marginLeft: 10, marginRight: 10 }}
-        defaultValue="polynomial"
-        onChange={changeAlgorithmHandler}
+        value={algorithm}
+        onChange={(val) => setAlgorithm(val)}
       />
 
       <FormikForm
@@ -172,4 +194,9 @@ function BaseLineCorrectionPanel() {
   );
 }
 
-export default BaseLineCorrectionPanel;
+const MemoizedBaseLineCorrectionPanel = memo(BaseLineCorrectionInnerPanel);
+
+export default function BaseLineCorrectionPanel() {
+  const filter = useFilter(Filters.baselineCorrection.id);
+  return <MemoizedBaseLineCorrectionPanel filter={filter} />;
+}

@@ -262,13 +262,14 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     const { index } = draft.activeSpectrum;
 
     const { zones } = draft.toolOptions.data.baselineCorrection;
+    const { livePreview, ...options } = action.options;
 
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.baselineCorrection.id,
         options: {
           zones,
-          ...action.options,
+          ...options,
         },
       },
     ]);
