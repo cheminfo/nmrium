@@ -24,6 +24,7 @@ export const prediction: InnerWorkspace = {
       slicingTool: true,
       spectraCenterAlignments: true,
       spectraStackAlignments: true,
+      apodizationTool: true,
       zeroFillingTool: true,
       zonePickingTool: true,
       zoomOutTool: true,
