@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.30.0](https://github.com/cheminfo/nmrium/compare/v0.29.0...v0.30.0) (2022-07-27)
+
+
+### Features
+
+* improve 1d filters  ([#1623](https://github.com/cheminfo/nmrium/issues/1623)) ([4651216](https://github.com/cheminfo/nmrium/commit/465121603fe468f751401521257a892a9f94bd3b))
+
+
+### Bug Fixes
+
+* **prediction:** empty multiplicity for singulets ([b2d6b2d](https://github.com/cheminfo/nmrium/commit/b2d6b2d006ec932f74691bc6eb0b52c7cfbe45aa))
+
 ## [0.29.0](https://github.com/cheminfo/nmrium/compare/v0.28.0...v0.29.0) (2022-07-25)
 
 
