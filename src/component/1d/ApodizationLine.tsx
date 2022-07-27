@@ -24,7 +24,9 @@ function ApdoizationLine() {
   const spectrum = useSpectrum({ emptyData }) as Datum1D;
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
 
-  if (!activeSpectrum?.id || selectedTool !== Filters.apodization.id) { return null; }
+  if (!activeSpectrum?.id || selectedTool !== Filters.apodization.id) {
+    return null;
+  }
 
   const _scaleX = scaleX();
   const _scaleY = scaleY(activeSpectrum?.id);
@@ -60,7 +62,7 @@ function ApdoizationLine() {
   return (
     <path
       data-test-id="apodization-line"
-      stroke='green'
+      stroke="green"
       fill="none"
       d={paths()}
       transform="translate(0,-10)"
