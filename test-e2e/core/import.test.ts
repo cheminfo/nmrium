@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
 
-test('should load and migrate .nmrium data from version 0 to latest version', async ({
+test('should load and migrate .nmrium data from version 0 to version 1', async ({
   page,
 }) => {
   const nmrium = await NmriumPage.create(page);
@@ -16,7 +16,7 @@ test('should load and migrate .nmrium data from version 0 to latest version', as
   ).toBeVisible();
 });
 
-test('should load and migrate .nmrium data from version 1 to latest version', async ({
+test('should load and migrate .nmrium data from version 1 to version 2', async ({
   page,
 }) => {
   const nmrium = await NmriumPage.create(page);
@@ -27,5 +27,23 @@ test('should load and migrate .nmrium data from version 1 to latest version', as
   // If the file was loaded successfully, there should be a 1H,1H tab.
   await expect(
     nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
+  ).toBeVisible();
+});
+test('should load and migrate .nmrium data from version 2 to version 3', async ({
+  page,
+}) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.page.setInputFiles(
+    'data-test-id=dropzone-input',
+    'test-e2e/data/13c-version-2.nmrium',
+  );
+
+  await expect(
+    nmrium.page.locator('data-test-id=filters-table >> text=Apodization'),
+  ).toBeVisible();
+
+  // If the file was loaded successfully, there should be a 13C tab.
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "13C"]'),
   ).toBeVisible();
 });
