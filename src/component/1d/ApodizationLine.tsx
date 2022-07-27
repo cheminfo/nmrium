@@ -10,17 +10,22 @@ import useSpectrum from '../hooks/useSpectrum';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
 
+import { getYScale } from './utilities/scale';
+
 const emptyData = { data: {}, info: {} };
 
 function ApdoizationLine() {
   const {
     activeSpectrum,
+    height,
+    margin,
+    verticalAlign,
     toolOptions: {
       selectedTool,
       data: { apodizationOptions },
     },
   } = useChartData();
-  const { scaleX, scaleY } = useScaleChecked();
+  const { scaleX } = useScaleChecked();
   const spectrum = useSpectrum({ emptyData }) as Datum1D;
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
 
@@ -29,7 +34,12 @@ function ApdoizationLine() {
   }
 
   const _scaleX = scaleX();
-  const _scaleY = scaleY(activeSpectrum?.id);
+  const _scaleY = getYScale({
+    height,
+    margin,
+    verticalAlign,
+    yDomain: [0, 1]
+  });
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
@@ -44,12 +54,12 @@ function ApdoizationLine() {
 
       pathBuilder.moveTo(
         _scaleX(pathPoints.x[0]),
-        _scaleY(pathPoints.y[0] * 500000),
+        _scaleY(pathPoints.y[0]),
       );
       for (let i = 1; i < pathPoints.x.length; i++) {
         pathBuilder.lineTo(
           _scaleX(pathPoints.x[i]),
-          _scaleY(pathPoints.y[i] * 500000),
+          _scaleY(pathPoints.y[i]),
         );
       }
 
@@ -64,8 +74,8 @@ function ApdoizationLine() {
       data-test-id="apodization-line"
       stroke="green"
       fill="none"
+      strokeWidth="2"
       d={paths()}
-      transform="translate(0,-10)"
     />
   );
 }
