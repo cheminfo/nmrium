@@ -20,7 +20,7 @@ export interface ApodizationOptions {
 export const defaultApodizationOptions: ApodizationOptions = {
   lineBroadening: 1,
   gaussBroadening: 0,
-  lineBroadeningCenter: 1,
+  lineBroadeningCenter: 0,
 };
 
 export function apply(datum1D: Datum1D, options: ApodizationOptions) {
