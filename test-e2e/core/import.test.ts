@@ -38,12 +38,14 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
     'test-e2e/data/13c-version-2.nmrium',
   );
 
-  await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Apodization'),
-  ).toBeVisible();
-
   // If the file was loaded successfully, there should be a 13C tab.
   await expect(
     nmrium.page.locator('_react=InternalTab[tabid = "13C"]'),
+  ).toBeVisible();
+
+  await nmrium.clickPanel('Filters');
+
+  await expect(
+    nmrium.page.locator('data-test-id=filters-table >> text=Apodization'),
   ).toBeVisible();
 });
