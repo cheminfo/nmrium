@@ -4,6 +4,7 @@ import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
+import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { migrate } from '../../data/migration/MigrationManager';
 import { Molecule } from '../../data/molecules/Molecule';
 import { Contours } from '../../data/types/data2d/Contours';
@@ -114,6 +115,7 @@ export const getInitialState = (): State => ({
         options: {},
         zones: [],
       },
+      apodizationOptions: {} as ApodizationOptions,
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -326,6 +328,7 @@ export interface State {
         zones: any[];
         options: any;
       };
+      apodizationOptions: ApodizationOptions;
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}

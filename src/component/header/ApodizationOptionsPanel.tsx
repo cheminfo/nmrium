@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
+import { defaultApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
@@ -60,9 +61,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  lineBroadening: 1,
-  gaussBroadening: 0,
-  lineBroadeningCenter: 0,
+  ...defaultApodizationOptions,
   livePreview: true,
 };
 
