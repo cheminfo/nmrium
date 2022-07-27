@@ -72,9 +72,9 @@ export function isApplicable(datum1D: Datum1D) {
   return false;
 }
 
-export function reduce() {
+export function reduce(previousValue, newValue) {
   return {
-    once: false,
-    reduce: null,
+    once: true,
+    reduce: newValue,
   };
 }
