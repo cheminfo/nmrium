@@ -53,7 +53,7 @@
     "@emotion/react": "^11.9.3",
     "analysis-ui-components": "^0.15.2",
     "cheminfo-font": "^1.9.0",
-    "cheminfo-types": "^1.2.0",
+    "cheminfo-types": "^1.4.0",
     "d3": "^7.6.1",
     "eventemitter3": "^4.0.7",
     "file-saver": "^2.0.5",
@@ -106,7 +106,7 @@
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.0",
     "@types/jest": "^28.1.6",
-    "@types/node": "^18.0.6",
+    "@types/node": "^18.6.1",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.0.0",
@@ -124,6 +124,6 @@
     "rollup-plugin-analyzer": "^4.0.0",
     "serve": "^14.0.1",
     "typescript": "~4.7.4",
-    "vite": "^3.0.2"
+    "vite": "^3.0.3"
   }
 }

@@ -27,6 +27,7 @@ export const basic: InnerWorkspace = {
       zonePickingTool: true,
       rangePickingTool: true,
       slicingTool: true,
+      apodizationTool: true,
       zeroFillingTool: true,
       FFTTool: true,
       phaseCorrectionTool: true,

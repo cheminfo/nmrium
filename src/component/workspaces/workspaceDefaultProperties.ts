@@ -39,6 +39,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       slicingTool: false,
       spectraCenterAlignments: false,
       spectraStackAlignments: false,
+      apodizationTool: false,
       zeroFillingTool: false,
       zonePickingTool: false,
       zoomOutTool: false,

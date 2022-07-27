@@ -21,6 +21,7 @@ import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';
 
+import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
@@ -53,6 +54,8 @@ function HeaderInner(props: HeaderInnerProps) {
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
+      case options.apodization.id:
+        return <ApodizationOptionsPanel />;
       case options.zeroFilling.id:
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:

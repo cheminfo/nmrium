@@ -24,6 +24,7 @@ export const process1D: InnerWorkspace = {
       slicingTool: true,
       spectraCenterAlignments: true,
       spectraStackAlignments: true,
+      apodizationTool: true,
       zeroFillingTool: true,
       zonePickingTool: true,
       zoomOutTool: true,

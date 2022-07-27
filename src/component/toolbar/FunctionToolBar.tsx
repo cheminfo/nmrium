@@ -1,5 +1,6 @@
 import { Toolbar } from 'analysis-ui-components';
 import {
+  SvgNmrApodization,
   SvgNmrBaselineCorrection,
   SvgNmrFourierTransform,
   SvgNmrIntegrate,
@@ -173,6 +174,18 @@ function FunctionToolBarInner({
               title={options.multipleSpectraAnalysis.label}
             >
               <SvgNmrMultipleAnalysis />
+            </ToggleButton>
+          )}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('apodizationTool') && (
+            <ToggleButton
+              key={options.apodization.id}
+              value={options.apodization.id}
+              isVisible={Filters.apodization.isApplicable({ info } as Datum1D)}
+              id="apodization"
+              title={options.apodization.label}
+            >
+              <SvgNmrApodization />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&

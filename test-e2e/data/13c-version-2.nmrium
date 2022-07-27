@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "spectra": [
+    {
+      "id": "n4eu7cs22v",
+      "display": {
+        "name": "test",
+        "color": "#817066",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "source": {
+        "jcampURL": "./data/cytisine/13C_Cytisin_600_fid.dx",
+        "jcampSpectrumIndex": 0
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "isSumConstant": true,
+          "sumAuto": true
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "isSumConstant": true,
+          "sumAuto": true
+        }
+      },
+      "filters": [
+        {
+          "name": "digitalFilter",
+          "label": "Digital Filter",
+          "value": {
+            "digitalFilterValue": 67.9918823242188
+          },
+          "id": "Y4vyvfjU",
+          "flag": true,
+          "isDeleteAllow": false
+        },
+        {
+          "name": "zeroFilling",
+          "label": "Zero Filling",
+          "value": 131072,
+          "id": "LFZ7j9Ds",
+          "flag": true,
+          "isDeleteAllow": true
+        },
+        {
+          "name": "lineBroadening",
+          "label": "Line broadening",
+          "value": 1,
+          "id": "ARmJ39ps",
+          "flag": true,
+          "isDeleteAllow": true
+        },
+        {
+          "name": "fft",
+          "label": "FFT",
+          "value": {},
+          "id": "RftqQUu1",
+          "flag": true,
+          "isDeleteAllow": true
+        },
+        {
+          "name": "phaseCorrection",
+          "label": "Phase correction",
+          "value": {
+            "ph0": -100.50461799980758,
+            "ph1": -104.07195300476224
+          },
+          "id": "98NUelEt",
+          "flag": true,
+          "isDeleteAllow": true
+        }
+      ]
+    }
+  ],
+  "molecules": [],
+  "correlations": {
+    "values": [],
+    "options": {
+      "tolerance": {
+        "C": 0.25,
+        "H": 0.02,
+        "N": 0.25,
+        "F": 0.25,
+        "Si": 0.25,
+        "P": 0.25
+      }
+    },
+    "state": {}
+  },
+  "preferences": {
+    "activeTab": "13C",
+    "verticalAlign": "bottom"
+  }
+}

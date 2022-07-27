@@ -36,13 +36,15 @@ export interface SelectEntry {
   label: string | number;
 }
 
-export interface SelectProps {
+export interface SelectProps
+  extends Omit<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    'style' | 'onChange'
+  > {
   onChange?: (element: string) => void;
   data: Array<SelectEntry>;
+  defaultValue?: string | number | undefined;
   style?: CSSProperties;
-  defaultValue?: string | number;
-  name?: string;
-  className?: string;
   placeholder?: string;
 }
 
@@ -55,6 +57,7 @@ const Select = forwardRef(function Select(
     style = { width: 100 },
     onChange = () => null,
     defaultValue = '',
+    value,
     name = '',
     className = '',
     placeholder = '',
@@ -78,6 +81,7 @@ const Select = forwardRef(function Select(
       name={name}
       onChange={handleOnChanged}
       defaultValue={defaultValue}
+      value={value}
       className={className}
       style={style}
       required

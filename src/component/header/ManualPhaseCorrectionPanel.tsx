@@ -1,16 +1,7 @@
-import {
-  useMemo,
-  CSSProperties,
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 
 import * as Filters from '../../data/Filters';
-import { Filter } from '../../data/FiltersManager';
-import { Data1D, Datum1D } from '../../data/types/data1d';
+import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
@@ -18,6 +9,7 @@ import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
+import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
@@ -67,18 +59,19 @@ const algorithms = [
     value: phaseCorrectionTypes.absolute,
   },
 ];
+const emptyData = { datum: {}, filter: null };
 
-interface ManualPhaseCorrectionPanelInnerProps {
-  data: Data1D;
-  pivot: { index: number };
-  filter: Filter | null;
-}
+export default function ManualPhaseCorrectionPanel() {
+  const {
+    toolOptions: {
+      data: { pivot },
+    },
+  } = useChartData();
 
-function ManualPhaseCorrectionPanelInner({
-  data,
-  pivot,
-  filter,
-}: ManualPhaseCorrectionPanelInnerProps) {
+  const { data } = useSpectrum(emptyData) as Datum1D;
+
+  const filter = useFilter(Filters.phaseCorrection.id);
+
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
   const valueRef = useRef({ ph0: 0, ph1: 0 });
@@ -231,28 +224,4 @@ function ManualPhaseCorrectionPanelInner({
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </div>
   );
-}
-
-const MemoizedManualPhaseCorrectionPanel = memo(
-  ManualPhaseCorrectionPanelInner,
-);
-
-const emptyData = { datum: {}, filter: null };
-export default function ManualPhaseCorrectionPanel() {
-  const {
-    toolOptions: {
-      data: { pivot },
-    },
-  } = useChartData();
-
-  const { data, filters } = useSpectrum(emptyData) as Datum1D;
-
-  const filter = useMemo(() => {
-    return (
-      filters.find((filter) => filter.name === Filters.phaseCorrection.id) ||
-      null
-    );
-  }, [filters]);
-
-  return <MemoizedManualPhaseCorrectionPanel {...{ data, filter, pivot }} />;
 }

@@ -12,16 +12,28 @@ export const name = 'Baseline correction';
  * @param {Datum1d} datum1d
  */
 
-export const baselineAlgorithms = {
-  airpls: 'airPLS',
-  polynomial: 'Polynomial',
-};
+export type BaselineAlgorithms = 'airpls' | 'polynomial';
 
-export function apply(datum1D: Datum1D, options: any = {}) {
+export interface PolynomialOptions {
+  zones: Array<{ from: number; to: number; id: string }>;
+  algorithm: 'polynomial';
+  degree: number;
+}
+
+export interface AirplsOptions {
+  zones: Array<{ from: number; to: number; id: string }>;
+  algorithm: 'airpls';
+  maxIterations: number;
+  tolerance: number;
+}
+
+export type BaselineCorrectionOptions = PolynomialOptions | AirplsOptions;
+
+export function apply(datum1D: Datum1D, options: BaselineCorrectionOptions) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }
-  const { algorithm, zones = [] } = options;
+  const { algorithm } = options;
   let { x, re } = datum1D.data;
 
   let corrected;
@@ -31,14 +43,14 @@ export function apply(datum1D: Datum1D, options: any = {}) {
       break;
     case 'polynomial':
       {
-        const baselineOptions = {
-          regressionOptions: options.degree,
-        };
+        const { degree, zones } = options;
         let reduced = equallySpaced(
           { x, y: re },
           { numberOfPoints: 4096, zones },
         );
-        let result = baselineRegression(reduced.x, reduced.y, baselineOptions);
+        let result = baselineRegression(reduced.x, reduced.y, {
+          regressionOptions: degree,
+        });
         let { regression } = result;
         corrected = new Float64Array(x.length);
         for (let i = 0; i < re.length; i++) {
@@ -48,6 +60,7 @@ export function apply(datum1D: Datum1D, options: any = {}) {
 
       break;
     default:
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`baselineCorrection: algorithm unknown: ${algorithm}`);
   }
 
@@ -59,9 +72,9 @@ export function isApplicable(datum1D: Datum1D) {
   return false;
 }
 
-export function reduce() {
+export function reduce(previousValue, newValue) {
   return {
-    once: false,
-    reduce: null,
+    once: true,
+    reduce: newValue,
   };
 }
