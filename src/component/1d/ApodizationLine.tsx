@@ -14,12 +14,19 @@ import { getYScale } from './utilities/scale';
 
 const emptyData = { data: {}, info: {} };
 
-function ApdoizationLine() {
-  const {
-    activeSpectrum,
+function useWindowYScale() {
+  const { height, margin, verticalAlign } = useChartData();
+  return getYScale({
     height,
     margin,
     verticalAlign,
+    yDomain: [0, 1],
+  });
+}
+
+function ApdoizationLine() {
+  const {
+    activeSpectrum,
     toolOptions: {
       selectedTool,
       data: { apodizationOptions },
@@ -28,18 +35,11 @@ function ApdoizationLine() {
   const { scaleX } = useScaleChecked();
   const spectrum = useSpectrum({ emptyData }) as Datum1D;
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
+  const scaleY = useWindowYScale();
 
   if (!activeSpectrum?.id || selectedTool !== Filters.apodization.id) {
     return null;
   }
-
-  const _scaleX = scaleX();
-  const _scaleY = getYScale({
-    height,
-    margin,
-    verticalAlign,
-    yDomain: [0, 1],
-  });
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
@@ -47,14 +47,14 @@ function ApdoizationLine() {
       spectrum,
       apodizationOptions || defaultApodizationOptions,
     );
-    if (spectrum.data?.x && y && _scaleX(0)) {
-      const x = spectrum.data?.x;
+    const x = spectrum.data?.x;
 
+    if (x && y) {
       const pathPoints = xyReduce({ x, y });
 
-      pathBuilder.moveTo(_scaleX(pathPoints.x[0]), _scaleY(pathPoints.y[0]));
+      pathBuilder.moveTo(scaleX()(pathPoints.x[0]), scaleY(pathPoints.y[0]));
       for (let i = 1; i < pathPoints.x.length; i++) {
-        pathBuilder.lineTo(_scaleX(pathPoints.x[i]), _scaleY(pathPoints.y[i]));
+        pathBuilder.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y[i]));
       }
 
       return pathBuilder.toString();
