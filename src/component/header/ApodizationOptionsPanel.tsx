@@ -18,26 +18,10 @@ import {
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
-const styles: Record<'container' | 'input' | 'label', CSSProperties> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
-  },
-
-  input: {
-    height: '100%',
-    width: '80px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
-  },
-
-  label: {
-    lineHeight: 2,
-    userSelect: 'none',
-  },
+const containerStyle: CSSProperties = {
+  padding: '5px',
+  height: '100%',
+  display: 'flex',
 };
 
 const labelStyle = {
@@ -51,7 +35,7 @@ const labelStyle = {
 };
 
 const inputStyle = {
-  input: { height: '24px' },
+  input: { height: '24px', width: '60px' },
 };
 
 const validationSchema = Yup.object().shape({
@@ -105,7 +89,7 @@ function ApodizationOptionsInnerPanel(
   }, [props?.filter]);
 
   return (
-    <div style={styles.container}>
+    <div style={containerStyle}>
       <FormikForm
         ref={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
