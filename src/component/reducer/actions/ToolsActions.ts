@@ -173,9 +173,9 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  const align = ['stack', 'center'].includes(draft.verticalAlign.align)
-    ? 'bottom'
-    : 'center';
+  const align = ['stack', 'bottom'].includes(draft.verticalAlign.align)
+    ? 'center'
+    : 'bottom';
   changeSpectrumVerticalAlignment(draft, { align });
 }
 
