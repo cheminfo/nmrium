@@ -51,7 +51,7 @@ function MyComponent() {
 
 See [General information for NMRium development](./README_DEV.md).
 
-There is an automatic build on each commit. You can test the latest build from `master` at:
+There is an automatic build on each commit. You can test the latest build from `main` at:
 
 https://dev.nmrium.org/
 
@@ -96,7 +96,7 @@ npm start
 
 [npm-image]: https://img.shields.io/npm/v/nmrium.svg
 [npm-url]: https://npmjs.org/package/nmrium
-[ci-image]: https://github.com/cheminfo/nmrium/workflows/Node.js%20CI/badge.svg?branch=master
+[ci-image]: https://github.com/cheminfo/nmrium/workflows/Node.js%20CI/badge.svg?branch=main
 [ci-url]: https://github.com/cheminfo/nmrium/actions?query=workflow%3A%22Node.js+CI%22
 [download-image]: https://img.shields.io/npm/dm/nmrium.svg
 [download-url]: https://npmjs.org/package/nmrium
