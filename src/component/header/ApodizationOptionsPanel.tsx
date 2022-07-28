@@ -16,7 +16,9 @@ import {
   APPLY_APODIZATION_FILTER,
   CALCULATE_APODIZATION_FILTER,
   RESET_SELECTED_TOOL,
+  SET_SELECTED_TOOL,
 } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 
 const containerStyle: CSSProperties = {
   padding: '5px',
@@ -88,6 +90,15 @@ function ApodizationOptionsInnerPanel(
     }
   }, [props?.filter]);
 
+  const resetTool = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.checked) {
+      dispatch({
+        type: SET_SELECTED_TOOL,
+        payload: { selectedTool: options.apodization.id },
+      });
+    }
+  };
+
   return (
     <div style={containerStyle}>
       <FormikForm
@@ -127,7 +138,7 @@ function ApodizationOptionsInnerPanel(
           />
         </Label>
         <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
-          <FormikCheckBox name="livePreview" />
+          <FormikCheckBox name="livePreview" onChange={resetTool} />
         </Label>
 
         <FormikOnChange
