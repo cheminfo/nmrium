@@ -59,7 +59,7 @@ function SpectrumListItem({
     }
     return value;
   };
-  const activated = activeSpectrum && activeSpectrum.id === data.id;
+  const activated = !activeSpectrum || activeSpectrum?.id === data.id;
   const { color, name, positiveColor, negativeColor } = data.display;
   return (
     <div

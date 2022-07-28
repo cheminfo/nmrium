@@ -20,7 +20,7 @@ function ColorIndicator1D({ color, activated }: ColorIndicator1DProps) {
         backgroundColor: color,
         height: '12px',
         width: '12px',
-        opacity: activated ? 1 : 0.1,
+        opacity: activated ? 1 : 0.2,
         display: 'inline-block',
       }}
     />
@@ -37,7 +37,7 @@ function ColorIndicator2D({
       width="12"
       height="12"
       viewBox="0 0 12 12"
-      opacity={activated ? 1 : 0.1}
+      opacity={activated ? 1 : 0.2}
     >
       <g>
         <path d="M0,0H12L0,12Z" fill={positiveColor} strokeWidth="0" />
