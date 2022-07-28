@@ -29,6 +29,10 @@ export default function ShowHideMarkersButton({
     return markersVisible.findIndex((v) => v.id === id) !== -1;
   };
 
+  if (data.peaks && data.peaks.values.length === 0) {
+    return null;
+  }
+
   return (
     <button
       style={{
@@ -40,7 +44,6 @@ export default function ShowHideMarkersButton({
       }}
       type="button"
       onClick={() => onChangeMarkersVisibility(data)}
-      disabled={data.peaks && data.peaks.values.length === 0}
     >
       <SvgNmrPeaks />
     </button>
