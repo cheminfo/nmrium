@@ -252,7 +252,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
               </div>
             </Tab>
 
-            <Tab tablabel="Display" tabid="display">
+            <Tab tablabel="Panels" tabid="display">
               <div className="inner-content">
                 <DisplayTabContent />
               </div>
