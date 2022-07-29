@@ -160,7 +160,7 @@ export default class Processing2D {
       throw e;
     }
 
-    return contours;
+    return Object.freeze(contours);
   }
 }
 
