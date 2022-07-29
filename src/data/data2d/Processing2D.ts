@@ -1,4 +1,5 @@
 import { Conrec } from 'ml-conrec';
+import { matrixAbsoluteMedian } from 'ml-spectra-processing';
 
 export const defaultContourOptions = {
   positive: {
@@ -28,6 +29,7 @@ export default class Processing2D {
     },
   ) {
     this.options = options;
+
     const { positive, negative } = defaultLevel;
 
     this.currentLevelPositive = positive;
@@ -39,7 +41,7 @@ export default class Processing2D {
 
     this.conrec = new Conrec(minMax.z, { xs, ys, swapAxes: false });
 
-    this.median = minMax.noise;
+    this.median = matrixAbsoluteMedian(minMax.z);
 
     this.minMax = minMax;
   }
