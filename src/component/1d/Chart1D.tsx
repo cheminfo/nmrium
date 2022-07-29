@@ -1,5 +1,6 @@
 import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 
+import ApdoizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
@@ -29,8 +30,8 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
           />
         </clipPath>
       </defs>
-
       <LinesSeries />
+      <ApdoizationLine />
       <IntegralsSeries />
       <PeakAnnotations />
       <Ranges />

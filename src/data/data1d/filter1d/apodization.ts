@@ -11,13 +11,42 @@ export const name = 'Apodization';
  * @param {Object} [value]
  */
 
-interface ApodizationOptions {
+export interface ApodizationOptions {
   lineBroadening: number;
   gaussBroadening: number;
   lineBroadeningCenter: number;
 }
 
+export const defaultApodizationOptions: ApodizationOptions = {
+  lineBroadening: 1,
+  gaussBroadening: 0,
+  lineBroadeningCenter: 0,
+};
+
 export function apply(datum1D: Datum1D, options: ApodizationOptions) {
+  const newData = apodizationFilter(datum1D, options);
+
+  datum1D.data = {
+    ...datum1D.data,
+    ...{ re: newData.re as Float64Array, im: newData.im as Float64Array },
+  };
+}
+export function isApplicable(datum1D: Datum1D) {
+  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
+  return false;
+}
+
+export function reduce(previousValue, newValue) {
+  return {
+    once: true,
+    reduce: newValue,
+  };
+}
+
+export function apodizationFilter(
+  datum1D: Datum1D,
+  options: ApodizationOptions,
+) {
   const { lineBroadening, gaussBroadening, lineBroadeningCenter } = options;
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
@@ -34,7 +63,7 @@ export function apply(datum1D: Datum1D, options: ApodizationOptions) {
   const length = re.length;
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
 
-  const newData = apodization(
+  return apodization(
     { re, im },
     {
       pointsToShift,
@@ -59,20 +88,4 @@ export function apply(datum1D: Datum1D, options: ApodizationOptions) {
       },
     },
   );
-
-  datum1D.data = {
-    ...datum1D.data,
-    ...{ re: newData.re as Float64Array, im: newData.im as Float64Array },
-  };
-}
-export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
-  return false;
-}
-
-export function reduce(previousValue, newValue) {
-  return {
-    once: true,
-    reduce: newValue,
-  };
 }

@@ -78,6 +78,7 @@ function calculateApodizationFilter(draft: Draft<State>, action) {
     } = draft.data[index] as Datum1D;
 
     let _data = { data: { x, re, im }, info };
+    draft.toolOptions.data.apodizationOptions = options;
     apodization(_data as Datum1D, options);
     const { im: newIm, re: newRe } = _data.data;
     draft.tempData[index].data.im = newIm;

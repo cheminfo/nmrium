@@ -2,6 +2,7 @@ import { max } from 'd3';
 import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
+import { defaultApodizationOptions } from '../../../data/data1d/filter1d/apodization';
 import { Data1D, Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
@@ -94,6 +95,10 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
               ? baselineCorrectionFilter.value.zones
               : [];
         }
+        break;
+      }
+      case options.apodization.id: {
+        draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
         break;
       }
 

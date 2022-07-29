@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
+import { defaultApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
@@ -15,28 +16,14 @@ import {
   APPLY_APODIZATION_FILTER,
   CALCULATE_APODIZATION_FILTER,
   RESET_SELECTED_TOOL,
+  SET_SELECTED_TOOL,
 } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 
-const styles: Record<'container' | 'input' | 'label', CSSProperties> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
-  },
-
-  input: {
-    height: '100%',
-    width: '80px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
-  },
-
-  label: {
-    lineHeight: 2,
-    userSelect: 'none',
-  },
+const containerStyle: CSSProperties = {
+  padding: '5px',
+  height: '100%',
+  display: 'flex',
 };
 
 const labelStyle = {
@@ -50,7 +37,7 @@ const labelStyle = {
 };
 
 const inputStyle = {
-  input: { height: '24px' },
+  input: { height: '24px', width: '60px' },
 };
 
 const validationSchema = Yup.object().shape({
@@ -60,9 +47,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  lineBroadening: 1,
-  gaussBroadening: 0,
-  lineBroadeningCenter: 0,
+  ...defaultApodizationOptions,
   livePreview: true,
 };
 
@@ -105,8 +90,17 @@ function ApodizationOptionsInnerPanel(
     }
   }, [props?.filter]);
 
+  const resetTool = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.checked) {
+      dispatch({
+        type: SET_SELECTED_TOOL,
+        payload: { selectedTool: options.apodization.id },
+      });
+    }
+  };
+
   return (
-    <div style={styles.container}>
+    <div style={containerStyle}>
       <FormikForm
         ref={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
@@ -144,7 +138,7 @@ function ApodizationOptionsInnerPanel(
           />
         </Label>
         <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
-          <FormikCheckBox name="livePreview" />
+          <FormikCheckBox name="livePreview" onChange={resetTool} />
         </Label>
 
         <FormikOnChange
