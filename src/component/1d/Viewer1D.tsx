@@ -9,7 +9,6 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
@@ -51,11 +50,6 @@ interface Viewer1DProps {
 }
 
 function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
-  const {
-    current: {
-      display: { general },
-    },
-  } = usePreferences();
   const state = useChartData();
 
   const {
