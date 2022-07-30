@@ -83,7 +83,6 @@ export default function Teaching(props) {
               data={data}
               preferences={{
                 general: {
-                  disableMultipletAnalysis: true,
                   hideSetSumFromMolecule: true,
                 },
                 panels: {

@@ -3,7 +3,6 @@ import { InitialSeparation } from 'analysis-ui-components/lib-esm/components/Spl
 import { PanelPreferencesType } from './PanelPreferencesType';
 
 export interface NMRiumGeneralPreferences {
-  disableMultipletAnalysis: boolean;
   hideSetSumFromMolecule: boolean;
   hideGeneralSettings: boolean;
   experimentalFeatures: PanelPreferencesType;

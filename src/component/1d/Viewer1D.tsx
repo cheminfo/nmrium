@@ -130,21 +130,19 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       if (brushData.altKey) {
         switch (selectedTool) {
           case options.rangesPicking.id: {
-            if (!general?.disableMultipletAnalysis) {
-              modal.show(
-                <MultipletAnalysisModal
-                  data={data}
-                  activeSpectrum={activeSpectrum}
-                  scaleX={scaleState.scaleX}
-                  {...brushData}
-                />,
-                {
-                  onClose: () => {
-                    modal.close();
-                  },
+            modal.show(
+              <MultipletAnalysisModal
+                data={data}
+                activeSpectrum={activeSpectrum}
+                scaleX={scaleState.scaleX}
+                {...brushData}
+              />,
+              {
+                onClose: () => {
+                  modal.close();
                 },
-              );
-            }
+              },
+            );
             break;
           }
           default:
@@ -232,7 +230,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     [
       scaleState,
       selectedTool,
-      general?.disableMultipletAnalysis,
       modal,
       data,
       activeSpectrum,

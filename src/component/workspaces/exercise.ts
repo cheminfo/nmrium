@@ -5,7 +5,6 @@ export const exercise: InnerWorkspace = {
   label: 'Exercise workspace',
   display: {
     general: {
-      disableMultipletAnalysis: true,
       hideSetSumFromMolecule: true,
       hideGeneralSettings: true,
     },

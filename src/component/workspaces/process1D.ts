@@ -4,9 +4,7 @@ export const process1D: InnerWorkspace = {
   version: 1,
   label: 'Process 1D workspace',
   display: {
-    general: {
-      disableMultipletAnalysis: true,
-    },
+    general: {},
 
     panels: {
       zonesPanel: { display: true },
