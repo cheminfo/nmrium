@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, memo } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
@@ -15,16 +15,12 @@ import { useFilter } from '../hooks/useFilter';
 import {
   APPLY_APODIZATION_FILTER,
   CALCULATE_APODIZATION_FILTER,
+  DISABLE_FILTER_LIVE_PREVIEW,
   RESET_SELECTED_TOOL,
-  SET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
-const containerStyle: CSSProperties = {
-  padding: '5px',
-  height: '100%',
-  display: 'flex',
-};
+import { HeaderContainer } from './HeaderContainer';
 
 const labelStyle = {
   label: {
@@ -90,17 +86,20 @@ function ApodizationOptionsInnerPanel(
     }
   }, [props?.filter]);
 
-  const resetTool = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const disableLivePreviewHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    //disable filter Live preview
     if (!event.target.checked) {
       dispatch({
-        type: SET_SELECTED_TOOL,
+        type: DISABLE_FILTER_LIVE_PREVIEW,
         payload: { selectedTool: options.apodization.id },
       });
     }
   };
 
   return (
-    <div style={containerStyle}>
+    <HeaderContainer>
       <FormikForm
         ref={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
@@ -138,7 +137,10 @@ function ApodizationOptionsInnerPanel(
           />
         </Label>
         <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
-          <FormikCheckBox name="livePreview" onChange={resetTool} />
+          <FormikCheckBox
+            name="livePreview"
+            onChange={disableLivePreviewHandler}
+          />
         </Label>
 
         <FormikOnChange
@@ -151,7 +153,7 @@ function ApodizationOptionsInnerPanel(
         onDone={() => formRef.current.submitForm()}
         onCancel={handleCancelFilter}
       />
-    </div>
+    </HeaderContainer>
   );
 }
 
