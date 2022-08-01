@@ -1,6 +1,7 @@
 import React, { CSSProperties, ReactNode } from 'react';
 
-interface LabelProps {
+interface LabelProps
+  extends Omit<React.LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
   title: string;
   children: ReactNode;
   className?: string;
@@ -11,10 +12,10 @@ interface LabelProps {
 }
 
 export default function Label(props: LabelProps) {
-  const { title, className = '', children, style } = props;
+  const { title, className = '', children, style, ...otherProps } = props;
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <span
+      <label
         className={className}
         style={{
           fontSize: '11px',
@@ -24,9 +25,10 @@ export default function Label(props: LabelProps) {
           width: 'max-content',
           ...style?.label,
         }}
+        {...otherProps}
       >
         {title}
-      </span>
+      </label>
       <div style={style?.wrapper}>{children}</div>
     </div>
   );
