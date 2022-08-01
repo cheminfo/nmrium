@@ -1,29 +1,31 @@
-import { CSSProperties, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
+import Label from '../elements/Label';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_PEAK_PICKING } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label',
-  CSSProperties
-> = {
-  container: {
-    height: '100%',
-    display: 'flex',
-    fontSize: '12px',
-    alignItems: 'center',
-  },
+import { HeaderContainer } from './HeaderContainer';
+
+const inputStyle = {
   input: {
     width: '50px',
+    margin: '0px',
   },
   inputContainer: {
     flex: '2',
   },
+};
+
+const labelStyle = {
   label: {
-    flex: '5',
+    fontWeight: 'normal',
+    fontSize: '12px',
+  },
+  wrapper: {
+    paddingRight: '5px',
   },
 };
 
@@ -47,55 +49,41 @@ function AutoPeakPickingOptionPanel() {
   }, [dispatch]);
 
   return (
-    <div style={styles.container}>
-      <NumberInput
-        ref={maxNumberOfPeaksRef}
-        label="Max Number Of Peaks:"
-        name="maxNumberOfPeaks"
-        style={{
-          input: styles.input,
-          inputContainer: styles.inputContainer,
-          label: styles.label,
-        }}
-        defaultValue={50}
-      />
-      <NumberInput
-        ref={noiseFactor}
-        label="Noise factor"
-        name="noiseFactor"
-        style={{
-          input: styles.input,
-          inputContainer: styles.inputContainer,
-          label: styles.label,
-        }}
-        defaultValue={3}
-      />
-      <NumberInput
-        ref={minMaxRatioRef}
-        label="Min Max Ratio:"
-        name="minMaxRatio"
-        style={{
-          input: styles.input,
-          inputContainer: styles.inputContainer,
-          label: styles.label,
-        }}
-        defaultValue={0.1}
-        step="0.01"
-      />
+    <HeaderContainer>
+      <Label title="Max Number Of Peaks:" style={labelStyle}>
+        <NumberInput
+          ref={maxNumberOfPeaksRef}
+          name="maxNumberOfPeaks"
+          style={inputStyle}
+          defaultValue={50}
+        />
+      </Label>
+      <Label title="Noise factor:" style={labelStyle}>
+        <NumberInput
+          ref={noiseFactor}
+          name="noiseFactor"
+          style={inputStyle}
+          defaultValue={3}
+        />
+      </Label>
+      <Label title="Min Max Ratio:" style={labelStyle}>
+        <NumberInput
+          ref={minMaxRatioRef}
+          name="minMaxRatio"
+          style={inputStyle}
+          defaultValue={0.1}
+          step="0.01"
+        />
+      </Label>
 
-      <div style={{ justifyItems: 'baseline', marginRight: '3px' }}>
-        <label
-          style={{ marginRight: '2px', lineHeight: 2, userSelect: 'none' }}
-          htmlFor="lookNegative"
-        >
-          Detect Negative:
-        </label>
+      <Label title="Detect negative:" htmlFor="lookNegative" style={labelStyle}>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
-      </div>
+      </Label>
+
       <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
         Apply
       </Button.Done>
-    </div>
+    </HeaderContainer>
   );
 }
 

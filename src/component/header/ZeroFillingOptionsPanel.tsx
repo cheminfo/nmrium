@@ -91,7 +91,11 @@ function ZeroFillingOptionsPanel() {
           onChange={(value) => setSize(Number(value))}
         />
       </Label>
-      <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
+      <Label
+        title="live preview "
+        htmlFor="livePreview"
+        style={{ label: { padding: '0 5px' } }}
+      >
         <CheckBox
           name="livePreview"
           defaultChecked

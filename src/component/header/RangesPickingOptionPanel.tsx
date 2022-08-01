@@ -3,39 +3,38 @@ import { CSSProperties, useCallback, useRef } from 'react';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
+import Label from '../elements/Label';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label' | 'hint',
-  CSSProperties
-> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
+import { HeaderContainer } from './HeaderContainer';
+
+const hintStyle: CSSProperties = {
+  lineHeight: 2,
+  userSelect: 'none',
+  fontSize: '11px',
+};
+
+const labelStyle = {
+  label: {
+    fontWeight: 'normal',
     fontSize: '12px',
-    alignItems: 'baseline',
   },
+  wrapper: {
+    paddingRight: '5px',
+  },
+};
+
+const inputStyle = {
   input: {
     height: '100%',
     width: '50px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
+    margin: '0px',
   },
   inputContainer: {
     flex: 2,
-  },
-  label: {
-    flex: 5,
-  },
-
-  hint: {
-    lineHeight: 2,
-    userSelect: 'none',
-    fontSize: '11px',
   },
 };
 
@@ -55,38 +54,32 @@ function RangesPickingOptionPanel() {
       },
     });
   }, [dispatch]);
-
   return (
-    <div style={styles.container}>
-      <div style={{ justifyItems: 'baseline', margin: '0 10px' }}>
-        <label
-          style={{ marginRight: '2px', lineHeight: 2, userSelect: 'none' }}
-          htmlFor="lookNegative"
-        >
-          Detect negative:
-        </label>
+    <HeaderContainer
+      style={{
+        alignItems: 'baseline',
+      }}
+    >
+      <Label title="Detect negative:" htmlFor="lookNegative" style={labelStyle}>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
-      </div>
-      <NumberInput
-        ref={minMaxRatioRef}
-        label="Min Max Ratio:"
-        name="minMaxRatio"
-        style={{
-          input: styles.input,
-          inputContainer: styles.inputContainer,
-          label: styles.label,
-        }}
-        defaultValue={0.05}
-        step="0.01"
-      />
+      </Label>
+      <Label title="Min Max Ratio:" style={labelStyle}>
+        <NumberInput
+          ref={minMaxRatioRef}
+          name="minMaxRatio"
+          style={inputStyle}
+          defaultValue={0.05}
+          step="0.01"
+        />
+      </Label>
 
       <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
         Auto ranges picking
       </Button.Done>
-      <span style={styles.hint}>
+      <span style={hintStyle}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
       </span>
-    </div>
+    </HeaderContainer>
   );
 }
 

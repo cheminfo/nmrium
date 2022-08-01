@@ -136,7 +136,11 @@ function ApodizationOptionsInnerPanel(
             debounceTime={250}
           />
         </Label>
-        <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
+        <Label
+          title="live preview "
+          htmlFor="livePreview"
+          style={{ label: { padding: '0 5px' } }}
+        >
           <FormikCheckBox
             name="livePreview"
             onChange={disableLivePreviewHandler}

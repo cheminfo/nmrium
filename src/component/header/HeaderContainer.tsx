@@ -1,11 +1,17 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
-const style: CSSProperties = {
+const containerStyle: CSSProperties = {
   padding: '5px',
   height: '100%',
   display: 'flex',
 };
 
-export function HeaderContainer(props) {
-  return <div style={style}>{props.children}</div>;
+interface HeaderContainerProps {
+  style?: CSSProperties;
+  children: ReactNode;
+}
+
+export function HeaderContainer(props: HeaderContainerProps) {
+  const { style = {}, children } = props;
+  return <div style={{ ...containerStyle, ...style }}>{children}</div>;
 }

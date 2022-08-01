@@ -196,7 +196,7 @@ function BaseLineCorrectionInnerPanel(
           </Label>
         )}
 
-        <Label title="live preview " style={labelStyle}>
+        <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
           <FormikCheckBox
             name="livePreview"
             onChange={disableLivePreviewHandler}

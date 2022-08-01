@@ -1,31 +1,32 @@
-import { CSSProperties, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
+import Label from '../elements/Label';
 import NumberInput from '../elements/NumberInput';
 import {
   AUTO_ZONES_DETECTION,
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
 
-const styles: Record<
-  'container' | 'input' | 'inputContainer' | 'label',
-  CSSProperties
-> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
-    fontSize: '12px',
-  },
+import { HeaderContainer } from './HeaderContainer';
+
+const inputStyle = {
   input: {
     width: '50px',
   },
   inputContainer: {
     flex: '2',
   },
+};
+
+const labelStyle = {
   label: {
-    flex: '5',
+    fontWeight: 'normal',
+    fontSize: '12px',
+  },
+  wrapper: {
+    paddingRight: '5px',
   },
 };
 
@@ -52,23 +53,20 @@ function Zones2DOptionPanel() {
   );
 
   return (
-    <div style={styles.container}>
-      <NumberInput
-        ref={thresholdFactor}
-        label="NoiseFactor"
-        name="noiseFactor"
-        style={{
-          input: styles.input,
-          inputContainer: styles.inputContainer,
-          label: styles.label,
-        }}
-        defaultValue={1}
-        onChange={handleInput}
-      />
+    <HeaderContainer>
+      <Label title="Noise factor :" htmlFor="livePreview" style={labelStyle}>
+        <NumberInput
+          ref={thresholdFactor}
+          name="noiseFactor"
+          style={inputStyle}
+          defaultValue={1}
+          onChange={handleInput}
+        />
+      </Label>
       <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
         Auto Zones Picking
       </Button.Done>
-    </div>
+    </HeaderContainer>
   );
 }
 

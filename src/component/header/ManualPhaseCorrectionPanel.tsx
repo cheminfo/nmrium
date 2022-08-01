@@ -19,20 +19,18 @@ import {
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
-const styles: Record<'container' | 'input' | 'select', CSSProperties> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
-  },
+import { HeaderContainer } from './HeaderContainer';
+
+const selectStyle: CSSProperties = {
+  marginLeft: '5px',
+  marginRight: '10px',
+  border: 'none',
+  height: '20px',
+};
+
+const inputStyle = {
   input: {
     width: '100px',
-  },
-  select: {
-    marginLeft: '5px',
-    marginRight: '10px',
-    border: 'none',
-    height: '20px',
   },
 };
 
@@ -174,12 +172,12 @@ export default function ManualPhaseCorrectionPanel() {
   }, []);
 
   return (
-    <div style={styles.container}>
+    <HeaderContainer>
       <Select
         onChange={onChangeHandler}
         data={algorithms}
         defaultValue={phaseCorrectionTypes.manual}
-        style={styles.select}
+        style={selectStyle}
       />
 
       {phaseCorrectionType === phaseCorrectionTypes.manual && (
@@ -187,7 +185,7 @@ export default function ManualPhaseCorrectionPanel() {
           <Label title="PH0 :" style={{ wrapper: { marginRight: '5px' } }}>
             <Input
               name="ph0"
-              style={{ input: styles.input }}
+              style={inputStyle}
               onChange={handleInput}
               value={value.ph0}
               type="number"
@@ -197,7 +195,7 @@ export default function ManualPhaseCorrectionPanel() {
           <Label title="PH1 :">
             <Input
               name="ph1"
-              style={{ input: styles.input }}
+              style={inputStyle}
               onChange={handleInput}
               value={value.ph1}
               type="number"
@@ -222,6 +220,6 @@ export default function ManualPhaseCorrectionPanel() {
       )}
 
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
-    </div>
+    </HeaderContainer>
   );
 }
