@@ -1,9 +1,7 @@
-import { max } from 'd3';
-import { original, Draft, current } from 'immer';
+import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { defaultApodizationOptions } from '../../../data/data1d/filter1d/apodization';
-import { Data1D, Datum1D } from '../../../data/types/data1d';
+import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
@@ -25,95 +23,9 @@ import {
 import {
   calculateBaseLineCorrection,
   resetSpectrumByFilter,
+  setFilterChanges,
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-
-function getStrongestPeak(draft: Draft<State>) {
-  const { activeSpectrum, data } = draft;
-  if (activeSpectrum) {
-    const activeData = data[activeSpectrum?.index].data as Data1D;
-    const strongestPeakValue = max(activeData.re);
-    const index = activeData.re.findIndex((val) => val === strongestPeakValue);
-    return {
-      xValue: activeData.x[index],
-      yValue: strongestPeakValue,
-      index,
-    };
-  }
-}
-
-function checkFilterHasTempData(selectedToolId: string) {
-  return [
-    options.phaseCorrection.id,
-    options.baselineCorrection.id,
-    options.apodization.id,
-  ].includes(selectedToolId);
-}
-
-function setFilterChanges(draft: Draft<State>, selectedFilterID) {
-  const activeSpectrumId = draft.activeSpectrum?.id;
-
-  // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
-  if (checkFilterHasTempData(selectedFilterID)) {
-    //return back the spectra data to point of time before applying a specific filter
-    const dataSavePoint = resetSpectrumByFilter(draft, selectedFilterID, {
-      updateDomain: false,
-      rollback: true,
-      searchBy: 'name',
-      returnCurrentDatum: true,
-    });
-
-    // create a temporary clone of the data
-    draft.tempData = current(draft).data;
-
-    if (dataSavePoint) {
-      draft.tempData[dataSavePoint?.index] = dataSavePoint?.datum;
-    }
-
-    switch (selectedFilterID) {
-      case options.phaseCorrection.id: {
-        // look for the strongest peak to set it as a pivot
-        const { xValue, index } = getStrongestPeak(draft) || {
-          xValue: 0,
-          index: 0,
-        };
-
-        draft.toolOptions.data.pivot = { value: xValue, index };
-
-        break;
-      }
-      case options.baselineCorrection.id: {
-        if (draft.activeSpectrum?.id) {
-          const baselineCorrectionFilter: any = current(draft).data[
-            draft.activeSpectrum.index
-          ].filters.find(
-            (filter) => filter.name === options.baselineCorrection.id,
-          );
-
-          draft.toolOptions.data.baselineCorrection.zones =
-            baselineCorrectionFilter
-              ? baselineCorrectionFilter.value.zones
-              : [];
-        }
-        break;
-      }
-      case options.apodization.id: {
-        draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
-        break;
-      }
-
-      default:
-        break;
-    }
-  } else if (checkFilterHasTempData(draft.toolOptions.selectedTool)) {
-    draft.toolOptions.data.activeFilterID = null;
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
-  }
-}
 
 function resetTool(draft: Draft<State>, setDefaultTool = true) {
   // reset temp range

@@ -3,10 +3,14 @@ import { current, Draft } from 'immer';
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
 import { updateXShift } from '../../../data/data1d/Spectrum1D';
-import { apply as apodization } from '../../../data/data1d/filter1d/apodization';
+import {
+  apply as apodization,
+  defaultApodizationOptions,
+} from '../../../data/data1d/filter1d/apodization';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
+import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
 import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -20,6 +24,8 @@ import getRange from '../helper/getRange';
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
+import { getStrongestPeak } from '../helper/getStrongestPeak';
+import { options } from '../../toolbar/ToolTypes';
 
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
@@ -51,6 +57,25 @@ function applyZeroFillingFilter(draft: Draft<State>, action) {
     setMode(draft);
   }
 }
+
+function calculateApodizationFilter(draft: Draft<State>, action) {
+  if (draft.activeSpectrum) {
+    const index = draft.activeSpectrum.index;
+    const options = action.payload;
+    const {
+      data: { x, re, im },
+      info,
+    } = draft.data[index] as Datum1D;
+
+    let _data = { data: { x, re, im }, info };
+    draft.toolOptions.data.apodizationOptions = options;
+    apodization(_data as Datum1D, options);
+    const { im: newIm, re: newRe } = _data.data;
+    draft.tempData[index].data.im = newIm;
+    draft.tempData[index].data.re = newRe;
+  }
+}
+
 function applyApodizationFilter(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
@@ -68,21 +93,23 @@ function applyApodizationFilter(draft: Draft<State>, action) {
   }
 }
 
-function calculateApodizationFilter(draft: Draft<State>, action) {
+function calculateZeroFillingFilter(draft: Draft<State>, action) {
   if (draft.activeSpectrum) {
     const index = draft.activeSpectrum.index;
-    const options = action.payload;
+    const { size } = action.payload;
     const {
       data: { x, re, im },
+      filters,
       info,
     } = draft.data[index] as Datum1D;
 
-    let _data = { data: { x, re, im }, info };
-    draft.toolOptions.data.apodizationOptions = options;
-    apodization(_data as Datum1D, options);
-    const { im: newIm, re: newRe } = _data.data;
+    let _data = { data: { x, re, im }, filters, info };
+    zeroFilling(_data as Datum1D, size);
+    const { im: newIm, re: newRe, x: newX } = _data.data;
+    draft.tempData[index].data.x = newX;
     draft.tempData[index].data.im = newIm;
     draft.tempData[index].data.re = newRe;
+    draft.xDomain = [newX[0], newX[newX.length - 1]];
   }
 }
 function applyFFTFilter(draft: Draft<State>) {
@@ -453,6 +480,88 @@ function handleDeleteExclusionZone(draft: Draft<State>, action) {
     }
   }
 }
+function handleDisableFilterLivePreview(draft: Draft<State>, action) {
+  const { selectedTool } = action.payload;
+
+  setFilterChanges(draft, selectedTool);
+  if (selectedTool === options.zeroFilling.id) {
+    setDomain(draft, { yDomain: { isChanged: false } });
+  }
+}
+
+function checkFilterHasTempData(selectedToolId: string) {
+  return [
+    options.phaseCorrection.id,
+    options.baselineCorrection.id,
+    options.apodization.id,
+    options.zeroFilling.id,
+  ].includes(selectedToolId);
+}
+
+function setFilterChanges(draft: Draft<State>, selectedFilterID) {
+  const activeSpectrumId = draft.activeSpectrum?.id;
+
+  // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
+  if (checkFilterHasTempData(selectedFilterID)) {
+    //return back the spectra data to point of time before applying a specific filter
+    const dataSavePoint = resetSpectrumByFilter(draft, selectedFilterID, {
+      updateDomain: false,
+      rollback: true,
+      searchBy: 'name',
+      returnCurrentDatum: true,
+    });
+
+    // create a temporary clone of the data
+    draft.tempData = current(draft).data;
+
+    if (dataSavePoint) {
+      draft.tempData[dataSavePoint?.index] = dataSavePoint?.datum;
+    }
+
+    switch (selectedFilterID) {
+      case options.phaseCorrection.id: {
+        // look for the strongest peak to set it as a pivot
+        const { xValue, index } = getStrongestPeak(draft) || {
+          xValue: 0,
+          index: 0,
+        };
+
+        draft.toolOptions.data.pivot = { value: xValue, index };
+
+        break;
+      }
+      case options.baselineCorrection.id: {
+        if (draft.activeSpectrum?.id) {
+          const baselineCorrectionFilter: any = current(draft).data[
+            draft.activeSpectrum.index
+          ].filters.find(
+            (filter) => filter.name === options.baselineCorrection.id,
+          );
+
+          draft.toolOptions.data.baselineCorrection.zones =
+            baselineCorrectionFilter
+              ? baselineCorrectionFilter.value.zones
+              : [];
+        }
+        break;
+      }
+      case options.apodization.id: {
+        draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+        break;
+      }
+
+      default:
+        break;
+    }
+  } else if (checkFilterHasTempData(draft.toolOptions.selectedTool)) {
+    draft.toolOptions.data.activeFilterID = null;
+    const spectrumIndex = draft.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
+  }
+}
 
 export {
   shiftSpectrumAlongXAxis,
@@ -465,6 +574,7 @@ export {
   calculateManualPhaseCorrection,
   calculateBaseLineCorrection,
   calculateApodizationFilter,
+  calculateZeroFillingFilter,
   handleMultipleSpectraFilter,
   enableFilter,
   deleteFilter,
@@ -474,4 +584,6 @@ export {
   resetSpectrumByFilter,
   handleAddExclusionZone,
   handleDeleteExclusionZone,
+  handleDisableFilterLivePreview,
+  setFilterChanges,
 };

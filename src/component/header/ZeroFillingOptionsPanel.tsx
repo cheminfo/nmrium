@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import * as Filters from '../../data/Filters';
 import { Data1D } from '../../data/types/data1d';
@@ -6,49 +6,34 @@ import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOf
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
+import CheckBox from '../elements/CheckBox';
+import Label from '../elements/Label';
 import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import {
   APPLY_ZERO_FILLING_FILTER,
+  CALCULATE_ZERO_FILLING_FILTER,
+  DISABLE_FILTER_LIVE_PREVIEW,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 
-const styles: Record<'container' | 'input' | 'label', CSSProperties> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
-  },
-
-  input: {
-    height: '100%',
-    width: '80px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
-  },
-
-  label: {
-    lineHeight: 2,
-    userSelect: 'none',
-  },
-};
+import { HeaderContainer } from './HeaderContainer';
 
 const Sizes = generateNumbersPowerOfX(8, 21);
 
 function ZeroFillingOptionsPanel() {
   const dispatch = useDispatch();
   const { data, activeSpectrum } = useChartData();
-  const sizeTextInputRef = useRef<any>();
   const [size, setSize] = useState<number>();
+  const [livePreview, setLivePreview] = useState<boolean>(true);
   const filter = useFilter(Filters.zeroFilling.id);
 
   const handleApplyFilter = () => {
     dispatch({
       type: APPLY_ZERO_FILLING_FILTER,
       payload: {
-        size: Number(sizeTextInputRef.current.value),
+        size,
       },
     });
   };
@@ -73,18 +58,48 @@ function ZeroFillingOptionsPanel() {
     }
   }, [activeSpectrum, data, filter]);
 
+  useEffect(() => {
+    if (livePreview && size) {
+      dispatch({
+        type: CALCULATE_ZERO_FILLING_FILTER,
+        payload: {
+          size,
+        },
+      });
+    }
+  }, [dispatch, livePreview, size]);
+
+  const checkChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setLivePreview(checked);
+    if (!checked) {
+      //disable filter Live preview
+      dispatch({
+        type: DISABLE_FILTER_LIVE_PREVIEW,
+        payload: { selectedTool: options.zeroFilling.id },
+      });
+    }
+  };
+
   return (
-    <div style={styles.container}>
-      <span style={styles.label}>Size: </span>
-      <Select
-        ref={sizeTextInputRef}
-        data={Sizes}
-        style={{ marginLeft: 10, marginRight: 10 }}
-        value={size}
-        onChange={(value) => setSize(Number(value))}
-      />
+    <HeaderContainer>
+      <Label title="Size:  " style={{ label: { padding: '0 5px' } }}>
+        <Select
+          data={Sizes}
+          style={{ marginLeft: 10, marginRight: 10 }}
+          value={size}
+          onChange={(value) => setSize(Number(value))}
+        />
+      </Label>
+      <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
+        <CheckBox
+          name="livePreview"
+          defaultChecked
+          onChange={checkChangeHandler}
+        />
+      </Label>
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
-    </div>
+    </HeaderContainer>
   );
 }
 

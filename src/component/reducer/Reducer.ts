@@ -537,6 +537,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       );
     case types.FULL_ZOOM_OUT:
       return ToolsActions.zoomOut(draft, action);
+    case types.DISABLE_FILTER_LIVE_PREVIEW:
+      return FiltersActions.handleDisableFilterLivePreview(draft, action);
     case types.SHIFT_SPECTRUM:
       return FiltersActions.shiftSpectrumAlongXAxis(draft, action.shiftValue);
     case types.APPLY_APODIZATION_FILTER:
@@ -545,6 +547,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.calculateApodizationFilter(draft, action);
     case types.APPLY_ZERO_FILLING_FILTER:
       return FiltersActions.applyZeroFillingFilter(draft, action);
+    case types.CALCULATE_ZERO_FILLING_FILTER:
+      return FiltersActions.calculateZeroFillingFilter(draft, action);
     case types.APPLY_FFT_FILTER:
       return FiltersActions.applyFFTFilter(draft);
     case types.APPLY_MANUAL_PHASE_CORRECTION_FILTER:
