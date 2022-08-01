@@ -1,4 +1,4 @@
-import { useRef, useState, CSSProperties, useEffect, memo } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
@@ -17,24 +17,25 @@ import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
   CALCULATE_BASE_LINE_CORRECTION_FILTER,
+  DISABLE_FILTER_LIVE_PREVIEW,
 } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 
-const styles: Record<'container' | 'label', CSSProperties> = {
-  container: {
-    padding: '5px',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  label: {
-    lineHeight: 2,
-    userSelect: 'none',
-  },
-};
+import { HeaderContainer } from './HeaderContainer';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;
 }
+
+const labelStyle = {
+  label: {
+    fontWeight: 'normal',
+    fontSize: '12px',
+  },
+  wrapper: {
+    paddingRight: '5px',
+  },
+};
 
 const getAlgorithmsList = () => {
   return ['airPLS', 'Polynomial'].map((val) => ({
@@ -136,17 +137,29 @@ function BaseLineCorrectionInnerPanel(
     }
   }, [props?.filter]);
 
+  const disableLivePreviewHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    //disable filter Live preview
+    if (!event.target.checked) {
+      dispatch({
+        type: DISABLE_FILTER_LIVE_PREVIEW,
+        payload: { selectedTool: options.baselineCorrection.id },
+      });
+    }
+  };
+
   const form = formData(algorithm, props?.filter?.value || {});
 
   return (
-    <div style={styles.container}>
-      <span style={styles.label}>Algorithm: </span>
-      <Select
-        data={getAlgorithmsList()}
-        style={{ marginLeft: 10, marginRight: 10 }}
-        value={algorithm}
-        onChange={(val) => setAlgorithm(val)}
-      />
+    <HeaderContainer>
+      <Label title="Algorithm: " style={labelStyle}>
+        <Select
+          data={getAlgorithmsList()}
+          value={algorithm}
+          onChange={(val) => setAlgorithm(val)}
+        />
+      </Label>
 
       <FormikForm
         ref={formRef}
@@ -157,21 +170,21 @@ function BaseLineCorrectionInnerPanel(
       >
         {algorithm && algorithm === 'airpls' && (
           <div style={{ display: 'flex' }}>
-            <Label title="maxIterations:">
+            <Label title="maxIterations:" style={labelStyle}>
               <FormikInput
                 type="number"
                 name="maxIterations"
                 debounceTime={250}
               />
             </Label>
-            <Label title="tolerance:" style={{ label: { padding: '0 5px' } }}>
+            <Label title="tolerance:" style={labelStyle}>
               <FormikInput type="number" name="tolerance" debounceTime={250} />
             </Label>
           </div>
         )}
 
         {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-          <Label title="degree [ 1 - 6 ]:">
+          <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
             <FormikInput
               type="number"
               name="degree"
@@ -183,8 +196,11 @@ function BaseLineCorrectionInnerPanel(
           </Label>
         )}
 
-        <Label title="live preview " style={{ label: { padding: '0 5px' } }}>
-          <FormikCheckBox name="livePreview" />
+        <Label title="live preview " style={labelStyle}>
+          <FormikCheckBox
+            name="livePreview"
+            onChange={disableLivePreviewHandler}
+          />
         </Label>
 
         <FormikOnChange
@@ -196,7 +212,7 @@ function BaseLineCorrectionInnerPanel(
         onDone={() => formRef.current.submitForm()}
         onCancel={handleCancelFilter}
       />
-    </div>
+    </HeaderContainer>
   );
 }
 

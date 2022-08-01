@@ -538,10 +538,12 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
             (filter) => filter.name === options.baselineCorrection.id,
           );
 
-          draft.toolOptions.data.baselineCorrection.zones =
-            baselineCorrectionFilter
-              ? baselineCorrectionFilter.value.zones
-              : [];
+          if (baselineCorrectionFilter) {
+            draft.toolOptions.data.baselineCorrection.zones =
+              baselineCorrectionFilter
+                ? baselineCorrectionFilter.value.zones
+                : [];
+          }
         }
         break;
       }
