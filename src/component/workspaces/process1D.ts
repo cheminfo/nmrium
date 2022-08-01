@@ -1,32 +1,34 @@
 import { InnerWorkspace } from './Workspace';
 
 export const process1D: InnerWorkspace = {
-  version: 1,
-  label: 'Process 1D workspace',
+  version: 2,
+  label: '1D multiple spectra analysis',
   display: {
     general: {},
 
     panels: {
-      zonesPanel: { display: true },
-      summaryPanel: { display: true },
-      multipleSpectraAnalysisPanel: { display: true, open: true },
       spectraPanel: { display: true, open: true },
+      informationPanel: { display: true },
+      peaksPanel: { display: true },
+      filtersPanel: { display: true },
+      multipleSpectraAnalysisPanel: { display: true },
     },
 
     toolBarButtons: {
-      baselineCorrectionTool: true,
-      FFTTool: true,
-      integralTool: true,
-      phaseCorrectionTool: true,
-      realImaginary: true,
-      slicingTool: true,
-      spectraCenterAlignments: true,
+      zoomTool: true,
+      zoomOutTool: true,
+      import: true,
+      exportAs: true,
       spectraStackAlignments: true,
+      spectraCenterAlignments: true,
+      peakTool: true,
       apodizationTool: true,
       zeroFillingTool: true,
-      zonePickingTool: true,
-      zoomOutTool: true,
-      zoomTool: true,
+      FFTTool: true,
+      phaseCorrectionTool: true,
+      baselineCorrectionTool: true,
+      exclusionZonesTool: true,
+      multipleSpectraAnalysisTool: true,
     },
   },
 };

@@ -2,7 +2,7 @@ import { InnerWorkspace } from './Workspace';
 
 export const exercise: InnerWorkspace = {
   version: 1,
-  label: 'Exercise workspace',
+  label: 'Exercise',
   display: {
     general: {
       hideSetSumFromMolecule: true,

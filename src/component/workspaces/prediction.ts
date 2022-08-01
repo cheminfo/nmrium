@@ -2,7 +2,7 @@ import { InnerWorkspace } from './Workspace';
 
 export const prediction: InnerWorkspace = {
   version: 1,
-  label: 'Prediction workspace',
+  label: 'Prediction',
   display: {
     panels: {
       spectraPanel: { display: true },

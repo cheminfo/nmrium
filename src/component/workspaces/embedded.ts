@@ -2,7 +2,7 @@ import { InnerWorkspace } from './Workspace';
 
 export const embedded: InnerWorkspace = {
   version: 1,
-  label: 'Embedded workspace',
+  label: 'Embedded',
   display: {
     general: {
       experimentalFeatures: { display: true },
