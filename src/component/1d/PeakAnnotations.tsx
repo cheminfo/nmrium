@@ -1,72 +1,49 @@
 import { useMemo } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
+import useSpectrum from '../hooks/useSpectrum';
 
 import PeakAnnotation from './PeakAnnotation';
 import getVerticalShift from './utilities/getVerticalShift';
 
+const emptyData = { peaks: {}, info: {}, display: {} };
+
 function PeakAnnotations() {
-  const { data, activeSpectrum, verticalAlign, displayerKey, xDomains } =
-    useChartData();
+  const { activeSpectrum, verticalAlign, displayerKey } = useChartData();
   const { scaleX, scaleY } = useScaleChecked();
+  const spectrum = useSpectrum(emptyData) as Datum1D;
 
   const Peaks = useMemo(() => {
-    const getVerticalAlign = (id) => {
-      const index = data.findIndex((d) => d.id === id);
-      return getVerticalShift(verticalAlign, { index });
+    const getVerticalAlign = () => {
+      return getVerticalShift(verticalAlign, { index: activeSpectrum?.index });
     };
-
-    const reSortData = () => {
-      const _data = [...data];
-      return activeSpectrum
-        ? _data.sort((x, y) => {
-            return x.id === activeSpectrum.id
-              ? 1
-              : y.id === activeSpectrum.id
-              ? -1
-              : 0;
-          })
-        : _data;
-    };
+    if (
+      !spectrum?.peaks?.values ||
+      !spectrum.display.isVisible ||
+      !spectrum.display.isPeaksMarkersVisible
+    ) {
+      return null;
+    }
 
     return (
-      data &&
-      reSortData()
-        .filter((d) => d.display.isVisible && xDomains[d.id])
-        .filter(isSpectrum1D)
-        .map((d) => {
-          return (
-            d.peaks?.values &&
-            d.display.isPeaksMarkersVisible && (
-              <g
-                key={d.id}
-                transform={`translate(0,-${getVerticalAlign(d.id)})`}
-              >
-                {d.peaks.values.map(({ x, y, id }) => (
-                  <PeakAnnotation
-                    key={id}
-                    x={scaleX()(x)}
-                    y={scaleY(d.id)(y) - 5}
-                    sign={Math.sign(y)}
-                    id={id}
-                    value={x}
-                    color="#730000"
-                    nucleus={d.info.nucleus}
-                    isActive={
-                      activeSpectrum == null
-                        ? false
-                        : activeSpectrum.id === d.id
-                    }
-                  />
-                ))}
-              </g>
-            )
-          );
-        })
+      <g transform={`translate(0,-${getVerticalAlign()})`}>
+        {spectrum.peaks.values.map(({ x, y, id }) => (
+          <PeakAnnotation
+            key={id}
+            x={scaleX()(x)}
+            y={scaleY(spectrum.id)(y) - 5}
+            sign={Math.sign(y)}
+            id={id}
+            value={x}
+            color="#730000"
+            nucleus={spectrum.info.nucleus}
+          />
+        ))}
+      </g>
     );
-  }, [data, verticalAlign, activeSpectrum, xDomains, scaleX, scaleY]);
+  }, [spectrum, verticalAlign, activeSpectrum?.index, scaleX, scaleY]);
 
   return (
     <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>

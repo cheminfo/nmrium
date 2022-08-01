@@ -59,7 +59,6 @@ interface PeakAnnotationProps {
   y: number;
   sign: number;
   color: string;
-  isActive: boolean;
   value: number;
   nucleus: string;
 }
@@ -71,7 +70,6 @@ function PeakAnnotation({
   sign, // 1 positive -1 negative
   value,
   color,
-  isActive,
   nucleus,
 }: PeakAnnotationProps) {
   const refText = useRef<SVGTextElement>(null);
@@ -211,7 +209,6 @@ function PeakAnnotation({
             style={{
               width: 'inherit',
               border: isSelected ? `1px solid ${color}` : `0`,
-              opacity: isActive ? 1 : 0.2,
               userSelect: 'none',
               color,
             }}
@@ -219,7 +216,6 @@ function PeakAnnotation({
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             type="number"
-            disabled={!isActive}
           />
         </div>
       </foreignObject>
