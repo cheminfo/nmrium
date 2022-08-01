@@ -1,38 +1,31 @@
 import {
-  useState,
   useCallback,
-  ChangeEvent,
   forwardRef,
   ForwardedRef,
   CSSProperties,
 } from 'react';
 
-export interface CheckBoxProps {
-  onChange?: (value: ChangeEvent<HTMLInputElement>) => void;
-  name?: string;
-  disabled?: boolean;
-  checked?: boolean;
+export interface CheckBoxProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   style?: CSSProperties;
 }
 
 const CheckBox = forwardRef(
   (props: CheckBoxProps, ref: ForwardedRef<HTMLInputElement>) => {
     const {
-      checked: checkProps = false,
+      checked,
+      defaultChecked,
       disabled = false,
-      name = '',
+      name,
       onChange = () => null,
       style = {},
     } = props;
 
-    const [checked, setCheck] = useState<boolean>(checkProps);
-
     const handleCheck = useCallback(
       (e) => {
-        setCheck(!checked);
         onChange(e);
       },
-      [checked, onChange],
+      [onChange],
     );
 
     return (
@@ -42,7 +35,8 @@ const CheckBox = forwardRef(
         name={name}
         id={name}
         onChange={handleCheck}
-        checked={checkProps}
+        checked={checked}
+        defaultChecked={defaultChecked}
         disabled={disabled}
         style={style}
       />
