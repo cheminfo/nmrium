@@ -25,6 +25,7 @@ export interface ResizerProps {
   tag?: 'div' | 'svg';
   parentElement?: HTMLElement | null;
   dragHandleClassName?: string;
+  disabled?: boolean;
 }
 
 type PositionChangeHandler = (data: Position) => void;

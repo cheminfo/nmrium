@@ -61,31 +61,35 @@ const styles = {
 };
 
 export default function DivResizer(props: ResizerProps) {
-  const { children } = props;
+  const { children, disabled } = props;
   const { left, right, prevPosition, currentPosition, isActive } =
     useResizer(props);
 
   return (
     <>
-      <div
-        data-no-export="true"
-        onMouseDown={right.onMouseDown}
-        css={styles.container(right.position.value.x)}
-      >
-        <div style={anchorStyle} />
-      </div>
+      {!disabled && (
+        <div
+          data-no-export="true"
+          onMouseDown={right.onMouseDown}
+          css={styles.container(right.position.value.x)}
+        >
+          <div style={anchorStyle} />
+        </div>
+      )}
       <div css={styles.content(left, right, prevPosition)}>
         {typeof children === 'function'
           ? children?.(currentPosition, isActive)
           : children}
       </div>
-      <div
-        data-no-export="true"
-        onMouseDown={left.onMouseDown}
-        css={styles.container(left.position.value.x)}
-      >
-        <div style={anchorStyle} />
-      </div>
+      {!disabled && (
+        <div
+          data-no-export="true"
+          onMouseDown={left.onMouseDown}
+          css={styles.container(left.position.value.x)}
+        >
+          <div style={anchorStyle} />
+        </div>
+      )}
     </>
   );
 }

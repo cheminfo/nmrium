@@ -34,7 +34,7 @@ const styles = {
 };
 
 export default function SVGResizer(props: ResizerProps) {
-  const { children } = props;
+  const { children, disabled } = props;
   const { left, right, currentPosition, isActive } = useResizer(props);
 
   return (
@@ -46,11 +46,16 @@ export default function SVGResizer(props: ResizerProps) {
       {typeof children === 'function'
         ? children(currentPosition, isActive)
         : children}
-      <SVGResizerHandle onMouseDown={left.onMouseDown} position={0} />
-      <SVGResizerHandle
-        onMouseDown={right.onMouseDown}
-        position={Math.ceil(currentPosition.x2 - currentPosition.x1)}
-      />
+      {!disabled && (
+        <>
+          {' '}
+          <SVGResizerHandle onMouseDown={left.onMouseDown} position={0} />
+          <SVGResizerHandle
+            onMouseDown={right.onMouseDown}
+            position={Math.ceil(currentPosition.x2 - currentPosition.x1)}
+          />
+        </>
+      )}
     </g>
   );
 }
