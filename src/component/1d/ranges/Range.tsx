@@ -155,6 +155,7 @@ function Range({
         onEnd={handleOnStopResizing}
         parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
+        disabled={selectedTool !== options.rangesPicking.id}
       >
         {({ x1, x2 }, isActive) => (
           <g

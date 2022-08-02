@@ -9,6 +9,7 @@ import { useScaleChecked } from '../context/ScaleContext';
 import Resizer from '../elements/resizer/Resizer';
 import { HighlightedSource, useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 import { formatNumber } from '../utility/formatNumber';
 
 const stylesOnHover = css`
@@ -51,7 +52,11 @@ function IntegralResizable({
   integralData,
   integralFormat,
 }: IntegralResizableProps) {
-  const { height, margin } = useChartData();
+  const {
+    height,
+    margin,
+    toolOptions: { selectedTool },
+  } = useChartData();
   const { viewerRef } = useGlobal();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
@@ -99,6 +104,7 @@ function IntegralResizable({
         onEnd={handleOnStopResizing}
         parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
+        disabled={selectedTool !== options.integral.id}
       >
         {({ x1, x2 }, isActive) => (
           <g
