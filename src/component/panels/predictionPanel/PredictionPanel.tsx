@@ -1,3 +1,4 @@
+import { useAccordionContext } from 'analysis-ui-components';
 import { useState, useCallback } from 'react';
 
 import { Molecule } from '../../../data/molecules/Molecule';
@@ -12,6 +13,10 @@ import PredictionPreferences from './PredictionOptions';
 export default function PredictionPane() {
   const [molecule, setMolecule] = useState<Molecule | null>();
   const { molecules } = useChartData();
+  const {
+    item: spectraPanelState,
+    utils: { toggle: openSpectraPanel },
+  } = useAccordionContext('Spectra');
 
   const changeHandler = useCallback((molecule) => {
     setMolecule(molecule);
@@ -19,32 +24,31 @@ export default function PredictionPane() {
   const dispatch = useDispatch();
   const alert = useAlert();
 
-  const predictHandler = useCallback(
-    (values) => {
-      void (async () => {
-        if (molecule) {
-          dispatch({
-            type: SET_LOADING_FLAG,
-            isLoading: true,
-          });
+  const predictHandler = (values) => {
+    void (async () => {
+      if (molecule) {
+        dispatch({
+          type: SET_LOADING_FLAG,
+          isLoading: true,
+        });
 
-          const hideLoading = await alert.showLoading(
-            `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
-          );
+        const hideLoading = await alert.showLoading(
+          `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
+        );
 
-          dispatch({
-            type: PREDICT_SPECTRA,
-            payload: { mol: molecule, options: values },
-          });
-
-          hideLoading();
-        } else {
-          alert.error('No Molecule selected');
+        dispatch({
+          type: PREDICT_SPECTRA,
+          payload: { mol: molecule, options: values },
+        });
+        if (!spectraPanelState?.isOpen) {
+          openSpectraPanel();
         }
-      })();
-    },
-    [alert, dispatch, molecule],
-  );
+        hideLoading();
+      } else {
+        alert.error('No Molecule selected');
+      }
+    })();
+  };
 
   return (
     <MoleculePanel
