@@ -68,9 +68,13 @@ const predictionFormValidation = Yup.object().shape({
 
 interface PredictionOptionsProps {
   onPredict?: (options?: PredictionOptionsInterface) => void;
+  disabled: boolean;
 }
 
-function PredictionOptions({ onPredict = () => null }: PredictionOptionsProps) {
+function PredictionOptions({
+  onPredict = () => null,
+  disabled = false,
+}: PredictionOptionsProps) {
   const refForm = useRef<any>();
 
   const handleSave = useCallback(() => {
@@ -135,7 +139,9 @@ function PredictionOptions({ onPredict = () => null }: PredictionOptionsProps) {
         </FormikForm>
       </div>
       <div>
-        <Button.Done onClick={handleSave}>Predict spectrum</Button.Done>
+        <Button.Done onClick={handleSave} disabled={disabled}>
+          Predict spectra
+        </Button.Done>
       </div>
     </div>
   );

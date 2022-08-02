@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 
 import { Molecule } from '../../../data/molecules/Molecule';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../../reducer/types/Types';
@@ -10,6 +11,7 @@ import PredictionPreferences from './PredictionOptions';
 
 export default function PredictionPane() {
   const [molecule, setMolecule] = useState<Molecule | null>();
+  const { molecules } = useChartData();
 
   const changeHandler = useCallback((molecule) => {
     setMolecule(molecule);
@@ -48,8 +50,17 @@ export default function PredictionPane() {
     <MoleculePanel
       onMoleculeChange={changeHandler}
       actionsOptions={{ hidePredict: true, hideDelete: true, hideExport: true }}
+      emptyTextStyle={{
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.2rem',
+        backgroundColor: '#2dd36f',
+        color: 'white',
+      }}
     >
-      <PredictionPreferences onPredict={predictHandler} />
+      <PredictionPreferences
+        onPredict={predictHandler}
+        disabled={!molecules || molecules.length === 0}
+      />
     </MoleculePanel>
   );
 }

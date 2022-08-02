@@ -1,7 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 import OCL from 'openchemlib/full';
-import { useState, useCallback, useEffect, memo, ReactElement } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  memo,
+  ReactElement,
+  CSSProperties,
+} from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 
@@ -71,6 +78,7 @@ function MoleculePanelInner({
   onMoleculeChange,
   actionsOptions,
   children,
+  emptyTextStyle,
 }: MoleculePanelInnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<any>([]);
@@ -182,7 +190,7 @@ function MoleculePanelInner({
                     style={{ height: '100%' }}
                     onClick={() => openMoleculeEditor()}
                   >
-                    <span>Click to draw molecule</span>
+                    <span style={emptyTextStyle}>Click to draw molecule</span>
                   </div>
                 );
               }}
@@ -202,12 +210,14 @@ interface MoleculePanelProps {
   onMoleculeChange?: (molecule: Molecule) => void;
   children?: ReactElement;
   actionsOptions?: MoleculeHeaderActionsOptions;
+  emptyTextStyle?: CSSProperties;
 }
 
 export default function MoleculePanel({
   onMoleculeChange,
   children,
   actionsOptions,
+  emptyTextStyle,
 }: MoleculePanelProps) {
   const { molecules, displayerMode, activeTab } = useChartData();
 
@@ -225,6 +235,7 @@ export default function MoleculePanel({
         zones,
         onMoleculeChange,
         actionsOptions,
+        emptyTextStyle,
       }}
     >
       {children}
