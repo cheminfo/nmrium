@@ -50,7 +50,7 @@
     "react-dom": ">=16.0.0"
   },
   "dependencies": {
-    "@emotion/react": "^11.9.3",
+    "@emotion/react": "^11.10.0",
     "analysis-ui-components": "^0.15.2",
     "cheminfo-font": "^1.9.0",
     "cheminfo-types": "^1.4.0",
@@ -59,7 +59,7 @@
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "immer": "^9.0.15",
-    "jszip": "^3.10.0",
+    "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "mf-parser": "^1.4.7",
     "ml-airpls": "^1.0.0",
@@ -73,9 +73,9 @@
     "ml-spectra-processing": "^11.12.0",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^2.0.0",
-    "nmr-correlation": "^2.3.2",
+    "nmr-correlation": "^2.3.3",
     "nmr-parser": "^1.9.0",
-    "nmr-processing": "^8.3.1",
+    "nmr-processing": "^8.4.0",
     "nmredata": "^0.6.1",
     "numeral": "^2.0.6",
     "openchemlib": "^7.4.3",
@@ -93,7 +93,7 @@
     "react-rnd": "^10.3.7",
     "react-slider": "^2.0.1",
     "react-table": "^7.8.0",
-    "react-transition-group": "^4.4.2",
+    "react-transition-group": "^4.4.5",
     "react-use": "^17.4.0",
     "smart-array-filter": "^3.2.0",
     "yup": "^0.32.11"
@@ -102,17 +102,17 @@
     "@babel/plugin-transform-modules-commonjs": "^7.18.6",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
-    "@playwright/test": "^1.24.1",
+    "@playwright/test": "^1.24.2",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.0",
     "@types/jest": "^28.1.6",
-    "@types/node": "^18.6.2",
+    "@types/node": "^18.6.3",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.0.0",
     "@zakodium/eslint-config": "^6.0.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.20.0",
+    "eslint": "^8.21.0",
     "jest": "^28.1.3",
     "modern-normalize": "^1.1.0",
     "prettier": "^2.7.1",
@@ -124,6 +124,6 @@
     "rollup-plugin-analyzer": "^4.0.0",
     "serve": "^14.0.1",
     "typescript": "~4.7.4",
-    "vite": "^3.0.3"
+    "vite": "^3.0.4"
   }
 }

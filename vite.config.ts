@@ -15,6 +15,7 @@ export default () => {
   return defineConfig({
     base: './',
     esbuild: {
+      jsx: 'automatic',
       sourcemap: true,
     },
     build: {
