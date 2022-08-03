@@ -15,17 +15,17 @@ import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
+import { options } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
 import { ActiveSpectrum, State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import getRange from '../helper/getRange';
+import { getStrongestPeak } from '../helper/getStrongestPeak';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
-import { getStrongestPeak } from '../helper/getStrongestPeak';
-import { options } from '../../toolbar/ToolTypes';
 
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum

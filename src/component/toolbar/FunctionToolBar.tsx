@@ -78,7 +78,7 @@ function FunctionToolBarInner({
           <ToggleButton
             key={options.zoom.id}
             value={options.zoom.id}
-            id="zoomIn"
+            id={options.zoom.id}
             title={`${options.zoom.label} ( Press z )`}
           >
             <div style={{ fontSize: 14 }}>
@@ -105,7 +105,7 @@ function FunctionToolBarInner({
             value={options.peakPicking.id}
             title={`${options.peakPicking.label} ( Press p )`}
             isVisible={!!(activeSpectrum && !info?.isFid)}
-            id="peakPicking"
+            id={options.peakPicking.id}
           >
             <SvgNmrPeakPicking />
           </ToggleButton>
@@ -115,7 +115,7 @@ function FunctionToolBarInner({
             key={options.integral.id}
             value={options.integral.id}
             isVisible={!!(activeSpectrum && !info?.isFid)}
-            id="integralPicking"
+            id={options.integral.id}
             title={`${options.integral.label} ( Press i )`}
           >
             <SvgNmrIntegrate />
@@ -125,7 +125,7 @@ function FunctionToolBarInner({
           <ToggleButton
             key={options.zonePicking.id}
             value={options.zonePicking.id}
-            id="zone2d"
+            id={options.zonePicking.id}
             isVisible={!!(activeSpectrum && !info?.isFid)}
             title={`${options.zonePicking.label} ( Press r )`}
           >
@@ -137,7 +137,7 @@ function FunctionToolBarInner({
             key={options.slicing.id}
             value={options.slicing.id}
             isVisible={!!(activeSpectrum && !info?.isFid)}
-            id="slic"
+            id={options.slicing.id}
             title={`${options.slicing.label}`}
           >
             <p>Slic</p>
@@ -149,7 +149,7 @@ function FunctionToolBarInner({
             value={options.rangePicking.id}
             isVisible={!!(activeSpectrum && !info?.isFid)}
             title={`${options.rangePicking.label} ( Press r )`}
-            id="ranges-pick"
+            id={options.rangePicking.id}
           >
             <SvgNmrRangePicking />
           </ToggleButton>
@@ -161,7 +161,7 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
-              id="multipleSpectraAnalysis"
+              id={options.multipleSpectraAnalysis.id}
               title={options.multipleSpectraAnalysis.label}
             >
               <SvgNmrMultipleAnalysis />
@@ -172,7 +172,7 @@ function FunctionToolBarInner({
             key={options.apodization.id}
             value={options.apodization.id}
             isVisible={Filters.apodization.isApplicable({ info } as Datum1D)}
-            id="apodization"
+            id={options.apodization.id}
             title={options.apodization.label}
           >
             <SvgNmrApodization />
@@ -183,7 +183,7 @@ function FunctionToolBarInner({
             key={options.zeroFilling.id}
             value={options.zeroFilling.id}
             isVisible={Filters.zeroFilling.isApplicable({ info } as Datum1D)}
-            id="zeroFilling"
+            id={options.zeroFilling.id}
             title={options.zeroFilling.label}
           >
             <SvgNmrZeroFilling />
@@ -193,7 +193,7 @@ function FunctionToolBarInner({
           <ToggleButton
             key={options.phaseCorrection.id}
             value={options.phaseCorrection.id}
-            id="phaseCorrection"
+            id={options.phaseCorrection.id}
             title={`${options.phaseCorrection.label} ( Press a )`}
             isVisible={
               !!(
@@ -212,7 +212,7 @@ function FunctionToolBarInner({
           <ToggleButton
             key={options.baselineCorrection.id}
             value={options.baselineCorrection.id}
-            id="baselineCorrection"
+            id={options.baselineCorrection.id}
             title={`${options.baselineCorrection.label} ( Press b )`}
             isVisible={
               !!(
@@ -232,7 +232,7 @@ function FunctionToolBarInner({
               key={options.exclusionZones.id}
               value={options.exclusionZones.id}
               title={`${options.exclusionZones.label} ( Press e )`}
-              id="exclusionZones"
+              id={options.exclusionZones.id}
             >
               <div style={{ fontSize: 18 }}>
                 <SvgNmrMultipleAnalysis />
@@ -241,13 +241,13 @@ function FunctionToolBarInner({
           )}
       </ToggleButtonGroup>
 
-      {isButtonVisible('FFT') &&
+      {isButtonVisible('fastFourierTransform') &&
         info &&
         Filters.fft.isApplicable({ info } as Datum1D) && (
           <Toolbar.Item
-            id="fft-filter"
+            id={options.fastFourierTransform.id}
             className="cheminfo"
-            title="FFT Filter"
+            title={options.fastFourierTransform.label}
             onClick={handleOnFFTFilter}
           >
             <SvgNmrFourierTransform />

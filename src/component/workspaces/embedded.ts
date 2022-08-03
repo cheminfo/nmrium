@@ -23,7 +23,7 @@ export const embedded: InnerWorkspace = {
       baselineCorrection: true,
       exclusionZones: true,
       exportAs: true,
-      FFT: true,
+      fastFourierTransform: true,
       import: true,
       integral: true,
       multipleSpectraAnalysis: true,

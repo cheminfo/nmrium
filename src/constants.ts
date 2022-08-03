@@ -1,7 +1,7 @@
 export const docsBaseUrl = 'https://docs.nmrium.org';
 
 export const helpList: Record<string, { text: string; url: string }> = {
-  zoomIn: {
+  zoom: {
     text: 'Zoom Tool',
     url: `${docsBaseUrl}/help/zoom-and-scale`,
   },

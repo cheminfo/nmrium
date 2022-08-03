@@ -29,7 +29,7 @@ type RecordOptions = Record<
 export const options: RecordOptions = {
   zoom: {
     id: 'zoom',
-    label: 'Zoom',
+    label: 'Zoom in',
     hasOptionPanel: false,
     isFilter: false,
     isToggle: true,
@@ -187,8 +187,8 @@ export const options: RecordOptions = {
     isFilter: false,
     isToggle: false,
   },
-  FFT: {
-    id: 'FFT',
+  fastFourierTransform: {
+    id: 'fft',
     label: 'Fourier transform',
     hasOptionPanel: false,
     isFilter: true,

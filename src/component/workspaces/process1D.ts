@@ -24,7 +24,7 @@ export const process1D: InnerWorkspace = {
       peakPicking: true,
       apodization: true,
       zeroFilling: true,
-      FFT: true,
+      fastFourierTransform: true,
       phaseCorrection: true,
       baselineCorrection: true,
       exclusionZones: true,

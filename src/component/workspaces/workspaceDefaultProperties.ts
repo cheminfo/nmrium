@@ -28,7 +28,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       baselineCorrection: false,
       exclusionZones: false,
       exportAs: false,
-      FFT: false,
+      fastFourierTransform: false,
       import: false,
       integral: false,
       multipleSpectraAnalysis: false,

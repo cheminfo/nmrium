@@ -15,7 +15,7 @@ export interface NMRiumToolBarPreferences {
   apodization: boolean;
   phaseCorrection: boolean;
   baselineCorrection: boolean;
-  FFT: boolean;
+  fastFourierTransform: boolean;
   multipleSpectraAnalysis: boolean;
   exclusionZones: boolean;
 }
