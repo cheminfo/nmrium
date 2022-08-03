@@ -23,13 +23,8 @@ import {
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
-  const {
-    keysPreferences,
-    displayerMode,
-    overDisplayer,
-    data,
-    activeSpectrum,
-  } = useChartData();
+  const { keysPreferences, displayerMode, overDisplayer, data } =
+    useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const openLoader = useLoader();
@@ -165,97 +160,89 @@ function KeysListenerTracker() {
 
   const toolsListenerHandler = useCallback(
     (e) => {
-      function check1DModeWithActiveSpectrum(
-        label: string,
-        checkSwitch = true,
-      ) {
-        if (displayerMode === DISPLAYER_MODE.DM_1D && !activeSpectrum) {
-          throw new Error(`Select a spectrum to proceed with ${label}`);
-        } else if (checkSwitch && displayerMode === DISPLAYER_MODE.DM_2D) {
-          throw new Error(
-            `Switch to 1D Mode and select a spectrum to proceed with ${label}`,
-          );
-        }
-      }
-      function check2DModeWithActiveSpectrum(
-        label: string,
-        checkSwitch = true,
-      ) {
-        if (displayerMode === DISPLAYER_MODE.DM_2D && !activeSpectrum) {
-          throw new Error(`Select a spectrum to proceed with ${label}`);
-        } else if (checkSwitch && displayerMode === DISPLAYER_MODE.DM_1D) {
-          throw new Error(
-            `Switch to 2D Mode and select a spectrum to proceed with ${label}`,
-          );
-        }
+      function throw1DSelectSpectraError(label: string) {
+        throw new Error(
+          `${
+            displayerMode === DISPLAYER_MODE.DM_2D
+              ? `Switch to 1D Mode and select a spectrum to proceed width ${label}`
+              : `Select a spectrum to proceed  width ${label}`
+          }`,
+        );
       }
 
       try {
         if (!e.shiftKey && !e.metaKey) {
           switch (e.key) {
             case 'f':
-              if (isToolVisible('zoomOutTool')) {
+              if (isToolVisible('zoomOut')) {
                 handleFullZoomOut();
               }
               break;
             case 'z':
             case 'Escape':
-              if (isToolVisible('zoomTool')) {
+              if (isToolVisible('zoom')) {
                 handleChangeOption(options.zoom.id);
               }
               break;
             case 'r': {
-              if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                if (isToolVisible('zonePickingTool')) {
-                  check2DModeWithActiveSpectrum(options.zone2D.label, false);
-                  handleChangeOption(options.zone2D.id);
-                }
-              } else if (isToolVisible('rangePickingTool')) {
-                check1DModeWithActiveSpectrum(
-                  options.rangesPicking.label,
-                  false,
-                );
-                handleChangeOption(options.rangesPicking.id);
+              if (isToolVisible('zonePicking')) {
+                handleChangeOption(options.zonePicking.id);
+              } else if (isToolVisible('rangePicking')) {
+                handleChangeOption(options.rangePicking.id);
+              } else {
+                const label =
+                  displayerMode === DISPLAYER_MODE.DM_2D
+                    ? options.zonePicking.label
+                    : options.rangePicking.label;
+                throw new Error(`Select a spectrum to proceed with ${label} `);
               }
 
               break;
             }
             case 'a': {
-              if (isToolVisible('phaseCorrectionTool')) {
-                check1DModeWithActiveSpectrum(options.phaseCorrection.label);
+              if (isToolVisible('apodization')) {
+                handleChangeOption(options.apodization.id);
+              } else if (isToolVisible('phaseCorrection')) {
                 handleChangeOption(options.phaseCorrection.id);
+              } else {
+                throw1DSelectSpectraError(
+                  `${options.phaseCorrection.label} or ${options.apodization.label}`,
+                );
               }
-
               break;
             }
             case 'b': {
-              if (isToolVisible('baselineCorrectionTool')) {
-                check1DModeWithActiveSpectrum(options.baselineCorrection.label);
+              if (isToolVisible('baselineCorrection')) {
                 handleChangeOption(options.baselineCorrection.id);
+              } else {
+                throw1DSelectSpectraError(options.baselineCorrection.label);
               }
 
               break;
             }
             case 'p': {
-              if (isToolVisible('peakTool')) {
-                check1DModeWithActiveSpectrum(options.peakPicking.label);
+              if (isToolVisible('peakPicking')) {
                 handleChangeOption(options.peakPicking.id);
+              } else {
+                throw1DSelectSpectraError(options.peakPicking.label);
               }
 
               break;
             }
             case 'i': {
-              if (isToolVisible('integralTool')) {
-                check1DModeWithActiveSpectrum(options.integral.label);
+              if (isToolVisible('integral')) {
                 handleChangeOption(options.integral.id);
+              } else {
+                throw1DSelectSpectraError(options.integral.label);
               }
 
               break;
             }
             case 'e': {
-              if (isToolVisible('exclusionZonesTool')) {
-                check1DModeWithActiveSpectrum(options.exclusionZones.label);
+              if (isToolVisible('exclusionZones')) {
                 handleChangeOption(options.exclusionZones.id);
+              } else if (displayerMode !== DISPLAYER_MODE.DM_1D) {
+                throw new Error('Switch to 1D Mode');
               }
 
               break;
@@ -316,7 +303,6 @@ function KeysListenerTracker() {
       }
     },
     [
-      activeSpectrum,
       alert,
       alignSpectrumsVerticallyHandler,
       allow1DTool,

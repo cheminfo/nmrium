@@ -79,7 +79,7 @@ function FooterBanner({ layout, data1D }) {
     if (!data1D || data1D.length === 0) {
       return get2DXScale({ width, margin, xDomain });
     }
-    if (selectedTool !== options.slicingTool.id) {
+    if (selectedTool !== options.slicing.id) {
       switch (trackID) {
         case LAYOUT.TOP_1D:
         case LAYOUT.CENTER_2D: {
@@ -99,7 +99,7 @@ function FooterBanner({ layout, data1D }) {
     if (!data1D || data1D.length === 0) {
       return get2DYScale({ height, margin, yDomain });
     }
-    if (selectedTool !== options.slicingTool.id) {
+    if (selectedTool !== options.slicing.id) {
       switch (trackID) {
         case LAYOUT.CENTER_2D: {
           return get2DYScale({ height, margin, yDomain });

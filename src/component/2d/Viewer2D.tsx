@@ -76,7 +76,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
           }
         } else if (brushData.shiftKey) {
           switch (selectedTool) {
-            case options.zone2D.id:
+            case options.zonePicking.id:
               dispatch({ type: ADD_2D_ZONE, ...brushData });
               break;
             default:
@@ -167,7 +167,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
               <MouseTracker
                 style={{ width: '100%', height: `100%`, position: 'absolute' }}
               >
-                {selectedTool && selectedTool === options.slicingTool.id && (
+                {selectedTool && selectedTool === options.slicing.id && (
                   <SlicingView />
                 )}
 

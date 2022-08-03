@@ -25,7 +25,6 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { ActiveSpectrum } from '../reducer/Reducer';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
@@ -34,10 +33,8 @@ interface FunctionToolBarInnerProps {
   defaultValue: string;
   activeSpectrum: ActiveSpectrum | null;
   ftCounter: number;
-  displayerMode: DISPLAYER_MODE;
   info: Info1D | Info2D;
   datum: Data1D | Data2D;
-  mode: string;
 }
 
 function FunctionToolBarInner({
@@ -45,9 +42,7 @@ function FunctionToolBarInner({
   activeSpectrum,
   info,
   datum,
-  displayerMode,
   ftCounter,
-  mode,
 }: FunctionToolBarInnerProps) {
   const [option, setOption] = useState<string>('');
   const isButtonVisible = useCheckToolsVisibility();
@@ -79,7 +74,7 @@ function FunctionToolBarInner({
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
-        {isButtonVisible('zoomTool') && (
+        {isButtonVisible('zoom') && (
           <ToggleButton
             key={options.zoom.id}
             value={options.zoom.id}
@@ -92,7 +87,7 @@ function FunctionToolBarInner({
           </ToggleButton>
         )}
 
-        {isButtonVisible('zoomOutTool') && (
+        {isButtonVisible('zoomOut') && (
           <Toolbar.Item
             id="zoom-out"
             onClick={handleFullZoomOut}
@@ -104,7 +99,7 @@ function FunctionToolBarInner({
           </Toolbar.Item>
         )}
 
-        {displayerMode === DISPLAYER_MODE.DM_1D && isButtonVisible('peakTool') && (
+        {isButtonVisible('peakPicking') && (
           <ToggleButton
             key={options.peakPicking.id}
             value={options.peakPicking.id}
@@ -115,58 +110,54 @@ function FunctionToolBarInner({
             <SvgNmrPeakPicking />
           </ToggleButton>
         )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('integralTool') && (
-            <ToggleButton
-              key={options.integral.id}
-              value={options.integral.id}
-              isVisible={!!(activeSpectrum && !info?.isFid)}
-              id="integralPicking"
-              title={`${options.integral.label} ( Press i )`}
-            >
-              <SvgNmrIntegrate />
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_2D &&
-          isButtonVisible('zonePickingTool') && (
-            <ToggleButton
-              key={options.zone2D.id}
-              value={options.zone2D.id}
-              id="zone2d"
-              isVisible={!!(activeSpectrum && !info?.isFid)}
-              title={`${options.zone2D.label} ( Press r )`}
-            >
-              <FaDiceFour />
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_2D &&
-          isButtonVisible('slicingTool') && (
-            <ToggleButton
-              key={options.slicingTool.id}
-              value={options.slicingTool.id}
-              isVisible={!!(activeSpectrum && !info?.isFid)}
-              id="slic"
-              title={`${options.slicingTool.label}`}
-            >
-              <p>Slic</p>
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('rangePickingTool') && (
-            <ToggleButton
-              key={options.rangesPicking.id}
-              value={options.rangesPicking.id}
-              isVisible={!!(activeSpectrum && !info?.isFid)}
-              title={`${options.rangesPicking.label} ( Press r )`}
-              id="ranges-pick"
-            >
-              <SvgNmrRangePicking />
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('multipleSpectraAnalysisTool') &&
-          ftCounter > 1 &&
-          mode === 'RTL' && (
+        {isButtonVisible('integral') && (
+          <ToggleButton
+            key={options.integral.id}
+            value={options.integral.id}
+            isVisible={!!(activeSpectrum && !info?.isFid)}
+            id="integralPicking"
+            title={`${options.integral.label} ( Press i )`}
+          >
+            <SvgNmrIntegrate />
+          </ToggleButton>
+        )}
+        {isButtonVisible('zonePicking') && (
+          <ToggleButton
+            key={options.zonePicking.id}
+            value={options.zonePicking.id}
+            id="zone2d"
+            isVisible={!!(activeSpectrum && !info?.isFid)}
+            title={`${options.zonePicking.label} ( Press r )`}
+          >
+            <FaDiceFour />
+          </ToggleButton>
+        )}
+        {isButtonVisible('slicing') && (
+          <ToggleButton
+            key={options.slicing.id}
+            value={options.slicing.id}
+            isVisible={!!(activeSpectrum && !info?.isFid)}
+            id="slic"
+            title={`${options.slicing.label}`}
+          >
+            <p>Slic</p>
+          </ToggleButton>
+        )}
+        {isButtonVisible('rangePicking') && (
+          <ToggleButton
+            key={options.rangePicking.id}
+            value={options.rangePicking.id}
+            isVisible={!!(activeSpectrum && !info?.isFid)}
+            title={`${options.rangePicking.label} ( Press r )`}
+            id="ranges-pick"
+          >
+            <SvgNmrRangePicking />
+          </ToggleButton>
+        )}
+        {isButtonVisible('multipleSpectraAnalysis', {
+          checkSpectrumType: false,
+        }) &&
+          ftCounter > 1 && (
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
@@ -176,72 +167,66 @@ function FunctionToolBarInner({
               <SvgNmrMultipleAnalysis />
             </ToggleButton>
           )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('apodizationTool') && (
-            <ToggleButton
-              key={options.apodization.id}
-              value={options.apodization.id}
-              isVisible={Filters.apodization.isApplicable({ info } as Datum1D)}
-              id="apodization"
-              title={options.apodization.label}
-            >
-              <SvgNmrApodization />
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('zeroFillingTool') && (
-            <ToggleButton
-              key={options.zeroFilling.id}
-              value={options.zeroFilling.id}
-              isVisible={Filters.zeroFilling.isApplicable({ info } as Datum1D)}
-              id="zeroFilling"
-              title={options.zeroFilling.label}
-            >
-              <SvgNmrZeroFilling />
-            </ToggleButton>
-          )}
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('phaseCorrectionTool') && (
-            <ToggleButton
-              key={options.phaseCorrection.id}
-              value={options.phaseCorrection.id}
-              id="phaseCorrection"
-              title={`${options.phaseCorrection.label} ( Press a )`}
-              isVisible={
-                !!(
-                  activeSpectrum &&
-                  info &&
-                  Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
-                  (datum as Data1D).im
-                )
-              }
-            >
-              <SvgNmrPhaseCorrection />
-            </ToggleButton>
-          )}
+        {isButtonVisible('apodization') && (
+          <ToggleButton
+            key={options.apodization.id}
+            value={options.apodization.id}
+            isVisible={Filters.apodization.isApplicable({ info } as Datum1D)}
+            id="apodization"
+            title={options.apodization.label}
+          >
+            <SvgNmrApodization />
+          </ToggleButton>
+        )}
+        {isButtonVisible('zeroFilling') && (
+          <ToggleButton
+            key={options.zeroFilling.id}
+            value={options.zeroFilling.id}
+            isVisible={Filters.zeroFilling.isApplicable({ info } as Datum1D)}
+            id="zeroFilling"
+            title={options.zeroFilling.label}
+          >
+            <SvgNmrZeroFilling />
+          </ToggleButton>
+        )}
+        {isButtonVisible('phaseCorrection') && (
+          <ToggleButton
+            key={options.phaseCorrection.id}
+            value={options.phaseCorrection.id}
+            id="phaseCorrection"
+            title={`${options.phaseCorrection.label} ( Press a )`}
+            isVisible={
+              !!(
+                activeSpectrum &&
+                info &&
+                Filters.phaseCorrection.isApplicable({ info } as Datum1D) &&
+                (datum as Data1D).im
+              )
+            }
+          >
+            <SvgNmrPhaseCorrection />
+          </ToggleButton>
+        )}
 
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('baselineCorrectionTool') && (
-            <ToggleButton
-              key={options.baselineCorrection.id}
-              value={options.baselineCorrection.id}
-              id="baselineCorrection"
-              title={`${options.baselineCorrection.label} ( Press b )`}
-              isVisible={
-                !!(
-                  activeSpectrum &&
-                  info &&
-                  Filters.baselineCorrection.isApplicable({ info } as Datum1D)
-                )
-              }
-            >
-              <SvgNmrBaselineCorrection />
-            </ToggleButton>
-          )}
+        {isButtonVisible('baselineCorrection') && (
+          <ToggleButton
+            key={options.baselineCorrection.id}
+            value={options.baselineCorrection.id}
+            id="baselineCorrection"
+            title={`${options.baselineCorrection.label} ( Press b )`}
+            isVisible={
+              !!(
+                activeSpectrum &&
+                info &&
+                Filters.baselineCorrection.isApplicable({ info } as Datum1D)
+              )
+            }
+          >
+            <SvgNmrBaselineCorrection />
+          </ToggleButton>
+        )}
 
-        {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('exclusionZonesTool') &&
-          !info?.isFid &&
+        {isButtonVisible('exclusionZones', { checkSpectrumType: false }) &&
           ftCounter > 0 && (
             <ToggleButton
               key={options.exclusionZones.id}
@@ -256,8 +241,7 @@ function FunctionToolBarInner({
           )}
       </ToggleButtonGroup>
 
-      {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('FFTTool') &&
+      {isButtonVisible('FFT') &&
         info &&
         Filters.fft.isApplicable({ info } as Datum1D) && (
           <Toolbar.Item
@@ -280,7 +264,7 @@ export default function FunctionToolBar({
 }: {
   defaultValue?: string;
 }) {
-  const { activeSpectrum, displayerMode, activeTab, mode } = useChartData();
+  const { activeSpectrum, displayerMode, activeTab } = useChartData();
 
   const data = useDatumWithSpectraStatistics();
 
@@ -292,7 +276,6 @@ export default function FunctionToolBar({
         displayerMode,
         activeTab,
         defaultValue,
-        mode,
       }}
     />
   );

@@ -20,7 +20,7 @@ const allowTools: Array<string | number> = [
   options.integral.id,
   options.phaseCorrection.id,
   options.baselineCorrection.id,
-  options.rangesPicking.id,
+  options.rangePicking.id,
   options.exclusionZones.id,
 ];
 

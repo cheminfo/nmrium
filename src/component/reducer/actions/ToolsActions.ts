@@ -293,7 +293,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index) {
 function setMargin(draft: Draft<State>) {
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
-    draft.toolOptions.selectedTool !== options.slicingTool.id
+    draft.toolOptions.selectedTool !== options.slicing.id
   ) {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
@@ -302,7 +302,7 @@ function setMargin(draft: Draft<State>) {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else if (draft.toolOptions.selectedTool === options.slicingTool.id) {
+  } else if (draft.toolOptions.selectedTool === options.slicing.id) {
     draft.margin = MARGIN['2D'];
   } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     draft.margin = MARGIN['1D'];
