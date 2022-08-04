@@ -20,7 +20,7 @@ interface SignalProps {
   };
 }
 
-const Signal = memo(({ signal, isVisible }: SignalProps) => {
+function Signal({ signal, isVisible }: SignalProps) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
@@ -92,6 +92,6 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
       </g>
     </g>
   );
-});
+}
 
-export default Signal;
+export default memo(Signal);

@@ -42,7 +42,7 @@ const styles = css`
   }
 `;
 
-const WorkspaceItem = ({ item, onSave, onDelete }) => {
+function WorkspaceItem({ item, onSave, onDelete }) {
   const [name, setName] = useState<string>('');
   const addWorkspaceHandler = useCallback(
     (e) => {
@@ -100,6 +100,6 @@ const WorkspaceItem = ({ item, onSave, onDelete }) => {
       )}
     </div>
   );
-};
+}
 
 export default WorkspaceItem;

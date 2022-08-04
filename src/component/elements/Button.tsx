@@ -178,7 +178,7 @@ interface ButtonProps
   children: ReactNode;
 }
 
-const Button = (props: ButtonProps) => {
+function Button(props: ButtonProps) {
   const {
     onClick,
     size = 'small',
@@ -211,7 +211,7 @@ const Button = (props: ButtonProps) => {
       <span style={{ flex: 1, pointerEvents: 'none' }}> {props.children}</span>
     </button>
   );
-};
+}
 
 function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
   const { colorTheme, ...buttonProps } = props;
@@ -230,13 +230,13 @@ function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
   return <Button {...{ fill, ...restProps, backgroundColor, color }} />;
 }
 
-Button.Done = (props: ButtonProps) => {
+Button.Done = function ButtonDone(props: ButtonProps) {
   return <ThemeButton {...props} colorTheme="success" />;
 };
-Button.Danger = (props: ButtonProps) => {
+Button.Danger = function ButtonDanger(props: ButtonProps) {
   return <ThemeButton {...props} colorTheme="danger" />;
 };
-Button.Action = (props: ButtonProps) => {
+Button.Action = function ButtonAction(props: ButtonProps) {
   return <ThemeButton {...props} colorTheme="medium" />;
 };
 

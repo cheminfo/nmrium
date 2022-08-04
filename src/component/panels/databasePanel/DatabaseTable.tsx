@@ -104,7 +104,7 @@ const databaseTableColumns = (
     accessor: 'index',
     style: { height: 0 },
     enableRowSpan: true,
-    Cell: ({ row }) => {
+    Cell({ row }) {
       const { idCode, coordinates } = row.original?.ocl || {};
       const smiles = row.original?.smiles;
       return (

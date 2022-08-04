@@ -47,7 +47,7 @@ interface ZoneProps {
   };
 }
 
-const Zone = ({ zoneData, isVisible }: ZoneProps) => {
+function Zone({ zoneData, isVisible }: ZoneProps) {
   const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight([assignmentZone.id], {
@@ -102,6 +102,6 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
       ))}
     </g>
   );
-};
+}
 
 export default Zone;
