@@ -19,6 +19,7 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
+  DELETE_ANALYZE_SPECTRA_RANGE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -120,6 +121,16 @@ function KeysListenerTracker() {
             },
           });
           hideLoading();
+          // remove keys from the highlighted list after delete
+          remove();
+
+          break;
+        }
+        case HighlightedSource.MULTIPLE_ANALYSIS_ZONE: {
+          dispatch({
+            type: DELETE_ANALYZE_SPECTRA_RANGE,
+            colKey: sourceData.extra.colKey,
+          });
           // remove keys from the highlighted list after delete
           remove();
 

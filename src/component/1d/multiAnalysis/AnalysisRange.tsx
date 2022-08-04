@@ -5,13 +5,9 @@ import { useCallback } from 'react';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import DeleteButton from '../../elements/DeleteButton';
 import Resizer from '../../elements/resizer/Resizer';
 import { useHighlight } from '../../highlight';
-import {
-  DELETE_ANALYZE_SPECTRA_RANGE,
-  RESIZE_ANALYZE_SPECTRA_RANGE,
-} from '../../reducer/types/Types';
+import { RESIZE_ANALYZE_SPECTRA_RANGE } from '../../reducer/types/Types';
 
 const styles = {
   common: css`
@@ -47,29 +43,33 @@ interface AnalysisRangeProps {
 }
 
 function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
-  const highlight = useHighlight([columnKey]);
+  const highlight = useHighlight([columnKey], {
+    type: 'MULTIPLE_ANALYSIS_ZONE',
+    extra: { colKey: columnKey },
+  });
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
   const { viewerRef } = useGlobal();
-  const deleteHandler = useCallback(() => {
-    dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey: columnKey });
-  }, [columnKey, dispatch]);
 
   const resizeEndHandler = useCallback(
     (resized) => {
+      const { x1, x2 } = resized;
+      const from = scaleX().invert(x2);
+      const to = scaleX().invert(x1);
+
       dispatch({
         type: RESIZE_ANALYZE_SPECTRA_RANGE,
-        payload: { ...rangeData, ...resized, columnKey },
+        payload: { ...rangeData, from, to, columnKey },
       });
     },
-    [columnKey, dispatch, rangeData],
+    [columnKey, dispatch, rangeData, scaleX],
   );
 
   const from = scaleX()(rangeData.from);
   const to = scaleX()(rangeData.to);
 
   return (
-    <g {...highlight.onHover}>
+    <g {...highlight.onHover} {...highlight.onHover}>
       <Resizer
         tag="svg"
         onEnd={resizeEndHandler}
@@ -107,7 +107,7 @@ function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
                 {columnKey}
               </text>
             </g>
-            <DeleteButton x={-20} y={10} onDelete={deleteHandler} />
+            {/* <DeleteButton x={-20} y={10} onDelete={deleteHandler} /> */}
           </>
         )}
       </Resizer>
