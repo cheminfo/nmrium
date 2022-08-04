@@ -50,7 +50,7 @@
     "react-dom": ">=16.0.0"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.0",
+    "@emotion/react": "^11.9.3",
     "analysis-ui-components": "^0.15.2",
     "cheminfo-font": "^1.9.0",
     "cheminfo-types": "^1.4.0",
