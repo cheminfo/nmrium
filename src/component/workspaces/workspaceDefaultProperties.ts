@@ -3,7 +3,6 @@ import { WorkspaceData } from './Workspace';
 export const workspaceDefaultProperties: Required<WorkspaceData> = {
   display: {
     general: {
-      hideSetSumFromMolecule: false,
       hideGeneralSettings: false,
       experimentalFeatures: { display: false },
       hidePanelOnLoad: false,

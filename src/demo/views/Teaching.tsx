@@ -82,15 +82,12 @@ export default function Teaching(props) {
             <NMRium
               data={data}
               preferences={{
-                general: {
-                  hideSetSumFromMolecule: true,
-                },
                 panels: {
-                  hideInformationPanel: true,
-                  hidePeaksPanel: true,
-                  hideIntegralsPanel: true,
-                  hideFiltersPanel: true,
-                  hideMultipleSpectraAnalysisPanel: true,
+                  informationPanel: { display: true },
+                  peaksPanel: { display: true },
+                  integralsPanel: { display: true },
+                  filtersPanel: { display: true },
+                  multipleSpectraAnalysisPanel: { display: true },
                 },
               }}
             />
