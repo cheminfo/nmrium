@@ -459,24 +459,36 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
 }
 
 function handleDeleteExclusionZone(draft: Draft<State>, action) {
-  const { id, spectrumID } = action.payload;
-  const spectrumIndex = draft.data.findIndex(
-    (spectrum) => spectrum.id === spectrumID,
-  );
-  const exclusionZonesFilter = draft.data[spectrumIndex].filters.find(
-    (filter) => filter.name === Filters.exclusionZones.id,
-  );
-  if (exclusionZonesFilter) {
-    if (exclusionZonesFilter.value.length === 1) {
-      FiltersManager.deleteFilter(
-        draft.data[spectrumIndex],
-        exclusionZonesFilter.id,
-      );
-    } else {
-      exclusionZonesFilter.value = exclusionZonesFilter.value.filter(
-        (zone) => zone.id !== id,
-      );
-      FiltersManager.reapplyFilters(draft.data[spectrumIndex]);
+  const { zone, spectrumID } = action.payload;
+
+  // if spectrum id exists, remove the selected exclusive zone in the spectrum
+  if (spectrumID) {
+    const spectrumIndex = draft.data.findIndex(
+      (spectrum) => spectrum.id === spectrumID,
+    );
+    const filter = draft.data[spectrumIndex].filters.find(
+      (_filter) => _filter.name === Filters.exclusionZones.id,
+    );
+    if (filter) {
+      if (filter.value.length === 1) {
+        FiltersManager.deleteFilter(draft.data[spectrumIndex], filter.id);
+      } else {
+        filter.value = filter.value.filter((_zone) => _zone.id !== zone?.id);
+        FiltersManager.reapplyFilters(draft.data[spectrumIndex]);
+      }
+    }
+  } else {
+    // remove all exclusive zone that have the same range in all spectra
+    const data = getSpectraByNucleus(draft.activeTab, draft.data);
+    for (const datum of data) {
+      for (const filter of datum.filters) {
+        if (filter.name === Filters.exclusionZones.id) {
+          filter.value = filter.value.filter(
+            (_zone) => zone.from !== _zone.from && zone.to !== _zone.to,
+          );
+          FiltersManager.reapplyFilters(datum);
+        }
+      }
     }
   }
 }

@@ -6,6 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
+import { useModal } from '../elements/popup/Modal';
 import { HighlightedSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
@@ -33,6 +34,7 @@ function KeysListenerTracker() {
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const modal = useModal();
   const openLoader = useLoader();
 
   const {
@@ -59,7 +61,6 @@ function KeysListenerTracker() {
         type,
         extra: { id },
       } = sourceData;
-
       switch (type) {
         case HighlightedSource.INTEGRAL: {
           dispatch({
@@ -110,19 +111,47 @@ function KeysListenerTracker() {
           break;
         }
         case HighlightedSource.EXCLUSION_ZONE: {
-          const hideLoading = await alert.showLoading(
-            `Exclusion filter in progress`,
-          );
-          dispatch({
-            type: DELETE_EXCLUSION_ZONE,
-            payload: {
-              id,
-              spectrumID: sourceData.extra.spectrumID,
+          const buttons = [
+            {
+              text: 'Yes, for all spectra',
+              handler: async () => {
+                const hideLoading = await alert.showLoading(
+                  'Delete all spectra exclusive zones in progress',
+                );
+                const { zone } = sourceData.extra;
+                dispatch({
+                  type: DELETE_EXCLUSION_ZONE,
+                  payload: {
+                    zone,
+                  },
+                });
+                hideLoading();
+              },
             },
+            {
+              text: 'Yes',
+              handler: async () => {
+                const hideLoading = await alert.showLoading(
+                  'Delete exclusive zone in progress',
+                );
+                const { spectrumID, zone } = sourceData.extra;
+                dispatch({
+                  type: DELETE_EXCLUSION_ZONE,
+                  payload: {
+                    zone,
+                    spectrumID,
+                  },
+                });
+                hideLoading();
+              },
+            },
+            { text: 'No' },
+          ];
+
+          modal.showConfirmDialog({
+            message: 'Are you sure you want to delete the exclusion zone/s?',
+            buttons,
           });
-          hideLoading();
-          // remove keys from the highlighted list after delete
-          remove();
 
           break;
         }
@@ -141,7 +170,7 @@ function KeysListenerTracker() {
           break;
       }
     },
-    [assignmentData, dispatch, remove, alert],
+    [dispatch, remove, assignmentData, modal, alert],
   );
 
   const keysPreferencesListenerHandler = useCallback(

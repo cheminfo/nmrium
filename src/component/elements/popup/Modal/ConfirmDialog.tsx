@@ -6,7 +6,7 @@ const styles = css`
   display: block;
   border-radius: 5px;
   overflow: hidden;
-  width: 300px;
+  width: 350px;
   border-top: 10px solid #ed0000;
 
   .message {

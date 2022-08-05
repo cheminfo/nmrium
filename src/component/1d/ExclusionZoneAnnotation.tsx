@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { memo } from 'react';
 
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
@@ -12,6 +14,12 @@ interface ExclusionZoneProps {
   spectrumID: string;
 }
 
+const style = css`
+   &:hover{
+     fill: #ff6f0057 !important;
+   }
+`;
+
 function ExclusionZoneAnnotation({
   zone,
   color,
@@ -19,9 +27,9 @@ function ExclusionZoneAnnotation({
   spectrumID,
 }: ExclusionZoneProps) {
   const { scaleX, scaleY } = useScaleChecked();
-  const highlight = useHighlight([zone.id], {
+  const highlight = useHighlight([], {
     type: HighlightedSource.EXCLUSION_ZONE,
-    extra: { id: zone.id, spectrumID },
+    extra: { zone, spectrumID },
   });
 
   const { opacity } = useActiveSpectrumStyleOptions(spectrumID);
@@ -30,11 +38,12 @@ function ExclusionZoneAnnotation({
     <g key={zone.id} transform={`translate(${scaleX()(zone.to)},0)`}>
       <rect
         x="0"
+        css={style}
         transform={`translate(0,${scaleY()(0) - (vAlign + 5)})`}
         width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
         height="10px"
         style={{
-          fill: highlight.isActive ? '#ff6f0057' : color,
+          fill: color,
           opacity,
         }}
         {...highlight.onHover}
