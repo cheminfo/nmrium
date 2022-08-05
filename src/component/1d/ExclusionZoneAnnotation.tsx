@@ -15,9 +15,9 @@ interface ExclusionZoneProps {
 }
 
 const style = css`
-   &:hover{
-     fill: #ff6f0057 !important;
-   }
+  &:hover {
+    fill: #ff6f0057 !important;
+  }
 `;
 
 function ExclusionZoneAnnotation({
