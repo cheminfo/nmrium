@@ -10,7 +10,7 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
     minMaxRatio,
     maxNumberOfPeaks,
     noiseFactor,
-    lookNegative,
+    direction,
     windowFromIndex,
     windowToIndex,
   } = options;
@@ -27,7 +27,7 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
   let peaks = xyAutoPeaksPicking(
     { x, y: re },
     {
-      lookNegative,
+      direction,
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,

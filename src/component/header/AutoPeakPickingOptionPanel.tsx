@@ -1,10 +1,11 @@
-import { useCallback, useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
-import CheckBox from '../elements/CheckBox';
 import Label from '../elements/Label';
-import NumberInput from '../elements/NumberInput';
+import FormikForm from '../elements/formik/FormikForm';
+import FormikNumberInput from '../elements/formik/FormikNumberInput';
+import FormikSelect from '../elements/formik/FormikSelect';
 import { AUTO_PEAK_PICKING } from '../reducer/types/Types';
 
 import { HeaderContainer } from './HeaderContainer';
@@ -29,62 +30,80 @@ const labelStyle = {
   },
 };
 
+const LookFor = [
+  {
+    label: 'Positive',
+    value: 'positive',
+  },
+  {
+    label: 'Negative',
+    value: 'negative',
+  },
+  {
+    label: 'Both',
+    value: 'both',
+  },
+];
+
+const INIT_VALUES = {
+  maxNumberOfPeaks: 50,
+  minMaxRatio: 0.1,
+  noiseFactor: 3,
+  direction: 'positive',
+};
+
 function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
-  const minMaxRatioRef = useRef<any>();
-  const maxNumberOfPeaksRef = useRef<any>();
-  const noiseFactor = useRef<any>();
-  const lookNegativeRef = useRef<any>();
+  const formRef = useRef<any>();
 
-  const handleApplyFilter = useCallback(() => {
-    dispatch({
-      type: AUTO_PEAK_PICKING,
-      options: {
-        maxNumberOfPeaks: maxNumberOfPeaksRef.current.value,
-        minMaxRatio: minMaxRatioRef.current.value,
-        noiseFactor: noiseFactor.current.value,
-        lookNegative: lookNegativeRef.current.checked,
-      },
-    });
-  }, [dispatch]);
+  const handleApplyFilter = useCallback(
+    (values) => {
+      dispatch({
+        type: AUTO_PEAK_PICKING,
+        options: values,
+      });
+    },
+    [dispatch],
+  );
 
   return (
     <HeaderContainer>
-      <Label title="Max Number Of Peaks:" style={labelStyle}>
-        <NumberInput
-          ref={maxNumberOfPeaksRef}
-          name="maxNumberOfPeaks"
-          style={inputStyle}
-          defaultValue={50}
-        />
-      </Label>
-      <Label title="Noise factor:" style={labelStyle}>
-        <NumberInput
-          ref={noiseFactor}
-          name="noiseFactor"
-          style={inputStyle}
-          defaultValue={3}
-        />
-      </Label>
-      <Label title="Min Max Ratio:" style={labelStyle}>
-        <NumberInput
-          ref={minMaxRatioRef}
-          name="minMaxRatio"
-          style={inputStyle}
-          defaultValue={0.1}
-          step="0.01"
-        />
-      </Label>
+      <FormikForm
+        ref={formRef}
+        initialValues={INIT_VALUES}
+        onSubmit={handleApplyFilter}
+      >
+        <Label title="Direction : " style={labelStyle}>
+          <FormikSelect
+            name="direction"
+            data={LookFor}
+            style={{ marginLeft: 10, marginRight: 10 }}
+            defaultValue="positive"
+          />
+        </Label>
+        <Label title="Max Number Of Peaks :" style={labelStyle}>
+          <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
+        </Label>
+        <Label title="Noise factor :" style={labelStyle}>
+          <FormikNumberInput name="noiseFactor" style={inputStyle} />
+        </Label>
+        <Label title="Min Max Ratio :" style={labelStyle}>
+          <FormikNumberInput
+            name="minMaxRatio"
+            style={inputStyle}
+            step="0.01"
+          />
+        </Label>
+      </FormikForm>
 
-      <Label title="Detect negative:" htmlFor="lookNegative" style={labelStyle}>
-        <CheckBox name="lookNegative" ref={lookNegativeRef} />
-      </Label>
-
-      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
+      <Button.Done
+        onClick={() => formRef.current.handleSubmit()}
+        style={{ margin: '0 10px' }}
+      >
         Apply
       </Button.Done>
     </HeaderContainer>
   );
 }
 
-export default AutoPeakPickingOptionPanel;
+export default memo(AutoPeakPickingOptionPanel);
