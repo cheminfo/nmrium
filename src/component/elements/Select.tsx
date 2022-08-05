@@ -31,7 +31,7 @@ const styles = {
 };
 
 export interface SelectEntry {
-  key: string | number;
+  key?: string | number;
   value: string | number;
   label: string | number;
 }
@@ -93,7 +93,7 @@ const Select = forwardRef(function Select(
       )}
 
       {data.map((d) => (
-        <option key={`${d.key}`} value={d.value}>
+        <option key={`${d.key ? d.key : d.value}`} value={d.value}>
           {d.label}
         </option>
       ))}

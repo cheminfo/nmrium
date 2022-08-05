@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import NumberInput, { NumberInputProps } from '../NumberInput';
 
 interface FormikNumberInputProps extends NumberInputProps {
-  label: string;
+  label?: string;
   name: string;
 }
 
