@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { CSSProperties, memo, ReactNode } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
+import Button from '../../elements/Button';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -17,16 +18,6 @@ const styles = css`
     flex-direction: row;
     flex: 1;
   }
-  button {
-    background-color: transparent;
-    border: none;
-    padding: 5px;
-  }
-
-  button:disabled {
-    opacity: 0.6;
-  }
-
   .counter-label {
     margin: 0;
     text-align: right;
@@ -73,9 +64,16 @@ function DefaultPanelHeader({
       <div className="left-container">
         {canDelete && (
           <ToolTip title={deleteToolTip} popupPlacement="right">
-            <button type="button" onClick={onDelete} disabled={counter === 0}>
+            <Button
+              type="button"
+              fill="clear"
+              backgroundColor={{ base: 'white', hover: 'white' }}
+              color={{ base: 'black', hover: 'red' }}
+              onClick={onDelete}
+              disabled={counter === 0}
+            >
               <FaRegTrashAlt />
-            </button>
+            </Button>
           </ToolTip>
         )}
 
