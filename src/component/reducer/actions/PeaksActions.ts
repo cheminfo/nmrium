@@ -88,19 +88,22 @@ function deletePeak(draft: Draft<State>, peakData) {
   }
 }
 
-function handleOptimizePeaks(draft: Draft<State>) {
+function handleOptimizePeaks(draft: Draft<State>, action) {
+  const { peaks } = action.payload;
+
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const datum = draft.data[index] as Datum1D;
 
     const [from, to] = draft.xDomain;
 
-    const peaks = optimizePeaks(draft.data[index] as Datum1D, {
+    const newPeaks = optimizePeaks(draft.data[index] as Datum1D, {
       from,
       to,
+      peaks,
     });
 
-    datum.peaks.values = peaks;
+    datum.peaks.values = newPeaks;
   }
 }
 function handleAutoPeakPicking(draft: Draft<State>, autOptions) {

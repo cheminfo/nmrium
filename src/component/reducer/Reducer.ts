@@ -498,7 +498,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.AUTO_PEAK_PICKING:
       return PeaksActions.handleAutoPeakPicking(draft, action.options);
     case types.OPTIMIZE_PEAKS:
-      return PeaksActions.handleOptimizePeaks(draft);
+      return PeaksActions.handleOptimizePeaks(draft, action);
 
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);

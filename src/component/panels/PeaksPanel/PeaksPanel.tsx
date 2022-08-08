@@ -4,10 +4,12 @@ import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
 import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
+import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
+import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -41,6 +43,7 @@ function PeaksPanelInner({
 
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
 
   const settingRef = useRef<any>();
 
@@ -69,16 +72,10 @@ function PeaksPanelInner({
   }, [filterIsActive]);
 
   const filteredPeaks = useMemo(() => {
-    function isInRange(value) {
-      const factor = 100000;
-      return (
-        value * factor >= xDomain[0] * factor &&
-        value * factor <= xDomain[1] * factor
-      );
-    }
     if (peaks?.values) {
+      const [from, to] = xDomain;
       const _peaks = filterIsActive
-        ? peaks.values.filter((peak) => isInRange(peak.x))
+        ? peaks.values.filter((peak) => isInRange(peak.x, { from, to }))
         : peaks.values;
 
       return _peaks
@@ -92,7 +89,7 @@ function PeaksPanelInner({
             id: peak.id,
             intensity: peak.y,
             peakWidth: peak.width ? peak.width : '',
-            isConstantlyHighlighted: isInRange(value),
+            isConstantlyHighlighted: isInRange(value, { from, to }),
           };
         })
         .sort((prev, next) => prev.value - next.value);
@@ -102,7 +99,15 @@ function PeaksPanelInner({
   }, [filterIsActive, format, info, peaks, xDomain]);
 
   const optimizePeaksHandler = () => {
-    dispatch({ type: OPTIMIZE_PEAKS });
+    const [from, to] = xDomain;
+    const filterPeaks = peaks.values.filter((peak) =>
+      isInRange(peak.x, { from, to }),
+    );
+    if (filterPeaks.length <= 8) {
+      dispatch({ type: OPTIMIZE_PEAKS, payload: { peaks: filterPeaks } });
+    } else {
+      alert.error('optimization can be done on no more than 8 peaks');
+    }
   };
 
   return (

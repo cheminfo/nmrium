@@ -13,13 +13,17 @@ function checkPeak(peak: Peak, datum: Datum1D, error) {
   return false;
 }
 
-export function mapPeaks(peaks: Peak[], datum: Datum1D) {
+export function mapPeaks(
+  peaks: Peak[],
+  datum: Datum1D,
+  checkPeakExisting = true,
+) {
   const shiftX = getShiftX(datum);
 
   const error = getSpectrumErrorValue(datum);
   return peaks.reduce<Peak[]>((acc, newPeak) => {
     // check if the peak is already exists
-    if (checkPeak(newPeak, datum, error)) return acc;
+    if (checkPeakExisting && checkPeak(newPeak, datum, error)) return acc;
 
     acc.push({
       ...newPeak,
