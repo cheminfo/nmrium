@@ -5,6 +5,7 @@ import {
   getShiftX,
   lookupPeak,
   autoPeakPicking,
+  optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
@@ -87,6 +88,21 @@ function deletePeak(draft: Draft<State>, peakData) {
   }
 }
 
+function handleOptimizePeaks(draft: Draft<State>) {
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
+    const datum = draft.data[index] as Datum1D;
+
+    const [from, to] = draft.xDomain;
+
+    const peaks = optimizePeaks(draft.data[index] as Datum1D, {
+      from,
+      to,
+    });
+
+    datum.peaks.values = peaks;
+  }
+}
 function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
   if (draft.activeSpectrum?.id) {
     draft.toolOptions.selectedTool = options.zoom.id;
@@ -108,4 +124,10 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
   }
 }
 
-export { addPeak, addPeaks, deletePeak, handleAutoPeakPicking };
+export {
+  addPeak,
+  addPeaks,
+  deletePeak,
+  handleAutoPeakPicking,
+  handleOptimizePeaks,
+};

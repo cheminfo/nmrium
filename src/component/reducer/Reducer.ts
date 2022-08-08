@@ -495,6 +495,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.DELETE_PEAK_NOTATION:
       return PeaksActions.deletePeak(draft, action.data);
+    case types.AUTO_PEAK_PICKING:
+      return PeaksActions.handleAutoPeakPicking(draft, action.options);
+    case types.OPTIMIZE_PEAKS:
+      return PeaksActions.handleOptimizePeaks(draft);
 
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
@@ -658,9 +662,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.setVerticalIndicatorXPosition(draft, action.position);
     case types.SET_SPECTRUMS_VERTICAL_ALIGN:
       return ToolsActions.setSpectrumsVerticalAlign(draft);
-
-    case types.AUTO_PEAK_PICKING:
-      return PeaksActions.handleAutoPeakPicking(draft, action.options);
 
     case types.AUTO_ZONES_DETECTION:
       return ZonesActions.handleAutoZonesDetection(draft, action.options);

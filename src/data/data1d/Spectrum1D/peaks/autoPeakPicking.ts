@@ -37,6 +37,5 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
   );
   peaks.sort((a, b) => b.y - a.y);
   if (maxNumberOfPeaks < peaks.length) peaks = peaks.slice(0, maxNumberOfPeaks);
-
   return mapPeaks(peaks as Peak[], datum1D);
 }

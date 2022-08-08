@@ -17,12 +17,12 @@ export function mapPeaks(peaks: Peak[], datum: Datum1D) {
   const shiftX = getShiftX(datum);
 
   const error = getSpectrumErrorValue(datum);
-
   return peaks.reduce<Peak[]>((acc, newPeak) => {
     // check if the peak is already exists
     if (checkPeak(newPeak, datum, error)) return acc;
 
     acc.push({
+      ...newPeak,
       id: newPeak?.id || generateID(),
       originalX: newPeak.x - shiftX,
       x: newPeak.x,

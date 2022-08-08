@@ -1,15 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
+import { FaThinkPeaks } from 'react-icons/fa';
 
 import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import Button from '../../elements/Button';
 import { useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
-import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
+import {
+  DELETE_PEAK_NOTATION,
+  OPTIMIZE_PEAKS,
+} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -96,6 +101,10 @@ function PeaksPanelInner({
     return [];
   }, [filterIsActive, format, info, peaks, xDomain]);
 
+  const optimizePeaksHandler = () => {
+    dispatch({ type: OPTIMIZE_PEAKS });
+  };
+
   return (
     <div
       css={[
@@ -124,7 +133,22 @@ function PeaksPanelInner({
           counterFiltered={filteredPeaks.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
-        />
+        >
+          <Button.Done
+            fill="clear"
+            onClick={optimizePeaksHandler}
+            style={{ width: '24px', padding: 0 }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <FaThinkPeaks />
+            </div>
+          </Button.Done>
+        </DefaultPanelHeader>
       )}
       {isFlipped && (
         <PreferencesHeader
