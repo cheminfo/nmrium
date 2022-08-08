@@ -86,7 +86,6 @@ function MultipleSpectraFiltersModal({
     const list = REFERENCES[nucleus]
       ? Object.entries(REFERENCES[nucleus]).map(
           (item) => ({
-            key: item[0],
             value: item[0],
             label: item[0],
           }),
@@ -168,7 +167,7 @@ function MultipleSpectraFiltersModal({
           <span className="custom-label">Filter :</span>
 
           <Select
-            data={List}
+            items={List}
             style={{ width: 275, height: 30, margin: 0 }}
             onChange={filterChangeHandler}
           />

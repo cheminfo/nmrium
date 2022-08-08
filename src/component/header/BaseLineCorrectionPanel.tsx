@@ -39,7 +39,6 @@ const labelStyle = {
 
 const getAlgorithmsList = () => {
   return ['airPLS', 'Polynomial'].map((val) => ({
-    key: val.toLowerCase(),
     label: val,
     value: val.toLowerCase(),
   }));
@@ -155,7 +154,7 @@ function BaseLineCorrectionInnerPanel(
     <HeaderContainer>
       <Label title="Algorithm: " style={labelStyle}>
         <Select
-          data={getAlgorithmsList()}
+          items={getAlgorithmsList()}
           value={algorithm}
           onChange={(val) => setAlgorithm(val)}
         />

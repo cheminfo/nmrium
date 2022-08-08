@@ -62,7 +62,7 @@ function ActionsColumn({
         <td {...onHoverSignal}>
           <Select
             onChange={changeRangeSignalKind}
-            data={SignalKinds}
+            items={SignalKinds}
             defaultValue={rowData.tableMetaInfo.signal.kind}
             style={selectBoxStyle}
           />

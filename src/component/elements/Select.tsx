@@ -30,22 +30,19 @@ const styles = {
   `,
 };
 
-export interface SelectEntry {
-  key?: string | number;
-  value: string | number;
-  label: string | number;
-}
-
 export interface SelectProps
   extends Omit<
     React.SelectHTMLAttributes<HTMLSelectElement>,
     'style' | 'onChange'
   > {
-  onChange?: (element: string) => void;
-  data: Array<SelectEntry>;
+  onChange?: (element: any) => void;
+  items: any[];
   defaultValue?: string | number | undefined;
   style?: CSSProperties;
   placeholder?: string;
+  itemValueField?: string;
+  itemTextField?: string;
+  returnValue?: boolean;
 }
 
 const Select = forwardRef(function Select(
@@ -53,25 +50,26 @@ const Select = forwardRef(function Select(
   ref: ForwardedRef<HTMLSelectElement>,
 ) {
   const {
-    data,
+    items,
     style = { width: 100 },
     onChange = () => null,
-    defaultValue = '',
+    defaultValue,
     value,
     name = '',
     className = '',
     placeholder = '',
+    itemValueField = 'value',
+    itemTextField = 'label',
+    returnValue = true,
   } = props;
 
   const handleOnChanged = useCallback(
     (e) => {
-      let value = e.target.value;
-      if (!isNaN(value)) {
-        value = Number(value);
-      }
-      onChange(value);
+      const [option] = e.target.selectedOptions;
+      const selectedData = JSON.parse(option.dataset.value);
+      onChange(returnValue ? selectedData[itemValueField] : selectedData);
     },
-    [onChange],
+    [itemValueField, onChange, returnValue],
   );
 
   return (
@@ -92,9 +90,13 @@ const Select = forwardRef(function Select(
         </option>
       )}
 
-      {data.map((d) => (
-        <option key={`${d.key ? d.key : d.value}`} value={d.value}>
-          {d.label}
+      {items.map((option) => (
+        <option
+          key={JSON.stringify(option)}
+          value={option[itemValueField]}
+          data-value={JSON.stringify(option)}
+        >
+          {option[itemTextField]}
         </option>
       ))}
     </select>

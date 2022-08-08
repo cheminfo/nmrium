@@ -296,7 +296,6 @@ function SummaryPanel() {
 
     return columnTypes.map((columnType) => {
       return {
-        key: columnType,
         label: columnType,
         value: columnType,
       };
@@ -542,7 +541,7 @@ function SummaryPanel() {
                     setShowProtonsAsRows(false);
                   }
                 }}
-                data={additionalColumnTypes}
+                items={additionalColumnTypes}
                 defaultValue={selectedAdditionalColumnsAtomType}
                 style={{
                   fontSize: '12px',

@@ -42,17 +42,14 @@ const phaseCorrectionTypes = {
 
 const algorithms = [
   {
-    key: phaseCorrectionTypes.manual,
     label: 'Manual',
     value: phaseCorrectionTypes.manual,
   },
   {
-    key: phaseCorrectionTypes.automatic,
     label: 'Automatic',
     value: phaseCorrectionTypes.automatic,
   },
   {
-    key: phaseCorrectionTypes.absolute,
     label: 'Absolute',
     value: phaseCorrectionTypes.absolute,
   },
@@ -175,7 +172,7 @@ export default function ManualPhaseCorrectionPanel() {
     <HeaderContainer>
       <Select
         onChange={onChangeHandler}
-        data={algorithms}
+        items={algorithms}
         defaultValue={phaseCorrectionTypes.manual}
         style={selectStyle}
       />

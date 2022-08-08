@@ -31,7 +31,6 @@ function AlignSpectraModal({
     const list = REFERENCES[nucleus]
       ? Object.entries(REFERENCES[nucleus]).map(
           (item) => ({
-            key: item[0],
             value: item[0],
             label: item[0],
           }),
@@ -95,7 +94,7 @@ function AlignSpectraModal({
             <span className="custom-label">Options :</span>
 
             <Select
-              data={List}
+              items={List}
               style={{ width: 270, height: 30, marginBottom: '20px' }}
               onChange={optionChangeHandler}
             />

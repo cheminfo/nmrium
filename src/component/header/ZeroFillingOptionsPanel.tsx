@@ -85,7 +85,7 @@ function ZeroFillingOptionsPanel() {
     <HeaderContainer>
       <Label title="Size:  " style={{ label: { padding: '0 5px' } }}>
         <Select
-          data={Sizes}
+          items={Sizes}
           style={{ marginLeft: 10, marginRight: 10 }}
           value={size}
           onChange={(value) => setSize(Number(value))}

@@ -73,7 +73,6 @@ function MoveLink({
           _correlation.atomType === link.atomType[dim]
         ) {
           arr.push({
-            key: _correlation.id,
             value: _correlation.id,
             label: `${_correlation.label.origin}: ${getCorrelationLabel(
               _correlation,
@@ -101,7 +100,7 @@ function MoveLink({
               setSelectedCorrelationIdDim2(selection);
             }
           }}
-          data={selectionData}
+          items={selectionData}
           defaultValue={correlation.id}
           style={{
             width: 110,

@@ -19,7 +19,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
 import Input from '../../elements/Input';
-import Select, { SelectEntry } from '../../elements/Select';
+import Select from '../../elements/Select';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { positions, transitions, useModal } from '../../elements/popup/Modal';
@@ -68,12 +68,12 @@ export interface DatabaseInnerProps {
 
 interface ResultEntry {
   data: DatabaseNMREntry[];
-  databases: SelectEntry[];
-  solvents: SelectEntry[];
+  databases: { key: string; value: string }[];
+  solvents: { label: string; value: string }[];
 }
 
 const emptyKeywords = {
-  solvent: '',
+  solvent: '-1',
   searchKeywords: '',
 };
 
@@ -131,12 +131,12 @@ function DatabasePanelInner({
     setTimeout(async () => {
       if (databaseInstance.current) {
         const hideLoading = await alert.showLoading(`Preparing of the Result`);
-
-        if (!solvent && !searchKeywords) {
+        if (solvent === '-1' && !searchKeywords) {
           const data = databaseInstance.current.data;
           const solvents = mapSolventsToSelect(
             databaseInstance.current.getSolvents(),
           );
+
           setResult((prevResult) => ({ ...prevResult, data, solvents }));
         } else {
           const values = [...searchKeywords.split(' ')];
@@ -179,6 +179,7 @@ function DatabasePanelInner({
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
       const database = databases.find((item) => item.key === databaseKey);
+
       setTimeout(async () => {
         if (database?.url) {
           const { url, label } = database;
@@ -210,7 +211,9 @@ function DatabasePanelInner({
           databaseDataRef.current,
           nucleus,
         );
+
         setKeywords({ ...emptyKeywords });
+
         hideLoading();
       }, 0);
     },
@@ -354,16 +357,19 @@ function DatabasePanelInner({
           </ToggleButton>
           <Select
             style={{ flex: 2 }}
-            data={mapDatabasesToSelect(databases)}
+            items={databases}
+            itemTextField="label"
+            itemValueField="key"
             onChange={handleChangeDatabase}
             placeholder="Select database"
             defaultValue={defaultDatabase}
           />
           <Select
             style={{ flex: 1 }}
-            data={result.solvents}
+            items={result.solvents}
             placeholder="Solvent"
             onChange={handleSearch}
+            value={keywords.solvent}
           />
           <Input
             value={keywords.searchKeywords}
@@ -452,19 +458,10 @@ export default function PeaksPanel() {
 function mapSolventsToSelect(solvents: string[]) {
   const result = solvents.map((key) => {
     return {
-      key,
       label: key,
       value: key,
     };
   }, []);
-  result.unshift({ key: '-1', label: 'All', value: '-1' });
+  result.unshift({ label: 'All', value: '-1' });
   return result;
-}
-
-function mapDatabasesToSelect(databases) {
-  return databases.map(({ label, key }) => ({
-    key,
-    value: key,
-    label,
-  }));
 }

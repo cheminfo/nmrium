@@ -86,7 +86,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         Cell: ({ row }) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
-            data={SignalKinds}
+            items={SignalKinds}
             style={selectStyle}
             defaultValue={row.original.kind}
           />

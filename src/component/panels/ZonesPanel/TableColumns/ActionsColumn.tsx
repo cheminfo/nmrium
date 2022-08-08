@@ -140,7 +140,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
           onChange={(value) => {
             changeSignalKindHandler(value);
           }}
-          data={SignalKinds}
+          items={SignalKinds}
           defaultValue={rowData.tableMetaInfo.signal.kind}
           style={selectBoxStyle}
         />
