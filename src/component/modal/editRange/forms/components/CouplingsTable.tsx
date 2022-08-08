@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
 import { Multiplets } from '../../../../../data/constants/Multiplets';
@@ -63,14 +63,6 @@ function CouplingsTable({
     [setFieldValue],
   );
 
-  const multipletsList = useMemo(() => {
-    return Multiplets.map((multiplet) => ({
-      key: multiplet.value,
-      ...multiplet,
-      value: multiplet.label,
-    }));
-  }, []);
-
   const couplingsList = lodashGet(
     values,
     `signals[${values.activeTab}].js`,
@@ -113,13 +105,14 @@ function CouplingsTable({
                 <FormikSelect
                   className="selectBox"
                   name={`signals.${values.activeTab}.js.${i}.multiplicity`}
-                  data={multipletsList}
-                  onChange={(value) =>
+                  items={Multiplets}
+                  itemValueField="label"
+                  onChange={(value) => {
                     multiplicityChangeHandler(
                       value,
                       `signals.${values.activeTab}.js.${i}.coupling`,
-                    )
-                  }
+                    );
+                  }}
                 />
               </td>
               <td>

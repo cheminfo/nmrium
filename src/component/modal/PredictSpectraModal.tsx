@@ -221,7 +221,7 @@ function PredictSpectraModal({
             <span className="custom-label">Spectrometer Frequency :</span>
 
             <FormikSelect
-              data={FREQUENCIES}
+              items={FREQUENCIES}
               style={{ width: 290, height: 30, margin: 0 }}
               name="frequency"
             />
@@ -259,7 +259,7 @@ function PredictSpectraModal({
           <div className="row margin-10 padding-h-10">
             <span className="custom-label">Number of Points : </span>
             <FormikSelect
-              data={NUMBER_OF_POINTS_1D}
+              items={NUMBER_OF_POINTS_1D}
               name="1d.nbPoints"
               style={{ width: 290, height: 30, margin: 0 }}
             />
@@ -269,13 +269,13 @@ function PredictSpectraModal({
           <div className="row margin-10 padding-h-10">
             <span className="custom-label">Number of Points : </span>
             <FormikSelect
-              data={NUMBER_OF_POINTS_2D}
+              items={NUMBER_OF_POINTS_2D}
               name="2d.nbPoints.x"
               style={{ margin: 0, height: 30 }}
             />
             <span className="middle-x"> X </span>
             <FormikSelect
-              data={NUMBER_OF_POINTS_2D}
+              items={NUMBER_OF_POINTS_2D}
               name="2d.nbPoints.y"
               style={{ margin: 0, height: 30 }}
             />

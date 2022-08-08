@@ -76,7 +76,7 @@ function AutoPeakPickingOptionPanel() {
         <Label title="Direction : " style={labelStyle}>
           <FormikSelect
             name="direction"
-            data={LookFor}
+            items={LookFor}
             style={{ marginLeft: 10, marginRight: 10 }}
             defaultValue="positive"
           />

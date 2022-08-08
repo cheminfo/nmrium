@@ -60,19 +60,18 @@ export const defaultPredictionOptions: PredictionOptions = {
   },
 };
 
-export const FREQUENCIES: Array<{ key: number; value: number; label: string }> =
-  [
-    { key: 1, value: 60, label: '60 MHz' },
-    { key: 2, value: 100, label: '100 MHz' },
-    { key: 3, value: 200, label: '200 MHz' },
-    { key: 4, value: 300, label: '300 MHz' },
-    { key: 5, value: 400, label: '400 MHz' },
-    { key: 6, value: 500, label: '500 MHz' },
-    { key: 7, value: 600, label: '600 MHz' },
-    { key: 8, value: 800, label: '800 MHz' },
-    { key: 9, value: 1000, label: '1000 MHz' },
-    { key: 10, value: 1200, label: '1200 MHz' },
-  ];
+export const FREQUENCIES: Array<{ value: number; label: string }> = [
+  { value: 60, label: '60 MHz' },
+  { value: 100, label: '100 MHz' },
+  { value: 200, label: '200 MHz' },
+  { value: 300, label: '300 MHz' },
+  { value: 400, label: '400 MHz' },
+  { value: 500, label: '500 MHz' },
+  { value: 600, label: '600 MHz' },
+  { value: 800, label: '800 MHz' },
+  { value: 1000, label: '1000 MHz' },
+  { value: 1200, label: '1200 MHz' },
+];
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 

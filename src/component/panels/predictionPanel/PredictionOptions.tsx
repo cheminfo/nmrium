@@ -103,7 +103,7 @@ function PredictionOptions({
           <div className="row margin-10">
             <span className="custom-label">Frequency : </span>
             <FormikSelect
-              data={FREQUENCIES}
+              items={FREQUENCIES}
               style={{ width: 290, height: 30, margin: 0 }}
               name="frequency"
             />
