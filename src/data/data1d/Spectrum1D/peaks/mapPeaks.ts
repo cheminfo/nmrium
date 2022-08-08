@@ -3,7 +3,7 @@ import generateID from '../../../utilities/generateID';
 import { getSpectrumErrorValue } from '../getSpectrumErrorValue';
 import { getShiftX } from '../shift/getShiftX';
 
-function checkPeak(peak: Peak, datum: Datum1D, error) {
+function isExists(peak: Peak, datum: Datum1D, error) {
   // check if the Peak is already exists
   for (const { x } of datum.peaks?.values || []) {
     if (Math.abs(peak.x - x) < error) {
@@ -21,19 +21,24 @@ export function mapPeaks(
   const shiftX = getShiftX(datum);
 
   const error = getSpectrumErrorValue(datum);
-  return peaks.reduce<Peak[]>((acc, newPeak) => {
-    // check if the peak is already exists
-    if (checkPeakExisting && checkPeak(newPeak, datum, error)) return acc;
 
-    acc.push({
-      ...newPeak,
-      id: newPeak?.id || generateID(),
-      originalX: newPeak.x - shiftX,
-      x: newPeak.x,
-      y: newPeak.y,
-      width: newPeak.width * datum.info.originFrequency,
-    });
+  let newPeaks: Peak[] = [];
 
-    return acc;
-  }, []);
+  for (const peak of peaks) {
+    if (
+      !checkPeakExisting ||
+      (checkPeakExisting && !isExists(peak, datum, error))
+    ) {
+      newPeaks.push({
+        ...peak,
+        id: peak?.id || generateID(),
+        originalX: peak.x - shiftX,
+        x: peak.x,
+        y: peak.y,
+        width: peak.width * datum.info.originFrequency,
+      });
+    }
+  }
+
+  return newPeaks;
 }
