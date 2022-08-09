@@ -54,15 +54,17 @@ const styles: Record<
 export type InputKeyboardEvent = React.KeyboardEvent & {
   target: { name: string; value: string | number };
 };
+
+export interface InputStyle {
+  input?: CSSProperties;
+  inputWrapper?: CSSProperties;
+}
 export interface InputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'style' | 'onKeyDown' | 'onKeyUp'
   > {
-  style?: {
-    input?: CSSProperties;
-    inputWrapper?: CSSProperties;
-  };
+  style?: InputStyle;
   enableAutoSelect?: boolean;
   debounceTime?: number;
   checkValue?: (element: number | string) => boolean;
