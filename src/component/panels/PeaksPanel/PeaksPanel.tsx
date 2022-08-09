@@ -80,19 +80,18 @@ function PeaksPanelInner({
 
       return _peaks
         .map((peak) => {
-          const value = Number(format(peak.x));
+          const { x, y, width, ...peakProperties } = peak;
+          const value = Number(format(x));
           return {
-            value,
-            valueHz: info?.originFrequency
-              ? Number(value) * info.originFrequency
-              : '',
-            id: peak.id,
-            intensity: peak.y,
-            peakWidth: peak.width ? peak.width : '',
+            ...peakProperties,
+            x,
+            xHz: info?.originFrequency ? value * info.originFrequency : '',
+            y,
+            width: width ? width : '',
             isConstantlyHighlighted: isInRange(value, { from, to }),
           };
         })
-        .sort((prev, next) => prev.value - next.value);
+        .sort((prev, next) => prev.x - next.x);
     }
 
     return [];

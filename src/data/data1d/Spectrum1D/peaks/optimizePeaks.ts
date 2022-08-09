@@ -19,7 +19,7 @@ export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
   const fromIndex = xFindClosestIndex(datum1D.data.x, from);
   const ToIndex = xFindClosestIndex(datum1D.data.x, to);
 
-  // cerate deleted peaks objet where the key is the id of the peaks that we need to remove
+  // create deleted peaks object where the key is the id of the peaks that we need to remove
   const ids = {};
   for (const peak of peaks) {
     ids[peak.id] = peak;
