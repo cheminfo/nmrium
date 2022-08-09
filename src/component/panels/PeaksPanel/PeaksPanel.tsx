@@ -11,6 +11,7 @@ import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import {
@@ -44,6 +45,7 @@ function PeaksPanelInner({
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
+  const isExperimental = useCheckExperimentalFeature();
 
   const settingRef = useRef<any>();
 
@@ -138,20 +140,22 @@ function PeaksPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          <Button.Done
-            fill="clear"
-            onClick={optimizePeaksHandler}
-            style={{ width: '24px', padding: 0 }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
+          {isExperimental && (
+            <Button.Done
+              fill="clear"
+              onClick={optimizePeaksHandler}
+              style={{ width: '24px', padding: 0 }}
             >
-              <FaThinkPeaks />
-            </div>
-          </Button.Done>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <FaThinkPeaks />
+              </div>
+            </Button.Done>
+          )}
         </DefaultPanelHeader>
       )}
       {isFlipped && (
