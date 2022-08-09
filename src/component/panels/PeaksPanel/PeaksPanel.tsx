@@ -102,10 +102,10 @@ function PeaksPanelInner({
     const filterPeaks = peaks.values.filter((peak) =>
       isInRange(peak.x, { from, to }),
     );
-    if (filterPeaks.length <= 8) {
+    if (filterPeaks.length <= 4) {
       dispatch({ type: OPTIMIZE_PEAKS, payload: { peaks: filterPeaks } });
     } else {
-      alert.error('optimization can be done on no more than 8 peaks');
+      alert.error('optimization can be done on no more than 4 peaks');
     }
   };
 
@@ -114,7 +114,7 @@ function PeaksPanelInner({
       css={[
         tablePanelStyle,
         isFlipped &&
-          css`
+        css`
             .table-container {
               table,
               th {
