@@ -124,7 +124,7 @@ function PeaksPanelInner({
       css={[
         tablePanelStyle,
         isFlipped &&
-          css`
+        css`
             .table-container {
               table,
               th {
@@ -150,7 +150,7 @@ function PeaksPanelInner({
         >
           <ToggleButton
             style={{ marginLeft: '2px', marginRight: '2px' }}
-            testID="toggle-multiplicity-tree-btn"
+            testID="toggle-peaks-shapes"
             popupTitle={
               showPeaksShapes ? 'Hide peaks shapes' : 'Show peaks shapes'
             }
