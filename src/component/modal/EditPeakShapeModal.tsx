@@ -19,7 +19,7 @@ import { PeaksNucleusPreferences } from '../workspaces/Workspace';
 import { ModalStyles } from './ModalStyle';
 
 const styles = css`
-  width: 500px;
+  width: 400px;
   min-height: 250px;
 
   .inner-content {

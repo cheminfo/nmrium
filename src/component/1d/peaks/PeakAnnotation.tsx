@@ -9,11 +9,11 @@ import {
   useMemo,
 } from 'react';
 
-import { useDispatch } from '../context/DispatchContext';
-import { HighlightedSource, useHighlight } from '../highlight';
-import { usePanelPreferences } from '../hooks/usePanelPreferences';
-import { SHIFT_SPECTRUM } from '../reducer/types/Types';
-import { formatNumber } from '../utility/formatNumber';
+import { useDispatch } from '../../context/DispatchContext';
+import { HighlightedSource, useHighlight } from '../../highlight';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { SHIFT_SPECTRUM } from '../../reducer/types/Types';
+import { formatNumber } from '../../utility/formatNumber';
 
 const styles = css`
   input {

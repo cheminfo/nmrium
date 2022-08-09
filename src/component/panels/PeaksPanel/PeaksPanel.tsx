@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
@@ -11,12 +12,14 @@ import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import ToggleButton from '../../elements/ToggleButton';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import {
   DELETE_PEAK_NOTATION,
   OPTIMIZE_PEAKS,
+  SHOW_PEAKS_SHAPES,
 } from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -30,6 +33,7 @@ interface PeaksPanelInnerProps {
   xDomain: number[];
   activeTab: string;
   info: Info1D;
+  showPeaksShapes: boolean;
 }
 
 function PeaksPanelInner({
@@ -37,6 +41,7 @@ function PeaksPanelInner({
   info,
   xDomain,
   activeTab,
+  showPeaksShapes,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -110,6 +115,9 @@ function PeaksPanelInner({
       alert.error('optimization can be done on no more than 4 peaks');
     }
   };
+  const togglePeaksShapesHandler = () => {
+    dispatch({ type: SHOW_PEAKS_SHAPES });
+  };
 
   return (
     <div
@@ -140,6 +148,19 @@ function PeaksPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
+          <ToggleButton
+            style={{ marginLeft: '2px', marginRight: '2px' }}
+            testID="toggle-multiplicity-tree-btn"
+            popupTitle={
+              showPeaksShapes ? 'Hide peaks shapes' : 'Show peaks shapes'
+            }
+            popupPlacement="right"
+            onClick={togglePeaksShapesHandler}
+            disabled={!peaks?.values || peaks.values.length === 0}
+          >
+            <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+          </ToggleButton>
+
           {isExperimental && (
             <Button.Done
               fill="clear"
@@ -180,11 +201,19 @@ const MemoizedPeaksPanel = memo(PeaksPanelInner);
 const emptyData = { peaks: null, info: {} };
 
 export default function PeaksPanel() {
-  const { xDomain, activeTab } = useChartData();
+  const {
+    xDomain,
+    activeTab,
+    toolOptions: {
+      data: { showPeaksShapes },
+    },
+  } = useChartData();
   const { peaks, info } = useSpectrum(emptyData) as Datum1D;
   const preferences = usePreferences();
 
   return (
-    <MemoizedPeaksPanel {...{ peaks, info, xDomain, activeTab, preferences }} />
+    <MemoizedPeaksPanel
+      {...{ peaks, info, xDomain, activeTab, preferences, showPeaksShapes }}
+    />
   );
 }

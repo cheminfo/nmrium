@@ -4,11 +4,12 @@ import ApdoizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
-import PeakAnnotations from './PeakAnnotations';
 import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
+import PeakAnnotations from './peaks/PeakAnnotations';
+import PeaksShapes from './peaks/PeaksShapes';
 import Ranges from './ranges/Ranges';
 import BaseLineZones from './tool/BaseLineZones';
 
@@ -40,6 +41,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <BaseLineZones />
       <ExclusionZonesAnnotations />
       <DatabaseElements />
+      <PeaksShapes />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />

@@ -11,7 +11,7 @@ const styles = css`
   display: flex;
   flex-direction: row;
   border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 0px 5px;
+  padding: 2px 5px;
 
   .left-container {
     display: flex;

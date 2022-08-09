@@ -123,6 +123,7 @@ export const getInitialState = (): State => ({
       showRangesIntegrals: true,
       showJGraph: false,
       predictionIndex: 0,
+      showPeaksShapes: false,
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -362,12 +363,18 @@ export interface State {
        */
 
       showJGraph: boolean;
-
       /**
        * prediction Index
        * @default 0
        */
       predictionIndex: number;
+
+      /**
+       * boolean indicator to hide/show peaks shapes
+       * @default false
+       */
+
+      showPeaksShapes: boolean;
     };
   };
 
@@ -500,6 +507,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.handleOptimizePeaks(draft, action);
     case types.CHANGE_PEAK_SHAPE:
       return PeaksActions.changePeakShapeHandler(draft, action);
+    case types.SHOW_PEAKS_SHAPES:
+      return PeaksActions.handleShowPeaksShapes(draft);
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:

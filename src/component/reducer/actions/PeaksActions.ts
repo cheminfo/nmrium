@@ -141,6 +141,11 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
   }
 }
 
+function handleShowPeaksShapes(draft: Draft<State>) {
+  draft.toolOptions.data.showPeaksShapes =
+    !draft.toolOptions.data.showPeaksShapes;
+}
+
 export {
   addPeak,
   addPeaks,
@@ -148,4 +153,5 @@ export {
   handleAutoPeakPicking,
   handleOptimizePeaks,
   changePeakShapeHandler,
+  handleShowPeaksShapes,
 };
