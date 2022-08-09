@@ -127,10 +127,25 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
   }
 }
 
+function changePeakShapeHandler(draft: Draft<State>, action) {
+  const { shape, id } = action.payload;
+
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
+    const datum = draft.data[index] as Datum1D;
+    const peakIndex = datum.peaks.values.findIndex((peak) => peak.id === id);
+
+    if (peakIndex !== -1) {
+      datum.peaks.values[peakIndex].shape = shape;
+    }
+  }
+}
+
 export {
   addPeak,
   addPeaks,
   deletePeak,
   handleAutoPeakPicking,
   handleOptimizePeaks,
+  changePeakShapeHandler,
 };

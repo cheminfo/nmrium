@@ -12,6 +12,7 @@ export const LOAD_ZIP_FILE = 'LOAD_ZIP_FILE';
 export const LOAD_JDF_FILE = 'LOAD_JDF_FILE';
 export const ADD_PEAK = 'ADD_PEAK';
 export const ADD_PEAKS = 'ADD_PEAKS';
+export const CHANGE_PEAK_SHAPE = 'CHANGE_PEAK_SHAPE';
 export const DELETE_PEAK_NOTATION = 'DELETE_PEAK_NOTATION';
 export const SHIFT_SPECTRUM = 'SHIFT_SPECTRUM';
 export const SET_X_DOMAIN = 'SET_X_DOMAIN';

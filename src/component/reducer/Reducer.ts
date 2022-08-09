@@ -492,14 +492,14 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:
       return PeaksActions.addPeaks(draft, action);
-
     case types.DELETE_PEAK_NOTATION:
       return PeaksActions.deletePeak(draft, action.data);
     case types.AUTO_PEAK_PICKING:
       return PeaksActions.handleAutoPeakPicking(draft, action.options);
     case types.OPTIMIZE_PEAKS:
       return PeaksActions.handleOptimizePeaks(draft, action);
-
+    case types.CHANGE_PEAK_SHAPE:
+      return PeaksActions.changePeakShapeHandler(draft, action);
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:

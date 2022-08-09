@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
 import { Peak } from '../../data/types/data1d';
+import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
 import { InputStyle } from '../elements/Input';
@@ -11,13 +12,15 @@ import Label, { LabelStyle } from '../elements/Label';
 import Select from '../elements/Select';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
-import { useAlert } from '../elements/popup/Alert';
+import { CHANGE_PEAK_SHAPE } from '../reducer/types/Types';
+import { formatNumber } from '../utility/formatNumber';
+import { PeaksNucleusPreferences } from '../workspaces/Workspace';
 
 import { ModalStyles } from './ModalStyle';
 
 const styles = css`
   width: 500px;
-  min-height: 320px;
+  min-height: 250px;
 
   .inner-content {
     flex: 1;
@@ -32,24 +35,19 @@ const getKindDefaultValues = (kind: string) => {
   };
 };
 const getValues = (peak: Peak, kind: string) => {
-  const { x, shape } = peak;
+  const { shape } = peak;
   const shapeData =
     (shape?.kind || '').toLocaleLowerCase() !== kind
-      ? getKindDefaultValues(kind)
+      ? {
+          ...getKindDefaultValues(kind),
+          ...(shape?.fwhm && { fwhm: shape?.fwhm }),
+        }
       : shape;
-  return {
-    from: '',
-    to: '',
-    x,
-    ...shapeData,
-  };
+  return shapeData;
 };
 
 const validation = (kind: string) =>
   Yup.object().shape({
-    x: Yup.number().required(),
-    from: Yup.number().required(),
-    to: Yup.number().required(),
     fwhm: Yup.number().required(),
     ...(kind === 'pseudovoigt' && { mu: Yup.number().required() }),
   });
@@ -64,47 +62,47 @@ const labelStyle: LabelStyle = {
   label: { flex: 3, fontSize: '14px', fontWeight: 'normal' },
   wrapper: { flex: 7, display: 'flex' },
 };
-const subLabelStyle: LabelStyle = {
-  label: { fontSize: '12px', fontWeight: 'normal' },
-};
+
 const inputStyle: InputStyle = { input: { width: '200px', textAlign: 'left' } };
 
-interface EditPeakModalProps {
+interface EditPeakShapeModalProps {
   onClose?: (element?: string) => void;
   peak: Peak;
+  peaksPreferences: PeaksNucleusPreferences;
 }
 
-function EditPeakModalModal({
+function EditPeakShapeModal({
   onClose = () => null,
   peak,
-}: EditPeakModalProps) {
+  peaksPreferences,
+}: EditPeakShapeModalProps) {
+  const dispatch = useDispatch();
   const refForm = useRef<any>();
-  const alert = useAlert();
   const [kind, setKind] = useState(peak.shape?.kind as string);
 
-  const handleOptimize = useCallback(
+  const changePeakShapeHandler = useCallback(
     (values) => {
-      void (async () => {
-        const hideLoading = await alert.showLoading(
-          `Peak optimization in progress`,
-        );
-
-        // eslint-disable-next-line no-console
-        console.log(values);
-
-        hideLoading();
-        onClose();
-      })();
+      dispatch({
+        type: CHANGE_PEAK_SHAPE,
+        payload: {
+          id: peak.id,
+          shape: {
+            ...values,
+          },
+        },
+      });
+      onClose();
     },
-    [alert, onClose],
+    [dispatch, onClose, peak.id],
   );
 
   const values = getValues(peak, kind);
+  const valuePPM = formatNumber(peak.x, peaksPreferences.deltaPPM.format);
 
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
-        <span>Peak Shape Edition</span>
+        <span>{`Peak Shape Edition ( ${valuePPM} PPM)`} </span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
@@ -113,11 +111,8 @@ function EditPeakModalModal({
           ref={refForm}
           initialValues={values}
           validationSchema={validation(kind)}
-          onSubmit={handleOptimize}
+          onSubmit={changePeakShapeHandler}
         >
-          <Label title="value (PPM): " style={labelStyle}>
-            <FormikInput name="x" style={inputStyle} disabled />
-          </Label>
           <Label title="kind : " style={labelStyle}>
             <Select
               items={KINDS}
@@ -136,15 +131,6 @@ function EditPeakModalModal({
               <FormikInput name="mu" style={inputStyle} />
             </Label>
           )}
-
-          <Label title="Range : " style={labelStyle}>
-            <Label title="from :" style={subLabelStyle}>
-              <FormikInput name="from" />
-            </Label>
-            <Label title="to :" style={subLabelStyle}>
-              <FormikInput name="to" />
-            </Label>
-          </Label>
         </FormikForm>
       </div>
       <div className="footer-container">
@@ -159,4 +145,4 @@ function EditPeakModalModal({
   );
 }
 
-export default EditPeakModalModal;
+export default EditPeakShapeModal;

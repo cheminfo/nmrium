@@ -11,7 +11,7 @@ import addCustomColumn, {
 import { useModal } from '../../elements/popup/Modal';
 import { positions, transitions } from '../../elements/popup/options';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import EditPeakModalModal from '../../modal/EditPeakModal';
+import EditPeakShapeModal from '../../modal/EditPeakShapeModal';
 import {
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
@@ -27,6 +27,7 @@ interface PeaksTableProps {
 function PeaksTable({ activeTab, data }: PeaksTableProps) {
   const dispatch = useDispatch();
   const modal = useModal();
+  const peaksPreferences = usePanelPreferences('peaks', activeTab);
 
   const deletePeakHandler = useCallback(
     (e, row) => {
@@ -45,15 +46,20 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
       e.preventDefault();
       e.stopPropagation();
 
-      modal.show(<EditPeakModalModal peak={row.original} />, {
-        position: positions.MIDDLE_RIGHT,
-        transition: transitions.SCALE,
-        isBackgroundBlur: false,
-      });
+      modal.show(
+        <EditPeakShapeModal
+          peak={row.original}
+          peaksPreferences={peaksPreferences}
+        />,
+        {
+          position: positions.MIDDLE_RIGHT,
+          transition: transitions.SCALE,
+          isBackgroundBlur: false,
+        },
+      );
     },
-    [modal],
+    [modal, peaksPreferences],
   );
-  const peaksPreferences = usePanelPreferences('peaks', activeTab);
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
@@ -108,7 +114,27 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         index: 6,
         Header: 'Width (Hz)',
         accessor: (row) =>
-          formatNumber(row.peakWidth, peaksPreferences.peakWidth.format),
+          formatNumber(row.width, peaksPreferences.peakWidth.format),
+      },
+      {
+        showWhen: 'showKind',
+        index: 7,
+        Header: 'Kind',
+        accessor: 'shape.kind',
+      },
+      {
+        showWhen: 'fwhm.show',
+        index: 8,
+        Header: 'fwhm',
+        accessor: (row) =>
+          formatNumber(row.shape?.fwhm, peaksPreferences.fwhm.format),
+      },
+      {
+        showWhen: 'mu.show',
+        index: 9,
+        Header: 'mu',
+        accessor: (row) =>
+          formatNumber(row.shape?.mu, peaksPreferences.mu.format),
       },
     ],
     [peaksPreferences, saveDeltaPPMRefsHandler],

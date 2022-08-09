@@ -45,12 +45,15 @@ interface RangesNucleusPreferences {
   showKind: boolean;
 }
 
-interface PeaksNucleusPreferences {
+export interface PeaksNucleusPreferences {
   peakNumber: ColumnPreferences;
   deltaPPM: ColumnPreferences;
   deltaHz: ColumnPreferences;
   peakWidth: ColumnPreferences;
   intensity: ColumnPreferences;
+  showKind: boolean;
+  fwhm: ColumnPreferences;
+  mu: ColumnPreferences;
 }
 
 export interface DatabasePanelPreferences {

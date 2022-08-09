@@ -51,6 +51,23 @@ const formatFields: NucleusPreferenceField[] = [
     checkControllerName: 'intensity.show',
     formatControllerName: 'intensity.format',
   },
+  {
+    id: 6,
+    label: 'kind :',
+    checkControllerName: 'fwhm.show',
+  },
+  {
+    id: 7,
+    label: 'fwhm :',
+    checkControllerName: 'fwhm.show',
+    formatControllerName: 'fwhm.format',
+  },
+  {
+    id: 8,
+    label: 'mu :',
+    checkControllerName: 'mu.show',
+    formatControllerName: 'mu.format',
+  },
 ];
 
 function PeaksPreferences(props, ref: any) {
