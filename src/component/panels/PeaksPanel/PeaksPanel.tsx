@@ -114,7 +114,7 @@ function PeaksPanelInner({
       css={[
         tablePanelStyle,
         isFlipped &&
-        css`
+          css`
             .table-container {
               table,
               th {
