@@ -33,9 +33,6 @@ export function mapPeaks(
         ...peak,
         id: peak?.id || generateID(),
         originalX: peak.x - shiftX,
-        x: peak.x,
-        y: peak.y,
-        width: peak.width * datum.info.originFrequency,
       });
     }
   }
