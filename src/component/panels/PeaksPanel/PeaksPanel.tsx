@@ -148,34 +148,36 @@ function PeaksPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          <ToggleButton
-            style={{ marginLeft: '2px', marginRight: '2px' }}
-            testID="toggle-peaks-shapes"
-            popupTitle={
-              showPeaksShapes ? 'Hide peaks shapes' : 'Show peaks shapes'
-            }
-            popupPlacement="right"
-            onClick={togglePeaksShapesHandler}
-            disabled={!peaks?.values || peaks.values.length === 0}
-          >
-            <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-          </ToggleButton>
-
           {isExperimental && (
-            <Button.Done
-              fill="clear"
-              onClick={optimizePeaksHandler}
-              style={{ width: '24px', padding: 0 }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
+            <>
+              <ToggleButton
+                style={{ marginLeft: '2px', marginRight: '2px' }}
+                testID="toggle-peaks-shapes"
+                popupTitle={
+                  showPeaksShapes ? 'Hide peaks shapes' : 'Show peaks shapes'
+                }
+                popupPlacement="right"
+                onClick={togglePeaksShapesHandler}
+                disabled={!peaks?.values || peaks.values.length === 0}
               >
-                <FaThinkPeaks />
-              </div>
-            </Button.Done>
+                <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+              </ToggleButton>
+
+              <Button.Done
+                fill="clear"
+                onClick={optimizePeaksHandler}
+                style={{ width: '24px', padding: 0 }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <FaThinkPeaks />
+                </div>
+              </Button.Done>
+            </>
           )}
         </DefaultPanelHeader>
       )}
