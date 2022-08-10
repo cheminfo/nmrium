@@ -95,6 +95,7 @@ function enableFilter(datum, id, checked, filters = null) {
   datum.data = { ...datum.data, ...datum.originalData };
   datum.info = { ...datum.info, ...datum.originalInfo };
   const _filters = filters ? filters : datum.filters;
+
   for (let filterIndex in _filters) {
     const filter = datum.filters[filterIndex];
     datum.filters[filterIndex] = {
@@ -153,7 +154,7 @@ function addFilter(datum, filter, isDeleteAllow = true) {
 }
 
 function replaceFilter(datum, filterID, value) {
-  datum.filters = datum.filters.slice(0);
+  // datum.filters = datum.filters.slice(0);
   const index = datum.filters.findIndex((f) => f.id === filterID);
   delete datum.filters[index].isSnapshot;
   datum.filters[index] = {

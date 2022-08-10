@@ -34,7 +34,6 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
   draft.toolOptions.data.baselineCorrection = { zones: [], options: [] };
-
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   }
