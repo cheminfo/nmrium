@@ -18,6 +18,7 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
   const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
   let { re, x } = datum1D.data;
+  const { originFrequency: frequency } = datum1D.info;
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {
     x = x.slice(windowFromIndex, windowToIndex);
@@ -27,6 +28,7 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
   let peaks = xyAutoPeaksPicking(
     { x, y: re },
     {
+      frequency,
       direction,
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
