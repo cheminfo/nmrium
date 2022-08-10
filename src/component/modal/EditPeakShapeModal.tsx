@@ -31,7 +31,7 @@ const getKindDefaultValues = (kind: string) => {
   return {
     kind,
     fwhm: 500,
-    ...(kind === 'pseudovoigt' && { mu: 0.5 }),
+    ...(kind === 'pseudoVoigt' && { mu: 0.5 }),
   };
 };
 const getValues = (peak: Peak, kind: string) => {
@@ -49,13 +49,23 @@ const getValues = (peak: Peak, kind: string) => {
 const validation = (kind: string) =>
   Yup.object().shape({
     fwhm: Yup.number().required(),
-    ...(kind === 'pseudovoigt' && { mu: Yup.number().required() }),
+    ...(kind === 'pseudoVoigt' && { mu: Yup.number().required() }),
   });
 
-const KINDS = ['Gaussian', 'Lorentzian', 'PseudoVoigt'].map((kind) => ({
-  value: kind.toLowerCase(),
-  label: kind,
-}));
+const KINDS = [
+  {
+    value: 'gaussian',
+    label: 'Gaussian',
+  },
+  {
+    value: 'lorentzian',
+    label: 'Lorentzian',
+  },
+  {
+    value: 'pseudoVoigt',
+    label: 'PseudoVoigt',
+  },
+];
 
 const labelStyle: LabelStyle = {
   container: { paddingTop: '5px' },
@@ -126,7 +136,7 @@ function EditPeakShapeModal({
             <FormikInput name="fwhm" style={inputStyle} />
           </Label>
 
-          {kind === 'pseudovoigt' && (
+          {kind === 'pseudoVoigt' && (
             <Label title="mu: " style={labelStyle}>
               <FormikInput name="mu" style={inputStyle} />
             </Label>
