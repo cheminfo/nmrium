@@ -25,7 +25,7 @@ function Arrow({ direction, onClick }: ArrowProps) {
       css={css`
         display: flex;
         position: absolute;
-        top: calc(50% - 20px);
+        top: 50%;
         ${direction === 'right' ? `right: 25px` : `left: 25px`};
         height: 40px;
         width: 40px;
