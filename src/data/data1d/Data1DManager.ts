@@ -41,11 +41,11 @@ export function fromCSD(result, options = {}, usedColors = {}) {
   let offset = dimension.coordinatesOffset.magnitude;
 
   let buffer = dependentVariables[0].components[0];
-  let re: number[] = [];
-  let im: number[] = [];
-  for (let i = buffer.length - 1; i > 0; i -= 2) {
-    re.push(buffer[i - 1]);
-    im.push(buffer[i]);
+  const re = new Float64Array(n);
+  const im = new Float64Array(n);
+  for (let i = buffer.length - 1, index = 0; i > 0; i -= 2) {
+    re[index] = buffer[i - 1];
+    im[index++] = buffer[i];
   }
 
   let data: any = {};
