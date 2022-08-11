@@ -107,7 +107,7 @@ export default function ChangeSumModal({
   }, []);
 
   useEffect(() => {
-    if (sumOptions?.sumAuto && !panels?.structuresPanel?.display) {
+    if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
       setActiveOption(SumSetOptions.Auto);
       const { mf, moleculeKey: key } = sumOptions;
       formRef.current.setValues({
@@ -161,6 +161,8 @@ export default function ChangeSumModal({
     }
   }, [setOption]);
 
+  const isStructurePanelVisible = panels?.structuresPanel?.display || false;
+
   return (
     // <div css={modalContainer}>
     <div css={[ModalStyles, styles]}>
@@ -177,7 +179,7 @@ export default function ChangeSumModal({
           validationSchema={validationSchema}
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
-            {!panels?.structuresPanel?.display && (
+            {isStructurePanelVisible && (
               <Tab tablabel="Auto" tabid={SumSetOptions.Auto}>
                 <SelectMolecule name="molecule" />
               </Tab>
