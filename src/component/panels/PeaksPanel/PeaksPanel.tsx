@@ -19,7 +19,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import {
   DELETE_PEAK_NOTATION,
   OPTIMIZE_PEAKS,
-  SHOW_PEAKS_SHAPES,
+  TOGGLE_PEAKS_SHAPES,
 } from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -27,13 +27,14 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
 import PeaksTable from './PeaksTable';
+import { SvgNmrFt } from 'cheminfo-font';
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
   xDomain: number[];
   activeTab: string;
   info: Info1D;
-  showPeaksShapes: boolean;
+  peaksOptions: { showPeaksShapes: boolean; showPeaksSum: boolean };
 }
 
 function PeaksPanelInner({
@@ -41,7 +42,7 @@ function PeaksPanelInner({
   info,
   xDomain,
   activeTab,
-  showPeaksShapes,
+  peaksOptions,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -115,8 +116,8 @@ function PeaksPanelInner({
       alert.error('optimization can be done on no more than 4 peaks');
     }
   };
-  const togglePeaksShapesHandler = () => {
-    dispatch({ type: SHOW_PEAKS_SHAPES });
+  const togglePeaksShapesHandler = (key: string) => {
+    dispatch({ type: TOGGLE_PEAKS_SHAPES, payload: { key } });
   };
 
   return (
@@ -154,13 +155,29 @@ function PeaksPanelInner({
                 style={{ marginLeft: '2px', marginRight: '2px' }}
                 testID="toggle-peaks-shapes"
                 popupTitle={
-                  showPeaksShapes ? 'Hide peaks shapes' : 'Show peaks shapes'
+                  peaksOptions.showPeaksShapes
+                    ? 'Hide peaks shapes'
+                    : 'Show peaks shapes'
                 }
                 popupPlacement="right"
-                onClick={togglePeaksShapesHandler}
+                onClick={() => togglePeaksShapesHandler('showPeaksShapes')}
                 disabled={!peaks?.values || peaks.values.length === 0}
               >
                 <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+              </ToggleButton>
+              <ToggleButton
+                style={{ marginLeft: '2px', marginRight: '2px' }}
+                testID="toggle-peaks-sum"
+                popupTitle={
+                  peaksOptions.showPeaksSum
+                    ? 'Hide peaks sum'
+                    : 'Show peaks sum'
+                }
+                popupPlacement="right"
+                onClick={() => togglePeaksShapesHandler('showPeaksSum')}
+                disabled={!peaks?.values || peaks.values.length === 0}
+              >
+                <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
               </ToggleButton>
 
               <Button.Done
@@ -207,7 +224,7 @@ export default function PeaksPanel() {
     xDomain,
     activeTab,
     toolOptions: {
-      data: { showPeaksShapes },
+      data: { peaksOptions },
     },
   } = useChartData();
   const { peaks, info } = useSpectrum(emptyData) as Datum1D;
@@ -215,7 +232,7 @@ export default function PeaksPanel() {
 
   return (
     <MemoizedPeaksPanel
-      {...{ peaks, info, xDomain, activeTab, preferences, showPeaksShapes }}
+      {...{ peaks, info, xDomain, activeTab, preferences, peaksOptions }}
     />
   );
 }

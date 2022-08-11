@@ -141,9 +141,14 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
   }
 }
 
-function handleShowPeaksShapes(draft: Draft<State>) {
-  draft.toolOptions.data.showPeaksShapes =
-    !draft.toolOptions.data.showPeaksShapes;
+function handleShowPeaksShapes(draft: Draft<State>, action) {
+  const { key } = action.payload;
+
+  const peaksOptions = draft.toolOptions.data.peaksOptions;
+  draft.toolOptions.data.peaksOptions = {
+    ...peaksOptions,
+    [key]: !peaksOptions[key],
+  };
 }
 
 export {
