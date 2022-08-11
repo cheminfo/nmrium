@@ -1,4 +1,3 @@
-import { PeakXYWidth } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { xyPeaksOptimization } from 'nmr-processing';
 
@@ -14,6 +13,7 @@ interface OptimizePeaksOptions {
 
 export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
   const { from, to, peaks } = options;
+  const { originFrequency: frequency } = datum1D.info;
   let { re, x } = datum1D.data;
 
   const fromIndex = xFindClosestIndex(datum1D.data.x, from);
@@ -30,12 +30,10 @@ export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
   x = x.subarray(fromIndex, ToIndex);
   re = re.subarray(fromIndex, ToIndex);
 
-  const newPeaks = xyPeaksOptimization(
-    { x, y: re },
-    peaks as PeakXYWidth[],
-    {},
-  );
-
+  const newPeaks = xyPeaksOptimization({ x, y: re }, peaks, {
+    frequency,
+    groupingFactor: 3,
+  });
   return mapPeaks(
     datum1D.peaks.values.concat(newPeaks as Peak[]),
     datum1D,
