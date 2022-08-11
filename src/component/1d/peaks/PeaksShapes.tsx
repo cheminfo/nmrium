@@ -34,7 +34,7 @@ function PeaksShapes() {
   });
 
   const getPath = (peak: Peak) => {
-    const data = peakToXY(peak);
+    const data = peakToXY(peak, { frequency: spectrum.info.originFrequency });
     const _scaleX = scaleX();
     const _scaleY = scaleY(spectrum.id);
 
