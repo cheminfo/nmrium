@@ -46,6 +46,7 @@ const styles: Record<
   }),
   molecule: css({
     flex: 1,
+    minHeight: '100px',
   }),
   slider: css({
     display: 'flex',
@@ -134,68 +135,70 @@ function MoleculePanelInner({
       />
       <div css={styles.innerPanel}>
         <div css={styles.molecule}>
-          <NextPrev
-            onChange={(slideIndex) => setCurrentIndex(slideIndex)}
-            defaultIndex={currentIndex}
-          >
-            <ResponsiveChart>
-              {({ height, width }) => {
-                return molecules && molecules.length > 0 ? (
-                  molecules.map((mol: Molecule, index) => (
-                    <div key={mol.key} css={styles.items}>
-                      <MoleculeHeader
-                        currentMolecule={mol}
-                        molecules={molecules}
-                      />
-                      <div
-                        css={styles.slider}
-                        className="mol-svg-container"
-                        onDoubleClick={() => openMoleculeEditor(mol)}
-                        style={{
-                          backgroundColor:
-                            (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
-                        }}
-                      >
-                        <OCLnmr
-                          OCL={OCL}
-                          id={`molSVG${index}`}
-                          width={width}
-                          height={height - 60}
-                          molfile={mol.molfile || ''}
-                          setMolfile={(molfile) =>
-                            handleReplaceMolecule(mol, molfile)
-                          }
-                          setSelectedAtom={handleOnClickAtom}
-                          atomHighlightColor={
-                            currentDiaIDsToHighlight &&
-                            currentDiaIDsToHighlight.length > 0
-                              ? 'red'
-                              : '#FFD700'
-                          }
-                          atomHighlightOpacity={0.35}
-                          highlights={
-                            currentDiaIDsToHighlight &&
-                            currentDiaIDsToHighlight.length > 0
-                              ? currentDiaIDsToHighlight
-                              : assignedDiaIDsMerged
-                          }
-                          setHoverAtom={handleOnAtomHover}
+          <ResponsiveChart>
+            {({ height, width }) => {
+              return (
+                <NextPrev
+                  onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+                  defaultIndex={currentIndex}
+                >
+                  {molecules && molecules.length > 0 ? (
+                    molecules.map((mol: Molecule, index) => (
+                      <div key={mol.key} css={styles.items}>
+                        <MoleculeHeader
+                          currentMolecule={mol}
+                          molecules={molecules}
                         />
+                        <div
+                          css={styles.slider}
+                          className="mol-svg-container"
+                          onDoubleClick={() => openMoleculeEditor(mol)}
+                          style={{
+                            backgroundColor:
+                              (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
+                          }}
+                        >
+                          <OCLnmr
+                            OCL={OCL}
+                            id={`molSVG${index}`}
+                            width={width}
+                            height={height - 60}
+                            molfile={mol.molfile || ''}
+                            setMolfile={(molfile) =>
+                              handleReplaceMolecule(mol, molfile)
+                            }
+                            setSelectedAtom={handleOnClickAtom}
+                            atomHighlightColor={
+                              currentDiaIDsToHighlight &&
+                              currentDiaIDsToHighlight.length > 0
+                                ? 'red'
+                                : '#FFD700'
+                            }
+                            atomHighlightOpacity={0.35}
+                            highlights={
+                              currentDiaIDsToHighlight &&
+                              currentDiaIDsToHighlight.length > 0
+                                ? currentDiaIDsToHighlight
+                                : assignedDiaIDsMerged
+                            }
+                            setHoverAtom={handleOnAtomHover}
+                          />
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div
+                      css={styles.slider}
+                      style={{ height: '100%' }}
+                      onClick={() => openMoleculeEditor()}
+                    >
+                      <span style={emptyTextStyle}>Click to draw molecule</span>
                     </div>
-                  ))
-                ) : (
-                  <div
-                    css={styles.slider}
-                    style={{ height: '100%' }}
-                    onClick={() => openMoleculeEditor()}
-                  >
-                    <span style={emptyTextStyle}>Click to draw molecule</span>
-                  </div>
-                );
-              }}
-            </ResponsiveChart>
-          </NextPrev>
+                  )}
+                </NextPrev>
+              );
+            }}
+          </ResponsiveChart>
         </div>
         {children}
       </div>
