@@ -38,4 +38,9 @@ export default class NmriumPage {
     await expect(firstTick).toHaveText(min.toString());
     await expect(lastTick).toHaveText(max.toString());
   }
+  public async moveMouseToViewer() {
+    const { x, y, width, height } =
+      (await this.viewerLocator.boundingBox()) as BoundingBox;
+    await this.page.mouse.move(x + width / 2, y + height / 2);
+  }
 }
