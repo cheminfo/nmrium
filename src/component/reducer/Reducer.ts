@@ -123,6 +123,10 @@ export const getInitialState = (): State => ({
       showRangesIntegrals: true,
       showJGraph: false,
       predictionIndex: 0,
+      peaksOptions: {
+        showPeaksShapes: false,
+        showPeaksSum: false,
+      },
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -362,12 +366,20 @@ export interface State {
        */
 
       showJGraph: boolean;
-
       /**
        * prediction Index
        * @default 0
        */
       predictionIndex: number;
+
+      /**
+       * boolean indicator to hide/show peaks shapes
+       * @default false
+       */
+      peaksOptions: {
+        showPeaksShapes: boolean;
+        showPeaksSum: boolean;
+      };
     };
   };
 
@@ -492,10 +504,16 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:
       return PeaksActions.addPeaks(draft, action);
-
     case types.DELETE_PEAK_NOTATION:
       return PeaksActions.deletePeak(draft, action.data);
-
+    case types.AUTO_PEAK_PICKING:
+      return PeaksActions.handleAutoPeakPicking(draft, action.options);
+    case types.OPTIMIZE_PEAKS:
+      return PeaksActions.handleOptimizePeaks(draft, action);
+    case types.CHANGE_PEAK_SHAPE:
+      return PeaksActions.changePeakShapeHandler(draft, action);
+    case types.TOGGLE_PEAKS_SHAPES:
+      return PeaksActions.handleShowPeaksShapes(draft, action);
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:
@@ -658,9 +676,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.setVerticalIndicatorXPosition(draft, action.position);
     case types.SET_SPECTRUMS_VERTICAL_ALIGN:
       return ToolsActions.setSpectrumsVerticalAlign(draft);
-
-    case types.AUTO_PEAK_PICKING:
-      return PeaksActions.handleAutoPeakPicking(draft, action.options);
 
     case types.AUTO_ZONES_DETECTION:
       return ZonesActions.handleAutoZonesDetection(draft, action.options);

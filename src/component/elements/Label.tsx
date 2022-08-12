@@ -1,20 +1,22 @@
 import React, { CSSProperties, ReactNode } from 'react';
 
+export interface LabelStyle {
+  label?: CSSProperties;
+  wrapper?: CSSProperties;
+  container?: CSSProperties;
+}
 interface LabelProps
   extends Omit<React.LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
   title: string;
   children: ReactNode;
   className?: string;
-  style?: {
-    label?: CSSProperties;
-    wrapper?: CSSProperties;
-  };
+  style?: LabelStyle;
 }
 
 export default function Label(props: LabelProps) {
   const { title, className = '', children, style, ...otherProps } = props;
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', alignItems: 'center', ...style?.container }}>
       <label
         className={className}
         style={{
