@@ -122,7 +122,6 @@ function AccordionItem({
         style={styles.button}
         onClick={toggleAccordion}
         onDoubleClick={dbClickHandler}
-        data-test-id={`panel-title-${title}`}
       >
         <p style={styles.buttonTitle}>{title}</p>
       </button>
