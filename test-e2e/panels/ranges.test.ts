@@ -105,7 +105,9 @@ test('Multiplicity should be visible', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
   //show multiplicity trees
-  await nmrium.page.click('data-test-id=toggle-multiplicity-tree-btn');
+  await nmrium.page.click(
+    '_react=ToggleButton[popupTitle="Show Multiplicity Trees in Spectrum"] >> button',
+  );
 
   expect(
     await nmrium.page.locator('_react=MultiplicityTree').count(),
