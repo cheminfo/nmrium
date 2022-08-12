@@ -7,7 +7,7 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.page.setInputFiles(
-    'data-test-id=dropzone-input',
+    '_react=DropZone >> input[type=file]',
     'test-e2e/data/1h-version-0.nmrium',
   );
   // If the file was loaded successfully, there should be a 1H,1H tab.
@@ -21,7 +21,7 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.page.setInputFiles(
-    'data-test-id=dropzone-input',
+    '_react=DropZone >> input[type=file]',
     'test-e2e/data/1h-version-1-datasource.nmrium',
   );
   // If the file was loaded successfully, there should be a 1H,1H tab.
@@ -34,7 +34,7 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.page.setInputFiles(
-    'data-test-id=dropzone-input',
+    '_react=DropZone >> input[type=file]',
     'test-e2e/data/13c-version-2.nmrium',
   );
 
