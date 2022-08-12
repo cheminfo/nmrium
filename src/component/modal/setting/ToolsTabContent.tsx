@@ -11,11 +11,11 @@ interface ListItem {
 const LIST: ListItem[] = [
   {
     label: 'Zoom in',
-    name: 'toolBarButtons.zoomTool',
+    name: 'toolBarButtons.zoom',
   },
   {
     label: 'Zoom out',
-    name: 'toolBarButtons.zoomOutTool',
+    name: 'toolBarButtons.zoomOut',
   },
   {
     label: 'Import',
@@ -39,47 +39,47 @@ const LIST: ListItem[] = [
   },
   {
     label: 'Peak picking',
-    name: 'toolBarButtons.peakTool',
+    name: 'toolBarButtons.peakPicking',
   },
   {
     label: 'Integral',
-    name: 'toolBarButtons.integralTool',
+    name: 'toolBarButtons.integral',
   },
   {
     label: 'Zone Picking',
-    name: 'toolBarButtons.zonePickingTool',
+    name: 'toolBarButtons.zonePicking',
   },
   {
     label: 'Range picking',
-    name: 'toolBarButtons.rangePickingTool',
+    name: 'toolBarButtons.rangePicking',
   },
   {
     label: 'Slicing',
-    name: 'toolBarButtons.slicingTool',
+    name: 'toolBarButtons.slicing',
   },
   {
     label: 'Zero filling',
-    name: 'toolBarButtons.zeroFillingTool',
+    name: 'toolBarButtons.zeroFilling',
   },
   {
     label: 'Fourier transform',
-    name: 'toolBarButtons.FFTTool',
+    name: 'toolBarButtons.fastFourierTransform',
   },
   {
     label: 'Phase correction',
-    name: 'toolBarButtons.phaseCorrectionTool',
+    name: 'toolBarButtons.phaseCorrection',
   },
   {
     label: 'Baseline correction',
-    name: 'toolBarButtons.baselineCorrectionTool',
+    name: 'toolBarButtons.baselineCorrection',
   },
   {
     label: 'Exclusion zones',
-    name: 'toolBarButtons.exclusionZonesTool',
+    name: 'toolBarButtons.exclusionZones',
   },
   {
     label: 'Multiple spectra analysis',
-    name: 'toolBarButtons.multipleSpectraAnalysisTool',
+    name: 'toolBarButtons.multipleSpectraAnalysis',
   },
 ];
 

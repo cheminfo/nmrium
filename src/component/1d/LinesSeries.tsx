@@ -14,7 +14,12 @@ function LinesSeries() {
         ?.filter((d) => d.display.isVisible === true && xDomains[d.id])
         .map((d, i) => (
           <g key={d.id} id={d.id}>
-            <Line {...d} data={get1DDataXY(d)} index={i} />
+            <Line
+              display={d.display}
+              id={d.id}
+              data={get1DDataXY(d)}
+              index={i}
+            />
           </g>
         ))}
 

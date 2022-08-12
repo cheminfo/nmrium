@@ -126,7 +126,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
   if (draft.toolOptions.data.activeFilterID) {
-    resetSpectrumByFilter(draft, null, {}, currentActiveSpectrum);
+    resetSpectrumByFilter(draft);
   } else if (refreshDomain) {
     setDomain(draft);
     setMode(draft);

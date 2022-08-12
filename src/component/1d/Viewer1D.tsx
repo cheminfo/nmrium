@@ -123,7 +123,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
       if (brushData.altKey) {
         switch (selectedTool) {
-          case options.rangesPicking.id: {
+          case options.rangePicking.id: {
             modal.show(
               <MultipletAnalysisModal
                 data={data}
@@ -150,7 +150,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               ...brushData,
             });
             break;
-          case options.rangesPicking.id: {
+          case options.rangePicking.id: {
             const [from, to] = getRange(state, {
               startX: brushData.startX,
               endX: brushData.endX,

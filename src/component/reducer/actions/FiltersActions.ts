@@ -18,7 +18,7 @@ import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
-import { ActiveSpectrum, State } from '../Reducer';
+import { State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
@@ -313,43 +313,44 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
 /**
  * reset spectrum data for specific point of time (Filter)
  * @param {object} draft
- * @param {string} id Filter id
  * @param {object} options
+ * @param {string}   options.id Filter id
  * @param {boolean=} options.resetTool
  * @param {boolean=} options.updateDomain
  * @param {boolean=} options.rollback
  */
+
 function resetSpectrumByFilter(
   draft,
-  id: string | null = null,
-  options: {
+  options?: {
     rollback?: boolean;
     resetTool?: boolean;
     updateDomain?: boolean;
-    returnCurrentDatum?: boolean;
+    applyFilter?: boolean;
     searchBy?: 'id' | 'name';
-  } = {},
-  activeSpectrum: ActiveSpectrum | null = null,
+    filterId?: string | null;
+  },
 ) {
   const {
     updateDomain = true,
     rollback = false,
     searchBy = 'id',
-    returnCurrentDatum = false,
-  } = options;
+    applyFilter = false, // the filter that we rollback and return the affect data for the selected spectrum
+    filterId,
+  } = options || {};
 
   let currentDatum: any = null;
 
-  const currentActiveSpectrum = activeSpectrum
-    ? activeSpectrum
-    : draft.activeSpectrum;
+  const currentActiveSpectrum = draft.activeSpectrum;
 
   if (currentActiveSpectrum?.id) {
     const index = currentActiveSpectrum.index;
     const datum = draft.data[index] as Datum1D | Datum2D;
 
-    if (id && draft.toolOptions.data.activeFilterID !== id) {
-      const filterIndex = datum.filters.findIndex((f) => f[searchBy] === id);
+    if (filterId && draft.toolOptions.data.activeFilterID !== filterId) {
+      const filterIndex = datum.filters.findIndex(
+        (f) => f[searchBy] === filterId,
+      );
       let filters: any[] = [];
       if (filterIndex !== -1) {
         filters = datum.filters.slice(
@@ -357,7 +358,7 @@ function resetSpectrumByFilter(
           rollback ? filterIndex : filterIndex + 1,
         );
 
-        if (filters.length > 1) {
+        if (filters.length >= 1) {
           draft.toolOptions.data.activeFilterID =
             datum.filters[rollback ? filterIndex - 1 : filterIndex]?.id;
         } else {
@@ -366,7 +367,7 @@ function resetSpectrumByFilter(
 
         FiltersManager.reapplyFilters(datum, filters);
 
-        if (returnCurrentDatum) {
+        if (applyFilter) {
           const { name, value: options } = datum.filters[filterIndex];
           const newDatum = current(draft).data[index];
           if (newDatum.info?.dimension === 1) {
@@ -393,13 +394,14 @@ function resetSpectrumByFilter(
       setMode(draft);
     }
   }
-  if (returnCurrentDatum) {
+  if (applyFilter) {
     return currentDatum;
   }
 }
 
 function filterSnapshotHandler(draft: Draft<State>, action) {
-  resetSpectrumByFilter(draft, action.id);
+  const { filterId } = action.payload;
+  resetSpectrumByFilter(draft, { filterId });
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
@@ -516,18 +518,27 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
   // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
   if (checkFilterHasTempData(selectedFilterID)) {
     //return back the spectra data to point of time before applying a specific filter
-    const dataSavePoint = resetSpectrumByFilter(draft, selectedFilterID, {
-      updateDomain: false,
+
+    const isPhaseCorrection = selectedFilterID === options.phaseCorrection.id;
+    const updateDomain = [
+      options.zeroFilling.id,
+      options.apodization.id,
+    ].includes(selectedFilterID);
+
+    const rollbackSpectrumData = resetSpectrumByFilter(draft, {
+      updateDomain,
       rollback: true,
       searchBy: 'name',
-      returnCurrentDatum: true,
+      filterId: selectedFilterID,
+      applyFilter: isPhaseCorrection,
     });
 
     // create a temporary clone of the data
+
     draft.tempData = current(draft).data;
 
-    if (dataSavePoint) {
-      draft.tempData[dataSavePoint?.index] = dataSavePoint?.datum;
+    if (rollbackSpectrumData) {
+      draft.tempData[rollbackSpectrumData?.index] = rollbackSpectrumData?.datum;
     }
 
     switch (selectedFilterID) {
@@ -572,7 +583,6 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
     const spectrumIndex = draft.data.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
     );
-
     draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
   }
 }

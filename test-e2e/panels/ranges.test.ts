@@ -62,7 +62,7 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
   //select range tool
-  await nmrium.clickTool('ranges-pick');
+  await nmrium.clickTool('rangePicking');
 
   await test.step('Add ranges', async () => {
     //add two ranges
@@ -86,7 +86,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
   await nmrium.open1D();
 
   //select range tool
-  await nmrium.clickTool('ranges-pick');
+  await nmrium.clickTool('rangePicking');
 
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
@@ -100,7 +100,7 @@ test('Multiplicity should be visible', async ({ page }) => {
   await nmrium.open1D();
 
   //select range tool
-  await nmrium.clickTool('ranges-pick');
+  await nmrium.clickTool('rangePicking');
 
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
