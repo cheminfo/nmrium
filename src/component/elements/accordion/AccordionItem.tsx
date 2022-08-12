@@ -132,7 +132,6 @@ function AccordionItem({
           maxHeight: active == null ? 0 : '100%',
           ...style,
         }}
-        data-test-id={`panel-content-${title}`}
       >
         {children}
       </div>
