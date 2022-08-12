@@ -24,7 +24,6 @@ const FormikOnChange = (props: FormikOnChangeProps) => {
       onChange(values);
     }
     oldValuesRef.current = values;
-
   }, [values, enableValidation, errors, onChange, submitForm, setTouched]);
 
   return null;
