@@ -83,12 +83,7 @@ export function InternalTab({
   );
 
   return (
-    <li
-      className={className}
-      onClick={clickHandler}
-      css={styles(tabstyles)}
-      data-test-id={`tab-${tabid}`}
-    >
+    <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
       {canDelete && <DeleteButton onDelete={deleteHandler} />}
       {render
         ? render({ isActive, title: tablabel || '', id: tabid })
