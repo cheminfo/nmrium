@@ -5,6 +5,7 @@ import {
   getShiftX,
   lookupPeak,
   autoPeakPicking,
+  optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
@@ -87,6 +88,24 @@ function deletePeak(draft: Draft<State>, peakData) {
   }
 }
 
+function handleOptimizePeaks(draft: Draft<State>, action) {
+  const { peaks } = action.payload;
+
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
+    const datum = draft.data[index] as Datum1D;
+
+    const [from, to] = draft.xDomain;
+
+    const newPeaks = optimizePeaks(draft.data[index] as Datum1D, {
+      from,
+      to,
+      peaks,
+    });
+
+    datum.peaks.values = newPeaks;
+  }
+}
 function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
   if (draft.activeSpectrum?.id) {
     draft.toolOptions.selectedTool = options.zoom.id;
@@ -108,4 +127,36 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
   }
 }
 
-export { addPeak, addPeaks, deletePeak, handleAutoPeakPicking };
+function changePeakShapeHandler(draft: Draft<State>, action) {
+  const { shape, id } = action.payload;
+
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
+    const datum = draft.data[index] as Datum1D;
+    const peakIndex = datum.peaks.values.findIndex((peak) => peak.id === id);
+
+    if (peakIndex !== -1) {
+      datum.peaks.values[peakIndex].shape = shape;
+    }
+  }
+}
+
+function handleShowPeaksShapes(draft: Draft<State>, action) {
+  const { key } = action.payload;
+
+  const peaksOptions = draft.toolOptions.data.peaksOptions;
+  draft.toolOptions.data.peaksOptions = {
+    ...peaksOptions,
+    [key]: !peaksOptions[key],
+  };
+}
+
+export {
+  addPeak,
+  addPeaks,
+  deletePeak,
+  handleAutoPeakPicking,
+  handleOptimizePeaks,
+  changePeakShapeHandler,
+  handleShowPeaksShapes,
+};

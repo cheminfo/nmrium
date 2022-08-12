@@ -28,6 +28,7 @@ export default function autoRangesDetection(
   const peakPickingOptions = {
     ...defaultPeakPickingOptions,
     ...peakPicking,
+    frequency: originFrequency,
   };
 
   const rangesOptions = {

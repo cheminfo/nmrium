@@ -1,27 +1,40 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
+import { FaThinkPeaks } from 'react-icons/fa';
 
 import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
+import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import Button from '../../elements/Button';
+import ToggleButton from '../../elements/ToggleButton';
+import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
-import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
+import {
+  DELETE_PEAK_NOTATION,
+  OPTIMIZE_PEAKS,
+  TOGGLE_PEAKS_SHAPES,
+} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
 import PeaksTable from './PeaksTable';
+import { SvgNmrFt } from 'cheminfo-font';
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
   xDomain: number[];
   activeTab: string;
   info: Info1D;
+  peaksOptions: { showPeaksShapes: boolean; showPeaksSum: boolean };
 }
 
 function PeaksPanelInner({
@@ -29,6 +42,7 @@ function PeaksPanelInner({
   info,
   xDomain,
   activeTab,
+  peaksOptions,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -36,6 +50,8 @@ function PeaksPanelInner({
 
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
+  const isExperimental = useCheckExperimentalFeature();
 
   const settingRef = useRef<any>();
 
@@ -64,37 +80,45 @@ function PeaksPanelInner({
   }, [filterIsActive]);
 
   const filteredPeaks = useMemo(() => {
-    function isInRange(value) {
-      const factor = 100000;
-      return (
-        value * factor >= xDomain[0] * factor &&
-        value * factor <= xDomain[1] * factor
-      );
-    }
     if (peaks?.values) {
+      const [from, to] = xDomain;
       const _peaks = filterIsActive
-        ? peaks.values.filter((peak) => isInRange(peak.x))
+        ? peaks.values.filter((peak) => isInRange(peak.x, { from, to }))
         : peaks.values;
 
       return _peaks
         .map((peak) => {
-          const value = Number(format(peak.x));
+          const { x, y, width, ...peakProperties } = peak;
+          const value = Number(format(x));
           return {
-            value,
-            valueHz: info?.originFrequency
-              ? Number(value) * info.originFrequency
-              : '',
-            id: peak.id,
-            intensity: peak.y,
-            peakWidth: peak.width ? peak.width : '',
-            isConstantlyHighlighted: isInRange(value),
+            ...peakProperties,
+            x,
+            xHz: info?.originFrequency ? value * info.originFrequency : '',
+            y,
+            width: width ? width : '',
+            isConstantlyHighlighted: isInRange(value, { from, to }),
           };
         })
-        .sort((prev, next) => prev.value - next.value);
+        .sort((prev, next) => prev.x - next.x);
     }
 
     return [];
   }, [filterIsActive, format, info, peaks, xDomain]);
+
+  const optimizePeaksHandler = () => {
+    const [from, to] = xDomain;
+    const filterPeaks = peaks.values.filter((peak) =>
+      isInRange(peak.x, { from, to }),
+    );
+    if (filterPeaks.length <= 4) {
+      dispatch({ type: OPTIMIZE_PEAKS, payload: { peaks: filterPeaks } });
+    } else {
+      alert.error('optimization can be done on no more than 4 peaks');
+    }
+  };
+  const togglePeaksShapesHandler = (key: string) => {
+    dispatch({ type: TOGGLE_PEAKS_SHAPES, payload: { key } });
+  };
 
   return (
     <div
@@ -124,7 +148,55 @@ function PeaksPanelInner({
           counterFiltered={filteredPeaks.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
-        />
+        >
+          {isExperimental && (
+            <>
+              <ToggleButton
+                style={{ marginLeft: '2px', marginRight: '2px' }}
+                testID="toggle-peaks-shapes"
+                popupTitle={
+                  peaksOptions.showPeaksShapes
+                    ? 'Hide peaks shapes'
+                    : 'Show peaks shapes'
+                }
+                popupPlacement="right"
+                onClick={() => togglePeaksShapesHandler('showPeaksShapes')}
+                disabled={!peaks?.values || peaks.values.length === 0}
+              >
+                <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+              </ToggleButton>
+              <ToggleButton
+                style={{ marginLeft: '2px', marginRight: '2px' }}
+                testID="toggle-peaks-sum"
+                popupTitle={
+                  peaksOptions.showPeaksSum
+                    ? 'Hide peaks sum'
+                    : 'Show peaks sum'
+                }
+                popupPlacement="right"
+                onClick={() => togglePeaksShapesHandler('showPeaksSum')}
+                disabled={!peaks?.values || peaks.values.length === 0}
+              >
+                <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
+              </ToggleButton>
+
+              <Button.Done
+                fill="clear"
+                onClick={optimizePeaksHandler}
+                style={{ width: '24px', padding: 0 }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <FaThinkPeaks />
+                </div>
+              </Button.Done>
+            </>
+          )}
+        </DefaultPanelHeader>
       )}
       {isFlipped && (
         <PreferencesHeader
@@ -148,11 +220,19 @@ const MemoizedPeaksPanel = memo(PeaksPanelInner);
 const emptyData = { peaks: null, info: {} };
 
 export default function PeaksPanel() {
-  const { xDomain, activeTab } = useChartData();
+  const {
+    xDomain,
+    activeTab,
+    toolOptions: {
+      data: { peaksOptions },
+    },
+  } = useChartData();
   const { peaks, info } = useSpectrum(emptyData) as Datum1D;
   const preferences = usePreferences();
 
   return (
-    <MemoizedPeaksPanel {...{ peaks, info, xDomain, activeTab, preferences }} />
+    <MemoizedPeaksPanel
+      {...{ peaks, info, xDomain, activeTab, preferences, peaksOptions }}
+    />
   );
 }

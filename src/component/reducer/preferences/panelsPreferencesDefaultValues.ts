@@ -41,6 +41,7 @@ const getRangeDefaultValues = (
 
   return getPreferences(preferences, nucleus);
 };
+
 const getPeaksDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['peaks'] => {
@@ -50,6 +51,9 @@ const getPeaksDefaultValues = (
     deltaHz: { show: false, format: '0.00' },
     peakWidth: { show: false, format: '0.00' },
     intensity: { show: true, format: '0.00' },
+    showKind: true,
+    fwhm: { show: true, format: '0.00000' },
+    mu: { show: false, format: '0.00000' },
   };
 
   return getPreferences(preferences, nucleus);

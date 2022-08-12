@@ -62,11 +62,11 @@ function HeaderInner(props: HeaderInnerProps) {
         return <ManualPhaseCorrectionPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;
-      case options.rangesPicking.id:
+      case options.rangePicking.id:
         return <RangesPickingOptionPanel />;
       case options.baselineCorrection.id:
         return <BaseLineCorrectionPanel />;
-      case options.zone2D.id:
+      case options.zonePicking.id:
         return <Zones2DOptionPanel />;
       default:
         break;

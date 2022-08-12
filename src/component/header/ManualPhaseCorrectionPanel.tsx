@@ -138,9 +138,23 @@ export default function ManualPhaseCorrectionPanel() {
       const { name, value } = e.target;
       if (e.target) {
         const newValue = { ...valueRef.current, [name]: value };
+
         if (String(value).trim() !== '-') {
           calcPhaseCorrectionHandler(newValue, name);
         }
+
+        // update InputRange initial value
+        switch (name) {
+          case 'ph0':
+            ph0Ref.current.setValue(newValue.ph0);
+            break;
+          case 'ph1':
+            ph1Ref.current.setValue(newValue.ph1);
+            break;
+          default:
+            break;
+        }
+
         valueRef.current = newValue;
         setValue(valueRef.current);
       }

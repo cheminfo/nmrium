@@ -8,6 +8,7 @@ import { updateIntegralsRelativeValues } from './integrals/updateIntegralsRelati
 import { isSpectrum1D } from './isSpectrum1D';
 import { autoPeakPicking } from './peaks/autoPeakPicking';
 import { lookupPeak } from './peaks/lookupPeak';
+import { optimizePeaks } from './peaks/optimizePeaks';
 import { addRange } from './ranges/addRange';
 import { changeRange } from './ranges/changeRange';
 import { changeRangeRelativeValue } from './ranges/changeRangeRelativeValue';
@@ -26,6 +27,7 @@ export {
   initiateDatum1D,
   toJSON,
   autoPeakPicking,
+  optimizePeaks,
   getShiftX,
   lookupPeak,
   checkRangeKind,

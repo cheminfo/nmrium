@@ -30,6 +30,10 @@ const ignoreActions = [
   types.CHANGE_ACTIVE_SPECTRUM,
   types.CHANGE_SPECTRUM_COLOR,
   types.SET_MOUSE_OVER_DISPLAYER,
+  types.TOGGLE_PEAKS_SHAPES,
+  types.SHOW_J_GRAPH,
+  types.SHOW_MULTIPLICTY_TREES,
+  types.SHOW_RANGES_INTEGRALS,
 ];
 
 function checkActionType(type: string): boolean {

@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import { useEffect, memo } from 'react';
+import { useEffect, memo, useRef } from 'react';
 
 interface FormikOnChangeProps {
   onChange?: (any) => void;
@@ -8,11 +8,14 @@ interface FormikOnChangeProps {
 
 const FormikOnChange = (props: FormikOnChangeProps) => {
   const { onChange = () => null, enableValidation = true } = props;
+  const oldValuesRef = useRef<any>({});
   const { values, errors, submitForm, setTouched } = useFormikContext();
-
   useEffect(() => {
     if (enableValidation) {
-      if (Object.keys(errors).length === 0) {
+      if (
+        Object.keys(errors).length === 0 &&
+        JSON.stringify(oldValuesRef.current) !== JSON.stringify(values)
+      ) {
         onChange(values);
       } else {
         setTouched(errors);
@@ -20,6 +23,7 @@ const FormikOnChange = (props: FormikOnChangeProps) => {
     } else {
       onChange(values);
     }
+    oldValuesRef.current = values;
   }, [values, enableValidation, errors, onChange, submitForm, setTouched]);
 
   return null;

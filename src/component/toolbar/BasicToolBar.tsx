@@ -33,7 +33,6 @@ import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { ActiveSpectrum, VerticalAlignment } from '../reducer/Reducer';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const IMPORT_MENU = [
@@ -91,7 +90,6 @@ interface BasicToolBarInnerProps {
   activeSpectrum: ActiveSpectrum | null;
   fidCounter: number;
   ftCounter: number;
-  displayerMode: DISPLAYER_MODE;
   info: Info1D | Info2D;
   verticalAlign: {
     align: VerticalAlignment;
@@ -101,7 +99,6 @@ interface BasicToolBarInnerProps {
 function BasicToolBarInner({
   info,
   verticalAlign,
-  displayerMode,
   ftCounter,
   fidCounter,
   activeSpectrum,
@@ -250,8 +247,7 @@ function BasicToolBarInner({
         />
       )}
 
-      {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('spectraStackAlignments') &&
+      {isButtonVisible('spectraStackAlignments') &&
         ftCounter > 1 &&
         (info?.isFt || !activeSpectrum) && (
           <Toolbar.Item
@@ -267,20 +263,17 @@ function BasicToolBarInner({
             )}
           </Toolbar.Item>
         )}
-      {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('realImaginary') &&
-        info.isComplex && (
-          <Toolbar.Item
-            id="display"
-            title={isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary'}
-            onClick={changeSpectrumViewHandler}
-            className="cheminfo"
-          >
-            <SvgNmrRealImag />
-          </Toolbar.Item>
-        )}
-      {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('spectraCenterAlignments') &&
+      {isButtonVisible('realImaginary') && info.isComplex && (
+        <Toolbar.Item
+          id="display"
+          title={isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary'}
+          onClick={changeSpectrumViewHandler}
+          className="cheminfo"
+        >
+          <SvgNmrRealImag />
+        </Toolbar.Item>
+      )}
+      {isButtonVisible('spectraCenterAlignments') &&
         (ftCounter > 0 || fidCounter > 0) && (
           <Toolbar.Item
             id="baseline-position"

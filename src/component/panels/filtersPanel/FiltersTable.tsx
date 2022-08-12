@@ -94,13 +94,13 @@ function FiltersTableInner({
     [alert, dispatch, modal, spectraCounter],
   );
   const filterSnapShotHandler = useCallback(
-    (newID) => {
+    (filterId) => {
       void (async () => {
         const hideLoading = await alert.showLoading(
           'Filter snapshot process in progress',
         );
         setTimeout(() => {
-          dispatch({ type: SET_FILTER_SNAPSHOT, id: newID });
+          dispatch({ type: SET_FILTER_SNAPSHOT, payload: { filterId } });
           hideLoading();
         }, 0);
       })();

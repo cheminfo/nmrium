@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import useSpectrum from '../hooks/useSpectrum';
+import { Datum1D } from '../../../data/types/data1d';
+import { useChartData } from '../../context/ChartContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import useSpectrum from '../../hooks/useSpectrum';
+import getVerticalShift from '../utilities/getVerticalShift';
 
 import PeakAnnotation from './PeakAnnotation';
-import getVerticalShift from './utilities/getVerticalShift';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 

@@ -21,7 +21,9 @@ const config: PlaywrightTestConfig = {
     },
   },
   webServer: {
-    command: 'npm run test-e2e-server',
+    command: process.env.CI
+      ? 'npm run test-e2e-server'
+      : 'npm run dev -- --no-open',
     port: 3000,
     reuseExistingServer: true,
   },

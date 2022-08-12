@@ -8,6 +8,7 @@ const styles = css`
   background-color: #f5f5f5;
   border: none;
   border-radius: 5px;
+  padding: 5px;
 
   &:hover {
     background-color: lightgray !important;

@@ -129,7 +129,7 @@ function Range({
   const assignHandler = useCallback(
     (e) => {
       if (
-        selectedTool === options.rangesPicking.id &&
+        selectedTool === options.rangePicking.id &&
         e.shiftKey &&
         !isBlockedByEditing
       ) {
@@ -155,7 +155,7 @@ function Range({
         onEnd={handleOnStopResizing}
         parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
-        disabled={selectedTool !== options.rangesPicking.id}
+        disabled={selectedTool !== options.rangePicking.id}
       >
         {({ x1, x2 }, isActive) => (
           <g

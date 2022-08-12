@@ -30,7 +30,7 @@ export default function useToolsFunctions() {
         [
           options.peakPicking.id,
           options.integral.id,
-          options.zone2D.id,
+          options.zonePicking.id,
           options.exclusionZones.id,
         ].includes(selectedTool)
       ) {

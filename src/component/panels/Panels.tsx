@@ -125,8 +125,8 @@ export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
   null: 'Spectra',
   peakPicking: 'Peaks',
   integral: 'Integrals',
-  rangesPicking: 'Ranges',
-  zone2D: 'Zones',
+  rangePicking: 'Ranges',
+  zonePicking: 'Zones',
   multipleSpectraAnalysis: 'Multiple Spectra Analysis',
 };
 

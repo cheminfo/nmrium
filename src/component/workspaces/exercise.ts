@@ -14,11 +14,11 @@ export const exercise: InnerWorkspace = {
     },
 
     toolBarButtons: {
-      integralTool: true,
+      integral: true,
       spectraCenterAlignments: true,
       spectraStackAlignments: true,
-      zoomOutTool: true,
-      zoomTool: true,
+      zoomOut: true,
+      zoom: true,
     },
   },
 };

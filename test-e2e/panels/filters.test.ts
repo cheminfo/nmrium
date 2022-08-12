@@ -26,7 +26,7 @@ async function zeroFillingFilter(nmrium: NmriumPage) {
 }
 
 async function fourierTransformFilter(nmrium: NmriumPage) {
-  await nmrium.clickTool('fft-filter');
+  await nmrium.clickTool('fft');
 
   await expect(
     nmrium.page.locator('data-test-id=filters-table >> text=FFT'),

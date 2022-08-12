@@ -12,7 +12,7 @@ interface ButtonToolTipProps
 
 function ButtonToolTip({
   children,
-  style = {},
+  style = { padding: '5px' },
   onClick = () => null,
   popupTitle = '',
   popupPlacement = 'right',
