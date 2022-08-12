@@ -250,6 +250,7 @@ function RangesHeader({
           <FaUnlink />
         </Button>
         <ToggleButton
+          testID="toggle-multiplicity-tree-btn"
           popupTitle={
             showMultiplicityTrees
               ? 'Hide Multiplicity Trees in Spectrum'

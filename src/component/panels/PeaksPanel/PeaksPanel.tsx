@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrFt } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
@@ -28,6 +27,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
 import PeaksTable from './PeaksTable';
+import { SvgNmrFt } from 'cheminfo-font';
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
@@ -153,6 +153,7 @@ function PeaksPanelInner({
             <>
               <ToggleButton
                 style={{ marginLeft: '2px', marginRight: '2px' }}
+                testID="toggle-peaks-shapes"
                 popupTitle={
                   peaksOptions.showPeaksShapes
                     ? 'Hide peaks shapes'
@@ -166,6 +167,7 @@ function PeaksPanelInner({
               </ToggleButton>
               <ToggleButton
                 style={{ marginLeft: '2px', marginRight: '2px' }}
+                testID="toggle-peaks-sum"
                 popupTitle={
                   peaksOptions.showPeaksSum
                     ? 'Hide peaks sum'
