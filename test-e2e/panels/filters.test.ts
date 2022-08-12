@@ -57,7 +57,12 @@ async function baselineCorrectionFilter(nmrium: NmriumPage) {
     ),
   ).toBeVisible();
 }
-
+async function xScaleDomain(nmrium: NmriumPage, min: number, max: number) {
+  const firstTick = nmrium.page.locator('.x >> .tick >> nth=0');
+  const lastTick = nmrium.page.locator('.x >> .tick >> nth=-1');
+  await expect(firstTick).toHaveText(min.toString());
+  await expect(lastTick).toHaveText(max.toString());
+}
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
@@ -77,5 +82,34 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
   });
   await test.step('Apply baseline correction filter', async () => {
     await baselineCorrectionFilter(nmrium);
+  });
+});
+
+test('Processing 13c spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await open13CFidSpectrum(nmrium);
+  await nmrium.clickPanel('Filters');
+
+  await test.step('Apply Apodization filter', async () => {
+    await apodizationFilter(nmrium);
+  });
+  await test.step('Apply Zero filling filter', async () => {
+    await zeroFillingFilter(nmrium);
+  });
+  await test.step('Apply fourier Transform filter', async () => {
+    await fourierTransformFilter(nmrium);
+  });
+  await test.step('Check horizontal scale domain', async () => {
+    await xScaleDomain(nmrium, 0, 200);
+  });
+  await test.step('Check filters panel', async () => {
+    await expect(
+      nmrium.page.locator('data-test-id=filters-table >> .filter-row'),
+    ).toHaveCount(4);
+  });
+  await test.step('Check spectrum is displayed', async () => {
+    await expect(
+      nmrium.page.locator('data-test-id=spectrum-line'),
+    ).toBeVisible();
   });
 });
