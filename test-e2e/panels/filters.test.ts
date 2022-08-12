@@ -78,4 +78,17 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
   await test.step('Apply baseline correction filter', async () => {
     await baselineCorrectionFilter(nmrium);
   });
+  await test.step('Check horizontal scale domain', async () => {
+    await nmrium.assertXScaleDomain(0, 200);
+  });
+  await test.step('Check filters panel', async () => {
+    await expect(
+      nmrium.page.locator('data-test-id=filters-table >> .filter-row'),
+    ).toHaveCount(6);
+  });
+  await test.step('Check spectrum is displayed', async () => {
+    await expect(
+      nmrium.page.locator('data-test-id=spectrum-line'),
+    ).toBeVisible();
+  });
 });
