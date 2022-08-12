@@ -35,8 +35,8 @@ async function fourierTransformFilter(nmrium: NmriumPage) {
 
 async function phaseCorrectionFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('phaseCorrection');
-  await nmrium.page.fill('data-test-id=input-ph1', '-100');
-  await nmrium.page.fill('data-test-id=input-ph0', '-104');
+  await nmrium.page.fill('_react=input[name="ph1"]', '-100');
+  await nmrium.page.fill('_react=input[name="ph0"]', '-104');
 
   // input debounce for 250ms
   await nmrium.page.waitForTimeout(250);

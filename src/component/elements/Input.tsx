@@ -233,7 +233,6 @@ const Input = forwardRef(
             ...styles.input,
             ...(style?.input ? style.input : {}),
           }}
-          data-test-id={name ? `input-${name}` : ''}
           type="text"
           value={val}
           onChange={onChangeHandler}
