@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 export default class NmriumPage {
   public readonly page: Page;
@@ -30,5 +30,12 @@ export default class NmriumPage {
 
   public async clickTool(id: string) {
     await this.page.click(`_react=ToolbarItem[id="${id}"]`);
+  }
+  public async assertXScaleDomain(min: number, max: number) {
+    const xTicks = this.page.locator('.x >> .tick');
+    const firstTick = xTicks.first();
+    const lastTick = xTicks.last();
+    await expect(firstTick).toHaveText(min.toString());
+    await expect(lastTick).toHaveText(max.toString());
   }
 }

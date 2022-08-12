@@ -57,12 +57,7 @@ async function baselineCorrectionFilter(nmrium: NmriumPage) {
     ),
   ).toBeVisible();
 }
-async function xScaleDomain(nmrium: NmriumPage, min: number, max: number) {
-  const firstTick = nmrium.page.locator('.x >> .tick >> nth=0');
-  const lastTick = nmrium.page.locator('.x >> .tick >> nth=-1');
-  await expect(firstTick).toHaveText(min.toString());
-  await expect(lastTick).toHaveText(max.toString());
-}
+
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
@@ -100,7 +95,7 @@ test('Processing 13c spectrum', async ({ page }) => {
     await fourierTransformFilter(nmrium);
   });
   await test.step('Check horizontal scale domain', async () => {
-    await xScaleDomain(nmrium, 0, 200);
+    await nmrium.assertXScaleDomain(0, 200);
   });
   await test.step('Check filters panel', async () => {
     await expect(
