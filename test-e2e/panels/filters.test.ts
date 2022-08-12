@@ -12,7 +12,7 @@ async function apodizationFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Apodization'),
+    nmrium.page.locator('_react=FilterPanelInner >> text=Apodization'),
   ).toBeVisible();
 }
 
@@ -21,7 +21,7 @@ async function zeroFillingFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Zero Filling'),
+    nmrium.page.locator('_react=FilterPanelInner >> text=Zero Filling'),
   ).toBeVisible();
 }
 
@@ -29,7 +29,7 @@ async function fourierTransformFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('fft');
 
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=FFT'),
+    nmrium.page.locator('_react=FilterPanelInner >> text=FFT'),
   ).toBeVisible();
 }
 
@@ -43,7 +43,7 @@ async function phaseCorrectionFilter(nmrium: NmriumPage) {
 
   await nmrium.page.click('button >> text=Apply');
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Phase correction'),
+    nmrium.page.locator('_react=FilterPanelInner >> text=Phase correction'),
   ).toBeVisible();
 }
 
@@ -52,9 +52,7 @@ async function baselineCorrectionFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator(
-      'data-test-id=filters-table >> text=Baseline correction',
-    ),
+    nmrium.page.locator('_react=FilterPanelInner >> text=Baseline correction'),
   ).toBeVisible();
 }
 
@@ -83,7 +81,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     await expect(
-      nmrium.page.locator('data-test-id=filters-table >> .filter-row'),
+      nmrium.page.locator('_react=FilterPanelInner >> .filter-row'),
     ).toHaveCount(6);
   });
   await test.step('Check spectrum is displayed', async () => {
