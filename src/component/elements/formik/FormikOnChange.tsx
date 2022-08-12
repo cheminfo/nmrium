@@ -8,7 +8,7 @@ interface FormikOnChangeProps {
 
 const FormikOnChange = (props: FormikOnChangeProps) => {
   const { onChange = () => null, enableValidation = true } = props;
-  const oldValuesRef = useRef({});
+  const oldValuesRef = useRef<any>({});
   const { values, errors, submitForm, setTouched } = useFormikContext();
   useEffect(() => {
     if (enableValidation) {
@@ -23,6 +23,8 @@ const FormikOnChange = (props: FormikOnChangeProps) => {
     } else {
       onChange(values);
     }
+    oldValuesRef.current = values;
+
   }, [values, enableValidation, errors, onChange, submitForm, setTouched]);
 
   return null;
