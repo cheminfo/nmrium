@@ -11,20 +11,18 @@ test('should draw structure and display it with MF', async ({ page }) => {
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
   });
-  await test.step('Add aromatic ring molecule', async () => {
+  await test.step('Add ring molecule', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click(
-      'data-test-id=panel-structures-button-add >> nth=0',
-    );
+    await nmrium.page.click('data-test-id=panel-structures-button-add');
 
-    // Select the "aromatic ring" tool.
+    // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
       position: {
         x: 35,
         y: 200,
       },
     });
-    // Draw the aromatic ring.
+    // Draw the ring.
     await nmrium.page.click('canvas >> nth=1', {
       position: {
         x: 50,
@@ -45,19 +43,15 @@ test('should draw structure and display it with MF', async ({ page }) => {
     ).toBeVisible();
 
     // The molecular formula should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('text=C6H6 - 78.11 >> nth=0'),
-    ).toBeVisible();
+    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
-    await expect(nmrium.page.locator('text=1 / 1 >> nth=0')).toBeVisible();
+    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
   });
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click(
-      'data-test-id=panel-structures-button-add >> nth=0',
-    );
+    await nmrium.page.click('data-test-id=panel-structures-button-add');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -80,46 +74,38 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
     // The molecule SVG rendering should now be visible in the panel.
     await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
+      nmrium.page.locator('.mol-svg-container #molSVG1'),
     ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
     await expect(
-      nmrium.page.locator('.mol-svg-container #molSVG0'),
+      nmrium.page.locator('.mol-svg-container #molSVG1'),
     ).toBeVisible();
 
     // The molecular formula should now be visible in the panel.
-    await expect(
-      nmrium.page.locator('text=C6H12 - 84.16 >> nth=0'),
-    ).toBeVisible();
+    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
-    await expect(nmrium.page.locator('text=2 / 2 >> nth=0')).toBeVisible();
+    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
   });
   await test.step('Switch between molecules', async () => {
     // Start with the second molecule.
-    await expect(nmrium.page.locator('text=2 / 2 >> nth=0')).toBeVisible();
-    await expect(
-      nmrium.page.locator('text=C6H12 - 84.16 >> nth=0'),
-    ).toBeVisible();
+    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // Go to the previous molecule.
-    await nmrium.page.click('.react-shadow-8g1a46-Arrow');
+    await nmrium.page.click('_react=Arrow[direction="left"]');
 
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=1 / 2 >> nth=0')).toBeVisible();
+    await expect(nmrium.page.locator('text=1 / 2')).toBeVisible();
 
     // Check selected molecule formula.
-    await expect(
-      nmrium.page.locator('text=C6H6 - 78.11 >> nth=0'),
-    ).toBeVisible();
+    await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // Go to the next molecule.
-    await nmrium.page.click('.react-shadow-46m0r1-Arrow');
+    await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=2 / 2 >> nth=0')).toBeVisible();
+    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
 
     // Check selected molecule formula.
-    await expect(
-      nmrium.page.locator('text=C6H12 - 84.16 >> nth=0'),
-    ).toBeVisible();
+    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
   });
 });
