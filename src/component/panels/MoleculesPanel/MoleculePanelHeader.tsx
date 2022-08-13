@@ -215,7 +215,11 @@ export default function MoleculePanelHeader({
         </ToolTip>
       )}
       {!actionsOptions.hideDelete && (
-        <ToolTip title="Delete Molecule" popupPlacement="left">
+        <ToolTip
+          title="Delete Molecule"
+          data-test-id="panel-structures-button-delete"
+          popupPlacement="left"
+        >
           <button className="bar-button" type="button" onClick={handleDelete}>
             <FaRegTrashAlt />
           </button>
@@ -236,6 +240,7 @@ export default function MoleculePanelHeader({
           key={molecules[currentIndex].isFloat}
           defaultValue={molecules[currentIndex].isFloat}
           popupTitle="Float Molecule"
+          data-test-id="panel-structures-button-float"
           popupPlacement="left"
           onClick={floatMoleculeHandler}
         >

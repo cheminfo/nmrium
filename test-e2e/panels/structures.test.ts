@@ -261,13 +261,13 @@ test('molecules 1H spectrum', async ({ page }) => {
   });
   await test.step('Check float molecule', async () => {
     // Click on float molecule button.
-    await nmrium.page.click('_react=ToggleButton[popupTitle="Float Molecule"]');
+    await nmrium.page.click('data-test-id=panel-structures-button-float');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
   });
   await test.step('Delete molecule', async () => {
     // Delete molecule.
-    await nmrium.page.click('_react=ToolTip[title="Delete Molecule"]');
+    await nmrium.page.click('data-test-id=panel-structures-button-delete');
     // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
     // Check selected molecule.
@@ -285,14 +285,14 @@ test('molecules 1H spectrum', async ({ page }) => {
       nmrium.page.locator('.mol-svg-container #molSVG1'),
     ).toBeVisible();
 
-    await nmrium.page.click('_react=ToolTip[title="Delete Molecule"]');
+    await nmrium.page.click('data-test-id=panel-structures-button-delete');
     // Check selected molecule.
     await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await expect(
       nmrium.page.locator('.mol-svg-container #molSVG0'),
     ).toBeVisible();
-    await nmrium.page.click('_react=ToolTip[title="Delete Molecule"] >> nth=0');
+    await nmrium.page.click('data-test-id=panel-structures-button-delete');
   });
   await test.step('empty panel', async () => {
     // The SVG container should not be rendered when there are no molecules.
