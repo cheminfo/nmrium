@@ -30,7 +30,6 @@ interface ToggleButtonProps {
   disabled?: boolean;
   children: ReactNode;
   className?: string;
-  testID?: string;
 }
 
 function ToggleButton({
@@ -42,7 +41,6 @@ function ToggleButton({
   defaultValue = false,
   disabled = false,
   className = '',
-  testID,
 }: ToggleButtonProps) {
   const [flag, toggle] = useState<boolean>(defaultValue);
 
@@ -54,7 +52,6 @@ function ToggleButton({
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
       <button
-        data-test-id={testID}
         disabled={disabled}
         css={styles}
         style={style}
