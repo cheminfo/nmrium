@@ -10,7 +10,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
   // The SVG container should not be rendered when there are no molecules.
   await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
   // Click on the "Add Molecule" button.
-  await nmrium.page.click('data-test-id=panel-structures-button-add >> nth=0');
+  await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
 
   // Select the "aromatic ring" tool.
   await nmrium.page.click('canvas >> nth=0', {
