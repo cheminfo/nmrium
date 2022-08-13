@@ -238,16 +238,24 @@ test('molecules 1H spectrum', async ({ page }) => {
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
   });
-  await test.step('check Float Molecule', async () => {
-    // Click on Float molecule button.
+  await test.step('Check float molecule', async () => {
+    // Click on float molecule button.
     await nmrium.page.click('_react=ToggleButton[popupTitle="Float Molecule"]');
-    const floatingMolecule = nmrium.page.locator('#molSVG');
-    await expect(floatingMolecule).toBeVisible();
+    // Check floated molecule.
+    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
   });
-  await test.step('check Float Molecule disappear on switch ', async () => {
-    // Go to the previous molecule.
+  await test.step('Delete molecule', async () => {
+    // Delete molecule.
     await nmrium.page.click('_react=ToolTip[title="Delete Molecule"]');
-
+    // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
+    // Check selected molecule number.
+    await expect(nmrium.page.locator('text=1 / 2')).toBeVisible();
+    // Check selected molecule formula.
+    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+    // Check selected molecule svg.
+    await expect(
+      nmrium.page.locator('.mol-svg-container #molSVG0'),
+    ).toBeVisible();
   });
 });
