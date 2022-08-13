@@ -261,7 +261,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
-    await nmrium.page.click('_react=[title="Change Integrals Sum"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Change Integrals Sum"] >> button',
+    );
     await expect(
       nmrium.page.locator('_react=Draggable >> #molSVG0'),
     ).toBeVisible();
@@ -295,11 +297,15 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(
       nmrium.page.locator('_react=Draggable >> text=New sum for H will be 12!'),
     ).toBeVisible();
-    await nmrium.page.click('_react=Draggable >> _react=[title="Close"]');
+    await nmrium.page.click(
+      '_react=Draggable >> _react=ToolTip[title="Close"] >> button',
+    );
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
-    await nmrium.page.click('_react=[title="Change Ranges Sum"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Change Ranges Sum"] >> button',
+    );
     await expect(
       nmrium.page.locator('_react=Draggable >> #molSVG0'),
     ).toBeVisible();
@@ -333,17 +339,21 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(
       nmrium.page.locator('_react=Draggable >> text=New sum for H will be 12!'),
     ).toBeVisible();
-    await nmrium.page.click('_react=Draggable >> _react=[title="Close"]');
+    await nmrium.page.click(
+      '_react=Draggable >> _react=ToolTip[title="Close"] >> button',
+    );
   });
   await test.step('Check float molecule', async () => {
     // Click on float molecule button.
-    await nmrium.page.click('_react=ToggleButton[popupTitle="Float Molecule"]');
+    await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
   });
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
-    await nmrium.page.click('_react=[title="Delete Molecule"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Delete Molecule"] >> button',
+    );
     // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
     // Check selected molecule.
@@ -365,7 +375,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     ).toBeVisible();
 
     // Delete molecule.
-    await nmrium.page.click('_react=[title="Delete Molecule"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Delete Molecule"] >> button',
+    );
 
     // Check selected molecule.
     await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
@@ -382,7 +394,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       );
       await nmrium.page.click('text=Copy as molfile');
       // Paste the molecule.
-      await nmrium.page.click('_react=[title="Paste molfile"] >> button');
+      await nmrium.page.click(
+        '_react=ToolTip[title="Paste molfile"] >> button',
+      );
       await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
       await expect(
         nmrium.page.locator('text=C11H14N2O - 190.25 >> nth=1'),
@@ -403,14 +417,18 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       ).toBeVisible();
 
       // Delete molecule.
-      await nmrium.page.click('_react=[title="Delete Molecule"] >> button');
+      await nmrium.page.click(
+        '_react=ToolTip[title="Delete Molecule"] >> button',
+      );
     }
     // Check selected molecule.
     await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
     // Delete molecule.
-    await nmrium.page.click('_react=[title="Delete Molecule"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Delete Molecule"] >> button',
+    );
 
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
