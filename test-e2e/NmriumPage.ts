@@ -43,7 +43,7 @@ export default class NmriumPage {
       (await this.viewerLocator.boundingBox()) as BoundingBox;
     await this.page.mouse.move(x + width / 2, y + height / 2);
   }
-  public async phaseCorrectionFilter(
+  public async applyPhaseCorrection(
     options: {
       keyboard?: boolean;
       mode?: 'automatic' | 'manual' | 'absolute';

@@ -105,7 +105,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await fourierTransformFilter(nmrium);
   });
   await test.step('Apply phase correction filter', async () => {
-    await nmrium.phaseCorrectionFilter();
+    await nmrium.applyPhaseCorrection();
   });
   await test.step('Apply baseline correction filter', async () => {
     await baselineCorrectionFilter(nmrium);
@@ -136,7 +136,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     await fourierTransformFilter(nmrium);
   });
   await test.step('Apply phase correction filter', async () => {
-    await nmrium.phaseCorrectionFilter({ keyboard: true, mode: 'automatic' });
+    await nmrium.applyPhaseCorrection({ keyboard: true, mode: 'automatic' });
   });
   await test.step('Apply baseline correction filter', async () => {
     await baselineCorrectionFilter(nmrium, { keyboard: true });
