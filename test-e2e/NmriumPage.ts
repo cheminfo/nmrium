@@ -43,4 +43,37 @@ export default class NmriumPage {
       (await this.viewerLocator.boundingBox()) as BoundingBox;
     await this.page.mouse.move(x + width / 2, y + height / 2);
   }
+  public async phaseCorrectionFilter(
+    options: {
+      keyboard?: boolean;
+      mode?: 'automatic' | 'manual' | 'absolute';
+    } = {},
+  ) {
+    const { keyboard = false, mode = 'manual' } = options;
+
+    if (keyboard) {
+      await this.moveMouseToViewer();
+      await this.page.keyboard.press('KeyA');
+    } else {
+      await this.clickTool('phaseCorrection');
+    }
+    if (mode === 'manual') {
+      await this.page.fill('data-test-id=input-ph1', '-100');
+      await this.page.fill('data-test-id=input-ph0', '-104');
+      // input debounce for 250ms
+      await this.page.waitForTimeout(250);
+    }
+    if (mode === 'automatic') {
+      const select = this.page.locator('select');
+      await select.selectOption('automatic');
+    }
+    if (mode === 'absolute') {
+      const select = this.page.locator('select');
+      await select.selectOption('absolute');
+    }
+    await this.page.click('button >> text=Apply');
+    await expect(
+      this.page.locator('data-test-id=filters-table >> text=Phase correction'),
+    ).toBeVisible();
+  }
 }
