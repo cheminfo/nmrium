@@ -96,7 +96,7 @@ const accordionItems: AccordionItem[] = [
     mode: null,
   },
   {
-    title: 'Structures',
+    title: 'Chemical structures',
     component: <MoleculePanel />,
     hidePreferenceKey: 'structuresPanel',
     mode: null,

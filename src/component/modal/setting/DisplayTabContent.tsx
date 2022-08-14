@@ -31,7 +31,7 @@ const LIST: ListItem[] = [
     name: 'panels.rangesPanel',
   },
   {
-    label: 'Chemical structure panel',
+    label: 'Chemical structures panel',
     name: 'panels.structuresPanel',
   },
   {
