@@ -33,6 +33,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chrome'],
         viewport: viewportOverride,
+        permissions: ['clipboard-read', 'clipboard-write'],
       },
     },
     {
