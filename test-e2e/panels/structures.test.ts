@@ -5,7 +5,7 @@ import NmriumPage from '../NmriumPage';
 test('should draw structure and display it with MF', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   // Open the "Structures" panel.
-  await nmrium.clickPanel('Structures');
+  await nmrium.clickPanel('Chemical structures');
 
   await test.step('empty panel', async () => {
     // The SVG container should not be rendered when there are no molecules.
@@ -114,8 +114,8 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  await test.step('open Structures panel', async () => {
-    await nmrium.clickPanel('Structures');
+  await test.step('open Chemical structures panel', async () => {
+    await nmrium.clickPanel('Chemical structures');
   });
 
   await test.step('check existing molecule', async () => {
