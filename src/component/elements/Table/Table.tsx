@@ -12,16 +12,11 @@ interface TableProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
-  testID?: string;
 }
 
-function Table({ children, className, style, testID }: TableProps) {
+function Table({ children, className, style }: TableProps) {
   return (
-    <div
-      className={className}
-      style={{ ...styles, ...style }}
-      data-test-id={testID}
-    >
+    <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
