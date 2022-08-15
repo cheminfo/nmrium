@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
 
-test('Should 1d spectrum hide/show', async ({ page }) => {
+test.skip('Should 1d spectrum hide/show', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -23,7 +23,7 @@ test('Should 1d spectrum hide/show', async ({ page }) => {
   await expect(spectrumLineLocator).toBeVisible();
 });
 
-test('Check if the color picker is visible after click on the ColorIndicator', async ({
+test.skip('Check if the color picker is visible after click on the ColorIndicator', async ({
   page,
 }) => {
   const nmrium = await NmriumPage.create(page);
@@ -36,7 +36,7 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
   await expect(sketchPicker).toHaveCount(2);
 });
 
-test('Should Zoom', async ({ page }) => {
+test.skip('Should Zoom', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -66,7 +66,7 @@ test('Should Zoom', async ({ page }) => {
   expect(path).not.toMatch(previousPath);
 });
 
-test('Check change spectrum color, Should be white', async ({ page }) => {
+test.skip('Check change spectrum color, Should be white', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -89,7 +89,7 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
   await expect(whiteSpectrumLine).toBeVisible();
 });
 
-test('Should 2d deactivate spectrum', async ({ page }) => {
+test.skip('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
 
@@ -105,4 +105,61 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
 
   // should spectra still visible
   await expect(spectrumLineLocator).toBeVisible();
+});
+
+test('2d spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+
+  await test.step('Open COSY ethylbenzene 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=COSY ethylbenzene');
+  });
+  await test.step('Check two spectrum tabs', async () => {
+    const Tabs = nmrium.page.locator(
+      '_react=SpectrumListPanel >> _react=InternalTab',
+    );
+    await expect(Tabs).toHaveCount(2);
+    await expect(Tabs.first()).toHaveText('1H');
+    await expect(Tabs.last()).toHaveText('1H,1H');
+  });
+  await test.step('Change H1 spectrum color', async () => {
+    // Check ColorIndicator initial color
+    await expect(
+      nmrium.page.locator('_react=ColorIndicator[color.color= "#7c2353"]'),
+    ).toBeVisible();
+    // Check spectrum initial color match with ColorIndicator
+    await expect(
+      nmrium.page.locator(
+        'data-test-id=spectrum-line >> _react=Line[display.color = "#7c2353"]',
+      ),
+    ).toBeVisible();
+
+    // Open Change color modal
+    await nmrium.page.click('_react=ColorIndicator');
+
+    // change the color to #ddb1c9ff
+    await nmrium.page.click('_react=ColorPicker >> div >> nth=0', {
+      position: { x: 40, y: 20 },
+    });
+
+    // Check that ColorIndicator color changed
+    await expect(
+      nmrium.page.locator('_react=ColorIndicator[color.color= "#ddb1c9ff"]'),
+    ).toBeVisible();
+    // Check that spectrum color changed
+    await expect(
+      nmrium.page.locator(
+        'data-test-id=spectrum-line >> _react=Line[display.color = "#ddb1c9ff"]',
+      ),
+    ).toBeVisible();
+
+    // Close Change color modal
+    await nmrium.page.click('_react=ColorIndicator');
+  });
+  await test.step('Change H1,H1 spectrum', async () => {
+    await nmrium.page.click('_react=SpectrumListPanel >> text=1H,1H');
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      2,
+    );
+  });
 });
