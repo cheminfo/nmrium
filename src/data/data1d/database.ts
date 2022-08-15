@@ -97,7 +97,6 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
       try {
         const molecule = OCL.Molecule.fromIDCode(
           entry.ocl.idCode,
-          //@ts-expect-error types will be fixed in next release of openchemlib
           entry.ocl.coordinates,
         );
         moleculesDB.pushEntry(
