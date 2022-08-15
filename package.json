@@ -78,7 +78,7 @@
     "nmr-processing": "^9.0.3",
     "nmredata": "^0.7.0",
     "numeral": "^2.0.6",
-    "openchemlib": "^8.0.0",
+    "openchemlib": "^8.0.1",
     "openchemlib-utils": "^2.0.0",
     "re-resizable": "^6.9.9",
     "react-d3-utils": "^0.5.1",

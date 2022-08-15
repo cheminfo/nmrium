@@ -45,7 +45,7 @@ async function resizeRange(nmrium: NmriumPage) {
 
   const { width } = (await greenArea.boundingBox()) as BoundingBox;
 
-  expect(width).toBe(30);
+  expect(width).toBe(31);
 }
 
 async function deleteRange(nmrium: NmriumPage) {
