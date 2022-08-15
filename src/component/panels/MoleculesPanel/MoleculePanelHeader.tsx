@@ -208,7 +208,6 @@ export default function MoleculePanelHeader({
             className="bar-button"
             type="button"
             onClick={onOpenMoleculeEditor}
-            data-test-id="panel-structures-button-add"
           >
             <FaPlus />
           </button>

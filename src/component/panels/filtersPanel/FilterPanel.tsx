@@ -65,7 +65,7 @@ interface FiltersPanelInnerProps {
 function FilterPanelInner({ filters }: FiltersPanelInnerProps) {
   const filtersTable = useMemo(() => {
     return filters ? (
-      <Table testID="filters-table">
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell align="center" size={1}>

@@ -58,8 +58,8 @@ export default class NmriumPage {
       await this.clickTool('phaseCorrection');
     }
     if (mode === 'manual') {
-      await this.page.fill('data-test-id=input-ph1', '-100');
-      await this.page.fill('data-test-id=input-ph0', '-104');
+      await this.page.fill('input[name="ph1"]', '-100');
+      await this.page.fill('input[name="ph0"]', '-104');
       // input debounce for 250ms
       await this.page.waitForTimeout(250);
     }
@@ -73,7 +73,7 @@ export default class NmriumPage {
     }
     await this.page.click('button >> text=Apply');
     await expect(
-      this.page.locator('data-test-id=filters-table >> text=Phase correction'),
+      this.page.locator('_react=FilterPanel >> text=Phase correction'),
     ).toBeVisible();
   }
 }

@@ -15,7 +15,7 @@ async function apodizationFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Apodization'),
+    nmrium.page.locator('_react=FilterPanel >> text=Apodization'),
   ).toBeVisible();
 }
 
@@ -24,7 +24,7 @@ async function zeroFillingFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=Zero Filling'),
+    nmrium.page.locator('_react=FilterPanel >> text=Zero Filling'),
   ).toBeVisible();
 }
 
@@ -32,7 +32,7 @@ async function fourierTransformFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('fft');
 
   await expect(
-    nmrium.page.locator('data-test-id=filters-table >> text=FFT'),
+    nmrium.page.locator('_react=FilterPanel >> text=FFT'),
   ).toBeVisible();
 }
 
@@ -49,9 +49,7 @@ async function baselineCorrectionFilter(
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator(
-      'data-test-id=filters-table >> text=Baseline correction',
-    ),
+    nmrium.page.locator('_react=FilterPanel >> text=Baseline correction'),
   ).toBeVisible();
 }
 
@@ -73,6 +71,10 @@ async function addPeaks(
     );
   }
   await nmrium.page.click('button >> text=Apply');
+
+  await expect(
+    nmrium.page.locator('_react=FilterPanel >> text=Baseline correction'),
+  ).toBeVisible();
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const peaksTable = nmrium.page.locator(
@@ -89,7 +91,6 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   await expect(lastPeak).toBeVisible();
   await expect(inexistentPeak).toBeHidden();
 }
-
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
@@ -115,7 +116,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     await expect(
-      nmrium.page.locator('data-test-id=filters-table >> .filter-row'),
+      nmrium.page.locator('_react=FilterPanel >> .filter-row'),
     ).toHaveCount(6);
   });
   await test.step('Check spectrum is displayed', async () => {
@@ -155,7 +156,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     await expect(
-      nmrium.page.locator('data-test-id=filters-table >> .filter-row'),
+      nmrium.page.locator('_react=FilterPanel >> .filter-row'),
     ).toHaveCount(5);
   });
 });
