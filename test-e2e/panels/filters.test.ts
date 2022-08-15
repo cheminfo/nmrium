@@ -12,7 +12,7 @@ async function apodizationFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('_react=FilterPanelInner >> text=Apodization'),
+    nmrium.page.locator('_react=FilterPanel >> text=Apodization'),
   ).toBeVisible();
 }
 
@@ -21,7 +21,7 @@ async function zeroFillingFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('_react=FilterPanelInner >> text=Zero Filling'),
+    nmrium.page.locator('_react=FilterPanel >> text=Zero Filling'),
   ).toBeVisible();
 }
 
@@ -29,21 +29,21 @@ async function fourierTransformFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('fft');
 
   await expect(
-    nmrium.page.locator('_react=FilterPanelInner >> text=FFT'),
+    nmrium.page.locator('_react=FilterPanel >> text=FFT'),
   ).toBeVisible();
 }
 
 async function phaseCorrectionFilter(nmrium: NmriumPage) {
   await nmrium.clickTool('phaseCorrection');
-  await nmrium.page.fill('_react=input[name="ph1"]', '-100');
-  await nmrium.page.fill('_react=input[name="ph0"]', '-104');
+  await nmrium.page.fill('input[name="ph1"]', '-100');
+  await nmrium.page.fill('input[name="ph0"]', '-104');
 
   // input debounce for 250ms
   await nmrium.page.waitForTimeout(250);
 
   await nmrium.page.click('button >> text=Apply');
   await expect(
-    nmrium.page.locator('_react=FilterPanelInner >> text=Phase correction'),
+    nmrium.page.locator('_react=FilterPanel >> text=Phase correction'),
   ).toBeVisible();
 }
 
@@ -52,7 +52,7 @@ async function baselineCorrectionFilter(nmrium: NmriumPage) {
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
-    nmrium.page.locator('_react=FilterPanelInner >> text=Baseline correction'),
+    nmrium.page.locator('_react=FilterPanel >> text=Baseline correction'),
   ).toBeVisible();
 }
 
@@ -81,7 +81,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     await expect(
-      nmrium.page.locator('_react=FilterPanelInner >> .filter-row'),
+      nmrium.page.locator('_react=FilterPanel >> .filter-row'),
     ).toHaveCount(6);
   });
   await test.step('Check spectrum is displayed', async () => {
