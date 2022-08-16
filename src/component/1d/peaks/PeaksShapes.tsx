@@ -47,7 +47,6 @@ function PeaksShapesItems(props: { vAlign: number }) {
         const { fill, path } = getPath({ target: 'peakShape', peak });
         return (
           <path
-            data-test-id="peak-shape"
             key={peak.id}
             stroke={'red'}
             fill={fill}
@@ -72,7 +71,6 @@ function PeaksShapesSum(props: { vAlign: number }) {
 
   return (
     <path
-      data-test-id="peaks-shapes-sum"
       stroke={'darkblue'}
       fill={fill}
       d={path}

@@ -38,4 +38,42 @@ export default class NmriumPage {
     await expect(firstTick).toHaveText(min.toString());
     await expect(lastTick).toHaveText(max.toString());
   }
+  public async moveMouseToViewer() {
+    const { x, y, width, height } =
+      (await this.viewerLocator.boundingBox()) as BoundingBox;
+    await this.page.mouse.move(x + width / 2, y + height / 2);
+  }
+  public async applyPhaseCorrection(
+    options: {
+      keyboard?: boolean;
+      mode?: 'automatic' | 'manual' | 'absolute';
+    } = {},
+  ) {
+    const { keyboard = false, mode = 'manual' } = options;
+
+    if (keyboard) {
+      await this.moveMouseToViewer();
+      await this.page.keyboard.press('KeyA');
+    } else {
+      await this.clickTool('phaseCorrection');
+    }
+    if (mode === 'manual') {
+      await this.page.fill('input[name="ph1"]', '-100');
+      await this.page.fill('input[name="ph0"]', '-104');
+      // input debounce for 250ms
+      await this.page.waitForTimeout(250);
+    }
+    if (mode === 'automatic') {
+      const select = this.page.locator('select');
+      await select.selectOption('automatic');
+    }
+    if (mode === 'absolute') {
+      const select = this.page.locator('select');
+      await select.selectOption('absolute');
+    }
+    await this.page.click('button >> text=Apply');
+    await expect(
+      this.page.locator('_react=FilterPanel >> text=Phase correction'),
+    ).toBeVisible();
+  }
 }
