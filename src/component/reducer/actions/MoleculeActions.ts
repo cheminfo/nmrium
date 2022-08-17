@@ -23,22 +23,27 @@ function addMoleculeHandler(draft: Draft<State>, molfile) {
   const molecule = draft.molecules[0] || null;
 
   if (isEmpty && molecule) {
-    changeSpectraRelativeSum(draft, molecule.key, molecule);
+    changeSpectraRelativeSum(draft, molecule.id, molecule);
   }
 }
 
 function setMoleculeHandler(draft: Draft<State>, action) {
-  const { key, label, molfile, isFloat } = action.payload;
-  MoleculeManager.setMolfile(draft.molecules, { key, label, molfile, isFloat });
+  const { id, label, molfile, isFloat } = action.payload;
+  MoleculeManager.setMolfile(draft.molecules, {
+    id,
+    label,
+    molfile,
+    isFloat,
+  });
 
   /**
    * update all spectra that its sum was based on this molecule with the new molecule
    */
-  const index = draft.molecules.findIndex((molecule) => molecule.key === key);
+  const index = draft.molecules.findIndex((molecule) => molecule.id === id);
 
   changeSpectraRelativeSum(
     draft,
-    key,
+    id,
     index !== -1 ? draft.molecules[index] : draft.molecules[0] || null,
   );
 }
@@ -58,7 +63,7 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
   removeAssignments(draft, assignmentData);
 
   const moleculeIndex = draft.molecules.findIndex(
-    (molecule) => molecule.key === key,
+    (molecule) => molecule.id === key,
   );
   draft.molecules.splice(moleculeIndex, 1);
   /**
@@ -88,9 +93,9 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   draft.isLoading = false;
 }
 function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
-  const { key } = action.payload;
+  const { id } = action.payload;
   const moleculeIndex = draft.molecules.findIndex(
-    (molecule) => molecule.key === key,
+    (molecule) => molecule.id === id,
   );
   draft.molecules[moleculeIndex].isFloat =
     !draft.molecules[moleculeIndex].isFloat;
@@ -98,7 +103,7 @@ function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
 function changeMoleculeLabel(draft: Draft<State>, action) {
   const { key, label } = action.payload;
   const moleculeIndex = draft.molecules.findIndex(
-    (molecule) => molecule.key === key,
+    (molecule) => molecule.id === key,
   );
   draft.molecules[moleculeIndex].label = label;
 }

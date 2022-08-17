@@ -30,7 +30,7 @@ export function changeIntegralsRelative(
     datum.integrals.options = {
       ...datum.integrals.options,
       mf: undefined,
-      moleculeKey: undefined,
+      moleculeId: undefined,
       sumAuto: false,
       sum,
     };

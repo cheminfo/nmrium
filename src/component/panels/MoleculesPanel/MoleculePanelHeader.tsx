@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import { IoOpenOutline } from 'react-icons/io5';
 
+import { Molecule } from '../../../data/molecules/Molecule';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
@@ -86,7 +87,7 @@ export interface MoleculeHeaderActionsOptions {
 }
 interface MoleculePanelHeaderProps {
   currentIndex: number;
-  molecules: Array<any>;
+  molecules: Array<Molecule>;
   onMoleculeIndexChange: (index: number) => void;
   onOpenMoleculeEditor: () => void;
   actionsOptions?: MoleculeHeaderActionsOptions;
@@ -154,11 +155,11 @@ export default function MoleculePanelHeader({
   }, [dispatch]);
 
   const handleDelete = useCallback(() => {
-    if (molecules[currentIndex]?.key) {
+    if (molecules[currentIndex]?.id) {
       onMoleculeIndexChange(0);
       dispatch({
         type: DELETE_MOLECULE,
-        payload: { key: molecules[currentIndex].key, assignmentData },
+        payload: { key: molecules[currentIndex].id, assignmentData },
       });
     }
   }, [
@@ -180,7 +181,7 @@ export default function MoleculePanelHeader({
   const floatMoleculeHandler = useCallback(() => {
     dispatch({
       type: FLOAT_MOLECULE_OVER_SPECTRUM,
-      payload: { key: molecules[currentIndex].key },
+      payload: { id: molecules[currentIndex].id },
     });
   }, [currentIndex, dispatch, molecules]);
 
@@ -232,7 +233,7 @@ export default function MoleculePanelHeader({
 
       {molecules?.[currentIndex] && (
         <ToggleButton
-          key={molecules[currentIndex].isFloat}
+          key={molecules[currentIndex].id}
           defaultValue={molecules[currentIndex].isFloat}
           popupTitle="Float Molecule"
           popupPlacement="left"

@@ -21,7 +21,7 @@ export function changeRangeRelativeValue(datum: Datum1D, newRange: RangeProps) {
     datum.ranges.options = {
       ...datum.ranges.options,
       mf: undefined,
-      moleculeKey: undefined,
+      moleculeId: undefined,
       sumAuto: false,
       sum,
     };

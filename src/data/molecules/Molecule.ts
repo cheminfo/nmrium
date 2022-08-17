@@ -4,7 +4,7 @@ import generateID from '../utilities/generateID';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 export interface MoleculeObject {
-  key: string;
+  id: string;
   molfile: string;
   isFloat: boolean;
   label: string;
@@ -18,7 +18,7 @@ export interface Molecule extends MoleculeObject {
 }
 
 export function initMolecule(options: Partial<MoleculeObject> = {}): Molecule {
-  const key = options.key || generateID();
+  const id = options.id || generateID();
   const label = options.label || 'p#';
   const molfile = options.molfile || '';
   const isFloat =
@@ -28,7 +28,7 @@ export function initMolecule(options: Partial<MoleculeObject> = {}): Molecule {
   const mfInfo = mol.getMolecularFormula();
 
   return {
-    key,
+    id,
     molfile,
     label,
     mf: mfInfo.formula,
@@ -41,11 +41,11 @@ export function initMolecule(options: Partial<MoleculeObject> = {}): Molecule {
 }
 
 export function toJSON(molecule: Molecule): MoleculeObject {
-  const { molfile, label, isFloat, key } = molecule;
+  const { molfile, label, isFloat, id } = molecule;
   return {
     molfile,
     label,
     isFloat,
-    key,
+    id,
   };
 }

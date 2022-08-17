@@ -100,7 +100,7 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
       <div css={moleculeContainerStyle}>
         <NextPrev defaultIndex={currentIndex} onChange={onChangeHandler}>
           {molecules?.map((mol, index) => (
-            <div key={mol.key} className="slider">
+            <div key={mol.id} className="slider">
               <div>
                 {mol.molfile && (
                   <MolfileSvgRenderer

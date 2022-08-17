@@ -57,12 +57,12 @@ export function DraggableStructure(props: DraggableStructureProps) {
   const floatMoleculeHandler = useCallback(() => {
     dispatch({
       type: FLOAT_MOLECULE_OVER_SPECTRUM,
-      payload: { key: molecule.key },
+      payload: { id: molecule.id },
     });
   }, [dispatch, molecule]);
   return (
     <SVGDraggable
-      key={molecule.key}
+      key={molecule.id}
       width={150}
       height={100}
       initialPosition={{ x: 100, y: 50 }}

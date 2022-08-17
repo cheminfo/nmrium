@@ -30,7 +30,7 @@ export function FloatMoleculeStructuresInner(
         .filter((molecule) => molecule.isFloat)
         .map((molecule) => (
           <DraggableStructure
-            key={molecule.key}
+            key={molecule.id}
             {...{ zones, ranges, activeTab, displayerMode, molecule }}
           />
         ))}

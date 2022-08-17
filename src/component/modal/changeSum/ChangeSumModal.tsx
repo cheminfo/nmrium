@@ -69,7 +69,7 @@ type SaveInput =
       sumAuto: false;
     }
   | {
-      moleculeKey: string;
+      moleculeId: string;
       mf: string;
       sumAuto: true;
     };
@@ -109,10 +109,10 @@ export default function ChangeSumModal({
   useEffect(() => {
     if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
       setActiveOption(SumSetOptions.Auto);
-      const { mf, moleculeKey: key } = sumOptions;
+      const { mf, moleculeId: id } = sumOptions;
       formRef.current.setValues({
         sum: null,
-        molecule: key && mf ? { mf, key } : null,
+        molecule: id && mf ? { mf, id } : null,
       });
     } else {
       setActiveOption(SumSetOptions.Manual);
@@ -125,10 +125,10 @@ export default function ChangeSumModal({
       switch (setOption) {
         case SumSetOptions.Auto: {
           const {
-            molecule: { mf, key: moleculeKey },
+            molecule: { mf, id: moleculeId },
           } = values;
 
-          onSave({ sumAuto: true, mf, moleculeKey });
+          onSave({ sumAuto: true, mf, moleculeId });
           break;
         }
         case SumSetOptions.Manual: {
