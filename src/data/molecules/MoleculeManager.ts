@@ -42,9 +42,9 @@ export function addMolfile(molecules, molfile) {
 
 export function setMolfile(
   molecules,
-  currentMolecule: Pick<Molecule, 'key' | 'molfile' | 'label' | 'isFloat'>,
+  currentMolecule: Pick<Molecule, 'id' | 'molfile' | 'label' | 'isFloat'>,
 ) {
-  const { molfile, key, label, isFloat } = currentMolecule;
+  const { molfile, id, label, isFloat } = currentMolecule;
   const reservedNumbers = extractLabelsNumbers(molecules);
 
   // try to parse molfile
@@ -53,7 +53,7 @@ export function setMolfile(
   let fragments = molecule.getFragments();
 
   if (fragments.length > 1) {
-    molecules = molecules.filter((m) => m.key !== key);
+    molecules = molecules.filter((m) => m.id !== id);
 
     for (let fragment of fragments) {
       molecules.push(
@@ -68,10 +68,10 @@ export function setMolfile(
     const _mol = initMolecule({
       isFloat,
       molfile: fragment.toMolfileV3(),
-      key,
+      id,
       label,
     });
-    let molIndex = molecules.findIndex((m) => m.key === key);
+    let molIndex = molecules.findIndex((m) => m.id === id);
     molecules.splice(molIndex, 1, _mol);
   }
 

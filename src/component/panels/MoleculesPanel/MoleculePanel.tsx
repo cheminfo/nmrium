@@ -144,7 +144,7 @@ function MoleculePanelInner({
                 >
                   {molecules && molecules.length > 0 ? (
                     molecules.map((mol: Molecule, index) => (
-                      <div key={mol.key} css={styles.items}>
+                      <div key={mol.id} css={styles.items}>
                         <MoleculeHeader
                           currentMolecule={mol}
                           molecules={molecules}

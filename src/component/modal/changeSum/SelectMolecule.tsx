@@ -47,7 +47,7 @@ interface SelectMoleculeProps {
 export default function SelectMolecule(props: SelectMoleculeProps) {
   const [currentIndex, setCurrentIndex] = useState<number>();
   const { setFieldValue, errors, values } = useFormikContext<{
-    molecule: { mf: string; key: string } | null;
+    molecule: { mf: string; id: string } | null;
     sum: number;
   }>();
   const { molecules, activeTab } = useChartData();
@@ -74,7 +74,7 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
     if (molecules && molecules.length > 0) {
       const index = values[props.name]
         ? molecules.findIndex(
-            (molecule) => molecule.key === values[props.name].key,
+            (molecule) => molecule.id === values[props.name].id,
           )
         : -1;
       setValue(index !== -1 ? index : 0);

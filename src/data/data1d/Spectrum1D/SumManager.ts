@@ -24,10 +24,10 @@ export function initSumOptions(options: SumOptions, params: SumParams) {
   const { molecules, nucleus } = params;
 
   if (options.sumAuto && Array.isArray(molecules) && molecules.length > 0) {
-    const { mf, key } = molecules[0];
-    newOptions = { ...newOptions, sumAuto: true, mf, moleculeKey: key };
+    const { mf, id } = molecules[0];
+    newOptions = { ...newOptions, sumAuto: true, mf, moleculeId: id };
   } else {
-    const { mf, moleculeKey, ...resOptions } = newOptions;
+    const { mf, moleculeId, ...resOptions } = newOptions;
     newOptions = { ...resOptions, sumAuto: false };
   }
   if (!newOptions.sum) {
@@ -54,11 +54,17 @@ export function setSumOptions(
 ) {
   const { nucleus, options } = params;
   if (options.sumAuto) {
-    const { mf, moleculeKey } = options;
+    const { mf, moleculeId } = options;
     const sum = getSum(mf, nucleus);
-    data.options = { ...data.options, sumAuto: true, moleculeKey, mf, sum };
+    data.options = {
+      ...data.options,
+      sumAuto: true,
+      moleculeId,
+      mf,
+      sum,
+    };
   } else {
-    const { mf, moleculeKey, ...resOptions } = data.options;
+    const { mf, moleculeId, ...resOptions } = data.options;
     data.options = { ...resOptions, sumAuto: false, sum: options.sum };
   }
 }
@@ -93,17 +99,17 @@ export function changeSpectraRelativeSum(
   for (const spectrum of draft.data) {
     if (isSpectrum1D(spectrum)) {
       for (const key of keys) {
-        const { moleculeKey, mf, sumAuto } = spectrum[key].options;
+        const { moleculeId, mf, sumAuto } = spectrum[key].options;
 
-        if ((molKey === moleculeKey || (!moleculeKey && !mf)) && sumAuto) {
+        if ((molKey === moleculeId || (!moleculeId && !mf)) && sumAuto) {
           const options: Partial<SetSumOptions> = molecule
             ? {
                 mf: molecule.mf,
-                moleculeKey: molecule.key,
+                moleculeId: molecule.id,
               }
             : {
                 mf: undefined,
-                moleculeKey: undefined,
+                moleculeId: undefined,
               };
 
           setSumOptions(spectrum[key], {

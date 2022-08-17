@@ -62,7 +62,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
           value={currentMolecule.label}
           style={styles.labelInput}
           validate={validateLabel}
-          onSave={(event) => saveLabelHandler(currentMolecule.key, event)}
+          onSave={(event) => saveLabelHandler(currentMolecule.id, event)}
         />
       </div>
 
