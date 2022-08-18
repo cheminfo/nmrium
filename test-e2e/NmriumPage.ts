@@ -76,4 +76,13 @@ export default class NmriumPage {
       this.page.locator('_react=FilterPanel >> text=Phase correction'),
     ).toBeVisible();
   }
+  public async checkSVGLength() {
+    const svgLength = await this.viewerLocator.evaluate(
+      (node) => node.innerHTML.length,
+    );
+    const bodyLength = await this.page
+      .locator('body')
+      .evaluate((node) => node.innerHTML.length);
+    expect(svgLength).toBeGreaterThan(bodyLength * 0.8);
+  }
 }
