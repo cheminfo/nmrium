@@ -106,3 +106,259 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
   // should spectra still visible
   await expect(spectrumLineLocator).toBeVisible();
 });
+
+test('2d spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+
+  await test.step('Open COSY ethylbenzene 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=COSY ethylbenzene');
+    // Wait the spectrum to load
+    await nmrium.page.waitForTimeout(250);
+    // Check svg
+    await nmrium.checkSVGLength(87876);
+  });
+  await test.step('Check two spectrum tabs', async () => {
+    const Tabs = nmrium.page.locator(
+      '_react=SpectrumListPanel >> _react=InternalTab',
+    );
+    await expect(Tabs).toHaveCount(2);
+    await expect(Tabs.first()).toHaveText('1H');
+    await expect(Tabs.last()).toHaveText('1H,1H');
+  });
+  await test.step('Change 1H spectrum color', async () => {
+    // Check ColorIndicator initial color
+    await expect(
+      nmrium.page.locator('_react=ColorIndicator[color.color="#7c2353"]'),
+    ).toBeVisible();
+    // Check spectrum initial color match with ColorIndicator
+    await expect(
+      nmrium.page.locator(
+        'data-test-id=spectrum-line >> _react=Line[display.color="#7c2353"]',
+      ),
+    ).toBeVisible();
+
+    // Open Change color modal
+    await nmrium.page.click('_react=ColorIndicator');
+
+    // change the color to #ddb1c9ff
+    await nmrium.page.click('_react=ColorPicker >> div >> nth=0', {
+      position: { x: 40, y: 20 },
+    });
+
+    // Check that ColorIndicator color changed
+    await expect(
+      nmrium.page.locator('_react=ColorIndicator[color.color="#ddb1c9ff"]'),
+    ).toBeVisible();
+    // Check that spectrum color changed
+    await expect(
+      nmrium.page.locator(
+        'data-test-id=spectrum-line >> _react=Line[display.color="#ddb1c9ff"]',
+      ),
+    ).toBeVisible();
+
+    // Check svg
+    await nmrium.checkSVGLength(87878);
+
+    // Close color picker
+    await nmrium.viewerLocator.click({ force: true });
+    await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
+  });
+  await test.step('Change H1,H1 spectrum', async () => {
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+    );
+    // Check svg
+    await nmrium.checkSVGLength(5087655);
+    // Check top spectrum
+    await expect(nmrium.page.locator('_react=Top1DChart')).toBeVisible();
+
+    // Check left spectrum
+    await expect(nmrium.page.locator('_react=Left1DChart')).toBeVisible();
+
+    // Check two Contours
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeVisible();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      2,
+    );
+  });
+  await test.step('Change 1H,1H spectrum color', async () => {
+    // Check ColorIndicator initial color
+    await expect(
+      nmrium.page.locator(
+        '_react=ColorIndicator[color.negativeColor="blue"][color.positiveColor="darkblue"]',
+      ),
+    ).toBeVisible();
+    // Check spectrum initial color match with ColorIndicator
+    await expect(
+      nmrium.page.locator(
+        '_react=ContoursPaths[sign="positive"][color="darkblue"]',
+      ),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        '_react=ContoursPaths[sign="negative"][color="blue"]',
+      ),
+    ).toBeVisible();
+
+    // Open Change color modal
+    await nmrium.page.click('_react=ColorIndicator');
+
+    // Change colors
+    await nmrium.page.click(
+      '_react=ColorPicker >> _react=SketchPresetColors >> nth=0 >> div >> nth=0',
+    );
+    await nmrium.page.click(
+      '_react=ColorPicker >> _react=SketchPresetColors >> nth=1 >> div >> nth=5',
+    );
+
+    // Check that ColorIndicator color changed
+    await expect(
+      nmrium.page.locator(
+        '_react=ColorIndicator[color.negativeColor="#803e75ff"][color.positiveColor="#c10020ff"]',
+      ),
+    ).toBeVisible();
+    // Check that spectrums color changed
+    await expect(
+      nmrium.page.locator(
+        '_react=ContoursPaths[sign="positive"][color="#c10020ff"]',
+      ),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        '_react=ContoursPaths[sign="negative"][color="#803e75ff"]',
+      ),
+    ).toBeVisible();
+    // Check svg
+    await nmrium.checkSVGLength(5087655);
+    // Close color picker
+    await nmrium.viewerLocator.click({ force: true });
+    await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
+  });
+  await test.step('Check hide spectrums', async () => {
+    // Hide positive spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
+    );
+    // Check svg
+    await nmrium.checkSVGLength(3727979);
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeHidden();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeVisible();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      1,
+    );
+
+    // Hide negative spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
+    );
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeHidden();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeHidden();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      0,
+    );
+    // Show positive spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
+    );
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeHidden();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      1,
+    );
+    // Check svg
+    await nmrium.checkSVGLength(1517395);
+
+    // Show negative spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
+    );
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeVisible();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      2,
+    );
+    // Check svg
+    await nmrium.checkSVGLength(5087661);
+  });
+  await test.step('Delete 1H tab', async () => {
+    // Go to 1H tab
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+    );
+    // Delete 1H Spectrum item
+    await nmrium.page.click('_react=SpectrumListItem', { button: 'right' });
+    await nmrium.page.click('text=Delete');
+    // Check tabs
+    const Tabs = nmrium.page.locator(
+      '_react=SpectrumListPanel >> _react=InternalTab',
+    );
+    await expect(Tabs).toHaveCount(1);
+    await expect(Tabs).toHaveText('1H,1H');
+    // Check top spectrum
+    await expect(nmrium.page.locator('_react=Top1DChart')).toBeHidden();
+    // Check left spectrum
+    await expect(nmrium.page.locator('_react=Left1DChart')).toBeHidden();
+    // Check two Contours
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeVisible();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      2,
+    );
+    // Check svg
+    await nmrium.checkSVGLength(4926279);
+  });
+  await test.step('Add projection', async () => {
+    // Click add missing projection btn
+    await nmrium.page.click('_react=ToolTip[title="Add missing projection"]');
+
+    // Check tabs
+    const Tabs = nmrium.page.locator(
+      '_react=SpectrumListPanel >> _react=InternalTab',
+    );
+    await expect(Tabs).toHaveCount(2);
+    await expect(Tabs.first()).toHaveText('1H');
+    await expect(Tabs.last()).toHaveText('1H,1H');
+    // Check svg
+    await nmrium.checkSVGLength(5013019);
+    // Check top spectrum
+    await expect(nmrium.page.locator('_react=Top1DChart')).toBeVisible();
+    // Check left spectrum
+    await expect(nmrium.page.locator('_react=Left1DChart')).toBeVisible();
+    // Check two Contours
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="positive"]'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
+    ).toBeVisible();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      2,
+    );
+  });
+});
