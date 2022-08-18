@@ -113,8 +113,10 @@ test('2d spectrum', async ({ page }) => {
   await test.step('Open COSY ethylbenzene 2D spectrum', async () => {
     await nmrium.page.click('li >> text=General');
     await nmrium.page.click('li >> text=COSY ethylbenzene');
+    // Wait the spectrum to load
+    await nmrium.page.waitForTimeout(250);
     // Check svg
-    await nmrium.checkSVGLength(146);
+    await nmrium.checkSVGLength(87876);
   });
   await test.step('Check two spectrum tabs', async () => {
     const Tabs = nmrium.page.locator(
