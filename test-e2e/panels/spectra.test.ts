@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
 
-test.skip('Should 1d spectrum hide/show', async ({ page }) => {
+test('Should 1d spectrum hide/show', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -23,7 +23,7 @@ test.skip('Should 1d spectrum hide/show', async ({ page }) => {
   await expect(spectrumLineLocator).toBeVisible();
 });
 
-test.skip('Check if the color picker is visible after click on the ColorIndicator', async ({
+test('Check if the color picker is visible after click on the ColorIndicator', async ({
   page,
 }) => {
   const nmrium = await NmriumPage.create(page);
@@ -36,7 +36,7 @@ test.skip('Check if the color picker is visible after click on the ColorIndicato
   await expect(sketchPicker).toHaveCount(2);
 });
 
-test.skip('Should Zoom', async ({ page }) => {
+test('Should Zoom', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -66,7 +66,7 @@ test.skip('Should Zoom', async ({ page }) => {
   expect(path).not.toMatch(previousPath);
 });
 
-test.skip('Check change spectrum color, Should be white', async ({ page }) => {
+test('Check change spectrum color, Should be white', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -89,7 +89,7 @@ test.skip('Check change spectrum color, Should be white', async ({ page }) => {
   await expect(whiteSpectrumLine).toBeVisible();
 });
 
-test.skip('Should 2d deactivate spectrum', async ({ page }) => {
+test('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
 
