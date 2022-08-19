@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import OCL from 'openchemlib/full';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import OCLnmr from 'react-ocl-nmr';
 
 import { Molecule } from '../../../data/molecules/Molecule';
@@ -13,7 +13,10 @@ import SVGDraggable from '../../elements/draggble/SVGDraggable';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../panels/MoleculesPanel/useAtomAssignment';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import { FLOAT_MOLECULE_OVER_SPECTRUM } from '../../reducer/types/Types';
+import {
+  FLOAT_MOLECULE_OVER_SPECTRUM,
+  SET_MOLECULE,
+} from '../../reducer/types/Types';
 
 import ActionsButton from './ActionsButton';
 
@@ -42,7 +45,6 @@ const style = css`
 `;
 export function DraggableStructure(props: DraggableStructureProps) {
   const { zones, ranges, molecule, activeTab, displayerMode, index } = props;
-  const [molfile, setMolFile] = useState(molecule.molfile);
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();
@@ -84,7 +86,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
             id={`molSVG${index || ''}`}
             width={width - 20}
             height={height}
-            molfile={molfile}
+            molfile={molecule.molfile}
             setSelectedAtom={handleOnClickAtom}
             atomHighlightColor={
               currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
@@ -96,7 +98,17 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 : assignedDiaIDsMerged
             }
             setHoverAtom={handleOnAtomHover}
-            setMolfile={setMolFile}
+            setMolfile={(molfile) => {
+              dispatch({
+                type: SET_MOLECULE,
+                payload: {
+                  molfile,
+                  id: molecule.id,
+                  isFloat: true,
+                  label: molecule.label,
+                },
+              });
+            }}
           />
         </foreignObject>
       )}
