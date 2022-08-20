@@ -1,5 +1,6 @@
+import { v4 } from '@lukeed/uuid';
+
 import { getShift } from '../../../../data/data2d/Spectrum2D';
-import generateID from '../../../../data/utilities/generateID';
 
 const axisLabels = ['y', 'x'];
 
@@ -10,8 +11,8 @@ export function addZones(signals, datum) {
   const frequency = { x: baseFrequency[0], y: baseFrequency[1] };
 
   for (const signal of signals) {
-    let zone = { x: {}, y: {}, id: generateID(), kind: 'signal' };
-    let signalFormated = { id: generateID(), kind: 'signal', peaks: [] };
+    let zone = { x: {}, y: {}, id: v4(), kind: 'signal' };
+    let signalFormated = { id: v4(), kind: 'signal', peaks: [] };
     let width = { x: 10, y: 10 };
     for (let axis of axisLabels) {
       let { coupling = [], delta, diaIDs = [] } = signal[axis];

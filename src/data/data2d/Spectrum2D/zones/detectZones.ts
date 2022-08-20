@@ -1,8 +1,8 @@
+import { v4 } from '@lukeed/uuid';
 import { NMRZone } from 'nmr-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { Zone } from '../../../types/data2d';
-import generateID from '../../../utilities/generateID';
 import { getShift } from '../shift/getShift';
 
 import { DetectionZonesOptions, getDetectionZones } from './getDetectionZones';
@@ -33,7 +33,7 @@ export function detectZones(datum, options: DetectionZonesOptions): Zone[] {
 
     const signals = zone.signals.map((signal) => {
       return {
-        id: generateID(),
+        id: v4(),
         peaks: signal.peaks,
         x: {
           originDelta: signal.x.delta - xShift,
@@ -48,7 +48,7 @@ export function detectZones(datum, options: DetectionZonesOptions): Zone[] {
     });
 
     acc.push({
-      id: generateID(),
+      id: v4(),
       x: { from: newXRange.from, to: newXRange.to },
       y: { from: newYRange.from, to: newYRange.to },
       signals,

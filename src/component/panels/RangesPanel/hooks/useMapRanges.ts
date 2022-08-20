@@ -1,7 +1,7 @@
+import { v4 } from '@lukeed/uuid';
 import { useMemo } from 'react';
 
 import { Range } from '../../../../data/types/data1d';
-import generateID from '../../../../data/utilities/generateID';
 
 export interface RangeData extends Range {
   rowKey: string;
@@ -14,7 +14,7 @@ function useMapRanges(data) {
     data.forEach((range, i) => {
       if (range.signals.length === 1) {
         _rangesData.push({
-          rowKey: generateID(),
+          rowKey: v4(),
           ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
@@ -39,7 +39,7 @@ function useMapRanges(data) {
           }
 
           _rangesData.push({
-            rowKey: generateID(),
+            rowKey: v4(),
             ...range,
             tableMetaInfo: {
               ...range.tableMetaInfo,
