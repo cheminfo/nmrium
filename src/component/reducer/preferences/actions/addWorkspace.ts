@@ -1,6 +1,6 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft } from 'immer';
 
-import generateID from '../../../../data/utilities/generateID';
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { AddWorkspaceAction, PreferencesState } from '../preferencesReducer';
 
@@ -20,7 +20,7 @@ export function addWorkspace(
     formatting,
     databases,
   };
-  const newWorkspaceKey = generateID();
+  const newWorkspaceKey = v4();
   const localData = getLocalStorage('nmr-general-settings');
 
   localData.workspaces[newWorkspaceKey] = newWorkSpace;

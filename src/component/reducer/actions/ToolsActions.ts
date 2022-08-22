@@ -1,9 +1,9 @@
+import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
-import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
@@ -114,7 +114,7 @@ function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
   }
   const zones = draft.toolOptions.data.baselineCorrection.zones;
   zones.push({
-    id: generateID(),
+    id: v4(),
     from: zone[0],
     to: zone[1],
   });

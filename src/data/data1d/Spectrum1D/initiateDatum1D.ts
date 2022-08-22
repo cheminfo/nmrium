@@ -1,7 +1,8 @@
+import { v4 } from '@lukeed/uuid';
+
 import * as FiltersTypes from '../../Filters';
 import * as FiltersManager from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
-import generateID from '../../utilities/generateID';
 import get1dColor from '../../utilities/getColor';
 
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
@@ -11,7 +12,7 @@ import { initiateRanges } from './ranges/initiateRanges';
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: Partial<Datum1D> = {};
-  datum.id = options.id || generateID();
+  datum.id = options.id || v4();
   datum.source = {
     jcampURL: null,
     file: {
@@ -23,7 +24,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   };
 
   datum.display = {
-    name: options.display?.name ? options.display.name : generateID(),
+    name: options.display?.name ? options.display.name : v4(),
     ...getColor(options, usedColors),
     isVisible: true,
     isPeaksMarkersVisible: true,

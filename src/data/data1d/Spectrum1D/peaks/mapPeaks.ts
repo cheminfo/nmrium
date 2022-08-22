@@ -1,5 +1,6 @@
+import { v4 } from '@lukeed/uuid';
+
 import { Peak, Datum1D } from '../../../types/data1d';
-import generateID from '../../../utilities/generateID';
 import { getSpectrumErrorValue } from '../getSpectrumErrorValue';
 import { getShiftX } from '../shift/getShiftX';
 
@@ -31,7 +32,7 @@ export function mapPeaks(
     ) {
       newPeaks.push({
         ...peak,
-        id: peak?.id || generateID(),
+        id: peak?.id || v4(),
         originalX: peak.x - shiftX,
       });
     }

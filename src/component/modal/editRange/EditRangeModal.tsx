@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { v4 } from '@lukeed/uuid';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { Datum1D, Range } from '../../../data/types/data1d';
-import generateID from '../../../data/utilities/generateID';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
@@ -108,7 +108,7 @@ function EditRangeModal({
     (signals) => {
       return signals.map((signal) => {
         return {
-          id: generateID(),
+          id: v4(),
           ...signal,
           multiplicity: signal.js
             .map((_coupling) => translateMultiplet(_coupling.multiplicity))

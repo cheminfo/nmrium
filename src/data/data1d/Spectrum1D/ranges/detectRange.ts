@@ -1,7 +1,7 @@
+import { v4 } from '@lukeed/uuid';
 import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
 
 import { RangeDetectionResult, Datum1D } from '../../../types/data1d';
-import generateID from '../../../utilities/generateID';
 import { getShiftX } from '../shift/getShiftX';
 
 interface DetectRangeOptions {
@@ -23,7 +23,7 @@ export function detectRange(
   const shiftX = getShiftX(datum);
 
   return {
-    id: generateID(),
+    id: v4(),
     originFrom: from - shiftX,
     originTo: to - shiftX,
     from,

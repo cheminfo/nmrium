@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import {
   protonImpurities,
   carbonImpurities,
@@ -7,8 +8,6 @@ import {
 import { MoleculesDB } from 'openchemlib-utils';
 import OCL from 'openchemlib/full';
 import { filter } from 'smart-array-filter';
-
-import generateID from '../utilities/generateID';
 
 export interface DataBaseSignal {
   assignment: string;
@@ -128,7 +127,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
 function prepareDataBase(array: Array<DatabaseNMREntry>) {
   return array.map((item) => {
     item.ranges = item.ranges.map((range) => ({
-      id: generateID(),
+      id: v4(),
       ...range,
     }));
     return item;
@@ -149,7 +148,7 @@ export function prepareData(
     const { ranges = [], ...restItemKeys } = item;
 
     for (const range of ranges) {
-      ids.push(range.id || generateID());
+      ids.push(range.id || v4());
       const { signals = [], ...restRangKeys } = range;
       for (const signal of signals) {
         const { js = [], ...restSignalKeys } = signal;

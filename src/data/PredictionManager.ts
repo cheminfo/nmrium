@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import {
   predictAll,
   signalsToXY,
@@ -15,7 +16,6 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
 import { Datum2D, Signal2D, Zone } from './types/data2d';
-import generateID from './utilities/generateID';
 import { adjustAlpha } from './utilities/getColor';
 
 export interface PredictionOptions {
@@ -182,7 +182,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
       (signalsAcc: Signal2D[], signal: Signal2D) => {
         const { x, y, id, ...resSignal } = signal;
         signalsAcc.push({
-          id: id || generateID(),
+          id: id || v4(),
           kind: 'signal',
           x: { ...x, originDelta: x.delta || 0 },
           y: { ...y, originDelta: y.delta || 0 },
@@ -194,7 +194,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
     );
 
     zonesAcc.push({
-      id: generateID(),
+      id: v4(),
       ...resZone,
       signals: newSignals,
       kind: DatumKind.signal,

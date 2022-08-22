@@ -1,6 +1,7 @@
 /* eslint-disable import/namespace */
+import { v4 } from '@lukeed/uuid';
+
 import * as Filters from './Filters';
-import generateID from './utilities/generateID';
 
 export interface Filter {
   id: string;
@@ -142,7 +143,7 @@ function deleteFilter(datum, id) {
 }
 
 function addFilter(datum, filter, isDeleteAllow = true) {
-  const id = generateID();
+  const id = v4();
   datum.filters = datum.filters.slice(0);
   delete filter.isSnapshot;
   datum.filters.push({

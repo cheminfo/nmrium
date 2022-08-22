@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { v4 } from '@lukeed/uuid';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { Fragment, useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
-import generateID from '../../../data/utilities/generateID';
 import Button from '../../elements/Button';
 import FormikInput from '../../elements/formik/FormikInput';
 
@@ -73,7 +73,7 @@ function FormattingTabContent() {
       ppm: '0.00',
       hz: '0.00',
     };
-    const key = generateID();
+    const key = v4();
     const newNuclei = { ...nuclei, [key]: newFormat };
     setFieldValue('formatting.nuclei', newNuclei);
   }, [nuclei, setFieldValue]);

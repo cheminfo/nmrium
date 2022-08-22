@@ -1,6 +1,7 @@
+import { v4 } from '@lukeed/uuid';
+
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { Zone } from '../../../types/data2d';
-import generateID from '../../../utilities/generateID';
 import { getShift } from '../shift/getShift';
 
 import { DetectionZonesOptions, getDetectionZones } from './getDetectionZones';
@@ -22,7 +23,7 @@ export function detectZonesManual(datum, options: DetectionZonesOptions) {
   const formattedZones: Zone[] = zones.map((zone) => {
     const signals = zone.signals.map((signal) => {
       return {
-        id: generateID(),
+        id: v4(),
         peaks: signal.peaks,
         x: {
           originDelta: signal.x.delta - xShift,
@@ -36,7 +37,7 @@ export function detectZonesManual(datum, options: DetectionZonesOptions) {
       };
     });
     return {
-      id: generateID(),
+      id: v4(),
       x: zone.x,
       y: zone.y,
       signals,
