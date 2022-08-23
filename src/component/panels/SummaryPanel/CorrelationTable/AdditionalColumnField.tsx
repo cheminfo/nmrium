@@ -1,9 +1,9 @@
+import { v4 } from '@lukeed/uuid';
 import { buildLink, Correlation, Link } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
@@ -85,11 +85,11 @@ function AdditionalColumnField({
       if (action === 'add') {
         const commonPseudoLink = buildLink({
           experimentType: 'hsqc',
-          experimentID: generateID(),
+          experimentID: v4(),
           atomType: [columnCorrelation.atomType, rowCorrelation.atomType],
-          id: generateID(),
+          id: v4(),
           pseudo: true,
-          signal: { id: generateID(), sign: 0 }, // pseudo signal
+          signal: { id: v4(), sign: 0 }, // pseudo signal
         });
         _correlationDim1 = cloneCorrelationAndEditLink(
           columnCorrelation,

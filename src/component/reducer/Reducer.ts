@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
@@ -8,7 +9,6 @@ import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { migrate } from '../../data/migration/MigrationManager';
 import { FloatingMolecules, Molecule } from '../../data/molecules/Molecule';
 import { Contours } from '../../data/types/data2d/Contours';
-import generateID from '../../data/utilities/generateID';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
@@ -393,7 +393,7 @@ export interface State {
 }
 
 export function initState(state: State): State {
-  const displayerKey = generateID();
+  const displayerKey = v4();
   const correlations = buildCorrelationData([], {
     tolerance: DefaultTolerance,
   });

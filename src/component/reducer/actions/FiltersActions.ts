@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
 
 import * as Filters from '../../../data/Filters';
@@ -14,7 +15,6 @@ import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling'
 import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
-import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
@@ -448,7 +448,7 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
         name: Filters.exclusionZones.id,
         options: [
           {
-            id: generateID(),
+            id: v4(),
             from: range[0],
             to: range[1],
           },

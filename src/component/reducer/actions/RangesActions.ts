@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import { xFindClosestIndex } from 'ml-spectra-processing';
@@ -23,7 +24,6 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
-import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
@@ -153,7 +153,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
 
     if (_editedRowData.id === 'new') {
-      _editedRowData.id = generateID();
+      _editedRowData.id = v4();
     }
 
     (draft.data[index] as Datum1D).ranges.values.splice(

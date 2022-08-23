@@ -1,9 +1,9 @@
+import { v4 } from '@lukeed/uuid';
 import { Field, useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
-import generateID from '../../../data/utilities/generateID';
 import { NMRiumWorkspace } from '../../NMRium';
 import Button from '../../elements/Button';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
@@ -56,7 +56,7 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   );
   const addNewDatabaseHandler = useCallback(() => {
     const newDatabase = {
-      key: generateID(),
+      key: v4(),
       label: '',
       url: '',
       enabled: true,

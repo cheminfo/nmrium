@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
 
@@ -11,7 +12,6 @@ import {
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager';
 import { Datum1D } from '../../../data/types/data1d';
-import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
@@ -40,7 +40,7 @@ function addIntegral(draft: Draft<State>, action) {
     const shiftX = getShiftX(datum);
 
     const integral = {
-      id: generateID(),
+      id: v4(),
       originFrom: from - shiftX,
       originTo: to - shiftX,
       from,

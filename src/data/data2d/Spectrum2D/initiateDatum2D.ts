@@ -1,19 +1,20 @@
+import { v4 } from '@lukeed/uuid';
+
 import * as FiltersManager from '../../FiltersManager';
 import { Datum2D } from '../../types/data2d';
-import generateID from '../../utilities/generateID';
 import { get2DColor } from '../../utilities/getColor';
 import Processing2D, { defaultContourOptions } from '../Processing2D';
 
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
-  datum.id = options.id || generateID();
+  datum.id = options.id || v4();
   datum.source = {
     jcampURL: null,
     ...options.source,
   };
   datum.display = {
-    name: options.display?.name ? options.display.name : generateID(),
+    name: options.display?.name ? options.display.name : v4(),
     ...getColor(options, usedColors),
     isPositiveVisible: true,
     isNegativeVisible: true,

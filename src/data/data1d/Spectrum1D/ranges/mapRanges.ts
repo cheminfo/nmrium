@@ -1,8 +1,8 @@
+import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { Datum1D, Range } from '../../../types/data1d';
-import generateID from '../../../utilities/generateID';
 import { getSpectrumErrorValue } from '../getSpectrumErrorValue';
 import { getShiftX } from '../shift/getShiftX';
 
@@ -33,7 +33,7 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
       const { kind = null, id, ...resSignal } = signal;
       return {
         kind: kind || 'signal',
-        id: id || generateID(),
+        id: id || v4(),
         originDelta: signal.delta - shiftX,
         ...resSignal,
       };
@@ -44,7 +44,7 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
       kind: signals?.[0].kind || DatumKind.signal,
       originFrom: newRange.from - shiftX,
       originTo: newRange.to - shiftX,
-      id: newRange.id || generateID(),
+      id: newRange.id || v4(),
       absolute,
       signals,
     });

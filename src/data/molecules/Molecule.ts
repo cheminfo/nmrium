@@ -1,6 +1,6 @@
+import { v4 } from '@lukeed/uuid';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import generateID from '../utilities/generateID';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 export interface MoleculeObject {
@@ -26,7 +26,7 @@ export interface FloatingMolecules {
   visible: boolean;
 }
 export function initMolecule(options: Partial<MoleculeObject> = {}): Molecule {
-  const id = options.id || generateID();
+  const id = options.id || v4();
   const label = options.label || 'p#';
   const molfile = options.molfile || '';
 

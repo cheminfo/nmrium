@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
@@ -10,7 +11,6 @@ import {
 import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
 import { Peak } from '../../../data/types/data1d/Peak';
-import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
@@ -32,7 +32,7 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
 
     if (candidatePeak) {
       const peak: Peak = {
-        id: generateID(),
+        id: v4(),
         originalX: candidatePeak.x - shiftX,
         x: candidatePeak.x,
         y: candidatePeak.y,
@@ -60,7 +60,7 @@ function addPeaks(draft: Draft<State>, action) {
 
       if (peak && !datumOriginal.peaks.values.some((p) => p.x === peak.x)) {
         const newPeak: Peak = {
-          id: generateID(),
+          id: v4(),
           originalX: peak.x - shiftX,
           x: peak.x,
           y: peak.y,

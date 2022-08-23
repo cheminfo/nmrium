@@ -1,9 +1,9 @@
+import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { Signal1D } from '../../../types/data1d';
 import { Datum1D } from '../../../types/data1d/Datum1D';
-import generateID from '../../../utilities/generateID';
 import { initSumOptions, SumParams } from '../SumManager';
 
 import detectSignal from './detectSignal';
@@ -24,11 +24,11 @@ export function createRangeObj({
   signal,
 }: RangeOptions & { signal: Omit<Signal1D, 'id'>; absolute: number }) {
   return {
-    id: id ? id : generateID(),
+    id: id ? id : v4(),
     from,
     to,
     absolute, // the real value,
-    signals: [{ id: generateID(), ...signal }],
+    signals: [{ id: v4(), ...signal }],
     kind: DatumKind.signal,
     integration: 0,
   };
