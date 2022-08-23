@@ -68,7 +68,9 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
   const floatingMoleculesIndex = draft.floatingMolecules.findIndex(
     (m) => m.id === id,
   );
-  draft.floatingMolecules.splice(floatingMoleculesIndex, 1);
+  if (floatingMoleculesIndex !== -1) {
+    draft.floatingMolecules.splice(floatingMoleculesIndex, 1);
+  }
   /**
    * update all spectra that its sum was based on this molecule with the first molecule
    * from molecules list and if no remains molecules it sum will be 100
