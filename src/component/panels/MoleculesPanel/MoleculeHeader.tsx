@@ -47,9 +47,9 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
     [molecules],
   );
   const saveLabelHandler = useCallback(
-    (key: string, event: InputKeyboardEvent) => {
+    (id: string, event: InputKeyboardEvent) => {
       const label = event.target.value;
-      dispatch({ type: CHANGE_MOLECULE_LABEL, payload: { label, key } });
+      dispatch({ type: CHANGE_MOLECULE_LABEL, payload: { label, id } });
     },
     [dispatch],
   );

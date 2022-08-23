@@ -12,7 +12,7 @@ import {
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 
-import { Molecule } from '../../../data/molecules/Molecule';
+import { FloatingMolecules, Molecule } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
 import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
@@ -66,6 +66,7 @@ interface MoleculePanelInnerProps extends MoleculePanelProps {
   zones: Zones;
   ranges: Ranges;
   molecules: Array<Molecule>;
+  floatingMolecules: Array<FloatingMolecules>;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
 }
@@ -74,6 +75,7 @@ function MoleculePanelInner({
   zones,
   ranges,
   molecules: moleculesProp,
+  floatingMolecules,
   activeTab,
   displayerMode,
   onMoleculeChange,
@@ -82,7 +84,7 @@ function MoleculePanelInner({
   emptyTextStyle,
 }: MoleculePanelInnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [molecules, setMolecules] = useState<any>([]);
+  const [molecules, setMolecules] = useState<Array<Molecule>>([]);
 
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();
@@ -111,10 +113,10 @@ function MoleculePanelInner({
 
   const handleReplaceMolecule = useCallback(
     (molecule, molfile) => {
-      const { key, label, isFloat } = molecule;
+      const { id, label } = molecule;
       dispatch({
         type: SET_MOLECULE,
-        payload: { molfile, key, label, isFloat },
+        payload: { molfile, id, label },
       });
     },
     [dispatch],
@@ -128,6 +130,7 @@ function MoleculePanelInner({
     <div css={styles.panel}>
       <MoleculePanelHeader
         currentIndex={currentIndex}
+        floatingMolecules={floatingMolecules}
         molecules={molecules}
         onOpenMoleculeEditor={() => openMoleculeEditor()}
         onMoleculeIndexChange={moleculeIndexHandler}
@@ -222,7 +225,8 @@ export default function MoleculePanel({
   actionsOptions,
   emptyTextStyle,
 }: MoleculePanelProps) {
-  const { molecules, displayerMode, activeTab } = useChartData();
+  const { molecules, floatingMolecules, displayerMode, activeTab } =
+    useChartData();
 
   const data = useSpectrum(emptyData);
   const ranges: Ranges = (data as Datum1D)?.ranges || {};
@@ -232,6 +236,7 @@ export default function MoleculePanel({
     <MemoizedMoleculePanel
       {...{
         molecules,
+        floatingMolecules,
         displayerMode,
         activeTab,
         ranges,

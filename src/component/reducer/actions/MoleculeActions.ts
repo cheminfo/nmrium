@@ -28,12 +28,11 @@ function addMoleculeHandler(draft: Draft<State>, molfile) {
 }
 
 function setMoleculeHandler(draft: Draft<State>, action) {
-  const { id, label, molfile, isFloat } = action.payload;
+  const { id, label, molfile } = action.payload;
   MoleculeManager.setMolfile(draft.molecules, {
     id,
     label,
     molfile,
-    isFloat,
   });
 
   /**
@@ -58,19 +57,23 @@ function removeAssignments(draft: Draft<State>, assignmentData: any) {
 }
 
 function deleteMoleculeHandler(draft: Draft<State>, action) {
-  const { key, assignmentData } = action.payload;
+  const { id, assignmentData } = action.payload;
   // remove Assignments links of the active spectrum
   removeAssignments(draft, assignmentData);
 
   const moleculeIndex = draft.molecules.findIndex(
-    (molecule) => molecule.id === key,
+    (molecule) => molecule.id === id,
   );
   draft.molecules.splice(moleculeIndex, 1);
+  const floatingMoleculesIndex = draft.floatingMolecules.findIndex(
+    (m) => m.id === id,
+  );
+  draft.floatingMolecules.splice(floatingMoleculesIndex, 1);
   /**
    * update all spectra that its sum was based on this molecule with the first molecule
    * from molecules list and if no remains molecules it sum will be 100
    */
-  changeSpectraRelativeSum(draft, key, draft.molecules[0] || null);
+  changeSpectraRelativeSum(draft, id, draft.molecules[0] || null);
 }
 
 function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
@@ -94,16 +97,18 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
 }
 function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
   const { id } = action.payload;
-  const moleculeIndex = draft.molecules.findIndex(
-    (molecule) => molecule.id === id,
-  );
-  draft.molecules[moleculeIndex].isFloat =
-    !draft.molecules[moleculeIndex].isFloat;
+  const moleculeIndex = draft.floatingMolecules.findIndex((m) => m.id === id);
+  if (moleculeIndex !== -1) {
+    draft.floatingMolecules[moleculeIndex].visible =
+      !draft.floatingMolecules[moleculeIndex].visible;
+  } else {
+    draft.floatingMolecules.push({ id, visible: true });
+  }
 }
 function changeMoleculeLabel(draft: Draft<State>, action) {
-  const { key, label } = action.payload;
+  const { id, label } = action.payload;
   const moleculeIndex = draft.molecules.findIndex(
-    (molecule) => molecule.id === key,
+    (molecule) => molecule.id === id,
   );
   draft.molecules[moleculeIndex].label = label;
 }

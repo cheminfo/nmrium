@@ -42,9 +42,9 @@ export function addMolfile(molecules, molfile) {
 
 export function setMolfile(
   molecules,
-  currentMolecule: Pick<Molecule, 'id' | 'molfile' | 'label' | 'isFloat'>,
+  currentMolecule: Pick<Molecule, 'id' | 'molfile' | 'label'>,
 ) {
-  const { molfile, id, label, isFloat } = currentMolecule;
+  const { molfile, id, label } = currentMolecule;
   const reservedNumbers = extractLabelsNumbers(molecules);
 
   // try to parse molfile
@@ -66,7 +66,6 @@ export function setMolfile(
   } else if (fragments.length === 1) {
     const fragment = fragments[0];
     const _mol = initMolecule({
-      isFloat,
       molfile: fragment.toMolfileV3(),
       id,
       label,
