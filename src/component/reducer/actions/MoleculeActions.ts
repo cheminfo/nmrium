@@ -65,11 +65,11 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
     (molecule) => molecule.id === id,
   );
   draft.molecules.splice(moleculeIndex, 1);
-  const floatingMoleculesIndex = draft.floatingMolecules.findIndex(
+  const floatingMoleculesIndex = draft.view.floatingMolecules.findIndex(
     (m) => m.id === id,
   );
   if (floatingMoleculesIndex !== -1) {
-    draft.floatingMolecules.splice(floatingMoleculesIndex, 1);
+    draft.view.floatingMolecules.splice(floatingMoleculesIndex, 1);
   }
   /**
    * update all spectra that its sum was based on this molecule with the first molecule
@@ -99,12 +99,14 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
 }
 function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
   const { id } = action.payload;
-  const moleculeIndex = draft.floatingMolecules.findIndex((m) => m.id === id);
+  const moleculeIndex = draft.view.floatingMolecules.findIndex(
+    (m) => m.id === id,
+  );
   if (moleculeIndex !== -1) {
-    draft.floatingMolecules[moleculeIndex].visible =
-      !draft.floatingMolecules[moleculeIndex].visible;
+    draft.view.floatingMolecules[moleculeIndex].visible =
+      !draft.view.floatingMolecules[moleculeIndex].visible;
   } else {
-    draft.floatingMolecules.push({ id, visible: true });
+    draft.view.floatingMolecules.push({ id, visible: true });
   }
 }
 function changeMoleculeLabel(draft: Draft<State>, action) {

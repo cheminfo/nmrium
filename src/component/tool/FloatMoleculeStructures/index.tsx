@@ -56,8 +56,12 @@ const MemoizedFloatMoleculeStructures = memo(FloatMoleculeStructuresInner);
 const emptyData = { ranges: {}, zones: {} };
 
 export default function FloatMoleculeStructures() {
-  const { molecules, displayerMode, activeTab, floatingMolecules } =
-    useChartData();
+  const {
+    molecules,
+    displayerMode,
+    activeTab,
+    view: { floatingMolecules },
+  } = useChartData();
 
   const data = useSpectrum(emptyData);
   const ranges: Ranges = (data as Datum1D)?.ranges || {};

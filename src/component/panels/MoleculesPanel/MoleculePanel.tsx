@@ -225,8 +225,12 @@ export default function MoleculePanel({
   actionsOptions,
   emptyTextStyle,
 }: MoleculePanelProps) {
-  const { molecules, floatingMolecules, displayerMode, activeTab } =
-    useChartData();
+  const {
+    molecules,
+    view: { floatingMolecules },
+    displayerMode,
+    activeTab,
+  } = useChartData();
 
   const data = useSpectrum(emptyData);
   const ranges: Ranges = (data as Datum1D)?.ranges || {};

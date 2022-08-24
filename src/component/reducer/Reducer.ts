@@ -85,7 +85,7 @@ export const getInitialState = (): State => ({
   activeSpectrum: null,
   mode: 'RTL',
   molecules: [],
-  floatingMolecules: [],
+  view: { floatingMolecules: [] },
   verticalAlign: {
     align: 'bottom',
     verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
@@ -238,10 +238,10 @@ export interface State {
    */
   molecules: Array<Molecule>;
   /**
-   * floating molecules
-   * @default []
+   * View related information
+   * @default { floatingMolecules: [] };
    */
-  floatingMolecules: Array<FloatingMolecules>;
+  view: { floatingMolecules: Array<FloatingMolecules> };
   /**
    * options to control spectra vertical alignment
    * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
