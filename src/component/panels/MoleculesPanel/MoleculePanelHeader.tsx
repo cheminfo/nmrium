@@ -17,9 +17,9 @@ import { FloatingMolecules, Molecule } from '../../../data/molecules/Molecule';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
+import ActiveButton from '../../elements/ActiveButton';
 import ButtonToolTip from '../../elements/ButtonToolTip';
 import MenuButton from '../../elements/MenuButton';
-import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { positions, useModal } from '../../elements/popup/Modal';
@@ -234,9 +234,9 @@ export default function MoleculePanelHeader({
       )}
 
       {molecules?.[currentIndex] && (
-        <ToggleButton
+        <ActiveButton
           key={molecules[currentIndex].id}
-          defaultValue={
+          value={
             floatingMolecules.find(
               ({ id }) => id === molecules[currentIndex].id,
             )?.visible || false
@@ -246,7 +246,7 @@ export default function MoleculePanelHeader({
           onClick={floatMoleculeHandler}
         >
           <IoOpenOutline />
-        </ToggleButton>
+        </ActiveButton>
       )}
       <p>
         {molecules &&
