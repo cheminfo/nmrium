@@ -104,7 +104,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 payload: {
                   molfile,
                   id: molecule.id,
-                  isFloat: true,
                   label: molecule.label,
                 },
               });

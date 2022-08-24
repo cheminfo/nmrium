@@ -239,7 +239,7 @@ export default function MoleculePanelHeader({
           defaultValue={
             floatingMolecules.find(
               ({ id }) => id === molecules[currentIndex].id,
-            )?.visible
+            )?.visible || false
           }
           popupTitle="Float Molecule"
           popupPlacement="left"
