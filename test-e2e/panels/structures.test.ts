@@ -110,7 +110,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
   });
 });
 
-test('molecules 1H spectrum', async ({ page, browserName }) => {
+test.only('molecules 1H spectrum', async ({ page, browserName }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
@@ -344,10 +344,50 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     );
   });
   await test.step('Check float molecule', async () => {
+    // Check float molecule btn is off.
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+      ),
+    ).toBeHidden();
     // Click on float molecule button.
     await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
+    // Check float molecule btn is on.
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+  });
+  await test.step('Close float molecule', async () => {
+    // Close float molecule draggable structure.
+    await nmrium.page.click(
+      '_react=DraggableStructure >> _react=ButtonDanger',
+      { force: true },
+    );
+    // Check floated molecule.
+    await expect(nmrium.page.locator('#molSVG')).toBeHidden();
+    await expect(
+      nmrium.page.locator('_react=DraggableStructure '),
+    ).toBeHidden();
+    // Check float molecule btn is off.
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+      ),
+    ).toBeHidden();
+    // Click on float molecule button.
+    await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
+    // Check floated molecule.
+    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
+    // Check float molecule btn is on.
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+      ),
+    ).toBeVisible();
   });
   if (browserName === 'chromium') {
     await test.step('Check copy as molfile and paste', async () => {
