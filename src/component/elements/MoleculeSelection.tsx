@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl/full';
 
-import { Molecule } from '../../data/molecules/Molecule';
+import { InternalMolecule } from '../../data/molecules/Molecule';
 
 import NextPrev from './NextPrev';
 
@@ -64,7 +64,7 @@ const moleculeContainerStyle = css`
 `;
 
 interface MoleculeSelectionProps {
-  molecules: Array<Molecule>;
+  molecules: Array<InternalMolecule>;
   onChange: (element: number) => void;
   index?: number;
 }

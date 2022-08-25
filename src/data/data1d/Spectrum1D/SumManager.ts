@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
 import { State } from '../../../component/reducer/Reducer';
-import { Molecule } from '../../molecules/Molecule';
+import { InternalMolecule } from '../../molecules/Molecule';
 import { Datum1D, Integrals, Ranges } from '../../types/data1d';
 import { SumOptions } from '../../types/data1d/SumOptions';
 import getAtom from '../../utilities/getAtom';
@@ -14,7 +14,7 @@ import {
 
 export interface SumParams {
   nucleus: string;
-  molecules: Molecule[];
+  molecules: InternalMolecule[];
 }
 
 export type SetSumOptions = Omit<SumOptions, 'isSumConstant'>;
@@ -92,7 +92,7 @@ export function getAtoms(mf: string): Record<string, number> {
 export function changeSpectraRelativeSum(
   draft: Draft<State>,
   molId: string,
-  molecule: Molecule,
+  molecule: InternalMolecule,
 ) {
   const keys: (keyof Datum1D)[] = ['ranges', 'integrals'];
 

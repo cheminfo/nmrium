@@ -4,7 +4,7 @@ import OCL from 'openchemlib/full';
 import { useCallback } from 'react';
 import OCLnmr from 'react-ocl-nmr';
 
-import { Molecule } from '../../../data/molecules/Molecule';
+import { InternalMolecule } from '../../../data/molecules/Molecule';
 import { Ranges } from '../../../data/types/data1d';
 import { Zones } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
@@ -23,7 +23,7 @@ import ActionsButton from './ActionsButton';
 interface DraggableStructureProps {
   zones: Zones;
   ranges: Ranges;
-  molecule: Molecule;
+  molecule: InternalMolecule;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
   index?: number;
