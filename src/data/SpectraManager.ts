@@ -1,15 +1,19 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
+import { State } from '../component/reducer/Reducer';
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 import { Preferences } from '../types/Preferences';
 
 import * as Data1DManager from './data1d/Data1DManager';
+import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Spectrum2D';
 import { CURRENT_EXPORT_VERSION } from './migration/MigrationManager';
 import * as Molecule from './molecules/Molecule';
+import { Datum1D as Datum1DType } from './types/data1d';
+import { Datum2D as Datum2DType } from './types/data2d';
 
 export enum DataExportOptions {
   ROW_DATA = 'ROW_DATA',
@@ -274,31 +278,25 @@ function getPreferences(state): Preferences {
 type JSONTarget = 'nmrium' | 'onDataChange';
 
 export function toJSON(
-  state,
+  state: State,
   target: JSONTarget,
   dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
 ): NMRiumDataReturn {
   const {
-    data,
-    molecules: mols,
-    correlations,
-    multipleAnalysis,
-    actionType,
-  } = state || {
-    data: [],
-    molecules: [],
-    correlations: {},
-    multipleAnalysis: {},
-    actionType: '',
-  };
+    data = [],
+    molecules: mols = [],
+    correlations = {},
+    spectraAnalysis: multipleAnalysis = [],
+    actionType = '',
+  } = state;
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1
-      ? Datum1D.toJSON(ob, dataExportOption)
-      : Datum2D.toJSON(ob, dataExportOption);
+      ? (Datum1D.toJSON(ob as Datum1DType, dataExportOption) as Datum1DType)
+      : (Datum2D.toJSON(ob as Datum2DType, dataExportOption) as Datum2DType);
   });
 
   const preferences = getPreferences(state);
-  const molecules = mols.map((mol) => Molecule.toJSON(mol));
+  const molecules = mols.map((mol: Molecule.Molecule) => Molecule.toJSON(mol));
 
   return {
     ...(target === 'onDataChange' ? { actionType } : {}),
@@ -306,7 +304,7 @@ export function toJSON(
     spectra,
     molecules,
     correlations,
-    multipleAnalysis,
+    multipleAnalysis: multipleAnalysis as SpectraAnalysis,
     preferences,
   };
 }
