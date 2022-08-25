@@ -45,13 +45,12 @@ function MoleculeStructureEditorModal(
 
   const handleSave = useCallback(() => {
     if (selectedMolecule) {
-      const { id, isFloat, label } = selectedMolecule;
+      const { id, label } = selectedMolecule;
       dispatch({
         type: SET_MOLECULE,
         payload: {
           molfile,
           id,
-          isFloat,
           label,
         },
       });

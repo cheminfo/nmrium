@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { Molecule } from '../../../data/molecules/Molecule';
+import { FloatingMolecules, Molecule } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
 import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
@@ -13,6 +13,7 @@ interface FloatMoleculeStructuresProps {
   zones: Zones;
   ranges: Ranges;
   molecules: Array<Molecule>;
+  floatingMolecules: Array<FloatingMolecules>;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
 }
@@ -20,18 +21,31 @@ interface FloatMoleculeStructuresProps {
 export function FloatMoleculeStructuresInner(
   props: FloatMoleculeStructuresProps,
 ) {
-  const { zones, ranges, molecules, activeTab, displayerMode } = props;
+  const {
+    zones,
+    ranges,
+    floatingMolecules,
+    molecules,
+    activeTab,
+    displayerMode,
+  } = props;
 
-  if (!molecules || molecules.length === 0) return null;
+  if (!floatingMolecules || floatingMolecules.length === 0) return null;
 
   return (
     <g>
-      {molecules
-        .filter((molecule) => molecule.isFloat)
+      {floatingMolecules
+        .filter((molecule) => molecule.visible)
         .map((molecule) => (
           <DraggableStructure
             key={molecule.id}
-            {...{ zones, ranges, activeTab, displayerMode, molecule }}
+            {...{
+              zones,
+              ranges,
+              activeTab,
+              displayerMode,
+              molecule: molecules.find((m) => m.id === molecule.id) as Molecule,
+            }}
           />
         ))}
     </g>
@@ -42,7 +56,12 @@ const MemoizedFloatMoleculeStructures = memo(FloatMoleculeStructuresInner);
 const emptyData = { ranges: {}, zones: {} };
 
 export default function FloatMoleculeStructures() {
-  const { molecules, displayerMode, activeTab } = useChartData();
+  const {
+    molecules,
+    displayerMode,
+    activeTab,
+    view: { floatingMolecules },
+  } = useChartData();
 
   const data = useSpectrum(emptyData);
   const ranges: Ranges = (data as Datum1D)?.ranges || {};
@@ -51,6 +70,7 @@ export default function FloatMoleculeStructures() {
   return (
     <MemoizedFloatMoleculeStructures
       {...{
+        floatingMolecules,
         molecules,
         displayerMode,
         activeTab,

@@ -86,12 +86,12 @@ export function getAtoms(mf: string): Record<string, number> {
  * 2- delete molecule / edit molecule and as a result of that it generate more than one molecule
  * 3- add a molecule for the first time
  * @param draft     State draft
- * @param molKey    Molecule key
+ * @param molId    Molecule id
  * @param molecule  Molecules list
  */
 export function changeSpectraRelativeSum(
   draft: Draft<State>,
-  molKey: string,
+  molId: string,
   molecule: Molecule,
 ) {
   const keys: (keyof Datum1D)[] = ['ranges', 'integrals'];
@@ -101,7 +101,7 @@ export function changeSpectraRelativeSum(
       for (const key of keys) {
         const { moleculeId, mf, sumAuto } = spectrum[key].options;
 
-        if ((molKey === moleculeId || (!moleculeId && !mf)) && sumAuto) {
+        if ((molId === moleculeId || (!moleculeId && !mf)) && sumAuto) {
           const options: Partial<SetSumOptions> = molecule
             ? {
                 mf: molecule.mf,

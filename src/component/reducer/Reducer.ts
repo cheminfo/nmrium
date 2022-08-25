@@ -7,7 +7,7 @@ import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { migrate } from '../../data/migration/MigrationManager';
-import { Molecule } from '../../data/molecules/Molecule';
+import { FloatingMolecules, Molecule } from '../../data/molecules/Molecule';
 import { Contours } from '../../data/types/data2d/Contours';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -85,6 +85,7 @@ export const getInitialState = (): State => ({
   activeSpectrum: null,
   mode: 'RTL',
   molecules: [],
+  view: { floatingMolecules: [] },
   verticalAlign: {
     align: 'bottom',
     verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
@@ -236,6 +237,11 @@ export interface State {
    * @default []
    */
   molecules: Array<Molecule>;
+  /**
+   * View related information
+   * @default { floatingMolecules: [] };
+   */
+  view: { floatingMolecules: Array<FloatingMolecules> };
   /**
    * options to control spectra vertical alignment
    * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}

@@ -13,13 +13,13 @@ import {
 } from 'react-icons/fa';
 import { IoOpenOutline } from 'react-icons/io5';
 
-import { Molecule } from '../../../data/molecules/Molecule';
+import { FloatingMolecules, Molecule } from '../../../data/molecules/Molecule';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
+import ActiveButton from '../../elements/ActiveButton';
 import ButtonToolTip from '../../elements/ButtonToolTip';
 import MenuButton from '../../elements/MenuButton';
-import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { positions, useModal } from '../../elements/popup/Modal';
@@ -88,6 +88,7 @@ export interface MoleculeHeaderActionsOptions {
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: Array<Molecule>;
+  floatingMolecules: Array<FloatingMolecules>;
   onMoleculeIndexChange: (index: number) => void;
   onOpenMoleculeEditor: () => void;
   actionsOptions?: MoleculeHeaderActionsOptions;
@@ -96,6 +97,7 @@ interface MoleculePanelHeaderProps {
 export default function MoleculePanelHeader({
   currentIndex,
   molecules,
+  floatingMolecules,
   onMoleculeIndexChange = () => null,
   onOpenMoleculeEditor = () => null,
   actionsOptions = {},
@@ -159,7 +161,7 @@ export default function MoleculePanelHeader({
       onMoleculeIndexChange(0);
       dispatch({
         type: DELETE_MOLECULE,
-        payload: { key: molecules[currentIndex].id, assignmentData },
+        payload: { id: molecules[currentIndex].id, assignmentData },
       });
     }
   }, [
@@ -232,15 +234,19 @@ export default function MoleculePanelHeader({
       )}
 
       {molecules?.[currentIndex] && (
-        <ToggleButton
+        <ActiveButton
           key={molecules[currentIndex].id}
-          defaultValue={molecules[currentIndex].isFloat}
+          value={
+            floatingMolecules.find(
+              ({ id }) => id === molecules[currentIndex].id,
+            )?.visible || false
+          }
           popupTitle="Float Molecule"
           popupPlacement="left"
           onClick={floatMoleculeHandler}
         >
           <IoOpenOutline />
-        </ToggleButton>
+        </ActiveButton>
       )}
       <p>
         {molecules &&
