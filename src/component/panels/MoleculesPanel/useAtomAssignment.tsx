@@ -113,7 +113,9 @@ export default function useAtomAssignment({
         const type = highlightData.highlight.sourceData?.type;
         if (
           datum &&
-          (type === HighlightedSource.ZONE || type === HighlightedSource.RANGE)
+          (type === HighlightedSource.ZONE ||
+            type === HighlightedSource.RANGE ||
+            type === HighlightedSource.UNKNOWN)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(
