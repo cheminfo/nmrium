@@ -3,12 +3,12 @@ import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
-export interface MoleculeObject {
+export interface Molecule {
   id: string;
   molfile: string;
   label: string;
 }
-export interface Molecule extends MoleculeObject {
+export interface InternalMolecule extends Molecule {
   mf: string;
   em: number;
   mw: number;
@@ -25,7 +25,9 @@ export interface FloatingMolecules {
    */
   visible: boolean;
 }
-export function initMolecule(options: Partial<MoleculeObject> = {}): Molecule {
+export function initMolecule(
+  options: Partial<Molecule> = {},
+): InternalMolecule {
   const id = options.id || v4();
   const label = options.label || 'p#';
   const molfile = options.molfile || '';
@@ -45,7 +47,7 @@ export function initMolecule(options: Partial<MoleculeObject> = {}): Molecule {
   };
 }
 
-export function toJSON(molecule: Molecule): MoleculeObject {
+export function toJSON(molecule: InternalMolecule): Molecule {
   const { molfile, label, id } = molecule;
   return {
     molfile,

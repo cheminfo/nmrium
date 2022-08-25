@@ -1,7 +1,7 @@
 import { useCallback, CSSProperties } from 'react';
 import { MF } from 'react-mf';
 
-import { Molecule } from '../../../data/molecules/Molecule';
+import { InternalMolecule } from '../../../data/molecules/Molecule';
 import {
   extractLabelsNumbers,
   extractNumber,
@@ -12,8 +12,8 @@ import { InputKeyboardEvent } from '../../elements/Input';
 import { CHANGE_MOLECULE_LABEL } from '../../reducer/types/Types';
 
 interface MoleculeHeaderProps {
-  currentMolecule: Molecule;
-  molecules: Molecule[];
+  currentMolecule: InternalMolecule;
+  molecules: InternalMolecule[];
 }
 
 const styles: Record<'toolbar' | 'labelInput', CSSProperties> = {

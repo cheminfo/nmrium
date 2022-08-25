@@ -1,11 +1,11 @@
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { initMolecule, Molecule } from './Molecule';
+import { initMolecule, InternalMolecule } from './Molecule';
 
-export function fromJSON(mols: any[] = []) {
+export function fromJSON(mols: InternalMolecule[] = []) {
   const reservedNumbers = extractLabelsNumbers(mols);
 
-  const molecules: Molecule[] = [];
+  const molecules: InternalMolecule[] = [];
   for (const mol of mols) {
     const molecule = OCLMolecule.fromMolfile(mol.molfile);
     const fragments = molecule.getFragments();
@@ -14,6 +14,7 @@ export function fromJSON(mols: any[] = []) {
         initMolecule({
           molfile: fragment.toMolfileV3(),
           label: mol.label ? mol.label : `P${getLabelNumber(reservedNumbers)}`,
+          id: mol.id,
         }),
       );
     }
@@ -42,7 +43,7 @@ export function addMolfile(molecules, molfile) {
 
 export function setMolfile(
   molecules,
-  currentMolecule: Pick<Molecule, 'id' | 'molfile' | 'label'>,
+  currentMolecule: Pick<InternalMolecule, 'id' | 'molfile' | 'label'>,
 ) {
   const { molfile, id, label } = currentMolecule;
   const reservedNumbers = extractLabelsNumbers(molecules);
@@ -81,7 +82,7 @@ export function extractNumber(value: string) {
   return /(?<number>\d+)/.exec(value)?.groups?.number || null;
 }
 
-export function extractLabelsNumbers(molecules: Molecule[]) {
+export function extractLabelsNumbers(molecules: InternalMolecule[]) {
   const values: number[] = [];
   for (const molecule of molecules) {
     const value = extractNumber(molecule.label);
