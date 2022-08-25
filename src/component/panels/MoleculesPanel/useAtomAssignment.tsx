@@ -41,8 +41,9 @@ export default function useAtomAssignment({
       ? assignments.data.activated.id
       : ConcatenationString, // dummy value
   );
-
-  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<any>([]);
+  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<
+    Array<string>
+  >([]);
   const [onAtomHoverAction, setOnAtomHoverAction] = useState<
     'show' | 'hide' | null
   >(null);
@@ -52,7 +53,10 @@ export default function useAtomAssignment({
       if (onAtomHoverAction === 'show') {
         highlightData.dispatch({
           type: 'SHOW',
-          payload: { convertedHighlights: onAtomHoverHighlights },
+          payload: {
+            convertedHighlights: onAtomHoverHighlights,
+            sourceData: { type: HighlightedSource.ATOM },
+          },
         });
       } else if (onAtomHoverAction === 'hide') {
         highlightData.dispatch({
@@ -115,7 +119,7 @@ export default function useAtomAssignment({
           datum &&
           (type === HighlightedSource.ZONE ||
             type === HighlightedSource.RANGE ||
-            type === HighlightedSource.UNKNOWN)
+            type === HighlightedSource.ATOM)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(
