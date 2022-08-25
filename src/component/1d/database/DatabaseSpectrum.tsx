@@ -22,8 +22,8 @@ function DatabaseSpectrum() {
   const { scaleX } = useScaleChecked();
   const alert = useAlert();
   const { color, marginBottom } = usePanelPreferences('database');
-  const { jcampURL: jcampRelativeURL, baseURL } =
-    highlight?.sourceData?.extra || [];
+  const { jcampURL: jcampRelativeURL = '', baseURL } =
+    highlight?.sourceData?.extra || {};
   const getSpinner = useContext(spinnerContext);
 
   const scaleY = useCallback(
@@ -38,7 +38,7 @@ function DatabaseSpectrum() {
   );
 
   const loadSpectrum = useRef(
-    throttle(async (baseURL: string, jcampRelativeURL: string) => {
+    throttle(async (baseURL: string | undefined, jcampRelativeURL: string) => {
       try {
         setLoading(true);
         const jcampURL = new URL(jcampRelativeURL, baseURL);

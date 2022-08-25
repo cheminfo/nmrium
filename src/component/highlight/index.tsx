@@ -8,6 +8,9 @@ import {
   MouseEvent,
 } from 'react';
 
+import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
+import { RangeData } from '../1d/ranges/Range';
+
 export enum HighlightedSource {
   PEAK = 'PEAK',
   INTEGRAL = 'INTEGRAL',
@@ -25,7 +28,15 @@ type HighlightedSourceType = keyof typeof HighlightedSource;
 
 interface SourceData {
   type: HighlightedSourceType;
-  extra?: any;
+  extra?: {
+    zone?: ExclusionZone;
+    spectrumID?: string;
+    id?: string;
+    jcampURL?: string;
+    baseURL?: string;
+    ranges?: RangeData[];
+    colKey?: string;
+  } | null;
 }
 
 type HighlightActions = 'HIDE' | 'SHOW' | 'SET_PERMANENT' | 'UNSET_PERMANENT';

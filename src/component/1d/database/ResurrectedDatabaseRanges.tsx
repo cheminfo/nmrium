@@ -27,7 +27,7 @@ function ResurrectedDatabaseRanges() {
   const blockHight = fullHeight / 4;
   const translateY = fullHeight - blockHight - marginBottom;
 
-  const { ranges } = highlight.sourceData.extra || [];
+  const { ranges = [] } = highlight.sourceData.extra || {};
 
   let yDomain: any[] = [0, 0];
 
