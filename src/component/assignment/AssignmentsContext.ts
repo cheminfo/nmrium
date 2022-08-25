@@ -58,7 +58,7 @@ export function useAssignmentData() {
 }
 
 // key can be signal id,range id or zone id
-export function useAssignment(key): AssignmentsData {
+export function useAssignment(key: number | string): AssignmentsData {
   const {
     data: { activated, highlighted, assignments },
     dispatch,

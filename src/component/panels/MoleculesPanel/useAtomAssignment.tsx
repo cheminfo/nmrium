@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Range } from '../../../data/types/data1d';
 import { Zone } from '../../../data/types/data2d';
@@ -16,6 +16,7 @@ import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_DIAID_RANGE, SET_DIAID_ZONE } from '../../reducer/types/Types';
 
 import {
+  Atom,
   AtomData,
   extractFromAtom,
   findDatumAndSignalIndex,
@@ -80,7 +81,10 @@ export default function useAtomAssignment({
   }, [displayerMode, ranges, zones]);
 
   const assignedDiaIDs = useMemo(() => {
-    const assignedDiaID: { x: Array<any>; y: Array<any> } = { x: [], y: [] };
+    const assignedDiaID: { x: Array<string>; y: Array<string> } = {
+      x: [],
+      y: [],
+    };
     const assignment = assignments.data.assignments;
     for (let id in assignment) {
       if (assignment[id].x) {
@@ -139,7 +143,7 @@ export default function useAtomAssignment({
   }, []);
 
   const handleOnClickAtom = useCallback(
-    (atom, event) => {
+    (atom: Atom, event: MouseEvent) => {
       if (!checkModifierKeyActivated(event) && activeAssignment.activated) {
         const { axis, id } = activeAssignment.activated;
         if (id && axis) {
@@ -226,7 +230,7 @@ export default function useAtomAssignment({
   );
 
   const handleOnAtomHover = useCallback(
-    (atom) => {
+    (atom: Atom) => {
       const { oclIDs } = extractFromAtom(atom, nucleus);
 
       // on enter the atom

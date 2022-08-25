@@ -2,7 +2,7 @@ import { Range } from '../../../data/types/data1d';
 import { Zone } from '../../../data/types/data2d';
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 
-interface Atom {
+export interface Atom {
   oclID: string;
   atomLabel: string;
   nbAtoms: number;
