@@ -4,7 +4,7 @@ import { rangesToXY } from 'nmr-processing';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightedSource, useHighlightData } from '../../highlight';
+import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { PathBuilder } from '../../utility/PathBuilder';
@@ -19,7 +19,7 @@ function ResurrectedDatabaseRanges() {
   const { scaleX } = useScaleChecked();
   const { color, marginBottom } = usePanelPreferences('database');
 
-  if (highlight.sourceData?.type !== HighlightedSource.DATABASE) {
+  if (highlight.sourceData?.type !== HighlightEventSource.DATABASE) {
     return null;
   }
 

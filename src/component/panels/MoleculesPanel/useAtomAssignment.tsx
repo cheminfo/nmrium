@@ -11,7 +11,7 @@ import {
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { HighlightedSource, useHighlightData } from '../../highlight';
+import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_DIAID_RANGE, SET_DIAID_ZONE } from '../../reducer/types/Types';
 
@@ -55,7 +55,7 @@ export default function useAtomAssignment({
           type: 'SHOW',
           payload: {
             convertedHighlights: onAtomHoverHighlights,
-            sourceData: { type: HighlightedSource.ATOM },
+            sourceData: { type: HighlightEventSource.ATOM },
           },
         });
       } else if (onAtomHoverAction === 'hide') {
@@ -117,9 +117,9 @@ export default function useAtomAssignment({
         const type = highlightData.highlight.sourceData?.type;
         if (
           datum &&
-          (type === HighlightedSource.ZONE ||
-            type === HighlightedSource.RANGE ||
-            type === HighlightedSource.ATOM)
+          (type === HighlightEventSource.ZONE ||
+            type === HighlightEventSource.RANGE ||
+            type === HighlightEventSource.ATOM)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(

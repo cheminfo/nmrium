@@ -11,7 +11,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import {
-  HighlightedSource,
+  HighlightEventSource,
   useHighlight,
   useHighlightData,
 } from '../../highlight';
@@ -60,16 +60,16 @@ function RangesTableRow({
         rowData.signals.map((_signal) => _signal.id),
       ),
     ),
-    { type: HighlightedSource.RANGE },
+    { type: HighlightEventSource.RANGE },
   );
   const highlightRangeAssignmentsColumn = useHighlight(
     assignmentRange.assigned?.x || [],
-    { type: HighlightedSource.RANGE },
+    { type: HighlightEventSource.RANGE },
   );
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignal = useHighlight(
     [assignmentSignal.id].concat(assignmentSignal.assigned?.x || []),
-    { type: HighlightedSource.SIGNAL },
+    { type: HighlightEventSource.SIGNAL },
   );
   const highlightData = useHighlightData();
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);

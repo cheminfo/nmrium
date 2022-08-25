@@ -13,7 +13,7 @@ import { useTable, useSortBy } from 'react-table';
 import { useMeasure } from 'react-use';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import { HighlightedSource } from '../../highlight';
+import { HighlightEventSource } from '../../highlight';
 import useCombinedRefs from '../../hooks/useCombinedRefs';
 import ContextMenu from '../ContextMenu';
 
@@ -29,7 +29,7 @@ import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
 interface ReactTableProps extends ClickEvent {
   data: any;
   columns: any;
-  highlightedSource?: HighlightedSource;
+  highlightedSource?: HighlightEventSource;
   context?: Array<{ label: string; onClick: () => void }> | null;
   approxItemHeight?: number;
   groupKey?: string;

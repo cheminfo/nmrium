@@ -3,7 +3,7 @@ import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
-import { HighlightedSource } from '../../../highlight';
+import { HighlightEventSource } from '../../../highlight';
 
 const spanStyle: CSSProperties = {
   color: 'red',
@@ -56,7 +56,8 @@ function RangeAssignmentsColumn({
       assignment.isActive ||
       assignment.isOver ||
       (highlight.isActive &&
-        highlightData.highlight.sourceData?.type !== HighlightedSource.SIGNAL);
+        highlightData.highlight.sourceData?.type !==
+          HighlightEventSource.SIGNAL);
     return flag
       ? {
           color: 'red',

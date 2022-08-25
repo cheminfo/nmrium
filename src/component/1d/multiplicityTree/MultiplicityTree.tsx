@@ -9,7 +9,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightedSource, useHighlight } from '../../highlight';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 import {
   hasCouplingConstant,
   checkMultiplicity,
@@ -65,7 +65,7 @@ function MultiplicityTree({
   } = useChartData();
   const assignment = useAssignment(signal.id);
   const highlight = useHighlight(extractID(assignment), {
-    type: HighlightedSource.SIGNAL,
+    type: HighlightEventSource.SIGNAL,
   });
 
   const spectrumData = useMemo(

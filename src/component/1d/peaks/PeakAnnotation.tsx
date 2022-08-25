@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { HighlightedSource, useHighlight } from '../../highlight';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { SHIFT_SPECTRUM } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
@@ -78,7 +78,7 @@ function PeakAnnotation({
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const { deltaPPM } = usePanelPreferences('peaks', nucleus);
   const highlight = useHighlight([id], {
-    type: HighlightedSource.PEAK,
+    type: HighlightEventSource.PEAK,
     extra: { id },
   });
 

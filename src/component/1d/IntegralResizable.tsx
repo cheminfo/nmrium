@@ -7,7 +7,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useGlobal } from '../context/GlobalContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import Resizer from '../elements/resizer/Resizer';
-import { HighlightedSource, useHighlight } from '../highlight/index';
+import { HighlightEventSource, useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import { formatNumber } from '../utility/formatNumber';
@@ -62,7 +62,7 @@ function IntegralResizable({
   const dispatch = useDispatch();
   const { id, integral } = integralData;
   const highlight = useHighlight([id], {
-    type: HighlightedSource.INTEGRAL,
+    type: HighlightEventSource.INTEGRAL,
     extra: { id },
   });
 

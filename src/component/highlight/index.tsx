@@ -11,7 +11,7 @@ import {
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { RangeData } from '../1d/ranges/Range';
 
-export enum HighlightedSource {
+export enum HighlightEventSource {
   PEAK = 'PEAK',
   INTEGRAL = 'INTEGRAL',
   SIGNAL = 'SIGNAL',
@@ -24,10 +24,10 @@ export enum HighlightedSource {
   UNKNOWN = 'UNKNOWN',
 }
 
-type HighlightedSourceType = keyof typeof HighlightedSource;
+type HighlightEventSourceType = keyof typeof HighlightEventSource;
 
 interface SourceData {
-  type: HighlightedSourceType;
+  type: HighlightEventSourceType;
   extra?: {
     zone?: ExclusionZone;
     spectrumID?: string;
@@ -84,7 +84,7 @@ function highlightReducer(
   switch (action.type) {
     case 'SHOW': {
       const { convertedHighlights = [], sourceData } = action.payload || {};
-      const { type = HighlightedSource.UNKNOWN, extra = null } =
+      const { type = HighlightEventSource.UNKNOWN, extra = null } =
         sourceData || {};
 
       const newState: HighlightState = {
