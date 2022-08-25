@@ -2,7 +2,7 @@ import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import { initMolecule, Molecule } from './Molecule';
 
-export function fromJSON(mols: any[] = []) {
+export function fromJSON(mols: Molecule[] = []) {
   const reservedNumbers = extractLabelsNumbers(mols);
 
   const molecules: Molecule[] = [];
@@ -14,6 +14,7 @@ export function fromJSON(mols: any[] = []) {
         initMolecule({
           molfile: fragment.toMolfileV3(),
           label: mol.label ? mol.label : `P${getLabelNumber(reservedNumbers)}`,
+          id: mol.id,
         }),
       );
     }
