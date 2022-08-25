@@ -7,7 +7,10 @@ import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { migrate } from '../../data/migration/MigrationManager';
-import { FloatingMolecules, Molecule } from '../../data/molecules/Molecule';
+import {
+  FloatingMolecules,
+  InternalMolecule,
+} from '../../data/molecules/Molecule';
 import { Contours } from '../../data/types/data2d/Contours';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -236,7 +239,7 @@ export interface State {
    * molecules
    * @default []
    */
-  molecules: Array<Molecule>;
+  molecules: Array<InternalMolecule>;
   /**
    * View related information
    * @default { floatingMolecules: [] };

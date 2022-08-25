@@ -12,7 +12,10 @@ import {
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 
-import { FloatingMolecules, Molecule } from '../../../data/molecules/Molecule';
+import {
+  FloatingMolecules,
+  InternalMolecule,
+} from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
 import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
@@ -65,7 +68,7 @@ const styles: Record<
 interface MoleculePanelInnerProps extends MoleculePanelProps {
   zones: Zones;
   ranges: Ranges;
-  molecules: Array<Molecule>;
+  molecules: Array<InternalMolecule>;
   floatingMolecules: Array<FloatingMolecules>;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
@@ -84,7 +87,7 @@ function MoleculePanelInner({
   emptyTextStyle,
 }: MoleculePanelInnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [molecules, setMolecules] = useState<Array<Molecule>>([]);
+  const [molecules, setMolecules] = useState<Array<InternalMolecule>>([]);
 
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();
@@ -146,7 +149,7 @@ function MoleculePanelInner({
                   defaultIndex={currentIndex}
                 >
                   {molecules && molecules.length > 0 ? (
-                    molecules.map((mol: Molecule, index) => (
+                    molecules.map((mol: InternalMolecule, index) => (
                       <div key={mol.id} css={styles.items}>
                         <MoleculeHeader
                           currentMolecule={mol}
@@ -213,7 +216,7 @@ const MemoizedMoleculePanel = memo(MoleculePanelInner);
 const emptyData = { ranges: {}, zones: {} };
 
 interface MoleculePanelProps {
-  onMoleculeChange?: (molecule: Molecule) => void;
+  onMoleculeChange?: (molecule: InternalMolecule) => void;
   children?: ReactElement;
   actionsOptions?: MoleculeHeaderActionsOptions;
   emptyTextStyle?: CSSProperties;
