@@ -3,10 +3,13 @@ import lodashGet from 'lodash/get';
 import { useMemo, useState, useEffect, CSSProperties } from 'react';
 
 import { Signal1D } from '../../../data/types/data1d';
-import { useAssignment } from '../../assignment/AssignmentsContext';
+import {
+  AssignmentsData,
+  useAssignment,
+} from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightedSource, useHighlight } from '../../highlight';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 import {
   hasCouplingConstant,
   checkMultiplicity,
@@ -40,7 +43,7 @@ interface MultiplicityTreeProps {
   };
 }
 
-function extractID(assignment) {
+function extractID(assignment: AssignmentsData) {
   return [assignment.id].concat(assignment.assigned?.x || []);
 }
 
@@ -62,8 +65,7 @@ function MultiplicityTree({
   } = useChartData();
   const assignment = useAssignment(signal.id);
   const highlight = useHighlight(extractID(assignment), {
-    type: HighlightedSource.SIGNAL,
-    extra: extractID(assignment),
+    type: HighlightEventSource.SIGNAL,
   });
 
   const spectrumData = useMemo(

@@ -3,7 +3,7 @@
 import { css, CSSObject } from '@emotion/react';
 import { useMemo, forwardRef, useEffect, useCallback } from 'react';
 
-import { HighlightedSource, useHighlight } from '../../../highlight/index';
+import { HighlightEventSource, useHighlight } from '../../../highlight/index';
 
 function highlightStyle(isActive: boolean, row): CSSObject {
   if (isActive) {
@@ -29,7 +29,7 @@ export interface ClickEvent {
 }
 interface ReactTableRowProps extends ClickEvent {
   row: any;
-  highlightedSource?: HighlightedSource;
+  highlightedSource?: HighlightEventSource;
   onContextMenu: () => void;
   isVisible: boolean;
   isRowActive: boolean;
@@ -49,7 +49,7 @@ function getIDs(row: any): string[] {
 function ReactTableRow(props: ReactTableRowProps, ref) {
   const {
     row,
-    highlightedSource = HighlightedSource.UNKNOWN,
+    highlightedSource = HighlightEventSource.UNKNOWN,
     onContextMenu,
     onClick,
     isRowActive = false,

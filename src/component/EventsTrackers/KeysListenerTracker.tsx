@@ -7,7 +7,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
-import { HighlightedSource, useHighlightData } from '../highlight/index';
+import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
@@ -57,7 +57,7 @@ function KeysListenerTracker() {
         extra: { id },
       } = sourceData;
       switch (type) {
-        case HighlightedSource.INTEGRAL: {
+        case HighlightEventSource.INTEGRAL: {
           dispatch({
             type: DELETE_INTEGRAL,
             integralID: id,
@@ -67,7 +67,7 @@ function KeysListenerTracker() {
 
           break;
         }
-        case HighlightedSource.PEAK: {
+        case HighlightEventSource.PEAK: {
           dispatch({
             type: DELETE_PEAK_NOTATION,
             data: { id },
@@ -77,7 +77,7 @@ function KeysListenerTracker() {
 
           break;
         }
-        case HighlightedSource.RANGE: {
+        case HighlightEventSource.RANGE: {
           dispatch({
             type: DELETE_RANGE,
             payload: {
@@ -92,7 +92,7 @@ function KeysListenerTracker() {
 
           break;
         }
-        case HighlightedSource.ZONE: {
+        case HighlightEventSource.ZONE: {
           dispatch({
             type: DELETE_2D_ZONE,
             payload: {
@@ -105,7 +105,7 @@ function KeysListenerTracker() {
 
           break;
         }
-        case HighlightedSource.EXCLUSION_ZONE: {
+        case HighlightEventSource.EXCLUSION_ZONE: {
           const buttons = [
             {
               text: 'Yes, for all spectra',
@@ -150,7 +150,7 @@ function KeysListenerTracker() {
 
           break;
         }
-        case HighlightedSource.MULTIPLE_ANALYSIS_ZONE: {
+        case HighlightEventSource.MULTIPLE_ANALYSIS_ZONE: {
           dispatch({
             type: DELETE_ANALYZE_SPECTRA_RANGE,
             colKey: sourceData.extra.colKey,

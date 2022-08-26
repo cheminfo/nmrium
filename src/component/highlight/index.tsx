@@ -5,9 +5,13 @@ import {
   useContext,
   useCallback,
   useEffect,
+  MouseEvent,
 } from 'react';
 
-export enum HighlightedSource {
+import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
+import { RangeData } from '../1d/ranges/Range';
+
+export enum HighlightEventSource {
   PEAK = 'PEAK',
   INTEGRAL = 'INTEGRAL',
   SIGNAL = 'SIGNAL',
@@ -16,14 +20,23 @@ export enum HighlightedSource {
   EXCLUSION_ZONE = 'EXCLUSION_ZONE',
   MULTIPLE_ANALYSIS_ZONE = 'MULTIPLE_ANALYSIS_ZONE',
   DATABASE = 'DATABASE',
+  ATOM = 'ATOM',
   UNKNOWN = 'UNKNOWN',
 }
 
-type HighlightedSourceType = keyof typeof HighlightedSource;
+type HighlightEventSourceType = keyof typeof HighlightEventSource;
 
 interface SourceData {
-  type: HighlightedSourceType;
-  extra?: any;
+  type: HighlightEventSourceType;
+  extra?: {
+    zone?: ExclusionZone;
+    spectrumID?: string;
+    id?: string;
+    jcampURL?: string;
+    baseURL?: string;
+    ranges?: RangeData[];
+    colKey?: string;
+  } | null;
 }
 
 type HighlightActions = 'HIDE' | 'SHOW' | 'SET_PERMANENT' | 'UNSET_PERMANENT';
@@ -34,10 +47,17 @@ interface HighlightState {
   highlightedPermanently: string[];
   sourceData: SourceData | null;
 }
-
+interface HighlightPayload {
+  convertedHighlights: string[];
+  id?: number | string;
+  sourceData?: SourceData | null;
+}
 interface HighlightContextProps {
   highlight: HighlightState;
-  dispatch: (props: { type: HighlightActions; payload?: any }) => void;
+  dispatch: (props: {
+    type: HighlightActions;
+    payload?: HighlightPayload;
+  }) => void;
   remove: () => void;
 }
 
@@ -54,14 +74,20 @@ const emptyState = {
 
 const highlightContext = createContext<HighlightContextProps>(emptyState);
 
-function highlightReducer(state, action) {
+function highlightReducer(
+  state: HighlightState,
+  action: {
+    type: HighlightActions;
+    payload?: HighlightPayload;
+  },
+): HighlightState {
   switch (action.type) {
     case 'SHOW': {
-      const { convertedHighlights, sourceData } = action.payload;
-      const { type = HighlightedSource.UNKNOWN, extra = null } =
+      const { convertedHighlights = [], sourceData } = action.payload || {};
+      const { type = HighlightEventSource.UNKNOWN, extra = null } =
         sourceData || {};
 
-      const newState = {
+      const newState: HighlightState = {
         ...state,
         highlights: { ...state.highlights },
         sourceData: { type, extra },
@@ -76,7 +102,7 @@ function highlightReducer(state, action) {
       return newState;
     }
     case 'HIDE': {
-      const { convertedHighlights } = action.payload;
+      const { convertedHighlights = [] } = action.payload || {};
 
       const newState = {
         ...state,
@@ -96,7 +122,7 @@ function highlightReducer(state, action) {
       const newState = {
         ...state,
         // allow just one permanent highlights group at same time
-        highlightedPermanently: action.payload,
+        highlightedPermanently: action.payload?.convertedHighlights || [],
       };
 
       return newState;
@@ -110,7 +136,7 @@ function highlightReducer(state, action) {
       return newState;
     }
     default: {
-      throw new Error(`unknown action type: ${action.type}`);
+      throw new Error(`unknown action type: ${String(action.type)}`);
     }
   }
 }
@@ -213,7 +239,7 @@ export function useHighlight(
   }, [convertedHighlights, dispatch]);
 
   const add = useCallback(
-    (id) => {
+    (id: number | string) => {
       dispatch({
         type: 'SHOW',
         payload: { convertedHighlights: [], id },
@@ -223,7 +249,7 @@ export function useHighlight(
   );
 
   const remove = useCallback(
-    (id) => {
+    (id: number | string) => {
       dispatch({
         type: 'HIDE',
         payload: { convertedHighlights: [], id },
@@ -233,7 +259,7 @@ export function useHighlight(
   );
 
   const click = useCallback(
-    (e) => {
+    (e: MouseEvent) => {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -242,7 +268,7 @@ export function useHighlight(
       if (!isActivePermanently) {
         dispatch({
           type: 'SET_PERMANENT',
-          payload: convertedHighlights,
+          payload: { convertedHighlights },
         });
       } else {
         dispatch({

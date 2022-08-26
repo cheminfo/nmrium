@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useState, MouseEvent } from 'react';
 
 import { Info1D } from '../../../data/types/data1d';
 import {
@@ -11,7 +11,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import {
-  HighlightedSource,
+  HighlightEventSource,
   useHighlight,
   useHighlightData,
 } from '../../highlight';
@@ -60,16 +60,16 @@ function RangesTableRow({
         rowData.signals.map((_signal) => _signal.id),
       ),
     ),
-    { type: HighlightedSource.RANGE },
+    { type: HighlightEventSource.RANGE },
   );
   const highlightRangeAssignmentsColumn = useHighlight(
     assignmentRange.assigned?.x || [],
-    { type: HighlightedSource.RANGE },
+    { type: HighlightEventSource.RANGE },
   );
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignal = useHighlight(
     [assignmentSignal.id].concat(assignmentSignal.assigned?.x || []),
-    { type: HighlightedSource.SIGNAL },
+    { type: HighlightEventSource.SIGNAL },
   );
   const highlightData = useHighlightData();
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);
@@ -88,7 +88,7 @@ function RangesTableRow({
   }, [rowData.tableMetaInfo]);
 
   const unlinkHandler = useCallback(
-    (e, isOnRangeLevel) => {
+    (e: MouseEvent, isOnRangeLevel: boolean) => {
       // stop propagation here to prevent enabling/disabling the assignment mode at the same time
       if (e) {
         e.stopPropagation();
@@ -115,10 +115,13 @@ function RangesTableRow({
     [assignmentRange, assignmentSignal, onUnlink, rowData],
   );
 
-  const linkHandler = useCallback((e, assignment: AssignmentsData) => {
-    e.stopPropagation();
-    assignment.setActive('x');
-  }, []);
+  const linkHandler = useCallback(
+    (e: MouseEvent, assignment: AssignmentsData) => {
+      e.stopPropagation();
+      assignment.setActive('x');
+    },
+    [],
+  );
 
   const onHoverRange = useMemo(() => {
     return {

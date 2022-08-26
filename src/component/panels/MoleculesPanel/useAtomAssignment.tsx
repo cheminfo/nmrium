@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Range } from '../../../data/types/data1d';
 import { Zone } from '../../../data/types/data2d';
@@ -11,11 +11,12 @@ import {
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { HighlightedSource, useHighlightData } from '../../highlight';
+import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_DIAID_RANGE, SET_DIAID_ZONE } from '../../reducer/types/Types';
 
 import {
+  Atom,
   AtomData,
   extractFromAtom,
   findDatumAndSignalIndex,
@@ -40,8 +41,9 @@ export default function useAtomAssignment({
       ? assignments.data.activated.id
       : ConcatenationString, // dummy value
   );
-
-  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<any>([]);
+  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<
+    Array<string>
+  >([]);
   const [onAtomHoverAction, setOnAtomHoverAction] = useState<
     'show' | 'hide' | null
   >(null);
@@ -51,7 +53,10 @@ export default function useAtomAssignment({
       if (onAtomHoverAction === 'show') {
         highlightData.dispatch({
           type: 'SHOW',
-          payload: { convertedHighlights: onAtomHoverHighlights },
+          payload: {
+            convertedHighlights: onAtomHoverHighlights,
+            sourceData: { type: HighlightEventSource.ATOM },
+          },
         });
       } else if (onAtomHoverAction === 'hide') {
         highlightData.dispatch({
@@ -80,7 +85,10 @@ export default function useAtomAssignment({
   }, [displayerMode, ranges, zones]);
 
   const assignedDiaIDs = useMemo(() => {
-    const assignedDiaID: { x: Array<any>; y: Array<any> } = { x: [], y: [] };
+    const assignedDiaID: { x: Array<string>; y: Array<string> } = {
+      x: [],
+      y: [],
+    };
     const assignment = assignments.data.assignments;
     for (let id in assignment) {
       if (assignment[id].x) {
@@ -109,7 +117,9 @@ export default function useAtomAssignment({
         const type = highlightData.highlight.sourceData?.type;
         if (
           datum &&
-          (type === HighlightedSource.ZONE || type === HighlightedSource.RANGE)
+          (type === HighlightEventSource.ZONE ||
+            type === HighlightEventSource.RANGE ||
+            type === HighlightEventSource.ATOM)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(
@@ -139,7 +149,7 @@ export default function useAtomAssignment({
   }, []);
 
   const handleOnClickAtom = useCallback(
-    (atom, event) => {
+    (atom: Atom, event: MouseEvent) => {
       if (!checkModifierKeyActivated(event) && activeAssignment.activated) {
         const { axis, id } = activeAssignment.activated;
         if (id && axis) {
@@ -226,7 +236,7 @@ export default function useAtomAssignment({
   );
 
   const handleOnAtomHover = useCallback(
-    (atom) => {
+    (atom: Atom) => {
       const { oclIDs } = extractFromAtom(atom, nucleus);
 
       // on enter the atom

@@ -9,7 +9,7 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
-import { HighlightedSource } from '../../highlight';
+import { HighlightEventSource } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { formatNumber } from '../../utility/formatNumber';
 
@@ -180,7 +180,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
     <ReactTable
       data={data}
       columns={tableColumns}
-      highlightedSource={HighlightedSource.DATABASE}
+      highlightedSource={HighlightEventSource.DATABASE}
       groupKey="index"
       approxItemHeight={24}
       enableVirtualScroll

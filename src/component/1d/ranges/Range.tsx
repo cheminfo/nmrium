@@ -13,7 +13,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
-import { HighlightedSource, useHighlight } from '../../highlight';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { formatNumber } from '../../utility/formatNumber';
@@ -81,7 +81,7 @@ function Range({
         signals.map((_signal) => _signal.id),
       ),
     ),
-    { type: HighlightedSource.RANGE, extra: { id } },
+    { type: HighlightEventSource.RANGE, extra: { id } },
   );
 
   const { scaleX } = useScaleChecked();

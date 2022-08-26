@@ -6,7 +6,7 @@ import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { HighlightedSource, useHighlightData } from '../../highlight';
+import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { spinnerContext } from '../../loader/SpinnerContext';
 import { loadFile } from '../../utility/FileUtility';
@@ -22,8 +22,8 @@ function DatabaseSpectrum() {
   const { scaleX } = useScaleChecked();
   const alert = useAlert();
   const { color, marginBottom } = usePanelPreferences('database');
-  const { jcampURL: jcampRelativeURL, baseURL } =
-    highlight?.sourceData?.extra || [];
+  const { jcampURL: jcampRelativeURL = '', baseURL } =
+    highlight?.sourceData?.extra || {};
   const getSpinner = useContext(spinnerContext);
 
   const scaleY = useCallback(
@@ -38,7 +38,7 @@ function DatabaseSpectrum() {
   );
 
   const loadSpectrum = useRef(
-    throttle(async (baseURL: string, jcampRelativeURL: string) => {
+    throttle(async (baseURL: string | undefined, jcampRelativeURL: string) => {
       try {
         setLoading(true);
         const jcampURL = new URL(jcampRelativeURL, baseURL);
@@ -68,7 +68,7 @@ function DatabaseSpectrum() {
     void loadSpectrum.current(baseURL, jcampRelativeURL);
   }, [baseURL, jcampRelativeURL, loadSpectrum]);
 
-  if (highlight.sourceData?.type !== HighlightedSource.DATABASE) {
+  if (highlight.sourceData?.type !== HighlightEventSource.DATABASE) {
     return null;
   }
 

@@ -6,7 +6,7 @@ import { Zone as ZoneDataProps } from '../../../data/types/data2d';
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
-import { HighlightedSource, useHighlight } from '../../highlight';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -51,7 +51,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
   const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight([assignmentZone.id], {
-    type: HighlightedSource.ZONE,
+    type: HighlightEventSource.ZONE,
     extra: { id: assignmentZone.id },
   });
   const { margin, width, height, xDomain, yDomain } = useChartData();
