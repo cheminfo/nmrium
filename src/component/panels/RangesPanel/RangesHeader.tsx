@@ -15,6 +15,7 @@ import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
@@ -249,7 +250,7 @@ function RangesHeader({
         >
           <FaUnlink />
         </Button>
-        <ToggleButton
+        <ActiveButton
           popupTitle={
             showMultiplicityTrees
               ? 'Hide Multiplicity Trees in Spectrum'
@@ -257,29 +258,31 @@ function RangesHeader({
           }
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
+          value={showMultiplicityTrees}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ToggleButton>
-        <ToggleButton
+        </ActiveButton>
+        <ActiveButton
           popupTitle={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
           popupPlacement="right"
           onClick={handleShowJGraph}
+          value={showJGraph}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ToggleButton>
-        <ToggleButton
+        </ActiveButton>
+        <ActiveButton
           popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
           popupPlacement="right"
           onClick={handleShowIntegrals}
-          defaultValue={showRangesIntegrals}
+          value={showRangesIntegrals}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <SvgNmrIntegrate
             style={{ pointerEvents: 'none', fontSize: '12px' }}
           />
-        </ToggleButton>
+        </ActiveButton>
 
         <ToggleButton
           className="icon"
