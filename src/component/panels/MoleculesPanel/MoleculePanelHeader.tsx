@@ -15,7 +15,7 @@ import { IoOpenOutline } from 'react-icons/io5';
 
 import {
   FloatingMolecules,
-  InternalMolecule,
+  StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -90,7 +90,7 @@ export interface MoleculeHeaderActionsOptions {
 }
 interface MoleculePanelHeaderProps {
   currentIndex: number;
-  molecules: Array<InternalMolecule>;
+  molecules: Array<StateMoleculeExtended>;
   floatingMolecules: Array<FloatingMolecules>;
   onMoleculeIndexChange: (index: number) => void;
   onOpenMoleculeEditor: () => void;

@@ -2,7 +2,7 @@ import { Draft } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
-import { InternalMolecule } from '../../../data/molecules/Molecule';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { UsedColors } from '../../../types/UsedColors';
 import { NMRiumPreferences, Spectra } from '../../NMRium';
@@ -26,7 +26,7 @@ function setData(
   draft: Draft<State>,
   data: {
     spectra: Spectra;
-    molecules: InternalMolecule[];
+    molecules: StateMoleculeExtended[];
     preferences: NMRiumPreferences;
     correlations: CorrelationData;
     usedColors: UsedColors;

@@ -14,7 +14,7 @@ import OCLnmr from 'react-ocl-nmr';
 
 import {
   FloatingMolecules,
-  InternalMolecule,
+  StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
 import { Datum2D, Zones } from '../../../data/types/data2d';
@@ -68,7 +68,7 @@ const styles: Record<
 interface MoleculePanelInnerProps extends MoleculePanelProps {
   zones: Zones;
   ranges: Ranges;
-  molecules: Array<InternalMolecule>;
+  molecules: Array<StateMoleculeExtended>;
   floatingMolecules: Array<FloatingMolecules>;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
@@ -87,7 +87,7 @@ function MoleculePanelInner({
   emptyTextStyle,
 }: MoleculePanelInnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [molecules, setMolecules] = useState<Array<InternalMolecule>>([]);
+  const [molecules, setMolecules] = useState<Array<StateMoleculeExtended>>([]);
 
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();
@@ -149,7 +149,7 @@ function MoleculePanelInner({
                   defaultIndex={currentIndex}
                 >
                   {molecules && molecules.length > 0 ? (
-                    molecules.map((mol: InternalMolecule, index) => (
+                    molecules.map((mol: StateMoleculeExtended, index) => (
                       <div key={mol.id} css={styles.items}>
                         <MoleculeHeader
                           currentMolecule={mol}
@@ -216,7 +216,7 @@ const MemoizedMoleculePanel = memo(MoleculePanelInner);
 const emptyData = { ranges: {}, zones: {} };
 
 interface MoleculePanelProps {
-  onMoleculeChange?: (molecule: InternalMolecule) => void;
+  onMoleculeChange?: (molecule: StateMoleculeExtended) => void;
   children?: ReactElement;
   actionsOptions?: MoleculeHeaderActionsOptions;
   emptyTextStyle?: CSSProperties;

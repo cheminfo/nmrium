@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import {
   FloatingMolecules,
-  InternalMolecule,
+  StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
 import { Datum2D, Zones } from '../../../data/types/data2d';
@@ -15,7 +15,7 @@ import { DraggableStructure } from './DraggableStructure';
 interface FloatMoleculeStructuresProps {
   zones: Zones;
   ranges: Ranges;
-  molecules: Array<InternalMolecule>;
+  molecules: Array<StateMoleculeExtended>;
   floatingMolecules: Array<FloatingMolecules>;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
@@ -49,7 +49,7 @@ export function FloatMoleculeStructuresInner(
               displayerMode,
               molecule: molecules.find(
                 (m) => m.id === molecule.id,
-              ) as InternalMolecule,
+              ) as StateMoleculeExtended,
             }}
           />
         ))}
