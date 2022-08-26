@@ -296,7 +296,7 @@ export function toJSON(
   });
 
   const preferences = getPreferences(state);
-  const molecules = mols.map((mol: Molecule.InternalMolecule) =>
+  const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
   );
 
