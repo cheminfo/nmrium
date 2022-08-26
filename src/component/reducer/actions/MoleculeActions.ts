@@ -4,6 +4,7 @@ import { generateSpectra } from '../../../data/PredictionManager';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import getColor from '../../../data/utilities/getColor';
+import { DRAGGABLE_STRUCTURE_INITIAL_POSITION } from '../../tool/FloatMoleculeStructures/DraggableStructure';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -106,7 +107,22 @@ function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
     draft.view.floatingMolecules[moleculeIndex].visible =
       !draft.view.floatingMolecules[moleculeIndex].visible;
   } else {
-    draft.view.floatingMolecules.push({ id, visible: true });
+    draft.view.floatingMolecules.push({
+      id,
+      visible: true,
+      position: DRAGGABLE_STRUCTURE_INITIAL_POSITION,
+    });
+  }
+}
+function changeFloatMoleculePosition(draft: Draft<State>, action) {
+  const { id, position } = action.payload;
+  const moleculeIndex = draft.view.floatingMolecules.findIndex(
+    (m) => m.id === id,
+  );
+  if (moleculeIndex !== -1) {
+    draft.view.floatingMolecules[moleculeIndex].position = position;
+  } else {
+    throw new Error(`Molecule ${id} does not exist`);
   }
 }
 function changeMoleculeLabel(draft: Draft<State>, action) {
@@ -123,5 +139,6 @@ export {
   deleteMoleculeHandler,
   predictSpectraFromMoleculeHandler,
   floatMoleculeOverSpectrum,
+  changeFloatMoleculePosition,
   changeMoleculeLabel,
 };

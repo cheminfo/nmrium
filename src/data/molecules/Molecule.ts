@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
+import { Position } from '../../component/elements/draggble/useDraggable';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 export interface Molecule {
@@ -24,6 +25,10 @@ export interface FloatingMolecules {
    * If the floating molecule is shown.
    */
   visible: boolean;
+  /**
+   * Floating molecule position.
+   */
+  position: Position;
 }
 export function initMolecule(
   options: Partial<Molecule> = {},

@@ -10,10 +10,12 @@ import { Zones } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import SVGDraggable from '../../elements/draggble/SVGDraggable';
+import { Position } from '../../elements/draggble/useDraggable';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../panels/MoleculesPanel/useAtomAssignment';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
+  CHANGE_FLOAT_MOLECULE_POSITION,
   FLOAT_MOLECULE_OVER_SPECTRUM,
   SET_MOLECULE,
 } from '../../reducer/types/Types';
@@ -43,6 +45,7 @@ const style = css`
     }
   }
 `;
+export const DRAGGABLE_STRUCTURE_INITIAL_POSITION = { x: 100, y: 50 };
 export function DraggableStructure(props: DraggableStructureProps) {
   const { zones, ranges, molecule, activeTab, displayerMode, index } = props;
   const { viewerRef } = useGlobal();
@@ -62,14 +65,24 @@ export function DraggableStructure(props: DraggableStructureProps) {
       payload: { id: molecule.id },
     });
   }, [dispatch, molecule]);
+  const dragFloatMoleculeHandler = useCallback(
+    (position: Position) => {
+      dispatch({
+        type: CHANGE_FLOAT_MOLECULE_POSITION,
+        payload: { id: molecule.id, position },
+      });
+    },
+    [dispatch, molecule],
+  );
   return (
     <SVGDraggable
       key={molecule.id}
       width={150}
       height={100}
-      initialPosition={{ x: 100, y: 50 }}
+      initialPosition={DRAGGABLE_STRUCTURE_INITIAL_POSITION}
       dragHandleClassName="handle"
       parentElement={viewerRef}
+      onEnd={dragFloatMoleculeHandler}
     >
       {(width, height) => (
         <foreignObject
