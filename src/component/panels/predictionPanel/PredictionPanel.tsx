@@ -1,7 +1,7 @@
 import { useAccordionContext } from 'analysis-ui-components';
 import { useState, useCallback } from 'react';
 
-import { InternalMolecule } from '../../../data/molecules/Molecule';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
@@ -11,7 +11,7 @@ import MoleculePanel from '../MoleculesPanel/MoleculePanel';
 import PredictionPreferences from './PredictionOptions';
 
 export default function PredictionPane() {
-  const [molecule, setMolecule] = useState<InternalMolecule | null>();
+  const [molecule, setMolecule] = useState<StateMoleculeExtended | null>();
   const { molecules } = useChartData();
   const {
     item: spectraPanelState,

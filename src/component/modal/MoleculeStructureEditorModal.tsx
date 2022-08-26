@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { StructureEditor } from 'react-ocl/full';
 
-import { InternalMolecule } from '../../data/molecules/Molecule';
+import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { isMolFileEmpty } from '../../data/utilities/isMolFileEmpty';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
@@ -14,7 +14,7 @@ import { ModalStyles } from './ModalStyle';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
-  selectedMolecule?: InternalMolecule;
+  selectedMolecule?: StateMoleculeExtended;
 }
 
 function MoleculeStructureEditorModal(
@@ -81,10 +81,12 @@ function MoleculeStructureEditorModal(
   );
 }
 
-export function useMoleculeEditor(): (molecule?: InternalMolecule) => void {
+export function useMoleculeEditor(): (
+  molecule?: StateMoleculeExtended,
+) => void {
   const modal = useModal();
   return useCallback(
-    (molecule?: InternalMolecule) => {
+    (molecule?: StateMoleculeExtended) => {
       modal.show(<MoleculeStructureEditorModal selectedMolecule={molecule} />, {
         position: positions.TOP_CENTER,
         width: 700,
