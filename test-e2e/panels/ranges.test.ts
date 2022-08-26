@@ -95,21 +95,59 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await nmrium.page.locator('data-test-id=range').count(),
   ).toBeGreaterThanOrEqual(10);
 });
-test('Multiplicity should be visible', async ({ page }) => {
+test.only('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  await nmrium.open1D();
+  await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=FULL ethylbenzene');
+  });
+  await test.step('Apply auto ranges', async () => {
+    //select range tool
+    await nmrium.clickTool('rangePicking');
 
-  //select range tool
-  await nmrium.clickTool('rangePicking');
+    //apply auto ranges detection
+    await nmrium.page.click('text=Auto ranges picking');
+  });
+  await test.step('Check multiplicity tree tool', async () => {
+    // Check that the multiplicity tree btn is off
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeHidden();
+    //show multiplicity trees
+    await nmrium.page.click(
+      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >>  button',
+    );
+    // Check that the multiplicity tree btn is on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+    // Check multiplicity tree is visible
+    expect(
+      await nmrium.page.locator('_react=MultiplicityTree').count(),
+    ).toBeGreaterThan(0);
+  });
+  await test.step('Check that multiplicity tree btn save state', async () => {
+    // Change spectra to 2D
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+    );
+    // Return to 1D spectra
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+    );
 
-  //apply auto ranges detection
-  await nmrium.page.click('text=Auto ranges picking');
-  //show multiplicity trees
-  await nmrium.page.click(
-    '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >>  button',
-  );
+    //open ranges panel
+    await nmrium.clickPanel('Ranges');
 
-  expect(
-    await nmrium.page.locator('_react=MultiplicityTree').count(),
-  ).toBeGreaterThan(0);
+    // Check that MultiplicityTree btn still on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+  });
 });
