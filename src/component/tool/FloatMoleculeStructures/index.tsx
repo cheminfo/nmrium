@@ -47,6 +47,7 @@ export function FloatMoleculeStructuresInner(
               ranges,
               activeTab,
               displayerMode,
+              position: molecule.position,
               molecule: molecules.find(
                 (m) => m.id === molecule.id,
               ) as StateMoleculeExtended,

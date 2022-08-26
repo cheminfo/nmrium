@@ -26,6 +26,7 @@ interface DraggableStructureProps {
   zones: Zones;
   ranges: Ranges;
   molecule: StateMoleculeExtended;
+  position?: Position;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
   index?: number;
@@ -47,7 +48,15 @@ const style = css`
 `;
 export const DRAGGABLE_STRUCTURE_INITIAL_POSITION = { x: 100, y: 50 };
 export function DraggableStructure(props: DraggableStructureProps) {
-  const { zones, ranges, molecule, activeTab, displayerMode, index } = props;
+  const {
+    zones,
+    ranges,
+    molecule,
+    activeTab,
+    displayerMode,
+    index,
+    position = DRAGGABLE_STRUCTURE_INITIAL_POSITION,
+  } = props;
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();
@@ -79,7 +88,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
       key={molecule.id}
       width={150}
       height={100}
-      initialPosition={DRAGGABLE_STRUCTURE_INITIAL_POSITION}
+      initialPosition={position}
       dragHandleClassName="handle"
       parentElement={viewerRef}
       onEnd={dragFloatMoleculeHandler}
