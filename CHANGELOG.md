@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.30.0](https://github.com/cheminfo/nmrium/compare/v0.29.0...v0.30.0) (2022-08-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* React v18 is now mandatory
+
+### Features
+
+* activate resizing for integrals/ranges when its tool selected ([4c75f34](https://github.com/cheminfo/nmrium/commit/4c75f345735e718fcf8687867ba9fb393b824399)), closes [#1648](https://github.com/cheminfo/nmrium/issues/1648)
+* apodization window preview ([#1647](https://github.com/cheminfo/nmrium/issues/1647)) ([16b97b3](https://github.com/cheminfo/nmrium/commit/16b97b36a3df275ade018f10769a33fc6ea26aa0))
+* change the spectra alignment from stack to center when pressing on 'c' shortcut ([7be801f](https://github.com/cheminfo/nmrium/commit/7be801f62a8ab4e3f726d08e2e7b80ea03b005ec)), closes [#1652](https://github.com/cheminfo/nmrium/issues/1652)
+* disable baseline correction live preview ([b1e7845](https://github.com/cheminfo/nmrium/commit/b1e784591a7aa7f222c52a4f552bad7d2ec40000))
+* enable/disable resize in the resizer component ([6797c43](https://github.com/cheminfo/nmrium/commit/6797c4362249700c8af28538e4bab471e638c619))
+* improve 1d filters  ([#1623](https://github.com/cheminfo/nmrium/issues/1623)) ([4651216](https://github.com/cheminfo/nmrium/commit/465121603fe468f751401521257a892a9f94bd3b))
+* improve multiple spectra range deletion ([e6007e3](https://github.com/cheminfo/nmrium/commit/e6007e3e998b0eb310162ddec7a2a0c572a7ced7)), closes [#1661](https://github.com/cheminfo/nmrium/issues/1661)
+* improve peak picking ([ecc091c](https://github.com/cheminfo/nmrium/commit/ecc091c4a7957e4c5fd332e44f7d1b6f7a6c50d3)), closes [#1651](https://github.com/cheminfo/nmrium/issues/1651)
+* improve remove exclusion zone/s ([d24dfb1](https://github.com/cheminfo/nmrium/commit/d24dfb10e0476bdb9e053ea02a6b9d3b91506c7a)), closes [#1667](https://github.com/cheminfo/nmrium/issues/1667)
+* improvement of prediction panel ([fa9d49c](https://github.com/cheminfo/nmrium/commit/fa9d49cf607740be9f2df70dedde0b1436e42969)), closes [#1664](https://github.com/cheminfo/nmrium/issues/1664)
+* move selected spectrum to front ([784a793](https://github.com/cheminfo/nmrium/commit/784a793e30f429392eeb502b70b16efe415ddbbd))
+* open spectra panel after prediction ([a939255](https://github.com/cheminfo/nmrium/commit/a939255b45f93589c3a2d280fdbce04419ad03f1)), closes [#1663](https://github.com/cheminfo/nmrium/issues/1663)
+* peaks annotations should not be displayed if the spectrum not active ([e10f0bd](https://github.com/cheminfo/nmrium/commit/e10f0bdf1972fc8a94c15d0602a0ac284706133e)), closes [#1662](https://github.com/cheminfo/nmrium/issues/1662)
+* React v18 is now mandatory ([2793d90](https://github.com/cheminfo/nmrium/commit/2793d907181b33783e30f2fdbaf4f0d35ee3d4c0))
+* zero-filling filter live preview ([5979a85](https://github.com/cheminfo/nmrium/commit/5979a855a622b4d6219db58fa349acffd1b0c246)), closes [#1646](https://github.com/cheminfo/nmrium/issues/1646)
+
+
+### Bug Fixes
+
+* absolute median as noise level for 2D ([#1660](https://github.com/cheminfo/nmrium/issues/1660)) ([735eb90](https://github.com/cheminfo/nmrium/commit/735eb9087cf001f0948b4a52910fec0e8a78e9a1))
+* correct and refactor floating molecules ([#1715](https://github.com/cheminfo/nmrium/issues/1715)) ([9000808](https://github.com/cheminfo/nmrium/commit/9000808ea53b53f90d86a7fac4626dd49e938af9))
+* database search ([c9af976](https://github.com/cheminfo/nmrium/commit/c9af97637f908dda1252fb77a025094f8f1e3bc0)), closes [#1678](https://github.com/cheminfo/nmrium/issues/1678)
+* import molecules id on loading json data ([#1725](https://github.com/cheminfo/nmrium/issues/1725)) ([5c43d1f](https://github.com/cheminfo/nmrium/commit/5c43d1fdc5fbd5875d432ec2a7a157653ee68037))
+* improve 2D first display performance ([78be996](https://github.com/cheminfo/nmrium/commit/78be9969cac8118332c376bba2308b16fa5f9bca))
+* **prediction2D:** right place for experiment ([#1675](https://github.com/cheminfo/nmrium/issues/1675)) ([e331998](https://github.com/cheminfo/nmrium/commit/e331998554cadd22eeea2641fbe23dfd4f1fcde9))
+* **prediction:** empty multiplicity for singulets ([b2d6b2d](https://github.com/cheminfo/nmrium/commit/b2d6b2d006ec932f74691bc6eb0b52c7cfbe45aa))
+* resizing multiple spectra range ([e6007e3](https://github.com/cheminfo/nmrium/commit/e6007e3e998b0eb310162ddec7a2a0c572a7ced7))
+* round data to dataPoints reported ([#1685](https://github.com/cheminfo/nmrium/issues/1685)) ([f271ade](https://github.com/cheminfo/nmrium/commit/f271adef416c34bac8cfdebde76617c9626d25b3))
+* show change sum modal when structure panel is visible ([f58ad99](https://github.com/cheminfo/nmrium/commit/f58ad9992b8252fcf5061faac78375f473e2c1c1)), closes [#1687](https://github.com/cheminfo/nmrium/issues/1687)
+
 ## [0.29.0](https://github.com/cheminfo/nmrium/compare/v0.28.0...v0.29.0) (2022-07-25)
 
 
