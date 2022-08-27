@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 
-import { InternalMolecule } from '../../../data/molecules/Molecule';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
@@ -28,7 +28,7 @@ interface RangesTablePanelInnerProps {
   info: Info1D;
   xDomain: Array<number>;
   activeTab: string;
-  molecules: Array<InternalMolecule>;
+  molecules: Array<StateMoleculeExtended>;
   showMultiplicityTrees: boolean;
   showJGraph: boolean;
   showRangesIntegrals: boolean;

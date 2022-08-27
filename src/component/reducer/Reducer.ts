@@ -9,7 +9,7 @@ import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { migrate } from '../../data/migration/MigrationManager';
 import {
   FloatingMolecules,
-  InternalMolecule,
+  StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
 import { Contours } from '../../data/types/data2d/Contours';
 import { UsedColors } from '../../types/UsedColors';
@@ -239,7 +239,7 @@ export interface State {
    * molecules
    * @default []
    */
-  molecules: Array<InternalMolecule>;
+  molecules: Array<StateMoleculeExtended>;
   /**
    * View related information
    * @default { floatingMolecules: [] };
