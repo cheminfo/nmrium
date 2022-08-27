@@ -58,6 +58,7 @@ const style = css`
 `;
 
 function RangesHeader({
+  id,
   ranges,
   info,
   onUnlink,
@@ -131,16 +132,16 @@ function RangesHeader({
   }, [assignmentData, dispatch, modal]);
 
   const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({ type: SHOW_MULTIPLICTY_TREES });
-  }, [dispatch]);
+    dispatch({ type: SHOW_MULTIPLICTY_TREES, payload: { id } });
+  }, [dispatch, id]);
 
   const handleShowIntegrals = useCallback(() => {
-    dispatch({ type: SHOW_RANGES_INTEGRALS });
-  }, [dispatch]);
+    dispatch({ type: SHOW_RANGES_INTEGRALS, payload: { id } });
+  }, [dispatch, id]);
 
   const handleShowJGraph = useCallback(() => {
-    dispatch({ type: SHOW_J_GRAPH });
-  }, [dispatch]);
+    dispatch({ type: SHOW_J_GRAPH, payload: { id } });
+  }, [dispatch, id]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {

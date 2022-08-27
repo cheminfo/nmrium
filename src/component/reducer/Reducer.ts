@@ -52,7 +52,31 @@ export interface ActiveSpectrum {
   id: string;
   index: number;
 }
-
+interface ToolStateBase {
+  spectrumID: string;
+}
+interface RangeToolState extends ToolStateBase {
+  /**
+   * boolean indicator to hide/show multiplicity tree
+   * @default false
+   */
+  showMultiplicityTrees: boolean;
+  /**
+   * boolean indicator to hide/show J graph for spectrum signals
+   * @default false
+   */
+  showJGraph: boolean;
+  /**
+   * boolean indicator to hide/show integrals for the spectrum ranges
+   * @default true
+   */
+  showRangesIntegrals: boolean;
+}
+export const rangeStateInit = {
+  showMultiplicityTrees: false,
+  showRangesIntegrals: true,
+  showJGraph: false,
+};
 export interface Margin {
   top: number;
   right: number;
@@ -88,7 +112,7 @@ export const getInitialState = (): State => ({
   activeSpectrum: null,
   mode: 'RTL',
   molecules: [],
-  view: { floatingMolecules: [] },
+  view: { floatingMolecules: [], ranges: [] },
   verticalAlign: {
     align: 'bottom',
     verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
@@ -244,7 +268,10 @@ export interface State {
    * View related information
    * @default { floatingMolecules: [] };
    */
-  view: { floatingMolecules: Array<FloatingMolecules> };
+  view: {
+    floatingMolecules: Array<FloatingMolecules>;
+    ranges: Array<RangeToolState>;
+  };
   /**
    * options to control spectra vertical alignment
    * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
@@ -719,13 +746,13 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.UPDATE_RANGE:
       return RangesActions.handleUpdateRange(draft, action);
     case types.SHOW_MULTIPLICTY_TREES:
-      return RangesActions.handleShowMultiplicityTrees(draft);
+      return RangesActions.handleShowMultiplicityTrees(draft, action);
     case types.SHOW_RANGES_INTEGRALS:
-      return RangesActions.handleShowRangesIntegrals(draft);
+      return RangesActions.handleShowRangesIntegrals(draft, action);
     case types.AUTO_RANGES_SPECTRA_PICKING:
       return RangesActions.handleAutoSpectraRangesDetection(draft);
     case types.SHOW_J_GRAPH:
-      return RangesActions.handleShowJGraph(draft);
+      return RangesActions.handleShowJGraph(draft, action);
 
     case types.SET_ACTIVE_TAB:
       return ToolsActions.handelSetActiveTab(draft, action.tab);
