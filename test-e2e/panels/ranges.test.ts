@@ -95,7 +95,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await nmrium.page.locator('data-test-id=range').count(),
   ).toBeGreaterThanOrEqual(10);
 });
-test.only('Multiplicity should be visible', async ({ page }) => {
+test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
     await nmrium.page.click('li >> text=General');
@@ -149,5 +149,132 @@ test.only('Multiplicity should be visible', async ({ page }) => {
         '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
       ),
     ).toBeVisible();
+  });
+});
+test('Range state', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Linked jcamp');
+  });
+  await test.step('Apply auto ranges', async () => {
+    //select range tool
+    await nmrium.clickTool('rangePicking');
+
+    //apply auto ranges detection
+    await nmrium.page.click('text=Auto ranges picking');
+  });
+  await test.step('Active range tools', async () => {
+    // Check that the integrals btn is on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide integrals"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+    // Check that the multiplicity tree btn is off
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeHidden();
+
+    // Check range integral
+    expect(
+      await nmrium.page.locator('_react=RangeIntegral').count(),
+    ).toBeGreaterThan(0);
+
+    // Check multiplicity tree
+    await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
+
+    //show multiplicity trees
+    await nmrium.page.click(
+      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >>  button',
+    );
+    // Check that the multiplicity tree btn is on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+    // Check multiplicity tree is visible
+    expect(
+      await nmrium.page.locator('_react=MultiplicityTree').count(),
+    ).toBeGreaterThan(0);
+  });
+  await test.step('Change active spectrum', async () => {
+    // Change spectra
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=SpectrumListItem >> nth=0',
+    );
+
+    //apply auto ranges detection
+    await nmrium.page.click('text=Auto ranges picking');
+
+    // Check that the integrals btn is on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide integrals"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+    // Check that the multiplicity tree btn is off
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeHidden();
+
+    // Check range integral
+    expect(
+      await nmrium.page.locator('_react=RangeIntegral').count(),
+    ).toBeGreaterThan(0);
+
+    // Check multiplicity tree
+    await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
+
+    // Show j graph
+    await nmrium.page.click('_react=ToolTip[title="Show J Graph"] >>  button');
+
+    // Check multiplicity tree
+    await expect(nmrium.page.locator('_react=JGraph')).toBeVisible();
+
+    // Hide range integral
+    await nmrium.page.click(
+      '_react=ToolTip[title="Hide integrals"] >>  button',
+    );
+    // Check that the integrals btn is off
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide integrals"] >> .toggle-active',
+      ),
+    ).toBeHidden();
+    // Check range integral
+    await expect(nmrium.page.locator('_react=RangeIntegral')).toBeHidden();
+  });
+  await test.step('Check that first spectrum range state saved', async () => {
+    // Change spectra
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=SpectrumListItem >> nth=1',
+    );
+    // Check that the integrals btn is on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide integrals"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+    // Check that the multiplicity tree btn is on
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+
+    // Check range integrals
+    expect(
+      await nmrium.page.locator('_react=RangeIntegral').count(),
+    ).toBeGreaterThan(0);
+    // Check multiplicity tree is visible
+    expect(
+      await nmrium.page.locator('_react=MultiplicityTree').count(),
+    ).toBeGreaterThan(0);
   });
 });
