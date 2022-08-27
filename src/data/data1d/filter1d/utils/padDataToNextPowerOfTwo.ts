@@ -1,31 +1,34 @@
-import { xSequentialFill } from "ml-spectra-processing";
+import { xSequentialFill } from 'ml-spectra-processing';
 
-import { Datum1D } from "../../../types/data1d";
+import { Datum1D } from '../../../types/data1d';
 
-export function padDataToNextPowerOfTwo(datum1D: Datum1D, digitalFilterApplied: boolean) {
+export function padDataToNextPowerOfTwo(
+  datum1D: Datum1D,
+  digitalFilterApplied: boolean,
+) {
   const { x, re, im } = datum1D.data;
-    const size = nextPowerOfTwo(x.length);
+  const size = nextPowerOfTwo(x.length);
 
-    let newRE = new Float64Array(size);
-    let newIM = new Float64Array(size);
+  let newRE = new Float64Array(size);
+  let newIM = new Float64Array(size);
 
-    const pointsToShift = getPointsToShift(datum1D);
+  const pointsToShift = getPointsToShift(datum1D);
 
-    newRE.set(re.slice(0, length - pointsToShift));
-    newIM.set(im.slice(0, length - pointsToShift));
+  newRE.set(re.slice(0, length - pointsToShift));
+  newIM.set(im.slice(0, length - pointsToShift));
 
-    if (pointsToShift > 0 && digitalFilterApplied) {
-      newRE.set(re.slice(re.length - pointsToShift), size - pointsToShift);
-      newIM.set(im.slice(re.length - pointsToShift), size - pointsToShift);
-    }
+  if (pointsToShift > 0 && digitalFilterApplied) {
+    newRE.set(re.slice(re.length - pointsToShift), size - pointsToShift);
+    newIM.set(im.slice(re.length - pointsToShift), size - pointsToShift);
+  }
 
-    const newX = xSequentialFill({
-      from: x[0],
-      size,
-      step: x[1] - x[0],
-    }) as Float64Array;
+  const newX = xSequentialFill({
+    from: x[0],
+    size,
+    step: x[1] - x[0],
+  }) as Float64Array;
 
-    datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
+  datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
 }
 
 function getPointsToShift(datum1D: Datum1D) {
