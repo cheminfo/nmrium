@@ -71,7 +71,6 @@ function PeaksShapesSum(props: { vAlign: number }) {
 
   return (
     <path
-      data-test-id="peaks-shapes-sum"
       stroke={'darkblue'}
       fill={fill}
       d={path}
