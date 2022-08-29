@@ -116,11 +116,9 @@ function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
 }
 function changeFloatMoleculePosition(draft: Draft<State>, action) {
   const { id, position } = action.payload;
-  const moleculeIndex = draft.view.floatingMolecules.findIndex(
-    (m) => m.id === id,
-  );
-  if (moleculeIndex !== -1) {
-    draft.view.floatingMolecules[moleculeIndex].position = position;
+  const molecule = draft.view.floatingMolecules.find((m) => m.id === id);
+  if (molecule) {
+    molecule.position = position;
   } else {
     throw new Error(`Molecule ${id} does not exist`);
   }

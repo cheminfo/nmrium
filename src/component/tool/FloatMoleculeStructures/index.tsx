@@ -1,3 +1,5 @@
+import assert from 'assert';
+
 import { memo } from 'react';
 
 import {
@@ -39,21 +41,23 @@ export function FloatMoleculeStructuresInner(
     <g>
       {floatingMolecules
         .filter((molecule) => molecule.visible)
-        .map((molecule) => (
-          <DraggableStructure
-            key={molecule.id}
-            {...{
-              zones,
-              ranges,
-              activeTab,
-              displayerMode,
-              position: molecule.position,
-              molecule: molecules.find(
-                (m) => m.id === molecule.id,
-              ) as StateMoleculeExtended,
-            }}
-          />
-        ))}
+        .map(({ id, position }) => {
+          const molecule = molecules.find((m) => m.id === id);
+          assert(molecule !== undefined, 'molecule should be defined');
+          return (
+            <DraggableStructure
+              key={id}
+              {...{
+                zones,
+                ranges,
+                activeTab,
+                displayerMode,
+                position,
+                molecule,
+              }}
+            />
+          );
+        })}
     </g>
   );
 }
