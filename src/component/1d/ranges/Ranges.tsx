@@ -1,9 +1,10 @@
-import { Fragment, memo } from 'react';
+import { Fragment, memo, useMemo } from 'react';
 
 import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import { rangeStateInit } from '../../reducer/Reducer';
 
 import Range from './Range';
 import RangeIntegral from './RangeIntegral';
@@ -48,14 +49,20 @@ const empyData = { ranges: {} };
 
 export default function Ranges() {
   const {
+    activeSpectrum,
     displayerKey,
-    toolOptions: {
-      selectedTool,
-      data: { showMultiplicityTrees, showRangesIntegrals },
-    },
+    view: { ranges: rangeState },
+    toolOptions: { selectedTool },
     activeTab,
   } = useChartData();
-
+  const { showMultiplicityTrees, showRangesIntegrals } = useMemo(
+    () =>
+      activeSpectrum
+        ? rangeState.find((r) => r.spectrumID === activeSpectrum.id) ||
+          rangeStateInit
+        : rangeStateInit,
+    [activeSpectrum, rangeState],
+  );
   const { ranges } = useSpectrum(empyData) as Datum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 

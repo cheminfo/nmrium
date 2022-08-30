@@ -147,9 +147,6 @@ export const getInitialState = (): State => ({
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
-      showMultiplicityTrees: false,
-      showRangesIntegrals: true,
-      showJGraph: false,
       predictionIndex: 0,
       peaksOptions: {
         showPeaksShapes: false,
@@ -385,23 +382,7 @@ export interface State {
        * @default null
        */
       activeFilterID: string | null;
-      /**
-       * boolean indicator to hide/show multiplicity tree
-       * @default false
-       */
-      showMultiplicityTrees: boolean;
-      /**
-       * boolean indicator to hide/show integrals for the spectrum ranges
-       * @default false
-       */
-      showRangesIntegrals: boolean;
 
-      /**
-       * boolean indicator to hide/show J graph for spectrum signals
-       * @default false
-       */
-
-      showJGraph: boolean;
       /**
        * prediction Index
        * @default 0

@@ -232,7 +232,6 @@ export default function RangesTablePanel() {
     toolOptions: { selectedTool },
     view: { ranges: rangeState },
   } = useChartData();
-  // console.log(rangeState);
   const { showMultiplicityTrees, showRangesIntegrals, showJGraph } = useMemo(
     () => rangeState.find((r) => r.spectrumID === id) || rangeStateInit,
     [id, rangeState],

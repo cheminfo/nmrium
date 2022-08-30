@@ -377,55 +377,43 @@ function handleUpdateRange(draft: Draft<State>, action) {
 
 function handleShowMultiplicityTrees(draft: Draft<State>, action) {
   const { id } = action.payload;
-  const index = draft.view.ranges.findIndex((r) => r.spectrumID === id);
-  if (index !== -1) {
-    draft.view.ranges[index].showMultiplicityTrees =
-      !draft.view.ranges[index].showMultiplicityTrees;
-    draft.toolOptions.data.showMultiplicityTrees =
-      draft.view.ranges[index].showMultiplicityTrees;
+  const range = draft.view.ranges.find((r) => r.spectrumID === id);
+  if (range) {
+    range.showMultiplicityTrees = !range.showMultiplicityTrees;
   } else {
     draft.view.ranges.push({
       spectrumID: id,
       ...rangeStateInit,
       showMultiplicityTrees: !rangeStateInit.showMultiplicityTrees,
     });
-    draft.toolOptions.data.showMultiplicityTrees =
-      !rangeStateInit.showMultiplicityTrees;
   }
 }
 
 function handleShowRangesIntegrals(draft: Draft<State>, action) {
   const { id } = action.payload;
-  const index = draft.view.ranges.findIndex((r) => r.spectrumID === id);
-  if (index !== -1) {
-    draft.view.ranges[index].showRangesIntegrals =
-      !draft.view.ranges[index].showRangesIntegrals;
-    draft.toolOptions.data.showRangesIntegrals =
-      draft.view.ranges[index].showRangesIntegrals;
+  const range = draft.view.ranges.find((r) => r.spectrumID === id);
+  if (range) {
+    range.showRangesIntegrals = !range.showRangesIntegrals;
   } else {
     draft.view.ranges.push({
       spectrumID: id,
       ...rangeStateInit,
       showRangesIntegrals: !rangeStateInit.showRangesIntegrals,
     });
-    draft.toolOptions.data.showRangesIntegrals =
-      !rangeStateInit.showRangesIntegrals;
   }
 }
 
 function handleShowJGraph(draft: Draft<State>, action) {
   const { id } = action.payload;
-  const index = draft.view.ranges.findIndex((r) => r.spectrumID === id);
-  if (index !== -1) {
-    draft.view.ranges[index].showJGraph = !draft.view.ranges[index].showJGraph;
-    draft.toolOptions.data.showJGraph = draft.view.ranges[index].showJGraph;
+  const range = draft.view.ranges.find((r) => r.spectrumID === id);
+  if (range) {
+    range.showJGraph = !range.showJGraph;
   } else {
     draft.view.ranges.push({
       spectrumID: id,
       ...rangeStateInit,
       showJGraph: !rangeStateInit.showJGraph,
     });
-    draft.toolOptions.data.showJGraph = !rangeStateInit.showJGraph;
   }
 }
 

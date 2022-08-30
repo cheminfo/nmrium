@@ -9,7 +9,7 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
-import { State } from '../Reducer';
+import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
@@ -61,7 +61,23 @@ function setSelectedTool(draft: Draft<State>, action) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
-        draft.toolOptions.data.showMultiplicityTrees = true;
+        // TODO: use assert
+        if (draft.activeSpectrum === null) {
+          throw new Error('Spectrum must have id');
+        }
+
+        const range = draft.view.ranges.find(
+          (r) => r.spectrumID === draft.activeSpectrum?.id,
+        );
+        if (range) {
+          range.showMultiplicityTrees = true;
+        } else {
+          draft.view.ranges.push({
+            spectrumID: draft.activeSpectrum.id,
+            ...rangeStateInit,
+            showMultiplicityTrees: true,
+          });
+        }
       }
 
       if (selectedTool !== draft.toolOptions.selectedTool) {
@@ -200,11 +216,13 @@ function handleZoom(draft: Draft<State>, action) {
   const { event, trackID, selectedTool } = action;
   const {
     activeSpectrum,
-    toolOptions: {
-      data: { showRangesIntegrals },
-    },
+    view: { ranges: rangeState },
     displayerMode,
   } = draft;
+
+  const { showRangesIntegrals } =
+    rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
+    rangeStateInit;
   if (displayerMode === DISPLAYER_MODE.DM_2D) {
     const index =
       trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
