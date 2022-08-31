@@ -116,6 +116,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
     draft.activeSpectrum = activeSpectrum;
+    draft.view.spectra.currentSpectrumId = activeSpectrum.id;
     draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
   } else {
     if (currentActiveSpectrum) {
@@ -127,6 +128,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       refreshDomain = false;
     }
     draft.activeSpectrum = null;
+    draft.view.spectra.currentSpectrumId = null;
     draft.tabActiveSpectrum[draft.activeTab] = null;
   }
 
