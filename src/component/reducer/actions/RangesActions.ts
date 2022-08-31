@@ -24,7 +24,7 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
-import { State } from '../Reducer';
+import { rangeStateInit, State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
@@ -375,18 +375,46 @@ function handleUpdateRange(draft: Draft<State>, action) {
   }
 }
 
-function handleShowMultiplicityTrees(draft: Draft<State>) {
-  draft.toolOptions.data.showMultiplicityTrees =
-    !draft.toolOptions.data.showMultiplicityTrees;
+function handleShowMultiplicityTrees(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  const range = draft.view.ranges.find((r) => r.spectrumID === id);
+  if (range) {
+    range.showMultiplicityTrees = !range.showMultiplicityTrees;
+  } else {
+    draft.view.ranges.push({
+      spectrumID: id,
+      ...rangeStateInit,
+      showMultiplicityTrees: !rangeStateInit.showMultiplicityTrees,
+    });
+  }
 }
 
-function handleShowRangesIntegrals(draft: Draft<State>) {
-  draft.toolOptions.data.showRangesIntegrals =
-    !draft.toolOptions.data.showRangesIntegrals;
+function handleShowRangesIntegrals(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  const range = draft.view.ranges.find((r) => r.spectrumID === id);
+  if (range) {
+    range.showRangesIntegrals = !range.showRangesIntegrals;
+  } else {
+    draft.view.ranges.push({
+      spectrumID: id,
+      ...rangeStateInit,
+      showRangesIntegrals: !rangeStateInit.showRangesIntegrals,
+    });
+  }
 }
 
-function handleShowJGraph(draft: Draft<State>) {
-  draft.toolOptions.data.showJGraph = !draft.toolOptions.data.showJGraph;
+function handleShowJGraph(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  const range = draft.view.ranges.find((r) => r.spectrumID === id);
+  if (range) {
+    range.showJGraph = !range.showJGraph;
+  } else {
+    draft.view.ranges.push({
+      spectrumID: id,
+      ...rangeStateInit,
+      showJGraph: !rangeStateInit.showJGraph,
+    });
+  }
 }
 
 export {

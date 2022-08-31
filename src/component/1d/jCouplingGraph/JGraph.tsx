@@ -9,6 +9,7 @@ import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import { rangeStateInit } from '../../reducer/Reducer';
 
 import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
@@ -38,12 +39,15 @@ const MemoizedJGraph = memo(InnerJGraph);
 
 export default function JGraph() {
   const {
+    activeSpectrum,
     height,
-    toolOptions: {
-      data: { showJGraph },
-    },
+    view: { ranges: rangeState },
     activeTab,
   } = useChartData();
+  const { showJGraph } =
+    rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
+    rangeStateInit;
+
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const graphHeight = height / 4;

@@ -15,6 +15,7 @@ import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
@@ -57,6 +58,7 @@ const style = css`
 `;
 
 function RangesHeader({
+  id,
   ranges,
   info,
   onUnlink,
@@ -130,16 +132,16 @@ function RangesHeader({
   }, [assignmentData, dispatch, modal]);
 
   const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({ type: SHOW_MULTIPLICTY_TREES });
-  }, [dispatch]);
+    dispatch({ type: SHOW_MULTIPLICTY_TREES, payload: { id } });
+  }, [dispatch, id]);
 
   const handleShowIntegrals = useCallback(() => {
-    dispatch({ type: SHOW_RANGES_INTEGRALS });
-  }, [dispatch]);
+    dispatch({ type: SHOW_RANGES_INTEGRALS, payload: { id } });
+  }, [dispatch, id]);
 
   const handleShowJGraph = useCallback(() => {
-    dispatch({ type: SHOW_J_GRAPH });
-  }, [dispatch]);
+    dispatch({ type: SHOW_J_GRAPH, payload: { id } });
+  }, [dispatch, id]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -249,7 +251,7 @@ function RangesHeader({
         >
           <FaUnlink />
         </Button>
-        <ToggleButton
+        <ActiveButton
           popupTitle={
             showMultiplicityTrees
               ? 'Hide Multiplicity Trees in Spectrum'
@@ -257,29 +259,31 @@ function RangesHeader({
           }
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
+          value={showMultiplicityTrees}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ToggleButton>
-        <ToggleButton
+        </ActiveButton>
+        <ActiveButton
           popupTitle={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
           popupPlacement="right"
           onClick={handleShowJGraph}
+          value={showJGraph}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ToggleButton>
-        <ToggleButton
+        </ActiveButton>
+        <ActiveButton
           popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
           popupPlacement="right"
           onClick={handleShowIntegrals}
-          defaultValue={showRangesIntegrals}
+          value={showRangesIntegrals}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <SvgNmrIntegrate
             style={{ pointerEvents: 'none', fontSize: '12px' }}
           />
-        </ToggleButton>
+        </ActiveButton>
 
         <ToggleButton
           className="icon"

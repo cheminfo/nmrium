@@ -110,7 +110,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
   });
 });
 
-test.only('molecules 1H spectrum', async ({ page, browserName }) => {
+test('molecules 1H spectrum', async ({ page, browserName }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
