@@ -72,10 +72,32 @@ interface RangeToolState extends ToolStateBase {
    */
   showRangesIntegrals: boolean;
 }
+interface ZoneToolState extends ToolStateBase {
+  /**
+   * boolean indicator to hide/show zones
+   * @default false
+   */
+  showZones: boolean;
+  /**
+   * boolean indicator to hide/show signals for spectrum zones
+   * @default false
+   */
+  showSignals: boolean;
+  /**
+   * boolean indicator to hide/show peaks for spectrum zones
+   * @default true
+   */
+  showPeaks: boolean;
+}
 export const rangeStateInit = {
   showMultiplicityTrees: false,
   showRangesIntegrals: true,
   showJGraph: false,
+};
+export const zoneStateInit = {
+  showZones: true,
+  showSignals: true,
+  showPeaks: true,
 };
 export interface Margin {
   top: number;
@@ -112,7 +134,7 @@ export const getInitialState = (): State => ({
   activeSpectrum: null,
   mode: 'RTL',
   molecules: [],
-  view: { floatingMolecules: [], ranges: [] },
+  view: { floatingMolecules: [], ranges: [], zones: [] },
   verticalAlign: {
     align: 'bottom',
     verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
@@ -268,6 +290,7 @@ export interface State {
   view: {
     floatingMolecules: Array<FloatingMolecules>;
     ranges: Array<RangeToolState>;
+    zones: Array<ZoneToolState>;
   };
   /**
    * options to control spectra vertical alignment
@@ -771,6 +794,12 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleSetDiaIDZone(draft, action);
     case types.AUTO_ZONES_SPECTRA_PICKING:
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
+    case types.SHOW_ZONES:
+      return ZonesActions.handleShowZones(draft, action);
+    case types.SHOW_ZONES_SIGNALS:
+      return ZonesActions.handleShowSignals(draft, action);
+    case types.SHOW_ZONES_PEAKS:
+      return ZonesActions.handleShowPeaks(draft, action);
     case types.SAVE_EDITED_ZONE:
       return ZonesActions.handleSaveEditedZone(draft, action);
 
