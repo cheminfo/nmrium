@@ -9,6 +9,7 @@ import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+import { assert } from '../../utility/assert';
 
 import { DraggableStructure } from './DraggableStructure';
 
@@ -39,20 +40,23 @@ export function FloatMoleculeStructuresInner(
     <g>
       {floatingMolecules
         .filter((molecule) => molecule.visible)
-        .map((molecule) => (
-          <DraggableStructure
-            key={molecule.id}
-            {...{
-              zones,
-              ranges,
-              activeTab,
-              displayerMode,
-              molecule: molecules.find(
-                (m) => m.id === molecule.id,
-              ) as StateMoleculeExtended,
-            }}
-          />
-        ))}
+        .map(({ id, position }) => {
+          const molecule = molecules.find((m) => m.id === id);
+          assert(molecule !== undefined, 'molecule should be defined');
+          return (
+            <DraggableStructure
+              key={id}
+              {...{
+                zones,
+                ranges,
+                activeTab,
+                displayerMode,
+                position,
+                molecule,
+              }}
+            />
+          );
+        })}
     </g>
   );
 }

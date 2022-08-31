@@ -671,6 +671,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.FLOAT_MOLECULE_OVER_SPECTRUM:
       return MoleculeActions.floatMoleculeOverSpectrum(draft, action);
 
+    case types.CHANGE_FLOAT_MOLECULE_POSITION:
+      return MoleculeActions.changeFloatMoleculePosition(draft, action);
+
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);
 
