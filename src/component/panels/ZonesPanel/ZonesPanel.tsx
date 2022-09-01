@@ -288,7 +288,7 @@ export default function ZonesPanel() {
     view: { zones: zoneState },
   } = useChartData();
   const { zones, info, id } = useSpectrum(emptyData) as Datum2D;
-  const btnState = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
+  const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
   return (
     <MemoizedZonesPanel
       {...{
@@ -299,7 +299,7 @@ export default function ZonesPanel() {
         displayerKey,
         zones,
         experiment: info.experiment,
-        ...btnState,
+        ...zoneProps,
       }}
     />
   );
