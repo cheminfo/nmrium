@@ -46,13 +46,17 @@ import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import { defaultGetSpinner, SpinnerProvider } from './loader/SpinnerContext';
 import Panels from './panels/Panels';
-import checkActionType from './reducer/IgnoreActions';
+import {
+  checkDataChangeActions,
+  checkViewChangeActions,
+} from './reducer/IgnoreActions';
 import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
   initState,
   State,
+  ViewState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
@@ -131,6 +135,7 @@ export type NMRiumWorkspace =
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: NMRiumDataReturn) => void;
+  onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
@@ -184,6 +189,7 @@ function InnerNMRium({
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
+  onViewChange,
   emptyText,
   innerRef,
 }: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
@@ -212,10 +218,13 @@ function InnerNMRium({
   const { displayerMode, data: spectraData } = state;
 
   useEffect(() => {
-    if (checkActionType(state.actionType)) {
+    if (checkDataChangeActions(state.actionType)) {
       onDataChange?.(toJSON(state, 'onDataChange'));
     }
-  }, [onDataChange, state]);
+    if (checkViewChangeActions(state.actionType)) {
+      onViewChange?.(state.view);
+    }
+  }, [onDataChange, onViewChange, state]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);
