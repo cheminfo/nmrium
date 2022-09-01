@@ -28,7 +28,7 @@ export function apply(datum1D: Datum1D) {
     padDataToNextPowerOfTwo(datum1D, digitalFilterApplied);
   }
 
-  Object.assign(datum1D.data, reimFFT(data, { applyZeroShift: true }));
+  Object.assign(datum1D.data, reimFFT(datum1D.data, { applyZeroShift: true }));
 
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = datum1D.info;
