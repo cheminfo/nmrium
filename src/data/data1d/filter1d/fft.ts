@@ -22,7 +22,7 @@ export function apply(datum1D: Datum1D) {
   );
 
   const { data } = datum1D;
-  if (data.x.length === data.re.length || data.x.length === data.im.length) {
+  if (data.x.length !== data.re.length || data.x.length !== data.im.length) {
     throw new Error('The length of data should be equal');
   } else if (!isPowerOfTwo(datum1D.data.x.length)) {
     padDataToNextPowerOfTwo(datum1D, digitalFilterApplied);
