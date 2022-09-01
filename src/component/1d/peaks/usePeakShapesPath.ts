@@ -19,7 +19,6 @@ type PeaksShapesOptions =
 export function usePeakShapesPath(spectrum: Datum1D) {
   const { scaleX, scaleY } = useScaleChecked();
   const { width, xDomain } = useChartData();
-
   return function getPath(options: PeaksShapesOptions): {
     path: string;
     fill: string;
@@ -59,7 +58,7 @@ export function usePeakShapesPath(spectrum: Datum1D) {
 
       if (target === 'peakShape') {
         pathBuilder.closePath();
-        fill = 'red';
+        fill = 'black';
       }
     }
 

@@ -2,6 +2,8 @@ import { reimFFT, reimPhaseCorrection } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
 
+import { padDataToNextPowerOfTwo } from './utils/padDataToNextPowerOfTwo';
+
 export const id = 'fft';
 export const name = 'FFT';
 
@@ -19,7 +21,14 @@ export function apply(datum1D: Datum1D) {
     (e) => e.name === 'digitalFilter' && e.flag,
   );
 
-  Object.assign(datum1D.data, reimFFT(datum1D.data, { applyZeroShift: true }));
+  const { data } = datum1D;
+  if (data.x.length !== data.re.length || data.x.length !== data.im.length) {
+    throw new Error('The length of data should be equal');
+  } else if (!isPowerOfTwo(datum1D.data.x.length)) {
+    padDataToNextPowerOfTwo(datum1D, digitalFilterApplied);
+  }
+
+  Object.assign(datum1D.data, reimFFT(data, { applyZeroShift: true }));
 
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = datum1D.info;
@@ -59,4 +68,8 @@ function generateXAxis(datum1D) {
     firstPoint += dx;
   }
   return xAxis;
+}
+
+function isPowerOfTwo(n) {
+  return n !== 0 && (n & (n - 1)) === 0;
 }
