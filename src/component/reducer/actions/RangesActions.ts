@@ -305,6 +305,16 @@ function addNewRange(
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
+    // add range intial state
+    const rangeState = draft.view.ranges.find(
+      (r) => r.spectrumID === activeSpectrum.id,
+    );
+    if (!rangeState) {
+      draft.view.ranges.push({
+        spectrumID: activeSpectrum.id,
+        ...rangeStateInit,
+      });
+    }
     addRange(draft.data[index] as Datum1D, {
       from,
       to,

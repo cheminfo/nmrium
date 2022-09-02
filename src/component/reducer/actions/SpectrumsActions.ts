@@ -11,7 +11,7 @@ import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
-import { rangeStateInit, State } from '../Reducer';
+import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 
 import { setDomain, setMode } from './DomainActions';
@@ -78,17 +78,6 @@ function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
 
 function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   let refreshDomain = false;
-
-  // Load specturm range state
-  const range = draft.view.ranges.find(
-    (r) => r.spectrumID === activeSpectrum.id,
-  );
-  if (!range) {
-    draft.view.ranges.push({
-      spectrumID: activeSpectrum.id,
-      ...rangeStateInit,
-    });
-  }
 
   const currentActiveSpectrum = draft.activeSpectrum;
   if (activeSpectrum) {

@@ -37,7 +37,9 @@ const ignoreActions = [
   types.CHANGE_FLOAT_MOLECULE_POSITION,
 ];
 
-export default function checkActionType(type: string): boolean {
+function checkActionType(type: string): boolean {
   if (!ignoreActions.includes(type)) return true;
   return false;
 }
+
+export default checkActionType;
