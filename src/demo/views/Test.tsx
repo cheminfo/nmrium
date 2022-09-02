@@ -79,10 +79,16 @@ export default function Test() {
     })();
   }, []);
   const viewChangeHandler = useCallback((data) => {
-    setViewCallBack(data);
+    setViewCallBack({ activate: true, data });
+    setTimeout(() => {
+      setViewCallBack(({ data }) => ({ data, activate: false }));
+    }, 500);
   }, []);
   const dataChangeHandler = useCallback((data) => {
-    setDataCallBack(data);
+    setDataCallBack({ activate: true, data });
+    setTimeout(() => {
+      setDataCallBack(({ data }) => ({ data, activate: false }));
+    }, 500);
   }, []);
 
   return (
@@ -106,10 +112,22 @@ export default function Test() {
           <DropZone onDrop={dropFileHandler} color="gray" />
         </div>
         <div style={{ flex: 9 }}>
-          <h3>onDataChange:</h3>
-          <Inspector data={dataCallBack} />
-          <h3>onViewChange:</h3>
-          <Inspector data={viewCallBack} />
+          <h3
+            style={
+              dataCallBack.activate ? { color: 'red', fontWeight: 'bold' } : {}
+            }
+          >
+            Data Change:
+          </h3>
+          <Inspector data={dataCallBack.data} />
+          <h3
+            style={
+              viewCallBack.activate ? { color: 'red', fontWeight: 'bold' } : {}
+            }
+          >
+            View Change:
+          </h3>
+          <Inspector data={viewCallBack.data} />
         </div>
       </div>
     </div>
