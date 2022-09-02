@@ -46,10 +46,7 @@ import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import { defaultGetSpinner, SpinnerProvider } from './loader/SpinnerContext';
 import Panels from './panels/Panels';
-import {
-  checkDataChangeActions,
-  checkViewChangeActions,
-} from './reducer/IgnoreActions';
+import checkActionType from './reducer/IgnoreActions';
 import {
   spectrumReducer,
   initialState,
@@ -218,16 +215,14 @@ function InnerNMRium({
   const { displayerMode, data: spectraData } = state;
 
   useEffect(() => {
-    if (checkDataChangeActions(state.actionType)) {
+    if (checkActionType(state.actionType)) {
       onDataChange?.(toJSON(state, 'onDataChange'));
     }
   }, [onDataChange, state]);
 
   useEffect(() => {
-    if (checkViewChangeActions(state.actionType)) {
-      onViewChange?.(state.view);
-    }
-  }, [onViewChange, state.view, state.actionType]);
+    onViewChange?.(state.view);
+  }, [onViewChange, state.view]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

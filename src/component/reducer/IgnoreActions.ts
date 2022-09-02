@@ -37,22 +37,7 @@ const ignoreActions = [
   types.CHANGE_FLOAT_MOLECULE_POSITION,
 ];
 
-export function checkDataChangeActions(type: string): boolean {
+export default function checkActionType(type: string): boolean {
   if (!ignoreActions.includes(type)) return true;
-  return false;
-}
-
-const viewChangeActions = [
-  types.AUTO_RANGES_DETECTION,
-  types.CHANGE_ACTIVE_SPECTRUM,
-  types.CHANGE_FLOAT_MOLECULE_POSITION,
-  types.FLOAT_MOLECULE_OVER_SPECTRUM,
-  types.SHOW_J_GRAPH,
-  types.SHOW_MULTIPLICTY_TREES,
-  types.SHOW_RANGES_INTEGRALS,
-];
-
-export function checkViewChangeActions(type: string): boolean {
-  if (viewChangeActions.includes(type)) return true;
   return false;
 }
