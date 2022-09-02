@@ -83,16 +83,11 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   const range = draft.view.ranges.find(
     (r) => r.spectrumID === activeSpectrum.id,
   );
-  if (range) {
-    draft.toolOptions.data = {
-      ...draft.toolOptions.data,
-      ...range,
-    };
-  } else {
-    draft.toolOptions.data = {
-      ...draft.toolOptions.data,
+  if (!range) {
+    draft.view.ranges.push({
+      spectrumID: activeSpectrum.id,
       ...rangeStateInit,
-    };
+    });
   }
 
   const currentActiveSpectrum = draft.activeSpectrum;

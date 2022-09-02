@@ -40,8 +40,17 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     activeTab: nucleus,
   } = draft;
   if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
+    const { index, id } = activeSpectrum;
     const datum = data[index] as Datum1D;
+
+    // add range intial state
+    const range = draft.view.ranges.find((r) => r.spectrumID === id);
+    if (!range) {
+      draft.view.ranges.push({
+        spectrumID: id,
+        ...rangeStateInit,
+      });
+    }
 
     const [from, to] = xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);

@@ -221,10 +221,13 @@ function InnerNMRium({
     if (checkDataChangeActions(state.actionType)) {
       onDataChange?.(toJSON(state, 'onDataChange'));
     }
+  }, [onDataChange, state]);
+
+  useEffect(() => {
     if (checkViewChangeActions(state.actionType)) {
       onViewChange?.(state.view);
     }
-  }, [onDataChange, onViewChange, state]);
+  }, [onViewChange, state.view, state.actionType]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

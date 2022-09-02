@@ -43,6 +43,8 @@ export function checkDataChangeActions(type: string): boolean {
 }
 
 const viewChangeActions = [
+  types.AUTO_RANGES_DETECTION,
+  types.CHANGE_ACTIVE_SPECTRUM,
   types.CHANGE_FLOAT_MOLECULE_POSITION,
   types.FLOAT_MOLECULE_OVER_SPECTRUM,
   types.SHOW_J_GRAPH,
