@@ -170,15 +170,15 @@ function ZonesPanelInner({
     setFlipStatus(false);
   }, []);
 
-  const handleSetShowZones = useCallback(() => {
+  const handleSetShowZones = () => {
     dispatch({ type: SHOW_ZONES, payload: { id } });
-  }, [dispatch, id]);
-  const handleSetShowSignals = useCallback(() => {
+  };
+  const handleSetShowSignals = () => {
     dispatch({ type: SHOW_ZONES_SIGNALS, payload: { id } });
-  }, [dispatch, id]);
-  const handleSetShowPeaks = useCallback(() => {
+  };
+  const handleSetShowPeaks = () => {
     dispatch({ type: SHOW_ZONES_PEAKS, payload: { id } });
-  }, [dispatch, id]);
+  };
 
   return (
     <div
