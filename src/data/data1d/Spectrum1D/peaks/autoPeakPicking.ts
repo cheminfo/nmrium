@@ -30,6 +30,7 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
     {
       frequency,
       direction,
+      // shape: { kind: 'lorentzian' },
       noiseLevel: noise * noiseFactor,
       minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,

@@ -30,6 +30,9 @@ export function usePeakShapesPath(spectrum: Datum1D) {
       case 'peakShape':
         pathSeries = peakToXY(options.peak, {
           frequency: spectrum.info.originFrequency,
+          nbPoints: 1024,
+          from: options.peak.x - 0.01,
+          to: options.peak.x + 0.01,
         });
         break;
       case 'peaksSum':
