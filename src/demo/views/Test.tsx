@@ -78,12 +78,12 @@ export default function Test() {
       }
     })();
   }, []);
-  const viewChangeHandler = useCallback((data) => {
+  const viewChangeHandler = (data) => {
     setViewCallBack({ activate: true, data });
     setTimeout(() => {
       setViewCallBack(({ data }) => ({ data, activate: false }));
     }, 500);
-  }, []);
+  };
   const dataChangeHandler = useCallback((data) => {
     setDataCallBack({ activate: true, data });
     setTimeout(() => {
