@@ -9,7 +9,7 @@
 ##LASTX=7.99993896484375
 ##FIRSTY=0
 ##LASTY=1499967940490.9358
-
+##.OBSERVE FREQUENCY= 600.202658313
 ##.OBSERVE NUCLEUS= ^1H
 ##$reference=Andrés M. Castillo, Luc Patiny and Julien Wist Journal of Magnetic Resonance 2011.
 ##$doi=10.1016/j.jmr.2010.12.008

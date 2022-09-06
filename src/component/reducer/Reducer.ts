@@ -72,6 +72,11 @@ interface RangeToolState extends ToolStateBase {
    */
   showRangesIntegrals: boolean;
 }
+export interface ViewState {
+  floatingMolecules: Array<FloatingMolecules>;
+  ranges: Array<RangeToolState>;
+  spectra: { currentSpectrumId: string | null };
+}
 export const rangeStateInit = {
   showMultiplicityTrees: false,
   showRangesIntegrals: true,
@@ -269,11 +274,7 @@ export interface State {
    * View related information
    * @default { floatingMolecules: [] };
    */
-  view: {
-    floatingMolecules: Array<FloatingMolecules>;
-    ranges: Array<RangeToolState>;
-    spectra: { currentSpectrumId: string | null };
-  };
+  view: ViewState;
   /**
    * options to control spectra vertical alignment
    * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
