@@ -34,6 +34,7 @@ const ignoreActions = [
   types.SHOW_J_GRAPH,
   types.SHOW_MULTIPLICTY_TREES,
   types.SHOW_RANGES_INTEGRALS,
+  types.CHANGE_FLOAT_MOLECULE_POSITION,
 ];
 
 function checkActionType(type: string): boolean {

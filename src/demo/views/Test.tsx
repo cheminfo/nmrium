@@ -60,8 +60,8 @@ function Inspector(data: any) {
 
 export default function Test() {
   const [data, setData] = useState<any>();
-  const [callBackData, setCallBackData] = useState<any>({});
-
+  const [viewCallBack, setViewCallBack] = useState<any>({});
+  const [dataCallBack, setDataCallBack] = useState<any>({});
   const dropFileHandler = useCallback((dropfiles) => {
     void (async () => {
       try {
@@ -78,14 +78,27 @@ export default function Test() {
       }
     })();
   }, []);
+  const viewChangeHandler = (data) => {
+    setViewCallBack({ activate: true, data });
+    setTimeout(() => {
+      setViewCallBack(({ data }) => ({ data, activate: false }));
+    }, 500);
+  };
   const dataChangeHandler = useCallback((data) => {
-    setCallBackData(data);
+    setDataCallBack({ activate: true, data });
+    setTimeout(() => {
+      setDataCallBack(({ data }) => ({ data, activate: false }));
+    }, 500);
   }, []);
 
   return (
     <div style={{ display: 'flex', height: '100vh', padding: '20px' }}>
       <div style={{ flex: 9 }}>
-        <NMRium data={data} onDataChange={dataChangeHandler} />
+        <NMRium
+          data={data}
+          onViewChange={viewChangeHandler}
+          onDataChange={dataChangeHandler}
+        />
       </div>
       <div
         style={{
@@ -99,7 +112,22 @@ export default function Test() {
           <DropZone onDrop={dropFileHandler} color="gray" />
         </div>
         <div style={{ flex: 9 }}>
-          <Inspector data={callBackData} />
+          <h3
+            style={
+              dataCallBack.activate ? { color: 'red', fontWeight: 'bold' } : {}
+            }
+          >
+            Data Change:
+          </h3>
+          <Inspector data={dataCallBack.data} />
+          <h3
+            style={
+              viewCallBack.activate ? { color: 'red', fontWeight: 'bold' } : {}
+            }
+          >
+            View Change:
+          </h3>
+          <Inspector data={viewCallBack.data} />
         </div>
       </div>
     </div>
