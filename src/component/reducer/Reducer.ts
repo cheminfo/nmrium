@@ -89,6 +89,11 @@ interface ZoneToolState extends ToolStateBase {
    */
   showPeaks: boolean;
 }
+export interface ViewState {
+  floatingMolecules: Array<FloatingMolecules>;
+  ranges: Array<RangeToolState>;
+  zones: Array<ZoneToolState>;
+}
 export const rangeStateInit = {
   showMultiplicityTrees: false,
   showRangesIntegrals: true,
@@ -285,13 +290,9 @@ export interface State {
   molecules: Array<StateMoleculeExtended>;
   /**
    * View related information
-   * @default { floatingMolecules: [] };
+   * @default { floatingMolecules: [], ranges: [], zones: [] };
    */
-  view: {
-    floatingMolecules: Array<FloatingMolecules>;
-    ranges: Array<RangeToolState>;
-    zones: Array<ZoneToolState>;
-  };
+  view: ViewState;
   /**
    * options to control spectra vertical alignment
    * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
