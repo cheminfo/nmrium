@@ -1,4 +1,5 @@
-import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
+import { CURRENT_EXPORT_VERSION } from 'nmr-load-save';
+import { fromJCAMP } from 'nmr-parser';
 
 import { State } from '../component/reducer/Reducer';
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
@@ -10,7 +11,6 @@ import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Spectrum2D';
-import { CURRENT_EXPORT_VERSION } from './migration/MigrationManager';
 import * as Molecule from './molecules/Molecule';
 import { Datum1D as Datum1DType } from './types/data1d';
 import { Datum2D as Datum2DType } from './types/data2d';
@@ -94,56 +94,6 @@ function addData(spectra, datum, usedColors) {
   }
 }
 
-export function addJDF(spectra, jdf, options: any = {}, usedColors: any = {}) {
-  // need to parse the jcamp
-  let converted = fromJEOL(jdf, {});
-  converted = converted[0];
-  let info = converted.description;
-  let metadata = info.metadata;
-  delete info.metadata;
-  info.acquisitionMode = 0;
-  info.experiment = info.dimension === 1 ? '1d' : '2d';
-  info.type = 'NMR SPECTRUM';
-  info.nucleus = info.nucleus[0];
-  info.numberOfPoints = info.numberOfPoints[0];
-  info.acquisitionTime = info.acquisitionTime[0];
-
-  info.baseFrequency = info.baseFrequency[0];
-  info.frequencyOffset = info.frequencyOffset[0];
-
-  info.spectralWidthClipped = converted.application.spectralWidthClipped;
-
-  if (info.dimension === 1) {
-    if (converted.dependentVariables) {
-      spectra.push(
-        Data1DManager.fromCSD(
-          converted,
-          {
-            ...options,
-            display: { ...options.display },
-            info,
-            meta: metadata,
-          },
-          usedColors,
-        ),
-      );
-    }
-  }
-  if (info.dimension === 2 && info.isFt) {
-    spectra.push(
-      Data2DManager.fromCSD(
-        converted,
-        {
-          ...options,
-          display: { ...options.display },
-          info,
-        },
-        usedColors,
-      ),
-    );
-  }
-}
-
 export async function fromJSON(data: any[] = [], usedColors: any = {}) {
   const spectra: any[] = [];
   let promises: any[] = [];
@@ -161,81 +111,6 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
   await Promise.all(promises);
   return spectra;
 }
-
-export async function addBruker(options, data, usedColors) {
-  const spectra: any[] = [];
-  let result = await fromBruker(data, {
-    converter: {
-      xy: true,
-    },
-  });
-  let entries = result;
-  for (let entry of entries) {
-    let { info, dependentVariables } = entry;
-    if (info.dimension === 1) {
-      if (dependentVariables[0].components) {
-        spectra.push(
-          Data1DManager.fromBruker(
-            entry,
-            {
-              ...options,
-              display: { ...options.display },
-            },
-            usedColors,
-          ),
-        );
-      }
-    } else if (info.dimension === 2) {
-      spectra.push(
-        Data2DManager.fromBruker(
-          entry,
-          {
-            ...options,
-            info,
-            display: { ...options.display },
-          },
-          usedColors,
-        ),
-      );
-    }
-  }
-  return spectra;
-}
-
-// handle zip files
-export async function fromZip(zipFiles) {
-  const spectra = [];
-  for (let zipFile of zipFiles) {
-    await addBruker(
-      spectra,
-      { display: { name: zipFile.name } },
-      zipFile.binary,
-    );
-  }
-  return spectra;
-}
-
-export function addJDFs(files, usedColors) {
-  const spectra = [];
-  for (const file of files) {
-    addJDF(
-      spectra,
-      file.binary,
-      {
-        display: {
-          name: file.name,
-        },
-        source: {
-          jcampURL: file.jcampURL ? file.jcampURL : null,
-          file,
-        },
-      },
-      usedColors,
-    );
-  }
-  return spectra;
-}
-
 export function addJcamps(files, usedColors) {
   const spectra = [];
   for (const file of files) {
@@ -256,7 +131,6 @@ export function addJcamps(files, usedColors) {
   }
   return spectra;
 }
-
 function getPreferences(state): Preferences {
   const {
     activeTab,
