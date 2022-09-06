@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { read as readDropFiles } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
@@ -16,7 +17,7 @@ import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
-import { nmredataToNmrium } from '../utility/nmredataToNmrium';
+// import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as AssignmentsActions from './actions/AssignmentsActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
@@ -457,33 +458,12 @@ export function dispatchMiddleware(dispatch) {
 
         break;
       }
-      case types.LOAD_JSON_FILE: {
-        const parsedData = JSON.parse(action.files[0].binary.toString());
-        const data = migrate(parsedData);
-        void SpectraManager.fromJSON(data.spectra, usedColors).then(
-          (spectra) => {
-            action.payload = Object.assign(data, { spectra, usedColors });
-            dispatch(action);
-          },
-        );
-        break;
-      }
-      case types.LOAD_ZIP_FILE: {
-        for (let zipFile of action.files) {
-          void SpectraManager.addBruker(
-            { display: { name: zipFile.name } },
-            zipFile.binary,
-            usedColors,
-          ).then((data) => {
-            action.payload = { data, usedColors };
-            dispatch(action);
-          });
-        }
-        break;
-      }
-      case types.LOAD_NMREDATA_FILE: {
-        void nmredataToNmrium(action.file, usedColors).then((data) => {
-          action.payload = Object.assign(data, { usedColors });
+      case types.LOAD_DROP_FILES: {
+        const { files } = action;
+        action.usedColors = usedColors;
+        void readDropFiles(files).then((data) => {
+          console.log('reader output', data);
+          action.data = data;
           dispatch(action);
         });
         break;
@@ -527,6 +507,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
   switch (action.type) {
     case types.INITIATE:
       return LoadActions.initiate(draft, action);
+    case types.LOAD_DROP_FILES:
+      return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:

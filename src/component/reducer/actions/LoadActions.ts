@@ -12,6 +12,8 @@ import { INITIATE, LOAD_JSON_FILE, LOAD_NMREDATA_FILE } from '../types/Types';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
+import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
+import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 
 function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
@@ -180,11 +182,31 @@ function handleLoadNmredata(draft: Draft<State>, action) {
   return state;
 }
 
+function loadDropFiles(draft: Draft<State>, actions) {
+  const { data, usedColors } = actions;
+  const { spectra, molecules } = data;
+  for (let spectrum of spectra) {
+    const { info } = spectrum;
+    if (info.dimension === 1) {
+      draft.data.push(initiateDatum1D(spectrum, usedColors));
+    } else if (info.dimension === 2) {
+      draft.data.push(initiateDatum2D(spectrum, usedColors));
+    }
+  }
+  for (let molecule of molecules) {
+    MoleculeManager.addMolfile(draft.molecules, molecule.molfile);
+  }
+  setActiveTab(draft);
+
+  draft.isLoading = false;
+}
+
 export {
   setIsLoading,
   initiate,
   loadJcampFile,
   loadJDFFile,
+  loadDropFiles,
   handleLoadJsonFile,
   handleLoadNmredata,
   handleLoadMOLFile,
