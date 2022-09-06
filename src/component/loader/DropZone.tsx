@@ -9,10 +9,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import {
-  SET_LOADING_FLAG,
-  LOAD_DROP_FILES,
-} from '../reducer/types/Types';
+import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
 const style = css`
   height: 100%;

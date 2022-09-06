@@ -1,13 +1,12 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { read as readDropFiles } from 'nmr-load-save';
+import { read as readDropFiles, migrate } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { migrate } from '../../data/migration/MigrationManager';
 import {
   FloatingMolecules,
   StateMoleculeExtended,
@@ -462,7 +461,6 @@ export function dispatchMiddleware(dispatch) {
         const { files } = action;
         action.usedColors = usedColors;
         void readDropFiles(files).then((data) => {
-          console.log('reader output', data);
           action.data = data;
           dispatch(action);
         });
