@@ -105,17 +105,13 @@ test('Automatic ranges detection should work', async ({ page }) => {
     { s: '2.15', r: '0.07' },
     { s: '2.31 - 2.34', r: '1.01' },
   ];
-
-  await Promise.all(
-    rangesData.map(async ({ s, r }, index) => {
-      await expect(
-        ranges.nth(index).locator('_react=SignalDeltaColumn'),
-      ).toHaveText(s);
-      await expect(
-        ranges.nth(index).locator('_react=RelativeColumn'),
-      ).toHaveText(r);
-    }),
-  );
+  for (const [i, range] of rangesData.entries()) {
+    const { s, r } = range;
+    await expect(ranges.nth(i).locator('_react=SignalDeltaColumn')).toHaveText(
+      s,
+    );
+    await expect(ranges.nth(i).locator('_react=RelativeColumn')).toHaveText(r);
+  }
 });
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
