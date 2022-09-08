@@ -92,9 +92,6 @@ test('Automatic ranges detection should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
 
-  // Wait ranges to load
-  await nmrium.page.waitForTimeout(250);
-
   expect(
     await nmrium.page.locator('data-test-id=range').count(),
   ).toBeGreaterThanOrEqual(10);
@@ -112,8 +109,8 @@ test('Automatic ranges detection should work', async ({ page }) => {
   for (const [i, { s, r }] of rangesData.entries()) {
     const range = ranges.nth(i);
     await expect(range).toBeVisible();
-    await expect(range.locator('_react=SignalDeltaColumn')).toHaveText(s);
-    await expect(range.locator('_react=RelativeColumn')).toHaveText(r);
+    await expect(range).toContainText(s);
+    await expect(range).toContainText(r);
   }
 });
 test('Multiplicity should be visible', async ({ page }) => {
