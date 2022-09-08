@@ -3,7 +3,7 @@ import { ObjectInspector } from 'react-inspector';
 
 import NMRium from '../../component/NMRium';
 
-async function loadData(file) {
+export async function loadData(file) {
   const response = await fetch(file);
   checkStatus(response);
   const data = await response.json();

@@ -20,7 +20,7 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
-import { State } from '../Reducer';
+import { State, zoneStateInit } from '../Reducer';
 import get2DRange from '../helper/get2DRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
@@ -296,7 +296,45 @@ function handleSaveEditedZone(draft: Draft<State>, action) {
     handleOnChangeZonesData(draft);
   }
 }
-
+function handleShowZones(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  const zone = draft.view.zones.find((r) => r.spectrumID === id);
+  if (zone) {
+    zone.showZones = !zone.showZones;
+  } else {
+    draft.view.zones.push({
+      spectrumID: id,
+      ...zoneStateInit,
+      showZones: !zoneStateInit.showZones,
+    });
+  }
+}
+function handleShowSignals(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  const zone = draft.view.zones.find((r) => r.spectrumID === id);
+  if (zone) {
+    zone.showSignals = !zone.showSignals;
+  } else {
+    draft.view.zones.push({
+      spectrumID: id,
+      ...zoneStateInit,
+      showSignals: !zoneStateInit.showSignals,
+    });
+  }
+}
+function handleShowPeaks(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  const zone = draft.view.zones.find((r) => r.spectrumID === id);
+  if (zone) {
+    zone.showPeaks = !zone.showPeaks;
+  } else {
+    draft.view.zones.push({
+      spectrumID: id,
+      ...zoneStateInit,
+      showPeaks: !zoneStateInit.showPeaks,
+    });
+  }
+}
 function handleOnChangeZonesData(draft) {
   handleUpdateCorrelations(draft);
 }
@@ -314,4 +352,7 @@ export {
   handleSetSignalPathLength,
   changeZonesFactorHandler,
   handleAutoSpectraZonesDetection,
+  handleShowZones,
+  handleShowSignals,
+  handleShowPeaks,
 };

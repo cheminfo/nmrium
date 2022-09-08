@@ -7,12 +7,18 @@ import { Datum2D } from '../../../data/types/data2d';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ToggleButton from '../../elements/ToggleButton';
+import ActiveButton from '../../elements/ActiveButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
-import { DELETE_2D_ZONE, UNLINK_ZONE } from '../../reducer/types/Types';
-import Events from '../../utility/Events';
+import { zoneStateInit } from '../../reducer/Reducer';
+import {
+  DELETE_2D_ZONE,
+  SHOW_ZONES,
+  SHOW_ZONES_PEAKS,
+  SHOW_ZONES_SIGNALS,
+  UNLINK_ZONE,
+} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -43,7 +49,17 @@ const style = css`
   }
 `;
 
-function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
+function ZonesPanelInner({
+  zones,
+  activeTab,
+  xDomain,
+  yDomain,
+  experiment,
+  showZones,
+  showSignals,
+  showPeaks,
+  id,
+}) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const assignmentData = useAssignmentData();
@@ -154,9 +170,15 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
     setFlipStatus(false);
   }, []);
 
-  const visibilityHandler = useCallback((key) => {
-    Events.emit('onZonesVisibilityChange', { key });
-  }, []);
+  const handleSetShowZones = () => {
+    dispatch({ type: SHOW_ZONES, payload: { id } });
+  };
+  const handleSetShowSignals = () => {
+    dispatch({ type: SHOW_ZONES_SIGNALS, payload: { id } });
+  };
+  const handleSetShowPeaks = () => {
+    dispatch({ type: SHOW_ZONES_PEAKS, payload: { id } });
+  };
 
   return (
     <div
@@ -195,30 +217,30 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
               <FaUnlink />
             </button>
           </ToolTip>
-          <ToggleButton
+          <ActiveButton
             popupTitle="show/hide zones"
             popupPlacement="right"
-            defaultValue
-            onClick={() => visibilityHandler('zones')}
+            value={showZones}
+            onClick={handleSetShowZones}
           >
             <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
-          </ToggleButton>
-          <ToggleButton
+          </ActiveButton>
+          <ActiveButton
             popupTitle="show/hide signals"
             popupPlacement="right"
-            defaultValue
-            onClick={() => visibilityHandler('signals')}
+            value={showSignals}
+            onClick={handleSetShowSignals}
           >
             <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
-          </ToggleButton>
-          <ToggleButton
+          </ActiveButton>
+          <ActiveButton
             popupTitle="show/hide peaks"
             popupPlacement="right"
-            defaultValue
-            onClick={() => visibilityHandler('peaks')}
+            value={showPeaks}
+            onClick={handleSetShowPeaks}
           >
             <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
-          </ToggleButton>
+          </ActiveButton>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
@@ -258,18 +280,26 @@ const MemoizedZonesPanel = memo(ZonesPanelInner);
 const emptyData = { zones: {}, info: {} };
 
 export default function ZonesPanel() {
-  const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
-  const { zones, info } = useSpectrum(emptyData) as Datum2D;
-
+  const {
+    displayerKey,
+    xDomain,
+    yDomain,
+    activeTab,
+    view: { zones: zoneState },
+  } = useChartData();
+  const { zones, info, id } = useSpectrum(emptyData) as Datum2D;
+  const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
   return (
     <MemoizedZonesPanel
       {...{
+        id,
         xDomain,
         yDomain,
         activeTab,
         displayerKey,
         zones,
         experiment: info.experiment,
+        ...zoneProps,
       }}
     />
   );
