@@ -105,12 +105,11 @@ test('Automatic ranges detection should work', async ({ page }) => {
     { s: '2.15', r: '0.07' },
     { s: '2.31 - 2.34', r: '1.01' },
   ];
-  for (const [i, range] of rangesData.entries()) {
-    const { s, r } = range;
-    await expect(ranges.nth(i).locator('_react=SignalDeltaColumn')).toHaveText(
-      s,
-    );
-    await expect(ranges.nth(i).locator('_react=RelativeColumn')).toHaveText(r);
+  for (const [i, { s, r }] of rangesData.entries()) {
+    const range = ranges.nth(i);
+    await expect(range).toBeVisible();
+    await expect(range.locator('_react=SignalDeltaColumn')).toHaveText(s);
+    await expect(range.locator('_react=RelativeColumn')).toHaveText(r);
   }
 });
 test('Multiplicity should be visible', async ({ page }) => {
