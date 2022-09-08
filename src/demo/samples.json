@@ -183,7 +183,23 @@
     ]
   },
   {
-    "title": "Test",
-    "view": "Test"
+    "groupName": "Test",
+    "children": [ 
+      {
+        "title": "empty",
+        "view": "Test"
+      },
+      {
+        "file": "./data/cytisine/1H.json",
+        "title": "1H spectrum test",
+        "view": "Test"
+      },
+      {
+        "file": "./data/cytisine/2d/all.json",
+        "title": "Full cytisine",
+        "view": "Test"
+      }
+    ]
   }
+
 ]
