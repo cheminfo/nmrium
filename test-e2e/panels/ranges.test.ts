@@ -61,6 +61,10 @@ async function deleteRange(nmrium: NmriumPage) {
 test('Should ranges Add/resize/delete', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
+
+  // Wait the spectrum to load
+  await nmrium.page.waitForTimeout(250);
+
   //select range tool
   await nmrium.clickTool('rangePicking');
 
