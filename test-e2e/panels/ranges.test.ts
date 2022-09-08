@@ -86,14 +86,14 @@ test('Automatic ranges detection should work', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  // Wait the spectrum to load
-  await nmrium.page.waitForTimeout(250);
-
   //select range tool
   await nmrium.clickTool('rangePicking');
 
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
+
+  // Wait ranges to load
+  await nmrium.page.waitForTimeout(250);
 
   expect(
     await nmrium.page.locator('data-test-id=range').count(),
