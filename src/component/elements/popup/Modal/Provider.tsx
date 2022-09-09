@@ -78,17 +78,12 @@ function Provider({
     [setModal],
   );
   // todo: optimize this
-  const wrapperRect = wrapperRef?.getBoundingClientRect();
-  const parentStyle = useMemo(() => {
-    return (
-      wrapperRect || {
-        top: 0,
-        left: 0,
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }
-    );
-  }, [wrapperRect]);
+  const parentStyle = wrapperRef?.getBoundingClientRect() || {
+    top: 0,
+    left: 0,
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
 
   /**
    *
