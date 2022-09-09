@@ -52,6 +52,10 @@ function DropZone(props) {
 
   const loadFilesHandler = useCallback(
     (files) => {
+      files.forEach((file) => {
+        Object.defineProperty(file, 'webkitRelativePath', { value: file.path });
+      });
+
       try {
         dispatch({ type: LOAD_DROP_FILES, files });
       } catch (e: any) {
