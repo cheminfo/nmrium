@@ -27,5 +27,9 @@ rules:
       message: "Use 'openchemlib/full'"
     - name: react-ocl
       message: "Use 'react-ocl/full"
+  react/no-unknown-property:
+    - error
+    - ignore:
+        - 'css'
 parserOptions:
   sourceType: module
