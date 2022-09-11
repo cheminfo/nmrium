@@ -459,7 +459,7 @@ export function dispatchMiddleware(dispatch) {
       case types.LOAD_DROP_FILES: {
         const { files } = action;
         action.usedColors = usedColors;
-        void readDropFiles(files).then((data) => {
+        void readDropFiles(files, usedColors).then((data) => {
           action.data = data;
           dispatch(action);
         });
