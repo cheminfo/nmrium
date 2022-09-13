@@ -72,15 +72,38 @@ interface RangeToolState extends ToolStateBase {
    */
   showRangesIntegrals: boolean;
 }
+interface ZoneToolState extends ToolStateBase {
+  /**
+   * boolean indicator to hide/show zones
+   * @default false
+   */
+  showZones: boolean;
+  /**
+   * boolean indicator to hide/show signals for spectrum zones
+   * @default false
+   */
+  showSignals: boolean;
+  /**
+   * boolean indicator to hide/show peaks for spectrum zones
+   * @default true
+   */
+  showPeaks: boolean;
+}
 export interface ViewState {
   floatingMolecules: Array<FloatingMolecules>;
   ranges: Array<RangeToolState>;
+  zones: Array<ZoneToolState>;
   spectra: { currentSpectrumId: string | null };
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
   showRangesIntegrals: true,
   showJGraph: false,
+};
+export const zoneStateInit = {
+  showZones: true,
+  showSignals: true,
+  showPeaks: true,
 };
 export interface Margin {
   top: number;
@@ -120,6 +143,7 @@ export const getInitialState = (): State => ({
   view: {
     floatingMolecules: [],
     ranges: [],
+    zones: [],
     spectra: { currentSpectrumId: null },
   },
   verticalAlign: {
@@ -272,7 +296,7 @@ export interface State {
   molecules: Array<StateMoleculeExtended>;
   /**
    * View related information
-   * @default { floatingMolecules: [] };
+   * @default { floatingMolecules: [], ranges: [], zones: [] };
    */
   view: ViewState;
   /**
@@ -777,6 +801,12 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleSetDiaIDZone(draft, action);
     case types.AUTO_ZONES_SPECTRA_PICKING:
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
+    case types.SHOW_ZONES:
+      return ZonesActions.handleShowZones(draft, action);
+    case types.SHOW_ZONES_SIGNALS:
+      return ZonesActions.handleShowSignals(draft, action);
+    case types.SHOW_ZONES_PEAKS:
+      return ZonesActions.handleShowPeaks(draft, action);
     case types.SAVE_EDITED_ZONE:
       return ZonesActions.handleSaveEditedZone(draft, action);
 

@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import {
   Datum2D,
@@ -7,7 +7,7 @@ import {
 } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
-import Events from '../../utility/Events';
+import { zoneStateInit } from '../../reducer/Reducer';
 
 import Zone from './Zone';
 
@@ -15,24 +15,19 @@ interface ZonesInnerProps {
   zones: ZonesProps;
   display: Display2D;
   displayerKey: string;
+  isVisible: {
+    zones: boolean;
+    signals: boolean;
+    peaks: boolean;
+  };
 }
 
-function ZonesInner({ zones, display, displayerKey }: ZonesInnerProps) {
-  const [isVisible, setVisibility] = useState({
-    zones: true,
-    signals: true,
-    peaks: true,
-  });
-
-  useEffect(() => {
-    Events.on('onZonesVisibilityChange', ({ key }) => {
-      setVisibility((prevVisiblity) => ({
-        ...prevVisiblity,
-        [key]: !prevVisiblity[key],
-      }));
-    });
-  }, []);
-
+function ZonesInner({
+  zones,
+  display,
+  displayerKey,
+  isVisible,
+}: ZonesInnerProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="2D-Zones">
       {display.isVisible &&
@@ -50,9 +45,22 @@ const MemoizedZones = memo(ZonesInner);
 const emptyData = { zones: {}, display: {} };
 
 export default function Zones() {
-  const { displayerKey } = useChartData();
+  const {
+    displayerKey,
+    view: { zones: zoneState },
+  } = useChartData();
 
-  const { zones, display } = useSpectrum(emptyData) as Datum2D;
+  const { zones, display, id } = useSpectrum(emptyData) as Datum2D;
 
-  return <MemoizedZones {...{ zones, display, displayerKey }} />;
+  const isVisible = useMemo(() => {
+    const { showPeaks, showSignals, showZones } =
+      zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
+    return {
+      zones: showZones,
+      signals: showSignals,
+      peaks: showPeaks,
+    };
+  }, [id, zoneState]);
+
+  return <MemoizedZones {...{ zones, display, displayerKey, isVisible }} />;
 }
