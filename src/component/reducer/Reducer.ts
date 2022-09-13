@@ -90,10 +90,26 @@ interface ZoneToolState extends ToolStateBase {
   showPeaks: boolean;
 }
 export interface ViewState {
+  /**
+   * Floatings molecules
+   * @default []
+   */
   floatingMolecules: Array<FloatingMolecules>;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
-  spectra: { currentSpectrumId: string | null };
+  spectra: {
+    /**
+     * active spectrum id
+     * @default {}
+     */
+    currentSpectrumId: string | null;
+
+    /**
+     * active spectrum id per nucleus
+     * @default {}
+     */
+    tabActiveSpectrum: Record<string, string | null>;
+  };
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -144,7 +160,7 @@ export const getInitialState = (): State => ({
     floatingMolecules: [],
     ranges: [],
     zones: [],
-    spectra: { currentSpectrumId: null },
+    spectra: { currentSpectrumId: null, tabActiveSpectrum: {} },
   },
   verticalAlign: {
     align: 'bottom',
