@@ -186,15 +186,23 @@ function InnerNMRium({
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
-  onViewChange: onViewChangeProp,
+  onViewChange,
   emptyText,
   innerRef,
 }: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const onViewChange = useRef(onViewChangeProp);
   const [show, toggle] = useToggle(false);
+
+  const handleDataChange = useRef(onDataChange);
+  useEffect(() => {
+    handleDataChange.current = onDataChange;
+  }, [onDataChange]);
+  const handleViewChange = useRef(onViewChange);
+  useEffect(() => {
+    handleViewChange.current = onViewChange;
+  }, [onViewChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
@@ -217,12 +225,12 @@ function InnerNMRium({
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
-      onDataChange?.(toJSON(state, 'onDataChange'));
+      handleDataChange.current?.(toJSON(state, 'onDataChange'));
     }
-  }, [onDataChange, state]);
+  }, [state]);
 
   useEffect(() => {
-    onViewChange.current?.(state.view);
+    handleViewChange.current?.(state.view);
   }, [state.view]);
 
   const dispatchMiddleWare = useMemo(() => {
