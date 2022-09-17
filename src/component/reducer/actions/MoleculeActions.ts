@@ -91,6 +91,12 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
         id: spectrum.id,
         index: draft.data.length - 1,
       };
+      draft.view.spectra.activeSpectraId[
+        nucleusToString(spectrum.info.nucleus)
+      ] = {
+        id: spectrum.id,
+        index: draft.data.length - 1,
+      };
     }
     draft.usedColors['1d'].push(color);
   }

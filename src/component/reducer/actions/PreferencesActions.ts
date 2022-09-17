@@ -149,6 +149,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
         );
       }
     });
+    draft.view = preferences.view;
     draft.displayerMode = preferences.displayerMode;
     draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
     draft.activeSpectrum = preferences.activeSpectrum;

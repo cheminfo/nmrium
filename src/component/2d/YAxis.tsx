@@ -47,8 +47,16 @@ function YAxis(props: YAxisProps) {
   const refAxis = useRef<SVGGElement>(null);
 
   const state = useChartData();
-  const { yDomain, width, height, activeTab, tabActiveSpectrum, margin } =
-    state;
+  const {
+    yDomain,
+    width,
+    height,
+    activeTab,
+    view: {
+      spectra: { activeSpectraId: tabActiveSpectrum },
+    },
+    margin,
+  } = state;
 
   useEffect(() => {
     if (!show || !yDomain) return;

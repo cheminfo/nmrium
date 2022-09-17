@@ -208,8 +208,9 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
 }
 
 function getSpectrumID(draft: Draft<State>, index): string | null {
-  const spectrum = draft.tabActiveSpectrum[draft.activeTab.split(',')[index]];
-  return spectrum?.id ? spectrum.id : null;
+  const spectrum =
+    draft.view.spectra.activeSpectraId[draft.activeTab.split(',')[index]];
+  return spectrum?.id || null;
 }
 
 function handleZoom(draft: Draft<State>, action) {

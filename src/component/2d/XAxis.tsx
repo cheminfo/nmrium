@@ -41,8 +41,16 @@ function XAxis(props: XAxisProps) {
   } = props;
 
   const state = useChartData();
-  const { xDomain, height, width, margin, tabActiveSpectrum, activeTab } =
-    state;
+  const {
+    xDomain,
+    height,
+    width,
+    margin,
+    view: {
+      spectra: { activeSpectraId: tabActiveSpectrum },
+    },
+    activeTab,
+  } = state;
 
   const refAxis = useRef<SVGGElement>(null);
 

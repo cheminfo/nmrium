@@ -37,7 +37,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     isLoading,
     data,
     margin,
-    tabActiveSpectrum,
+    view: {
+      spectra: { activeSpectraId: tabActiveSpectrum },
+    },
     activeTab,
   } = state;
 

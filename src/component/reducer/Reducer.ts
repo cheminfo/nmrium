@@ -99,16 +99,10 @@ export interface ViewState {
   zones: Array<ZoneToolState>;
   spectra: {
     /**
-     * active spectrum id
-     * @default {}
-     */
-    currentSpectrumId: string | null;
-
-    /**
      * active spectrum id per nucleus
      * @default {}
      */
-    tabActiveSpectrum: Record<string, string | null>;
+    activeSpectraId: Record<string, ActiveSpectrum | null>;
   };
 }
 export const rangeStateInit = {
@@ -160,7 +154,7 @@ export const getInitialState = (): State => ({
     floatingMolecules: [],
     ranges: [],
     zones: [],
-    spectra: { currentSpectrumId: null, tabActiveSpectrum: {} },
+    spectra: { activeSpectraId: {} },
   },
   verticalAlign: {
     align: 'bottom',
