@@ -94,9 +94,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     originDomain,
     margin,
     displayerMode,
-    view: {
-      spectra: { activeSpectra },
-    },
+    view,
   } = draft;
 
   if (activeTab) {
@@ -116,7 +114,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       activeTab,
       activeSpectrum,
       displayerMode,
-      activeSpectra,
+      view,
       zoom,
       xDomain,
       xDomains,
@@ -153,7 +151,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     });
     draft.view = preferences.view;
     draft.displayerMode = preferences.displayerMode;
-    // draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
     draft.activeSpectrum = preferences.activeSpectrum;
 
     draft.margin = preferences.margin;
