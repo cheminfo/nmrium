@@ -39,14 +39,14 @@ interface ProviderProps {
   children: ReactNode;
   style?: CSSProperties;
   offset?: string;
-  position?: any;
-  transition?: any;
-  wrapperRef?: any;
+  position?: string;
+  transition?: string;
+  wrapperRef?: HTMLDivElement | null;
 }
 
 function Provider({
   children,
-  style = undefined,
+  style,
   offset = '0px',
   position = positions.MIDDLE,
   transition = transitions.SCALE,
@@ -77,17 +77,13 @@ function Provider({
     },
     [setModal],
   );
-
-  const parentStyle = useMemo(() => {
-    return wrapperRef
-      ? wrapperRef.getBoundingClientRect()
-      : {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-  }, [wrapperRef]);
+  // todo: optimize this
+  const parentStyle = wrapperRef?.getBoundingClientRect() || {
+    top: 0,
+    left: 0,
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
 
   /**
    *
