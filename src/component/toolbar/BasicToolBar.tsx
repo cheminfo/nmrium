@@ -301,8 +301,14 @@ function BasicToolBarInner({
 const MemoizedBasicToolBar = memo(BasicToolBarInner);
 
 export default function BasicToolBar() {
-  const { activeSpectrum, verticalAlign, displayerMode, activeTab } =
-    useChartData();
+  const {
+    activeSpectrum,
+    verticalAlign,
+    displayerMode,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
   const { info, fidCounter, ftCounter } = useDatumWithSpectraStatistics();
   return (

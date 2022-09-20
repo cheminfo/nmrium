@@ -49,7 +49,9 @@ function XAxis(props: XAxisProps) {
     view: {
       spectra: { activeSpectra },
     },
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
   } = state;
 
   const refAxis = useRef<SVGGElement>(null);

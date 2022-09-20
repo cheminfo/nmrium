@@ -9,7 +9,7 @@ function analyzeSpectra(draft: Draft<State>, action) {
   MultipleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
     to,
-    nucleus: draft.activeTab,
+    nucleus: draft.view.spectra.activeTab,
   });
 }
 
@@ -19,7 +19,7 @@ function handleDeleteSpectraRanges(draft: Draft<State>, action) {
   MultipleAnalysis.deleteSpectraAnalysis(
     draft.spectraAnalysis,
     colKey,
-    draft.activeTab,
+    draft.view.spectra.activeTab,
   );
 }
 function handleResizeSpectraRange(draft: Draft<State>, action) {
@@ -27,21 +27,25 @@ function handleResizeSpectraRange(draft: Draft<State>, action) {
   MultipleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
     to,
-    nucleus: draft.activeTab,
+    nucleus: draft.view.spectra.activeTab,
     columnKey,
   });
 }
 function handleSetColumns(draft: Draft<State>, action) {
   const data = action.payload;
 
-  MultipleAnalysis.setColumn(draft.spectraAnalysis, draft.activeTab, data);
+  MultipleAnalysis.setColumn(
+    draft.spectraAnalysis,
+    draft.view.spectra.activeTab,
+    data,
+  );
 }
 function handleFilterColumn(draft: Draft<State>, action) {
   const { columnKey, valueKey } = action.payload;
 
   MultipleAnalysis.changeColumnValueKey(
     draft.spectraAnalysis,
-    draft.activeTab,
+    draft.view.spectra.activeTab,
     columnKey,
     valueKey,
   );

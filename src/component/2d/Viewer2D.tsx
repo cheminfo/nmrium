@@ -40,7 +40,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     view: {
       spectra: { activeSpectra },
     },
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
   } = state;
 
   const dispatch = useDispatch();

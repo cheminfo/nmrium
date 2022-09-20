@@ -51,7 +51,9 @@ function YAxis(props: YAxisProps) {
     yDomain,
     width,
     height,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     view: {
       spectra: { activeSpectra },
     },

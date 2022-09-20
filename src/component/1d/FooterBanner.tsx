@@ -193,7 +193,15 @@ function FooterBannerInner({
 const MemoizedFooterBanner = memo(FooterBannerInner);
 
 export default function FooterBanner() {
-  const { margin, width, height, activeSpectrum, activeTab } = useChartData();
+  const {
+    margin,
+    width,
+    height,
+    activeSpectrum,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const spectrum = useSpectrum(null) as Datum1D;
   return (
     <MemoizedFooterBanner

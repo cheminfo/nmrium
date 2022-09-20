@@ -42,7 +42,9 @@ export default function JGraph() {
     activeSpectrum,
     height,
     view: { ranges: rangeState },
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
   } = useChartData();
   const { showJGraph } =
     rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||

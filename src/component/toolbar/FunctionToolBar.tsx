@@ -264,7 +264,13 @@ export default function FunctionToolBar({
 }: {
   defaultValue?: string;
 }) {
-  const { activeSpectrum, displayerMode, activeTab } = useChartData();
+  const {
+    activeSpectrum,
+    displayerMode,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
   const data = useDatumWithSpectraStatistics();
 

@@ -227,7 +227,9 @@ export default function RangesTablePanel() {
   const {
     displayerKey,
     xDomain,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     molecules,
     toolOptions: { selectedTool },
     view: { ranges: rangeState },

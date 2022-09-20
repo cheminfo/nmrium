@@ -230,7 +230,13 @@ function SpectrumsTabsInner({
 const MemoizedSpectra = memo(SpectrumsTabsInner);
 
 export default function SpectrumsTabs({ onTabChange }: SpectrumsTabsProps) {
-  const { data, activeSpectrum, activeTab } = useChartData();
+  const {
+    data,
+    activeSpectrum,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
   return (
     <MemoizedSpectra {...{ data, activeSpectrum, activeTab, onTabChange }} />

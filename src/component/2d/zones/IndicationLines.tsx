@@ -20,7 +20,9 @@ interface IndicationLinesProps {
 function IndicationLines({ axis, show }: IndicationLinesProps) {
   const {
     data,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     margin,
     width,
     height,

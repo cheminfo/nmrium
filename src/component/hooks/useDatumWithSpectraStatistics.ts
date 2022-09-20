@@ -15,7 +15,13 @@ interface SpectrumWithStatisticsProps {
 const emptyData = { info: {}, datum: {}, ftCounter: 0, fidCounter: 0 };
 
 export default function useDatumWithSpectraStatistics(): SpectrumWithStatisticsProps {
-  const { data, activeSpectrum, activeTab } = useChartData();
+  const {
+    data,
+    activeSpectrum,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
   return useMemo(() => {
     if (data) {

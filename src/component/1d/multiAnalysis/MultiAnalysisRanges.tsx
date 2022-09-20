@@ -49,7 +49,13 @@ function MultiAnalysisRangesInner({
 const MemoizedMultiAnalysisRanges = memo(MultiAnalysisRangesInner);
 
 export default function MultiAnalysisRanges() {
-  const { activeTab, spectraAnalysis, displayerKey } = useChartData();
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+    spectraAnalysis,
+    displayerKey,
+  } = useChartData();
 
   return (
     <MemoizedMultiAnalysisRanges

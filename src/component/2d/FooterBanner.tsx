@@ -60,7 +60,9 @@ function FooterBanner({ layout, data1D }) {
     xDomain,
     yDomain,
     yDomains,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     data,
     toolOptions: { selectedTool },
   } = useChartData();

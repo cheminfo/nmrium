@@ -18,7 +18,13 @@ import getRange from '../helper/getRange';
 import { setIntegralsYDomain } from './DomainActions';
 
 function handleChangeIntegralSum(draft: Draft<State>, options) {
-  const { data, activeSpectrum, activeTab: nucleus } = draft;
+  const {
+    data,
+    activeSpectrum,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+  } = draft;
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -29,7 +35,14 @@ function handleChangeIntegralSum(draft: Draft<State>, options) {
 
 function addIntegral(draft: Draft<State>, action) {
   const { startX, endX } = action;
-  const { data, molecules, activeTab: nucleus, activeSpectrum } = draft;
+  const {
+    data,
+    molecules,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+    activeSpectrum,
+  } = draft;
   const [from, to] = getRange(draft, { startX, endX });
 
   if (activeSpectrum?.id) {

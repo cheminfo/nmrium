@@ -77,7 +77,11 @@ function EditRangeModal({
   range: originRange,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
-  const { activeTab } = useChartData();
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const dispatch = useDispatch();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
   const validation = useRangeFormValidation();

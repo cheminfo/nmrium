@@ -37,7 +37,9 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     data,
     xDomain,
     molecules,
-    activeTab: nucleus,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
   } = draft;
   if (activeSpectrum?.id) {
     const { index, id } = activeSpectrum;
@@ -88,7 +90,13 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
     clean: true,
     keepPeaks: true,
   };
-  const { data, activeTab: nucleus, molecules } = draft;
+  const {
+    data,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+    molecules,
+  } = draft;
   for (const datum of data) {
     if (datum.info.dimension === 1) {
       detectRanges(datum as Datum1D, { peakPicking, molecules, nucleus });
@@ -285,7 +293,13 @@ function handleResizeRange(draft: Draft<State>, action) {
 }
 
 function handleChangeRangeSum(draft: Draft<State>, options) {
-  const { data, activeSpectrum, activeTab: nucleus } = draft;
+  const {
+    data,
+    activeSpectrum,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+  } = draft;
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -300,7 +314,13 @@ function addNewRange(
 ) {
   const { startX, endX, id } = props;
   const range = getRange(draft, { startX, endX });
-  const { activeSpectrum, activeTab: nucleus, molecules } = draft;
+  const {
+    activeSpectrum,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+    molecules,
+  } = draft;
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;

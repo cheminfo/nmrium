@@ -143,7 +143,6 @@ export const getInitialState = (): State => ({
     shareYDomain: false,
   },
   integralsYDomains: {},
-  activeTab: '',
   width: 0,
   height: 0,
   margin: {
@@ -273,11 +272,6 @@ export interface State {
    */
   integralsYDomains: Record<string, Array<number>>;
 
-  /**
-   * current select tab (nucleus)
-   * @default null
-   */
-  activeTab: string;
   /**
    * plot chart area width
    * @default 0

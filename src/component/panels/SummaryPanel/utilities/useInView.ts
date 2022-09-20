@@ -15,7 +15,9 @@ function useInView({ correlation }: InputProps) {
     xDomain,
     yDomain,
     displayerMode,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     activeSpectrum,
   } = useChartData();
 

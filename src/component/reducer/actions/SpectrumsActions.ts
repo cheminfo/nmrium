@@ -100,7 +100,8 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
     draft.activeSpectrum = activeSpectrum;
-    draft.view.spectra.activeSpectra[draft.activeTab] = activeSpectrum;
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] =
+      activeSpectrum;
   } else {
     if (currentActiveSpectrum) {
       const index = draft.data.findIndex(
@@ -111,7 +112,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       refreshDomain = false;
     }
     draft.activeSpectrum = null;
-    draft.view.spectra.activeSpectra[draft.activeTab] = null;
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = null;
   }
 
   if (options[draft.toolOptions.selectedTool].isFilter) {
@@ -156,7 +157,10 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   } else {
     draft.data = [];
   }
-  setActiveTab(draft, { tab: draft.activeTab, refreshActiveTab: true });
+  setActiveTab(draft, {
+    tab: draft.view.spectra.activeTab,
+    refreshActiveTab: true,
+  });
 }
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
@@ -183,7 +187,7 @@ function alignSpectraHandler(draft: Draft<State>, action) {
     for (let datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab &&
+        datum.info.nucleus === draft.view.spectra.activeTab &&
         !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });

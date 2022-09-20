@@ -220,7 +220,9 @@ const emptyData = { peaks: null, info: {} };
 export default function PeaksPanel() {
   const {
     xDomain,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     toolOptions: {
       data: { peaksOptions },
     },

@@ -53,7 +53,9 @@ export default function Ranges() {
     displayerKey,
     view: { ranges: rangeState },
     toolOptions: { selectedTool },
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
   } = useChartData();
   const { showMultiplicityTrees, showRangesIntegrals } = useMemo(
     () =>

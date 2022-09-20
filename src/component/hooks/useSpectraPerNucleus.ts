@@ -6,7 +6,12 @@ import { useChartData } from '../context/ChartContext';
 import nucleusToString from '../utility/nucleusToString';
 
 export default function useSpectraByActiveNucleus() {
-  const { data, activeTab } = useChartData();
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
   return useMemo<Array<Datum1D | Datum2D>>(() => {
     if (data) {

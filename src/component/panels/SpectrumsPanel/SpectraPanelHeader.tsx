@@ -139,7 +139,14 @@ function SpectraPanelHeaderInner({
 const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
 export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
-  const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
+  const {
+    data,
+    activeSpectrum,
+    view: {
+      spectra: { activeTab },
+    },
+    displayerMode,
+  } = useChartData();
   return (
     <MemoizedSpectraPanelHeader
       {...{

@@ -12,7 +12,7 @@ import { DISPLAYER_MODE } from '../core/Constants';
 function getActiveData(draft: Draft<State>): Array<Datum1D> {
   let data = draft.data.filter(
     (datum) =>
-      nucleusToString(datum.info.nucleus) === draft.activeTab &&
+      nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
       datum.info.dimension === 1,
   );
 
@@ -80,9 +80,8 @@ function get2DDomain(state: State) {
   let xDomains = {};
 
   const {
-    activeTab,
     view: {
-      spectra: { activeSpectra },
+      spectra: { activeSpectra, activeTab },
     },
     data,
   } = state;
@@ -160,7 +159,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   const { yDomain = { isChanged: true, isShared: true } } = options || {};
   let domain;
 
-  if (draft.activeTab) {
+  if (draft.view.spectra.activeTab) {
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       domain = getDomain(draft);
     } else {
@@ -234,7 +233,7 @@ function setMode(draft: Draft<State>) {
   const data = draft.data.filter(
     (datum) =>
       draft.xDomains[datum.id] &&
-      nucleusToString(datum.info.nucleus) === draft.activeTab,
+      nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab,
   );
   draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }

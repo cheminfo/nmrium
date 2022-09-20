@@ -11,7 +11,9 @@ function IntegralsSeries() {
     activeSpectrum,
     data,
     displayerKey,
-    activeTab: nucleus,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
   } = useChartData();
 
   const Integrals = useMemo(() => {

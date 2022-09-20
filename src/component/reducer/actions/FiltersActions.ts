@@ -231,7 +231,10 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
     setDomain(draft);
     setMode(draft);
 
-    const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
+    const zoomHistory = zoomHistoryManager(
+      draft.zoom.history,
+      draft.view.spectra.activeTab,
+    );
     const zoomValue = zoomHistory.getLast();
     if (zoomValue) {
       draft.xDomain = zoomValue.xDomain;
@@ -261,9 +264,11 @@ function deleteFilter(draft: Draft<State>, actions) {
 function deleteSpectraFilter(draft: Draft<State>, actions) {
   const filterType = actions.payload.filterType;
 
-  if (draft.activeTab) {
+  if (draft.view.spectra.activeTab) {
     for (const datum of draft.data) {
-      if (nucleusToString(datum?.info?.nucleus) === draft.activeTab) {
+      if (
+        nucleusToString(datum?.info?.nucleus) === draft.view.spectra.activeTab
+      ) {
         const filtersResult =
           datum.filters?.filter((filter) => filter.name === filterType) || [];
 
@@ -405,7 +410,7 @@ function filterSnapshotHandler(draft: Draft<State>, action) {
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
-  const spectra = getSpectraByNucleus(draft.activeTab, draft.data);
+  const spectra = getSpectraByNucleus(draft.view.spectra.activeTab, draft.data);
 
   if (spectra && spectra.length > 0 && Array.isArray(action.payload)) {
     const exclusions =
@@ -439,7 +444,10 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
     const index = draft.activeSpectrum?.index;
     spectra = [draft.data[index] as Datum1D];
   } else {
-    spectra = getSpectraByNucleus(draft.activeTab, draft.data) as Datum1D[];
+    spectra = getSpectraByNucleus(
+      draft.view.spectra.activeTab,
+      draft.data,
+    ) as Datum1D[];
   }
 
   for (const spectrum of spectra) {
@@ -481,7 +489,7 @@ function handleDeleteExclusionZone(draft: Draft<State>, action) {
     }
   } else {
     // remove all exclusive zone that have the same range in all spectra
-    const data = getSpectraByNucleus(draft.activeTab, draft.data);
+    const data = getSpectraByNucleus(draft.view.spectra.activeTab, draft.data);
     for (const datum of data) {
       for (const filter of datum.filters) {
         if (filter.name === Filters.exclusionZones.id) {
