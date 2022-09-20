@@ -9,6 +9,7 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
+import { useActiveSpectrum } from '../reducer/Reducer';
 import { options } from '../toolbar/ToolTypes';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
@@ -56,7 +57,6 @@ function FooterBanner({ layout, data1D }) {
     margin,
     width,
     height,
-    activeSpectrum,
     xDomain,
     yDomain,
     yDomains,
@@ -67,6 +67,7 @@ function FooterBanner({ layout, data1D }) {
     toolOptions: { selectedTool },
   } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   const trackID =
     position &&
     getLayoutID(layout, {

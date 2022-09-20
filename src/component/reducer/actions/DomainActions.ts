@@ -15,10 +15,11 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
       datum.info.dimension === 1,
   );
-
-  if (draft.activeSpectrum) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
     const activeSpectrumIndex = data.findIndex(
-      (datum) => datum.id === draft.activeSpectrum?.id,
+      (datum) => datum.id === activeSpectrum?.id,
     );
     if (activeSpectrumIndex !== -1) {
       const isFid = data[activeSpectrumIndex].info.isFid || false;

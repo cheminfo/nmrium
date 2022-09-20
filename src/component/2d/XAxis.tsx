@@ -47,10 +47,7 @@ function XAxis(props: XAxisProps) {
     width,
     margin,
     view: {
-      spectra: { activeSpectra },
-    },
-    view: {
-      spectra: { activeTab },
+      spectra: { activeSpectra, activeTab },
     },
   } = state;
 

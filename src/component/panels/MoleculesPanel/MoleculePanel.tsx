@@ -230,11 +230,11 @@ export default function MoleculePanel({
 }: MoleculePanelProps) {
   const {
     molecules,
-    view: { floatingMolecules },
-    displayerMode,
     view: {
+      floatingMolecules,
       spectra: { activeTab },
     },
+    displayerMode,
   } = useChartData();
 
   const data = useSpectrum(emptyData);

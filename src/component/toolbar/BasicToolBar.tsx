@@ -32,7 +32,11 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
-import { ActiveSpectrum, VerticalAlignment } from '../reducer/Reducer';
+import {
+  ActiveSpectrum,
+  useActiveSpectrum,
+  VerticalAlignment,
+} from '../reducer/Reducer';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const IMPORT_MENU = [
@@ -302,7 +306,6 @@ const MemoizedBasicToolBar = memo(BasicToolBarInner);
 
 export default function BasicToolBar() {
   const {
-    activeSpectrum,
     verticalAlign,
     displayerMode,
     view: {
@@ -310,6 +313,7 @@ export default function BasicToolBar() {
     },
   } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   const { info, fidCounter, ftCounter } = useDatumWithSpectraStatistics();
   return (
     <MemoizedBasicToolBar

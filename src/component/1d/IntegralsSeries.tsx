@@ -2,20 +2,20 @@ import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
+import { useActiveSpectrum } from '../reducer/Reducer';
 
 import Integral from './Integral';
 
 function IntegralsSeries() {
   const {
     xDomains,
-    activeSpectrum,
     data,
     displayerKey,
     view: {
       spectra: { activeTab: nucleus },
     },
   } = useChartData();
-
+  const activeSpectrum = useActiveSpectrum();
   const Integrals = useMemo(() => {
     const isActive = (id) => {
       return activeSpectrum === null ? true : id === activeSpectrum.id;

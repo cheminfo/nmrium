@@ -9,7 +9,7 @@ import ContextMenu from '../../elements/ContextMenu';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import { useAlert } from '../../elements/popup/Alert';
-import { ActiveSpectrum } from '../../reducer/Reducer';
+import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
 import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   SET_ACTIVE_TAB,
@@ -232,11 +232,11 @@ const MemoizedSpectra = memo(SpectrumsTabsInner);
 export default function SpectrumsTabs({ onTabChange }: SpectrumsTabsProps) {
   const {
     data,
-    activeSpectrum,
     view: {
       spectra: { activeTab },
     },
   } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
 
   return (
     <MemoizedSpectra {...{ data, activeSpectrum, activeTab, onTabChange }} />

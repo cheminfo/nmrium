@@ -14,6 +14,7 @@ import {
 import { Contours } from '../../data/types/data2d/Contours';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
+import { useChartData } from '../context/ChartContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 import { nmredataToNmrium } from '../utility/nmredataToNmrium';
@@ -151,7 +152,6 @@ export const getInitialState = (): State => ({
     bottom: 70,
     left: 0,
   },
-  activeSpectrum: null,
   mode: 'RTL',
   molecules: [],
   view: {
@@ -287,11 +287,6 @@ export interface State {
    * @default {top: 10,right: 20,bottom: 70,left: 0}
    */
   margin: Margin;
-  /**
-   * current active spectrum
-   * @default null
-   */
-  activeSpectrum: ActiveSpectrum | null;
   /**
    * Scale direction
    * @default 'RTL'
@@ -434,7 +429,14 @@ export interface State {
 
   usedColors: UsedColors;
 }
-
+export function useActiveSpectrum() {
+  const {
+    view: {
+      spectra: { activeSpectra, activeTab },
+    },
+  } = useChartData();
+  return activeSpectra[activeTab] || null;
+}
 export function initState(state: State): State {
   const displayerKey = v4();
   const correlations = buildCorrelationData([], {

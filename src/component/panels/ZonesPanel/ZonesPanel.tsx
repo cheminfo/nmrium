@@ -285,9 +285,9 @@ export default function ZonesPanel() {
     xDomain,
     yDomain,
     view: {
+      zones: zoneState,
       spectra: { activeTab },
     },
-    view: { zones: zoneState },
   } = useChartData();
   const { zones, info, id } = useSpectrum(emptyData) as Datum2D;
   const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;

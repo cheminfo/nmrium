@@ -36,7 +36,9 @@ function setZoom(
     spectrumID?: string;
   } = {},
 ) {
-  const { height, margin, activeSpectrum } = draft;
+  const { height, margin } = draft;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const { scale = 1, spectrumID = null } = options;
 
   if (activeSpectrum === null && spectrumID === null) {

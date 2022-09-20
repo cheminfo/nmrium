@@ -7,6 +7,7 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 import { options } from '../../toolbar/ToolTypes';
 import getVerticalShift from '../utilities/getVerticalShift';
 
@@ -29,7 +30,6 @@ function PeakPointer() {
     height,
     width,
     margin,
-    activeSpectrum,
     data,
     mode,
     toolOptions: { selectedTool },
@@ -37,6 +37,7 @@ function PeakPointer() {
   } = useChartData();
   const { scaleX, scaleY } = useScaleChecked();
 
+  const activeSpectrum = useActiveSpectrum();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();

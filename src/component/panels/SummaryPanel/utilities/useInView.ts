@@ -2,6 +2,7 @@ import { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
+import { useActiveSpectrum } from '../../../reducer/Reducer';
 
 import { isInView } from './Utilities';
 
@@ -18,9 +19,9 @@ function useInView({ correlation }: InputProps) {
     view: {
       spectra: { activeTab },
     },
-    activeSpectrum,
   } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   return useMemo(
     () =>
       isInView(

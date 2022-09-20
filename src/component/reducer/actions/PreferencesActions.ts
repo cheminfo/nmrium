@@ -84,7 +84,7 @@ function changeSpectrumVerticalAlignment(
 function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   const {
     data,
-    activeSpectrum,
+
     zoom,
     xDomain,
     xDomains,
@@ -96,6 +96,8 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     view,
   } = draft;
 
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (view.spectra.activeTab) {
     const groupByNucleus = groupByInfoKey('nucleus');
 
@@ -148,7 +150,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     });
     draft.view = preferences.view;
     draft.displayerMode = preferences.displayerMode;
-    draft.activeSpectrum = preferences.activeSpectrum;
 
     draft.margin = preferences.margin;
 

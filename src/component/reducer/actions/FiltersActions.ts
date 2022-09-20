@@ -29,8 +29,11 @@ import { resetSelectedTool } from './ToolsActions';
 
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
-  if (draft.activeSpectrum?.id) {
-    const index = draft.activeSpectrum?.index;
+
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const index = activeSpectrum?.index;
 
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.shiftX.id, options: shiftValue },
@@ -42,8 +45,10 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
 }
 
 function applyZeroFillingFilter(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const index = draft.activeSpectrum.index;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const index = activeSpectrum.index;
     const { size } = action.payload;
     const filters = [
       {
@@ -59,8 +64,10 @@ function applyZeroFillingFilter(draft: Draft<State>, action) {
 }
 
 function calculateApodizationFilter(draft: Draft<State>, action) {
-  if (draft.activeSpectrum) {
-    const index = draft.activeSpectrum.index;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
+    const index = activeSpectrum.index;
     const options = action.payload;
     const {
       data: { x, re, im },
@@ -77,8 +84,10 @@ function calculateApodizationFilter(draft: Draft<State>, action) {
 }
 
 function applyApodizationFilter(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const index = draft.activeSpectrum.index;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const index = activeSpectrum.index;
     const options = action.payload;
     const filters = [
       {
@@ -94,8 +103,10 @@ function applyApodizationFilter(draft: Draft<State>, action) {
 }
 
 function calculateZeroFillingFilter(draft: Draft<State>, action) {
-  if (draft.activeSpectrum) {
-    const index = draft.activeSpectrum.index;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
+    const index = activeSpectrum.index;
     const { size } = action.payload;
     const {
       data: { x, re, im },
@@ -113,8 +124,10 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
   }
 }
 function applyFFTFilter(draft: Draft<State>) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     //apply filter into the spectrum
     FiltersManager.applyFilter(draft.data[index], [
@@ -128,8 +141,10 @@ function applyFFTFilter(draft: Draft<State>) {
   }
 }
 function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const { ph0, ph1 } = filterOptions;
 
     FiltersManager.applyFilter(draft.data[index], [
@@ -142,8 +157,10 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
   }
 }
 function applyAbsoluteFilter(draft: Draft<State>) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.absolute.id, options: {} },
     ]);
@@ -155,8 +172,10 @@ function applyAbsoluteFilter(draft: Draft<State>) {
 }
 
 function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     const { ph0, ph1 } = autoPhaseCorrection(draft.data[index] as Datum1D);
 
@@ -171,8 +190,10 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 }
 
 function calculateBaseLineCorrection(draft: Draft<State>, action?) {
-  if (draft.activeSpectrum) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
     const {
       data: { x, re, im },
       info,
@@ -198,8 +219,10 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
   }
 }
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
-  if (draft.activeSpectrum) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
     const {
       data: { x, re, im },
       info,
@@ -215,8 +238,10 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
 }
 
 function enableFilter(draft: Draft<State>, filterID, checked) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     //apply filter into the spectrum
     FiltersManager.enableFilter(draft.data[index], filterID, checked);
@@ -245,8 +270,10 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 
 function deleteFilter(draft: Draft<State>, actions) {
   const filterID = actions.payload.id;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     //apply filter into the spectrum
     FiltersManager.deleteFilter(draft.data[index], filterID);
 
@@ -291,8 +318,10 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
 }
 
 function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     const { zones } = draft.toolOptions.data.baselineCorrection;
     const { livePreview, ...options } = action.options;
@@ -440,8 +469,10 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
 
   let spectra: Datum1D[];
 
-  if (draft.activeSpectrum?.id) {
-    const index = draft.activeSpectrum?.index;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const index = activeSpectrum?.index;
     spectra = [draft.data[index] as Datum1D];
   } else {
     spectra = getSpectraByNucleus(
@@ -521,7 +552,8 @@ function checkFilterHasTempData(selectedToolId: string) {
 }
 
 function setFilterChanges(draft: Draft<State>, selectedFilterID) {
-  const activeSpectrumId = draft.activeSpectrum?.id;
+  const activeSpectrumId =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab]?.id;
 
   // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
   if (checkFilterHasTempData(selectedFilterID)) {
@@ -562,9 +594,11 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
         break;
       }
       case options.baselineCorrection.id: {
-        if (draft.activeSpectrum?.id) {
+        const activeSpectrum =
+          draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+        if (activeSpectrum?.id) {
           const baselineCorrectionFilter: any = current(draft).data[
-            draft.activeSpectrum.index
+            activeSpectrum.index
           ].filters.find(
             (filter) => filter.name === options.baselineCorrection.id,
           );

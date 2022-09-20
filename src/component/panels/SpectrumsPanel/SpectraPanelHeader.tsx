@@ -13,7 +13,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import { ActiveSpectrum } from '../../reducer/Reducer';
+import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
@@ -141,12 +141,12 @@ const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
   const {
     data,
-    activeSpectrum,
     view: {
       spectra: { activeTab },
     },
     displayerMode,
   } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   return (
     <MemoizedSpectraPanelHeader
       {...{

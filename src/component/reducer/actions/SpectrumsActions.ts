@@ -79,11 +79,12 @@ function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
 function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   let refreshDomain = false;
 
-  const currentActiveSpectrum = draft.activeSpectrum;
+  const currentActiveSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum) {
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
     const oldIndex = draft.data.findIndex(
-      (d) => d.id === draft.activeSpectrum?.id,
+      (d) => d.id === currentActiveSpectrum?.id,
     );
     if (newIndex !== -1) {
       const newActiveSpectrum = draft.data[newIndex] as Datum1D | Datum2D;
@@ -99,7 +100,6 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       }
     }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
-    draft.activeSpectrum = activeSpectrum;
     draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] =
       activeSpectrum;
   } else {
@@ -111,7 +111,6 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     } else {
       refreshDomain = false;
     }
-    draft.activeSpectrum = null;
     draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = null;
   }
 

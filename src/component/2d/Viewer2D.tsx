@@ -38,10 +38,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     data,
     margin,
     view: {
-      spectra: { activeSpectra },
-    },
-    view: {
-      spectra: { activeTab },
+      spectra: { activeSpectra, activeTab },
     },
   } = state;
 

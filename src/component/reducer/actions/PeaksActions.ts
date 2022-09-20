@@ -16,9 +16,11 @@ import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 function addPeak(draft: Draft<State>, mouseCoordinates) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const state = original(draft) as State;
-  if (draft.activeSpectrum?.id && state) {
-    const { index } = draft.activeSpectrum;
+  if (activeSpectrum?.id && state) {
+    const { index } = activeSpectrum;
     const xShift = 10;
     const startX = mouseCoordinates.x - xShift;
     const endX = mouseCoordinates.x + xShift;
@@ -46,8 +48,10 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
 function addPeaks(draft: Draft<State>, action) {
   const state = original(draft) as State;
 
-  if (draft.activeSpectrum) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
     const datumOriginal = state.data[index] as Datum1D;
 
     const { startX, endX } = action;
@@ -73,8 +77,10 @@ function addPeaks(draft: Draft<State>, action) {
 }
 
 function deletePeak(draft: Draft<State>, peakData) {
-  if (draft.activeSpectrum) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
     const state = original(draft) as State;
 
     if (peakData == null) {
@@ -91,8 +97,10 @@ function deletePeak(draft: Draft<State>, peakData) {
 function handleOptimizePeaks(draft: Draft<State>, action) {
   const { peaks } = action.payload;
 
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const datum = draft.data[index] as Datum1D;
 
     const [from, to] = draft.xDomain;
@@ -107,10 +115,12 @@ function handleOptimizePeaks(draft: Draft<State>, action) {
   }
 }
 function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
-  if (draft.activeSpectrum?.id) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
     draft.toolOptions.selectedTool = options.zoom.id;
     draft.toolOptions.selectedOptionPanel = null;
-    const { index } = draft.activeSpectrum;
+    const { index } = activeSpectrum;
     const datum = draft.data[index] as Datum1D;
 
     const [from, to] = draft.xDomain;
@@ -130,8 +140,10 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
 function changePeakShapeHandler(draft: Draft<State>, action) {
   const { shape, id } = action.payload;
 
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const datum = draft.data[index] as Datum1D;
     const peakIndex = datum.peaks.values.findIndex((peak) => peak.id === id);
 

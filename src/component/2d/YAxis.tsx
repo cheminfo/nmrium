@@ -52,10 +52,7 @@ function YAxis(props: YAxisProps) {
     width,
     height,
     view: {
-      spectra: { activeTab },
-    },
-    view: {
-      spectra: { activeSpectra },
+      spectra: { activeTab, activeSpectra },
     },
     margin,
   } = state;

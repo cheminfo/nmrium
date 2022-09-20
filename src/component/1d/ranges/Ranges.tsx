@@ -4,7 +4,7 @@ import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
+import { rangeStateInit, useActiveSpectrum } from '../../reducer/Reducer';
 
 import Range from './Range';
 import RangeIntegral from './RangeIntegral';
@@ -49,14 +49,14 @@ const empyData = { ranges: {} };
 
 export default function Ranges() {
   const {
-    activeSpectrum,
     displayerKey,
-    view: { ranges: rangeState },
-    toolOptions: { selectedTool },
     view: {
+      ranges: rangeState,
       spectra: { activeTab },
     },
+    toolOptions: { selectedTool },
   } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const { showMultiplicityTrees, showRangesIntegrals } = useMemo(
     () =>
       activeSpectrum

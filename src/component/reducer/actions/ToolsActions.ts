@@ -57,23 +57,25 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
 function setSelectedTool(draft: Draft<State>, action) {
   const { selectedTool } = action.payload;
 
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (draft?.data.length > 0) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
         // TODO: use assert
-        if (draft.activeSpectrum === null) {
+        if (activeSpectrum === null) {
           throw new Error('Spectrum must have id');
         }
 
         const range = draft.view.ranges.find(
-          (r) => r.spectrumID === draft.activeSpectrum?.id,
+          (r) => r.spectrumID === activeSpectrum?.id,
         );
         if (range) {
           range.showMultiplicityTrees = true;
         } else {
           draft.view.ranges.push({
-            spectrumID: draft.activeSpectrum.id,
+            spectrumID: activeSpectrum.id,
             ...rangeStateInit,
             showMultiplicityTrees: true,
           });
@@ -201,10 +203,12 @@ function handleBrushEnd(draft: Draft<State>, action) {
   }
 }
 function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
-  if (draft.activeSpectrum?.id) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
     const scaleX = getXScale(draft);
     const value = scaleX.invert(position);
-    const datum = draft.data[draft.activeSpectrum.index] as Datum1D;
+    const datum = draft.data[activeSpectrum.index] as Datum1D;
     const index = xFindClosestIndex(datum.data.x, value);
     draft.toolOptions.data.pivot = { value, index };
   }
@@ -221,11 +225,12 @@ function getSpectrumID(draft: Draft<State>, index): string | null {
 function handleZoom(draft: Draft<State>, action) {
   const { event, trackID, selectedTool } = action;
   const {
-    activeSpectrum,
     view: { ranges: rangeState },
     displayerMode,
   } = draft;
 
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const { showRangesIntegrals } =
     rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
     rangeStateInit;
@@ -408,15 +413,12 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
     const tabs2D = setTabActiveSpectrum(draft, dataGroupByTab);
 
     if (tabs2D.length > 0 && tab == null) {
-      draft.activeSpectrum = draft.view.spectra.activeSpectra[tabs2D[0]];
       draft.view.spectra.activeTab = tabs2D[0];
     } else {
-      draft.activeSpectrum = tab ? draft.view.spectra.activeSpectra[tab] : tab;
       draft.view.spectra.activeTab = tab;
     }
   } else {
     draft.view.spectra.activeTab = tab;
-    draft.activeSpectrum = draft.view.spectra.activeSpectra[tab];
   }
 
   setDisplayerMode(draft, dataGroupByTab[draft.view.spectra.activeTab]);
@@ -467,9 +469,11 @@ function handelSetActiveTab(draft: Draft<State>, tab) {
 }
 
 function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   try {
-    if (draft.activeSpectrum?.id) {
-      const { index, id } = draft.activeSpectrum;
+    if (activeSpectrum?.id) {
+      const { index, id } = activeSpectrum;
       const processingController = (draft.data[index] as Datum2D)
         .processingController;
       if (shiftKey) {

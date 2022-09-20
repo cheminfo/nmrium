@@ -6,6 +6,7 @@ import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 
 const style: CSSProperties = {
   cursor: 'crosshair',
@@ -19,7 +20,8 @@ const style: CSSProperties = {
 };
 
 function XLabelPointer() {
-  const { height, width, margin, data, activeSpectrum } = useChartData();
+  const { height, width, margin, data } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const { scaleX } = useScaleChecked();
 
   const position = useContext(MouseContext);

@@ -20,11 +20,14 @@ import { setIntegralsYDomain } from './DomainActions';
 function handleChangeIntegralSum(draft: Draft<State>, options) {
   const {
     data,
-    activeSpectrum,
     view: {
       spectra: { activeTab: nucleus },
     },
   } = draft;
+
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -41,8 +44,9 @@ function addIntegral(draft: Draft<State>, action) {
     view: {
       spectra: { activeTab: nucleus },
     },
-    activeSpectrum,
   } = draft;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const [from, to] = getRange(draft, { startX, endX });
 
   if (activeSpectrum?.id) {
@@ -72,9 +76,11 @@ function addIntegral(draft: Draft<State>, action) {
 }
 
 function deleteIntegral(draft: Draft<State>, action) {
-  if (draft.activeSpectrum) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
     const state = original(draft) as State;
-    const { index } = draft.activeSpectrum;
+    const { index } = activeSpectrum;
     const { integralID } = action;
 
     const datum = draft.data[index] as Datum1D;
@@ -92,11 +98,13 @@ function deleteIntegral(draft: Draft<State>, action) {
 }
 
 function changeIntegral(draft: Draft<State>, action) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const state = original(draft) as State;
   const integral = action.payload.data;
 
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     const originalDatum = state.data[index] as Datum1D;
     const datum = draft.data[index] as Datum1D;
@@ -122,9 +130,11 @@ function changeIntegral(draft: Draft<State>, action) {
 }
 
 function handleChangeIntegralsRelativeValue(draft: Draft<State>, action) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const data = action.payload.data;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     changeIntegralsRelative(draft.data[index] as Datum1D, data);
   }
 }
