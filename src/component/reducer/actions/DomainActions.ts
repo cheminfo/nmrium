@@ -73,18 +73,24 @@ function getDomain(drfat: Draft<State>) {
     xDomains,
   };
 }
-function get2DDomain(state) {
+function get2DDomain(state: State) {
   let xArray = [];
   let yArray = [];
   let yDomains = {};
   let xDomains = {};
 
-  const { activeTab, tabActiveSpectrum, data } = state;
+  const {
+    activeTab,
+    view: {
+      spectra: { activeSpectra },
+    },
+    data,
+  } = state;
 
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
+    xArray = data.reduce((acc: any, datum: Datum1D | Datum2D) => {
       if (
         isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
@@ -95,7 +101,7 @@ function get2DDomain(state) {
       return acc;
     }, []);
 
-    yArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
+    yArray = data.reduce((acc: any, datum: Datum1D | Datum2D) => {
       if (
         isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
@@ -110,9 +116,9 @@ function get2DDomain(state) {
     console.log(e);
   }
 
-  const spectrumsIDs = nucleus.map((n) => tabActiveSpectrum[n]?.id);
+  const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);
 
-  const filteredData = data.reduce((acc, datum: Datum1D | Datum2D) => {
+  const filteredData = data.reduce((acc: any, datum: Datum1D | Datum2D) => {
     return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
       ? acc.concat(datum)
       : acc.concat([]);

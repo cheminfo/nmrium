@@ -175,7 +175,6 @@ export const getInitialState = (): State => ({
   isLoading: false,
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
-  tabActiveSpectrum: {},
   spectraAnalysis: {},
   correlations: {},
   displayerKey: '',
@@ -346,12 +345,6 @@ export interface State {
    * @default '1D'
    */
   displayerMode: DISPLAYER_MODE;
-
-  /**
-   * active spectrum per nucleus
-   * @default {}
-   */
-  tabActiveSpectrum: Record<string, ActiveSpectrum | null>;
 
   /**
    * Multiple spectra analysis data
