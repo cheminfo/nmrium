@@ -3,11 +3,15 @@ import { useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 
 export default function useNucleus() {
-  const { tabActiveSpectrum } = useChartData();
+  const {
+    view: {
+      spectra: { activeSpectra },
+    },
+  } = useChartData();
   return useMemo<Array<string>>(() => {
-    if (tabActiveSpectrum && Object.keys(tabActiveSpectrum).length > 0) {
-      return Object.keys(tabActiveSpectrum);
+    if (activeSpectra && Object.keys(activeSpectra).length > 0) {
+      return Object.keys(activeSpectra);
     }
     return [];
-  }, [tabActiveSpectrum]);
+  }, [activeSpectra]);
 }

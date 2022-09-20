@@ -209,7 +209,7 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
 
 function getSpectrumID(draft: Draft<State>, index): string | null {
   const spectrum =
-    draft.view.spectra.activeSpectraId[draft.activeTab.split(',')[index]];
+    draft.view.spectra.activeSpectra[draft.activeTab.split(',')[index]];
   return spectrum?.id || null;
 }
 
@@ -301,7 +301,7 @@ function zoomOut(draft: Draft<State>, action) {
 
 function hasAcceptedSpectrum(draft: Draft<State>, index) {
   const nucleuses = draft.activeTab.split(',');
-  const activeSpectrum = draft.tabActiveSpectrum[nucleuses[index]];
+  const activeSpectrum = draft.view.spectra.activeSpectra[nucleuses[index]];
   return (
     activeSpectrum?.id &&
     !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
@@ -383,7 +383,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
       }
     }
   }
-  draft.tabActiveSpectrum = tabActiveSpectrum;
+  draft.view.spectra.activeSpectra = tabActiveSpectrum;
   return tabs2D;
 }
 
@@ -394,21 +394,21 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
 
   if (
     JSON.stringify(groupByTab) !==
-      JSON.stringify(Object.keys(draft.tabActiveSpectrum)) ||
+      JSON.stringify(Object.keys(draft.view.spectra.activeSpectra)) ||
     refresh
   ) {
     const tabs2D = setTabActiveSpectrum(draft, dataGroupByTab);
 
     if (tabs2D.length > 0 && tab == null) {
-      draft.activeSpectrum = draft.tabActiveSpectrum[tabs2D[0]];
+      draft.activeSpectrum = draft.view.spectra.activeSpectra[tabs2D[0]];
       draft.activeTab = tabs2D[0];
     } else {
-      draft.activeSpectrum = tab ? draft.tabActiveSpectrum[tab] : tab;
+      draft.activeSpectrum = tab ? draft.view.spectra.activeSpectra[tab] : tab;
       draft.activeTab = tab;
     }
   } else {
     draft.activeTab = tab;
-    draft.activeSpectrum = draft.tabActiveSpectrum[tab];
+    draft.activeSpectrum = draft.view.spectra.activeSpectra[tab];
   }
 
   setDisplayerMode(draft, dataGroupByTab[draft.activeTab]);

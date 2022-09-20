@@ -100,8 +100,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
     draft.activeSpectrum = activeSpectrum;
-    draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-    draft.view.spectra.activeSpectraId[draft.activeTab] = activeSpectrum.id;
+    draft.view.spectra.activeSpectra[draft.activeTab] = activeSpectrum;
   } else {
     if (currentActiveSpectrum) {
       const index = draft.data.findIndex(
@@ -112,8 +111,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       refreshDomain = false;
     }
     draft.activeSpectrum = null;
-    draft.tabActiveSpectrum[draft.activeTab] = null;
-    draft.view.spectra.activeSpectraId[draft.activeTab] = null;
+    draft.view.spectra.activeSpectra[draft.activeTab] = null;
   }
 
   if (options[draft.toolOptions.selectedTool].isFilter) {

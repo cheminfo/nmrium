@@ -102,7 +102,12 @@ export interface ViewState {
      * active spectrum id per nucleus
      * @default {}
      */
-    activeSpectraId: Record<string, ActiveSpectrum | null>;
+    activeSpectra: Record<string, ActiveSpectrum | null>;
+    /**
+     * current select tab (nucleus)
+     * @default null
+     */
+    activeTab: string;
   };
 }
 export const rangeStateInit = {
@@ -154,7 +159,7 @@ export const getInitialState = (): State => ({
     floatingMolecules: [],
     ranges: [],
     zones: [],
-    spectra: { activeSpectraId: {} },
+    spectra: { activeSpectra: {}, activeTab: '' },
   },
   verticalAlign: {
     align: 'bottom',

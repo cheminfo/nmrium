@@ -53,7 +53,7 @@ function YAxis(props: YAxisProps) {
     height,
     activeTab,
     view: {
-      spectra: { activeSpectraId: tabActiveSpectrum },
+      spectra: { activeSpectra },
     },
     margin,
   } = state;
@@ -66,7 +66,7 @@ function YAxis(props: YAxisProps) {
 
     // @ts-expect-error well typed
     d3.select(refAxis.current).call(axis);
-  }, [show, yDomain, activeTab, tabActiveSpectrum, height, margin]);
+  }, [show, yDomain, activeTab, activeSpectra, height, margin]);
 
   if (!width || !height) {
     return null;

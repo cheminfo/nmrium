@@ -87,16 +87,11 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
     const color = getColor(false, draft.usedColors['1d']);
     for (const spectrum of generateSpectra(data, options, color)) {
       draft.data.push(spectrum);
-      draft.tabActiveSpectrum[nucleusToString(spectrum.info.nucleus)] = {
-        id: spectrum.id,
-        index: draft.data.length - 1,
-      };
-      draft.view.spectra.activeSpectraId[
-        nucleusToString(spectrum.info.nucleus)
-      ] = {
-        id: spectrum.id,
-        index: draft.data.length - 1,
-      };
+      draft.view.spectra.activeSpectra[nucleusToString(spectrum.info.nucleus)] =
+        {
+          id: spectrum.id,
+          index: draft.data.length - 1,
+        };
     }
     draft.usedColors['1d'].push(color);
   }
