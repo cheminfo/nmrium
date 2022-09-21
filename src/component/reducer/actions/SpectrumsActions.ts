@@ -164,8 +164,10 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
   const { nucleus } = action;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
         state.data[index],
