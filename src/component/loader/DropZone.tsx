@@ -7,7 +7,6 @@ import { FaUpload } from 'react-icons/fa';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
-import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
@@ -47,7 +46,6 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-  const alert = useAlert();
   const isToolEnabled = useCheckToolsVisibility();
 
   const loadFilesHandler = useCallback(
@@ -55,15 +53,9 @@ function DropZone(props) {
       files.forEach((file) => {
         Object.defineProperty(file, 'webkitRelativePath', { value: file.path });
       });
-
-      try {
-        dispatch({ type: LOAD_DROP_FILES, files });
-      } catch (e: any) {
-        dispatch({ type: SET_LOADING_FLAG, isLoading: false });
-        alert.error(e.message);
-      }
+      dispatch({ type: LOAD_DROP_FILES, files });
     },
-    [alert, dispatch],
+    [dispatch],
   );
 
   const onDrop = useCallback(

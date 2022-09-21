@@ -442,7 +442,6 @@ export function initState(state: State): State {
 
 export function dispatchMiddleware(dispatch) {
   const usedColors: UsedColors = { '1d': [], '2d': [] };
-
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
@@ -459,10 +458,15 @@ export function dispatchMiddleware(dispatch) {
       case types.LOAD_DROP_FILES: {
         const { files } = action;
         action.usedColors = usedColors;
-        void readDropFiles(files, usedColors).then((data) => {
-          action.data = data;
-          dispatch(action);
-        });
+        try {
+          void readDropFiles(files, usedColors).then((data) => {
+            action.data = data;
+            dispatch(action);
+          });
+        } catch (e: any) {
+          dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
+          new Error(e.message);
+        }
         break;
       }
       case types.PREDICT_SPECTRA: {
