@@ -465,7 +465,7 @@ export function dispatchMiddleware(dispatch) {
           })
           .catch((e: any) => {
             dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
-            throw new Error(e);
+            reportError(e);
           });
         break;
       }
