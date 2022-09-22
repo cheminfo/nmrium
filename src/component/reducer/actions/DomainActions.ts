@@ -32,13 +32,13 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
   return data as Array<Datum1D>;
 }
 
-function getDomain(drfat: Draft<State>) {
+function getDomain(draft: Draft<State>) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
   let yDomains = {};
   let xDomains = {};
 
-  const data = getActiveData(drfat);
+  const data = getActiveData(draft);
   try {
     xArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
       const { display, data } = d;
@@ -75,8 +75,8 @@ function getDomain(drfat: Draft<State>) {
   };
 }
 function get2DDomain(state: State) {
-  let xArray = [];
-  let yArray = [];
+  let xArray: Array<number> = [];
+  let yArray: Array<number> = [];
   let yDomains = {};
   let xDomains = {};
 
@@ -90,7 +90,7 @@ function get2DDomain(state: State) {
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data.reduce((acc: any, datum: Datum1D | Datum2D) => {
+    xArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
       if (
         isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
@@ -101,7 +101,7 @@ function get2DDomain(state: State) {
       return acc;
     }, []);
 
-    yArray = data.reduce((acc: any, datum: Datum1D | Datum2D) => {
+    yArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
       if (
         isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
@@ -118,11 +118,14 @@ function get2DDomain(state: State) {
 
   const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);
 
-  const filteredData = data.reduce((acc: any, datum: Datum1D | Datum2D) => {
-    return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
-      ? acc.concat(datum)
-      : acc.concat([]);
-  }, []);
+  const filteredData = data.reduce(
+    (acc: Datum1D[], datum: Datum1D | Datum2D) => {
+      return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
+        ? acc.concat(datum as Datum1D)
+        : acc.concat([]);
+    },
+    [],
+  );
   try {
     xDomains = filteredData.reduce((acc, d: Datum1D) => {
       const { x } = d.data;
