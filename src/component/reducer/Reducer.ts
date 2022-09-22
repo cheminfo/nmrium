@@ -458,15 +458,15 @@ export function dispatchMiddleware(dispatch) {
       case types.LOAD_DROP_FILES: {
         const { files } = action;
         action.usedColors = usedColors;
-        try {
-          void readDropFiles(files, usedColors).then((data) => {
+        void readDropFiles(files, usedColors)
+          .then((data) => {
             action.data = data;
             dispatch(action);
+          })
+          .catch((e: any) => {
+            dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
+            throw new Error(e);
           });
-        } catch (e: any) {
-          dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
-          new Error(e.message);
-        }
         break;
       }
       case types.PREDICT_SPECTRA: {
