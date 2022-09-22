@@ -15,6 +15,7 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
       datum.info.dimension === 1,
   );
+  // todo: refactor this
   const activeSpectrum =
     draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum) {

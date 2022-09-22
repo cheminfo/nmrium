@@ -13,6 +13,7 @@ import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 
 import {
   setDomain,
@@ -57,16 +58,11 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
 function setSelectedTool(draft: Draft<State>, action) {
   const { selectedTool } = action.payload;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (draft?.data.length > 0) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
-        // TODO: use assert
-        if (activeSpectrum === null) {
-          throw new Error('Spectrum must have id');
-        }
+        const activeSpectrum = getActiveSpectrumOrFail(draft);
 
         const range = draft.view.ranges.find(
           (r) => r.spectrumID === activeSpectrum?.id,
