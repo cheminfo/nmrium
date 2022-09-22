@@ -1,14 +1,16 @@
 import { Draft } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
-import { addJcamps, addJDFs } from '../../../data/SpectraManager';
+import { addJcamps } from '../../../data/SpectraManager';
+import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
+import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { UsedColors } from '../../../types/UsedColors';
 import { NMRiumPreferences, Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { getInitialState, State } from '../Reducer';
-import { INITIATE, LOAD_JSON_FILE, LOAD_NMREDATA_FILE } from '../types/Types';
+import { INITIATE, LOAD_JSON_FILE } from '../types/Types';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
@@ -109,18 +111,6 @@ function initiate(draft: Draft<State>, action) {
   return state;
 }
 
-function loadJDFFile(draft: Draft<State>, actions) {
-  const { files } = actions;
-  const spectra = addJDFs(files, draft.usedColors);
-  for (const spectrum of spectra) {
-    draft.data.push(spectrum);
-  }
-
-  setActiveTab(draft);
-
-  draft.isLoading = false;
-}
-
 function loadJcampFile(draft: Draft<State>, actions) {
   const { files } = actions;
   const spectra = addJcamps(files, draft.usedColors);
@@ -147,46 +137,29 @@ function handleLoadJsonFile(draft: Draft<State>, action) {
   return state;
 }
 
-function handleLoadMOLFile(draft: Draft<State>, actions) {
-  const { files } = actions;
-  for (let file of files) {
-    MoleculeManager.addMolfile(draft.molecules, file.binary.toString());
+function loadDropFiles(draft: Draft<State>, actions) {
+  const { data, usedColors } = actions;
+  const { spectra, molecules } = data;
+  for (let spectrum of spectra) {
+    const { info } = spectrum;
+    if (info.dimension === 1) {
+      draft.data.push(initiateDatum1D(spectrum, usedColors));
+    } else if (info.dimension === 2) {
+      draft.data.push(initiateDatum2D(spectrum, usedColors));
+    }
   }
-  draft.isLoading = false;
-}
-
-function handleLoadZIPFile(draft: Draft<State>, action) {
-  const { data, usedColors } = action.payload;
-  draft.data = draft.data.concat(data);
-  setColors(draft, usedColors);
-
+  for (let molecule of molecules) {
+    MoleculeManager.addMolfile(draft.molecules, molecule.molfile);
+  }
   setActiveTab(draft);
-  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
 
   draft.isLoading = false;
-}
-
-function handleLoadNmredata(draft: Draft<State>, action) {
-  const state = getInitialState();
-
-  setData(state, action.payload);
-  setActiveTab(state);
-  changeSpectrumVerticalAlignment(state, { align: 'auto-check' });
-  state.isLoading = false;
-  state.width = draft.width;
-  state.height = draft.height;
-  state.actionType = LOAD_NMREDATA_FILE;
-
-  return state;
 }
 
 export {
   setIsLoading,
   initiate,
   loadJcampFile,
-  loadJDFFile,
+  loadDropFiles,
   handleLoadJsonFile,
-  handleLoadNmredata,
-  handleLoadMOLFile,
-  handleLoadZIPFile,
 };

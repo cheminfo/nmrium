@@ -9,11 +9,9 @@ import SaveAsModal from '../modal/SaveAsModal';
 import {
   copyPNGToClipboard,
   exportAsJSON,
-  exportAsNMRE,
   exportAsPng,
   exportAsSVG,
 } from '../utility/Export';
-import { nmriumToNmredata } from '../utility/nmriumToNmredata';
 
 export default function useExport() {
   const { rootRef } = useGlobal();
@@ -61,24 +59,6 @@ export default function useExport() {
     },
     [alert, state],
   );
-
-  const saveAsNMREHandler = useCallback(async () => {
-    if (state.data.length > 0) {
-      const hideLoading = await alert.showLoading(
-        'Exporting as NMRE process in progress',
-      );
-      setTimeout(() => {
-        async function handle() {
-          const fileName = state.data[0]?.display?.name;
-          const exportedData = await nmriumToNmredata(state);
-          exportAsNMRE(exportedData, fileName);
-          hideLoading();
-        }
-
-        void handle();
-      }, 0);
-    }
-  }, [alert, state]);
 
   const saveAsSVGHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
@@ -141,7 +121,6 @@ export default function useExport() {
   return {
     saveToClipboardHandler,
     saveAsJSONHandler,
-    saveAsNMREHandler,
     saveAsSVGHandler,
     saveAsPNGHandler,
     saveAsHandler,

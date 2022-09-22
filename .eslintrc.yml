@@ -10,9 +10,6 @@ rules:
   '@typescript-eslint/restrict-plus-operands': off
   'jest/no-standalone-expect': off
   'react/no-unstable-nested-components': off
-  'react/no-unknown-property':
-    - error
-    - ignore: ['css']
   no-restricted-properties:
     - warn
     - property: reduce
@@ -27,5 +24,9 @@ rules:
       message: "Use 'openchemlib/full'"
     - name: react-ocl
       message: "Use 'react-ocl/full"
+  react/no-unknown-property:
+    - error
+    - ignore:
+        - 'css'
 parserOptions:
   sourceType: module
