@@ -1,12 +1,12 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { read as readDropFiles, migrate } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { migrate } from '../../data/migration/MigrationManager';
 import {
   FloatingMolecules,
   StateMoleculeExtended,
@@ -17,7 +17,6 @@ import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
-import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as AssignmentsActions from './actions/AssignmentsActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
@@ -453,7 +452,6 @@ export function initState(state: State): State {
 
 export function dispatchMiddleware(dispatch) {
   const usedColors: UsedColors = { '1d': [], '2d': [] };
-
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
@@ -467,35 +465,18 @@ export function dispatchMiddleware(dispatch) {
 
         break;
       }
-      case types.LOAD_JSON_FILE: {
-        const parsedData = JSON.parse(action.files[0].binary.toString());
-        const data = migrate(parsedData);
-        void SpectraManager.fromJSON(data.spectra, usedColors).then(
-          (spectra) => {
-            action.payload = Object.assign(data, { spectra, usedColors });
+      case types.LOAD_DROP_FILES: {
+        const { files } = action;
+        action.usedColors = usedColors;
+        readDropFiles(files, usedColors)
+          .then((data) => {
+            action.data = data;
             dispatch(action);
-          },
-        );
-        break;
-      }
-      case types.LOAD_ZIP_FILE: {
-        for (let zipFile of action.files) {
-          void SpectraManager.addBruker(
-            { display: { name: zipFile.name } },
-            zipFile.binary,
-            usedColors,
-          ).then((data) => {
-            action.payload = { data, usedColors };
-            dispatch(action);
+          })
+          .catch((e: any) => {
+            dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
+            reportError(e);
           });
-        }
-        break;
-      }
-      case types.LOAD_NMREDATA_FILE: {
-        void nmredataToNmrium(action.file, usedColors).then((data) => {
-          action.payload = Object.assign(data, { usedColors });
-          dispatch(action);
-        });
         break;
       }
       case types.PREDICT_SPECTRA: {
@@ -537,20 +518,14 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
   switch (action.type) {
     case types.INITIATE:
       return LoadActions.initiate(draft, action);
+    case types.LOAD_DROP_FILES:
+      return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
       return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action);
-    case types.LOAD_JDF_FILE:
-      return LoadActions.loadJDFFile(draft, action);
-    case types.LOAD_MOL_FILE:
-      return LoadActions.handleLoadMOLFile(draft, action);
-    case types.LOAD_ZIP_FILE:
-      return LoadActions.handleLoadZIPFile(draft, action);
-    case types.LOAD_NMREDATA_FILE:
-      return LoadActions.handleLoadNmredata(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:

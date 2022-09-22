@@ -10,6 +10,7 @@ export const LOAD_NMREDATA_FILE = 'LOAD_NMREDATA_FILE';
 export const LOAD_MOL_FILE = 'LOAD_MOL_FILE';
 export const LOAD_ZIP_FILE = 'LOAD_ZIP_FILE';
 export const LOAD_JDF_FILE = 'LOAD_JDF_FILE';
+export const LOAD_DROP_FILES = 'LOAD_DROP_FILES';
 export const ADD_PEAK = 'ADD_PEAK';
 export const ADD_PEAKS = 'ADD_PEAKS';
 export const CHANGE_PEAK_SHAPE = 'CHANGE_PEAK_SHAPE';

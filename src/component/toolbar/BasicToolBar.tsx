@@ -132,7 +132,6 @@ function BasicToolBarInner({
     saveAsSVGHandler,
     saveAsPNGHandler,
     saveAsJSONHandler,
-    saveAsNMREHandler,
     saveToClipboardHandler,
     saveAsHandler,
   } = useExport();
@@ -205,9 +204,6 @@ function BasicToolBarInner({
         case 'advance_save':
           void saveAsHandler();
           break;
-        case 'nmre':
-          void saveAsNMREHandler();
-          break;
         case 'copy':
           void saveToClipboardHandler();
           break;
@@ -221,7 +217,6 @@ function BasicToolBarInner({
       saveAsPNGHandler,
       saveAsJSONHandler,
       saveAsHandler,
-      saveAsNMREHandler,
       saveToClipboardHandler,
     ],
   );
