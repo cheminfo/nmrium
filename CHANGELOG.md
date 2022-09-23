@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.31.0](https://github.com/cheminfo/nmrium/compare/v0.30.0...v0.31.0) (2022-09-23)
+
+
+### Features
+
+* allow apodization, zf, ft in exercises ([4ee24ba](https://github.com/cheminfo/nmrium/commit/4ee24bad78882c8d55e3d1f3a44d6d7f8e905fe2))
+* implement onViewChange callback ([#1743](https://github.com/cheminfo/nmrium/issues/1743)) ([865cfe6](https://github.com/cheminfo/nmrium/commit/865cfe65e5e97d15eec7565d3acbaa1823bd3d14))
+* remember position of floating molecule ([#1730](https://github.com/cheminfo/nmrium/issues/1730)) ([179e4a0](https://github.com/cheminfo/nmrium/commit/179e4a0fe32b27d9ae8e53aab344fedb050f7392))
+* use nmr-load-save ([#1753](https://github.com/cheminfo/nmrium/issues/1753)) ([11a6fa3](https://github.com/cheminfo/nmrium/commit/11a6fa30b0f4a9cdd73739566b1b753eb3087518))
+
+
+### Bug Fixes
+
+* dialog box position ([#1757](https://github.com/cheminfo/nmrium/issues/1757)) ([ce1ab49](https://github.com/cheminfo/nmrium/commit/ce1ab49750f04279ce7cd6543f86a009c413042c))
+* peak shape drawing ([#1767](https://github.com/cheminfo/nmrium/issues/1767)) ([90a75a7](https://github.com/cheminfo/nmrium/commit/90a75a77d25630170d806007664aa5ef184b5466)), closes [#1746](https://github.com/cheminfo/nmrium/issues/1746)
+* peaks, signals, ranges, zones with id ([#1732](https://github.com/cheminfo/nmrium/issues/1732)) ([bdb4daa](https://github.com/cheminfo/nmrium/commit/bdb4daa917a149fe2186a9a668511ffdc291565a))
+* refactor range tools state to fix state-related bugs ([#1731](https://github.com/cheminfo/nmrium/issues/1731)) ([ebac30a](https://github.com/cheminfo/nmrium/commit/ebac30a305b5f1dd0da4e3caa29a83d50235bf61))
+* support changing onViewChange callback ([ff529ed](https://github.com/cheminfo/nmrium/commit/ff529ed8e4a0d3b9a60e1763ce59622c6290f76c))
+
 ## [0.30.0](https://github.com/cheminfo/nmrium/compare/v0.29.0...v0.30.0) (2022-08-26)
 
 
