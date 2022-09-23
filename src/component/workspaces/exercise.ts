@@ -14,6 +14,12 @@ export const exercise: InnerWorkspace = {
     },
 
     toolBarButtons: {
+      peakPicking: true,
+      apodization: true,
+      zeroFilling: true,
+      fastFourierTransform: true,
+      phaseCorrection: true,
+      baselineCorrection: true,
       integral: true,
       spectraCenterAlignments: true,
       spectraStackAlignments: true,

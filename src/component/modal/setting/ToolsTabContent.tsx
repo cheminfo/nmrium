@@ -58,6 +58,10 @@ const LIST: ListItem[] = [
     name: 'toolBarButtons.slicing',
   },
   {
+    label: 'Apodization',
+    name: 'toolBarButtons.apodization',
+  },
+  {
     label: 'Zero filling',
     name: 'toolBarButtons.zeroFilling',
   },
