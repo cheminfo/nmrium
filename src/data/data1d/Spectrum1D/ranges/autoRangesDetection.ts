@@ -4,6 +4,7 @@ import { Datum1D, Range } from '../../../types/data1d';
 
 const defaultPeakPickingOptions = {
   minMaxRatio: 1,
+  shape: { kind: 'lorentzian' },
   realTopDetection: true,
   maxCriteria: true,
   smoothY: false,
