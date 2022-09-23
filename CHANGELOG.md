@@ -8,7 +8,7 @@
 * allow apodization, zf, ft in exercises ([4ee24ba](https://github.com/cheminfo/nmrium/commit/4ee24bad78882c8d55e3d1f3a44d6d7f8e905fe2))
 * implement onViewChange callback ([#1743](https://github.com/cheminfo/nmrium/issues/1743)) ([865cfe6](https://github.com/cheminfo/nmrium/commit/865cfe65e5e97d15eec7565d3acbaa1823bd3d14))
 * remember position of floating molecule ([#1730](https://github.com/cheminfo/nmrium/issues/1730)) ([179e4a0](https://github.com/cheminfo/nmrium/commit/179e4a0fe32b27d9ae8e53aab344fedb050f7392))
-* use nmr-load-save ([#1753](https://github.com/cheminfo/nmrium/issues/1753)) ([11a6fa3](https://github.com/cheminfo/nmrium/commit/11a6fa30b0f4a9cdd73739566b1b753eb3087518))
+* use nmr-load-save to allow among other to drag / drop directly a bruker folder ([#1753](https://github.com/cheminfo/nmrium/issues/1753)) ([11a6fa3](https://github.com/cheminfo/nmrium/commit/11a6fa30b0f4a9cdd73739566b1b753eb3087518))
 
 
 ### Bug Fixes
