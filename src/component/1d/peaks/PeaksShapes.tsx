@@ -46,7 +46,6 @@ function PeaksShapesItems(props: { vAlign: number }) {
       {' '}
       {spectrum.peaks.values.map((peak) => {
         const { fill, path } = getPath({ target: 'peakShape', peak });
-
         return (
           <path
             key={peak.id}

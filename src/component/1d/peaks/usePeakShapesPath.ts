@@ -25,16 +25,20 @@ export function usePeakShapesPath(spectrum: Datum1D) {
   } {
     const { target } = options;
 
+    const frequency = spectrum.info.originFrequency;
     let pathSeries: DataXY<DoubleArray> | null = null;
     switch (target) {
       case 'peakShape':
         pathSeries = peakToXY(options.peak, {
-          frequency: spectrum.info.originFrequency,
+          frequency,
+          nbPoints: 1024,
+          from: options.peak.x - (options.peak.width / frequency) * 9,
+          to: options.peak.x + (options.peak.width / frequency) * 9,
         });
         break;
       case 'peaksSum':
         pathSeries = peaksToXY(options.peaks, {
-          frequency: spectrum.info.originFrequency,
+          frequency,
           nbPoints: width,
           from: xDomain[0],
           to: xDomain[1],
