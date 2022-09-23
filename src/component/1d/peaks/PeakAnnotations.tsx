@@ -4,6 +4,7 @@ import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import useSpectrum from '../../hooks/useSpectrum';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 import getVerticalShift from '../utilities/getVerticalShift';
 
 import PeakAnnotation from './PeakAnnotation';
@@ -11,7 +12,8 @@ import PeakAnnotation from './PeakAnnotation';
 const emptyData = { peaks: {}, info: {}, display: {} };
 
 function PeakAnnotations() {
-  const { activeSpectrum, verticalAlign, displayerKey } = useChartData();
+  const { verticalAlign, displayerKey } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const { scaleX, scaleY } = useScaleChecked();
   const spectrum = useSpectrum(emptyData) as Datum1D;
 

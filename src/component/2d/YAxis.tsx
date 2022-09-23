@@ -47,8 +47,15 @@ function YAxis(props: YAxisProps) {
   const refAxis = useRef<SVGGElement>(null);
 
   const state = useChartData();
-  const { yDomain, width, height, activeTab, tabActiveSpectrum, margin } =
-    state;
+  const {
+    yDomain,
+    width,
+    height,
+    view: {
+      spectra: { activeTab, activeSpectra },
+    },
+    margin,
+  } = state;
 
   useEffect(() => {
     if (!show || !yDomain) return;
@@ -58,7 +65,7 @@ function YAxis(props: YAxisProps) {
 
     // @ts-expect-error well typed
     d3.select(refAxis.current).call(axis);
-  }, [show, yDomain, activeTab, tabActiveSpectrum, height, margin]);
+  }, [show, yDomain, activeTab, activeSpectra, height, margin]);
 
   if (!width || !height) {
     return null;

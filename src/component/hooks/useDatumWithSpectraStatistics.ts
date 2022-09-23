@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Info1D as Datum1DInfo, Data1D } from '../../data/types/data1d';
 import { Info2D as Datum2DInfo, Data2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
+import { useActiveSpectrum } from '../reducer/Reducer';
 import nucleusToString from '../utility/nucleusToString';
 
 interface SpectrumWithStatisticsProps {
@@ -15,8 +16,14 @@ interface SpectrumWithStatisticsProps {
 const emptyData = { info: {}, datum: {}, ftCounter: 0, fidCounter: 0 };
 
 export default function useDatumWithSpectraStatistics(): SpectrumWithStatisticsProps {
-  const { data, activeSpectrum, activeTab } = useChartData();
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   return useMemo(() => {
     if (data) {
       let info: any = {};

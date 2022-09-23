@@ -1,11 +1,12 @@
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { useChartData } from '../context/ChartContext';
+import { useActiveSpectrum } from '../reducer/Reducer';
 
 import Line from './Line';
 
 function LinesSeries() {
-  const { data, tempData, displayerKey, xDomains, activeSpectrum } =
-    useChartData();
+  const { data, tempData, displayerKey, xDomains } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   let _data = tempData ? tempData : data;
 
   return (

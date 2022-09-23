@@ -91,7 +91,9 @@ function SummaryPanel() {
     xDomain,
     yDomain,
     displayerMode,
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
   } = useChartData();
 
   const dispatch = useDispatch();

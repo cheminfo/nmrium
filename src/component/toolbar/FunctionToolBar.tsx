@@ -24,7 +24,7 @@ import ToggleButtonGroup from '../elements/toggle/ToggleButtonGroup';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useToolsFunctions from '../hooks/useToolsFunctions';
-import { ActiveSpectrum } from '../reducer/Reducer';
+import { ActiveSpectrum, useActiveSpectrum } from '../reducer/Reducer';
 import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
@@ -264,8 +264,14 @@ export default function FunctionToolBar({
 }: {
   defaultValue?: string;
 }) {
-  const { activeSpectrum, displayerMode, activeTab } = useChartData();
+  const {
+    displayerMode,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   const data = useDatumWithSpectraStatistics();
 
   return (

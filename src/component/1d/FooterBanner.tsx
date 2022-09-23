@@ -13,7 +13,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../hooks/useSpectrum';
-import { ActiveSpectrum } from '../reducer/Reducer';
+import { ActiveSpectrum, useActiveSpectrum } from '../reducer/Reducer';
 
 const styles = css`
   display: flex;
@@ -193,7 +193,15 @@ function FooterBannerInner({
 const MemoizedFooterBanner = memo(FooterBannerInner);
 
 export default function FooterBanner() {
-  const { margin, width, height, activeSpectrum, activeTab } = useChartData();
+  const {
+    margin,
+    width,
+    height,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const spectrum = useSpectrum(null) as Datum1D;
   return (
     <MemoizedFooterBanner

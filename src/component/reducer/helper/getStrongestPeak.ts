@@ -5,7 +5,9 @@ import { Data1D } from '../../../data/types/data1d';
 import { State } from '../Reducer';
 
 export function getStrongestPeak(draft: Draft<State>) {
-  const { activeSpectrum, data } = draft;
+  const { data } = draft;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum) {
     const activeData = data[activeSpectrum?.index].data as Data1D;
     const strongestPeakValue = max(activeData.re);

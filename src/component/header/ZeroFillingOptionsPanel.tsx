@@ -10,6 +10,7 @@ import CheckBox from '../elements/CheckBox';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
+import { useActiveSpectrum } from '../reducer/Reducer';
 import {
   APPLY_ZERO_FILLING_FILTER,
   CALCULATE_ZERO_FILLING_FILTER,
@@ -24,7 +25,8 @@ const Sizes = generateNumbersPowerOfX(8, 21);
 
 function ZeroFillingOptionsPanel() {
   const dispatch = useDispatch();
-  const { data, activeSpectrum } = useChartData();
+  const { data } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const [size, setSize] = useState<number>();
   const [livePreview, setLivePreview] = useState<boolean>(true);
   const filter = useFilter(Filters.zeroFilling.id);

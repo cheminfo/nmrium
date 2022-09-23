@@ -79,11 +79,12 @@ function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
 function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   let refreshDomain = false;
 
-  const currentActiveSpectrum = draft.activeSpectrum;
+  const currentActiveSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum) {
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
     const oldIndex = draft.data.findIndex(
-      (d) => d.id === draft.activeSpectrum?.id,
+      (d) => d.id === currentActiveSpectrum?.id,
     );
     if (newIndex !== -1) {
       const newActiveSpectrum = draft.data[newIndex] as Datum1D | Datum2D;
@@ -99,8 +100,8 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       }
     }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
-    draft.activeSpectrum = activeSpectrum;
-    draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] =
+      activeSpectrum;
   } else {
     if (currentActiveSpectrum) {
       const index = draft.data.findIndex(
@@ -110,8 +111,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     } else {
       refreshDomain = false;
     }
-    draft.activeSpectrum = null;
-    draft.tabActiveSpectrum[draft.activeTab] = null;
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = null;
   }
 
   if (options[draft.toolOptions.selectedTool].isFilter) {
@@ -156,13 +156,18 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   } else {
     draft.data = [];
   }
-  setActiveTab(draft, { tab: draft.activeTab, refreshActiveTab: true });
+  setActiveTab(draft, {
+    tab: draft.view.spectra.activeTab,
+    refreshActiveTab: true,
+  });
 }
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
   const { nucleus } = action;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
         state.data[index],
@@ -183,7 +188,7 @@ function alignSpectraHandler(draft: Draft<State>, action) {
     for (let datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab &&
+        datum.info.nucleus === draft.view.spectra.activeTab &&
         !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });

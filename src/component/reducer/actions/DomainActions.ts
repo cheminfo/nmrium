@@ -12,13 +12,15 @@ import { DISPLAYER_MODE } from '../core/Constants';
 function getActiveData(draft: Draft<State>): Array<Datum1D> {
   let data = draft.data.filter(
     (datum) =>
-      nucleusToString(datum.info.nucleus) === draft.activeTab &&
+      nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
       datum.info.dimension === 1,
   );
-
-  if (draft.activeSpectrum) {
+  // todo: refactor this
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum) {
     const activeSpectrumIndex = data.findIndex(
-      (datum) => datum.id === draft.activeSpectrum?.id,
+      (datum) => datum.id === activeSpectrum?.id,
     );
     if (activeSpectrumIndex !== -1) {
       const isFid = data[activeSpectrumIndex].info.isFid || false;
@@ -31,13 +33,13 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
   return data as Array<Datum1D>;
 }
 
-function getDomain(drfat: Draft<State>) {
+function getDomain(draft: Draft<State>) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
   let yDomains = {};
   let xDomains = {};
 
-  const data = getActiveData(drfat);
+  const data = getActiveData(draft);
   try {
     xArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
       const { display, data } = d;
@@ -73,18 +75,23 @@ function getDomain(drfat: Draft<State>) {
     xDomains,
   };
 }
-function get2DDomain(state) {
-  let xArray = [];
-  let yArray = [];
+function get2DDomain(state: State) {
+  let xArray: Array<number> = [];
+  let yArray: Array<number> = [];
   let yDomains = {};
   let xDomains = {};
 
-  const { activeTab, tabActiveSpectrum, data } = state;
+  const {
+    view: {
+      spectra: { activeSpectra, activeTab },
+    },
+    data,
+  } = state;
 
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
+    xArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
       if (
         isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
@@ -95,7 +102,7 @@ function get2DDomain(state) {
       return acc;
     }, []);
 
-    yArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
+    yArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
       if (
         isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
@@ -110,13 +117,16 @@ function get2DDomain(state) {
     console.log(e);
   }
 
-  const spectrumsIDs = nucleus.map((n) => tabActiveSpectrum[n]?.id);
+  const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);
 
-  const filteredData = data.reduce((acc, datum: Datum1D | Datum2D) => {
-    return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
-      ? acc.concat(datum)
-      : acc.concat([]);
-  }, []);
+  const filteredData = data.reduce(
+    (acc: Datum1D[], datum: Datum1D | Datum2D) => {
+      return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
+        ? acc.concat(datum as Datum1D)
+        : acc.concat([]);
+    },
+    [],
+  );
   try {
     xDomains = filteredData.reduce((acc, d: Datum1D) => {
       const { x } = d.data;
@@ -154,7 +164,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   const { yDomain = { isChanged: true, isShared: true } } = options || {};
   let domain;
 
-  if (draft.activeTab) {
+  if (draft.view.spectra.activeTab) {
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       domain = getDomain(draft);
     } else {
@@ -228,7 +238,7 @@ function setMode(draft: Draft<State>) {
   const data = draft.data.filter(
     (datum) =>
       draft.xDomains[datum.id] &&
-      nucleusToString(datum.info.nucleus) === draft.activeTab,
+      nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab,
   );
   draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }

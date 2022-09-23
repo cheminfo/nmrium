@@ -68,8 +68,10 @@ export default function FloatMoleculeStructures() {
   const {
     molecules,
     displayerMode,
-    activeTab,
-    view: { floatingMolecules },
+    view: {
+      floatingMolecules,
+      spectra: { activeTab },
+    },
   } = useChartData();
 
   const data = useSpectrum(emptyData);

@@ -435,7 +435,9 @@ const MemoizedDatabasePanel = memo(DatabasePanelInner);
 
 export default function PeaksPanel() {
   const {
-    activeTab,
+    view: {
+      spectra: { activeTab },
+    },
     toolOptions: { selectedTool },
   } = useChartData();
   const { current } = usePreferences();

@@ -4,6 +4,7 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
 import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
 
@@ -31,10 +32,12 @@ function XYLabelPointer({ layout, data1D }) {
     xDomain,
     yDomain,
     yDomains,
-    activeTab,
-    activeSpectrum,
+    view: {
+      spectra: { activeTab },
+    },
   } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   const trackID =
     position &&
     getLayoutID(layout, {

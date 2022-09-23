@@ -50,7 +50,12 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
     molecule: { mf: string; id: string } | null;
     sum: number;
   }>();
-  const { molecules, activeTab } = useChartData();
+  const {
+    molecules,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const element = getAtom(activeTab);
   const newSum = useMemo(() => {
     return element &&

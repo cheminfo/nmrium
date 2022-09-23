@@ -14,6 +14,7 @@ import {
   hasCouplingConstant,
   checkMultiplicity,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 import { options } from '../../toolbar/ToolTypes';
 
 import LevelNode from './LevelNode';
@@ -59,10 +60,10 @@ function MultiplicityTree({
   const { scaleX, scaleY } = useScaleChecked();
   const {
     data: spectraData,
-    activeSpectrum,
     toolOptions: { selectedTool },
     width,
   } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const assignment = useAssignment(signal.id);
   const highlight = useHighlight(extractID(assignment), {
     type: HighlightEventSource.SIGNAL,

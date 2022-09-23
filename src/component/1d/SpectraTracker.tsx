@@ -56,7 +56,13 @@ function YTracker({ datum }: YTrackerProps) {
 }
 
 function SpectraTracker() {
-  const { data, activeTab, xDomains } = useChartData();
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+    xDomains,
+  } = useChartData();
   const [isVisible, toggleVisibility] = useState(false);
 
   useEffect(() => {

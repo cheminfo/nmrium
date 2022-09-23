@@ -223,7 +223,12 @@ const MemoizedIntegralPanel = memo(IntegralPanelInner);
 const emptyData = { integrals: {}, info: {} };
 
 export default function IntegralPanel() {
-  const { xDomain, activeTab } = useChartData();
+  const {
+    xDomain,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
 
   const { integrals, info } = useSpectrum(emptyData) as Datum1D;
 

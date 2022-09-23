@@ -33,12 +33,16 @@ import { resetSelectedTool } from './ToolsActions';
 
 function handleAutoRangesDetection(draft: Draft<State>, options) {
   const {
-    activeSpectrum,
     data,
     xDomain,
     molecules,
-    activeTab: nucleus,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
   } = draft;
+
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum?.id) {
     const { index, id } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -88,7 +92,13 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
     clean: true,
     keepPeaks: true,
   };
-  const { data, activeTab: nucleus, molecules } = draft;
+  const {
+    data,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+    molecules,
+  } = draft;
   for (const datum of data) {
     if (datum.info.dimension === 1) {
       detectRanges(datum as Datum1D, { peakPicking, molecules, nucleus });
@@ -104,8 +114,10 @@ function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
 }
 
 function handleDeleteRange(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const { data, resetSelectTool = false } = action.payload;
     const { id = null, assignmentData } = data;
     const datum = draft.data[index] as Datum1D;
@@ -127,8 +139,10 @@ function handleDeleteRange(draft: Draft<State>, action) {
 
 function handleChangeRangeSignalKind(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  const activeSpectrum =
+    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const { rowData, value } = action.payload.data;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
     const _range = (draft.data[index] as Datum1D).ranges.values[rangeIndex];
@@ -145,8 +159,10 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
 
 function handleSaveEditedRange(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  const activeSpectrum =
+    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
 
     // remove assignments in global state
@@ -213,8 +229,10 @@ function handleDeleteSignal(draft: Draft<State>, action) {
 }
 
 function handleUnlinkRange(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const {
       assignmentData,
       rangeData = null,
@@ -257,8 +275,10 @@ function handleUnlinkRange(draft: Draft<State>, action) {
 }
 
 function handleSetDiaIDRange(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const { rangeData, diaIDs, signalIndex, nbAtoms } = action.payload;
     const getNbAtoms = (input, current = 0) => input + current;
     const rangeIndex = getRangeIndex(draft, index, rangeData.id);
@@ -278,14 +298,24 @@ function handleSetDiaIDRange(draft: Draft<State>, action) {
 }
 
 function handleResizeRange(draft: Draft<State>, action) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     changeRange(draft.data[index] as Datum1D, action.data);
   }
 }
 
 function handleChangeRangeSum(draft: Draft<State>, options) {
-  const { data, activeSpectrum, activeTab: nucleus } = draft;
+  const {
+    data,
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+  } = draft;
+
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -300,8 +330,14 @@ function addNewRange(
 ) {
   const { startX, endX, id } = props;
   const range = getRange(draft, { startX, endX });
-  const { activeSpectrum, activeTab: nucleus, molecules } = draft;
-
+  const {
+    view: {
+      spectra: { activeTab: nucleus },
+    },
+    molecules,
+  } = draft;
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
@@ -382,8 +418,11 @@ function handleChangeRangesSumFlag(draft, action) {
 
 function handleUpdateRange(draft: Draft<State>, action) {
   const { range, resetSelectTool = false } = action.payload;
-  if (draft.activeSpectrum?.id && range.id) {
-    const datum = draft.data[draft.activeSpectrum?.index] as Datum1D;
+
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id && range.id) {
+    const datum = draft.data[activeSpectrum?.index] as Datum1D;
     const index = datum.ranges.values.findIndex(
       (_range) => _range.id === range.id,
     );

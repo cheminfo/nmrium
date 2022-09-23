@@ -14,6 +14,7 @@ import {
 import { Contours } from '../../data/types/data2d/Contours';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
+import { useChartData } from '../context/ChartContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -89,9 +90,25 @@ interface ZoneToolState extends ToolStateBase {
   showPeaks: boolean;
 }
 export interface ViewState {
+  /**
+   * Floatings molecules
+   * @default []
+   */
   floatingMolecules: Array<FloatingMolecules>;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
+  spectra: {
+    /**
+     * active spectrum id per nucleus
+     * @default {}
+     */
+    activeSpectra: Record<string, ActiveSpectrum | null>;
+    /**
+     * current select tab (nucleus)
+     * @default null
+     */
+    activeTab: string;
+  };
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -126,7 +143,6 @@ export const getInitialState = (): State => ({
     shareYDomain: false,
   },
   integralsYDomains: {},
-  activeTab: '',
   width: 0,
   height: 0,
   margin: {
@@ -135,10 +151,14 @@ export const getInitialState = (): State => ({
     bottom: 70,
     left: 0,
   },
-  activeSpectrum: null,
   mode: 'RTL',
   molecules: [],
-  view: { floatingMolecules: [], ranges: [], zones: [] },
+  view: {
+    floatingMolecules: [],
+    ranges: [],
+    zones: [],
+    spectra: { activeSpectra: {}, activeTab: '' },
+  },
   verticalAlign: {
     align: 'bottom',
     verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
@@ -153,7 +173,6 @@ export const getInitialState = (): State => ({
   isLoading: false,
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
-  tabActiveSpectrum: {},
   spectraAnalysis: {},
   correlations: {},
   displayerKey: '',
@@ -253,11 +272,6 @@ export interface State {
   integralsYDomains: Record<string, Array<number>>;
 
   /**
-   * current select tab (nucleus)
-   * @default null
-   */
-  activeTab: string;
-  /**
    * plot chart area width
    * @default 0
    */
@@ -272,11 +286,6 @@ export interface State {
    * @default {top: 10,right: 20,bottom: 70,left: 0}
    */
   margin: Margin;
-  /**
-   * current active spectrum
-   * @default null
-   */
-  activeSpectrum: ActiveSpectrum | null;
   /**
    * Scale direction
    * @default 'RTL'
@@ -324,12 +333,6 @@ export interface State {
    * @default '1D'
    */
   displayerMode: DISPLAYER_MODE;
-
-  /**
-   * active spectrum per nucleus
-   * @default {}
-   */
-  tabActiveSpectrum: Record<string, ActiveSpectrum | null>;
 
   /**
    * Multiple spectra analysis data
@@ -425,7 +428,14 @@ export interface State {
 
   usedColors: UsedColors;
 }
-
+export function useActiveSpectrum() {
+  const {
+    view: {
+      spectra: { activeSpectra, activeTab },
+    },
+  } = useChartData();
+  return activeSpectra[activeTab] || null;
+}
 export function initState(state: State): State {
   const displayerKey = v4();
   const correlations = buildCorrelationData([], {

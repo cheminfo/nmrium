@@ -1,8 +1,8 @@
 import get from 'lodash/get';
 import { useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { useActiveSpectrum } from '../reducer/Reducer';
 
 interface ActiveSpectrumOptionsResult {
   isActive: boolean;
@@ -12,7 +12,7 @@ interface ActiveSpectrumOptionsResult {
 export default function useActiveSpectrumStyleOptions(
   id: string,
 ): ActiveSpectrumOptionsResult {
-  const { activeSpectrum } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
 
   return useMemo(() => {

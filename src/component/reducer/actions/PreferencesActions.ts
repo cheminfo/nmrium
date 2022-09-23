@@ -49,7 +49,7 @@ function changeSpectrumVerticalAlignment(
       dataPerNucleus = (draft.data as Datum1D[]).filter((datum) =>
         datum.info.nucleus === options?.activeTab
           ? options.activeTab
-          : draft.activeTab && datum.info.dimension === 1,
+          : draft.view.spectra.activeTab && datum.info.dimension === 1,
       );
     }
 
@@ -83,9 +83,8 @@ function changeSpectrumVerticalAlignment(
 
 function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   const {
-    activeTab,
     data,
-    activeSpectrum,
+
     zoom,
     xDomain,
     xDomains,
@@ -94,27 +93,28 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     originDomain,
     margin,
     displayerMode,
-    tabActiveSpectrum,
+    view,
   } = draft;
 
-  if (activeTab) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (view.spectra.activeTab) {
     const groupByNucleus = groupByInfoKey('nucleus');
 
     const spectrumsGroupsList = groupByNucleus(data);
 
     const level =
       displayerMode === DISPLAYER_MODE.DM_2D
-        ? spectrumsGroupsList[activeTab].reduce((acc, datum) => {
+        ? spectrumsGroupsList[view.spectra.activeTab].reduce((acc, datum) => {
             acc[datum.id] = datum.processingController.getLevel();
             return acc;
           }, {})
         : null;
 
     draft.keysPreferences[keyCode] = {
-      activeTab,
       activeSpectrum,
       displayerMode,
-      tabActiveSpectrum,
+      view,
       zoom,
       xDomain,
       xDomains,
@@ -123,7 +123,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       originDomain,
       level,
       margin,
-      data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
+      data: spectrumsGroupsList[view.spectra.activeTab].reduce((acc, datum) => {
         acc[datum.id] = {
           display: {
             color: datum.display.color,
@@ -140,7 +140,6 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
 function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   const preferences = draft.keysPreferences[keyCode];
   if (preferences) {
-    draft.activeTab = preferences.activeTab;
     (draft.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
       if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
         draft.data[index].display = Object.assign(
@@ -149,9 +148,8 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
         );
       }
     });
+    draft.view = preferences.view;
     draft.displayerMode = preferences.displayerMode;
-    draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
-    draft.activeSpectrum = preferences.activeSpectrum;
 
     draft.margin = preferences.margin;
 

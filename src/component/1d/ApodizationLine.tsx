@@ -8,6 +8,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import useSpectrum from '../hooks/useSpectrum';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { useActiveSpectrum } from '../reducer/Reducer';
 import { PathBuilder } from '../utility/PathBuilder';
 
 import { getYScale } from './utilities/scale';
@@ -26,12 +27,12 @@ function useWindowYScale() {
 
 function ApdoizationLine() {
   const {
-    activeSpectrum,
     toolOptions: {
       selectedTool,
       data: { apodizationOptions },
     },
   } = useChartData();
+  const activeSpectrum = useActiveSpectrum();
   const { scaleX } = useScaleChecked();
   const spectrum = useSpectrum({ emptyData }) as Datum1D;
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);

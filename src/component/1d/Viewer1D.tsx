@@ -14,6 +14,7 @@ import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import { useActiveSpectrum } from '../reducer/Reducer';
 import { ZoomType } from '../reducer/helper/Zoom1DManager';
 import getRange from '../reducer/helper/getRange';
 import scaleReducer, {
@@ -60,7 +61,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     width: widthProp,
     height: heightProp,
     margin,
-    activeSpectrum,
     xDomain,
     xDomains,
     yDomain,
@@ -69,6 +69,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     displayerKey,
   } = state;
 
+  const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();

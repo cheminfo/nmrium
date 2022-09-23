@@ -5,6 +5,7 @@ import { getShift } from '../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { useActiveSpectrum } from '../reducer/Reducer';
 import { PathBuilder } from '../utility/PathBuilder';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
@@ -22,9 +23,9 @@ function ContoursPaths({
   color,
   datum,
 }: ContoursPathsProps) {
-  const { margin, width, height, xDomain, yDomain, contours, activeSpectrum } =
-    useChartData();
+  const { margin, width, height, xDomain, yDomain, contours } = useChartData();
 
+  const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
   const { xShift, yShift } = getShift(datum);
 

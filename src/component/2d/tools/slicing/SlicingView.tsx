@@ -4,6 +4,7 @@ import { getSlice } from '../../../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../../../data/types/data2d/Datum2D';
 import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../../context/ChartContext';
+import { useActiveSpectrum } from '../../../reducer/Reducer';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
 
 import HorizontalSliceChart from './HorizontalSliceChart';
@@ -14,12 +15,12 @@ function SlicingView() {
     width,
     height,
     margin,
-    activeSpectrum,
     data: spectra,
     xDomain,
     yDomain,
   } = useChartData();
   const position = useMouseTracker();
+  const activeSpectrum = useActiveSpectrum();
 
   const chart2d = useMemo(() => {
     if (position && activeSpectrum && activeSpectrum.id) {

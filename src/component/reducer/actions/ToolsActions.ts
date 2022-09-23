@@ -13,6 +13,7 @@ import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 
 import {
   setDomain,
@@ -61,19 +62,16 @@ function setSelectedTool(draft: Draft<State>, action) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
-        // TODO: use assert
-        if (draft.activeSpectrum === null) {
-          throw new Error('Spectrum must have id');
-        }
+        const activeSpectrum = getActiveSpectrumOrFail(draft);
 
         const range = draft.view.ranges.find(
-          (r) => r.spectrumID === draft.activeSpectrum?.id,
+          (r) => r.spectrumID === activeSpectrum?.id,
         );
         if (range) {
           range.showMultiplicityTrees = true;
         } else {
           draft.view.ranges.push({
-            spectrumID: draft.activeSpectrum.id,
+            spectrumID: activeSpectrum.id,
             ...rangeStateInit,
             showMultiplicityTrees: true,
           });
@@ -171,7 +169,10 @@ function handleBrushEnd(draft: Draft<State>, action) {
   const endY = yScale.invert(action.endY);
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
-  const brushHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
+  const brushHistory = zoomHistoryManager(
+    draft.zoom.history,
+    draft.view.spectra.activeTab,
+  );
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     switch (action.trackID) {
       case LAYOUT.CENTER_2D:
@@ -198,28 +199,34 @@ function handleBrushEnd(draft: Draft<State>, action) {
   }
 }
 function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
-  if (draft.activeSpectrum?.id) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  if (activeSpectrum?.id) {
     const scaleX = getXScale(draft);
     const value = scaleX.invert(position);
-    const datum = draft.data[draft.activeSpectrum.index] as Datum1D;
+    const datum = draft.data[activeSpectrum.index] as Datum1D;
     const index = xFindClosestIndex(datum.data.x, value);
     draft.toolOptions.data.pivot = { value, index };
   }
 }
 
 function getSpectrumID(draft: Draft<State>, index): string | null {
-  const spectrum = draft.tabActiveSpectrum[draft.activeTab.split(',')[index]];
-  return spectrum?.id ? spectrum.id : null;
+  const spectrum =
+    draft.view.spectra.activeSpectra[
+      draft.view.spectra.activeTab.split(',')[index]
+    ];
+  return spectrum?.id || null;
 }
 
 function handleZoom(draft: Draft<State>, action) {
   const { event, trackID, selectedTool } = action;
   const {
-    activeSpectrum,
     view: { ranges: rangeState },
     displayerMode,
   } = draft;
 
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   const { showRangesIntegrals } =
     rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
     rangeStateInit;
@@ -255,7 +262,10 @@ function handleZoom(draft: Draft<State>, action) {
 function zoomOut(draft: Draft<State>, action) {
   if (draft?.data.length > 0) {
     const { zoomType, trackID } = action;
-    const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
+    const zoomHistory = zoomHistoryManager(
+      draft.zoom.history,
+      draft.view.spectra.activeTab,
+    );
 
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       switch (zoomType) {
@@ -299,8 +309,8 @@ function zoomOut(draft: Draft<State>, action) {
 }
 
 function hasAcceptedSpectrum(draft: Draft<State>, index) {
-  const nucleuses = draft.activeTab.split(',');
-  const activeSpectrum = draft.tabActiveSpectrum[nucleuses[index]];
+  const nucleuses = draft.view.spectra.activeTab.split(',');
+  const activeSpectrum = draft.view.spectra.activeSpectra[nucleuses[index]];
   return (
     activeSpectrum?.id &&
     !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
@@ -329,7 +339,7 @@ function setMargin(draft: Draft<State>) {
 function processing2DData(draft: Draft<State>, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
-    for (const datum of data[draft.activeTab]) {
+    for (const datum of data[draft.view.spectra.activeTab]) {
       _data[datum.id] = datum.processingController.drawContours();
     }
     draft.contours = _data;
@@ -382,7 +392,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
       }
     }
   }
-  draft.tabActiveSpectrum = tabActiveSpectrum;
+  draft.view.spectra.activeSpectra = tabActiveSpectrum;
   return tabs2D;
 }
 
@@ -393,24 +403,21 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
 
   if (
     JSON.stringify(groupByTab) !==
-      JSON.stringify(Object.keys(draft.tabActiveSpectrum)) ||
+      JSON.stringify(Object.keys(draft.view.spectra.activeSpectra)) ||
     refresh
   ) {
     const tabs2D = setTabActiveSpectrum(draft, dataGroupByTab);
 
     if (tabs2D.length > 0 && tab == null) {
-      draft.activeSpectrum = draft.tabActiveSpectrum[tabs2D[0]];
-      draft.activeTab = tabs2D[0];
+      draft.view.spectra.activeTab = tabs2D[0];
     } else {
-      draft.activeSpectrum = tab ? draft.tabActiveSpectrum[tab] : tab;
-      draft.activeTab = tab;
+      draft.view.spectra.activeTab = tab;
     }
   } else {
-    draft.activeTab = tab;
-    draft.activeSpectrum = draft.tabActiveSpectrum[tab];
+    draft.view.spectra.activeTab = tab;
   }
 
-  setDisplayerMode(draft, dataGroupByTab[draft.activeTab]);
+  setDisplayerMode(draft, dataGroupByTab[draft.view.spectra.activeTab]);
   setMargin(draft);
 }
 
@@ -439,7 +446,10 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setDomain(draft, domainOptions);
   setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
 
-  const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
+  const zoomHistory = zoomHistoryManager(
+    draft.zoom.history,
+    draft.view.spectra.activeTab,
+  );
   const zoomValue = zoomHistory.getLast();
   if (zoomValue) {
     draft.xDomain = zoomValue.xDomain;
@@ -455,9 +465,11 @@ function handelSetActiveTab(draft: Draft<State>, tab) {
 }
 
 function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
+  const activeSpectrum =
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   try {
-    if (draft.activeSpectrum?.id) {
-      const { index, id } = draft.activeSpectrum;
+    if (activeSpectrum?.id) {
+      const { index, id } = activeSpectrum;
       const processingController = (draft.data[index] as Datum2D)
         .processingController;
       if (shiftKey) {

@@ -156,7 +156,13 @@ const MemoizedMultipleSpectraAnalysisPanel = memo(
 );
 
 export default function MultipleSpectraAnalysisPanel() {
-  const { activeTab, spectraAnalysis, displayerKey } = useChartData();
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+    spectraAnalysis,
+    displayerKey,
+  } = useChartData();
 
   if (!activeTab) {
     return <div />;
