@@ -1,0 +1,173 @@
+#*******************************************************************
+#
+# $Source: /sc/CvsTree/sc/gen/src/prg/scripts/tix/prosol/lib/lists/default,v $
+#
+# Copyright (c) 1999
+# BRUKER ANALYTIK GMBH
+# D-76287 Rheinstetten, Germany
+#
+# All Rights Reserved
+#
+#
+# $Id: default,v 1.15.2.4 2009/04/21 07:11:57 ber Exp $
+#
+#*******************************************************************
+#../conf/instr/spect/prosol/relations/default
+#avance-version (09/04/21)
+#
+#pulses
+#
+P[0]=P90[F1];				#  90 deg pulse F1
+P[1]=P90[F1];				#  90 deg pulse F1
+P[2]=P90[F1]*2;				# 180 deg pulse F1
+P[3]=P90[F2];				#  90 deg pulse F2
+P[4]=P90[F2]*2;				# 180 deg pulse F2
+P[5]=PTOC[F1]*0.66;			#  60 deg pulse F1, TOCSY 
+P[6]=PTOC[F1];				#  90 deg pulse F1, TOCSY
+P[7]=PTOC[F1]*2;			# 180 deg pulse F1, TOCSY
+P[8]=PSH3[F1];                          #  90 deg selective F1, WET
+P[9]=PTOC[F2];				#  90 deg pulse F2, TOCSY
+P[10]=PTOC[F2]*2;			# 180 deg pulse F2, TOCSY
+P[11]=PSH1[F1];				#  90 deg selective F1
+P[12]=PSH2[F1];				# 180 deg selective F1
+#
+P[14]=PSH3[F2];				# 180 deg inversion, adiabatic
+P[15]=TROE[F1];				# cw pulse F1, ROESY
+P[18]=PSH7[F1];				# off-resonance presat F1
+P[21]=P90[F3];				#  90 deg pulse F3
+P[22]=P90[F3]*2;			# 180 deg pulse F3
+P[23]=P90[F4];				#  90 deg pulse F4
+P[24]=PSH2[F2];				# 180 deg refocussing, adiabatic
+P[25]=PROE[F1]*2;			# 180 deg pulse, Shaka ROESY
+P[26]=PSH12[F1];			# 180 deg inversion F1, adiabatic
+P[27]=P90[F1];				#  90 deg pulse F1, WATERGATE
+#
+P[29]=PSH8[F1];                         # flip back pulse
+P[31]=PSH15[F2];                        # 180 deg adiabatic, F2, 13C x-filter
+P[32]=PSH16[F1];                        # 180 deg adiabatic, F1, z-spoil
+#P[33]=PSH[F1];                         #  90 deg, F1, hadamard
+#P[34]=PSH[F1];                         # 180 deg, F1, hadamard
+#P[35]=PSH[F2];                         #  90 deg, F2, hadamard
+#P[36]=PSH[F2];                         # 180 deg, F2, hadamard
+#P[37]=PSH[F3];                         #  90 deg, F3, hadamard
+#P[38]=PSH[F3];                         # 180 deg, F3, hadamard
+P[39]=PSH21[F2];                        # 180 deg, F2, Bip
+P[40]=PSH8[F1]*2;                       # 180 deg sel. F1, 1H (exc. scul)
+#
+P[63]=PSH11[F2];                        # 180 deg adiabatic decoupling, F2, 13C
+#
+#decoupling pulses
+#
+PCPD[1]=PCPDP[F1];			# 90 deg pulse F1, dec.
+PCPD[2]=PCPDP[F2];			# 90 deg pulse F2, dec.
+PCPD[3]=PCPDP[F3];			# 90 deg pulse F3, dec.
+#
+#power levels
+#
+PL[1]=PL90[F1];				# high power, F1
+PL[2]=PL90[F2];				# high power, F2
+PL[3]=PL90[F3];				# high power, F3
+PL[4]=PL90[F4];				# high power, F4
+PL[9]=PLCW[F1];				# presat power, F1
+PL[10]=PLTOC[F1];			# TOCSY power, F1
+PL[11]=PLROE[F1];			# ROESY power, F1
+PL[12]=PLCPDP[F2];			# dec. power, F2
+PL[13]=PLCPD2[F2];			# dec. power 2, F2
+PL[14]=PLNOE[F2];			# low power cw, F2
+PL[15]=PLTOC[F2];			# TOCSY power, F2
+PL[16]=PLCPDP[F3];			# dec. power, F3
+PL[18]=PL90[F1];			# WATERGATE power, F1
+PL[19]=PLCPDP[F1];			# dec. power, F1
+PL[21]=PLCW[F2];			# 
+PL[23]=PLTOC[F3];			# TOCSY power, F3
+PL[24]=PLHD[F2];			# HD decoupling, F2
+PL[25]=PLSH8U[F2];			# Eretic, F2
+PL[27]=PLROE[F1];			# Shaka Spinlock
+PL[30]=PLCPDP[F2];			# dec. power, F2, 13C (=pl12)
+PL[31]=PLUSER2[F2];			# dec. power, F2, 13C, cw bilev
+#
+#shapes
+#
+SP[1]=PLSH1[F1];			#  90 deg selective F1
+SP[2]=PLSH2[F1];			# 180 deg selective F1
+SP[3]=PLSH3[F2];			# adiabatic 180 deg, F2, inversion
+SP[4]=PLSH21[F2];			# 180 deg Bip, F2, inversion
+SP[6]=PLSH7[F1];			# off-resonance presat F1
+SP[7]=PLSH2[F2];			# adiabatic 180 deg, F2, refocussing
+SP[8]=PLSH12[F1];			# adiabatic 180 deg, F1, inversion
+SP[10]=PLSH8[F1];                       # flip-back pulse, F1, 1H
+SP[11]=PLSH8[F1];                       # flip-back pulse, F1, H
+SP[14]=PLSH12[F2];			# adiab. bilev dec., F2, 13C
+SP[18]=PLSH15[F2];                      # adiabatic 180 deg, F2, 13C, x-filter
+SP[19]=PLSH3[F1] +0.87;                 #  90 deg, F1, wet
+SP[20]=PLSH3[F1] -1.04;                 #  90 deg, F1, wet
+SP[21]=PLSH3[F1] +2.27;                 #  90 deg, F1, wet
+SP[22]=PLSH3[F1] -5.05;                 #  90 deg, F1, wet
+#SP[23]=PLSH[F1];                       #  90 deg, F1, hadamard
+#SP[24]=PLSH[F1];                       # 180 deg, F1, hadamard
+#SP[25]=PLSH[F2];                       #  90 deg, F2, hadamard
+#SP[26]=PLSH[F2];                       # 180 deg, F2, hadamard
+#SP[27]=PLSH[F3];                       #  90 deg, F3, hadamard
+#SP[28]=PLSH[F3];                       # 180 deg, F3, hadamard
+SP[29]=PLSH16[F1];                      # adiabatic 180 deg, F1, z-spoil
+SP[31]=PLSH11[F2];			# adiab. dec., F2, 13C
+#
+SPNAM1=PNSH1[F1];			#
+SPNAM2=PNSH2[F1];			#
+SPNAM3=PNSH3[F2];			#
+SPNAM4=PNSH21[F2];			#
+SPNAM6=PNSH7[F1];			#
+SPNAM7=PNSH2[F2];			#
+SPNAM8=PNSH12[F1];			#
+SPNAM10=PNSH8[F1];                      #
+SPNAM11=PNSH8[F1];                      #
+SPNAM14=PNSH12[F2];			#
+SPNAM15=PNSH8U[F2];			# Eretic, F2
+SPNAM18=PNSH15[F2];			#
+SPNAM19=PNSH3[F1];			#
+SPNAM20=PNSH3[F1];			#
+SPNAM21=PNSH3[F1];			#
+SPNAM22=PNSH3[F1];			#
+#SPNAM23=PNSH[];                        #
+#SPNAM24=PNSH[];                        #
+#SPNAM25=PNSH[];                        #
+#SPNAM26=PNSH[];                        #
+#SPNAM27=PNSH[];                        #
+#SPNAM28=PNSH[];                        #
+SPNAM29=PNSH16[F1];                     #
+SPNAM31=PNSH11[F2];			#
+#
+SPOAL[1]=PASH1[F1];			#
+SPOAL[2]=PASH2[F1];			#
+SPOAL[3]=PASH3[F2];			#
+SPOAL[4]=PASH21[F2];			#
+SPOAL[6]=PASH7[F1];			#
+SPOAL[7]=PASH2[F2];			#
+SPOAL[8]=PASH12[F1];			#
+SPOAL[10]=PASH8[F1];
+SPOAL[11]=PASH8[F1];
+SPOAL[14]=PASH12[F2];			#
+SPOAL[18]=PASH15[F2];			#
+SPOAL[19]=PASH3[F1];			#
+SPOAL[20]=PASH3[F1];			#
+SPOAL[21]=PASH3[F1];			#
+SPOAL[22]=PASH3[F1];			#
+#SPOAL[23]=PASH[];			#
+#SPOAL[24]=PASH[];			#
+#SPOAL[25]=PASH[];			#
+#SPOAL[26]=PASH[];			#
+#SPOAL[27]=PASH[];			#
+#SPOAL[28]=PASH[];			#
+SPOAL[29]=PASH16[F1];                   #
+SPOAL[31]=PASH11[F2];			#
+#
+#global
+#
+D[9]=TTOC[F1];				#
+D[16]=D_grad;				#
+P[16]=P_grad1;				#
+P[17]=P_mlev;				#
+P[19]=P_grad2;				#
+P[20]=P_mlev;				#
+P[28]=P_hsqc;				#
+#

@@ -1,0 +1,17 @@
+##TITLE= Parameter file, TOPSPIN		Version 2.1
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= Administrator
+$$ 2012-06-02 07:31:52.015 -0500  Administrator@TOPSPIN
+$$ C:\Bruker\TOPSPIN/data/COFFEE/nmr/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/outd
+$$ process C:\Bruker\TOPSPIN\prog\mod\xwish3.exe
+##$CURPLOT= <Network HP LaserJet P1505>
+##$CURPRIN= <$Network HP LaserJet P1505>
+##$DFORMAT= <normdp>
+##$LAYOUT= <+/1D_H.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##$SURQMSG= 1
+##END=
