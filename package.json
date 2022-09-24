@@ -58,7 +58,6 @@
     "eventemitter3": "^4.0.7",
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
-    "fs": "^0.0.1-security",
     "immer": "^9.0.15",
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
