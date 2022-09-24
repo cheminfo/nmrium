@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+
 import { Locator, Page, expect } from '@playwright/test';
 
 export default class NmriumPage {
@@ -82,5 +84,44 @@ export default class NmriumPage {
     );
     expect(svgLength).toBeGreaterThan(length * 0.8);
     expect(svgLength).toBeLessThan(length * 1.2);
+  }
+  public async dropFile(file: string | string[]) {
+    const bufferData: string[] = [];
+    if (typeof file === 'string') {
+      const data = `data:application/octet-stream;base64,${readFileSync(
+        `test-e2e/data/${file}`,
+      ).toString('base64')}`;
+      bufferData.push(data);
+    } else {
+      file.forEach((f) => {
+        const data = `data:application/octet-stream;base64,${readFileSync(
+          `test-e2e/data/${f}`,
+        ).toString('base64')}`;
+        bufferData.push(data);
+      });
+    }
+    const dataTransfer = await this.page.evaluateHandle(
+      async ({ bufferData, fileName }) => {
+        const dt = new DataTransfer();
+
+        await Promise.all(
+          bufferData.map(async (buffer) => {
+            const blobData = await fetch(buffer).then((res) => res.blob());
+            const file = new File([blobData], fileName);
+            dt.items.add(file);
+          }),
+        );
+
+        return dt;
+      },
+      {
+        bufferData,
+        fileName: file,
+      },
+    );
+
+    await this.page.dispatchEvent('_react=DropZone', 'drop', {
+      dataTransfer,
+    });
   }
 }
