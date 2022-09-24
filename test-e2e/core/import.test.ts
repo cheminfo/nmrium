@@ -84,11 +84,19 @@ test('should load multiple files', async ({ page }) => {
 test.only('should load file using drag and drop .nmrium', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('1h-version-1-datasource.nmrium');
+  // If the file was loaded successfully, there should be a 1H,1H tab.
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
+  ).toBeVisible();
 });
 
 test('should load file using drag and drop .zip', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('ethylvinylether.zip');
+  // If the file was loaded successfully, there should be a 1H tab.
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H"]'),
+  ).toBeVisible();
 });
 test('should load multiple files using drag and drop', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
@@ -98,4 +106,14 @@ test('should load multiple files using drag and drop', async ({ page }) => {
     '1h-version-1-datasource.nmrium',
     '13c-version-2.nmrium',
   ]);
+  // If the file was loaded successfully, there should be many tabs.
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H"]'),
+  ).toBeVisible();
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "13C"]'),
+  ).toBeVisible();
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
+  ).toBeVisible();
 });
