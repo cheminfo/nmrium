@@ -1,0 +1,52 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.1
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= Administrator
+$$ C:\Bruker\TOPSPIN/data/COFFEE/nmr/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2012-06-02 07:41:55.890 -0500>,<Administrator>,<TOPSPIN>,<go>,<TOPSPIN 2.1>,
+      <created by zg
+	started at 2012-06-02 07:40:49.312 -0500,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       D5 CA 7A 23 FE 6B EE E2 50 67 74 61 24 F7 5E 3B
+       data hash MD5: 64K
+       C7 99 9F DB B6 F2 11 95 CA FF 6C 5A 0F 7B D8 2B>)
+(   2,<2012-06-02 07:42:00.046 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <Start of raw data processing
+       efp LB = 0 FT_mod = 6 PKNL = 1 PHC0 = 0 PHC1 = 0 SI = 32K 
+       data hash MD5: 32K
+       2A B5 23 03 7C CB D3 7E 5F A5 2C 0F 9C E5 0D 82>)
+(   3,<2012-06-02 07:42:00.359 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <pk PHC0 = 205.8563 PHC1 = 0 
+       data hash MD5: 32K
+       2F 37 49 9C BE 31 91 B4 7D 08 7F A3 97 EA 59 0D>)
+(   4,<2012-06-02 07:42:00.421 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <abs ABSG = 1 
+       data hash MD5: 32K
+       53 2D 23 AB AD 93 2F 7B 12 5F E1 EE 00 20 90 DF>)
+(   5,<2012-06-02 07:42:00.453 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <abs ABSG = 2 
+       data hash MD5: 32K
+       3A AA C6 B0 2E 13 3B 93 3F C4 35 89 47 02 79 CD>)
+(   6,<2012-06-02 07:42:00.484 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <abs ABSG = 3 
+       data hash MD5: 32K
+       DB 1B 73 11 0D A3 89 9B 0D 61 75 E0 15 B7 5F F2>)
+(   7,<2012-06-02 07:42:00.500 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <abs ABSG = 4 
+       data hash MD5: 32K
+       25 AF F5 A7 06 4D A3 29 C8 D2 59 C4 42 B1 4A CC>)
+(   8,<2012-06-02 07:42:00.546 -0500>,<Administrator>,<TOPSPIN>,<proc1d>,<TOPSPIN 2.1>,
+      <abs ABSG = 5 
+       data hash MD5: 32K
+       55 F7 94 0A 22 B8 8C 1F A8 30 F6 20 7B EC 93 25>)
+(   9,<2012-06-02 07:42:04.937 -0500>,<Administrator>,<TOPSPIN>,<audit>,<TOPSPIN 2.1>,
+      <user comment:
+       ICON-NMR User ID: COFFEE
+       data hash MD5: 32K
+       55 F7 94 0A 22 B8 8C 1F A8 30 F6 20 7B EC 93 25>)
+##END=
+
+$$ hash MD5
+$$ A0 B3 D1 5B 82 7F 00 B8 2B 27 CC 30 3C 11 4E CF
