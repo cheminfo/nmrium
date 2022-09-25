@@ -1,7 +1,7 @@
 import { InnerWorkspace } from './Workspace';
 
 export const exercise: InnerWorkspace = {
-  version: 1,
+  version: 2,
   label: 'Exercise',
   display: {
     general: {
@@ -14,17 +14,17 @@ export const exercise: InnerWorkspace = {
     },
 
     toolBarButtons: {
-      peakPicking: true,
+      zoom: true,
+      zoomOut: true,
       apodization: true,
       zeroFilling: true,
       fastFourierTransform: true,
       phaseCorrection: true,
       baselineCorrection: true,
+      peakPicking: true,
       integral: true,
       spectraCenterAlignments: true,
       spectraStackAlignments: true,
-      zoomOut: true,
-      zoom: true,
     },
   },
 };
