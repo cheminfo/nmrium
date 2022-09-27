@@ -75,7 +75,7 @@
     "multiplet-analysis": "^2.0.0",
     "nmr-correlation": "^2.3.3",
     "nmr-load-save": "^0.2.2",
-    "nmr-parser": "2.0.1-pre.1664198521",
+    "nmr-parser": "^2.0.2",
     "nmr-processing": "^9.2.0",
     "nmredata": "^0.7.1",
     "numeral": "^2.0.6",
