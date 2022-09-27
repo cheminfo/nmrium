@@ -52,7 +52,13 @@ async function copyHTMLToClipboard(data) {
 }
 async function copyTextToClipboard(data) {
   try {
-    await navigator.clipboard.writeText(data);
+    void navigator.clipboard.write([
+      new ClipboardItem({
+        'text/plain': new Promise((resolve) => {
+          resolve(new Blob([data], { type: 'text/plain' }));
+        }),
+      }),
+    ]);
     return true;
   } catch (err) {
     return false;
