@@ -6,7 +6,7 @@ import {
   SvgNmrAlignBottom,
   SvgNmrAlignCenter,
 } from 'cheminfo-font';
-import { Fragment, useCallback, memo, useMemo } from 'react';
+import { Fragment, useCallback, memo } from 'react';
 import {
   FaDownload,
   FaFileDownload,
@@ -115,11 +115,13 @@ function BasicToolBarInner({
   const isExperimentalFeature = useCheckExperimentalFeature();
   const isButtonVisible = useCheckToolsVisibility();
 
-  const importMenu = useMemo(() => {
-    return isExperimentalFeature
-      ? IMPORT_MENU
-      : IMPORT_MENU.filter((item) => item.id !== 'importPublicationString');
-  }, [isExperimentalFeature]);
+  const importMenu = isExperimentalFeature
+    ? IMPORT_MENU
+    : IMPORT_MENU.filter((item) => item.id !== 'importPublicationString');
+
+  const exportMenu = isExperimentalFeature
+    ? EXPORT_MENU
+    : EXPORT_MENU.filter((item) => item.id !== 'nmre');
 
   const {
     isRealSpectrumShown,
@@ -242,7 +244,7 @@ function BasicToolBarInner({
             exportHandler(element);
             return null;
           }}
-          items={EXPORT_MENU}
+          items={exportMenu}
         />
       )}
 
