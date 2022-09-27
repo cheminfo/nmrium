@@ -129,7 +129,10 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
   const { ph0, ph1 } = filterOptions;
 
   FiltersManager.applyFilter(draft.data[index], [
-    { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
+    {
+      name: Filters.phaseCorrection.id,
+      options: { ph0, ph1, absolute: false },
+    },
   ]);
 
   resetSelectedTool(draft);
@@ -140,7 +143,10 @@ function applyAbsoluteFilter(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrumOrFail(draft);
   const { index } = activeSpectrum;
   FiltersManager.applyFilter(draft.data[index], [
-    { name: Filters.absolute.id, options: {} },
+    {
+      name: Filters.phaseCorrection.id,
+      options: { absolute: true, ph0: 0, ph1: 0 },
+    },
   ]);
 
   resetSelectedTool(draft);
@@ -155,7 +161,10 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   const { ph0, ph1 } = autoPhaseCorrection(draft.data[index] as Datum1D);
 
   FiltersManager.applyFilter(draft.data[index], [
-    { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
+    {
+      name: Filters.phaseCorrection.id,
+      options: { ph0, ph1, absolute: false },
+    },
   ]);
 
   resetSelectedTool(draft);

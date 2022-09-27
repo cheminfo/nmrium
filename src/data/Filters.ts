@@ -1,4 +1,3 @@
-import * as absolute from './data1d/filter1d/absolute';
 import * as apodization from './data1d/filter1d/apodization';
 import * as autoPhaseCorrection from './data1d/filter1d/autoPhaseCorrection';
 import * as baselineCorrection from './data1d/filter1d/baselineCorrection';
@@ -17,7 +16,6 @@ import * as shift2DX from './data2d/filter2d/shiftX';
 import * as shift2DY from './data2d/filter2d/shiftY';
 
 export {
-  absolute,
   baselineCorrection,
   apodization,
   fft,
