@@ -7,9 +7,10 @@ import {
   useState,
 } from 'react';
 
-import Input, { InputKeyboardEvent } from './Input';
+import Input, { InputKeyboardEvent, InputProps } from './Input';
 
-interface EditableColumnProps {
+interface EditableColumnProps
+  extends Omit<InputProps, 'style' | 'value' | 'type'> {
   onSave?: (element: any) => void;
   onEditStart?: (element: any) => void;
   type?: 'number' | 'text';
@@ -31,6 +32,7 @@ const EditableColumn = forwardRef(function EditableColumn(
     onEditStart = () => null,
     editStatus = false,
     validate = () => true,
+    ...InputProps
   } = props;
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
@@ -107,6 +109,7 @@ const EditableColumn = forwardRef(function EditableColumn(
             value={value}
             type={type}
             onKeyUp={editHandler}
+            {...InputProps}
           />
         </div>
       )}
