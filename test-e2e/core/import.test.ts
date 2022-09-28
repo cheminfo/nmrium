@@ -81,7 +81,7 @@ test('should load multiple files', async ({ page }) => {
     nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
   ).toBeVisible();
 });
-test.only('should load file using drag and drop .nmrium', async ({ page }) => {
+test('should load file using drag and drop .nmrium', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('1h-version-1-datasource.nmrium');
   // If the file was loaded successfully, there should be a 1H,1H tab.
