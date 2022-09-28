@@ -49,8 +49,7 @@ function YAxis(props: YAxisProps) {
 
   const refAxis = useRef<SVGGElement>(null);
 
-  const state = useChartData();
-  const { yDomain, width, height, margin } = state;
+  const { yDomain, width, height, margin } = useChartData();
   const spectrum = useSpectrum({}) as Datum2D;
 
   useEffect(() => {
