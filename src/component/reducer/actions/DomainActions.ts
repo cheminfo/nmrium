@@ -8,6 +8,7 @@ import { Datum2D } from '../../../data/types/data2d';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 function getActiveData(draft: Draft<State>): Array<Datum1D> {
   let data = draft.data.filter(
@@ -16,9 +17,10 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
       datum.info.dimension === 1,
   );
   // todo: refactor this
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
-  if (activeSpectrum) {
+
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
     const activeSpectrumIndex = data.findIndex(
       (datum) => datum.id === activeSpectrum?.id,
     );

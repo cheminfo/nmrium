@@ -13,6 +13,7 @@ import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
@@ -78,9 +79,8 @@ function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
 
 function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   let refreshDomain = false;
+  const currentActiveSpectrum = getActiveSpectrum(draft);
 
-  const currentActiveSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
   if (activeSpectrum) {
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
     const oldIndex = draft.data.findIndex(
@@ -164,8 +164,9 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
   const { nucleus } = action;
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     for (let n of nucleus) {

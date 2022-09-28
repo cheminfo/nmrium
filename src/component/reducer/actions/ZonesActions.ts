@@ -22,6 +22,7 @@ import {
 } from '../../../data/utilities/ZoneUtilities';
 import { State, zoneStateInit } from '../Reducer';
 import get2DRange from '../helper/get2DRange';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
@@ -31,8 +32,8 @@ function changeZonesFactorHandler(draft: Draft<State>, action) {
 }
 
 function add2dZoneHandler(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const drawnZone = get2DRange(draft, action);
@@ -50,8 +51,8 @@ function add2dZoneHandler(draft: Draft<State>, action) {
   }
 }
 function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
 
@@ -85,8 +86,9 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
 
 function changeZoneSignalDelta(draft: Draft<State>, action) {
   const { zoneID, signal } = action.payload;
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { xShift, yShift } = changeZoneSignal(
@@ -119,8 +121,9 @@ function getZoneIndex(state, spectrumIndex, zoneID) {
 
 function handleChangeZoneSignalKind(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { rowData, value } = action.payload;
@@ -136,8 +139,9 @@ function handleChangeZoneSignalKind(draft: Draft<State>, action) {
 
 function handleDeleteZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { id, assignmentData } = action.payload;
@@ -224,8 +228,9 @@ function handleSetSignalPathLength(draft: Draft<State>, action) {
 
 function handleUnlinkZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const {
@@ -265,8 +270,9 @@ function handleUnlinkZone(draft: Draft<State>, action) {
 
 function handleSetDiaIDZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { zoneData, diaIDs, axis, signalIndex, nbAtoms } = action.payload;
@@ -288,8 +294,9 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
 
 function handleSaveEditedZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { editedRowData } = action.payload;

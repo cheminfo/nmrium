@@ -13,6 +13,7 @@ import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 
 import {
@@ -146,12 +147,14 @@ function handleDeleteBaseLineZone(draft: Draft<State>, id) {
   calculateBaseLineCorrection(draft);
 }
 
-function handleToggleRealImaginaryVisibility(draft) {
-  if (draft.activeSpectrum != null) {
-    const { index } = draft.activeSpectrum;
+function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
+  const activeSpectrum = getActiveSpectrum(draft);
 
-    draft.data[index].display.isRealSpectrumVisible =
-      !draft.data[index].display.isRealSpectrumVisible;
+  if (activeSpectrum != null) {
+    const { index } = activeSpectrum;
+    const datum = draft.data[index] as Datum1D;
+
+    datum.display.isRealSpectrumVisible = !datum.display.isRealSpectrumVisible;
 
     setDomain(draft);
   }
@@ -199,8 +202,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
   }
 }
 function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const scaleX = getXScale(draft);
     const value = scaleX.invert(position);
@@ -225,8 +227,7 @@ function handleZoom(draft: Draft<State>, action) {
     displayerMode,
   } = draft;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   const { showRangesIntegrals } =
     rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
     rangeStateInit;
@@ -465,8 +466,7 @@ function handelSetActiveTab(draft: Draft<State>, tab) {
 }
 
 function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   try {
     if (activeSpectrum?.id) {
       const { index, id } = activeSpectrum;
