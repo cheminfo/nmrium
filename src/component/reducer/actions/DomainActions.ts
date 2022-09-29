@@ -91,32 +91,40 @@ function get2DDomain(state: State) {
   } = state;
 
   const nucleus = activeTab.split(',');
+  const activeSpectrum = getActiveSpectrum(state);
+  const spectrum =
+    data.find((datum) => datum.id === activeSpectrum?.id) || null;
+  if (spectrum?.info.isFid) {
+    const { minX, maxX, minY, maxY } = (spectrum as Datum2D).data;
+    xArray = [minX, maxX];
+    yArray = [minY, maxY];
+  } else {
+    try {
+      xArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
+        if (
+          isSpectrum2D(datum) &&
+          datum.info.nucleus?.join(',') === activeTab &&
+          datum.info.isFt
+        ) {
+          acc = acc.concat([datum.data.minX, datum.data.maxX]);
+        }
+        return acc;
+      }, []);
 
-  try {
-    xArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
-      if (
-        isSpectrum2D(datum) &&
-        datum.info.nucleus?.join(',') === activeTab &&
-        datum.info.isFt
-      ) {
-        acc = acc.concat([datum.data.minX, datum.data.maxX]);
-      }
-      return acc;
-    }, []);
-
-    yArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
-      if (
-        isSpectrum2D(datum) &&
-        datum.info.nucleus?.join(',') === activeTab &&
-        datum.info.isFt
-      ) {
-        acc = acc.concat([datum.data.minY, datum.data.maxY]);
-      }
-      return acc;
-    }, []);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+      yArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
+        if (
+          isSpectrum2D(datum) &&
+          datum.info.nucleus?.join(',') === activeTab &&
+          datum.info.isFt
+        ) {
+          acc = acc.concat([datum.data.minY, datum.data.maxY]);
+        }
+        return acc;
+      }, []);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
   }
 
   const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);

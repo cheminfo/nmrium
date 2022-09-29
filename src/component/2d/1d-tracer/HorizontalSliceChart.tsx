@@ -1,36 +1,39 @@
 import { useMemo, memo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
-import { PathBuilder } from '../utility/PathBuilder';
+import { useChartData } from '../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getYScale } from '../utilities/SliceScale';
+import { get2DXScale } from '../utilities/scale';
 
-import { get1DYScale, get2DXScale } from './utilities/scale';
-
-interface Top1DChartProps {
+interface HorizontalSliceChartProps {
   margin?: number;
-  data: Datum1D;
+  data: {
+    x: Float64Array;
+    re: Float64Array;
+  };
+  reverseScale?: boolean;
 }
 
-function Top1DChart({
+function HorizontalSliceChart({
   margin: marginProps = 10,
-  data: spectrum,
-}: Top1DChartProps) {
-  const {
-    width,
-    margin: originMargin,
-    xDomain,
-    yDomains,
-    displayerKey,
-  } = useChartData();
+  data,
+  reverseScale = false,
+}: HorizontalSliceChartProps) {
+  const { width, margin: originMargin, xDomain, displayerKey } = useChartData();
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
+
   const height = originMargin.top;
 
   const paths = useMemo(() => {
-    if (spectrum) {
-      const scaleX = get2DXScale({ width, xDomain, margin: originMargin });
-      const scaleY = get1DYScale(yDomains[spectrum.id], height, marginProps);
-      const { x, re: y } = spectrum.data;
+    if (data) {
+      const { x, re: y } = data;
+      const scaleX = get2DXScale(
+        { margin: originMargin, width, xDomain },
+        reverseScale,
+      );
+
+      const scaleY = getYScale(height, y, marginProps);
       const pathPoints = xyReduce({ x, y });
 
       const pathBuilder = new PathBuilder();
@@ -44,14 +47,14 @@ function Top1DChart({
       return undefined;
     }
   }, [
+    data,
     height,
     marginProps,
     originMargin,
-    spectrum,
+    reverseScale,
     width,
     xDomain,
     xyReduce,
-    yDomains,
   ]);
 
   if (!width || !height) {
@@ -71,16 +74,17 @@ function Top1DChart({
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-top)`}>
-        <path
-          className="line"
-          stroke="red"
-          fill="none"
-          strokeWidth="1px"
-          d={paths}
+        <rect
+          width={width - originMargin.left - originMargin.right}
+          height={height}
+          x={originMargin.left}
+          y={`${0}`}
+          fillOpacity="0"
         />
+        <path className="line" stroke="red" fill="none" d={paths} />
       </g>
     </svg>
   );
 }
 
-export default memo(Top1DChart);
+export default memo(HorizontalSliceChart);

@@ -125,6 +125,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
    * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
+
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   } else if (refreshDomain) {

@@ -1,11 +1,10 @@
 import { useMemo, memo } from 'react';
 
-import { useChartData } from '../../../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
-import { PathBuilder } from '../../../utility/PathBuilder';
-import { get2DYScale } from '../../utilities/scale';
-
-import { getYScale } from './SliceScale';
+import { useChartData } from '../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getYScale } from '../utilities/SliceScale';
+import { get2DYScale } from '../utilities/scale';
 
 interface VerticalSliceChartProps {
   margin?: number;
@@ -13,11 +12,13 @@ interface VerticalSliceChartProps {
     x: Float64Array;
     re: Float64Array;
   };
+  reverseScale?: boolean;
 }
 
 function VerticalSliceChart({
   margin: marignValue = 10,
   data,
+  reverseScale = false,
 }: VerticalSliceChartProps) {
   const {
     height: originHeight,
@@ -32,7 +33,10 @@ function VerticalSliceChart({
   const paths = useMemo(() => {
     if (data) {
       const { x, re: y } = data;
-      const scaleX = get2DYScale({ height: originHeight, margin, yDomain });
+      const scaleX = get2DYScale(
+        { height: originHeight, margin, yDomain },
+        reverseScale,
+      );
 
       const scaleY = getYScale(height, y, marignValue);
 
@@ -53,7 +57,16 @@ function VerticalSliceChart({
     } else {
       return undefined;
     }
-  }, [data, height, margin, marignValue, originHeight, xyReduce, yDomain]);
+  }, [
+    data,
+    height,
+    margin,
+    marignValue,
+    originHeight,
+    reverseScale,
+    xyReduce,
+    yDomain,
+  ]);
 
   const mainHeight = originHeight - margin.bottom - margin.top;
 

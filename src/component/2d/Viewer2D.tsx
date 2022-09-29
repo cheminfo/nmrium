@@ -20,8 +20,8 @@ import { options } from '../toolbar/ToolTypes';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
+import SlicingView from './SlicingView';
 import XYLabelPointer from './tools/XYLabelPointer';
-import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
 interface Viewer2DProps {

@@ -5,12 +5,10 @@ import { useChartData } from '../context/ChartContext';
 import { Margin } from '../reducer/Reducer';
 import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 
-import Contours from './Contours';
-import { FidCanvas } from './FidCanvas';
-import Left1DChart from './Left1DChart';
-import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
+import { FidContainer } from './fid/FidContainer';
+import { FTContainer } from './ft/FTContainer';
 import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
 
@@ -58,10 +56,8 @@ function chart2DInner({
         strokeWidth="1"
         fill="transparent"
       />
-      {spectra?.[0] && <Top1DChart data={spectra[0]} />}
-      {spectra?.[1] && <Left1DChart data={spectra[1]} />}
-      <Contours />
-      <FidCanvas />
+      <FTContainer spectra={spectra} />
+      <FidContainer />
       <Zones />
       <IndicationLines axis="X" show />
       <IndicationLines axis="Y" show />

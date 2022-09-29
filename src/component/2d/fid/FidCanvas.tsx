@@ -3,9 +3,9 @@
 import { matrixZPivotRescale } from 'ml-spectra-processing';
 import { useEffect, useRef } from 'react';
 
-import { Datum2D } from '../../data/types/data2d';
-import { useChartData } from '../context/ChartContext';
-import useSpectrum from '../hooks/useSpectrum';
+import { Datum2D } from '../../../data/types/data2d';
+import { useChartData } from '../../context/ChartContext';
+import useSpectrum from '../../hooks/useSpectrum';
 
 export function FidCanvas() {
   const { displayerKey, width, height, margin } = useChartData();
@@ -55,8 +55,6 @@ export function FidCanvas() {
       }
     }
   }, [height, spectrum, width]);
-
-  if (spectrum?.info?.isFt) return null;
 
   const { left, top, right, bottom } = margin;
 

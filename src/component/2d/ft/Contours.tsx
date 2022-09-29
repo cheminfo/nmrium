@@ -1,15 +1,14 @@
 import get from 'lodash/get';
 import { memo, useMemo } from 'react';
 
-import { getShift } from '../../data/data2d/Spectrum2D';
-import { Datum2D } from '../../data/types/data2d';
-import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
-import useSpectrum from '../hooks/useSpectrum';
-import { useActiveSpectrum } from '../reducer/Reducer';
-import { PathBuilder } from '../utility/PathBuilder';
-
-import { get2DXScale, get2DYScale } from './utilities/scale';
+import { getShift } from '../../../data/data2d/Spectrum2D';
+import { Datum2D } from '../../../data/types/data2d';
+import { useChartData } from '../../context/ChartContext';
+import { usePreferences } from '../../context/PreferencesContext';
+import { useActiveSpectrum } from '../../reducer/Reducer';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
+import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 interface ContoursPathsProps {
   id: string;
@@ -25,7 +24,6 @@ function ContoursPaths({
   datum,
 }: ContoursPathsProps) {
   const { margin, width, height, xDomain, yDomain, contours } = useChartData();
-
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
   const { xShift, yShift } = getShift(datum);
@@ -130,17 +128,18 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
 const MemoizedContours = memo(ContoursInner);
 
 export default function Contours() {
-  const { data: spectra, displayerKey } = useChartData();
-  const activeSpectrum = useSpectrum({});
+  const {
+    data: spectra,
+    displayerKey,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const data = useMemo<Array<Datum2D>>(() => {
-    return spectra.filter(
-      (datum) => datum.info.dimension === 2 && datum.info.isFt,
+    return getSpectraByNucleus(activeTab, spectra).filter(
+      (datum) => datum.info.isFt,
     ) as Array<Datum2D>;
-  }, [spectra]);
-
-  if (activeSpectrum?.info?.isFid) {
-    return null;
-  }
+  }, [activeTab, spectra]);
 
   return <MemoizedContours {...{ data, displayerKey }} />;
 }

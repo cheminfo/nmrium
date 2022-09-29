@@ -1,11 +1,10 @@
 import { useMemo, memo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
-import { PathBuilder } from '../utility/PathBuilder';
-
-import { get1DYScale, get2DYScale } from './utilities/scale';
+import { Datum1D } from '../../../data/types/data1d';
+import { useChartData } from '../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { get1DYScale, get2DYScale } from '../utilities/scale';
 
 interface Left1DChartProps {
   margin?: number;

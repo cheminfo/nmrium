@@ -79,7 +79,6 @@ function XYLabelPointer({ layout, data1D }) {
     if (!activeSpectrum || !data1D || data1D.length === 0) {
       return get2DYScale({ height, margin, yDomain });
     }
-
     switch (trackID) {
       case LAYOUT.CENTER_2D: {
         return get2DYScale({ height, margin, yDomain });
