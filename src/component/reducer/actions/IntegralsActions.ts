@@ -13,6 +13,7 @@ import {
 } from '../../../data/data1d/Spectrum1D/SumManager';
 import { Datum1D } from '../../../data/types/data1d';
 import { State } from '../Reducer';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 
 import { setIntegralsYDomain } from './DomainActions';
@@ -25,8 +26,7 @@ function handleChangeIntegralSum(draft: Draft<State>, options) {
     },
   } = draft;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
@@ -45,8 +45,9 @@ function addIntegral(draft: Draft<State>, action) {
       spectra: { activeTab: nucleus },
     },
   } = draft;
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(draft);
+
   const [from, to] = getRange(draft, { startX, endX });
 
   if (activeSpectrum?.id) {
@@ -76,8 +77,7 @@ function addIntegral(draft: Draft<State>, action) {
 }
 
 function deleteIntegral(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const state = original(draft) as State;
     const { index } = activeSpectrum;
@@ -98,8 +98,7 @@ function deleteIntegral(draft: Draft<State>, action) {
 }
 
 function changeIntegral(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   const state = original(draft) as State;
   const integral = action.payload.data;
 
@@ -130,8 +129,7 @@ function changeIntegral(draft: Draft<State>, action) {
 }
 
 function handleChangeIntegralsRelativeValue(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   const data = action.payload.data;
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;

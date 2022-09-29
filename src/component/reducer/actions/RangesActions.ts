@@ -25,6 +25,7 @@ import {
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
 import { rangeStateInit, State } from '../Reducer';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
@@ -41,8 +42,8 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     },
   } = draft;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (activeSpectrum?.id) {
     const { index, id } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -114,8 +115,7 @@ function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
 }
 
 function handleDeleteRange(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { data, resetSelectTool = false } = action.payload;
@@ -139,8 +139,9 @@ function handleDeleteRange(draft: Draft<State>, action) {
 
 function handleChangeRangeSignalKind(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { rowData, value } = action.payload.data;
@@ -159,8 +160,9 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
 
 function handleSaveEditedRange(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+
+  const activeSpectrum = getActiveSpectrum(state);
+
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
@@ -229,8 +231,7 @@ function handleDeleteSignal(draft: Draft<State>, action) {
 }
 
 function handleUnlinkRange(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const {
@@ -275,8 +276,7 @@ function handleUnlinkRange(draft: Draft<State>, action) {
 }
 
 function handleSetDiaIDRange(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { rangeData, diaIDs, signalIndex, nbAtoms } = action.payload;
@@ -298,8 +298,7 @@ function handleSetDiaIDRange(draft: Draft<State>, action) {
 }
 
 function handleResizeRange(draft: Draft<State>, action) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     changeRange(draft.data[index] as Datum1D, action.data);
@@ -314,8 +313,7 @@ function handleChangeRangeSum(draft: Draft<State>, options) {
     },
   } = draft;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum = data[index] as Datum1D;
@@ -336,8 +334,7 @@ function addNewRange(
     },
     molecules,
   } = draft;
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
@@ -408,19 +405,20 @@ function handleOnChangeRangesData(draft) {
   handleUpdateCorrelations(draft);
 }
 
-function handleChangeRangesSumFlag(draft, action) {
+function handleChangeRangesSumFlag(draft: Draft<State>, action) {
   const flag = action.payload;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
-    draft.data[index].ranges.options.isSumConstant = !flag;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
+    (draft.data[index] as Datum1D).ranges.options.isSumConstant = !flag;
   }
 }
 
 function handleUpdateRange(draft: Draft<State>, action) {
   const { range, resetSelectTool = false } = action.payload;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id && range.id) {
     const datum = draft.data[activeSpectrum?.index] as Datum1D;
     const index = datum.ranges.values.findIndex(

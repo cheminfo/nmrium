@@ -7,6 +7,7 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain } from './DomainActions';
 
@@ -96,8 +97,8 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     view,
   } = draft;
 
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (view.spectra.activeTab) {
     const groupByNucleus = groupByInfoKey('nucleus');
 
