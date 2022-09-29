@@ -41,7 +41,6 @@ function XAxis(props: XAxisProps) {
   const { xDomain, height, width, margin } = useChartData();
   const spectrum = useSpectrum() as Datum2D;
 
-
   const refAxis = useRef<SVGGElement>(null);
 
   useEffect(() => {
@@ -83,8 +82,9 @@ function XAxis(props: XAxisProps) {
         <g
           className="x"
           css={axisStyles}
-          transform={`translate(0,${height - (margin.bottom + marginProps.bottom)
-            })`}
+          transform={`translate(0,${
+            height - (margin.bottom + marginProps.bottom)
+          })`}
           ref={refAxis}
         >
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">

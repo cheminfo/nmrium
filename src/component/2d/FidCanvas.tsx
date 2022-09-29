@@ -7,7 +7,6 @@ import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import useSpectrum from '../hooks/useSpectrum';
 
-
 export function FidCanvas() {
   const { displayerKey, width, height, margin } = useChartData();
   const spectrum = useSpectrum() as Datum2D;
@@ -54,7 +53,6 @@ export function FidCanvas() {
           context.putImageData(imageData, 0, 0);
         }
       }
-
     }
   }, [height, spectrum, width]);
 
