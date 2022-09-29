@@ -50,12 +50,12 @@ function YAxis(props: YAxisProps) {
   const refAxis = useRef<SVGGElement>(null);
 
   const { yDomain, width, height, margin } = useChartData();
-  const spectrum = useSpectrum({}) as Datum2D;
+  const spectrum = useSpectrum() as Datum2D;
 
   useEffect(() => {
     if (!show || !yDomain) return;
     let scaleY: ScaleLinear<number, number, never> | null = null;
-    if (spectrum.info.isFid) {
+    if (spectrum?.info.isFid) {
       const { minY, maxY } = spectrum.data;
       scaleY = get2DYScale({ height, yDomain: [minY, maxY], margin }, true);
     } else {

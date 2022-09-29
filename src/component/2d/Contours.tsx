@@ -138,7 +138,7 @@ export default function Contours() {
     ) as Array<Datum2D>;
   }, [spectra]);
 
-  if (activeSpectrum?.info.isFid) {
+  if (activeSpectrum?.info?.isFid) {
     return null;
   }
 

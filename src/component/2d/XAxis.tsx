@@ -39,7 +39,8 @@ function XAxis(props: XAxisProps) {
   const { show = true, margin: marginProps = defaultMargin } = props;
 
   const { xDomain, height, width, margin } = useChartData();
-  const spectrum = useSpectrum({}) as Datum2D;
+  const spectrum = useSpectrum() as Datum2D;
+
 
   const refAxis = useRef<SVGGElement>(null);
 
@@ -48,7 +49,7 @@ function XAxis(props: XAxisProps) {
 
     let scaleX: ScaleLinear<number, number, never> | null = null;
 
-    if (spectrum.info.isFid) {
+    if (spectrum?.info.isFid) {
       const { minX, maxX } = spectrum.data;
       scaleX = get2DXScale(
         {
@@ -82,13 +83,12 @@ function XAxis(props: XAxisProps) {
         <g
           className="x"
           css={axisStyles}
-          transform={`translate(0,${
-            height - (margin.bottom + marginProps.bottom)
-          })`}
+          transform={`translate(0,${height - (margin.bottom + marginProps.bottom)
+            })`}
           ref={refAxis}
         >
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
-            {spectrum?.info.isFid ? 'Time [sec]' : 'δ [ppm]'}
+            {spectrum?.info?.isFid ? 'Time [sec]' : 'δ [ppm]'}
           </text>
         </g>
       )}
