@@ -1,19 +1,16 @@
-import { xNoiseSanPlot, xyReduce } from 'ml-spectra-processing';
+import { xyReduce } from 'ml-spectra-processing';
 
 import { Data1D } from '../../../../../data/types/data1d';
 import { Data2D } from '../../../../../data/types/data2d';
+
+import { calculateSanPlot } from './calculateSanPlot';
 
 export function processSnapPlot<T extends '1D' | '2D'>(
   dimension: T,
   data: T extends '1D' ? Data1D : Data2D,
   yLogBase: number,
 ) {
-  const input =
-    dimension === '1D'
-      ? prepare1DData(data as Data1D)
-      : prepare2DData(data as Data2D);
-
-  const sanResult = xNoiseSanPlot(input);
+  const sanResult = calculateSanPlot(dimension, data);
   const sanPlot: any = {};
   const lines: any = {};
   for (let plotKey in sanResult.sanplot) {
@@ -26,29 +23,6 @@ export function processSnapPlot<T extends '1D' | '2D'>(
     lines[plotKey] = getLine(sanResult[plotKey], result, { yLogBase });
   }
   return { sanPlot, lines };
-}
-
-function prepare1DData(data: Data1D) {
-  const length = data.re.length;
-  const jump = Math.floor(length / 307200) || 1;
-  const array = new Float64Array((length / jump) >> 0);
-  let index = 0;
-  for (let i = 0; i < array.length; i += jump) {
-    array[index++] = data.re[i];
-  }
-  return array;
-}
-
-function prepare2DData(data: Data2D) {
-  let cols = data.z[0].length;
-  let rows = data.z.length;
-  let jump = Math.floor((cols * rows) / 204800) || 1;
-  const array = new Float64Array(((cols * rows) / jump) >> 0);
-  let index = 0;
-  for (let i = 0; i < array.length; i += jump) {
-    array[index++] = data.z[(i / rows) >> 0][i % rows];
-  }
-  return array;
 }
 
 function getLine(value, data, options) {
