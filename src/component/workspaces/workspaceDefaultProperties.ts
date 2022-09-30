@@ -47,7 +47,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
   },
 
   general: {
-    dimmedSpectraTransparency: 0.1,
+    dimmedSpectraOpacity: 0.1,
   },
   formatting: {
     nuclei: {

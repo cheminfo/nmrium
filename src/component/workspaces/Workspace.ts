@@ -6,7 +6,7 @@ interface NucleusFormat {
   hz: string;
 }
 interface GeneralPreferences {
-  dimmedSpectraTransparency: number;
+  dimmedSpectraOpacity: number;
 }
 
 interface ColumnPreferences {
