@@ -483,13 +483,13 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await nmrium.page.click('li >> text=Test');
     await nmrium.page.click('li >> text=1H spectrum test');
     // wait the spectrum to load
-    await nmrium.page.waitForTimeout(500);
+    await nmrium.page.waitForTimeout(250);
     await expect(
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText('4');
-    await expect(viewCount).toContainText('4');
+    await expect(dataCount).toContainText('3');
+    await expect(viewCount).toContainText('3');
   });
 
   await test.step('Check the visibly of molecule', async () => {
@@ -532,8 +532,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Save the molecule.
     await nmrium.page.click('text=Save');
 
-    await expect(dataCount).toContainText('5');
-    await expect(viewCount).toContainText('4');
+    await expect(dataCount).toContainText('4');
+    await expect(viewCount).toContainText('3');
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
@@ -568,15 +568,15 @@ test('check callbacks count on changing structures', async ({ page }) => {
       ),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText('6');
-    await expect(viewCount).toContainText('5');
+    await expect(dataCount).toContainText('5');
+    await expect(viewCount).toContainText('4');
   });
   await test.step('change float position molecule', async () => {
     await nmrium.page
       .locator('_react=DraggableStructure >> _react=ButtonAction')
       .dragTo(nmrium.page.locator('_react=XAxis >> nth=1'), { force: true });
-    await expect(dataCount).toContainText('6');
-    await expect(viewCount).toContainText('6');
+    await expect(dataCount).toContainText('5');
+    await expect(viewCount).toContainText('5');
   });
   await test.step('Close float molecule', async () => {
     // Close float molecule draggable structure.
@@ -585,8 +585,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
       { force: true },
     );
 
-    await expect(dataCount).toContainText('7');
-    await expect(viewCount).toContainText('7');
+    await expect(dataCount).toContainText('6');
+    await expect(viewCount).toContainText('6');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
     await expect(
