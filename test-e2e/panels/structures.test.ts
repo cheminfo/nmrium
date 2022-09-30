@@ -578,25 +578,4 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(dataCount).toContainText('5');
     await expect(viewCount).toContainText('5');
   });
-  await test.step('Close float molecule', async () => {
-    // Close float molecule draggable structure.
-    await nmrium.page.click(
-      '_react=DraggableStructure >> _react=ButtonDanger',
-      { force: true },
-    );
-
-    await expect(dataCount).toContainText('5');
-    await expect(viewCount).toContainText('6');
-    // Check floated molecule.
-    await expect(nmrium.page.locator('#molSVG')).toBeHidden();
-    await expect(
-      nmrium.page.locator('_react=DraggableStructure '),
-    ).toBeHidden();
-    // Check float molecule btn is off.
-    await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
-      ),
-    ).toBeHidden();
-  });
 });

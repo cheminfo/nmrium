@@ -39,7 +39,7 @@ test('check callbacks count', async ({ page }) => {
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
   // wait the spectrum to load
   await nmrium.page.waitForTimeout(250);
-  await expect(nmrium.page.locator('_react=Chart1D')).toBeVisible();
+  await expect(nmrium.page.locator('#nmrSVG path.line ')).toBeVisible();
 
   await expect(dataCount).toContainText('3');
   await expect(viewCount).toContainText('3');
