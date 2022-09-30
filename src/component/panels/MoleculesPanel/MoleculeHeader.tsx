@@ -63,7 +63,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
           style={styles.labelInput}
           validate={validateLabel}
           onSave={(event) => saveLabelHandler(currentMolecule.id, event)}
-          maxLength={10}
+          textOverFlowEllipses
         />
       </div>
 
