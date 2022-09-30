@@ -5,12 +5,9 @@ function GeneralTabContent() {
   return (
     <>
       <p className="section-header">Spectra</p>
-      <Label
-        title="Transparency of Dimmed Spectra [ 0 - 1 ]"
-        // style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
-      >
+      <Label title="Opacity of dimmed spectra [ 0 - 1 ]">
         <FormikInput
-          name="general.dimmedSpectraTransparency"
+          name="general.dimmedSpectraOpacity"
           checkValue={(value) => value >= 0 && value <= 1}
           type="number"
         />
