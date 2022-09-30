@@ -482,7 +482,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
   await test.step('open test page', async () => {
     await nmrium.page.click('li >> text=Test');
     await nmrium.page.click('li >> text=1H spectrum test');
-
+    // wait the spectrum to load
+    await nmrium.page.waitForTimeout(500);
     await expect(
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();

@@ -38,7 +38,7 @@ test('check callbacks count', async ({ page }) => {
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
   // wait the spectrum to load
-  await nmrium.page.waitForTimeout(250);
+  await nmrium.page.waitForTimeout(500);
   await expect(nmrium.page.locator('_react=Chart1D')).toBeVisible();
 
   await expect(dataCount).toContainText('4');
