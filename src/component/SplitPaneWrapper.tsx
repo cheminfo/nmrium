@@ -9,10 +9,10 @@ export function SplitPaneWrapper({ children }) {
   return (
     <SplitPane
       key={hidePanelOnLoad ? 'true' : 'false'}
-      initialSeparation={initialPanelWidth}
-      orientation="horizontal"
-      sideSeparation="end"
-      {...(hidePanelOnLoad ? { initialClosed: true } : { minimumSize: 600 })}
+      initialSize={initialPanelWidth}
+      direction="horizontal"
+      controlledSide="end"
+      initialClosed={hidePanelOnLoad ? true : 600}
     >
       {children}
     </SplitPane>
