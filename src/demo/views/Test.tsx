@@ -1,6 +1,6 @@
 import { DropZone } from 'analysis-ui-components';
 import debounce from 'lodash/debounce';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useReducer } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import NMRium from '../../component/NMRium';
@@ -63,6 +63,8 @@ function Inspector(data: any) {
 export default function Test(props) {
   const { file, title, baseURL } = props;
   const [data, setData] = useState<any>();
+  const [viewCount, incrementViewCount] = useReducer((a) => a + 1, 0);
+  const [dataCount, incrementDataCount] = useReducer((a) => a + 1, 0);
   useEffect(() => {
     if (file) {
       void loadData(file).then((d) => {
@@ -92,12 +94,14 @@ export default function Test(props) {
     })();
   }, []);
   const viewChangeHandler = (data) => {
+    incrementViewCount();
     setViewCallBack({ activate: true, data });
     setTimeout(() => {
       setViewCallBack(({ data }) => ({ data, activate: false }));
     }, 500);
   };
   const dataChangeHandler = useCallback((data) => {
+    incrementDataCount();
     setDataCallBack({ activate: true, data });
     setTimeout(() => {
       setDataCallBack(({ data }) => ({ data, activate: false }));
@@ -155,6 +159,7 @@ export default function Test(props) {
             data={data}
             onViewChange={viewChangeHandler}
             onDataChange={dataChangeHandler}
+            workspace={props.workspace || null}
           />
         </div>
         <div
@@ -176,7 +181,7 @@ export default function Test(props) {
                   : {}
               }
             >
-              Data Change:
+              <span data-test-id="data-count">{dataCount}</span> - Data Change:
             </h3>
             <Inspector data={dataCallBack.data} />
             <h3
@@ -186,7 +191,7 @@ export default function Test(props) {
                   : {}
               }
             >
-              View Change:
+              <span data-test-id="view-count">{viewCount}</span> - View Change:
             </h3>
             <Inspector data={viewCallBack.data} />
           </div>
