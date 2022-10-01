@@ -1,7 +1,7 @@
 import { xNoiseSanPlot } from 'ml-spectra-processing';
 
-import { Data1D } from '../../../../../data/types/data1d';
-import { Data2D } from '../../../../../data/types/data2d';
+import { Data1D } from '../types/data1d';
+import { Data2D } from '../types/data2d';
 
 export function calculateSanPlot<T extends '1D' | '2D'>(
   dimension: T,

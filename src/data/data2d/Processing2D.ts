@@ -1,7 +1,7 @@
 import { Conrec } from 'ml-conrec';
 
-import { calculateSanPlot } from '../../component/panels/SpectrumsPanel/base/setting/calculateSanPlot';
 import { Data2D } from '../types/data2d';
+import { calculateSanPlot } from '../utilities/calculateSanPlot';
 
 export const defaultContourOptions = {
   positive: {
