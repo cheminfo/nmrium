@@ -22,8 +22,9 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
   const error = getSpectrumErrorValue(datum);
-  return ranges.reduce<Array<Range>>((acc, newRange) => {
-    if (checkRange(newRange, datum, error) && newRange.id !== 'new') return acc;
+  const result: Array<Range> = [];
+  ranges.forEach((newRange) => {
+    if (checkRange(newRange, datum, error) && newRange.id !== 'new') return;
 
     const absolute = xyIntegration(
       { x, y: re },
@@ -39,7 +40,7 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
       };
     });
 
-    acc.push({
+    result.push({
       ...newRange,
       kind: signals?.[0].kind || DatumKind.signal,
       originFrom: newRange.from - shiftX,
@@ -48,7 +49,6 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
       absolute,
       signals,
     });
-
-    return acc;
-  }, []);
+  });
+  return result;
 }

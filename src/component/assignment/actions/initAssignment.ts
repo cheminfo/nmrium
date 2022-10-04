@@ -21,17 +21,13 @@ export default function initAssignment(action) {
 }
 
 function setRangesAssignments(state: AssignmentState, ranges: Ranges) {
-  const diaIDRecords = ranges.values.reduce<{ id: string; diaIDs: string[] }[]>(
-    (acc, { id, diaIDs, signals }) => {
-      acc.push({ id, diaIDs: diaIDs || [] });
-      for (const signal of signals) {
-        acc.push({ id: signal.id, diaIDs: signal.diaIDs || [] });
-      }
-      return acc;
-    },
-    [],
-  );
-
+  const diaIDRecords: Array<{ id: string; diaIDs: string[] }> = [];
+  ranges.values.forEach(({ id, diaIDs, signals }) => {
+    diaIDRecords.push({ id, diaIDs: diaIDs || [] });
+    for (const signal of signals) {
+      diaIDRecords.push({ id: signal.id, diaIDs: signal.diaIDs || [] });
+    }
+  });
   for (const { id, diaIDs } of diaIDRecords) {
     for (const diaID of diaIDs) {
       setAssignment(state, id, 'x', diaID);
@@ -39,18 +35,20 @@ function setRangesAssignments(state: AssignmentState, ranges: Ranges) {
   }
 }
 function setZonesAssignments(state: AssignmentState, zones: Zones) {
-  const diaIDRecords = zones.values.reduce<
-    { id: string; diaIDs: Record<Axis, string[]> }[]
-  >((acc, { id, x, y, signals }) => {
-    acc.push({ id, diaIDs: { x: x.diaIDs || [], y: y.diaIDs || [] } });
+  const diaIDRecords: Array<{
+    id: string;
+    diaIDs: Record<Axis, string[]>;
+  }> = [];
+
+  zones.values.forEach(({ id, x, y, signals }) => {
+    diaIDRecords.push({ id, diaIDs: { x: x.diaIDs || [], y: y.diaIDs || [] } });
     for (const signal of signals) {
-      acc.push({
+      diaIDRecords.push({
         id: signal.id,
         diaIDs: { x: signal.x.diaIDs || [], y: signal.y.diaIDs || [] },
       });
     }
-    return acc;
-  }, []);
+  });
 
   for (const { id, diaIDs } of diaIDRecords) {
     (['x', 'y'] as Axis[]).forEach((axis) => {

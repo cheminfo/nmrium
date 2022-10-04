@@ -9,23 +9,19 @@ export function changeIntegralsRelative(
   );
   if (index !== -1) {
     const ratio = datum.integrals.values[index].absolute / newIntegral.value;
-    const { values, sum } = datum.integrals.values.reduce<{
+    const result: {
       sum: number;
       values: Integral[];
-    }>(
-      (acc, integral, index) => {
-        const newIntegralValue = integral.absolute / ratio;
-        acc.sum += newIntegralValue;
-        acc.values[index] = {
-          ...integral,
-          integral: newIntegralValue,
-        };
-
-        return acc;
-      },
-      { values: [], sum: 0 },
-    );
-
+    } = { values: [], sum: 0 };
+    datum.integrals.values.forEach((integral, index) => {
+      const newIntegralValue = integral.absolute / ratio;
+      result.sum += newIntegralValue;
+      result.values[index] = {
+        ...integral,
+        integral: newIntegralValue,
+      };
+    });
+    const { values, sum } = result;
     datum.integrals.values = values;
     datum.integrals.options = {
       ...datum.integrals.options,

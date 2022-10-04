@@ -173,14 +173,15 @@ export function prepareData(
 
 function mapJs(js: Jcoupling[]) {
   if (js && js.length > 0) {
-    const { coupling, multiplicity } = js.reduce<any>(
-      (acc, { coupling, multiplicity }) => {
-        acc.coupling.push(coupling);
-        acc.multiplicity += multiplicity;
-        return acc;
-      },
-      { coupling: [], multiplicity: '' },
-    );
+    const result: { coupling: Array<number>; multiplicity: string } = {
+      coupling: [],
+      multiplicity: '',
+    };
+    js.forEach(({ coupling, multiplicity }) => {
+      result.coupling.push(coupling);
+      result.multiplicity += multiplicity;
+    });
+    const { coupling, multiplicity } = result;
     return { multiplicity, coupling: coupling.join(',') };
   } else {
     return { multiplicity: '', coupling: '' };

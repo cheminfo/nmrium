@@ -64,6 +64,16 @@ function AdditionalColumnHeader({
   const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
+    const titleArray: Array<string> = [];
+    correlation.link.forEach((link) => {
+      if (
+        link.pseudo === false &&
+        !titleArray.includes(link.experimentType.toUpperCase())
+      ) {
+        titleArray.push(link.experimentType.toUpperCase());
+      }
+    });
+
     return {
       style: {
         ...{ color: getLabelColor(correlationsData, correlation) || undefined },
@@ -75,18 +85,7 @@ function AdditionalColumnHeader({
       },
       title:
         correlation.pseudo === false &&
-        correlation.link
-          .reduce((arr, link) => {
-            if (
-              link.pseudo === false &&
-              !arr.includes(link.experimentType.toUpperCase())
-            ) {
-              arr.push(link.experimentType.toUpperCase());
-            }
-            return arr;
-          }, [])
-          .sort()
-          .join('/'),
+        titleArray.sort((a, b) => a.localeCompare(b)).join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };

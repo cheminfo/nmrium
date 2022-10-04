@@ -11,13 +11,14 @@ export function getDiaIDs(zone: Zone, axis: string): string[] {
 }
 
 export function getNbAtoms(zone: Zone, axis: string) {
-  return zone.signals
-    ? zone.signals.reduce(
-        (sum, signal) =>
-          signal[axis].nbAtoms ? sum + signal[axis].nbAtoms : sum,
-        0,
-      )
-    : 0;
+  let sum = 0;
+  if (zone.signals) {
+    zone.signals.forEach(
+      (signal) => (signal[axis].nbAtoms ? sum + signal[axis].nbAtoms : sum),
+      0,
+    );
+  }
+  return sum;
 }
 
 export function setNbAtoms(zone: Zone, axis: string): void {
@@ -83,15 +84,15 @@ export function unlinkInAssignmentData(
   zones: Partial<Zone>[],
   axis?: string,
 ): void {
-  const ids = zones.reduce((acc: string[], zone) => {
+  let ids: string[] = [];
+  zones.forEach((zone) => {
     if (zone.id) {
-      acc.push(zone.id);
+      ids.push(zone.id);
     }
     if (zone.signals) {
-      acc = acc.concat(zone.signals.map((signal) => signal.id, []));
+      ids = ids.concat(zone.signals.map((signal) => signal.id, []));
     }
-    return acc;
-  }, []);
+  });
 
   if (axis) {
     assignmentData.dispatch({

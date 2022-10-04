@@ -48,20 +48,21 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
-    return nucleuses.reduce<any>((acc, n) => {
-      if (activeSpectra[n]?.id) {
-        const id = activeSpectra[n]?.id;
+    const spectrumData: any = [];
+    nucleuses.forEach((nucleus) => {
+      if (activeSpectra[nucleus]?.id) {
+        const id = activeSpectra[nucleus]?.id;
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
         );
         if (spectrum) {
-          acc.push(spectrum);
+          spectrumData.push(spectrum);
         }
       } else {
-        acc.push(null);
+        spectrumData.push(null);
       }
-      return acc;
-    }, []);
+    });
+    return spectrumData;
   }, [activeTab, data, activeSpectra]);
 
   const DIMENSION = get2DDimensionLayout(state);

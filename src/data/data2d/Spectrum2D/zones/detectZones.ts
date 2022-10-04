@@ -15,7 +15,8 @@ export function detectZones(datum, options: DetectionZonesOptions): Zone[] {
   const xError = Math.abs(maxX - minX) / 10000;
   const yError = Math.abs(maxY - minY) / 10000;
 
-  const formattedZones = zones.reduce((acc: Zone[], zone: NMRZone) => {
+  const formattedZones: Zone[] = [];
+  zones.forEach((zone: NMRZone) => {
     const newXRange = zone.x || { from: 0, to: 0 };
     const newYRange = zone.y || { from: 0, to: 0 };
 
@@ -27,7 +28,7 @@ export function detectZones(datum, options: DetectionZonesOptions): Zone[] {
         Math.abs(newYRange.from - y.from) < yError &&
         Math.abs(newYRange.to - y.to) < yError
       ) {
-        return acc;
+        return;
       }
     }
 
@@ -47,15 +48,13 @@ export function detectZones(datum, options: DetectionZonesOptions): Zone[] {
       };
     });
 
-    acc.push({
+    formattedZones.push({
       id: v4(),
       x: { from: newXRange.from, to: newXRange.to },
       y: { from: newYRange.from, to: newYRange.to },
       signals,
       kind: DatumKind.signal,
     });
-
-    return acc;
-  }, []);
+  });
   return formattedZones;
 }

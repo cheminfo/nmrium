@@ -176,31 +176,29 @@ function generated1DSpectrum(params: {
 }
 
 function mapZones(zones: Array<Partial<Zone>>) {
-  return zones.reduce<Array<Zone>>((zonesAcc, zone: any) => {
+  const result: Array<Zone> = [];
+  zones.forEach((zone: any) => {
     const { signals, ...resZone } = zone;
-    const newSignals = signals.reduce(
-      (signalsAcc: Signal2D[], signal: Signal2D) => {
-        const { x, y, id, ...resSignal } = signal;
-        signalsAcc.push({
-          id: id || v4(),
-          kind: 'signal',
-          x: { ...x, originDelta: x.delta || 0 },
-          y: { ...y, originDelta: y.delta || 0 },
-          ...resSignal,
-        });
-        return signalsAcc;
-      },
-      [],
-    );
+    const newSignals: Array<Signal2D> = [];
+    signals.forEach((signal: Signal2D) => {
+      const { x, y, id, ...resSignal } = signal;
+      newSignals.push({
+        id: id || v4(),
+        kind: 'signal',
+        x: { ...x, originDelta: x.delta || 0 },
+        y: { ...y, originDelta: y.delta || 0 },
+        ...resSignal,
+      });
+    });
 
-    zonesAcc.push({
+    result.push({
       id: v4(),
       ...resZone,
       signals: newSignals,
       kind: DatumKind.signal,
     });
-    return zonesAcc;
-  }, []);
+  });
+  return result;
 }
 
 function generated2DSpectrum(params: {

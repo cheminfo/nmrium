@@ -1,16 +1,19 @@
 import * as Yup from 'yup';
+import { ObjectShape } from 'yup/lib/object';
 
 import { Workspace } from '../../workspaces/Workspace';
 
-const formattingElementValidation = (obj: Workspace) =>
-  Object.keys(obj.formatting.nuclei).reduce((validate, key) => {
+const formattingElementValidation = (obj: Workspace) => {
+  const validate: ObjectShape = {};
+  Object.keys(obj.formatting.nuclei).forEach((key) => {
     validate[key] = Yup.object().shape({
       name: Yup.string().trim().required('Nucleus is a required field'),
       ppm: Yup.string().trim().required('PPM format is a required field'),
       hz: Yup.string().trim().required('Hz format  is a required field'),
     });
-    return validate;
-  }, {});
+  });
+  return validate;
+};
 
 const formattingValidation = (obj: Workspace) =>
   Yup.object().shape<any>({
@@ -36,13 +39,12 @@ const formattingValidation = (obj: Workspace) =>
             }
           }
 
-          const errors = Object.keys(nucleusFrequencies).reduce<
-            Yup.ValidationError[]
-          >((errorList, key) => {
+          const errors: Yup.ValidationError[] = [];
+          Object.keys(nucleusFrequencies).forEach((key) => {
             const { value, fields } = nucleusFrequencies[key];
             if (value > 1) {
               for (let field of fields) {
-                errorList.push(
+                errors.push(
                   new Yup.ValidationError(
                     `${key} nucleus must te be unique`,
                     nuclei[key].name,
@@ -51,8 +53,7 @@ const formattingValidation = (obj: Workspace) =>
                 );
               }
             }
-            return errorList;
-          }, []);
+          });
 
           return new Yup.ValidationError(errors);
         },

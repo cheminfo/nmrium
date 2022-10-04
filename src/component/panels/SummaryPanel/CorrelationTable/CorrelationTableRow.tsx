@@ -152,6 +152,15 @@ function CorrelationTableRow({
   const isInView = useInView({ correlation });
 
   const tableDataProps = useMemo(() => {
+    const titleArray: Array<string> = [];
+    correlation.link.forEach((link) => {
+      if (
+        link.pseudo === false &&
+        !titleArray.includes(link.experimentType.toUpperCase())
+      ) {
+        titleArray.push(link.experimentType.toUpperCase());
+      }
+    });
     return {
       style: {
         ...styleRow,
@@ -163,18 +172,7 @@ function CorrelationTableRow({
       },
       title:
         correlation.pseudo === false &&
-        correlation.link
-          .reduce((arr, link) => {
-            if (
-              link.pseudo === false &&
-              !arr.includes(link.experimentType.toUpperCase())
-            ) {
-              arr.push(link.experimentType.toUpperCase());
-            }
-            return arr;
-          }, [])
-          .sort()
-          .join('/'),
+        titleArray.sort((a, b) => a.localeCompare(b)).join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };

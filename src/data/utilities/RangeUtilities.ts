@@ -15,12 +15,14 @@ export function getDiaIDs(range: Range): string[] {
 
 export function getNbAtoms(range: Range, signalIndex?: number): number {
   if (signalIndex === undefined) {
-    return range.signals
-      ? range.signals.reduce(
-          (sum, signal) => (signal.nbAtoms ? signal.nbAtoms + sum : sum),
-          0,
-        )
-      : 0;
+    let sum = 0;
+    if (range.signals) {
+      range.signals.forEach(
+        (signal) => (signal.nbAtoms ? signal.nbAtoms + sum : sum),
+        0,
+      );
+    }
+    return sum;
   }
 
   return range.signals[signalIndex].nbAtoms || 0;
@@ -97,15 +99,15 @@ export function unlinkInAssignmentData(
   assignmentData,
   ranges: Partial<Range>[],
 ) {
-  const ids = ranges.reduce((acc: string[], range) => {
+  let ids: string[] = [];
+  ranges.forEach((range) => {
     if (range.id) {
-      acc.push(range.id);
+      ids.push(range.id);
     }
     if (range.signals) {
-      acc = acc.concat(range.signals.map((signal) => signal.id, []));
+      ids = ids.concat(range.signals.map((signal) => signal.id, []));
     }
-    return acc;
-  }, []);
+  });
   assignmentData.dispatch({
     type: 'REMOVE_ALL',
     payload: { id: ids, axis: 'x' },

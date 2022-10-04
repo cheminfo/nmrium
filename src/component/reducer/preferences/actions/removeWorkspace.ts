@@ -16,12 +16,12 @@ export function removeWorkspace(
 
   let localData = getLocalStorage('nmr-general-settings');
   const storedWorkspaces = original(draft)?.workspaces || {};
-  const workspaces = Object.keys(storedWorkspaces).reduce((acc, key) => {
+  const workspaces = {};
+  Object.keys(storedWorkspaces).forEach((key) => {
     if (key !== workspace) {
-      acc[key] = storedWorkspaces[key];
+      workspaces[key] = storedWorkspaces[key];
     }
-    return acc;
-  }, {});
+  });
   draft.workspaces = workspaces;
   localData.workspaces = filterObject(workspaces);
   storeData('nmr-general-settings', JSON.stringify(localData));

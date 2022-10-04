@@ -82,10 +82,10 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   }));
 
   useEffect(() => {
-    const result = Object.keys(data.columns).reduce((acc, key) => {
-      acc[key] = { ...data.columns[key], tempKey: key };
-      return acc;
-    }, {});
+    const result = {};
+    Object.keys(data.columns).forEach((key) => {
+      result[key] = { ...data.columns[key], tempKey: key };
+    });
     setColumns(result);
     refForm.current.setValues({ columns: result, code: data.code });
   }, [data]);
@@ -96,28 +96,28 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   const preferncesSchema = useMemo(() => {
     function columnSchema() {
-      return columnsKeys.reduce((acc, key) => {
-        acc[key] = Yup.object().shape({
+      const result = {};
+      columnsKeys.forEach((key) => {
+        result[key] = Yup.object().shape({
           tempKey: Yup.string()
             .required()
             .test('unique', 'must be unique column name', (colmnName) => {
               const formData = refForm.current.values.columns;
-              return (
-                Object.keys(formData).reduce((acc, colKey) => {
-                  if (formData[colKey].tempKey === colmnName) {
-                    (acc as any[]).push(colmnName);
-                  }
-                  return acc;
-                }, []).length === 1
-              );
+              const cols = [];
+              Object.keys(formData).forEach((colKey) => {
+                if (formData[colKey].tempKey === colmnName) {
+                  (cols as any[]).push(colmnName);
+                }
+              });
+              return cols.length === 1;
             }),
           ...(columns[key].type === COLUMNS_TYPES.FORMULA
             ? { formula: Yup.string().required() }
             : {}),
           index: Yup.string().required(),
         });
-        return acc;
-      }, {});
+      });
+      return result;
     }
 
     return Yup.object().shape({
@@ -128,13 +128,10 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   const submitHandler = useCallback(
     (values) => {
       onAfterSave?.(true);
-      const result = Object.entries(values.columns).reduce(
-        (acc, [key, value]) => {
-          acc[key] = { ...columns[key], ...(value as any) };
-          return acc;
-        },
-        {},
-      );
+      const result: any = {};
+      Object.entries(values.columns).forEach(([key, value]) => {
+        result[key] = { ...columns[key], ...(value as any) };
+      });
       dispatch({
         type: SET_ANALYZE_SPECTRA_COLUMNS,
         payload: { code: values.code, columns: result },

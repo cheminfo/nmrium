@@ -43,7 +43,8 @@ function setZoom(
 
   if (activeSpectrum === null && spectrumID === null) {
     const { shareYDomain, yDomain, yDomains } = draft.originDomain;
-    draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
+    const _yDomains = {};
+    Object.keys(draft.yDomains).forEach((id) => {
       const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
         height - margin.bottom,
         margin.top,
@@ -59,9 +60,9 @@ function setZoom(
         .scale(scale)
         .translate(0, -_scale(0));
       const newYDomain = t.rescaleY(_scale).domain();
-      acc[id] = newYDomain;
-      return acc;
-    }, {});
+      _yDomains[id] = newYDomain;
+    });
+    draft.yDomains = _yDomains;
   } else {
     const spectrumId = spectrumID || activeSpectrum?.id;
     if (spectrumId) {

@@ -104,14 +104,24 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
 
     const spectrumsGroupsList = groupByNucleus(data);
 
-    const level =
-      displayerMode === DISPLAYER_MODE.DM_2D
-        ? spectrumsGroupsList[view.spectra.activeTab].reduce((acc, datum) => {
-            acc[datum.id] = datum.processingController.getLevel();
-            return acc;
-          }, {})
-        : null;
-
+    let level: any = {};
+    if (displayerMode === DISPLAYER_MODE.DM_2D) {
+      spectrumsGroupsList[view.spectra.activeTab].forEach((datum) => {
+        level[datum.id] = datum.processingController.getLevel();
+      });
+    } else {
+      level = null;
+    }
+    const _data = {};
+    spectrumsGroupsList[view.spectra.activeTab].forEach((datum) => {
+      _data[datum.id] = {
+        display: {
+          color: datum.display.color,
+          isVisible: datum.display.isVisible,
+          isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
+        },
+      };
+    });
     draft.keysPreferences[keyCode] = {
       activeSpectrum,
       displayerMode,
@@ -124,16 +134,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       originDomain,
       level,
       margin,
-      data: spectrumsGroupsList[view.spectra.activeTab].reduce((acc, datum) => {
-        acc[datum.id] = {
-          display: {
-            color: datum.display.color,
-            isVisible: datum.display.isVisible,
-            isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
-          },
-        };
-        return acc;
-      }, {}),
+      data: _data,
     };
   }
 }
