@@ -25,7 +25,6 @@ function applyFilter(datum, filters: any[] = []) {
     };
     const previousFilter = lookupForFilter(datum, filter.name);
     if (previousFilter) {
-      // todo: remove reduce
       const reduceResult = Filters[filter.name].reduce(
         previousFilter.value,
         filterOption.value,
