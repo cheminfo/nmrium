@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { fileCollectionFromFileList } from 'filelist-utils';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
@@ -53,7 +54,14 @@ function DropZone(props) {
       files.forEach((file) => {
         Object.defineProperty(file, 'webkitRelativePath', { value: file.path });
       });
-      dispatch({ type: LOAD_DROP_FILES, files });
+      fileCollectionFromFileList(files)
+        .then((fileCollection) => {
+          dispatch({ type: LOAD_DROP_FILES, fileCollection });
+        })
+        .catch((e: any) => {
+          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          reportError(e);
+        });
     },
     [dispatch],
   );
