@@ -86,7 +86,7 @@ function ContoursPaths({
       style={{
         opacity: isActive
           ? 1
-          : get(preferences.current, 'general.dimmedSpectraTransparency', 0.1),
+          : get(preferences.current, 'general.dimmedSpectraOpacity', 0.1),
       }}
       d={path}
     />

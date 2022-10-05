@@ -1,5 +1,7 @@
 import { Conrec } from 'ml-conrec';
-import { matrixAbsoluteMedian } from 'ml-spectra-processing';
+
+import { Data2D } from '../types/data2d';
+import { calculateSanPlot } from '../utilities/calculateSanPlot';
 
 export const defaultContourOptions = {
   positive: {
@@ -41,7 +43,8 @@ export default class Processing2D {
 
     this.conrec = new Conrec(minMax.z, { xs, ys, swapAxes: false });
 
-    this.median = matrixAbsoluteMedian(minMax.z);
+    const sanResult = calculateSanPlot('2D', minMax as Data2D);
+    this.median = sanResult.positive;
 
     this.minMax = minMax;
   }

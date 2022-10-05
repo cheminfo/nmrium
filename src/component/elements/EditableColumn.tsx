@@ -18,6 +18,7 @@ interface EditableColumnProps
   value: string | number;
   style?: CSSProperties;
   validate?: (value?: any) => boolean;
+  textOverFlowEllipses?: boolean;
 }
 
 const EditableColumn = forwardRef(function EditableColumn(
@@ -32,6 +33,7 @@ const EditableColumn = forwardRef(function EditableColumn(
     onEditStart = () => null,
     editStatus = false,
     validate = () => true,
+    textOverFlowEllipses = false,
     ...InputProps
   } = props;
 
@@ -87,11 +89,28 @@ const EditableColumn = forwardRef(function EditableColumn(
 
   return (
     <div
-      style={{ display: 'table', width: '100%', height: '100%', ...style }}
+      style={{
+        display: 'table',
+        width: '100%',
+        height: '100%',
+        ...(textOverFlowEllipses
+          ? { whiteSpace: 'nowrap', overflow: 'hidden', display: 'inline-flex' }
+          : {}),
+        ...style,
+      }}
       onDoubleClick={startEditHandler}
     >
       {!enabled && (
-        <span style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+        <span
+          style={{
+            display: 'table-cell',
+            verticalAlign: 'middle',
+            width: 'inherit',
+            ...(textOverFlowEllipses
+              ? { textOverflow: 'ellipsis', overflow: 'hidden' }
+              : {}),
+          }}
+        >
           {value}
         </span>
       )}
