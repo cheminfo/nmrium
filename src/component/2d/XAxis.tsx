@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import { ScaleLinear } from 'd3';
 import { useEffect, useRef, memo } from 'react';
 
 import { Datum2D } from '../../data/types/data2d';
@@ -46,25 +45,11 @@ function XAxis(props: XAxisProps) {
   useEffect(() => {
     if (!show) return;
 
-    let scaleX: ScaleLinear<number, number, never> | null = null;
-
-    if (spectrum?.info.isFid) {
-      const { minX, maxX } = spectrum.data;
-      scaleX = get2DXScale(
-        {
-          width,
-          margin,
-          xDomain: [minX, maxX],
-        },
-        true,
-      );
-    } else {
-      scaleX = get2DXScale({
-        width,
-        margin,
-        xDomain,
-      });
-    }
+    let scaleX = get2DXScale({
+      width,
+      margin,
+      xDomain,
+    });
 
     const xAxis = d3.axisBottom(scaleX).ticks(8).tickFormat(d3.format('0'));
 

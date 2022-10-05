@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import { ScaleLinear } from 'd3';
 import { useEffect, useRef, memo } from 'react';
 
 import { Datum2D } from '../../data/types/data2d';
@@ -54,13 +53,11 @@ function YAxis(props: YAxisProps) {
 
   useEffect(() => {
     if (!show || !yDomain) return;
-    let scaleY: ScaleLinear<number, number, never> | null = null;
-    if (spectrum?.info.isFid) {
-      const { minY, maxY } = spectrum.data;
-      scaleY = get2DYScale({ height, yDomain: [minY, maxY], margin }, true);
-    } else {
-      scaleY = get2DYScale({ height, yDomain, margin });
-    }
+
+    let scaleY = get2DYScale(
+      { height, yDomain, margin },
+      !!spectrum?.info?.isFid,
+    );
 
     const axis = d3.axisRight(scaleY).ticks(8).tickFormat(d3.format('0'));
 
