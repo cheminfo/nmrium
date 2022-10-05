@@ -17,7 +17,7 @@ import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
-import { setTab, setActiveTab } from './ToolsActions';
+import { setTab, setActiveTab, setMargin } from './ToolsActions';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
@@ -130,6 +130,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     resetSpectrumByFilter(draft);
   } else if (refreshDomain) {
     setDomain(draft);
+    setMargin(draft);
     setMode(draft);
   }
 }

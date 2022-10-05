@@ -523,4 +523,5 @@ export {
   setTab,
   setSpectraSameTopHandler,
   resetSpectraScale,
+  setMargin,
 };
