@@ -32,7 +32,7 @@ function TrackerContainer() {
 
   const { x, y } = position;
   const scale2dX = get2DXScale({ margin, width, xDomain });
-  const scale2dY = get2DYScale({ margin, height, yDomain });
+  const scale2dY = get2DYScale({ margin, height, yDomain }, true);
   const data = getSlice(spectrum, {
     x: scale2dX.invert(x),
     y: scale2dY.invert(y),
