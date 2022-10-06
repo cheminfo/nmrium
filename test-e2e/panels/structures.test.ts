@@ -474,3 +474,108 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
   });
 });
+
+test('check callbacks count on changing structures', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
+  const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
+  await test.step('open test page', async () => {
+    await nmrium.page.click('li >> text=Test');
+    await nmrium.page.click('li >> text=1H spectrum test');
+    // wait the spectrum to load
+    await nmrium.page.waitForTimeout(250);
+    await expect(
+      nmrium.page.locator('data-test-id=spectrum-line'),
+    ).toBeVisible();
+
+    await expect(dataCount).toContainText('3');
+    await expect(viewCount).toContainText('3');
+  });
+
+  await test.step('Check the visibly of molecule', async () => {
+    // Open the "Structures" panel.
+    await nmrium.page.dblclick('_react=Splitter');
+    await nmrium.clickPanel('Chemical structures');
+    // The molecule SVG rendering should now be visible in the panel.
+    await expect(
+      nmrium.page.locator('.mol-svg-container #molSVG0'),
+    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    await expect(
+      nmrium.page.locator('.mol-svg-container #molSVG0'),
+    ).toBeVisible();
+
+    // The molecular formula should now be visible in the panel.
+    await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
+
+    // The number of molecules should now be visible in the panel.
+    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+  });
+
+  await test.step('Add a second molecule and check the visibility', async () => {
+    // Click on the "Add Molecule" button.
+    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+
+    // Select the "aromatic ring" tool.
+    await nmrium.page.click('canvas >> nth=0', {
+      position: {
+        x: 35,
+        y: 180,
+      },
+    });
+    // Draw the aromatic ring.
+    await nmrium.page.click('canvas >> nth=1', {
+      position: {
+        x: 50,
+        y: 50,
+      },
+    });
+    // Save the molecule.
+    await nmrium.page.click('text=Save');
+
+    await expect(dataCount).toContainText('4');
+    await expect(viewCount).toContainText('3');
+    // Check the visibility.
+
+    // The molecule SVG rendering should now be visible in the panel.
+    await expect(
+      nmrium.page.locator('.mol-svg-container #molSVG1'),
+    ).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    await expect(
+      nmrium.page.locator('.mol-svg-container #molSVG1'),
+    ).toBeVisible();
+
+    // The molecular formula should now be visible in the panel.
+    await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
+
+    // The number of molecules should now be visible in the panel.
+    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+  });
+  await test.step('Check float molecule', async () => {
+    // Check float molecule btn is off.
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+      ),
+    ).toBeHidden();
+    // Click on float molecule button.
+    await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
+    // Check floated molecule.
+    await expect(nmrium.page.locator('#molSVG')).toBeVisible();
+    // Check float molecule btn is on.
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+      ),
+    ).toBeVisible();
+
+    await expect(dataCount).toContainText('5');
+    await expect(viewCount).toContainText('4');
+  });
+  await test.step('change float position molecule', async () => {
+    await nmrium.page
+      .locator('_react=DraggableStructure >> _react=ButtonAction')
+      .dragTo(nmrium.page.locator('_react=XAxis >> nth=1'), { force: true });
+    await expect(dataCount).toContainText('5');
+    await expect(viewCount).toContainText('5');
+  });
+});
