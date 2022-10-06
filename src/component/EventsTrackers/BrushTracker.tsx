@@ -23,8 +23,11 @@ const initialState = {
   endY: 0,
 };
 
-export const BrushContext = createContext(initialState);
+function stopPageScrolling(event) {
+  event.preventDefault();
+}
 
+export const BrushContext = createContext(initialState);
 interface BrushTrackerProps {
   children: ReactNode;
   className?: string;
@@ -160,6 +163,16 @@ export function BrushTracker({
         onMouseDown={mouseDownHandler}
         onClick={clickHandler}
         onWheel={handleMouseWheel}
+        onMouseEnter={() => {
+          // disable page scrolling once the mouse over the Displayer
+          window.addEventListener('wheel', stopPageScrolling, {
+            passive: false,
+          });
+        }}
+        onMouseLeave={() => {
+          // disable page scrolling once the mouse over the Displayer
+          window.removeEventListener('wheel', stopPageScrolling);
+        }}
       >
         {children}
       </div>
