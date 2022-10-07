@@ -35,11 +35,11 @@ test('check callbacks count', async ({ page }) => {
   await nmrium.page.click('li >> text=Test');
   await nmrium.page.click('li >> text=Full cytisine');
 
+  // wait the spectrum to load
+  await expect(nmrium.page.locator('#nmrSVG')).toBeVisible({ timeout: 10000 });
+
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
-  // wait the spectrum to load
-  await nmrium.page.waitForTimeout(250);
-  await expect(nmrium.page.locator('#nmrSVG path.line ')).toBeVisible();
 
   await expect(dataCount).toContainText('3');
   await expect(viewCount).toContainText('3');
@@ -53,11 +53,10 @@ test('check callbacks count', async ({ page }) => {
   expect(path).not.toContain('NaN');
 
   //switch to 2d
-  await nmrium.page.dblclick('_react=Splitter');
   await nmrium.page.click('_react=InternalTab[tabid="1H,1H"]');
 
   await expect(dataCount).toContainText('3');
-  await expect(viewCount).toContainText('4');
+  await expect(viewCount).toContainText('5');
 
   const spectrumLineLocator = nmrium.page.locator(
     'data-test-id=spectrum-line >> nth=0',

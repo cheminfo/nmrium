@@ -483,7 +483,6 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await nmrium.page.click('li >> text=Test');
     await nmrium.page.click('li >> text=1H spectrum test');
     // wait the spectrum to load
-    await nmrium.page.waitForTimeout(250);
     await expect(
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
@@ -494,7 +493,6 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
   await test.step('Check the visibly of molecule', async () => {
     // Open the "Structures" panel.
-    await nmrium.page.dblclick('_react=Splitter');
     await nmrium.clickPanel('Chemical structures');
     // The molecule SVG rendering should now be visible in the panel.
     await expect(
