@@ -487,8 +487,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText('4');
-    await expect(viewCount).toContainText('4');
+    await expect(dataCount).toContainText('3');
+    await expect(viewCount).toContainText('3');
   });
 
   await test.step('Check the visibly of molecule', async () => {
@@ -530,8 +530,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Save the molecule.
     await nmrium.page.click('text=Save');
 
-    await expect(dataCount).toContainText('5');
-    await expect(viewCount).toContainText('4');
+    await expect(dataCount).toContainText('4');
+    await expect(viewCount).toContainText('3');
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
@@ -566,14 +566,14 @@ test('check callbacks count on changing structures', async ({ page }) => {
       ),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText('6');
-    await expect(viewCount).toContainText('5');
+    await expect(dataCount).toContainText('5');
+    await expect(viewCount).toContainText('4');
   });
   await test.step('change float position molecule', async () => {
     await nmrium.page
       .locator('_react=DraggableStructure >> _react=ButtonAction')
       .dragTo(nmrium.page.locator('_react=XAxis >> nth=1'), { force: true });
-    await expect(dataCount).toContainText('6');
-    await expect(viewCount).toContainText('6');
+    await expect(dataCount).toContainText('5');
+    await expect(viewCount).toContainText('5');
   });
 });
