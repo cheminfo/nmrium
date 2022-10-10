@@ -98,7 +98,16 @@ function XYLabelPointer({ layout, data1D }) {
       default:
         return null;
     }
-  }, [activeSpectrum, data1D, height, margin, spectrum?.info.isFid, trackID, yDomain, yDomains]);
+  }, [
+    activeSpectrum,
+    data1D,
+    height,
+    margin,
+    spectrum?.info.isFid,
+    trackID,
+    yDomain,
+    yDomains,
+  ]);
 
   if (
     step === 'brushing' ||
