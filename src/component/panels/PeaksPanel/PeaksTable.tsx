@@ -63,7 +63,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
-      const shiftValue = parseFloat(event.target.value) - parseFloat(row.value);
+      const shiftValue = parseFloat(event.target.value) - parseFloat(row.x);
       dispatch({ type: SHIFT_SPECTRUM, shiftValue });
     },
     [dispatch],
