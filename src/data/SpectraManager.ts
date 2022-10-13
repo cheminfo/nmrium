@@ -1,6 +1,7 @@
 import { CURRENT_EXPORT_VERSION } from 'nmr-load-save';
 import { fromJCAMP } from 'nmr-parser';
 
+import { Spectra } from '../component/NMRium';
 import { State } from '../component/reducer/Reducer';
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
@@ -94,7 +95,7 @@ function addData(spectra, datum, usedColors) {
   }
 }
 
-export async function fromJSON(data: any[] = [], usedColors: any = {}) {
+export async function fromJSON(data: Spectra = [], usedColors: any = {}) {
   const spectra: any[] = [];
   let promises: any[] = [];
 
