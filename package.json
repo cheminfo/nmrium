@@ -38,7 +38,7 @@
     "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "volta": {
-    "node": "16.17.0"
+    "node": "16.18.0"
   },
   "overrides": {
     "react": "$react",
