@@ -63,11 +63,8 @@ async function resizeRange(nmrium: NmriumPage) {
 }
 
 async function deleteRange(nmrium: NmriumPage) {
-  const rightResizer = nmrium.page.locator('data-test-id=range').nth(1);
-
-  const { x, height, width } =
-    (await rightResizer.boundingBox()) as BoundingBox;
-  await nmrium.page.mouse.move(x + width / 2, height / 2, { steps: 15 });
+  const rangeLocator = nmrium.page.locator('_react=Range >> nth=0 ');
+  await rangeLocator.hover();
   await nmrium.page.keyboard.press('Delete');
   await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(1);
 }
@@ -85,13 +82,14 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
     await addRange(nmrium, 110, 120, 2);
   });
 
-  await test.step('Shift Signal', async () => {
-    //test resize the first range
-    await shiftSignal(nmrium);
-  });
   await test.step('resize one of the ranges', async () => {
     //test resize the first range
     await resizeRange(nmrium);
+  });
+
+  await test.step('Shift Signal', async () => {
+    //test resize the first range
+    await shiftSignal(nmrium);
   });
 
   await test.step('delete one of the ranges', async () => {
