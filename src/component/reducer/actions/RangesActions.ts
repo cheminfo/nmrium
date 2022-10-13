@@ -374,16 +374,19 @@ function handleAddRange(draft: Draft<State>, action) {
 
 function handleChangeRangeRelativeValue(draft, action) {
   const data = action.payload.data;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     changeRangeRelativeValue(draft.data[index], data);
   }
 }
 
 function handleChangeRangeSignalValue(draft, action) {
   const { rangeID, signalID, value } = action.payload;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     const shift = changeRangeSignal(draft.data[index], {
       rangeID,
