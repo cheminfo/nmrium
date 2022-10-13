@@ -17,6 +17,20 @@ async function addRange(
   await expect(nmrium.page.locator(`data-test-id=range`)).toHaveCount(count);
 }
 
+async function shiftSignal(nmrium: NmriumPage) {
+  const signalColumnLocator = nmrium.page.locator(
+    '_react=RangesTable >> .editable-column-input >> nth=0 ',
+  );
+
+  await signalColumnLocator.dblclick();
+  const inputLocator = signalColumnLocator.locator('input');
+  await inputLocator.selectText();
+  await inputLocator.type('100');
+  await inputLocator.press('Enter');
+  const trackerLocator = nmrium.page.locator('_react=XAxis >> text=100');
+  await expect(trackerLocator).toHaveCount(1);
+}
+
 async function resizeRange(nmrium: NmriumPage) {
   const rightResizer = nmrium.page.locator(
     'data-test-id=range >> nth=0 >> _react=SVGResizerHandle >> nth=1',
@@ -71,6 +85,10 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
     await addRange(nmrium, 110, 120, 2);
   });
 
+  await test.step('Shift Signal', async () => {
+    //test resize the first range
+    await shiftSignal(nmrium);
+  });
   await test.step('resize one of the ranges', async () => {
     //test resize the first range
     await resizeRange(nmrium);
