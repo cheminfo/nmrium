@@ -1,10 +1,13 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { read as readDropFiles, migrate } from 'nmr-load-save';
+import {
+  read as readDropFiles,
+  migrate,
+  readNMRiumObject,
+} from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
-import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
@@ -457,9 +460,9 @@ export function dispatchMiddleware(dispatch) {
     switch (action.type) {
       case types.INITIATE: {
         if (action.payload) {
-          const { spectra, ...res } = migrate(action.payload);
-          void SpectraManager.fromJSON(spectra, usedColors).then((data) => {
-            action.payload = { spectra: data, ...res, usedColors };
+          const result = migrate(action.payload);
+          void readNMRiumObject(result, usedColors).then((data) => {
+            action.payload = { ...data, usedColors };
             dispatch(action);
           });
         }

@@ -85,33 +85,6 @@ function addJcampSS(spectra, jcampDatum, options, usedColors) {
   }
 }
 
-function addData(spectra, datum, usedColors) {
-  const dimension = datum.info.dimension;
-  if (dimension === 1) {
-    spectra.push(Datum1D.initiateDatum1D(datum, usedColors));
-  }
-  if (dimension === 2) {
-    spectra.push(Datum2D.initiateDatum2D(datum, usedColors));
-  }
-}
-
-export async function fromJSON(data: Spectra = [], usedColors: any = {}) {
-  const spectra: any[] = [];
-  let promises: any[] = [];
-
-  for (let datum of data) {
-    const { jcamp, jcampURL } = datum?.source || {};
-    if (jcamp != null) {
-      addJcamp(spectra, jcamp, datum, usedColors);
-    } else if (jcampURL != null) {
-      promises.push(addJcampFromURL(spectra, jcampURL, datum, usedColors));
-    } else {
-      addData(spectra, datum, usedColors);
-    }
-  }
-  await Promise.all(promises);
-  return spectra;
-}
 export function addJcamps(files, usedColors) {
   const spectra = [];
   for (const file of files) {
