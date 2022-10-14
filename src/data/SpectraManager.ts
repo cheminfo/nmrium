@@ -1,7 +1,7 @@
-import { CURRENT_EXPORT_VERSION } from 'nmr-load-save';
+import { fileCollectionFromFiles } from 'filelist-utils';
+import { CURRENT_EXPORT_VERSION, read } from 'nmr-load-save';
 import { fromJCAMP } from 'nmr-parser';
 
-import { Spectra } from '../component/NMRium';
 import { State } from '../component/reducer/Reducer';
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
@@ -23,11 +23,12 @@ export enum DataExportOptions {
 
 export type DataExportOptionsType = keyof typeof DataExportOptions;
 
-export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
-  return fetch(jcampURL)
+export function createSpectraFetchFromURL(url) {
+  return fetch(url)
     .then((response) => response.arrayBuffer())
-    .then((jcamp) => {
-      addJcamp(spectra, jcamp, options, usedColors);
+    .then((data) => {
+      const fileName = url.replace(/^.*[\\/]/, '');
+      return new File([data], fileName);
     });
 }
 
@@ -71,8 +72,6 @@ function addJcampSS(spectra, jcampDatum, options, usedColors) {
       );
     }
     if (dimension === 2) {
-      // console.log(options, jcampDatum.entry);
-
       spectra.push(
         Data2DManager.fromParsedJcamp(
           jcampDatum.entry,
@@ -85,33 +84,41 @@ function addJcampSS(spectra, jcampDatum, options, usedColors) {
   }
 }
 
-function addData(spectra, datum, usedColors) {
+function getData(datum, usedColors) {
   const dimension = datum.info.dimension;
+
   if (dimension === 1) {
-    spectra.push(Datum1D.initiateDatum1D(datum, usedColors));
-  }
-  if (dimension === 2) {
-    spectra.push(Datum2D.initiateDatum2D(datum, usedColors));
+    return Datum1D.initiateDatum1D(datum, usedColors);
+  } else if (dimension === 2) {
+    return Datum2D.initiateDatum2D(datum, usedColors);
   }
 }
 
-export async function fromJSON(data: Spectra = [], usedColors: any = {}) {
-  const spectra: any[] = [];
-  let promises: any[] = [];
+export async function fromJSON(data: any[] = [], usedColors: any = {}) {
+  let spectra: any[] = [];
+  let promises: Promise<File>[] = [];
 
   for (let datum of data) {
     const { jcamp, jcampURL } = datum?.source || {};
     if (jcamp != null) {
       addJcamp(spectra, jcamp, datum, usedColors);
     } else if (jcampURL != null) {
-      promises.push(addJcampFromURL(spectra, jcampURL, datum, usedColors));
+      promises.push(createSpectraFetchFromURL(jcampURL));
     } else {
-      addData(spectra, datum, usedColors);
+      spectra.push(getData(datum, usedColors));
     }
   }
-  await Promise.all(promises);
-  return spectra;
+
+  return spectra.concat(await resolveSpectra(promises, usedColors));
 }
+
+async function resolveSpectra(promises: Promise<File>[], usedColors) {
+  const files = await Promise.all(promises);
+  const fileCollections = await fileCollectionFromFiles(files);
+  const readResult = await read(fileCollections);
+  return readResult.spectra.map((spectrum) => getData(spectrum, usedColors));
+}
+
 export function addJcamps(files, usedColors) {
   const spectra = [];
   for (const file of files) {
