@@ -21,7 +21,7 @@ const styles: Record<'container' | 'infoText' | 'errorText', CSSProperties> = {
   },
 };
 
-const EDIT_SIGNAL_INFO_TEXT = `Focus on an input field and press Shift + Drag &#38; Drop to draw a coupling constant in spectrum view.`;
+const EDIT_SIGNAL_INFO_TEXT = `Focus on an input field and press Shift + Drag and Drop to draw a coupling constant in spectrum view.`;
 const ADD_SIGNAL_INFO_TEXT = `Focus on the input field and press Shift + Left mouse click to select new signal delta value in spectrum view.`;
 
 const InfoText = (props: { value: string; type?: 'info' | 'error' }) => {
@@ -52,7 +52,7 @@ export function SignalFormInfo() {
       }}
     >
       {errors.signals &&
-      (errors.signals.noSignals || errors.signals.noCouplings) ? (
+        (errors.signals.noSignals || errors.signals.noCouplings) ? (
         <div>
           <p className="errorText">
             {errors.signals.noSignals || errors.signals.noCouplings[0].message}
