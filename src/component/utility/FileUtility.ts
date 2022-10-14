@@ -13,6 +13,7 @@ export const FILES_SIGNATURES = {
 };
 
 function getFileSignature(fileArrayBuffer) {
+  // eslint-disable-next-line no-restricted-properties
   return new Uint8Array(fileArrayBuffer)
     .slice(0, 4)
     .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
@@ -80,25 +81,8 @@ function loadFiles<T = unknown>(
   ) as Promise<Array<T>>;
 }
 
-async function loadFilesFromZip(files, options: { asBuffer?: boolean } = {}) {
-  const result: Array<{ binary: any; name: string; extension: string }> = [];
-  for (const file of files) {
-    try {
-      const binary = await file.async(options.asBuffer ? 'uint8array' : 'text');
-      const name = getFileName(file.name);
-      const extension = getFileExtension(file.name);
-      result.push({ binary, name, extension });
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-    }
-  }
-  return result;
-}
-
 export {
   loadFiles,
-  loadFilesFromZip,
   loadFile,
   getFileExtension,
   getFileName,
