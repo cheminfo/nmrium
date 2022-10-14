@@ -2,7 +2,6 @@ import { xyReduce } from 'ml-spectra-processing';
 
 import { Data1D } from '../../../../../data/types/data1d';
 import { Data2D } from '../../../../../data/types/data2d';
-
 import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot';
 
 export function processSnapPlot<T extends '1D' | '2D'>(

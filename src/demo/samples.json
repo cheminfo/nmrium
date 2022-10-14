@@ -184,7 +184,7 @@
   },
   {
     "groupName": "Test",
-    "children": [ 
+    "children": [
       {
         "title": "empty",
         "view": "Test"
@@ -198,8 +198,11 @@
         "file": "./data/cytisine/2d/all.json",
         "title": "Full cytisine",
         "view": "Test"
+      },
+      {
+        "file": "./data/tests/test-jcamp-as-string.nmrium",
+        "title": "jcamp as string"
       }
     ]
   }
-
 ]

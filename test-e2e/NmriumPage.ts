@@ -86,28 +86,31 @@ export default class NmriumPage {
     expect(svgLength).toBeLessThan(length * 1.2);
   }
   public async dropFile(file: string | string[]) {
-    const bufferData: string[] = [];
+    const filename: string[] = [];
+
     if (typeof file === 'string') {
-      const data = `data:application/octet-stream;base64,${readFileSync(
-        `test-e2e/data/${file}`,
-      ).toString('base64')}`;
-      bufferData.push(data);
+      filename.push(file);
     } else {
-      file.forEach((f) => {
-        const data = `data:application/octet-stream;base64,${readFileSync(
-          `test-e2e/data/${f}`,
-        ).toString('base64')}`;
-        bufferData.push(data);
-      });
+      filename.push(...file);
     }
+
+    const bufferData: string[] = [];
+    filename.forEach((f) => {
+      const data = `data:application/octet-stream;base64,${readFileSync(
+        `test-e2e/data/${f}`,
+      ).toString('base64')}`;
+
+      bufferData.push(data);
+    });
+
     const dataTransfer = await this.page.evaluateHandle(
-      async ({ bufferData, fileName }) => {
+      async ({ bufferData, filename }) => {
         const dt = new DataTransfer();
 
         await Promise.all(
-          bufferData.map(async (buffer) => {
+          bufferData.map(async (buffer, i) => {
             const blobData = await fetch(buffer).then((res) => res.blob());
-            const file = new File([blobData], fileName);
+            const file = new File([blobData], filename[i]);
             dt.items.add(file);
           }),
         );
@@ -116,7 +119,7 @@ export default class NmriumPage {
       },
       {
         bufferData,
-        fileName: file,
+        filename,
       },
     );
 

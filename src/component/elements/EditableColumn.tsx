@@ -98,6 +98,7 @@ const EditableColumn = forwardRef(function EditableColumn(
           : {}),
         ...style,
       }}
+      className="editable-column-input"
       onDoubleClick={startEditHandler}
     >
       {!enabled && (

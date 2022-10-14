@@ -80,7 +80,12 @@ function Left1DChart({
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-left)`}>
-        <path className="line" stroke="black" fill="none" d={paths} />
+        <path
+          className="line"
+          stroke={spectrum.display.color}
+          fill="none"
+          d={paths}
+        />
       </g>
     </svg>
   );

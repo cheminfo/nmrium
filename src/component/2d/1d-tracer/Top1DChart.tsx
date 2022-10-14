@@ -72,7 +72,7 @@ function Top1DChart({
       <g clipPath={`url(#${displayerKey}clip-top)`}>
         <path
           className="line"
-          stroke="red"
+          stroke={spectrum.display.color}
           fill="none"
           strokeWidth="1px"
           d={paths}
