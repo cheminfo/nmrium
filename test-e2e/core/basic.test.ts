@@ -36,7 +36,7 @@ test('check callbacks count', async ({ page }) => {
   await nmrium.page.click('li >> text=Full cytisine');
 
   // wait the spectrum to load
-  await expect(nmrium.page.locator('#nmrSVG')).toBeVisible({ timeout: 10000 });
+  await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
