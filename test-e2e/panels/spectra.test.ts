@@ -127,33 +127,35 @@ test('2d spectrum', async ({ page }) => {
     await expect(Tabs.last()).toHaveText('1H,1H');
   });
   await test.step('Change 1H spectrum color', async () => {
+    await nmrium.page.click('_react=InternalTab[tabid="1H"]');
+
     // Check ColorIndicator initial color
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[color.color="#7c2353"]'),
+      nmrium.page.locator('_react=ColorIndicator[color.color="#C10020" i]'),
     ).toBeVisible();
     // Check spectrum initial color match with ColorIndicator
     await expect(
       nmrium.page.locator(
-        'data-test-id=spectrum-line >> _react=Line[display.color="#7c2353"]',
+        'data-test-id=spectrum-line >> _react=Line[display.color="#C10020" i]',
       ),
     ).toBeVisible();
 
     // Open Change color modal
     await nmrium.page.click('_react=ColorIndicator');
 
-    // change the color to #ddb1c9ff
+    // change the color to #FFFFFF
     await nmrium.page.click('_react=ColorPicker >> div >> nth=0', {
-      position: { x: 40, y: 20 },
+      position: { x: 0, y: 0 },
     });
 
     // Check that ColorIndicator color changed
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[color.color="#ddb1c9ff"]'),
+      nmrium.page.locator('_react=ColorIndicator[color.color*="#FFFFFF" i]'),
     ).toBeVisible();
     // Check that spectrum color changed
     await expect(
       nmrium.page.locator(
-        'data-test-id=spectrum-line >> _react=Line[display.color="#ddb1c9ff"]',
+        'data-test-id=spectrum-line >> _react=Line[display.color*="#FFFFFF" i]',
       ),
     ).toBeVisible();
 
