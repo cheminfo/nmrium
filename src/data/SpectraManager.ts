@@ -1,16 +1,12 @@
-import { CURRENT_EXPORT_VERSION } from 'nmr-load-save';
-import { fromJCAMP } from 'nmr-parser';
+import { CURRENT_EXPORT_VERSION, processJcamp } from 'nmr-load-save';
 
-import { Spectra } from '../component/NMRium';
 import { State } from '../component/reducer/Reducer';
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 import { Preferences } from '../types/Preferences';
 
-import * as Data1DManager from './data1d/Data1DManager';
 import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
-import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
 import { Datum1D as Datum1DType } from './types/data1d';
@@ -31,58 +27,16 @@ export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
     });
 }
 
-export function addJcamp(spectra, jcamp, options, usedColors) {
+export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
-  const entries = fromJCAMP(jcamp, {
-    noContour: true,
+  const { spectra } = processJcamp(jcamp, usedColors, {
+    noContours: true,
     xy: true,
     keepRecordsRegExp: /.*/,
     profiling: true,
   });
-  if (entries.length === 0) return;
-  // Should be improved when we have a more complex case
-  for (let index = 0; index < entries.length; index++) {
-    let entry = entries[index];
-
-    const components = entry.dependentVariables?.[0]?.components;
-    if (components && (components.length > 0 || components.z)) {
-      addJcampSS(spectra, { index, entry }, options, usedColors);
-    }
-  }
-}
-
-function addJcampSS(spectra, jcampDatum, options, usedColors) {
-  const source = options?.source || {};
-
-  if (
-    !('jcampSpectrumIndex' in source) ||
-    source.jcampSpectrumIndex === jcampDatum.index
-  ) {
-    const dimension = jcampDatum.entry.info.dimension;
-
-    if (dimension === 1) {
-      spectra.push(
-        Data1DManager.fromParsedJcamp(
-          jcampDatum.entry,
-          options,
-          usedColors,
-          jcampDatum.index,
-        ),
-      );
-    }
-    if (dimension === 2) {
-      // console.log(options, jcampDatum.entry);
-
-      spectra.push(
-        Data2DManager.fromParsedJcamp(
-          jcampDatum.entry,
-          options,
-          usedColors,
-          jcampDatum.index,
-        ),
-      );
-    }
-  }
+  if (spectra.length === 0) return;
+  output.push(...spectra);
 }
 
 export function addJcamps(files, usedColors) {
