@@ -475,7 +475,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
 });
 
-test.only('check callbacks count on changing structures', async ({ page }) => {
+test('check callbacks count on changing structures', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
