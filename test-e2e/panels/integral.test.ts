@@ -61,11 +61,8 @@ async function resizeIntegral(nmrium: NmriumPage) {
 }
 
 async function deleteIntegral(nmrium: NmriumPage) {
-  const rightResizer = nmrium.page.locator('_react=Integral').first();
-
-  const { x, height, width } =
-    (await rightResizer.boundingBox()) as BoundingBox;
-  await nmrium.page.mouse.move(x + width / 2, height / 2, { steps: 15 });
+  const container = nmrium.page.locator('_react=Integral >> nth=0 ');
+  await container.hover();
   await nmrium.page.keyboard.press('Delete');
   await expect(nmrium.page.locator('_react=Integral')).toHaveCount(1);
 }

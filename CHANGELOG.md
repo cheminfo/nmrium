@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.32.0](https://github.com/cheminfo/nmrium/compare/v0.31.0...v0.32.0) (2022-10-13)
+
+
+### Features
+
+* add ellipsis to molecule label when exceeding the defined size ([62b268a](https://github.com/cheminfo/nmrium/commit/62b268a45db1e0b119642d8ca4d834f07236d207)), closes [#1784](https://github.com/cheminfo/nmrium/issues/1784)
+* display the index of the x array of the spectrum in the 1D footer ([8f32820](https://github.com/cheminfo/nmrium/commit/8f328209d741cf823815eb00acd903bb7d01f868)), closes [#1795](https://github.com/cheminfo/nmrium/issues/1795)
+* improve zoom tool ([#1794](https://github.com/cheminfo/nmrium/issues/1794)) ([9fe278f](https://github.com/cheminfo/nmrium/commit/9fe278f4ed0b0b92c0d480ef230532a73f342bcf)), closes [#1783](https://github.com/cheminfo/nmrium/issues/1783)
+* limit the Molecule label length to a maximum of 10 characters ([9a49474](https://github.com/cheminfo/nmrium/commit/9a4947477fb190f270e1e15d73a7aea74f3c717d)), closes [#1691](https://github.com/cheminfo/nmrium/issues/1691)
+* sync 2d chart spectrum colors ([#1807](https://github.com/cheminfo/nmrium/issues/1807)) ([10c7b1a](https://github.com/cheminfo/nmrium/commit/10c7b1af7d8d5399233237fedf5ade34eb66aad8))
+
+
+### Bug Fixes
+
+* **contours:** use xSanplot instead of absMedian ([#1790](https://github.com/cheminfo/nmrium/issues/1790)) ([e8b16c7](https://github.com/cheminfo/nmrium/commit/e8b16c7a08624cc32212dc71cee487dab326bfb9))
+* copy to clipboard in Safari ([a6b54c9](https://github.com/cheminfo/nmrium/commit/a6b54c956a7b3c8b860ecd346174879d91df769c))
+* count callback tests ([#1802](https://github.com/cheminfo/nmrium/issues/1802)) ([2d69b50](https://github.com/cheminfo/nmrium/commit/2d69b50c1c821775fb6025c508f07b1f48963c67))
+* phase correction crash after absolute ([e185b71](https://github.com/cheminfo/nmrium/commit/e185b712c4b497e1b665323299afb3b129fdfaf1)), closes [#1766](https://github.com/cheminfo/nmrium/issues/1766)
+* shift spectrum not working when change the value directly from peaks table ([acd1ab3](https://github.com/cheminfo/nmrium/commit/acd1ab3c88aeeb52f6ce1b8665769792b55e19d8))
+* stop page scrolling when zooming in spectra by mouse wheel ([46e0b16](https://github.com/cheminfo/nmrium/commit/46e0b16cf3503260abbeae7f9f3bb53344ca63b6)), closes [#1799](https://github.com/cheminfo/nmrium/issues/1799)
+* switch between Real and imaginary spectra ([bfbae61](https://github.com/cheminfo/nmrium/commit/bfbae61840e8f8e404eb7506218128ab4061bc5b)), closes [#1780](https://github.com/cheminfo/nmrium/issues/1780)
+
 ## [0.31.0](https://github.com/cheminfo/nmrium/compare/v0.30.0...v0.31.0) (2022-09-23)
 
 
