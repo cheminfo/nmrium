@@ -48,15 +48,28 @@ async function shiftX(nmrium: NmriumPage) {
   await expect(peakInputLocator).toHaveValue(/10\.00?/);
 }
 
-async function deletePeak(nmrium: NmriumPage) {
-  const peakAnnotationLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=1',
+async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
+  const ppmColumnLocator = nmrium.page.locator(
+    '_react=PeaksTable >> .editable-column-input >> nth=1 ',
   );
 
-  const { x, width, y, height } =
-    (await peakAnnotationLocator.boundingBox()) as BoundingBox;
+  await ppmColumnLocator.dblclick();
+  const inputLocator = ppmColumnLocator.locator('input');
+  await inputLocator.selectText();
+  await inputLocator.type('20');
+  await inputLocator.press('Enter');
 
-  await nmrium.page.mouse.move(x + width / 2, y + height / 2);
+  const peakInputLocator = nmrium.page.locator(
+    '_react=PeakAnnotation >> nth=0 >> input',
+  );
+  await expect(peakInputLocator).toHaveValue(/20\.00?/);
+}
+
+async function deletePeak(nmrium: NmriumPage) {
+  const peakAnnotationLocator = nmrium.page.locator(
+    '_react=PeakAnnotation >> nth=0',
+  );
+  await peakAnnotationLocator.hover();
   await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
@@ -73,6 +86,8 @@ test('add/shift/delete peaks', async ({ page }) => {
 
   await test.step('Shift spectrum over X axis', async () => {
     await shiftX(nmrium);
+    // shift the spectra by change delta from peaks table
+    await shiftSpectraByDeltaColumn(nmrium);
   });
 
   await test.step('Delete peak', async () => {

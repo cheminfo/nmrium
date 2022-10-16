@@ -23,8 +23,11 @@ const initialState = {
   endY: 0,
 };
 
-export const BrushContext = createContext(initialState);
+function stopPageScrolling(event) {
+  event.preventDefault();
+}
 
+export const BrushContext = createContext(initialState);
 interface BrushTrackerProps {
   children: ReactNode;
   className?: string;
@@ -69,6 +72,28 @@ export function BrushTracker({
 
         setMouseDownTime(event.timeStamp);
       }
+
+      function moveCallback(event) {
+        dispatch({
+          type: 'MOVE',
+          screenX: event.screenX,
+          screenY: event.screenY,
+          clientX: event.clientX,
+          clientY: event.clientY,
+        });
+      }
+
+      function mouseUpCallback() {
+        dispatch({
+          type: 'UP',
+        });
+        window.removeEventListener('mousemove', moveCallback);
+        window.removeEventListener('mouseup', mouseUpCallback);
+      }
+
+      window.addEventListener('mousemove', moveCallback);
+      window.addEventListener('mouseup', mouseUpCallback);
+
       return false;
     },
     [noPropagation],
@@ -130,35 +155,24 @@ export function BrushTracker({
     }
   }, [onBrush, state]);
 
-  const moveCallback = useCallback((event) => {
-    dispatch({
-      type: 'MOVE',
-      screenX: event.screenX,
-      screenY: event.screenY,
-      clientX: event.clientX,
-      clientY: event.clientY,
-    });
-  }, []);
-
-  const upCallback = useCallback((event) => {
-    dispatch({
-      type: 'UP',
-      clientX: event.clientX,
-      clientY: event.clientY,
-    });
-    return false;
-  }, []);
-
   return (
     <BrushContext.Provider value={state}>
       <div
         className={className}
         style={style}
         onMouseDown={mouseDownHandler}
-        onMouseUp={upCallback}
-        onMouseMove={moveCallback}
         onClick={clickHandler}
         onWheel={handleMouseWheel}
+        onMouseEnter={() => {
+          // disable page scrolling once the mouse over the Displayer
+          window.addEventListener('wheel', stopPageScrolling, {
+            passive: false,
+          });
+        }}
+        onMouseLeave={() => {
+          // disable page scrolling once the mouse over the Displayer
+          window.removeEventListener('wheel', stopPageScrolling);
+        }}
       >
         {children}
       </div>
@@ -170,13 +184,8 @@ function reducer(state, action) {
   switch (action.type) {
     case 'UP':
       if (state.step === 'brushing' || state.step === 'start') {
-        const { clientX, clientY } = action;
-
         return {
           ...state,
-          endX: clientX - state.boundingRect.x,
-          endY: clientY - state.boundingRect.y,
-
           step: state.step === 'start' ? 'initial' : 'end',
         };
       }
@@ -194,7 +203,6 @@ function reducer(state, action) {
         } = action;
         const x = clientX - boundingRect.x;
         const y = clientY - boundingRect.y;
-
         return {
           ...state,
           shiftKey,

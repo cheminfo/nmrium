@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { useContext, useCallback, Fragment, memo } from 'react';
+import { useContext, Fragment, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
@@ -93,18 +93,6 @@ function FooterBannerInner({
 
   const format = useFormatNumberByNucleus(activeTab);
 
-  const getYValue = useCallback(
-    (xPosition) => {
-      if (spectrum) {
-        const data = get1DDataXY(spectrum);
-        const xIndex = xFindClosestIndex(data.x, scaleX().invert(xPosition));
-        return data.y[xIndex];
-      }
-      return 1;
-    },
-    [spectrum, scaleX],
-  );
-
   if (
     !position ||
     position.y < margin.top ||
@@ -113,6 +101,23 @@ function FooterBannerInner({
     position.y > height - margin.bottom
   ) {
     return <div css={styles} />;
+  }
+
+  function getXIndex(xPosition) {
+    if (spectrum) {
+      const data = get1DDataXY(spectrum);
+      return xFindClosestIndex(data.x, scaleX().invert(xPosition));
+    }
+    return 0;
+  }
+
+  function getYValue(xPosition) {
+    if (spectrum) {
+      const data = get1DDataXY(spectrum);
+      const xIndex = getXIndex(xPosition);
+      return data.y[xIndex];
+    }
+    return 1;
   }
 
   return (
@@ -133,6 +138,9 @@ function FooterBannerInner({
             </span>
             <span className="unit">Hz</span>
             <span className="value">) </span>
+            <span>,</span>
+            <span className="label"> Index: </span>
+            <span className="value">{getXIndex(position.x)}</span>
           </>
         )}
       </div>
