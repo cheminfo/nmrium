@@ -60,14 +60,14 @@ function SpectrumsTabsInner({
   useEffect(() => {
     if (data) {
       const visibleMarkers: Array<{ id: string }> = [];
-      data.forEach((datum) => {
+      for (const datum of data) {
         if (
           datum.info.dimension === 1 &&
           (datum as Datum1D).display.isPeaksMarkersVisible
         ) {
           visibleMarkers.push({ id: datum.id });
         }
-      });
+      }
       setMarkersVisible(visibleMarkers);
     }
   }, [data, dispatch]);

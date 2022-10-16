@@ -64,15 +64,18 @@ function AdditionalColumnHeader({
   const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
-    const titleArray: Array<string> = [];
-    correlation.link.forEach((link) => {
-      if (
-        link.pseudo === false &&
-        !titleArray.includes(link.experimentType.toUpperCase())
-      ) {
-        titleArray.push(link.experimentType.toUpperCase());
-      }
-    });
+    const title = [
+      ...new Set(
+        correlation.link
+          .map((link) => {
+            if (link.pseudo === false) {
+              return link.experimentType.toUpperCase();
+            }
+            return undefined;
+          })
+          .sort(),
+      ),
+    ].join('/');
 
     return {
       style: {
@@ -83,9 +86,7 @@ function AdditionalColumnHeader({
           ? '#f5f5dc'
           : 'inherit',
       },
-      title:
-        correlation.pseudo === false &&
-        titleArray.sort((a, b) => a.localeCompare(b)).join('/'),
+      title: correlation.pseudo === false && title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };

@@ -19,6 +19,7 @@ import {
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
+import { assert } from '../utility/assert';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
@@ -52,12 +53,12 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     nucleuses.forEach((nucleus) => {
       if (activeSpectra[nucleus]?.id) {
         const id = activeSpectra[nucleus]?.id;
+        assert(id, `Error in Viewer2D: id is not defined`);
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
         );
-        if (spectrum) {
-          spectrumData.push(spectrum);
-        }
+        assert(spectrum, `Spectrum with id ${id} not found`);
+        spectrumData.push(spectrum);
       } else {
         spectrumData.push(null);
       }

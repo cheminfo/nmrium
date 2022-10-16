@@ -118,17 +118,13 @@ export function usePanelPreferencesByNuclei<T extends Panel>(
   );
 
   return useMemo(() => {
-    const _nuclei: Array<any> = [];
-    nuclei.forEach((nucleusLabel) => {
-      _nuclei[nucleusLabel] = getPanelPreferences(
-        current,
-        panelKey,
-        nucleusLabel,
-        true,
-      );
-    });
     return {
-      nuclei: _nuclei,
+      nuclei: Object.fromEntries(
+        nuclei.map((nucleusLabel) => [
+          nucleusLabel,
+          getPanelPreferences(current, panelKey, nucleusLabel, true),
+        ]),
+      ),
       ...restPreferences,
     };
   }, [current, nuclei, panelKey, restPreferences]);

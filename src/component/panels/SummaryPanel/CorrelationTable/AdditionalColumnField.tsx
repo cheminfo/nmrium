@@ -221,14 +221,14 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
-  const title = useMemo(() => {
-    const title: Array<string> = [];
-    commonLinks.forEach((link) => {
-      if (!title.includes(link.experimentType.toUpperCase())) {
-        title.push(link.experimentType.toUpperCase());
-      }
-    });
-    return title.join('/');
+  const title: string = useMemo(() => {
+    return [
+      ...new Set(
+        commonLinks.link.map((link) => {
+          return link.experimentType.toUpperCase();
+        }),
+      ),
+    ].join('/');
   }, [commonLinks]);
 
   const isInViewRow = useInView({ correlation: rowCorrelation });

@@ -167,15 +167,17 @@ function PredictSpectraModal({
           isLoading: true,
         });
 
-        const predictedSpectra: Array<string> = [];
-        Object.entries(values.spectra).forEach(([key, value]) => {
-          if (value) {
-            predictedSpectra.push(key);
-          }
-        });
+        const predictedSpectra = Object.entries(values.spectra)
+          .map(([key, value]) => {
+            if (value) {
+              return key;
+            }
+            return undefined;
+          })
+          .join(',');
 
         const hideLoading = await alert.showLoading(
-          `Predict ${predictedSpectra.join(',')} in progress`,
+          `Predict ${predictedSpectra} in progress`,
         );
 
         dispatch({

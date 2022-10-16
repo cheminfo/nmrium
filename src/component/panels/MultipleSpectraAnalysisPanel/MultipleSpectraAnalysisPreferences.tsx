@@ -82,10 +82,12 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   }));
 
   useEffect(() => {
-    const result = {};
-    Object.keys(data.columns).forEach((key) => {
-      result[key] = { ...data.columns[key], tempKey: key };
-    });
+    const result = Object.fromEntries(
+      Object.keys(data.columns).map((key) => [
+        key,
+        { ...data.columns[key], tempKey: key },
+      ]),
+    );
     setColumns(result);
     refForm.current.setValues({ columns: result, code: data.code });
   }, [data]);
@@ -103,12 +105,12 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
             .required()
             .test('unique', 'must be unique column name', (colmnName) => {
               const formData = refForm.current.values.columns;
-              const cols = [];
-              Object.keys(formData).forEach((colKey) => {
+              const cols: Array<string | undefined> = [];
+              for (const colKey of Object.keys(formData)) {
                 if (formData[colKey].tempKey === colmnName) {
-                  (cols as any[]).push(colmnName);
+                  cols.push(colmnName);
                 }
-              });
+              }
               return cols.length === 1;
             }),
           ...(columns[key].type === COLUMNS_TYPES.FORMULA
@@ -129,9 +131,9 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
     (values) => {
       onAfterSave?.(true);
       const result: any = {};
-      Object.entries(values.columns).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(values.columns)) {
         result[key] = { ...columns[key], ...(value as any) };
-      });
+      }
       dispatch({
         type: SET_ANALYZE_SPECTRA_COLUMNS,
         payload: { code: values.code, columns: result },

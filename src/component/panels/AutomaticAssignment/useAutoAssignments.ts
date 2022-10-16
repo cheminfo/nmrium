@@ -1,3 +1,5 @@
+import { assert } from 'console';
+
 import {
   getAssignments as getAssignmentsData,
   SpectraData,
@@ -21,19 +23,18 @@ export interface AutoAssignmentsData {
 }
 
 function mapSpectra(data: Spectra) {
-  const spectra: SpectraData[] = [];
-  data.forEach((spectrum) => {
+  return data.map((spectrum) => {
     const { id, info } = spectrum;
-    const dimension = spectrum.info.dimension;
+    const dimension = info.dimension;
+    assert(dimension === 1 || dimension === 2, 'dimension must be 1 or 2');
     if (dimension === 1) {
       const ranges = (spectrum as Datum1D).ranges.values;
-      spectra.push({ id, info, ranges });
-    } else if (dimension === 2) {
+      return { id, info, ranges };
+    } else {
       const zones = (spectrum as Datum2D).zones.values;
-      spectra.push({ id, info, zones });
+      return { id, info, zones };
     }
   });
-  return spectra;
 }
 
 export function useAutoAssignments() {

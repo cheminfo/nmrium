@@ -22,12 +22,12 @@ export default function initAssignment(action) {
 
 function setRangesAssignments(state: AssignmentState, ranges: Ranges) {
   const diaIDRecords: Array<{ id: string; diaIDs: string[] }> = [];
-  ranges.values.forEach(({ id, diaIDs, signals }) => {
+  for (const { id, diaIDs, signals } of ranges.values) {
     diaIDRecords.push({ id, diaIDs: diaIDs || [] });
     for (const signal of signals) {
       diaIDRecords.push({ id: signal.id, diaIDs: signal.diaIDs || [] });
     }
-  });
+  }
   for (const { id, diaIDs } of diaIDRecords) {
     for (const diaID of diaIDs) {
       setAssignment(state, id, 'x', diaID);

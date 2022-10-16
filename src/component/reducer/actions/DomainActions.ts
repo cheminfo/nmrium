@@ -43,16 +43,16 @@ function getDomain(draft: Draft<State>) {
 
   const data = getActiveData(draft);
   try {
-    data.forEach((d: Datum1D) => {
+    for (const d of data) {
       const { display, data } = d;
       const domain = [data.x[0], data.x[data.x.length - 1]];
       xDomains[d.id] = domain;
       if (display.isVisible) {
         xArray = xArray.concat(domain);
       }
-    });
+    }
 
-    data.forEach((d: Datum1D) => {
+    for (const d of data) {
       const { display } = d;
       const data = get1DDataXY(d);
 
@@ -62,7 +62,7 @@ function getDomain(draft: Draft<State>) {
       if (display.isVisible) {
         yArray = yArray.concat(_extent);
       }
-    });
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -91,25 +91,31 @@ function get2DDomain(state: State) {
   const nucleus = activeTab.split(',');
 
   try {
-    data.forEach((datum: Datum1D | Datum2D) => {
-      if (
-        isSpectrum2D(datum) &&
-        datum.info.nucleus?.join(',') === activeTab &&
-        datum.info.isFt
-      ) {
-        xArray = xArray.concat([datum.data.minX, datum.data.maxX]);
-      }
-    });
+    xArray = data
+      .map((datum: Datum1D | Datum2D) => {
+        if (
+          isSpectrum2D(datum) &&
+          datum.info.nucleus?.join(',') === activeTab &&
+          datum.info.isFt
+        ) {
+          return [datum.data.minY, datum.data.maxY];
+        }
+        return [];
+      })
+      .flat();
 
-    data.forEach((datum: Datum1D | Datum2D) => {
-      if (
-        isSpectrum2D(datum) &&
-        datum.info.nucleus?.join(',') === activeTab &&
-        datum.info.isFt
-      ) {
-        yArray = yArray.concat([datum.data.minY, datum.data.maxY]);
-      }
-    });
+    yArray = data
+      .map((datum: Datum1D | Datum2D) => {
+        if (
+          isSpectrum2D(datum) &&
+          datum.info.nucleus?.join(',') === activeTab &&
+          datum.info.isFt
+        ) {
+          return [datum.data.minY, datum.data.maxY];
+        }
+        return [];
+      })
+      .flat();
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);

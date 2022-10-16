@@ -3,16 +3,17 @@ import { ObjectShape } from 'yup/lib/object';
 
 import { Workspace } from '../../workspaces/Workspace';
 
-const formattingElementValidation = (obj: Workspace) => {
-  const validate: ObjectShape = {};
-  Object.keys(obj.formatting.nuclei).forEach((key) => {
-    validate[key] = Yup.object().shape({
-      name: Yup.string().trim().required('Nucleus is a required field'),
-      ppm: Yup.string().trim().required('PPM format is a required field'),
-      hz: Yup.string().trim().required('Hz format  is a required field'),
-    });
-  });
-  return validate;
+const formattingElementValidation = (obj: Workspace): ObjectShape => {
+  return Object.fromEntries(
+    Object.keys(obj.formatting.nuclei).map((key) => [
+      key,
+      Yup.object().shape({
+        name: Yup.string().trim().required('Nucleus is a required field'),
+        ppm: Yup.string().trim().required('PPM format is a required field'),
+        hz: Yup.string().trim().required('Hz format  is a required field'),
+      }),
+    ]),
+  );
 };
 
 const formattingValidation = (obj: Workspace) =>
@@ -40,7 +41,7 @@ const formattingValidation = (obj: Workspace) =>
           }
 
           const errors: Yup.ValidationError[] = [];
-          Object.keys(nucleusFrequencies).forEach((key) => {
+          for (const key in nucleusFrequencies) {
             const { value, fields } = nucleusFrequencies[key];
             if (value > 1) {
               for (let field of fields) {
@@ -53,7 +54,7 @@ const formattingValidation = (obj: Workspace) =>
                 );
               }
             }
-          });
+          }
 
           return new Yup.ValidationError(errors);
         },
