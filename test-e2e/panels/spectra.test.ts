@@ -129,12 +129,12 @@ test('2d spectrum', async ({ page }) => {
   await test.step('Change 1H spectrum color', async () => {
     // Check ColorIndicator initial color
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[color.color="#7c2353"]'),
+      nmrium.page.locator('_react=ColorIndicator[color.color="#C10020"]'),
     ).toBeVisible();
     // Check spectrum initial color match with ColorIndicator
     await expect(
       nmrium.page.locator(
-        'data-test-id=spectrum-line >> _react=Line[display.color="#7c2353"]',
+        'data-test-id=spectrum-line >> _react=Line[display.color="#C10020"]',
       ),
     ).toBeVisible();
 
@@ -148,12 +148,12 @@ test('2d spectrum', async ({ page }) => {
 
     // Check that ColorIndicator color changed
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[color.color="#ddb1c9ff"]'),
+      nmrium.page.locator('_react=ColorIndicator[color.color="#ddb1b8ff"]'),
     ).toBeVisible();
     // Check that spectrum color changed
     await expect(
       nmrium.page.locator(
-        'data-test-id=spectrum-line >> _react=Line[display.color="#ddb1c9ff"]',
+        'data-test-id=spectrum-line >> _react=Line[display.color="#ddb1b8ff"]',
       ),
     ).toBeVisible();
 
