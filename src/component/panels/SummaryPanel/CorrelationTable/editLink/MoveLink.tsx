@@ -72,19 +72,19 @@ function MoveLink({
         value: string;
         label: string;
       }> = [];
-      correlations.forEach((_correlation) => {
+      for (const correlation of correlations) {
         if (
-          _correlation.pseudo === false &&
-          _correlation.atomType === link.atomType[dim]
+          correlation.pseudo === false &&
+          correlation.atomType === link.atomType[dim]
         ) {
           selectionData.push({
-            value: _correlation.id,
-            label: `${_correlation.label.origin}: ${getCorrelationLabel(
-              _correlation,
+            value: correlation.id,
+            label: `${correlation.label.origin}: ${getCorrelationLabel(
+              correlation,
             )}`,
           });
         }
-      });
+      }
       selectionData.push({
         key: 'new',
         value: 'new',

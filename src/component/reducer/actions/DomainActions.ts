@@ -38,28 +38,22 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
 function getDomain(draft: Draft<State>) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
-  let yDomains: Record<string, number[]> = {};
-  let xDomains: Record<string, number[]> = {};
+  const yDomains: Record<string, number[]> = {};
+  const xDomains: Record<string, number[]> = {};
 
   const data = getActiveData(draft);
   try {
     for (const d of data) {
       const { display, data } = d;
+      const { y } = get1DDataXY(d);
+
+      const _extent = extent(y) as Array<number>;
       const domain = [data.x[0], data.x[data.x.length - 1]];
+
+      yDomains[d.id] = _extent;
       xDomains[d.id] = domain;
       if (display.isVisible) {
         xArray = xArray.concat(domain);
-      }
-    }
-
-    for (const d of data) {
-      const { display } = d;
-      const data = get1DDataXY(d);
-
-      const _extent = extent(data.y) as Array<number>;
-      yDomains[d.id] = _extent;
-
-      if (display.isVisible) {
         yArray = yArray.concat(_extent);
       }
     }
@@ -78,8 +72,8 @@ function getDomain(draft: Draft<State>) {
 function get2DDomain(state: State) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
-  let yDomains: Record<string, [number | undefined, number | undefined]> = {};
-  let xDomains: Record<string, number[]> = {};
+  const yDomains: Record<string, [number | undefined, number | undefined]> = {};
+  const xDomains: Record<string, number[]> = {};
 
   const {
     view: {
@@ -91,29 +85,29 @@ function get2DDomain(state: State) {
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data
-      .map((datum: Datum1D | Datum2D) => {
-        if (
+    xArray = (
+      data.filter(
+        (datum) =>
           isSpectrum2D(datum) &&
           datum.info.nucleus?.join(',') === activeTab &&
-          datum.info.isFt
-        ) {
-          return [datum.data.minY, datum.data.maxY];
-        }
-        return [];
+          datum.info.isFt,
+      ) as Array<Datum2D>
+    )
+      .map((datum: Datum2D) => {
+        return [datum.data.minY, datum.data.maxY];
       })
       .flat();
 
-    yArray = data
-      .map((datum: Datum1D | Datum2D) => {
-        if (
-          isSpectrum2D(datum) &&
-          datum.info.nucleus?.join(',') === activeTab &&
-          datum.info.isFt
-        ) {
-          return [datum.data.minY, datum.data.maxY];
-        }
-        return [];
+    yArray = (
+      data.filter(
+        (d) =>
+          isSpectrum2D(d) &&
+          d.info.nucleus?.join(',') === activeTab &&
+          d.info.isFt,
+      ) as Array<Datum2D>
+    )
+      .map((datum: Datum2D) => {
+        return [datum.data.minY, datum.data.maxY];
       })
       .flat();
   } catch (e) {
@@ -123,23 +117,20 @@ function get2DDomain(state: State) {
 
   const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);
 
-  let filteredData: Datum1D[] = [];
-  data.forEach((datum: Datum1D | Datum2D) => {
-    if (spectrumsIDs.includes(datum.id) && datum.info.dimension === 1) {
-      filteredData = filteredData.concat(datum as Datum1D);
-    }
-  });
+  const filteredData = data
+    .filter((d) => spectrumsIDs.includes(d.id) && d.info.dimension === 1)
+    .map((datum: Datum1D | Datum2D) => {
+      return datum as Datum1D;
+    })
+    .flat();
   try {
-    filteredData.forEach((d: Datum1D) => {
+    for (const d of filteredData) {
       const { x } = d.data;
       const domain = [x[0], x[x.length - 1]];
       xDomains[d.id] = domain;
-    });
-
-    filteredData.forEach((d: Datum1D) => {
       const _extent = extent(d.data.re);
       yDomains[d.id] = _extent;
-    });
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -178,9 +169,9 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
       draft.yDomain = domain.yDomain;
       if (draft.displayerMode === DISPLAYER_MODE.DM_1D && yDomain.isShared) {
         const yDomains = {};
-        Object.keys(domain.yDomains).forEach((acc, key) => {
-          yDomain[key] = domain.yDomain;
-        });
+        for (const key in domain.yDomains) {
+          yDomains[key] = domain.yDomain;
+        }
         draft.yDomains = yDomains;
       } else {
         draft.yDomains = domain.yDomains;

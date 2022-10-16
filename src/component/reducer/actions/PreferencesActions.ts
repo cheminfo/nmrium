@@ -112,16 +112,6 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     } else {
       level = null;
     }
-    const _data = {};
-    spectrumsGroupsList[view.spectra.activeTab].forEach((datum) => {
-      _data[datum.id] = {
-        display: {
-          color: datum.display.color,
-          isVisible: datum.display.isVisible,
-          isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
-        },
-      };
-    });
     draft.keysPreferences[keyCode] = {
       activeSpectrum,
       displayerMode,
@@ -134,7 +124,18 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       originDomain,
       level,
       margin,
-      data: _data,
+      data: Object.fromEntries(
+        spectrumsGroupsList[view.spectra.activeTab].map((datum) => [
+          datum.id,
+          {
+            display: {
+              color: datum.display.color,
+              isVisible: datum.display.isVisible,
+              isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
+            },
+          },
+        ]),
+      ),
     };
   }
 }
