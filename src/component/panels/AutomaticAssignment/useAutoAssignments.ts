@@ -1,5 +1,3 @@
-import { assert } from 'console';
-
 import {
   getAssignments as getAssignmentsData,
   SpectraData,
@@ -16,6 +14,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
+import { assert } from '../../utility/assert';
 
 export interface AutoAssignmentsData {
   score: number;
