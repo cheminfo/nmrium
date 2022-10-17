@@ -13,11 +13,9 @@ export const FILES_SIGNATURES = {
 };
 
 function getFileSignature(fileArrayBuffer) {
-  let uint = '';
-  for (const byte of new Uint8Array(fileArrayBuffer).slice(0, 4)) {
-    uint += byte.toString(16).padStart(2, '0');
-  }
-  return uint;
+  return Array.from(new Uint8Array(fileArrayBuffer).slice(0, 4), (byte) =>
+    byte.toString(16).padStart(2, '0'),
+  ).join('');
 }
 
 async function loadFile(file, options = { asBuffer: false }) {

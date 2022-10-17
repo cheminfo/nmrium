@@ -1,3 +1,4 @@
+import groupBy from 'lodash/groupBy';
 import {
   Fragment,
   useState,
@@ -15,7 +16,6 @@ import { TransitionGroup } from 'react-transition-group';
 
 import Transition from '../Transition';
 import Wrapper from '../Wrapper';
-import { groupBy } from '../helpers';
 import { positions, transitions, types } from '../options';
 
 import { AlertProvider } from './Context';
