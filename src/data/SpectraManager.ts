@@ -29,13 +29,23 @@ export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
 
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
-  const { spectra } = processJcamp(jcamp, usedColors, {
+  const { spectra: spectraIn } = processJcamp(jcamp, usedColors, {
     noContours: true,
     xy: true,
     keepRecordsRegExp: /.*/,
     profiling: true,
   });
-  if (spectra.length === 0) return;
+  if (spectraIn.length === 0) return;
+
+  const spectra: Array<Datum1DType | Datum2DType> = [];
+  for (let spectrum of spectraIn) {
+    const { info } = spectrum;
+    if (info.dimension === 1) {
+      spectra.push(Datum1D.initiateDatum1D(spectrum, usedColors));
+    } else if (info.dimension === 2) {
+      spectra.push(Datum2D.initiateDatum2D(spectrum, usedColors));
+    }
+  }
   output.push(...spectra);
 }
 
