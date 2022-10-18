@@ -27,24 +27,25 @@ function AdditionalColumnField({
   const modal = useModal();
 
   const highlightIDsCommonLinks = useMemo(() => {
-    const ids: Array<any> = [];
-    commonLinks.forEach((link: Link) => {
-      if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair'));
-        const _id = findRangeOrZoneID(
-          spectraData,
-          link.experimentID,
-          link.signal.id,
-          true,
-        );
-        if (_id) {
-          ids.push(_id);
+    return commonLinks
+      .map((link: Link) => {
+        const ids: string[] = [];
+        if (link.pseudo === false) {
+          ids.push(link.signal.id);
+          ids.push(buildID(link.signal.id, 'Crosshair'));
+          const _id = findRangeOrZoneID(
+            spectraData,
+            link.experimentID,
+            link.signal.id,
+            true,
+          );
+          if (_id) {
+            ids.push(_id);
+          }
         }
-      }
-    });
-
-    return ids;
+        return ids;
+      })
+      .flat();
   }, [commonLinks, spectraData]);
   const highlightCommonLinks = useHighlight(highlightIDsCommonLinks);
 

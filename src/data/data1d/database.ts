@@ -177,10 +177,10 @@ function mapJs(js: Jcoupling[]) {
       coupling: [],
       multiplicity: '',
     };
-    js.forEach(({ coupling, multiplicity }) => {
+    for (const { coupling, multiplicity } of js) {
       result.coupling.push(coupling);
       result.multiplicity += multiplicity;
-    });
+    }
     const { coupling, multiplicity } = result;
     return { multiplicity, coupling: coupling.join(',') };
   } else {

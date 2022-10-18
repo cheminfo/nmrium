@@ -15,7 +15,7 @@ import {
   detectZonesManual,
   updateShift,
 } from '../../../data/data2d/Spectrum2D';
-import { Datum2D, Signal2D } from '../../../data/types/data2d';
+import { Datum2D } from '../../../data/types/data2d';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -307,13 +307,13 @@ function handleSaveEditedZone(draft: Draft<State>, action) {
     (draft.data[index] as Datum2D).zones.values[zoneIndex] = editedRowData;
 
     if (editedRowData.signals) {
-      editedRowData.signals.forEach((signal: Signal2D) => {
+      for (const signal of editedRowData.signals) {
         setPathLength(
           draft.correlations.values,
           signal.id,
           signal.j?.pathLength as FromTo,
         );
-      });
+      }
     }
 
     handleOnChangeZonesData(draft);

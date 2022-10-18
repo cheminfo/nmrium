@@ -94,13 +94,11 @@ export default class NmriumPage {
       filename.push(...file);
     }
 
-    const bufferData: string[] = [];
-    filename.forEach((f) => {
+    const bufferData = filename.map((f) => {
       const data = `data:application/octet-stream;base64,${readFileSync(
         `test-e2e/data/${f}`,
       ).toString('base64')}`;
-
-      bufferData.push(data);
+      return data;
     });
 
     const dataTransfer = await this.page.evaluateHandle(

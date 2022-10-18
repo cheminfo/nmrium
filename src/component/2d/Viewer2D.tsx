@@ -47,23 +47,19 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const { info } = useSpectrum({ info: {} });
   const isVisible = info.isFt || !('isFt' in info);
 
-  const spectrumData = useMemo(() => {
+  const spectrumData: any[] = useMemo(() => {
     const nucleuses = activeTab.split(',');
-    const spectrumData: any = [];
-    nucleuses.forEach((nucleus) => {
-      if (activeSpectra[nucleus]?.id) {
+    return nucleuses
+      .filter((n) => activeSpectra[n]?.id)
+      .map((nucleus) => {
         const id = activeSpectra[nucleus]?.id;
         assert(id, `Error in Viewer2D: id is not defined`);
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
         );
         assert(spectrum, `Spectrum with id ${id} not found`);
-        spectrumData.push(spectrum);
-      } else {
-        spectrumData.push(null);
-      }
-    });
-    return spectrumData;
+        return spectrum;
+      });
   }, [activeTab, data, activeSpectra]);
 
   const DIMENSION = get2DDimensionLayout(state);

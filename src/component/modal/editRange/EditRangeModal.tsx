@@ -142,13 +142,13 @@ function EditRangeModal({
       let counterJ = 0;
       const couplings: Array<Coupling> = [];
       if (signal.multiplicity) {
-        signal.multiplicity.split('').forEach((_multiplicity) => {
+        for (const multiplicity of signal.multiplicity.split('')) {
           let js: Coupling = {
-            multiplicity: _multiplicity,
+            multiplicity,
             coupling: '',
           };
 
-          if (hasCouplingConstant(_multiplicity) && signal?.js) {
+          if (hasCouplingConstant(multiplicity) && signal?.js) {
             js = { ...signal.js[counterJ] } as Coupling;
             js.coupling = Number(
               formatNumber(js.coupling, rangesPreferences.coupling.format),
@@ -157,7 +157,7 @@ function EditRangeModal({
           }
           js.multiplicity = translateMultiplet(js.multiplicity || '');
           couplings.push(js);
-        });
+        }
       }
       return { ...signal, js: couplings };
     });

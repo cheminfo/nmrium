@@ -35,20 +35,19 @@ function setRangesAssignments(state: AssignmentState, ranges: Ranges) {
   }
 }
 function setZonesAssignments(state: AssignmentState, zones: Zones) {
-  const diaIDRecords: Array<{
-    id: string;
-    diaIDs: Record<Axis, string[]>;
-  }> = [];
-
-  zones.values.forEach(({ id, x, y, signals }) => {
-    diaIDRecords.push({ id, diaIDs: { x: x.diaIDs || [], y: y.diaIDs || [] } });
-    for (const signal of signals) {
-      diaIDRecords.push({
+  const diaIDRecords = zones.values
+    .map(({ id, x, y, signals }) => {
+      const diaIDRecords = signals.map((signal) => ({
         id: signal.id,
         diaIDs: { x: signal.x.diaIDs || [], y: signal.y.diaIDs || [] },
-      });
-    }
-  });
+      }));
+
+      return [
+        { id, diaIDs: { x: x.diaIDs || [], y: y.diaIDs || [] } },
+        ...diaIDRecords,
+      ];
+    })
+    .flat();
 
   for (const { id, diaIDs } of diaIDRecords) {
     (['x', 'y'] as Axis[]).forEach((axis) => {

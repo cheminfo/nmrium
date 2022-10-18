@@ -22,13 +22,13 @@ export interface FormikErrorsSummaryProps {
 const getErrors = (errorObj: Record<string, any>): string[] => {
   const result: string[] = [];
   function errorsIterators(obj) {
-    Object.keys(obj).forEach((key) => {
+    for (const key in obj) {
       if (typeof obj[key] === 'object') {
         errorsIterators(obj[key]);
       } else {
         result.push(obj[key]);
       }
-    });
+    }
   }
 
   errorsIterators(errorObj);

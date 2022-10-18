@@ -25,24 +25,25 @@ function AdditionalColumnHeader({
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids: string[] = [];
-    correlation.link.forEach((link) => {
-      if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair_X'));
-        const _id = findRangeOrZoneID(
-          spectraData,
-          link.experimentID,
-          link.signal.id,
-          true,
-        );
-        if (_id) {
-          ids.push(_id);
+    return correlation.link
+      .map((link) => {
+        const ids: string[] = [];
+        if (link.pseudo === false) {
+          ids.push(link.signal.id);
+          ids.push(buildID(link.signal.id, 'Crosshair_X'));
+          const _id = findRangeOrZoneID(
+            spectraData,
+            link.experimentID,
+            link.signal.id,
+            true,
+          );
+          if (_id) {
+            ids.push(_id);
+          }
         }
-      }
-    });
-
-    return ids;
+        return ids;
+      })
+      .flat();
   }, [correlation, spectraData]);
   const highlightAdditionalColumn = useHighlight(highlightIDsAdditionalColumn);
 

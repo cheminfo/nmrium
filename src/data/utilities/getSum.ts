@@ -12,8 +12,8 @@ export function getSum<Type>(
   check: ((value: Type) => boolean) | null = null,
 ) {
   let sum = 0;
-  values.forEach((current) => {
+  for (const current of values) {
     if (check?.(current)) sum += Math.abs(current[key as string]);
-  }, 0);
+  }
   return sum;
 }

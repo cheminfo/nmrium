@@ -22,33 +22,31 @@ export function mapRanges(ranges: Range[], datum: Datum1D) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
   const error = getSpectrumErrorValue(datum);
-  const result: Array<Range> = [];
-  ranges.forEach((newRange) => {
-    if (checkRange(newRange, datum, error) && newRange.id !== 'new') return;
 
-    const absolute = xyIntegration(
-      { x, y: re },
-      { from: newRange.from, to: newRange.to, reverse: true },
-    );
-    const signals = newRange.signals.map((signal) => {
-      const { kind = null, id, ...resSignal } = signal;
+  return ranges
+    .filter((r) => !checkRange(r, datum, error) || r.id === 'new')
+    .map((newRange) => {
+      const absolute = xyIntegration(
+        { x, y: re },
+        { from: newRange.from, to: newRange.to, reverse: true },
+      );
+      const signals = newRange.signals.map((signal) => {
+        const { kind = null, id, ...resSignal } = signal;
+        return {
+          kind: kind || 'signal',
+          id: id || v4(),
+          originDelta: signal.delta - shiftX,
+          ...resSignal,
+        };
+      });
       return {
-        kind: kind || 'signal',
-        id: id || v4(),
-        originDelta: signal.delta - shiftX,
-        ...resSignal,
+        ...newRange,
+        kind: signals?.[0].kind || DatumKind.signal,
+        originFrom: newRange.from - shiftX,
+        originTo: newRange.to - shiftX,
+        id: newRange.id || v4(),
+        absolute,
+        signals,
       };
     });
-
-    result.push({
-      ...newRange,
-      kind: signals?.[0].kind || DatumKind.signal,
-      originFrom: newRange.from - shiftX,
-      originTo: newRange.to - shiftX,
-      id: newRange.id || v4(),
-      absolute,
-      signals,
-    });
-  });
-  return result;
 }

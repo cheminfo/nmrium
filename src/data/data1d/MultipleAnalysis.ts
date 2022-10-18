@@ -81,7 +81,7 @@ export function getSpectraAnalysis(
     values: [],
     sum: 0,
   };
-  spectra.forEach((datum) => {
+  for (const datum of spectra) {
     if (
       isSpectrum1D(datum) &&
       datum.info.nucleus === nucleus &&
@@ -91,7 +91,7 @@ export function getSpectraAnalysis(
       result.sum += range.absolute;
       result.values.push({ SID: datum.id, ...range });
     }
-  });
+  }
   return result;
 }
 
@@ -130,78 +130,86 @@ export function setColumn(
 ) {
   init(spectraAnalysis, nucleus);
   spectraAnalysis[nucleus].options.code = code;
-  const columns = {};
-  Object.values(inputColumns).forEach((value: any) => {
-    const data = { ...value };
-    delete data.tempKey;
-    columns[value.tempKey] = data;
-  });
+  const columns = Object.fromEntries(
+    Object.values(inputColumns).map((value: any) => {
+      const data = { ...value };
+      delete data.tempKey;
+      return [value.tempKey, data];
+    }),
+  );
   spectraAnalysis[nucleus].options.columns = columns;
 
   const { columns: newColumns } = spectraAnalysis[nucleus].options;
 
-  let data = {};
-  Object.entries(spectraAnalysis[nucleus].values).forEach(
-    ([spectraKey, spectra]) => {
-      const result = {};
-      Object.keys(inputColumns).forEach((key) => {
-        const newKey = inputColumns[key].tempKey;
-        if (spectra[key]) {
-          result[newKey] = spectra[key];
-        }
-      });
-      data[spectraKey] = result;
-    },
+  let data = Object.fromEntries(
+    Object.entries(spectraAnalysis[nucleus].values).map(
+      ([spectraKey, spectra]) => {
+        const result = Object.fromEntries(
+          Object.keys(inputColumns)
+            .filter((k) => spectra[k])
+            .map((key) => {
+              const newKey = inputColumns[key].tempKey;
+              return [newKey, spectra[key]];
+            }),
+        );
+        return [spectraKey, result];
+      },
+    ),
   );
-  const newData = {};
-  Object.entries(data).forEach((spectra: any) => {
-    const result = {};
-    Object.keys(newColumns).forEach((key) => {
-      const isFormula = newColumns[key].type === COLUMNS_TYPES.FORMULA;
-      result[key] = isFormula
-        ? {
-            colKey: key,
-            value: calculate(
-              newColumns,
-              data[spectra[0]],
-              newColumns[key].formula,
-            ),
-          }
-        : { ...spectra[1][key], colKey: key };
-    });
-    newData[spectra[0]] = result;
-  });
+  const newData = Object.fromEntries(
+    Object.entries(data).map((spectra: any) => {
+      const result = Object.fromEntries(
+        Object.keys(newColumns).map((key) => {
+          const isFormula = newColumns[key].type === COLUMNS_TYPES.FORMULA;
+          return [
+            key,
+            isFormula
+              ? {
+                  colKey: key,
+                  value: calculate(
+                    newColumns,
+                    data[spectra[0]],
+                    newColumns[key].formula,
+                  ),
+                }
+              : { ...spectra[1][key], colKey: key },
+          ];
+        }),
+      );
+      return [spectra[0], result];
+    }),
+  );
   data = newData;
   spectraAnalysis[nucleus].values = data;
 }
 
 function refreshByRow(row, columns) {
-  const result = {};
-  Object.keys(columns).forEach((key) => {
-    if (columns[key].type === COLUMNS_TYPES.FORMULA) {
-      result[key] = {
-        colKey: key,
-        ...row,
-        value: calculate(columns, row, columns[key].formula),
-      };
-    }
-  });
-  return result;
+  return Object.fromEntries(
+    Object.keys(columns)
+      .filter((k) => columns[k].type === COLUMNS_TYPES.FORMULA)
+      .map((key) => [
+        key,
+        {
+          colKey: key,
+          ...row,
+          value: calculate(columns, row, columns[key].formula),
+        },
+      ]),
+  );
 }
 
 function refreshCalculation(spectraAnalysis: SpectraAnalysis, nucleus: string) {
   const { columns } = spectraAnalysis[nucleus].options;
 
-  const data = {};
-  Object.entries(spectraAnalysis[nucleus].values).forEach((spectra) => {
-    const [id, row] = spectra;
-    data[id] = {
-      ...row,
-      ...refreshByRow(row, columns),
-    };
-  });
-
-  return data;
+  return Object.fromEntries(
+    Object.entries(spectraAnalysis[nucleus].values).map(([id, row]) => [
+      id,
+      {
+        ...row,
+        ...refreshByRow(row, columns),
+      },
+    ]),
+  );
 }
 
 export function analyzeSpectra(
@@ -234,19 +242,23 @@ export function analyzeSpectra(
 
   const prevNucleusData = lodashGet(spectraAnalysis, `${nucleus}.values`, {});
 
-  let data = {};
-  result.forEach((row) => {
-    const factor = spectraSum > 0 ? sum / spectraSum : 0.0;
+  const data = Object.fromEntries(
+    result.map((row) => {
+      const factor = spectraSum > 0 ? sum / spectraSum : 0.0;
 
-    data[row.SID] = {
-      ...prevNucleusData[row.SID],
-      [colKey]: {
-        colKey,
-        ...row,
-        relative: Math.abs(row.absolute) * factor,
-      },
-    };
-  });
+      return [
+        row.SID,
+        {
+          ...prevNucleusData[row.SID],
+          [colKey]: {
+            colKey,
+            ...row,
+            relative: Math.abs(row.absolute) * factor,
+          },
+        },
+      ];
+    }),
+  );
 
   spectraAnalysis[nucleus].values = data;
   spectraAnalysis[nucleus].values = refreshCalculation(

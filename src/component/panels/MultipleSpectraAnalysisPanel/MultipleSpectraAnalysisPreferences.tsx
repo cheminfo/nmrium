@@ -98,28 +98,29 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   const preferncesSchema = useMemo(() => {
     function columnSchema() {
-      const result = {};
-      columnsKeys.forEach((key) => {
-        result[key] = Yup.object().shape({
-          tempKey: Yup.string()
-            .required()
-            .test('unique', 'must be unique column name', (colmnName) => {
-              const formData = refForm.current.values.columns;
-              const cols: Array<string | undefined> = [];
-              for (const colKey of Object.keys(formData)) {
-                if (formData[colKey].tempKey === colmnName) {
-                  cols.push(colmnName);
+      return Object.fromEntries(
+        columnsKeys.map((key) => [
+          key,
+          Yup.object().shape({
+            tempKey: Yup.string()
+              .required()
+              .test('unique', 'must be unique column name', (colmnName) => {
+                const formData = refForm.current.values.columns;
+                const cols: Array<string | undefined> = [];
+                for (const colKey of Object.keys(formData)) {
+                  if (formData[colKey].tempKey === colmnName) {
+                    cols.push(colmnName);
+                  }
                 }
-              }
-              return cols.length === 1;
-            }),
-          ...(columns[key].type === COLUMNS_TYPES.FORMULA
-            ? { formula: Yup.string().required() }
-            : {}),
-          index: Yup.string().required(),
-        });
-      });
-      return result;
+                return cols.length === 1;
+              }),
+            ...(columns[key].type === COLUMNS_TYPES.FORMULA
+              ? { formula: Yup.string().required() }
+              : {}),
+            index: Yup.string().required(),
+          }),
+        ]),
+      );
     }
 
     return Yup.object().shape({

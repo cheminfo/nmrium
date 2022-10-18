@@ -11,7 +11,7 @@ import { loadData } from './View';
 function searchDeep(obj, searchKey) {
   let result: any = [];
   function objectHelper(obj) {
-    Object.keys(obj).forEach((key) => {
+    for (const key in obj) {
       if (searchKey === key) {
         result.push({ [key]: obj[key] });
       }
@@ -22,7 +22,7 @@ function searchDeep(obj, searchKey) {
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
         objectHelper(obj[key]);
       }
-    });
+    }
   }
 
   objectHelper(obj);

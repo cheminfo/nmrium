@@ -33,12 +33,9 @@ export function usePreferences() {
 export function useWorkspacesList() {
   const { workspaces } = usePreferences();
   return useMemo(() => {
-    const currentWorkspaces: Array<{ key: string; label: string }> = [];
-    Object.keys(workspaces).forEach((key) => {
-      if (!Workspaces[key]) {
-        currentWorkspaces.push({ key, label: workspaces[key].label });
-      }
-    });
+    const currentWorkspaces = Object.keys(workspaces)
+      .filter((k) => !Workspaces[k])
+      .map((key) => ({ key, label: workspaces[key].label }));
 
     return [...WORKSPACES, ...currentWorkspaces];
   }, [workspaces]);

@@ -10,10 +10,10 @@ export interface RangeData extends Range {
 
 function useMapRanges(data) {
   return useMemo(() => {
-    const _rangesData: Array<RangeData> = [];
+    const rangesData: Array<RangeData> = [];
     data.forEach((range, i) => {
       if (range.signals.length === 1) {
-        _rangesData.push({
+        rangesData.push({
           rowKey: v4(),
           ...range,
           tableMetaInfo: {
@@ -38,7 +38,7 @@ function useMapRanges(data) {
             hide = true;
           }
 
-          _rangesData.push({
+          rangesData.push({
             rowKey: v4(),
             ...range,
             tableMetaInfo: {
@@ -55,7 +55,7 @@ function useMapRanges(data) {
       }
     });
 
-    return _rangesData;
+    return rangesData;
   }, [data]);
 }
 
