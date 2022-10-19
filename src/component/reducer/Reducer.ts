@@ -454,12 +454,13 @@ export function initState(state: State): State {
 }
 
 export function dispatchMiddleware(dispatch) {
-  const usedColors: UsedColors = { '1d': [], '2d': [] };
+  let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
         if (action.payload) {
-          void readNMRiumObject(action.payload, usedColors).then((data) => {
+          usedColors = { '1d': [], '2d': [] };
+          void readNMRiumObject(action.payload).then((data) => {
             const { spectra: spectraIn } = data;
 
             const spectra: Array<Datum1D | Datum2D> = [];
@@ -476,13 +477,12 @@ export function dispatchMiddleware(dispatch) {
             dispatch(action);
           });
         }
-
         break;
       }
       case types.LOAD_DROP_FILES: {
         const { fileCollection } = action;
         action.usedColors = usedColors;
-        readDropFiles(fileCollection, usedColors)
+        readDropFiles(fileCollection)
           .then((data) => {
             action.data = data;
             dispatch(action);
