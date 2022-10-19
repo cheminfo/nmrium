@@ -21,7 +21,8 @@ test('Datum2D', () => {
     },
     [],
   );
-  const { positive, negative } = spectra[0].processingController.drawContours();
+  const { positive, negative } =
+    spectra[0].processingController.drawContours().contours;
   expect(positive).toHaveLength(10);
   expect(negative).toHaveLength(10);
 });
