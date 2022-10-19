@@ -121,15 +121,26 @@ export default class Processing2D {
       positive: { numberOfLayers: numberOfPositiveLayer },
       negative: { numberOfLayers: numberOfNegativeLayer },
     } = this.options;
-    return {
-      positive: this.getContours(zoomPositive, {
-        nbLevels: numberOfPositiveLayer,
-      }),
-      negative: this.getContours(zoomNegative, {
-        negative: true,
-        nbLevels: numberOfNegativeLayer,
-      }),
-    };
+
+    let contours: any = {};
+    let error: any = null;
+
+    try {
+      contours = {
+        positive: this.getContours(zoomPositive, {
+          nbLevels: numberOfPositiveLayer,
+        }),
+        negative: this.getContours(zoomNegative, {
+          negative: true,
+          nbLevels: numberOfNegativeLayer,
+        }),
+      };
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+      error = e;
+    }
+    return { contours, error };
   }
 
   public getContours(zoomLevel, options: any = {}) {
@@ -150,18 +161,12 @@ export default class Processing2D {
     if (negative) {
       _range = _range.map((value) => -value);
     }
-    let contours = [];
-    try {
-      contours = this.conrec.drawContour({
-        contourDrawer: 'basic', // shape or basic
-        levels: _range,
-        timeout,
-      });
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-      throw e;
-    }
+
+    const contours = this.conrec.drawContour({
+      contourDrawer: 'basic', // shape or basic
+      levels: _range,
+      timeout,
+    });
 
     return Object.freeze(contours);
   }

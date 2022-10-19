@@ -7,6 +7,7 @@ import { Datum2D } from '../../../data/types/data2d';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
+import { NMRiumError } from '../../elements/NMRiumError';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { rangeStateInit, State } from '../Reducer';
@@ -340,9 +341,22 @@ function setMargin(draft: Draft<State>) {
 function processing2DData(draft: Draft<State>, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
+    let errorFlag = false;
     for (const datum of data[draft.view.spectra.activeTab]) {
-      _data[datum.id] = datum.processingController.drawContours();
+      if (datum.info.isFt) {
+        const { contours, error } = datum.processingController.drawContours();
+        _data[datum.id] = contours;
+        if (!errorFlag && error) {
+          errorFlag = true;
+          reportError(
+            new NMRiumError(
+              'Too many contour lines, only showing the first ones',
+            ),
+          );
+        }
+      }
     }
+
     draft.contours = _data;
   }
 }
@@ -477,7 +491,7 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
       } else {
         processingController.wheel(deltaY);
       }
-      const contours = Object.freeze(processingController.drawContours());
+      const contours = processingController.drawContours().contours;
       draft.contours[id] = contours;
     }
   } catch (e) {

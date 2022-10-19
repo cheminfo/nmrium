@@ -170,7 +170,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
           .processingController;
         processController.setLevel(levelPositive, levelNegative);
 
-        draft.contours[datumID] = processController.drawContours();
+        draft.contours[datumID] = processController.drawContours().contours;
       }
     } else {
       draft.zoom = preferences.zoom;
