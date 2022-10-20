@@ -190,22 +190,6 @@ function Provider({
     [show, success, error, info, showLoading],
   );
 
-  useEffect(() => {
-    function errorHandler(e: ErrorEvent) {
-      const { message, isNMRiumError = false } = e.error || {};
-      if (isNMRiumError && message) {
-        setTimeout(() => {
-          error(message);
-        }, 0);
-      }
-    }
-    window.addEventListener('error', errorHandler);
-
-    return () => {
-      window.removeEventListener('error', errorHandler);
-    };
-  }, [error]);
-
   return (
     <AlertProvider value={alertContextValue}>
       {children}
