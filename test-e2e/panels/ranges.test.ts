@@ -116,11 +116,11 @@ test('Automatic ranges detection should work', async ({ page }) => {
   );
 
   const rangesData = [
-    { s: '1.75 - 1.79', r: '3.49' },
-    { s: '1.95', r: '14.67' },
-    { s: '1.94', r: '14.67' },
-    { s: '2.15', r: '0.53' },
-    { s: '2.31 - 2.34', r: '7.24' },
+    { s: '1.75 - 1.79', r: '0.49' },
+    { s: '1.95', r: '2.05' },
+    { s: '1.94', r: '2.05' },
+    { s: '2.15', r: '0.07' },
+    { s: '2.31 - 2.34', r: '1.01' },
   ];
   for (const [i, { s, r }] of rangesData.entries()) {
     const range = ranges.nth(i);

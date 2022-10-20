@@ -262,7 +262,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
     await nmrium.page.click(
-      '_react=ToolTip[title="Change Integrals Sum (100.00)"] >> button',
+      '_react=ToolTip[title="Change Integrals Sum"] >> button',
     );
     await expect(
       nmrium.page.locator('_react=Draggable >> #molSVG0'),
@@ -304,7 +304,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
     await nmrium.page.click(
-      '_react=ToolTip[title="Change Ranges Sum (100.00)"] >> button',
+      '_react=ToolTip[title="Change Ranges Sum"] >> button',
     );
     await expect(
       nmrium.page.locator('_react=Draggable >> #molSVG0'),
