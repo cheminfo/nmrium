@@ -19,6 +19,16 @@ export enum DataExportOptions {
 
 export type DataExportOptionsType = keyof typeof DataExportOptions;
 
+function getData(datum, usedColors) {
+  const dimension = datum.info.dimension;
+
+  if (dimension === 1) {
+    return Datum1D.initiateDatum1D(datum, usedColors);
+  } else if (dimension === 2) {
+    return Datum2D.initiateDatum2D(datum, usedColors);
+  }
+}
+
 export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
   return fetch(jcampURL)
     .then((response) => response.arrayBuffer())
@@ -29,7 +39,7 @@ export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
 
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
-  const { spectra: spectraIn } = processJcamp(jcamp, usedColors, {
+  const { spectra: spectraIn } = processJcamp(jcamp, {
     noContours: true,
     xy: true,
     keepRecordsRegExp: /.*/,
@@ -39,12 +49,9 @@ export function addJcamp(output, jcamp, options, usedColors) {
 
   const spectra: Array<Datum1DType | Datum2DType> = [];
   for (let spectrum of spectraIn) {
-    const { info } = spectrum;
-    if (info.dimension === 1) {
-      spectra.push(Datum1D.initiateDatum1D(spectrum, usedColors));
-    } else if (info.dimension === 2) {
-      spectra.push(Datum2D.initiateDatum2D(spectrum, usedColors));
-    }
+    const data = getData(spectrum, usedColors);
+    if (!data) continue;
+    spectra.push(data);
   }
   output.push(...spectra);
 }
