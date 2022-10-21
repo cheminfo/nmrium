@@ -462,7 +462,7 @@ export function dispatchMiddleware(dispatch) {
           usedColors = { '1d': [], '2d': [] };
           void readNMRiumObject(action.payload).then((data) => {
             const { spectra: spectraIn } = data;
-
+            console.log(JSON.parse(JSON.stringify(data)));
             const spectra: Array<Datum1D | Datum2D> = [];
             for (let spectrum of spectraIn) {
               const { info } = spectrum;
