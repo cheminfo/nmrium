@@ -2,7 +2,10 @@ import get from 'lodash/get';
 import { memo, useLayoutEffect, useMemo, useRef } from 'react';
 
 import { getShift } from '../../data/data2d/Spectrum2D';
-import { drawContours, getDefaultContoursLevel } from '../../data/data2d/Spectrum2D/contours';
+import {
+  drawContours,
+  getDefaultContoursLevel,
+} from '../../data/data2d/Spectrum2D/contours';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -12,7 +15,7 @@ import nucleusToString from '../utility/nucleusToString';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-type ContoursSign = "negative" | "positive"
+type ContoursSign = 'negative' | 'positive';
 interface ContoursPathsProps {
   id: string;
   color: string;
@@ -24,7 +27,6 @@ interface ContoursInnerProps {
   data: Array<Datum2D>;
   displayerKey: string;
 }
-
 
 function usePath(datum: Datum2D, contours) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
@@ -65,25 +67,29 @@ function usePath(datum: Datum2D, contours) {
 
   pathBuilder.closePath();
 
-  return pathBuilder.toString()
-
+  return pathBuilder.toString();
 }
 
-
-
-const useContoursLevel = (datum: Datum2D, sign: "negative" | "positive") => {
-  const { view: { zoom: { levels } } } = useChartData();
-  const { id, display: { contourOptions } } = datum;
+const useContoursLevel = (datum: Datum2D, sign: 'negative' | 'positive') => {
+  const {
+    view: {
+      zoom: { levels },
+    },
+  } = useChartData();
+  const {
+    id,
+    display: { contourOptions },
+  } = datum;
   const defaultLevel = getDefaultContoursLevel(contourOptions);
   const level = levels?.[id]?.[sign];
-  return isNaN(level) ? defaultLevel[sign] : level
-}
+  return isNaN(level) ? defaultLevel[sign] : level;
+};
 
 function ContoursPaths({
   id: spectrumID,
   sign,
   color,
-  datum
+  datum,
 }: ContoursPathsProps) {
   const pathRef = useRef<SVGPathElement>(null);
   const activeSpectrum = useActiveSpectrum();
@@ -91,32 +97,36 @@ function ContoursPaths({
 
   const level = useContoursLevel(datum, sign);
 
-
   useLayoutEffect(() => {
     if (pathRef.current) {
       if (activeSpectrum === null || spectrumID === activeSpectrum.id) {
-        pathRef.current.style.opacity = "1";
+        pathRef.current.style.opacity = '1';
       } else {
-        pathRef.current.style.opacity = get(preferences.current, 'general.dimmedSpectraOpacity', 0.1)
+        pathRef.current.style.opacity = get(
+          preferences.current,
+          'general.dimmedSpectraOpacity',
+          0.1,
+        );
       }
     }
-  }, [activeSpectrum, preferences, spectrumID])
+  }, [activeSpectrum, preferences, spectrumID]);
 
   const contours = useMemo(() => {
-    return drawContours(level, datum, sign === "negative")
+    return drawContours(level, datum, sign === 'negative');
   }, [datum, level, sign]);
 
-  const path = usePath(datum, contours)
+  const path = usePath(datum, contours);
 
-
-  return <path
-    ref={pathRef}
-    fill="none"
-    data-test-id="spectrum-line"
-    stroke={color}
-    strokeWidth="1"
-    d={path}
-  />;
+  return (
+    <path
+      ref={pathRef}
+      fill="none"
+      data-test-id="spectrum-line"
+      stroke={color}
+      strokeWidth="1"
+      d={path}
+    />
+  );
 }
 
 function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
@@ -138,7 +148,6 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
               sign="negative"
               datum={datum}
               color={datum.display.negativeColor}
-
             />
           )}
         </g>
@@ -150,11 +159,19 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
 const MemoizedContours = memo(ContoursInner);
 
 export default function Contours() {
-  const { data: spectra, displayerKey, view: { spectra: { activeTab } }
+  const {
+    data: spectra,
+    displayerKey,
+    view: {
+      spectra: { activeTab },
+    },
   } = useChartData();
   const data = useMemo<Array<Datum2D>>(() => {
     return spectra.filter(
-      (datum) => datum.info.dimension === 2 && datum.info.isFt && activeTab === nucleusToString(datum.info.nucleus),
+      (datum) =>
+        datum.info.dimension === 2 &&
+        datum.info.isFt &&
+        activeTab === nucleusToString(datum.info.nucleus),
     ) as Array<Datum2D>;
   }, [activeTab, spectra]);
 
