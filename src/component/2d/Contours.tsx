@@ -1,5 +1,6 @@
+import debounce from 'lodash/debounce';
 import get from 'lodash/get';
-import { memo, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
 
 import { getShift } from '../../data/data2d/Spectrum2D';
 import {
@@ -9,6 +10,7 @@ import {
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { useAlert } from '../elements/popup/Alert';
 import { useActiveSpectrum } from '../reducer/Reducer';
 import { PathBuilder } from '../utility/PathBuilder';
 import nucleusToString from '../utility/nucleusToString';
@@ -21,6 +23,7 @@ interface ContoursPathsProps {
   color: string;
   sign: ContoursSign;
   datum: Datum2D;
+  onTimeout: () => void;
 }
 
 interface ContoursInnerProps {
@@ -90,6 +93,7 @@ function ContoursPaths({
   sign,
   color,
   datum,
+  onTimeout,
 }: ContoursPathsProps) {
   const pathRef = useRef<SVGPathElement>(null);
   const activeSpectrum = useActiveSpectrum();
@@ -112,8 +116,16 @@ function ContoursPaths({
   }, [activeSpectrum, preferences, spectrumID]);
 
   const contours = useMemo(() => {
-    return drawContours(level, datum, sign === 'negative');
-  }, [datum, level, sign]);
+    const { contours, timeout } = drawContours(
+      level,
+      datum,
+      sign === 'negative',
+    );
+    if (timeout) {
+      onTimeout();
+    }
+    return contours;
+  }, [datum, level, onTimeout, sign]);
 
   const path = usePath(datum, contours);
 
@@ -130,6 +142,16 @@ function ContoursPaths({
 }
 
 function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
+  const alert = useAlert();
+  const debounceAlert = useRef(
+    debounce(() => {
+      alert.error('Too many contour lines, only showing the first ones');
+    }, 2000),
+  );
+  const timeoutHandler = useCallback(() => {
+    debounceAlert.current();
+  }, []);
+
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
       {data?.map((datum) => (
@@ -140,6 +162,7 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
               sign="positive"
               datum={datum}
               color={datum.display.positiveColor}
+              onTimeout={timeoutHandler}
             />
           )}
           {datum.display.isNegativeVisible && (
@@ -148,6 +171,7 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
               sign="negative"
               datum={datum}
               color={datum.display.negativeColor}
+              onTimeout={timeoutHandler}
             />
           )}
         </g>

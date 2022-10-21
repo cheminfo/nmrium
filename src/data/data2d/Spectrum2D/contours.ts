@@ -146,7 +146,11 @@ function range(from: number, to: number, step: number) {
   return result;
 }
 
-function drawContours(level: number, datum: Datum2D, negative = false) {
+function drawContours(
+  level: number,
+  datum: Datum2D,
+  negative = false,
+): { contours: any; timeout: boolean } {
   const zoom = level / 2 + 1;
   const {
     positive: { numberOfLayers: numberOfPositiveLayer },
@@ -193,20 +197,12 @@ function getContours(zoomLevel, options: ContoursCalcOptions) {
   if (negative) {
     _range = _range.map((value) => -value);
   }
-  let contours = [];
-  try {
-    contours = conrec.drawContour({
-      contourDrawer: 'basic', // shape or basic
-      levels: _range,
-      timeout,
-    });
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
-    throw e;
-  }
 
-  return contours;
+  return conrec.drawContour({
+    contourDrawer: 'basic', // shape or basic
+    levels: _range,
+    timeout,
+  });
 }
 
 export {
