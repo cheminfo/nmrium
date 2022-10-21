@@ -82,7 +82,6 @@
     "numeral": "^2.0.6",
     "openchemlib": "^8.0.1",
     "openchemlib-utils": "^2.0.0",
-    "playwright": "^1.27.1",
     "re-resizable": "^6.9.9",
     "react-d3-utils": "^0.5.1",
     "react-dropzone": "^14.2.3",
