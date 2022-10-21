@@ -31,10 +31,29 @@ interface WheelOptions {
 interface Spectra2DZoomLevel {
   [key: string]: Level;
 }
+const DEFAULT_CONTOURS_OPTIONS = {
+  positive: {
+    contourLevels: [0, 21],
+    numberOfLayers: 10,
+  },
+  negative: {
+    contourLevels: [0, 21],
+    numberOfLayers: 10,
+  },
+};
 
 interface ReturnZoom2DManager {
   wheel: (value: number, shift: boolean) => Level;
   getLevel: () => Level;
+}
+
+function getDefaultContoursLevel(options: ContourOptions) {
+  const defaultLevel: Level = { negative: 10, positive: 10 };
+  for (const sign of ['positive', 'negative']) {
+    const [min, max] = options[sign].contourLevels;
+    defaultLevel[sign] = min + max / 2;
+  }
+  return defaultLevel;
 }
 
 function zoom2DManager(
@@ -44,9 +63,12 @@ function zoom2DManager(
 ): ReturnZoom2DManager {
   const spectraLevels = { ...spectraZoomLevel };
   const { contourOptions } = options;
+
   if (!spectraZoomLevel || !spectraZoomLevel[spectrumID]) {
-    spectraLevels[spectrumID] = { positive: 10, negative: 10 };
+    const defaultLevel = getDefaultContoursLevel(contourOptions);
+    spectraLevels[spectrumID] = defaultLevel;
   }
+
   const currentLevel = spectraLevels[spectrumID];
 
   const wheel = (value, shiftKey) =>
@@ -187,5 +209,10 @@ function getContours(zoomLevel, options: ContoursCalcOptions) {
   return contours;
 }
 
-export { drawContours, zoom2DManager };
+export {
+  drawContours,
+  zoom2DManager,
+  getDefaultContoursLevel,
+  DEFAULT_CONTOURS_OPTIONS,
+};
 export type { Spectra2DZoomLevel, ReturnZoom2DManager, Level };
