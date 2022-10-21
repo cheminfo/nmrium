@@ -58,8 +58,9 @@ function DropZone(props) {
         .then((fileCollection) => {
           dispatch({ type: LOAD_DROP_FILES, fileCollection });
         })
-        .catch(() => {
+        .catch((e: any) => {
           dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          reportError(e);
         });
     },
     [dispatch],

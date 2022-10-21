@@ -476,6 +476,7 @@ export function dispatchMiddleware(dispatch) {
           })
           .catch(() => {
             dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
+            reportError(e);
           });
         break;
       }
