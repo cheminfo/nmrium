@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import { memo, useLayoutEffect, useMemo, useRef } from 'react';
 
 import { getShift } from '../../data/data2d/Spectrum2D';
-import { drawContours } from '../../data/data2d/Spectrum2D/contours';
+import { drawContours, getDefaultContoursLevel } from '../../data/data2d/Spectrum2D/contours';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -12,12 +12,17 @@ import nucleusToString from '../utility/nucleusToString';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-
+type ContoursSign = "negative" | "positive"
 interface ContoursPathsProps {
   id: string;
   color: string;
-  sign: string;
+  sign: ContoursSign;
   datum: Datum2D;
+}
+
+interface ContoursInnerProps {
+  data: Array<Datum2D>;
+  displayerKey: string;
 }
 
 
@@ -66,18 +71,26 @@ function usePath(datum: Datum2D, contours) {
 
 
 
+const useContoursLevel = (datum: Datum2D, sign: "negative" | "positive") => {
+  const { view: { zoom: { levels } } } = useChartData();
+  const { id, display: { contourOptions } } = datum;
+  const defaultLevel = getDefaultContoursLevel(contourOptions);
+  const level = levels?.[id]?.[sign];
+  return isNaN(level) ? defaultLevel[sign] : level
+}
+
 function ContoursPaths({
   id: spectrumID,
   sign,
   color,
   datum
 }: ContoursPathsProps) {
-  const { view: { zoom: { levels } } } = useChartData();
   const pathRef = useRef<SVGPathElement>(null);
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
 
-  const level = levels?.[datum.id]?.[sign] || 10;
+  const level = useContoursLevel(datum, sign);
+
 
   useLayoutEffect(() => {
     if (pathRef.current) {
@@ -105,14 +118,6 @@ function ContoursPaths({
     d={path}
   />;
 }
-
-interface ContoursInnerProps {
-  data: Array<Datum2D>;
-  displayerKey: string;
-}
-
-
-
 
 function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
   return (

@@ -4,8 +4,7 @@ import * as FiltersManager from '../../FiltersManager';
 import { Datum2D } from '../../types/data2d';
 import { get2DColor } from '../../utilities/getColor';
 
-// TODO: import default option form the new function.
-import { defaultContourOptions } from '../Processing2D';
+import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
@@ -21,7 +20,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
     isPositiveVisible: true,
     isNegativeVisible: true,
     isVisible: true,
-    contourOptions: defaultContourOptions,
+    contourOptions: DEFAULT_CONTOURS_OPTIONS,
     dimension: 2,
     ...options.display,
   };
