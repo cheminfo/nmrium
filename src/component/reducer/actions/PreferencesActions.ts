@@ -163,15 +163,15 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     draft.yDomains = preferences.yDomains;
 
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      for (const datumID of Object.keys(preferences.level)) {
-        const { levelPositive, levelNegative } = preferences.level[datumID];
-        const index = draft.data.findIndex((datum) => datum.id === datumID);
-        const processController = (draft.data[index] as Datum2D)
-          .processingController;
-        processController.setLevel(levelPositive, levelNegative);
-
-        draft.contours[datumID] = processController.drawContours();
-      }
+      // TODO: update the value inside the view > zoom > {spectra id} > level.
+      // for (const datumID of Object.keys(preferences.level)) {
+      // const { levelPositive, levelNegative } = preferences.level[datumID];
+      // const index = draft.data.findIndex((datum) => datum.id === datumID);
+      // const processController = (draft.data[index] as Datum2D)
+      //   .processingController;
+      // processController.setLevel(levelPositive, levelNegative);
+      // draft.contours[datumID] = processController.drawContours();
+      // }
     } else {
       draft.zoom = preferences.zoom;
     }

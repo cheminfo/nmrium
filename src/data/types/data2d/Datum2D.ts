@@ -17,6 +17,4 @@ export interface Datum2D {
   originalData?: Data2D;
   zones: Zones;
   filters: Array<Filter>;
-  // TODO: this is in fact a Processing2D instance. That's not allowed due to state mutabilitty.
-  processingController: any;
 }

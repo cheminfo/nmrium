@@ -1,0 +1,191 @@
+import { Conrec } from 'ml-conrec';
+
+import { Data2D, Datum2D } from '../../types/data2d';
+import { calculateSanPlot } from '../../utilities/calculateSanPlot';
+
+interface Level {
+  positive: number;
+  negative: number;
+}
+
+interface ContourItem {
+  contourLevels: [number, number];
+  numberOfLayers: number;
+}
+interface ContourOptions {
+  positive: ContourItem;
+  negative: ContourItem;
+}
+
+interface ZoomManagerOptions {
+  defaultLevel?: Level;
+  contourOptions: ContourOptions;
+}
+
+interface WheelOptions {
+  shiftKey: boolean;
+  contourOptions: ContourOptions;
+  currentLevel: Level;
+}
+
+interface Spectra2DZoomLevel {
+  [key: string]: Level;
+}
+
+interface ReturnZoom2DManager {
+  wheel: (value: number, shift: boolean) => Level;
+  getLevel: () => Level;
+}
+
+function zoom2DManager(
+  spectraZoomLevel: Spectra2DZoomLevel,
+  spectrumID: string,
+  options: ZoomManagerOptions,
+): ReturnZoom2DManager {
+  const spectraLevels = { ...spectraZoomLevel };
+  const { contourOptions } = options;
+  if (!spectraZoomLevel || !spectraZoomLevel[spectrumID]) {
+    spectraLevels[spectrumID] = { positive: 10, negative: 10 };
+  }
+  const currentLevel = spectraLevels[spectrumID];
+
+  const wheel = (value, shiftKey) =>
+    prepareWheel(value, { shiftKey, contourOptions, currentLevel });
+  const getLevel = () => currentLevel;
+
+  return { wheel, getLevel };
+}
+
+function prepareWheel(value: number, options: WheelOptions) {
+  let { shiftKey, currentLevel, contourOptions } = options;
+  const sign = Math.sign(value);
+
+  const positiveBoundary = contourOptions.positive.contourLevels;
+  const negativeBoundary = contourOptions.negative.contourLevels;
+  if (shiftKey) {
+    if (
+      (currentLevel.positive === positiveBoundary[0] && sign === -1) ||
+      (currentLevel.positive >= positiveBoundary[1] && sign === 1)
+    ) {
+      return currentLevel;
+    }
+    currentLevel.positive += sign;
+  } else {
+    if (
+      (currentLevel.positive > positiveBoundary[0] && sign === -1) ||
+      (currentLevel.positive < positiveBoundary[1] && sign === 1)
+    ) {
+      currentLevel.positive += sign;
+    }
+
+    if (
+      (currentLevel.negative > negativeBoundary[0] && sign === -1) ||
+      (currentLevel.negative < negativeBoundary[1] && sign === 1)
+    ) {
+      currentLevel.negative += sign;
+    }
+  }
+  return currentLevel;
+}
+
+function getRange(min: number, max: number, length: number, exp?: number) {
+  if (exp !== undefined) {
+    const factors: number[] = [];
+
+    factors[0] = 0;
+
+    for (let i = 1; i <= length; i++) {
+      factors[i] = factors[i - 1] + (exp - 1) / Math.pow(exp, i);
+    }
+
+    const lastFactor = factors[length];
+
+    const result = new Array(length);
+
+    for (let i = 0; i < length; i++) {
+      result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;
+    }
+
+    return result;
+  } else {
+    const step = (max - min) / (length - 1);
+
+    return range(min, max + step / 2, step);
+  }
+}
+
+function range(from: number, to: number, step: number) {
+  const result: number[] = [];
+
+  for (let i = from; i < to; i += step) {
+    result.push(i);
+  }
+
+  return result;
+}
+
+function drawContours(level: number, datum: Datum2D, negative = false) {
+  const zoom = level / 2 + 1;
+  const {
+    positive: { numberOfLayers: numberOfPositiveLayer },
+    negative: { numberOfLayers: numberOfNegativeLayer },
+  } = datum.display.contourOptions;
+
+  if (negative) {
+    return getContours(zoom, {
+      negative,
+      nbLevels: numberOfNegativeLayer,
+      data: datum.data,
+    });
+  }
+
+  return getContours(zoom, {
+    nbLevels: numberOfPositiveLayer,
+    data: datum.data,
+  });
+}
+
+interface ContoursCalcOptions {
+  negative?: boolean;
+  timeout?: number;
+  nbLevels: number;
+  data: Data2D;
+}
+
+function getContours(zoomLevel, options: ContoursCalcOptions) {
+  const { negative = false, timeout = 2000, nbLevels, data } = options;
+
+  const xs = getRange(data.minX, data.maxX, data.z[0].length);
+
+  const ys = getRange(data.minY, data.maxY, data.z.length);
+
+  const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
+
+  const sanResult = calculateSanPlot('2D', data);
+  const median = sanResult.positive;
+
+  const max = Math.max(Math.abs(data.maxZ), Math.abs(data.minZ));
+
+  let _range = getRange(median * 1 * Math.pow(2, zoomLevel), max, nbLevels, 2);
+
+  if (negative) {
+    _range = _range.map((value) => -value);
+  }
+  let contours = [];
+  try {
+    contours = conrec.drawContour({
+      contourDrawer: 'basic', // shape or basic
+      levels: _range,
+      timeout,
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+    throw e;
+  }
+
+  return contours;
+}
+
+export { drawContours, zoom2DManager };
+export type { Spectra2DZoomLevel, ReturnZoom2DManager, Level };

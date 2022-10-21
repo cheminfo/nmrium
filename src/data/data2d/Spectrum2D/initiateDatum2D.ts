@@ -3,7 +3,9 @@ import { v4 } from '@lukeed/uuid';
 import * as FiltersManager from '../../FiltersManager';
 import { Datum2D } from '../../types/data2d';
 import { get2DColor } from '../../utilities/getColor';
-import Processing2D, { defaultContourOptions } from '../Processing2D';
+
+// TODO: import default option form the new function.
+import { defaultContourOptions } from '../Processing2D';
 
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
@@ -47,11 +49,6 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.filters = Object.assign([], options.filters);
 
   datum.zones = { values: [], options: {}, ...options.zones };
-
-  datum.processingController = new Processing2D(
-    datum.data,
-    datum.display.contourOptions,
-  );
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(datum);
