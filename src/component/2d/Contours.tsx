@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
-import { memo, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
+import { memo, useLayoutEffect, useMemo, useRef } from 'react';
 
 import { getShift } from '../../data/data2d/Spectrum2D';
 import {
@@ -148,9 +148,10 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
       alert.error('Too many contour lines, only showing the first ones');
     }, 2000),
   );
-  const timeoutHandler = useCallback(() => {
+
+  function timeoutHandler() {
     debounceAlert.current();
-  }, []);
+  }
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
