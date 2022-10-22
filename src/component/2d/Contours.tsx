@@ -6,6 +6,7 @@ import { getShift } from '../../data/data2d/Spectrum2D';
 import {
   drawContours,
   getDefaultContoursLevel,
+  LevelSign,
 } from '../../data/data2d/Spectrum2D/contours';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
@@ -73,7 +74,7 @@ function usePath(datum: Datum2D, contours) {
   return pathBuilder.toString();
 }
 
-const useContoursLevel = (datum: Datum2D, sign: 'negative' | 'positive') => {
+const useContoursLevel = (datum: Datum2D, sign: LevelSign) => {
   const {
     view: {
       zoom: { levels },

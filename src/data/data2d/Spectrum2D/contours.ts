@@ -16,19 +16,13 @@ interface ContourOptions {
   positive: ContourItem;
   negative: ContourItem;
 }
-
-interface ZoomManagerOptions {
-  defaultLevel?: Level;
-  contourOptions: ContourOptions;
-}
-
 interface WheelOptions {
   shiftKey: boolean;
   contourOptions: ContourOptions;
   currentLevel: Level;
 }
 
-interface Spectra2DZoomLevel {
+interface ContoursLevels {
   [key: string]: Level;
 }
 const DEFAULT_CONTOURS_OPTIONS = {
@@ -42,29 +36,32 @@ const DEFAULT_CONTOURS_OPTIONS = {
   },
 };
 
-interface ReturnZoom2DManager {
+const LEVEL_SIGNS = ['positive', 'negative'] as const;
+type LevelSign = typeof LEVEL_SIGNS[number];
+
+interface ReturnContoursManager {
   wheel: (value: number, shift: boolean) => Level;
   getLevel: () => Level;
 }
 
 function getDefaultContoursLevel(options: ContourOptions) {
   const defaultLevel: Level = { negative: 10, positive: 10 };
-  for (const sign of ['positive', 'negative']) {
+  for (const sign of LEVEL_SIGNS) {
     const [min, max] = options[sign].contourLevels;
     defaultLevel[sign] = min + max / 2;
   }
   return defaultLevel;
 }
 
-function zoom2DManager(
-  spectraZoomLevel: Spectra2DZoomLevel,
+function contoursManager(
+  state: ContoursLevels,
   spectrumID: string,
-  options: ZoomManagerOptions,
-): ReturnZoom2DManager {
-  const spectraLevels = { ...spectraZoomLevel };
-  const { contourOptions } = options;
+  options: ContourOptions,
+): ReturnContoursManager {
+  const spectraLevels = { ...state };
+  const contourOptions = { ...options };
 
-  if (!spectraZoomLevel || !spectraZoomLevel[spectrumID]) {
+  if (!state || !state[spectrumID]) {
     const defaultLevel = getDefaultContoursLevel(contourOptions);
     spectraLevels[spectrumID] = defaultLevel;
   }
@@ -74,16 +71,17 @@ function zoom2DManager(
   const wheel = (value, shiftKey) =>
     prepareWheel(value, { shiftKey, contourOptions, currentLevel });
   const getLevel = () => currentLevel;
-
   return { wheel, getLevel };
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
   let { shiftKey, currentLevel, contourOptions } = options;
   const sign = Math.sign(value);
-
   const positiveBoundary = contourOptions.positive.contourLevels;
   const negativeBoundary = contourOptions.negative.contourLevels;
+
+  currentLevel = validateLevelBoundary(currentLevel, contourOptions);
+
   if (shiftKey) {
     if (
       (currentLevel.positive === positiveBoundary[0] && sign === -1) ||
@@ -108,6 +106,20 @@ function prepareWheel(value: number, options: WheelOptions) {
     }
   }
   return currentLevel;
+}
+
+function validateLevelBoundary(currentLevel: Level, options: ContourOptions) {
+  const level = { ...currentLevel };
+  for (const sign of LEVEL_SIGNS) {
+    const [min, max] = options[sign].contourLevels;
+    //check if the level is out of the boundary
+    if (level[sign] > max) {
+      level[sign] = max;
+    } else if (level[sign] < min) {
+      level[sign] = min;
+    }
+  }
+  return level;
 }
 
 function getRange(min: number, max: number, length: number, exp?: number) {
@@ -207,8 +219,8 @@ function getContours(zoomLevel, options: ContoursCalcOptions) {
 
 export {
   drawContours,
-  zoom2DManager,
+  contoursManager,
   getDefaultContoursLevel,
   DEFAULT_CONTOURS_OPTIONS,
 };
-export type { Spectra2DZoomLevel, ReturnZoom2DManager, Level };
+export type { ContoursLevels, ReturnContoursManager, Level, LevelSign };

@@ -7,7 +7,7 @@ import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { Spectra2DZoomLevel } from '../../data/data2d/Spectrum2D/contours';
+import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   FloatingMolecules,
   StateMoleculeExtended,
@@ -110,7 +110,7 @@ export interface ViewState {
     activeTab: string;
   };
   zoom: {
-    levels: Spectra2DZoomLevel;
+    levels: ContoursLevels;
   };
 }
 export const rangeStateInit = {
@@ -474,7 +474,7 @@ export function dispatchMiddleware(dispatch) {
             action.data = data;
             dispatch(action);
           })
-          .catch(() => {
+          .catch((e) => {
             dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
             reportError(e);
           });

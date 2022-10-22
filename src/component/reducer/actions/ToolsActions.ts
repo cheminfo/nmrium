@@ -2,7 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { zoom2DManager } from '../../../data/data2d/Spectrum2D/contours';
+import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
@@ -463,9 +463,7 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
     if (activeSpectrum?.id) {
       const { levels } = draft.view.zoom;
       const contourOptions = activeSpectrum.display.contourOptions;
-      const zoom = zoom2DManager(levels, activeSpectrum.id, {
-        contourOptions,
-      });
+      const zoom = contoursManager(levels, activeSpectrum.id, contourOptions);
       draft.view.zoom.levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
     }
   } catch (e) {
