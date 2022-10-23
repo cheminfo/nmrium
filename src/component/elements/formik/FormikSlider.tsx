@@ -1,34 +1,27 @@
 import { useFormikContext } from 'formik';
+import debounce from 'lodash/debounce';
 import lodashGet from 'lodash/get';
-import { useCallback, memo } from 'react';
+import { useRef } from 'react'
 import ReactSlider from 'react-slider';
 
 interface FormikSliderProps {
   name: string;
-  onAfterChange?: (element: any) => void;
-  triggerSubmit?: boolean;
+  debounceTime?: number;
 }
 
 function FormikSlider(props: FormikSliderProps) {
   const {
-    onAfterChange = () => null,
     name,
-    triggerSubmit = false,
-    ...sliderProps
+    debounceTime = 0,
   } = props;
 
-  const { values, setFieldValue, submitForm } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
 
-  const changeHandler = useCallback(
-    (value) => {
-      onAfterChange(value);
-      setFieldValue(name, value);
-      if (triggerSubmit) {
-        setTimeout(submitForm, 1);
-      }
-    },
-    [name, onAfterChange, setFieldValue, submitForm, triggerSubmit],
-  );
+  const debounceOnChange = useRef(
+    debounce((value) => {
+      setFieldValue(name, value)
+    }, debounceTime),
+  ).current;
 
   return (
     <ReactSlider
@@ -36,7 +29,7 @@ function FormikSlider(props: FormikSliderProps) {
       thumbClassName="thumb"
       trackClassName="track"
       defaultValue={lodashGet(values, name, [0, 100])}
-      onAfterChange={changeHandler}
+      onAfterChange={(value) => debounceOnChange(value)}
       renderThumb={(props, state) => (
         <div {...props}>
           <span>{state.valueNow}</span>
@@ -44,9 +37,8 @@ function FormikSlider(props: FormikSliderProps) {
       )}
       pearling
       minDistance={10}
-      {...sliderProps}
     />
   );
 }
 
-export default memo(FormikSlider);
+export default FormikSlider;
