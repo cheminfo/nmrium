@@ -463,7 +463,7 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
     if (activeSpectrum?.id) {
       const { levels } = draft.view.zoom;
       const contourOptions = activeSpectrum.display.contourOptions;
-      const zoom = contoursManager(levels, activeSpectrum.id, contourOptions);
+      const zoom = contoursManager(activeSpectrum.id, levels, contourOptions);
       draft.view.zoom.levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
     }
   } catch (e) {

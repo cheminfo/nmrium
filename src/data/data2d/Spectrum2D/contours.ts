@@ -35,13 +35,13 @@ const DEFAULT_CONTOURS_OPTIONS = {
     numberOfLayers: 10,
   },
 };
+type LevelSign = keyof Level;
 
-const LEVEL_SIGNS = ['positive', 'negative'] as const;
-type LevelSign = typeof LEVEL_SIGNS[number];
-
+const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
 interface ReturnContoursManager {
   wheel: (value: number, shift: boolean) => Level;
   getLevel: () => Level;
+  checkLevel: () => Level;
 }
 
 function getDefaultContoursLevel(options: ContourOptions) {
@@ -54,8 +54,8 @@ function getDefaultContoursLevel(options: ContourOptions) {
 }
 
 function contoursManager(
-  state: ContoursLevels,
   spectrumID: string,
+  state: ContoursLevels,
   options: ContourOptions,
 ): ReturnContoursManager {
   const spectraLevels = { ...state };
@@ -71,7 +71,8 @@ function contoursManager(
   const wheel = (value, shiftKey) =>
     prepareWheel(value, { shiftKey, contourOptions, currentLevel });
   const getLevel = () => currentLevel;
-  return { wheel, getLevel };
+  const checkLevel = () => prepareCheckLevel(currentLevel, contourOptions);
+  return { wheel, getLevel, checkLevel };
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
@@ -79,8 +80,6 @@ function prepareWheel(value: number, options: WheelOptions) {
   const sign = Math.sign(value);
   const positiveBoundary = contourOptions.positive.contourLevels;
   const negativeBoundary = contourOptions.negative.contourLevels;
-
-  currentLevel = validateLevelBoundary(currentLevel, contourOptions);
 
   if (shiftKey) {
     if (
@@ -108,7 +107,7 @@ function prepareWheel(value: number, options: WheelOptions) {
   return currentLevel;
 }
 
-function validateLevelBoundary(currentLevel: Level, options: ContourOptions) {
+function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
   const level = { ...currentLevel };
   for (const sign of LEVEL_SIGNS) {
     const [min, max] = options[sign].contourLevels;

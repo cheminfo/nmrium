@@ -18,11 +18,10 @@ import nucleusToString from '../utility/nucleusToString';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-type ContoursSign = 'negative' | 'positive';
 interface ContoursPathsProps {
   id: string;
   color: string;
-  sign: ContoursSign;
+  sign: LevelSign;
   datum: Datum2D;
   onTimeout: () => void;
 }
