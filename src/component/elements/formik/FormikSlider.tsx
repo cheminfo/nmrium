@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import debounce from 'lodash/debounce';
 import lodashGet from 'lodash/get';
-import { useRef } from 'react'
+import { useRef } from 'react';
 import ReactSlider from 'react-slider';
 
 interface FormikSliderProps {
@@ -10,16 +10,13 @@ interface FormikSliderProps {
 }
 
 function FormikSlider(props: FormikSliderProps) {
-  const {
-    name,
-    debounceTime = 0,
-  } = props;
+  const { name, debounceTime = 0 } = props;
 
   const { values, setFieldValue } = useFormikContext();
 
   const debounceOnChange = useRef(
     debounce((value) => {
-      setFieldValue(name, value)
+      setFieldValue(name, value);
     }, debounceTime),
   ).current;
 

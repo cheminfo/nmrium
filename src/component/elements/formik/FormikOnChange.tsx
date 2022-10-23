@@ -12,8 +12,7 @@ const FormikOnChange = (props: FormikOnChangeProps) => {
   const { values, errors, setTouched, initialValues } = useFormikContext();
 
   useEffect(() => {
-
-    const isNewValue = JSON.stringify(values) !== JSON.stringify(initialValues)
+    const isNewValue = JSON.stringify(values) !== JSON.stringify(initialValues);
     if (isNewValue) {
       if (enableValidation) {
         if (

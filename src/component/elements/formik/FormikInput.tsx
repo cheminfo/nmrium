@@ -22,15 +22,12 @@ function FormikInput(props: FormikInputProps) {
     ...resProps
   } = props;
 
-  const { values, handleChange, errors, touched } =
-    useFormikContext();
+  const { values, handleChange, errors, touched } = useFormikContext();
 
   function changeHandler(e) {
     onChange(e);
     handleChange(e);
   }
-
-
 
   let isInvalid = lodashGet(errors, name);
 
