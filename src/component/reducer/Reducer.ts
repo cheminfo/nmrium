@@ -471,8 +471,7 @@ export function dispatchMiddleware(dispatch) {
                 spectra.push(initiateDatum2D(spectrum, usedColors));
               }
             }
-            data.spectra = spectra;
-            action.payload = { ...data, usedColors };
+            action.payload = { ...data, usedColors, spectra };
             dispatch(action);
           });
         }
