@@ -54,6 +54,7 @@
     "analysis-ui-components": "^0.17.3",
     "cheminfo-font": "^1.9.0",
     "cheminfo-types": "^1.4.0",
+    "clipboard-polyfill": "^4.0.0-rc1",
     "d3": "^7.6.1",
     "eventemitter3": "^4.0.7",
     "file-saver": "^2.0.5",

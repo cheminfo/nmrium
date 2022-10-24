@@ -11,7 +11,7 @@ import {
   exportAsJSON,
   exportAsPng,
   exportAsSVG,
-} from '../utility/Export';
+} from '../utility/export';
 
 export default function useExport() {
   const { rootRef } = useGlobal();

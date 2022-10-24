@@ -32,7 +32,7 @@ import {
   SHOW_MULTIPLICTY_TREES,
   SHOW_RANGES_INTEGRALS,
 } from '../../reducer/types/Types';
-import { copyHTMLToClipboard } from '../../utility/Export';
+import { copyHTMLToClipboard } from '../../utility/export';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
