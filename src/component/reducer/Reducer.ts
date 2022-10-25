@@ -7,6 +7,7 @@ import { predictSpectra } from '../../data/PredictionManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { initiateDatum1D } from '../../data/data1d/Spectrum1D';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
+import { initiateDatum2D } from '../../data/data2d/Spectrum2D';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   FloatingMolecules,
