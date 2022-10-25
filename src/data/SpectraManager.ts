@@ -39,7 +39,9 @@ export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
 
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
+  const name = options?.display?.name;
   const { spectra: spectraIn } = processJcamp(jcamp, {
+    name,
     noContours: true,
     xy: true,
     keepRecordsRegExp: /.*/,
