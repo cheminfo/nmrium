@@ -434,7 +434,6 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
   resetTool(draft);
 
-
   setDomain(draft, domainOptions);
   setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
 

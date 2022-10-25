@@ -95,25 +95,10 @@ function ContoursPaths({
   datum,
   onTimeout,
 }: ContoursPathsProps) {
-  const pathRef = useRef<SVGPathElement>(null);
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
 
   const level = useContoursLevel(datum, sign);
-
-  useLayoutEffect(() => {
-    if (pathRef.current) {
-      if (activeSpectrum === null || spectrumID === activeSpectrum.id) {
-        pathRef.current.style.opacity = '1';
-      } else {
-        pathRef.current.style.opacity = get(
-          preferences.current,
-          'general.dimmedSpectraOpacity',
-          0.1,
-        );
-      }
-    }
-  }, [activeSpectrum, preferences, spectrumID]);
 
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
@@ -129,13 +114,18 @@ function ContoursPaths({
 
   const path = usePath(datum, contours);
 
+  const opacity =
+    activeSpectrum === null || spectrumID === activeSpectrum.id
+      ? '1'
+      : get(preferences.current, 'general.dimmedSpectraOpacity', 0.1);
+
   return (
     <path
-      ref={pathRef}
       fill="none"
       data-test-id="spectrum-line"
       stroke={color}
       strokeWidth="1"
+      opacity={opacity}
       d={path}
     />
   );
