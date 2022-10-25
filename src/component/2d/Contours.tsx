@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
-import { memo, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 
 import { getShift } from '../../data/data2d/Spectrum2D';
 import {
