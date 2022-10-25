@@ -7,13 +7,13 @@ interface FormatOptions {
 }
 
 function formatNumber(
-  value: any,
-  format: number | string,
+  value: string | number,
+  format: string | undefined,
   options: FormatOptions = {},
 ) {
   const { prefix = '', suffix = '', defaultFormat = '0.00' } = options;
 
-  return (value || value === 0) && !isNaN(value)
+  return typeof value === 'number' || !isNaN(value as unknown as number)
     ? prefix + numeral(value).format(format || defaultFormat) + suffix
     : value;
 }
