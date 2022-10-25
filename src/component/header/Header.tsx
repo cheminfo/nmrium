@@ -75,7 +75,7 @@ function HeaderInner(props: HeaderInnerProps) {
 
   const openGeneralSettingsHandler = useCallback(() => {
     modal.show(<GeneralSettings />, {
-      position: positions.TOP_CENTER,
+      position: positions.MIDDLE,
       enableResizing: true,
       width: 600,
       height: 400,
