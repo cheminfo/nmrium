@@ -17,8 +17,8 @@ import {
   CHANGE_ACTIVE_SPECTRUM,
   DELETE_SPECTRA,
 } from '../../reducer/types/Types';
-import { copyTextToClipboard } from '../../utility/Export';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
+import { copyTextToClipboard } from '../../utility/export';
 
 import SpectrumListItem from './SpectrumListItem';
 import SpectrumSetting from './base/setting/SpectrumSetting';
