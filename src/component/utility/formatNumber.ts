@@ -1,8 +1,20 @@
 import numeral from 'numeral';
 
-function formatNumber(value, format, prefix = '', suffix = '') {
+interface FormatOptions {
+  prefix?: string;
+  suffix?: string;
+  defaultFormat?: string;
+}
+
+function formatNumber(
+  value: any,
+  format: number | string,
+  options: FormatOptions = {},
+) {
+  const { prefix = '', suffix = '', defaultFormat = '0.00' } = options;
+
   return (value || value === 0) && !isNaN(value)
-    ? prefix + numeral(value).format(format) + suffix
+    ? prefix + numeral(value).format(format || defaultFormat) + suffix
     : value;
 }
 
