@@ -7,11 +7,11 @@ import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
+import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   FloatingMolecules,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
-import { Contours } from '../../data/types/data2d/Contours';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
@@ -109,6 +109,9 @@ export interface ViewState {
      */
     activeTab: string;
   };
+  zoom: {
+    levels: ContoursLevels;
+  };
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -129,7 +132,6 @@ export interface Margin {
 export const getInitialState = (): State => ({
   actionType: '',
   data: [],
-  contours: {} as Contours,
   tempData: null,
   xDomain: [],
   yDomain: [],
@@ -158,6 +160,9 @@ export const getInitialState = (): State => ({
     ranges: [],
     zones: [],
     spectra: { activeSpectra: {}, activeTab: '' },
+    zoom: {
+      levels: {},
+    },
   },
   verticalAlign: {
     align: 'bottom',
@@ -219,10 +224,6 @@ export interface State {
    * spectra list (1d and 2d)
    */
   data: Spectra;
-  /**
-   * calculated contours for 2d spectra
-   */
-  contours: Contours;
   /**
    * snapshot of the spectra data once phase correction activated
    *
@@ -473,7 +474,7 @@ export function dispatchMiddleware(dispatch) {
             action.data = data;
             dispatch(action);
           })
-          .catch((e: any) => {
+          .catch((e) => {
             dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
             reportError(e);
           });

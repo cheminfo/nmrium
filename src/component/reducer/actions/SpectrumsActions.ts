@@ -6,7 +6,11 @@ import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
 } from '../../../data/data1d/Spectrum1D';
-import { getMissingProjection } from '../../../data/data2d/Spectrum2D';
+import {
+  getMissingProjection,
+  isSpectrum2D,
+} from '../../../data/data2d/Spectrum2D';
+import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { options } from '../../toolbar/ToolTypes';
@@ -134,12 +138,22 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
 }
 
 function changeSpectrumSetting(draft: Draft<State>, { id, display }) {
-  const state = original(draft) as State;
-  const index = state.data.findIndex((d) => d.id === id);
+  const index = draft.data.findIndex((d) => d.id === id);
   if (index !== -1) {
-    draft.data[index].display = display;
+    const spectrum = draft.data[index];
+    spectrum.display = display;
+    if (isSpectrum2D(spectrum)) {
+      const contoursLevels = draft.view.zoom.levels;
+      const { checkLevel } = contoursManager(
+        spectrum.id,
+        contoursLevels,
+        spectrum.display.contourOptions,
+      );
+      contoursLevels[spectrum.id] = checkLevel();
+    }
   }
 }
+
 function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   const state = original(draft) as State;
   const index = state.data.findIndex((d) => d.id === id);

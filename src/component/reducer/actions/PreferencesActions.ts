@@ -1,8 +1,6 @@
 import { Draft } from 'immer';
-import cloneDeep from 'lodash/cloneDeep';
 
 import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
@@ -97,21 +95,16 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     view,
   } = draft;
 
+  const {
+    spectra: { activeTab },
+  } = view;
+
   const activeSpectrum = getActiveSpectrum(draft);
 
-  if (view.spectra.activeTab) {
+  if (activeTab) {
     const groupByNucleus = groupByInfoKey('nucleus');
-
     const spectrumsGroupsList = groupByNucleus(data);
-
-    const level =
-      displayerMode === DISPLAYER_MODE.DM_2D
-        ? spectrumsGroupsList[view.spectra.activeTab].reduce((acc, datum) => {
-            acc[datum.id] = datum.processingController.getLevel();
-            return acc;
-          }, {})
-        : null;
-
+    const spectra = spectrumsGroupsList[activeTab];
     draft.keysPreferences[keyCode] = {
       activeSpectrum,
       displayerMode,
@@ -122,33 +115,26 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       yDomain,
       yDomains,
       originDomain,
-      level,
       margin,
-      data: spectrumsGroupsList[view.spectra.activeTab].reduce((acc, datum) => {
-        acc[datum.id] = {
-          display: {
-            color: datum.display.color,
-            isVisible: datum.display.isVisible,
-            isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
-          },
-        };
-        return acc;
-      }, {}),
+      data: spectra,
     };
   }
+}
+function setSpectraDisplayPreferences(draft: Draft<State>, preferences) {
+  draft.data.forEach((datum, index) => {
+    if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
+      draft.data[index].display = {
+        ...datum.display,
+        ...preferences.data[datum.id].display,
+      };
+    }
+  });
 }
 
 function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   const preferences = draft.keysPreferences[keyCode];
   if (preferences) {
-    (draft.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
-      if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
-        draft.data[index].display = Object.assign(
-          cloneDeep(datum.display),
-          preferences.data[datum.id].display,
-        );
-      }
-    });
+    setSpectraDisplayPreferences(draft, preferences);
     draft.view = preferences.view;
     draft.displayerMode = preferences.displayerMode;
 
@@ -162,17 +148,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     draft.originDomain = preferences.originDomain;
     draft.yDomains = preferences.yDomains;
 
-    if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      for (const datumID of Object.keys(preferences.level)) {
-        const { levelPositive, levelNegative } = preferences.level[datumID];
-        const index = draft.data.findIndex((datum) => datum.id === datumID);
-        const processController = (draft.data[index] as Datum2D)
-          .processingController;
-        processController.setLevel(levelPositive, levelNegative);
-
-        draft.contours[datumID] = processController.drawContours();
-      }
-    } else {
+    if (draft.displayerMode !== DISPLAYER_MODE.DM_2D) {
       draft.zoom = preferences.zoom;
     }
   }

@@ -1,34 +1,28 @@
 import { ColorPicker } from 'analysis-ui-components';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { useCallback, memo } from 'react';
+import { memo } from 'react';
 
 import { COLORS } from '../../../data/utilities/getColor';
 
 interface FormikColorPickerProps {
   name: string;
   onColorChange?: (element: any) => void;
-  triggerSubmit?: boolean;
 }
 
 function FormikColorPicker(props: FormikColorPickerProps) {
-  const { onColorChange = () => null, name, triggerSubmit = false } = props;
+  const { onColorChange = () => null, name } = props;
 
-  const { values, setFieldValue, submitForm } = useFormikContext();
-  const colorChangeHandler = useCallback(
-    (color) => {
-      setFieldValue(
-        name,
-        `${color.hex}${Math.round(color.rgb.a * 255).toString(16)}`,
-        false,
-      );
-      onColorChange(color);
-      if (triggerSubmit) {
-        setTimeout(submitForm, 1);
-      }
-    },
-    [name, onColorChange, setFieldValue, submitForm, triggerSubmit],
-  );
+  const { values, setFieldValue } = useFormikContext();
+
+  function colorChangeHandler(color) {
+    setFieldValue(
+      name,
+      `${color.hex}${Math.round(color.rgb.a * 255).toString(16)}`,
+      false,
+    );
+    onColorChange(color);
+  }
 
   return (
     <ColorPicker

@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
+import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
@@ -15,6 +16,7 @@ import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
+import { getSpectrum } from '../helper/getSpectrum';
 
 import {
   setDomain,
@@ -337,16 +339,6 @@ function setMargin(draft: Draft<State>) {
   }
 }
 
-function processing2DData(draft: Draft<State>, data) {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-    let _data = {};
-    for (const datum of data[draft.view.spectra.activeTab]) {
-      _data[datum.id] = datum.processingController.drawContours();
-    }
-    draft.contours = _data;
-  }
-}
-
 function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
     data && (data as Datum1D[] | Datum2D[]).some((d) => d.info.dimension === 2)
@@ -442,8 +434,6 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
   resetTool(draft);
 
-  processing2DData(draft, dataGroupByNucleus);
-
   setDomain(draft, domainOptions);
   setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
 
@@ -466,19 +456,13 @@ function handelSetActiveTab(draft: Draft<State>, tab) {
 }
 
 function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const activeSpectrum = getSpectrum(draft) as Datum2D;
   try {
     if (activeSpectrum?.id) {
-      const { index, id } = activeSpectrum;
-      const processingController = (draft.data[index] as Datum2D)
-        .processingController;
-      if (shiftKey) {
-        processingController.shiftWheel(deltaY);
-      } else {
-        processingController.wheel(deltaY);
-      }
-      const contours = Object.freeze(processingController.drawContours());
-      draft.contours[id] = contours;
+      const { levels } = draft.view.zoom;
+      const contourOptions = activeSpectrum.display.contourOptions;
+      const zoom = contoursManager(activeSpectrum.id, levels, contourOptions);
+      draft.view.zoom.levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
     }
   } catch (e) {
     // eslint-disable-next-line no-console
