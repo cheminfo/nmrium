@@ -54,7 +54,7 @@ function WorkspaceItem({ item, onSave, onDelete }) {
   return (
     <div>
       {item.key === 'new' ? (
-        <div style={styles.newContainer} className="new-container">
+        <div style={styles.newContainer}>
           <input
             style={styles.input}
             value={name}
