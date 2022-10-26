@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
@@ -50,25 +49,20 @@ const styles = css`
 
 function FormattingTabContent() {
   const { values, setFieldValue } = useFormikContext();
-  const nuclei = useMemo(
-    () => lodashGet(values, 'formatting.nuclei', {}),
-    [values],
-  );
 
-  const deleteHandler = useCallback(
-    (key: string) => {
-      let _nuclei = {};
-      for (const nucleus in nuclei) {
-        if (nucleus !== key) {
-          _nuclei[nucleus] = nuclei[nucleus];
-        }
+  const nuclei = lodashGet(values, 'formatting.nuclei', {});
+
+  function deleteHandler(key: string) {
+    let _nuclei = {};
+    for (const nucleus in nuclei) {
+      if (nucleus !== key) {
+        _nuclei[nucleus] = nuclei[nucleus];
       }
-      setFieldValue('formatting.nuclei', _nuclei);
-    },
-    [nuclei, setFieldValue],
-  );
+    }
+    setFieldValue('formatting.nuclei', _nuclei);
+  }
 
-  const addNewNucleusFormatHandler = useCallback(() => {
+  function addHandler() {
     const newFormat = {
       name: '',
       ppm: '0.00',
@@ -77,7 +71,7 @@ function FormattingTabContent() {
     const key = v4();
     const newNuclei = { ...nuclei, [key]: newFormat };
     setFieldValue('formatting.nuclei', newNuclei);
-  }, [nuclei, setFieldValue]);
+  }
 
   const nucleiList = Object.keys(nuclei);
 
@@ -133,7 +127,7 @@ function FormattingTabContent() {
                       <Button.Done
                         fill="clear"
                         style={{ fontSize: '14px' }}
-                        onClick={addNewNucleusFormatHandler}
+                        onClick={addHandler}
                       >
                         <FaPlus />
                       </Button.Done>

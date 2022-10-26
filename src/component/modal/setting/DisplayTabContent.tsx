@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { CheckBoxCell } from '../../elements/CheckBoxCell';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
@@ -64,44 +62,41 @@ const LIST: ListItem[] = [
   },
 ];
 
-function DisplayTabContent() {
-  const COLUMNS: CustomColumn[] = useMemo(
-    () => [
-      {
-        index: 1,
-        Header: '#',
-        Cell: ({ row }) => row.index + 1,
-      },
-      {
-        index: 1,
-        Header: 'Feature',
-        accessor: 'label',
-        style: { width: '60%' },
-      },
-      {
-        index: 2,
-        Header: 'Active',
-        Cell: ({ row }) => (
-          <CheckBoxCell
-            name={`display.${row.original.name}.display`}
-            defaultValue={false}
-          />
-        ),
-      },
-      {
-        index: 3,
-        Header: 'Open on load',
-        Cell: ({ row }) => (
-          <CheckBoxCell
-            name={`display.${row.original.name}.open`}
-            defaultValue={false}
-          />
-        ),
-      },
-    ],
-    [],
-  );
+const COLUMNS: CustomColumn[] = [
+  {
+    index: 1,
+    Header: '#',
+    Cell: ({ row }) => row.index + 1,
+  },
+  {
+    index: 1,
+    Header: 'Feature',
+    accessor: 'label',
+    style: { width: '60%' },
+  },
+  {
+    index: 2,
+    Header: 'Active',
+    Cell: ({ row }) => (
+      <CheckBoxCell
+        name={`display.${row.original.name}.display`}
+        defaultValue={false}
+      />
+    ),
+  },
+  {
+    index: 3,
+    Header: 'Open on load',
+    Cell: ({ row }) => (
+      <CheckBoxCell
+        name={`display.${row.original.name}.open`}
+        defaultValue={false}
+      />
+    ),
+  },
+];
 
+function DisplayTabContent() {
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <ReactTable columns={COLUMNS} data={LIST} />

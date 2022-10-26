@@ -125,10 +125,6 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     ]);
   }, [workspaces]);
 
-  const handleSave = () => {
-    refForm.current.submitForm();
-  };
-
   const handleReset = () => {
     const workSpaceDisplayPreferences = getPreferencesByWorkspace(
       preferences.workspace.current,
@@ -140,65 +136,53 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     onClose?.();
   };
 
-  const submitHandler = (values) => {
+  function submitHandler(values) {
     dispatch({ type: 'SET_PREFERENCES', payload: values });
     alert.success('Settings saved successfully');
-
     onClose?.();
-  };
+  }
 
   const tabChangeHandler = useCallback((tab) => {
     setActiveTab(tab.tabid);
   }, []);
 
-  const addWorkSpaceHandler = useCallback(
-    (name) => {
-      dispatch({
-        type: 'ADD_WORKSPACE',
-        payload: {
-          workspace: name,
-          data: refForm.current.values,
-        },
-      });
-    },
-    [dispatch],
-  );
-  const deleteWorkSpaceHandler = useCallback(
-    (key) => {
-      dispatch({
-        type: 'REMOVE_WORKSPACE',
-        payload: {
-          workspace: key,
-        },
-      });
-    },
-    [dispatch],
-  );
+  function addWorkSpaceHandler(name) {
+    dispatch({
+      type: 'ADD_WORKSPACE',
+      payload: {
+        workspace: name,
+        data: refForm.current.values,
+      },
+    });
+  }
 
-  const ChangeWorkspaceHandler = useCallback(
-    (option: DropDownListItem) => {
-      dispatch({
-        type: 'SET_WORKSPACE',
-        payload: {
-          workspace: option.key,
-        },
-      });
-    },
-    [dispatch],
-  );
+  function deleteWorkSpaceHandler(key) {
+    dispatch({
+      type: 'REMOVE_WORKSPACE',
+      payload: {
+        workspace: key,
+      },
+    });
+  }
 
-  const renderItem = useCallback(
-    (item) => {
-      return (
-        <WorkspaceItem
-          item={item}
-          onSave={addWorkSpaceHandler}
-          onDelete={deleteWorkSpaceHandler}
-        />
-      );
-    },
-    [addWorkSpaceHandler, deleteWorkSpaceHandler],
-  );
+  function ChangeWorkspaceHandler(option: DropDownListItem) {
+    dispatch({
+      type: 'SET_WORKSPACE',
+      payload: {
+        workspace: option.key,
+      },
+    });
+  }
+
+  function renderItem(item) {
+    return (
+      <WorkspaceItem
+        item={item}
+        onSave={addWorkSpaceHandler}
+        onDelete={deleteWorkSpaceHandler}
+      />
+    );
+  }
 
   return (
     <div css={[ModalStyles, styles]}>
@@ -276,7 +260,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       <div className="footer-container">
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={handleSave}
+          onDone={() => refForm.current.submitForm()}
           doneLabel="Save"
           onCancel={handleClose}
         />

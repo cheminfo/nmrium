@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Field, useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import { CSSProperties } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
 import { NMRiumWorkspace } from '../../NMRium';
@@ -45,17 +45,15 @@ interface DatabasesTabContentProps {
 function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   const { values, setFieldValue } = useFormikContext();
 
-  const databases = useMemo(() => lodashGet(values, 'databases', []), [values]);
+  const databases = lodashGet(values, 'databases', []);
 
-  const deleteHandler = useCallback(
-    (index: number) => {
-      const _database = databases.data.slice();
-      _database.splice(index, 1);
-      setFieldValue('databases.data', _database);
-    },
-    [databases, setFieldValue],
-  );
-  const addHandler = useCallback(() => {
+  function deleteHandler(index: number) {
+    const _database = databases.data.slice();
+    _database.splice(index, 1);
+    setFieldValue('databases.data', _database);
+  }
+
+  function addHandler() {
     const newDatabase = {
       key: v4(),
       label: '',
@@ -63,15 +61,15 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
       enabled: true,
     };
     setFieldValue('databases.data', [...databases.data, newDatabase]);
-  }, [databases, setFieldValue]);
+  }
 
-  const resetHandler = useCallback(() => {
+  function resetHandler() {
     const workSpaceDisplayPreferences =
       getPreferencesByWorkspace(currentWorkspace);
     const database = workSpaceDisplayPreferences.databases.data;
 
     setFieldValue('databases.data', database);
-  }, [currentWorkspace, setFieldValue]);
+  }
 
   return (
     <fieldset
