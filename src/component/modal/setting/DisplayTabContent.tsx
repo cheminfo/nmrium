@@ -62,11 +62,6 @@ const LIST: ListItem[] = [
     label: 'Automatic assignment panel',
     name: 'panels.automaticAssignmentPanel',
   },
-  {
-    label: 'Experimental features',
-    name: 'general.experimentalFeatures',
-    hideOpenOption: true,
-  },
 ];
 
 function DisplayTabContent() {
@@ -96,15 +91,12 @@ function DisplayTabContent() {
       {
         index: 3,
         Header: 'Open on load',
-        Cell: ({ row }) =>
-          !row.original.hideOpenOption ? (
-            <CheckBoxCell
-              name={`display.${row.original.name}.open`}
-              defaultValue={false}
-            />
-          ) : (
-            <div />
-          ),
+        Cell: ({ row }) => (
+          <CheckBoxCell
+            name={`display.${row.original.name}.open`}
+            defaultValue={false}
+          />
+        ),
       },
     ],
     [],

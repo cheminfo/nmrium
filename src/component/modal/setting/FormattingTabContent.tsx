@@ -3,10 +3,11 @@ import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { Fragment, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
+import { GroupPane } from '../../elements/GroupPane';
 import FormikInput from '../../elements/formik/FormikInput';
 
 const styles = css`
@@ -81,10 +82,7 @@ function FormattingTabContent() {
   const nucleiList = Object.keys(nuclei);
 
   return (
-    <Fragment>
-      <p className="section-header">
-        Number formatting for crosshair and info line
-      </p>
+    <GroupPane text="Number formatting for crosshair and info line">
       <div css={styles}>
         <table>
           <thead>
@@ -147,7 +145,7 @@ function FormattingTabContent() {
           </tbody>
         </table>
       </div>
-    </Fragment>
+    </GroupPane>
   );
 }
 
