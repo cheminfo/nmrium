@@ -10,7 +10,7 @@ export const MARGIN = {
   '1D': {
     top: 10,
     right: 10,
-    bottom: 70,
+    bottom: 50,
     left: 10,
   },
 };

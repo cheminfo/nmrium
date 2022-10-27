@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback } from 'react';
+import { CSSProperties, useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -37,6 +37,22 @@ const stylesHighlighted = css`
     visibility: visible;
   }
 `;
+
+const styles: Record<'text' | 'path', CSSProperties> = {
+  text: {
+    fontSize: '11px',
+    textAnchor: 'middle',
+    dominantBaseline: 'middle',
+    writingMode: 'vertical-rl',
+    fill: 'black',
+  },
+  path: {
+    fill: 'none',
+    stroke: 'black',
+    strokeWidth: '1px',
+    shapeRendering: 'crispEdges',
+  },
+};
 
 interface IntegralResizableProps {
   integralData: {
@@ -93,6 +109,8 @@ function IntegralResizable({
   const from = integralData.from ? scaleX()(integralData.from) : 0;
   const to = integralData.to ? scaleX()(integralData.to) : 0;
 
+  const bottom = height - margin.bottom;
+
   return (
     <g
       onMouseEnter={handleOnEnterNotation}
@@ -106,32 +124,40 @@ function IntegralResizable({
         key={`${id}_${to}_${from}`}
         disabled={selectedTool !== options.integral.id}
       >
-        {({ x1, x2 }, isActive) => (
-          <g
-            css={
-              highlight.isActive || isActive ? stylesHighlighted : stylesOnHover
-            }
-          >
-            <rect
-              x="0"
-              y="0"
-              width={x2 - x1}
-              height={height - margin.bottom}
-              className="highlight"
-              data-no-export="true"
-            />
-            <text
-              x={0}
-              y={height - margin.bottom + 30}
-              fill="black"
-              style={{ fontSize: '12px', fontWeight: 'bold' }}
+        {({ x1, x2 }, isActive) => {
+          const width = x2 - x1;
+
+          return (
+            <g
+              css={
+                highlight.isActive || isActive
+                  ? stylesHighlighted
+                  : stylesOnHover
+              }
             >
-              {integral !== undefined
-                ? formatNumber(integral, integralFormat)
-                : ''}
-            </text>
-          </g>
-        )}
+              <rect
+                width={width}
+                height={bottom}
+                className="highlight"
+                data-no-export="true"
+              />
+              <g style={{ transform: `translate(0,${bottom - 15}px) ` }}>
+                <text
+                  style={{
+                    ...styles.text,
+                    transform: `translate(${width / 2}px,-5px) scale(-1)`,
+                  }}
+                >
+                  {integral ? formatNumber(integral, integralFormat) : ''}
+                </text>
+                <path
+                  style={styles.path}
+                  d={`M0 0 L0 10 L${width} 10 L${width} 0 `}
+                />
+              </g>
+            </g>
+          );
+        }}
       </Resizer>
     </g>
   );
