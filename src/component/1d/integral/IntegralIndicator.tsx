@@ -7,7 +7,7 @@ interface IntegralIndicatorProps {
   value: number | undefined;
   format: string;
   width: number;
-  lineColor?: string;
+  opacity?: number;
 }
 
 const styles: Record<'text' | 'path', CSSProperties> = {
@@ -22,17 +22,18 @@ const styles: Record<'text' | 'path', CSSProperties> = {
     fill: 'none',
     strokeWidth: '1px',
     shapeRendering: 'crispEdges',
+    stroke: 'black',
   },
 };
 
 export function IntegralIndicator(props: IntegralIndicatorProps) {
-  const { value, width, format, lineColor = 'black' } = props;
+  const { value, width, format, opacity = 1 } = props;
   const { height, margin } = useChartData();
 
   const bottom = height - margin.bottom;
 
   return (
-    <g style={{ transform: `translate(0,${bottom - 10}px) ` }}>
+    <g style={{ transform: `translate(0,${bottom - 10}px) `, opacity }}>
       <text
         style={{
           ...styles.text,
@@ -41,10 +42,7 @@ export function IntegralIndicator(props: IntegralIndicatorProps) {
       >
         {value ? formatNumber(value, format) : ''}
       </text>
-      <path
-        style={{ ...styles.path, stroke: lineColor }}
-        d={`M0 0 L0 5 L${width} 5 L${width} 0 `}
-      />
+      <path style={styles.path} d={`M0 0 L0 5 L${width} 5 L${width} 0 `} />
     </g>
   );
 }

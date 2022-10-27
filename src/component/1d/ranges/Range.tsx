@@ -160,7 +160,7 @@ function Range({
                 value={integration}
                 format={relativeFormat}
                 width={width}
-                lineColor={isNotSignal ? 'red' : 'black'}
+                opacity={isNotSignal ? 0.5 : 1}
               />
             </g>
           );
