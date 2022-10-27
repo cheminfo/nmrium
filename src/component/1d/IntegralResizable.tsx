@@ -141,18 +141,18 @@ function IntegralResizable({
                 className="highlight"
                 data-no-export="true"
               />
-              <g style={{ transform: `translate(0,${bottom - 15}px) ` }}>
+              <g style={{ transform: `translate(0,${bottom - 10}px) ` }}>
                 <text
                   style={{
                     ...styles.text,
-                    transform: `translate(${width / 2}px,-5px) scale(-1)`,
+                    transform: `translate(${width / 2}px,-12px) scale(-1)`,
                   }}
                 >
                   {integral ? formatNumber(integral, integralFormat) : ''}
                 </text>
                 <path
                   style={styles.path}
-                  d={`M0 0 L0 10 L${width} 10 L${width} 0 `}
+                  d={`M0 0 L0 5 L${width} 5 L${width} 0 `}
                 />
               </g>
             </g>
