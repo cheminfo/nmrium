@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -67,29 +66,20 @@ function IntegralResizable({
     extra: { id },
   });
 
-  const handleOnStopResizing = useCallback(
-    (position) => {
-      dispatch({
-        type: RESIZE_INTEGRAL,
-        payload: {
-          data: {
-            ...integralData,
-            from: scaleX().invert(position.x2),
-            to: scaleX().invert(position.x1),
-          },
+  function handleOnStopResizing
+    (position) {
+    dispatch({
+      type: RESIZE_INTEGRAL,
+      payload: {
+        data: {
+          ...integralData,
+          from: scaleX().invert(position.x2),
+          to: scaleX().invert(position.x1),
         },
-      });
-    },
-    [dispatch, integralData, scaleX],
-  );
+      },
+    });
+  }
 
-  const handleOnEnterNotation = useCallback(() => {
-    highlight.show();
-  }, [highlight]);
-
-  const handleOnMouseLeaveNotation = useCallback(() => {
-    highlight.hide();
-  }, [highlight]);
 
   const from = integralData.from ? scaleX()(integralData.from) : 0;
   const to = integralData.to ? scaleX()(integralData.to) : 0;
@@ -98,8 +88,8 @@ function IntegralResizable({
 
   return (
     <g
-      onMouseEnter={handleOnEnterNotation}
-      onMouseLeave={handleOnMouseLeaveNotation}
+      onMouseEnter={() => highlight.show()}
+      onMouseLeave={() => highlight.hide()}
     >
       <Resizer
         tag="svg"
