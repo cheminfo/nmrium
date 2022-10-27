@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
-import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
+import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 
 import Integral from './Integral';
 

@@ -153,7 +153,7 @@ export const getInitialState = (): State => ({
   margin: {
     top: 10,
     right: 20,
-    bottom: 70,
+    bottom: 50,
     left: 0,
   },
   mode: 'RTL',
