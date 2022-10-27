@@ -17,7 +17,7 @@ async function addIntegral(
 
   // Should have integral with at least 1000 points
   const path = (await nmrium.page.getAttribute(
-    `_react=Integral >> nth=${childIndex} >> path`,
+    `_react=Integral >> nth=${childIndex} >> path >> nth=0`,
     'd',
   )) as string;
   expect(path.length).toBeGreaterThan(1000);
@@ -46,7 +46,7 @@ async function resizeIntegral(nmrium: NmriumPage) {
   await nmrium.page.mouse.up();
 
   const path = (await nmrium.page.getAttribute(
-    '_react=Integral >> nth=0 >> path',
+    '_react=Integral >> nth=0 >> path >> nth=0',
     'd',
   )) as string;
 
