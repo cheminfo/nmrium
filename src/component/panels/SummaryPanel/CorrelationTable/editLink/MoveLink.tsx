@@ -67,20 +67,24 @@ function MoveLink({
 
   const getSelection = useCallback(
     (correlation: Correlation, dim: 0 | 1) => {
-      const selectionData = correlations.reduce((arr, _correlation) => {
+      const selectionData: Array<{
+        key?: string;
+        value: string;
+        label: string;
+      }> = [];
+      for (const correlation of correlations) {
         if (
-          _correlation.pseudo === false &&
-          _correlation.atomType === link.atomType[dim]
+          correlation.pseudo === false &&
+          correlation.atomType === link.atomType[dim]
         ) {
-          arr.push({
-            value: _correlation.id,
-            label: `${_correlation.label.origin}: ${getCorrelationLabel(
-              _correlation,
+          selectionData.push({
+            value: correlation.id,
+            label: `${correlation.label.origin}: ${getCorrelationLabel(
+              correlation,
             )}`,
           });
         }
-        return arr;
-      }, []);
+      }
       selectionData.push({
         key: 'new',
         value: 'new',

@@ -38,33 +38,25 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
 function getDomain(draft: Draft<State>) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
-  let yDomains = {};
-  let xDomains = {};
+  const yDomains: Record<string, number[]> = {};
+  const xDomains: Record<string, number[]> = {};
 
   const data = getActiveData(draft);
   try {
-    xArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
+    for (const d of data) {
       const { display, data } = d;
+      const { y } = get1DDataXY(d);
+
+      const _extent = extent(y) as Array<number>;
       const domain = [data.x[0], data.x[data.x.length - 1]];
+
+      yDomains[d.id] = _extent;
       xDomains[d.id] = domain;
       if (display.isVisible) {
-        acc = acc.concat(domain);
+        xArray = xArray.concat(domain);
+        yArray = yArray.concat(_extent);
       }
-      return acc;
-    }, []);
-
-    yArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
-      const { display } = d;
-      const data = get1DDataXY(d);
-
-      const _extent = extent(data.y) as Array<number>;
-      yDomains[d.id] = _extent;
-
-      if (display.isVisible) {
-        acc = acc.concat(_extent);
-      }
-      return acc;
-    }, []);
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -80,8 +72,8 @@ function getDomain(draft: Draft<State>) {
 function get2DDomain(state: State) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
-  let yDomains = {};
-  let xDomains = {};
+  const yDomains: Record<string, [number | undefined, number | undefined]> = {};
+  const xDomains: Record<string, number[]> = {};
 
   const {
     view: {
@@ -93,27 +85,31 @@ function get2DDomain(state: State) {
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
-      if (
-        isSpectrum2D(datum) &&
-        datum.info.nucleus?.join(',') === activeTab &&
-        datum.info.isFt
-      ) {
-        acc = acc.concat([datum.data.minX, datum.data.maxX]);
-      }
-      return acc;
-    }, []);
+    xArray = (
+      data.filter(
+        (datum) =>
+          isSpectrum2D(datum) &&
+          datum.info.nucleus?.join(',') === activeTab &&
+          datum.info.isFt,
+      ) as Array<Datum2D>
+    )
+      .map((datum: Datum2D) => {
+        return [datum.data.minX, datum.data.maxX];
+      })
+      .flat();
 
-    yArray = data.reduce((acc: Array<number>, datum: Datum1D | Datum2D) => {
-      if (
-        isSpectrum2D(datum) &&
-        datum.info.nucleus?.join(',') === activeTab &&
-        datum.info.isFt
-      ) {
-        acc = acc.concat([datum.data.minY, datum.data.maxY]);
-      }
-      return acc;
-    }, []);
+    yArray = (
+      data.filter(
+        (d) =>
+          isSpectrum2D(d) &&
+          d.info.nucleus?.join(',') === activeTab &&
+          d.info.isFt,
+      ) as Array<Datum2D>
+    )
+      .map((datum: Datum2D) => {
+        return [datum.data.minY, datum.data.maxY];
+      })
+      .flat();
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -121,27 +117,20 @@ function get2DDomain(state: State) {
 
   const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);
 
-  const filteredData = data.reduce(
-    (acc: Datum1D[], datum: Datum1D | Datum2D) => {
-      return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
-        ? acc.concat(datum as Datum1D)
-        : acc.concat([]);
-    },
-    [],
-  );
+  const filteredData = data
+    .filter((d) => spectrumsIDs.includes(d.id) && d.info.dimension === 1)
+    .map((datum: Datum1D | Datum2D) => {
+      return datum as Datum1D;
+    });
+
   try {
-    xDomains = filteredData.reduce((acc, d: Datum1D) => {
+    for (const d of filteredData) {
       const { x } = d.data;
       const domain = [x[0], x[x.length - 1]];
-      acc[d.id] = domain;
-      return acc;
-    }, {});
-
-    yDomains = filteredData.reduce((acc, d: Datum1D) => {
+      xDomains[d.id] = domain;
       const _extent = extent(d.data.re);
-      acc[d.id] = _extent;
-      return acc;
-    }, {});
+      yDomains[d.id] = _extent;
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -179,10 +168,11 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
     if (yDomain.isChanged) {
       draft.yDomain = domain.yDomain;
       if (draft.displayerMode === DISPLAYER_MODE.DM_1D && yDomain.isShared) {
-        draft.yDomains = Object.keys(domain.yDomains).reduce((acc, key) => {
-          acc[key] = domain.yDomain;
-          return acc;
-        }, {});
+        draft.yDomains = Object.fromEntries(
+          Object.keys(domain.yDomains).map((key) => {
+            return [key, domain.yDomain];
+          }),
+        );
       } else {
         draft.yDomains = domain.yDomains;
       }

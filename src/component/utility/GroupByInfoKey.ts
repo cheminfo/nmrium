@@ -1,29 +1,29 @@
-function getNucleusSum(input) {
+function getNucleusSum(input: string) {
   const nucleus = input.split(',');
-  return nucleus.reduce((acc, i) => {
+  let output = 0;
+  for (const i of nucleus) {
     const additions = nucleus.length === 2 ? 100 : 0;
-    acc += Number(i.replace(/\D/g, '')) + additions;
-    return acc;
-  }, 0);
+    output += Number(i.replace(/\D/g, '')) + additions;
+  }
+  return output;
 }
 
-export default function GroupByInfoKey(key) {
+export default function GroupByInfoKey(key: string) {
   return (array, orderByNucleus = false) => {
-    const unorderedGroup = array.reduce((objectsByKeyValue, obj) => {
+    const unorderedGroup = {};
+    for (const obj of array) {
       const value = obj.info[key];
-      objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-      return objectsByKeyValue;
-    }, {});
+      unorderedGroup[value] = (unorderedGroup[value] || []).concat(obj);
+    }
 
     if (!orderByNucleus) {
       return unorderedGroup;
     } else {
-      return Object.keys(unorderedGroup)
-        .sort((a, b) => getNucleusSum(a) - getNucleusSum(b))
-        .reduce((acc, key) => {
-          acc[key] = unorderedGroup[key];
-          return acc;
-        }, {});
+      return Object.fromEntries(
+        Object.keys(unorderedGroup)
+          .sort((a, b) => getNucleusSum(a) - getNucleusSum(b))
+          .map((key) => [key, unorderedGroup[key]]),
+      );
     }
   };
 }

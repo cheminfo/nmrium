@@ -25,24 +25,25 @@ function AdditionalColumnHeader({
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids: string[] = [];
-    correlation.link.forEach((link) => {
-      if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair_X'));
-        const _id = findRangeOrZoneID(
-          spectraData,
-          link.experimentID,
-          link.signal.id,
-          true,
-        );
-        if (_id) {
-          ids.push(_id);
+    return correlation.link
+      .map((link) => {
+        const ids: string[] = [];
+        if (link.pseudo === false) {
+          ids.push(link.signal.id);
+          ids.push(buildID(link.signal.id, 'Crosshair_X'));
+          const _id = findRangeOrZoneID(
+            spectraData,
+            link.experimentID,
+            link.signal.id,
+            true,
+          );
+          if (_id) {
+            ids.push(_id);
+          }
         }
-      }
-    });
-
-    return ids;
+        return ids;
+      })
+      .flat();
   }, [correlation, spectraData]);
   const highlightAdditionalColumn = useHighlight(highlightIDsAdditionalColumn);
 
@@ -64,6 +65,19 @@ function AdditionalColumnHeader({
   const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
+    const title = [
+      ...new Set(
+        correlation.link
+          .map((link) => {
+            if (link.pseudo === false) {
+              return link.experimentType.toUpperCase();
+            }
+            return undefined;
+          })
+          .sort(),
+      ),
+    ].join('/');
+
     return {
       style: {
         ...{ color: getLabelColor(correlationsData, correlation) || undefined },
@@ -73,20 +87,7 @@ function AdditionalColumnHeader({
           ? '#f5f5dc'
           : 'inherit',
       },
-      title:
-        correlation.pseudo === false &&
-        correlation.link
-          .reduce((arr, link) => {
-            if (
-              link.pseudo === false &&
-              !arr.includes(link.experimentType.toUpperCase())
-            ) {
-              arr.push(link.experimentType.toUpperCase());
-            }
-            return arr;
-          }, [])
-          .sort()
-          .join('/'),
+      title: correlation.pseudo === false && title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };

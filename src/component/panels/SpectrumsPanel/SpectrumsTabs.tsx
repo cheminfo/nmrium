@@ -59,16 +59,15 @@ function SpectrumsTabsInner({
 
   useEffect(() => {
     if (data) {
-      const visibleMarkers = data.reduce((acc: any, datum) => {
+      const visibleMarkers: Array<{ id: string }> = [];
+      for (const datum of data) {
         if (
           datum.info.dimension === 1 &&
           (datum as Datum1D).display.isPeaksMarkersVisible
         ) {
-          acc.push({ id: datum.id });
+          visibleMarkers.push({ id: datum.id });
         }
-        return acc;
-      }, []);
-
+      }
       setMarkersVisible(visibleMarkers);
     }
   }, [data, dispatch]);

@@ -109,10 +109,11 @@ export default function useAtomAssignment({
   );
 
   const currentDiaIDsToHighlight = useMemo(() => {
-    let highlights: string[] = [];
-    highlightData.highlight.highlighted.forEach((highlightID) => {
-      const temp = assignments.data.assignments[highlightID];
-      if (temp) {
+    const highlights = highlightData.highlight.highlighted
+      .filter((highlightID) => {
+        return assignments.data.assignments[highlightID];
+      })
+      .map((highlightID) => {
         const { datum } = findDatumAndSignalIndex(data, highlightID);
         const type = highlightData.highlight.sourceData?.type;
         if (
@@ -122,18 +123,17 @@ export default function useAtomAssignment({
             type === HighlightEventSource.ATOM)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
-          highlights = highlights.concat(
-            datum.signals
-              .map((signal) =>
-                filterForIDsWithAssignment(assignments, [signal.id]).length > 0
-                  ? signal.diaIDs
-                  : [],
-              )
-              .flat(),
-          );
+          return datum.signals
+            .map((signal) =>
+              filterForIDsWithAssignment(assignments, [signal.id]).length > 0
+                ? signal.diaIDs
+                : [],
+            )
+            .flat();
         }
-      }
-    });
+        return [];
+      })
+      .flat();
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
   }, [
     assignments,

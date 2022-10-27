@@ -126,13 +126,13 @@ export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
   let _diaIDs = diaIDs ? diaIDs.slice() : [];
   const { nbAtoms, oclIDs } = atomInformation;
   let tempNbAtoms = nbAtoms;
-  oclIDs.forEach((_oclID) => {
-    if (_diaIDs.includes(_oclID)) {
+  for (const oclID of oclIDs) {
+    if (_diaIDs.includes(oclID)) {
       tempNbAtoms *= -1;
-      _diaIDs = _diaIDs.filter((_id) => _id !== _oclID);
+      _diaIDs = _diaIDs.filter((_id) => _id !== oclID);
     } else {
-      _diaIDs.push(_oclID);
+      _diaIDs.push(oclID);
     }
-  });
+  }
   return [_diaIDs, tempNbAtoms];
 }

@@ -27,24 +27,25 @@ function AdditionalColumnField({
   const modal = useModal();
 
   const highlightIDsCommonLinks = useMemo(() => {
-    const ids: Array<any> = [];
-    commonLinks.forEach((link: Link) => {
-      if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair'));
-        const _id = findRangeOrZoneID(
-          spectraData,
-          link.experimentID,
-          link.signal.id,
-          true,
-        );
-        if (_id) {
-          ids.push(_id);
+    return commonLinks
+      .map((link: Link) => {
+        const ids: string[] = [];
+        if (link.pseudo === false) {
+          ids.push(link.signal.id);
+          ids.push(buildID(link.signal.id, 'Crosshair'));
+          const _id = findRangeOrZoneID(
+            spectraData,
+            link.experimentID,
+            link.signal.id,
+            true,
+          );
+          if (_id) {
+            ids.push(_id);
+          }
         }
-      }
-    });
-
-    return ids;
+        return ids;
+      })
+      .flat();
   }, [commonLinks, spectraData]);
   const highlightCommonLinks = useHighlight(highlightIDsCommonLinks);
 
@@ -221,18 +222,15 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
-  const title = useMemo(
-    () =>
-      commonLinks
-        .reduce((arr, link) => {
-          if (!arr.includes(link.experimentType.toUpperCase())) {
-            arr.push(link.experimentType.toUpperCase());
-          }
-          return arr;
-        }, [])
-        .join('/'),
-    [commonLinks],
-  );
+  const title: string = useMemo(() => {
+    return [
+      ...new Set(
+        commonLinks.link.map((link) => {
+          return link.experimentType.toUpperCase();
+        }),
+      ),
+    ].join('/');
+  }, [commonLinks]);
 
   const isInViewRow = useInView({ correlation: rowCorrelation });
   const isInViewColumn = useInView({ correlation: columnCorrelation });

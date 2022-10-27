@@ -1,10 +1,15 @@
 import { Formatting } from '../../../workspaces/Workspace';
 
-export function mapNucleiFormatting(formatting: Formatting) {
+export function mapNucleiFormatting(formatting: Formatting): Formatting {
   const { nuclei, ...res } = formatting;
-  const _nuclei = Object.keys(nuclei).reduce((nucleusFormatting, key) => {
-    nucleusFormatting[nuclei[key].name.trim().toLowerCase()] = nuclei[key];
-    return nucleusFormatting;
-  }, {});
-  return { nuclei: _nuclei, ...res };
+
+  return {
+    nuclei: Object.fromEntries(
+      Object.keys(nuclei).map((key) => [
+        nuclei[key].name.trim().toLowerCase(),
+        nuclei[key],
+      ]),
+    ),
+    ...res,
+  };
 }

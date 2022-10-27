@@ -13,10 +13,9 @@ export const FILES_SIGNATURES = {
 };
 
 function getFileSignature(fileArrayBuffer) {
-  // eslint-disable-next-line no-restricted-properties
-  return new Uint8Array(fileArrayBuffer)
-    .slice(0, 4)
-    .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
+  return Array.from(new Uint8Array(fileArrayBuffer).slice(0, 4), (byte) =>
+    byte.toString(16).padStart(2, '0'),
+  ).join('');
 }
 
 async function loadFile(file, options = { asBuffer: false }) {
