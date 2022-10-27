@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, useCallback } from 'react';
+import { useCallback } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useGlobal } from '../context/GlobalContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import Resizer from '../elements/resizer/Resizer';
-import { HighlightEventSource, useHighlight } from '../highlight/index';
-import { RESIZE_INTEGRAL } from '../reducer/types/Types';
-import { options } from '../toolbar/ToolTypes';
-import { formatNumber } from '../utility/formatNumber';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useGlobal } from '../../context/GlobalContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import Resizer from '../../elements/resizer/Resizer';
+import { HighlightEventSource, useHighlight } from '../../highlight/index';
+import { RESIZE_INTEGRAL } from '../../reducer/types/Types';
+import { options } from '../../toolbar/ToolTypes';
+
+import { IntegralIndicator } from './IntegralIndicator';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -37,22 +38,6 @@ const stylesHighlighted = css`
     visibility: visible;
   }
 `;
-
-const styles: Record<'text' | 'path', CSSProperties> = {
-  text: {
-    fontSize: '11px',
-    textAnchor: 'middle',
-    dominantBaseline: 'middle',
-    writingMode: 'vertical-rl',
-    fill: 'black',
-  },
-  path: {
-    fill: 'none',
-    stroke: 'black',
-    strokeWidth: '1px',
-    shapeRendering: 'crispEdges',
-  },
-};
 
 interface IntegralResizableProps {
   integralData: {
@@ -141,20 +126,11 @@ function IntegralResizable({
                 className="highlight"
                 data-no-export="true"
               />
-              <g style={{ transform: `translate(0,${bottom - 10}px) ` }}>
-                <text
-                  style={{
-                    ...styles.text,
-                    transform: `translate(${width / 2}px,-12px) scale(-1)`,
-                  }}
-                >
-                  {integral ? formatNumber(integral, integralFormat) : ''}
-                </text>
-                <path
-                  style={styles.path}
-                  d={`M0 0 L0 5 L${width} 5 L${width} 0 `}
-                />
-              </g>
+              <IntegralIndicator
+                value={integral}
+                format={integralFormat}
+                width={width}
+              />
             </g>
           );
         }}

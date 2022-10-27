@@ -2,10 +2,10 @@ import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 
 import ApdoizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
-import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
+import IntegralsSeries from './integral/IntegralsSeries';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import PeakAnnotations from './peaks/PeakAnnotations';
