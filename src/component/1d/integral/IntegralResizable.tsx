@@ -66,8 +66,7 @@ function IntegralResizable({
     extra: { id },
   });
 
-  function handleOnStopResizing
-    (position) {
+  function handleOnStopResizing(position) {
     dispatch({
       type: RESIZE_INTEGRAL,
       payload: {
@@ -79,7 +78,6 @@ function IntegralResizable({
       },
     });
   }
-
 
   const from = integralData.from ? scaleX()(integralData.from) : 0;
   const to = integralData.to ? scaleX()(integralData.to) : 0;
