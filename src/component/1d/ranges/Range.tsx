@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useState, useEffect } from 'react';
 
 import { Signal1D } from '../../../data/types/data1d';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
@@ -16,7 +15,7 @@ import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
-import { formatNumber } from '../../utility/formatNumber';
+import { IntegralIndicator } from '../integral/IntegralIndicator';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 
 const stylesOnHover = css`
@@ -24,11 +23,10 @@ const stylesOnHover = css`
   @-moz-document url-prefix() {
     pointer-events: fill;
   }
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-
-  .delete-button {
+  .highlight {
+    fill: transparent;
+  }
+  .target {
     visibility: hidden;
   }
 `;
@@ -39,13 +37,10 @@ const stylesHighlighted = css`
   @-moz-document url-prefix() {
     pointer-events: fill;
   }
-  .range-area {
-    height: 100%;
-    fill: #ff6f0057;
-  }
-  .delete-button {
+  fill: #ff6f0057;
+
+  .target {
     visibility: visible;
-    cursor: pointer;
   }
 `;
 
@@ -87,59 +82,44 @@ function Range({
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
-  const [reduceOpacity, setReduceOpacity] = useState(false);
-  const [isBlockedByEditing, setIsBlockedByEditing] = useState(false);
+  const isBlockedByEditing =
+    selectedTool && selectedTool === options.editRange.id;
 
-  useEffect(() => {
-    if (selectedTool && selectedTool === options.editRange.id) {
-      setIsBlockedByEditing(true);
-    } else {
-      setIsBlockedByEditing(false);
-    }
-  }, [selectedTool]);
+  function handleOnStopResizing(position) {
+    dispatch({
+      type: RESIZE_RANGE,
+      data: {
+        ...rangeData,
+        from: scaleX().invert(position.x2),
+        to: scaleX().invert(position.x1),
+      },
+    });
+  }
 
-  useEffect(() => {
-    setReduceOpacity(!checkRangeKind(rangeData));
-  }, [rangeData]);
-
-  const handleOnStopResizing = useCallback(
-    (position) => {
-      dispatch({
-        type: RESIZE_RANGE,
-        data: {
-          ...rangeData,
-          from: scaleX().invert(position.x2),
-          to: scaleX().invert(position.x1),
-        },
-      });
-    },
-    [dispatch, rangeData, scaleX],
-  );
-
-  const mouseEnterHandler = useCallback(() => {
+  function mouseEnterHandler() {
     assignmentRange.show('x');
     highlightRange.show();
-  }, [assignmentRange, highlightRange]);
+  }
 
-  const mouseLeaveHandler = useCallback(() => {
+  function mouseLeaveHandler() {
     assignmentRange.hide();
     highlightRange.hide();
-  }, [assignmentRange, highlightRange]);
+  }
 
-  const assignHandler = useCallback(
-    (e) => {
-      if (
-        selectedTool === options.rangePicking.id &&
-        e.shiftKey &&
-        !isBlockedByEditing
-      ) {
-        assignmentRange.setActive('x');
-      }
-    },
-    [assignmentRange, isBlockedByEditing, selectedTool],
-  );
+  function assignHandler(e) {
+    if (
+      selectedTool === options.rangePicking.id &&
+      e.shiftKey &&
+      !isBlockedByEditing
+    ) {
+      assignmentRange.setActive('x');
+    }
+  }
   const from = scaleX()(rangeData.from);
   const to = scaleX()(rangeData.to);
+
+  const isNotSignal = !checkRangeKind(rangeData);
+
   return (
     <g
       data-test-id="range"
@@ -157,52 +137,34 @@ function Range({
         key={`${id}_${to}_${from}`}
         disabled={selectedTool !== options.rangePicking.id}
       >
-        {({ x1, x2 }, isActive) => (
-          <g
-            transform={`translate(0,10)`}
-            css={
-              isBlockedByEditing ||
-              highlightRange.isActive ||
-              assignmentRange.isActive ||
-              isActive
-                ? stylesHighlighted
-                : stylesOnHover
-            }
-          >
-            <rect
-              x="0"
-              width={x2 - x1}
-              height="6"
-              className="range-area"
-              fill="green"
-              fillOpacity={
-                !reduceOpacity ||
+        {({ x1, x2 }, isActive) => {
+          const width = x2 - x1;
+          return (
+            <g
+              css={
+                isBlockedByEditing ||
                 highlightRange.isActive ||
-                assignmentRange.isActive
-                  ? 1
-                  : 0.4
-              }
-            />
-            <text
-              textAnchor="middle"
-              x={(x2 - x1) / 2}
-              y="20"
-              fontSize="10"
-              fill="red"
-              fillOpacity={
-                !reduceOpacity ||
-                highlightRange.isActive ||
-                assignmentRange.isActive
-                  ? 1
-                  : 0.6
+                assignmentRange.isActive ||
+                isActive
+                  ? stylesHighlighted
+                  : stylesOnHover
               }
             >
-              {integration !== undefined
-                ? formatNumber(integration, relativeFormat)
-                : ''}
-            </text>
-          </g>
-        )}
+              <rect
+                width={width}
+                height="100%"
+                className="highlight"
+                data-no-export="true"
+              />
+              <IntegralIndicator
+                value={integration}
+                format={relativeFormat}
+                width={width}
+                lineColor={isNotSignal ? 'red' : 'black'}
+              />
+            </g>
+          );
+        }}
       </Resizer>
 
       {showMultiplicityTrees &&
