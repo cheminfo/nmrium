@@ -49,6 +49,7 @@ import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
+import { initiateDatum2D } from '../../data/data2d/Spectrum2D';
 
 export interface ActiveSpectrum {
   id: string;
