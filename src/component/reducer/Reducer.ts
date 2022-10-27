@@ -1,17 +1,20 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { read as readDropFiles, migrate } from 'nmr-load-save';
+import { read as readDropFiles, readNMRiumObject } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
-import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
+import { initiateDatum1D } from '../../data/data1d/Spectrum1D';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
+import { initiateDatum2D } from '../../data/data2d/Spectrum2D';
+import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   FloatingMolecules,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
-import { Contours } from '../../data/types/data2d/Contours';
+import { Datum1D } from '../../data/types/data1d';
+import { Datum2D } from '../../data/types/data2d';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
@@ -109,6 +112,9 @@ export interface ViewState {
      */
     activeTab: string;
   };
+  zoom: {
+    levels: ContoursLevels;
+  };
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -129,7 +135,6 @@ export interface Margin {
 export const getInitialState = (): State => ({
   actionType: '',
   data: [],
-  contours: {} as Contours,
   tempData: null,
   xDomain: [],
   yDomain: [],
@@ -148,7 +153,7 @@ export const getInitialState = (): State => ({
   margin: {
     top: 10,
     right: 20,
-    bottom: 70,
+    bottom: 50,
     left: 0,
   },
   mode: 'RTL',
@@ -158,6 +163,9 @@ export const getInitialState = (): State => ({
     ranges: [],
     zones: [],
     spectra: { activeSpectra: {}, activeTab: '' },
+    zoom: {
+      levels: {},
+    },
   },
   verticalAlign: {
     align: 'bottom',
@@ -219,10 +227,6 @@ export interface State {
    * spectra list (1d and 2d)
    */
   data: Spectra;
-  /**
-   * calculated contours for 2d spectra
-   */
-  contours: Contours;
   /**
    * snapshot of the spectra data once phase correction activated
    *
@@ -451,29 +455,38 @@ export function initState(state: State): State {
 }
 
 export function dispatchMiddleware(dispatch) {
-  const usedColors: UsedColors = { '1d': [], '2d': [] };
+  let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
         if (action.payload) {
-          const { spectra, ...res } = migrate(action.payload);
-          void SpectraManager.fromJSON(spectra, usedColors).then((data) => {
-            action.payload = { spectra: data, ...res, usedColors };
+          usedColors = { '1d': [], '2d': [] };
+          void readNMRiumObject(action.payload).then((data) => {
+            const { spectra: spectraIn } = data;
+            const spectra: Array<Datum1D | Datum2D> = [];
+            for (let spectrum of spectraIn) {
+              const { info } = spectrum;
+              if (info.dimension === 1) {
+                spectra.push(initiateDatum1D(spectrum, usedColors));
+              } else if (info.dimension === 2) {
+                spectra.push(initiateDatum2D(spectrum, usedColors));
+              }
+            }
+            action.payload = { ...data, usedColors, spectra };
             dispatch(action);
           });
         }
-
         break;
       }
       case types.LOAD_DROP_FILES: {
         const { fileCollection } = action;
         action.usedColors = usedColors;
-        readDropFiles(fileCollection, usedColors)
+        readDropFiles(fileCollection)
           .then((data) => {
             action.data = data;
             dispatch(action);
           })
-          .catch((e: any) => {
+          .catch((e) => {
             dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
             reportError(e);
           });

@@ -67,7 +67,7 @@ import {
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
-import { BlobObject, getBlob } from './utility/Export';
+import { BlobObject, getBlob } from './utility/export';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;

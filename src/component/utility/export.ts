@@ -1,64 +1,33 @@
+import * as clipboard from 'clipboard-polyfill';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-function copyFormattedHtml(html) {
-  // Create an iframe (isolated container) for the HTML
-  let container = document.createElement('div');
-  container.innerHTML = html;
-
-  // Hide element
-  container.style.position = 'fixed';
-  container.style.pointerEvents = 'none';
-  container.style.opacity = '0';
-
-  // Detect all style sheets of the page
-  let activeSheets = Array.prototype.slice
-    .call(document.styleSheets)
-    .filter((sheet) => {
-      return !sheet.disabled;
-    });
-
-  // Mount the iframe to the DOM to make `contentWindow` available
-  document.body.appendChild(container);
-
-  // Copy to clipboard
-  window.getSelection()?.removeAllRanges();
-
-  let range = document.createRange();
-  range.selectNode(container);
-  window.getSelection()?.addRange(range);
-
-  document.execCommand('copy');
-  for (const active of activeSheets) {
-    active.disabled = true;
-  }
-
-  document.execCommand('copy');
-  for (const active of activeSheets) {
-    active.disabled = false;
-  }
-
-  // Remove the iframe
-  document.body.removeChild(container);
-}
-
 async function copyHTMLToClipboard(data) {
-  try {
-    copyFormattedHtml(data);
-    return true;
-  } catch (err) {
-    return false;
-  }
+  return copyToClipboard(data, 'text/html');
 }
 async function copyTextToClipboard(data) {
+  return copyToClipboard(data, 'text/plain');
+}
+
+async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
   try {
-    void navigator.clipboard.write([
-      new ClipboardItem({
-        'text/plain': new Promise((resolve) => {
-          resolve(new Blob([data], { type: 'text/plain' }));
+    if (typeof ClipboardItem !== 'undefined') {
+      void navigator.clipboard.write([
+        new ClipboardItem({
+          [type]: new Promise((resolve) => {
+            resolve(new Blob([data], { type }));
+          }),
         }),
-      }),
-    ]);
+      ]);
+    } else {
+      //TODO when Firefox team implement ClipboardItem this code should be removed
+      // this library is used mainly to solve the problem of copy HTML to a clipboard in Firefox but we use it for both HTML and plain text
+      const item = new clipboard.ClipboardItem({
+        [type]: new Blob([data], { type }),
+      });
+      await clipboard.write([item]);
+    }
+
     return true;
   } catch (err) {
     return false;
@@ -182,7 +151,8 @@ function exportAsPng(
   }
 }
 
-function copyDataURLCliboard(image) {
+// hack way to copy the image to the clipboard
+function copyDataURLClipboardFireFox(image) {
   const img = document.createElement('img');
   img.src = image;
 
@@ -198,7 +168,7 @@ function copyDataURLCliboard(image) {
   document.body.removeChild(img);
 }
 
-function copyBlobToCliboard(canvas) {
+function copyBlobToClipboard(canvas) {
   canvas.toBlob((b) => {
     const clip = new ClipboardItem({
       [b.type]: b,
@@ -238,9 +208,9 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
 
       // @ts-expect-error write exists in some browsers
       if (navigator.clipboard.write) {
-        copyBlobToCliboard(canvas);
+        copyBlobToClipboard(canvas);
       } else {
-        copyDataURLCliboard(png);
+        copyDataURLClipboardFireFox(png);
       }
 
       URL.revokeObjectURL(png);

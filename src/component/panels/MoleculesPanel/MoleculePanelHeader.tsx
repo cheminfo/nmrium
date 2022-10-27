@@ -36,7 +36,7 @@ import {
   copyPNGToClipboard,
   copyTextToClipboard,
   exportAsSVG,
-} from '../../utility/Export';
+} from '../../utility/export';
 
 const toolbarStyle = css`
   display: flex;

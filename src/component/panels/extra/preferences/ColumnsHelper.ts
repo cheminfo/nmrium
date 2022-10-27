@@ -60,14 +60,12 @@ export default class ColumnsHelper {
         } = options;
 
         if (showPrefixSuffixCallback(row)) {
-          return formatNumber(
-            row.original[columnKey],
-            format,
-            formatPrefix,
-            formatSuffix,
-          );
+          return formatNumber(row.original[columnKey], format, {
+            prefix: formatPrefix,
+            suffix: formatSuffix,
+          });
         } else {
-          return formatNumber(row.original[columnKey], format, '', '');
+          return formatNumber(row.original[columnKey], format);
         }
       });
     }
