@@ -94,7 +94,7 @@ function get2DDomain(state: State) {
       ) as Array<Datum2D>
     )
       .map((datum: Datum2D) => {
-        return [datum.data.minY, datum.data.maxY];
+        return [datum.data.minX, datum.data.maxX];
       })
       .flat();
 
@@ -121,8 +121,8 @@ function get2DDomain(state: State) {
     .filter((d) => spectrumsIDs.includes(d.id) && d.info.dimension === 1)
     .map((datum: Datum1D | Datum2D) => {
       return datum as Datum1D;
-    })
-    .flat();
+    });
+
   try {
     for (const d of filteredData) {
       const { x } = d.data;
@@ -168,11 +168,11 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
     if (yDomain.isChanged) {
       draft.yDomain = domain.yDomain;
       if (draft.displayerMode === DISPLAYER_MODE.DM_1D && yDomain.isShared) {
-        const yDomains = {};
-        for (const key in domain.yDomains) {
-          yDomains[key] = domain.yDomain;
-        }
-        draft.yDomains = yDomains;
+        draft.yDomains = Object.fromEntries(
+          Object.keys(domain.yDomains).map((key) => {
+            return [key, domain.yDomain];
+          }),
+        );
       } else {
         draft.yDomains = domain.yDomains;
       }
