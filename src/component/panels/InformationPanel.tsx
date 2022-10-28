@@ -1,18 +1,15 @@
 import {
   useState,
-  useCallback,
-  useEffect,
   memo,
-  useMemo,
-  useRef,
   CSSProperties,
 } from 'react';
 
+import Input from '../elements/Input';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
 import useSpectrum from '../hooks/useSpectrum';
 
 const styles: Record<
-  'container' | 'tableContainer' | 'searchInput',
+  'container' | 'tableContainer' | 'tableHeader',
   CSSProperties
 > = {
   container: {
@@ -22,18 +19,15 @@ const styles: Record<
     width: '100%',
   },
   tableContainer: {
-    height: 'calc(100% - 30px)',
     overflow: 'auto',
     display: 'block',
   },
-
-  searchInput: {
-    width: '100%',
-    borderRadius: '5px',
-    border: '0.55px solid gray',
-    padding: '5px',
-    marginBottom: '2px',
-  },
+  tableHeader: {
+    padding: ' 5px 10px',
+    backgroundColor: " #f8f8f8",
+    borderBottom: "1px solid gray",
+    fontSize: "1em"
+  }
 };
 
 interface InformationPanelInnerProps {
@@ -41,90 +35,76 @@ interface InformationPanelInnerProps {
   meta: any;
 }
 
+
+function filter(searchKey: string | undefined, data: Record<any, any>): Array<{ key: string, value: string }> {
+  const result: Array<{ key: string, value: string }> = []
+  for (const key in data) {
+    if (!searchKey || key.toLowerCase().includes(searchKey)) {
+      result.push({ key, value: data[key] })
+    }
+  }
+  return result;
+}
+
+const columns = [
+  {
+    Header: 'Parameter',
+    sortType: 'basic',
+    minWidth: 100,
+    width: 20,
+    maxWidth: 20,
+    accessor: "key",
+    Cell: ({ row }) => (
+      <p style={{ padding: '5px', backgroundColor: 'white' }}>
+        {row.original.key}
+      </p>
+    ),
+  },
+  {
+    Header: 'Value',
+    sortType: 'basic',
+    resizable: true,
+    accessor: "value",
+    Cell: ({ row }) => (
+      <p
+        style={{
+          backgroundColor: '#efefef',
+          height: '100%',
+          padding: '5px',
+          fontFamily: 'monospace',
+          whiteSpace: 'pre',
+          overflow: 'hidden',
+        }}
+      >
+        {`${row.original.value}`}
+      </p>
+    ),
+  },
+];
+
 function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
-  const [information, setInformation] = useState({});
-  const [matches, setMatchesData] = useState<string[]>([]);
-  const searchRef = useRef<HTMLInputElement>(null);
+  const [searchKey, setSearchKey] = useState();
 
-  const handleSearch = useCallback(
-    (e) => {
-      const values = Object.keys(information).filter((key) =>
-        key
-          .toLowerCase()
-          .includes(e.target ? e.target.value.toLowerCase() : e.toLowerCase()),
-      );
-      setMatchesData(values);
-    },
-    [information],
-  );
+  function handleSearch(e) {
+    const searchKey = e.target.value.toLowerCase();
+    setSearchKey(searchKey)
+  }
 
-  useEffect(() => {
-    if (searchRef.current) {
-      handleSearch(searchRef.current.value);
-    }
-  }, [handleSearch, searchRef]);
 
-  useEffect(() => {
-    if (info && meta) {
-      const keys = Object.keys(info).concat(Object.keys(meta));
-      setMatchesData(keys);
-      setInformation({
-        ...info,
-        ...meta,
-      });
-    }
-  }, [info, meta]);
+  const matchesInfo = filter(searchKey, info)
+  const matchesMeta = filter(searchKey, meta)
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Parameter',
-        sortType: 'basic',
-        minWidth: 100,
-        width: 20,
-        maxWidth: 20,
-        Cell: ({ row }) => (
-          <p style={{ padding: '5px', backgroundColor: 'white' }}>
-            {row.original}
-          </p>
-        ),
-      },
-      {
-        Header: 'Value',
-        sortType: 'basic',
-        resizable: true,
-        Cell: ({ row }) => (
-          <p
-            style={{
-              backgroundColor: '#efefef',
-              height: '100%',
-              padding: '5px',
-              fontFamily: 'monospace',
-              whiteSpace: 'pre',
-              overflow: 'hidden',
-            }}
-          >
-            {`${information[row.original]}`}
-          </p>
-        ),
-      },
-    ],
-    [information],
-  );
 
   return (
     <div style={styles.container}>
       <div>
-        <input
-          type="text"
-          style={styles.searchInput}
-          placeholder="Search for parameter..."
-          onChange={handleSearch}
-          ref={searchRef}
-        />
+        <Input placeholder="Search for parameter..." onChange={handleSearch} debounceTime={250} style={{ inputWrapper: { width: "100%", }, input: { textAlign: "left", padding: "5px" } }} />
       </div>
       <div style={styles.tableContainer}>
-        <ReactTableFlexLayout data={matches} columns={columns} />
+        <p style={styles.tableHeader}>Spectrum information</p>
+        <ReactTableFlexLayout data={matchesInfo} columns={columns} style={{ height: "auto" }} />
+        <p style={styles.tableHeader}>Other parameters</p>
+        <ReactTableFlexLayout data={matchesMeta} columns={columns} style={{ height: "auto" }} />
       </div>
     </div>
   );

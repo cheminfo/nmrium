@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { memo } from 'react';
+import { memo, CSSProperties } from 'react';
 import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
 import { ReactTableStyle } from './Style';
@@ -9,12 +9,14 @@ interface ReactTableFlexLayoutProps {
   data: any;
   columns: any;
   onMouseDown?: () => void;
+  style?: CSSProperties
 }
 
 function ReactTableFlexLayout({
   data,
   columns,
   onMouseDown = () => null,
+  style = {}
 }: ReactTableFlexLayoutProps) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
@@ -29,7 +31,7 @@ function ReactTableFlexLayout({
     <table
       {...getTableProps()}
       css={ReactTableStyle}
-      style={{ height: '100%' }}
+      style={{ height: '100%', ...style }}
     >
       <thead>
         {headerGroups.map((headerGroup) => (
