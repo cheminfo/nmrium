@@ -1,8 +1,4 @@
-import {
-  useState,
-  memo,
-  CSSProperties,
-} from 'react';
+import { useState, memo, CSSProperties } from 'react';
 
 import Input from '../elements/Input';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
@@ -24,10 +20,10 @@ const styles: Record<
   },
   tableHeader: {
     padding: ' 5px 10px',
-    backgroundColor: " #f8f8f8",
-    borderBottom: "1px solid gray",
-    fontSize: "1em"
-  }
+    backgroundColor: ' #f8f8f8',
+    borderBottom: '1px solid gray',
+    fontSize: '1em',
+  },
 };
 
 interface InformationPanelInnerProps {
@@ -35,12 +31,14 @@ interface InformationPanelInnerProps {
   meta: any;
 }
 
-
-function filter(searchKey: string | undefined, data: Record<any, any>): Array<{ key: string, value: string }> {
-  const result: Array<{ key: string, value: string }> = []
+function filter(
+  searchKey: string | undefined,
+  data: Record<any, any>,
+): Array<{ key: string; value: string }> {
+  const result: Array<{ key: string; value: string }> = [];
   for (const key in data) {
     if (!searchKey || key.toLowerCase().includes(searchKey)) {
-      result.push({ key, value: data[key] })
+      result.push({ key, value: data[key] });
     }
   }
   return result;
@@ -53,7 +51,7 @@ const columns = [
     minWidth: 100,
     width: 20,
     maxWidth: 20,
-    accessor: "key",
+    accessor: 'key',
     Cell: ({ row }) => (
       <p style={{ padding: '5px', backgroundColor: 'white' }}>
         {row.original.key}
@@ -64,7 +62,7 @@ const columns = [
     Header: 'Value',
     sortType: 'basic',
     resizable: true,
-    accessor: "value",
+    accessor: 'value',
     Cell: ({ row }) => (
       <p
         style={{
@@ -87,24 +85,38 @@ function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
 
   function handleSearch(e) {
     const searchKey = e.target.value.toLowerCase();
-    setSearchKey(searchKey)
+    setSearchKey(searchKey);
   }
 
-
-  const matchesInfo = filter(searchKey, info)
-  const matchesMeta = filter(searchKey, meta)
-
+  const matchesInfo = filter(searchKey, info);
+  const matchesMeta = filter(searchKey, meta);
 
   return (
     <div style={styles.container}>
       <div>
-        <Input placeholder="Search for parameter..." onChange={handleSearch} debounceTime={250} style={{ inputWrapper: { width: "100%", }, input: { textAlign: "left", padding: "5px" } }} />
+        <Input
+          placeholder="Search for parameter..."
+          onChange={handleSearch}
+          debounceTime={250}
+          style={{
+            inputWrapper: { width: '100%' },
+            input: { textAlign: 'left', padding: '5px' },
+          }}
+        />
       </div>
       <div style={styles.tableContainer}>
         <p style={styles.tableHeader}>Spectrum information</p>
-        <ReactTableFlexLayout data={matchesInfo} columns={columns} style={{ height: "auto" }} />
+        <ReactTableFlexLayout
+          data={matchesInfo}
+          columns={columns}
+          style={{ height: 'auto' }}
+        />
         <p style={styles.tableHeader}>Other parameters</p>
-        <ReactTableFlexLayout data={matchesMeta} columns={columns} style={{ height: "auto" }} />
+        <ReactTableFlexLayout
+          data={matchesMeta}
+          columns={columns}
+          style={{ height: 'auto' }}
+        />
       </div>
     </div>
   );

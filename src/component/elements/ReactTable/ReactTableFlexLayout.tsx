@@ -9,14 +9,14 @@ interface ReactTableFlexLayoutProps {
   data: any;
   columns: any;
   onMouseDown?: () => void;
-  style?: CSSProperties
+  style?: CSSProperties;
 }
 
 function ReactTableFlexLayout({
   data,
   columns,
   onMouseDown = () => null,
-  style = {}
+  style = {},
 }: ReactTableFlexLayoutProps) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
