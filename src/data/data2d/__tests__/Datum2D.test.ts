@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
+import { test, expect } from 'vitest';
+
 import { addJcamp } from '../../SpectraManager';
 import { drawContours } from '../Spectrum2D/contours';
 

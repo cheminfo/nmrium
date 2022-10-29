@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
+import { describe, it, expect } from 'vitest';
+
 import { autoPeakPicking, initiateDatum1D } from '../Spectrum1D';
 
 describe('test peakPicking', () => {
