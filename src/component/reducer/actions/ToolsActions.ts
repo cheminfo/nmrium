@@ -227,6 +227,8 @@ function handleZoom(draft: Draft<State>, action) {
   const {
     view: { ranges: rangeState },
     displayerMode,
+    yDomains,
+    integralsYDomains,
   } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -239,8 +241,8 @@ function handleZoom(draft: Draft<State>, action) {
     if (index !== null) {
       const id = getSpectrumID(draft, index);
       if (id) {
-        const domain = draft.yDomains[id];
-        draft.yDomains[id] = wheelZoom(event, domain);
+        const domain = yDomains[id];
+        yDomains[id] = wheelZoom(event, domain);
       }
     }
   } else if (activeSpectrum?.id) {
@@ -248,16 +250,16 @@ function handleZoom(draft: Draft<State>, action) {
       (showRangesIntegrals || selectedTool === options.integral.id) &&
       event.shiftKey
     ) {
-      const domain = draft.integralsYDomains[activeSpectrum?.id];
-      draft.integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      const domain = integralsYDomains[activeSpectrum?.id];
+      integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
     } else {
-      const domain = draft.yDomains[activeSpectrum?.id];
-      draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      const domain = yDomains[activeSpectrum?.id];
+      yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
     }
   } else {
-    for (const key of Object.keys(draft.yDomains)) {
-      const domain = draft.yDomains[key];
-      draft.yDomains[key] = wheelZoom(event, domain);
+    for (const key of Object.keys(yDomains)) {
+      const domain = yDomains[key];
+      yDomains[key] = wheelZoom(event, domain);
     }
   }
 }
@@ -462,11 +464,11 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
       const { levels } = draft.view.zoom;
       const contourOptions = activeSpectrum.display.contourOptions;
       const zoom = contoursManager(activeSpectrum.id, levels, contourOptions);
-      draft.view.zoom.levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
+      levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
     }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  } catch (error) {
+    // TODO: handle error.
+    reportError(error);
   }
 }
 

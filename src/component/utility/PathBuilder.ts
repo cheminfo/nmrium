@@ -10,7 +10,7 @@ export class PathBuilder {
   }
 
   public closePath() {
-    if (this.array.length !== 0) this.array.push('Z');
+    if (this.array.length > 0) this.array.push('Z');
   }
 
   public toString() {

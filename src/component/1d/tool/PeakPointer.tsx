@@ -76,7 +76,7 @@ function PeakPointer() {
         const yDataRange = datum.y.slice(minIndex, maxIndex);
         if (yDataRange && yDataRange.length > 0) {
           const yValue = max(yDataRange);
-          const xIndex = yDataRange.findIndex((value) => value === yValue);
+          const xIndex = yDataRange.indexOf(yValue);
           const xValue = datum.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),

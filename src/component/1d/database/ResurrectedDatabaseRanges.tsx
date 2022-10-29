@@ -48,7 +48,7 @@ function ResurrectedDatabaseRanges() {
     yDomain[1] = domain[1] > yDomain[1] ? domain[1] : yDomain[1];
 
     return { data, from: newForm, to: newTo };
-  }, []);
+  });
 
   const scaleY = getYScale({
     height: blockHight,
@@ -66,7 +66,7 @@ function ResurrectedDatabaseRanges() {
       pathBuilder.lineTo(finalScaleX(x[i]), scaleY(y[i]));
     }
     return { path: pathBuilder.toString(), from, to };
-  }, []);
+  });
 
   return (
     <g

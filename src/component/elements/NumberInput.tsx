@@ -79,7 +79,7 @@ const NumberInput = forwardRef(
             target: { ...e.target, name: e.target.name, value },
           });
         } else {
-          const _ref: any = ref ? ref : localRef;
+          const _ref: any = ref || localRef;
           _ref.current.value = Number(defaultValue);
         }
       },
@@ -90,7 +90,7 @@ const NumberInput = forwardRef(
         <span style={{ ...styles.label, ...style.label }}>{label}</span>
         <div style={{ ...styles.inputContainer, ...style.inputContainer }}>
           <input
-            ref={ref ? ref : localRef}
+            ref={ref || localRef}
             name={name}
             style={{ ...styles.input, ...style.input }}
             type="number"

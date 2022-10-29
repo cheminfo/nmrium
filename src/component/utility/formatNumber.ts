@@ -13,7 +13,7 @@ function formatNumber(
 ) {
   const { prefix = '', suffix = '', defaultFormat = '0.00' } = options;
 
-  return typeof value === 'number' || !isNaN(value as unknown as number)
+  return typeof value === 'number' || !Number.isNaN(Number(value))
     ? prefix + numeral(value).format(format || defaultFormat) + suffix
     : value;
 }
@@ -21,7 +21,7 @@ function formatNumber(
 function getNumberOfDecimals(value: number | string) {
   value = String(value).trim();
   const lastIndex = value.lastIndexOf('.');
-  return lastIndex > 0 ? value.substr(lastIndex).split('').length - 1 : 0;
+  return lastIndex > 0 ? value.slice(lastIndex).split('').length - 1 : 0;
 }
 
 export { formatNumber, getNumberOfDecimals };

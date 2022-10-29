@@ -215,7 +215,7 @@ function Button(props: ButtonProps) {
 
 function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
   const { colorTheme, ...buttonProps } = props;
-  const { base, shade, tint } = colorPalettes[props.colorTheme];
+  const { base, shade, tint } = colorPalettes[colorTheme];
 
   const {
     color = { base: shade, hover: 'white' },

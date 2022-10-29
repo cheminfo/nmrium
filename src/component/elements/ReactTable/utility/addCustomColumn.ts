@@ -27,9 +27,9 @@ export default function addCustomColumn(array, options: CustomColumn) {
 
   array.push({
     index,
-    ...{ ...(id && { id }) },
-    ...{ ...(accessor ? { accessor } : {}) },
-    ...{ ...(Cell ? { Cell } : {}) },
+    ...(id && { id }),
+    ...(accessor && { accessor }),
+    ...(Cell && { Cell }),
     Header,
     sortType,
     enableRowSpan,

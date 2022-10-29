@@ -123,7 +123,7 @@ function MultiplicityTree({
 
   const startY = useMemo(() => {
     let yMax;
-    spectrumData.data.x.forEach((_x, i) => {
+    for (const [i, _x] of spectrumData.data.x.entries()) {
       if (
         _x >= rangeFrom &&
         _x <= rangeTo &&
@@ -131,7 +131,7 @@ function MultiplicityTree({
       ) {
         yMax = spectrumData.data.re[i];
       }
-    });
+    }
 
     return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
   }, [

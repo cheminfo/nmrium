@@ -25,25 +25,22 @@ function AdditionalColumnHeader({
     if (correlation.pseudo === true) {
       return [];
     }
-    return correlation.link
-      .map((link) => {
-        const ids: string[] = [];
-        if (link.pseudo === false) {
-          ids.push(link.signal.id);
-          ids.push(buildID(link.signal.id, 'Crosshair_X'));
-          const _id = findRangeOrZoneID(
-            spectraData,
-            link.experimentID,
-            link.signal.id,
-            true,
-          );
-          if (_id) {
-            ids.push(_id);
-          }
+    return correlation.link.flatMap((link) => {
+      const ids: string[] = [];
+      if (link.pseudo === false) {
+        ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_X'));
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
+        if (_id) {
+          ids.push(_id);
         }
-        return ids;
-      })
-      .flat();
+      }
+      return ids;
+    });
   }, [correlation, spectraData]);
   const highlightAdditionalColumn = useHighlight(highlightIDsAdditionalColumn);
 
@@ -80,7 +77,7 @@ function AdditionalColumnHeader({
 
     return {
       style: {
-        ...{ color: getLabelColor(correlationsData, correlation) || undefined },
+        color: getLabelColor(correlationsData, correlation) || undefined,
         backgroundColor: highlightAdditionalColumn.isActive
           ? '#ff6f0057'
           : isInView

@@ -1,11 +1,11 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 
 import { addJcamp } from '../../SpectraManager';
 import { drawContours } from '../Spectrum2D/contours';
 
 test('Datum2D', () => {
-  const jcamp = readFileSync(join(__dirname, './data/cosy.jdx'), 'utf8');
+  const jcamp = readFileSync(path.join(__dirname, './data/cosy.jdx'), 'utf8');
   const spectra: any[] = [];
 
   addJcamp(

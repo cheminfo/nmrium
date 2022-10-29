@@ -1,6 +1,6 @@
 import * as types from './types/Types';
 
-const ignoreActions = [
+const ignoreActions = new Set([
   types.APPLY_KEY_PREFERENCES,
   types.BRUSH_END,
   types.RESET_DOMAIN,
@@ -35,10 +35,10 @@ const ignoreActions = [
   types.SHOW_MULTIPLICTY_TREES,
   types.SHOW_RANGES_INTEGRALS,
   types.CHANGE_FLOAT_MOLECULE_POSITION,
-];
+]);
 
 function checkActionType(type: string): boolean {
-  if (!ignoreActions.includes(type)) return true;
+  if (!ignoreActions.has(type)) return true;
   return false;
 }
 

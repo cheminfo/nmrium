@@ -43,7 +43,7 @@ export function detectZonesManual(datum, options: DetectionZonesOptions) {
       signals,
       kind: DatumKind.signal,
     };
-  }, []);
+  });
 
   return formattedZones;
 }

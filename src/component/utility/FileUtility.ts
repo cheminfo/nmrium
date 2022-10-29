@@ -18,10 +18,11 @@ function getFileSignature(fileArrayBuffer) {
   ).join('');
 }
 
-async function loadFile(file, options = { asBuffer: false }) {
+async function loadFile(file, options: { asBuffer?: boolean } = {}) {
+  const { asBuffer = false } = options;
   const response = await fetch(file);
   checkStatus(response);
-  const data = options.asBuffer ? response.arrayBuffer() : response.text();
+  const data = asBuffer ? response.arrayBuffer() : response.text();
   return data;
 }
 
@@ -37,11 +38,11 @@ function getFileExtension(name) {
 }
 
 function getFileName(name) {
-  return name.substr(0, name.lastIndexOf('.'));
+  return name.slice(0, Math.max(0, name.lastIndexOf('.')));
 }
 
 function extractFileMetaFromPath(path) {
-  const meta = path.replace(/^.*[\\/]/, '').split('.');
+  const meta = path.replace(/^.*[/\\]/, '').split('.');
 
   return { name: meta[0].toLowerCase(), extension: meta[1].toLowerCase() };
 }
@@ -60,16 +61,16 @@ function loadFiles<T = unknown>(
     ([] as Array<T>).map.call(acceptedFiles, (file: any) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onabort = (e) => reject(e);
-        reader.onerror = (e) => reject(e);
-        reader.onload = () => {
+        reader.addEventListener('abort', (e) => reject(e));
+        reader.addEventListener('error', (e) => reject(e));
+        reader.addEventListener('load', () => {
           if (reader.result) {
             const binary = reader.result;
             const name = getFileName(file.name);
             const extension = getFileExtension(file.name);
             resolve({ binary, name, extension });
           }
-        };
+        });
         if (options.asBuffer) {
           reader.readAsArrayBuffer(file);
         } else {

@@ -15,7 +15,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
     ...options.source,
   };
   datum.display = {
-    name: options.display?.name ? options.display.name : v4(),
+    name: options.display?.name || v4(),
     ...getColor(options, usedColors),
     isPositiveVisible: true,
     isNegativeVisible: true,

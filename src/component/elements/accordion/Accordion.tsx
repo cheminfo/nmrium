@@ -80,11 +80,11 @@ function Accordion({ children, defaultOpenIndex = 0 }: AccordionProps) {
             !forcedOpenedElementsRef.current[i] ? i === defaultOpenIndex : e,
           );
         }
-        forcedOpenedElementsRef.current = Array(children.length)
+        forcedOpenedElementsRef.current = new Array(children.length)
           .fill(false)
           .map((e) => e);
 
-        return Array(children.length)
+        return new Array(children.length)
           .fill(false)
           .map((e, i) => (i === defaultOpenIndex ? true : e));
       });

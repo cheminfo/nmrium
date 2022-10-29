@@ -161,7 +161,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
             const {
               data: { x },
-            } = state.data[activeSpectrum.index] as Datum1D;
+            } = data[activeSpectrum.index] as Datum1D;
 
             const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
 

@@ -1,11 +1,11 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 
 import { autoPeakPicking, initiateDatum1D } from '../Spectrum1D';
 
 describe('test peakPicking', () => {
   let data = JSON.parse(
-    readFileSync(join(__dirname, './data/13c.json'), 'utf8'),
+    readFileSync(path.join(__dirname, './data/13c.json'), 'utf8'),
   );
 
   it('check baseline', () => {

@@ -44,7 +44,7 @@ function FormikTextarea(props: FormikTextareaProps) {
   return (
     <textarea
       {...{ name, className, placeholder }}
-      value={value ? value : lodashGet(values, name)}
+      value={value || lodashGet(values, name)}
       onChange={changeHandler}
       style={{
         ...style,

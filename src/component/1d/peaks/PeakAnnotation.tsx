@@ -105,7 +105,7 @@ function PeakAnnotation({
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
         const newValue = event.currentTarget.valueAsNumber;
-        if (!isNaN(newValue)) {
+        if (!Number.isNaN(newValue)) {
           const shiftValue = newValue - value;
 
           handleOnPeakChange({

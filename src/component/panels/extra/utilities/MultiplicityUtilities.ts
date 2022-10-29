@@ -28,9 +28,9 @@ function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
   if (multiplicity === undefined || multiplicity.length === 0) {
     return false;
   }
-  return !multiplicity
+  return multiplicity
     .split('')
-    .find((_multiplet) => !checkMultiplet(_multiplet, rejected));
+    .every((_multiplet) => checkMultiplet(_multiplet, rejected));
 }
 
 function translateMultiplet(multiplet) {

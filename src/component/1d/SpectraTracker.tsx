@@ -96,7 +96,6 @@ function SpectraTracker() {
               <span style={styles.value}>{spectrum.display.name}</span>
             </div>
           ),
-        [],
       )
     );
   }, [activeTab, data, isVisible, xDomains]);

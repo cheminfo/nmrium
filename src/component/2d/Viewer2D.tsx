@@ -220,7 +220,7 @@ export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
   const { width, height, children } = props;
 
   useEffect(() => {
-    dispatch({ type: SET_DIMENSIONS, ...{ width, height } });
+    dispatch({ type: SET_DIMENSIONS, width, height });
   }, [width, height, dispatch]);
 
   return children;

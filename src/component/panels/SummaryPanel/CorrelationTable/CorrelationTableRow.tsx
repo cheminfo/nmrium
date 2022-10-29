@@ -38,25 +38,22 @@ function CorrelationTableRow({
       return [];
     }
 
-    return correlation.link
-      .map((link) => {
-        const ids: string[] = [];
-        if (link.pseudo === false) {
-          ids.push(link.signal.id);
-          ids.push(buildID(link.signal.id, 'Crosshair_Y'));
-          const _id = findRangeOrZoneID(
-            spectraData,
-            link.experimentID,
-            link.signal.id,
-            true,
-          );
-          if (_id) {
-            ids.push(_id);
-          }
+    return correlation.link.flatMap((link) => {
+      const ids: string[] = [];
+      if (link.pseudo === false) {
+        ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_Y'));
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
+        if (_id) {
+          ids.push(_id);
         }
-        return ids;
-      })
-      .flat();
+      }
+      return ids;
+    });
   }, [correlation, spectraData]);
   const highlightRow = useHighlight(highlightIDsRow);
 
@@ -260,7 +257,7 @@ function CorrelationTableRow({
   );
 
   const { title, ...otherTableDataProps } = tableDataProps;
-  const t = !title ? '' : title;
+  const t = title || '';
 
   return (
     <tr style={styleRow}>

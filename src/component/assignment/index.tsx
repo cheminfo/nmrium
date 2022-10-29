@@ -9,7 +9,7 @@ import {
 import assignmentReducer, { AssignmentsActions } from './AssignmentsReducer';
 
 export function AssignmentProvider(props) {
-  const { spectraData: spectra } = props;
+  const { spectraData: spectra, children } = props;
   const [data, dispatch] = useReducer<
     Reducer<AssignmentState, AssignmentsActions>
   >(assignmentReducer, assignmentState);
@@ -27,7 +27,7 @@ export function AssignmentProvider(props) {
 
   return (
     <assignmentContext.Provider value={state}>
-      {props.children}
+      {children}
     </assignmentContext.Provider>
   );
 }

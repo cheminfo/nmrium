@@ -38,7 +38,7 @@ interface ReactTableRowProps extends ClickEvent {
 function getIDs(row: any): string[] {
   const id = row.original.id;
   if (id) {
-    if (id instanceof Array) {
+    if (Array.isArray(id)) {
       return id;
     } else {
       return [String(id)];

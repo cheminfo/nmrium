@@ -17,7 +17,7 @@ interface MultipleAnalysisCodeEditorProps {
 
 function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
   const { values, setFieldValue } = useFormikContext<any>();
-  const [code, setCode] = useState(values.code ? values.code : initCode);
+  const [code, setCode] = useState(values.code || initCode);
   const [result, setResult] = useState('');
 
   useEffect(() => {

@@ -43,6 +43,13 @@ const styles: Record<
   },
 };
 
+function formatValueAsHTML(value) {
+  if (value) {
+    value = value.replace(/(?<value>\d+)/g, '<sub>$<value></sub>');
+  }
+  return value;
+}
+
 function SpectrumListItem({
   activeSpectrum,
   markersVisible,
@@ -53,12 +60,6 @@ function SpectrumListItem({
   onOpenSettingModal,
   onContextMenu,
 }) {
-  const formatValueAsHTML = (value) => {
-    if (value) {
-      value = value.replace(/(?<value>[0-9]+)/g, '<sub>$<value></sub>');
-    }
-    return value;
-  };
   const activated = !activeSpectrum || activeSpectrum?.id === data.id;
   const { color, name, positiveColor, negativeColor } = data.display;
   return (

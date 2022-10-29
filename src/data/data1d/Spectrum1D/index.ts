@@ -1,51 +1,24 @@
-import { generateSpectrumFromPublicationString } from './generateSpectrumFromPublicationString';
-import { get1DDataXY } from './get1DDataXY';
-import { getReferenceShift } from './getReferenceShift';
-import { initiateDatum1D } from './initiateDatum1D';
-import { changeIntegralsRelative } from './integrals/changeIntegralsRelative';
-import { checkIntegralKind } from './integrals/checkIntegralKind';
-import { updateIntegralsRelativeValues } from './integrals/updateIntegralsRelativeValues';
-import { isSpectrum1D } from './isSpectrum1D';
-import { autoPeakPicking } from './peaks/autoPeakPicking';
-import { lookupPeak } from './peaks/lookupPeak';
-import { optimizePeaks } from './peaks/optimizePeaks';
-import { addRange } from './ranges/addRange';
-import { changeRange } from './ranges/changeRange';
-import { changeRangeRelativeValue } from './ranges/changeRangeRelativeValue';
-import { changeRangeSignal } from './ranges/changeRangeSignal';
-import { checkRangeKind } from './ranges/checkRangeKind';
-import { detectRange } from './ranges/detectRange';
-import { detectRanges } from './ranges/detectRanges';
-import { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
-import { mapRanges } from './ranges/mapRanges';
-import { updateRangesRelativeValues } from './ranges/updateRangesRelativeValues';
-import { getShiftX } from './shift/getShiftX';
-import { updateXShift } from './shift/updateXShift';
-import { toJSON } from './toJSON';
-
-export {
-  initiateDatum1D,
-  toJSON,
-  autoPeakPicking,
-  optimizePeaks,
-  getShiftX,
-  lookupPeak,
-  checkRangeKind,
-  checkIntegralKind,
-  isSpectrum1D,
-  generateSpectrumFromPublicationString,
-  getReferenceShift,
-  updateIntegralsRelativeValues,
-  updateRangesRelativeValues,
-  changeIntegralsRelative,
-  addRange,
-  changeRangeSignal,
-  detectRanges,
-  detectRange,
-  changeRange,
-  changeRangeRelativeValue,
-  updateXShift,
-  mapRanges,
-  generateSpectrumFromRanges,
-  get1DDataXY,
-};
+export { generateSpectrumFromPublicationString } from './generateSpectrumFromPublicationString';
+export { get1DDataXY } from './get1DDataXY';
+export { getReferenceShift } from './getReferenceShift';
+export { initiateDatum1D } from './initiateDatum1D';
+export { changeIntegralsRelative } from './integrals/changeIntegralsRelative';
+export { checkIntegralKind } from './integrals/checkIntegralKind';
+export { updateIntegralsRelativeValues } from './integrals/updateIntegralsRelativeValues';
+export { isSpectrum1D } from './isSpectrum1D';
+export { autoPeakPicking } from './peaks/autoPeakPicking';
+export { lookupPeak } from './peaks/lookupPeak';
+export { optimizePeaks } from './peaks/optimizePeaks';
+export { addRange } from './ranges/addRange';
+export { changeRange } from './ranges/changeRange';
+export { changeRangeRelativeValue } from './ranges/changeRangeRelativeValue';
+export { changeRangeSignal } from './ranges/changeRangeSignal';
+export { checkRangeKind } from './ranges/checkRangeKind';
+export { detectRange } from './ranges/detectRange';
+export { detectRanges } from './ranges/detectRanges';
+export { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
+export { mapRanges } from './ranges/mapRanges';
+export { updateRangesRelativeValues } from './ranges/updateRangesRelativeValues';
+export { getShiftX } from './shift/getShiftX';
+export { updateXShift } from './shift/updateXShift';
+export { toJSON } from './toJSON';

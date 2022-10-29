@@ -67,7 +67,7 @@ function processSearchByStructure(
 
   // todo: idCode may be null and the current version of search requires a string or molecule. `|| ''` will become useless in next release of openchemlib-util
   const result = moleculesDB.search(idCode || '');
-  return result.map((entry) => entry.data, []);
+  return result.map((entry) => entry.data);
 }
 
 function prepareGetSolvents(data) {
@@ -107,17 +107,19 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
             index: entry.ocl.index,
           },
         );
-      } catch (e) {
+      } catch (error) {
+        reportError(error);
         // eslint-disable-next-line no-console
-        console.log(`Could not parse idCode: ${JSON.stringify(entry.ocl)}`, e);
+        console.error(`Could not parse idCode: ${JSON.stringify(entry.ocl)}`);
       }
     } else if (entry.smiles) {
       try {
         const molecule = OCL.Molecule.fromSmiles(entry.smiles);
         moleculesDB.pushEntry(molecule, entry);
-      } catch (e) {
+      } catch (error) {
+        reportError(error);
         // eslint-disable-next-line no-console
-        console.log(`Could not parse smiles: ${entry.smiles}`, e);
+        console.error(`Could not parse smiles: ${entry.smiles}`);
       }
     }
   }
@@ -131,7 +133,7 @@ function prepareDataBase(array: Array<DatabaseNMREntry>) {
       ...range,
     }));
     return item;
-  }, []);
+  });
 }
 
 export type PrepareDataResult = Partial<

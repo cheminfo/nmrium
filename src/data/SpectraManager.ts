@@ -69,7 +69,7 @@ export function addJcamps(files, usedColors) {
           name: file.name,
         },
         source: {
-          jcampURL: file.jcampURL ? file.jcampURL : null,
+          jcampURL: file.jcampURL || null,
           file,
         },
       },
@@ -82,12 +82,11 @@ function getPreferences(state): Preferences {
   const {
     activeTab,
     verticalAlign: { align },
+    displayerMode,
   } = state;
   return {
     activeTab,
-    ...(state.displayerMode === DISPLAYER_MODE.DM_1D
-      ? { verticalAlign: align }
-      : {}),
+    ...(displayerMode === DISPLAYER_MODE.DM_1D ? { verticalAlign: align } : {}),
   };
 }
 

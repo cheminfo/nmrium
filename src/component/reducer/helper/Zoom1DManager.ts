@@ -36,16 +36,15 @@ function setZoom(
     spectrumID?: string;
   } = {},
 ) {
-  const { height, margin } = draft;
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const { height, margin, view, originDomain, yDomains } = draft;
+  const activeSpectrum = view.spectra.activeSpectra[view.spectra.activeTab];
   const { scale = 1, spectrumID = null } = options;
 
   if (activeSpectrum === null && spectrumID === null) {
-    const { shareYDomain, yDomain, yDomains } = draft.originDomain;
+    const { shareYDomain, yDomain, yDomains } = originDomain;
 
     draft.yDomains = Object.fromEntries(
-      Object.keys(draft.yDomains).map((id) => {
+      Object.keys(yDomains).map((id) => {
         const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
           height - margin.bottom,
           margin.top,
@@ -69,7 +68,7 @@ function setZoom(
   } else {
     const spectrumId = spectrumID || activeSpectrum?.id;
     if (spectrumId) {
-      const _scale = scaleLinear(draft.originDomain.yDomains[spectrumId], [
+      const _scale = scaleLinear(originDomain.yDomains[spectrumId], [
         height - margin.bottom,
         margin.top,
       ]);
@@ -80,7 +79,7 @@ function setZoom(
       const yDomain = t.rescaleY(_scale).domain();
 
       draft.yDomains = {
-        ...draft.yDomains,
+        ...yDomains,
         [spectrumId]: yDomain,
       };
     }

@@ -46,13 +46,13 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
   return (
     <div
       className={`${className} check-${value}`}
-      style={style.container ? style.container : {}}
+      style={style.container || {}}
     >
       {label && (
         <label
           htmlFor={name}
           className="checkbox-label"
-          style={style.label ? style.label : {}}
+          style={style.label || {}}
         >
           {label}
         </label>
@@ -62,7 +62,7 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
         name={name}
         checked={value}
         onChange={changeHandler}
-        style={style.checkbox ? style.checkbox : {}}
+        style={style.checkbox || {}}
       />
     </div>
   );

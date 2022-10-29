@@ -53,7 +53,7 @@ const styles = css`
     }
   }
 `;
-const allowedExtensions = ['dx', 'jdx'];
+const allowedExtensions = new Set(['dx', 'jdx']);
 
 interface LoadJCAMPModalProps {
   onLoadClick: (element: any) => void;
@@ -71,7 +71,7 @@ export default function LoadJCAMPModal({
   const loadJCAMPHandler = useCallback(() => {
     const path = pathReft.current.value;
     const { name, extension } = extractFileMetaFromPath(path);
-    if (allowedExtensions.includes(extension)) {
+    if (allowedExtensions.has(extension)) {
       startLoading?.();
       void loadFile(path, { asBuffer: true }).then((data) => {
         const file = {

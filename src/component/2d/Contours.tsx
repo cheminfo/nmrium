@@ -85,7 +85,7 @@ const useContoursLevel = (datum: Datum2D, sign: LevelSign) => {
   } = datum;
   const defaultLevel = getDefaultContoursLevel(contourOptions);
   const level = levels?.[id]?.[sign];
-  return isNaN(level) ? defaultLevel[sign] : level;
+  return typeof level !== 'number' ? defaultLevel[sign] : level;
 };
 
 function ContoursPaths({

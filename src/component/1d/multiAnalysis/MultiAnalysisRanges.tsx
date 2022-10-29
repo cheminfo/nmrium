@@ -26,7 +26,7 @@ function MultiAnalysisRangesInner({
   }, [activeTab, spectraAnalysis]);
 
   const ranges = useMemo(() => {
-    return Object.keys(columns).map((key) => key, []);
+    return Object.keys(columns).map((key) => key);
   }, [columns]);
 
   if (!ranges || ranges.length === 0) {

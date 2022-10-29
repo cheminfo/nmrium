@@ -44,22 +44,22 @@ function getDomain(draft: Draft<State>) {
   const data = getActiveData(draft);
   try {
     for (const d of data) {
-      const { display, data } = d;
+      const { display, data, id } = d;
       const { y } = get1DDataXY(d);
 
       const _extent = extent(y) as Array<number>;
       const domain = [data.x[0], data.x[data.x.length - 1]];
 
-      yDomains[d.id] = _extent;
-      xDomains[d.id] = domain;
+      yDomains[id] = _extent;
+      xDomains[id] = domain;
       if (display.isVisible) {
         xArray = xArray.concat(domain);
         yArray = yArray.concat(_extent);
       }
     }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  } catch (error) {
+    // TODO: handle error.
+    reportError(error);
   }
 
   return {
@@ -92,11 +92,9 @@ function get2DDomain(state: State) {
           datum.info.nucleus?.join(',') === activeTab &&
           datum.info.isFt,
       ) as Array<Datum2D>
-    )
-      .map((datum: Datum2D) => {
-        return [datum.data.minX, datum.data.maxX];
-      })
-      .flat();
+    ).flatMap((datum: Datum2D) => {
+      return [datum.data.minX, datum.data.maxX];
+    });
 
     yArray = (
       data.filter(
@@ -105,35 +103,33 @@ function get2DDomain(state: State) {
           d.info.nucleus?.join(',') === activeTab &&
           d.info.isFt,
       ) as Array<Datum2D>
-    )
-      .map((datum: Datum2D) => {
-        return [datum.data.minY, datum.data.maxY];
-      })
-      .flat();
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+    ).flatMap((datum: Datum2D) => {
+      return [datum.data.minY, datum.data.maxY];
+    });
+  } catch (error) {
+    // TODO: handle error
+    reportError(error);
   }
 
-  const spectrumsIDs = nucleus.map((n) => activeSpectra[n]?.id);
+  const spectrumsIDs = new Set(nucleus.map((n) => activeSpectra[n]?.id));
 
   const filteredData = data
-    .filter((d) => spectrumsIDs.includes(d.id) && d.info.dimension === 1)
+    .filter((d) => spectrumsIDs.has(d.id) && d.info.dimension === 1)
     .map((datum: Datum1D | Datum2D) => {
       return datum as Datum1D;
     });
 
   try {
     for (const d of filteredData) {
-      const { x } = d.data;
+      const { x, re } = d.data;
       const domain = [x[0], x[x.length - 1]];
       xDomains[d.id] = domain;
-      const _extent = extent(d.data.re);
+      const _extent = extent(re);
       yDomains[d.id] = _extent;
     }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  } catch (error) {
+    // TODO: handle error.
+    reportError(error);
   }
 
   return {
@@ -227,12 +223,12 @@ function handelResetDomain(draft: Draft<State>) {
 }
 
 function setMode(draft: Draft<State>) {
-  const data = draft.data.filter(
+  const datum_ = draft.data.find(
     (datum) =>
       draft.xDomains[datum.id] &&
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab,
   );
-  draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
+  draft.mode = (datum_ as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
 export {

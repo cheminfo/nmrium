@@ -7,8 +7,8 @@ export function CheckBoxCell(props: FormikCheckBoxProps) {
       style={{
         container: { display: 'block', margin: '0 auto', width: 'fit-content' },
       }}
-      key={props.name}
-      name={props.name}
+      key={name}
+      name={name}
       {...otherProps}
     />
   );

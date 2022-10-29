@@ -1,4 +1,4 @@
-import { setTimeout as wait } from 'timers/promises';
+import { setTimeout as wait } from 'node:timers/promises';
 
 import { test, expect } from '@playwright/test';
 

@@ -56,15 +56,14 @@ function Provider({
     const timersIdRef = timersId.current;
 
     if (wrapperRef) {
-      wrapperRef.appendChild(ref);
+      wrapperRef.append(ref);
     }
     return () => {
-      if (ref) {
-        if (wrapperRef) {
-          timersIdRef.forEach(clearTimeout);
-
-          wrapperRef.removeChild(ref);
+      if (ref && wrapperRef) {
+        for (const id of timersIdRef) {
+          clearTimeout(id);
         }
+        ref.remove();
       }
     };
   }, [wrapperRef]);
@@ -84,7 +83,7 @@ function Provider({
 
   const show = useCallback(
     (message = '', options: any = {}) => {
-      const id = Math.random().toString(36).substring(2, 9);
+      const id = Math.random().toString(36).slice(2, 9);
 
       const alertOptions = {
         position: options.position || position,

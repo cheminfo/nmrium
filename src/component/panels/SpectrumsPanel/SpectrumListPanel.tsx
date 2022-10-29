@@ -12,15 +12,15 @@ const styles: CSSProperties = {
 };
 
 function SpectrumListPanel() {
-  const [spectrums, setSpectrums] = useState<Array<any>>([]);
+  const [spectra, setSpectra] = useState<Array<any>>([]);
 
   const tabChangeHandler = useCallback((e) => {
-    setSpectrums(e.data ? e.data : []);
+    setSpectra(e.data || []);
   }, []);
 
   return (
     <div style={styles}>
-      <SpectraPanelHeader spectrums={spectrums} />
+      <SpectraPanelHeader spectrums={spectra} />
       <SpectrumsTabs onTabChange={tabChangeHandler} />
     </div>
   );
