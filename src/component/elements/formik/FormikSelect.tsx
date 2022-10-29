@@ -27,7 +27,7 @@ const FormikSelect = function FormikSelect(
   return (
     <Select
       name={name}
-      defaultValue={value ? value : lodashGet(values, name)}
+      defaultValue={value || lodashGet(values, name)}
       onChange={changeHandler}
       {...resProps}
     />

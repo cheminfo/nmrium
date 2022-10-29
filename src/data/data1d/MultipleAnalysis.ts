@@ -56,9 +56,9 @@ function addColumnKey(
   columnProps: Column,
   columnKey: string,
 ) {
-  const key = columnKey
-    ? columnKey
-    : generateChar(spectraAnalysis[nucleus].options.columnIndex).toUpperCase();
+  const key =
+    columnKey ||
+    generateChar(spectraAnalysis[nucleus].options.columnIndex).toUpperCase();
   spectraAnalysis[nucleus].options.columns[key] = columnProps;
   spectraAnalysis[nucleus].options.columnIndex++;
   return key;
@@ -244,7 +244,7 @@ export function analyzeSpectra(
 
   const data = Object.fromEntries(
     result.map((row) => {
-      const factor = spectraSum > 0 ? sum / spectraSum : 0.0;
+      const factor = spectraSum > 0 ? sum / spectraSum : 0;
 
       return [
         row.SID,
@@ -273,13 +273,14 @@ export function deleteSpectraAnalysis(
   nucleus: string,
 ) {
   const result = {};
-  Object.entries(spectraAnalysis[nucleus].values).forEach((item: any) => {
+  const analyses = Object.entries(spectraAnalysis[nucleus].values);
+  for (const item of analyses) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete item[1][colKey];
     if (item[1] && Object.keys(item[1]).length > 0) {
       result[item[0]] = item[1];
     }
-  });
+  }
 
   const { [colKey]: deletedColumnKey, ...resColumns } =
     spectraAnalysis[nucleus].options.columns;
@@ -299,7 +300,7 @@ export function deleteSpectraAnalysis(
 }
 
 function calculate(columns: Columns, data: AnalysisRow, formula = '') {
-  const array = formula.split(/\+|-|\*|\/|%|\(|\)/);
+  const array = formula.split(/[%()*+/-]/);
 
   const variables: string[] = [];
 
@@ -318,9 +319,8 @@ function calculate(columns: Columns, data: AnalysisRow, formula = '') {
   try {
     // eslint-disable-next-line no-new-func
     result = new Function(...variables, `return ${formula}`)(...params);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e);
+  } catch (error) {
+    reportError(error);
     result = new Error(`Invalid Formula ( ${formula} ) `);
   }
   return result;

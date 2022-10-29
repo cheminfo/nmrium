@@ -13,14 +13,14 @@ export function changeIntegralsRelative(
       sum: number;
       values: Integral[];
     } = { values: [], sum: 0 };
-    datum.integrals.values.forEach((integral, index) => {
+    for (const [index, integral] of datum.integrals.values.entries()) {
       const newIntegralValue = integral.absolute / ratio;
       result.sum += newIntegralValue;
       result.values[index] = {
         ...integral,
         integral: newIntegralValue,
       };
-    });
+    }
     const { values, sum } = result;
     datum.integrals.values = values;
     datum.integrals.options = {

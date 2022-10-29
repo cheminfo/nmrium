@@ -96,7 +96,7 @@ function ZonesTable({
 
   const data = useMemo(() => {
     const data: Array<any> = [];
-    tableData.forEach((zone, i) => {
+    for (const [i, zone] of tableData.entries()) {
       if (zone.signals.length === 1) {
         data.push({
           ...zone,
@@ -111,7 +111,7 @@ function ZonesTable({
           },
         });
       } else if (zone.signals.length > 1) {
-        zone.signals.forEach((signal, j) => {
+        for (const [j, signal] of zone.signals.entries()) {
           let hide = false;
           let rowSpan: number | null = null;
           if (j < zone.signals.length - 1) {
@@ -136,9 +136,9 @@ function ZonesTable({
               experiment,
             },
           });
-        });
+        }
       }
-    });
+    }
 
     return data;
   }, [experiment, nuclei, tableData]);

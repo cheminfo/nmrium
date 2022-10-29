@@ -41,7 +41,7 @@ export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
     } else if (Array.isArray(nucleus)) {
       return nucleus.map((n) => formatFun(n));
     } else {
-      throw Error('nuclus must be string or array of string');
+      throw new Error('nuclus must be string or array of string');
     }
   }, [nucleus, nucleusByKey]);
 }

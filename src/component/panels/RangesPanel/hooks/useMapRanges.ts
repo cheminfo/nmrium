@@ -11,7 +11,7 @@ export interface RangeData extends Range {
 function useMapRanges(data) {
   return useMemo(() => {
     const rangesData: Array<RangeData> = [];
-    data.forEach((range, i) => {
+    for (const [i, range] of data.entries()) {
       if (range.signals.length === 1) {
         rangesData.push({
           rowKey: v4(),
@@ -25,7 +25,7 @@ function useMapRanges(data) {
           },
         });
       } else if (range.signals.length > 1) {
-        range.signals.forEach((signal, j) => {
+        for (const [j, signal] of range.signals.entries()) {
           let hide = false;
           let rowSpan = null;
           if (j < range.signals.length - 1) {
@@ -51,9 +51,9 @@ function useMapRanges(data) {
               id: signal.id,
             },
           });
-        });
+        }
       }
-    });
+    }
 
     return rangesData;
   }, [data]);

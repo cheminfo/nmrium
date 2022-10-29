@@ -221,17 +221,17 @@ function InnerNMRium({
     PreferencesState
   >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
-  const { displayerMode, data: spectraData } = state;
+  const { displayerMode, data: spectraData, actionType, view } = state;
 
   useEffect(() => {
-    if (checkActionType(state.actionType)) {
+    if (checkActionType(actionType)) {
       handleDataChange.current?.(toJSON(state, 'onDataChange'));
     }
-  }, [state]);
+  }, [actionType, state]);
 
   useEffect(() => {
-    handleViewChange.current?.(state.view);
-  }, [state.view]);
+    handleViewChange.current?.(view);
+  }, [view]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

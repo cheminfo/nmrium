@@ -362,7 +362,7 @@ function resetSpectrumByFilter(
         rollback ? filterIndex : filterIndex + 1,
       );
 
-      if (filters.length >= 1) {
+      if (filters.length > 0) {
         draft.toolOptions.data.activeFilterID =
           datum.filters[rollback ? filterIndex - 1 : filterIndex]?.id;
       } else {

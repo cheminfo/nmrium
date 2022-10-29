@@ -93,6 +93,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     margin,
     displayerMode,
     view,
+    keysPreferences,
   } = draft;
 
   const {
@@ -105,7 +106,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     const groupByNucleus = groupByInfoKey('nucleus');
     const spectrumsGroupsList = groupByNucleus(data);
     const spectra = spectrumsGroupsList[activeTab];
-    draft.keysPreferences[keyCode] = {
+    keysPreferences[keyCode] = {
       activeSpectrum,
       displayerMode,
       view,
@@ -121,14 +122,14 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   }
 }
 function setSpectraDisplayPreferences(draft: Draft<State>, preferences) {
-  draft.data.forEach((datum, index) => {
+  for (const [index, datum] of draft.data.entries()) {
     if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
       draft.data[index].display = {
         ...datum.display,
         ...preferences.data[datum.id].display,
       };
     }
-  });
+  }
 }
 
 function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {

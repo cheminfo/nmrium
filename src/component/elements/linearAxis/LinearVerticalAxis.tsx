@@ -33,23 +33,25 @@ interface TickAxis {
 }
 
 type VerticalAxisProps = BaseAxis & (Vertical | VerticalGrid) & ScaleAxis;
-type VerticalRenderProps = BaseAxis & (Vertical | VerticalGrid) & TickAxis;
+type VerticalRenderProps = BaseAxis &
+  (Vertical | VerticalGrid) &
+  TickAxis & { width?: number };
 
 const VerticalAxis = forwardRef<SVGGElement | null, VerticalRenderProps>(
   (props, ref) => {
-    const { x, y, height, showGrid, ticks } = props;
+    const { x, y, height, width, showGrid, ticks } = props;
     return (
       <g ref={ref} transform={`translate(${x}, ${y})`}>
         <line y2={height} x1={15} x2={15} stroke="black" />
         {ticks.map(({ label, position }, index) => (
           // eslint-disable-next-line react/no-array-index-key
           <g key={index + label + position}>
-            {showGrid && props.width && (
+            {showGrid && width && (
               <line
                 y1={position}
                 y2={position}
                 x1={15}
-                x2={props.width - x}
+                x2={width - x}
                 stroke="lightgray"
               />
             )}

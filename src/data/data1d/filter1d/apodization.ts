@@ -28,7 +28,8 @@ export function apply(datum1D: Datum1D, options: ApodizationOptions) {
 
   datum1D.data = {
     ...datum1D.data,
-    ...{ re: newData.re as Float64Array, im: newData.im as Float64Array },
+    re: newData.re as Float64Array,
+    im: newData.im as Float64Array,
   };
 }
 export function isApplicable(datum1D: Datum1D) {

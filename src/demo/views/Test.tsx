@@ -16,9 +16,9 @@ function searchDeep(obj, searchKey) {
         result.push({ [key]: obj[key] });
       }
       if (Array.isArray(obj[key])) {
-        obj[key].forEach((object) => {
+        for (const object of obj[key]) {
           objectHelper(object);
-        });
+        }
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
         objectHelper(obj[key]);
       }
@@ -61,7 +61,7 @@ function Inspector(data: any) {
 }
 
 export default function Test(props) {
-  const { file, title, baseURL } = props;
+  const { file, title, baseURL, workspace } = props;
   const [data, setData] = useState<any>();
   const [viewCount, incrementViewCount] = useReducer((a) => a + 1, 0);
   const [dataCount, incrementDataCount] = useReducer((a) => a + 1, 0);
@@ -87,7 +87,8 @@ export default function Test(props) {
         const decoder = new TextDecoder('utf8');
         const data = JSON.parse(decoder.decode(files[0].binary));
         setData(data);
-      } catch (e) {
+      } catch (error) {
+        reportError(error);
         // eslint-disable-next-line no-alert
         alert('Invalid JSON file');
       }
@@ -159,7 +160,7 @@ export default function Test(props) {
             data={data}
             onViewChange={viewChangeHandler}
             onDataChange={dataChangeHandler}
-            workspace={props.workspace || null}
+            workspace={workspace || null}
           />
         </div>
         <div

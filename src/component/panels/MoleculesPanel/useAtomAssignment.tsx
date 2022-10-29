@@ -113,7 +113,7 @@ export default function useAtomAssignment({
       .filter((highlightID) => {
         return assignments.data.assignments[highlightID];
       })
-      .map((highlightID) => {
+      .flatMap((highlightID) => {
         const { datum } = findDatumAndSignalIndex(data, highlightID);
         const type = highlightData.highlight.sourceData?.type;
         if (
@@ -123,17 +123,14 @@ export default function useAtomAssignment({
             type === HighlightEventSource.ATOM)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
-          return datum.signals
-            .map((signal) =>
-              filterForIDsWithAssignment(assignments, [signal.id]).length > 0
-                ? signal.diaIDs
-                : [],
-            )
-            .flat();
+          return datum.signals.flatMap((signal) =>
+            filterForIDsWithAssignment(assignments, [signal.id]).length > 0
+              ? signal.diaIDs
+              : [],
+          );
         }
         return [];
-      })
-      .flat();
+      });
     return getCurrentDiaIDsToHighlight(assignments).concat(highlights);
   }, [
     assignments,

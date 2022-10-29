@@ -48,6 +48,11 @@ interface MoveLinkProps {
   ) => void;
 }
 
+function getCorrelationLabel(correlation: Correlation) {
+  const delta = getCorrelationDelta(correlation);
+  return `${delta ? delta.toFixed(2) : '?'}`;
+}
+
 function MoveLink({
   correlationDim1,
   correlationDim2,
@@ -59,11 +64,6 @@ function MoveLink({
     useState<string>(correlationDim1.id);
   const [selectedCorrelationIdDim2, setSelectedCorrelationIdDim2] =
     useState<string>(correlationDim2?.id || undefined);
-
-  function getCorrelationLabel(correlation: Correlation) {
-    const delta = getCorrelationDelta(correlation);
-    return `${delta ? delta.toFixed(2) : '?'}`;
-  }
 
   const getSelection = useCallback(
     (correlation: Correlation, dim: 0 | 1) => {

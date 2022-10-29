@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 
 import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
@@ -45,19 +46,16 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
           (_datum) =>
             _datum.display.isVisible && _datum.info.nucleus === nucleus,
         )
-        .filter(isSpectrum1D)
-        .map((_datum) => _datum.ranges.values)
-        .flat();
+        .filter((element): element is Datum1D => isSpectrum1D(element))
+        .flatMap((_datum) => _datum.ranges.values);
 
-      const deltas = ranges
-        .map((_range) =>
-          _range.signals
-            .filter((_signal) =>
-              SignalKindsToInclude.some((_kind) => _signal.kind === _kind),
-            )
-            .map((_signal) => _signal.delta),
-        )
-        .flat();
+      const deltas = ranges.flatMap((_range) =>
+        _range.signals
+          .filter((_signal) =>
+            SignalKindsToInclude.includes(_signal.kind as string),
+          )
+          .map((_signal) => _signal.delta),
+      );
       setDeltas1D(deltas);
     } else {
       setDeltas1D([]);

@@ -8,6 +8,10 @@ interface FormikInputProps extends InputProps {
   checkErrorAfterInputTouched?: boolean;
 }
 
+function identity<T = unknown>(value: T): T {
+  return value;
+}
+
 function FormikInput(props: FormikInputProps) {
   const {
     name,
@@ -17,7 +21,7 @@ function FormikInput(props: FormikInputProps) {
     type = 'text',
     className = '',
     value = null,
-    format = () => (value) => value,
+    format = () => identity,
     checkErrorAfterInputTouched = true,
     ...resProps
   } = props;
@@ -38,7 +42,7 @@ function FormikInput(props: FormikInputProps) {
   return (
     <Input
       name={name}
-      value={value ? value : lodashGet(values, name)}
+      value={value || lodashGet(values, name)}
       onChange={changeHandler}
       type={type}
       style={{
