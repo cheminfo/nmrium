@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "vite build --outDir build",
+    "postbuild": "rm build/data/cytisine/2d/HMBC_Cytisin_RI+FT.dx && rm build/data/cytisine/2d/HSQC_Cytisin_RI+FT.dx",
     "build-no-minify": "cross-env NO_MINIFY=true npm run build",
     "build-with-profiling": "cross-env WITH_PROFILING=true npm run build",
     "check-types": "tsc --project tsconfig.esm.json",
