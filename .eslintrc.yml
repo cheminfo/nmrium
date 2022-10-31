@@ -1,5 +1,7 @@
 root: true
-extends: '@zakodium/eslint-config/typescript-react'
+extends:
+  - '@zakodium/eslint-config/typescript-react'
+  - 'cheminfo/unicorn'
 rules:
   'import/default': off
   'import/no-unresolved': off
@@ -8,12 +10,7 @@ rules:
   '@typescript-eslint/no-implied-eval': off
   '@typescript-eslint/no-misused-promises': off
   '@typescript-eslint/restrict-plus-operands': off
-  'jest/no-standalone-expect': off
   'react/no-unstable-nested-components': off
-  no-restricted-properties:
-    - warn
-    - property: reduce
-      message: 'array.reduce should be avoided. Use another array method like map, forEach, or a for loop.'
   no-restricted-imports:
     - error
     - name: lodash

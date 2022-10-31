@@ -25,6 +25,7 @@ function applyFilter(datum, filters: any[] = []) {
     };
     const previousFilter = lookupForFilter(datum, filter.name);
     if (previousFilter) {
+      // eslint-disable-next-line unicorn/no-array-reduce
       const reduceResult = Filters[filter.name].reduce(
         previousFilter.value,
         filterOption.value,
