@@ -57,8 +57,16 @@ const databaseTableColumns = (
     showWhen: 'delta.show',
     index: 3,
     Header: 'δ (ppm)',
-    accessor: (row) =>
-      `${formatNumber(row.delta, databasePreferences.delta.format)}`,
+    accessor: (row) => {
+      if (typeof row.delta === 'string') {
+        return row.delta
+          .split(',')
+          .map((value) => formatNumber(value, databasePreferences.delta.format))
+          .join(',');
+      }
+
+      return formatNumber(row.delta, databasePreferences.delta.format);
+    },
   },
 
   {
