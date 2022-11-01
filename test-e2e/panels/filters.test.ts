@@ -78,10 +78,12 @@ async function addPeaks(
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const peaksTable = nmrium.page.locator(
-    '_react=PeaksTable >> _react=ReactTable',
+    '_react=PeaksTable >> _react=ReactTable >> .table-container',
   );
-  await peaksTable.click();
-  await nmrium.page.mouse.wheel(0, 500);
+  await peaksTable.evaluate((e) => {
+    e.scrollTop = e.scrollHeight;
+  });
+
   const lastPeak = peaksTable.locator(
     `_react=[role="row"][key="row_${number - 1}"]`,
   );
@@ -92,16 +94,6 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   await expect(inexistentPeak).toBeHidden();
 }
 
-async function scrollPeaksTableToBottom(nmrium: NmriumPage) {
-  const peaksTable = nmrium.page.locator(
-    '_react=PeaksTable >> _react=ReactTable',
-  );
-  const scrollTop = await peaksTable.evaluate((e) => e.scrollHeight);
-  await peaksTable.evaluate(
-    (e, scrollTop) => (e.scrollTop = scrollTop),
-    scrollTop,
-  );
-}
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
@@ -157,16 +149,13 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     await addPeaks(nmrium, { keyboard: true });
   });
   await test.step('Check peaks table', async () => {
-    await scrollPeaksTableToBottom(nmrium);
     await checkPeakNumber(nmrium, 15);
   });
   await test.step('Add peaks with 0.05 ratio', async () => {
     await addPeaks(nmrium, { keyboard: true, ratio: 0.05 });
   });
   await test.step('Check peaks table', async () => {
-    await scrollPeaksTableToBottom(nmrium);
     await checkPeakNumber(nmrium, 16);
-    await nmrium.page.waitForTimeout(10000);
   });
   await test.step('Check filters panel', async () => {
     await expect(
