@@ -148,7 +148,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
 
   return (
     <>
-      {' '}
       <div
         ref={ref}
         className="table-container"
