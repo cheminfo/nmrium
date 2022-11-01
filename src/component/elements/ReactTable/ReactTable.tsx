@@ -52,19 +52,17 @@ const styles = {
   },
 };
 
-
 const counterStyle: CSSProperties = {
-  position: "absolute",
+  position: 'absolute',
   bottom: 0,
-  width: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.3)",
-  padding: "0.1em",
-  pointerEvents: "none",
-  textAlign: "center",
-  fontWeight: "bolder",
-  color: "white",
-  fontSize: "1.4em"
-}
+  width: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  pointerEvents: 'none',
+  textAlign: 'center',
+  fontWeight: 'bolder',
+  color: 'white',
+  fontSize: '1.4em',
+};
 
 const ReactTableInner = forwardRef(function ReactTableInner(
   props: ReactTableInnerProps,
@@ -82,7 +80,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     onClick,
     highlightActiveRow = false,
     totalCount,
-    indexKey = "index"
+    indexKey = 'index',
   } = props;
 
   const contextRef = useRef<any>(null);
@@ -120,7 +118,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     ? rows.slice(indexBoundary.start, indexBoundary.end)
     : rows;
 
-
   const clickHandler = useCallback(
     (event, row) => {
       setRowIndex(row.index);
@@ -131,85 +128,85 @@ const ReactTableInner = forwardRef(function ReactTableInner(
 
   function scrollHandler(e) {
     if (enableVirtualScroll) {
-      onScroll(e)
+      onScroll(e);
     }
 
     if (timeoutIdRef.current) {
-      clearTimeout(timeoutIdRef.current)
+      clearTimeout(timeoutIdRef.current);
       setCounterVisibility(true);
     }
 
     timeoutIdRef.current = setTimeout(() => {
       setCounterVisibility(false);
     }, 1000);
-
-
   }
 
-
-
-
-  const index = (rowsData[rowsData.length - 1]?.original[indexKey] || rowsData[rowsData.length - 1]?.index)
+  const index =
+    rowsData[rowsData.length - 1]?.original[indexKey] ||
+    rowsData[rowsData.length - 1]?.index;
   const total = totalCount ? totalCount : data.length;
 
   return (
-    <>    <div
-      ref={ref}
-      className="table-container"
-      style={{
-        overflowY: 'auto',
-        position: 'relative',
-        height: '100%',
-      }}
-
-      onScroll={scrollHandler}
-    >
-      {enableVirtualScroll && (
-        <div
-          style={{
-            height: approxItemHeight * data.length,
-            position: 'absolute',
-            width: '100%',
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-      <table
-        {...getTableProps()}
-        css={ReactTableStyle}
-        style={styles.table(enableVirtualScroll)}
+    <>
+      {' '}
+      <div
+        ref={ref}
+        className="table-container"
+        style={{
+          overflowY: 'auto',
+          position: 'relative',
+          height: '100%',
+        }}
+        onScroll={scrollHandler}
       >
-        <ReactTableHeader headerGroups={headerGroups} />
-        <tbody {...getTableBodyProps()}>
-          {rowsData.map((row, index) => {
-            prepareRow(row);
+        {enableVirtualScroll && (
+          <div
+            style={{
+              height: approxItemHeight * data.length,
+              position: 'absolute',
+              width: '100%',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+        <table
+          {...getTableProps()}
+          css={ReactTableStyle}
+          style={styles.table(enableVirtualScroll)}
+        >
+          <ReactTableHeader headerGroups={headerGroups} />
+          <tbody {...getTableBodyProps()}>
+            {rowsData.map((row, index) => {
+              prepareRow(row);
 
-            prepareRowSpan(
-              rows,
-              enableVirtualScroll ? index + indexBoundary.start : index,
-              rowSpanHeaders,
-              groupKey,
-            );
+              prepareRowSpan(
+                rows,
+                enableVirtualScroll ? index + indexBoundary.start : index,
+                rowSpanHeaders,
+                groupKey,
+              );
 
-
-            return (
-              <ReactTableRow
-                key={row.key}
-                row={row}
-                {...row.getRowProps()}
-                onContextMenu={(e) => contextMenuHandler(e, row)}
-                onClick={highlightActiveRow ? clickHandler : onClick}
-                highlightedSource={highlightedSource}
-                isRowActive={rowIndex === index}
-              />
-            );
-          })}
-        </tbody>
-      </table>
-      <ContextMenu ref={contextRef} context={context} />
-
-    </div>
-      {enableVirtualScroll && isCounterVisible && <p style={counterStyle}>{index + 1} / {total}</p>}
+              return (
+                <ReactTableRow
+                  key={row.key}
+                  row={row}
+                  {...row.getRowProps()}
+                  onContextMenu={(e) => contextMenuHandler(e, row)}
+                  onClick={highlightActiveRow ? clickHandler : onClick}
+                  highlightedSource={highlightedSource}
+                  isRowActive={rowIndex === index}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+        <ContextMenu ref={contextRef} context={context} />
+      </div>
+      {enableVirtualScroll && isCounterVisible && (
+        <p style={counterStyle}>
+          {index + 1} / {total}
+        </p>
+      )}
     </>
   );
 });
@@ -232,16 +229,16 @@ function ReactTable(props: ReactTableProps) {
       index: { start: 0, end: 0 },
     });
 
-
   useEffect(() => {
     if (containerRef.current) {
       const { scrollHeight } = containerRef.current;
-      const header = containerRef.current.querySelectorAll("thead");
-      const numberOfVisibleRows = Math.ceil((height - header[0].clientHeight) / approxItemHeight);
+      const header = containerRef.current.querySelectorAll('thead');
+      const numberOfVisibleRows = Math.ceil(
+        (height - header[0].clientHeight) / approxItemHeight,
+      );
       setTableVirtualConfig((prev) => ({
         ...prev,
-        scrollHeight
-        ,
+        scrollHeight,
         numberOfVisibleRows: numberOfVisibleRows - 1,
         index: { start: 0, end: numberOfVisibleRows },
       }));
@@ -327,17 +324,15 @@ function ReactTable(props: ReactTableProps) {
         style={{
           position: 'relative',
           height: '100%',
-
-        }} >
-
+        }}
+      >
         <ReactTableInner
           onScroll={scrollHandler}
           ref={containerRef}
           {...{ ...props }}
         />
       </div>
-
-    </ReactTableProvider >
+    </ReactTableProvider>
   );
 }
 
