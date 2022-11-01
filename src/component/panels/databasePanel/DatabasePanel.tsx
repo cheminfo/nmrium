@@ -324,7 +324,7 @@ function DatabasePanelInner({
         tablePanelStyle,
         style,
         isFlipped &&
-          css`
+        css`
             .table-container {
               table,
               th {
@@ -414,7 +414,7 @@ function DatabasePanelInner({
       <div className="inner-container">
         {!isFlipped ? (
           tableData && tableData.length > 0 ? (
-            <DatabaseTable data={tableData} onAdd={resurrectHandler} />
+            <DatabaseTable data={tableData} totalCount={result.data.length} onAdd={resurrectHandler} />
           ) : (
             <NoTableData
               text={
