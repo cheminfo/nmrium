@@ -68,7 +68,7 @@ function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
 function handleAutoSpectraZonesDetection(draft: Draft<State>) {
   for (const datum of draft.data) {
     if (datum.info.dimension === 2) {
-      const { minX, maxX, minY, maxY } = (datum as Datum2D).data;
+      const { minX, maxX, minY, maxY } = (datum as Datum2D).data.rr;
       const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,

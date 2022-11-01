@@ -1,4 +1,4 @@
-export interface Data2D {
+export interface MinMaxContent {
   z: Array<Array<number>>;
   minX: number;
   minY: number;
@@ -7,3 +7,5 @@ export interface Data2D {
   maxY: number;
   maxZ: number;
 }
+
+export type Data2D = Record<string, MinMaxContent>;

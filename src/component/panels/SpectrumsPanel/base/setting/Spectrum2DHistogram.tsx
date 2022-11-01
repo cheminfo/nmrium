@@ -15,7 +15,7 @@ function Spectrum2DHistogram({
   data,
 }: Spectrum2DHistogramProps) {
   const processedData = useMemo(() => {
-    return processSnapPlot('2D', data, yLogBase);
+    return processSnapPlot('2D', data.rr, yLogBase);
   }, [data]);
 
   return (

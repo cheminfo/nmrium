@@ -185,10 +185,13 @@ function addMissingProjectionHandler(draft, action) {
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
+    const datum2D = state.data[index];
+    const info = datum2D.info;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
-        state.data[index],
+        datum2D.data.rr,
         n,
+        info,
         draft.usedColors,
       );
       draft.data.push(datum1D);
