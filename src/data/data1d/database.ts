@@ -147,25 +147,34 @@ export function prepareData(
   let index = 0;
   for (const item of data) {
     let ids: string[] = [];
-    const { ranges = [], ...restItemKeys } = item;
+    const { ranges, ...restItemKeys } = item;
+    if (!ranges) {
+      ids.push(v4());
+      result.push({
+        ...restItemKeys,
+        index,
+        id: ids,
+        ranges: [],
+      } as PrepareDataResult);
+    } else {
+      for (const range of ranges) {
+        ids.push(range.id || v4());
+        const { signals = [], ...restRangKeys } = range;
+        for (const signal of signals) {
+          const { js = [], ...restSignalKeys } = signal;
+          const jsResult = mapJs(js);
 
-    for (const range of ranges) {
-      ids.push(range.id || v4());
-      const { signals = [], ...restRangKeys } = range;
-      for (const signal of signals) {
-        const { js = [], ...restSignalKeys } = signal;
-        const jsResult = mapJs(js);
-
-        const data = {
-          ...restItemKeys,
-          ...restRangKeys,
-          ...restSignalKeys,
-          ...jsResult,
-          index,
-          id: ids,
-          ranges,
-        };
-        result.push(data);
+          const data = {
+            ...restItemKeys,
+            ...restRangKeys,
+            ...restSignalKeys,
+            ...jsResult,
+            index,
+            id: ids,
+            ranges,
+          };
+          result.push(data);
+        }
       }
     }
     index++;
