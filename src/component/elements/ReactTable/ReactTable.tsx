@@ -201,8 +201,15 @@ const ReactTableInner = forwardRef(function ReactTableInner(
         </table>
         <ContextMenu ref={contextRef} context={context} />
       </div>
-      {enableVirtualScroll && isCounterVisible && (
-        <p style={counterStyle}>
+      {enableVirtualScroll && (
+        <p
+          style={{
+            ...counterStyle,
+            opacity: !isCounterVisible ? '0' : '1',
+            transition: 'all 0.5s',
+            visibility: !isCounterVisible ? 'hidden' : 'visible',
+          }}
+        >
           {index + 1} / {total}
         </p>
       )}
