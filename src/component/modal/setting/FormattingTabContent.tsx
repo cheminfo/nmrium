@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { Fragment, useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
+import { GroupPane } from '../../elements/GroupPane';
 import FormikInput from '../../elements/formik/FormikInput';
 
 const styles = css`
@@ -49,25 +49,20 @@ const styles = css`
 
 function FormattingTabContent() {
   const { values, setFieldValue } = useFormikContext();
-  const nuclei = useMemo(
-    () => lodashGet(values, 'formatting.nuclei', {}),
-    [values],
-  );
 
-  const deleteHandler = useCallback(
-    (key: string) => {
-      let _nuclei = {};
-      for (const nucleus in nuclei) {
-        if (nucleus !== key) {
-          _nuclei[nucleus] = nuclei[nucleus];
-        }
+  const nuclei = lodashGet(values, 'formatting.nuclei', {});
+
+  function deleteHandler(key: string) {
+    let _nuclei = {};
+    for (const nucleus in nuclei) {
+      if (nucleus !== key) {
+        _nuclei[nucleus] = nuclei[nucleus];
       }
-      setFieldValue('formatting.nuclei', _nuclei);
-    },
-    [nuclei, setFieldValue],
-  );
+    }
+    setFieldValue('formatting.nuclei', _nuclei);
+  }
 
-  const addNewNucleusFormatHandler = useCallback(() => {
+  function addHandler() {
     const newFormat = {
       name: '',
       ppm: '0.00',
@@ -76,15 +71,12 @@ function FormattingTabContent() {
     const key = v4();
     const newNuclei = { ...nuclei, [key]: newFormat };
     setFieldValue('formatting.nuclei', newNuclei);
-  }, [nuclei, setFieldValue]);
+  }
 
   const nucleiList = Object.keys(nuclei);
 
   return (
-    <Fragment>
-      <p className="section-header">
-        Number formatting for crosshair and info line
-      </p>
+    <GroupPane text="Number formatting for crosshair and info line">
       <div css={styles}>
         <table>
           <thead>
@@ -135,7 +127,7 @@ function FormattingTabContent() {
                       <Button.Done
                         fill="clear"
                         style={{ fontSize: '14px' }}
-                        onClick={addNewNucleusFormatHandler}
+                        onClick={addHandler}
                       >
                         <FaPlus />
                       </Button.Done>
@@ -147,7 +139,7 @@ function FormattingTabContent() {
           </tbody>
         </table>
       </div>
-    </Fragment>
+    </GroupPane>
   );
 }
 

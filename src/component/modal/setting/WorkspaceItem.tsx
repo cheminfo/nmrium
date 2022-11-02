@@ -1,100 +1,82 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { useCallback, useState } from 'react';
+import { CSSProperties, useState } from 'react';
+import { FaTimes } from 'react-icons/fa';
 
+import Button from '../../elements/Button';
 import workspaces from '../../workspaces';
 
-const styles = css`
-  .container {
-    display: flex;
-    span {
-      padding: 5px !important;
-    }
-    span {
-      flex: 1;
-      text-align: left !important;
-    }
-  }
-
-  .new-container {
-    background-color: #f6f6f6;
-    display: flex;
-    padding: 0.3em;
-
-    input {
-      padding: 0.5em;
-      color: black;
-      outline: none;
-      background-color: transparent !important;
-    }
-  }
-
-  .delete-button:hover {
-    color: white;
-  }
-
-  .save-button:hover {
-    color: green;
-  }
-  .delete-button,
-  .save-button {
-    padding: 5px;
-  }
-`;
+const styles: Record<
+  'container' | 'item' | 'newContainer' | 'input',
+  CSSProperties
+> = {
+  container: {
+    display: 'flex',
+  },
+  item: {
+    flex: '1',
+    textAlign: 'left',
+    fontSize: '11px',
+    padding: '5px',
+  },
+  newContainer: {
+    backgroundColor: '#f6f6f6',
+    display: 'flex',
+    padding: '0.3em',
+  },
+  input: {
+    padding: '0.5em 0.8em',
+    fontSize: '12px',
+    color: 'black',
+    outline: 'none',
+    backgroundColor: 'transparent',
+  },
+};
 
 function WorkspaceItem({ item, onSave, onDelete }) {
   const [name, setName] = useState<string>('');
-  const addWorkspaceHandler = useCallback(
-    (e) => {
-      e.stopPropagation();
-      setName('');
-      onSave(name);
-    },
-    [name, onSave],
-  );
 
-  const deleteWorkspaceHandler = useCallback(
-    (e) => {
-      e.stopPropagation();
-      onDelete(item.key);
-    },
-    [item.key, onDelete],
-  );
+  // Add new workspace
+  function addHandler(e) {
+    e.stopPropagation();
+    setName('');
+    onSave(name);
+  }
 
-  const onTextChange = useCallback((e) => {
+  // bubble onDelete
+  function deleteHandler(e) {
+    e.stopPropagation();
+    onDelete(item.key);
+  }
+
+  function onTextChange(e) {
     setName(e.target.value);
-  }, []);
+  }
 
   return (
-    <div css={styles}>
+    <div>
       {item.key === 'new' ? (
-        <div className="new-container">
+        <div style={styles.newContainer}>
           <input
+            style={styles.input}
             value={name}
             placeholder="Custom workspace"
             onClick={(e) => e.stopPropagation()}
             onChange={onTextChange}
           />
-          <button
-            type="button"
-            className="save-button"
-            onClick={addWorkspaceHandler}
+          <Button.Done
+            onClick={addHandler}
             disabled={!name}
+            style={{ fontSize: '11px' }}
           >
-            save
-          </button>
+            Save
+          </Button.Done>
         </div>
       ) : (
-        <div className="container">
-          <span>{item.label}</span>
+        <div style={styles.container}>
+          <span style={styles.item}>{item.label}</span>
           {!workspaces[item.key] && (
-            <button
-              type="button"
-              className="delete-button"
-              onClick={deleteWorkspaceHandler}
-            >
-              Delete
-            </button>
+            <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
+              <FaTimes />
+            </Button.Danger>
           )}
         </div>
       )}

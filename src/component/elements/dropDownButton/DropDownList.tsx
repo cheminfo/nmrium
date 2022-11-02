@@ -22,10 +22,9 @@ const styles = {
   `,
   li: css`
     text-align: center;
+    white-space: nowrap;
     color: black;
     border-bottom: 0.55px solid #f9f9f9;
-    min-width: 150px;
-    width: fit-content;
     &:last-of-type {
       border-bottom: none;
     }

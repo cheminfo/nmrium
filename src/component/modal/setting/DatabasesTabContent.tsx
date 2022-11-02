@@ -1,11 +1,12 @@
 import { v4 } from '@lukeed/uuid';
 import { Field, useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import { CSSProperties } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
 import { NMRiumWorkspace } from '../../NMRium';
 import Button from '../../elements/Button';
+import { GroupPane } from '../../elements/GroupPane';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
@@ -44,17 +45,15 @@ interface DatabasesTabContentProps {
 function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   const { values, setFieldValue } = useFormikContext();
 
-  const databases = useMemo(() => lodashGet(values, 'databases', []), [values]);
+  const databases = lodashGet(values, 'databases', []);
 
-  const deleteHandler = useCallback(
-    (index: number) => {
-      const _database = databases.data.slice();
-      _database.splice(index, 1);
-      setFieldValue('databases.data', _database);
-    },
-    [databases, setFieldValue],
-  );
-  const addNewDatabaseHandler = useCallback(() => {
+  function deleteHandler(index: number) {
+    const _database = databases.data.slice();
+    _database.splice(index, 1);
+    setFieldValue('databases.data', _database);
+  }
+
+  function addHandler() {
     const newDatabase = {
       key: v4(),
       label: '',
@@ -62,15 +61,15 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
       enabled: true,
     };
     setFieldValue('databases.data', [...databases.data, newDatabase]);
-  }, [databases, setFieldValue]);
+  }
 
-  const resetDatabaseHandler = useCallback(() => {
+  function resetHandler() {
     const workSpaceDisplayPreferences =
       getPreferencesByWorkspace(currentWorkspace);
     const database = workSpaceDisplayPreferences.databases.data;
 
     setFieldValue('databases.data', database);
-  }, [currentWorkspace, setFieldValue]);
+  }
 
   return (
     <fieldset
@@ -81,27 +80,18 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
         }
       }}
     >
-      <div className="section-header" style={{ display: 'flex' }}>
-        <p style={{ flex: 1 }}>Databases</p>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button.Danger
-            fill="clear"
-            size="xSmall"
-            onClick={resetDatabaseHandler}
-            style={{ margin: '0 5px' }}
-          >
-            Reset Databases
-          </Button.Danger>
-          <Button.Done
-            fill="outline"
-            size="xSmall"
-            onClick={addNewDatabaseHandler}
-          >
-            Add Database
-          </Button.Done>
-        </div>
-      </div>
-      <div>
+      <GroupPane
+        text="Databases"
+        renderHeader={(text) => {
+          return (
+            <DataBaseHeader
+              text={text}
+              onReset={resetHandler}
+              onAdd={addHandler}
+            />
+          );
+        }}
+      >
         <table style={style.table}>
           <thead>
             <tr>
@@ -172,7 +162,7 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
                         <Button.Done
                           fill="clear"
                           style={{ fontSize: '14px' }}
-                          onClick={addNewDatabaseHandler}
+                          onClick={addHandler}
                         >
                           <FaPlus />
                         </Button.Done>
@@ -193,8 +183,29 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
             })}
           </tbody>
         </table>
-      </div>
+      </GroupPane>
     </fieldset>
+  );
+}
+
+function DataBaseHeader({ onReset, onAdd, text }) {
+  return (
+    <div className="section-header" style={{ display: 'flex' }}>
+      <p style={{ flex: 1 }}>{text}</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button.Danger
+          fill="clear"
+          size="xSmall"
+          onClick={onReset}
+          style={{ margin: '0 5px' }}
+        >
+          Reset Databases
+        </Button.Danger>
+        <Button.Done fill="outline" size="xSmall" onClick={onAdd}>
+          Add Database
+        </Button.Done>
+      </div>
+    </div>
   );
 }
 
