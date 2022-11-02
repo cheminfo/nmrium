@@ -244,63 +244,55 @@ function ReactTable(props: ReactTableProps) {
     }
   }, [approxItemHeight, height]);
 
-  const lookForGroupIndex = useCallback(
-    (currentIndex: number, side: 1 | -1) => {
-      const currentItem = data[currentIndex];
-      if (currentItem.index && groupKey) {
-        switch (side) {
-          case -1: {
-            let index = currentIndex - 1;
-            while (index > 0) {
-              if (data[index][groupKey] !== currentItem[groupKey]) {
-                return index + 1;
-              }
-              index--;
+  function lookForGroupIndex(currentIndex: number, side: 1 | -1) {
+    const currentItem = data[currentIndex];
+    if (currentItem.index && groupKey) {
+      switch (side) {
+        case -1: {
+          let index = currentIndex - 1;
+          while (index > 0) {
+            if (data[index][groupKey] !== currentItem[groupKey]) {
+              return index + 1;
             }
-            return currentIndex;
+            index--;
           }
-          case 1: {
-            let index = currentIndex + 1;
-            while (index < data.length) {
-              if (data[index][groupKey] !== currentItem[groupKey]) {
-                return index - 1;
-              }
-              index++;
-            }
-            return currentIndex;
-          }
-          default:
-            return currentIndex;
+          return currentIndex;
         }
+        case 1: {
+          let index = currentIndex + 1;
+          while (index < data.length) {
+            if (data[index][groupKey] !== currentItem[groupKey]) {
+              return index - 1;
+            }
+            index++;
+          }
+          return currentIndex;
+        }
+        default:
+          return currentIndex;
       }
+    }
 
-      return currentIndex;
-    },
-    [data, groupKey],
-  );
+    return currentIndex;
+  }
 
-  const findStartIndex = useCallback(
-    (index: number, numberOfVisibleRows: number) => {
-      const newIndex = index - numberOfVisibleRows;
-      const currentIndx = newIndex >= data.length ? newIndex : index;
-      // return currentIndx;
-      // Look for the first index of the group
-      return lookForGroupIndex(currentIndx, -1);
-    },
-    [data.length, lookForGroupIndex],
-  );
-  const findEndIndex = useCallback(
-    (index: number, numberOfVisibleRows: number) => {
-      const newIndex = index + numberOfVisibleRows;
-      const currentIndx = newIndex >= data.length ? data.length - 1 : newIndex;
-      // return currentIndx;
-      // Look for the last index of the group
-      return lookForGroupIndex(currentIndx, 1);
-    },
-    [data.length, lookForGroupIndex],
-  );
+  function findStartIndex(index: number, numberOfVisibleRows: number) {
+    const newIndex = index - numberOfVisibleRows;
+    const currentIndx = newIndex >= data.length ? newIndex : index;
+    // return currentIndx;
+    // Look for the first index of the group
+    return lookForGroupIndex(currentIndx, -1);
+  }
 
-  const scrollHandler = useCallback(() => {
+  function findEndIndex(index: number, numberOfVisibleRows: number) {
+    const newIndex = index + numberOfVisibleRows;
+    const currentIndx = newIndex >= data.length ? data.length - 1 : newIndex;
+    // return currentIndx;
+    // Look for the last index of the group
+    return lookForGroupIndex(currentIndx, 1);
+  }
+
+  function scrollHandler() {
     if (containerRef.current && tableVirtualConfig) {
       const { scrollTop } = containerRef.current;
       const { numberOfVisibleRows, index } = tableVirtualConfig;
@@ -314,7 +306,7 @@ function ReactTable(props: ReactTableProps) {
         });
       }
     }
-  }, [approxItemHeight, findEndIndex, findStartIndex, tableVirtualConfig]);
+  }
 
   return (
     <ReactTableProvider value={tableVirtualConfig}>
