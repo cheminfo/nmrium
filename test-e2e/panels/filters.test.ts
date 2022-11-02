@@ -78,10 +78,12 @@ async function addPeaks(
 }
 async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const peaksTable = nmrium.page.locator(
-    '_react=PeaksTable >> _react=ReactTable',
+    '_react=PeaksTable >> _react=ReactTable >> .table-container',
   );
-  await peaksTable.click();
-  await nmrium.page.mouse.wheel(0, 500);
+  await peaksTable.evaluate((e) => {
+    e.scrollTop = e.scrollHeight;
+  });
+
   const lastPeak = peaksTable.locator(
     `_react=[role="row"][key="row_${number - 1}"]`,
   );
@@ -91,6 +93,7 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   await expect(lastPeak).toBeVisible();
   await expect(inexistentPeak).toBeHidden();
 }
+
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);

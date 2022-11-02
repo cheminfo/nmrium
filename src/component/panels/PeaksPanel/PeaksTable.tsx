@@ -191,7 +191,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
     <ReactTable
       data={data}
       columns={tableColumns}
-      approxItemHeight={20}
+      approxItemHeight={24}
       enableVirtualScroll
     />
   ) : (
