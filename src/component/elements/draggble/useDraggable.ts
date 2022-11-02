@@ -49,9 +49,7 @@ export default function useDraggable(props: UseDraggable): Draggable {
         (dragHandleClassName && classes.includes(dragHandleClassName)) ||
         !dragHandleClassName
       ) {
-        const _parentElement = parentElement
-          ? parentElement
-          : eventTarget?.parentElement;
+        const _parentElement = parentElement || eventTarget?.parentElement;
         if (_parentElement) {
           const parentBounding = _parentElement.getBoundingClientRect();
           const currentBounding = eventTarget?.getBoundingClientRect();

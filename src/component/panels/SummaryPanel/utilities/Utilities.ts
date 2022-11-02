@@ -97,26 +97,36 @@ function findSignalMatch2D(
 
 function getAbbreviation(link: Link): string {
   let abbreviation = 'X';
-  if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
-    abbreviation =
-      !link.signal || link.signal.sign === 0
-        ? 'S'
-        : `S${link.signal.sign === 1 ? '+' : '-'}`;
-  } else if (
-    link.experimentType === 'hmbc' ||
-    link.experimentType === 'cosy' ||
-    link.experimentType === 'tocsy'
-  ) {
-    abbreviation = 'M';
-  } else if (
-    link.experimentType === 'noesy' ||
-    link.experimentType === 'roesy'
-  ) {
-    abbreviation = 'NOE';
-  } else if (link.experimentType === 'inadequate') {
-    abbreviation = 'I';
-  } else if (link.experimentType === 'adequate') {
-    abbreviation = 'A';
+  switch (link.experimentType) {
+    case 'hsqc':
+    case 'hmqc': {
+      abbreviation =
+        !link.signal || link.signal.sign === 0
+          ? 'S'
+          : `S${link.signal.sign === 1 ? '+' : '-'}`;
+      break;
+    }
+    case 'hmbc':
+    case 'cosy':
+    case 'tocsy': {
+      abbreviation = 'M';
+      break;
+    }
+    case 'noesy':
+    case 'roesy': {
+      abbreviation = 'NOE';
+      break;
+    }
+    case 'inadequate': {
+      abbreviation = 'I';
+      break;
+    }
+    case 'adequate': {
+      abbreviation = 'A';
+      break;
+    }
+    // TODO: handle default?
+    // No default
   }
 
   const pathLength: FromTo | undefined = link.signal.j?.pathLength;
@@ -212,34 +222,119 @@ function getEditedCorrelations({
     skipDataUpdate?: boolean;
   } = {};
 
-  if (action === 'move') {
-    if (linkDim === 1) {
-      // modify current cell correlation
-      const _correlationDim1 = cloneCorrelationAndEditLink(
-        correlationDim1,
-        link,
-        'x',
-        'remove',
-      );
-      // modify selected correlation
-      let newCorrelationDim1: Correlation;
-      if (selectedCorrelationDim1) {
-        newCorrelationDim1 = cloneCorrelationAndEditLink(
-          hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+  switch (action) {
+    case 'move': {
+      if (linkDim === 1) {
+        // modify current cell correlation
+        const _correlationDim1 = cloneCorrelationAndEditLink(
+          correlationDim1,
           link,
           'x',
-          'add',
+          'remove',
         );
-      } else {
-        newCorrelationDim1 = buildCorrelation({
-          atomType: correlationDim1.atomType,
-          link: [buildNewLink1D(link)],
-        });
+        // modify selected correlation
+        let newCorrelationDim1: Correlation;
+        if (selectedCorrelationDim1) {
+          newCorrelationDim1 = cloneCorrelationAndEditLink(
+            hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+            link,
+            'x',
+            'add',
+          );
+        } else {
+          newCorrelationDim1 = buildCorrelation({
+            atomType: correlationDim1.atomType,
+            link: [buildNewLink1D(link)],
+          });
+        }
+        editedCorrelations.push(_correlationDim1, newCorrelationDim1);
+        buildCorrelationDataOptions.skipDataUpdate = true;
+      } else if (linkDim === 2) {
+        // modify current cell correlations
+        const _correlationDim1 = cloneCorrelationAndEditLink(
+          correlationDim1,
+          link,
+          'x',
+          'remove',
+        );
+        editedCorrelations.push(_correlationDim1);
+        const _correlationDim2 = cloneCorrelationAndEditLink(
+          correlationDim2,
+          link,
+          'y',
+          'remove',
+        );
+        editedCorrelations.push(_correlationDim2);
+
+        // modify selected correlations
+        if (selectedCorrelationDim1 && selectedCorrelationDim2) {
+          editedCorrelations.push(
+            cloneCorrelationAndEditLink(
+              hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+              link,
+              'x',
+              'add',
+            ),
+            cloneCorrelationAndEditLink(
+              hasChangedDim2 ? selectedCorrelationDim2 : _correlationDim2,
+              link,
+              'y',
+              'add',
+            ),
+          );
+        } else if (
+          selectedCorrelationDim1 &&
+          selectedCorrelationIdDim2 === 'new'
+        ) {
+          editedCorrelations.push(
+            cloneCorrelationAndEditLink(
+              hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+              link,
+              'x',
+              'add',
+            ),
+            buildCorrelation({
+              atomType: correlationDim2.atomType,
+              link: [buildNewLink2D(link, 'y')],
+            }),
+          );
+        } else if (
+          selectedCorrelationIdDim1 === 'new' &&
+          selectedCorrelationDim2
+        ) {
+          editedCorrelations.push(
+            buildCorrelation({
+              atomType: correlationDim1.atomType,
+              link: [buildNewLink2D(link, 'x')],
+            }),
+            cloneCorrelationAndEditLink(
+              hasChangedDim2 ? selectedCorrelationDim2 : _correlationDim2,
+              link,
+              'y',
+              'add',
+            ),
+          );
+        } else if (
+          selectedCorrelationIdDim1 === 'new' &&
+          selectedCorrelationIdDim2 === 'new'
+        ) {
+          editedCorrelations.push(
+            buildCorrelation({
+              atomType: correlationDim1.atomType,
+              link: [buildNewLink2D(link, 'x')],
+            }),
+            buildCorrelation({
+              atomType: correlationDim2.atomType,
+              link: [buildNewLink2D(link, 'y')],
+            }),
+          );
+        }
+        buildCorrelationDataOptions.skipDataUpdate = true;
       }
-      editedCorrelations.push(_correlationDim1, newCorrelationDim1);
-      buildCorrelationDataOptions.skipDataUpdate = true;
-    } else if (linkDim === 2) {
-      // modify current cell correlations
+
+      break;
+    }
+    case 'remove': {
       const _correlationDim1 = cloneCorrelationAndEditLink(
         correlationDim1,
         link,
@@ -247,127 +342,42 @@ function getEditedCorrelations({
         'remove',
       );
       editedCorrelations.push(_correlationDim1);
-      const _correlationDim2 = cloneCorrelationAndEditLink(
-        correlationDim2,
-        link,
-        'y',
-        'remove',
-      );
-      editedCorrelations.push(_correlationDim2);
+      if (getLinkDim(link) === 2) {
+        const _correlationDim2 = cloneCorrelationAndEditLink(
+          correlationDim2,
+          link,
+          'y',
+          'remove',
+        );
+        editedCorrelations.push(_correlationDim2);
+      }
 
-      // modify selected correlations
-      if (selectedCorrelationDim1 && selectedCorrelationDim2) {
-        editedCorrelations.push(
-          cloneCorrelationAndEditLink(
-            hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
-            link,
-            'x',
-            'add',
-          ),
-        );
-        editedCorrelations.push(
-          cloneCorrelationAndEditLink(
-            hasChangedDim2 ? selectedCorrelationDim2 : _correlationDim2,
-            link,
-            'y',
-            'add',
-          ),
-        );
+      break;
+    }
+    case 'unmove': {
+      if (linkDim === 1) {
+        if (selectedCorrelationDim1) {
+          editedCorrelations.push(
+            cloneCorrelationAndEditLink(
+              selectedCorrelationDim1,
+              link,
+              'x',
+              'unmove',
+            ),
+          );
+        }
       } else if (
+        linkDim === 2 &&
         selectedCorrelationDim1 &&
-        selectedCorrelationIdDim2 === 'new'
-      ) {
-        editedCorrelations.push(
-          cloneCorrelationAndEditLink(
-            hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
-            link,
-            'x',
-            'add',
-          ),
-        );
-        editedCorrelations.push(
-          buildCorrelation({
-            atomType: correlationDim2.atomType,
-            link: [buildNewLink2D(link, 'y')],
-          }),
-        );
-      } else if (
-        selectedCorrelationIdDim1 === 'new' &&
         selectedCorrelationDim2
       ) {
         editedCorrelations.push(
-          buildCorrelation({
-            atomType: correlationDim1.atomType,
-            link: [buildNewLink2D(link, 'x')],
-          }),
-        );
-        editedCorrelations.push(
-          cloneCorrelationAndEditLink(
-            hasChangedDim2 ? selectedCorrelationDim2 : _correlationDim2,
-            link,
-            'y',
-            'add',
-          ),
-        );
-      } else if (
-        selectedCorrelationIdDim1 === 'new' &&
-        selectedCorrelationIdDim2 === 'new'
-      ) {
-        editedCorrelations.push(
-          buildCorrelation({
-            atomType: correlationDim1.atomType,
-            link: [buildNewLink2D(link, 'x')],
-          }),
-        );
-        editedCorrelations.push(
-          buildCorrelation({
-            atomType: correlationDim2.atomType,
-            link: [buildNewLink2D(link, 'y')],
-          }),
-        );
-      }
-      buildCorrelationDataOptions.skipDataUpdate = true;
-    }
-  } else if (action === 'remove') {
-    const _correlationDim1 = cloneCorrelationAndEditLink(
-      correlationDim1,
-      link,
-      'x',
-      'remove',
-    );
-    editedCorrelations.push(_correlationDim1);
-    if (getLinkDim(link) === 2) {
-      const _correlationDim2 = cloneCorrelationAndEditLink(
-        correlationDim2,
-        link,
-        'y',
-        'remove',
-      );
-      editedCorrelations.push(_correlationDim2);
-    }
-  } else if (action === 'unmove') {
-    if (linkDim === 1) {
-      if (selectedCorrelationDim1) {
-        editedCorrelations.push(
           cloneCorrelationAndEditLink(
             selectedCorrelationDim1,
             link,
             'x',
             'unmove',
           ),
-        );
-      }
-    } else if (linkDim === 2) {
-      if (selectedCorrelationDim1 && selectedCorrelationDim2) {
-        editedCorrelations.push(
-          cloneCorrelationAndEditLink(
-            selectedCorrelationDim1,
-            link,
-            'x',
-            'unmove',
-          ),
-        );
-        editedCorrelations.push(
           cloneCorrelationAndEditLink(
             selectedCorrelationDim2,
             link,
@@ -376,14 +386,18 @@ function getEditedCorrelations({
           ),
         );
       }
+
+      break;
     }
-  } else if (action === 'setPathLength') {
-    editedCorrelations.push(
-      cloneCorrelationAndSetPathLength(correlationDim1, link, 'x'),
-    );
-    editedCorrelations.push(
-      cloneCorrelationAndSetPathLength(correlationDim2, link, 'y'),
-    );
+    case 'setPathLength': {
+      editedCorrelations.push(
+        cloneCorrelationAndSetPathLength(correlationDim1, link, 'x'),
+        cloneCorrelationAndSetPathLength(correlationDim2, link, 'y'),
+      );
+
+      break;
+    }
+    // No default
   }
 
   return { editedCorrelations, buildCorrelationDataOptions };
@@ -435,13 +449,13 @@ function convertValuesString(
   valuesString = valuesString.replaceAll('sp', '');
 
   let values: number[] = [];
-  const regex = /^(?:[0-9],{0,1})+$/g;
+  const regex = /^(?:\d,{0,1})+$/g;
   if (regex.test(valuesString)) {
     // allow digits followed by optional comma only
     values = valuesString
       .split(',')
       .filter((char) => char.length > 0)
-      .map((char) => Number(char));
+      .map(Number);
   }
 
   // allow key specific values only

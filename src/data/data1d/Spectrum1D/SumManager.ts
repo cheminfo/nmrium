@@ -45,7 +45,7 @@ export function getSum(mf: string | null | undefined, nucleus: string) {
   const atom = getAtom(nucleus);
   const atoms = getAtoms(mf);
 
-  return atoms[atom] ? atoms[atom] : defaultSum;
+  return atoms[atom] || defaultSum;
 }
 
 export function setSumOptions(

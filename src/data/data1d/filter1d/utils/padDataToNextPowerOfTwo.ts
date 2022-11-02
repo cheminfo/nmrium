@@ -28,7 +28,7 @@ export function padDataToNextPowerOfTwo(
     step: x[1] - x[0],
   }) as Float64Array;
 
-  datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
+  datum1D.data = { ...datum1D.data, re: newRE, im: newIM, x: newX };
 }
 
 function getPointsToShift(datum1D: Datum1D) {

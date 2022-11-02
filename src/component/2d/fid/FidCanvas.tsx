@@ -34,10 +34,10 @@ export function FidCanvas() {
           height,
           yDomain: originDomain.yDomain,
         });
-        const x1 = scale2dX(xDomain[1]) - margin.top;
-        const y1 = scale2dY(yDomain[0]) - margin.left;
-        const x2 = scale2dX(xDomain[0]) - margin.top;
-        const y2 = scale2dY(yDomain[1]) - margin.left;
+        const x1 = scale2dX(xDomain[1]) - top;
+        const y1 = scale2dY(yDomain[0]) - left;
+        const x2 = scale2dX(xDomain[0]) - top;
+        const y2 = scale2dY(yDomain[1]) - left;
 
         const w = Math.max(canvasWidth, imageData.width);
         const h = Math.max(canvasHeight, imageData.height);
@@ -49,7 +49,7 @@ export function FidCanvas() {
 
         context.putImageData(imageData, 0, 0);
 
-        // eslint-disable-next-line func-names
+        // eslint-disable-next-line func-names, unicorn/prefer-add-event-listener
         imageObject.onload = function () {
           context.resetTransform();
           context.clearRect(0, 0, w, h);
@@ -67,8 +67,10 @@ export function FidCanvas() {
     canvasWidth,
     height,
     imageData,
+    left,
     margin,
     originDomain,
+    top,
     width,
     xDomain,
     yDomain,

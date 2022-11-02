@@ -14,7 +14,7 @@ const styles: Record<'container', CSSProperties> = {
   },
 };
 
-const allowTools: Array<string | number> = [
+const allowTools = new Set([
   options.zoom.id,
   options.apodization.id,
   options.zeroFilling.id,
@@ -29,7 +29,7 @@ const allowTools: Array<string | number> = [
   options.multipleSpectraAnalysis.id,
   options.exclusionZones.id,
   options.databaseRangesSelection.id,
-];
+]);
 
 export const BRUSH_TYPE = {
   X: 1,
@@ -73,7 +73,7 @@ export default function BrushXY({
   let { startX, endX, startY, endY, step } = useContext(BrushContext);
 
   if (
-    !allowTools.includes(selectedTool) ||
+    !allowTools.has(selectedTool) ||
     step !== 'brushing' ||
     !dimensionBorder ||
     (dimensionBorder.startX && startX < dimensionBorder.startX) ||
@@ -90,9 +90,9 @@ export default function BrushXY({
     return null;
   }
 
-  width = widthProps ? widthProps : width;
+  width = widthProps || width;
 
-  height = heightProps ? heightProps : height;
+  height = heightProps || height;
 
   endX =
     dimensionBorder.endX && endX > dimensionBorder.endX

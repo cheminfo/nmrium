@@ -99,7 +99,6 @@ function setPreferences(draft: Draft<State>, data) {
 
 function initiate(draft: Draft<State>, action) {
   const state = getInitialState();
-
   setData(state, action.payload);
   const preferences = action.payload?.preferences || {};
   setActiveTab(state, { tab: preferences?.activeTab || '' });

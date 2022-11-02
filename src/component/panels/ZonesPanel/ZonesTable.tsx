@@ -95,10 +95,10 @@ function ZonesTable({
   );
 
   const data = useMemo(() => {
-    const _data: Array<any> = [];
-    tableData.forEach((zone, i) => {
+    const data: Array<any> = [];
+    for (const [i, zone] of tableData.entries()) {
       if (zone.signals.length === 1) {
-        _data.push({
+        data.push({
           ...zone,
           tableMetaInfo: {
             ...zone.tableMetaInfo,
@@ -111,7 +111,7 @@ function ZonesTable({
           },
         });
       } else if (zone.signals.length > 1) {
-        zone.signals.forEach((signal, j) => {
+        for (const [j, signal] of zone.signals.entries()) {
           let hide = false;
           let rowSpan: number | null = null;
           if (j < zone.signals.length - 1) {
@@ -123,7 +123,7 @@ function ZonesTable({
           } else {
             hide = true;
           }
-          _data.push({
+          data.push({
             ...zone,
             tableMetaInfo: {
               ...zone.tableMetaInfo,
@@ -136,11 +136,11 @@ function ZonesTable({
               experiment,
             },
           });
-        });
+        }
       }
-    });
+    }
 
-    return _data;
+    return data;
   }, [experiment, nuclei, tableData]);
 
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);

@@ -63,9 +63,8 @@ async function loadData(url) {
     checkStatus(response);
     const data = await response.json();
     return data;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e);
+  } catch (error) {
+    reportError(error);
     return null;
   }
 }
@@ -75,6 +74,10 @@ function checkStatus(response) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
   }
   return response;
+}
+
+function getFileExtension(url = '') {
+  return url.slice(url.lastIndexOf('.') + 1);
 }
 
 const Main = () => {
@@ -96,10 +99,6 @@ const Main = () => {
     setRoutes({ isLoaded: true, status: 200, routes });
   }, []);
 
-  const getFileExtension = (url = '') => {
-    return url.substring(url.lastIndexOf('.') + 1);
-  };
-
   const href = window.location.href;
   useEffect(() => {
     const qs = new URL(href).searchParams;
@@ -112,7 +111,7 @@ const Main = () => {
           void loadData(sampleURL).then((remoteRoutes) => {
             if (remoteRoutes) {
               const baseURL = sampleURL.replace(
-                /^(?<url>.*[\\/])?(?<filename>.*?\.[^.]*?|)$/g,
+                /^(?<url>.*[/\\])?(?<filename>.*?\.[^.]*?|)$/g,
                 '$1',
               );
 

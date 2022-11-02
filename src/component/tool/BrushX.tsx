@@ -13,7 +13,7 @@ const styles: Record<'container', CSSProperties> = {
   },
 };
 
-const allowTools: Array<string | number> = [
+const allowTools = new Set([
   options.zoom.id,
   options.zeroFilling.id,
   options.peakPicking.id,
@@ -22,7 +22,7 @@ const allowTools: Array<string | number> = [
   options.baselineCorrection.id,
   options.rangePicking.id,
   options.exclusionZones.id,
-];
+]);
 
 export default function BrushX() {
   const {
@@ -32,7 +32,7 @@ export default function BrushX() {
   } = useChartData();
   const { startX, endX, step } = useContext(BrushContext);
 
-  if (!allowTools.includes(selectedTool) || step !== 'brushing') return null;
+  if (!allowTools.has(selectedTool) || step !== 'brushing') return null;
 
   const scale = (endX - startX) / width;
 

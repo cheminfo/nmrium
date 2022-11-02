@@ -1,6 +1,0 @@
-overrides:
-  - files: ['*.test.{js,jsx,ts,tsx}']
-    env:
-      jest: false
-    rules:
-      jest/no-done-callback: off

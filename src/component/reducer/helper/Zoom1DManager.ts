@@ -36,36 +36,39 @@ function setZoom(
     spectrumID?: string;
   } = {},
 ) {
-  const { height, margin } = draft;
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const { height, margin, view, originDomain, yDomains } = draft;
+  const activeSpectrum = view.spectra.activeSpectra[view.spectra.activeTab];
   const { scale = 1, spectrumID = null } = options;
 
   if (activeSpectrum === null && spectrumID === null) {
-    const { shareYDomain, yDomain, yDomains } = draft.originDomain;
-    draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
-      const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
-        height - margin.bottom,
-        margin.top,
-      ]);
-      const [min, max] = shareYDomain ? yDomain : yDomains[id];
-      const maxPoint = Math.max(Math.abs(max), Math.abs(min));
-      const scalePoint = maxPoint === max ? 0 : min;
-      const t = zoomIdentity
-        .translate(
-          0,
-          Math.sign(scalePoint) >= 0 ? _scale(scalePoint) : _scale(scalePoint),
-        )
-        .scale(scale)
-        .translate(0, -_scale(0));
-      const newYDomain = t.rescaleY(_scale).domain();
-      acc[id] = newYDomain;
-      return acc;
-    }, {});
+    const { shareYDomain, yDomain, yDomains } = originDomain;
+
+    draft.yDomains = Object.fromEntries(
+      Object.keys(yDomains).map((id) => {
+        const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
+          height - margin.bottom,
+          margin.top,
+        ]);
+        const [min, max] = shareYDomain ? yDomain : yDomains[id];
+        const maxPoint = Math.max(Math.abs(max), Math.abs(min));
+        const scalePoint = maxPoint === max ? 0 : min;
+        const t = zoomIdentity
+          .translate(
+            0,
+            Math.sign(scalePoint) >= 0
+              ? _scale(scalePoint)
+              : _scale(scalePoint),
+          )
+          .scale(scale)
+          .translate(0, -_scale(0));
+        const newYDomain = t.rescaleY(_scale).domain();
+        return [id, newYDomain];
+      }),
+    );
   } else {
     const spectrumId = spectrumID || activeSpectrum?.id;
     if (spectrumId) {
-      const _scale = scaleLinear(draft.originDomain.yDomains[spectrumId], [
+      const _scale = scaleLinear(originDomain.yDomains[spectrumId], [
         height - margin.bottom,
         margin.top,
       ]);
@@ -76,7 +79,7 @@ function setZoom(
       const yDomain = t.rescaleY(_scale).domain();
 
       draft.yDomains = {
-        ...draft.yDomains,
+        ...yDomains,
         [spectrumId]: yDomain,
       };
     }

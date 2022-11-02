@@ -123,7 +123,7 @@ function MultiplicityTree({
 
   const startY = useMemo(() => {
     let yMax;
-    spectrumData.data.x.forEach((_x, i) => {
+    for (const [i, _x] of spectrumData.data.x.entries()) {
       if (
         _x >= rangeFrom &&
         _x <= rangeTo &&
@@ -131,7 +131,7 @@ function MultiplicityTree({
       ) {
         yMax = spectrumData.data.re[i];
       }
-    });
+    }
 
     return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
   }, [
@@ -162,7 +162,7 @@ function MultiplicityTree({
       setXRange({ x1: rangeFrom, x2: rangeTo });
     } else {
       const _xRange = { x1: signal.delta, x2: signal.delta };
-      treeNodesData.forEach((_treeNodeData) => {
+      for (const _treeNodeData of treeNodesData) {
         if (_treeNodeData.startX < _xRange.x1) {
           _xRange.x1 = _treeNodeData.startX;
         }
@@ -175,7 +175,7 @@ function MultiplicityTree({
         if (_treeNodeData._startX > _xRange.x2) {
           _xRange.x2 = _treeNodeData._startX;
         }
-      });
+      }
       setXRange(_xRange);
     }
   }, [

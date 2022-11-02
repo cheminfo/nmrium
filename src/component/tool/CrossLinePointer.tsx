@@ -15,7 +15,7 @@ const styles: Record<'line', CSSProperties> = {
   },
 };
 
-const allowTools: Array<string | number> = [
+const allowTools = new Set([
   options.zoom.id,
   options.apodization.id,
   options.equalizer.id,
@@ -28,7 +28,7 @@ const allowTools: Array<string | number> = [
   options.multipleSpectraAnalysis.id,
   options.exclusionZones.id,
   options.databaseRangesSelection.id,
-];
+]);
 
 function CrossLinePointer() {
   const {
@@ -41,7 +41,7 @@ function CrossLinePointer() {
   const brushState = useContext(BrushContext);
 
   if (
-    !allowTools.includes(selectedTool) ||
+    !allowTools.has(selectedTool) ||
     brushState.step === 'brushing' ||
     !position ||
     position.x > width - margin.right ||

@@ -68,7 +68,7 @@ function RangesTable({
   preferences,
   info,
 }: RangesTableProps) {
-  const element = activeTab?.replace(/[0-9]/g, '');
+  const element = activeTab?.replace(/\d/g, '');
   const contextRef = useRef<any>();
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);

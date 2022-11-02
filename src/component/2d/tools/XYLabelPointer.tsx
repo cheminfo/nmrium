@@ -124,10 +124,10 @@ function XYLabelPointer({ layout, data1D }) {
     switch (trackID) {
       case LAYOUT.CENTER_2D:
       case LAYOUT.TOP_1D: {
-        return scaleX?.invert(x ? x : position.x);
+        return scaleX?.invert(x || position.x);
       }
       case LAYOUT.LEFT_1D: {
-        return scaleX?.invert(x ? x : position.y);
+        return scaleX?.invert(x || position.y);
       }
       default:
         return 0;

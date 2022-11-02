@@ -48,7 +48,7 @@ export function apply(datum1D: Datum1D, size) {
     newIM.set(im.slice(re.length - pointsToShift), size - pointsToShift);
   }
 
-  datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
+  datum1D.data = { ...datum1D.data, re: newRE, im: newIM, x: newX };
 }
 
 export function isApplicable(datum1D: Datum1D) {

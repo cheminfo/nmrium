@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
 import {
   useRef,
@@ -8,13 +9,13 @@ import {
   Ref,
   useEffect,
   UIEvent,
+  CSSProperties,
 } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { useMeasure } from 'react-use';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { HighlightEventSource } from '../../highlight';
-import useCombinedRefs from '../../hooks/useCombinedRefs';
 import ContextMenu from '../ContextMenu';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -33,8 +34,10 @@ interface ReactTableProps extends ClickEvent {
   context?: Array<{ label: string; onClick: () => void }> | null;
   approxItemHeight?: number;
   groupKey?: string;
+  indexKey?: string;
   enableVirtualScroll?: boolean;
   highlightActiveRow?: boolean;
+  totalCount?: number;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -47,6 +50,18 @@ const styles = {
       return { position: 'sticky', top: 0 };
     }
   },
+};
+
+const counterStyle: CSSProperties = {
+  position: 'absolute',
+  bottom: 0,
+  width: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  pointerEvents: 'none',
+  textAlign: 'center',
+  fontWeight: 'bolder',
+  color: 'white',
+  fontSize: '1.4em',
 };
 
 const ReactTableInner = forwardRef(function ReactTableInner(
@@ -64,11 +79,15 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     groupKey,
     onClick,
     highlightActiveRow = false,
+    totalCount,
+    indexKey = 'index',
   } = props;
 
   const contextRef = useRef<any>(null);
   const { index: indexBoundary } = useReactTableContext();
   const [rowIndex, setRowIndex] = useState<number>();
+  const timeoutIdRef = useRef<NodeJS.Timeout>();
+  const [isCounterVisible, setCounterVisibility] = useState(false);
 
   const {
     getTableProps,
@@ -107,64 +126,98 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     [onClick],
   );
 
-  return (
-    <div
-      ref={ref}
-      className="table-container"
-      style={{
-        overflowY: 'auto',
-        position: 'relative',
-        height: '100%',
-      }}
-      {...(enableVirtualScroll && { onScroll })}
-    >
-      {enableVirtualScroll && (
-        <div
-          style={{
-            height: approxItemHeight * data.length,
-            position: 'absolute',
-            width: '100%',
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-      <table
-        {...getTableProps()}
-        css={ReactTableStyle}
-        style={styles.table(enableVirtualScroll)}
-      >
-        <ReactTableHeader headerGroups={headerGroups} />
-        <tbody {...getTableBodyProps()}>
-          {rowsData.map((row, index) => {
-            prepareRow(row);
-            prepareRowSpan(
-              rows,
-              enableVirtualScroll ? index + indexBoundary.start : index,
-              rowSpanHeaders,
-              groupKey,
-            );
+  function scrollHandler(e) {
+    if (enableVirtualScroll) {
+      onScroll(e);
+    }
 
-            return (
-              <ReactTableRow
-                key={row.key}
-                row={row}
-                {...row.getRowProps()}
-                onContextMenu={(e) => contextMenuHandler(e, row)}
-                onClick={highlightActiveRow ? clickHandler : onClick}
-                highlightedSource={highlightedSource}
-                isRowActive={rowIndex === index}
-              />
-            );
-          })}
-        </tbody>
-      </table>
-      <ContextMenu ref={contextRef} context={context} />
-    </div>
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+      setCounterVisibility(true);
+    }
+
+    timeoutIdRef.current = setTimeout(() => {
+      setCounterVisibility(false);
+    }, 1000);
+  }
+
+  const index =
+    rowsData[rowsData.length - 1]?.original[indexKey] ||
+    rowsData[rowsData.length - 1]?.index;
+  const total = totalCount ? totalCount : data.length;
+
+  return (
+    <>
+      <div
+        ref={ref}
+        className="table-container"
+        style={{
+          overflowY: 'auto',
+          position: 'relative',
+          height: '100%',
+        }}
+        onScroll={scrollHandler}
+      >
+        {enableVirtualScroll && (
+          <div
+            style={{
+              height: approxItemHeight * data.length,
+              position: 'absolute',
+              width: '100%',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+        <table
+          {...getTableProps()}
+          css={ReactTableStyle}
+          style={styles.table(enableVirtualScroll)}
+        >
+          <ReactTableHeader headerGroups={headerGroups} />
+          <tbody {...getTableBodyProps()}>
+            {rowsData.map((row, index) => {
+              prepareRow(row);
+
+              prepareRowSpan(
+                rows,
+                enableVirtualScroll ? index + indexBoundary.start : index,
+                rowSpanHeaders,
+                groupKey,
+              );
+
+              return (
+                <ReactTableRow
+                  key={row.key}
+                  row={row}
+                  {...row.getRowProps()}
+                  onContextMenu={(e) => contextMenuHandler(e, row)}
+                  onClick={highlightActiveRow ? clickHandler : onClick}
+                  highlightedSource={highlightedSource}
+                  isRowActive={rowIndex === index}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+        <ContextMenu ref={contextRef} context={context} />
+      </div>
+      {enableVirtualScroll && (
+        <p
+          style={{
+            ...counterStyle,
+            opacity: !isCounterVisible ? '0' : '1',
+            transition: 'all 0.5s',
+            visibility: !isCounterVisible ? 'hidden' : 'visible',
+          }}
+        >
+          {index + 1} / {total}
+        </p>
+      )}
+    </>
   );
 });
 
 export interface TableVirtualConfig {
-  offsetHeight: number;
   scrollHeight: number;
   numberOfVisibleRows: number;
   index: { start: number; end: number };
@@ -172,95 +225,86 @@ export interface TableVirtualConfig {
 
 function ReactTable(props: ReactTableProps) {
   const { data, approxItemHeight = 40, groupKey } = props;
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [mRef, { height }] = useMeasure();
-  const combineRef = useCombinedRefs([mRef, ref]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [mRef, { height }] = useMeasure<HTMLDivElement>();
 
   const [tableVirtualConfig, setTableVirtualConfig] =
     useState<TableVirtualConfig>({
-      offsetHeight: 0,
       scrollHeight: 0,
       numberOfVisibleRows: 0,
       index: { start: 0, end: 0 },
     });
 
   useEffect(() => {
-    if (combineRef.current) {
-      const { scrollHeight } = combineRef.current;
-      const numberOfVisibleRows = Math.ceil(height / approxItemHeight);
+    if (containerRef.current) {
+      const { scrollHeight } = containerRef.current;
+      const header = containerRef.current.querySelectorAll('thead');
+      const numberOfVisibleRows = Math.ceil(
+        (height - header[0].clientHeight) / approxItemHeight,
+      );
       setTableVirtualConfig((prev) => ({
         ...prev,
-        offsetHeight: height,
         scrollHeight,
-        numberOfVisibleRows,
-        index: { start: 0, end: numberOfVisibleRows + 1 },
+        numberOfVisibleRows: numberOfVisibleRows - 1,
+        index: { start: 0, end: numberOfVisibleRows },
       }));
     }
-  }, [approxItemHeight, combineRef, height]);
+  }, [approxItemHeight, height]);
 
-  const lookForGroupIndex = useCallback(
-    (currentIndex: number, side: 1 | -1) => {
-      const currentItem = data[currentIndex];
-      if (currentItem.index && groupKey) {
-        switch (side) {
-          case -1: {
-            let index = currentIndex - 1;
-            while (index > 0) {
-              if (data[index][groupKey] !== currentItem[groupKey]) {
-                return index + 1;
-              }
-              index--;
+  function lookForGroupIndex(currentIndex: number, side: 1 | -1) {
+    const currentItem = data[currentIndex];
+    if (currentItem.index && groupKey) {
+      switch (side) {
+        case -1: {
+          let index = currentIndex - 1;
+          while (index > 0) {
+            if (data[index][groupKey] !== currentItem[groupKey]) {
+              return index + 1;
             }
-            return currentIndex;
+            index--;
           }
-          case 1: {
-            let index = currentIndex + 1;
-            while (index < data.length) {
-              if (data[index][groupKey] !== currentItem[groupKey]) {
-                return index - 1;
-              }
-              index++;
-            }
-            return currentIndex;
-          }
-          default:
-            return currentIndex;
+          return currentIndex;
         }
+        case 1: {
+          let index = currentIndex + 1;
+          while (index < data.length) {
+            if (data[index][groupKey] !== currentItem[groupKey]) {
+              return index - 1;
+            }
+            index++;
+          }
+          return currentIndex;
+        }
+        default:
+          return currentIndex;
       }
+    }
 
-      return currentIndex;
-    },
-    [data, groupKey],
-  );
+    return currentIndex;
+  }
 
-  const findStartIndex = useCallback(
-    (index: number, numberOfVisibleRows: number) => {
-      const newIndex = index - numberOfVisibleRows;
-      const currentIndx = newIndex >= data.length ? newIndex : index;
-      // return currentIndx;
-      // Look for the first index of the group
-      return lookForGroupIndex(currentIndx, -1);
-    },
-    [data.length, lookForGroupIndex],
-  );
-  const findEndIndex = useCallback(
-    (index: number, numberOfVisibleRows: number) => {
-      const newIndex = index + numberOfVisibleRows;
-      const currentIndx = newIndex >= data.length ? data.length - 1 : newIndex;
-      // return currentIndx;
-      // Look for the last index of the group
-      return lookForGroupIndex(currentIndx, 1);
-    },
-    [data.length, lookForGroupIndex],
-  );
+  function findStartIndex(index: number, numberOfVisibleRows: number) {
+    const newIndex = index - numberOfVisibleRows;
+    const currentIndx = newIndex >= data.length ? newIndex : index;
+    // return currentIndx;
+    // Look for the first index of the group
+    return lookForGroupIndex(currentIndx, -1);
+  }
 
-  const scrollHandler = useCallback(() => {
-    if (ref.current && tableVirtualConfig) {
-      const { scrollTop } = ref.current;
+  function findEndIndex(index: number, numberOfVisibleRows: number) {
+    const newIndex = index + numberOfVisibleRows;
+    const currentIndx = newIndex >= data.length ? data.length - 1 : newIndex;
+    // return currentIndx;
+    // Look for the last index of the group
+    return lookForGroupIndex(currentIndx, 1);
+  }
+
+  function scrollHandler() {
+    if (containerRef.current && tableVirtualConfig) {
+      const { scrollTop } = containerRef.current;
       const { numberOfVisibleRows, index } = tableVirtualConfig;
       const currentIndx = Math.ceil(scrollTop / approxItemHeight);
       const start = findStartIndex(currentIndx, numberOfVisibleRows);
-
       if (currentIndx !== index.start) {
         const end = findEndIndex(currentIndx, numberOfVisibleRows);
         setTableVirtualConfig({
@@ -269,15 +313,23 @@ function ReactTable(props: ReactTableProps) {
         });
       }
     }
-  }, [approxItemHeight, findEndIndex, findStartIndex, tableVirtualConfig]);
+  }
 
   return (
     <ReactTableProvider value={tableVirtualConfig}>
-      <ReactTableInner
-        onScroll={scrollHandler}
-        ref={combineRef}
-        {...{ ...props }}
-      />
+      <div
+        ref={mRef}
+        style={{
+          position: 'relative',
+          height: '100%',
+        }}
+      >
+        <ReactTableInner
+          onScroll={scrollHandler}
+          ref={containerRef}
+          {...{ ...props }}
+        />
+      </div>
     </ReactTableProvider>
   );
 }

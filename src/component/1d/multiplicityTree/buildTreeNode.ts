@@ -26,9 +26,7 @@ function createTreeNodes(signal: Signal1D, spectrumData) {
     const color =
       TREE_LEVEL_COLORS[multiplicityIndex % TREE_LEVEL_COLORS.length];
 
-    const jIndex = jIndices.findIndex(
-      (_jIndex) => _jIndex === multiplicityIndex,
-    );
+    const jIndex = jIndices.indexOf(multiplicityIndex);
     const frequency = lodashGet(spectrumData, 'info.originFrequency', 0);
 
     const coupling =
@@ -65,7 +63,7 @@ function createTreeNodes(signal: Signal1D, spectrumData) {
           ? startX - (pascal.length / 2) * coupling + coupling / 2 // in case of even number of nodes
           : startX - (pascal.length / 2 - 0.5) * coupling; // in case of odd number of nodes
 
-      pascal.forEach((ratio, k) => {
+      for (const [k, ratio] of pascal.entries()) {
         if (k > 0) {
           _startX += coupling;
         }
@@ -83,7 +81,7 @@ function createTreeNodes(signal: Signal1D, spectrumData) {
           treeNodesData,
           _startX,
         );
-      });
+      }
     }
 
     return treeNodesData;

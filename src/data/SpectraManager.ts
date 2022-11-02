@@ -1,16 +1,12 @@
-import { fileCollectionFromFiles } from 'filelist-utils';
-import { CURRENT_EXPORT_VERSION, read } from 'nmr-load-save';
-import { fromJCAMP } from 'nmr-parser';
+import { CURRENT_EXPORT_VERSION, processJcamp } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
 import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 import { Preferences } from '../types/Preferences';
 
-import * as Data1DManager from './data1d/Data1DManager';
 import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
-import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
 import { Datum1D as Datum1DType } from './types/data1d';
@@ -23,67 +19,6 @@ export enum DataExportOptions {
 
 export type DataExportOptionsType = keyof typeof DataExportOptions;
 
-export function createSpectraFetchFromURL(url) {
-  return fetch(url)
-    .then((response) => response.arrayBuffer())
-    .then((data) => {
-      const fileName = url.replace(/^.*[\\/]/, '');
-      return new File([data], fileName);
-    });
-}
-
-export function addJcamp(spectra, jcamp, options, usedColors) {
-  options = options || {};
-  const entries = fromJCAMP(jcamp, {
-    noContour: true,
-    xy: true,
-    keepRecordsRegExp: /.*/,
-    profiling: true,
-  });
-  if (entries.length === 0) return;
-  // Should be improved when we have a more complex case
-  for (let index = 0; index < entries.length; index++) {
-    let entry = entries[index];
-
-    const components = entry.dependentVariables?.[0]?.components;
-    if (components && (components.length > 0 || components.z)) {
-      addJcampSS(spectra, { index, entry }, options, usedColors);
-    }
-  }
-}
-
-function addJcampSS(spectra, jcampDatum, options, usedColors) {
-  const source = options?.source || {};
-
-  if (
-    !('jcampSpectrumIndex' in source) ||
-    source.jcampSpectrumIndex === jcampDatum.index
-  ) {
-    const dimension = jcampDatum.entry.info.dimension;
-
-    if (dimension === 1) {
-      spectra.push(
-        Data1DManager.fromParsedJcamp(
-          jcampDatum.entry,
-          options,
-          usedColors,
-          jcampDatum.index,
-        ),
-      );
-    }
-    if (dimension === 2) {
-      spectra.push(
-        Data2DManager.fromParsedJcamp(
-          jcampDatum.entry,
-          options,
-          usedColors,
-          jcampDatum.index,
-        ),
-      );
-    }
-  }
-}
-
 function getData(datum, usedColors) {
   const dimension = datum.info.dimension;
 
@@ -94,29 +29,33 @@ function getData(datum, usedColors) {
   }
 }
 
-export async function fromJSON(data: any[] = [], usedColors: any = {}) {
-  let spectra: any[] = [];
-  let promises: Promise<File>[] = [];
-
-  for (let datum of data) {
-    const { jcamp, jcampURL } = datum?.source || {};
-    if (jcamp != null) {
-      addJcamp(spectra, jcamp, datum, usedColors);
-    } else if (jcampURL != null) {
-      promises.push(createSpectraFetchFromURL(jcampURL));
-    } else {
-      spectra.push(getData(datum, usedColors));
-    }
-  }
-
-  return spectra.concat(await resolveSpectra(promises, usedColors));
+export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
+  return fetch(jcampURL)
+    .then((response) => response.arrayBuffer())
+    .then((jcamp) => {
+      addJcamp(spectra, jcamp, options, usedColors);
+    });
 }
 
-async function resolveSpectra(promises: Promise<File>[], usedColors) {
-  const files = await Promise.all(promises);
-  const fileCollections = await fileCollectionFromFiles(files);
-  const readResult = await read(fileCollections);
-  return readResult.spectra.map((spectrum) => getData(spectrum, usedColors));
+export function addJcamp(output, jcamp, options, usedColors) {
+  options = options || {};
+  const name = options?.display?.name;
+  const { spectra: spectraIn } = processJcamp(jcamp, {
+    name,
+    noContours: true,
+    xy: true,
+    keepRecordsRegExp: /.*/,
+    profiling: true,
+  });
+  if (spectraIn.length === 0) return;
+
+  const spectra: Array<Datum1DType | Datum2DType> = [];
+  for (let spectrum of spectraIn) {
+    const data = getData(spectrum, usedColors);
+    if (!data) continue;
+    spectra.push(data);
+  }
+  output.push(...spectra);
 }
 
 export function addJcamps(files, usedColors) {
@@ -130,7 +69,7 @@ export function addJcamps(files, usedColors) {
           name: file.name,
         },
         source: {
-          jcampURL: file.jcampURL ? file.jcampURL : null,
+          jcampURL: file.jcampURL || null,
           file,
         },
       },
@@ -143,12 +82,11 @@ function getPreferences(state): Preferences {
   const {
     activeTab,
     verticalAlign: { align },
+    displayerMode,
   } = state;
   return {
     activeTab,
-    ...(state.displayerMode === DISPLAYER_MODE.DM_1D
-      ? { verticalAlign: align }
-      : {}),
+    ...(displayerMode === DISPLAYER_MODE.DM_1D ? { verticalAlign: align } : {}),
   };
 }
 

@@ -13,7 +13,7 @@ export function fromJSON(mols: StateMoleculeExtended[] = []) {
       molecules.push(
         initMolecule({
           molfile: fragment.toMolfileV3(),
-          label: mol.label ? mol.label : `P${getLabelNumber(reservedNumbers)}`,
+          label: mol.label || `P${getLabelNumber(reservedNumbers)}`,
           id: mol.id,
         }),
       );

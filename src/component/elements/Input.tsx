@@ -76,6 +76,10 @@ export interface InputProps
   onKeyUp?: (event: InputKeyboardEvent) => void;
 }
 
+function identity<T = unknown>(value: T): T {
+  return value;
+}
+
 const Input = forwardRef(
   (
     {
@@ -93,7 +97,7 @@ const Input = forwardRef(
       type = 'text',
       enableAutoSelect = false,
       className,
-      format = () => (value) => value,
+      format = () => identity,
       onBlur = () => null,
       onFocus = () => null,
       renderIcon = null,
@@ -145,7 +149,7 @@ const Input = forwardRef(
         e.preventDefault();
         function check(value) {
           if (type === 'number') {
-            const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
+            const pattern = /^(?:-?\d*|\d+)(?:\.\d{0,20})?$/;
             if (value.trim() === '' || pattern.test(value)) {
               return true;
             }
@@ -220,7 +224,7 @@ const Input = forwardRef(
       <div
         style={{
           ...styles.inputWrapper,
-          ...(style?.inputWrapper ? style.inputWrapper : {}),
+          ...style?.inputWrapper,
         }}
         className={`input ${className || ''}`}
       >
@@ -231,7 +235,7 @@ const Input = forwardRef(
           name={name}
           style={{
             ...styles.input,
-            ...(style?.input ? style.input : {}),
+            ...style?.input,
           }}
           type="text"
           value={val}

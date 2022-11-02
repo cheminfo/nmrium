@@ -26,7 +26,7 @@ function CouplingColumn({
     <td {...onHoverSignal}>
       {result
         ?.map((coupling) =>
-          !isNaN(coupling.coupling)
+          !Number.isNaN(Number(coupling.coupling))
             ? formatNumber(coupling.coupling, format)
             : '',
         )

@@ -72,11 +72,9 @@ const EditableColumn = forwardRef(function EditableColumn(
       setValid(valid);
 
       // when press Enter or Tab
-      if (valid) {
-        if (['Enter', 'Tab'].includes(event.key)) {
-          onSave(event);
-          enableEdit(false);
-        }
+      if (valid && ['Enter', 'Tab'].includes(event.key)) {
+        onSave(event);
+        enableEdit(false);
       }
       // close edit mode if press Enter, Tab or Escape
       if (['Escape'].includes(event.key)) {

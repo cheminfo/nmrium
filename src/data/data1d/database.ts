@@ -67,7 +67,7 @@ function processSearchByStructure(
 
   // todo: idCode may be null and the current version of search requires a string or molecule. `|| ''` will become useless in next release of openchemlib-util
   const result = moleculesDB.search(idCode || '');
-  return result.map((entry) => entry.data, []);
+  return result.map((entry) => entry.data);
 }
 
 function prepareGetSolvents(data) {
@@ -107,17 +107,19 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
             index: entry.ocl.index,
           },
         );
-      } catch (e) {
+      } catch (error) {
+        reportError(error);
         // eslint-disable-next-line no-console
-        console.log(`Could not parse idCode: ${JSON.stringify(entry.ocl)}`, e);
+        console.error(`Could not parse idCode: ${JSON.stringify(entry.ocl)}`);
       }
     } else if (entry.smiles) {
       try {
         const molecule = OCL.Molecule.fromSmiles(entry.smiles);
         moleculesDB.pushEntry(molecule, entry);
-      } catch (e) {
+      } catch (error) {
+        reportError(error);
         // eslint-disable-next-line no-console
-        console.log(`Could not parse smiles: ${entry.smiles}`, e);
+        console.error(`Could not parse smiles: ${entry.smiles}`);
       }
     }
   }
@@ -131,7 +133,7 @@ function prepareDataBase(array: Array<DatabaseNMREntry>) {
       ...range,
     }));
     return item;
-  }, []);
+  });
 }
 
 export type PrepareDataResult = Partial<
@@ -145,25 +147,34 @@ export function prepareData(
   let index = 0;
   for (const item of data) {
     let ids: string[] = [];
-    const { ranges = [], ...restItemKeys } = item;
+    const { ranges, ...restItemKeys } = item;
+    if (!ranges) {
+      ids.push(v4());
+      result.push({
+        ...restItemKeys,
+        index,
+        id: ids,
+        ranges: [],
+      } as PrepareDataResult);
+    } else {
+      for (const range of ranges) {
+        ids.push(range.id || v4());
+        const { signals = [], ...restRangKeys } = range;
+        for (const signal of signals) {
+          const { js = [], ...restSignalKeys } = signal;
+          const jsResult = mapJs(js);
 
-    for (const range of ranges) {
-      ids.push(range.id || v4());
-      const { signals = [], ...restRangKeys } = range;
-      for (const signal of signals) {
-        const { js = [], ...restSignalKeys } = signal;
-        const jsResult = mapJs(js);
-
-        const data = {
-          ...restItemKeys,
-          ...restRangKeys,
-          ...restSignalKeys,
-          ...jsResult,
-          index,
-          id: ids,
-          ranges,
-        };
-        result.push(data);
+          const data = {
+            ...restItemKeys,
+            ...restRangKeys,
+            ...restSignalKeys,
+            ...jsResult,
+            index,
+            id: ids,
+            ranges,
+          };
+          result.push(data);
+        }
       }
     }
     index++;
@@ -173,14 +184,15 @@ export function prepareData(
 
 function mapJs(js: Jcoupling[]) {
   if (js && js.length > 0) {
-    const { coupling, multiplicity } = js.reduce<any>(
-      (acc, { coupling, multiplicity }) => {
-        acc.coupling.push(coupling);
-        acc.multiplicity += multiplicity;
-        return acc;
-      },
-      { coupling: [], multiplicity: '' },
-    );
+    const result: { coupling: Array<number>; multiplicity: string } = {
+      coupling: [],
+      multiplicity: '',
+    };
+    for (const { coupling, multiplicity } of js) {
+      result.coupling.push(coupling);
+      result.multiplicity += multiplicity;
+    }
+    const { coupling, multiplicity } = result;
     return { multiplicity, coupling: coupling.join(',') };
   } else {
     return { multiplicity: '', coupling: '' };

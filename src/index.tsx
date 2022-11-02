@@ -11,7 +11,7 @@ import './demo/preflight.css';
 
 import './demo/index.css';
 
-const rootElement = document.getElementById('root');
+const rootElement = document.querySelector('#root');
 if (!rootElement) {
   throw new Error('#root element not found');
 }

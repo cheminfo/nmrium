@@ -18,7 +18,7 @@ import { useModal } from '../../elements/popup/Modal';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
-import { copyTextToClipboard } from '../../utility/Export';
+import { copyTextToClipboard } from '../../utility/export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';

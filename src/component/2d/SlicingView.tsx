@@ -44,7 +44,9 @@ function SlicingView() {
           {data?.horizontal && (
             <HorizontalSliceChart data={data.horizontal.data} />
           )}
-          {data?.vertical && <VerticalSliceChart data={data.vertical.data} />}
+          {data?.vertical && (
+            <VerticalSliceChart data={data.vertical.data} reverseScale />
+          )}
         </svg>
       );
     }

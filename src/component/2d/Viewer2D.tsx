@@ -17,6 +17,7 @@ import {
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
+import { assert } from '../utility/assert';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
@@ -42,22 +43,19 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const dispatch = useDispatch();
 
-  const spectrumData = useMemo(() => {
+  const spectrumData: any[] = useMemo(() => {
     const nucleuses = activeTab.split(',');
-    return nucleuses.reduce<any>((acc, n) => {
-      if (activeSpectra[n]?.id) {
-        const id = activeSpectra[n]?.id;
+    return nucleuses
+      .filter((n) => activeSpectra[n]?.id)
+      .map((nucleus) => {
+        const id = activeSpectra[nucleus]?.id;
+        assert(id, `Error in Viewer2D: id is not defined`);
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
         );
-        if (spectrum) {
-          acc.push(spectrum);
-        }
-      } else {
-        acc.push(null);
-      }
-      return acc;
-    }, []);
+        assert(spectrum, `Spectrum with id ${id} not found`);
+        return spectrum;
+      });
   }, [activeTab, data, activeSpectra]);
 
   const DIMENSION = get2DDimensionLayout(state);
@@ -208,7 +206,7 @@ export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
   const { width, height, children } = props;
 
   useEffect(() => {
-    dispatch({ type: SET_DIMENSIONS, ...{ width, height } });
+    dispatch({ type: SET_DIMENSIONS, width, height });
   }, [width, height, dispatch]);
 
   return children;

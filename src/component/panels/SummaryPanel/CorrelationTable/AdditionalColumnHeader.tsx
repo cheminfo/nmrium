@@ -25,11 +25,10 @@ function AdditionalColumnHeader({
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids: string[] = [];
-    correlation.link.forEach((link) => {
+    return correlation.link.flatMap((link) => {
+      const ids: string[] = [];
       if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair_X'));
+        ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_X'));
         const _id = findRangeOrZoneID(
           spectraData,
           link.experimentID,
@@ -40,9 +39,8 @@ function AdditionalColumnHeader({
           ids.push(_id);
         }
       }
+      return ids;
     });
-
-    return ids;
   }, [correlation, spectraData]);
   const highlightAdditionalColumn = useHighlight(highlightIDsAdditionalColumn);
 
@@ -64,29 +62,29 @@ function AdditionalColumnHeader({
   const isInView = useInView({ correlation });
 
   const tableHeaderProps = useMemo(() => {
+    const title = [
+      ...new Set(
+        correlation.link
+          .map((link) => {
+            if (link.pseudo === false) {
+              return link.experimentType.toUpperCase();
+            }
+            return undefined;
+          })
+          .sort(),
+      ),
+    ].join('/');
+
     return {
       style: {
-        ...{ color: getLabelColor(correlationsData, correlation) || undefined },
+        color: getLabelColor(correlationsData, correlation) || undefined,
         backgroundColor: highlightAdditionalColumn.isActive
           ? '#ff6f0057'
           : isInView
           ? '#f5f5dc'
           : 'inherit',
       },
-      title:
-        correlation.pseudo === false &&
-        correlation.link
-          .reduce((arr, link) => {
-            if (
-              link.pseudo === false &&
-              !arr.includes(link.experimentType.toUpperCase())
-            ) {
-              arr.push(link.experimentType.toUpperCase());
-            }
-            return arr;
-          }, [])
-          .sort()
-          .join('/'),
+      title: correlation.pseudo === false && title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };

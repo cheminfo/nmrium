@@ -58,7 +58,8 @@ function DatabaseSpectrum() {
           }
           setPath(pathBuilder.toString());
         }
-      } catch (e) {
+      } catch (error) {
+        reportError(error);
         alert.error('Failed to Load spectrum');
       }
     }, 250),

@@ -63,7 +63,8 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
-      const shiftValue = parseFloat(event.target.value) - parseFloat(row.x);
+      const shiftValue =
+        Number.parseFloat(event.target.value) - Number.parseFloat(row.x);
       dispatch({ type: SHIFT_SPECTRUM, shiftValue });
     },
     [dispatch],
@@ -190,7 +191,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
     <ReactTable
       data={data}
       columns={tableColumns}
-      approxItemHeight={20}
+      approxItemHeight={24}
       enableVirtualScroll
     />
   ) : (

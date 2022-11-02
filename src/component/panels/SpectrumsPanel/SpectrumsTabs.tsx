@@ -17,8 +17,8 @@ import {
   CHANGE_ACTIVE_SPECTRUM,
   DELETE_SPECTRA,
 } from '../../reducer/types/Types';
-import { copyTextToClipboard } from '../../utility/Export';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
+import { copyTextToClipboard } from '../../utility/export';
 
 import SpectrumListItem from './SpectrumListItem';
 import SpectrumSetting from './base/setting/SpectrumSetting';
@@ -59,16 +59,15 @@ function SpectrumsTabsInner({
 
   useEffect(() => {
     if (data) {
-      const visibleMarkers = data.reduce((acc: any, datum) => {
+      const visibleMarkers: Array<{ id: string }> = [];
+      for (const datum of data) {
         if (
           datum.info.dimension === 1 &&
           (datum as Datum1D).display.isPeaksMarkersVisible
         ) {
-          acc.push({ id: datum.id });
+          visibleMarkers.push({ id: datum.id });
         }
-        return acc;
-      }, []);
-
+      }
       setMarkersVisible(visibleMarkers);
     }
   }, [data, dispatch]);

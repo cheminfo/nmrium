@@ -1,10 +1,13 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
+import { test, expect } from 'vitest';
 
 import { addJcamp } from '../../SpectraManager';
+import { drawContours } from '../Spectrum2D/contours';
 
 test('Datum2D', () => {
-  const jcamp = readFileSync(join(__dirname, './data/cosy.jdx'), 'utf8');
+  const jcamp = readFileSync(path.join(__dirname, './data/cosy.jdx'), 'utf8');
   const spectra: any[] = [];
 
   addJcamp(
@@ -21,7 +24,10 @@ test('Datum2D', () => {
     },
     [],
   );
-  const { positive, negative } = spectra[0].processingController.drawContours();
-  expect(positive).toHaveLength(10);
-  expect(negative).toHaveLength(10);
+  const positive = drawContours(10, spectra[0]);
+  const negative = drawContours(10, spectra[0], true);
+  expect(positive.contours).toHaveLength(10);
+  expect(positive.timeout).toBeFalsy();
+  expect(negative.contours).toHaveLength(10);
+  expect(negative.timeout).toBeFalsy();
 });

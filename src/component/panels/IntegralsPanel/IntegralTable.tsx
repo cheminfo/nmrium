@@ -138,7 +138,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         index: 5,
         id: 'relative',
         Header: () => {
-          const n = activeTab?.replace(/[0-9]/g, '');
+          const n = activeTab?.replace(/\d/g, '');
           return <span>{`Relative ${n}`}</span>;
         },
         accessor: (row) => {

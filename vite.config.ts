@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import analyze from 'rollup-plugin-analyzer';
-import { AliasOptions, defineConfig, splitVendorChunkPlugin } from 'vite';
+import { AliasOptions, splitVendorChunkPlugin } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default () => {
@@ -28,6 +29,9 @@ export default () => {
     plugins: [react(), splitVendorChunkPlugin()],
     resolve: {
       alias: resolveAliases,
+    },
+    test: {
+      include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
   });
 };

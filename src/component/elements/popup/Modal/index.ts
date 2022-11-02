@@ -1,7 +1,4 @@
-import { positions, transitions } from '../options';
-
-import { useModal } from './Context';
-import Modal from './Modal';
-import ModalProvider from './Provider';
-
-export { Modal, ModalProvider, useModal, positions, transitions };
+export { positions, transitions } from '../options';
+export { useModal } from './Context';
+export { default as Modal } from './Modal';
+export { default as ModalProvider } from './Provider';

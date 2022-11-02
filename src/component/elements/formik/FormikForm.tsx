@@ -14,6 +14,7 @@ const FormikForm = forwardRef(
       onSubmit = () => null,
       initialValues = {},
       validationSchema = null,
+      children,
     } = props;
 
     return (
@@ -23,7 +24,7 @@ const FormikForm = forwardRef(
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        <>{props.children}</>
+        <>{children}</>
       </Formik>
     );
   },

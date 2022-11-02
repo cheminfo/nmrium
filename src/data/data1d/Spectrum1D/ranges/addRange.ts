@@ -24,7 +24,7 @@ export function createRangeObj({
   signal,
 }: RangeOptions & { signal: Omit<Signal1D, 'id'>; absolute: number }) {
   return {
-    id: id ? id : v4(),
+    id: id || v4(),
     from,
     to,
     absolute, // the real value,
@@ -82,7 +82,8 @@ export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
       );
       updateRangesRelativeValues(datum);
     }
-  } catch (e) {
+  } catch (error) {
+    reportError(error);
     throw new Error('Could not calculate the multiplicity');
   }
 }

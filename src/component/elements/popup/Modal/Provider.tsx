@@ -60,13 +60,11 @@ function Provider({
     root.current = document.createElement('div');
     const ref = root.current;
     if (wrapperRef) {
-      wrapperRef.appendChild(ref);
+      wrapperRef.append(ref);
     }
     return () => {
-      if (ref) {
-        if (wrapperRef) {
-          wrapperRef.removeChild(ref);
-        }
+      if (ref && wrapperRef) {
+        ref.remove();
       }
     };
   }, [wrapperRef]);
@@ -117,10 +115,11 @@ function Provider({
    * @param {object} dialogOptions.tyle
    */
   const showConfirmDialog = useCallback(
-    (dialogOptions, options = { enableResizing: false }) => {
+    (dialogOptions, options: any = {}) => {
+      const { enableResizing = false, ...otherOptions } = options;
       const _modal: any = {
         component: <ConfirmDialog {...dialogOptions} />,
-        options: { isBackgroundBlur: true, ...options },
+        options: { isBackgroundBlur: true, enableResizing, ...otherOptions },
       };
 
       _modal.close = close;
@@ -174,16 +173,14 @@ function Provider({
 
   const contentLayoutHandler = useCallback(
     ({ modal, layout }) => {
-      const width = modal.options.width
-        ? modal.options.width
-        : layout.width > parentStyle.width
-        ? parentStyle.width
-        : layout.width;
-      const height = modal.options.height
-        ? modal.options.height
-        : layout.height > parentStyle.height
-        ? parentStyle.height
-        : layout.height;
+      const width =
+        modal.options.width ||
+        (layout.width > parentStyle.width ? parentStyle.width : layout.width);
+      const height =
+        modal.options.height ||
+        (layout.height > parentStyle.height
+          ? parentStyle.height
+          : layout.height);
 
       modalRef.current.updateSize({ width, height });
     },
@@ -205,27 +202,15 @@ function Provider({
               >
                 <TransitionGroup
                   appear
-                  key={
-                    positions[
-                      modal.options.transition
-                        ? modal.options.transition
-                        : transition
-                    ]
-                  }
+                  key={positions[modal.options.transition || transition]}
                   options={{
-                    position: modal.options.position
-                      ? modal.options.position
-                      : position,
+                    position: modal.options.position || position,
                   }}
                   containerStyle={parentStyle}
                   component={Wrapper}
                 >
                   <Transition
-                    type={
-                      modal.options.transition
-                        ? modal.options.transition
-                        : transition
-                    }
+                    type={modal.options.transition || transition}
                     transitionStyles={{
                       ...transitionStyles,
                       default: {
@@ -244,12 +229,8 @@ function Provider({
                       maxHeight={parentStyle.height}
                       ref={modalRef}
                       default={{
-                        width: modal.options.width
-                          ? modal.options.width
-                          : 'auto',
-                        height: modal.options.height
-                          ? modal.options.height
-                          : 'auto',
+                        width: modal.options.width || 'auto',
+                        height: modal.options.height || 'auto',
                         x: 0,
                         y: 0,
                       }}
