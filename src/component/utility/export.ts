@@ -29,7 +29,7 @@ async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
     }
 
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -64,9 +64,9 @@ async function exportAsJSON(
         },
       });
       saveAs(blob, `${fileName}.nmrium`);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+    } catch (error) {
+      // TODO: handle error.
+      reportError(error);
     }
   }
 }
@@ -138,16 +138,16 @@ function exportAsPng(
 
     let img = new Image();
     let url = URL.createObjectURL(blob);
-    img.onload = async () => {
+    img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
-    };
+    });
     img.src = url;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  } catch (error) {
+    // TODO: handle error.
+    reportError(error);
   }
 }
 
@@ -160,12 +160,12 @@ function copyDataURLClipboardFireFox(image) {
   img.style.pointerEvents = 'none';
   img.style.opacity = '0';
 
-  document.body.appendChild(img);
+  document.body.append(img);
   const range = document.createRange();
   range.selectNode(img);
   window.getSelection()?.addRange(range);
   document.execCommand('Copy');
-  document.body.removeChild(img);
+  img.remove();
 }
 
 function copyBlobToClipboard(canvas) {
@@ -179,9 +179,9 @@ function copyBlobToClipboard(canvas) {
         // eslint-disable-next-line no-console
         console.log('experiment copied.');
       },
-      (err) => {
-        // eslint-disable-next-line no-console
-        console.log(err);
+      (error) => {
+        // TODO: handle error;
+        reportError(error);
       },
     );
   });
@@ -202,7 +202,7 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
 
     let img = new Image();
     const url = URL.createObjectURL(blob);
-    img.onload = async () => {
+    img.addEventListener('load', async () => {
       context?.drawImage(img, 0, 0);
       const png = canvas.toDataURL('image/png', 1);
 
@@ -214,17 +214,17 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
       }
 
       URL.revokeObjectURL(png);
-    };
+    });
     img.src = url;
-  } catch (e) {
-    if (e instanceof ReferenceError) {
+  } catch (error) {
+    if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
       alert(
         'Your browser does not support this feature, please use Google Chrome',
       );
     }
-    // eslint-disable-next-line no-console
-    console.log(e);
+    // TODO: handle error.
+    reportError(error);
   }
 }
 
@@ -236,19 +236,19 @@ export interface BlobObject {
 
 function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   let _svg: any = (rootRef.getRootNode() as Document)
-    .getElementById(elementID)
+    .querySelector(`#${elementID}`)
     ?.cloneNode(true);
   const width = Number(_svg?.getAttribute('width').replace('px', ''));
   const height = Number(_svg?.getAttribute('height').replace('px', ''));
-  _svg
-    .querySelectorAll('[data-no-export="true"]')
-    .forEach((element) => element.remove());
-  _svg
-    .querySelectorAll('[data-replace-float-structure="true"]')
-    .forEach((element: Element) => {
-      element.replaceWith(element.childNodes[0].childNodes[0]);
-      return element;
-    });
+  for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
+    element.remove();
+  }
+  const elements = _svg.querySelectorAll(
+    '[data-replace-float-structure="true"]',
+  );
+  for (const element of elements) {
+    element.replaceWith(element.childNodes[0].childNodes[0]);
+  }
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;

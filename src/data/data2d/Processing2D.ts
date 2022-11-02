@@ -25,14 +25,11 @@ export default class Processing2D {
   public constructor(
     minMax: any,
     options: any = defaultContourOptions,
-    defaultLevel: any = {
-      positive: 10,
-      negative: 10,
-    },
+    defaultLevel: any = {},
   ) {
     this.options = options;
 
-    const { positive, negative } = defaultLevel;
+    const { positive = 10, negative = 10 } = defaultLevel;
 
     this.currentLevelPositive = positive;
     this.currentLevelNegative = negative;
@@ -150,18 +147,11 @@ export default class Processing2D {
     if (negative) {
       _range = _range.map((value) => -value);
     }
-    let contours = [];
-    try {
-      contours = this.conrec.drawContour({
-        contourDrawer: 'basic', // shape or basic
-        levels: _range,
-        timeout,
-      });
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-      throw e;
-    }
+    const contours = this.conrec.drawContour({
+      contourDrawer: 'basic', // shape or basic
+      levels: _range,
+      timeout,
+    });
 
     return Object.freeze(contours);
   }

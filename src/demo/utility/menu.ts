@@ -85,7 +85,7 @@ function getKey(filePath = '') {
         ? parentPath[parentPath.length - 2] + parentPath[parentPath.length - 1]
         : parentPath[parentPath.length - 1];
   }
-  return parentFolderName + filePath.replace(/\.|\s|\//g, '');
+  return parentFolderName + filePath.replace(/[\s./]/g, '');
 }
 
 export { buildMenu, getKey, mapTreeToFlatArray };

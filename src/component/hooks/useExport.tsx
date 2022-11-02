@@ -33,28 +33,27 @@ export default function useExport() {
   }, [rootRef, alert, state]);
 
   const saveAsJSONHandler = useCallback(
-    async (spaceIndent = 0, isCompressed = true) => {
+    (spaceIndent = 0, isCompressed = true) => {
       if (state.data.length > 0) {
-        const hideLoading = await alert.showLoading(
-          'Exporting as NMRium process in progress',
-        );
-
-        setTimeout(() => {
-          async function handle() {
-            //exported file name by default will be the first spectrum name
-            const fileName = state.data[0]?.display?.name;
-            const exportedData = toJSON(state, 'nmrium');
-            await exportAsJSON(
-              exportedData,
-              fileName,
-              spaceIndent,
-              isCompressed,
-            );
-            hideLoading();
-          }
-
-          void handle();
-        }, 0);
+        alert
+          .showLoading('Exporting as NMRium process in progress')
+          .then((hideLoading) => {
+            async function handle() {
+              //exported file name by default will be the first spectrum name
+              const fileName = state.data[0]?.display?.name;
+              const exportedData = toJSON(state, 'nmrium');
+              await exportAsJSON(
+                exportedData,
+                fileName,
+                spaceIndent,
+                isCompressed,
+              );
+              hideLoading();
+            }
+            setTimeout(() => {
+              void handle();
+            }, 0);
+          });
       }
     },
     [alert, state],

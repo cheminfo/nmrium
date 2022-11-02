@@ -18,7 +18,8 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/cytisine/2d/COSY_Cytisin.dx"
+        "jcampURL": "./data/cytisine/2d/COSY_Cytisin.dx",
+        "jcampSpectrumIndex": 1
       },
       "display": {
         "name": "test",

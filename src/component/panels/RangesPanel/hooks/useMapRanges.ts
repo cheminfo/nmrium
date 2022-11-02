@@ -10,10 +10,10 @@ export interface RangeData extends Range {
 
 function useMapRanges(data) {
   return useMemo(() => {
-    const _rangesData: Array<RangeData> = [];
-    data.forEach((range, i) => {
+    const rangesData: Array<RangeData> = [];
+    for (const [i, range] of data.entries()) {
       if (range.signals.length === 1) {
-        _rangesData.push({
+        rangesData.push({
           rowKey: v4(),
           ...range,
           tableMetaInfo: {
@@ -25,7 +25,7 @@ function useMapRanges(data) {
           },
         });
       } else if (range.signals.length > 1) {
-        range.signals.forEach((signal, j) => {
+        for (const [j, signal] of range.signals.entries()) {
           let hide = false;
           let rowSpan = null;
           if (j < range.signals.length - 1) {
@@ -38,7 +38,7 @@ function useMapRanges(data) {
             hide = true;
           }
 
-          _rangesData.push({
+          rangesData.push({
             rowKey: v4(),
             ...range,
             tableMetaInfo: {
@@ -51,11 +51,11 @@ function useMapRanges(data) {
               id: signal.id,
             },
           });
-        });
+        }
       }
-    });
+    }
 
-    return _rangesData;
+    return rangesData;
   }, [data]);
 }
 

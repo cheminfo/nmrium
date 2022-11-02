@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.33.0](https://github.com/cheminfo/nmrium/compare/v0.32.0...v0.33.0) (2022-10-27)
+
+
+### Features
+
+* show a message when the 2d has too many lines ([55617e2](https://github.com/cheminfo/nmrium/commit/55617e2f8ea17d6ee36d80a7d340584d45f6692e))
+* support for inline jcamp from nmr-load-save ([#1816](https://github.com/cheminfo/nmrium/issues/1816)) ([c9fcbf4](https://github.com/cheminfo/nmrium/commit/c9fcbf4bdee6c224e5b2e573396fb7fba2072be9))
+
+
+### Bug Fixes
+
+* absolute integration column format ([#1828](https://github.com/cheminfo/nmrium/issues/1828)) ([f87886b](https://github.com/cheminfo/nmrium/commit/f87886bee312f6a09e0072f370cc4d470eecd352)), closes [#1827](https://github.com/cheminfo/nmrium/issues/1827)
+* add `jcamp` to data source types ([bc1bd11](https://github.com/cheminfo/nmrium/commit/bc1bd11a69071aef5a31e4481701c49a1c7af91f))
+* chemical shift in 'ranges' has no impact ([e55c35f](https://github.com/cheminfo/nmrium/commit/e55c35fa4739bec1db543ed7ce746bf2b4ba46fa)), closes [#1808](https://github.com/cheminfo/nmrium/issues/1808)
+* remove DC offset if AQ_mod is qsim ([#1804](https://github.com/cheminfo/nmrium/issues/1804)) ([135a072](https://github.com/cheminfo/nmrium/commit/135a072693d0de425025abeb8d90429b1a7a3008))
+
 ## [0.32.0](https://github.com/cheminfo/nmrium/compare/v0.31.0...v0.32.0) (2022-10-13)
 
 

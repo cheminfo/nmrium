@@ -84,13 +84,10 @@ function MultipleSpectraFiltersModal({
 
   const List = useMemo(() => {
     const list = REFERENCES[nucleus]
-      ? Object.entries(REFERENCES[nucleus]).map(
-          (item) => ({
-            value: item[0],
-            label: item[0],
-          }),
-          [],
-        )
+      ? Object.entries(REFERENCES[nucleus]).map((item) => ({
+          value: item[0],
+          label: item[0],
+        }))
       : [];
 
     return baseList.concat(list as any);

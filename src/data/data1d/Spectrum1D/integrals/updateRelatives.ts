@@ -13,16 +13,14 @@ export function updateRelatives<Type extends Integral | Range>(
 
   let factor = 0;
   if (options.sum) {
-    if (data.options.isSumConstant || forceCalculateIntegral) {
-      factor = currentSum > 0 ? options.sum / currentSum : 0.0;
-    } else if (data.values?.[0]) {
-      const item = data.values[0];
-      factor =
-        (item[key as string] ? item[key as string] : options.sum) /
-        item.absolute;
+    if (options.isSumConstant || forceCalculateIntegral) {
+      factor = currentSum > 0 ? options.sum / currentSum : 0;
+    } else if (values?.[0]) {
+      const item = values[0];
+      factor = (item[key as string] || options.sum) / item.absolute;
     }
   }
-  data.values = data.values.map((value) => {
+  data.values = values.map((value) => {
     return {
       ...value,
       ...(check(value) && {
@@ -31,7 +29,7 @@ export function updateRelatives<Type extends Integral | Range>(
     };
   });
 
-  if (!data.options.isSumConstant && !forceCalculateIntegral) {
-    data.options.sum = getSum<Type>(data.values as Type[], key, check);
+  if (!options.isSumConstant && !forceCalculateIntegral) {
+    options.sum = getSum<Type>(values as Type[], key, check);
   }
 }

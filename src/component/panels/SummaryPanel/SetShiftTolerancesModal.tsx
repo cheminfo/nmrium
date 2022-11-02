@@ -88,11 +88,12 @@ export default function SetShiftToleranceModal({
   useEffect(() => {
     if (previousTolerance) {
       setTolerance(previousTolerance);
-      const _isValid = {};
-      Object.keys(previousTolerance).forEach((atomType) => {
-        _isValid[atomType] = true;
-      });
-      setIsValid(_isValid);
+
+      setIsValid(
+        Object.fromEntries(
+          Object.keys(previousTolerance).map((atomType) => [atomType, true]),
+        ),
+      );
     } else {
       setTolerance(undefined);
     }

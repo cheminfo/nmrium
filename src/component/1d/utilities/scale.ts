@@ -13,8 +13,8 @@ function getYScale(state, spectrumId: number | null | string = null) {
   const { height, margin, verticalAlign, yDomain, yDomains } = state;
   const _height =
     verticalAlign.align === 'center'
-      ? (height - 30) / 2
-      : height - margin.bottom - 30;
+      ? (height - 40) / 2
+      : height - margin.bottom - 40;
   let domainY: [number, number] | [] = [];
   if (spectrumId === null || yDomains[spectrumId] === undefined) {
     domainY = [0, yDomain[1]];

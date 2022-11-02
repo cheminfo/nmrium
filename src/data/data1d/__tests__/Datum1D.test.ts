@@ -1,11 +1,13 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
+import { describe, it, expect } from 'vitest';
 
 import { addJcamp } from '../../SpectraManager';
 
 describe('test Datum1D', () => {
   const jcamp = readFileSync(
-    join(__dirname, './data/ethylbenzene-1h.jdx'),
+    path.join(__dirname, './data/ethylbenzene-1h.jdx'),
     'utf8',
   );
   const spectra: any[] = [];

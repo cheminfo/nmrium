@@ -148,7 +148,7 @@ function FiltersTableInner({
           </TableCell>
           <TableCell align="left" size={3}>
             <div onClick={(e) => e.stopPropagation()}>
-              <ObjectInspector data={d.error ? d.error : d.value} />
+              <ObjectInspector data={d.error || d.value} />
             </div>
           </TableCell>
           <TableCell align="center" vAlign="center" size={1}>

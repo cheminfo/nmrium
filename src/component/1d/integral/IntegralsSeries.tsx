@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
-import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../../data/types/data1d';
+import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrum } from '../../reducer/Reducer';
 
 import Integral from './Integral';
 
@@ -26,7 +27,7 @@ function IntegralsSeries() {
         {data?.[0] &&
           data
             .filter((d) => d.display.isVisible && xDomains[d.id])
-            .filter(isSpectrum1D)
+            .filter((element): element is Datum1D => isSpectrum1D(element))
             .map((spectrum) =>
               spectrum.integrals.values.map((integral) => (
                 <Integral

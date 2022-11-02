@@ -53,7 +53,7 @@ export default function SomeComponent() {
 
 ## Testing
 
-We use the [Jest](https://jestjs.io/docs/getting-started) test runner.
+We use the [Vitest](https://vitest.dev/) test runner.
 
 Keep the tests simple and focused. Do not hesitate to write many tests instead of doing everything in the same test.
 This is important because in case one test fails, the others will still run.

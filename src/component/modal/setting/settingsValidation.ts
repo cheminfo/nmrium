@@ -1,17 +1,19 @@
 import * as Yup from 'yup';
+import { ObjectShape } from 'yup/lib/object';
 
 import { Workspace } from '../../workspaces/Workspace';
 
-const formattingElementValidation = (obj: Workspace) => {
-  const schema = {};
-  for (const key of Object.keys(obj.formatting.nuclei)) {
-    schema[key] = Yup.object().shape({
-      name: Yup.string().trim().required('Nucleus is a required field'),
-      ppm: Yup.string().trim().required('PPM format is a required field'),
-      hz: Yup.string().trim().required('Hz format  is a required field'),
-    });
-  }
-  return schema;
+const formattingElementValidation = (obj: Workspace): ObjectShape => {
+  return Object.fromEntries(
+    Object.keys(obj.formatting.nuclei).map((key) => [
+      key,
+      Yup.object().shape({
+        name: Yup.string().trim().required('Nucleus is a required field'),
+        ppm: Yup.string().trim().required('PPM format is a required field'),
+        hz: Yup.string().trim().required('Hz format  is a required field'),
+      }),
+    ]),
+  );
 };
 
 const formattingValidation = (obj: Workspace) =>
@@ -37,8 +39,9 @@ const formattingValidation = (obj: Workspace) =>
               }
             }
           }
+
           const errors: Yup.ValidationError[] = [];
-          for (const key of Object.keys(nucleusFrequencies)) {
+          for (const key in nucleusFrequencies) {
             const { value, fields } = nucleusFrequencies[key];
             if (value > 1) {
               for (let field of fields) {

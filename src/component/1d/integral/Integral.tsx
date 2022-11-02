@@ -1,5 +1,5 @@
-import useIntegralPath from '../hooks/useIntegralPath';
-import { usePanelPreferences } from '../hooks/usePanelPreferences';
+import useIntegralPath from '../../hooks/useIntegralPath';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import IntegralResizable from './IntegralResizable';
 

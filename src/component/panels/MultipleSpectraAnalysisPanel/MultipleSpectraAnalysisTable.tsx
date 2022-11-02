@@ -80,7 +80,7 @@ function MultipleSpectraAnalysisTable({
     }
 
     if (data.columns) {
-      Object.keys(data.columns).forEach((columnKey) => {
+      for (const columnKey in data.columns) {
         const { valueKey, index: columnIndex } = data.columns[columnKey];
         addCustomColumn(columns, {
           index: columnIndex + 1,
@@ -88,7 +88,7 @@ function MultipleSpectraAnalysisTable({
           Header: () => headerHandler(data.columns[columnKey], columnKey),
           id: columnKey,
         });
-      });
+      }
     }
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [columnFilterHandler, data.columns, format]);

@@ -16,6 +16,7 @@ import { formatNumber } from '../../utility/formatNumber';
 interface DatabaseTableProps {
   data: any;
   onAdd: (row: any) => void;
+  totalCount: number;
 }
 
 const overFlowStyle: CSSProperties = {
@@ -46,10 +47,12 @@ const databaseTableColumns = (
     Header: 'From - To',
     accessor: (row) => {
       const rangeFormat = databasePreferences.range.format;
-      return `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
-        row.to,
-        rangeFormat,
-      )}`;
+      return row?.from && row?.to
+        ? `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
+            row.to,
+            rangeFormat,
+          )}`
+        : '';
     },
     enableRowSpan: true,
   },
@@ -57,8 +60,19 @@ const databaseTableColumns = (
     showWhen: 'delta.show',
     index: 3,
     Header: 'δ (ppm)',
-    accessor: (row) =>
-      `${formatNumber(row.delta, databasePreferences.delta.format)}`,
+    style: overFlowStyle,
+    accessor: (row) => {
+      if (typeof row.delta === 'string' && !row?.delta) {
+        return row.delta
+          .split(',')
+          .map((value) => formatNumber(value, databasePreferences.delta.format))
+          .join(',');
+      }
+
+      return row?.delta
+        ? formatNumber(row.delta, databasePreferences.delta.format)
+        : '';
+    },
   },
 
   {
@@ -79,7 +93,9 @@ const databaseTableColumns = (
     index: 6,
     Header: 'J (Hz)',
     accessor: (row) =>
-      `${formatNumber(row.coupling, databasePreferences.coupling.format)}`,
+      row?.coupling
+        ? formatNumber(row.coupling, databasePreferences.coupling.format)
+        : '',
     style: {
       width: '60px',
       minWidth: '60px',
@@ -137,7 +153,7 @@ const databaseTableColumns = (
   },
 ];
 
-function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
+function DatabaseTable({ data, onAdd, totalCount }: DatabaseTableProps) {
   const databasePreferences = usePanelPreferences('database');
 
   const initialColumns = useMemo(
@@ -182,8 +198,9 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       columns={tableColumns}
       highlightedSource={HighlightEventSource.DATABASE}
       groupKey="index"
-      approxItemHeight={24}
+      approxItemHeight={23.5}
       enableVirtualScroll
+      totalCount={totalCount}
     />
   );
 }

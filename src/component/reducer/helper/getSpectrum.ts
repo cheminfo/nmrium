@@ -9,11 +9,9 @@ export function getSpectrum(state: Draft<State>, id: string);
 export function getSpectrum(state: Draft<State>, value?: number | string) {
   const activeSpectrum =
     state.view.spectra.activeSpectra[state.view.spectra.activeTab];
-  if (value === undefined) {
-    if (activeSpectrum?.id) {
-      const index = activeSpectrum.index;
-      return state.data[index];
-    }
+  if (value === undefined && activeSpectrum?.id) {
+    const index = activeSpectrum.index;
+    return state.data[index];
   }
 
   if (typeof value === 'number') {

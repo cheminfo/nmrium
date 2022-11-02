@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
+import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
@@ -15,6 +16,7 @@ import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
+import { getSpectrum } from '../helper/getSpectrum';
 
 import {
   setDomain,
@@ -225,6 +227,8 @@ function handleZoom(draft: Draft<State>, action) {
   const {
     view: { ranges: rangeState },
     displayerMode,
+    yDomains,
+    integralsYDomains,
   } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -237,8 +241,8 @@ function handleZoom(draft: Draft<State>, action) {
     if (index !== null) {
       const id = getSpectrumID(draft, index);
       if (id) {
-        const domain = draft.yDomains[id];
-        draft.yDomains[id] = wheelZoom(event, domain);
+        const domain = yDomains[id];
+        yDomains[id] = wheelZoom(event, domain);
       }
     }
   } else if (activeSpectrum?.id) {
@@ -246,16 +250,16 @@ function handleZoom(draft: Draft<State>, action) {
       (showRangesIntegrals || selectedTool === options.integral.id) &&
       event.shiftKey
     ) {
-      const domain = draft.integralsYDomains[activeSpectrum?.id];
-      draft.integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      const domain = integralsYDomains[activeSpectrum?.id];
+      integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
     } else {
-      const domain = draft.yDomains[activeSpectrum?.id];
-      draft.yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      const domain = yDomains[activeSpectrum?.id];
+      yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
     }
   } else {
-    for (const key of Object.keys(draft.yDomains)) {
-      const domain = draft.yDomains[key];
-      draft.yDomains[key] = wheelZoom(event, domain);
+    for (const key of Object.keys(yDomains)) {
+      const domain = yDomains[key];
+      yDomains[key] = wheelZoom(event, domain);
     }
   }
 }
@@ -334,16 +338,6 @@ function setMargin(draft: Draft<State>) {
     draft.margin = MARGIN['2D'];
   } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     draft.margin = MARGIN['1D'];
-  }
-}
-
-function processing2DData(draft: Draft<State>, data) {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-    let _data = {};
-    for (const datum of data[draft.view.spectra.activeTab]) {
-      _data[datum.id] = datum.processingController.drawContours();
-    }
-    draft.contours = _data;
   }
 }
 
@@ -442,8 +436,6 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
   resetTool(draft);
 
-  processing2DData(draft, dataGroupByNucleus);
-
   setDomain(draft, domainOptions);
   setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
 
@@ -466,23 +458,17 @@ function handelSetActiveTab(draft: Draft<State>, tab) {
 }
 
 function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
-  const activeSpectrum = getActiveSpectrum(draft);
+  const activeSpectrum = getSpectrum(draft) as Datum2D;
   try {
     if (activeSpectrum?.id) {
-      const { index, id } = activeSpectrum;
-      const processingController = (draft.data[index] as Datum2D)
-        .processingController;
-      if (shiftKey) {
-        processingController.shiftWheel(deltaY);
-      } else {
-        processingController.wheel(deltaY);
-      }
-      const contours = Object.freeze(processingController.drawContours());
-      draft.contours[id] = contours;
+      const { levels } = draft.view.zoom;
+      const contourOptions = activeSpectrum.display.contourOptions;
+      const zoom = contoursManager(activeSpectrum.id, levels, contourOptions);
+      levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
     }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  } catch (error) {
+    // TODO: handle error.
+    reportError(error);
   }
 }
 

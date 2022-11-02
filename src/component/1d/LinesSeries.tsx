@@ -7,7 +7,7 @@ import Line from './Line';
 function LinesSeries() {
   const { data, tempData, displayerKey, xDomains } = useChartData();
   const activeSpectrum = useActiveSpectrum();
-  let _data = tempData ? tempData : data;
+  let _data = tempData || data;
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="spectrums">

@@ -72,11 +72,11 @@ function ContextMenu({ context }: ContextMenuProps, ref: any) {
   useEffect(() => {
     root.current = document.createElement('div');
     if (elementsWrapperRef) {
-      elementsWrapperRef.appendChild(root.current);
+      elementsWrapperRef.append(root.current);
     }
     return () => {
       if (root.current && elementsWrapperRef) {
-        elementsWrapperRef.removeChild(root.current);
+        root.current.remove();
       }
     };
   }, [elementsWrapperRef]);
