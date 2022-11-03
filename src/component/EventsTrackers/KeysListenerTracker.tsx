@@ -25,7 +25,7 @@ import {
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer, data } =
+  const { keysPreferences, displayerMode, data } =
     useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -200,10 +200,9 @@ function KeysListenerTracker() {
     (e) => {
       function throw1DSelectSpectraError(label: string) {
         throw new Error(
-          `${
-            displayerMode === DISPLAYER_MODE.DM_2D
-              ? `Switch to 1D Mode and select a spectrum to proceed width ${label}`
-              : `Select a spectrum to proceed  width ${label}`
+          `${displayerMode === DISPLAYER_MODE.DM_2D
+            ? `Switch to 1D Mode and select a spectrum to proceed width ${label}`
+            : `Select a spectrum to proceed  width ${label}`
           }`,
         );
       }
@@ -359,7 +358,7 @@ function KeysListenerTracker() {
 
   const handleOnKeyDown = useCallback(
     (e) => {
-      if (checkNotInputField(e) && overDisplayer) {
+      if (checkNotInputField(e)) {
         const num = Number(e.code.slice(-1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
@@ -378,7 +377,6 @@ function KeysListenerTracker() {
       deleteHandler,
       highlight,
       keysPreferencesListenerHandler,
-      overDisplayer,
       toolsListenerHandler,
     ],
   );
