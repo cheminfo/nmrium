@@ -273,7 +273,7 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
         const filtersResult =
           datum.filters?.filter((filter) => filter.name === filterType) || [];
 
-        filtersResult.forEach((filter) => {
+        for (const filter of filtersResult) {
           FiltersManager.deleteFilter(datum, filter.id);
 
           if (datum.info?.dimension === 1) {
@@ -281,7 +281,7 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
           } else if (datum.info?.dimension === 2) {
             update2dShift(datum as Datum2D);
           }
-        });
+        }
       }
     }
 
@@ -362,7 +362,7 @@ function resetSpectrumByFilter(
         rollback ? filterIndex : filterIndex + 1,
       );
 
-      if (filters.length >= 1) {
+      if (filters.length > 0) {
         draft.toolOptions.data.activeFilterID =
           datum.filters[rollback ? filterIndex - 1 : filterIndex]?.id;
       } else {

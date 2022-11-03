@@ -23,7 +23,11 @@ const ModalContent = ({ modal, onClose, onLayout }) => {
   });
 
   useEffect(() => {
-    if (isFinite(height) && isFinite(width) && !contentSize.current) {
+    if (
+      Number.isFinite(height) &&
+      Number.isFinite(width) &&
+      !contentSize.current
+    ) {
       contentSize.current = { width, height };
       onLayout({ modal, layout: { width, height } });
     }

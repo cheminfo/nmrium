@@ -37,12 +37,11 @@ function CorrelationTableRow({
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids: string[] = [];
 
-    correlation.link.forEach((link) => {
+    return correlation.link.flatMap((link) => {
+      const ids: string[] = [];
       if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair_Y'));
+        ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair_Y'));
         const _id = findRangeOrZoneID(
           spectraData,
           link.experimentID,
@@ -53,9 +52,8 @@ function CorrelationTableRow({
           ids.push(_id);
         }
       }
+      return ids;
     });
-
-    return ids;
   }, [correlation, spectraData]);
   const highlightRow = useHighlight(highlightIDsRow);
 
@@ -80,8 +78,8 @@ function CorrelationTableRow({
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation) => {
       const commonLinks: Link[] = [];
-      correlation.link.forEach((link) => {
-        _correlation.link.forEach((_link) => {
+      for (const link of correlation.link) {
+        for (const _link of _correlation.link) {
           if (
             link.axis !== _link.axis &&
             link.experimentID === _link.experimentID &&
@@ -103,8 +101,8 @@ function CorrelationTableRow({
               }),
             );
           }
-        });
-      });
+        }
+      }
 
       return (
         <AdditionalColumnField
@@ -152,6 +150,19 @@ function CorrelationTableRow({
   const isInView = useInView({ correlation });
 
   const tableDataProps = useMemo(() => {
+    const title = [
+      ...new Set(
+        correlation.link
+          .map((link) => {
+            if (link.pseudo === false) {
+              return link.experimentType.toUpperCase();
+            }
+            return undefined;
+          })
+          .sort(),
+      ),
+    ].join('/');
+
     return {
       style: {
         ...styleRow,
@@ -161,20 +172,7 @@ function CorrelationTableRow({
           ? '#f5f5dc'
           : 'inherit',
       },
-      title:
-        correlation.pseudo === false &&
-        correlation.link
-          .reduce((arr, link) => {
-            if (
-              link.pseudo === false &&
-              !arr.includes(link.experimentType.toUpperCase())
-            ) {
-              arr.push(link.experimentType.toUpperCase());
-            }
-            return arr;
-          }, [])
-          .sort()
-          .join('/'),
+      title: correlation.pseudo === false && title,
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
@@ -259,7 +257,7 @@ function CorrelationTableRow({
   );
 
   const { title, ...otherTableDataProps } = tableDataProps;
-  const t = !title ? '' : title;
+  const t = title || '';
 
   return (
     <tr style={styleRow}>

@@ -51,7 +51,7 @@ function XAxis(props: XAxisProps) {
   const refAxis = useRef<SVGGElement>(null);
   const refGrid = useRef<SVGGElement>(null);
 
-  const label = labelProp ? labelProp : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
+  const label = labelProp || (mode === 'RTL' ? 'δ [ppm]' : 'time [s]');
 
   useEffect(() => {
     if (!show || !scaleX) return;

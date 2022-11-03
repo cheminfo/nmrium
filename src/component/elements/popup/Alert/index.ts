@@ -1,6 +1,3 @@
-import { positions, types, transitions } from '../options';
-
-import { useAlert } from './Context';
-import AlertProvider from './Provider';
-
-export { AlertProvider, useAlert, positions, types, transitions };
+export { positions, types, transitions } from '../options';
+export { useAlert } from './Context';
+export { default as AlertProvider } from './Provider';

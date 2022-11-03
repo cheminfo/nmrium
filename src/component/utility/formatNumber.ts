@@ -1,15 +1,27 @@
 import numeral from 'numeral';
 
-function formatNumber(value, format, prefix = '', suffix = '') {
-  return (value || value === 0) && !isNaN(value)
-    ? prefix + numeral(value).format(format) + suffix
+interface FormatOptions {
+  prefix?: string;
+  suffix?: string;
+  defaultFormat?: string;
+}
+
+function formatNumber(
+  value: string | number,
+  format: string | undefined,
+  options: FormatOptions = {},
+) {
+  const { prefix = '', suffix = '', defaultFormat = '0.00' } = options;
+
+  return typeof value === 'number' || !Number.isNaN(Number(value))
+    ? prefix + numeral(value).format(format || defaultFormat) + suffix
     : value;
 }
 
 function getNumberOfDecimals(value: number | string) {
   value = String(value).trim();
   const lastIndex = value.lastIndexOf('.');
-  return lastIndex > 0 ? value.substr(lastIndex).split('').length - 1 : 0;
+  return lastIndex > 0 ? value.slice(lastIndex).split('').length - 1 : 0;
 }
 
 export { formatNumber, getNumberOfDecimals };

@@ -1,13 +1,15 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { useCallback, useEffect, useMemo } from 'react';
 
 import Input, { InputProps } from '../Input';
 
 interface FormikInputProps extends InputProps {
   name: string;
   checkErrorAfterInputTouched?: boolean;
-  triggerSubmit?: boolean;
+}
+
+function identity<T = unknown>(value: T): T {
+  return value;
 }
 
 function FormikInput(props: FormikInputProps) {
@@ -19,43 +21,28 @@ function FormikInput(props: FormikInputProps) {
     type = 'text',
     className = '',
     value = null,
-    format = () => (value) => value,
+    format = () => identity,
     checkErrorAfterInputTouched = true,
-    triggerSubmit = false,
     ...resProps
   } = props;
 
-  const { values, handleChange, setFieldValue, errors, touched, submitForm } =
-    useFormikContext();
+  const { values, handleChange, errors, touched } = useFormikContext();
 
-  const changeHandler = useCallback(
-    (e) => {
-      onChange(e);
-      handleChange(e);
-    },
-    [handleChange, onChange],
-  );
+  function changeHandler(e) {
+    onChange(e);
+    handleChange(e);
+  }
 
-  useEffect(() => {
-    if (value) {
-      setFieldValue(name, value);
-      if (triggerSubmit) {
-        setTimeout(submitForm, 1);
-      }
-    }
-  }, [name, setFieldValue, submitForm, triggerSubmit, value]);
+  let isInvalid = lodashGet(errors, name);
 
-  const isInvalid = useMemo(() => {
-    if (checkErrorAfterInputTouched) {
-      return lodashGet(errors, name) && lodashGet(touched, name);
-    }
-    return lodashGet(errors, name);
-  }, [checkErrorAfterInputTouched, errors, name, touched]);
+  if (checkErrorAfterInputTouched) {
+    isInvalid = lodashGet(errors, name) && lodashGet(touched, name);
+  }
 
   return (
     <Input
       name={name}
-      value={value ? value : lodashGet(values, name)}
+      value={value || lodashGet(values, name)}
       onChange={changeHandler}
       type={type}
       style={{

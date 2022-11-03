@@ -3,11 +3,11 @@ import { setDomain, getDomain } from './DomainActions';
 function handleHistoryUndo(draft) {
   const { past, present, future } = draft.history;
   const previous = past[past.length - 1];
-  const newPast = past.slice(0, past.length - 1);
+  const newPast = past.slice(0, -1);
   const newfuture = [present, ...future];
 
-  const hasRedo = newfuture.length !== 0;
-  const hasUndo = past.length !== 0;
+  const hasRedo = newfuture.length > 0;
+  const hasUndo = past.length > 0;
 
   const domain = getDomain(draft.data);
   const history = {
@@ -25,14 +25,14 @@ function handleHistoryUndo(draft) {
 }
 
 function handleHistoryRedo(draft) {
-  const { history } = draft;
+  const { history, data } = draft;
   const newPresent = history.future.shift();
   history.past.push(history.present);
   history.present = newPresent;
   history.hasUndo = true;
   history.hasRedo = history.future.length > 0;
 
-  setDomain(draft.data);
+  setDomain(data);
 }
 
 function handleHistoryReset(draft, action) {

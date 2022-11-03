@@ -16,8 +16,8 @@ export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
   const { originFrequency: frequency } = datum1D.info;
   let { re, x } = datum1D.data;
 
-  const fromIndex = xFindClosestIndex(datum1D.data.x, from);
-  const ToIndex = xFindClosestIndex(datum1D.data.x, to);
+  const fromIndex = xFindClosestIndex(x, from);
+  const ToIndex = xFindClosestIndex(x, to);
 
   // create deleted peaks object where the key is the id of the peaks that we need to remove
   const ids = {};

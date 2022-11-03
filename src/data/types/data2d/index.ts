@@ -1,19 +1,8 @@
-import { ContourOptions } from './ContourOptions';
-import { Data2D } from './Data2D';
-import { Datum2D } from './Datum2D';
-import { Display2D } from './Display2D';
-import { Info2D } from './Info2D';
-import { Signal2D } from './Signal2D';
-import { Zone } from './Zone';
-import { Zones } from './Zones';
-
-export type {
-  Zone,
-  Zones,
-  Signal2D,
-  Info2D,
-  Display2D,
-  ContourOptions,
-  Datum2D,
-  Data2D,
-};
+export { type ContourOptions } from './ContourOptions';
+export { type Data2D } from './Data2D';
+export { type Datum2D } from './Datum2D';
+export { type Display2D } from './Display2D';
+export { type Info2D } from './Info2D';
+export { type Signal2D } from './Signal2D';
+export { type Zone } from './Zone';
+export { type Zones } from './Zones';

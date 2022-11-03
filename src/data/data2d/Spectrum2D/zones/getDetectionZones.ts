@@ -40,10 +40,14 @@ export function getDetectionZones(
 }
 
 function autoZonesDetection(data, options) {
-  const { thresholdFactor, clean, maxPercentCutOff, convolutionByFFT } =
-    options;
+  const {
+    thresholdFactor,
+    clean,
+    maxPercentCutOff,
+    convolutionByFFT,
+    info: { nucleus: nuclei, originFrequency },
+  } = options;
 
-  const { nucleus: nuclei, originFrequency } = options.info;
   const { enhanceSymmetry = nuclei[0] === nuclei[1] } = options;
 
   let zones = xyzAutoZonesPicking(data, {

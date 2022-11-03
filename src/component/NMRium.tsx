@@ -67,7 +67,7 @@ import {
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
-import { BlobObject, getBlob } from './utility/Export';
+import { BlobObject, getBlob } from './utility/export';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -221,17 +221,17 @@ function InnerNMRium({
     PreferencesState
   >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
-  const { displayerMode, data: spectraData } = state;
+  const { displayerMode, data: spectraData, actionType, view } = state;
 
   useEffect(() => {
-    if (checkActionType(state.actionType)) {
+    if (checkActionType(actionType)) {
       handleDataChange.current?.(toJSON(state, 'onDataChange'));
     }
-  }, [state]);
+  }, [actionType, state]);
 
   useEffect(() => {
-    handleViewChange.current?.(state.view);
-  }, [state.view]);
+    handleViewChange.current?.(view);
+  }, [view]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

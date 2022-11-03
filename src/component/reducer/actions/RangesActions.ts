@@ -39,6 +39,7 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     molecules,
     view: {
       spectra: { activeTab: nucleus },
+      ranges,
     },
   } = draft;
 
@@ -49,9 +50,9 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     const datum = data[index] as Datum1D;
 
     // add range intial state
-    const range = draft.view.ranges.find((r) => r.spectrumID === id);
+    const range = ranges.find((r) => r.spectrumID === id);
     if (!range) {
-      draft.view.ranges.push({
+      ranges.push({
         spectrumID: id,
         ...rangeStateInit,
       });
@@ -329,8 +330,10 @@ function addNewRange(
   const { startX, endX, id } = props;
   const range = getRange(draft, { startX, endX });
   const {
+    data,
     view: {
       spectra: { activeTab: nucleus },
+      ranges,
     },
     molecules,
   } = draft;
@@ -339,16 +342,14 @@ function addNewRange(
     const { index } = activeSpectrum;
     const [from, to] = range;
     // add range intial state
-    const rangeState = draft.view.ranges.find(
-      (r) => r.spectrumID === activeSpectrum.id,
-    );
+    const rangeState = ranges.find((r) => r.spectrumID === activeSpectrum.id);
     if (!rangeState) {
-      draft.view.ranges.push({
+      ranges.push({
         spectrumID: activeSpectrum.id,
         ...rangeStateInit,
       });
     }
-    addRange(draft.data[index] as Datum1D, {
+    addRange(data[index] as Datum1D, {
       from,
       to,
       id,
@@ -356,7 +357,7 @@ function addNewRange(
       molecules,
     });
     handleOnChangeRangesData(draft);
-    setIntegralsYDomain(draft, draft.data[index] as Datum1D);
+    setIntegralsYDomain(draft, data[index] as Datum1D);
   }
 }
 
@@ -374,16 +375,19 @@ function handleAddRange(draft: Draft<State>, action) {
 
 function handleChangeRangeRelativeValue(draft, action) {
   const data = action.payload.data;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     changeRangeRelativeValue(draft.data[index], data);
   }
 }
 
 function handleChangeRangeSignalValue(draft, action) {
   const { rangeID, signalID, value } = action.payload;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
 
     const shift = changeRangeSignal(draft.data[index], {
       rangeID,

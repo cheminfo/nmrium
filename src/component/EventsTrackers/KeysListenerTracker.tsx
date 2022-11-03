@@ -54,7 +54,7 @@ function KeysListenerTracker() {
     async (sourceData) => {
       const {
         type,
-        extra: { id },
+        extra: { id, zone, spectrumID, colKey },
       } = sourceData;
       switch (type) {
         case HighlightEventSource.INTEGRAL: {
@@ -113,7 +113,6 @@ function KeysListenerTracker() {
                 const hideLoading = await alert.showLoading(
                   'Delete all spectra exclusive zones in progress',
                 );
-                const { zone } = sourceData.extra;
                 dispatch({
                   type: DELETE_EXCLUSION_ZONE,
                   payload: {
@@ -129,7 +128,6 @@ function KeysListenerTracker() {
                 const hideLoading = await alert.showLoading(
                   'Delete exclusive zone in progress',
                 );
-                const { spectrumID, zone } = sourceData.extra;
                 dispatch({
                   type: DELETE_EXCLUSION_ZONE,
                   payload: {
@@ -153,7 +151,7 @@ function KeysListenerTracker() {
         case HighlightEventSource.MULTIPLE_ANALYSIS_ZONE: {
           dispatch({
             type: DELETE_ANALYZE_SPECTRA_RANGE,
-            colKey: sourceData.extra.colKey,
+            colKey,
           });
           // remove keys from the highlighted list after delete
           remove();
@@ -317,7 +315,7 @@ function KeysListenerTracker() {
               break;
             case 's':
               if (isToolVisible('exportAs')) {
-                void saveAsJSONHandler();
+                saveAsJSONHandler();
                 e.preventDefault();
               }
               break;
@@ -338,8 +336,9 @@ function KeysListenerTracker() {
             default:
           }
         }
-      } catch (e: any) {
-        alert.error(e.message);
+      } catch (error: any) {
+        reportError(error);
+        alert.error(error.message);
       }
     },
     [
@@ -358,18 +357,10 @@ function KeysListenerTracker() {
     ],
   );
 
-  function checkNotInputField(e: Event) {
-    const tags = ['input', 'textarea'];
-    const tagName = (e.composedPath()[0] as HTMLElement).tagName.toLowerCase();
-    if (!tags.includes(tagName)) return true;
-
-    return false;
-  }
-
   const handleOnKeyDown = useCallback(
     (e) => {
       if (checkNotInputField(e) && overDisplayer) {
-        const num = Number(e.code.substr(e.code.length - 1)) || 0;
+        const num = Number(e.code.slice(-1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
         } else if (
@@ -399,6 +390,14 @@ function KeysListenerTracker() {
   }, [handleOnKeyDown]);
 
   return null;
+}
+
+function checkNotInputField(e: Event) {
+  const tags = ['input', 'textarea'];
+  const tagName = (e.composedPath()[0] as HTMLElement).tagName.toLowerCase();
+  if (!tags.includes(tagName)) return true;
+
+  return false;
 }
 
 export default KeysListenerTracker;

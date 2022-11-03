@@ -5,15 +5,12 @@ export default function useRowSpan(hooks) {
 function reducer(instance) {
   const { allColumns } = instance;
 
-  let rowSpanHeaders: any[] = [];
-
-  allColumns.forEach((column) => {
-    const { id, enableRowSpan } = column;
-
-    if (enableRowSpan !== undefined && enableRowSpan !== false) {
-      rowSpanHeaders.push({ id, cellValue: null, cellIndex: 0 });
-    }
-  });
+  const rowSpanHeaders = allColumns
+    .filter(
+      ({ enableRowSpan }) =>
+        enableRowSpan !== undefined && enableRowSpan !== false,
+    )
+    .map(({ id }) => ({ id, cellValue: null, cellIndex: 0 }));
 
   Object.assign(instance, {
     rowSpanHeaders,

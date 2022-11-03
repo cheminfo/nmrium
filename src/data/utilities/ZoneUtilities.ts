@@ -5,19 +5,19 @@ export function getDiaIDs(zone: Zone, axis: string): string[] {
   return ([] as string[]).concat(
     zone[axis].diaIDs || [],
     zone.signals
-      ? zone.signals.map((signal) => signal[axis].diaIDs || []).flat()
+      ? zone.signals.flatMap((signal) => signal[axis].diaIDs || [])
       : [],
   );
 }
 
 export function getNbAtoms(zone: Zone, axis: string) {
-  return zone.signals
-    ? zone.signals.reduce(
-        (sum, signal) =>
-          signal[axis].nbAtoms ? sum + signal[axis].nbAtoms : sum,
-        0,
-      )
-    : 0;
+  let sum = 0;
+  if (zone.signals) {
+    for (const signal of zone.signals) {
+      sum += signal[axis].nbAtoms || 0;
+    }
+  }
+  return sum;
 }
 
 export function setNbAtoms(zone: Zone, axis: string): void {
@@ -30,10 +30,10 @@ export function setNbAtoms(zone: Zone, axis: string): void {
 export function resetDiaIDs(zone: Zone, axis: string) {
   delete zone[axis].diaIDs;
   delete zone[axis].nbAtoms;
-  zone.signals.forEach((signal) => {
+  for (const signal of zone.signals) {
     delete signal[axis].diaIDs;
     delete signal[axis].nbAtoms;
-  });
+  }
   return zone;
 }
 
@@ -70,10 +70,10 @@ export function unlink(
     resetDiaIDs(zone, axis);
     setNbAtoms(zone, axis);
   } else {
-    ['x', 'y'].forEach((key) => {
+    for (const key of ['x', 'y']) {
       resetDiaIDs(zone, key);
       setNbAtoms(zone, key);
-    });
+    }
   }
   return zone;
 }
@@ -83,15 +83,15 @@ export function unlinkInAssignmentData(
   zones: Partial<Zone>[],
   axis?: string,
 ): void {
-  const ids = zones.reduce((acc: string[], zone) => {
+  const ids = zones.flatMap((zone) => {
     if (zone.id) {
-      acc.push(zone.id);
+      return zone.id;
     }
     if (zone.signals) {
-      acc = acc.concat(zone.signals.map((signal) => signal.id, []));
+      return zone.signals.map((signal) => signal.id);
     }
-    return acc;
-  }, []);
+    return [];
+  });
 
   if (axis) {
     assignmentData.dispatch({

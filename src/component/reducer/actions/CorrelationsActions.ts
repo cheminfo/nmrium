@@ -91,13 +91,13 @@ function handleSetCorrelations(
   const { correlations, options } = payload;
   const state = original(draft) as State;
   let correlationsData = lodashCloneDeep(state.correlations);
-  correlations.forEach((correlation) => {
+  for (const correlation of correlations) {
     correlationsData = setCorrelation(
       correlationsData,
       correlation.id,
       correlation,
     );
-  });
+  }
   draft.correlations = correlationsData;
   if (options) {
     draft.correlations = {
@@ -114,7 +114,7 @@ function handleDeleteCorrelation(
 ) {
   const { correlation, assignmentData } = payload;
   // delete all signals linked to the correlation
-  correlation.link.forEach((link) => {
+  for (const link of correlation.links) {
     const spectrum = findSpectrum(draft.data, link.experimentID, false);
     if (spectrum) {
       if (spectrum.info.dimension === 1) {
@@ -141,7 +141,7 @@ function handleDeleteCorrelation(
         });
       }
     }
-  });
+  }
 }
 
 export {

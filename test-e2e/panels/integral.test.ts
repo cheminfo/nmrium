@@ -17,7 +17,7 @@ async function addIntegral(
 
   // Should have integral with at least 1000 points
   const path = (await nmrium.page.getAttribute(
-    `_react=Integral >> nth=${childIndex} >> path`,
+    `_react=Integral >> nth=${childIndex} >> path >> nth=0`,
     'd',
   )) as string;
   expect(path.length).toBeGreaterThan(1000);
@@ -46,7 +46,7 @@ async function resizeIntegral(nmrium: NmriumPage) {
   await nmrium.page.mouse.up();
 
   const path = (await nmrium.page.getAttribute(
-    '_react=Integral >> nth=0 >> path',
+    '_react=Integral >> nth=0 >> path >> nth=0',
     'd',
   )) as string;
 
@@ -61,11 +61,8 @@ async function resizeIntegral(nmrium: NmriumPage) {
 }
 
 async function deleteIntegral(nmrium: NmriumPage) {
-  const rightResizer = nmrium.page.locator('_react=Integral').first();
-
-  const { x, height, width } =
-    (await rightResizer.boundingBox()) as BoundingBox;
-  await nmrium.page.mouse.move(x + width / 2, height / 2, { steps: 15 });
+  const container = nmrium.page.locator('_react=Integral >> nth=0 ');
+  await container.hover();
   await nmrium.page.keyboard.press('Delete');
   await expect(nmrium.page.locator('_react=Integral')).toHaveCount(1);
 }

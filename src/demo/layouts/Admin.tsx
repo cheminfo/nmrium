@@ -41,7 +41,7 @@ export function Dashboard(props: DashboardProps) {
   let rootRoute: JSX.Element | null = null;
   if (routesList.length > 0) {
     const route = routesList[0];
-    const viewName = route.view ? route.view : 'View';
+    const viewName = route.view || 'View';
     const RenderedView = possibleViews[viewName];
     rootRoute = (
       <Route
@@ -98,7 +98,7 @@ export function Dashboard(props: DashboardProps) {
 
 function RenderView(props) {
   const { prop, baseURL } = props;
-  const viewName = prop.view ? prop.view : 'View';
+  const viewName = prop.view || 'View';
   const RenderedView = possibleViews[viewName];
   return <RenderedView {...prop} id={getKey(prop.file)} baseURL={baseURL} />;
 }

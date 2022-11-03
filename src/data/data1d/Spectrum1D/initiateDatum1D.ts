@@ -24,7 +24,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   };
 
   datum.display = {
-    name: options.display?.name ? options.display.name : v4(),
+    name: options.display?.name || v4(),
     ...getColor(options, usedColors),
     isVisible: true,
     isPeaksMarkersVisible: true,

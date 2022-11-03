@@ -25,6 +25,7 @@ function applyFilter(datum, filters: any[] = []) {
     };
     const previousFilter = lookupForFilter(datum, filter.name);
     if (previousFilter) {
+      // eslint-disable-next-line unicorn/no-array-reduce
       const reduceResult = Filters[filter.name].reduce(
         previousFilter.value,
         filterOption.value,
@@ -81,7 +82,7 @@ function lookupForFilter(datum, filterName) {
 }
 
 function reapplyFilters(datum, filters: any = null) {
-  const _filters = filters ? filters : datum.filters;
+  const _filters = filters || datum.filters;
   enableFilter(datum, null, null, _filters);
 }
 
@@ -91,11 +92,11 @@ function enableFilter(datum, id, checked, filters = null) {
   if (id) {
     datum.filters = datum.filters.map((filter) => {
       return { ...filter, flag: filter.id === id ? checked : filter.flag };
-    }, []);
+    });
   }
   datum.data = { ...datum.data, ...datum.originalData };
   datum.info = { ...datum.info, ...datum.originalInfo };
-  const _filters = filters ? filters : datum.filters;
+  const _filters = filters || datum.filters;
 
   for (let filterIndex in _filters) {
     const filter = datum.filters[filterIndex];

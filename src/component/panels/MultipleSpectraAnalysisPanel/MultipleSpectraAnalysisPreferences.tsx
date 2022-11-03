@@ -82,10 +82,12 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   }));
 
   useEffect(() => {
-    const result = Object.keys(data.columns).reduce((acc, key) => {
-      acc[key] = { ...data.columns[key], tempKey: key };
-      return acc;
-    }, {});
+    const result = Object.fromEntries(
+      Object.keys(data.columns).map((key) => [
+        key,
+        { ...data.columns[key], tempKey: key },
+      ]),
+    );
     setColumns(result);
     refForm.current.setValues({ columns: result, code: data.code });
   }, [data]);
@@ -96,28 +98,29 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   const preferncesSchema = useMemo(() => {
     function columnSchema() {
-      return columnsKeys.reduce((acc, key) => {
-        acc[key] = Yup.object().shape({
-          tempKey: Yup.string()
-            .required()
-            .test('unique', 'must be unique column name', (colmnName) => {
-              const formData = refForm.current.values.columns;
-              return (
-                Object.keys(formData).reduce((acc, colKey) => {
+      return Object.fromEntries(
+        columnsKeys.map((key) => [
+          key,
+          Yup.object().shape({
+            tempKey: Yup.string()
+              .required()
+              .test('unique', 'must be unique column name', (colmnName) => {
+                const formData = refForm.current.values.columns;
+                const cols: Array<string | undefined> = [];
+                for (const colKey of Object.keys(formData)) {
                   if (formData[colKey].tempKey === colmnName) {
-                    (acc as any[]).push(colmnName);
+                    cols.push(colmnName);
                   }
-                  return acc;
-                }, []).length === 1
-              );
-            }),
-          ...(columns[key].type === COLUMNS_TYPES.FORMULA
-            ? { formula: Yup.string().required() }
-            : {}),
-          index: Yup.string().required(),
-        });
-        return acc;
-      }, {});
+                }
+                return cols.length === 1;
+              }),
+            ...(columns[key].type === COLUMNS_TYPES.FORMULA
+              ? { formula: Yup.string().required() }
+              : {}),
+            index: Yup.string().required(),
+          }),
+        ]),
+      );
     }
 
     return Yup.object().shape({
@@ -128,13 +131,10 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   const submitHandler = useCallback(
     (values) => {
       onAfterSave?.(true);
-      const result = Object.entries(values.columns).reduce(
-        (acc, [key, value]) => {
-          acc[key] = { ...columns[key], ...(value as any) };
-          return acc;
-        },
-        {},
-      );
+      const result: any = {};
+      for (const [key, value] of Object.entries(values.columns)) {
+        result[key] = { ...columns[key], ...(value as any) };
+      }
       dispatch({
         type: SET_ANALYZE_SPECTRA_COLUMNS,
         payload: { code: values.code, columns: result },

@@ -49,7 +49,7 @@ export default function generateJGraphData(
 }
 
 function getJsCouplingMax(js: Jcoupling[]): number {
-  let max = -Infinity;
+  let max = Number.NEGATIVE_INFINITY;
   for (const { coupling } of js) {
     max = coupling > max ? coupling : max;
   }

@@ -95,7 +95,7 @@ function PeaksPanelInner({
             x,
             xHz: info?.originFrequency ? value * info.originFrequency : '',
             y,
-            width: width ? width : '',
+            width: width || '',
             isConstantlyHighlighted: isInRange(value, { from, to }),
           };
         })

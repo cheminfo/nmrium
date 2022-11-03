@@ -155,9 +155,9 @@ export default function MultipletAnalysisModal({
         });
         setCalcFinished(true);
         setAnalysisData(result);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log(err);
+      } catch (error) {
+        // TODO: handle error
+        reportError(error);
       }
     }
   }, [startX, endX, data, scaleX, activeSpectrum, calcStart]);

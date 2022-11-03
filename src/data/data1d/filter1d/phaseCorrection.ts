@@ -23,8 +23,8 @@ export function apply(datum1D: Datum1D, options: any = {}) {
     datum1D.data.re = reimAbsolute(datum1D.data);
     datum1D.data.im = new Float64Array(0);
   } else {
-    ph0 *= Math.PI / 180.0;
-    ph1 *= Math.PI / 180.0;
+    ph0 *= Math.PI / 180;
+    ph1 *= Math.PI / 180;
     Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, ph0, ph1));
   }
 }

@@ -20,8 +20,7 @@ export default function Label(props: LabelProps) {
       <label
         className={className}
         style={{
-          fontSize: '11px',
-          fontWeight: 'bold',
+          fontSize: '12px',
           color: '#232323',
           paddingRight: '10px',
           width: 'max-content',

@@ -23,7 +23,7 @@ export default function useEditRangeModal(range?: RangeData) {
 
   const zoomRange = useCallback(
     (modalRange?: RangeData) => {
-      const _range = modalRange ? modalRange : range;
+      const _range = modalRange || range;
       if (_range) {
         const { from, to } = _range;
         const margin = Math.abs(from - to);
@@ -42,7 +42,7 @@ export default function useEditRangeModal(range?: RangeData) {
         dispatch({
           type: DELETE_RANGE,
           payload: {
-            data: { id: id ? id : range?.id, assignmentData },
+            data: { id: id || range?.id, assignmentData },
             resetSelectTool,
           },
         });

@@ -26,7 +26,6 @@ import RelativeColumn from './TableColumns/RelativeColumn';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
-import useFormat from './TableColumns/format';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -75,8 +74,6 @@ function RangesTableRow({
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);
   const [unlinkSignalButtonVisibility, showUnlinkSignalButton] =
     useState(false);
-
-  const getFormat = useFormat(preferences);
 
   const rowSpanTags: any = useMemo(() => {
     return {
@@ -223,7 +220,7 @@ function RangesTableRow({
           value={rowData.absolute}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('absoluteFormat', undefined)}
+          format={preferences.absolute.format}
         />
       )}
 

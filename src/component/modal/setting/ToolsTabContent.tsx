@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { CheckBoxCell } from '../../elements/CheckBoxCell';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
@@ -87,34 +85,31 @@ const LIST: ListItem[] = [
   },
 ];
 
-function ToolsTabContent() {
-  const COLUMNS: CustomColumn[] = useMemo(
-    () => [
-      {
-        index: 1,
-        Header: '#',
-        Cell: ({ row }) => row.index + 1,
-      },
-      {
-        index: 1,
-        Header: 'Tool',
-        accessor: 'label',
-        style: { width: '60%' },
-      },
-      {
-        index: 2,
-        Header: 'Active',
-        Cell: ({ row }) => (
-          <CheckBoxCell
-            name={`display.${row.original.name}`}
-            defaultValue={false}
-          />
-        ),
-      },
-    ],
-    [],
-  );
+const COLUMNS: CustomColumn[] = [
+  {
+    index: 1,
+    Header: '#',
+    Cell: ({ row }) => row.index + 1,
+  },
+  {
+    index: 1,
+    Header: 'Tool',
+    accessor: 'label',
+    style: { width: '60%' },
+  },
+  {
+    index: 2,
+    Header: 'Active',
+    Cell: ({ row }) => (
+      <CheckBoxCell
+        name={`display.${row.original.name}`}
+        defaultValue={false}
+      />
+    ),
+  },
+];
 
+function ToolsTabContent() {
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <ReactTable columns={COLUMNS} data={LIST} />

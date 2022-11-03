@@ -201,7 +201,7 @@ function BasicToolBarInner({
           void saveAsPNGHandler();
           break;
         case 'json':
-          void saveAsJSONHandler();
+          saveAsJSONHandler();
           break;
         case 'advance_save':
           void saveAsHandler();

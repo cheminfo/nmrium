@@ -27,11 +27,10 @@ function AdditionalColumnField({
   const modal = useModal();
 
   const highlightIDsCommonLinks = useMemo(() => {
-    const ids: Array<any> = [];
-    commonLinks.forEach((link: Link) => {
+    return commonLinks.flatMap((link: Link) => {
+      const ids: string[] = [];
       if (link.pseudo === false) {
-        ids.push(link.signal.id);
-        ids.push(buildID(link.signal.id, 'Crosshair'));
+        ids.push(link.signal.id, buildID(link.signal.id, 'Crosshair'));
         const _id = findRangeOrZoneID(
           spectraData,
           link.experimentID,
@@ -42,9 +41,8 @@ function AdditionalColumnField({
           ids.push(_id);
         }
       }
+      return ids;
     });
-
-    return ids;
   }, [commonLinks, spectraData]);
   const highlightCommonLinks = useHighlight(highlightIDsCommonLinks);
 
@@ -136,40 +134,38 @@ function AdditionalColumnField({
 
   const contextMenu = useMemo(() => {
     // allow the edition of correlations
-    const commonLinksMenu = commonLinks
-      .map((commonLink) => {
-        const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
-          commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
-        }, ${
-          commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'
-        })${commonLink.edited?.moved === true ? '[MOVED]' : ''}`;
+    const commonLinksMenu = commonLinks.flatMap((commonLink) => {
+      const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
+        commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
+      }, ${commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'})${
+        commonLink.edited?.moved === true ? '[MOVED]' : ''
+      }`;
 
-        return commonLink.pseudo === false
-          ? [
-              {
-                label: `edit ${commonLinkContextMenuLabel}`,
-                onClick: () => {
-                  highlightCommonLinks.hide();
-                  modal.show(
-                    <EditLinkModal
-                      onClose={() => modal.close()}
-                      onEdit={onEdit}
-                      link={commonLink}
-                      correlationDim1={columnCorrelation}
-                      correlationDim2={rowCorrelation}
-                      correlations={correlations}
-                    />,
-                    {
-                      position: positions.MIDDLE_RIGHT,
-                      isBackgroundBlur: false,
-                    },
-                  );
-                },
+      return commonLink.pseudo === false
+        ? [
+            {
+              label: `edit ${commonLinkContextMenuLabel}`,
+              onClick: () => {
+                highlightCommonLinks.hide();
+                modal.show(
+                  <EditLinkModal
+                    onClose={() => modal.close()}
+                    onEdit={onEdit}
+                    link={commonLink}
+                    correlationDim1={columnCorrelation}
+                    correlationDim2={rowCorrelation}
+                    correlations={correlations}
+                  />,
+                  {
+                    position: positions.MIDDLE_RIGHT,
+                    isBackgroundBlur: false,
+                  },
+                );
               },
-            ]
-          : [];
-      })
-      .flat();
+            },
+          ]
+        : [];
+    });
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
     const commonPseudoLinkHSQC = commonLinks.find(
       (commonLink) =>
@@ -221,18 +217,15 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
-  const title = useMemo(
-    () =>
-      commonLinks
-        .reduce((arr, link) => {
-          if (!arr.includes(link.experimentType.toUpperCase())) {
-            arr.push(link.experimentType.toUpperCase());
-          }
-          return arr;
-        }, [])
-        .join('/'),
-    [commonLinks],
-  );
+  const title: string = useMemo(() => {
+    return [
+      ...new Set(
+        commonLinks.link.map((link) => {
+          return link.experimentType.toUpperCase();
+        }),
+      ),
+    ].join('/');
+  }, [commonLinks]);
 
   const isInViewRow = useInView({ correlation: rowCorrelation });
   const isInViewColumn = useInView({ correlation: columnCorrelation });

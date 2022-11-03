@@ -19,7 +19,7 @@ function checkStatus(response) {
 
 export default function View(props) {
   const [data, setData] = useState();
-  const { file, title, baseURL } = props;
+  const { file, title, baseURL, workspace } = props;
   const [callbackData, setCallbackData] = useState<Array<any>>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
@@ -118,7 +118,7 @@ export default function View(props) {
             <NMRium
               data={data}
               onDataChange={changeHandler}
-              workspace={props.workspace || null}
+              workspace={workspace || null}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (

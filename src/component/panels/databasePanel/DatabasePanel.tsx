@@ -195,7 +195,8 @@ function DatabasePanelInner({
                   baseURL: url,
                 })),
               );
-          } catch (e) {
+          } catch (error) {
+            reportError(error);
             alert.error(`Failed to load ${url}`);
           } finally {
             hideLoading();
@@ -265,7 +266,7 @@ function DatabasePanelInner({
               type: RESURRECTING_SPECTRUM_FROM_JCAMP,
               payload: { file: result, ranges, jcampURL },
             });
-          } catch (e) {
+          } catch {
             alert.error(`Failed to load Jcamp`);
           } finally {
             hideLoading();
@@ -413,7 +414,11 @@ function DatabasePanelInner({
       <div className="inner-container">
         {!isFlipped ? (
           tableData && tableData.length > 0 ? (
-            <DatabaseTable data={tableData} onAdd={resurrectHandler} />
+            <DatabaseTable
+              data={tableData}
+              totalCount={result.data.length}
+              onAdd={resurrectHandler}
+            />
           ) : (
             <NoTableData
               text={
@@ -463,7 +468,7 @@ function mapSolventsToSelect(solvents: string[]) {
       label: key,
       value: key,
     };
-  }, []);
+  });
   result.unshift({ label: 'All', value: '-1' });
   return result;
 }

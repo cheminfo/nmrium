@@ -34,7 +34,7 @@ export function lookupPeak(
   const dataRange = data.re.slice(minIndex, maxIndex);
   if (dataRange && dataRange.length > 0) {
     const yValue = max(dataRange);
-    const xIndex = dataRange.findIndex((value) => value === yValue);
+    const xIndex = dataRange.indexOf(yValue);
     const xValue = data.x[minIndex + xIndex];
 
     return { x: xValue, y: yValue, xIndex: minIndex + xIndex };

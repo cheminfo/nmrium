@@ -22,8 +22,8 @@ const useValidation = () =>
                         this.parent.multiplicity,
                       );
                       if (
-                        (!hasCoupling && isNaN(value)) ||
-                        (hasCoupling && !isNaN(value))
+                        (!hasCoupling && Number.isNaN(Number(value))) ||
+                        (hasCoupling && !Number.isNaN(Number(value)))
                       ) {
                         return true;
                       }

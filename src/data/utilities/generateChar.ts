@@ -1,12 +1,14 @@
 export default function generateChar(index: number): string {
-  const aPotions = 'a'.charCodeAt(0);
-  const zPostion = 'z'.charCodeAt(0);
-  const len = zPostion - aPotions + 1;
+  // a
+  const aPosition = 97;
+  // z
+  const zPosition = 122;
+  const len = zPosition - aPosition + 1;
 
-  let chartResult = '';
+  let charResult = '';
   while (index >= 0) {
-    chartResult = String.fromCharCode((index % len) + aPotions) + chartResult;
+    charResult = String.fromCodePoint((index % len) + aPosition) + charResult;
     index = Math.floor(index / len) - 1;
   }
-  return chartResult;
+  return charResult;
 }

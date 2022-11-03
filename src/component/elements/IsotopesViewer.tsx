@@ -10,7 +10,7 @@ function IsotopesViewer({ value = '', ...othersProps }: IsotopesViewerProps) {
       {...othersProps}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
-        __html: value.replace(/(?<isotope>[0-9]+)/g, '<sup>$<isotope></sup>'),
+        __html: value.replace(/(?<isotope>\d+)/g, '<sup>$<isotope></sup>'),
       }}
     />
   );

@@ -53,6 +53,8 @@ function MolecularFormulaInput({
       getAtomsFromMF(mf);
       return true;
     } catch (error) {
+      // TODO: handle error.
+      reportError(error);
       return false;
     }
   }, []);

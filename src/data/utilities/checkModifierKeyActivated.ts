@@ -1,18 +1,17 @@
-import { KeyboardEvent, MouseEvent } from 'react';
+import { KeyboardEvent, ModifierKey, MouseEvent } from 'react';
 
 export default function checkModifierKeyActivated(
   event: KeyboardEvent | MouseEvent,
 ): boolean {
-  const modifiersKeys = [
+  const modifiersKeys: ModifierKey[] = [
     'Alt',
     'AltGraph',
     'CapsLock',
     'Control',
     'Meta',
-    'NumLocK',
+    'NumLock',
     'ScrollLock',
     'Shift',
-    'OS',
   ];
   for (const key of modifiersKeys) {
     if (event.getModifierState(key)) {

@@ -1,66 +1,35 @@
+import * as clipboard from 'clipboard-polyfill';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-function copyFormattedHtml(html) {
-  // Create an iframe (isolated container) for the HTML
-  let container = document.createElement('div');
-  container.innerHTML = html;
-
-  // Hide element
-  container.style.position = 'fixed';
-  container.style.pointerEvents = 'none';
-  container.style.opacity = '0';
-
-  // Detect all style sheets of the page
-  let activeSheets = Array.prototype.slice
-    .call(document.styleSheets)
-    .filter((sheet) => {
-      return !sheet.disabled;
-    });
-
-  // Mount the iframe to the DOM to make `contentWindow` available
-  document.body.appendChild(container);
-
-  // Copy to clipboard
-  window.getSelection()?.removeAllRanges();
-
-  let range = document.createRange();
-  range.selectNode(container);
-  window.getSelection()?.addRange(range);
-
-  document.execCommand('copy');
-  for (const active of activeSheets) {
-    active.disabled = true;
-  }
-
-  document.execCommand('copy');
-  for (const active of activeSheets) {
-    active.disabled = false;
-  }
-
-  // Remove the iframe
-  document.body.removeChild(container);
-}
-
 async function copyHTMLToClipboard(data) {
-  try {
-    copyFormattedHtml(data);
-    return true;
-  } catch (err) {
-    return false;
-  }
+  return copyToClipboard(data, 'text/html');
 }
 async function copyTextToClipboard(data) {
+  return copyToClipboard(data, 'text/plain');
+}
+
+async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
   try {
-    void navigator.clipboard.write([
-      new ClipboardItem({
-        'text/plain': new Promise((resolve) => {
-          resolve(new Blob([data], { type: 'text/plain' }));
+    if (typeof ClipboardItem !== 'undefined') {
+      void navigator.clipboard.write([
+        new ClipboardItem({
+          [type]: new Promise((resolve) => {
+            resolve(new Blob([data], { type }));
+          }),
         }),
-      }),
-    ]);
+      ]);
+    } else {
+      //TODO when Firefox team implement ClipboardItem this code should be removed
+      // this library is used mainly to solve the problem of copy HTML to a clipboard in Firefox but we use it for both HTML and plain text
+      const item = new clipboard.ClipboardItem({
+        [type]: new Blob([data], { type }),
+      });
+      await clipboard.write([item]);
+    }
+
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -95,9 +64,9 @@ async function exportAsJSON(
         },
       });
       saveAs(blob, `${fileName}.nmrium`);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+    } catch (error) {
+      // TODO: handle error.
+      reportError(error);
     }
   }
 }
@@ -169,20 +138,21 @@ function exportAsPng(
 
     let img = new Image();
     let url = URL.createObjectURL(blob);
-    img.onload = async () => {
+    img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
-    };
+    });
     img.src = url;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+  } catch (error) {
+    // TODO: handle error.
+    reportError(error);
   }
 }
 
-function copyDataURLCliboard(image) {
+// hack way to copy the image to the clipboard
+function copyDataURLClipboardFireFox(image) {
   const img = document.createElement('img');
   img.src = image;
 
@@ -190,15 +160,15 @@ function copyDataURLCliboard(image) {
   img.style.pointerEvents = 'none';
   img.style.opacity = '0';
 
-  document.body.appendChild(img);
+  document.body.append(img);
   const range = document.createRange();
   range.selectNode(img);
   window.getSelection()?.addRange(range);
   document.execCommand('Copy');
-  document.body.removeChild(img);
+  img.remove();
 }
 
-function copyBlobToCliboard(canvas) {
+function copyBlobToClipboard(canvas) {
   canvas.toBlob((b) => {
     const clip = new ClipboardItem({
       [b.type]: b,
@@ -209,9 +179,9 @@ function copyBlobToCliboard(canvas) {
         // eslint-disable-next-line no-console
         console.log('experiment copied.');
       },
-      (err) => {
-        // eslint-disable-next-line no-console
-        console.log(err);
+      (error) => {
+        // TODO: handle error;
+        reportError(error);
       },
     );
   });
@@ -232,29 +202,29 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
 
     let img = new Image();
     const url = URL.createObjectURL(blob);
-    img.onload = async () => {
+    img.addEventListener('load', async () => {
       context?.drawImage(img, 0, 0);
       const png = canvas.toDataURL('image/png', 1);
 
       // @ts-expect-error write exists in some browsers
       if (navigator.clipboard.write) {
-        copyBlobToCliboard(canvas);
+        copyBlobToClipboard(canvas);
       } else {
-        copyDataURLCliboard(png);
+        copyDataURLClipboardFireFox(png);
       }
 
       URL.revokeObjectURL(png);
-    };
+    });
     img.src = url;
-  } catch (e) {
-    if (e instanceof ReferenceError) {
+  } catch (error) {
+    if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
       alert(
         'Your browser does not support this feature, please use Google Chrome',
       );
     }
-    // eslint-disable-next-line no-console
-    console.log(e);
+    // TODO: handle error.
+    reportError(error);
   }
 }
 
@@ -266,19 +236,19 @@ export interface BlobObject {
 
 function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   let _svg: any = (rootRef.getRootNode() as Document)
-    .getElementById(elementID)
+    .querySelector(`#${elementID}`)
     ?.cloneNode(true);
   const width = Number(_svg?.getAttribute('width').replace('px', ''));
   const height = Number(_svg?.getAttribute('height').replace('px', ''));
-  _svg
-    .querySelectorAll('[data-no-export="true"]')
-    .forEach((element) => element.remove());
-  _svg
-    .querySelectorAll('[data-replace-float-structure="true"]')
-    .forEach((element: Element) => {
-      element.replaceWith(element.childNodes[0].childNodes[0]);
-      return element;
-    });
+  for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
+    element.remove();
+  }
+  const elements = _svg.querySelectorAll(
+    '[data-replace-float-structure="true"]',
+  );
+  for (const element of elements) {
+    element.replaceWith(element.childNodes[0].childNodes[0]);
+  }
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;

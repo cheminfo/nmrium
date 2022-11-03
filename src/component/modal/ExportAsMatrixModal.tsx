@@ -8,7 +8,7 @@ import Label from '../elements/Label';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import Events from '../utility/Events';
-import { exportAsMatrix } from '../utility/Export';
+import { exportAsMatrix } from '../utility/export';
 
 import { ModalStyles } from './ModalStyle';
 
