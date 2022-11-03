@@ -462,17 +462,7 @@ export function dispatchMiddleware(dispatch) {
         if (action.payload) {
           usedColors = { '1d': [], '2d': [] };
           void readNMRiumObject(action.payload).then((data) => {
-            const { spectra: spectraIn } = data;
-            const spectra: Array<Datum1D | Datum2D> = [];
-            for (let spectrum of spectraIn) {
-              const { info } = spectrum;
-              if (info.dimension === 1) {
-                spectra.push(initiateDatum1D(spectrum, usedColors));
-              } else if (info.dimension === 2) {
-                spectra.push(initiateDatum2D(spectrum, usedColors));
-              }
-            }
-            action.payload = { ...data, usedColors, spectra };
+            action.payload = { ...data, usedColors };
             dispatch(action);
           });
         }

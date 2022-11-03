@@ -6,7 +6,7 @@
     "groupName": "General",
     "children": [
       {
-        "file": "./data/cytisine/1H.json",
+        "file": "./data/nmrium.json",
         "title": "1H spectrum test"
       },
       {
@@ -184,7 +184,7 @@
   },
   {
     "groupName": "Test",
-    "children": [ 
+    "children": [
       {
         "title": "empty",
         "view": "Test"
@@ -201,5 +201,4 @@
       }
     ]
   }
-
 ]
