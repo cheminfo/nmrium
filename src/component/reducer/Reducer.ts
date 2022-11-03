@@ -5,16 +5,12 @@ import { read as readDropFiles, readNMRiumObject } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
-import { initiateDatum1D } from '../../data/data1d/Spectrum1D';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { initiateDatum2D } from '../../data/data2d/Spectrum2D';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   FloatingMolecules,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
-import { Datum1D } from '../../data/types/data1d';
-import { Datum2D } from '../../data/types/data2d';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
