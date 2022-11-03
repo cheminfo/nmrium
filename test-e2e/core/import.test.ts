@@ -14,6 +14,11 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
   await expect(
     nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
   ).toBeVisible();
+
+  await test.step('check ranges', async () => {
+    const ranges = nmrium.page.locator('_react=Range');
+    await expect(ranges).toHaveCount(5);
+  });
 });
 
 test('should load and migrate .nmrium data from version 1 to version 2', async ({
@@ -28,6 +33,17 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
   await expect(
     nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
   ).toBeVisible();
+
+  await test.step('check Peaks', async () => {
+    await nmrium.clickPanel('Peaks');
+    const peaks = nmrium.page.locator('_react=PeakAnnotation');
+    await expect(peaks).toHaveCount(6);
+  });
+
+  await test.step('check ranges', async () => {
+    const ranges = nmrium.page.locator('_react=Range');
+    await expect(ranges).toHaveCount(3);
+  });
 });
 test('should load and migrate .nmrium data from version 2 to version 3', async ({
   page,
@@ -48,6 +64,34 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
   await expect(
     nmrium.page.locator('_react=FilterPanel >> text=Apodization'),
   ).toBeVisible();
+});
+test('should load .nmrium data from version 3', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.page.setInputFiles(
+    '_react=DropZone >> input[type=file]',
+    'test-e2e/data/1h-version-3-1d.nmrium',
+  );
+
+  // If the file was loaded successfully, there should be a 13C tab.
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H"]'),
+  ).toBeVisible();
+
+  await test.step('check Peaks', async () => {
+    await nmrium.clickPanel('Peaks');
+    const peaks = nmrium.page.locator('_react=PeakAnnotation');
+    await expect(peaks).toHaveCount(2);
+  });
+
+  await test.step('check integrals', async () => {
+    const integrals = nmrium.page.locator('_react=Integral');
+    await expect(integrals).toHaveCount(1);
+  });
+
+  await test.step('check ranges', async () => {
+    const ranges = nmrium.page.locator('_react=Range');
+    await expect(ranges).toHaveCount(2);
+  });
 });
 test('should load .zip files', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
