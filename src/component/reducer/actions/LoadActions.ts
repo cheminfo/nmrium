@@ -99,6 +99,17 @@ function setPreferences(draft: Draft<State>, data) {
 
 function initiate(draft: Draft<State>, action) {
   const state = getInitialState();
+  const { spectra, usedColors } = action.payload;
+  const newSpectra: any = [];
+  for (let spectrum of spectra) {
+    const { info } = spectrum;
+    if (info.dimension === 1) {
+      newSpectra.push(initiateDatum1D(spectrum, usedColors));
+    } else if (info.dimension === 2) {
+      newSpectra.push(initiateDatum2D(spectrum, usedColors));
+    }
+  }
+  action.payload.spectra = newSpectra;
   setData(state, action.payload);
   const preferences = action.payload?.preferences || {};
   setActiveTab(state, { tab: preferences?.activeTab || '' });
