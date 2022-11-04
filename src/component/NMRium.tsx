@@ -59,10 +59,7 @@ import preferencesReducer, {
   PreferencesState,
   initPreferencesState,
 } from './reducer/preferences/preferencesReducer';
-import {
-  INITIATE,
-  SET_LOADING_FLAG,
-} from './reducer/types/Types';
+import { INITIATE, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
 
@@ -74,8 +71,6 @@ const viewerContainerStyle = css`
   height: 100%;
   margin-left: -1px;
 `;
-
-
 
 export type { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 
@@ -226,7 +221,6 @@ function InnerNMRium({
     }
   }, [dataProp, dispatchMiddleWare]);
 
-
   return (
     <GlobalProvider
       value={{
@@ -245,8 +239,7 @@ function InnerNMRium({
                     <AssignmentProvider spectraData={spectraData}>
                       <SpinnerProvider value={getSpinner}>
                         <DropZone>
-                          <NMRiumContainer ref={rootRef} >
-
+                          <NMRiumContainer ref={rootRef}>
                             <Header
                               isFullscreen={isFullscreen}
                               onMaximize={toggle}
@@ -270,8 +263,7 @@ function InnerNMRium({
                                       height: '100%',
                                     }}
                                   >
-                                    {displayerMode ===
-                                      DISPLAYER_MODE.DM_1D ? (
+                                    {displayerMode === DISPLAYER_MODE.DM_1D ? (
                                       <Viewer1D emptyText={emptyText} />
                                     ) : (
                                       <Viewer2D emptyText={emptyText} />

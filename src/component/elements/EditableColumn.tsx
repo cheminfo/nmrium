@@ -4,7 +4,7 @@ import {
   useCallback,
   useImperativeHandle,
   useState,
-  KeyboardEvent
+  KeyboardEvent,
 } from 'react';
 
 import Input, { InputProps } from './Input';
@@ -51,7 +51,11 @@ const EditableColumn = forwardRef(function EditableColumn(
 
   const mouseClickCallback = useCallback((e: MouseEvent) => {
     // eslint-disable-next-line unicorn/prefer-dom-node-dataset
-    if (!(e.composedPath()[0] as HTMLInputElement).hasAttribute("data-editable-column")) {
+    if (
+      !(e.composedPath()[0] as HTMLInputElement).hasAttribute(
+        'data-editable-column',
+      )
+    ) {
       enableEdit(false);
       window.removeEventListener('mousedown', mouseClickCallback);
     }
@@ -66,7 +70,6 @@ const EditableColumn = forwardRef(function EditableColumn(
   function handleValidation(event) {
     const valid = validate(event?.target.value);
     setValid(valid);
-
   }
 
   function handleSave(event: KeyboardEvent<HTMLInputElement>) {
@@ -74,12 +77,12 @@ const EditableColumn = forwardRef(function EditableColumn(
     if (isValid && ['Enter', 'Tab'].includes(event.key)) {
       onSave(event);
       enableEdit(false);
-    } else
-      // close edit mode if press Enter and the field not valid
-      if (event.key === "Escape") {
-        enableEdit(false);
-        window.removeEventListener('mousedown', mouseClickCallback);
-      }
+    }
+    // close edit mode if press Enter and the field not valid
+    else if (event.key === 'Escape') {
+      enableEdit(false);
+      window.removeEventListener('mousedown', mouseClickCallback);
+    }
   }
 
   return (
@@ -111,9 +114,12 @@ const EditableColumn = forwardRef(function EditableColumn(
         </span>
       )}
       {enabled && (
-        <div style={{
-          display: 'table-cell', verticalAlign: 'middle'
-        }} >
+        <div
+          style={{
+            display: 'table-cell',
+            verticalAlign: 'middle',
+          }}
+        >
           <Input
             data-editable-column
             style={{
@@ -128,7 +134,9 @@ const EditableColumn = forwardRef(function EditableColumn(
             type={type}
             onChange={handleValidation}
             onKeyUp={handleSave}
-            onKeyDown={(e) => { if (e.key === "Tab") e.preventDefault() }}
+            onKeyDown={(e) => {
+              if (e.key === 'Tab') e.preventDefault();
+            }}
             {...InputProps}
           />
         </div>

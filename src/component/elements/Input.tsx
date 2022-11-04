@@ -51,7 +51,6 @@ const styles: Record<
   },
 };
 
-
 export interface InputStyle {
   input?: CSSProperties;
   inputWrapper?: CSSProperties;
@@ -91,7 +90,6 @@ function check(value, type) {
   }
   return true;
 }
-
 
 const Input = forwardRef(
   (
@@ -153,7 +151,6 @@ const Input = forwardRef(
     }
 
     function onChangeHandler(e) {
-
       const _value: string = e.target.value;
 
       if (check(_value, type) && checkValue(_value)) {
