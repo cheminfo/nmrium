@@ -31,9 +31,6 @@ const containerStyles = css`
     user-select: none;
   }
 
-  
-
-
 `;
 
 interface NMRiumContainerProps {
@@ -52,20 +49,23 @@ const NMRiumContainer = forwardRef<HTMLDivElement, NMRiumContainerProps>(functio
     const divRef = useCombinedRefs([ref])
 
     useEffect(() => {
-        const div = divRef.current;
+        const div = divRef.current as HTMLDivElement;
         if (!div) {
             return;
         }
         function mouseEnterHandler() {
-            div.focus();
+            div.focus()
+
         }
         function mouseLeaveHandler() {
             div.blur();
         }
+
         div.addEventListener('mouseenter', mouseEnterHandler);
+        div.addEventListener('mouseleave', mouseLeaveHandler);
         return () => {
             div.removeEventListener('mouseenter', mouseEnterHandler);
-            div.removeEventListener('mouseout', mouseLeaveHandler);
+            div.removeEventListener('mouseleave', mouseLeaveHandler);
         };
     }, [divRef]);
 
@@ -76,8 +76,6 @@ const NMRiumContainer = forwardRef<HTMLDivElement, NMRiumContainerProps>(functio
         ref={divRef}
         css={containerStyles}
         onContextMenu={preventContextMenuHandler}
-        onMouseEnter={(e) => e.currentTarget.focus()}
-        onMouseLeave={(e) => e.currentTarget.blur()}
     >
         {props.children}
     </div >);
