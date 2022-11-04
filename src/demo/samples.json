@@ -184,7 +184,7 @@
   },
   {
     "groupName": "Test",
-    "children": [ 
+    "children": [
       {
         "title": "empty",
         "view": "Test"
@@ -201,5 +201,4 @@
       }
     ]
   }
-
 ]
