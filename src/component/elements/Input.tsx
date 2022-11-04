@@ -2,12 +2,12 @@ import debounce from 'lodash/debounce';
 import {
   useState,
   useEffect,
-  useCallback,
   useRef,
   CSSProperties,
   forwardRef,
   ForwardedRef,
   ReactElement,
+  KeyboardEvent,
 } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs';
@@ -51,9 +51,6 @@ const styles: Record<
   },
 };
 
-export type InputKeyboardEvent = React.KeyboardEvent & {
-  target: { name: string; value: string | number };
-};
 
 export interface InputStyle {
   input?: CSSProperties;
@@ -72,8 +69,8 @@ export interface InputProps
   renderIcon?: (() => ReactElement) | null;
   canClear?: boolean;
   onClear?: () => void;
-  onKeyDown?: (event: InputKeyboardEvent) => void;
-  onKeyUp?: (event: InputKeyboardEvent) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  onKeyUp?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 function identity<T = unknown>(value: T): T {
@@ -158,6 +155,7 @@ const Input = forwardRef(
     function onChangeHandler(e) {
 
       const _value: string = e.target.value;
+
       if (check(_value, type) && checkValue(_value)) {
         const formatValue = format();
 
@@ -174,26 +172,6 @@ const Input = forwardRef(
           onChange(val);
         }
       }
-    }
-
-
-    function handleKeyDown(event) {
-      onKeyDown({
-        ...event,
-        target: {
-          name: event.target.name,
-          value: getValue(valueRef.current),
-        },
-      });
-    }
-    function handleKeyUp(event) {
-      onKeyUp({
-        ...event,
-        target: {
-          name: event.target.name,
-          value: getValue(valueRef.current),
-        },
-      });
     }
 
     function clearHandler() {
@@ -221,8 +199,8 @@ const Input = forwardRef(
           type="text"
           value={val}
           onChange={onChangeHandler}
-          onKeyDown={handleKeyDown}
-          onKeyUp={handleKeyUp}
+          onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
           onKeyPress={stopPropagation}
           onDoubleClick={stopPropagation}
           onFocus={onFocus}
