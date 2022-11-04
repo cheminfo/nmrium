@@ -24,12 +24,6 @@ import { useCheckToolsVisibility } from './useCheckToolsVisibility';
 import useExport from './useExport';
 import useToolsFunctions from './useToolsFunctions';
 
-function handleWithIgnoreMetaKey(e, handler) {
-  if (!e.metaKey) {
-    handler();
-  }
-}
-
 function throw1DSelectSpectraError(label: string, displayerMode) {
   throw new Error(
     `${
@@ -205,120 +199,82 @@ export function useKeyboardShortcuts() {
     }
   }
 
-  function handleZoomOut(e) {
-    handleWithIgnoreMetaKey(e, () => {
-      if (isToolVisible('zoomOut')) {
-        handleFullZoomOut();
-      }
-    });
-  }
-  function handleZoom(e) {
-    handleWithIgnoreMetaKey(e, () => {
-      if (isToolVisible('zoom')) {
-        handleChangeOption(options.zoom.id);
-      }
-    });
-  }
-  function handleRangesAndZonesPicking(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (isToolVisible('zonePicking')) {
-        handleChangeOption(options.zonePicking.id);
-      } else if (isToolVisible('rangePicking')) {
-        handleChangeOption(options.rangePicking.id);
-      } else {
-        const label =
-          displayerMode === DISPLAYER_MODE.DM_2D
-            ? options.zonePicking.label
-            : options.rangePicking.label;
-        throw new Error(`Select a spectrum to proceed with ${label} `);
-      }
+  function handleZoomOut() {
+    if (isToolVisible('zoomOut')) {
+      handleFullZoomOut();
     }
-
-    handleWithIgnoreMetaKey(e, handler);
   }
-  function handleApodizationAndPhaseCorrectionFilter(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (isToolVisible('apodization')) {
-        handleChangeOption(options.apodization.id);
-      } else if (isToolVisible('phaseCorrection')) {
-        handleChangeOption(options.phaseCorrection.id);
-      } else {
-        throw1DSelectSpectraError(
-          `${options.phaseCorrection.label} or ${options.apodization.label}`,
-          displayerMode,
-        );
-      }
+  function handleZoom() {
+    if (isToolVisible('zoom')) {
+      handleChangeOption(options.zoom.id);
     }
-
-    handleWithIgnoreMetaKey(e, handler);
+  }
+  function handleRangesAndZonesPicking() {
+    if (isToolVisible('zonePicking')) {
+      handleChangeOption(options.zonePicking.id);
+    } else if (isToolVisible('rangePicking')) {
+      handleChangeOption(options.rangePicking.id);
+    } else {
+      const label =
+        displayerMode === DISPLAYER_MODE.DM_2D
+          ? options.zonePicking.label
+          : options.rangePicking.label;
+      throw new Error(`Select a spectrum to proceed with ${label} `);
+    }
+  }
+  function handleApodizationAndPhaseCorrectionFilter() {
+    if (isToolVisible('apodization')) {
+      handleChangeOption(options.apodization.id);
+    } else if (isToolVisible('phaseCorrection')) {
+      handleChangeOption(options.phaseCorrection.id);
+    } else {
+      throw1DSelectSpectraError(
+        `${options.phaseCorrection.label} or ${options.apodization.label}`,
+        displayerMode,
+      );
+    }
   }
 
-  function handleBaseLineCorrection(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (isToolVisible('baselineCorrection')) {
-        handleChangeOption(options.baselineCorrection.id);
-      } else {
-        throw1DSelectSpectraError(
-          options.baselineCorrection.label,
-          displayerMode,
-        );
-      }
+  function handleBaseLineCorrection() {
+    if (isToolVisible('baselineCorrection')) {
+      handleChangeOption(options.baselineCorrection.id);
+    } else {
+      throw1DSelectSpectraError(
+        options.baselineCorrection.label,
+        displayerMode,
+      );
     }
-    handleWithIgnoreMetaKey(e, handler);
   }
-  function handlePeakPicking(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (isToolVisible('peakPicking')) {
-        handleChangeOption(options.peakPicking.id);
-      } else {
-        throw1DSelectSpectraError(options.peakPicking.label, displayerMode);
-      }
+  function handlePeakPicking() {
+    if (isToolVisible('peakPicking')) {
+      handleChangeOption(options.peakPicking.id);
+    } else {
+      throw1DSelectSpectraError(options.peakPicking.label, displayerMode);
     }
-    handleWithIgnoreMetaKey(e, handler);
   }
-  function handleIntegralPicking(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (isToolVisible('integral')) {
-        handleChangeOption(options.integral.id);
-      } else {
-        throw1DSelectSpectraError(options.integral.label, displayerMode);
-      }
+  function handleIntegralPicking() {
+    if (isToolVisible('integral')) {
+      handleChangeOption(options.integral.id);
+    } else {
+      throw1DSelectSpectraError(options.integral.label, displayerMode);
     }
-    handleWithIgnoreMetaKey(e, handler);
   }
-  function handleExclusionZonePicking(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (isToolVisible('exclusionZones')) {
-        handleChangeOption(options.exclusionZones.id);
-      } else if (displayerMode !== DISPLAYER_MODE.DM_1D) {
-        throw new Error('Switch to 1D Mode');
-      }
+  function handleExclusionZonePicking() {
+    if (isToolVisible('exclusionZones')) {
+      handleChangeOption(options.exclusionZones.id);
+    } else if (displayerMode !== DISPLAYER_MODE.DM_1D) {
+      throw new Error('Switch to 1D Mode');
     }
-    handleWithIgnoreMetaKey(e, handler);
   }
-  function handleAlignSpectraVertical(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (allow1DTool && isToolVisible('spectraCenterAlignments')) {
-        alignSpectrumsVerticallyHandler();
-      }
+  function handleAlignSpectraVertical() {
+    if (allow1DTool && isToolVisible('spectraCenterAlignments')) {
+      alignSpectrumsVerticallyHandler();
     }
-    handleWithIgnoreMetaKey(e, handler);
   }
-  function handleStackSpectra(e) {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handler() {
-      if (allow1DTool && isToolVisible('spectraStackAlignments')) {
-        changeDisplayViewModeHandler();
-      }
+  function handleStackSpectra() {
+    if (allow1DTool && isToolVisible('spectraStackAlignments')) {
+      changeDisplayViewModeHandler();
     }
-    handleWithIgnoreMetaKey(e, handler);
   }
 
   const shortcutProps = useKbs([
