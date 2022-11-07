@@ -109,16 +109,11 @@ function MultipleSpectraAnalysisPanelInner({
         >
           <Button
             popupTitle="Copy To Clipboard"
-            // style={styles.button}
             onClick={copyToClipboardHandler}
           >
             <FaFileExport />
           </Button>
-          <Button
-            popupTitle="Spectra calibration"
-            // style={styles.button}
-            onClick={openAlignSpectra}
-          >
+          <Button popupTitle="Spectra calibration" onClick={openAlignSpectra}>
             <SvgNmrOverlay style={{ fontSize: '18px' }} />
           </Button>
           <ToggleButton
