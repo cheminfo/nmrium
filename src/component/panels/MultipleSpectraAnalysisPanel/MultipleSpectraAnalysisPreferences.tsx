@@ -2,10 +2,8 @@
 import { css } from '@emotion/react';
 import {
   forwardRef,
-  useCallback,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -44,7 +42,7 @@ const styles = css`
     margin: 0 !important;
   }
 
-  .input.disbale {
+  .input.disable {
     background-color: #e8e8e8;
     border-radius: 5px;
   }
@@ -92,77 +90,45 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
     refForm.current.setValues({ columns: result, code: data.code });
   }, [data]);
 
-  const columnsKeys = useMemo(() => {
-    return Object.keys(columns);
-  }, [columns]);
+  const columnsKeys = Object.keys(columns);
 
-  const preferncesSchema = useMemo(() => {
-    function columnSchema() {
-      return Object.fromEntries(
-        columnsKeys.map((key) => [
-          key,
-          Yup.object().shape({
-            tempKey: Yup.string()
-              .required()
-              .test('unique', 'must be unique column name', (colmnName) => {
-                const formData = refForm.current.values.columns;
-                const cols: Array<string | undefined> = [];
-                for (const colKey of Object.keys(formData)) {
-                  if (formData[colKey].tempKey === colmnName) {
-                    cols.push(colmnName);
-                  }
-                }
-                return cols.length === 1;
-              }),
-            ...(columns[key].type === COLUMNS_TYPES.FORMULA
-              ? { formula: Yup.string().required() }
-              : {}),
-            index: Yup.string().required(),
-          }),
-        ]),
-      );
+  const preferencesSchema = Yup.object().shape({
+    columns: Yup.lazy((data) => {
+      return Yup.object().shape(columnSchema(columnsKeys, data));
+    }),
+  });
+
+  function submitHandler(values) {
+    onAfterSave?.(true);
+    const result: any = {};
+    for (const [key, value] of Object.entries(values.columns)) {
+      result[key] = { ...columns[key], ...(value as any) };
     }
 
-    return Yup.object().shape({
-      columns: Yup.object().shape(columnSchema()),
+    dispatch({
+      type: SET_ANALYZE_SPECTRA_COLUMNS,
+      payload: { code: values.code, columns: result },
     });
-  }, [columns, columnsKeys, refForm]);
+  }
 
-  const submitHandler = useCallback(
-    (values) => {
-      onAfterSave?.(true);
-      const result: any = {};
-      for (const [key, value] of Object.entries(values.columns)) {
-        result[key] = { ...columns[key], ...(value as any) };
-      }
-      dispatch({
-        type: SET_ANALYZE_SPECTRA_COLUMNS,
-        payload: { code: values.code, columns: result },
-      });
-    },
-    [columns, dispatch, onAfterSave],
-  );
-
-  const addNewColumn = useCallback((index) => {
-    setColumns((prevData) => {
-      return {
-        ...prevData,
-        [`temp${index}`]: {
-          tempKey: '',
-          type: 'FORMULA',
-          valueKey: 'value',
-          formula: '',
-          index,
-        },
-      };
+  function addNewColumn(index) {
+    setColumns({
+      ...columns,
+      [`temp${index}`]: {
+        tempKey: '',
+        type: 'FORMULA',
+        valueKey: 'value',
+        formula: '',
+        index,
+      },
     });
-  }, []);
-
+  }
   return (
     <FormikForm
       ref={refForm}
+      key={JSON.stringify(columns)}
       initialValues={{ columns, code: null }}
-      validationSchema={preferncesSchema}
+      validationSchema={preferencesSchema}
       onSubmit={submitHandler}
     >
       {columnsKeys && (
@@ -181,27 +147,17 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
                 <tr key={key}>
                   <td className="counter">{index + 1}</td>
                   <td className="label">
-                    <FormikInput
-                      key={key}
-                      name={`columns.${key}.tempKey`}
-                      value={columns[key].tempKey}
-                    />
+                    <FormikInput key={key} name={`columns.${key}.tempKey`} />
                   </td>
                   <td>
                     {columns[key].type === COLUMNS_TYPES.FORMULA ? (
-                      <FormikInput
-                        name={`columns.${key}.formula`}
-                        value={columns[key].formula}
-                      />
+                      <FormikInput name={`columns.${key}.formula`} />
                     ) : (
-                      <div className="input disbale" />
+                      <div className="input disable" />
                     )}
                   </td>
                   <td className="index">
-                    <FormikInput
-                      name={`columns.${key}.index`}
-                      value={columns[key].index}
-                    />
+                    <FormikInput name={`columns.${key}.index`} />
                   </td>
                   <td className="operation-col">
                     {columnsKeys.length === index + 1 && (
@@ -222,6 +178,31 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
       )}
       <MultipleAnalysisCodeEditor data={data} />
     </FormikForm>
+  );
+}
+
+function columnSchema(columnsKeys, data) {
+  return Object.fromEntries(
+    columnsKeys.map((key) => [
+      key,
+      Yup.object().shape({
+        tempKey: Yup.string()
+          .required()
+          .test('unique', 'must be unique column name', (columnName) => {
+            const cols: Array<string | undefined> = [];
+            for (const colKey of Object.keys(data)) {
+              if (data[colKey].tempKey === columnName) {
+                cols.push(columnName);
+              }
+            }
+            return cols.length === 1;
+          }),
+        ...(data[key].type === COLUMNS_TYPES.FORMULA
+          ? { formula: Yup.string().required() }
+          : {}),
+        index: Yup.string().required(),
+      }),
+    ]),
   );
 }
 
