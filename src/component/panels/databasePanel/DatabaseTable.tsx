@@ -28,119 +28,129 @@ const overFlowStyle: CSSProperties = {
 const databaseTableColumns = (
   databasePreferences,
 ): (CustomColumn & { showWhen: string })[] => [
-    {
-      showWhen: 'showNames',
-      index: 1,
-      Header: 'names',
-      accessor: (row) => (row.names ? row.names.join(',') : ''),
-      enableRowSpan: true,
-      style: {
-        width: '100px',
-        minWidth: '100px',
-        maxWidth: '100px',
-        ...overFlowStyle,
-      },
+  {
+    showWhen: 'showNames',
+    index: 1,
+    Header: 'names',
+    accessor: (row) => (row.names ? row.names.join(',') : ''),
+    enableRowSpan: true,
+    style: {
+      width: '100px',
+      minWidth: '100px',
+      maxWidth: '100px',
+      ...overFlowStyle,
     },
-    {
-      showWhen: 'range.show',
-      index: 2,
-      Header: 'From - To',
-      accessor: (row) => {
-        const rangeFormat = databasePreferences.range.format;
-        return row?.from && row?.to
-          ? `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
+  },
+  {
+    showWhen: 'range.show',
+    index: 2,
+    Header: 'From - To',
+    accessor: (row) => {
+      const rangeFormat = databasePreferences.range.format;
+      return row?.from && row?.to
+        ? `${formatNumber(row.from, rangeFormat)} - ${formatNumber(
             row.to,
             rangeFormat,
           )}`
-          : '';
-      },
-      enableRowSpan: true,
+        : '';
     },
-    {
-      showWhen: 'delta.show',
-      index: 3,
-      Header: 'δ (ppm)',
-      accessor: (row) =>
-        `${formatNumber(row.delta, databasePreferences.delta.format)}`,
-    },
+    enableRowSpan: true,
+  },
+  {
+    showWhen: 'delta.show',
+    index: 3,
+    Header: 'δ (ppm)',
+    accessor: (row) =>
+      row.delta
+        ? formatNumber(row.delta, databasePreferences.delta.format)
+        : '',
+  },
 
-    {
-      showWhen: 'showAssignment',
-      index: 4,
-      Header: 'Assignment',
-      accessor: 'assignment',
-    },
-    {
-      showWhen: 'showMultiplicity',
-      index: 5,
-      Header: 'Multi.',
-      accessor: 'multiplicity',
-    },
+  {
+    showWhen: 'showAssignment',
+    index: 4,
+    Header: 'Assignment',
+    accessor: 'assignment',
+  },
+  {
+    showWhen: 'showMultiplicity',
+    index: 5,
+    Header: 'Multi.',
+    accessor: 'multiplicity',
+  },
 
-    {
-      showWhen: 'coupling.show',
-      index: 6,
-      Header: 'J (Hz)',
-      accessor: (row) =>
-        row?.coupling
-          ? formatNumber(row.coupling, databasePreferences.coupling.format)
-          : '',
-      style: {
-        width: '60px',
-        minWidth: '60px',
-        ...overFlowStyle,
-      },
+  {
+    showWhen: 'coupling.show',
+    index: 6,
+    Header: 'J (Hz)',
+    accessor: (row) => {
+      if (!row?.coupling) {
+        return '';
+      } else {
+        return row.coupling
+          .split(',')
+          .map((value) =>
+            formatNumber(value, databasePreferences.coupling.format),
+          )
+          .join(',');
+      }
     },
-    {
-      showWhen: 'showSolvent',
-      index: 7,
-      Header: 'Solvent',
-      accessor: 'solvent',
-      style: {
-        width: '80px',
-        minWidth: '80px',
-        ...overFlowStyle,
-      },
+    style: {
+      width: '60px',
+      minWidth: '60px',
+      ...overFlowStyle,
     },
-    {
-      showWhen: 'showSmiles',
-      index: 8,
-      Header: 'structure',
-      accessor: 'index',
-      style: { height: 0 },
-      enableRowSpan: true,
-      Cell({ row }) {
-        const { idCode, coordinates } = row.original?.ocl || {};
-        const smiles = row.original?.smiles;
-        return (
-          <ResponsiveChart>
-            {({ width, height }) => {
-              if (idCode && coordinates) {
-                return (
-                  <IdcodeSvgRenderer
-                    height={height}
-                    width={width}
-                    idcode={idCode}
-                    coordinates={coordinates}
-                  />
-                );
-              } else if (smiles) {
-                return (
-                  <SmilesSvgRenderer
-                    height={height}
-                    width={width}
-                    smiles={smiles}
-                  />
-                );
-              } else {
-                return null;
-              }
-            }}
-          </ResponsiveChart>
-        );
-      },
+  },
+  {
+    showWhen: 'showSolvent',
+    index: 7,
+    Header: 'Solvent',
+    accessor: 'solvent',
+    style: {
+      width: '80px',
+      minWidth: '80px',
+      ...overFlowStyle,
     },
-  ];
+  },
+  {
+    showWhen: 'showSmiles',
+    index: 8,
+    Header: 'structure',
+    accessor: 'index',
+    style: { height: 0 },
+    enableRowSpan: true,
+    Cell({ row }) {
+      const { idCode, coordinates } = row.original?.ocl || {};
+      const smiles = row.original?.smiles;
+      return (
+        <ResponsiveChart>
+          {({ width, height }) => {
+            if (idCode && coordinates) {
+              return (
+                <IdcodeSvgRenderer
+                  height={height}
+                  width={width}
+                  idcode={idCode}
+                  coordinates={coordinates}
+                />
+              );
+            } else if (smiles) {
+              return (
+                <SmilesSvgRenderer
+                  height={height}
+                  width={width}
+                  smiles={smiles}
+                />
+              );
+            } else {
+              return null;
+            }
+          }}
+        </ResponsiveChart>
+      );
+    },
+  },
+];
 
 function DatabaseTable({ data, onAdd, totalCount }: DatabaseTableProps) {
   const databasePreferences = usePanelPreferences('database');
