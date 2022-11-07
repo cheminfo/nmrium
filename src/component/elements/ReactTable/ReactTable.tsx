@@ -110,7 +110,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     }
   }
 
-
   function clickHandler(event, row) {
     setRowIndex(row.index);
     onClick?.(event, row);
@@ -131,12 +130,13 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     }, 1000);
   }
 
-
-  const end = virtualBoundary.end === rows.length - 1 ? virtualBoundary.end + 1 : virtualBoundary.end
+  const end =
+    virtualBoundary.end === rows.length - 1
+      ? virtualBoundary.end + 1
+      : virtualBoundary.end;
   const rowsData = enableVirtualScroll
     ? rows.slice(virtualBoundary.start, end)
     : rows;
-
 
   const index =
     rowsData[rowsData.length - 1]?.original[indexKey] ||
@@ -215,7 +215,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
 });
 
 export interface TableVirtualBoundary {
-  start: number; end: number
+  start: number;
+  end: number;
 }
 
 function ReactTable(props: ReactTableProps) {
@@ -226,7 +227,8 @@ function ReactTable(props: ReactTableProps) {
 
   const [tableVirtualBoundary, setTableVirtualBoundary] =
     useState<TableVirtualBoundary>({
-      start: 1, end: 0
+      start: 1,
+      end: 0,
     });
 
   useLayoutEffect(() => {
@@ -235,9 +237,7 @@ function ReactTable(props: ReactTableProps) {
       visibleRowsCountRef.current = Math.ceil(
         (height - header[0].clientHeight) / approxItemHeight,
       );
-      setTableVirtualBoundary(
-        { start: 0, end: visibleRowsCountRef.current }
-      );
+      setTableVirtualBoundary({ start: 0, end: visibleRowsCountRef.current });
     }
   }, [approxItemHeight, height]);
 
@@ -289,15 +289,13 @@ function ReactTable(props: ReactTableProps) {
     return lookForGroupIndex(currentIndx, 1);
   }
 
-
-
   function scrollHandler() {
     if (containerRef.current) {
       const { scrollTop } = containerRef.current;
       const currentIndx = Math.ceil(scrollTop / approxItemHeight);
       const start = findStartIndex(currentIndx, visibleRowsCountRef.current);
       const end = findEndIndex(currentIndx, visibleRowsCountRef.current);
-      setTableVirtualBoundary({ start, end })
+      setTableVirtualBoundary({ start, end });
     }
   }
 
