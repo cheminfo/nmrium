@@ -60,19 +60,10 @@ const databaseTableColumns = (
     showWhen: 'delta.show',
     index: 3,
     Header: 'δ (ppm)',
-    style: overFlowStyle,
-    accessor: (row) => {
-      if (typeof row.delta === 'string' && !row?.delta) {
-        return row.delta
-          .split(',')
-          .map((value) => formatNumber(value, databasePreferences.delta.format))
-          .join(',');
-      }
-
-      return row?.delta
+    accessor: (row) =>
+      row.delta
         ? formatNumber(row.delta, databasePreferences.delta.format)
-        : '';
-    },
+        : '',
   },
 
   {
@@ -92,10 +83,18 @@ const databaseTableColumns = (
     showWhen: 'coupling.show',
     index: 6,
     Header: 'J (Hz)',
-    accessor: (row) =>
-      row?.coupling
-        ? formatNumber(row.coupling, databasePreferences.coupling.format)
-        : '',
+    accessor: (row) => {
+      if (!row?.coupling) {
+        return '';
+      } else {
+        return row.coupling
+          .split(',')
+          .map((value) =>
+            formatNumber(value, databasePreferences.coupling.format),
+          )
+          .join(',');
+      }
+    },
     style: {
       width: '60px',
       minWidth: '60px',
