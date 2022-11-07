@@ -27,7 +27,9 @@ export default class NmriumPage {
   }
 
   public async clickPanel(title: string) {
-    await this.page.click(`_react=AccordionItem[title="${title}"]`);
+    await this.page.click(`_react=AccordionItem[title="${title}"]`, {
+      position: { x: 10, y: 10 },
+    });
   }
 
   public async clickTool(id: string) {

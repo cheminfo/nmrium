@@ -163,3 +163,21 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     ).toHaveCount(5);
   });
 });
+
+test('Processed spectra filters', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open 13c spectrum', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Processed 13C Spectrum');
+
+    // wait specturm to load
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+  });
+  await test.step('Check filters panel', async () => {
+    //Open peaks panel
+    await nmrium.clickPanel('Filters');
+
+    const filters = nmrium.page.locator('_react=FilterTable');
+    await expect(filters).toHaveCount(6);
+  });
+});
