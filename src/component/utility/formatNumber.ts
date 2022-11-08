@@ -13,9 +13,15 @@ function formatNumber(
 ) {
   const { prefix = '', suffix = '', defaultFormat = '0.00' } = options;
 
-  return typeof value === 'number' || !Number.isNaN(Number(value))
-    ? prefix + numeral(value).format(format || defaultFormat) + suffix
-    : value;
+  if (typeof value === 'number' || !Number.isNaN(Number(value))) {
+    const formattedValue = numeral(value).format(format || defaultFormat);
+    if (prefix || suffix) {
+      return prefix + formattedValue + suffix;
+    }
+    return Number(formattedValue);
+  }
+
+  return value;
 }
 
 function getNumberOfDecimals(value: number | string) {
