@@ -17,6 +17,7 @@ import {
   TableInstance,
   CellProps,
   Column as ReactColumn,
+  UseSortByColumnOptions,
 } from 'react-table';
 import { useMeasure } from 'react-use';
 
@@ -37,13 +38,14 @@ import useRowSpan, {
 } from './utility/useRowSpan';
 
 interface ExtraColumn<T extends object> {
-  sortType?: string;
   enableRowSpan?: boolean;
   style?: CSSProperties;
   Cell?: (cell: CellProps<T, any>) => JSX.Element | string;
 }
 
-export type Column<T extends object> = ReactColumn<T> & ExtraColumn<T>;
+export type Column<T extends object> = ReactColumn<T> &
+  ExtraColumn<T> &
+  UseSortByColumnOptions<T>;
 
 type TableInstanceWithHooks = TableInstance & {
   rowSpanHeaders: RowSpanHeaders;

@@ -50,7 +50,6 @@ function MultipleSpectraAnalysisTable({
         Header: '#',
         index: 0,
         accessor: (_, index) => index !== undefined && index + 1,
-        sortType: 'basic',
       },
     ];
 
@@ -88,7 +87,7 @@ function MultipleSpectraAnalysisTable({
           Header: () => headerHandler(data.columns[columnKey], columnKey),
           id: columnKey,
           accessor: (row) => cellHandler(row, columnKey, valueKey),
-          sortType: 'basic',
+          disableSortBy: true,
         });
       }
     }

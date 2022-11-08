@@ -20,26 +20,33 @@ function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
           headerGroup.getHeaderGroupProps();
         return (
           <tr key={headerGroupKey} {...restHeaderGroupProps}>
-            {headerGroup.headers.map((column) => (
-              <th
-                key={column.getHeaderProps().key}
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-                style={{ ...column.style, height: '1px' }}
-              >
-                <span style={sortIconStyle}>
-                  {column.isSorted ? (
-                    column.isSortedDesc ? (
-                      <FaSortAmountDown />
+            {headerGroup.headers.map((column) => {
+              const {
+                key: headerKey,
+                style: headerStyle,
+                ...restHeaderProps
+              } = column.getHeaderProps(column.getSortByToggleProps());
+              return (
+                <th
+                  key={headerKey}
+                  {...restHeaderProps}
+                  style={{ ...headerStyle, ...column.style, height: '1px' }}
+                >
+                  <span style={sortIconStyle}>
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <FaSortAmountDown />
+                      ) : (
+                        <FaSortAmountUp />
+                      )
                     ) : (
-                      <FaSortAmountUp />
-                    )
-                  ) : (
-                    ''
-                  )}
-                </span>
-                {column.render('Header') && column.render('Header')}
-              </th>
-            ))}
+                      ''
+                    )}
+                  </span>
+                  {column.render('Header') && column.render('Header')}
+                </th>
+              );
+            })}
           </tr>
         );
       })}
