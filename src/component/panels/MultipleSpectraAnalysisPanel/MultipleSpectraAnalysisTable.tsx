@@ -49,7 +49,7 @@ function MultipleSpectraAnalysisTable({
       {
         Header: '#',
         index: 0,
-        accessor: (row) => row.index,
+        accessor: (_, index) => index !== undefined && index + 1,
         sortType: 'basic',
       },
     ];
