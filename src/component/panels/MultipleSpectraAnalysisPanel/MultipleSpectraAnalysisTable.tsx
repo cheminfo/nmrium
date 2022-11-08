@@ -49,12 +49,13 @@ function MultipleSpectraAnalysisTable({
       {
         Header: '#',
         index: 0,
-        Cell: ({ row }) => row.index + 1,
+        accessor: (row) => row.index,
+        sortType: 'basic',
       },
     ];
 
     function cellHandler(row, columnKey, valueKey) {
-      const value = row.original[columnKey][valueKey];
+      const value = row[columnKey][valueKey];
       const result =
         value instanceof Error ? (
           <span style={{ color: 'red' }}>{value.message}</span>
@@ -84,9 +85,10 @@ function MultipleSpectraAnalysisTable({
         const { valueKey, index: columnIndex } = data.columns[columnKey];
         addCustomColumn(columns, {
           index: columnIndex + 1,
-          Cell: ({ row }) => cellHandler(row, columnKey, valueKey),
           Header: () => headerHandler(data.columns[columnKey], columnKey),
           id: columnKey,
+          accessor: (row) => cellHandler(row, columnKey, valueKey),
+          sortType: 'basic',
         });
       }
     }
