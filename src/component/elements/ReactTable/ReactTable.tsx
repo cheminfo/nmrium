@@ -11,7 +11,13 @@ import {
   UIEvent,
   CSSProperties,
 } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import {
+  useTable,
+  useSortBy,
+  TableInstance,
+  CellProps,
+  Column as ReactColumn,
+} from 'react-table';
 import { useMeasure } from 'react-use';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
@@ -25,7 +31,23 @@ import {
   ReactTableProvider,
   useReactTableContext,
 } from './utility/ReactTableContext';
-import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
+import useRowSpan, {
+  prepareRowSpan,
+  RowSpanHeaders,
+} from './utility/useRowSpan';
+
+interface ExtraColumn<T extends object> {
+  sortType?: string;
+  enableRowSpan?: boolean;
+  style?: CSSProperties;
+  Cell?: (cell: CellProps<T, any>) => JSX.Element | string;
+}
+
+export type Column<T extends object> = ReactColumn<T> & ExtraColumn<T>;
+
+type TableInstanceWithHooks = TableInstance & {
+  rowSpanHeaders: RowSpanHeaders;
+};
 
 interface ReactTableProps extends ClickEvent {
   data: any;
@@ -45,10 +67,11 @@ interface ReactTableInnerProps extends ReactTableProps {
 }
 
 const styles = {
-  table: (enableVirtualScroll: boolean) => {
+  table: (enableVirtualScroll: boolean): CSSProperties => {
     if (enableVirtualScroll) {
       return { position: 'sticky', top: 0 };
     }
+    return {};
   },
 };
 
@@ -103,7 +126,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     },
     useSortBy,
     useRowSpan,
-  );
+  ) as TableInstanceWithHooks;
   const contextMenuHandler = useCallback(
     (e, row) => {
       if (!checkModifierKeyActivated(e)) {
@@ -184,12 +207,12 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                 rowSpanHeaders,
                 groupKey,
               );
-
+              const { key, ...restRowProps } = row.getRowProps();
               return (
                 <ReactTableRow
-                  key={row.key}
+                  key={key}
+                  {...restRowProps}
                   row={row}
-                  {...row.getRowProps()}
                   onContextMenu={(e) => contextMenuHandler(e, row)}
                   onClick={highlightActiveRow ? clickHandler : onClick}
                   highlightedSource={highlightedSource}

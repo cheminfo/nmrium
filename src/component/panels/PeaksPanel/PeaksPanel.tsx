@@ -5,7 +5,7 @@ import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
-import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
+import { Datum1D, Info1D, Peak, Peaks } from '../../../data/types/data1d';
 import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -35,6 +35,11 @@ interface PeaksPanelInnerProps {
   activeTab: string;
   info: Info1D;
   peaksOptions: { showPeaksShapes: boolean; showPeaksSum: boolean };
+}
+
+export interface PeakRecord extends Peak {
+  xHz: number;
+  isConstantlyHighlighted: boolean;
 }
 
 function PeaksPanelInner({
@@ -79,7 +84,7 @@ function PeaksPanelInner({
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const filteredPeaks = useMemo(() => {
+  const filteredPeaks = useMemo<PeakRecord[]>(() => {
     if (peaks?.values) {
       const [from, to] = xDomain;
       const _peaks = filterIsActive
@@ -93,9 +98,9 @@ function PeaksPanelInner({
           return {
             ...peakProperties,
             x,
-            xHz: info?.originFrequency ? value * info.originFrequency : '',
+            xHz: info?.originFrequency && value * info.originFrequency,
             y,
-            width: width || '',
+            width,
             isConstantlyHighlighted: isInRange(value, { from, to }),
           };
         })

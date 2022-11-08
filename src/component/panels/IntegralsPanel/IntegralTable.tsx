@@ -54,12 +54,12 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     },
     [dispatch],
   );
-  const initialColumns: CustomColumn[] = useMemo(
+  const initialColumns: CustomColumn<Integral>[] = useMemo(
     () => [
       {
         index: 1,
         Header: '#',
-        Cell: ({ row }) => row.index + 1,
+        accessor: (_, index) => index + 1,
         width: 10,
       },
 
@@ -82,7 +82,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         Header: 'Kind',
         sortType: 'basic',
         resizable: true,
-        accessor: (row) => row.kind,
+        accessor: 'kind',
         Cell: ({ row }) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
@@ -122,7 +122,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
   );
   const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const COLUMNS: (CustomColumn & {
+  const COLUMNS: (CustomColumn<Integral> & {
     showWhen: string;
   })[] = useMemo(
     () => [
@@ -142,18 +142,21 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
           return <span>{`Relative ${n}`}</span>;
         },
         accessor: (row) => {
-          return formatNumber(
-            row.integral,
-            integralsPreferences.relative.format,
-          );
+          return row?.integral
+            ? formatNumber(row.integral, integralsPreferences.relative.format)
+            : '';
         },
         Cell: ({ row }) => {
-          const value = formatNumber(
-            row.original.integral,
-            integralsPreferences.relative.format,
-          );
-          const flag = checkIntegralKind(row.original);
-          const integral = flag ? value : `[ ${value} ]`;
+          let integral: string | number = '';
+
+          if (row.original?.integral) {
+            const value = formatNumber(
+              row.original.integral,
+              integralsPreferences.relative.format,
+            );
+            const flag = checkIntegralKind(row.original);
+            integral = flag ? value : `[ ${value} ]`;
+          }
 
           return (
             <EditableColumn

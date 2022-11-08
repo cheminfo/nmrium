@@ -45,7 +45,7 @@ function MultipleSpectraAnalysisTable({
   );
 
   const tableColumns = useMemo(() => {
-    const columns: CustomColumn[] = [
+    const columns: CustomColumn<any>[] = [
       {
         Header: '#',
         index: 0,

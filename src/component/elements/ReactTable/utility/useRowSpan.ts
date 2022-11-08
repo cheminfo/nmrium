@@ -1,3 +1,9 @@
+export type RowSpanHeaders = Array<{
+  cellIndex: number;
+  cellValue: string;
+  id: string;
+}>;
+
 export default function useRowSpan(hooks) {
   hooks.useInstance.push(reducer);
 }
@@ -17,7 +23,12 @@ function reducer(instance) {
   });
 }
 
-export function prepareRowSpan(rows, index, rowSpanHeaders, groupKey?: string) {
+export function prepareRowSpan(
+  rows,
+  index,
+  rowSpanHeaders: RowSpanHeaders,
+  groupKey?: string,
+) {
   const row = rows[index];
   for (let j = 0; j < row.allCells.length; j++) {
     const cell = row.allCells[j];
