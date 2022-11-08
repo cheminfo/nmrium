@@ -1,8 +1,16 @@
-import { memo } from 'react';
+import { CSSProperties } from 'react';
+import { FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 
 interface ReactTableHeaderProps {
   headerGroups: any;
 }
+
+const sortIconStyle: CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  left: '2px',
+};
 
 function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
   return (
@@ -16,12 +24,20 @@ function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
             <th
               key={column.getHeaderProps().key}
               {...column.getHeaderProps(column.getSortByToggleProps())}
-              style={column.style}
+              style={{ ...column.style, height: '1px' }}
             >
-              {column.render('Header')}
-              <span>
-                {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
+              <span style={sortIconStyle}>
+                {column.isSorted ? (
+                  column.isSortedDesc ? (
+                    <FaSortAmountDown />
+                  ) : (
+                    <FaSortAmountUp />
+                  )
+                ) : (
+                  ''
+                )}
               </span>
+              {column.render('Header') && column.render('Header')}
             </th>
           ))}
         </tr>
@@ -30,4 +46,4 @@ function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
   );
 }
 
-export default memo(ReactTableHeader);
+export default ReactTableHeader;
