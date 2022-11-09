@@ -1,7 +1,10 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, MouseEvent } from 'react';
 import { FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 
-interface ReactTableHeaderProps {
+interface TableCellEvent {
+  onClick: (e: MouseEvent<HTMLTableCellElement>) => void;
+}
+interface ReactTableHeaderProps extends TableCellEvent {
   headerGroups: any;
 }
 
@@ -12,7 +15,7 @@ const sortIconStyle: CSSProperties = {
   left: '2px',
 };
 
-function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
+function ReactTableHeader({ headerGroups, onClick }: ReactTableHeaderProps) {
   return (
     <thead>
       {headerGroups.map((headerGroup) => {
@@ -20,38 +23,55 @@ function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
           headerGroup.getHeaderGroupProps();
         return (
           <tr key={headerGroupKey} {...restHeaderGroupProps}>
-            {headerGroup.headers.map((column) => {
-              const {
-                key: headerKey,
-                style: headerStyle,
-                ...restHeaderProps
-              } = column.getHeaderProps(column.getSortByToggleProps());
-              return (
-                <th
-                  key={headerKey}
-                  {...restHeaderProps}
-                  style={{ ...headerStyle, ...column.style, height: '1px' }}
-                >
-                  <span style={sortIconStyle}>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <FaSortAmountDown />
-                      ) : (
-                        <FaSortAmountUp />
-                      )
-                    ) : (
-                      ''
-                    )}
-                  </span>
-                  {column.render('Header') && column.render('Header')}
-                </th>
-              );
-            })}
+            {headerGroup.headers.map((column) => (
+              <HeaderCell key={column.key} column={column} onClick={onClick} />
+            ))}
           </tr>
         );
       })}
     </thead>
   );
 }
+
+interface HeaderCellProps extends TableCellEvent {
+  column: any;
+}
+
+const HeaderCell = (props: HeaderCellProps) => {
+  const { column } = props;
+  const {
+    key: headerKey,
+    style: headerStyle,
+    onClick,
+    ...restHeaderProps
+  } = column.getHeaderProps(column.getSortByToggleProps());
+  function clickHandler(e: MouseEvent<HTMLTableCellElement>) {
+    if (onClick) {
+      onClick(e);
+      props.onClick(e);
+    }
+  }
+  return (
+    <th
+      key={headerKey}
+      {...restHeaderProps}
+      style={{ ...headerStyle, ...column.style, height: '1px' }}
+      onClick={clickHandler}
+    >
+      <span style={sortIconStyle}>
+        {column.isSorted ? (
+          column.isSortedDesc ? (
+            <FaSortAmountDown />
+          ) : (
+            <FaSortAmountUp />
+          )
+        ) : (
+          ''
+        )}
+      </span>
+      {column.render('Header') && column.render('Header')}
+    </th>
+  );
+};
 
 export default ReactTableHeader;

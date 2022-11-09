@@ -18,6 +18,7 @@ import {
   CellProps,
   Column as ReactColumn,
   UseSortByColumnOptions,
+  UseSortByInstanceProps,
 } from 'react-table';
 import { useMeasure } from 'react-use';
 
@@ -49,9 +50,12 @@ export type Column<T extends object> = ReactColumn<T> &
 
 type TableInstanceWithHooks = TableInstance & {
   rowSpanHeaders: RowSpanHeaders;
-};
+} & UseSortByInstanceProps<any>;
 
-interface ReactTableProps extends ClickEvent {
+interface SortEvent {
+  onSortEnd?: (data: any) => void;
+}
+interface ReactTableProps extends ClickEvent, SortEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
@@ -64,7 +68,7 @@ interface ReactTableProps extends ClickEvent {
   totalCount?: number;
 }
 
-interface ReactTableInnerProps extends ReactTableProps {
+interface ReactTableInnerProps extends ReactTableProps, SortEvent {
   onScroll: (event: UIEvent<HTMLDivElement>) => void;
 }
 
@@ -106,9 +110,11 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     highlightActiveRow = false,
     totalCount,
     indexKey = 'index',
+    onSortEnd,
   } = props;
 
   const contextRef = useRef<any>(null);
+  const isSortedEventTriggered = useRef<boolean>(false);
   const { index: indexBoundary } = useReactTableContext();
   const [rowIndex, setRowIndex] = useState<number>();
   const timeoutIdRef = useRef<NodeJS.Timeout>();
@@ -171,6 +177,18 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     rowsData[rowsData.length - 1]?.index;
   const total = totalCount ? totalCount : data.length;
 
+  useEffect(() => {
+    if (isSortedEventTriggered.current) {
+      const data = rows.map((row) => row.original);
+      onSortEnd?.(data);
+      isSortedEventTriggered.current = false;
+    }
+  }, [onSortEnd, rows]);
+
+  function headerClickHandler() {
+    isSortedEventTriggered.current = true;
+  }
+
   return (
     <>
       <div
@@ -198,7 +216,10 @@ const ReactTableInner = forwardRef(function ReactTableInner(
           css={ReactTableStyle}
           style={styles.table(enableVirtualScroll)}
         >
-          <ReactTableHeader headerGroups={headerGroups} />
+          <ReactTableHeader
+            headerGroups={headerGroups}
+            onClick={headerClickHandler}
+          />
           <tbody {...getTableBodyProps()}>
             {rowsData.map((row, index) => {
               prepareRow(row);
@@ -249,7 +270,7 @@ export interface TableVirtualConfig {
 }
 
 function ReactTable(props: ReactTableProps) {
-  const { data, approxItemHeight = 40, groupKey } = props;
+  const { data, approxItemHeight = 40, groupKey, onSortEnd } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [mRef, { height }] = useMeasure<HTMLDivElement>();
 
@@ -351,6 +372,7 @@ function ReactTable(props: ReactTableProps) {
       >
         <ReactTableInner
           onScroll={scrollHandler}
+          onSortEnd={onSortEnd}
           ref={containerRef}
           {...{ ...props }}
         />
