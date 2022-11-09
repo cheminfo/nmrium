@@ -25,10 +25,14 @@ export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
   return useMemo(() => {
     function formatFun(n: string) {
       return (value: any, formatKey = 'ppm', prefix = '', suffix = '') => {
-        return formatNumber(value, nucleusByKey?.[n.toLowerCase()][formatKey], {
-          prefix,
-          suffix,
-        });
+        return formatNumber(
+          value,
+          nucleusByKey?.[n.toLowerCase()]?.[formatKey],
+          {
+            prefix,
+            suffix,
+          },
+        );
       };
     }
 
