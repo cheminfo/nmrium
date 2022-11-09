@@ -72,6 +72,10 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   color: '#C0B000',
   marginBottom: 30,
 };
+const multipleSpectraAnalysisDefaultValues: PanelsPreferences['multipleSpectraAnalysis'] =
+  {
+    resortSpectra: true,
+  };
 
 export {
   getPeaksDefaultValues,
@@ -79,4 +83,5 @@ export {
   getRangeDefaultValues,
   getZoneDefaultValues,
   databaseDefaultValues,
+  multipleSpectraAnalysisDefaultValues,
 };
