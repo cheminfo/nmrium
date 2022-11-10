@@ -25,8 +25,7 @@ import {
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer, data } =
-    useChartData();
+  const { keysPreferences, displayerMode, data } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const modal = useModal();
@@ -359,7 +358,7 @@ function KeysListenerTracker() {
 
   const handleOnKeyDown = useCallback(
     (e) => {
-      if (checkNotInputField(e) && overDisplayer) {
+      if (checkNotInputField(e)) {
         const num = Number(e.code.slice(-1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
@@ -378,7 +377,6 @@ function KeysListenerTracker() {
       deleteHandler,
       highlight,
       keysPreferencesListenerHandler,
-      overDisplayer,
       toolsListenerHandler,
     ],
   );
