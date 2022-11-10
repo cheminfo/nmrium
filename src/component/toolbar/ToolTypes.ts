@@ -90,7 +90,7 @@ export const options: RecordOptions = {
   },
   rangePicking: {
     id: 'rangePicking',
-    label: 'Ranges Picking',
+    label: 'Range picking and multiplet analysis',
     hasOptionPanel: true,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,

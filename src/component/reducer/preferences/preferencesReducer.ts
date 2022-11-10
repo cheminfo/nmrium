@@ -65,6 +65,10 @@ export const WORKSPACES: Array<{
     label: Workspaces.prediction.label,
   },
   {
+    key: 'assignment',
+    label: Workspaces.assignment.label,
+  },
+  {
     key: 'embedded',
     label: Workspaces.embedded.label,
   },
