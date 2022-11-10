@@ -127,7 +127,8 @@ export type NMRiumWorkspace =
   | 'process1D'
   | 'default'
   | 'prediction'
-  | 'embedded';
+  | 'embedded'
+  | 'assignment';
 
 export interface NMRiumProps {
   data?: NMRiumData;
