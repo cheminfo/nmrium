@@ -1,8 +1,8 @@
 import lodashGet from 'lodash/get';
-import numeral from 'numeral';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
+import { formatNumber } from '../utility/formatNumber';
 
 export type ReturnFunction = (
   value?: number | string,
@@ -25,10 +25,14 @@ export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
   return useMemo(() => {
     function formatFun(n: string) {
       return (value: any, formatKey = 'ppm', prefix = '', suffix = '') => {
-        const formattedNumber = numeral(Number(value)).format(
-          lodashGet(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
+        return formatNumber(
+          value,
+          nucleusByKey?.[n.toLowerCase()]?.[formatKey],
+          {
+            prefix,
+            suffix,
+          },
         );
-        return `${prefix}${formattedNumber}${suffix}`;
       };
     }
 

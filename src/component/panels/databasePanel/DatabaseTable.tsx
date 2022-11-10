@@ -5,6 +5,7 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
+import { PrepareDataResult } from '../../../data/data1d/database';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
@@ -27,7 +28,7 @@ const overFlowStyle: CSSProperties = {
 
 const databaseTableColumns = (
   databasePreferences,
-): (CustomColumn & { showWhen: string })[] => [
+): (CustomColumn<PrepareDataResult> & { showWhen: string })[] => [
   {
     showWhen: 'showNames',
     index: 1,

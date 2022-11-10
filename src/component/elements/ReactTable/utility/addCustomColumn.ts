@@ -1,22 +1,14 @@
-import { CSSProperties } from 'react';
+import { Column } from '../ReactTable';
 
-export interface CustomColumn {
-  index: number;
-  id?: string;
-  Header?: (() => JSX.Element) | string;
-  sortType?: string;
-  Cell?: (rowData: { row: { original: any; index: number } }) => any;
-  accessor?: ((row?: any, index?: number) => any) | string;
-  enableRowSpan?: boolean;
-  style?: CSSProperties;
-  extraParams?: any;
-}
+export type CustomColumn<T extends object> = Column<T> & { index: number };
 
-export default function addCustomColumn(array, options: CustomColumn) {
+export default function addCustomColumn<T extends object>(
+  array,
+  options: CustomColumn<T>,
+) {
   const {
     index,
     Header = () => null,
-    extraParams,
     accessor = null,
     Cell = null,
     sortType = 'basic',
@@ -34,6 +26,5 @@ export default function addCustomColumn(array, options: CustomColumn) {
     sortType,
     enableRowSpan,
     style,
-    ...extraParams,
   });
 }

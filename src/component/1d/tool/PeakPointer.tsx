@@ -43,10 +43,9 @@ function PeakPointer() {
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 
   useEffect(() => {
-    const vShift = activeSpectrum
+    const vShift = activeSpectrum?.id
       ? getVerticalShift(verticalAlign, {
           index: activeSpectrum?.index || 1,
-          align: 'center',
         })
       : 0;
 

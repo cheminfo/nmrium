@@ -798,6 +798,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return SpectraAnalysisActions.handleSetColumns(draft, action);
     case types.FILTER_SPECTRA_COLUMN:
       return SpectraAnalysisActions.handleFilterColumn(draft, action);
+    case types.ORDER_MULTIPLE_SPECTRA_ANALYSIS:
+      return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 
     case types.RESURRECTING_SPECTRUM_FROM_RANGES:
       return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);

@@ -8,6 +8,7 @@ import {
   getZoneDefaultValues,
   getRangeDefaultValues,
   databaseDefaultValues,
+  multipleSpectraAnalysisDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 import {
@@ -18,7 +19,13 @@ import {
 
 const basePath = 'formatting.panels';
 
-type Panel = 'peaks' | 'integrals' | 'zones' | 'ranges' | 'database';
+type Panel =
+  | 'peaks'
+  | 'integrals'
+  | 'zones'
+  | 'ranges'
+  | 'database'
+  | 'multipleSpectraAnalysis';
 
 function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
@@ -32,13 +39,17 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
       return getZoneDefaultValues(nucleus);
     case 'database':
       return databaseDefaultValues;
+    case 'multipleSpectraAnalysis':
+      return multipleSpectraAnalysisDefaultValues;
 
     default:
       return {};
   }
 }
 
-function joinWithNucleusPreferences<T extends Exclude<Panel, 'database'>>(
+function joinWithNucleusPreferences<
+  T extends Exclude<Panel, 'database' | 'multipleSpectraAnalysis'>,
+>(
   data: PanelsPreferences[T],
   nucleus: string,
   returnOnlyNucleusPreferences = false,
@@ -64,7 +75,7 @@ function getPanelPreferences(
     getValue(preferences, `${basePath}.${panelKey}`, {}),
   );
 
-  if (panelKey !== 'database' && nucleus) {
+  if (!['database', 'multipleSpectraAnalysis'].includes(panelKey) && nucleus) {
     return joinWithNucleusPreferences(
       panelPreferences,
       nucleus,
@@ -82,6 +93,9 @@ export function usePanelPreferences<T extends Panel>(
 export function usePanelPreferences<T extends 'database'>(
   panelKey: T,
 ): WorkSpacePanelPreferences['database'];
+export function usePanelPreferences<T extends 'multipleSpectraAnalysis'>(
+  panelKey: T,
+): WorkSpacePanelPreferences['multipleSpectraAnalysis'];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,

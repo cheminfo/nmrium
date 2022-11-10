@@ -1,33 +1,77 @@
-import { memo } from 'react';
+import { CSSProperties, MouseEvent } from 'react';
+import { FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 
-interface ReactTableHeaderProps {
+interface TableCellEvent {
+  onClick: (e: MouseEvent<HTMLTableCellElement>) => void;
+}
+interface ReactTableHeaderProps extends TableCellEvent {
   headerGroups: any;
 }
 
-function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
+const sortIconStyle: CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  left: '2px',
+};
+
+function ReactTableHeader({ headerGroups, onClick }: ReactTableHeaderProps) {
   return (
     <thead>
-      {headerGroups.map((headerGroup) => (
-        <tr
-          key={headerGroup.getHeaderGroupProps().key}
-          {...headerGroup.getHeaderGroupProps()}
-        >
-          {headerGroup.headers.map((column) => (
-            <th
-              key={column.getHeaderProps().key}
-              {...column.getHeaderProps(column.getSortByToggleProps())}
-              style={column.style}
-            >
-              {column.render('Header')}
-              <span>
-                {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
-              </span>
-            </th>
-          ))}
-        </tr>
-      ))}
+      {headerGroups.map((headerGroup) => {
+        const { key: headerGroupKey, ...restHeaderGroupProps } =
+          headerGroup.getHeaderGroupProps();
+        return (
+          <tr key={headerGroupKey} {...restHeaderGroupProps}>
+            {headerGroup.headers.map((column) => (
+              <HeaderCell key={column.key} column={column} onClick={onClick} />
+            ))}
+          </tr>
+        );
+      })}
     </thead>
   );
 }
 
-export default memo(ReactTableHeader);
+interface HeaderCellProps extends TableCellEvent {
+  column: any;
+}
+
+const HeaderCell = (props: HeaderCellProps) => {
+  const { column } = props;
+  const {
+    key: headerKey,
+    style: headerStyle,
+    onClick,
+    ...restHeaderProps
+  } = column.getHeaderProps(column.getSortByToggleProps());
+  function clickHandler(e: MouseEvent<HTMLTableCellElement>) {
+    if (onClick) {
+      onClick(e);
+      props.onClick(e);
+    }
+  }
+  return (
+    <th
+      key={headerKey}
+      {...restHeaderProps}
+      style={{ ...headerStyle, ...column.style, height: '1px' }}
+      onClick={clickHandler}
+    >
+      <span style={sortIconStyle}>
+        {column.isSorted ? (
+          column.isSortedDesc ? (
+            <FaSortAmountDown />
+          ) : (
+            <FaSortAmountUp />
+          )
+        ) : (
+          ''
+        )}
+      </span>
+      {column.render('Header') && column.render('Header')}
+    </th>
+  );
+};
+
+export default ReactTableHeader;

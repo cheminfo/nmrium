@@ -45,7 +45,7 @@ async function shiftX(nmrium: NmriumPage) {
   await peakInputLocator.type('10');
   await peakInputLocator.press('Enter');
 
-  await expect(peakInputLocator).toHaveValue(/10\.00?/);
+  await expect(peakInputLocator).toHaveValue('10');
 }
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
@@ -62,7 +62,7 @@ async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   const peakInputLocator = nmrium.page.locator(
     '_react=PeakAnnotation >> nth=0 >> input',
   );
-  await expect(peakInputLocator).toHaveValue(/20\.00?/);
+  await expect(peakInputLocator).toHaveValue('20');
 }
 
 async function deletePeak(nmrium: NmriumPage) {
@@ -126,9 +126,9 @@ test('Processed spectra peaks', async ({ page }) => {
     await expect(peaks).toHaveCount(16);
 
     const peaksData = [
-      { p: '26.93', intensity: '2304124678.90' },
-      { p: '28.58', intensity: '2220075572.10' },
-      { p: '36.30', intensity: '2169790333.08' },
+      { p: '26.93', intensity: '2304124678.9' },
+      { p: '28.58', intensity: '2220075572.1' },
+      { p: '36.3', intensity: '2169790333.08' },
       { p: '50.39', intensity: '2029514468.85' },
       { p: '53.66', intensity: '2053846103.58' },
     ];

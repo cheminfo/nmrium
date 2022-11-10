@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import {
   forwardRef,
   useEffect,
@@ -12,67 +10,29 @@ import * as Yup from 'yup';
 
 import { COLUMNS_TYPES } from '../../../data/data1d/MultipleAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
+import Button from '../../elements/Button';
+import { GroupPane } from '../../elements/GroupPane';
+import Label from '../../elements/Label';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
+import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { SET_ANALYZE_SPECTRA_COLUMNS } from '../../reducer/types/Types';
+import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
 import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
 
-const styles = css`
-  width: 100%;
-  thead {
-    border-bottom: 1px solid lightgray;
-    background-color: #fafafa;
-    font-size: 12px;
-  }
-
-  td,
-  th {
-    padding: 3px 5px;
-    text-align: center;
-  }
-
-  .operation-col {
-    width: 30px;
-  }
-
-  .input {
-    height: 25px !important;
-    width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .input.disable {
-    background-color: #e8e8e8;
-    border-radius: 5px;
-  }
-
-  .label,
-  .index {
-    width: 100px;
-  }
-
-  .counter {
-    width: 50px;
-  }
-
-  .add {
-    background-color: transparent;
-    border: 0;
-    outline: none;
-    svg {
-      font-szie: 14px;
-      fill: green;
-    }
-  }
-`;
+const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
 // TODO: remove this hacky use of ref.
 function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   const dispatch = useDispatch();
   const refForm = useRef<any>();
   const [columns, setColumns] = useState({});
-
+  const panelPreferences = usePanelPreferences('multipleSpectraAnalysis');
+  const preferences = usePreferences();
   useImperativeHandle(ref, () => ({
     saveSetting() {
       refForm.current.submitForm();
@@ -105,6 +65,10 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
       result[key] = { ...columns[key], ...(value as any) };
     }
 
+    preferences.dispatch({
+      type: 'SET_PANELS_PREFERENCES',
+      payload: { key: 'multipleSpectraAnalysis', value: values.preferences },
+    });
     dispatch({
       type: SET_ANALYZE_SPECTRA_COLUMNS,
       payload: { code: values.code, columns: result },
@@ -123,61 +87,101 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
       },
     });
   }
+
+  const COLUMNS: Column<any>[] = [
+    {
+      Header: '#',
+      accessor: (_, index) => index + 1,
+    },
+    {
+      Header: 'Label',
+      Cell: ({ row }) => (
+        <FormikInput
+          name={`columns.${row.original}.tempKey`}
+          style={inputStyle}
+        />
+      ),
+    },
+    {
+      Header: 'Value',
+      Cell: ({ row }) => {
+        const isFormulaColumn =
+          columns[row.original].type === COLUMNS_TYPES.FORMULA;
+        return (
+          <FormikInput
+            disabled={!isFormulaColumn}
+            name={`columns.${row.original}.formula`}
+            style={inputStyle}
+          />
+        );
+      },
+    },
+    {
+      Header: 'Index',
+      style: { maxWidth: '50px' },
+      Cell: ({ row }) => {
+        return (
+          <FormikInput
+            name={`columns.${row.original}.index`}
+            style={inputStyle}
+          />
+        );
+      },
+    },
+    {
+      Header: '',
+      style: { maxWidth: '50px' },
+      id: 'add-button',
+      Cell: ({ data, row }) => {
+        if (data.length === row.index + 1) {
+          return (
+            <Button.Done
+              fill="outline"
+              onClick={() => addNewColumn(row.index + 1)}
+            >
+              <FaPlus />
+            </Button.Done>
+          );
+        }
+        return <div />;
+      },
+    },
+  ];
+
   return (
-    <FormikForm
-      ref={refForm}
-      key={JSON.stringify(columns)}
-      initialValues={{ columns, code: null }}
-      validationSchema={preferencesSchema}
-      onSubmit={submitHandler}
-    >
-      {columnsKeys && (
-        <table css={styles}>
-          <thead>
-            <tr>
-              <th className="counter">#</th>
-              <th className="label">Label</th>
-              <th>value</th>
-              <th className="index">index</th>
-            </tr>
-          </thead>
-          <tbody>
-            {columnsKeys.map((key, index) => {
-              return (
-                <tr key={key}>
-                  <td className="counter">{index + 1}</td>
-                  <td className="label">
-                    <FormikInput key={key} name={`columns.${key}.tempKey`} />
-                  </td>
-                  <td>
-                    {columns[key].type === COLUMNS_TYPES.FORMULA ? (
-                      <FormikInput name={`columns.${key}.formula`} />
-                    ) : (
-                      <div className="input disable" />
-                    )}
-                  </td>
-                  <td className="index">
-                    <FormikInput name={`columns.${key}.index`} />
-                  </td>
-                  <td className="operation-col">
-                    {columnsKeys.length === index + 1 && (
-                      <button
-                        className="add"
-                        type="button"
-                        onClick={() => addNewColumn(index + 1)}
-                      >
-                        <FaPlus />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-      <MultipleAnalysisCodeEditor data={data} />
-    </FormikForm>
+    <PreferencesContainer style={{ backgroundColor: 'white' }}>
+      <FormikForm
+        ref={refForm}
+        key={JSON.stringify(columns)}
+        initialValues={{ columns, code: null, preferences: panelPreferences }}
+        validationSchema={preferencesSchema}
+        onSubmit={submitHandler}
+      >
+        <GroupPane
+          text="General"
+          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+        >
+          <Label
+            title="Enable resort spectra"
+            htmlFor="preferences.resortSpectra"
+          >
+            <FormikCheckBox name="preferences.resortSpectra" />
+          </Label>
+        </GroupPane>
+        <GroupPane
+          text="Columns Settings "
+          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+        >
+          <ReactTable columns={COLUMNS} data={columnsKeys} />
+        </GroupPane>
+        <GroupPane
+          text="Execute code "
+          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+        >
+          <MultipleAnalysisCodeEditor data={data} />
+        </GroupPane>
+      </FormikForm>
+    </PreferencesContainer>
   );
 }
 

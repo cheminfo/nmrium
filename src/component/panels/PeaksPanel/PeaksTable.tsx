@@ -19,6 +19,8 @@ import {
 import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
+import { PeakRecord } from './PeaksPanel';
+
 interface PeaksTableProps {
   activeTab: string;
   data: any;
@@ -69,13 +71,13 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
     },
     [dispatch],
   );
-  const COLUMNS: (CustomColumn & { showWhen: string })[] = useMemo(
+  const COLUMNS: (CustomColumn<PeakRecord> & { showWhen: string })[] = useMemo(
     () => [
       {
         showWhen: 'peakNumber.show',
         index: 1,
         Header: '#',
-        Cell: ({ row }) => row.index + 1,
+        accessor: (_, index) => index + 1,
         style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
       },
       {
@@ -121,27 +123,35 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         showWhen: 'showKind',
         index: 7,
         Header: 'Kind',
-        accessor: 'shape.kind',
+        accessor: (row) => row.shape?.kind || '',
       },
       {
         showWhen: 'fwhm.show',
         index: 8,
         Header: 'fwhm',
-        accessor: (row) =>
-          formatNumber(row.shape?.fwhm, peaksPreferences.fwhm.format),
+        accessor: (row) => {
+          if (row?.shape?.fwhm) {
+            return formatNumber(row.shape.fwhm, peaksPreferences.fwhm.format);
+          }
+          return '';
+        },
       },
       {
         showWhen: 'mu.show',
         index: 9,
         Header: 'mu',
-        accessor: (row) =>
-          formatNumber(row.shape?.mu, peaksPreferences.mu.format),
+        accessor: (row) => {
+          if (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) {
+            return formatNumber(row.shape.mu, peaksPreferences.mu.format);
+          }
+          return '';
+        },
       },
     ],
     [peaksPreferences, saveDeltaPPMRefsHandler],
   );
 
-  const initialColumns: CustomColumn[] = useMemo(
+  const initialColumns: CustomColumn<any>[] = useMemo(
     () => [
       {
         index: 20,

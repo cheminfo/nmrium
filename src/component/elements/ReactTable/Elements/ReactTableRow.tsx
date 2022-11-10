@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css, CSSObject } from '@emotion/react';
-import { useMemo, forwardRef, useEffect, useCallback } from 'react';
+import { useMemo, forwardRef, useEffect, useCallback, MouseEvent } from 'react';
 
 import { HighlightEventSource, useHighlight } from '../../../highlight/index';
 
@@ -30,8 +30,7 @@ export interface ClickEvent {
 interface ReactTableRowProps extends ClickEvent {
   row: any;
   highlightedSource?: HighlightEventSource;
-  onContextMenu: () => void;
-  isVisible: boolean;
+  onContextMenu: (e: MouseEvent<HTMLTableRowElement>) => void;
   isRowActive: boolean;
 }
 

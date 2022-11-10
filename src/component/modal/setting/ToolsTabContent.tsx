@@ -85,11 +85,11 @@ const LIST: ListItem[] = [
   },
 ];
 
-const COLUMNS: CustomColumn[] = [
+const COLUMNS: Array<CustomColumn<ListItem>> = [
   {
     index: 1,
     Header: '#',
-    Cell: ({ row }) => row.index + 1,
+    accessor: (_, index) => index + 1,
   },
   {
     index: 1,

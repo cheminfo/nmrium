@@ -70,12 +70,17 @@ export interface DatabasePanelPreferences {
   marginBottom: number;
 }
 
+export interface MultipleSpectraAnalysisPreferences {
+  resortSpectra: boolean;
+}
+
 export interface WorkSpacePanelPreferences {
   peaks: PeaksNucleusPreferences;
   integrals: IntegralsNucleusPreferences;
   ranges: RangesNucleusPreferences;
   zones: ZonesNucleusPreferences & ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
+  multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences;
 }
 
 export interface PanelsPreferences {
@@ -85,6 +90,7 @@ export interface PanelsPreferences {
   zones: NucleusPreferences<ZonesNucleusPreferences> &
     ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
+  multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences;
 }
 
 export interface Formatting {
