@@ -3,7 +3,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { createPeakInRange } from '../utilities/selectRange';
+import { selectRange } from '../utilities/selectRange';
 
 async function addPeaks(nmrium: NmriumPage) {
   const peakAnnotationLocator = nmrium.page.locator('_react=PeakAnnotation');
@@ -12,7 +12,7 @@ async function addPeaks(nmrium: NmriumPage) {
   await nmrium.clickTool('peakPicking');
 
   // add peak by select range
-  await createPeakInRange(nmrium, {
+  await selectRange(nmrium, {
     axis: 'X',
     startX: 50,
     endX: 100,
