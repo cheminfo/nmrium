@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { createPeakInRange } from '../utilities/selectRange';
+import { selectRange } from '../utilities/selectRange';
 
 async function addRange(
   nmrium: NmriumPage,
@@ -9,7 +9,7 @@ async function addRange(
   endX: number,
   count: number,
 ) {
-  await createPeakInRange(nmrium, {
+  await selectRange(nmrium, {
     axis: 'X',
     startX,
     endX,
