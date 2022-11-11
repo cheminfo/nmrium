@@ -222,37 +222,38 @@ test('Exclusive zones', async ({ page }) => {
   await nmrium.clickPanel('Filters');
   const filters = nmrium.page.locator('_react=FilterTable');
 
-  await test.step('add exclusive zones tool', async () => {
+  await test.step('add exclusive zones', async () => {
     //select exclusive zones tool
     await nmrium.clickTool('exclusionZones');
     //add exclusion zones
     await selectRange(nmrium, { axis: 'X', startX: 100, endX: 150 });
+    // check that the filters applied to all spectra
+    await expect(
+      nmrium.page.locator('_react=ExclusionZoneAnnotation'),
+    ).toHaveCount(12);
   });
 
   await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
-    // check that the filters applied to all spectra
-    await expect(filters.locator('_react=ExclusionZoneAnnotation')).toHaveCount(
-      13,
-    );
-
     //select spectrum the last spectrum to be sure that the filter applied to all spectra
-    await nmrium.page.locator('_react=SpectrumListItem >> nth=12').click();
+    await nmrium.page.locator('_react=SpectrumListItem >> nth=11').click();
     //Open filters panel
     await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
   });
 
-  await test.step('add exclusive zones to first spectrum', async () => {
+  await test.step('add exclusive zones to the active spectrum', async () => {
     //add exclusion zones to the last spectrum which is active from the previous step
     await selectRange(nmrium, { axis: 'X', startX: 200, endX: 220 });
 
-    // the number of exclusion zones  should become 14 since the previous count for all spectra is 13
-    await expect(filters.locator('_react=ExclusionZoneAnnotation')).toHaveCount(
-      14,
-    );
+    // the number of exclusion zones  should become 13 since the previous count for all spectra is 12
+    await expect(
+      nmrium.page.locator('_react=ExclusionZoneAnnotation'),
+    ).toHaveCount(13);
   });
 
   // the number of exclusion zones should become 2 since we have one from the previous step
   await expect(
-    filters.locator('_react=ExclusionZoneAnnotation[style.opacity="1"]'),
+    nmrium.page.locator(
+      '_react=ExclusionZoneAnnotation >> _react=rect[style.opacity = 1]',
+    ),
   ).toHaveCount(2);
 });
