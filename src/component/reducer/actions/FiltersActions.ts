@@ -20,6 +20,7 @@ import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
@@ -438,9 +439,7 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
 
   let spectra: Datum1D[];
 
-  // todo: refactor this
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const index = activeSpectrum?.index;
     spectra = [draft.data[index] as Datum1D];
