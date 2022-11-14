@@ -17,8 +17,6 @@ import {
   FaFileImport,
 } from 'react-icons/fa';
 
-import { Info1D } from '../../data/types/data1d';
-import { Info2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
@@ -32,11 +30,7 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
-import {
-  ActiveSpectrum,
-  useActiveSpectrum,
-  VerticalAlignment,
-} from '../reducer/Reducer';
+import { VerticalAlignment } from '../reducer/Reducer';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const IMPORT_MENU = [
@@ -91,21 +85,17 @@ const EXPORT_MENU = [
 ];
 
 interface BasicToolBarInnerProps {
-  activeSpectrum: ActiveSpectrum | null;
   fidCounter: number;
   ftCounter: number;
-  info: Info1D | Info2D;
   verticalAlign: {
     align: VerticalAlignment;
   };
 }
 
 function BasicToolBarInner({
-  info,
   verticalAlign,
   ftCounter,
   fidCounter,
-  activeSpectrum,
 }: BasicToolBarInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -248,23 +238,21 @@ function BasicToolBarInner({
         />
       )}
 
-      {isButtonVisible('spectraStackAlignments') &&
-        ftCounter > 1 &&
-        (info?.isFt || !activeSpectrum) && (
-          <Toolbar.Item
-            id="spectra-alignment"
-            className="cheminfo"
-            title="Spectra alignment ( Press s )"
-            onClick={changeDisplayViewModeHandler}
-          >
-            {verticalAlign.align === 'stack' ? (
-              <SvgNmrOverlay3Aligned />
-            ) : (
-              <SvgNmrOverlay3 />
-            )}
-          </Toolbar.Item>
-        )}
-      {isButtonVisible('realImaginary') && info.isComplex && (
+      {isButtonVisible('spectraStackAlignments') && ftCounter > 1 && (
+        <Toolbar.Item
+          id="spectra-alignment"
+          className="cheminfo"
+          title="Spectra alignment ( Press s )"
+          onClick={changeDisplayViewModeHandler}
+        >
+          {verticalAlign.align === 'stack' ? (
+            <SvgNmrOverlay3Aligned />
+          ) : (
+            <SvgNmrOverlay3 />
+          )}
+        </Toolbar.Item>
+      )}
+      {isButtonVisible('realImaginary') && (
         <Toolbar.Item
           id="display"
           title={isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary'}
@@ -310,15 +298,12 @@ export default function BasicToolBar() {
     },
   } = useChartData();
 
-  const activeSpectrum = useActiveSpectrum();
-  const { info, fidCounter, ftCounter } = useDatumWithSpectraStatistics();
+  const { fidCounter, ftCounter } = useDatumWithSpectraStatistics();
   return (
     <MemoizedBasicToolBar
       {...{
-        info,
         fidCounter,
         ftCounter,
-        activeSpectrum,
         verticalAlign,
         displayerMode,
         activeTab,
