@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrFt } from 'cheminfo-font';
-import { useCallback } from 'react';
+import { CSSProperties, useCallback } from 'react';
 import {
   FaCopy,
   FaDownload,
@@ -14,7 +14,7 @@ import {
 import { IoOpenOutline } from 'react-icons/io5';
 
 import {
-  FloatingMolecules,
+  MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
@@ -31,6 +31,7 @@ import {
   ADD_MOLECULE,
   DELETE_MOLECULE,
   FLOAT_MOLECULE_OVER_SPECTRUM,
+  TOGGLE_MOLECULE_ATOM_NUMBER,
 } from '../../reducer/types/Types';
 import {
   copyPNGToClipboard,
@@ -63,6 +64,15 @@ const toolbarStyle = css`
   }
 `;
 
+const atomLabelStyle: CSSProperties = {
+  width: '14px',
+  height: '14px',
+  padding: 0,
+  margin: 0,
+  textAlign: 'center',
+  lineHeight: 1,
+};
+
 const MOL_EXPORT_MENU = [
   {
     id: 'molfile',
@@ -91,7 +101,7 @@ export interface MoleculeHeaderActionsOptions {
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: Array<StateMoleculeExtended>;
-  floatingMolecules: Array<FloatingMolecules>;
+  moleculesView: MoleculesView;
   onMoleculeIndexChange: (index: number) => void;
   onOpenMoleculeEditor: () => void;
   actionsOptions?: MoleculeHeaderActionsOptions;
@@ -100,7 +110,7 @@ interface MoleculePanelHeaderProps {
 export default function MoleculePanelHeader({
   currentIndex,
   molecules,
-  floatingMolecules,
+  moleculesView,
   onMoleculeIndexChange = () => null,
   onOpenMoleculeEditor = () => null,
   actionsOptions = {},
@@ -110,6 +120,7 @@ export default function MoleculePanelHeader({
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
+  const moleculeKey = molecules?.[currentIndex]?.id;
 
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
@@ -183,12 +194,19 @@ export default function MoleculePanelHeader({
     });
   }, [modal, molecules, currentIndex]);
 
-  const floatMoleculeHandler = useCallback(() => {
+  function floatMoleculeHandler() {
     dispatch({
       type: FLOAT_MOLECULE_OVER_SPECTRUM,
-      payload: { id: molecules[currentIndex].id },
+      payload: { id: moleculeKey },
     });
-  }, [currentIndex, dispatch, molecules]);
+  }
+
+  function showAtomNumbersHandler() {
+    dispatch({
+      type: TOGGLE_MOLECULE_ATOM_NUMBER,
+      payload: { id: moleculeKey },
+    });
+  }
 
   return (
     <div css={toolbarStyle}>
@@ -236,21 +254,24 @@ export default function MoleculePanelHeader({
         </ButtonToolTip>
       )}
 
-      {molecules?.[currentIndex] && (
-        <ActiveButton
-          key={molecules[currentIndex].id}
-          value={
-            floatingMolecules.find(
-              ({ id }) => id === molecules[currentIndex].id,
-            )?.visible || false
-          }
-          popupTitle="Float Molecule"
-          popupPlacement="left"
-          onClick={floatMoleculeHandler}
-        >
-          <IoOpenOutline />
-        </ActiveButton>
-      )}
+      <ActiveButton
+        value={moleculesView?.[moleculeKey]?.floating.visible || false}
+        popupTitle="Float Molecule"
+        popupPlacement="left"
+        onClick={floatMoleculeHandler}
+      >
+        <IoOpenOutline />
+      </ActiveButton>
+      <ActiveButton
+        style={{ marginLeft: '2px' }}
+        value={moleculesView?.[moleculeKey]?.showAtomNumber || false}
+        popupTitle="Show atom number"
+        popupPlacement="left"
+        onClick={showAtomNumbersHandler}
+      >
+        <p style={atomLabelStyle}>#</p>
+      </ActiveButton>
+
       <p>
         {molecules &&
           molecules.length > 0 &&
