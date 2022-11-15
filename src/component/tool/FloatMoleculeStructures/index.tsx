@@ -1,7 +1,8 @@
 import { memo } from 'react';
 
 import {
-  FloatingMolecules,
+  MoleculesView,
+  MoleculeView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
@@ -17,7 +18,7 @@ interface FloatMoleculeStructuresProps {
   zones: Zones;
   ranges: Ranges;
   molecules: Array<StateMoleculeExtended>;
-  floatingMolecules: Array<FloatingMolecules>;
+  moleculesView: MoleculesView;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
 }
@@ -25,22 +26,18 @@ interface FloatMoleculeStructuresProps {
 export function FloatMoleculeStructuresInner(
   props: FloatMoleculeStructuresProps,
 ) {
-  const {
-    zones,
-    ranges,
-    floatingMolecules,
-    molecules,
-    activeTab,
-    displayerMode,
-  } = props;
+  const { zones, ranges, moleculesView, molecules, activeTab, displayerMode } =
+    props;
 
-  if (!floatingMolecules || floatingMolecules.length === 0) return null;
+  const floatingMolecules = Object.entries<MoleculeView>(moleculesView);
+
+  if (floatingMolecules.length === 0) return null;
 
   return (
     <g>
       {floatingMolecules
-        .filter((molecule) => molecule.visible)
-        .map(({ id, position }) => {
+        .filter(([, view]) => view.floating.visible)
+        .map(([id, moleculeView]) => {
           const molecule = molecules.find((m) => m.id === id);
           assert(molecule !== undefined, 'molecule should be defined');
           return (
@@ -51,7 +48,7 @@ export function FloatMoleculeStructuresInner(
                 ranges,
                 activeTab,
                 displayerMode,
-                position,
+                moleculeView,
                 molecule,
               }}
             />
@@ -69,7 +66,7 @@ export default function FloatMoleculeStructures() {
     molecules,
     displayerMode,
     view: {
-      floatingMolecules,
+      molecules: moleculesView,
       spectra: { activeTab },
     },
   } = useChartData();
@@ -81,7 +78,7 @@ export default function FloatMoleculeStructures() {
   return (
     <MemoizedFloatMoleculeStructures
       {...{
-        floatingMolecules,
+        moleculesView,
         molecules,
         displayerMode,
         activeTab,
