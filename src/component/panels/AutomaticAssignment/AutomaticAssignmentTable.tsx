@@ -17,12 +17,13 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
   const dispatch = useDispatch();
 
   const assignHandler = useCallback(
-    (e, assignments) => {
+    (e, row) => {
       e.preventDefault();
       e.stopPropagation();
+
       dispatch({
         type: SET_AUTOMATIC_ASSIGNMENTS,
-        payload: { assignments },
+        payload: { assignments: row.original.assignment },
       });
     },
     [dispatch],
@@ -54,7 +55,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
           <button
             type="button"
             className="assign-button"
-            onClick={(e) => assignHandler(e, row.original.assignment)}
+            onClick={(e) => assignHandler(e, row)}
           >
             <SvgNmrAssignment />
           </button>
@@ -69,7 +70,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
       data={data}
       columns={COLUMNS}
       onClick={assignHandler}
-      highlightActiveRow
+      enableDefaultActiveRow
     />
   ) : (
     <NoTableData />

@@ -75,6 +75,7 @@ interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
   indexKey?: string;
   enableVirtualScroll?: boolean;
   activeRow?: (data: any) => boolean;
+  enableDefaultActiveRow?: boolean;
   totalCount?: number;
 }
 
@@ -123,12 +124,13 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     onSortEnd,
     rowStyle,
     disableDefaultRowStyle = false,
+    enableDefaultActiveRow = false,
   } = props;
 
   const contextRef = useRef<any>(null);
   const isSortedEventTriggered = useRef<boolean>(false);
   const virtualBoundary = useReactTableContext();
-  const [activeRowData, setActiveRowData] = useState<any>();
+  const [rowIndex, setRowIndex] = useState<number>();
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   const [isCounterVisible, setCounterVisibility] = useState(false);
   const {
@@ -154,7 +156,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   }
 
   function clickHandler(event, row) {
-    setActiveRowData(row);
+    setRowIndex(row.index);
     onClick?.(event, row);
   }
 
@@ -246,10 +248,18 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                   {...restRowProps}
                   row={row}
                   onContextMenu={(e) => contextMenuHandler(e, row)}
-                  onClick={activeRow ? clickHandler : onClick}
+                  onClick={
+                    !activeRow && enableDefaultActiveRow
+                      ? clickHandler
+                      : onClick
+                  }
                   highlightedSource={highlightedSource}
                   isRowActive={
-                    !activeRow ? activeRowData?.index === index : activeRow(row)
+                    !activeRow
+                      ? enableDefaultActiveRow
+                        ? rowIndex === index
+                        : false
+                      : activeRow(row)
                   }
                   rowStyle={rowStyle}
                   disableDefaultRowStyle={disableDefaultRowStyle}
