@@ -94,7 +94,7 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
   await nmrium.open2D();
 
   const spectrumButtonLocator = nmrium.page.locator(
-    'data-test-id=activate-deactivate-spectrum-button >> nth=1',
+    '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
   );
   const spectrumLineLocator = nmrium.page.locator(
     'data-test-id=spectrum-line >> nth=0',
@@ -115,6 +115,10 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.page.click('li >> text=COSY ethylbenzene');
     // Wait the spectrum to load
     await nmrium.page.waitForTimeout(250);
+
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+    );
     // Check svg
     await nmrium.checkSVGLength(87876);
   });
@@ -129,7 +133,7 @@ test('2d spectrum', async ({ page }) => {
   await test.step('Change 1H spectrum color', async () => {
     // Check ColorIndicator initial color
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[color.color="#7c2353"]'),
+      nmrium.page.locator('_react=ColorIndicator[display.color="#7c2353"]'),
     ).toBeVisible();
     // Check spectrum initial color match with ColorIndicator
     await expect(
@@ -148,7 +152,7 @@ test('2d spectrum', async ({ page }) => {
 
     // Check that ColorIndicator color changed
     await expect(
-      nmrium.page.locator('_react=ColorIndicator[color.color="#ddb1c9ff"]'),
+      nmrium.page.locator('_react=ColorIndicator[display.color="#ddb1c9ff"]'),
     ).toBeVisible();
     // Check that spectrum color changed
     await expect(
@@ -191,7 +195,7 @@ test('2d spectrum', async ({ page }) => {
     // Check ColorIndicator initial color
     await expect(
       nmrium.page.locator(
-        '_react=ColorIndicator[color.negativeColor="blue"][color.positiveColor="darkblue"]',
+        '_react=ColorIndicator[display.negativeColor="blue"][display.positiveColor="darkblue"]',
       ),
     ).toBeVisible();
     // Check spectrum initial color match with ColorIndicator
@@ -220,7 +224,7 @@ test('2d spectrum', async ({ page }) => {
     // Check that ColorIndicator color changed
     await expect(
       nmrium.page.locator(
-        '_react=ColorIndicator[color.negativeColor="#803e75ff"][color.positiveColor="#c10020ff"]',
+        '_react=ColorIndicator[display.negativeColor="#803e75ff"][display.positiveColor="#c10020ff"]',
       ),
     ).toBeVisible();
     // Check that spectrums color changed
@@ -308,7 +312,9 @@ test('2d spectrum', async ({ page }) => {
       '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
     );
     // Delete 1H Spectrum item
-    await nmrium.page.click('_react=SpectrumListItem', { button: 'right' });
+    await nmrium.page.click('_react=SpectraTable >> _react=ReactTableRow ', {
+      button: 'right',
+    });
     await nmrium.page.click('text=Delete');
     // Check tabs
     const Tabs = nmrium.page.locator(

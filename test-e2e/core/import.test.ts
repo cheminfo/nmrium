@@ -10,10 +10,17 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
     '_react=DropZone >> input[type=file]',
     'test-e2e/data/1h-version-0.nmrium',
   );
-  // If the file was loaded successfully, there should be a 1H,1H tab.
+  // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
   await expect(
     nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
   ).toBeVisible();
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H"]'),
+  ).toBeVisible();
+
+  await nmrium.page.click(
+    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+  );
 
   await test.step('check ranges', async () => {
     const ranges = nmrium.page.locator('_react=Range');
@@ -29,10 +36,18 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
     '_react=DropZone >> input[type=file]',
     'test-e2e/data/1h-version-1-datasource.nmrium',
   );
-  // If the file was loaded successfully, there should be a 1H,1H tab.
+
+  // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
   await expect(
     nmrium.page.locator('_react=InternalTab[tabid = "1H,1H"]'),
   ).toBeVisible();
+  await expect(
+    nmrium.page.locator('_react=InternalTab[tabid = "1H"]'),
+  ).toBeVisible();
+
+  await nmrium.page.click(
+    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+  );
 
   await test.step('check Peaks', async () => {
     await nmrium.clickPanel('Peaks');

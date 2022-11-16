@@ -135,6 +135,12 @@ test('Multiplicity should be visible', async ({ page }) => {
     await nmrium.page.click('li >> text=General');
     await nmrium.page.click('li >> text=FULL ethylbenzene');
   });
+
+  // switch to 1H tab.
+  await nmrium.page.click(
+    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+  );
+
   await test.step('Apply auto ranges', async () => {
     //select range tool
     await nmrium.clickTool('rangePicking');
@@ -191,6 +197,12 @@ test('Range state', async ({ page }) => {
     await nmrium.page.click('li >> text=General');
     await nmrium.page.click('li >> text=Linked jcamp');
   });
+
+  // switch to 1H tab.
+  await nmrium.page.click(
+    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
+  );
+
   await test.step('Apply auto ranges', async () => {
     //select range tool
     await nmrium.clickTool('rangePicking');
@@ -238,11 +250,11 @@ test('Range state', async ({ page }) => {
   await test.step('Check that first spectrum range state saved', async () => {
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=SpectrumListItem >> nth=0',
+      '_react=SpectraTable >> _react=ReactTableRow>> nth=0',
     );
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=SpectrumListItem >> nth=1',
+      '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
     );
     // Check that the integrals btn is on
     await expect(
