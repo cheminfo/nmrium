@@ -63,7 +63,10 @@ function DisplayButtons1D(props: ShowHideSpectrumButtonProps) {
       data-test-id="hide-show-spectrum-button"
       style={SpectraTableButtonStyle}
       type="button"
-      onClick={() => onChangeVisibility(data, 'isVisible')}
+      onClick={(e) => {
+        e.stopPropagation();
+        onChangeVisibility(data, 'isVisible');
+      }}
     >
       <FaEye
         style={{
