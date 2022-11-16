@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css, CSSObject } from '@emotion/react';
-import { useMemo, forwardRef, useEffect, useCallback, MouseEvent } from 'react';
+import { useMemo, useEffect, useCallback, MouseEvent } from 'react';
 
 import { HighlightEventSource, useHighlight } from '../../../highlight/index';
 import { RowStyle } from '../ReactTable';
@@ -53,7 +53,7 @@ function getIDs(row: any): string[] {
   }
   return [''];
 }
-function ReactTableRow(props: ReactTableRowProps, ref) {
+function ReactTableRow(props: ReactTableRowProps) {
   const {
     row,
     highlightedSource = HighlightEventSource.UNKNOWN,
@@ -87,7 +87,6 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
   );
   return (
     <tr
-      ref={ref}
       onContextMenu={onContextMenu}
       key={row.getRowProps().key}
       css={getRowStyle(
@@ -126,4 +125,4 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
   );
 }
 
-export default forwardRef(ReactTableRow);
+export default ReactTableRow;
