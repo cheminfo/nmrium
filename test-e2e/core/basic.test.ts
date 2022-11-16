@@ -44,6 +44,9 @@ test('check callbacks count', async ({ page }) => {
   await expect(dataCount).toContainText('3');
   await expect(viewCount).toContainText('3');
 
+  //switch to 1d
+  await nmrium.page.click('_react=InternalTab[tabid="1H"]');
+
   //test to 1d
   const path = (await nmrium.page.getAttribute(
     '#nmrSVG path.line ',
@@ -51,9 +54,6 @@ test('check callbacks count', async ({ page }) => {
   )) as string;
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
-
-  //switch to 2d
-  await nmrium.page.click('_react=InternalTab[tabid="1H,1H"]');
 
   await expect(dataCount).toContainText('3');
   await expect(viewCount).toContainText('5');
