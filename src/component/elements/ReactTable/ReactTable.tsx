@@ -55,16 +55,26 @@ type TableInstanceWithHooks = TableInstance & {
 interface SortEvent {
   onSortEnd?: (data: any) => void;
 }
-interface ReactTableProps extends ClickEvent, SortEvent {
+
+export interface RowStyle {
+  rowStyle?: {
+    active?: CSSProperties;
+    activated?: CSSProperties;
+    hover?: CSSProperties;
+    base?: CSSProperties;
+  };
+  disableDefaultRowStyle?: boolean;
+}
+interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
-  context?: Array<{ label: string; onClick: () => void }> | null;
+  context?: Array<{ label: string; onClick: (data: any) => void }> | null;
   approxItemHeight?: number;
   groupKey?: string;
   indexKey?: string;
   enableVirtualScroll?: boolean;
-  highlightActiveRow?: boolean;
+  activeRow?: (data: any) => boolean;
   totalCount?: number;
 }
 
@@ -107,19 +117,20 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     enableVirtualScroll = false,
     groupKey,
     onClick,
-    highlightActiveRow = false,
+    activeRow,
     totalCount,
     indexKey = 'index',
     onSortEnd,
+    rowStyle,
+    disableDefaultRowStyle = false,
   } = props;
 
   const contextRef = useRef<any>(null);
   const isSortedEventTriggered = useRef<boolean>(false);
   const virtualBoundary = useReactTableContext();
-  const [rowIndex, setRowIndex] = useState<number>();
+  const [activeRowData, setActiveRowData] = useState<any>();
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   const [isCounterVisible, setCounterVisibility] = useState(false);
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -143,7 +154,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   }
 
   function clickHandler(event, row) {
-    setRowIndex(row.index);
+    setActiveRowData(row);
     onClick?.(event, row);
   }
 
@@ -235,9 +246,13 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                   {...restRowProps}
                   row={row}
                   onContextMenu={(e) => contextMenuHandler(e, row)}
-                  onClick={highlightActiveRow ? clickHandler : onClick}
+                  onClick={activeRow ? clickHandler : onClick}
                   highlightedSource={highlightedSource}
-                  isRowActive={rowIndex === index}
+                  isRowActive={
+                    !activeRow ? activeRowData?.index === index : activeRow(row)
+                  }
+                  rowStyle={rowStyle}
+                  disableDefaultRowStyle={disableDefaultRowStyle}
                 />
               );
             })}

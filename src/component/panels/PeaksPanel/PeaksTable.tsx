@@ -26,6 +26,10 @@ interface PeaksTableProps {
   data: any;
 }
 
+function handleActiveRow(row) {
+  return row.original.isConstantlyHighlighted;
+}
+
 function PeaksTable({ activeTab, data }: PeaksTableProps) {
   const dispatch = useDispatch();
   const modal = useModal();
@@ -199,6 +203,8 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
 
   return data && data.length > 0 ? (
     <ReactTable
+      activeRow={handleActiveRow}
+      rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
       data={data}
       columns={tableColumns}
       approxItemHeight={24}
