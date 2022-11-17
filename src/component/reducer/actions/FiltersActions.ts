@@ -471,7 +471,7 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
 function handleDeleteExclusionZone(draft: Draft<State>, action) {
   const { zone, spectrumID } = action.payload;
 
-  // if spectrum id exists, remove the selected exclusive zone in the spectrum
+  // if spectrum id exists, remove the selected exclusion zone in the spectrum
   if (spectrumID) {
     const spectrumIndex = draft.data.findIndex(
       (spectrum) => spectrum.id === spectrumID,
@@ -488,7 +488,7 @@ function handleDeleteExclusionZone(draft: Draft<State>, action) {
       }
     }
   } else {
-    // remove all exclusive zone that have the same range in all spectra
+    // remove all exclusion zones that have the same range in all spectra
     const data = getSpectraByNucleus(draft.view.spectra.activeTab, draft.data);
     for (const datum of data) {
       for (const filter of datum.filters) {

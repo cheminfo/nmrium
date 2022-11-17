@@ -111,7 +111,7 @@ function KeysListenerTracker() {
               text: 'Yes, for all spectra',
               handler: async () => {
                 const hideLoading = await alert.showLoading(
-                  'Delete all spectra exclusive zones in progress',
+                  'Delete all spectra exclusion zones in progress',
                 );
                 dispatch({
                   type: DELETE_EXCLUSION_ZONE,
@@ -126,7 +126,7 @@ function KeysListenerTracker() {
               text: 'Yes',
               handler: async () => {
                 const hideLoading = await alert.showLoading(
-                  'Delete exclusive zone in progress',
+                  'Delete exclusion zones in progress',
                 );
                 dispatch({
                   type: DELETE_EXCLUSION_ZONE,
