@@ -37,11 +37,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.originalInfo = datum.info;
   datum.meta = { ...options.meta };
   datum.data = {
-    z: [],
-    minX: 0,
-    minY: 0,
-    maxX: 0,
-    maxY: 0,
+    ...{ rr: { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 } },
     ...options.data,
   };
   datum.originalData = datum.data;
