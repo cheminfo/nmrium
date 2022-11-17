@@ -182,7 +182,7 @@ test('Processed spectra filters', async ({ page }) => {
     await expect(filters).toHaveCount(6);
   });
 });
-test('Exclusive zones', async ({ page }) => {
+test('Exclusion zones', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open Coffee example', async () => {
     await nmrium.page.click('li >> text=General');
@@ -230,7 +230,7 @@ test('Exclusive zones', async ({ page }) => {
     // check that the filters applied to all spectra
     await expect(
       nmrium.page.locator('_react=ExclusionZoneAnnotation'),
-    ).toHaveCount(12);
+    ).toHaveCount(13);
   });
 
   await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
