@@ -1,12 +1,22 @@
 import * as Filters from '../../data/Filters';
+import { Info1D } from '../../data/types/data1d';
+import { Info2D } from '../../data/types/data2d';
 import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
-interface OptionItem {
+type InfoKey = keyof Info1D | keyof Info2D;
+
+export interface ToolOptionItem {
   id: string;
   label: string;
   mode?: DISPLAYER_MODE;
-  spectrumType?: 'FID' | 'FT';
+  spectraOptions?: (
+    | {
+        info?: { key: InfoKey; value: any }[]; // check if the active spectrum has these info
+        active: true;
+      }
+    | { active: false }
+  )[];
   isToggle: boolean;
   hasOptionPanel: boolean;
   isFilter: boolean;
@@ -23,7 +33,7 @@ type RecordOptions = Record<
       | 'editRange'
       | 'databaseRangesSelection'
     ),
-  OptionItem
+  ToolOptionItem
 >;
 
 export const options: RecordOptions = {
@@ -40,7 +50,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   integral: {
@@ -49,7 +64,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   zonePicking: {
@@ -58,7 +78,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_2D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   slicing: {
@@ -67,7 +92,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_2D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   HMove: {
@@ -76,7 +106,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   equalizer: {
@@ -85,7 +120,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   rangePicking: {
@@ -94,7 +134,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   apodization: {
@@ -103,7 +148,15 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FID',
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   zeroFilling: {
@@ -112,7 +165,15 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FID',
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   phaseCorrection: {
@@ -121,7 +182,15 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFt', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   baselineCorrection: {
@@ -130,7 +199,12 @@ export const options: RecordOptions = {
     hasOptionPanel: true,
     isFilter: true,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   generalSelector: {
@@ -139,7 +213,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
 
@@ -149,7 +228,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
 
@@ -159,7 +243,15 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+      {
+        active: false,
+      },
+    ],
     isToggle: true,
   },
   exclusionZones: {
@@ -168,7 +260,15 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+      {
+        active: false,
+      },
+    ],
     isToggle: true,
   },
   databaseRangesSelection: {
@@ -177,7 +277,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FT',
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+    ],
     isToggle: true,
   },
   exportAs: {
@@ -193,7 +298,15 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: true,
     mode: DISPLAYER_MODE.DM_1D,
-    spectrumType: 'FID',
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
     isToggle: false,
   },
   import: {
@@ -209,6 +322,12 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
+    spectraOptions: [
+      {
+        info: [{ key: 'isComplex', value: true }],
+        active: true,
+      },
+    ],
     isToggle: false,
   },
   spectraCenterAlignments: {
@@ -225,6 +344,15 @@ export const options: RecordOptions = {
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+      {
+        active: false,
+      },
+    ],
     isToggle: false,
   },
   zoomOut: {

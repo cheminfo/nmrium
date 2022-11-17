@@ -198,16 +198,6 @@ function KeysListenerTracker() {
 
   const toolsListenerHandler = useCallback(
     (e) => {
-      function throw1DSelectSpectraError(label: string) {
-        throw new Error(
-          `${
-            displayerMode === DISPLAYER_MODE.DM_2D
-              ? `Switch to 1D Mode and select a spectrum to proceed width ${label}`
-              : `Select a spectrum to proceed  width ${label}`
-          }`,
-        );
-      }
-
       try {
         if (!e.shiftKey && !e.metaKey) {
           switch (e.key) {
@@ -227,14 +217,7 @@ function KeysListenerTracker() {
                 handleChangeOption(options.zonePicking.id);
               } else if (isToolVisible('rangePicking')) {
                 handleChangeOption(options.rangePicking.id);
-              } else {
-                const label =
-                  displayerMode === DISPLAYER_MODE.DM_2D
-                    ? options.zonePicking.label
-                    : options.rangePicking.label;
-                throw new Error(`Select a spectrum to proceed with ${label} `);
               }
-
               break;
             }
             case 'a': {
@@ -242,18 +225,13 @@ function KeysListenerTracker() {
                 handleChangeOption(options.apodization.id);
               } else if (isToolVisible('phaseCorrection')) {
                 handleChangeOption(options.phaseCorrection.id);
-              } else {
-                throw1DSelectSpectraError(
-                  `${options.phaseCorrection.label} or ${options.apodization.label}`,
-                );
               }
+
               break;
             }
             case 'b': {
               if (isToolVisible('baselineCorrection')) {
                 handleChangeOption(options.baselineCorrection.id);
-              } else {
-                throw1DSelectSpectraError(options.baselineCorrection.label);
               }
 
               break;
@@ -261,17 +239,12 @@ function KeysListenerTracker() {
             case 'p': {
               if (isToolVisible('peakPicking')) {
                 handleChangeOption(options.peakPicking.id);
-              } else {
-                throw1DSelectSpectraError(options.peakPicking.label);
               }
-
               break;
             }
             case 'i': {
               if (isToolVisible('integral')) {
                 handleChangeOption(options.integral.id);
-              } else {
-                throw1DSelectSpectraError(options.integral.label);
               }
 
               break;
@@ -279,8 +252,6 @@ function KeysListenerTracker() {
             case 'e': {
               if (isToolVisible('exclusionZones')) {
                 handleChangeOption(options.exclusionZones.id);
-              } else if (displayerMode !== DISPLAYER_MODE.DM_1D) {
-                throw new Error('Switch to 1D Mode');
               }
 
               break;
@@ -346,7 +317,6 @@ function KeysListenerTracker() {
       alignSpectrumsVerticallyHandler,
       allow1DTool,
       changeDisplayViewModeHandler,
-      displayerMode,
       handleChangeOption,
       handleFullZoomOut,
       isToolVisible,
