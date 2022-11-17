@@ -22,6 +22,10 @@
         "title": "FULL ethylbenzene"
       },
       {
+        "file": "./data/acd/jcampWithAssignment.json",
+        "title": "Assignment into a JCAMP-DX"
+      },
+      {
         "file": "./data/cytisine/2d/hsqc.json",
         "title": "HSQC cytisine"
       },

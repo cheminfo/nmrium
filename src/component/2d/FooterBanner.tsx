@@ -5,6 +5,7 @@ import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
+import { Data2D } from '../../data/types/data2d';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -14,7 +15,6 @@ import { options } from '../toolbar/ToolTypes';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
 import { get2DXScale, get1DYScale, get2DYScale } from './utilities/scale';
-import { Data2D } from '../../data/types/data2d';
 
 const styles = css`
   display: flex;
@@ -228,8 +228,9 @@ function FooterBanner({ layout, data1D }) {
 
   const getZValue = () => {
     if (trackID === LAYOUT.CENTER_2D) {
-      const { maxX, maxY, minX, minY, z } = (data[activeSpectrum.index]
-        .data as Data2D).rr as any;
+      const { maxX, maxY, minX, minY, z } = (
+        data[activeSpectrum.index].data as Data2D
+      ).rr as any;
 
       const xStep = (maxX - minX) / (z[0].length - 1);
       const yStep = (maxY - minY) / (z.length - 1);

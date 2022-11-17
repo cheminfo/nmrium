@@ -1,6 +1,6 @@
 import { Conrec } from 'ml-conrec';
 
-import { Data2D, Datum2D } from '../../types/data2d';
+import { Datum2D } from '../../types/data2d';
 import { MinMaxContent } from '../../types/data2d/Data2D';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
