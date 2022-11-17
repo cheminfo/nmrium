@@ -65,7 +65,7 @@ function autoZonesDetection(data, options) {
 
 function getSubMatrix(datum, selectedZone) {
   const { fromX, toX, fromY, toY } = selectedZone;
-  const data = datum.data;
+  const data = datum.data.rr;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   let xIndexFrom = Math.max(Math.floor((fromX - data.minX) / xStep), 0);

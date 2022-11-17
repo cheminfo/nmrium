@@ -14,7 +14,7 @@ interface SlicePosition {
 }
 
 export function getSlice(spectrum: Datum2D, position: SlicePosition) {
-  const data = spectrum.data;
+  const data = spectrum.data.rr;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   const xIndex = Math.floor((position.x - data.minX) / xStep);
@@ -31,10 +31,7 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
   };
 
   let dataX = {
-    x: zoneToX(
-      { from: spectrum.data.minX, to: spectrum.data.maxX },
-      spectrum.data.z[0].length,
-    ),
+    x: zoneToX({ from: data.minX, to: data.maxX }, spectrum.data.z[0].length),
     re: new Float64Array(spectrum.data.z[0].length),
   };
 
@@ -50,15 +47,12 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
   };
 
   let dataY = {
-    x: zoneToX(
-      { from: spectrum.data.minY, to: spectrum.data.maxY },
-      spectrum.data.z.length,
-    ),
-    re: new Float64Array(spectrum.data.z.length),
+    x: zoneToX({ from: data.minY, to: data.maxY }, data.z.length),
+    re: new Float64Array(data.z.length),
   };
 
-  let index = spectrum.data.z.length - 1;
-  for (let i = 0; i < spectrum.data.z.length; i++) {
+  let index = data.z.length - 1;
+  for (let i = 0; i < data.z.length; i++) {
     dataY.re[i] += spectrum.data.z[index--][xIndex];
   }
   const horizontal = initiateDatum1D({ info: infoX, data: dataX }, {});

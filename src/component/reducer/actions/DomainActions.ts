@@ -87,7 +87,7 @@ function get2DDomain(state: State) {
   const spectrum =
     data.find((datum) => datum.id === activeSpectrum?.id) || null;
   if (spectrum?.info.isFid) {
-    const { minX, maxX, minY, maxY } = (spectrum as Datum2D).data;
+    const { minX, maxX, minY, maxY } = (spectrum as Datum2D).data.rr;
     xArray = [minX, maxX];
     yArray = [minY, maxY];
   } else {
@@ -100,7 +100,7 @@ function get2DDomain(state: State) {
             datum.info.isFt,
         ) as Array<Datum2D>
       ).flatMap((datum: Datum2D) => {
-        return [datum.data.minX, datum.data.maxX];
+        return [datum.data.rr.minX, datum.data.rr.maxX];
       });
 
       yArray = (
@@ -111,7 +111,7 @@ function get2DDomain(state: State) {
             d.info.isFt,
         ) as Array<Datum2D>
       ).flatMap((datum: Datum2D) => {
-        return [datum.data.minY, datum.data.maxY];
+        return [datum.data.rr.minY, datum.data.rr.maxY];
       });
     } catch (error) {
       // TODO: handle error
