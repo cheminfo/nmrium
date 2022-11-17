@@ -2,13 +2,19 @@ import { scaleLinear } from 'd3';
 
 import { LAYOUT } from './DimensionLayout';
 
-function get2DXScale(props: {
-  width: number;
-  margin: { right: number; left: number };
-  xDomain: Array<number>;
-}) {
+function get2DXScale(
+  props: {
+    width: number;
+    margin: { right: number; left: number };
+    xDomain: Array<number>;
+  },
+  reverse = false,
+) {
   const { width, margin, xDomain } = props;
-  return scaleLinear(xDomain, [width - margin.right, margin.left]);
+  const range = !reverse
+    ? [width - margin.right, margin.left]
+    : [margin.left, width - margin.right];
+  return scaleLinear(xDomain, range);
 }
 
 function get2DYScale(

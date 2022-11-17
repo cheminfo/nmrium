@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
-import { getSlice } from '../../../../data/data2d/Spectrum2D';
-import { Datum2D } from '../../../../data/types/data2d/Datum2D';
-import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
-import { useChartData } from '../../../context/ChartContext';
-import { useActiveSpectrum } from '../../../reducer/Reducer';
-import { get2DXScale, get2DYScale } from '../../utilities/scale';
+import { getSlice } from '../../data/data2d/Spectrum2D';
+import { Datum2D } from '../../data/types/data2d/Datum2D';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker';
+import { useChartData } from '../context/ChartContext';
+import { useActiveSpectrum } from '../reducer/Reducer';
 
-import HorizontalSliceChart from './HorizontalSliceChart';
-import VerticalSliceChart from './VerticalSliceChart';
+import HorizontalSliceChart from './1d-tracer/HorizontalSliceChart';
+import VerticalSliceChart from './1d-tracer/VerticalSliceChart';
+import { get2DXScale, get2DYScale } from './utilities/scale';
 
 function SlicingView() {
   const {
@@ -44,7 +44,9 @@ function SlicingView() {
           {data?.horizontal && (
             <HorizontalSliceChart data={data.horizontal.data} />
           )}
-          {data?.vertical && <VerticalSliceChart data={data.vertical.data} />}
+          {data?.vertical && (
+            <VerticalSliceChart data={data.vertical.data} reverseScale />
+          )}
         </svg>
       );
     }

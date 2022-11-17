@@ -1,26 +1,29 @@
 import { useMemo, memo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
-import { useChartData } from '../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
-import { PathBuilder } from '../utility/PathBuilder';
+import { useChartData } from '../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getYScale } from '../utilities/SliceScale';
+import { get2DYScale } from '../utilities/scale';
 
-import { get1DYScale, get2DYScale } from './utilities/scale';
-
-interface Left1DChartProps {
+interface VerticalSliceChartProps {
   margin?: number;
-  data: Datum1D;
+  data: {
+    x: Float64Array;
+    re: Float64Array;
+  };
+  reverseScale?: boolean;
 }
 
-function Left1DChart({
+function VerticalSliceChart({
   margin: marignValue = 10,
-  data: spectrum,
-}: Left1DChartProps) {
+  data,
+  reverseScale = false,
+}: VerticalSliceChartProps) {
   const {
     height: originHeight,
     margin,
     yDomain,
-    yDomains,
     displayerKey,
   } = useChartData();
   const xyReduce = useXYReduce(XYReducerDomainAxis.YAxis);
@@ -28,15 +31,15 @@ function Left1DChart({
   const height = margin.left;
 
   const paths = useMemo(() => {
-    if (spectrum) {
-      const scaleX = get2DYScale({
-        height: originHeight,
-        yDomain: [yDomain[0], yDomain[1]],
-        margin,
-      });
-      const scaleY = get1DYScale(yDomains[spectrum.id], height, marignValue);
+    if (data) {
+      const { x, re: y } = data;
+      const scaleX = get2DYScale(
+        { height: originHeight, margin, yDomain },
+        reverseScale,
+      );
 
-      const { x, re: y } = spectrum.data;
+      const scaleY = getYScale(height, y, marignValue);
+
       const pathPoints = xyReduce({ x, y });
 
       const pathBuilder = new PathBuilder();
@@ -55,14 +58,14 @@ function Left1DChart({
       return undefined;
     }
   }, [
+    data,
     height,
     margin,
     marignValue,
     originHeight,
-    spectrum,
+    reverseScale,
     xyReduce,
     yDomain,
-    yDomains,
   ]);
 
   const mainHeight = originHeight - margin.bottom - margin.top;
@@ -81,15 +84,10 @@ function Left1DChart({
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-left)`}>
-        <path
-          className="line"
-          stroke={spectrum.display.color}
-          fill="none"
-          d={paths}
-        />
+        <path className="line" stroke="red" fill="none" d={paths} />
       </g>
     </svg>
   );
 }
 
-export default memo(Left1DChart);
+export default memo(VerticalSliceChart);

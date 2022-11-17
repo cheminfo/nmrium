@@ -5,8 +5,6 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import useSpectrum from '../hooks/useSpectrum';
-import NoData from '../loader/NoData';
 import Spinner from '../loader/Spinner';
 import {
   BRUSH_END,
@@ -23,8 +21,8 @@ import { assert } from '../utility/assert';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
+import SlicingView from './SlicingView';
 import XYLabelPointer from './tools/XYLabelPointer';
-import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
 interface Viewer2DProps {
@@ -44,8 +42,6 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   } = state;
 
   const dispatch = useDispatch();
-  const { info } = useSpectrum({ info: {} });
-  const isVisible = info.isFt || !('isFt' in info);
 
   const spectrumData: any[] = useMemo(() => {
     const nucleuses = activeTab.split(',');
@@ -133,16 +129,6 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     },
     [selectedTool],
   );
-
-  if (!isVisible) {
-    return (
-      <NoData
-        emptyText="2D FID spectra can not be displayed yet"
-        canOpenLoader={false}
-        style={{ outline: 'none' }}
-      />
-    );
-  }
 
   return (
     <ResponsiveChart>

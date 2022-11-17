@@ -28,7 +28,9 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-
+  await nmrium.page.click(
+    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+  );
   const sketchPicker = nmrium.page.locator('_react=ColorPicker');
 
   await expect(sketchPicker).toHaveCount(0);
@@ -92,9 +94,11 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
 test('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-
+  await nmrium.page.click(
+    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+  );
   const spectrumButtonLocator = nmrium.page.locator(
-    'data-test-id=activate-deactivate-spectrum-button >> nth=1',
+    'data-test-id=activate-deactivate-spectrum-button >> nth=0',
   );
   const spectrumLineLocator = nmrium.page.locator(
     'data-test-id=spectrum-line >> nth=0',

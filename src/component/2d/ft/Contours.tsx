@@ -2,21 +2,20 @@ import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { memo, useMemo, useRef } from 'react';
 
-import { getShift } from '../../data/data2d/Spectrum2D';
+import { getShift } from '../../../data/data2d/Spectrum2D';
 import {
   drawContours,
   getDefaultContoursLevel,
   LevelSign,
-} from '../../data/data2d/Spectrum2D/contours';
-import { Datum2D } from '../../data/types/data2d';
-import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
-import { useActiveSpectrum } from '../reducer/Reducer';
-import { PathBuilder } from '../utility/PathBuilder';
-import nucleusToString from '../utility/nucleusToString';
-
-import { get2DXScale, get2DYScale } from './utilities/scale';
+} from '../../../data/data2d/Spectrum2D/contours';
+import { Datum2D } from '../../../data/types/data2d';
+import { useChartData } from '../../context/ChartContext';
+import { usePreferences } from '../../context/PreferencesContext';
+import { useAlert } from '../../elements/popup/Alert';
+import { useActiveSpectrum } from '../../reducer/Reducer';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
+import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 interface ContoursPathsProps {
   id: string;
@@ -182,11 +181,8 @@ export default function Contours() {
     },
   } = useChartData();
   const data = useMemo<Array<Datum2D>>(() => {
-    return spectra.filter(
-      (datum) =>
-        datum.info.dimension === 2 &&
-        datum.info.isFt &&
-        activeTab === nucleusToString(datum.info.nucleus),
+    return getSpectraByNucleus(activeTab, spectra).filter(
+      (datum) => datum.info.isFt,
     ) as Array<Datum2D>;
   }, [activeTab, spectra]);
 

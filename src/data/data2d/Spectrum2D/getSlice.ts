@@ -61,7 +61,6 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
   for (let i = 0; i < spectrum.data.z.length; i++) {
     dataY.re[i] += spectrum.data.z[index--][xIndex];
   }
-
   const horizontal = initiateDatum1D({ info: infoX, data: dataX }, {});
   const vertical = initiateDatum1D({ info: infoY, data: dataY }, {});
   return { horizontal, vertical };

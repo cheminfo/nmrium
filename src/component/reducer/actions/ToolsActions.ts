@@ -323,10 +323,17 @@ function hasAcceptedSpectrum(draft: Draft<State>, index) {
 }
 
 function setMargin(draft: Draft<State>) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum =
+    (activeSpectrum?.id && draft.data[activeSpectrum.index]) || null;
+
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
-    draft.toolOptions.selectedTool !== options.slicing.id
+    (draft.toolOptions.selectedTool === options.slicing.id ||
+      spectrum?.info.isFid)
   ) {
+    draft.margin = MARGIN['2D'];
+  } else if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
       : MARGIN['1D'].top;
@@ -334,8 +341,6 @@ function setMargin(draft: Draft<State>) {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else if (draft.toolOptions.selectedTool === options.slicing.id) {
-    draft.margin = MARGIN['2D'];
   } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     draft.margin = MARGIN['1D'];
   }
@@ -504,4 +509,5 @@ export {
   setTab,
   setSpectraSameTopHandler,
   resetSpectraScale,
+  setMargin,
 };
