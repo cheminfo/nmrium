@@ -1,11 +1,10 @@
 import { useMemo, memo } from 'react';
 
-import { useChartData } from '../../../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
-import { PathBuilder } from '../../../utility/PathBuilder';
-import { get2DXScale } from '../../utilities/scale';
-
-import { getYScale } from './SliceScale';
+import { useChartData } from '../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getYScale } from '../utilities/SliceScale';
+import { get2DXScale } from '../utilities/scale';
 
 interface HorizontalSliceChartProps {
   margin?: number;
@@ -13,11 +12,13 @@ interface HorizontalSliceChartProps {
     x: Float64Array;
     re: Float64Array;
   };
+  reverseScale?: boolean;
 }
 
 function HorizontalSliceChart({
   margin: marginProps = 10,
   data,
+  reverseScale = false,
 }: HorizontalSliceChartProps) {
   const { width, margin: originMargin, xDomain, displayerKey } = useChartData();
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
@@ -27,7 +28,10 @@ function HorizontalSliceChart({
   const paths = useMemo(() => {
     if (data) {
       const { x, re: y } = data;
-      const scaleX = get2DXScale({ margin: originMargin, width, xDomain });
+      const scaleX = get2DXScale(
+        { margin: originMargin, width, xDomain },
+        reverseScale,
+      );
 
       const scaleY = getYScale(height, y, marginProps);
       const pathPoints = xyReduce({ x, y });
@@ -42,7 +46,16 @@ function HorizontalSliceChart({
     } else {
       return undefined;
     }
-  }, [data, height, marginProps, originMargin, width, xDomain, xyReduce]);
+  }, [
+    data,
+    height,
+    marginProps,
+    originMargin,
+    reverseScale,
+    width,
+    xDomain,
+    xyReduce,
+  ]);
 
   if (!width || !height) {
     return null;

@@ -4,6 +4,7 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import useSpectrum from '../../hooks/useSpectrum';
 import { useActiveSpectrum } from '../../reducer/Reducer';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
 import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
@@ -47,6 +48,7 @@ function XYLabelPointer({ layout, data1D }) {
 
   const nucleuses = activeTab.split(',');
   const [formatX, formatY] = useFormatNumberByNucleus(nucleuses);
+  const spectrum = useSpectrum();
 
   const scaleX = useMemo(() => {
     if (!activeSpectrum || !data1D || data1D.length === 0) {
@@ -79,10 +81,9 @@ function XYLabelPointer({ layout, data1D }) {
     if (!activeSpectrum || !data1D || data1D.length === 0) {
       return get2DYScale({ height, margin, yDomain });
     }
-
     switch (trackID) {
       case LAYOUT.CENTER_2D: {
-        return get2DYScale({ height, margin, yDomain });
+        return get2DYScale({ height, margin, yDomain }, !!spectrum?.info.isFid);
       }
       case LAYOUT.TOP_1D: {
         return data1D[0]
@@ -97,7 +98,16 @@ function XYLabelPointer({ layout, data1D }) {
       default:
         return null;
     }
-  }, [activeSpectrum, data1D, height, margin, trackID, yDomain, yDomains]);
+  }, [
+    activeSpectrum,
+    data1D,
+    height,
+    margin,
+    spectrum?.info.isFid,
+    trackID,
+    yDomain,
+    yDomains,
+  ]);
 
   if (
     step === 'brushing' ||
