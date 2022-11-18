@@ -47,6 +47,7 @@ export type PredefinedSpectraColumn =
   | 'solvent';
 export interface PredefinedTableColumn<T> extends BasicColumnPreferences {
   name: T;
+  description: string;
 }
 
 export interface JpathTableColumn extends BasicColumnPreferences {

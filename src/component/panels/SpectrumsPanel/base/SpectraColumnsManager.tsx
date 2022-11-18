@@ -49,7 +49,7 @@ export function SpectraColumnsManager({
           const column: any = row.original;
 
           if (column?.name) {
-            return <span style={style}>{column?.label}</span>;
+            return <span style={style}>{column?.description}</span>;
           }
 
           return (

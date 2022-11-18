@@ -14,19 +14,22 @@ const getSpectraDefaultValues = (
     columns: [
       {
         name: 'visible',
-        label: 'Show/Hide Spectrum',
+        label: '',
+        description: 'Show/Hide Spectrum',
         visible: true,
         index: 0,
       },
       {
         name: 'name',
         label: 'Spectrum Name',
+        description: 'Spectrum Name',
         visible: true,
         index: 1,
       },
       {
         name: 'solvent',
         label: 'Solvent',
+        description: 'Solvent',
         visible: true,
         index: 3,
       },
@@ -44,13 +47,15 @@ const getSpectraDefaultValues = (
       },
       {
         name: 'peaks-visible',
-        label: 'Show/Hide Peaks',
+        label: 'Peaks',
+        description: 'Show/Hide Peaks',
         visible: true,
         index: 1000,
       },
       {
         name: 'color',
-        label: 'Spectrum Color',
+        label: '',
+        description: 'Spectrum Color',
         visible: true,
         index: 10001,
       },

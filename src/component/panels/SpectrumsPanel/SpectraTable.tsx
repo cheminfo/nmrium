@@ -95,16 +95,15 @@ export function SpectraTable(props: SpectraTableProps) {
         },
       },
       name: {
-        Header: 'Name',
+        Header: '',
         style: { width: '50%', ...columnStyle },
         accessor: (row) => row.display.name,
         Cell: ({ row }) => {
           return <SpectrumName data={row.original} />;
         },
-        sortType: 'basic',
       },
       solvent: {
-        Header: 'Solvent',
+        Header: '',
         style: columnStyle,
         Cell: ({ row }) => {
           const info: any = row.original.info;
@@ -123,7 +122,6 @@ export function SpectraTable(props: SpectraTableProps) {
       },
       'peaks-visible': {
         id: 'peaks-visible',
-        Header: 'peaks',
         style: {
           width: '30px',
           ...columnStyle,
@@ -142,7 +140,6 @@ export function SpectraTable(props: SpectraTableProps) {
       },
       color: {
         id: 'spectrum-actions',
-        Header: '',
         style: {
           width: '30px',
           ...columnStyle,
@@ -212,7 +209,11 @@ export function SpectraTable(props: SpectraTableProps) {
       if (col.visible) {
         const name = (col as PredefinedTableColumn<any>)?.name;
         if (name && COLUMNS[name]) {
-          addCustomColumn(columns, { ...COLUMNS[name], index: col.index });
+          addCustomColumn(columns, {
+            ...COLUMNS[name],
+            index: col.index,
+            Header: col.label,
+          });
         } else {
           const path = (col as JpathTableColumn)?.jpath;
           addCustomColumn(columns, {
