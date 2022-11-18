@@ -449,7 +449,6 @@ export function initState(state: State): State {
     history: {},
   };
 }
-
 export function dispatchMiddleware(dispatch) {
   let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {
@@ -458,7 +457,6 @@ export function dispatchMiddleware(dispatch) {
         if (action.payload) {
           usedColors = { '1d': [], '2d': [] };
           void readNMRiumObject(action.payload).then((data) => {
-            console.log('data from readNMR',JSON.parse(JSON.stringify(data)));
             action.payload = { ...data, usedColors };
             dispatch(action);
           });

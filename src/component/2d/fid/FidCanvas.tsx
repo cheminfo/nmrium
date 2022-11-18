@@ -102,7 +102,6 @@ export function FidCanvas() {
 }
 
 function getImageData(spectrum: Datum2D) {
-  console.log('data getImage', JSON.parse(JSON.stringify(spectrum)))
   const matrix = matrixZPivotRescale(spectrum.data.rr.z, {
     max: 255,
     ArrayConstructor: Int16Array,

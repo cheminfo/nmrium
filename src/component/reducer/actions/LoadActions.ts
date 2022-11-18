@@ -99,25 +99,24 @@ function setPreferences(draft: Draft<State>, data) {
 
 function initiate(draft: Draft<State>, action) {
   const state = getInitialState();
-  const { spectra, usedColors } = action.payload;
+  const { spectra, usedColors, ...resPayload } = action.payload;
   const newSpectra: any = [];
   for (let spectrum of spectra) {
     const { info } = spectrum;
-    console.log('spcetrum loadAction', JSON.parse(JSON.stringify(spectrum)));
     if (info.dimension === 1) {
       newSpectra.push(initiateDatum1D(spectrum, usedColors));
     } else if (info.dimension === 2) {
       newSpectra.push(initiateDatum2D({ ...spectrum }, usedColors));
     }
   }
-  console.log('pasa')
-  action.payload.spectra = newSpectra;
-  setData(state, action.payload);
-  const preferences = action.payload?.preferences || {};
+  resPayload.usedColors = usedColors;
+  resPayload.spectra = newSpectra;
+  setData(state, resPayload);
+  const preferences = resPayload?.preferences || {};
   setActiveTab(state, { tab: preferences?.activeTab || '' });
   state.width = draft.width;
   state.height = draft.height;
-  setPreferences(state, action.payload);
+  setPreferences(state, resPayload);
   state.isLoading = false;
   state.actionType = INITIATE;
   return state;
@@ -152,7 +151,6 @@ function handleLoadJsonFile(draft: Draft<State>, action) {
 function loadDropFiles(draft: Draft<State>, actions) {
   const { data, usedColors } = actions;
   const { spectra, molecules } = data;
-  console.log('LOADDROPFILES')
   for (let spectrum of spectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {

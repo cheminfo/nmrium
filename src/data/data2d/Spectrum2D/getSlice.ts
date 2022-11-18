@@ -14,7 +14,6 @@ interface SlicePosition {
 }
 
 export function getSlice(spectrum: Datum2D, position: SlicePosition) {
-  console.log(JSON.parse(JSON.stringify(spectrum)))
   const data = spectrum.data.rr;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
@@ -32,7 +31,10 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
   };
 
   let dataX = {
-    x: zoneToX({ from: data.minX, to: data.maxX }, spectrum.data.rr.z[0].length),
+    x: zoneToX(
+      { from: data.minX, to: data.maxX },
+      spectrum.data.rr.z[0].length,
+    ),
     re: new Float64Array(spectrum.data.rr.z[0].length),
   };
 
