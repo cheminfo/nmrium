@@ -40,7 +40,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.meta = { ...options.meta };
 
   datum.data = getData(datum, options);
-
+  console.log('options after getData', JSON.parse(JSON.stringify(options)));
   datum.originalData = datum.data;
   datum.filters = Object.assign([], options.filters);
 
@@ -56,7 +56,8 @@ function getData(datum, options) {
   console.log('getData', JSON.parse(JSON.stringify(options)))
   if (datum.info.isFid) {
     const { re = defaultMinMax, im = defaultMinMax } = options.data;
-    console.log('real part of the fid', re)
+    if (re.z.length === 0) throw new Error('algo mal');
+    console.log('real part of the fid', re);
     return { rr: re, ii: im };
   }
   return { rr: defaultMinMax, ...options.data };

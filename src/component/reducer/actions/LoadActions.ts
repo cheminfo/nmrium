@@ -107,7 +107,7 @@ function initiate(draft: Draft<State>, action) {
     if (info.dimension === 1) {
       newSpectra.push(initiateDatum1D(spectrum, usedColors));
     } else if (info.dimension === 2) {
-      newSpectra.push(initiateDatum2D(spectrum, usedColors));
+      newSpectra.push(initiateDatum2D({ ...spectrum }, usedColors));
     }
   }
   console.log('pasa')
@@ -152,6 +152,7 @@ function handleLoadJsonFile(draft: Draft<State>, action) {
 function loadDropFiles(draft: Draft<State>, actions) {
   const { data, usedColors } = actions;
   const { spectra, molecules } = data;
+  console.log('LOADDROPFILES')
   for (let spectrum of spectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
