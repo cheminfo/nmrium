@@ -458,6 +458,7 @@ export function dispatchMiddleware(dispatch) {
         if (action.payload) {
           usedColors = { '1d': [], '2d': [] };
           void readNMRiumObject(action.payload).then((data) => {
+            console.log('data from readNMR',JSON.parse(JSON.stringify(data)));
             action.payload = { ...data, usedColors };
             dispatch(action);
           });

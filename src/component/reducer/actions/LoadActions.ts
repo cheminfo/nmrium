@@ -103,12 +103,14 @@ function initiate(draft: Draft<State>, action) {
   const newSpectra: any = [];
   for (let spectrum of spectra) {
     const { info } = spectrum;
+    console.log('spcetrum loadAction', JSON.parse(JSON.stringify(spectrum)));
     if (info.dimension === 1) {
       newSpectra.push(initiateDatum1D(spectrum, usedColors));
     } else if (info.dimension === 2) {
       newSpectra.push(initiateDatum2D(spectrum, usedColors));
     }
   }
+  console.log('pasa')
   action.payload.spectra = newSpectra;
   setData(state, action.payload);
   const preferences = action.payload?.preferences || {};
