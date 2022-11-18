@@ -449,7 +449,6 @@ export function initState(state: State): State {
     history: {},
   };
 }
-
 export function dispatchMiddleware(dispatch) {
   let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {

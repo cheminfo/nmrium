@@ -31,12 +31,15 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
   };
 
   let dataX = {
-    x: zoneToX({ from: data.minX, to: data.maxX }, spectrum.data.z[0].length),
-    re: new Float64Array(spectrum.data.z[0].length),
+    x: zoneToX(
+      { from: data.minX, to: data.maxX },
+      spectrum.data.rr.z[0].length,
+    ),
+    re: new Float64Array(spectrum.data.rr.z[0].length),
   };
 
-  for (let i = 0; i < spectrum.data.z[0].length; i++) {
-    dataX.re[i] += spectrum.data.z[yIndex][i];
+  for (let i = 0; i < spectrum.data.rr.z[0].length; i++) {
+    dataX.re[i] += spectrum.data.rr.z[yIndex][i];
   }
 
   let infoY = {
@@ -53,7 +56,7 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
 
   let index = data.z.length - 1;
   for (let i = 0; i < data.z.length; i++) {
-    dataY.re[i] += spectrum.data.z[index--][xIndex];
+    dataY.re[i] += spectrum.data.rr.z[index--][xIndex];
   }
   const horizontal = initiateDatum1D({ info: infoX, data: dataX }, {});
   const vertical = initiateDatum1D({ info: infoY, data: dataY }, {});
