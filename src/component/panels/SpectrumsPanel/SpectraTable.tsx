@@ -3,12 +3,18 @@ import { useMemo, CSSProperties } from 'react';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
-import ReactTable from '../../elements/ReactTable/ReactTable';
-import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
+import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn';
 import { useAlert } from '../../elements/popup/Alert';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import { DELETE_SPECTRA } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
+import {
+  JpathTableColumn,
+  PredefinedSpectraColumn,
+  PredefinedTableColumn,
+} from '../../workspaces/Workspace';
 
 import ColorIndicator from './base/ColorIndicator';
 import ShowHideMarkersButton, {
@@ -32,6 +38,7 @@ export const SpectraTableButtonStyle: CSSProperties = {
   border: 'none',
   width: '20px',
   height: '20px',
+  margin: 'auto',
 };
 
 interface SpectraTableProps
@@ -42,6 +49,7 @@ interface SpectraTableProps
   activeSpectrum: ActiveSpectrum | null;
   onOpenSettingModal: (event: Event, data: Datum1D | Datum2D) => void;
   onChangeActiveSpectrum: (event: Event, data: Datum1D | Datum2D) => void;
+  nucleus: string;
 }
 
 const columnStyle = {
@@ -58,95 +66,105 @@ export function SpectraTable(props: SpectraTableProps) {
     onChangeMarkersVisibility,
     onOpenSettingModal,
     onChangeActiveSpectrum,
+    nucleus,
   } = props;
   const alert = useAlert();
   const dispatch = useDispatch();
+  const spectraPreferences = usePanelPreferences('spectra', nucleus);
 
-  const basicColumns: CustomColumn<Datum1D | Datum2D>[] = [
-    {
-      index: 1,
-      id: 'hide-show-spectrum',
-      Header: '',
-      style: {
-        width: '20px',
-        ...columnStyle,
-      },
-      Cell: ({ row }) => {
-        return (
-          <ShowHideSpectrumButton
-            data={row.original}
-            onChangeVisibility={onChangeVisibility}
-          />
-        );
-      },
-    },
-    {
-      index: 2,
-      Header: 'Name',
-      style: { width: '50%', ...columnStyle },
-      accessor: (row) => row.display.name,
-      Cell: ({ row }) => {
-        return <SpectrumName data={row.original} />;
-      },
-      sortType: 'basic',
-    },
-    {
-      index: 3,
-      Header: 'Solvent',
-      style: columnStyle,
-      Cell: ({ row }) => {
-        const info: any = row.original.info;
-        return (
-          info?.solvent && (
-            <div
-              // style={styles.info}
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{
-                __html: formatValueAsHTML(info.solvent),
-              }}
+  const COLUMNS: Record<
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    (string & {}) | PredefinedSpectraColumn,
+    Column<Datum1D | Datum2D>
+  > = useMemo(
+    () => ({
+      visible: {
+        id: 'hide-show-spectrum',
+        Header: '',
+        style: {
+          width: '20px',
+          ...columnStyle,
+        },
+        Cell: ({ row }) => {
+          return (
+            <ShowHideSpectrumButton
+              data={row.original}
+              onChangeVisibility={onChangeVisibility}
             />
-          )
-        );
+          );
+        },
       },
-    },
-    {
-      index: 4,
-      Header: 'Pulse',
-      style: columnStyle,
-      accessor: (row) => (row.info as any)?.pulse,
-    },
-    {
-      index: 5,
-      Header: 'Experiment',
-      style: columnStyle,
-      accessor: (row) => (row.info as any)?.experiment,
-    },
-    {
-      index: 6,
-      id: 'spectrum-actions',
-      Header: '',
-      style: {
-        width: '30px',
-        ...columnStyle,
+      name: {
+        Header: 'Name',
+        style: { width: '50%', ...columnStyle },
+        accessor: (row) => row.display.name,
+        Cell: ({ row }) => {
+          return <SpectrumName data={row.original} />;
+        },
+        sortType: 'basic',
       },
-      Cell: ({ row }) => {
-        return (
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <ShowHideMarkersButton
-              data={row.original as Datum1D}
-              onChangeMarkersVisibility={onChangeMarkersVisibility}
-              markersVisible={markersVisible}
-            />
+      solvent: {
+        Header: 'Solvent',
+        style: columnStyle,
+        Cell: ({ row }) => {
+          const info: any = row.original.info;
+          return (
+            info?.solvent && (
+              <div
+                // style={styles.info}
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: formatValueAsHTML(info.solvent),
+                }}
+              />
+            )
+          );
+        },
+      },
+      'peaks-visible': {
+        id: 'peaks-visible',
+        Header: 'peaks',
+        style: {
+          width: '30px',
+          ...columnStyle,
+        },
+        Cell: ({ row }) => {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <ShowHideMarkersButton
+                data={row.original as Datum1D}
+                onChangeMarkersVisibility={onChangeMarkersVisibility}
+                markersVisible={markersVisible}
+              />
+            </div>
+          );
+        },
+      },
+      color: {
+        id: 'spectrum-actions',
+        Header: '',
+        style: {
+          width: '30px',
+          ...columnStyle,
+        },
+        Cell: ({ row }) => {
+          return (
             <ColorIndicator
               display={row.original.display}
               dimension={row.original.info.dimension}
               onClick={(event) => onOpenSettingModal(event, row.original)}
             />
-          </div>
-        );
+          );
+        },
       },
-    },
-  ];
+    }),
+    [
+      markersVisible,
+      onChangeMarkersVisibility,
+      onChangeVisibility,
+      onOpenSettingModal,
+    ],
+  );
 
   const contextMenu = useMemo(
     () => [
@@ -188,6 +206,27 @@ export function SpectraTable(props: SpectraTableProps) {
     return row?.original.id === activeSpectrum?.id;
   }
 
+  const tableColumns = useMemo(() => {
+    let columns: Array<Column<any> & { index: number }> = [];
+    for (const col of spectraPreferences.columns) {
+      if (col.visible) {
+        const name = (col as PredefinedTableColumn<any>)?.name;
+        if (name && COLUMNS[name]) {
+          addCustomColumn(columns, { ...COLUMNS[name], index: col.index });
+        } else {
+          const path = (col as JpathTableColumn)?.jpath;
+          addCustomColumn(columns, {
+            index: col.index,
+            Header: col.label,
+            accessor: path,
+            id: `${col.index}${path}`,
+          });
+        }
+      }
+    }
+    return columns.sort((object1, object2) => object1.index - object2.index);
+  }, [COLUMNS, spectraPreferences.columns]);
+
   return (
     <ReactTable
       rowStyle={{
@@ -196,7 +235,7 @@ export function SpectraTable(props: SpectraTableProps) {
       }}
       activeRow={handleActiveRow}
       data={data}
-      columns={basicColumns}
+      columns={tableColumns}
       onClick={(e, data: any) =>
         onChangeActiveSpectrum(e, data.original as Datum1D | Datum2D)
       }

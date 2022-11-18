@@ -27,6 +27,7 @@ import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPicking
 
 interface SpectraPanelHeaderProps {
   spectrums: Array<Datum1D | Datum2D>;
+  onSettingClick: () => void;
 }
 
 interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
@@ -42,6 +43,7 @@ function SpectraPanelHeaderInner({
   activeTab,
   displayerMode,
   spectrums,
+  onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
   const alert = useAlert();
@@ -106,6 +108,8 @@ function SpectraPanelHeaderInner({
       onDelete={handleDelete}
       counter={spectrums?.length}
       deleteToolTip="Delete all spectra"
+      showSettingButton
+      onSettingClick={onSettingClick}
     >
       <Button popupTitle="Hide all spectra" onClick={hideAllSpectrumsHandler}>
         <FaEyeSlash />
@@ -138,7 +142,10 @@ function SpectraPanelHeaderInner({
 
 const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
-export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
+export default function SpectrumsTabs({
+  spectrums,
+  onSettingClick,
+}: SpectraPanelHeaderProps) {
   const {
     data,
     view: {
@@ -155,6 +162,7 @@ export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
         activeTab,
         displayerMode,
         spectrums,
+        onSettingClick,
       }}
     />
   );

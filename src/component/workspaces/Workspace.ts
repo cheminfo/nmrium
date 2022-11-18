@@ -33,6 +33,34 @@ interface NucleusPreferences<T> {
   nuclei: Record<string, T>;
 }
 
+interface BasicColumnPreferences {
+  visible: boolean;
+  label: string;
+  index: number;
+}
+
+export type PredefinedSpectraColumn =
+  | 'visible'
+  | 'name'
+  | 'peaks-visible'
+  | 'color'
+  | 'solvent';
+export interface PredefinedTableColumn<T> extends BasicColumnPreferences {
+  name: T;
+}
+
+export interface JpathTableColumn extends BasicColumnPreferences {
+  jpath: string;
+}
+
+export type SpectraTableColumn =
+  | PredefinedTableColumn<PredefinedSpectraColumn>
+  | JpathTableColumn;
+
+export interface SpectraNucleusPreferences {
+  columns: Array<SpectraTableColumn>;
+}
+
 interface RangesNucleusPreferences {
   from: ColumnPreferences;
   to: ColumnPreferences;
@@ -75,6 +103,7 @@ export interface MultipleSpectraAnalysisPreferences {
 }
 
 export interface WorkSpacePanelPreferences {
+  spectra: SpectraNucleusPreferences;
   peaks: PeaksNucleusPreferences;
   integrals: IntegralsNucleusPreferences;
   ranges: RangesNucleusPreferences;
@@ -84,6 +113,7 @@ export interface WorkSpacePanelPreferences {
 }
 
 export interface PanelsPreferences {
+  spectra: NucleusPreferences<SpectraNucleusPreferences>;
   peaks: NucleusPreferences<PeaksNucleusPreferences>;
   integrals: NucleusPreferences<IntegralsNucleusPreferences>;
   ranges: NucleusPreferences<RangesNucleusPreferences>;

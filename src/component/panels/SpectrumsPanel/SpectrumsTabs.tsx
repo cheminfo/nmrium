@@ -144,10 +144,11 @@ function SpectrumsTabsInner({
     >
       <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
-          Object.keys(spectrumsGroupByNucleus).map((group) => (
-            <Tab tablabel={group} tabid={group} key={group}>
+          Object.keys(spectrumsGroupByNucleus).map((nucleus) => (
+            <Tab tablabel={nucleus} tabid={nucleus} key={nucleus}>
               <SpectraTable
-                data={spectrumsGroupByNucleus[group]}
+                nucleus={nucleus}
+                data={spectrumsGroupByNucleus[nucleus]}
                 markersVisible={markersVisible}
                 activeSpectrum={activeSpectrum}
                 onChangeVisibility={handleChangeVisibility}
