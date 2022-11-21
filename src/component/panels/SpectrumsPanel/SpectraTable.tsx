@@ -17,10 +17,6 @@ import {
 } from '../../workspaces/Workspace';
 
 import ColorIndicator from './base/ColorIndicator';
-import ShowHideMarkersButton, {
-  Markers,
-  OnChangeMarkersVisibilityEvent,
-} from './base/ShowHideMarkersButton';
 import ShowHideSpectrumButton, {
   OnChangeVisibilityEvent,
 } from './base/ShowHideSpectrumButton';
@@ -41,11 +37,8 @@ export const SpectraTableButtonStyle: CSSProperties = {
   margin: 'auto',
 };
 
-interface SpectraTableProps
-  extends OnChangeVisibilityEvent,
-    OnChangeMarkersVisibilityEvent {
+interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
-  markersVisible: Markers;
   activeSpectrum: ActiveSpectrum | null;
   onOpenSettingModal: (event: Event, data: Datum1D | Datum2D) => void;
   onChangeActiveSpectrum: (event: Event, data: Datum1D | Datum2D) => void;
@@ -60,10 +53,8 @@ const columnStyle = {
 export function SpectraTable(props: SpectraTableProps) {
   const {
     data,
-    markersVisible,
     activeSpectrum,
     onChangeVisibility,
-    onChangeMarkersVisibility,
     onOpenSettingModal,
     onChangeActiveSpectrum,
     nucleus,
@@ -120,24 +111,6 @@ export function SpectraTable(props: SpectraTableProps) {
           );
         },
       },
-      'peaks-visible': {
-        id: 'peaks-visible',
-        style: {
-          width: '30px',
-          ...columnStyle,
-        },
-        Cell: ({ row }) => {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <ShowHideMarkersButton
-                data={row.original as Datum1D}
-                onChangeMarkersVisibility={onChangeMarkersVisibility}
-                markersVisible={markersVisible}
-              />
-            </div>
-          );
-        },
-      },
       color: {
         id: 'spectrum-actions',
         style: {
@@ -155,12 +128,7 @@ export function SpectraTable(props: SpectraTableProps) {
         },
       },
     }),
-    [
-      markersVisible,
-      onChangeMarkersVisibility,
-      onChangeVisibility,
-      onOpenSettingModal,
-    ],
+    [onChangeVisibility, onOpenSettingModal],
   );
 
   const contextMenu = useMemo(

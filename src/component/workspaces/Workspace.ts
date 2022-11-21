@@ -39,12 +39,7 @@ interface BasicColumnPreferences {
   index: number;
 }
 
-export type PredefinedSpectraColumn =
-  | 'visible'
-  | 'name'
-  | 'peaks-visible'
-  | 'color'
-  | 'solvent';
+export type PredefinedSpectraColumn = 'visible' | 'name' | 'color' | 'solvent';
 export interface PredefinedTableColumn<T> extends BasicColumnPreferences {
   name: T;
   description: string;

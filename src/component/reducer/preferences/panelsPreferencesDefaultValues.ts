@@ -46,13 +46,6 @@ const getSpectraDefaultValues = (
         index: 5,
       },
       {
-        name: 'peaks-visible',
-        label: 'Peaks',
-        description: 'Show/Hide Peaks',
-        visible: true,
-        index: 1000,
-      },
-      {
         name: 'color',
         label: '',
         description: 'Spectrum Color',

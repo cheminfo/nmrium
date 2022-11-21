@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState, useMemo, useEffect, memo } from 'react';
+import { useState, useMemo, memo } from 'react';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -10,7 +10,6 @@ import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
 import {
-  CHANGE_PEAKS_MARKERS_VISIBILITY,
   SET_ACTIVE_TAB,
   CHANGE_VISIBILITY,
   CHANGE_ACTIVE_SPECTRUM,
@@ -40,9 +39,6 @@ function SpectrumsTabsInner({
   activeTab,
   onTabChange,
 }: SpectrumsTabsInnerProps) {
-  const [markersVisible, setMarkersVisible] = useState<Array<{ id: string }>>(
-    [],
-  );
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [settingModalPosition, setSettingModalPosition] = useState<{
     x: number;
@@ -51,45 +47,11 @@ function SpectrumsTabsInner({
   const [isSettingModalDisplayed, setIsSettingModalDisplayed] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (data) {
-      const visibleMarkers: Array<{ id: string }> = [];
-      for (const datum of data) {
-        if (
-          datum.info.dimension === 1 &&
-          (datum as Datum1D).display.isPeaksMarkersVisible
-        ) {
-          visibleMarkers.push({ id: datum.id });
-        }
-      }
-      setMarkersVisible(visibleMarkers);
-    }
-  }, [data, dispatch]);
-
   const spectrumsGroupByNucleus = useMemo(() => {
     if (!data) return [];
     const groupByNucleus = groupByInfoKey('nucleus');
     return groupByNucleus(data, true);
   }, [data]);
-
-  // useEffect(() => {
-  //   onTabChange({
-  //     tab: activeTab,
-  //     data: spectrumsGroupByNucleus[activeTab],
-  //   });
-  // }, [activeTab, onTabChange, spectrumsGroupByNucleus]);
-
-  function handleChangeMarkersVisibility(d) {
-    const currentIndex = markersVisible.findIndex((v) => v.id === d.id);
-    const newChecked = [...markersVisible];
-    if (currentIndex === -1) {
-      newChecked.push({ id: d.id });
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-    dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data: newChecked });
-    // setMarkersVisible(newChecked);
-  }
 
   function onTabChangeHandler(tab) {
     onTabChange({
@@ -149,10 +111,8 @@ function SpectrumsTabsInner({
               <SpectraTable
                 nucleus={nucleus}
                 data={spectrumsGroupByNucleus[nucleus]}
-                markersVisible={markersVisible}
                 activeSpectrum={activeSpectrum}
                 onChangeVisibility={handleChangeVisibility}
-                onChangeMarkersVisibility={handleChangeMarkersVisibility}
                 onChangeActiveSpectrum={handleChangeActiveSpectrum}
                 onOpenSettingModal={openSettingHandler}
               />
