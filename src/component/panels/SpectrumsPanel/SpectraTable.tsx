@@ -4,7 +4,6 @@ import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { ActiveSpectrum } from '../../reducer/Reducer';
@@ -172,28 +171,28 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   const tableColumns = useMemo(() => {
-    let columns: Array<Column<any> & { index: number }> = [];
+    let columns: Array<Column<Datum1D | Datum2D>> = [];
+    let index = 0;
     for (const col of spectraPreferences.columns) {
       if (col.visible) {
         const name = (col as PredefinedTableColumn<any>)?.name;
         if (name && COLUMNS[name]) {
-          addCustomColumn(columns, {
+          columns.push({
             ...COLUMNS[name],
-            index: col.index,
             Header: col.label,
           });
         } else {
           const path = (col as JpathTableColumn)?.jpath;
-          addCustomColumn(columns, {
-            index: col.index,
+          columns.push({
             Header: col.label,
-            accessor: path,
-            id: `${col.index}${path}`,
+            accessor: path as any,
+            id: `${index}${path}`,
           });
         }
       }
+      index++;
     }
-    return columns.sort((object1, object2) => object1.index - object2.index);
+    return columns;
   }, [COLUMNS, spectraPreferences.columns]);
 
   return (

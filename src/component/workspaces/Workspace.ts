@@ -36,7 +36,6 @@ interface NucleusPreferences<T> {
 interface BasicColumnPreferences {
   visible: boolean;
   label: string;
-  index: number;
 }
 
 export type PredefinedSpectraColumn = 'visible' | 'name' | 'color' | 'solvent';

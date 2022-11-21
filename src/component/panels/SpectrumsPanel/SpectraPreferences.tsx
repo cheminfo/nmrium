@@ -38,13 +38,17 @@ function SpectraPreferences(props, ref: any) {
 
   function handleAdd(nucleus, index) {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
-    const columns = data.nuclei[nucleus].columns.slice();
-    columns.push({
-      index,
-      jpath: '',
-      label: '',
-      visible: true,
-    });
+    let columns = data.nuclei[nucleus].columns;
+
+    columns = [
+      ...columns.slice(0, index),
+      {
+        jpath: '',
+        label: '',
+        visible: true,
+      },
+      ...columns.slice(index),
+    ];
 
     formRef.current.setValues({
       ...data,

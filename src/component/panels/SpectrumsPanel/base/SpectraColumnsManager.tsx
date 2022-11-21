@@ -85,10 +85,16 @@ export function SpectraColumnsManager({
         Header: '',
         style: { width: '30px' },
         id: 'add-button',
-        Cell: ({ data, row }) => {
+        Cell: ({ row }) => {
           const record: any = row.original;
           return (
             <div style={{ display: 'flex' }}>
+              <Button.Done
+                fill="outline"
+                onClick={() => onAdd(nucleus, row.index + 1)}
+              >
+                <FaPlus />
+              </Button.Done>
               {!record?.name && (
                 <Button.Danger
                   fill="outline"
@@ -96,14 +102,6 @@ export function SpectraColumnsManager({
                 >
                   <FaTimes />
                 </Button.Danger>
-              )}
-              {data.length === row.index + 1 && (
-                <Button.Done
-                  fill="outline"
-                  onClick={() => onAdd(nucleus, row.index + 1)}
-                >
-                  <FaPlus />
-                </Button.Done>
               )}
             </div>
           );
