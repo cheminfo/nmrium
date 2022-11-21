@@ -65,14 +65,14 @@ enum SumSetOptions {
 
 type SaveInput =
   | {
-      sum: number;
-      sumAuto: false;
-    }
+    sum: number;
+    sumAuto: false;
+  }
   | {
-      moleculeId: string;
-      mf: string;
-      sumAuto: true;
-    };
+    moleculeId: string;
+    mf: string;
+    sumAuto: true;
+  };
 
 interface ChangeSumModalProps {
   onSave: (saveInput: SaveInput) => void;
@@ -180,12 +180,12 @@ export default function ChangeSumModal({
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
             {isStructurePanelVisible && (
-              <Tab tablabel="Auto" tabid={SumSetOptions.Auto}>
+              <Tab title="Auto" tabid={SumSetOptions.Auto}>
                 <SelectMolecule name="molecule" />
               </Tab>
             )}
 
-            <Tab tablabel="Manual" tabid={SumSetOptions.Manual}>
+            <Tab title="Manual" tabid={SumSetOptions.Manual}>
               <div className="manual-container">
                 <FormikInput
                   name="sum"

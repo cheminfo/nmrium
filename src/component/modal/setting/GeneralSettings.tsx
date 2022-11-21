@@ -224,30 +224,30 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             activeTab={activeTab}
             onClick={tabChangeHandler}
           >
-            <Tab tablabel="General" tabid="general">
+            <Tab title="General" tabid="general">
               <div className="inner-content">
                 <GeneralTabContent />
               </div>
             </Tab>
 
-            <Tab tablabel="Formatting" tabid="formatting">
+            <Tab title="Formatting" tabid="formatting">
               <div className="inner-content">
                 <FormattingTabContent />
               </div>
             </Tab>
 
-            <Tab tablabel="Panels" tabid="display">
+            <Tab title="Panels" tabid="display">
               <div className="inner-content">
                 <DisplayTabContent />
               </div>
             </Tab>
-            <Tab tablabel="Tools" tabid="tools">
+            <Tab title="Tools" tabid="tools">
               <div className="inner-content">
                 <ToolsTabContent />
               </div>
             </Tab>
 
-            <Tab tablabel="Databases" tabid="databases">
+            <Tab title="Databases" tabid="databases">
               <div className="inner-content">
                 <DatabasesTabContent
                   currentWorkspace={preferences.workspace.current}

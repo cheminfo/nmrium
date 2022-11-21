@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { CSSProperties, ReactNode, useCallback } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 import DeleteButton from './DeleteButton';
 
@@ -16,82 +16,69 @@ const styles = (styles) => css`
   ${styles}
 `;
 
-export interface InternalTabProps {
-  tabid: string;
-  tablabel?: string;
-  isActive: boolean;
-  tabstyles?: CSSProperties | SerializedStyles;
-  canDelete?: boolean;
-  onDelete?: (element: any) => void;
-  onClick?: (element: any) => void;
-  render?: ({
-    isActive,
-    title,
-    id,
-  }: {
-    isActive: boolean;
-    title: string;
-    id: string | number;
-  }) => any;
+
+export interface TabEvents {
+  onDelete?: (tab: Required<BaseTab>) => void;
+  onClick?: (tab: Required<BaseTab>) => void;
 }
 
-/* eslint-disable react/no-unused-prop-types */
-export interface TabProps {
+
+export interface BaseTab {
   tabid: string;
-  tablabel?: string;
-  canDelete?: boolean;
-  onDelete?: (element: any) => void;
+  title?: string;
+}
+export interface BasicTabProps extends BaseTab {
+  isActive?: boolean;
+}
+export interface TabProps extends BasicTabProps, TabEvents {
   tabstyles?: CSSProperties | SerializedStyles;
-  children: ReactNode;
-  render?: () => ReactNode;
+  canDelete?: boolean;
+  render?: (options: Required<BasicTabProps>) => any;
   className?: string;
+  children: ReactNode
 }
-/* eslint-enable react/no-unused-prop-types */
 
-export function InternalTab({
+
+export default function Tab({
   tabid,
-  tablabel,
+  title,
   isActive,
   onClick = () => null,
   canDelete,
   onDelete = () => null,
   tabstyles,
   render,
-}: InternalTabProps) {
-  let className = 'tab-list-item';
+  className,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  children
+}: TabProps) {
+
+  const classNames = ['tab-list-item'];
 
   // use tab identifier if given (higher priority)
   if (isActive) {
-    className += ' tab-list-active';
+    classNames.push('tab-list-active');
   }
 
-  const clickHandler = useCallback(
-    (e) => {
-      onClick({ ...e, tablabel, tabid });
-    },
-    [onClick, tablabel, tabid],
-  );
+  function clickHandler(e) {
+    onClick({ ...e, title, tabid });
+  }
 
-  const deleteHandler = useCallback(
-    (e) => {
-      // stop propagation here to not have set it
-      // as active tab too (via tab click event triggering)
-      e.stopPropagation();
-      onDelete({ ...e, tablabel, tabid });
-    },
-    [onDelete, tablabel, tabid],
-  );
+  function deleteHandler(e) {
+    // stop propagation here to not have set it
+    // as active tab too (via tab click event triggering)
+    e.stopPropagation();
+    onDelete({ ...e, title, tabid });
+  }
 
   return (
-    <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
+    <li className={`${classNames.join(" ")} ${className || ''}`} onClick={clickHandler} css={styles(tabstyles)} >
       {canDelete && <DeleteButton onDelete={deleteHandler} />}
-      {render
-        ? render({ isActive, title: tablabel || '', id: tabid })
-        : tablabel}
-    </li>
+      {
+        render
+          ? render({ isActive: isActive || false, title: title || '', tabid })
+          : title
+      }
+    </li >
   );
-}
-
-export default function Tab(props: TabProps) {
-  return <>{props.children}</>;
 }
