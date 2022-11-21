@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrFt } from 'cheminfo-font';
+import { SvgNmrFt, SvgNmrPeaks } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
@@ -10,14 +10,17 @@ import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import {
+  CHANGE_PEAKS_MARKERS_VISIBILITY,
   DELETE_PEAK_NOTATION,
   OPTIMIZE_PEAKS,
   TOGGLE_PEAKS_SHAPES,
@@ -57,6 +60,7 @@ function PeaksPanelInner({
   const modal = useModal();
   const alert = useAlert();
   const isExperimental = useCheckExperimentalFeature();
+  const peaksViewState = useActiveSpectrumPeaksViewState();
 
   const settingRef = useRef<any>();
 
@@ -124,6 +128,10 @@ function PeaksPanelInner({
   const togglePeaksShapesHandler = (key: string) => {
     dispatch({ type: TOGGLE_PEAKS_SHAPES, payload: { key } });
   };
+
+  function handleChangeMarkersVisibility() {
+    dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY });
+  }
 
   return (
     <div
@@ -199,6 +207,18 @@ function PeaksPanelInner({
               </Button.Done>
             </>
           )}
+          <ActiveButton
+            style={{ marginLeft: '2px', marginRight: '2px' }}
+            popupTitle={
+              peaksViewState.isPeaksVisible ? 'Hide peaks' : 'Show peaks'
+            }
+            popupPlacement="right"
+            onClick={() => handleChangeMarkersVisibility()}
+            disabled={!peaks?.values || peaks.values.length === 0}
+            value={peaksViewState.isPeaksVisible}
+          >
+            <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+          </ActiveButton>
         </DefaultPanelHeader>
       )}
       {isFlipped && (

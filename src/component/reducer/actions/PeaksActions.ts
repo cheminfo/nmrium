@@ -11,6 +11,7 @@ import {
 import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
 import { Peak } from '../../../data/types/data1d/Peak';
+import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -164,6 +165,28 @@ function handleShowPeaksShapes(draft: Draft<State>, action) {
   };
 }
 
+function handlePeaksVisibility(draft: Draft<State>) {
+  togglePeaksViewProperty(draft, 'isPeaksVisible');
+}
+
+function togglePeaksViewProperty(
+  draft: Draft<State>,
+  key: keyof typeof defaultPeaksViewState,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const peaksView = draft.view.peaks;
+    if (peaksView[activeSpectrum.id]) {
+      peaksView[activeSpectrum.id][key] = !peaksView[activeSpectrum.id][key];
+    } else {
+      const defaultPeaksView = { ...defaultPeaksViewState };
+      defaultPeaksView[key] = !defaultPeaksView[key];
+      peaksView[activeSpectrum.id] = defaultPeaksView;
+    }
+  }
+}
+
 export {
   addPeak,
   addPeaks,
@@ -172,4 +195,5 @@ export {
   handleOptimizePeaks,
   changePeakShapeHandler,
   handleShowPeaksShapes,
+  handlePeaksVisibility,
 };

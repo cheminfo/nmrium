@@ -11,6 +11,7 @@ import {
   FloatingMolecules,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
+import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
@@ -88,6 +89,7 @@ interface ZoneToolState extends ToolStateBase {
    */
   showPeaks: boolean;
 }
+
 export interface ViewState {
   /**
    * Floatings molecules
@@ -96,6 +98,11 @@ export interface ViewState {
   floatingMolecules: Array<FloatingMolecules>;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
+  /**
+   * peaks view property
+   * where the key is the id of the spectrum
+   */
+  peaks: Record<string, PeaksViewState>;
   spectra: {
     /**
      * active spectrum id per nucleus
@@ -158,6 +165,7 @@ export const getInitialState = (): State => ({
     floatingMolecules: [],
     ranges: [],
     zones: [],
+    peaks: {},
     spectra: { activeSpectra: {}, activeTab: '' },
     zoom: {
       levels: {},
@@ -539,6 +547,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.changePeakShapeHandler(draft, action);
     case types.TOGGLE_PEAKS_SHAPES:
       return PeaksActions.handleShowPeaksShapes(draft, action);
+    case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
+      return PeaksActions.handlePeaksVisibility(draft);
+
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:
@@ -626,12 +637,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
-
-    case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
-      return SpectrumsActions.handleChangePeaksMarkersVisibility(
-        draft,
-        action.data,
-      );
     case types.CHANGE_ACTIVE_SPECTRUM:
       return SpectrumsActions.handleChangeActiveSpectrum(draft, action.data);
     case types.CHANGE_SPECTRUM_COLOR:
