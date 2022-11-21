@@ -182,7 +182,7 @@ test('Processed spectra filters', async ({ page }) => {
     await expect(filters).toHaveCount(6);
   });
 });
-test('Exclusive zones', async ({ page }) => {
+test('Exclusion zones', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open Coffee example', async () => {
     await nmrium.page.click('li >> text=General');
@@ -197,7 +197,7 @@ test('Exclusive zones', async ({ page }) => {
     );
   });
 
-  await test.step('activate exclusive zones tool', async () => {
+  await test.step('activate exclusision zones tool', async () => {
     //open general setting
     await nmrium.clickTool('general-settings');
 
@@ -222,15 +222,15 @@ test('Exclusive zones', async ({ page }) => {
   await nmrium.clickPanel('Filters');
   const filters = nmrium.page.locator('_react=FilterTable');
 
-  await test.step('add exclusive zones', async () => {
-    //select exclusive zones tool
+  await test.step('add exclusision zones', async () => {
+    //select exclusion zones tool
     await nmrium.clickTool('exclusionZones');
     //add exclusion zones
     await selectRange(nmrium, { axis: 'X', startX: 100, endX: 150 });
     // check that the filters applied to all spectra
     await expect(
       nmrium.page.locator('_react=ExclusionZoneAnnotation'),
-    ).toHaveCount(12);
+    ).toHaveCount(13);
   });
 
   await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
@@ -242,14 +242,14 @@ test('Exclusive zones', async ({ page }) => {
     await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
   });
 
-  await test.step('add exclusive zones to the active spectrum', async () => {
+  await test.step('add exclusion zones to the active spectrum', async () => {
     //add exclusion zones to the last spectrum which is active from the previous step
     await selectRange(nmrium, { axis: 'X', startX: 200, endX: 220 });
 
-    // the number of exclusion zones  should become 13 since the previous count for all spectra is 12
+    // the number of exclusion zones  should become 14 since the previous count for all spectra is 13
     await expect(
       nmrium.page.locator('_react=ExclusionZoneAnnotation'),
-    ).toHaveCount(13);
+    ).toHaveCount(14);
   });
 
   // the number of exclusion zones should become 2 since we have one from the previous step

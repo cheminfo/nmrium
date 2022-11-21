@@ -8,7 +8,7 @@ import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
-  FloatingMolecules,
+  MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
@@ -92,10 +92,10 @@ interface ZoneToolState extends ToolStateBase {
 
 export interface ViewState {
   /**
-   * Floatings molecules
+   *  Molecules view properties
    * @default []
    */
-  floatingMolecules: Array<FloatingMolecules>;
+  molecules: MoleculesView;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
   /**
@@ -162,7 +162,7 @@ export const getInitialState = (): State => ({
   mode: 'RTL',
   molecules: [],
   view: {
-    floatingMolecules: [],
+    molecules: {},
     ranges: [],
     zones: [],
     peaks: {},
@@ -444,7 +444,6 @@ export function initState(state: State): State {
     history: {},
   };
 }
-
 export function dispatchMiddleware(dispatch) {
   let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {
@@ -667,6 +666,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.FLOAT_MOLECULE_OVER_SPECTRUM:
       return MoleculeActions.floatMoleculeOverSpectrum(draft, action);
+
+    case types.TOGGLE_MOLECULE_ATOM_NUMBER:
+      return MoleculeActions.toggleMoleculeAtomsNumbers(draft, action);
 
     case types.CHANGE_FLOAT_MOLECULE_POSITION:
       return MoleculeActions.changeFloatMoleculePosition(draft, action);

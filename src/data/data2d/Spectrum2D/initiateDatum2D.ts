@@ -6,6 +6,8 @@ import { get2DColor } from '../../utilities/getColor';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 
+const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
+
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
@@ -36,14 +38,8 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
 
   datum.originalInfo = datum.info;
   datum.meta = { ...options.meta };
-  datum.data = {
-    z: [],
-    minX: 0,
-    minY: 0,
-    maxX: 0,
-    maxY: 0,
-    ...options.data,
-  };
+
+  datum.data = getData(datum, options);
   datum.originalData = datum.data;
   datum.filters = Object.assign([], options.filters);
 
@@ -53,6 +49,15 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   FiltersManager.reapplyFilters(datum);
 
   return datum;
+}
+
+function getData(datum, options) {
+  if (datum.info.isFid) {
+    const { re = defaultMinMax, im = defaultMinMax } = options.data;
+    if (re.z.length === 0) throw new Error('algo mal');
+    return { rr: re, ii: im };
+  }
+  return { rr: defaultMinMax, ...options.data };
 }
 
 function getColor(options, usedColors) {

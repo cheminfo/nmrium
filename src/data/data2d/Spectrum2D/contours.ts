@@ -1,6 +1,7 @@
 import { Conrec } from 'ml-conrec';
 
-import { Data2D, Datum2D } from '../../types/data2d';
+import { Datum2D } from '../../types/data2d';
+import { MinMaxContent } from '../../types/data2d/Data2D';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 interface Level {
@@ -172,13 +173,13 @@ function drawContours(
     return getContours(zoom, {
       negative,
       nbLevels: numberOfNegativeLayer,
-      data: datum.data,
+      data: datum.data.rr,
     });
   }
 
   return getContours(zoom, {
     nbLevels: numberOfPositiveLayer,
-    data: datum.data,
+    data: datum.data.rr,
   });
 }
 
@@ -186,7 +187,7 @@ interface ContoursCalcOptions {
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
-  data: Data2D;
+  data: MinMaxContent;
 }
 
 function getContours(zoomLevel, options: ContoursCalcOptions) {

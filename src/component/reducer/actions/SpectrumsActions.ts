@@ -21,7 +21,7 @@ import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
-import { setTab, setActiveTab } from './ToolsActions';
+import { setTab, setActiveTab, setMargin } from './ToolsActions';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
@@ -116,10 +116,12 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
    * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
+
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   } else if (refreshDomain) {
     setDomain(draft);
+    setMargin(draft);
     setMode(draft);
   }
 }
@@ -175,10 +177,13 @@ function addMissingProjectionHandler(draft, action) {
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
+    const datum2D = state.data[index];
+    const info = datum2D.info;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
-        state.data[index],
+        datum2D.data.rr,
         n,
+        info,
         draft.usedColors,
       );
       draft.data.push(datum1D);

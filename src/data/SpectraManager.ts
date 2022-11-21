@@ -21,7 +21,6 @@ export type DataExportOptionsType = keyof typeof DataExportOptions;
 
 function getData(datum, usedColors) {
   const dimension = datum.info.dimension;
-
   if (dimension === 1) {
     return Datum1D.initiateDatum1D(datum, usedColors);
   } else if (dimension === 2) {
@@ -42,8 +41,7 @@ export function addJcamp(output, jcamp, options, usedColors) {
   const name = options?.display?.name;
   const { spectra: spectraIn } = processJcamp(jcamp, {
     name,
-    noContours: true,
-    xy: true,
+    noContour: true,
     keepRecordsRegExp: /.*/,
     profiling: true,
   });

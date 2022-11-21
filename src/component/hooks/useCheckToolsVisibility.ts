@@ -6,11 +6,9 @@ import { Info2D } from '../../data/types/data2d';
 import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { options } from '../toolbar/ToolTypes';
+import { options, ToolOptionItem } from '../toolbar/ToolTypes';
 
 import useSpectrum from './useSpectrum';
-
-const emptyData = { info: {} };
 
 type SpectrumInfo = Info1D | Info2D;
 
@@ -26,7 +24,7 @@ export function useCheckToolsVisibility(): (
 ) => boolean {
   const { displayerMode } = useChartData();
   const preferences = usePreferences();
-  const spectrum = useSpectrum(emptyData);
+  const spectrum = useSpectrum(null);
 
   return useCallback(
     (toolKey, checkOptions: CheckOptions = {}) => {
@@ -41,30 +39,57 @@ export function useCheckToolsVisibility(): (
         `display.toolBarButtons.${toolKey}`,
         false,
       );
-      const { spectrumType, mode } = options[toolKey];
+      const { spectraOptions, mode } = options[toolKey];
 
       const modeFlag =
         !checkMode || (checkMode && (!mode || displayerMode === mode));
 
       const spectrumCheckFlag =
         !checkSpectrumType ||
-        (checkSpectrumType &&
-          (!spectrumType ||
-            !spectrum ||
-            (spectrumType === 'FID' && spectrum.info.isFid) ||
-            (spectrumType === 'FT' && !spectrum.info.isFid)));
+        (checkSpectrumType && checkSpectrum(spectrum, spectraOptions));
 
       return (
         flag &&
         modeFlag &&
         spectrumCheckFlag &&
         (!extraInfoCheckParameters ||
-          checkInfo(extraInfoCheckParameters, spectrum.info))
+          checkInfo(extraInfoCheckParameters, spectrum?.info))
       );
     },
 
     [displayerMode, preferences, spectrum],
   );
+}
+
+function checkSpectrum(
+  spectrum: any,
+  options: ToolOptionItem['spectraOptions'],
+) {
+  let outerConditionResult = false;
+
+  if (!options) {
+    return true;
+  }
+
+  for (const option of options) {
+    let innerConditionFlag = true;
+
+    if (option.active) {
+      if (spectrum) {
+        for (let { key, value } of option.info || []) {
+          if (spectrum.info[key] !== value) {
+            innerConditionFlag = false;
+          }
+        }
+      } else {
+        innerConditionFlag = false;
+      }
+    }
+
+    outerConditionResult = outerConditionResult || innerConditionFlag;
+  }
+
+  return outerConditionResult;
 }
 
 function checkInfo(checkParameters: SpectrumInfo, data: SpectrumInfo) {

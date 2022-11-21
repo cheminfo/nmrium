@@ -4,7 +4,10 @@ import OCL from 'openchemlib/full';
 import { useCallback } from 'react';
 import OCLnmr from 'react-ocl-nmr';
 
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
+import {
+  MoleculeView,
+  StateMoleculeExtended,
+} from '../../../data/molecules/Molecule';
 import { Ranges } from '../../../data/types/data1d';
 import { Zones } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
@@ -26,7 +29,7 @@ interface DraggableStructureProps {
   zones: Zones;
   ranges: Ranges;
   molecule: StateMoleculeExtended;
-  position?: Position;
+  moleculeView: MoleculeView;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
   index?: number;
@@ -55,7 +58,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
     activeTab,
     displayerMode,
     index,
-    position = DRAGGABLE_STRUCTURE_INITIAL_POSITION,
+    moleculeView,
   } = props;
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
@@ -88,7 +91,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
       key={molecule.id}
       width={150}
       height={100}
-      initialPosition={position}
+      initialPosition={moleculeView.floating.position}
       dragHandleClassName="handle"
       parentElement={viewerRef}
       onEnd={dragFloatMoleculeHandler}
@@ -130,6 +133,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 },
               });
             }}
+            showAtomNumber={moleculeView.showAtomNumber}
           />
         </foreignObject>
       )}
