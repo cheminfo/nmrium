@@ -100,7 +100,7 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
   const spectrumButtonLocator = nmrium.page.locator(
     '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
   );
-  
+
   const spectrumLineLocator = nmrium.page.locator(
     'data-test-id=spectrum-line >> nth=0',
   );
