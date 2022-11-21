@@ -205,10 +205,6 @@ export const getInitialState = (): State => ({
       zonesNoiseFactor: 1,
       activeFilterID: null,
       predictionIndex: 0,
-      peaksOptions: {
-        showPeaksShapes: false,
-        showPeaksSum: false,
-      },
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -422,15 +418,6 @@ export interface State {
        * @default 0
        */
       predictionIndex: number;
-
-      /**
-       * boolean indicator to hide/show peaks shapes
-       * @default false
-       */
-      peaksOptions: {
-        showPeaksShapes: boolean;
-        showPeaksSum: boolean;
-      };
     };
   };
 
@@ -545,11 +532,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.handleOptimizePeaks(draft, action);
     case types.CHANGE_PEAK_SHAPE:
       return PeaksActions.changePeakShapeHandler(draft, action);
-    case types.TOGGLE_PEAKS_SHAPES:
-      return PeaksActions.handleShowPeaksShapes(draft, action);
-    case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
-      return PeaksActions.handlePeaksVisibility(draft);
-
+    case types.TOGGLE_PEAKS_VIEW_PROPERTY:
+      return PeaksActions.handleTogglePeaksViewProperty(draft, action);
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:

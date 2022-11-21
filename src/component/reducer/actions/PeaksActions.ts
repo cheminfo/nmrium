@@ -155,18 +155,9 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
   }
 }
 
-function handleShowPeaksShapes(draft: Draft<State>, action) {
+function handleTogglePeaksViewProperty(draft: Draft<State>, action) {
   const { key } = action.payload;
-
-  const peaksOptions = draft.toolOptions.data.peaksOptions;
-  draft.toolOptions.data.peaksOptions = {
-    ...peaksOptions,
-    [key]: !peaksOptions[key],
-  };
-}
-
-function handlePeaksVisibility(draft: Draft<State>) {
-  togglePeaksViewProperty(draft, 'isPeaksVisible');
+  togglePeaksViewProperty(draft, key);
 }
 
 function togglePeaksViewProperty(
@@ -194,6 +185,5 @@ export {
   handleAutoPeakPicking,
   handleOptimizePeaks,
   changePeakShapeHandler,
-  handleShowPeaksShapes,
-  handlePeaksVisibility,
+  handleTogglePeaksViewProperty,
 };
