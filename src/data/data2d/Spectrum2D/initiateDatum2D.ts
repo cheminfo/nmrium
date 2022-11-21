@@ -54,7 +54,6 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
 function getData(datum, options) {
   if (datum.info.isFid) {
     const { re = defaultMinMax, im = defaultMinMax } = options.data;
-    if (re.z.length === 0) throw new Error('algo mal');
     return { rr: re, ii: im };
   }
   return { rr: defaultMinMax, ...options.data };
