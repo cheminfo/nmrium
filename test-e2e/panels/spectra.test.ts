@@ -28,9 +28,7 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-  await nmrium.page.click(
-    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
-  );
+  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]');
   const sketchPicker = nmrium.page.locator('_react=ColorPicker');
 
   await expect(sketchPicker).toHaveCount(0);
@@ -94,9 +92,7 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
 test('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-  await nmrium.page.click(
-    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
-  );
+  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]');
   const spectrumButtonLocator = nmrium.page.locator(
     '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
   );
@@ -121,16 +117,12 @@ test('2d spectrum', async ({ page }) => {
     // Wait the spectrum to load
     await nmrium.page.waitForTimeout(250);
 
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-    );
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
     // Check svg
     await nmrium.checkSVGLength(87876);
   });
   await test.step('Check two spectrum tabs', async () => {
-    const Tabs = nmrium.page.locator(
-      '_react=SpectrumListPanel >> _react=InternalTab',
-    );
+    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
     await expect(Tabs).toHaveCount(2);
     await expect(Tabs.first()).toHaveText('1H');
     await expect(Tabs.last()).toHaveText('1H,1H');
@@ -175,7 +167,7 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Change H1,H1 spectrum', async () => {
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
     );
     // Check svg
     await nmrium.checkSVGLength(5087655);
@@ -313,18 +305,14 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Delete 1H tab', async () => {
     // Go to 1H tab
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-    );
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
     // Delete 1H Spectrum item
     await nmrium.page.click('_react=SpectraTable >> _react=ReactTableRow ', {
       button: 'right',
     });
     await nmrium.page.click('text=Delete');
     // Check tabs
-    const Tabs = nmrium.page.locator(
-      '_react=SpectrumListPanel >> _react=InternalTab',
-    );
+    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
     await expect(Tabs).toHaveCount(1);
     await expect(Tabs).toHaveText('1H,1H');
     // Check top spectrum
@@ -349,9 +337,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.page.click('_react=ToolTip[title="Add missing projection"]');
 
     // Check tabs
-    const Tabs = nmrium.page.locator(
-      '_react=SpectrumListPanel >> _react=InternalTab',
-    );
+    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
     await expect(Tabs).toHaveCount(2);
     await expect(Tabs.first()).toHaveText('1H');
     await expect(Tabs.last()).toHaveText('1H,1H');

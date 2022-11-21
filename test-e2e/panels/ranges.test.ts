@@ -137,9 +137,7 @@ test('Multiplicity should be visible', async ({ page }) => {
   });
 
   // switch to 1H tab.
-  await nmrium.page.click(
-    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-  );
+  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
 
   await test.step('Apply auto ranges', async () => {
     //select range tool
@@ -173,12 +171,10 @@ test('Multiplicity should be visible', async ({ page }) => {
   await test.step('Check that multiplicity tree btn save state', async () => {
     // Change spectra to 2D
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
     );
     // Return to 1D spectra
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-    );
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
 
     //open ranges panel
     await nmrium.clickPanel('Ranges');
@@ -199,9 +195,7 @@ test('Range state', async ({ page }) => {
   });
 
   // switch to 1H tab.
-  await nmrium.page.click(
-    '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-  );
+  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
 
   await test.step('Apply auto ranges', async () => {
     //select range tool
