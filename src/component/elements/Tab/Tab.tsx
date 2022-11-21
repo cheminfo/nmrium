@@ -16,12 +16,10 @@ const styles = (styles) => css`
   ${styles}
 `;
 
-
 export interface TabEvents {
   onDelete?: (tab: Required<BaseTab>) => void;
   onClick?: (tab: Required<BaseTab>) => void;
 }
-
 
 export interface BaseTab {
   tabid: string;
@@ -35,9 +33,8 @@ export interface TabProps extends BasicTabProps, TabEvents {
   canDelete?: boolean;
   render?: (options: Required<BasicTabProps>) => any;
   className?: string;
-  children: ReactNode
+  children: ReactNode;
 }
-
 
 export default function Tab({
   tabid,
@@ -50,9 +47,8 @@ export default function Tab({
   render,
   className,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  children
+  children,
 }: TabProps) {
-
   const classNames = ['tab-list-item'];
 
   // use tab identifier if given (higher priority)
@@ -72,13 +68,15 @@ export default function Tab({
   }
 
   return (
-    <li className={`${classNames.join(" ")} ${className || ''}`} onClick={clickHandler} css={styles(tabstyles)} >
+    <li
+      className={`${classNames.join(' ')} ${className || ''}`}
+      onClick={clickHandler}
+      css={styles(tabstyles)}
+    >
       {canDelete && <DeleteButton onDelete={deleteHandler} />}
-      {
-        render
-          ? render({ isActive: isActive || false, title: title || '', tabid })
-          : title
-      }
-    </li >
+      {render
+        ? render({ isActive: isActive || false, title: title || '', tabid })
+        : title}
+    </li>
   );
 }

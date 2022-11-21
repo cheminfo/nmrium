@@ -4,9 +4,8 @@ interface IsotopesViewerProps extends HTMLAttributes<HTMLDivElement> {
   value?: string;
 }
 
-
 function renderIsotope(value: string) {
-  return value.replace(/(?<isotope>\d+)/g, '<sup>$<isotope></sup>')
+  return value.replace(/(?<isotope>\d+)/g, '<sup>$<isotope></sup>');
 }
 
 function IsotopesViewer({ value = '', ...othersProps }: IsotopesViewerProps) {

@@ -1,12 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  isValidElement,
-  useMemo,
-  Children,
-  memo,
-  ReactElement,
-} from 'react';
+import { isValidElement, useMemo, Children, memo, ReactElement } from 'react';
 
 import Tab, { TabEvents, TabProps } from './Tab';
 
@@ -104,8 +98,6 @@ function Tabs({
   onDelete = () => null,
   activeTab,
 }: TabsProps) {
-
-
   function handleClickTab(tab) {
     const { title, tabid } = tab;
     onClick?.({ title, tabid });

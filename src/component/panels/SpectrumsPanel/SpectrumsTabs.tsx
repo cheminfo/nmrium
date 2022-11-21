@@ -6,7 +6,7 @@ import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import IsotopesViewer from "../../elements/IsotopesViewer";
+import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
@@ -108,7 +108,12 @@ function SpectrumsTabsInner({
       <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
           Object.keys(spectrumsGroupByNucleus).map((nucleus) => (
-            <Tab render={({ title }) => <IsotopesViewer value={title} />} title={nucleus} tabid={nucleus} key={nucleus}>
+            <Tab
+              render={({ title }) => <IsotopesViewer value={title} />}
+              title={nucleus}
+              tabid={nucleus}
+              key={nucleus}
+            >
               <SpectraTable
                 nucleus={nucleus}
                 data={spectrumsGroupByNucleus[nucleus]}

@@ -65,14 +65,14 @@ enum SumSetOptions {
 
 type SaveInput =
   | {
-    sum: number;
-    sumAuto: false;
-  }
+      sum: number;
+      sumAuto: false;
+    }
   | {
-    moleculeId: string;
-    mf: string;
-    sumAuto: true;
-  };
+      moleculeId: string;
+      mf: string;
+      sumAuto: true;
+    };
 
 interface ChangeSumModalProps {
   onSave: (saveInput: SaveInput) => void;
