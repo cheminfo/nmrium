@@ -8,4 +8,4 @@ export interface MinMaxContent {
   maxZ: number;
 }
 
-export type Data2D = Record<string, MinMaxContent>;
+export type Data2D = Record<'rr' | 'ii' | 'ri' | 'ir', MinMaxContent>;

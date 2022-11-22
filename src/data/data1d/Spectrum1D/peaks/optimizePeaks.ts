@@ -34,9 +34,7 @@ export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
     frequency,
     groupingFactor: 3,
   });
-  return mapPeaks(
-    datum1D.peaks.values.concat(newPeaks as Peak[]),
-    datum1D,
-    false,
-  );
+  return mapPeaks(datum1D.peaks.values.concat(newPeaks as Peak[]), datum1D, {
+    checkIsExisting: false,
+  });
 }

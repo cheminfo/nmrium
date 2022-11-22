@@ -13,7 +13,6 @@ import {
   changeZoneSignal,
   detectZones,
   detectZonesManual,
-  updateShift,
 } from '../../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../../data/types/data2d';
 import {
@@ -105,8 +104,6 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
     }
 
     FiltersManager.applyFilter(draft.data[index], filters);
-
-    updateShift(draft.data[index] as Datum2D);
 
     setDomain(draft);
     handleOnChangeZonesData(draft);

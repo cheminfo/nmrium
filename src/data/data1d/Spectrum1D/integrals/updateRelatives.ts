@@ -20,6 +20,7 @@ export function updateRelatives<Type extends Integral | Range>(
       factor = (item[key as string] || options.sum) / item.absolute;
     }
   }
+
   data.values = values.map((value) => {
     return {
       ...value,

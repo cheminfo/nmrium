@@ -1,8 +1,13 @@
 import merge from 'lodash/merge';
 
-import { Integrals } from '../../../types/data1d';
+import { Datum1D, Integrals } from '../../../types/data1d';
 
-export function initiateIntegrals(options: Partial<{ integrals: Integrals }>) {
+import { mapIntegrals } from './mapIntegrals';
+
+export function initiateIntegrals(
+  options: Partial<{ integrals: Integrals }>,
+  datum: Datum1D,
+) {
   return merge(
     {
       values: [],
@@ -13,5 +18,8 @@ export function initiateIntegrals(options: Partial<{ integrals: Integrals }>) {
       },
     },
     options.integrals,
+    {
+      values: mapIntegrals(options?.integrals?.values || [], datum),
+    },
   );
 }
