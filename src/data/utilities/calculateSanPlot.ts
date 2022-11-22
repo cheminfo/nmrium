@@ -32,7 +32,6 @@ function prepare2DData(data: MinMaxContent) {
   let jump = Math.floor((cols * rows) / 204800) || 1;
   const array = new Float64Array(((cols * rows) / jump) >> 0);
   let index = 0;
-  // console.log('jump', jump, cols * rows);
   for (let r = 0; r < rows; r += 1) {
     for (let c = 0; c < cols; c += jump) {
       array[index++] = data.z[r][c];
