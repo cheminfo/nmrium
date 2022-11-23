@@ -1,29 +1,15 @@
-import { CSSProperties } from 'react';
-
 import { formatNumber } from '../../../utility/formatNumber';
-
-interface AbsoluteColumnProps {
-  value: any;
-  onHoverRange: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
-  rowSpanTags: {
-    rowSpan: any;
-    style: CSSProperties;
-  };
-  format: string;
-}
+import { RangeColumnProps } from '../RangesTableRow';
 
 function AbsoluteColumn({
   rowSpanTags,
-  value,
-  onHoverRange,
+  row,
+  onHover,
   format,
-}: AbsoluteColumnProps) {
+}: RangeColumnProps) {
   return (
-    <td {...rowSpanTags} {...onHoverRange}>
-      {formatNumber(value, format)}
+    <td {...rowSpanTags} {...onHover}>
+      {formatNumber(row.absolute, format)}
     </td>
   );
 }

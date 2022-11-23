@@ -1,38 +1,31 @@
 import { Info1D } from '../../../../data/types/data1d';
 import { formatNumber } from '../../../utility/formatNumber';
 import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
+import { RangeColumnProps } from '../RangesTableRow';
 
-interface SignalDeltaHzColumnProps {
-  rowData: any;
-  onHoverSignal: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
-  deltaHzFormat: string;
+interface SignalDeltaHzColumnProps extends RangeColumnProps {
   info: Info1D;
 }
 
 function SignalDeltaHzColumn({
-  rowData,
-  onHoverSignal,
-  deltaHzFormat,
+  row,
+  onHover,
+  format,
   info,
+  rowSpanTags,
 }: SignalDeltaHzColumnProps) {
-  const signal = rowData.tableMetaInfo.signal;
+  const signal = row.tableMetaInfo.signal;
 
   if (!signal) return <td>{''}</td>;
   return (
-    <td {...onHoverSignal}>
+    <td {...rowSpanTags} {...onHover}>
       {!checkMultiplicity(signal.multiplicity, ['m'])
         ? `${formatNumber(
-            rowData.from * info.originFrequency,
-            deltaHzFormat,
-          )} - ${formatNumber(
-            rowData.to * info.originFrequency,
-            deltaHzFormat,
-          )}`
+            row.from * info.originFrequency,
+            format,
+          )} - ${formatNumber(row.to * info.originFrequency, format)}`
         : info?.originFrequency
-        ? formatNumber(signal.delta * info.originFrequency, deltaHzFormat)
+        ? formatNumber(signal.delta * info.originFrequency, format)
         : ''}
     </td>
   );

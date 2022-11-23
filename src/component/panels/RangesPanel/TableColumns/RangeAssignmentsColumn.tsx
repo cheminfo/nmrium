@@ -4,18 +4,14 @@ import { FaMinusCircle } from 'react-icons/fa';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import { HighlightEventSource } from '../../../highlight';
+import { RangeColumnProps } from '../RangesTableRow';
 
 const spanStyle: CSSProperties = {
   color: 'red',
   fontWeight: 'bold',
 };
 
-interface RangAssignmentColumnProps {
-  rowData: any;
-  onHover: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
+interface RangAssignmentColumnProps extends Omit<RangeColumnProps, 'format'> {
   assignment: AssignmentsData;
   highlight: {
     isActive: boolean;
@@ -24,12 +20,11 @@ interface RangAssignmentColumnProps {
   unlinkVisibility: boolean;
   onLink?: (a: any, b: any) => void;
   onUnlink?: (element: any, b: boolean) => void;
-  rowSpanTags: any;
   highlightData: any;
 }
 
 function RangeAssignmentsColumn({
-  rowData,
+  row,
   assignment,
   highlight,
   onUnlinkVisibilityChange,
@@ -40,9 +35,7 @@ function RangeAssignmentsColumn({
   onHover,
   highlightData,
 }: RangAssignmentColumnProps) {
-  const diaIDs = useMemo(() => {
-    return lodashGet(rowData, 'diaIDs', 0);
-  }, [rowData]);
+  const diaIDs = lodashGet(row, 'diaIDs', []);
 
   const visibilityChangeHandler = useCallback(
     (flag) => {
@@ -74,16 +67,17 @@ function RangeAssignmentsColumn({
   return (
     <td
       {...rowSpanTags}
+      style={{ padding: '0', ...rowSpanTags.style }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
     >
-      {rowData.nbAtoms !== undefined && rowData.nbAtoms > 0 ? (
-        rowData.diaIDs && rowData.diaIDs.length > 0 ? (
+      {row.nbAtoms !== undefined && row.nbAtoms > 0 ? (
+        row.diaIDs && row.diaIDs.length > 0 ? (
           <div
             onMouseEnter={() => visibilityChangeHandler(true)}
             onMouseLeave={() => visibilityChangeHandler(false)}
           >
-            {rowData.nbAtoms} {' ( '}
+            {row.nbAtoms} {' ( '}
             <span style={spanCss}>{diaIDs.length}</span>
             {' ) '}
             <sup>
@@ -102,12 +96,12 @@ function RangeAssignmentsColumn({
           </div>
         ) : assignment.isActive ? (
           <div>
-            {`${rowData.nbAtoms} (`}
+            {`${row.nbAtoms} (`}
             <span style={spanStyle}>0</span>
             {')'}
           </div>
         ) : (
-          rowData.nbAtoms
+          row.nbAtoms
         )
       ) : assignment.isActive ? (
         <div>

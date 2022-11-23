@@ -5,8 +5,12 @@ import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import Select from '../../../elements/Select';
+import {
+  OnHoverEvent,
+  BaseRangeColumnProps,
+  RowSpanTags,
+} from '../RangesTableRow';
 import useEditRangeModal from '../hooks/useEditRangeModal';
-import { RangeData } from '../hooks/useMapRanges';
 
 const styles = css`
   width: 66px;
@@ -30,31 +34,22 @@ const selectBoxStyle: CSSProperties = {
   height: '20px',
 };
 
-interface ActionsColumnProps {
-  rowData: RangeData;
-  rowSpanTags: {
-    rowSpan: any;
-    style: CSSProperties;
-  };
-  onHoverSignal?: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
-  onHoverRange?: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
+interface ActionsColumnProps
+  extends Omit<BaseRangeColumnProps, 'format'>,
+    RowSpanTags {
+  onHoverSignal?: OnHoverEvent['onHover'];
+  onHoverRange?: OnHoverEvent['onHover'];
   showKind: boolean;
 }
 
 function ActionsColumn({
-  rowData,
+  row,
   onHoverSignal,
   rowSpanTags,
   showKind,
 }: ActionsColumnProps) {
   const { editRange, deleteRange, changeRangeSignalKind, zoomRange } =
-    useEditRangeModal(rowData);
+    useEditRangeModal(row);
 
   return (
     <Fragment>
@@ -63,7 +58,7 @@ function ActionsColumn({
           <Select
             onChange={changeRangeSignalKind}
             items={SignalKinds}
-            defaultValue={rowData.tableMetaInfo.signal.kind}
+            defaultValue={row.tableMetaInfo.signal.kind}
             style={selectBoxStyle}
           />
         </td>
