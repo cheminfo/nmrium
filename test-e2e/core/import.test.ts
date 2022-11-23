@@ -105,7 +105,7 @@ test('should load and migrate .nmrium data from version 3 to version 4', async (
     '_react=DropZone >> input[type=file]',
     'test-e2e/data/cosy-version-3-2d.nmrium',
   );
-  // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
+  // If the file was loaded successfully, there should be a 1H,1H.
   await expect(
     nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
   ).toBeVisible();
