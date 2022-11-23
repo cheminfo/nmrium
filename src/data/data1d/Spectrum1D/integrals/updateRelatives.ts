@@ -12,7 +12,7 @@ export function updateRelatives<Type extends Integral | Range>(
   const currentSum = getSum<Type>(values as Type[], 'absolute', check);
 
   let factor = 0;
-  if (options.sum) {
+  if (options?.sum) {
     if (options.isSumConstant || forceCalculateIntegral) {
       factor = currentSum > 0 ? options.sum / currentSum : 0;
     } else if (values?.[0]) {
