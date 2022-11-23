@@ -96,6 +96,26 @@ test('should load .nmrium data from version 3', async ({ page }) => {
     await expect(ranges).toHaveCount(2);
   });
 });
+
+test('should load and migrate .nmrium data from version 3 to version 4', async ({
+  page,
+}) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.page.setInputFiles(
+    '_react=DropZone >> input[type=file]',
+    'test-e2e/data/cosy-version-3-2d.nmrium',
+  );
+  // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
+  await expect(
+    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
+  ).toBeVisible();
+
+  await test.step('check zones', async () => {
+    const ranges = nmrium.page.locator('_react=Zone');
+    await expect(ranges).toHaveCount(9);
+  });
+});
+
 test('should load .zip files', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.page.setInputFiles(
