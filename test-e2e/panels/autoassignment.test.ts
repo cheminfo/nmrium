@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
 
 test('automatic assignment panel', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
