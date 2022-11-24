@@ -74,6 +74,7 @@ export interface InputProps
   onClear?: () => void;
   onKeyDown?: (event: InputKeyboardEvent) => void;
   onKeyUp?: (event: InputKeyboardEvent) => void;
+  nullable?: boolean;
 }
 
 function identity<T = unknown>(value: T): T {
@@ -102,6 +103,7 @@ const Input = forwardRef(
       onFocus = () => null,
       renderIcon = null,
       canClear = false,
+      nullable = false,
       onClear,
       ...props
     }: InputProps,
@@ -131,15 +133,20 @@ const Input = forwardRef(
     const getValue = useCallback(
       (value) => {
         const formatValue = format();
+
         return formatValue(
           type === 'number'
             ? String(value).trim() === '-'
               ? Number(0)
+              : nullable && !value
+              ? null
               : Number(value)
+            : nullable && !value
+            ? null
             : value,
         );
       },
-      [format, type],
+      [format, nullable, type],
     );
 
     const onChangeHandler = useCallback(
@@ -161,7 +168,6 @@ const Input = forwardRef(
         const _value: string = e.target.value;
         if (check(_value) && checkValue(_value)) {
           const formatValue = format();
-
           setVal(formatValue(_value));
           valueRef.current = _value;
           const val = {

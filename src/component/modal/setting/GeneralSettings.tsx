@@ -23,6 +23,7 @@ import DatabasesTabContent from './DatabasesTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
 import GeneralTabContent from './GeneralTabContent';
+import ImportationFiltersTabContent from './ImportationFiltersTabContent';
 import ToolsTabContent from './ToolsTabContent';
 import WorkspaceItem from './WorkspaceItem';
 import { validation } from './settingsValidation';
@@ -252,6 +253,11 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
                 <DatabasesTabContent
                   currentWorkspace={preferences.workspace.current}
                 />
+              </div>
+            </Tab>
+            <Tab tablabel="Import filters" tabid="importation-filters">
+              <div className="inner-content">
+                <ImportationFiltersTabContent />
               </div>
             </Tab>
           </Tabs>

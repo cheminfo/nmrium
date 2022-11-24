@@ -114,11 +114,27 @@ export interface Databases {
   defaultDatabase: string;
 }
 
+export interface LoadersPreferences {
+  general: {
+    ignoreFID: boolean;
+    ignoreFT: boolean;
+    ignore1D: boolean;
+    ignore2D: boolean;
+    onlyReal: boolean;
+  };
+  bruker: {
+    processingNumber: number | null;
+    experimentalNumber: number | null;
+    onlyFirstProcessedData: boolean;
+  };
+}
+
 export interface WorkspaceData {
   display?: NMRiumPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
   databases?: Databases;
+  nmrLoaders?: LoadersPreferences;
 }
 
 export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
