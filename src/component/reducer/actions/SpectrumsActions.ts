@@ -68,19 +68,6 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
   }
 }
 
-function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
-  for (let datum of draft.data) {
-    if (
-      datum.info?.dimension === 1 &&
-      data.some((activeData) => activeData.id === datum.id)
-    ) {
-      (datum as Datum1D).display.isPeaksMarkersVisible = true;
-    } else {
-      (datum as Datum1D).display.isPeaksMarkersVisible = false;
-    }
-  }
-}
-
 function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   let refreshDomain = false;
   const currentActiveSpectrum = getActiveSpectrum(draft);
@@ -169,8 +156,13 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   if (action.id) {
     const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
+
+    // remove peaks State
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete draft.view.peaks[action.id];
   } else {
     draft.data = [];
+    draft.view.peaks = {};
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,
@@ -243,7 +235,6 @@ function generateSpectrumFromPublicationStringHandler(
 
 export {
   handleSpectrumVisibility,
-  handleChangePeaksMarkersVisibility,
   handleChangeActiveSpectrum,
   handleChangeSpectrumColor,
   changeSpectrumSetting,

@@ -1,8 +1,56 @@
-import { PanelsPreferences } from '../../workspaces/Workspace';
+import {
+  PanelsPreferences,
+  SpectraNucleusPreferences,
+} from '../../workspaces/Workspace';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
 }
+
+const getSpectraDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['spectra'] => {
+  const preferences: SpectraNucleusPreferences = {
+    columns: [
+      {
+        name: 'visible',
+        label: '',
+        description: 'Show/Hide Spectrum',
+        visible: true,
+      },
+      {
+        name: 'name',
+        label: 'Spectrum Name',
+        description: 'Spectrum Name',
+        visible: true,
+      },
+      {
+        name: 'solvent',
+        label: 'Solvent',
+        description: 'Solvent',
+        visible: true,
+      },
+      {
+        jpath: 'info.pulse',
+        label: 'Pulse',
+        visible: true,
+      },
+      {
+        jpath: 'info.experiment',
+        label: 'Experiment',
+        visible: true,
+      },
+      {
+        name: 'color',
+        label: '',
+        description: 'Spectrum Color',
+        visible: true,
+      },
+    ],
+  };
+
+  return getPreferences(preferences, nucleus);
+};
 
 const getIntegralDefaultValues = (
   nucleus?: string,
@@ -78,6 +126,7 @@ const multipleSpectraAnalysisDefaultValues: PanelsPreferences['multipleSpectraAn
   };
 
 export {
+  getSpectraDefaultValues,
   getPeaksDefaultValues,
   getIntegralDefaultValues,
   getRangeDefaultValues,

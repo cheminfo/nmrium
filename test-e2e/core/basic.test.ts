@@ -10,7 +10,7 @@ test('should load and display the 1D and 2D spectrum', async ({ page }) => {
   await nmrium.page.click('li >> text=FULL ethylbenzene');
 
   //switch to 1d
-  await nmrium.page.click('_react=InternalTab[tabid="1H"]');
+  await nmrium.page.click('_react=Tab[tabid="1H"]');
 
   const path = (await nmrium.page.getAttribute(
     '#nmrSVG path.line ',
@@ -20,7 +20,7 @@ test('should load and display the 1D and 2D spectrum', async ({ page }) => {
   expect(path).not.toContain('NaN');
 
   //switch to 2d
-  await nmrium.page.click('_react=InternalTab[tabid="1H,1H"]');
+  await nmrium.page.click('_react=Tab[tabid="1H,1H"]');
 
   const spectrumLineLocator = nmrium.page.locator(
     'data-test-id=spectrum-line >> nth=0',
@@ -44,6 +44,9 @@ test('check callbacks count', async ({ page }) => {
   await expect(dataCount).toContainText('3');
   await expect(viewCount).toContainText('3');
 
+  //switch to 1d
+  await nmrium.page.click('_react=Tab[tabid="1H"]');
+
   //test to 1d
   const path = (await nmrium.page.getAttribute(
     '#nmrSVG path.line ',
@@ -51,9 +54,6 @@ test('check callbacks count', async ({ page }) => {
   )) as string;
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
-
-  //switch to 2d
-  await nmrium.page.click('_react=InternalTab[tabid="1H,1H"]');
 
   await expect(dataCount).toContainText('3');
   await expect(viewCount).toContainText('5');

@@ -9,15 +9,20 @@ const styles = css`
   border: none;
   border-radius: 5px;
   padding: 5px;
+  &:not([disabled]) {
+    &:hover {
+      background-color: lightgray !important;
+      color: black !important;
+    }
 
-  &:hover {
-    background-color: lightgray !important;
-    color: black !important;
+    &.toggle-active {
+      background-color: gray;
+      color: white;
+    }
   }
 
-  &.toggle-active {
-    background-color: gray;
-    color: white;
+  &:disabled {
+    opacity: 0.3;
   }
 `;
 

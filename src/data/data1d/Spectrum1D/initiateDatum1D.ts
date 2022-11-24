@@ -27,7 +27,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
     name: options.display?.name || v4(),
     ...getColor(options, usedColors),
     isVisible: true,
-    isPeaksMarkersVisible: true,
     isRealSpectrumVisible: true,
     ...options.display,
   };
@@ -54,7 +53,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  datum.integrals = initiateIntegrals(options); // array of object (from: xIndex, to: xIndex)
+  datum.integrals = initiateIntegrals(options, datum as Datum1D); // array of object (from: xIndex, to: xIndex)
   datum.ranges = initiateRanges(options, datum as Datum1D);
 
   //reapply filters after load the original data

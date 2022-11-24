@@ -9,10 +9,21 @@ export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
     const { key, value } = action.payload;
-    let localData = getLocalStorage('nmr-general-settings');
-    localData.workspaces[draft.workspace.current].formatting.panels[key] =
-      value;
+    const localData = getLocalStorage('nmr-general-settings');
+    const panels =
+      localData.workspaces[draft.workspace.current].formatting.panels;
+
+    if (value?.nuclei) {
+      const { nuclei, ...commonPreferences } = value;
+      panels[key] = {
+        ...commonPreferences,
+        nuclei: { ...panels[key]?.nuclei, ...nuclei },
+      };
+    } else {
+      panels[key] = value;
+    }
+
     storeData('nmr-general-settings', JSON.stringify(localData));
-    currentWorkspacePreferences.formatting.panels[key] = value;
+    currentWorkspacePreferences.formatting.panels[key] = panels[key];
   }
 }

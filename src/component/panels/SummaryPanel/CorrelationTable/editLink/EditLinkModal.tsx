@@ -134,7 +134,7 @@ export default function EditLinkModal({
           activeTab={activeTab}
           onClick={(tab) => setActiveTab(tab.tabid)}
         >
-          <Tab tablabel="Move" tabid={'move'}>
+          <Tab title="Move" tabid={'move'}>
             <MoveLink
               correlationDim1={correlationDim1}
               correlationDim2={correlationDim2}
@@ -145,7 +145,7 @@ export default function EditLinkModal({
               }
             />
           </Tab>
-          <Tab tablabel="Unmove" tabid="unmove">
+          <Tab title="Unmove" tabid="unmove">
             <EditLinkConfirmation
               description="Movement of signal to its original place."
               onConfirm={() =>
@@ -153,13 +153,13 @@ export default function EditLinkModal({
               }
             />
           </Tab>
-          <Tab tablabel="Remove" tabid={'remove'}>
+          <Tab title="Remove" tabid={'remove'}>
             <EditLinkConfirmation
               description="Deletion of signal."
               onConfirm={() => handleOnEdit('remove', undefined, undefined)}
             />
           </Tab>
-          <Tab tablabel="J Coupling" tabid={'setPathLength'}>
+          <Tab title="J Coupling" tabid={'setPathLength'}>
             <EditPathLength
               signal={link.signal}
               experimentType={link.experimentType}

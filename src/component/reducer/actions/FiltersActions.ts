@@ -3,7 +3,6 @@ import { current, Draft } from 'immer';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
-import { updateXShift } from '../../../data/data1d/Spectrum1D';
 import {
   apply as apodization,
   defaultApodizationOptions,
@@ -12,7 +11,6 @@ import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/auto
 import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
-import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { options } from '../../toolbar/ToolTypes';
@@ -38,7 +36,6 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   FiltersManager.applyFilter(draft.data[index], [
     { name: Filters.shiftX.id, options: shiftValue },
   ]);
-  updateXShift(draft.data[index] as Datum1D);
   resetSelectedTool(draft);
   setDomain(draft);
 }
@@ -201,12 +198,13 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
 }
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   const activeSpectrum = getActiveSpectrumOrFail(draft);
-
   const { index } = activeSpectrum;
+  const datum = draft.data[index] as Datum1D;
+
   const {
     data: { x, re, im },
     info,
-  } = draft.data[index] as Datum1D;
+  } = datum;
 
   const { ph0, ph1 } = filterOptions;
   let _data = { data: { x, re, im }, info };
@@ -223,12 +221,6 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 
   //apply filter into the spectrum
   FiltersManager.enableFilter(draft.data[index], filterID, checked);
-
-  if (draft.data[index].info?.dimension === 1) {
-    updateXShift(draft.data[index] as Datum1D);
-  } else if (draft.data[index].info?.dimension === 2) {
-    update2dShift(draft.data[index] as Datum2D);
-  }
 
   resetSelectedTool(draft);
   setDomain(draft);
@@ -253,12 +245,6 @@ function deleteFilter(draft: Draft<State>, actions) {
   //apply filter into the spectrum
   FiltersManager.deleteFilter(draft.data[index], filterID);
 
-  if (draft.data[index].info?.dimension === 1) {
-    updateXShift(draft.data[index] as Datum1D);
-  } else if (draft.data[index].info?.dimension === 2) {
-    update2dShift(draft.data[index] as Datum2D);
-  }
-
   resetSelectedTool(draft);
   setDomain(draft);
   setMode(draft);
@@ -276,12 +262,6 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
 
         for (const filter of filtersResult) {
           FiltersManager.deleteFilter(datum, filter.id);
-
-          if (datum.info?.dimension === 1) {
-            updateXShift(datum as Datum1D);
-          } else if (datum.info?.dimension === 2) {
-            update2dShift(datum as Datum2D);
-          }
         }
       }
     }
@@ -386,12 +366,6 @@ function resetSpectrumByFilter(
     //close filter snapshot mode and replay all enabled filters
     draft.toolOptions.data.activeFilterID = null;
     FiltersManager.reapplyFilters(datum);
-  }
-
-  if (datum.info?.dimension === 1) {
-    updateXShift(datum as Datum1D);
-  } else if (datum.info?.dimension === 2) {
-    update2dShift(datum as Datum2D);
   }
 
   if (updateDomain) {

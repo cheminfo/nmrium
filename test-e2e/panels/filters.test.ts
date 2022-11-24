@@ -192,9 +192,7 @@ test('Exclusion zones', async ({ page }) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
     // select the 1H tab
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-    );
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
   });
 
   await test.step('activate exclusision zones tool', async () => {
@@ -202,7 +200,7 @@ test('Exclusion zones', async ({ page }) => {
     await nmrium.clickTool('general-settings');
 
     //click on the display tab
-    await nmrium.page.click('_react=InternalTab[tabid="tools"]');
+    await nmrium.page.click('_react=Tab[tabid="tools"]');
 
     //enable exclusion zone tool
     await nmrium.page
@@ -235,7 +233,9 @@ test('Exclusion zones', async ({ page }) => {
 
   await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
     //select spectrum the last spectrum to be sure that the filter applied to all spectra
-    await nmrium.page.locator('_react=SpectrumListItem >> nth=11').click();
+    await nmrium.page
+      .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=11')
+      .click();
     //Open filters panel
     await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
   });

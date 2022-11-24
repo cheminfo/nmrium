@@ -1,15 +1,13 @@
 import lodashGet from 'lodash/get';
-import { CSSProperties, useMemo, useCallback, memo, MouseEvent } from 'react';
+import { CSSProperties, memo, MouseEvent } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import { OnHoverEvent, BaseRangeColumnProps } from '../RangesTableRow';
 
-interface SignalAssignmentsColumnProps {
-  rowData: any;
-  onHover: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
+interface SignalAssignmentsColumnProps
+  extends Omit<BaseRangeColumnProps, 'format'>,
+    OnHoverEvent {
   assignment: AssignmentsData;
   highlight: {
     isActive: boolean;
@@ -21,7 +19,7 @@ interface SignalAssignmentsColumnProps {
 }
 
 function SignalAssignmentsColumn({
-  rowData,
+  row,
   onHover,
   assignment,
   highlight,
@@ -30,40 +28,32 @@ function SignalAssignmentsColumn({
   onLink,
   onUnlink,
 }: SignalAssignmentsColumnProps) {
-  const diaIDs = useMemo(() => {
-    return lodashGet(rowData, 'tableMetaInfo.signal.diaIDs', []);
-  }, [rowData]);
+  const diaIDs = lodashGet(row, 'tableMetaInfo.signal.diaIDs', []);
 
-  const tdCss: CSSProperties | undefined = useMemo(() => {
-    return assignment.isActive || highlight.isActive
+  const tdCss: CSSProperties =
+    assignment.isActive || highlight.isActive
       ? {
           color: 'red',
           fontWeight: 'bold',
         }
-      : undefined;
-  }, [assignment.isActive, highlight.isActive]);
+      : {};
 
-  const visibilityChangeHandler = useCallback(
-    (flag: boolean) => {
-      onUnlinkVisibilityChange?.(flag);
-    },
-    [onUnlinkVisibilityChange],
-  );
-  const assignHandler = useCallback(
-    (e: MouseEvent) => {
-      onLink?.(e, assignment);
-    },
-    [assignment, onLink],
-  );
+  function visibilityChangeHandler(flag: boolean) {
+    onUnlinkVisibilityChange?.(flag);
+  }
+
+  function assignHandler(e: MouseEvent) {
+    onLink?.(e, assignment);
+  }
 
   return (
-    <td {...onHover} onClick={assignHandler} style={tdCss}>
+    <td {...onHover} onClick={assignHandler} style={{ padding: '0', ...tdCss }}>
       {diaIDs && diaIDs.length > 0 ? (
         <div
           onMouseEnter={() => visibilityChangeHandler(true)}
           onMouseLeave={() => visibilityChangeHandler(false)}
         >
-          {diaIDs.length}{' '}
+          <span>{diaIDs.length}</span>
           <sup>
             <button
               type="button"

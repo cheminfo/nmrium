@@ -11,6 +11,7 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
+import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
@@ -88,6 +89,7 @@ interface ZoneToolState extends ToolStateBase {
    */
   showPeaks: boolean;
 }
+
 export interface ViewState {
   /**
    *  Molecules view properties
@@ -96,6 +98,11 @@ export interface ViewState {
   molecules: MoleculesView;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
+  /**
+   * peaks view property
+   * where the key is the id of the spectrum
+   */
+  peaks: Record<string, PeaksViewState>;
   spectra: {
     /**
      * active spectrum id per nucleus
@@ -158,6 +165,7 @@ export const getInitialState = (): State => ({
     molecules: {},
     ranges: [],
     zones: [],
+    peaks: {},
     spectra: { activeSpectra: {}, activeTab: '' },
     zoom: {
       levels: {},
@@ -197,10 +205,6 @@ export const getInitialState = (): State => ({
       zonesNoiseFactor: 1,
       activeFilterID: null,
       predictionIndex: 0,
-      peaksOptions: {
-        showPeaksShapes: false,
-        showPeaksSum: false,
-      },
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -414,15 +418,6 @@ export interface State {
        * @default 0
        */
       predictionIndex: number;
-
-      /**
-       * boolean indicator to hide/show peaks shapes
-       * @default false
-       */
-      peaksOptions: {
-        showPeaksShapes: boolean;
-        showPeaksSum: boolean;
-      };
     };
   };
 
@@ -536,8 +531,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.handleOptimizePeaks(draft, action);
     case types.CHANGE_PEAK_SHAPE:
       return PeaksActions.changePeakShapeHandler(draft, action);
-    case types.TOGGLE_PEAKS_SHAPES:
-      return PeaksActions.handleShowPeaksShapes(draft, action);
+    case types.TOGGLE_PEAKS_VIEW_PROPERTY:
+      return PeaksActions.handleTogglePeaksViewProperty(draft, action);
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:
@@ -625,12 +620,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
-
-    case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
-      return SpectrumsActions.handleChangePeaksMarkersVisibility(
-        draft,
-        action.data,
-      );
     case types.CHANGE_ACTIVE_SPECTRUM:
       return SpectrumsActions.handleChangeActiveSpectrum(draft, action.data);
     case types.CHANGE_SPECTRUM_COLOR:

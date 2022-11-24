@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useActiveSpectrum } from '../../reducer/Reducer';
 import getVerticalShift from '../utilities/getVerticalShift';
@@ -16,6 +17,7 @@ function PeakAnnotations() {
   const activeSpectrum = useActiveSpectrum();
   const { scaleX, scaleY } = useScaleChecked();
   const spectrum = useSpectrum(emptyData) as Datum1D;
+  const peaksViewState = useActiveSpectrumPeaksViewState();
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = () => {
@@ -24,7 +26,7 @@ function PeakAnnotations() {
     if (
       !spectrum?.peaks?.values ||
       !spectrum.display.isVisible ||
-      !spectrum.display.isPeaksMarkersVisible
+      !peaksViewState.isPeaksVisible
     ) {
       return null;
     }
@@ -45,7 +47,17 @@ function PeakAnnotations() {
         ))}
       </g>
     );
-  }, [spectrum, verticalAlign, activeSpectrum?.index, scaleX, scaleY]);
+  }, [
+    spectrum.peaks.values,
+    spectrum.display.isVisible,
+    spectrum.id,
+    spectrum.info.nucleus,
+    peaksViewState.isPeaksVisible,
+    verticalAlign,
+    activeSpectrum?.index,
+    scaleX,
+    scaleY,
+  ]);
 
   return (
     <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>

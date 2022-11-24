@@ -1,29 +1,14 @@
 import lodashGet from 'lodash/get';
 
 import { formatNumber } from '../../../utility/formatNumber';
+import { OnHoverEvent, BaseRangeColumnProps } from '../RangesTableRow';
 
-interface CouplingColumnProps {
-  rowData: {
-    id: number;
-    from: number;
-    to: number;
-    tableMetaInfo: any;
-  };
-  onHoverSignal?: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
-  format: string;
-}
+type CouplingColumnProps = BaseRangeColumnProps & OnHoverEvent;
 
-function CouplingColumn({
-  rowData,
-  onHoverSignal,
-  format,
-}: CouplingColumnProps) {
-  const result = lodashGet(rowData, 'tableMetaInfo.signal.js');
+function CouplingColumn({ row, onHover, format }: CouplingColumnProps) {
+  const result = lodashGet(row, 'tableMetaInfo.signal.js');
   return (
-    <td {...onHoverSignal}>
+    <td {...onHover}>
       {result
         ?.map((coupling) =>
           !Number.isNaN(Number(coupling.coupling))

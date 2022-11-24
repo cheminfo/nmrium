@@ -411,7 +411,9 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
     if (tabs2D.length > 0 && tab == null) {
       draft.view.spectra.activeTab = tabs2D[0];
     } else {
-      draft.view.spectra.activeTab = tab;
+      draft.view.spectra.activeTab = !groupByTab.includes(tab)
+        ? groupByTab[0]
+        : tab;
     }
   } else {
     draft.view.spectra.activeTab = tab;
@@ -436,13 +438,11 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
 
   const groupByNucleus = groupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data, true);
-  const tabs = Object.keys(dataGroupByNucleus);
-  const currentTab = !tab || !tabs.includes(tab || '') ? tabs[0] : tab;
-  setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
+  setTab(draft, dataGroupByNucleus, tab, refreshActiveTab);
   resetTool(draft);
 
   setDomain(draft, domainOptions);
-  setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
+  setIntegralsYDomain(draft, dataGroupByNucleus[draft.view.spectra.activeTab]);
 
   const zoomHistory = zoomHistoryManager(
     draft.zoom.history,

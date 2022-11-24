@@ -1,10 +1,11 @@
 import { v4 } from '@lukeed/uuid';
 
 import * as FiltersManager from '../../FiltersManager';
-import { Datum2D } from '../../types/data2d';
+import { Datum2D } from '../../types/data2d/Datum2D';
 import { get2DColor } from '../../utilities/getColor';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
+import { initiateZones } from './zones/initiateZones';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
@@ -43,7 +44,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.originalData = datum.data;
   datum.filters = Object.assign([], options.filters);
 
-  datum.zones = { values: [], options: {}, ...options.zones };
+  datum.zones = initiateZones(options, datum as Datum2D);
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(datum);
@@ -54,7 +55,6 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
 function getData(datum, options) {
   if (datum.info.isFid) {
     const { re = defaultMinMax, im = defaultMinMax } = options.data;
-    if (re.z.length === 0) throw new Error('algo mal');
     return { rr: re, ii: im };
   }
   return { rr: defaultMinMax, ...options.data };

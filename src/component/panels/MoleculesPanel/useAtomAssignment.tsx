@@ -156,7 +156,6 @@ export default function useAtomAssignment({
             const dimension =
               displayerMode === DISPLAYER_MODE.DM_1D ? '1D' : '2D';
             activeAssignment.toggle(atomInformation.oclIDs, dimension);
-            // console.log(activeAssignment);
             // save assignment (diaIDs) in range/zone data
             const { datum, signalIndex } = findDatumAndSignalIndex(
               data,

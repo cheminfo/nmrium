@@ -32,7 +32,7 @@ interface ContoursInnerProps {
 
 function usePath(datum: Datum2D, contours) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
-  const { xShift, yShift } = getShift(datum);
+  const shift = getShift(datum);
 
   const _scaleX = get2DXScale({ margin, width, xDomain });
   const _scaleY = get2DYScale({ margin, height, yDomain });
@@ -43,25 +43,25 @@ function usePath(datum: Datum2D, contours) {
       if (lines.length < 1e6) {
         for (let i = 0; i < lines.length; i += 4) {
           pathBuilder.moveTo(
-            _scaleX(lines[i] + xShift),
-            _scaleY(lines[i + 1] + yShift),
+            _scaleX(lines[i] + shift.x),
+            _scaleY(lines[i + 1] + shift.y),
           );
           pathBuilder.lineTo(
-            _scaleX(lines[i + 2] + xShift),
-            _scaleY(lines[i + 3] + yShift),
+            _scaleX(lines[i + 2] + shift.x),
+            _scaleY(lines[i + 3] + shift.y),
           );
         }
       }
     } else {
       pathBuilder.moveTo(
-        _scaleX(element[0].x + xShift),
-        _scaleY(element[0].y + yShift),
+        _scaleX(element[0].x + shift.x),
+        _scaleY(element[0].y + shift.y),
       );
 
       for (let j = 1; j < element.length; j++) {
         pathBuilder.lineTo(
-          _scaleX(element[j].x + xShift),
-          _scaleY(element[j].y + yShift),
+          _scaleX(element[j].x + shift.x),
+          _scaleY(element[j].y + shift.y),
         );
       }
     }
