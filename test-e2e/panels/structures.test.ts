@@ -493,8 +493,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText(/3|5/);
-    await expect(viewCount).toContainText(/3|5/);
+    await expect(dataCount).toContainText(/[3-5]/);
+    await expect(viewCount).toContainText(/[3-5]/);
   });
 
   const initialDataCount = await getCount(dataCount);
