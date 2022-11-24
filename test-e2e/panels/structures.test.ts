@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Locator } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
 
@@ -475,6 +475,12 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
 });
 
+async function getCount(locator: Locator): Promise<number> {
+  const text = await locator.textContent();
+  if (!text) throw new Error('no text content');
+  return Number.parseInt(text.slice(0, 1), 10);
+}
+
 test('check callbacks count on changing structures', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
@@ -487,9 +493,12 @@ test('check callbacks count on changing structures', async ({ page }) => {
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText('3');
-    await expect(viewCount).toContainText('3');
+    await expect(dataCount).toContainText(/[3-5]/);
+    await expect(viewCount).toContainText(/[3-5]/);
   });
+
+  const initialDataCount = await getCount(dataCount);
+  const initialViewCount = await getCount(viewCount);
 
   await test.step('Check the visibly of molecule', async () => {
     // Open the "Structures" panel.
@@ -530,8 +539,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Save the molecule.
     await nmrium.page.click('text=Save');
 
-    await expect(dataCount).toContainText('4');
-    await expect(viewCount).toContainText('3');
+    await expect(dataCount).toContainText(String(initialDataCount + 1));
+    await expect(viewCount).toContainText(String(initialViewCount));
     // Check the visibility.
 
     // The molecule SVG rendering should now be visible in the panel.
@@ -566,14 +575,14 @@ test('check callbacks count on changing structures', async ({ page }) => {
       ),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText('5');
-    await expect(viewCount).toContainText('4');
+    await expect(dataCount).toContainText(String(initialDataCount + 2));
+    await expect(viewCount).toContainText(String(initialViewCount + 1));
   });
   await test.step('change float position molecule', async () => {
     await nmrium.page
       .locator('_react=DraggableStructure >> _react=ButtonAction')
       .dragTo(nmrium.page.locator('_react=XAxis >> nth=1'), { force: true });
-    await expect(dataCount).toContainText('5');
-    await expect(viewCount).toContainText('5');
+    await expect(dataCount).toContainText(String(initialDataCount + 2));
+    await expect(viewCount).toContainText(String(initialViewCount + 2));
   });
 });
