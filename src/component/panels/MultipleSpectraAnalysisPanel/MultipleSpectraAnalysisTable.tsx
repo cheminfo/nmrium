@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get';
 import { useMemo, memo, useCallback, Fragment } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -31,7 +30,7 @@ function MultipleSpectraAnalysisTable({
   const preferences = usePanelPreferences('multipleSpectraAnalysis');
 
   const codeEvaluation = useMemo(() => {
-    const code = lodashGet(data, 'code', '');
+    const code = data.code || '';
     return evaluate(code, data);
   }, [data]);
 

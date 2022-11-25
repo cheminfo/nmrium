@@ -1,7 +1,8 @@
 root: true
 extends:
-  - '@zakodium/eslint-config/typescript-react'
-  - 'cheminfo/unicorn'
+  - zakodium/ts
+  - zakodium/react
+  - zakodium/unicorn
 rules:
   'import/default': off
   'import/no-unresolved': off
