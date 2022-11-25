@@ -80,7 +80,7 @@
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^2.0.0",
     "nmr-correlation": "^2.3.3",
-    "nmr-load-save": "0.5.2-pre.1669302748",
+    "nmr-load-save": "^0.6.0",
     "nmr-processing": "^9.3.0",
     "nmredata": "^0.9.1",
     "numeral": "^2.0.6",
