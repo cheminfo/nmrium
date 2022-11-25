@@ -62,7 +62,7 @@ function contoursManager(
   const spectraLevels = { ...state };
   const contourOptions = { ...options };
 
-  if (!state || !state[spectrumID]) {
+  if (!state?.[spectrumID]) {
     const defaultLevel = getDefaultContoursLevel(contourOptions);
     spectraLevels[spectrumID] = defaultLevel;
   }

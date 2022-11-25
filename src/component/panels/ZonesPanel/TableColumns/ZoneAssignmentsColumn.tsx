@@ -41,7 +41,7 @@ function ZoneAssignmentColumn({
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
     >
       {lodashGet(rowData, `${axis}.nbAtoms`, 0) > 0 ? (
-        lodashGet(rowData, `${axis}.diaIDs`, 0).length > 0 ? (
+        lodashGet(rowData, `${axis}.diaIDs`, []).length > 0 ? (
           <div
             onMouseEnter={() => setShowUnlinkButton(true)}
             onMouseLeave={() => setShowUnlinkButton(false)}

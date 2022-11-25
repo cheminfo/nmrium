@@ -78,10 +78,9 @@ function ZonesTableRow({
   const rowSpanTags = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
-      style:
-        lodashGet(rowData, 'tableMetaInfo.hide', false) === true
-          ? { display: 'none' }
-          : null,
+      style: lodashGet(rowData, 'tableMetaInfo.hide', false)
+        ? { display: 'none' }
+        : null,
     };
   }, [rowData]);
 
@@ -198,11 +197,7 @@ function ZonesTableRow({
       style={
         highlightZone.isActive || assignmentZone.isActive
           ? (HighlightedRowStyle as any)
-          : lodashGet(
-              rowData,
-              'tableMetaInfo.isConstantlyHighlighted',
-              false,
-            ) === true
+          : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
           ? ConstantlyHighlightedRowStyle
           : null
       }

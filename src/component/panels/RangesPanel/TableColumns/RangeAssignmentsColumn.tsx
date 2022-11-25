@@ -1,4 +1,3 @@
-import lodashGet from 'lodash/get';
 import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
@@ -35,7 +34,7 @@ function RangeAssignmentsColumn({
   onHover,
   highlightData,
 }: RangAssignmentColumnProps) {
-  const diaIDs = lodashGet(row, 'diaIDs', []);
+  const diaIDs = row.diaIDs || [];
 
   const visibilityChangeHandler = useCallback(
     (flag) => {
