@@ -60,6 +60,10 @@ const LIST: ListItem[] = [
     label: 'Automatic assignment panel',
     name: 'panels.automaticAssignmentPanel',
   },
+  {
+    label: 'Matrix generation Panel',
+    name: 'panels.matrixGenerationPanel',
+  },
 ];
 
 const COLUMNS: CustomColumn<ListItem>[] = [

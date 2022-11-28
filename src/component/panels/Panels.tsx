@@ -79,9 +79,8 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Matrix Generation',
     component: <MatrixGenerationPanel />,
-    hidePreferenceKey: '',
+    hidePreferenceKey: 'matrixGenerationPanel',
     mode: null,
-    isExperimental: true,
   },
   {
     title: 'Zones',
