@@ -7,7 +7,7 @@ import { mapNucleiFormatting } from '../utilities/mapNucleiFormatting';
 
 export function setPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
-    let { general = {}, formatting, display, databases } = action.payload;
+    let { formatting, ...restPreferences } = action.payload;
     formatting = mapNucleiFormatting(formatting);
     let localData = getLocalStorage('nmr-general-settings');
     localData.currentWorkspace = draft.workspace.current;
@@ -15,10 +15,8 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
       ...localData.workspaces,
       [draft.workspace.current]: {
         ...localData.workspaces[draft.workspace.current],
-        general,
+        ...restPreferences,
         formatting,
-        display,
-        databases,
       },
     };
 
@@ -27,10 +25,8 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
     draft.workspaces[draft.workspace.current] = {
       ...currentWorkspacePreferences,
-      general,
+      ...restPreferences,
       formatting,
-      databases,
-      display,
     };
   }
 }

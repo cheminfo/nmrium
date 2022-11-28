@@ -71,4 +71,18 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       },
     ],
   },
+  nmrLoaders: {
+    general: {
+      ignoreFID: false,
+      ignoreFT: false,
+      ignore1D: false,
+      ignore2D: false,
+      onlyReal: false,
+    },
+    bruker: {
+      processingNumber: null,
+      experimentalNumber: null,
+      onlyFirstProcessedData: true,
+    },
+  },
 };
