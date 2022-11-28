@@ -68,6 +68,7 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
+import { CustomWorkspaces } from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -128,13 +129,15 @@ export type NMRiumWorkspace =
   | 'default'
   | 'prediction'
   | 'embedded'
-  | 'assignment';
+  | 'assignment'
+  | `custom-${string}`;
 
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: NMRiumDataReturn) => void;
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
+  customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
@@ -184,6 +187,7 @@ const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
 function InnerNMRium({
   data: dataProp = defaultData,
   workspace,
+  customWorkspaces,
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
@@ -248,10 +252,11 @@ function InnerNMRium({
       payload: {
         display: preferences,
         workspace,
+        customWorkspaces,
         dispatch: dispatchPreferences,
       },
     });
-  }, [preferences, workspace]);
+  }, [customWorkspaces, preferences, workspace]);
 
   useImperativeHandle(
     innerRef,
