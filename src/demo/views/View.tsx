@@ -2,6 +2,18 @@ import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import NMRium from '../../component/NMRium';
+import { CustomWorkspaces } from '../../component/workspaces/Workspace';
+
+const customWorkspaces: CustomWorkspaces = {
+  test: {
+    label: 'Test Workspace',
+    display: {
+      panels: {
+        spectraPanel: { display: true, open: true },
+      },
+    },
+  },
+};
 
 export async function loadData(file) {
   const response = await fetch(file);
@@ -119,6 +131,7 @@ export default function View(props) {
               data={data}
               onDataChange={changeHandler}
               workspace={workspace || null}
+              customWorkspaces={customWorkspaces}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (
