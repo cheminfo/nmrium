@@ -45,16 +45,6 @@ export default function autoRangesDetection(
     re = re.slice(windowFromIndex, windowToIndex);
   }
 
-  if (originFrequency) {
-    // we calculate the number of points per Hz
-    let pointsPerHz = 1 / originFrequency / (x[1] - x[0]);
-    // we can consider a peak with of 0.5 Hz for the windowSize
-    let ws = Math.max(Math.round(pointsPerHz / 2), 5);
-    peakPickingOptions.sgOptions = {
-      windowSize: ws - (ws % 2) + 1,
-      polynomial: 3,
-    };
-  }
   peakPickingOptions.smoothY = undefined;
   peakPickingOptions.sgOptions = undefined;
 
