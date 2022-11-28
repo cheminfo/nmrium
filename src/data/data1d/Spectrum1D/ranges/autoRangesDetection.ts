@@ -38,6 +38,7 @@ export default function autoRangesDetection(
     compile: true,
     frequencyCluster: 13,
     keepPeaks: true,
+    clean: 0.3,
   };
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {
