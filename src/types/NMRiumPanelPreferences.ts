@@ -14,4 +14,5 @@ export interface NMRiumPanelPreferences {
   databasePanel: PanelPreferencesType;
   predictionPanel: PanelPreferencesType;
   automaticAssignmentPanel: PanelPreferencesType;
+  matrixGenerationPanel: PanelPreferencesType;
 }
