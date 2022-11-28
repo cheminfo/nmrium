@@ -8,17 +8,11 @@ export function addWorkspace(
   draft: Draft<PreferencesState>,
   action: AddWorkspaceAction,
 ) {
-  const {
-    workspace: workspaceName,
-    data: { display, general, formatting, databases },
-  } = action.payload;
+  const { workspace: workspaceName, data } = action.payload;
   const newWorkSpace = {
+    ...data,
     version: 1,
     label: workspaceName,
-    display,
-    general,
-    formatting,
-    databases,
   };
   const newWorkspaceKey = v4();
   const localData = getLocalStorage('nmr-general-settings');
