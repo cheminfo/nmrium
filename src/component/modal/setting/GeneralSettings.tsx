@@ -255,7 +255,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
                 />
               </div>
             </Tab>
-            <Tab tablabel="Import filters" tabid="importation-filters">
+            <Tab title="Import filters" tabid="importation-filters">
               <div className="inner-content">
                 <ImportationFiltersTabContent />
               </div>
