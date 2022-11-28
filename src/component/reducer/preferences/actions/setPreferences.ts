@@ -11,17 +11,19 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
     formatting = mapNucleiFormatting(formatting);
     let localData = getLocalStorage('nmr-general-settings');
     localData.currentWorkspace = draft.workspace.current;
-    localData.workspaces = {
-      ...localData.workspaces,
-      [draft.workspace.current]: {
-        ...localData.workspaces[draft.workspace.current],
-        general,
-        formatting,
-        display,
-        databases,
-      },
-    };
 
+    if (!draft.customWorkspaces[draft.workspace.current]) {
+      localData.workspaces = {
+        ...localData.workspaces,
+        [draft.workspace.current]: {
+          ...localData.workspaces[draft.workspace.current],
+          general,
+          formatting,
+          display,
+          databases,
+        },
+      };
+    }
     storeData('nmr-general-settings', JSON.stringify(localData));
 
     const currentWorkspacePreferences = getActiveWorkspace(draft);

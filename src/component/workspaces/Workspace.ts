@@ -146,6 +146,17 @@ export interface WorkspaceData {
   databases?: Databases;
 }
 
+/**
+ * custom : workspace which come form the component level <NMRium customWorkspaces = {} />
+ * predefined : workspace which hardcoded in NMRium
+ * user: workspaces which the user create from the general settings
+ */
+export type WorkSpaceSource = 'custom' | 'predefined' | 'user';
+
 export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
+export type CustomWorkspaces = Record<
+  string,
+  Omit<WorkspaceMeta, 'version'> & WorkspaceData
+>;
 
 export type Workspace = WorkspaceMeta & Required<WorkspaceData>;

@@ -5,14 +5,30 @@ import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import Workspaces from '../../../workspaces';
 import { PreferencesState } from '../preferencesReducer';
 import { checkKeysExists } from '../utilities/checkKeysExists';
+import { filterCustomWorkspaces } from '../utilities/filterCustomWorkspaces';
 import { filterObject } from '../utilities/filterObject';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
 import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
+import { mapWorkspaces } from '../utilities/mapWorkspaces';
 
 export function initPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const localData = getLocalStorage('nmr-general-settings');
-    const { dispatch, workspace, ...resProps } = action.payload;
+    const {
+      dispatch,
+      workspace,
+      customWorkspaces: cw,
+      ...resProps
+    } = action.payload;
+    const customWorkspaces = mapWorkspaces(cw, 'custom');
+    const workspaces = mapWorkspaces(Workspaces as any, 'predefined');
+    draft.customWorkspaces = customWorkspaces;
+    draft.workspaces = {
+      ...workspaces,
+      ...customWorkspaces,
+      ...draft.workspaces,
+    };
+
     /**
      * set the current workspace what the user-defined in the setting if the workspace is not defined at the level of component, otherwise
      * use the default workspace
@@ -54,6 +70,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
         workspaces,
         version,
         workspace: { current },
+        customWorkspaces,
       } = draft || {};
       const display = filterObject(workspacePreferences.display);
 
@@ -63,11 +80,15 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
           currentWorkspace: localData?.currentWorkspace,
         }),
         workspaces: {
-          ...workspaces,
-          [current]: {
-            ...workspacePreferences,
-            display,
-          },
+          ...filterCustomWorkspaces(workspaces),
+          ...(!customWorkspaces[current]
+            ? {
+                [current]: {
+                  ...workspacePreferences,
+                  display,
+                },
+              }
+            : {}),
         },
       };
 
