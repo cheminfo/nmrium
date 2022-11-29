@@ -17,7 +17,12 @@ const LOCAL_STORAGE_VERSION = 11;
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
-  { display: NMRiumPreferences; workspace: NMRiumWorkspace; dispatch: any }
+  {
+    display: NMRiumPreferences;
+    workspace: NMRiumWorkspace;
+    customWorkspaces: Record<string, Workspace>;
+    dispatch: any;
+  }
 >;
 type SetPreferencesAction = ActionType<
   'SET_PREFERENCES',
@@ -77,6 +82,7 @@ export const WORKSPACES: Array<{
 export interface PreferencesState {
   version: number;
   workspaces: Record<string, Workspace>;
+  customWorkspaces: Record<string, Workspace>;
   dispatch: (action?: PreferencesActions) => void;
   workspace: {
     current: NMRiumWorkspace;
@@ -87,6 +93,7 @@ export interface PreferencesState {
 export const preferencesInitialState: PreferencesState = {
   version: LOCAL_STORAGE_VERSION,
   workspaces: {},
+  customWorkspaces: {},
   dispatch: () => null,
   workspace: {
     current: 'default',

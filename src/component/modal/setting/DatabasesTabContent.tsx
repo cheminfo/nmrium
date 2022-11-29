@@ -103,7 +103,7 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
             </tr>
           </thead>
           <tbody>
-            {databases.data.map((item, index) => {
+            {databases?.data.map((item, index) => {
               const num = index + 1;
               return (
                 // eslint-disable-next-line react/no-array-index-key
