@@ -9,4 +9,5 @@ export const possibleViews = {
   TwoInstances: memo(lazy(() => import('./TwoInstances'))),
   Teaching: memo(lazy(() => import('./Teaching'))),
   Prediction: memo(lazy(() => import('./Prediction'))),
+  CustomWorkspace: memo(lazy(() => import('./CustomWorkspace'))),
 };

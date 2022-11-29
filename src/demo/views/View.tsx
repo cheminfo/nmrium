@@ -1,19 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import NMRium from '../../component/NMRium';
+import NMRium, { NMRiumWorkspace } from '../../component/NMRium';
 import { CustomWorkspaces } from '../../component/workspaces/Workspace';
-
-const customWorkspaces: CustomWorkspaces = {
-  test: {
-    label: 'Test Workspace',
-    display: {
-      panels: {
-        spectraPanel: { display: true, open: true },
-      },
-    },
-  },
-};
 
 export async function loadData(file) {
   const response = await fetch(file);
@@ -29,9 +18,17 @@ function checkStatus(response) {
   return response;
 }
 
-export default function View(props) {
+interface ViewProps {
+  file: File;
+  title?: string;
+  baseURL: string;
+  workspace?: NMRiumWorkspace;
+  customWorkspaces?: CustomWorkspaces;
+}
+
+export default function View(props: ViewProps) {
   const [data, setData] = useState();
-  const { file, title, baseURL, workspace } = props;
+  const { file, title, baseURL, workspace, customWorkspaces } = props;
   const [callbackData, setCallbackData] = useState<Array<any>>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
@@ -130,8 +127,8 @@ export default function View(props) {
             <NMRium
               data={data}
               onDataChange={changeHandler}
-              workspace={workspace || null}
-              customWorkspaces={customWorkspaces}
+              {...(workspace && { workspace })}
+              {...(customWorkspaces && { customWorkspaces })}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (

@@ -194,6 +194,11 @@
         "view": "Test"
       },
       {
+        "title": "Metabo workspace",
+        "view": "CustomWorkspace",
+        "file": "./data/xtc/XTC.json"
+      },
+      {
         "file": "./data/cytisine/1H.json",
         "title": "1H spectrum test",
         "view": "Test"
