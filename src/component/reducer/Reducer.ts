@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { read as readDropFiles, readNMRiumObject } from 'nmr-load-save';
+import { readNMRiumObject } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
@@ -456,20 +456,6 @@ export function dispatchMiddleware(dispatch) {
             dispatch(action);
           });
         }
-        break;
-      }
-      case types.LOAD_DROP_FILES: {
-        const { fileCollection } = action;
-        action.usedColors = usedColors;
-        readDropFiles(fileCollection)
-          .then((data) => {
-            action.data = data;
-            dispatch(action);
-          })
-          .catch((error) => {
-            dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
-            reportError(error);
-          });
         break;
       }
       case types.PREDICT_SPECTRA: {
