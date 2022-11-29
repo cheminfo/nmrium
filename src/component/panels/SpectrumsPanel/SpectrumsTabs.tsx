@@ -20,15 +20,7 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { SpectraTable } from './SpectraTable';
 import SpectrumSetting from './base/setting/SpectrumSetting';
 
-interface TabChangeProps {
-  tab: string;
-  data: Array<Datum1D | Datum2D>;
-}
-
-interface SpectrumsTabsProps {
-  onTabChange: (data: TabChangeProps) => void;
-}
-interface SpectrumsTabsInnerProps extends SpectrumsTabsProps {
+interface SpectrumsTabsInnerProps {
   data: Array<Datum1D | Datum2D>;
   activeTab: string;
   activeSpectrum: ActiveSpectrum | null;
@@ -38,7 +30,6 @@ function SpectrumsTabsInner({
   data,
   activeSpectrum,
   activeTab,
-  onTabChange,
 }: SpectrumsTabsInnerProps) {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [settingModalPosition, setSettingModalPosition] = useState<{
@@ -55,11 +46,6 @@ function SpectrumsTabsInner({
   }, [data]);
 
   function onTabChangeHandler(tab) {
-    onTabChange({
-      tab: tab.tabid,
-      data: spectrumsGroupByNucleus[tab.tabid],
-    });
-
     dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
   }
 
@@ -76,9 +62,10 @@ function SpectrumsTabsInner({
   function handleChangeVisibility(d, key) {
     dispatch({
       type: CHANGE_VISIBILITY,
-      id: d.id,
-      key,
-      value: !d.display[key],
+      payload: {
+        id: d.id,
+        key,
+      },
     });
   }
 
@@ -139,7 +126,7 @@ function SpectrumsTabsInner({
 
 const MemoizedSpectra = memo(SpectrumsTabsInner);
 
-export default function SpectrumsTabs({ onTabChange }: SpectrumsTabsProps) {
+export default function SpectrumsTabs() {
   const {
     data,
     view: {
@@ -148,7 +135,5 @@ export default function SpectrumsTabs({ onTabChange }: SpectrumsTabsProps) {
   } = useChartData();
   const activeSpectrum = useActiveSpectrum();
 
-  return (
-    <MemoizedSpectra {...{ data, activeSpectrum, activeTab, onTabChange }} />
-  );
+  return <MemoizedSpectra {...{ data, activeSpectrum, activeTab }} />;
 }

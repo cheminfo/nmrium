@@ -15,6 +15,7 @@ import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -41,29 +42,19 @@ function setVisible(datum, flag) {
 }
 
 function handleSpectrumVisibility(draft: Draft<State>, action) {
-  if (Array.isArray(action.id)) {
-    const IDs = action.id;
-    if (IDs.length === 0) {
-      for (const datum of draft.data) {
-        setVisible(datum, false);
-      }
-    } else {
-      for (const datum of draft.data) {
-        if (IDs.includes(datum.id)) {
-          setVisible(datum, true);
-        } else {
-          setVisible(datum, false);
-        }
-      }
+  const { id, key, nucleus, flag } = action.payload;
+  if (nucleus) {
+    for (const datum of getSpectraByNucleus(nucleus, draft.data)) {
+      setVisible(datum, flag);
     }
   } else {
-    const index = draft.data.findIndex((d) => d.id === action.id);
-    (draft.data[index] as Datum1D | Datum2D).display[action.key] = action.value;
+    const spectrum = draft.data.find((d) => d.id === id);
+    if (spectrum) {
+      spectrum.display[key] = !spectrum.display[key];
 
-    if ((draft.data[index] as Datum1D | Datum2D).info.dimension === 2) {
-      (draft.data[index] as Datum2D).display.isVisible = checkIsVisible2D(
-        draft.data[index] as Datum2D,
-      );
+      if (spectrum.info.dimension === 2) {
+        spectrum.display.isVisible = checkIsVisible2D(spectrum as Datum2D);
+      }
     }
   }
 }
