@@ -22,11 +22,23 @@ import {
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
+function getMissingProjection(SpectrumsData, activeTab) {
+  let nucleus = activeTab.split(',');
+  nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
+  const missingNucleus: Array<string> = [];
+  for (const n of nucleus) {
+    const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
+    if (!hasSpectrums) {
+      missingNucleus.push(n);
+    }
+  }
+  return missingNucleus;
+}
 interface SpectraPanelHeaderProps {
-  spectrums: Array<Datum1D | Datum2D>;
   onSettingClick: () => void;
 }
 
@@ -42,12 +54,13 @@ function SpectraPanelHeaderInner({
   activeSpectrum,
   activeTab,
   displayerMode,
-  spectrums,
   onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
+
+  const spectra = getSpectraByNucleus(activeTab, data);
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
@@ -64,49 +77,41 @@ function SpectraPanelHeaderInner({
     });
   }, [dispatch, modal]);
 
-  const showAllSpectrumsHandler = useCallback(() => {
-    const spectrumsPerTab = spectrums.map((datum) => {
-      return datum.id;
+  function showAllSpectrumsHandler() {
+    dispatch({
+      type: CHANGE_VISIBILITY,
+      payload: { nucleus: activeTab, flag: true },
     });
-    dispatch({ type: CHANGE_VISIBILITY, id: spectrumsPerTab });
-  }, [dispatch, spectrums]);
+  }
 
-  const hideAllSpectrumsHandler = useCallback(() => {
-    dispatch({ type: CHANGE_VISIBILITY, id: [] });
-  }, [dispatch]);
+  function hideAllSpectrumsHandler() {
+    dispatch({
+      type: CHANGE_VISIBILITY,
+      payload: { nucleus: activeTab, flag: false },
+    });
+  }
 
-  const addMissingProjectionHandler = useCallback(() => {
-    function getMissingProjection(SpectrumsData) {
-      let nucleus = activeTab.split(',');
-      nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
-      const missingNucleus: Array<string> = [];
-      for (const n of nucleus) {
-        const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
-        if (!hasSpectrums) {
-          missingNucleus.push(n);
-        }
-      }
-      return missingNucleus;
-    }
-    const missingNucleus = getMissingProjection(data);
+  function addMissingProjectionHandler() {
+    const missingNucleus = getMissingProjection(data, activeTab);
     if (missingNucleus.length > 0) {
       dispatch({ type: ADD_MISSING_PROJECTION, nucleus: missingNucleus });
     } else {
       alert.error('Nothing to calculate');
     }
-  }, [activeTab, alert, data, dispatch]);
+  }
 
-  const setSameTopHandler = useCallback(() => {
+  function setSameTopHandler() {
     dispatch({ type: SET_SPECTRA_SAME_TOP });
-  }, [dispatch]);
-  const resetScaleHandler = useCallback(() => {
+  }
+
+  function resetScaleHandler() {
     dispatch({ type: RESET_SPECTRA_SCALE });
-  }, [dispatch]);
+  }
 
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
-      counter={spectrums?.length}
+      counter={spectra?.length}
       deleteToolTip="Delete all spectra"
       showSettingButton
       onSettingClick={onSettingClick}
@@ -125,7 +130,7 @@ function SpectraPanelHeaderInner({
           <FaCreativeCommonsSamplingPlus />
         </Button>
       )}
-      {displayerMode === DISPLAYER_MODE.DM_1D && spectrums.length > 1 && (
+      {displayerMode === DISPLAYER_MODE.DM_1D && spectra.length > 1 && (
         <>
           <Button popupTitle="Reset Scale" onClick={resetScaleHandler}>
             <SvgNmrResetScale />
@@ -143,7 +148,6 @@ function SpectraPanelHeaderInner({
 const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
 export default function SpectrumsTabs({
-  spectrums,
   onSettingClick,
 }: SpectraPanelHeaderProps) {
   const {
@@ -161,7 +165,6 @@ export default function SpectrumsTabs({
         activeSpectrum,
         activeTab,
         displayerMode,
-        spectrums,
         onSettingClick,
       }}
     />

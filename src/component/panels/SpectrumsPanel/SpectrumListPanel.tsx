@@ -1,4 +1,4 @@
-import { useCallback, memo, useState, CSSProperties, useRef } from 'react';
+import { memo, useState, CSSProperties, useRef } from 'react';
 
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -16,8 +16,6 @@ const styles: CSSProperties = {
 
 function SpectrumListPanel() {
   const settingsRef = useRef<any>();
-  const [spectra, setSpectra] = useState<Array<any>>([]);
-
   const [isFlipped, setFlipStatus] = useState(false);
 
   function settingsPanelHandler() {
@@ -28,10 +26,6 @@ function SpectrumListPanel() {
     settingsRef.current.saveSetting();
     setFlipStatus(!isFlipped);
   }
-
-  const tabChangeHandler = useCallback((e) => {
-    setSpectra(e.data || []);
-  }, []);
 
   return (
     <div style={styles}>
@@ -45,11 +39,8 @@ function SpectrumListPanel() {
         </>
       ) : (
         <>
-          <SpectraPanelHeader
-            spectrums={spectra}
-            onSettingClick={settingsPanelHandler}
-          />
-          <SpectrumsTabs onTabChange={tabChangeHandler} />
+          <SpectraPanelHeader onSettingClick={settingsPanelHandler} />
+          <SpectrumsTabs />
         </>
       )}
     </div>
