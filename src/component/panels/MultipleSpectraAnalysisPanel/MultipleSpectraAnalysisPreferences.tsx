@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import { COLUMNS_TYPES } from '../../../data/data1d/MultipleAnalysis';
@@ -19,7 +19,10 @@ import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { SET_ANALYZE_SPECTRA_COLUMNS } from '../../reducer/types/Types';
+import {
+  DELETE_ANALYZE_SPECTRA_RANGE,
+  SET_ANALYZE_SPECTRA_COLUMNS,
+} from '../../reducer/types/Types';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
 import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
@@ -88,6 +91,13 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
     });
   }
 
+  function handleDelete(colKey) {
+    dispatch({
+      type: DELETE_ANALYZE_SPECTRA_RANGE,
+      colKey,
+    });
+  }
+
   const COLUMNS: Column<any>[] = [
     {
       Header: '#',
@@ -117,33 +127,29 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
       },
     },
     {
-      Header: 'Index',
-      style: { maxWidth: '50px' },
-      Cell: ({ row }) => {
-        return (
-          <FormikInput
-            name={`columns.${row.original}.index`}
-            style={inputStyle}
-          />
-        );
-      },
-    },
-    {
       Header: '',
-      style: { maxWidth: '50px' },
+      style: { width: '50px' },
       id: 'add-button',
       Cell: ({ data, row }) => {
-        if (data.length === row.index + 1) {
-          return (
-            <Button.Done
+        const columnKey = row.original;
+        return (
+          <div style={{ display: 'flex' }}>
+            <Button.Danger
               fill="outline"
-              onClick={() => addNewColumn(row.index + 1)}
+              onClick={() => handleDelete(columnKey)}
             >
-              <FaPlus />
-            </Button.Done>
-          );
-        }
-        return <div />;
+              <FaTimes />
+            </Button.Danger>
+            {data.length === row.index + 1 && (
+              <Button.Done
+                fill="outline"
+                onClick={() => addNewColumn(row.index + 1)}
+              >
+                <FaPlus />
+              </Button.Done>
+            )}
+          </div>
+        );
       },
     },
   ];
@@ -201,7 +207,7 @@ function columnSchema(columnsKeys, data) {
             }
             return cols.length === 1;
           }),
-        ...(data[key].type === COLUMNS_TYPES.FORMULA
+        ...(data[key]?.type === COLUMNS_TYPES.FORMULA
           ? { formula: Yup.string().required() }
           : {}),
         index: Yup.string().required(),
