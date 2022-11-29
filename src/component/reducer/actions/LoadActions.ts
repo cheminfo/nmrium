@@ -149,14 +149,14 @@ function handleLoadJsonFile(draft: Draft<State>, action) {
 }
 
 function loadDropFiles(draft: Draft<State>, actions) {
-  const { data, usedColors } = actions.payload;
+  const { data } = actions.payload;
   const { spectra, molecules } = data;
   for (let spectrum of spectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
-      draft.data.push(initiateDatum1D(spectrum, usedColors));
+      draft.data.push(initiateDatum1D(spectrum, draft.usedColors));
     } else if (info.dimension === 2) {
-      draft.data.push(initiateDatum2D(spectrum, usedColors));
+      draft.data.push(initiateDatum2D(spectrum, draft.usedColors));
     }
   }
   for (let molecule of molecules) {
