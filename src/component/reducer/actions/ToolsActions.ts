@@ -415,7 +415,7 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
         ? groupByTab[0]
         : tab;
     }
-  } else {
+  } else if (tab) {
     draft.view.spectra.activeTab = tab;
   }
 
