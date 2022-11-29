@@ -149,7 +149,7 @@ function handleLoadJsonFile(draft: Draft<State>, action) {
 }
 
 function loadDropFiles(draft: Draft<State>, actions) {
-  const { data, usedColors } = actions;
+  const { data, usedColors } = actions.payload;
   const { spectra, molecules } = data;
   for (let spectrum of spectra) {
     const { info } = spectrum;
