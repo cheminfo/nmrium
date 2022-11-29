@@ -149,7 +149,7 @@ export interface LoadersPreferences {
   };
   bruker: {
     processingNumber: number | null;
-    experimentalNumber: number | null;
+    experimentNumber: number | null;
     onlyFirstProcessedData: boolean;
   };
 }

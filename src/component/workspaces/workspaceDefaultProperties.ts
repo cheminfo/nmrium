@@ -81,7 +81,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
     },
     bruker: {
       processingNumber: null,
-      experimentalNumber: null,
+      experimentNumber: null,
       onlyFirstProcessedData: true,
     },
   },

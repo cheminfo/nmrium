@@ -43,8 +43,8 @@ const BRUKER_LIST: ListItem[] = [
     fieldType: 'input',
   },
   {
-    label: 'Experimental Number',
-    name: 'bruker.experimentalNumber',
+    label: 'Experiment Number',
+    name: 'bruker.experimentNumber',
     fieldType: 'input',
   },
   {
