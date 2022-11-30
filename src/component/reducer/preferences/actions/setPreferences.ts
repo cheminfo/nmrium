@@ -21,15 +21,15 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
           formatting,
         },
       };
+
+      const currentWorkspacePreferences = getActiveWorkspace(draft);
+      draft.workspaces[draft.workspace.current] = {
+        ...currentWorkspacePreferences,
+        ...restPreferences,
+        formatting,
+      };
     }
 
     storeData('nmr-general-settings', JSON.stringify(localData));
-
-    const currentWorkspacePreferences = getActiveWorkspace(draft);
-    draft.workspaces[draft.workspace.current] = {
-      ...currentWorkspacePreferences,
-      ...restPreferences,
-      formatting,
-    };
   }
 }

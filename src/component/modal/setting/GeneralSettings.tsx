@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { FaBolt, FaRegCopy } from 'react-icons/fa';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FaBolt, FaPaste, FaRegCopy } from 'react-icons/fa';
 
 import {
   usePreferences,
@@ -20,6 +20,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
+import { Workspace } from '../../workspaces/Workspace';
 import { ModalStyles } from '../ModalStyle';
 
 import DatabasesTabContent from './DatabasesTabContent';
@@ -105,6 +106,21 @@ const styles = css`
   }
 `;
 
+function isRestButtonDisable(
+  currentWorkspaceSetting,
+  workspaceName,
+  customWorkspaces,
+) {
+  if (!PredefinedWorkspaces[workspaceName] || customWorkspaces[workspaceName]) {
+    return true;
+  } else {
+    return (
+      JSON.stringify(currentWorkspaceSetting) ===
+      JSON.stringify(getPreferencesByWorkspace(workspaceName))
+    );
+  }
+}
+
 interface GeneralSettingsProps {
   onClose?: () => void;
 }
@@ -114,15 +130,17 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const {
     dispatch,
     current: currentWorkspace,
+    customWorkspaces,
     ...preferences
   } = usePreferences();
   const alert = useAlert();
   const refForm = useRef<FormikProps<any>>(null);
   const workspaces = useWorkspacesList(true);
-
-  const [isRestDisabled, setRestDisabled] = useState(true);
-
   const workspaceName = preferences.workspace.current;
+  const [isRestDisabled, setRestDisabled] = useState(
+    isRestButtonDisable(currentWorkspace, workspaceName, customWorkspaces),
+  );
+  const pastRef = useRef<Record<string, Workspace> | null>(null);
 
   const workspacesList = useMemo(() => {
     return workspaces.concat([
@@ -191,21 +209,14 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     );
   }
 
-  const handleDisabledRestButton = useCallback(
-    (values) => {
-      if (!PredefinedWorkspaces[workspaceName]) {
-        setRestDisabled(true);
-      } else {
-        setRestDisabled(
-          JSON.stringify(values) === JSON.stringify(currentWorkspace),
-        );
-      }
-    },
-    [currentWorkspace, workspaceName],
-  );
+  function handleDisabledRestButton(values) {
+    setRestDisabled(
+      isRestButtonDisable(values, workspaceName, customWorkspaces),
+    );
+  }
 
   function handleCopyWorkspace() {
-    const data = { [workspaceName]: currentWorkspace };
+    const data = { [workspaceName]: refForm.current?.values };
     void copyTextToClipboard(JSON.stringify(data)).then((flag) => {
       if (flag) {
         alert.success('Workspace copied to clipboard');
@@ -214,6 +225,42 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       }
     });
   }
+
+  const setWorkspaceSetting = useCallback(
+    (inputWorkspace) => {
+      const parseWorkspaceName = Object.keys(inputWorkspace)[0];
+      if (preferences?.workspace.current === parseWorkspaceName) {
+        refForm.current?.setValues(inputWorkspace[parseWorkspaceName]);
+      } else if (preferences.workspaces[parseWorkspaceName]) {
+        pastRef.current = inputWorkspace;
+        dispatch({
+          type: 'SET_WORKSPACE',
+          payload: {
+            workspace: parseWorkspaceName,
+          },
+        });
+      }
+    },
+    [dispatch, preferences?.workspace, preferences.workspaces],
+  );
+
+  function handlePastWorkspace() {
+    void navigator.clipboard.readText().then((text) => {
+      try {
+        const parseWorkspaces = JSON.parse(text);
+        setWorkspaceSetting(parseWorkspaces);
+      } catch {
+        alert.error('object parse error');
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (pastRef.current) {
+      setWorkspaceSetting(pastRef.current);
+      pastRef.current = null;
+    }
+  }, [setWorkspaceSetting]);
 
   return (
     <div css={[ModalStyles, styles]}>
@@ -251,6 +298,16 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         >
           <FaRegCopy />
         </Button.Done>
+        <Button.Action
+          size="xSmall"
+          fill="outline"
+          onClick={handlePastWorkspace}
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          <FaPaste />
+        </Button.Action>
       </div>
       <div className="main-content">
         <Formik

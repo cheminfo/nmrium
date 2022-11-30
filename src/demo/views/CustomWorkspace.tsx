@@ -3,7 +3,7 @@ import { CustomWorkspaces } from '../../component/workspaces/Workspace';
 import View from './View';
 
 const customWorkspaces: CustomWorkspaces = {
-  test: {
+  default: {
     label: 'Test Workspace',
     display: {
       panels: {

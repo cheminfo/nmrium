@@ -22,7 +22,7 @@ const styles: Record<
   },
   workspaceVersion: {
     fontSize: '9px',
-    padding: "5px"
+    padding: '5px',
   },
   newContainer: {
     backgroundColor: '#f6f6f6',
@@ -90,8 +90,9 @@ function WorkspaceItem({ item, onSave, onDelete }) {
               <FaTimes />
             </Button.Danger>
           )}
-          <span style={styles.workspaceVersion}>{workspaceVersion}</span>
-
+          {workspaceVersion && (
+            <span style={styles.workspaceVersion}>{workspaceVersion}</span>
+          )}
         </div>
       )}
     </div>
