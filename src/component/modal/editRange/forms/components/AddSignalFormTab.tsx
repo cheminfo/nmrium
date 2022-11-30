@@ -76,8 +76,9 @@ function AddSignalFormTab(
             return true;
           }
 
-          const errorMessage = ` ${value ? value.toFixed(5) : 0
-            } ppm out of the range`;
+          const errorMessage = ` ${
+            value ? value.toFixed(5) : 0
+          } ppm out of the range`;
           return createError({ path, message: errorMessage });
         })
         .required(),

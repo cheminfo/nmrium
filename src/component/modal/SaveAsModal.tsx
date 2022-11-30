@@ -82,17 +82,18 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
           initialValues={{ ...INITIAL_VALUE, name }}
           onSubmit={submitHandler}
         >
-          <>          <div className="row margin-10">
-            <span className="custom-label">Name</span>
-            <FormikInput
-              name="name"
-              className="name"
-              style={{
-                inputWrapper: { width: '100%' },
-              }}
-            />
-          </div>
-
+          <>
+            {' '}
+            <div className="row margin-10">
+              <span className="custom-label">Name</span>
+              <FormikInput
+                name="name"
+                className="name"
+                style={{
+                  inputWrapper: { width: '100%' },
+                }}
+              />
+            </div>
             <div className="row margin-10">
               <span className="custom-label">Compressed</span>
               <FormikCheckBox name="compressed" />

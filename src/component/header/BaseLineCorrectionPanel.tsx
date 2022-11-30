@@ -168,7 +168,6 @@ function BaseLineCorrectionInnerPanel(
         validationSchema={form.validation}
       >
         <>
-
           {algorithm && algorithm === 'airpls' && (
             <div style={{ display: 'flex' }}>
               <Label title="maxIterations:" style={labelStyle}>
@@ -179,23 +178,28 @@ function BaseLineCorrectionInnerPanel(
                 />
               </Label>
               <Label title="tolerance:" style={labelStyle}>
-                <FormikInput type="number" name="tolerance" debounceTime={250} />
+                <FormikInput
+                  type="number"
+                  name="tolerance"
+                  debounceTime={250}
+                />
               </Label>
             </div>
           )}
 
-          {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-            <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
-              <FormikInput
-                type="number"
-                name="degree"
-                min={1}
-                max={6}
-                style={{ inputWrapper: { height: '100%' } }}
-                debounceTime={250}
-              />
-            </Label>
-          )}
+          {algorithm &&
+            ['autoPolynomial', 'polynomial'].includes(algorithm) && (
+              <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
+                <FormikInput
+                  type="number"
+                  name="degree"
+                  min={1}
+                  max={6}
+                  style={{ inputWrapper: { height: '100%' } }}
+                  debounceTime={250}
+                />
+              </Label>
+            )}
 
           <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
             <FormikCheckBox

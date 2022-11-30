@@ -39,9 +39,9 @@ const getValues = (peak: Peak, kind: string) => {
   const shapeData =
     (shape?.kind || '').toLocaleLowerCase() !== kind
       ? {
-        ...getKindDefaultValues(kind),
-        ...(shape?.fwhm && { fwhm: shape?.fwhm }),
-      }
+          ...getKindDefaultValues(kind),
+          ...(shape?.fwhm && { fwhm: shape?.fwhm }),
+        }
       : shape;
   return shapeData;
 };

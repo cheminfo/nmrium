@@ -166,7 +166,10 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
         <>
           <GroupPane
             text="General"
-            style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
           >
             <Label
               title="Enable resort spectra"
@@ -177,13 +180,19 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
           </GroupPane>
           <GroupPane
             text="Columns Settings "
-            style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
           >
             <ReactTable columns={COLUMNS} data={columnsKeys} />
           </GroupPane>
           <GroupPane
             text="Execute code "
-            style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
           >
             <MultipleAnalysisCodeEditor data={data} />
           </GroupPane>

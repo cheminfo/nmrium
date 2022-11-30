@@ -17,7 +17,9 @@ function Spectrum1DSetting({
   return (
     <Formik initialValues={SpectrumData.display} onSubmit={onSubmit}>
       <>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+        >
           <div style={{ display: 'block', position: 'relative' }}>
             <FormikColorPicker name="color" />
           </div>
