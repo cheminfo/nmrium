@@ -3,17 +3,93 @@ import { CustomWorkspaces } from '../../component/workspaces/Workspace';
 import View from './View';
 
 const customWorkspaces: CustomWorkspaces = {
-  default: {
-    label: 'Test Workspace',
+  metabo: {
     display: {
+      general: {
+        hideGeneralSettings: false,
+        experimentalFeatures: { display: false },
+        hidePanelOnLoad: false,
+      },
       panels: {
         spectraPanel: { display: true, open: true },
+        informationPanel: { display: false, open: false },
+        integralsPanel: { display: false, open: false },
+        rangesPanel: { display: false, open: false },
+        structuresPanel: { display: false, open: false },
+        filtersPanel: { display: false, open: false },
+        zonesPanel: { display: false, open: false },
+        automaticAssignmentPanel: { display: false, open: false },
+        databasePanel: { display: false, open: false },
         multipleSpectraAnalysisPanel: { display: true, open: true },
+        peaksPanel: { display: false, open: false },
+        predictionPanel: { display: false, open: false },
+        summaryPanel: { display: false, open: false },
+      },
+      toolBarButtons: {
+        baselineCorrection: false,
+        exclusionZones: false,
+        exportAs: false,
+        fastFourierTransform: false,
+        import: true,
+        integral: false,
+        multipleSpectraAnalysis: false,
+        phaseCorrection: false,
+        rangePicking: false,
+        realImaginary: false,
+        slicing: false,
+        spectraCenterAlignments: false,
+        spectraStackAlignments: false,
+        apodization: false,
+        zeroFilling: false,
+        zonePicking: false,
+        zoomOut: false,
+        zoom: false,
+        peakPicking: false,
       },
     },
+    general: { dimmedSpectraOpacity: 0.1 },
+    formatting: {
+      nuclei: {
+        '1h': { name: '1H', ppm: '0.00', hz: '0.00' },
+        '13c': { name: '13C', ppm: '0.00', hz: '0.00' },
+        '15n': { name: '15N', ppm: '0.00', hz: '0.00' },
+        '19f': { name: '19F', ppm: '0.00', hz: '0.00' },
+        '29si': { name: '29Si', ppm: '0.00', hz: '0.00' },
+        '31p': { name: '31P', ppm: '0.00', hz: '0.00' },
+      },
+      panels: {},
+    },
+    databases: {
+      defaultDatabase: '',
+      data: [
+        {
+          key: 'toc',
+          label: 'Toc',
+          url: 'https://data.cheminfo.org/nmr/database/toc.json',
+          enabled: true,
+        },
+      ],
+    },
+    nmrLoaders: {
+      general: {
+        ignoreFID: true,
+        ignoreFT: false,
+        ignore1D: false,
+        ignore2D: true,
+        onlyReal: true,
+      },
+      bruker: {
+        processingNumber: null,
+        experimentalNumber: null,
+        onlyFirstProcessedData: true,
+      },
+    },
+    label: 'Metabolomics',
   },
 };
 
 export default function CustomWorkspace(props) {
-  return <View {...props} customWorkspaces={customWorkspaces} />;
+  return (
+    <View {...props} workspace="metabo" customWorkspaces={customWorkspaces} />
+  );
 }
