@@ -118,7 +118,6 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   } = usePreferences();
   const alert = useAlert();
   const refForm = useRef<FormikProps<any>>(null);
-  const resetButtonRef = useRef<HTMLButtonElement>(null);
   const workspaces = useWorkspacesList(true);
 
   const [isRestDisabled, setRestDisabled] = useState(true);
@@ -233,7 +232,6 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         />
 
         <Button.Action
-          ref={resetButtonRef}
           size="xSmall"
           onClick={handleReset}
           style={{
