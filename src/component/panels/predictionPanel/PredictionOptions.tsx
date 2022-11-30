@@ -100,43 +100,45 @@ function PredictionOptions({
           validationSchema={predictionFormValidation}
           onSubmit={submitHandler}
         >
-          <FormikErrorsSummary />
-          <div className="row margin-10">
-            <span className="custom-label">Frequency : </span>
-            <FormikSelect
-              items={FREQUENCIES}
-              style={{ width: 290, height: 30, margin: 0 }}
-              name="frequency"
-            />
-          </div>
+          <>
+            <FormikErrorsSummary />
+            <div className="row margin-10">
+              <span className="custom-label">Frequency : </span>
+              <FormikSelect
+                items={FREQUENCIES}
+                style={{ width: 290, height: 30, margin: 0 }}
+                name="frequency"
+              />
+            </div>
 
-          <div className="row">
-            <IsotopesViewer value="1H" className="custom-label" />
-            <Label title="From">
-              <FormikInput name="1d.1H.from" type="number" />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.1H.to" type="number" />
-            </Label>
-          </div>
-          <div className="row">
-            <IsotopesViewer value="13C" className="custom-label" />
-            <Label title="From">
-              <FormikInput name="1d.13C.from" type="number" />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.13C.to" type="number" />
-            </Label>
-          </div>
-          <div className="row margin-10 padding-h-10">
-            <span className="custom-label">Line Width : </span>
-            <FormikInput
-              name="1d.lineWidth"
-              type="number"
-              style={{ input: { margin: 0 } }}
-            />
-            <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-          </div>
+            <div className="row">
+              <IsotopesViewer value="1H" className="custom-label" />
+              <Label title="From">
+                <FormikInput name="1d.1H.from" type="number" />
+              </Label>
+              <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                <FormikInput name="1d.1H.to" type="number" />
+              </Label>
+            </div>
+            <div className="row">
+              <IsotopesViewer value="13C" className="custom-label" />
+              <Label title="From">
+                <FormikInput name="1d.13C.from" type="number" />
+              </Label>
+              <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                <FormikInput name="1d.13C.to" type="number" />
+              </Label>
+            </div>
+            <div className="row margin-10 padding-h-10">
+              <span className="custom-label">Line Width : </span>
+              <FormikInput
+                name="1d.lineWidth"
+                type="number"
+                style={{ input: { margin: 0 } }}
+              />
+              <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
+            </div>
+          </>
         </Formik>
       </div>
       <div>
