@@ -148,8 +148,8 @@ export interface LoadersPreferences {
     onlyReal: boolean;
   };
   bruker: {
-    processingNumber: number | null;
-    experimentalNumber: number | null;
+    processingNumber?: number | number[];
+    experimentNumber?: number | number[];
     onlyFirstProcessedData: boolean;
   };
 }

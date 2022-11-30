@@ -80,8 +80,6 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       onlyReal: false,
     },
     bruker: {
-      processingNumber: null,
-      experimentalNumber: null,
       onlyFirstProcessedData: true,
     },
   },

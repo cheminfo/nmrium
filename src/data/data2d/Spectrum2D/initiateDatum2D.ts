@@ -55,7 +55,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
 function getData(datum, options) {
   if (datum.info.isFid) {
     const { re = defaultMinMax, im = defaultMinMax } = options.data;
-    return { rr: re, ii: im };
+    return { re, im };
   }
   return { rr: defaultMinMax, ...options.data };
 }

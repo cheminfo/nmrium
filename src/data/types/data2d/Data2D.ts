@@ -8,4 +8,16 @@ export interface MinMaxContent {
   maxZ: number;
 }
 
-export type Data2D = Record<'rr' | 'ii' | 'ri' | 'ir', MinMaxContent>;
+export type Data2D = Data2DFid | Data2DFt;
+
+export interface Data2DFid {
+  re: MinMaxContent;
+  im?: MinMaxContent;
+}
+
+export interface Data2DFt {
+  rr: MinMaxContent;
+  ri?: MinMaxContent;
+  ir?: MinMaxContent;
+  ii?: MinMaxContent;
+}

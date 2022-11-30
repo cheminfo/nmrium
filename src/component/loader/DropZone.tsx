@@ -9,6 +9,7 @@ import { FaUpload } from 'react-icons/fa';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
@@ -49,6 +50,7 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
+  const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
   const alert = useAlert();
 
@@ -58,7 +60,9 @@ function DropZone(props) {
     }
     try {
       const fileCollection = await fileCollectionFromFileList(files);
-      const data = await readDropFiles(fileCollection);
+
+      const { nmrLoaders: filter } = preferences.current;
+      const data = await readDropFiles(fileCollection, { filter });
       dispatch({ type: LOAD_DROP_FILES, payload: { data } });
     } catch (error: any) {
       alert.error(error.message);
