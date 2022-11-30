@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaRegCopy } from 'react-icons/fa';
 
 import {
@@ -121,7 +121,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const resetButtonRef = useRef<HTMLButtonElement>(null);
   const workspaces = useWorkspacesList(true);
 
-  const [isRestDisabled, setRestDisabled] = useState(true)
+  const [isRestDisabled, setRestDisabled] = useState(true);
 
   const workspaceName = preferences.workspace.current;
 
@@ -197,16 +197,13 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       if (!PredefinedWorkspaces[workspaceName]) {
         setRestDisabled(true);
       } else {
-        setRestDisabled(JSON.stringify(values) === JSON.stringify(currentWorkspace));
-
+        setRestDisabled(
+          JSON.stringify(values) === JSON.stringify(currentWorkspace),
+        );
       }
     },
     [currentWorkspace, workspaceName],
   );
-
-  // useEffect(() => {
-  //   handleDisabledRestButton();
-  // }, [handleDisabledRestButton]);
 
   function handleCopyWorkspace() {
     const data = { [workspaceName]: currentWorkspace };
