@@ -67,9 +67,11 @@ function ZonesPreferences(props, ref) {
   return (
     <PreferencesContainer>
       <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
-        {nuclei?.map((n) => (
-          <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
-        ))}
+        <>
+          {nuclei?.map((n) => (
+            <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
+          ))}
+        </>
       </Formik>
     </PreferencesContainer>
   );

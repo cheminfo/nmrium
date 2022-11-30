@@ -82,7 +82,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
           initialValues={{ ...INITIAL_VALUE, name }}
           onSubmit={submitHandler}
         >
-          <div className="row margin-10">
+          <>          <div className="row margin-10">
             <span className="custom-label">Name</span>
             <FormikInput
               name="name"
@@ -93,35 +93,36 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
             />
           </div>
 
-          <div className="row margin-10">
-            <span className="custom-label">Compressed</span>
-            <FormikCheckBox name="compressed" />
-          </div>
-          <div className="row margin-10">
-            <span className="custom-label">Pretty Format</span>
-            <FormikCheckBox name="pretty" />
-          </div>
-          <div className="row margin-10">
-            <span className="custom-label"> Include </span>
-            <div className="data-export-group">
-              <label>
-                <Field
-                  type="radio"
-                  name="dataExportOption"
-                  value={DataExportOptions.ROW_DATA}
-                />
-                Raw Data
-              </label>
-              <label>
-                <Field
-                  type="radio"
-                  name="dataExportOption"
-                  value={DataExportOptions.DATA_SOURCE}
-                />
-                Data Source
-              </label>
+            <div className="row margin-10">
+              <span className="custom-label">Compressed</span>
+              <FormikCheckBox name="compressed" />
             </div>
-          </div>
+            <div className="row margin-10">
+              <span className="custom-label">Pretty Format</span>
+              <FormikCheckBox name="pretty" />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label"> Include </span>
+              <div className="data-export-group">
+                <label>
+                  <Field
+                    type="radio"
+                    name="dataExportOption"
+                    value={DataExportOptions.ROW_DATA}
+                  />
+                  Raw Data
+                </label>
+                <label>
+                  <Field
+                    type="radio"
+                    name="dataExportOption"
+                    value={DataExportOptions.DATA_SOURCE}
+                  />
+                  Data Source
+                </label>
+              </div>
+            </div>
+          </>
         </Formik>
       </div>
       <div className="footer-container">

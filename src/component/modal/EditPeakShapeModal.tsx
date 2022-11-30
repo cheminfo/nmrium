@@ -39,9 +39,9 @@ const getValues = (peak: Peak, kind: string) => {
   const shapeData =
     (shape?.kind || '').toLocaleLowerCase() !== kind
       ? {
-          ...getKindDefaultValues(kind),
-          ...(shape?.fwhm && { fwhm: shape?.fwhm }),
-        }
+        ...getKindDefaultValues(kind),
+        ...(shape?.fwhm && { fwhm: shape?.fwhm }),
+      }
       : shape;
   return shapeData;
 };
@@ -123,24 +123,26 @@ function EditPeakShapeModal({
           validationSchema={validation(kind)}
           onSubmit={changePeakShapeHandler}
         >
-          <Label title="kind : " style={labelStyle}>
-            <Select
-              items={KINDS}
-              style={{ margin: 0, height: 30 }}
-              value={kind}
-              onChange={(kind) => setKind(kind)}
-            />
-          </Label>
-
-          <Label title="fwhm: " style={labelStyle}>
-            <FormikInput name="fwhm" style={inputStyle} />
-          </Label>
-
-          {kind === 'pseudoVoigt' && (
-            <Label title="mu: " style={labelStyle}>
-              <FormikInput name="mu" style={inputStyle} />
+          <>
+            <Label title="kind : " style={labelStyle}>
+              <Select
+                items={KINDS}
+                style={{ margin: 0, height: 30 }}
+                value={kind}
+                onChange={(kind) => setKind(kind)}
+              />
             </Label>
-          )}
+
+            <Label title="fwhm: " style={labelStyle}>
+              <FormikInput name="fwhm" style={inputStyle} />
+            </Label>
+
+            {kind === 'pseudoVoigt' && (
+              <Label title="mu: " style={labelStyle}>
+                <FormikInput name="mu" style={inputStyle} />
+              </Label>
+            )}
+          </>
         </Formik>
       </div>
       <div className="footer-container">

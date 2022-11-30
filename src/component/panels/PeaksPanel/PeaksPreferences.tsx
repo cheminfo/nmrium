@@ -106,9 +106,11 @@ function PeaksPreferences(props, ref: any) {
   return (
     <PreferencesContainer>
       <Formik initialValues={{}} onSubmit={saveHandler} ref={formRef}>
-        {nuclei?.map((n) => (
-          <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
-        ))}
+        <>
+          {nuclei?.map((n) => (
+            <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
+          ))}
+        </>
       </Formik>
     </PreferencesContainer>
   );

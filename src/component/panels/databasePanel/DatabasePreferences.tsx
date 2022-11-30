@@ -48,62 +48,64 @@ function DatabasePreferences(props, ref) {
   return (
     <PreferencesContainer>
       <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
-        <PreferencesGroup>
-          <FormikColumnFormatField
-            label="Preview jcamp"
-            checkControllerName="previewJcamp"
-            hideFormatField
-          />
-          <FormikColorInput name="color" />
-          <Label
-            title="Margin bottom (px) :"
-            style={{ label: { padding: 0, flex: 4 }, wrapper: { flex: 8 } }}
-          >
-            <FormikInput name="marginBottom" type="number" />
-          </Label>
-        </PreferencesGroup>
-        <PreferencesGroup header="Table Preferences">
-          <FormikColumnFormatField
-            label="Structure"
-            checkControllerName="showSmiles"
-            hideFormatField
-          />
-          <FormikColumnFormatField
-            label="Solvent"
-            checkControllerName="showSolvent"
-            hideFormatField
-          />
-          <FormikColumnFormatField
-            label="Names"
-            checkControllerName="showNames"
-            hideFormatField
-          />
-          <FormikColumnFormatField
-            label="Range"
-            checkControllerName="range.show"
-            formatControllerName="range.format"
-          />
-          <FormikColumnFormatField
-            label="δ (ppm)"
-            checkControllerName="delta.show"
-            formatControllerName="delta.format"
-          />
-          <FormikColumnFormatField
-            label="Assignment"
-            checkControllerName="showAssignment"
-            hideFormatField
-          />
-          <FormikColumnFormatField
-            label="J (Hz)"
-            checkControllerName="coupling.show"
-            formatControllerName="coupling.format"
-          />
-          <FormikColumnFormatField
-            label="Multiplicity"
-            checkControllerName="showMultiplicity"
-            hideFormatField
-          />
-        </PreferencesGroup>
+        <>
+          <PreferencesGroup>
+            <FormikColumnFormatField
+              label="Preview jcamp"
+              checkControllerName="previewJcamp"
+              hideFormatField
+            />
+            <FormikColorInput name="color" />
+            <Label
+              title="Margin bottom (px) :"
+              style={{ label: { padding: 0, flex: 4 }, wrapper: { flex: 8 } }}
+            >
+              <FormikInput name="marginBottom" type="number" />
+            </Label>
+          </PreferencesGroup>
+          <PreferencesGroup header="Table Preferences">
+            <FormikColumnFormatField
+              label="Structure"
+              checkControllerName="showSmiles"
+              hideFormatField
+            />
+            <FormikColumnFormatField
+              label="Solvent"
+              checkControllerName="showSolvent"
+              hideFormatField
+            />
+            <FormikColumnFormatField
+              label="Names"
+              checkControllerName="showNames"
+              hideFormatField
+            />
+            <FormikColumnFormatField
+              label="Range"
+              checkControllerName="range.show"
+              formatControllerName="range.format"
+            />
+            <FormikColumnFormatField
+              label="δ (ppm)"
+              checkControllerName="delta.show"
+              formatControllerName="delta.format"
+            />
+            <FormikColumnFormatField
+              label="Assignment"
+              checkControllerName="showAssignment"
+              hideFormatField
+            />
+            <FormikColumnFormatField
+              label="J (Hz)"
+              checkControllerName="coupling.show"
+              formatControllerName="coupling.format"
+            />
+            <FormikColumnFormatField
+              label="Multiplicity"
+              checkControllerName="showMultiplicity"
+              hideFormatField
+            />
+          </PreferencesGroup>
+        </>
       </Formik>
     </PreferencesContainer>
   );

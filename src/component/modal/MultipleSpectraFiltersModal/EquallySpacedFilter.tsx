@@ -24,20 +24,22 @@ function EquallySpacedFilter(
       }}
       onSubmit={onSubmit}
     >
-      <div className="row margin-10">
-        <span className="custom-label">Range :</span>
-        <Label title="From : ">
-          <FormikInput name="from" type="number" />
-        </Label>
-        <Label title="To : ">
-          <FormikInput name="to" type="number" />
-        </Label>
-      </div>
-      <div className="row margin-10">
-        <Label className="custom-label" title="Number of points : ">
-          <FormikInput name="numberOfPoints" type="number" />
-        </Label>
-      </div>
+      <>
+        <div className="row margin-10">
+          <span className="custom-label">Range :</span>
+          <Label title="From : ">
+            <FormikInput name="from" type="number" />
+          </Label>
+          <Label title="To : ">
+            <FormikInput name="to" type="number" />
+          </Label>
+        </div>
+        <div className="row margin-10">
+          <Label className="custom-label" title="Number of points : ">
+            <FormikInput name="numberOfPoints" type="number" />
+          </Label>
+        </div>
+      </>
     </Formik>
   );
 }

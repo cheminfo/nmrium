@@ -61,20 +61,22 @@ function ExportAsMatrixModal({
           initialValues={INITIAL_VALUE}
           onSubmit={submitHandler}
         >
-          <div className="row margin-10">
-            <span className="custom-label">Range :</span>
-            <Label title="From : ">
-              <FormikInput name="from" type="number" />
-            </Label>
-            <Label title="To : ">
-              <FormikInput name="to" type="number" />
-            </Label>
-          </div>
-          <div className="row margin-10">
-            <Label title="Number of Points :" className="custom-label">
-              <FormikInput name="nbPoints" type="number" />
-            </Label>
-          </div>
+          <>
+            <div className="row margin-10">
+              <span className="custom-label">Range :</span>
+              <Label title="From : ">
+                <FormikInput name="from" type="number" />
+              </Label>
+              <Label title="To : ">
+                <FormikInput name="to" type="number" />
+              </Label>
+            </div>
+            <div className="row margin-10">
+              <Label title="Number of Points :" className="custom-label">
+                <FormikInput name="nbPoints" type="number" />
+              </Label>
+            </div>
+          </>
         </Formik>
       </div>
       <div className="footer-container">

@@ -76,9 +76,8 @@ function AddSignalFormTab(
             return true;
           }
 
-          const errorMessage = ` ${
-            value ? value.toFixed(5) : 0
-          } ppm out of the range`;
+          const errorMessage = ` ${value ? value.toFixed(5) : 0
+            } ppm out of the range`;
           return createError({ path, message: errorMessage });
         })
         .required(),
@@ -103,39 +102,41 @@ function AddSignalFormTab(
           }}
           onSubmit={saveHandler}
         >
-          <div css={styles.inputContainer}>
-            <FormikInput
-              name="newSignalDelta"
-              type="number"
-              placeholder={`𝛅 (ppm)`}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              style={{
-                input: {
-                  width: '250px',
-                  height: '30px',
-                },
-              }}
-              checkErrorAfterInputTouched={false}
-            />
-            <Button.Done
-              style={{
-                marginLeft: '5px',
-                padding: '0 15px',
-              }}
-              onClick={triggerSubmitHandler}
-            >
-              <FaPlus title="Add new signal" />
-            </Button.Done>
-          </div>
-          <p css={styles.inputInfo}>
-            [
-            {`${formatNumber(
-              range.from,
-              preferences.from.format,
-            )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
-            ]
-          </p>
+          <>
+            <div css={styles.inputContainer}>
+              <FormikInput
+                name="newSignalDelta"
+                type="number"
+                placeholder={`𝛅 (ppm)`}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                style={{
+                  input: {
+                    width: '250px',
+                    height: '30px',
+                  },
+                }}
+                checkErrorAfterInputTouched={false}
+              />
+              <Button.Done
+                style={{
+                  marginLeft: '5px',
+                  padding: '0 15px',
+                }}
+                onClick={triggerSubmitHandler}
+              >
+                <FaPlus title="Add new signal" />
+              </Button.Done>
+            </div>
+            <p css={styles.inputInfo}>
+              [
+              {`${formatNumber(
+                range.from,
+                preferences.from.format,
+              )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
+              ]
+            </p>
+          </>
         </Formik>
       </div>
     </div>

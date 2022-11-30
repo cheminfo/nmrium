@@ -209,105 +209,107 @@ function PredictSpectraModal({
           validationSchema={predictionFormValidation}
           onSubmit={submitHandler}
         >
-          <FormikErrorsSummary />
-          <div className="row margin-10">
-            <span className="custom-label">Name :</span>
-            <FormikInput
-              name="name"
-              style={{ input: { width: '200px', textAlign: 'left' } }}
-            />
-          </div>
-          <div className="row margin-10">
-            <span className="custom-label">Spectrometer Frequency :</span>
+          <>
+            <FormikErrorsSummary />
+            <div className="row margin-10">
+              <span className="custom-label">Name :</span>
+              <FormikInput
+                name="name"
+                style={{ input: { width: '200px', textAlign: 'left' } }}
+              />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label">Spectrometer Frequency :</span>
 
-            <FormikSelect
-              items={FREQUENCIES}
-              style={{ width: 290, height: 30, margin: 0 }}
-              name="frequency"
-            />
-          </div>
+              <FormikSelect
+                items={FREQUENCIES}
+                style={{ width: 290, height: 30, margin: 0 }}
+                name="frequency"
+              />
+            </div>
 
-          <span className="group-label">1D Options </span>
+            <span className="group-label">1D Options </span>
 
-          <div className="row margin-10 padding-h-10">
-            <IsotopesViewer value="1H" className="custom-label" />
-            <Label title="From">
-              <FormikInput name="1d.1H.from" type="number" />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.1H.to" type="number" />
-            </Label>
-          </div>
-          <div className="row margin-10 padding-h-10">
-            <IsotopesViewer value="13C" className="custom-label" />
-            <Label title="From">
-              <FormikInput name="1d.13C.from" type="number" />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.13C.to" type="number" />
-            </Label>
-          </div>
-          <div className="row margin-10 padding-h-10">
-            <span className="custom-label">Line Width : </span>
-            <FormikInput
-              name="1d.lineWidth"
-              type="number"
-              style={{ input: { margin: 0 } }}
-            />
-            <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-          </div>
-          <div className="row margin-10 padding-h-10">
-            <span className="custom-label">Number of Points : </span>
-            <FormikSelect
-              items={NUMBER_OF_POINTS_1D}
-              name="1d.nbPoints"
-              style={{ width: 290, height: 30, margin: 0 }}
-            />
-          </div>
-          <span className="group-label">2D Options </span>
+            <div className="row margin-10 padding-h-10">
+              <IsotopesViewer value="1H" className="custom-label" />
+              <Label title="From">
+                <FormikInput name="1d.1H.from" type="number" />
+              </Label>
+              <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                <FormikInput name="1d.1H.to" type="number" />
+              </Label>
+            </div>
+            <div className="row margin-10 padding-h-10">
+              <IsotopesViewer value="13C" className="custom-label" />
+              <Label title="From">
+                <FormikInput name="1d.13C.from" type="number" />
+              </Label>
+              <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                <FormikInput name="1d.13C.to" type="number" />
+              </Label>
+            </div>
+            <div className="row margin-10 padding-h-10">
+              <span className="custom-label">Line Width : </span>
+              <FormikInput
+                name="1d.lineWidth"
+                type="number"
+                style={{ input: { margin: 0 } }}
+              />
+              <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
+            </div>
+            <div className="row margin-10 padding-h-10">
+              <span className="custom-label">Number of Points : </span>
+              <FormikSelect
+                items={NUMBER_OF_POINTS_1D}
+                name="1d.nbPoints"
+                style={{ width: 290, height: 30, margin: 0 }}
+              />
+            </div>
+            <span className="group-label">2D Options </span>
 
-          <div className="row margin-10 padding-h-10">
-            <span className="custom-label">Number of Points : </span>
-            <FormikSelect
-              items={NUMBER_OF_POINTS_2D}
-              name="2d.nbPoints.x"
-              style={{ margin: 0, height: 30 }}
-            />
-            <span className="middle-x"> X </span>
-            <FormikSelect
-              items={NUMBER_OF_POINTS_2D}
-              name="2d.nbPoints.y"
-              style={{ margin: 0, height: 30 }}
-            />
-          </div>
-          <div className="row margin-10">
-            <span className="group-label">Spectra </span>
-          </div>
-          <div
-            className="row margin-10 padding-h-10"
-            style={{ justifyContent: 'space-between' }}
-          >
-            <div className="row">
-              <FormikCheckBox name="spectra.proton" />
-              <IsotopesViewer value="1H" className="nucleus-label" />
+            <div className="row margin-10 padding-h-10">
+              <span className="custom-label">Number of Points : </span>
+              <FormikSelect
+                items={NUMBER_OF_POINTS_2D}
+                name="2d.nbPoints.x"
+                style={{ margin: 0, height: 30 }}
+              />
+              <span className="middle-x"> X </span>
+              <FormikSelect
+                items={NUMBER_OF_POINTS_2D}
+                name="2d.nbPoints.y"
+                style={{ margin: 0, height: 30 }}
+              />
             </div>
-            <div className="row">
-              <FormikCheckBox name="spectra.carbon" />
-              <IsotopesViewer value="13C" className="nucleus-label" />
+            <div className="row margin-10">
+              <span className="group-label">Spectra </span>
             </div>
-            <div className="row">
-              <FormikCheckBox name="spectra.cosy" />
-              <IsotopesViewer value="COSY" className="nucleus-label" />
+            <div
+              className="row margin-10 padding-h-10"
+              style={{ justifyContent: 'space-between' }}
+            >
+              <div className="row">
+                <FormikCheckBox name="spectra.proton" />
+                <IsotopesViewer value="1H" className="nucleus-label" />
+              </div>
+              <div className="row">
+                <FormikCheckBox name="spectra.carbon" />
+                <IsotopesViewer value="13C" className="nucleus-label" />
+              </div>
+              <div className="row">
+                <FormikCheckBox name="spectra.cosy" />
+                <IsotopesViewer value="COSY" className="nucleus-label" />
+              </div>
+              <div className="row">
+                <FormikCheckBox name="spectra.hsqc" />
+                <IsotopesViewer value="HSQC" className="nucleus-label" />
+              </div>
+              <div className="row">
+                <FormikCheckBox name="spectra.hmbc" />
+                <IsotopesViewer value="HMBC" className="nucleus-label" />
+              </div>
             </div>
-            <div className="row">
-              <FormikCheckBox name="spectra.hsqc" />
-              <IsotopesViewer value="HSQC" className="nucleus-label" />
-            </div>
-            <div className="row">
-              <FormikCheckBox name="spectra.hmbc" />
-              <IsotopesViewer value="HMBC" className="nucleus-label" />
-            </div>
-          </div>
+          </>
         </Formik>
         <p className="warning">
           In order to predict spectra we are calling an external service and the

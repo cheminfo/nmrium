@@ -218,8 +218,10 @@ function EditRangeModal({
         validationSchema={validation}
         onSubmit={handleOnSave}
       >
-        <SignalsForm range={range} preferences={rangesPreferences} />
-        <FormikOnChange onChange={changeHandler} />
+        <>
+          <SignalsForm range={range} preferences={rangesPreferences} />
+          <FormikOnChange onChange={changeHandler} />
+        </>
       </Formik>
     </div>
   );

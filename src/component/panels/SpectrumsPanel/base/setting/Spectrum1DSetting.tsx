@@ -16,13 +16,15 @@ function Spectrum1DSetting({
 }: Spectrum1DSettingProps) {
   return (
     <Formik initialValues={SpectrumData.display} onSubmit={onSubmit}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        <div style={{ display: 'block', position: 'relative' }}>
-          <FormikColorPicker name="color" />
+      <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'block', position: 'relative' }}>
+            <FormikColorPicker name="color" />
+          </div>
+          <Spectrum1DHistogram color="red" data={SpectrumData.data} />
         </div>
-        <Spectrum1DHistogram color="red" data={SpectrumData.data} />
-      </div>
-      <FormikOnChange onChange={onSubmit} />
+        <FormikOnChange onChange={onSubmit} />
+      </>
     </Formik>
   );
 }

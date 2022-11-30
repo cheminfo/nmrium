@@ -261,45 +261,47 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           onSubmit={submitHandler}
           validate={handleDisabledRestButton}
         >
-          <Tabs
-            position={PositionsEnum.LEFT}
-            activeTab={activeTab}
-            onClick={tabChangeHandler}
-          >
-            <Tab title="General" tabid="general">
-              <div className="inner-content">
-                <GeneralTabContent />
-              </div>
-            </Tab>
+          <>
+            <Tabs
+              position={PositionsEnum.LEFT}
+              activeTab={activeTab}
+              onClick={tabChangeHandler}
+            >
+              <Tab title="General" tabid="general">
+                <div className="inner-content">
+                  <GeneralTabContent />
+                </div>
+              </Tab>
 
-            <Tab title="Formatting" tabid="formatting">
-              <div className="inner-content">
-                <FormattingTabContent />
-              </div>
-            </Tab>
+              <Tab title="Formatting" tabid="formatting">
+                <div className="inner-content">
+                  <FormattingTabContent />
+                </div>
+              </Tab>
 
-            <Tab title="Panels" tabid="display">
-              <div className="inner-content">
-                <DisplayTabContent />
-              </div>
-            </Tab>
-            <Tab title="Tools" tabid="tools">
-              <div className="inner-content">
-                <ToolsTabContent />
-              </div>
-            </Tab>
+              <Tab title="Panels" tabid="display">
+                <div className="inner-content">
+                  <DisplayTabContent />
+                </div>
+              </Tab>
+              <Tab title="Tools" tabid="tools">
+                <div className="inner-content">
+                  <ToolsTabContent />
+                </div>
+              </Tab>
 
-            <Tab title="Databases" tabid="databases">
-              <div className="inner-content">
-                <DatabasesTabContent currentWorkspace={workspaceName} />
-              </div>
-            </Tab>
-            <Tab title="Import filters" tabid="importation-filters">
-              <div className="inner-content">
-                <ImportationFiltersTabContent />
-              </div>
-            </Tab>
-          </Tabs>
+              <Tab title="Databases" tabid="databases">
+                <div className="inner-content">
+                  <DatabasesTabContent currentWorkspace={workspaceName} />
+                </div>
+              </Tab>
+              <Tab title="Import filters" tabid="importation-filters">
+                <div className="inner-content">
+                  <ImportationFiltersTabContent />
+                </div>
+              </Tab>
+            </Tabs>
+          </>
         </Formik>
       </div>
       <div className="footer-container">

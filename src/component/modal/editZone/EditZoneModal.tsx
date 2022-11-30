@@ -135,18 +135,20 @@ function EditZoneModal({
         validationSchema={validation}
         onSubmit={handleOnSave}
       >
-        <div className="header handle">
-          <Button onClick={handleOnZoom} className="zoom-button">
-            <FaSearchPlus title="Set to default view on range in spectrum" />
-          </Button>
-          <span>{`Zone and Signal edition`}</span>
-          <SaveButton
-            onClick={() => formRef.current.submitForm()}
-            popupTitle="Save and exit"
-          />
-          <CloseButton onClick={handleOnClose} />
-        </div>
-        <SignalsForm />
+        <>
+          <div className="header handle">
+            <Button onClick={handleOnZoom} className="zoom-button">
+              <FaSearchPlus title="Set to default view on range in spectrum" />
+            </Button>
+            <span>{`Zone and Signal edition`}</span>
+            <SaveButton
+              onClick={() => formRef.current.submitForm()}
+              popupTitle="Save and exit"
+            />
+            <CloseButton onClick={handleOnClose} />
+          </div>
+          <SignalsForm />
+        </>
       </Formik>
     </div>
   );

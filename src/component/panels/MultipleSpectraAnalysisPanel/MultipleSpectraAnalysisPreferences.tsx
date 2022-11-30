@@ -163,29 +163,31 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
         validationSchema={preferencesSchema}
         onSubmit={submitHandler}
       >
-        <GroupPane
-          text="General"
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <Label
-            title="Enable resort spectra"
-            htmlFor="preferences.resortSpectra"
+        <>
+          <GroupPane
+            text="General"
+            style={{ header: { color: 'black' }, container: { padding: '5px' } }}
           >
-            <FormikCheckBox name="preferences.resortSpectra" />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="Columns Settings "
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <ReactTable columns={COLUMNS} data={columnsKeys} />
-        </GroupPane>
-        <GroupPane
-          text="Execute code "
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <MultipleAnalysisCodeEditor data={data} />
-        </GroupPane>
+            <Label
+              title="Enable resort spectra"
+              htmlFor="preferences.resortSpectra"
+            >
+              <FormikCheckBox name="preferences.resortSpectra" />
+            </Label>
+          </GroupPane>
+          <GroupPane
+            text="Columns Settings "
+            style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+          >
+            <ReactTable columns={COLUMNS} data={columnsKeys} />
+          </GroupPane>
+          <GroupPane
+            text="Execute code "
+            style={{ header: { color: 'black' }, container: { padding: '5px' } }}
+          >
+            <MultipleAnalysisCodeEditor data={data} />
+          </GroupPane>
+        </>
       </Formik>
     </PreferencesContainer>
   );

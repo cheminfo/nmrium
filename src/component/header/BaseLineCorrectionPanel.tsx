@@ -167,44 +167,47 @@ function BaseLineCorrectionInnerPanel(
         initialValues={form.values}
         validationSchema={form.validation}
       >
-        {algorithm && algorithm === 'airpls' && (
-          <div style={{ display: 'flex' }}>
-            <Label title="maxIterations:" style={labelStyle}>
+        <>
+
+          {algorithm && algorithm === 'airpls' && (
+            <div style={{ display: 'flex' }}>
+              <Label title="maxIterations:" style={labelStyle}>
+                <FormikInput
+                  type="number"
+                  name="maxIterations"
+                  debounceTime={250}
+                />
+              </Label>
+              <Label title="tolerance:" style={labelStyle}>
+                <FormikInput type="number" name="tolerance" debounceTime={250} />
+              </Label>
+            </div>
+          )}
+
+          {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
+            <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
               <FormikInput
                 type="number"
-                name="maxIterations"
+                name="degree"
+                min={1}
+                max={6}
+                style={{ inputWrapper: { height: '100%' } }}
                 debounceTime={250}
               />
             </Label>
-            <Label title="tolerance:" style={labelStyle}>
-              <FormikInput type="number" name="tolerance" debounceTime={250} />
-            </Label>
-          </div>
-        )}
+          )}
 
-        {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-          <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
-            <FormikInput
-              type="number"
-              name="degree"
-              min={1}
-              max={6}
-              style={{ inputWrapper: { height: '100%' } }}
-              debounceTime={250}
+          <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
+            <FormikCheckBox
+              name="livePreview"
+              onChange={disableLivePreviewHandler}
             />
           </Label>
-        )}
 
-        <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
-          <FormikCheckBox
-            name="livePreview"
-            onChange={disableLivePreviewHandler}
+          <FormikOnChange
+            onChange={(values) => handleApplyFilter(values, 'onChange')}
           />
-        </Label>
-
-        <FormikOnChange
-          onChange={(values) => handleApplyFilter(values, 'onChange')}
-        />
+        </>
       </Formik>
 
       <ActionButtons

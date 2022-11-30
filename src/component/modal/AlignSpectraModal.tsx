@@ -30,9 +30,9 @@ function AlignSpectraModal({
   const List = useMemo(() => {
     const list = REFERENCES[nucleus]
       ? Object.entries(REFERENCES[nucleus]).map((item) => ({
-          value: item[0],
-          label: item[0],
-        }))
+        value: item[0],
+        label: item[0],
+      }))
       : [];
 
     return baseList.concat(list as any);
@@ -87,34 +87,36 @@ function AlignSpectraModal({
           initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
           onSubmit={submitHandler}
         >
-          <div className="row margin-10">
-            <span className="custom-label">Options :</span>
+          <>
+            <div className="row margin-10">
+              <span className="custom-label">Options :</span>
 
-            <Select
-              items={List}
-              style={{ width: 270, height: 30, marginBottom: '20px' }}
-              onChange={optionChangeHandler}
-            />
-          </div>
-          <div className="row margin-10">
-            <span className="custom-label">Range :</span>
-            <Label title="From : ">
-              <FormikInput name="from" type="number" />
-            </Label>
-            <Label title="To : ">
-              <FormikInput name="to" type="number" />
-            </Label>
-          </div>
-          <div className=" margin-10">
-            <Label className="custom-label" title="Number of Peaks : ">
-              <FormikInput name="nbPeaks" type="number" />
-            </Label>
-          </div>
-          <div className=" margin-10">
-            <Label className="custom-label" title="Target PPM :">
-              <FormikInput name="targetX" type="number" />
-            </Label>
-          </div>
+              <Select
+                items={List}
+                style={{ width: 270, height: 30, marginBottom: '20px' }}
+                onChange={optionChangeHandler}
+              />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label">Range :</span>
+              <Label title="From : ">
+                <FormikInput name="from" type="number" />
+              </Label>
+              <Label title="To : ">
+                <FormikInput name="to" type="number" />
+              </Label>
+            </div>
+            <div className=" margin-10">
+              <Label className="custom-label" title="Number of Peaks : ">
+                <FormikInput name="nbPeaks" type="number" />
+              </Label>
+            </div>
+            <div className=" margin-10">
+              <Label className="custom-label" title="Target PPM :">
+                <FormikInput name="targetX" type="number" />
+              </Label>
+            </div>
+          </>
         </Formik>
       </div>
       <div className="footer-container">

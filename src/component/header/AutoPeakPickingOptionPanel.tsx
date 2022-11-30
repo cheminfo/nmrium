@@ -73,27 +73,29 @@ function AutoPeakPickingOptionPanel() {
         initialValues={INIT_VALUES}
         onSubmit={handleApplyFilter}
       >
-        <Label title="Direction : " style={labelStyle}>
-          <FormikSelect
-            name="direction"
-            items={LookFor}
-            style={{ marginLeft: 10, marginRight: 10 }}
-            defaultValue="positive"
-          />
-        </Label>
-        <Label title="Max Number Of Peaks :" style={labelStyle}>
-          <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
-        </Label>
-        <Label title="Noise factor :" style={labelStyle}>
-          <FormikNumberInput name="noiseFactor" style={inputStyle} />
-        </Label>
-        <Label title="Min Max Ratio :" style={labelStyle}>
-          <FormikNumberInput
-            name="minMaxRatio"
-            style={inputStyle}
-            step="0.01"
-          />
-        </Label>
+        <>
+          <Label title="Direction : " style={labelStyle}>
+            <FormikSelect
+              name="direction"
+              items={LookFor}
+              style={{ marginLeft: 10, marginRight: 10 }}
+              defaultValue="positive"
+            />
+          </Label>
+          <Label title="Max Number Of Peaks :" style={labelStyle}>
+            <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
+          </Label>
+          <Label title="Noise factor :" style={labelStyle}>
+            <FormikNumberInput name="noiseFactor" style={inputStyle} />
+          </Label>
+          <Label title="Min Max Ratio :" style={labelStyle}>
+            <FormikNumberInput
+              name="minMaxRatio"
+              style={inputStyle}
+              step="0.01"
+            />
+          </Label>
+        </>
       </Formik>
 
       <Button.Done

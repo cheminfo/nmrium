@@ -86,15 +86,17 @@ function SpectraPreferences(props, ref: any) {
         onSubmit={saveHandler}
         initialValues={preferencesByNuclei}
       >
-        {nuclei?.map((n) => (
-          <NucleusGroup key={n} nucleus={n}>
-            <SpectraColumnsManager
-              nucleus={n}
-              onAdd={handleAdd}
-              onDelete={handleDelete}
-            />
-          </NucleusGroup>
-        ))}
+        <>
+          {nuclei?.map((n) => (
+            <NucleusGroup key={n} nucleus={n}>
+              <SpectraColumnsManager
+                nucleus={n}
+                onAdd={handleAdd}
+                onDelete={handleDelete}
+              />
+            </NucleusGroup>
+          ))}
+        </>
       </Formik>
     </PreferencesContainer>
   );

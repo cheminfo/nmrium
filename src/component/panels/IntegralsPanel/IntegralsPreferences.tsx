@@ -70,37 +70,39 @@ function IntegralsPreferences(props, ref) {
   return (
     <PreferencesContainer>
       <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            key={n}
-            nucleus={n}
-            fields={formatFields}
-            renderTop={() => (
-              <>
-                <FormikColorInput name={`nuclei.${n}.color`} />
-                <FormikNumberInput
-                  name={`nuclei.${n}.strokeWidth`}
-                  label="stroke width :"
-                  style={{
-                    label: {
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                      color: '#232323',
-                    },
-                    input: {
-                      width: '60%',
-                      textAlign: 'center',
-                      borderRadius: '5px',
-                    },
-                  }}
-                  min={1}
-                  max={9}
-                  pattern="[1-9]+"
-                />
-              </>
-            )}
-          />
-        ))}
+        <>
+          {nuclei?.map((n) => (
+            <NucleusPreferences
+              key={n}
+              nucleus={n}
+              fields={formatFields}
+              renderTop={() => (
+                <>
+                  <FormikColorInput name={`nuclei.${n}.color`} />
+                  <FormikNumberInput
+                    name={`nuclei.${n}.strokeWidth`}
+                    label="stroke width :"
+                    style={{
+                      label: {
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        color: '#232323',
+                      },
+                      input: {
+                        width: '60%',
+                        textAlign: 'center',
+                        borderRadius: '5px',
+                      },
+                    }}
+                    min={1}
+                    max={9}
+                    pattern="[1-9]+"
+                  />
+                </>
+              )}
+            />
+          ))}
+        </>
       </Formik>
     </PreferencesContainer>
   );

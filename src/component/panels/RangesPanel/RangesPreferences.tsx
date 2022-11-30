@@ -121,27 +121,29 @@ function RangesPreferences(props, ref) {
   return (
     <PreferencesContainer>
       <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            key={n}
-            nucleus={n}
-            fields={formatFields}
-            renderBottom={() => (
-              <Label
-                title="J Graph tolerance (Hz) :"
-                style={{
-                  label: styles.inputLabel,
-                  wrapper: styles.inputWrapper,
-                }}
-              >
-                <FormikInput
-                  name={`nuclei.${n}.jGraphTolerance`}
-                  type="number"
-                />
-              </Label>
-            )}
-          />
-        ))}
+        <>
+          {nuclei?.map((n) => (
+            <NucleusPreferences
+              key={n}
+              nucleus={n}
+              fields={formatFields}
+              renderBottom={() => (
+                <Label
+                  title="J Graph tolerance (Hz) :"
+                  style={{
+                    label: styles.inputLabel,
+                    wrapper: styles.inputWrapper,
+                  }}
+                >
+                  <FormikInput
+                    name={`nuclei.${n}.jGraphTolerance`}
+                    type="number"
+                  />
+                </Label>
+              )}
+            />
+          ))}
+        </>
       </Formik>
     </PreferencesContainer>
   );

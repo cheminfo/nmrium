@@ -106,51 +106,53 @@ function ApodizationOptionsInnerPanel(
         initialValues={initialValues}
         validationSchema={validationSchema}
       >
-        <Label title="Line broadening : " style={labelStyle}>
-          <FormikInput
-            type="number"
-            name="lineBroadening"
-            min={0}
-            max={1}
-            style={inputStyle}
-            debounceTime={250}
-          />
-        </Label>
-        <Label title="Gauss broadening :" style={labelStyle}>
-          <FormikInput
-            type="number"
-            name="gaussBroadening"
-            min={0}
-            max={1}
-            style={inputStyle}
-            debounceTime={250}
-          />
-        </Label>
-        <Label title="lineBroadeningCenter [0 - 1] : " style={labelStyle}>
-          <FormikInput
-            type="number"
-            name="lineBroadeningCenter"
-            min={0}
-            max={1}
-            style={inputStyle}
-            debounceTime={250}
-          />
-        </Label>
-        <Label
-          title="live preview "
-          htmlFor="livePreview"
-          style={{ label: { padding: '0 5px' } }}
-        >
-          <FormikCheckBox
-            name="livePreview"
-            onChange={disableLivePreviewHandler}
-          />
-        </Label>
+        <>
+          <Label title="Line broadening : " style={labelStyle}>
+            <FormikInput
+              type="number"
+              name="lineBroadening"
+              min={0}
+              max={1}
+              style={inputStyle}
+              debounceTime={250}
+            />
+          </Label>
+          <Label title="Gauss broadening :" style={labelStyle}>
+            <FormikInput
+              type="number"
+              name="gaussBroadening"
+              min={0}
+              max={1}
+              style={inputStyle}
+              debounceTime={250}
+            />
+          </Label>
+          <Label title="lineBroadeningCenter [0 - 1] : " style={labelStyle}>
+            <FormikInput
+              type="number"
+              name="lineBroadeningCenter"
+              min={0}
+              max={1}
+              style={inputStyle}
+              debounceTime={250}
+            />
+          </Label>
+          <Label
+            title="live preview "
+            htmlFor="livePreview"
+            style={{ label: { padding: '0 5px' } }}
+          >
+            <FormikCheckBox
+              name="livePreview"
+              onChange={disableLivePreviewHandler}
+            />
+          </Label>
 
-        <FormikOnChange
-          onChange={(values) => handleApplyFilter(values, 'onChange')}
-          enableValidation
-        />
+          <FormikOnChange
+            onChange={(values) => handleApplyFilter(values, 'onChange')}
+            enableValidation
+          />
+        </>
       </Formik>
 
       <ActionButtons
