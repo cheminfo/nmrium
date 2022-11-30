@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { Formik, FormikProps } from 'formik';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FaBolt, FaRegCopy } from 'react-icons/fa';
 
 import {
   usePreferences,
@@ -14,9 +16,10 @@ import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
-import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
+import { copyTextToClipboard } from '../../utility/export';
+import PredefinedWorkspaces from '../../workspaces';
 import { ModalStyles } from '../ModalStyle';
 
 import DatabasesTabContent from './DatabasesTabContent';
@@ -114,8 +117,13 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     ...preferences
   } = usePreferences();
   const alert = useAlert();
-  const refForm = useRef<any>();
-  const workspaces = useWorkspacesList();
+  const refForm = useRef<FormikProps<any>>(null);
+  const resetButtonRef = useRef<HTMLButtonElement>(null);
+  const workspaces = useWorkspacesList(true);
+
+  const [isRestDisabled, setRestDisabled] = useState(true)
+
+  const workspaceName = preferences.workspace.current;
 
   const workspacesList = useMemo(() => {
     return workspaces.concat([
@@ -127,10 +135,9 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   }, [workspaces]);
 
   const handleReset = () => {
-    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
-      preferences.workspace.current,
-    );
-    refForm.current.setValues(workSpaceDisplayPreferences);
+    const workSpaceDisplayPreferences =
+      getPreferencesByWorkspace(workspaceName);
+    refForm.current?.setValues(workSpaceDisplayPreferences);
   };
 
   const handleClose = () => {
@@ -152,7 +159,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       type: 'ADD_WORKSPACE',
       payload: {
         workspace: name,
-        data: refForm.current.values,
+        data: refForm.current?.values,
       },
     });
   }
@@ -185,6 +192,33 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     );
   }
 
+  const handleDisabledRestButton = useCallback(
+    (values) => {
+      if (!PredefinedWorkspaces[workspaceName]) {
+        setRestDisabled(true);
+      } else {
+        setRestDisabled(JSON.stringify(values) === JSON.stringify(currentWorkspace));
+
+      }
+    },
+    [currentWorkspace, workspaceName],
+  );
+
+  // useEffect(() => {
+  //   handleDisabledRestButton();
+  // }, [handleDisabledRestButton]);
+
+  function handleCopyWorkspace() {
+    const data = { [workspaceName]: currentWorkspace };
+    void copyTextToClipboard(JSON.stringify(data)).then((flag) => {
+      if (flag) {
+        alert.success('Workspace copied to clipboard');
+      } else {
+        alert.error('copied not completed');
+      }
+    });
+  }
+
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
@@ -201,24 +235,36 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           onSelect={ChangeWorkspaceHandler}
         />
 
-        <Button.Danger
-          fill="outline"
+        <Button.Action
+          ref={resetButtonRef}
           size="xSmall"
           onClick={handleReset}
           style={{
             marginLeft: '10px',
           }}
+          disabled={isRestDisabled}
         >
-          Reset workspace settings
-        </Button.Danger>
+          <FaBolt />
+        </Button.Action>
+        <Button.Done
+          size="xSmall"
+          fill="outline"
+          onClick={handleCopyWorkspace}
+          style={{
+            marginLeft: '10px',
+          }}
+        >
+          <FaRegCopy />
+        </Button.Done>
       </div>
       <div className="main-content">
-        <FormikForm
-          key={JSON.stringify(currentWorkspace)}
-          ref={refForm}
+        <Formik
+          enableReinitialize
+          innerRef={refForm}
           initialValues={currentWorkspace}
           validationSchema={validation}
           onSubmit={submitHandler}
+          validate={handleDisabledRestButton}
         >
           <Tabs
             position={PositionsEnum.LEFT}
@@ -250,9 +296,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab title="Databases" tabid="databases">
               <div className="inner-content">
-                <DatabasesTabContent
-                  currentWorkspace={preferences.workspace.current}
-                />
+                <DatabasesTabContent currentWorkspace={workspaceName} />
               </div>
             </Tab>
             <Tab title="Import filters" tabid="importation-filters">
@@ -261,12 +305,12 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
               </div>
             </Tab>
           </Tabs>
-        </FormikForm>
+        </Formik>
       </div>
       <div className="footer-container">
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => refForm.current.submitForm()}
+          onDone={() => refForm.current?.submitForm()}
           doneLabel="Save"
           onCancel={handleClose}
         />
