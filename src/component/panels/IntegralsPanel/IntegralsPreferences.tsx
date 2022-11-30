@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -10,7 +11,6 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
@@ -69,7 +69,7 @@ function IntegralsPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
+      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
         {nuclei?.map((n) => (
           <NucleusPreferences
             key={n}
@@ -101,7 +101,7 @@ function IntegralsPreferences(props, ref) {
             )}
           />
         ))}
-      </FormikForm>
+      </Formik>
     </PreferencesContainer>
   );
 }

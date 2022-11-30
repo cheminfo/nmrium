@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -11,7 +12,6 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
@@ -120,7 +120,7 @@ function RangesPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
+      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
         {nuclei?.map((n) => (
           <NucleusPreferences
             key={n}
@@ -142,7 +142,7 @@ function RangesPreferences(props, ref) {
             )}
           />
         ))}
-      </FormikForm>
+      </Formik>
     </PreferencesContainer>
   );
 }

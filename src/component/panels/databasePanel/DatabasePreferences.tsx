@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -10,7 +11,6 @@ import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -47,7 +47,7 @@ function DatabasePreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
+      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
         <PreferencesGroup>
           <FormikColumnFormatField
             label="Preview jcamp"
@@ -104,7 +104,7 @@ function DatabasePreferences(props, ref) {
             hideFormatField
           />
         </PreferencesGroup>
-      </FormikForm>
+      </Formik>
     </PreferencesContainer>
   );
 }

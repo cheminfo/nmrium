@@ -1,3 +1,4 @@
+import { Formik, FormikProps } from 'formik';
 import { useEffect, useRef, memo } from 'react';
 import * as Yup from 'yup';
 
@@ -8,7 +9,6 @@ import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
@@ -55,7 +55,7 @@ function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
 ) {
   const dispatch = useDispatch();
-  const formRef = useRef<any>();
+  const formRef = useRef<FormikProps<any>>(null);
   const handleApplyFilter = (
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
@@ -81,7 +81,7 @@ function ApodizationOptionsInnerPanel(
   };
 
   useEffect(() => {
-    if (props.filter) {
+    if (props.filter && formRef.current) {
       formRef.current.setValues({ ...props.filter.value, livePreview: true });
     }
   }, [props?.filter]);
@@ -100,8 +100,8 @@ function ApodizationOptionsInnerPanel(
 
   return (
     <HeaderContainer>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -151,10 +151,10 @@ function ApodizationOptionsInnerPanel(
           onChange={(values) => handleApplyFilter(values, 'onChange')}
           enableValidation
         />
-      </FormikForm>
+      </Formik>
 
       <ActionButtons
-        onDone={() => formRef.current.submitForm()}
+        onDone={() => formRef.current?.submitForm()}
         onCancel={handleCancelFilter}
       />
     </HeaderContainer>

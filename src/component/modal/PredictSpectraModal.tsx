@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 import { useCallback, useRef, useState, useMemo } from 'react';
 import * as Yup from 'yup';
 
@@ -17,7 +18,6 @@ import IsotopesViewer from '../elements/IsotopesViewer';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
@@ -203,8 +203,8 @@ function PredictSpectraModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={initValues}
           validationSchema={predictionFormValidation}
           onSubmit={submitHandler}
@@ -308,7 +308,7 @@ function PredictSpectraModal({
               <IsotopesViewer value="HMBC" className="nucleus-label" />
             </div>
           </div>
-        </FormikForm>
+        </Formik>
         <p className="warning">
           In order to predict spectra we are calling an external service and the
           chemical structure will leave your browser! You should never predict

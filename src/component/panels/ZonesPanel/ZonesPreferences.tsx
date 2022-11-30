@@ -1,3 +1,4 @@
+import { Formik, FormikProps } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -9,7 +10,6 @@ import {
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
@@ -32,7 +32,7 @@ const formatFields: NucleusPreferenceField[] = [
 
 function ZonesPreferences(props, ref) {
   const alert = useAlert();
-  const formRef = useRef<any>();
+  const formRef = useRef<FormikProps<any>>(null);
 
   const preferences = usePreferences();
   const nucleus = useNucleus();
@@ -40,7 +40,7 @@ function ZonesPreferences(props, ref) {
   const zonesPreferences = usePanelPreferencesByNuclei('zones', nuclei);
 
   useEffect(() => {
-    formRef.current.setValues(zonesPreferences);
+    formRef.current?.setValues(zonesPreferences);
   }, [zonesPreferences]);
 
   const saveHandler = useCallback(
@@ -58,7 +58,7 @@ function ZonesPreferences(props, ref) {
     ref,
     () => ({
       saveSetting: () => {
-        formRef.current.submitForm();
+        void formRef.current?.submitForm();
       },
     }),
     [],
@@ -66,11 +66,11 @@ function ZonesPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
+      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
         {nuclei?.map((n) => (
           <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
         ))}
-      </FormikForm>
+      </Formik>
     </PreferencesContainer>
   );
 }

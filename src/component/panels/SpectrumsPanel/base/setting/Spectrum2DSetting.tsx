@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 
 import FormikColorPicker from '../../../../elements/formik/FormikColorPicker';
-import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import FormikOnChange from '../../../../elements/formik/FormikOnChange';
 import FormikSlider from '../../../../elements/formik/FormikSlider';
@@ -27,7 +27,7 @@ function Spectrum2DSetting({
 }: Spectrum2DSettingProps) {
   const { positiveColor, negativeColor } = SpectrumData.display;
   return (
-    <FormikForm initialValues={SpectrumData.display}>
+    <Formik onSubmit={onSubmit} initialValues={SpectrumData.display}>
       <div>
         <div css={style(positiveColor)}>
           <span style={{ padding: '0 10px' }}>Positive</span>
@@ -66,7 +66,7 @@ function Spectrum2DSetting({
         <Spectrum2DHistogram data={SpectrumData.data} />
       </div>
       <FormikOnChange onChange={onSubmit} />
-    </FormikForm>
+    </Formik>
   );
 }
 

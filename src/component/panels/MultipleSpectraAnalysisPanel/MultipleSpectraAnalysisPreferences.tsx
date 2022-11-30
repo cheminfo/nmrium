@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   forwardRef,
   useEffect,
@@ -16,7 +17,6 @@ import { GroupPane } from '../../elements/GroupPane';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
@@ -156,8 +156,8 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   return (
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
-      <FormikForm
-        ref={refForm}
+      <Formik
+        innerRef={refForm}
         key={JSON.stringify(columns)}
         initialValues={{ columns, code: null, preferences: panelPreferences }}
         validationSchema={preferencesSchema}
@@ -186,7 +186,7 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
         >
           <MultipleAnalysisCodeEditor data={data} />
         </GroupPane>
-      </FormikForm>
+      </Formik>
     </PreferencesContainer>
   );
 }

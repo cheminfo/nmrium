@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { Formik } from 'formik';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { REFERENCES } from '../../data/constants/References';
@@ -7,7 +8,6 @@ import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import { ALIGN_SPECTRA } from '../reducer/types/Types';
 import Events from '../utility/Events';
@@ -82,8 +82,8 @@ function AlignSpectraModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content" style={{ flex: 1 }}>
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
           onSubmit={submitHandler}
         >
@@ -115,7 +115,7 @@ function AlignSpectraModal({
               <FormikInput name="targetX" type="number" />
             </Label>
           </div>
-        </FormikForm>
+        </Formik>
       </div>
       <div className="footer-container">
         <Button.Done onClick={handleSave}>Done</Button.Done>

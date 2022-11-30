@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Field } from 'formik';
+import { Field, Formik } from 'formik';
 import { useCallback, useRef } from 'react';
 
 import { DataExportOptions } from '../../data/SpectraManager';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 
 import { ModalStyles } from './ModalStyle';
@@ -78,8 +77,8 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={{ ...INITIAL_VALUE, name }}
           onSubmit={submitHandler}
         >
@@ -123,7 +122,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
               </label>
             </div>
           </div>
-        </FormikForm>
+        </Formik>
       </div>
       <div className="footer-container">
         <ActionButtons

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 import { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 
@@ -12,7 +13,6 @@ import Button from '../../elements/Button';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Label from '../../elements/Label';
 import FormikErrorsSummary from '../../elements/formik/FormikErrorsSummary';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 
@@ -48,7 +48,8 @@ const styles = css`
     width: 100px;
     margin-right: 10px;
     height: initial !important;
-  }
+  }import { Formik } from 'formik';
+
 `;
 
 const predictionFormValidation = Yup.object().shape({
@@ -93,8 +94,8 @@ function PredictionOptions({
   return (
     <div css={styles}>
       <div>
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={defaultPredictionOptions}
           validationSchema={predictionFormValidation}
           onSubmit={submitHandler}
@@ -136,7 +137,7 @@ function PredictionOptions({
             />
             <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
           </div>
-        </FormikForm>
+        </Formik>
       </div>
       <div>
         <Button.Done onClick={handleSave} disabled={disabled}>

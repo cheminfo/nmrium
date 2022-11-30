@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -9,7 +10,6 @@ import {
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
@@ -105,11 +105,11 @@ function PeaksPreferences(props, ref: any) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
+      <Formik initialValues={{}} onSubmit={saveHandler} ref={formRef}>
         {nuclei?.map((n) => (
           <NucleusPreferences key={n} nucleus={n} fields={formatFields} />
         ))}
-      </FormikForm>
+      </Formik>
     </PreferencesContainer>
   );
 }

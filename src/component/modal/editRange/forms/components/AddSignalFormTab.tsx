@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useFormikContext } from 'formik';
+import { Formik, useFormikContext } from 'formik';
 import { forwardRef, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import Button from '../../../../elements/Button';
-import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../../../utility/formatNumber';
@@ -96,8 +95,8 @@ function AddSignalFormTab(
         <p css={styles.infoText}>
           Edit or select a delta value of new signal (ppm):
         </p>
-        <FormikForm
-          ref={ref}
+        <Formik
+          innerRef={ref}
           validationSchema={validation}
           initialValues={{
             newSignalDelta: (range.from + range.to) / 2,
@@ -137,7 +136,7 @@ function AddSignalFormTab(
             )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
             ]
           </p>
-        </FormikForm>
+        </Formik>
       </div>
     </div>
   );
