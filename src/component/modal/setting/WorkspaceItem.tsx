@@ -22,6 +22,7 @@ const styles: Record<
   },
   workspaceVersion: {
     fontSize: '9px',
+    padding: "5px"
   },
   newContainer: {
     backgroundColor: '#f6f6f6',
@@ -84,12 +85,13 @@ function WorkspaceItem({ item, onSave, onDelete }) {
         <div style={styles.container}>
           <WorkSpaceIndicator workspaceKey={item.key} />
           <span style={styles.workspaceName}>{workspaceName}</span>
-          <span style={styles.workspaceVersion}>{workspaceVersion}</span>
           {!workspaces[item.key] && !customWorkspaces[item.key] && (
             <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
               <FaTimes />
             </Button.Danger>
           )}
+          <span style={styles.workspaceVersion}>{workspaceVersion}</span>
+
         </div>
       )}
     </div>

@@ -34,7 +34,7 @@ export function useWorkspacesList(showVersion = false) {
   return useMemo(() => {
     return Object.keys(workspaces).map((key) => ({
       key,
-      label: showVersion
+      label: showVersion && workspaces[key]?.version
         ? `${workspaces[key].label} - V${workspaces[key].version}`
         : workspaces[key].label,
     }));
