@@ -13,6 +13,7 @@ import {
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
+import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
@@ -169,10 +170,10 @@ function addMissingProjectionHandler(draft, action) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum2D = state.data[index];
-    const info = datum2D.info;
+    const { info, data } = datum2D;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
-        datum2D.data.rr,
+        info.isFid ? (data as Data2DFid).re : (data as Data2DFt).rr,
         n,
         info,
         draft.usedColors,

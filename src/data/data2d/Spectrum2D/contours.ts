@@ -162,6 +162,7 @@ function drawContours(
   level: number,
   datum: Datum2D,
   negative = false,
+  quadrant = 'rr',
 ): { contours: any; timeout: boolean } {
   const zoom = level / 2 + 1;
   const {
@@ -173,13 +174,13 @@ function drawContours(
     return getContours(zoom, {
       negative,
       nbLevels: numberOfNegativeLayer,
-      data: datum.data.rr,
+      data: datum.data[quadrant],
     });
   }
 
   return getContours(zoom, {
     nbLevels: numberOfPositiveLayer,
-    data: datum.data.rr,
+    data: datum.data[quadrant],
   });
 }
 
