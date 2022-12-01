@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -11,7 +12,6 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
@@ -120,29 +120,31 @@ function RangesPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            key={n}
-            nucleus={n}
-            fields={formatFields}
-            renderBottom={() => (
-              <Label
-                title="J Graph tolerance (Hz) :"
-                style={{
-                  label: styles.inputLabel,
-                  wrapper: styles.inputWrapper,
-                }}
-              >
-                <FormikInput
-                  name={`nuclei.${n}.jGraphTolerance`}
-                  type="number"
-                />
-              </Label>
-            )}
-          />
-        ))}
-      </FormikForm>
+      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+        <>
+          {nuclei?.map((n) => (
+            <NucleusPreferences
+              key={n}
+              nucleus={n}
+              fields={formatFields}
+              renderBottom={() => (
+                <Label
+                  title="J Graph tolerance (Hz) :"
+                  style={{
+                    label: styles.inputLabel,
+                    wrapper: styles.inputWrapper,
+                  }}
+                >
+                  <FormikInput
+                    name={`nuclei.${n}.jGraphTolerance`}
+                    type="number"
+                  />
+                </Label>
+              )}
+            />
+          ))}
+        </>
+      </Formik>
     </PreferencesContainer>
   );
 }

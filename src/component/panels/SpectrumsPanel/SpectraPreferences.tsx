@@ -1,7 +1,7 @@
+import { Formik } from 'formik';
 import { useImperativeHandle, useRef, memo, forwardRef } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
@@ -81,21 +81,23 @@ function SpectraPreferences(props, ref: any) {
 
   return (
     <PreferencesContainer>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         onSubmit={saveHandler}
         initialValues={preferencesByNuclei}
       >
-        {nuclei?.map((n) => (
-          <NucleusGroup key={n} nucleus={n}>
-            <SpectraColumnsManager
-              nucleus={n}
-              onAdd={handleAdd}
-              onDelete={handleDelete}
-            />
-          </NucleusGroup>
-        ))}
-      </FormikForm>
+        <>
+          {nuclei?.map((n) => (
+            <NucleusGroup key={n} nucleus={n}>
+              <SpectraColumnsManager
+                nucleus={n}
+                onAdd={handleAdd}
+                onDelete={handleDelete}
+              />
+            </NucleusGroup>
+          ))}
+        </>
+      </Formik>
     </PreferencesContainer>
   );
 }

@@ -1,9 +1,8 @@
-import { FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { ForwardedRef, forwardRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import Label from '../../elements/Label';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 
 interface FromToFilterProps {
@@ -16,8 +15,8 @@ function FromToFilter(
 ) {
   const { xDomain } = useChartData();
   return (
-    <FormikForm
-      ref={ref}
+    <Formik
+      innerRef={ref}
       initialValues={{ from: xDomain[0], to: xDomain[1] }}
       onSubmit={onSubmit}
     >
@@ -30,7 +29,7 @@ function FromToFilter(
           <FormikInput name="to" type="number" />
         </Label>
       </div>
-    </FormikForm>
+    </Formik>
   );
 }
 

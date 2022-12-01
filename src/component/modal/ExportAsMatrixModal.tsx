@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import { Formik } from 'formik';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import Label from '../elements/Label';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import Events from '../utility/Events';
 import { exportAsMatrix } from '../utility/export';
@@ -56,26 +56,28 @@ function ExportAsMatrixModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={INITIAL_VALUE}
           onSubmit={submitHandler}
         >
-          <div className="row margin-10">
-            <span className="custom-label">Range :</span>
-            <Label title="From : ">
-              <FormikInput name="from" type="number" />
-            </Label>
-            <Label title="To : ">
-              <FormikInput name="to" type="number" />
-            </Label>
-          </div>
-          <div className="row margin-10">
-            <Label title="Number of Points :" className="custom-label">
-              <FormikInput name="nbPoints" type="number" />
-            </Label>
-          </div>
-        </FormikForm>
+          <>
+            <div className="row margin-10">
+              <span className="custom-label">Range :</span>
+              <Label title="From : ">
+                <FormikInput name="from" type="number" />
+              </Label>
+              <Label title="To : ">
+                <FormikInput name="to" type="number" />
+              </Label>
+            </div>
+            <div className="row margin-10">
+              <Label title="Number of Points :" className="custom-label">
+                <FormikInput name="nbPoints" type="number" />
+              </Label>
+            </div>
+          </>
+        </Formik>
       </div>
       <div className="footer-container">
         <Button.Done onClick={handleSave}>Export Now</Button.Done>

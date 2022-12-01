@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import * as Filters from '../../../data/Filters';
@@ -8,7 +9,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import ActionButtons from '../../elements/ActionButtons';
 import CloseButton from '../../elements/CloseButton';
 import Select from '../../elements/Select';
-import FormikForm from '../../elements/formik/FormikForm';
 import { APPLY_MULTIPLE_SPECTRA_FILTER } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { ModalStyles } from '../ModalStyle';
@@ -140,9 +140,9 @@ function MultipleSpectraFiltersModal({
       case Filters.equallySpaced.id:
         return <EquallySpacedFilter onSubmit={submitHandler} ref={refForm} />;
       default:
-        <FormikForm
-          ref={refForm}
-          initialValues={null}
+        <Formik
+          initialValues={{}}
+          innerRef={refForm}
           onSubmit={submitHandler}
         />;
         break;
