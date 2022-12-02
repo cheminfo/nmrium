@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   useEffect,
   useCallback,
@@ -10,7 +11,6 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
@@ -69,39 +69,41 @@ function IntegralsPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <FormikForm onSubmit={saveHandler} ref={formRef}>
-        {nuclei?.map((n) => (
-          <NucleusPreferences
-            key={n}
-            nucleus={n}
-            fields={formatFields}
-            renderTop={() => (
-              <>
-                <FormikColorInput name={`nuclei.${n}.color`} />
-                <FormikNumberInput
-                  name={`nuclei.${n}.strokeWidth`}
-                  label="stroke width :"
-                  style={{
-                    label: {
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                      color: '#232323',
-                    },
-                    input: {
-                      width: '60%',
-                      textAlign: 'center',
-                      borderRadius: '5px',
-                    },
-                  }}
-                  min={1}
-                  max={9}
-                  pattern="[1-9]+"
-                />
-              </>
-            )}
-          />
-        ))}
-      </FormikForm>
+      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+        <>
+          {nuclei?.map((n) => (
+            <NucleusPreferences
+              key={n}
+              nucleus={n}
+              fields={formatFields}
+              renderTop={() => (
+                <>
+                  <FormikColorInput name={`nuclei.${n}.color`} />
+                  <FormikNumberInput
+                    name={`nuclei.${n}.strokeWidth`}
+                    label="stroke width :"
+                    style={{
+                      label: {
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        color: '#232323',
+                      },
+                      input: {
+                        width: '60%',
+                        textAlign: 'center',
+                        borderRadius: '5px',
+                      },
+                    }}
+                    min={1}
+                    max={9}
+                    pattern="[1-9]+"
+                  />
+                </>
+              )}
+            />
+          ))}
+        </>
+      </Formik>
     </PreferencesContainer>
   );
 }

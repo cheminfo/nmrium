@@ -1,20 +1,31 @@
 import lodashMerge from 'lodash/merge';
 
-import { Workspace, WorkSpaceSource } from '../../../workspaces/Workspace';
+import { Workspace } from '../../../workspaces/Workspace';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
 
+interface MapWorkspacesOptions {
+  ignoreKeys?: object;
+  mergeWithDefaultProperties?: boolean;
+}
+
 export function mapWorkspaces(
-  customWorkspaces: Record<string, Workspace>,
-  source: WorkSpaceSource,
+  workspaces: Record<string, Workspace>,
+  options: MapWorkspacesOptions = {},
 ) {
+  const { mergeWithDefaultProperties = true, ignoreKeys = {} } = options;
   const mapObject = {};
-  const prefix = source === 'custom' ? 'custom-' : '';
-  for (const key in customWorkspaces) {
-    mapObject[`${prefix}${key}`] = lodashMerge(
-      {},
-      workspaceDefaultProperties,
-      customWorkspaces[key],
-    );
+  for (const key in workspaces) {
+    if (!(key in ignoreKeys)) {
+      if (mergeWithDefaultProperties) {
+        mapObject[key] = lodashMerge(
+          {},
+          workspaceDefaultProperties,
+          workspaces[key],
+        );
+      } else {
+        mapObject[key] = workspaces[key];
+      }
+    }
   }
   return mapObject;
 }

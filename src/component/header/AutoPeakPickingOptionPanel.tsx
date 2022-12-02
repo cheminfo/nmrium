@@ -1,9 +1,9 @@
+import { Formik, FormikProps } from 'formik';
 import { memo, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { AUTO_PEAK_PICKING } from '../reducer/types/Types';
@@ -54,7 +54,7 @@ const INIT_VALUES = {
 
 function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
-  const formRef = useRef<any>();
+  const formRef = useRef<FormikProps<any>>(null);
 
   const handleApplyFilter = useCallback(
     (values) => {
@@ -68,36 +68,38 @@ function AutoPeakPickingOptionPanel() {
 
   return (
     <HeaderContainer>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         initialValues={INIT_VALUES}
         onSubmit={handleApplyFilter}
       >
-        <Label title="Direction : " style={labelStyle}>
-          <FormikSelect
-            name="direction"
-            items={LookFor}
-            style={{ marginLeft: 10, marginRight: 10 }}
-            defaultValue="positive"
-          />
-        </Label>
-        <Label title="Max Number Of Peaks :" style={labelStyle}>
-          <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
-        </Label>
-        <Label title="Noise factor :" style={labelStyle}>
-          <FormikNumberInput name="noiseFactor" style={inputStyle} />
-        </Label>
-        <Label title="Min Max Ratio :" style={labelStyle}>
-          <FormikNumberInput
-            name="minMaxRatio"
-            style={inputStyle}
-            step="0.01"
-          />
-        </Label>
-      </FormikForm>
+        <>
+          <Label title="Direction : " style={labelStyle}>
+            <FormikSelect
+              name="direction"
+              items={LookFor}
+              style={{ marginLeft: 10, marginRight: 10 }}
+              defaultValue="positive"
+            />
+          </Label>
+          <Label title="Max Number Of Peaks :" style={labelStyle}>
+            <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
+          </Label>
+          <Label title="Noise factor :" style={labelStyle}>
+            <FormikNumberInput name="noiseFactor" style={inputStyle} />
+          </Label>
+          <Label title="Min Max Ratio :" style={labelStyle}>
+            <FormikNumberInput
+              name="minMaxRatio"
+              style={inputStyle}
+              step="0.01"
+            />
+          </Label>
+        </>
+      </Formik>
 
       <Button.Done
-        onClick={() => formRef.current.handleSubmit()}
+        onClick={() => formRef.current?.handleSubmit()}
         style={{ margin: '0 10px' }}
       >
         Apply

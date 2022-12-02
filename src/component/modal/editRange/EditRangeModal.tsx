@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import cloneDeep from 'lodash/cloneDeep';
+import { Formik } from 'formik';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -11,7 +12,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -213,15 +213,17 @@ function EditRangeModal({
 
         <CloseButton onClick={handleOnClose} />
       </div>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         initialValues={data}
         validationSchema={validation}
         onSubmit={handleOnSave}
       >
-        <SignalsForm range={range} preferences={rangesPreferences} />
-        <FormikOnChange onChange={changeHandler} />
-      </FormikForm>
+        <>
+          <SignalsForm range={range} preferences={rangesPreferences} />
+          <FormikOnChange onChange={changeHandler} />
+        </>
+      </Formik>
     </div>
   );
 }
