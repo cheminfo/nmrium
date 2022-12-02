@@ -2,13 +2,11 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
-import Workspaces from '../../../workspaces';
+import PredefinedWorkspaces from '../../../workspaces';
 import { PreferencesState } from '../preferencesReducer';
 import { checkKeysExists } from '../utilities/checkKeysExists';
-import { filterCustomWorkspaces } from '../utilities/filterCustomWorkspaces';
 import { filterObject } from '../utilities/filterObject';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
-import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
 import { mapWorkspaces } from '../utilities/mapWorkspaces';
 
 export function initPreferences(draft: Draft<PreferencesState>, action) {
@@ -20,13 +18,15 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
       customWorkspaces: cw,
       ...resProps
     } = action.payload;
-    const customWorkspaces = mapWorkspaces(cw, 'custom');
-    const workspaces = mapWorkspaces(Workspaces as any, 'predefined');
+    const customWorkspaces = mapWorkspaces(cw);
+    const predefinedWorkspaces = mapWorkspaces(PredefinedWorkspaces as any);
+    const localWorkspaces = mapWorkspaces(draft.workspaces);
+
     draft.customWorkspaces = customWorkspaces;
     draft.workspaces = {
-      ...workspaces,
+      ...predefinedWorkspaces,
+      ...localWorkspaces,
       ...customWorkspaces,
-      ...draft.workspaces,
     };
 
     /**
@@ -34,15 +34,21 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
      * use the default workspace
      *
      */
-    draft.workspace =
-      !workspace && localData?.currentWorkspace
-        ? { current: localData.currentWorkspace, base: null }
-        : { current: workspace || 'default', base: workspace };
+
+    if (!workspace && localData?.currentWorkspace) {
+      draft.workspace = { current: localData.currentWorkspace, base: null };
+    } else {
+      const _workspace = draft.workspaces[workspace] ? workspace : 'default';
+      draft.workspace = {
+        current: _workspace,
+        base: _workspace,
+      };
+    }
 
     const workspacePreferences = lodashMerge(
       {},
-      getPreferencesByWorkspace(draft.workspace.current),
-      resProps,
+      draft.workspaces[draft.workspace.current],
+      resProps.display,
     );
 
     const currentWorkspacePreferences = getActiveWorkspace(draft);
@@ -56,7 +62,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
      *    d) if hard code workspace parameters !=  current workspace parameters
      */
     if (
-      (Workspaces[draft.workspace.current] &&
+      (PredefinedWorkspaces[draft.workspace.current] &&
         (!currentWorkspacePreferences ||
           workspacePreferences?.version !==
             currentWorkspacePreferences?.version ||
@@ -80,7 +86,10 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
           currentWorkspace: localData?.currentWorkspace,
         }),
         workspaces: {
-          ...filterCustomWorkspaces(workspaces),
+          ...mapWorkspaces(workspaces, {
+            ignoreKeys: customWorkspaces,
+            mergeWithDefaultProperties: false,
+          }),
           ...(!customWorkspaces[current]
             ? {
                 [current]: {

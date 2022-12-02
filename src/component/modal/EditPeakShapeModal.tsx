@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 import { useCallback, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
@@ -10,7 +11,6 @@ import CloseButton from '../elements/CloseButton';
 import { InputStyle } from '../elements/Input';
 import Label, { LabelStyle } from '../elements/Label';
 import Select from '../elements/Select';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import { CHANGE_PEAK_SHAPE } from '../reducer/types/Types';
 import { formatNumber } from '../utility/formatNumber';
@@ -116,32 +116,34 @@ function EditPeakShapeModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <FormikForm
-          key={JSON.stringify(values)}
-          ref={refForm}
-          initialValues={values}
+        <Formik
+          enableReinitialize
+          innerRef={refForm}
+          initialValues={values as any}
           validationSchema={validation(kind)}
           onSubmit={changePeakShapeHandler}
         >
-          <Label title="kind : " style={labelStyle}>
-            <Select
-              items={KINDS}
-              style={{ margin: 0, height: 30 }}
-              value={kind}
-              onChange={(kind) => setKind(kind)}
-            />
-          </Label>
-
-          <Label title="fwhm: " style={labelStyle}>
-            <FormikInput name="fwhm" style={inputStyle} />
-          </Label>
-
-          {kind === 'pseudoVoigt' && (
-            <Label title="mu: " style={labelStyle}>
-              <FormikInput name="mu" style={inputStyle} />
+          <>
+            <Label title="kind : " style={labelStyle}>
+              <Select
+                items={KINDS}
+                style={{ margin: 0, height: 30 }}
+                value={kind}
+                onChange={(kind) => setKind(kind)}
+              />
             </Label>
-          )}
-        </FormikForm>
+
+            <Label title="fwhm: " style={labelStyle}>
+              <FormikInput name="fwhm" style={inputStyle} />
+            </Label>
+
+            {kind === 'pseudoVoigt' && (
+              <Label title="mu: " style={labelStyle}>
+                <FormikInput name="mu" style={inputStyle} />
+              </Label>
+            )}
+          </>
+        </Formik>
       </div>
       <div className="footer-container">
         <ActionButtons

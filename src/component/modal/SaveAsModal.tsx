@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Field } from 'formik';
+import { Field, Formik } from 'formik';
 import { useCallback, useRef } from 'react';
 
 import { DataExportOptions } from '../../data/SpectraManager';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 
 import { ModalStyles } from './ModalStyle';
@@ -78,52 +77,54 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={{ ...INITIAL_VALUE, name }}
           onSubmit={submitHandler}
         >
-          <div className="row margin-10">
-            <span className="custom-label">Name</span>
-            <FormikInput
-              name="name"
-              className="name"
-              style={{
-                inputWrapper: { width: '100%' },
-              }}
-            />
-          </div>
-
-          <div className="row margin-10">
-            <span className="custom-label">Compressed</span>
-            <FormikCheckBox name="compressed" />
-          </div>
-          <div className="row margin-10">
-            <span className="custom-label">Pretty Format</span>
-            <FormikCheckBox name="pretty" />
-          </div>
-          <div className="row margin-10">
-            <span className="custom-label"> Include </span>
-            <div className="data-export-group">
-              <label>
-                <Field
-                  type="radio"
-                  name="dataExportOption"
-                  value={DataExportOptions.ROW_DATA}
-                />
-                Raw Data
-              </label>
-              <label>
-                <Field
-                  type="radio"
-                  name="dataExportOption"
-                  value={DataExportOptions.DATA_SOURCE}
-                />
-                Data Source
-              </label>
+          <>
+            {' '}
+            <div className="row margin-10">
+              <span className="custom-label">Name</span>
+              <FormikInput
+                name="name"
+                className="name"
+                style={{
+                  inputWrapper: { width: '100%' },
+                }}
+              />
             </div>
-          </div>
-        </FormikForm>
+            <div className="row margin-10">
+              <span className="custom-label">Compressed</span>
+              <FormikCheckBox name="compressed" />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label">Pretty Format</span>
+              <FormikCheckBox name="pretty" />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label"> Include </span>
+              <div className="data-export-group">
+                <label>
+                  <Field
+                    type="radio"
+                    name="dataExportOption"
+                    value={DataExportOptions.ROW_DATA}
+                  />
+                  Raw Data
+                </label>
+                <label>
+                  <Field
+                    type="radio"
+                    name="dataExportOption"
+                    value={DataExportOptions.DATA_SOURCE}
+                  />
+                  Data Source
+                </label>
+              </div>
+            </div>
+          </>
+        </Formik>
       </div>
       <div className="footer-container">
         <ActionButtons

@@ -130,7 +130,8 @@ export type NMRiumWorkspace =
   | 'prediction'
   | 'embedded'
   | 'assignment'
-  | `custom-${string}`;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});
 
 export interface NMRiumProps {
   data?: NMRiumData;

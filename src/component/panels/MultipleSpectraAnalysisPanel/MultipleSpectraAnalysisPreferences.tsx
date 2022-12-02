@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   forwardRef,
   useEffect,
@@ -16,7 +17,6 @@ import { GroupPane } from '../../elements/GroupPane';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import {
@@ -156,37 +156,48 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   return (
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
-      <FormikForm
-        ref={refForm}
+      <Formik
+        innerRef={refForm}
         key={JSON.stringify(columns)}
         initialValues={{ columns, code: null, preferences: panelPreferences }}
         validationSchema={preferencesSchema}
         onSubmit={submitHandler}
       >
-        <GroupPane
-          text="General"
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <Label
-            title="Enable resort spectra"
-            htmlFor="preferences.resortSpectra"
+        <>
+          <GroupPane
+            text="General"
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
           >
-            <FormikCheckBox name="preferences.resortSpectra" />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="Columns Settings "
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <ReactTable columns={COLUMNS} data={columnsKeys} />
-        </GroupPane>
-        <GroupPane
-          text="Execute code "
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <MultipleAnalysisCodeEditor data={data} />
-        </GroupPane>
-      </FormikForm>
+            <Label
+              title="Enable resort spectra"
+              htmlFor="preferences.resortSpectra"
+            >
+              <FormikCheckBox name="preferences.resortSpectra" />
+            </Label>
+          </GroupPane>
+          <GroupPane
+            text="Columns Settings "
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
+          >
+            <ReactTable columns={COLUMNS} data={columnsKeys} />
+          </GroupPane>
+          <GroupPane
+            text="Execute code "
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
+          >
+            <MultipleAnalysisCodeEditor data={data} />
+          </GroupPane>
+        </>
+      </Formik>
     </PreferencesContainer>
   );
 }

@@ -13,7 +13,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
+import useSpectrum from '../../hooks/useSpectrum';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
@@ -45,7 +45,7 @@ interface SpectraPanelHeaderProps {
 interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   data: Array<Datum1D | Datum2D>;
   activeTab: string;
-  activeSpectrum: ActiveSpectrum | null;
+  activeSpectrum: Datum2D | null;
   displayerMode: string;
 }
 
@@ -122,7 +122,7 @@ function SpectraPanelHeaderInner({
       <Button popupTitle="Show all spectra" onClick={showAllSpectrumsHandler}>
         <FaEye />
       </Button>
-      {activeSpectrum && activeTab && activeTab.split(',').length > 1 && (
+      {displayerMode === DISPLAYER_MODE.DM_2D && activeSpectrum?.info.isFt && (
         <Button
           popupTitle="Add missing projection"
           onClick={addMissingProjectionHandler}
@@ -157,12 +157,12 @@ export default function SpectrumsTabs({
     },
     displayerMode,
   } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
+  const spectrum = useSpectrum() as Datum2D;
   return (
     <MemoizedSpectraPanelHeader
       {...{
         data,
-        activeSpectrum,
+        activeSpectrum: spectrum,
         activeTab,
         displayerMode,
         onSettingClick,

@@ -6,7 +6,7 @@ import Button from '../../elements/Button';
 import workspaces from '../../workspaces';
 
 const styles: Record<
-  'container' | 'item' | 'newContainer' | 'input',
+  'container' | 'workspaceName' | 'workspaceVersion' | 'newContainer' | 'input',
   CSSProperties
 > = {
   container: {
@@ -14,10 +14,14 @@ const styles: Record<
     alignItems: 'center',
     padding: '0 5px',
   },
-  item: {
+  workspaceName: {
     flex: '1',
     textAlign: 'left',
     fontSize: '11px',
+    padding: '5px',
+  },
+  workspaceVersion: {
+    fontSize: '9px',
     padding: '5px',
   },
   newContainer: {
@@ -56,6 +60,8 @@ function WorkspaceItem({ item, onSave, onDelete }) {
     setName(e.target.value);
   }
 
+  const [workspaceName, workspaceVersion] = item.label.split('-');
+
   return (
     <div>
       {item.key === 'new' ? (
@@ -78,11 +84,14 @@ function WorkspaceItem({ item, onSave, onDelete }) {
       ) : (
         <div style={styles.container}>
           <WorkSpaceIndicator workspaceKey={item.key} />
-          <span style={styles.item}>{item.label}</span>
+          <span style={styles.workspaceName}>{workspaceName}</span>
           {!workspaces[item.key] && !customWorkspaces[item.key] && (
             <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
               <FaTimes />
             </Button.Danger>
+          )}
+          {workspaceVersion && (
+            <span style={styles.workspaceVersion}>{workspaceVersion}</span>
           )}
         </div>
       )}
