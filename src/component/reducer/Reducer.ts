@@ -451,7 +451,8 @@ export function dispatchMiddleware(dispatch) {
       case types.INITIATE: {
         if (action.payload) {
           usedColors = { '1d': [], '2d': [] };
-          void readNMRiumObject(action.payload).then((data) => {
+          void readNMRiumObject(action.payload).then((nmriumObject) => {
+            const { data } = nmriumObject;
             action.payload = { ...data, usedColors };
             dispatch(action);
           });

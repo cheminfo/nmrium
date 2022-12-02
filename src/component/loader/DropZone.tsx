@@ -62,7 +62,7 @@ function DropZone(props) {
       const fileCollection = await fileCollectionFromFileList(files);
 
       const { nmrLoaders: filter } = preferences.current;
-      const data = await readDropFiles(fileCollection, { filter });
+      const { data } = await readDropFiles(fileCollection, { filter });
       dispatch({ type: LOAD_DROP_FILES, payload: { data } });
     } catch (error: any) {
       alert.error(error.message);
