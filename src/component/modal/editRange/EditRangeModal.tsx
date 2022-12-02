@@ -23,7 +23,7 @@ import { UPDATE_RANGE } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
-import useRangeFormValidation from './forms/validation/EditRangeValidation';
+import editRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
   width: 600px;
@@ -85,9 +85,7 @@ function EditRangeModal({
   } = useChartData();
   const dispatch = useDispatch();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
-  const validation = useRangeFormValidation();
   const range = useRange(originRange, manualRange);
-
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(range);
   }, [onZoomEditRangeModal, range]);
@@ -216,7 +214,7 @@ function EditRangeModal({
       <FormikForm
         ref={formRef}
         initialValues={data}
-        validationSchema={validation}
+        validationSchema={editRangeFormValidation}
         onSubmit={handleOnSave}
       >
         <SignalsForm range={range} preferences={rangesPreferences} />
