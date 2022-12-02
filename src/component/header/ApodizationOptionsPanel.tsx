@@ -1,5 +1,5 @@
 import { Formik, FormikProps } from 'formik';
-import { useEffect, useRef, memo } from 'react';
+import { useRef, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
@@ -56,10 +56,11 @@ function ApodizationOptionsInnerPanel(
 ) {
   const dispatch = useDispatch();
   const formRef = useRef<FormikProps<any>>(null);
-  const handleApplyFilter = (
+
+  function handleApplyFilter(
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
-  ) => {
+  ) {
     const { livePreview, ...filterOptions } = values;
     if (livePreview && triggerSource === 'onChange') {
       dispatch({
@@ -72,23 +73,17 @@ function ApodizationOptionsInnerPanel(
         payload: filterOptions,
       });
     }
-  };
+  }
 
-  const handleCancelFilter = () => {
+  function handleCancelFilter() {
     dispatch({
       type: RESET_SELECTED_TOOL,
     });
-  };
+  }
 
-  useEffect(() => {
-    if (props.filter && formRef.current) {
-      formRef.current.setValues({ ...props.filter.value, livePreview: true });
-    }
-  }, [props?.filter]);
-
-  const disableLivePreviewHandler = (
+  function disableLivePreviewHandler(
     event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  ) {
     //disable filter Live preview
     if (!event.target.checked) {
       dispatch({
@@ -96,14 +91,19 @@ function ApodizationOptionsInnerPanel(
         payload: { selectedTool: options.apodization.id },
       });
     }
-  };
+  }
+
+  let formData = initialValues;
+  if (props.filter) {
+    formData = { ...initialValues, ...props.filter.value, livePreview: true };
+  }
 
   return (
     <HeaderContainer>
       <Formik
         innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
-        initialValues={initialValues}
+        initialValues={formData}
         validationSchema={validationSchema}
       >
         <>
@@ -150,7 +150,7 @@ function ApodizationOptionsInnerPanel(
 
           <FormikOnChange
             onChange={(values) => handleApplyFilter(values, 'onChange')}
-            enableValidation
+            enableOnload
           />
         </>
       </Formik>
@@ -163,9 +163,9 @@ function ApodizationOptionsInnerPanel(
   );
 }
 
-const MemoziedApodizationPanel = memo(ApodizationOptionsInnerPanel);
+const MemoizedApodizationPanel = memo(ApodizationOptionsInnerPanel);
 
 export default function ApodizationOptionsPanel() {
   const filter = useFilter(Filters.apodization.id);
-  return <MemoziedApodizationPanel filter={filter} />;
+  return <MemoizedApodizationPanel filter={filter} />;
 }

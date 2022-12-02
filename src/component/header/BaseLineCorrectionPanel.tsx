@@ -1,5 +1,5 @@
 import { Formik, FormikProps } from 'formik';
-import { useRef, useState, useEffect, memo } from 'react';
+import { useRef, useState, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
@@ -54,6 +54,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
       return {
         validation,
         values: {
+          algorithm,
           livePreview: true,
           maxIterations: 100,
           tolerance: 0.001,
@@ -70,6 +71,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
       return {
         validation,
         values: {
+          algorithm,
           livePreview: true,
           degree: 3,
           ...(filterValues?.algorithm === 'polynomial' ? filterValues : {}),
@@ -89,37 +91,21 @@ function BaseLineCorrectionInnerPanel(
 ) {
   const dispatch = useDispatch();
   const formRef = useRef<FormikProps<any>>(null);
+  const { algorithm: baseAlgorithm = 'polynomial' } =
+    props?.filter?.value || {};
 
-  const [algorithm, setAlgorithm] = useState('polynomial');
+  const [algorithm, setAlgorithm] = useState(baseAlgorithm);
 
   const handleApplyFilter = (
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
-    let options = {};
-    switch (algorithm) {
-      case 'airpls':
-        options = {
-          algorithm,
-          ...values,
-        };
-        break;
-      case 'polynomial':
-        options = {
-          algorithm,
-          ...values,
-        };
-        break;
-      default:
-        break;
-    }
-
     dispatch({
       type:
         triggerSource === 'onChange'
           ? CALCULATE_BASE_LINE_CORRECTION_FILTER
           : APPLY_BASE_LINE_CORRECTION_FILTER,
-      options,
+      options: values,
     });
   };
 
@@ -128,13 +114,6 @@ function BaseLineCorrectionInnerPanel(
       type: RESET_SELECTED_TOOL,
     });
   };
-
-  useEffect(() => {
-    if (props.filter) {
-      const { algorithm } = props.filter.value;
-      setAlgorithm(algorithm);
-    }
-  }, [props?.filter]);
 
   const disableLivePreviewHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -148,6 +127,10 @@ function BaseLineCorrectionInnerPanel(
     }
   };
 
+  function handleChangeAlgorithm(selectedAlgorithm) {
+    setAlgorithm(selectedAlgorithm);
+  }
+
   const form = formData(algorithm, props?.filter?.value || {});
 
   return (
@@ -156,16 +139,16 @@ function BaseLineCorrectionInnerPanel(
         <Select
           items={getAlgorithmsList()}
           value={algorithm}
-          onChange={(val) => setAlgorithm(val)}
+          onChange={handleChangeAlgorithm}
         />
       </Label>
 
       <Formik
         innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
-        key={JSON.stringify(form.values)}
         initialValues={form.values}
         validationSchema={form.validation}
+        enableReinitialize
       >
         <>
           {algorithm && algorithm === 'airpls' && (
@@ -210,6 +193,7 @@ function BaseLineCorrectionInnerPanel(
 
           <FormikOnChange
             onChange={(values) => handleApplyFilter(values, 'onChange')}
+            enableOnload
           />
         </>
       </Formik>
