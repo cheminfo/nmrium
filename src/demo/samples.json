@@ -195,8 +195,12 @@
       },
       {
         "title": "Metabo workspace",
+        "view": "CustomWorkspace"
+      },
+      {
+        "title": "Metabo coffee workspace",
         "view": "CustomWorkspace",
-        "file": "./data/xtc/XTC.json"
+        "file": "./data/coffee/Coffee.json"
       },
       {
         "file": "./data/cytisine/1H.json",
