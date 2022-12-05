@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
-import cloneDeep from 'lodash/cloneDeep';
 import { Formik } from 'formik';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
@@ -233,7 +232,7 @@ function useRange(range: Range, isNew: boolean) {
 
   const id = isNew ? 'new' : range.id;
   const index = ranges.values.findIndex((rangeRecord) => rangeRecord.id === id);
-  return cloneDeep(ranges.values[index]);
+  return ranges.values[index];
 }
 
 export default EditRangeModal;
