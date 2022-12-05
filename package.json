@@ -62,7 +62,7 @@
     "d3": "^7.6.1",
     "eventemitter3": "^4.0.7",
     "file-saver": "^2.0.5",
-    "filelist-utils": "^1.2.0",
+    "filelist-utils": "^1.4.0",
     "formik": "^2.2.9",
     "immer": "^9.0.16",
     "jszip": "^3.10.1",
