@@ -2,6 +2,7 @@ import { Draft, original } from 'immer';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
+import { deleteSpectraAnalysisById } from '../../../data/data1d/MultipleAnalysis';
 import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
@@ -145,16 +146,21 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
 
 function handleDeleteSpectra(draft: Draft<State>, action) {
   const state = original(draft) as State;
+  const activeTab = draft.view.spectra.activeTab;
   if (action.id) {
     const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
-
     // remove peaks State
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete draft.view.peaks[action.id];
+    draft.spectraAnalysis[activeTab].values = deleteSpectraAnalysisById(
+      state.spectraAnalysis[activeTab],
+      action.id,
+    );
   } else {
     draft.data = [];
     draft.view.peaks = {};
+    draft.spectraAnalysis[activeTab].values = {};
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,

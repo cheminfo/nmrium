@@ -53,14 +53,17 @@ interface AnalysisRow extends RangeDetectionResult {
 
 interface SpectraAnalysisInnerData {
   options: AnalysisOptions;
-  values: Record<string, AnalysisRow>;
+  values: Record<string /** spectrum key */, AnalysisRow>;
 }
 export interface SpectraAnalysisData {
   options: AnalysisOptions;
   values: AnalysisRow[];
 }
 
-export type SpectraAnalysis = Record<string, SpectraAnalysisInnerData>;
+export type SpectraAnalysis = Record<
+  string /** where the key is the nucleus*/,
+  SpectraAnalysisInnerData
+>;
 
 function addColumnKey(
   spectraAnalysis: SpectraAnalysis,
@@ -404,4 +407,18 @@ export function getDataAsString(
     return result;
   }
   return null;
+}
+export function deleteSpectraAnalysisById(
+  spectraAnalysis: SpectraAnalysisInnerData,
+  id?: string,
+) {
+  const { values = {} } = spectraAnalysis;
+
+  const analysisValues = {};
+  for (const spectrumKey in values) {
+    if (spectrumKey !== id) {
+      analysisValues[spectrumKey] = values[spectrumKey];
+    }
+  }
+  return analysisValues;
 }
