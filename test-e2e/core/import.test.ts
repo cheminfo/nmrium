@@ -108,7 +108,7 @@ test('should load and migrate .nmrium data from version 3 to version 4', async (
   );
   // If the file was loaded successfully, there should be a 1H,1H.
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H,1H"]')).toBeVisible({
-    timeout: 2000,
+    timeout: 3000,
   });
 
   await test.step('check zones', async () => {
