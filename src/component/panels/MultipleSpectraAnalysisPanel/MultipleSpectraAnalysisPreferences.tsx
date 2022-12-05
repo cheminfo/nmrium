@@ -9,7 +9,10 @@ import {
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { COLUMNS_TYPES } from '../../../data/data1d/MultipleAnalysis';
+import {
+  COLUMNS_TYPES,
+  SpectraAnalysisData,
+} from '../../../data/data1d/MultipleAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
@@ -29,8 +32,16 @@ import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
 
 const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
+interface MultipleSpectraAnalysisPreferencesProps {
+  data: SpectraAnalysisData;
+  onAfterSave: (flag: boolean) => void;
+}
+
 // TODO: remove this hacky use of ref.
-function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
+function MultipleSpectraAnalysisPreferences(
+  { data, onAfterSave }: MultipleSpectraAnalysisPreferencesProps,
+  ref: any,
+) {
   const dispatch = useDispatch();
   const refForm = useRef<any>();
   const [columns, setColumns] = useState({});
@@ -44,13 +55,13 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   useEffect(() => {
     const result = Object.fromEntries(
-      Object.keys(data.columns).map((key) => [
+      Object.keys(data.options.columns).map((key) => [
         key,
-        { ...data.columns[key], tempKey: key },
+        { ...data.options.columns[key], tempKey: key },
       ]),
     );
     setColumns(result);
-    refForm.current.setValues({ columns: result, code: data.code });
+    refForm.current.setValues({ columns: result, code: data.options.code });
   }, [data]);
 
   const columnsKeys = Object.keys(columns);
