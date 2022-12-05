@@ -145,14 +145,14 @@ function loadJcampFile(draft: Draft<State>, actions) {
 
 function loadDropFiles(draft: Draft<State>, action) {
   const { append } = action.payload;
-  if (!append) {
-    return initData(draft, action);
-  } else {
+  if (append) {
     setData(draft, action.payload);
     setActiveTab(draft);
     changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
     draft.actionType = action.actionType;
     draft.isLoading = false;
+  } else {
+    return initData(draft, action);
   }
 }
 
