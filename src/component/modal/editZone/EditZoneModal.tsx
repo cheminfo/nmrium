@@ -12,7 +12,7 @@ import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
 
 import SignalsForm from './SignalsForm';
-import useRangeFormValidation from './validation/EditZoneValidation';
+import zoneFormValidation from './validation/EditZoneValidation';
 import isDefaultPathLength from './validation/isDefaultPathLength';
 
 const styles = css`
@@ -65,7 +65,6 @@ function EditZoneModal({
   rowData,
 }: EditZoneModalProps) {
   const formRef = useRef<any>(null);
-  const validation = useRangeFormValidation();
 
   const handleOnZoom = useCallback(() => {
     onZoomEditZoneModal(rowData);
@@ -132,7 +131,7 @@ function EditZoneModal({
       <Formik
         innerRef={formRef}
         initialValues={data}
-        validationSchema={validation}
+        validationSchema={zoneFormValidation}
         onSubmit={handleOnSave}
       >
         <>
