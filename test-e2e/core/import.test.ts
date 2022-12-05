@@ -10,10 +10,11 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
     '_react=DropZone >> input[type=file]',
     'test-e2e/data/1h-version-0.nmrium',
   );
+
   // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "1H,1H"]')).toBeVisible({
+    timeout: 2000,
+  });
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
 
   await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
@@ -34,9 +35,9 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
   );
 
   // If the file was loaded successfully, there should be a 1H,1H and 1H tab.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "1H,1H"]')).toBeVisible({
+    timeout: 2000,
+  });
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
 
   await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
@@ -106,9 +107,9 @@ test('should load and migrate .nmrium data from version 3 to version 4', async (
     'test-e2e/data/cosy-version-3-2d.nmrium',
   );
   // If the file was loaded successfully, there should be a 1H,1H.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "1H,1H"]')).toBeVisible({
+    timeout: 2000,
+  });
 
   await test.step('check zones', async () => {
     const ranges = nmrium.page.locator('_react=Zone');
@@ -136,8 +137,9 @@ test('should load multiple files', async ({ page }) => {
   ]);
 
   // If the file was loaded successfully, there should be many tabs.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
-  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible({
+    timeout: 2000,
+  });
   await expect(
     nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
   ).toBeVisible();
@@ -146,9 +148,9 @@ test('should load file using drag and drop .nmrium', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('1h-version-1-datasource.nmrium');
   // If the file was loaded successfully, there should be a 1H,1H tab.
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "1H,1H"]')).toBeVisible({
+    timeout: 2000,
+  });
 });
 
 test('should load file using drag and drop .zip', async ({ page }) => {
@@ -166,8 +168,9 @@ test('should load multiple files using drag and drop', async ({ page }) => {
     '13c-version-2.nmrium',
   ]);
   // If the file was loaded successfully, there should be many tabs.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
-  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible({
+    timeout: 2000,
+  });
   await expect(
     nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
   ).toBeVisible();
