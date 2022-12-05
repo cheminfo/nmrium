@@ -1,4 +1,4 @@
-import { SplitPane } from 'analysis-ui-components';
+import { SplitPane } from 'react-science/ui';
 
 import { usePreferences } from './context/PreferencesContext';
 

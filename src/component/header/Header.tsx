@@ -1,4 +1,3 @@
-import { Header, Toolbar } from 'analysis-ui-components';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { useMemo, useCallback, memo } from 'react';
 import {
@@ -6,6 +5,7 @@ import {
   FaWrench,
   FaQuestionCircle,
 } from 'react-icons/fa';
+import { Header, Toolbar } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';

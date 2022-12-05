@@ -1,68 +1,64 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ColorPicker } from 'analysis-ui-components';
 import { useCallback, memo, useState, useEffect } from 'react';
+import { ColorPicker } from 'react-science/ui';
 
 const style = css`
   display: flex;
   margin: 5px 0px;
 
-.inputLabel{
-  flex: 2;
-  font-size: 11px;
-  font-weight: bold;
-  color: #232323;
-}
+  .inputLabel {
+    flex: 2;
+    font-size: 11px;
+    font-weight: bold;
+    color: #232323;
+  }
 
-.input {
-  width: '60%',
-  text-align: 'center',
-}
+  .input {
+    width: 60%;
+    text-align: center;
+  }
 
-.color{
-  width: 36px;
-  height: 14px;
-  border-radius: 2px;
-}
+  .color {
+    width: 36px;
+    height: 14px;
+    border-radius: 2px;
+  }
 
-.swatch{
-  padding: 5px;
-  background: #fff;
-  border-radius: 1px;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.1);
-  display: inline-block;
-  cursor: pointer;
-}
-.color-popover {
-  position: absolute;
-  z-index: 2;
-}
+  .swatch {
+    padding: 5px;
+    background: #fff;
+    border-radius: 1px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    cursor: pointer;
+  }
+  .color-popover {
+    position: absolute;
+    z-index: 2;
+  }
 
-.cover {
-  position: fixed;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-}
+  .cover {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+  }
   .chrome-picker {
     border-radius: none !important;
     width: 200px !important;
     height: 60px !important;
     display: flex;
-
-
   }
   .chrome-picker > div:first-of-type {
     padding: 0px !important;
-
   }
-  .chrome-picker > div:last-child >  div:first-of-type {
+  .chrome-picker > div:last-child > div:first-of-type {
     width: 120px;
-
   }
-  .chrome-picker > div:last-child >  div:last-child {
-    display:none !important;
+  .chrome-picker > div:last-child > div:last-child {
+    display: none !important;
   }
 `;
 

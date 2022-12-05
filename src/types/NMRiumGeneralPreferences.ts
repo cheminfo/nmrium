@@ -1,4 +1,4 @@
-import { SplitPaneSize } from 'analysis-ui-components';
+import { SplitPaneSize } from 'react-science/ui';
 
 import { PanelPreferencesType } from './PanelPreferencesType';
 

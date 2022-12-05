@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
+import { useAccordionContext } from 'react-science/ui';
 
 import {
   initiateDatabase,
