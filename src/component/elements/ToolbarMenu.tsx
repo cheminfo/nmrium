@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Toolbar } from 'analysis-ui-components';
 import {
   ReactNode,
   useState,
@@ -8,6 +7,7 @@ import {
   useRef,
   useLayoutEffect,
 } from 'react';
+import { Toolbar } from 'react-science/ui';
 
 const menuStyles = css`
   .menu {

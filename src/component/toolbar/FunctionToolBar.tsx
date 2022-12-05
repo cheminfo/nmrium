@@ -1,4 +1,3 @@
-import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrApodization,
   SvgNmrBaselineCorrection,
@@ -12,6 +11,7 @@ import {
 } from 'cheminfo-font';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -70,9 +70,7 @@ function FunctionToolBarInner({
             id={options.zoom.id}
             title={`${options.zoom.label} ( Press z )`}
           >
-            <div style={{ fontSize: 14 }}>
-              <FaSearchPlus />
-            </div>
+            <FaSearchPlus />
           </ToggleButton>
         )}
 
@@ -82,9 +80,7 @@ function FunctionToolBarInner({
             onClick={handleFullZoomOut}
             title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
           >
-            <div style={{ fontSize: 14 }}>
-              <FaExpand />
-            </div>
+            <FaExpand />
           </Toolbar.Item>
         )}
 

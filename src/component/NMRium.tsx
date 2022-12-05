@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { RootLayout } from 'analysis-ui-components';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -18,6 +17,7 @@ import {
   ForwardedRef,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { RootLayout } from 'react-science/ui';
 import { useToggle, useFullscreen } from 'react-use';
 
 import { toJSON } from '../data/SpectraManager';
@@ -84,7 +84,6 @@ const containerStyles = css`
   width: 100%;
   display: block;
   height: 100%;
-  font-size: 14px;
 
   div:focus {
     outline: none !important;
