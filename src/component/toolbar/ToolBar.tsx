@@ -1,5 +1,5 @@
-import { Toolbar } from 'analysis-ui-components';
 import { memo } from 'react';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -12,13 +12,11 @@ interface ToolBarInnerProps {
 
 function ToolBarInner({ selectedTool }: ToolBarInnerProps) {
   return (
-    <div style={{ fontSize: 18 }}>
-      <Toolbar orientation="vertical">
-        <FunctionToolBar defaultValue={selectedTool} />
-        {/* <HistoryToolBar /> */}
-        <BasicToolBar />
-      </Toolbar>
-    </div>
+    <Toolbar orientation="vertical">
+      <FunctionToolBar defaultValue={selectedTool} />
+      {/* <HistoryToolBar /> */}
+      <BasicToolBar />
+    </Toolbar>
   );
 }
 

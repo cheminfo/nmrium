@@ -1,4 +1,3 @@
-import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrRealImag,
   SvgNmrOverlay3,
@@ -16,6 +15,7 @@ import {
   FaFile,
   FaFileImport,
 } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
