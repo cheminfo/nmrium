@@ -137,12 +137,7 @@ test('should load multiple files', async ({ page }) => {
   ]);
 
   // If the file was loaded successfully, there should be many tabs.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible({
-    timeout: 2000,
-  });
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
 });
 test('should load file using drag and drop .nmrium', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
@@ -168,10 +163,5 @@ test('should load multiple files using drag and drop', async ({ page }) => {
     '13c-version-2.nmrium',
   ]);
   // If the file was loaded successfully, there should be many tabs.
-  await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible({
-    timeout: 2000,
-  });
-  await expect(
-    nmrium.page.locator('_react=Tab[tabid = "1H,1H"]'),
-  ).toBeVisible();
+  await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
 });
