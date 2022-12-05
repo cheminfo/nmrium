@@ -2,7 +2,6 @@ import { Draft, original } from 'immer';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
-import { deleteSpectraAnalysisById } from '../../../data/data1d/MultipleAnalysis';
 import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
@@ -153,14 +152,22 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
     // remove peaks State
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete draft.view.peaks[action.id];
-    draft.spectraAnalysis[activeTab].values = deleteSpectraAnalysisById(
-      state.spectraAnalysis[activeTab],
-      action.id,
-    );
+
+    //delete spectrum analysis record when delete the spectrum
+    if (draft.spectraAnalysis[activeTab]) {
+      const spectraAnalysis = draft.spectraAnalysis[activeTab].values;
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete spectraAnalysis[action.id];
+      if (Object.keys(spectraAnalysis).length === 0) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete draft.spectraAnalysis[activeTab];
+      }
+    }
   } else {
     draft.data = [];
     draft.view.peaks = {};
-    draft.spectraAnalysis[activeTab].values = {};
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete draft.spectraAnalysis[activeTab];
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,

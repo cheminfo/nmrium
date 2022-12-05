@@ -408,17 +408,3 @@ export function getDataAsString(
   }
   return null;
 }
-export function deleteSpectraAnalysisById(
-  spectraAnalysis: SpectraAnalysisInnerData,
-  id?: string,
-) {
-  const { values = {} } = spectraAnalysis;
-
-  const analysisValues = {};
-  for (const spectrumKey in values) {
-    if (spectrumKey !== id) {
-      analysisValues[spectrumKey] = values[spectrumKey];
-    }
-  }
-  return analysisValues;
-}
