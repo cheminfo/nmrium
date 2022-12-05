@@ -452,8 +452,7 @@ export function dispatchMiddleware(dispatch) {
         if (action.payload) {
           usedColors = { '1d': [], '2d': [] };
           void readNMRiumObject(action.payload).then((nmriumObject) => {
-            const { data } = nmriumObject;
-            action.payload = { ...data, usedColors };
+            action.payload = { ...nmriumObject, usedColors };
             dispatch(action);
           });
         }
@@ -476,6 +475,11 @@ export function dispatchMiddleware(dispatch) {
 
         break;
       }
+      case types.LOAD_DROP_FILES: {
+        action.payload.usedColors = usedColors;
+        dispatch(action);
+        break;
+      }
 
       default:
         action.usedColors = usedColors;
@@ -488,7 +492,7 @@ export function dispatchMiddleware(dispatch) {
 
 function innerSpectrumReducer(draft: Draft<State>, action) {
   if (
-    ![types.LOAD_JSON_FILE, types.LOAD_NMREDATA_FILE, types.INITIATE].includes(
+    ![types.LOAD_DROP_FILES, types.LOAD_NMREDATA_FILE, types.INITIATE].includes(
       action.type,
     )
   ) {
@@ -502,8 +506,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
-    case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action);
     case types.ADD_PEAK:
