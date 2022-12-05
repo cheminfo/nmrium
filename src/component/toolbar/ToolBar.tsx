@@ -1,5 +1,5 @@
-import { Toolbar } from 'analysis-ui-components';
 import { memo } from 'react';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 

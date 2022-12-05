@@ -1,7 +1,7 @@
-import { ColorPicker } from 'analysis-ui-components';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { memo } from 'react';
+import { ColorPicker } from 'react-science/ui';
 
 import { COLORS } from '../../../data/utilities/getColor';
 

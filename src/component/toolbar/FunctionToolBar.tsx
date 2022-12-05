@@ -1,4 +1,3 @@
-import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrApodization,
   SvgNmrBaselineCorrection,
@@ -12,6 +11,7 @@ import {
 } from 'cheminfo-font';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';

@@ -1,4 +1,3 @@
-import { Toolbar } from 'analysis-ui-components';
 import {
   useCallback,
   useState,
@@ -6,6 +5,7 @@ import {
   ReactElement,
   JSXElementConstructor,
 } from 'react';
+import { Toolbar } from 'react-science/ui';
 
 interface ToggleButtonProps {
   isActive?: boolean;
