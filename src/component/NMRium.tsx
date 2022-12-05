@@ -84,7 +84,6 @@ const containerStyles = css`
   width: 100%;
   display: block;
   height: 100%;
-  font-size: 14px;
 
   div:focus {
     outline: none !important;
