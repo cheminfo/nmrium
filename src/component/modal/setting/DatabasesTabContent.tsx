@@ -1,6 +1,5 @@
 import { v4 } from '@lukeed/uuid';
 import { Field, useFormikContext } from 'formik';
-import lodashGet from 'lodash/get';
 import { CSSProperties } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -45,7 +44,7 @@ interface DatabasesTabContentProps {
 function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   const { values, setFieldValue } = useFormikContext();
 
-  const databases = lodashGet(values, 'databases', []);
+  const databases = (values as any).databases;
 
   function deleteHandler(index: number) {
     const _database = databases.data.slice();

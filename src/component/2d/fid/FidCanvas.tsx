@@ -2,6 +2,7 @@ import { matrixZPivotRescale } from 'ml-spectra-processing';
 import { useEffect, useRef, useMemo } from 'react';
 
 import { Datum2D } from '../../../data/types/data2d';
+import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
@@ -102,10 +103,16 @@ export function FidCanvas() {
 }
 
 function getImageData(spectrum: Datum2D) {
-  const matrix = matrixZPivotRescale(spectrum.data.rr.z, {
-    max: 255,
-    ArrayConstructor: Int16Array,
-  });
+  const { isFid } = spectrum.info;
+  const matrix = matrixZPivotRescale(
+    isFid
+      ? (spectrum.data as Data2DFid).re.z
+      : (spectrum.data as Data2DFt).rr.z,
+    {
+      max: 255,
+      ArrayConstructor: Int16Array,
+    },
+  );
   const WIDTH = matrix[0].length;
   const HEIGHT = matrix.length;
 

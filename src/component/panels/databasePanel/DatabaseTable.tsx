@@ -201,6 +201,7 @@ function DatabaseTable({ data, onAdd, totalCount }: DatabaseTableProps) {
       approxItemHeight={23.5}
       enableVirtualScroll
       totalCount={totalCount}
+      disableDefaultRowStyle
     />
   );
 }

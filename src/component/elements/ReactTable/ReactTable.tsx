@@ -55,16 +55,27 @@ type TableInstanceWithHooks = TableInstance & {
 interface SortEvent {
   onSortEnd?: (data: any) => void;
 }
-interface ReactTableProps extends ClickEvent, SortEvent {
+
+export interface RowStyle {
+  rowStyle?: {
+    active?: CSSProperties;
+    activated?: CSSProperties;
+    hover?: CSSProperties;
+    base?: CSSProperties;
+  };
+  disableDefaultRowStyle?: boolean;
+}
+interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
-  context?: Array<{ label: string; onClick: () => void }> | null;
+  context?: Array<{ label: string; onClick: (data: any) => void }> | null;
   approxItemHeight?: number;
   groupKey?: string;
   indexKey?: string;
   enableVirtualScroll?: boolean;
-  highlightActiveRow?: boolean;
+  activeRow?: (data: any) => boolean;
+  enableDefaultActiveRow?: boolean;
   totalCount?: number;
 }
 
@@ -107,10 +118,13 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     enableVirtualScroll = false,
     groupKey,
     onClick,
-    highlightActiveRow = false,
+    activeRow,
     totalCount,
     indexKey = 'index',
     onSortEnd,
+    rowStyle,
+    disableDefaultRowStyle = false,
+    enableDefaultActiveRow = false,
   } = props;
 
   const contextRef = useRef<any>(null);
@@ -119,7 +133,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   const [rowIndex, setRowIndex] = useState<number>();
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   const [isCounterVisible, setCounterVisibility] = useState(false);
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -235,9 +248,21 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                   {...restRowProps}
                   row={row}
                   onContextMenu={(e) => contextMenuHandler(e, row)}
-                  onClick={highlightActiveRow ? clickHandler : onClick}
+                  onClick={
+                    !activeRow && enableDefaultActiveRow
+                      ? clickHandler
+                      : onClick
+                  }
                   highlightedSource={highlightedSource}
-                  isRowActive={rowIndex === index}
+                  isRowActive={
+                    !activeRow
+                      ? enableDefaultActiveRow
+                        ? rowIndex === index
+                        : false
+                      : activeRow(row)
+                  }
+                  rowStyle={rowStyle}
+                  disableDefaultRowStyle={disableDefaultRowStyle}
                 />
               );
             })}

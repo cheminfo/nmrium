@@ -1,6 +1,6 @@
-import lodashGet from 'lodash/get';
 import { useMemo, memo, useCallback, Fragment } from 'react';
 
+import { SpectraAnalysisData } from '../../../data/data1d/MultipleAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
@@ -18,7 +18,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 import ColumnHeader from './ColumnHeader';
 
 interface MultipleSpectraAnalysisTableProps {
-  data: any;
+  data: SpectraAnalysisData;
   activeTab: string;
 }
 
@@ -31,8 +31,8 @@ function MultipleSpectraAnalysisTable({
   const preferences = usePanelPreferences('multipleSpectraAnalysis');
 
   const codeEvaluation = useMemo(() => {
-    const code = lodashGet(data, 'code', '');
-    return evaluate(code, data);
+    const code = data.options.code || '';
+    return evaluate(code, data as any);
   }, [data]);
 
   const columnFilterHandler = useCallback(
@@ -83,19 +83,20 @@ function MultipleSpectraAnalysisTable({
       );
     }
 
-    if (data.columns) {
-      for (const columnKey in data.columns) {
-        const { valueKey, index: columnIndex } = data.columns[columnKey];
+    if (data.options.columns) {
+      const analysisColumns = data.options.columns;
+      for (const columnKey in analysisColumns) {
+        const { valueKey, index: columnIndex } = analysisColumns[columnKey];
         addCustomColumn(columns, {
           index: columnIndex + 1,
-          Header: () => headerHandler(data.columns[columnKey], columnKey),
+          Header: () => headerHandler(analysisColumns[columnKey], columnKey),
           id: columnKey,
           accessor: (row) => cellHandler(row, columnKey, valueKey),
         });
       }
     }
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [columnFilterHandler, data.columns, format]);
+  }, [columnFilterHandler, data.options.columns, format]);
 
   function handleSortEnd(data) {
     if (preferences.resortSpectra) {
@@ -107,8 +108,7 @@ function MultipleSpectraAnalysisTable({
       });
     }
   }
-
-  return data.values && data.values.length > 0 ? (
+  return data?.values.length > 0 ? (
     <Fragment>
       <ReactTable
         data={data.values}

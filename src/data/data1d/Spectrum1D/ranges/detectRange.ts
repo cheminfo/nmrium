@@ -2,7 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
 
 import { RangeDetectionResult, Datum1D } from '../../../types/data1d';
-import { getShiftX } from '../shift/getShiftX';
+import { getShiftX } from '../getShiftX';
 
 interface DetectRangeOptions {
   from: number;

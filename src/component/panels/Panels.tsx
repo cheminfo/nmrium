@@ -1,6 +1,6 @@
-import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import { useCallback, memo, ReactElement, CSSProperties } from 'react';
+import { Accordion } from 'react-science/ui';
 
 import { PanelPreferencesType } from '../../types/PanelPreferencesType';
 import { useChartData } from '../context/ChartContext';
@@ -79,9 +79,8 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Matrix Generation',
     component: <MatrixGenerationPanel />,
-    hidePreferenceKey: '',
+    hidePreferenceKey: 'matrixGenerationPanel',
     mode: null,
-    isExperimental: true,
   },
   {
     title: 'Zones',

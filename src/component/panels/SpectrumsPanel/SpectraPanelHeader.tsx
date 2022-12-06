@@ -13,7 +13,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
+import useSpectrum from '../../hooks/useSpectrum';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
@@ -22,17 +22,30 @@ import {
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
+function getMissingProjection(SpectrumsData, activeTab) {
+  let nucleus = activeTab.split(',');
+  nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
+  const missingNucleus: Array<string> = [];
+  for (const n of nucleus) {
+    const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
+    if (!hasSpectrums) {
+      missingNucleus.push(n);
+    }
+  }
+  return missingNucleus;
+}
 interface SpectraPanelHeaderProps {
-  spectrums: Array<Datum1D | Datum2D>;
+  onSettingClick: () => void;
 }
 
 interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   data: Array<Datum1D | Datum2D>;
   activeTab: string;
-  activeSpectrum: ActiveSpectrum | null;
+  activeSpectrum: Datum2D | null;
   displayerMode: string;
 }
 
@@ -41,11 +54,13 @@ function SpectraPanelHeaderInner({
   activeSpectrum,
   activeTab,
   displayerMode,
-  spectrums,
+  onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
+
+  const spectra = getSpectraByNucleus(activeTab, data);
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
@@ -62,50 +77,44 @@ function SpectraPanelHeaderInner({
     });
   }, [dispatch, modal]);
 
-  const showAllSpectrumsHandler = useCallback(() => {
-    const spectrumsPerTab = spectrums.map((datum) => {
-      return datum.id;
+  function showAllSpectrumsHandler() {
+    dispatch({
+      type: CHANGE_VISIBILITY,
+      payload: { nucleus: activeTab, flag: true },
     });
-    dispatch({ type: CHANGE_VISIBILITY, id: spectrumsPerTab });
-  }, [dispatch, spectrums]);
+  }
 
-  const hideAllSpectrumsHandler = useCallback(() => {
-    dispatch({ type: CHANGE_VISIBILITY, id: [] });
-  }, [dispatch]);
+  function hideAllSpectrumsHandler() {
+    dispatch({
+      type: CHANGE_VISIBILITY,
+      payload: { nucleus: activeTab, flag: false },
+    });
+  }
 
-  const addMissingProjectionHandler = useCallback(() => {
-    function getMissingProjection(SpectrumsData) {
-      let nucleus = activeTab.split(',');
-      nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
-      const missingNucleus: Array<string> = [];
-      for (const n of nucleus) {
-        const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
-        if (!hasSpectrums) {
-          missingNucleus.push(n);
-        }
-      }
-      return missingNucleus;
-    }
-    const missingNucleus = getMissingProjection(data);
+  function addMissingProjectionHandler() {
+    const missingNucleus = getMissingProjection(data, activeTab);
     if (missingNucleus.length > 0) {
       dispatch({ type: ADD_MISSING_PROJECTION, nucleus: missingNucleus });
     } else {
       alert.error('Nothing to calculate');
     }
-  }, [activeTab, alert, data, dispatch]);
+  }
 
-  const setSameTopHandler = useCallback(() => {
+  function setSameTopHandler() {
     dispatch({ type: SET_SPECTRA_SAME_TOP });
-  }, [dispatch]);
-  const resetScaleHandler = useCallback(() => {
+  }
+
+  function resetScaleHandler() {
     dispatch({ type: RESET_SPECTRA_SCALE });
-  }, [dispatch]);
+  }
 
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
-      counter={spectrums?.length}
+      counter={spectra?.length}
       deleteToolTip="Delete all spectra"
+      showSettingButton
+      onSettingClick={onSettingClick}
     >
       <Button popupTitle="Hide all spectra" onClick={hideAllSpectrumsHandler}>
         <FaEyeSlash />
@@ -113,7 +122,7 @@ function SpectraPanelHeaderInner({
       <Button popupTitle="Show all spectra" onClick={showAllSpectrumsHandler}>
         <FaEye />
       </Button>
-      {activeSpectrum && activeTab && activeTab.split(',').length > 1 && (
+      {displayerMode === DISPLAYER_MODE.DM_2D && activeSpectrum?.info.isFt && (
         <Button
           popupTitle="Add missing projection"
           onClick={addMissingProjectionHandler}
@@ -121,7 +130,7 @@ function SpectraPanelHeaderInner({
           <FaCreativeCommonsSamplingPlus />
         </Button>
       )}
-      {displayerMode === DISPLAYER_MODE.DM_1D && spectrums.length > 1 && (
+      {displayerMode === DISPLAYER_MODE.DM_1D && spectra.length > 1 && (
         <>
           <Button popupTitle="Reset Scale" onClick={resetScaleHandler}>
             <SvgNmrResetScale />
@@ -138,7 +147,9 @@ function SpectraPanelHeaderInner({
 
 const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
-export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
+export default function SpectrumsTabs({
+  onSettingClick,
+}: SpectraPanelHeaderProps) {
   const {
     data,
     view: {
@@ -146,15 +157,15 @@ export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
     },
     displayerMode,
   } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
+  const spectrum = useSpectrum() as Datum2D;
   return (
     <MemoizedSpectraPanelHeader
       {...{
         data,
-        activeSpectrum,
+        activeSpectrum: spectrum,
         activeTab,
         displayerMode,
-        spectrums,
+        onSettingClick,
       }}
     />
   );

@@ -1,35 +1,16 @@
-import { ReactNode } from 'react';
-
-import IsotopesViewer from '../../../elements/IsotopesViewer';
 import FormikColumnFormatField, {
   ColumnFormatField,
 } from '../../../elements/formik/FormikColumnFormatField';
+
+import { NucleusGroup, NucleusGroupProps } from './NucleusGroup';
 
 export type NucleusPreferenceField = ColumnFormatField & {
   id: string | number;
 };
 
-interface NucleusPreferencesProps {
-  nucleus: string;
+interface NucleusPreferencesProps extends NucleusGroupProps {
   fields: NucleusPreferenceField[];
-  renderTop?: () => ReactNode;
-  renderBottom?: () => ReactNode;
 }
-
-const styles = {
-  groupContainer: {
-    padding: '5px',
-    borderRadius: '5px',
-    margin: '10px 0px',
-    backgroundColor: 'white',
-  },
-  header: {
-    borderBottom: '1px solid #e8e8e8',
-    paddingBottom: '5px',
-    fontWeight: 'bold',
-    color: '#4a4a4a',
-  },
-};
 
 export function NucleusPreferences({
   nucleus,
@@ -38,9 +19,11 @@ export function NucleusPreferences({
   renderBottom,
 }: NucleusPreferencesProps) {
   return (
-    <div key={nucleus} style={styles.groupContainer}>
-      <IsotopesViewer style={styles.header} value={nucleus} />
-      {renderTop?.()}
+    <NucleusGroup
+      nucleus={nucleus}
+      renderTop={renderTop}
+      renderBottom={renderBottom}
+    >
       {fields.map((field) => (
         <FormikColumnFormatField
           key={field.id}
@@ -58,7 +41,6 @@ export function NucleusPreferences({
           disableFormat={field.disableFormat}
         />
       ))}
-      {renderBottom?.()}
-    </div>
+    </NucleusGroup>
   );
 }

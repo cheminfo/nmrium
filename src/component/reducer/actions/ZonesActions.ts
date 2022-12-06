@@ -13,9 +13,9 @@ import {
   changeZoneSignal,
   detectZones,
   detectZonesManual,
-  updateShift,
 } from '../../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../../data/types/data2d';
+import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -67,8 +67,11 @@ function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
 }
 function handleAutoSpectraZonesDetection(draft: Draft<State>) {
   for (const datum of draft.data) {
-    if (datum.info.dimension === 2) {
-      const { minX, maxX, minY, maxY } = (datum as Datum2D).data.rr;
+    const { info, data } = datum;
+    if (info.dimension === 2) {
+      const { minX, maxX, minY, maxY } = info.isFid
+        ? (data as Data2DFid).re
+        : (data as Data2DFt).rr;
       const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
@@ -105,8 +108,6 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
     }
 
     FiltersManager.applyFilter(draft.data[index], filters);
-
-    updateShift(draft.data[index] as Datum2D);
 
     setDomain(draft);
     handleOnChangeZonesData(draft);

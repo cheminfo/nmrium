@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   forwardRef,
   useEffect,
@@ -5,10 +6,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { COLUMNS_TYPES } from '../../../data/data1d/MultipleAnalysis';
+import {
+  COLUMNS_TYPES,
+  SpectraAnalysisData,
+} from '../../../data/data1d/MultipleAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
@@ -16,18 +20,28 @@ import { GroupPane } from '../../elements/GroupPane';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { SET_ANALYZE_SPECTRA_COLUMNS } from '../../reducer/types/Types';
+import {
+  DELETE_ANALYZE_SPECTRA_RANGE,
+  SET_ANALYZE_SPECTRA_COLUMNS,
+} from '../../reducer/types/Types';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
 import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
 
 const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
+interface MultipleSpectraAnalysisPreferencesProps {
+  data: SpectraAnalysisData;
+  onAfterSave: (flag: boolean) => void;
+}
+
 // TODO: remove this hacky use of ref.
-function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
+function MultipleSpectraAnalysisPreferences(
+  { data, onAfterSave }: MultipleSpectraAnalysisPreferencesProps,
+  ref: any,
+) {
   const dispatch = useDispatch();
   const refForm = useRef<any>();
   const [columns, setColumns] = useState({});
@@ -41,13 +55,13 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
 
   useEffect(() => {
     const result = Object.fromEntries(
-      Object.keys(data.columns).map((key) => [
+      Object.keys(data.options.columns).map((key) => [
         key,
-        { ...data.columns[key], tempKey: key },
+        { ...data.options.columns[key], tempKey: key },
       ]),
     );
     setColumns(result);
-    refForm.current.setValues({ columns: result, code: data.code });
+    refForm.current.setValues({ columns: result, code: data.options.code });
   }, [data]);
 
   const columnsKeys = Object.keys(columns);
@@ -88,6 +102,13 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
     });
   }
 
+  function handleDelete(colKey) {
+    dispatch({
+      type: DELETE_ANALYZE_SPECTRA_RANGE,
+      colKey,
+    });
+  }
+
   const COLUMNS: Column<any>[] = [
     {
       Header: '#',
@@ -117,70 +138,77 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
       },
     },
     {
-      Header: 'Index',
-      style: { maxWidth: '50px' },
-      Cell: ({ row }) => {
-        return (
-          <FormikInput
-            name={`columns.${row.original}.index`}
-            style={inputStyle}
-          />
-        );
-      },
-    },
-    {
       Header: '',
-      style: { maxWidth: '50px' },
+      style: { width: '50px' },
       id: 'add-button',
       Cell: ({ data, row }) => {
-        if (data.length === row.index + 1) {
-          return (
-            <Button.Done
+        const columnKey = row.original;
+        return (
+          <div style={{ display: 'flex' }}>
+            <Button.Danger
               fill="outline"
-              onClick={() => addNewColumn(row.index + 1)}
+              onClick={() => handleDelete(columnKey)}
             >
-              <FaPlus />
-            </Button.Done>
-          );
-        }
-        return <div />;
+              <FaTimes />
+            </Button.Danger>
+            {data.length === row.index + 1 && (
+              <Button.Done
+                fill="outline"
+                onClick={() => addNewColumn(row.index + 1)}
+              >
+                <FaPlus />
+              </Button.Done>
+            )}
+          </div>
+        );
       },
     },
   ];
 
   return (
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
-      <FormikForm
-        ref={refForm}
+      <Formik
+        innerRef={refForm}
         key={JSON.stringify(columns)}
         initialValues={{ columns, code: null, preferences: panelPreferences }}
         validationSchema={preferencesSchema}
         onSubmit={submitHandler}
       >
-        <GroupPane
-          text="General"
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <Label
-            title="Enable resort spectra"
-            htmlFor="preferences.resortSpectra"
+        <>
+          <GroupPane
+            text="General"
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
           >
-            <FormikCheckBox name="preferences.resortSpectra" />
-          </Label>
-        </GroupPane>
-        <GroupPane
-          text="Columns Settings "
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <ReactTable columns={COLUMNS} data={columnsKeys} />
-        </GroupPane>
-        <GroupPane
-          text="Execute code "
-          style={{ header: { color: 'black' }, container: { padding: '5px' } }}
-        >
-          <MultipleAnalysisCodeEditor data={data} />
-        </GroupPane>
-      </FormikForm>
+            <Label
+              title="Enable resort spectra"
+              htmlFor="preferences.resortSpectra"
+            >
+              <FormikCheckBox name="preferences.resortSpectra" />
+            </Label>
+          </GroupPane>
+          <GroupPane
+            text="Columns Settings "
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
+          >
+            <ReactTable columns={COLUMNS} data={columnsKeys} />
+          </GroupPane>
+          <GroupPane
+            text="Execute code "
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
+          >
+            <MultipleAnalysisCodeEditor data={data} />
+          </GroupPane>
+        </>
+      </Formik>
     </PreferencesContainer>
   );
 }
@@ -201,7 +229,7 @@ function columnSchema(columnsKeys, data) {
             }
             return cols.length === 1;
           }),
-        ...(data[key].type === COLUMNS_TYPES.FORMULA
+        ...(data[key]?.type === COLUMNS_TYPES.FORMULA
           ? { formula: Yup.string().required() }
           : {}),
         index: Yup.string().required(),

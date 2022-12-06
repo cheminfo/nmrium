@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
+import { Formik } from 'formik';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -10,7 +11,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -22,7 +22,7 @@ import { UPDATE_RANGE } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
-import useRangeFormValidation from './forms/validation/EditRangeValidation';
+import editRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
   width: 600px;
@@ -84,9 +84,7 @@ function EditRangeModal({
   } = useChartData();
   const dispatch = useDispatch();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
-  const validation = useRangeFormValidation();
   const range = useRange(originRange, manualRange);
-
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(range);
   }, [onZoomEditRangeModal, range]);
@@ -212,15 +210,17 @@ function EditRangeModal({
 
         <CloseButton onClick={handleOnClose} />
       </div>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         initialValues={data}
-        validationSchema={validation}
+        validationSchema={editRangeFormValidation}
         onSubmit={handleOnSave}
       >
-        <SignalsForm range={range} preferences={rangesPreferences} />
-        <FormikOnChange onChange={changeHandler} />
-      </FormikForm>
+        <>
+          <SignalsForm range={range} preferences={rangesPreferences} />
+          <FormikOnChange onChange={changeHandler} />
+        </>
+      </Formik>
     </div>
   );
 }

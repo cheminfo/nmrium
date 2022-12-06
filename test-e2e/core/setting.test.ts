@@ -19,7 +19,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
     await nmrium.clickTool('general-settings');
 
     //click on the display tab
-    await nmrium.page.click('_react=InternalTab[tabid="display"]');
+    await nmrium.page.click('_react=Tab[tabid="display"]');
 
     //change  the checkbox value to tru
     await nmrium.page

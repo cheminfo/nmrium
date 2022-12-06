@@ -116,9 +116,9 @@ test('Automatic ranges detection should work', async ({ page }) => {
   );
 
   const rangesData = [
-    { s: '1.75 - 1.79', r: '0.49' },
-    { s: '1.95', r: '2.05' },
-    { s: '1.94', r: '2.05' },
+    { s: '1.75 - 1.79', r: '0.51' },
+    { s: '1.95', r: '2.06' },
+    { s: '1.94', r: '2.06' },
     { s: '2.15', r: '0.07' },
     { s: '2.31 - 2.34', r: '1.01' },
   ];
@@ -135,6 +135,10 @@ test('Multiplicity should be visible', async ({ page }) => {
     await nmrium.page.click('li >> text=General');
     await nmrium.page.click('li >> text=FULL ethylbenzene');
   });
+
+  // switch to 1H tab.
+  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+
   await test.step('Apply auto ranges', async () => {
     //select range tool
     await nmrium.clickTool('rangePicking');
@@ -167,12 +171,10 @@ test('Multiplicity should be visible', async ({ page }) => {
   await test.step('Check that multiplicity tree btn save state', async () => {
     // Change spectra to 2D
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H,1H"]',
+      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
     );
     // Return to 1D spectra
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=InternalTab[tablabel="1H"]',
-    );
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
 
     //open ranges panel
     await nmrium.clickPanel('Ranges');
@@ -191,6 +193,10 @@ test('Range state', async ({ page }) => {
     await nmrium.page.click('li >> text=General');
     await nmrium.page.click('li >> text=Linked jcamp');
   });
+
+  // switch to 1H tab.
+  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+
   await test.step('Apply auto ranges', async () => {
     //select range tool
     await nmrium.clickTool('rangePicking');
@@ -238,11 +244,11 @@ test('Range state', async ({ page }) => {
   await test.step('Check that first spectrum range state saved', async () => {
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=SpectrumListItem >> nth=0',
+      '_react=SpectraTable >> _react=ReactTableRow>> nth=0',
     );
     // Change spectra
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=SpectrumListItem >> nth=1',
+      '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
     );
     // Check that the integrals btn is on
     await expect(

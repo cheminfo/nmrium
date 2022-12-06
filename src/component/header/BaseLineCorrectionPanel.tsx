@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect, memo } from 'react';
+import { Formik, FormikProps } from 'formik';
+import { useRef, useState, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
@@ -9,7 +10,6 @@ import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
@@ -54,6 +54,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
       return {
         validation,
         values: {
+          algorithm,
           livePreview: true,
           maxIterations: 100,
           tolerance: 0.001,
@@ -70,6 +71,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
       return {
         validation,
         values: {
+          algorithm,
           livePreview: true,
           degree: 3,
           ...(filterValues?.algorithm === 'polynomial' ? filterValues : {}),
@@ -88,38 +90,22 @@ function BaseLineCorrectionInnerPanel(
   props: BaseLineCorrectionInnerPanelProps,
 ) {
   const dispatch = useDispatch();
-  const formRef = useRef<any>();
+  const formRef = useRef<FormikProps<any>>(null);
+  const { algorithm: baseAlgorithm = 'polynomial' } =
+    props?.filter?.value || {};
 
-  const [algorithm, setAlgorithm] = useState('polynomial');
+  const [algorithm, setAlgorithm] = useState(baseAlgorithm);
 
   const handleApplyFilter = (
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
-    let options = {};
-    switch (algorithm) {
-      case 'airpls':
-        options = {
-          algorithm,
-          ...values,
-        };
-        break;
-      case 'polynomial':
-        options = {
-          algorithm,
-          ...values,
-        };
-        break;
-      default:
-        break;
-    }
-
     dispatch({
       type:
         triggerSource === 'onChange'
           ? CALCULATE_BASE_LINE_CORRECTION_FILTER
           : APPLY_BASE_LINE_CORRECTION_FILTER,
-      options,
+      options: values,
     });
   };
 
@@ -128,13 +114,6 @@ function BaseLineCorrectionInnerPanel(
       type: RESET_SELECTED_TOOL,
     });
   };
-
-  useEffect(() => {
-    if (props.filter) {
-      const { algorithm } = props.filter.value;
-      setAlgorithm(algorithm);
-    }
-  }, [props?.filter]);
 
   const disableLivePreviewHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -148,6 +127,10 @@ function BaseLineCorrectionInnerPanel(
     }
   };
 
+  function handleChangeAlgorithm(selectedAlgorithm) {
+    setAlgorithm(selectedAlgorithm);
+  }
+
   const form = formData(algorithm, props?.filter?.value || {});
 
   return (
@@ -156,59 +139,67 @@ function BaseLineCorrectionInnerPanel(
         <Select
           items={getAlgorithmsList()}
           value={algorithm}
-          onChange={(val) => setAlgorithm(val)}
+          onChange={handleChangeAlgorithm}
         />
       </Label>
 
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
-        key={JSON.stringify(form.values)}
         initialValues={form.values}
         validationSchema={form.validation}
+        enableReinitialize
       >
-        {algorithm && algorithm === 'airpls' && (
-          <div style={{ display: 'flex' }}>
-            <Label title="maxIterations:" style={labelStyle}>
-              <FormikInput
-                type="number"
-                name="maxIterations"
-                debounceTime={250}
-              />
-            </Label>
-            <Label title="tolerance:" style={labelStyle}>
-              <FormikInput type="number" name="tolerance" debounceTime={250} />
-            </Label>
-          </div>
-        )}
+        <>
+          {algorithm && algorithm === 'airpls' && (
+            <div style={{ display: 'flex' }}>
+              <Label title="maxIterations:" style={labelStyle}>
+                <FormikInput
+                  type="number"
+                  name="maxIterations"
+                  debounceTime={250}
+                />
+              </Label>
+              <Label title="tolerance:" style={labelStyle}>
+                <FormikInput
+                  type="number"
+                  name="tolerance"
+                  debounceTime={250}
+                />
+              </Label>
+            </div>
+          )}
 
-        {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-          <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
-            <FormikInput
-              type="number"
-              name="degree"
-              min={1}
-              max={6}
-              style={{ inputWrapper: { height: '100%' } }}
-              debounceTime={250}
+          {algorithm &&
+            ['autoPolynomial', 'polynomial'].includes(algorithm) && (
+              <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
+                <FormikInput
+                  type="number"
+                  name="degree"
+                  min={1}
+                  max={6}
+                  style={{ inputWrapper: { height: '100%' } }}
+                  debounceTime={250}
+                />
+              </Label>
+            )}
+
+          <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
+            <FormikCheckBox
+              name="livePreview"
+              onChange={disableLivePreviewHandler}
             />
           </Label>
-        )}
 
-        <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
-          <FormikCheckBox
-            name="livePreview"
-            onChange={disableLivePreviewHandler}
+          <FormikOnChange
+            onChange={(values) => handleApplyFilter(values, 'onChange')}
+            enableOnload
           />
-        </Label>
-
-        <FormikOnChange
-          onChange={(values) => handleApplyFilter(values, 'onChange')}
-        />
-      </FormikForm>
+        </>
+      </Formik>
 
       <ActionButtons
-        onDone={() => formRef.current.submitForm()}
+        onDone={() => formRef.current?.submitForm()}
         onCancel={handleCancelFilter}
       />
     </HeaderContainer>

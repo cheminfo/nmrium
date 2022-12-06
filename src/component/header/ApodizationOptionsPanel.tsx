@@ -1,4 +1,5 @@
-import { useEffect, useRef, memo } from 'react';
+import { Formik, FormikProps } from 'formik';
+import { useRef, memo } from 'react';
 import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
@@ -8,7 +9,6 @@ import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
@@ -55,11 +55,12 @@ function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
 ) {
   const dispatch = useDispatch();
-  const formRef = useRef<any>();
-  const handleApplyFilter = (
+  const formRef = useRef<FormikProps<any>>(null);
+
+  function handleApplyFilter(
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
-  ) => {
+  ) {
     const { livePreview, ...filterOptions } = values;
     if (livePreview && triggerSource === 'onChange') {
       dispatch({
@@ -72,23 +73,17 @@ function ApodizationOptionsInnerPanel(
         payload: filterOptions,
       });
     }
-  };
+  }
 
-  const handleCancelFilter = () => {
+  function handleCancelFilter() {
     dispatch({
       type: RESET_SELECTED_TOOL,
     });
-  };
+  }
 
-  useEffect(() => {
-    if (props.filter) {
-      formRef.current.setValues({ ...props.filter.value, livePreview: true });
-    }
-  }, [props?.filter]);
-
-  const disableLivePreviewHandler = (
+  function disableLivePreviewHandler(
     event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  ) {
     //disable filter Live preview
     if (!event.target.checked) {
       dispatch({
@@ -96,74 +91,81 @@ function ApodizationOptionsInnerPanel(
         payload: { selectedTool: options.apodization.id },
       });
     }
-  };
+  }
+
+  let formData = initialValues;
+  if (props.filter) {
+    formData = { ...initialValues, ...props.filter.value, livePreview: true };
+  }
 
   return (
     <HeaderContainer>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
-        initialValues={initialValues}
+        initialValues={formData}
         validationSchema={validationSchema}
       >
-        <Label title="Line broadening : " style={labelStyle}>
-          <FormikInput
-            type="number"
-            name="lineBroadening"
-            min={0}
-            max={1}
-            style={inputStyle}
-            debounceTime={250}
-          />
-        </Label>
-        <Label title="Gauss broadening :" style={labelStyle}>
-          <FormikInput
-            type="number"
-            name="gaussBroadening"
-            min={0}
-            max={1}
-            style={inputStyle}
-            debounceTime={250}
-          />
-        </Label>
-        <Label title="lineBroadeningCenter [0 - 1] : " style={labelStyle}>
-          <FormikInput
-            type="number"
-            name="lineBroadeningCenter"
-            min={0}
-            max={1}
-            style={inputStyle}
-            debounceTime={250}
-          />
-        </Label>
-        <Label
-          title="live preview "
-          htmlFor="livePreview"
-          style={{ label: { padding: '0 5px' } }}
-        >
-          <FormikCheckBox
-            name="livePreview"
-            onChange={disableLivePreviewHandler}
-          />
-        </Label>
+        <>
+          <Label title="Line broadening : " style={labelStyle}>
+            <FormikInput
+              type="number"
+              name="lineBroadening"
+              min={0}
+              max={1}
+              style={inputStyle}
+              debounceTime={250}
+            />
+          </Label>
+          <Label title="Gauss broadening :" style={labelStyle}>
+            <FormikInput
+              type="number"
+              name="gaussBroadening"
+              min={0}
+              max={1}
+              style={inputStyle}
+              debounceTime={250}
+            />
+          </Label>
+          <Label title="lineBroadeningCenter [0 - 1] : " style={labelStyle}>
+            <FormikInput
+              type="number"
+              name="lineBroadeningCenter"
+              min={0}
+              max={1}
+              style={inputStyle}
+              debounceTime={250}
+            />
+          </Label>
+          <Label
+            title="live preview "
+            htmlFor="livePreview"
+            style={{ label: { padding: '0 5px' } }}
+          >
+            <FormikCheckBox
+              name="livePreview"
+              onChange={disableLivePreviewHandler}
+            />
+          </Label>
 
-        <FormikOnChange
-          onChange={(values) => handleApplyFilter(values, 'onChange')}
-          enableValidation
-        />
-      </FormikForm>
+          <FormikOnChange
+            onChange={(values) => handleApplyFilter(values, 'onChange')}
+            enableOnload
+          />
+        </>
+      </Formik>
 
       <ActionButtons
-        onDone={() => formRef.current.submitForm()}
+        onDone={() => formRef.current?.submitForm()}
         onCancel={handleCancelFilter}
       />
     </HeaderContainer>
   );
 }
 
-const MemoziedApodizationPanel = memo(ApodizationOptionsInnerPanel);
+const MemoizedApodizationPanel = memo(ApodizationOptionsInnerPanel);
 
 export default function ApodizationOptionsPanel() {
   const filter = useFilter(Filters.apodization.id);
-  return <MemoziedApodizationPanel filter={filter} />;
+  return <MemoizedApodizationPanel filter={filter} />;
 }

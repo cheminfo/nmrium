@@ -33,6 +33,29 @@ interface NucleusPreferences<T> {
   nuclei: Record<string, T>;
 }
 
+interface BasicColumnPreferences {
+  visible: boolean;
+  label: string;
+}
+
+export type PredefinedSpectraColumn = 'visible' | 'name' | 'color' | 'solvent';
+export interface PredefinedTableColumn<T> extends BasicColumnPreferences {
+  name: T;
+  description: string;
+}
+
+export interface JpathTableColumn extends BasicColumnPreferences {
+  jpath: string;
+}
+
+export type SpectraTableColumn =
+  | PredefinedTableColumn<PredefinedSpectraColumn>
+  | JpathTableColumn;
+
+export interface SpectraNucleusPreferences {
+  columns: Array<SpectraTableColumn>;
+}
+
 interface RangesNucleusPreferences {
   from: ColumnPreferences;
   to: ColumnPreferences;
@@ -75,6 +98,7 @@ export interface MultipleSpectraAnalysisPreferences {
 }
 
 export interface WorkSpacePanelPreferences {
+  spectra: SpectraNucleusPreferences;
   peaks: PeaksNucleusPreferences;
   integrals: IntegralsNucleusPreferences;
   ranges: RangesNucleusPreferences;
@@ -84,6 +108,7 @@ export interface WorkSpacePanelPreferences {
 }
 
 export interface PanelsPreferences {
+  spectra: NucleusPreferences<SpectraNucleusPreferences>;
   peaks: NucleusPreferences<PeaksNucleusPreferences>;
   integrals: NucleusPreferences<IntegralsNucleusPreferences>;
   ranges: NucleusPreferences<RangesNucleusPreferences>;
@@ -114,13 +139,40 @@ export interface Databases {
   defaultDatabase: string;
 }
 
+export interface LoadersPreferences {
+  general: {
+    ignoreFID: boolean;
+    ignoreFT: boolean;
+    ignore1D: boolean;
+    ignore2D: boolean;
+    onlyReal: boolean;
+  };
+  bruker: {
+    processingNumber?: number | number[];
+    experimentNumber?: number | number[];
+    onlyFirstProcessedData: boolean;
+  };
+}
+
 export interface WorkspaceData {
   display?: NMRiumPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
   databases?: Databases;
+  nmrLoaders?: LoadersPreferences;
 }
 
+/**
+ * custom : workspace which come form the component level <NMRium customWorkspaces = {} />
+ * predefined : workspace which hardcoded in NMRium
+ * user: workspaces which the user create from the general settings
+ */
+export type WorkSpaceSource = 'custom' | 'predefined' | 'user';
+
 export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
+export type CustomWorkspaces = Record<
+  string,
+  Omit<WorkspaceMeta, 'version'> & WorkspaceData
+>;
 
 export type Workspace = WorkspaceMeta & Required<WorkspaceData>;

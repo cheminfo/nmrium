@@ -212,7 +212,7 @@ function generated2DSpectrum(params: {
   const width = get2DWidth(nuclei);
   const frequency = calculateFrequency(nuclei, inputOptions.frequency);
 
-  const spectrumData = signals2DToZ(signals, {
+  const minMaxContent = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
     to: { x: xOption.to, y: yOption.to },
     nbPoints: {
@@ -225,7 +225,7 @@ function generated2DSpectrum(params: {
 
   const datum = initiateDatum2D(
     {
-      data: { ...spectrumData, noise: 0.01 },
+      data: { rr: { ...minMaxContent, noise: 0.01 } },
       display: {
         name: inputOptions.name,
         positiveColor: color,

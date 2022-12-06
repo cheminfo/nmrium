@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { fileCollectionFromFileList } from 'filelist-utils';
+import { read as readDropFiles } from 'nmr-load-save';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
@@ -8,6 +9,8 @@ import { FaUpload } from 'react-icons/fa';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
+import { usePreferences } from '../context/PreferencesContext';
+import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
@@ -47,32 +50,32 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
+  const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
+  const alert = useAlert();
 
-  const loadFilesHandler = useCallback(
-    (files) => {
-      for (const file of files) {
-        Object.defineProperty(file, 'webkitRelativePath', { value: file.path });
-      }
-      fileCollectionFromFileList(files)
-        .then((fileCollection) => {
-          dispatch({ type: LOAD_DROP_FILES, fileCollection });
-        })
-        .catch((error: any) => {
-          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
-          reportError(error);
-        });
-    },
-    [dispatch],
-  );
+  async function loadFilesHandler(files) {
+    for (const file of files) {
+      Object.defineProperty(file, 'webkitRelativePath', { value: file.path });
+    }
+    try {
+      const fileCollection = await fileCollectionFromFileList(files);
 
-  const onDrop = useCallback(
-    (droppedFiles) => {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-      loadFilesHandler(droppedFiles);
-    },
-    [dispatch, loadFilesHandler],
-  );
+      const { nmrLoaders: filter } = preferences.current;
+      const data = await readDropFiles(fileCollection, { filter });
+      dispatch({ type: LOAD_DROP_FILES, payload: data });
+    } catch (error: any) {
+      alert.error(error.message);
+      reportError(error);
+    } finally {
+      dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+    }
+  }
+
+  function onDrop(droppedFiles) {
+    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+    void loadFilesHandler(droppedFiles);
+  }
 
   const isImportEnabled = isToolEnabled('import');
 

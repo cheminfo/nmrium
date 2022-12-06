@@ -5,6 +5,7 @@ import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
+import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -87,7 +88,7 @@ function get2DDomain(state: State) {
   const spectrum =
     data.find((datum) => datum.id === activeSpectrum?.id) || null;
   if (spectrum?.info.isFid) {
-    const { minX, maxX, minY, maxY } = (spectrum as Datum2D).data.rr;
+    const { minX, maxX, minY, maxY } = (spectrum.data as Data2DFid).re;
     xArray = [minX, maxX];
     yArray = [minY, maxY];
   } else {
@@ -100,7 +101,8 @@ function get2DDomain(state: State) {
             datum.info.isFt,
         ) as Array<Datum2D>
       ).flatMap((datum: Datum2D) => {
-        return [datum.data.rr.minX, datum.data.rr.maxX];
+        const { minX, maxX } = (datum.data as Data2DFt).rr;
+        return [minX, maxX];
       });
 
       yArray = (
@@ -111,7 +113,8 @@ function get2DDomain(state: State) {
             d.info.isFt,
         ) as Array<Datum2D>
       ).flatMap((datum: Datum2D) => {
-        return [datum.data.rr.minY, datum.data.rr.maxY];
+        const { minY, maxY } = (datum.data as Data2DFt).rr;
+        return [minY, maxY];
       });
     } catch (error) {
       // TODO: handle error

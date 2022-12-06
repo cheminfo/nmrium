@@ -3,9 +3,7 @@ import { createContext, useContext, useMemo } from 'react';
 import {
   preferencesInitialState,
   PreferencesState,
-  WORKSPACES,
 } from '../reducer/preferences/preferencesReducer';
-import Workspaces from '../workspaces';
 
 export const PreferencesContext = createContext<PreferencesState>(
   preferencesInitialState,
@@ -18,25 +16,28 @@ export function usePreferences() {
     throw new Error('Preferences context was not found');
   }
 
-  const { workspace, workspaces, dispatch } = context;
+  const { workspace, workspaces, customWorkspaces, dispatch } = context;
 
   return useMemo(() => {
     return {
       current: workspaces[workspace.current] || {},
       workspace,
       workspaces,
+      customWorkspaces,
       dispatch,
     };
-  }, [dispatch, workspace, workspaces]);
+  }, [customWorkspaces, dispatch, workspace, workspaces]);
 }
 
-export function useWorkspacesList() {
+export function useWorkspacesList(showVersion = false) {
   const { workspaces } = usePreferences();
   return useMemo(() => {
-    const currentWorkspaces = Object.keys(workspaces)
-      .filter((k) => !Workspaces[k])
-      .map((key) => ({ key, label: workspaces[key].label }));
-
-    return [...WORKSPACES, ...currentWorkspaces];
-  }, [workspaces]);
+    return Object.keys(workspaces).map((key) => ({
+      key,
+      label:
+        showVersion && workspaces[key]?.version
+          ? `${workspaces[key].label} - V${workspaces[key].version}`
+          : workspaces[key].label,
+    }));
+  }, [showVersion, workspaces]);
 }

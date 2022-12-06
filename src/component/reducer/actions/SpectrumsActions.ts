@@ -13,8 +13,10 @@ import {
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
+import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -41,42 +43,19 @@ function setVisible(datum, flag) {
 }
 
 function handleSpectrumVisibility(draft: Draft<State>, action) {
-  if (Array.isArray(action.id)) {
-    const IDs = action.id;
-    if (IDs.length === 0) {
-      for (const datum of draft.data) {
-        setVisible(datum, false);
-      }
-    } else {
-      for (const datum of draft.data) {
-        if (IDs.includes(datum.id)) {
-          setVisible(datum, true);
-        } else {
-          setVisible(datum, false);
-        }
-      }
+  const { id, key, nucleus, flag } = action.payload;
+  if (nucleus) {
+    for (const datum of getSpectraByNucleus(nucleus, draft.data)) {
+      setVisible(datum, flag);
     }
   } else {
-    const index = draft.data.findIndex((d) => d.id === action.id);
-    (draft.data[index] as Datum1D | Datum2D).display[action.key] = action.value;
+    const spectrum = draft.data.find((d) => d.id === id);
+    if (spectrum) {
+      spectrum.display[key] = !spectrum.display[key];
 
-    if ((draft.data[index] as Datum1D | Datum2D).info.dimension === 2) {
-      (draft.data[index] as Datum2D).display.isVisible = checkIsVisible2D(
-        draft.data[index] as Datum2D,
-      );
-    }
-  }
-}
-
-function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
-  for (let datum of draft.data) {
-    if (
-      datum.info?.dimension === 1 &&
-      data.some((activeData) => activeData.id === datum.id)
-    ) {
-      (datum as Datum1D).display.isPeaksMarkersVisible = true;
-    } else {
-      (datum as Datum1D).display.isPeaksMarkersVisible = false;
+      if (spectrum.info.dimension === 2) {
+        spectrum.display.isVisible = checkIsVisible2D(spectrum as Datum2D);
+      }
     }
   }
 }
@@ -166,11 +145,29 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
 
 function handleDeleteSpectra(draft: Draft<State>, action) {
   const state = original(draft) as State;
+  const activeTab = draft.view.spectra.activeTab;
   if (action.id) {
     const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
+    // remove peaks State
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete draft.view.peaks[action.id];
+
+    //delete spectrum analysis record when delete the spectrum
+    if (draft.spectraAnalysis[activeTab]) {
+      const spectraAnalysis = draft.spectraAnalysis[activeTab].values;
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete spectraAnalysis[action.id];
+      if (Object.keys(spectraAnalysis).length === 0) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete draft.spectraAnalysis[activeTab];
+      }
+    }
   } else {
     draft.data = [];
+    draft.view.peaks = {};
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete draft.spectraAnalysis[activeTab];
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,
@@ -186,10 +183,10 @@ function addMissingProjectionHandler(draft, action) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const datum2D = state.data[index];
-    const info = datum2D.info;
+    const { info, data } = datum2D;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
-        datum2D.data.rr,
+        info.isFid ? (data as Data2DFid).re : (data as Data2DFt).rr,
         n,
         info,
         draft.usedColors,
@@ -243,7 +240,6 @@ function generateSpectrumFromPublicationStringHandler(
 
 export {
   handleSpectrumVisibility,
-  handleChangePeaksMarkersVisibility,
   handleChangeActiveSpectrum,
   handleChangeSpectrumColor,
   changeSpectrumSetting,
