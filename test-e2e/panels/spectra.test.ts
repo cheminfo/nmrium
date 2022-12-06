@@ -359,3 +359,51 @@ test('2d spectrum', async ({ page }) => {
     );
   });
 });
+
+test('show/hide spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+
+  await test.step('Open Coffee spectrum', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Coffee');
+    // Wait the spectrum to load
+    await nmrium.page.waitForTimeout(250);
+    // Check svg
+    await nmrium.checkSVGLength(1017148);
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      13,
+    );
+  });
+  await test.step('Check hide spectrums', async () => {
+    // Hide positive spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
+    );
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      12,
+    );
+
+    // Hide negative spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
+    );
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      11,
+    );
+    // Show positive spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
+    );
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      12,
+    );
+
+    // Show negative spectrum
+    await nmrium.page.click(
+      '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
+    );
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      13,
+    );
+  });
+});
