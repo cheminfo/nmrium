@@ -3,9 +3,10 @@ import { Draft } from 'immer';
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState } from '../preferencesReducer';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
+import { isReadOnlyWorkspace } from '../utilities/isReadOnlyWorkspace';
 
 export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {
-  if (action.payload) {
+  if (action.payload && !isReadOnlyWorkspace(draft)) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
     const { key, value } = action.payload;
