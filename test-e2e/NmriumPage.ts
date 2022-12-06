@@ -23,7 +23,7 @@ export default class NmriumPage {
 
   public async open2D() {
     await this.page.click('li >> text=General');
-    await this.page.click('li >> text=2D cosy');
+    await this.page.click('li >> text=COSY ethylbenzene');
   }
 
   public async clickPanel(title: string) {

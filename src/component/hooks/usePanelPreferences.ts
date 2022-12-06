@@ -1,4 +1,4 @@
-import lodashMerge from 'lodash/merge';
+import has from 'lodash/has';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
@@ -8,6 +8,8 @@ import {
   getZoneDefaultValues,
   getRangeDefaultValues,
   databaseDefaultValues,
+  multipleSpectraAnalysisDefaultValues,
+  getSpectraDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 import {
@@ -18,10 +20,19 @@ import {
 
 const basePath = 'formatting.panels';
 
-type Panel = 'peaks' | 'integrals' | 'zones' | 'ranges' | 'database';
+type Panel =
+  | 'spectra'
+  | 'peaks'
+  | 'integrals'
+  | 'zones'
+  | 'ranges'
+  | 'database'
+  | 'multipleSpectraAnalysis';
 
 function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
+    case 'spectra':
+      return getSpectraDefaultValues(nucleus);
     case 'peaks':
       return getPeaksDefaultValues(nucleus);
     case 'integrals':
@@ -32,13 +43,17 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
       return getZoneDefaultValues(nucleus);
     case 'database':
       return databaseDefaultValues;
+    case 'multipleSpectraAnalysis':
+      return multipleSpectraAnalysisDefaultValues;
 
     default:
       return {};
   }
 }
 
-function joinWithNucleusPreferences<T extends Exclude<Panel, 'database'>>(
+function joinWithNucleusPreferences<
+  T extends Exclude<Panel, 'database' | 'multipleSpectraAnalysis'>,
+>(
   data: PanelsPreferences[T],
   nucleus: string,
   returnOnlyNucleusPreferences = false,
@@ -58,13 +73,16 @@ function getPanelPreferences(
   nucleus?: string,
   returnOnlyNucleusPreferences = false,
 ) {
-  const panelPreferences = lodashMerge(
-    {},
-    getDefaultPreferences(panelKey, nucleus),
-    getValue(preferences, `${basePath}.${panelKey}`, {}),
-  );
+  const panelPath = `${basePath}.${panelKey}`;
+  const path = nucleus ? `${panelPath}.nuclei.${nucleus}` : panelPath;
+  let panelPreferences: any = {};
+  if (has(preferences, path)) {
+    panelPreferences = getValue(preferences, panelPath, {});
+  } else {
+    panelPreferences = getDefaultPreferences(panelKey, nucleus);
+  }
 
-  if (panelKey !== 'database' && nucleus) {
+  if (!['database', 'multipleSpectraAnalysis'].includes(panelKey) && nucleus) {
     return joinWithNucleusPreferences(
       panelPreferences,
       nucleus,
@@ -82,6 +100,9 @@ export function usePanelPreferences<T extends Panel>(
 export function usePanelPreferences<T extends 'database'>(
   panelKey: T,
 ): WorkSpacePanelPreferences['database'];
+export function usePanelPreferences<T extends 'multipleSpectraAnalysis'>(
+  panelKey: T,
+): WorkSpacePanelPreferences['multipleSpectraAnalysis'];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
@@ -95,7 +116,9 @@ export function usePanelPreferences<T extends Panel>(
 }
 
 export type UsePanelPreferencesByNucleiResult<T extends Panel> =
-  T extends 'peaks'
+  T extends 'spectra'
+    ? PanelsPreferences['spectra']
+    : T extends 'peaks'
     ? PanelsPreferences['peaks']
     : T extends 'integrals'
     ? PanelsPreferences['integrals']

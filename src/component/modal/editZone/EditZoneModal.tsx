@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { FromTo } from 'cheminfo-types';
+import { Formik } from 'formik';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -9,10 +10,9 @@ import { Signal2D } from '../../../data/types/data2d';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
-import FormikForm from '../../elements/formik/FormikForm';
 
 import SignalsForm from './SignalsForm';
-import useRangeFormValidation from './validation/EditZoneValidation';
+import zoneFormValidation from './validation/EditZoneValidation';
 import isDefaultPathLength from './validation/isDefaultPathLength';
 
 const styles = css`
@@ -65,7 +65,6 @@ function EditZoneModal({
   rowData,
 }: EditZoneModalProps) {
   const formRef = useRef<any>(null);
-  const validation = useRangeFormValidation();
 
   const handleOnZoom = useCallback(() => {
     onZoomEditZoneModal(rowData);
@@ -129,25 +128,27 @@ function EditZoneModal({
 
   return (
     <div css={styles}>
-      <FormikForm
-        ref={formRef}
+      <Formik
+        innerRef={formRef}
         initialValues={data}
-        validationSchema={validation}
+        validationSchema={zoneFormValidation}
         onSubmit={handleOnSave}
       >
-        <div className="header handle">
-          <Button onClick={handleOnZoom} className="zoom-button">
-            <FaSearchPlus title="Set to default view on range in spectrum" />
-          </Button>
-          <span>{`Zone and Signal edition`}</span>
-          <SaveButton
-            onClick={() => formRef.current.submitForm()}
-            popupTitle="Save and exit"
-          />
-          <CloseButton onClick={handleOnClose} />
-        </div>
-        <SignalsForm />
-      </FormikForm>
+        <>
+          <div className="header handle">
+            <Button onClick={handleOnZoom} className="zoom-button">
+              <FaSearchPlus title="Set to default view on range in spectrum" />
+            </Button>
+            <span>{`Zone and Signal edition`}</span>
+            <SaveButton
+              onClick={() => formRef.current.submitForm()}
+              popupTitle="Save and exit"
+            />
+            <CloseButton onClick={handleOnClose} />
+          </div>
+          <SignalsForm />
+        </>
+      </Formik>
     </div>
   );
 }

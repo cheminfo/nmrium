@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { RootLayout } from 'analysis-ui-components';
 import { CorrelationData } from 'nmr-correlation';
 import {
   useEffect,
@@ -18,6 +17,7 @@ import {
   ForwardedRef,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { RootLayout } from 'react-science/ui';
 import { useToggle, useFullscreen } from 'react-use';
 
 import { toJSON } from '../data/SpectraManager';
@@ -68,6 +68,7 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
+import { CustomWorkspaces } from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -83,7 +84,6 @@ const containerStyles = css`
   width: 100%;
   display: block;
   height: 100%;
-  font-size: 14px;
 
   div:focus {
     outline: none !important;
@@ -127,13 +127,17 @@ export type NMRiumWorkspace =
   | 'process1D'
   | 'default'
   | 'prediction'
-  | 'embedded';
+  | 'embedded'
+  | 'assignment'
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});
 
 export interface NMRiumProps {
   data?: NMRiumData;
   onDataChange?: (data: NMRiumDataReturn) => void;
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
+  customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
@@ -183,6 +187,7 @@ const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
 function InnerNMRium({
   data: dataProp = defaultData,
   workspace,
+  customWorkspaces,
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
@@ -247,10 +252,11 @@ function InnerNMRium({
       payload: {
         display: preferences,
         workspace,
+        customWorkspaces,
         dispatch: dispatchPreferences,
       },
     });
-  }, [preferences, workspace]);
+  }, [customWorkspaces, preferences, workspace]);
 
   useImperativeHandle(
     innerRef,

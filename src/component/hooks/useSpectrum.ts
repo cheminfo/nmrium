@@ -5,7 +5,7 @@ import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useActiveSpectrum } from '../reducer/Reducer';
 
-export default function useSpectrum(defaultValue: any) {
+export default function useSpectrum(defaultValue: any = null) {
   const { data } = useChartData();
   const activeSpectrum = useActiveSpectrum();
 

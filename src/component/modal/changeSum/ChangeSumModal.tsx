@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
@@ -8,7 +9,6 @@ import { usePreferences } from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { ModalStyles } from '../ModalStyle';
 
@@ -54,7 +54,8 @@ const styles = css`
       border: 1px solid gray;
       color: gray;
       background-color: white !important;
-    }
+    }import { Formik } from 'formik';
+
   }
 `;
 
@@ -172,20 +173,20 @@ export default function ChangeSumModal({
         <CloseButton onClick={onClose} />
       </div>
       <div className="tab-content">
-        <FormikForm
-          ref={formRef}
+        <Formik
+          innerRef={formRef}
           onSubmit={saveHandler}
           initialValues={{ sum: null, molecule: null }}
           validationSchema={validationSchema}
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
             {isStructurePanelVisible && (
-              <Tab tablabel="Auto" tabid={SumSetOptions.Auto}>
+              <Tab title="Auto" tabid={SumSetOptions.Auto}>
                 <SelectMolecule name="molecule" />
               </Tab>
             )}
 
-            <Tab tablabel="Manual" tabid={SumSetOptions.Manual}>
+            <Tab title="Manual" tabid={SumSetOptions.Manual}>
               <div className="manual-container">
                 <FormikInput
                   name="sum"
@@ -196,7 +197,7 @@ export default function ChangeSumModal({
               </div>
             </Tab>
           </Tabs>
-        </FormikForm>
+        </Formik>
       </div>
       <div className="footer-container">
         <button

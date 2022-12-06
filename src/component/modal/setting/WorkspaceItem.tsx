@@ -1,20 +1,27 @@
 import { CSSProperties, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
+import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
 import workspaces from '../../workspaces';
 
 const styles: Record<
-  'container' | 'item' | 'newContainer' | 'input',
+  'container' | 'workspaceName' | 'workspaceVersion' | 'newContainer' | 'input',
   CSSProperties
 > = {
   container: {
     display: 'flex',
+    alignItems: 'center',
+    padding: '0 5px',
   },
-  item: {
+  workspaceName: {
     flex: '1',
     textAlign: 'left',
     fontSize: '11px',
+    padding: '5px',
+  },
+  workspaceVersion: {
+    fontSize: '9px',
     padding: '5px',
   },
   newContainer: {
@@ -28,11 +35,13 @@ const styles: Record<
     color: 'black',
     outline: 'none',
     backgroundColor: 'transparent',
+    flex: 1,
   },
 };
 
 function WorkspaceItem({ item, onSave, onDelete }) {
   const [name, setName] = useState<string>('');
+  const { customWorkspaces } = usePreferences();
 
   // Add new workspace
   function addHandler(e) {
@@ -50,6 +59,8 @@ function WorkspaceItem({ item, onSave, onDelete }) {
   function onTextChange(e) {
     setName(e.target.value);
   }
+
+  const [workspaceName, workspaceVersion] = item.label.split('-');
 
   return (
     <div>
@@ -72,16 +83,49 @@ function WorkspaceItem({ item, onSave, onDelete }) {
         </div>
       ) : (
         <div style={styles.container}>
-          <span style={styles.item}>{item.label}</span>
-          {!workspaces[item.key] && (
+          <WorkSpaceIndicator workspaceKey={item.key} />
+          <span style={styles.workspaceName}>{workspaceName}</span>
+          {!workspaces[item.key] && !customWorkspaces[item.key] && (
             <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
               <FaTimes />
             </Button.Danger>
+          )}
+          {workspaceVersion && (
+            <span style={styles.workspaceVersion}>{workspaceVersion}</span>
           )}
         </div>
       )}
     </div>
   );
 }
+
+const style = {
+  width: '20px',
+  height: '20px',
+  borderRadius: '50%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const WorkSpaceIndicator = (props) => {
+  const { customWorkspaces } = usePreferences();
+  let letter = 'U';
+  let backgroundColor = '#ff6f00';
+
+  if (customWorkspaces[props.workspaceKey]) {
+    letter = 'C';
+    backgroundColor = '#ffbe05';
+  } else if (workspaces[props.workspaceKey]) {
+    letter = 'P';
+    backgroundColor = '#2dd36f';
+  }
+
+  return (
+    <div style={{ ...style, backgroundColor }}>
+      <span style={{ fontWeight: 'bolder' }}>{letter}</span>
+    </div>
+  );
+};
 
 export default WorkspaceItem;

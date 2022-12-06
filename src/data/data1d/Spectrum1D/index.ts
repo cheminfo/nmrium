@@ -19,6 +19,5 @@ export { detectRanges } from './ranges/detectRanges';
 export { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
 export { mapRanges } from './ranges/mapRanges';
 export { updateRangesRelativeValues } from './ranges/updateRangesRelativeValues';
-export { getShiftX } from './shift/getShiftX';
-export { updateXShift } from './shift/updateXShift';
+export { getShiftX } from './getShiftX';
 export { toJSON } from './toJSON';

@@ -1,5 +1,6 @@
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useActiveSpectrum } from '../../reducer/Reducer';
 import getVerticalShift from '../utilities/getVerticalShift';
@@ -9,15 +10,8 @@ import { usePeakShapesPath } from './usePeakShapesPath';
 const emptyData = { peaks: {}, display: {} };
 
 function PeaksShapes() {
-  const {
-    verticalAlign,
-    displayerKey,
-    toolOptions: {
-      data: {
-        peaksOptions: { showPeaksShapes, showPeaksSum },
-      },
-    },
-  } = useChartData();
+  const { verticalAlign, displayerKey } = useChartData();
+  const { showPeaksShapes, showPeaksSum } = useActiveSpectrumPeaksViewState();
   const activeSpectrum = useActiveSpectrum();
   const spectrum = useSpectrum(emptyData) as Datum1D;
 

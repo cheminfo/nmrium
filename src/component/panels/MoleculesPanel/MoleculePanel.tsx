@@ -13,7 +13,7 @@ import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 
 import {
-  FloatingMolecules,
+  MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
@@ -69,7 +69,7 @@ interface MoleculePanelInnerProps extends MoleculePanelProps {
   zones: Zones;
   ranges: Ranges;
   molecules: Array<StateMoleculeExtended>;
-  floatingMolecules: Array<FloatingMolecules>;
+  moleculesView: MoleculesView;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
 }
@@ -78,7 +78,7 @@ function MoleculePanelInner({
   zones,
   ranges,
   molecules: moleculesProp,
-  floatingMolecules,
+  moleculesView,
   activeTab,
   displayerMode,
   onMoleculeChange,
@@ -133,7 +133,7 @@ function MoleculePanelInner({
     <div css={styles.panel}>
       <MoleculePanelHeader
         currentIndex={currentIndex}
-        floatingMolecules={floatingMolecules}
+        moleculesView={moleculesView}
         molecules={molecules}
         onOpenMoleculeEditor={() => openMoleculeEditor()}
         onMoleculeIndexChange={moleculeIndexHandler}
@@ -188,6 +188,9 @@ function MoleculePanelInner({
                                 : assignedDiaIDsMerged
                             }
                             setHoverAtom={handleOnAtomHover}
+                            showAtomNumber={
+                              moleculesView?.[mol.id]?.showAtomNumber || false
+                            }
                           />
                         </div>
                       </div>
@@ -231,7 +234,7 @@ export default function MoleculePanel({
   const {
     molecules,
     view: {
-      floatingMolecules,
+      molecules: moleculesView,
       spectra: { activeTab },
     },
     displayerMode,
@@ -245,7 +248,7 @@ export default function MoleculePanel({
     <MemoizedMoleculePanel
       {...{
         molecules,
-        floatingMolecules,
+        moleculesView,
         displayerMode,
         activeTab,
         ranges,

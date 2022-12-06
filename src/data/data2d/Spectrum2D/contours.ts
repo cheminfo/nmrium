@@ -1,6 +1,7 @@
 import { Conrec } from 'ml-conrec';
 
-import { Data2D, Datum2D } from '../../types/data2d';
+import { Datum2D } from '../../types/data2d';
+import { MinMaxContent } from '../../types/data2d/Data2D';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 interface Level {
@@ -61,7 +62,7 @@ function contoursManager(
   const spectraLevels = { ...state };
   const contourOptions = { ...options };
 
-  if (!state || !state[spectrumID]) {
+  if (!state?.[spectrumID]) {
     const defaultLevel = getDefaultContoursLevel(contourOptions);
     spectraLevels[spectrumID] = defaultLevel;
   }
@@ -161,6 +162,7 @@ function drawContours(
   level: number,
   datum: Datum2D,
   negative = false,
+  quadrant = 'rr',
 ): { contours: any; timeout: boolean } {
   const zoom = level / 2 + 1;
   const {
@@ -172,13 +174,13 @@ function drawContours(
     return getContours(zoom, {
       negative,
       nbLevels: numberOfNegativeLayer,
-      data: datum.data,
+      data: datum.data[quadrant],
     });
   }
 
   return getContours(zoom, {
     nbLevels: numberOfPositiveLayer,
-    data: datum.data,
+    data: datum.data[quadrant],
   });
 }
 
@@ -186,7 +188,7 @@ interface ContoursCalcOptions {
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
-  data: Data2D;
+  data: MinMaxContent;
 }
 
 function getContours(zoomLevel, options: ContoursCalcOptions) {

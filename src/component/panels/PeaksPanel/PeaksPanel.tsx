@@ -1,26 +1,31 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrFt } from 'cheminfo-font';
+import { SvgNmrFt, SvgNmrPeaks } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
-import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
+import { Datum1D, Info1D, Peak, Peaks } from '../../../data/types/data1d';
+import { PeaksViewState } from '../../../data/types/view-state/PeaksViewState';
 import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
-import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import {
+  defaultPeaksViewState,
+  useActiveSpectrumPeaksViewState,
+} from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import {
   DELETE_PEAK_NOTATION,
   OPTIMIZE_PEAKS,
-  TOGGLE_PEAKS_SHAPES,
+  TOGGLE_PEAKS_VIEW_PROPERTY,
 } from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -34,7 +39,12 @@ interface PeaksPanelInnerProps {
   xDomain: number[];
   activeTab: string;
   info: Info1D;
-  peaksOptions: { showPeaksShapes: boolean; showPeaksSum: boolean };
+  peaksViewState: PeaksViewState;
+}
+
+export interface PeakRecord extends Peak {
+  xHz: number;
+  isConstantlyHighlighted: boolean;
 }
 
 function PeaksPanelInner({
@@ -42,7 +52,7 @@ function PeaksPanelInner({
   info,
   xDomain,
   activeTab,
-  peaksOptions,
+  peaksViewState,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -79,7 +89,7 @@ function PeaksPanelInner({
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const filteredPeaks = useMemo(() => {
+  const filteredPeaks = useMemo<PeakRecord[]>(() => {
     if (peaks?.values) {
       const [from, to] = xDomain;
       const _peaks = filterIsActive
@@ -93,9 +103,9 @@ function PeaksPanelInner({
           return {
             ...peakProperties,
             x,
-            xHz: info?.originFrequency ? value * info.originFrequency : '',
+            xHz: info?.originFrequency && value * info.originFrequency,
             y,
-            width: width || '',
+            width,
             isConstantlyHighlighted: isInRange(value, { from, to }),
           };
         })
@@ -116,9 +126,10 @@ function PeaksPanelInner({
       alert.error('optimization can be done on no more than 4 peaks');
     }
   };
-  const togglePeaksShapesHandler = (key: string) => {
-    dispatch({ type: TOGGLE_PEAKS_SHAPES, payload: { key } });
-  };
+
+  function toggleViewProperty(key: keyof typeof defaultPeaksViewState) {
+    dispatch({ type: TOGGLE_PEAKS_VIEW_PROPERTY, payload: { key } });
+  }
 
   return (
     <div
@@ -151,32 +162,34 @@ function PeaksPanelInner({
         >
           {isExperimental && (
             <>
-              <ToggleButton
+              <ActiveButton
                 style={{ marginLeft: '2px', marginRight: '2px' }}
                 popupTitle={
-                  peaksOptions.showPeaksShapes
+                  peaksViewState.showPeaksShapes
                     ? 'Hide peaks shapes'
                     : 'Show peaks shapes'
                 }
                 popupPlacement="right"
-                onClick={() => togglePeaksShapesHandler('showPeaksShapes')}
+                onClick={() => toggleViewProperty('showPeaksShapes')}
                 disabled={!peaks?.values || peaks.values.length === 0}
+                value={peaksViewState.showPeaksShapes}
               >
                 <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-              </ToggleButton>
-              <ToggleButton
+              </ActiveButton>
+              <ActiveButton
                 style={{ marginLeft: '2px', marginRight: '2px' }}
                 popupTitle={
-                  peaksOptions.showPeaksSum
+                  peaksViewState.showPeaksSum
                     ? 'Hide peaks sum'
                     : 'Show peaks sum'
                 }
                 popupPlacement="right"
-                onClick={() => togglePeaksShapesHandler('showPeaksSum')}
+                onClick={() => toggleViewProperty('showPeaksSum')}
                 disabled={!peaks?.values || peaks.values.length === 0}
+                value={peaksViewState.showPeaksSum}
               >
                 <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
-              </ToggleButton>
+              </ActiveButton>
 
               <Button.Done
                 fill="clear"
@@ -194,6 +207,18 @@ function PeaksPanelInner({
               </Button.Done>
             </>
           )}
+          <ActiveButton
+            style={{ marginLeft: '2px', marginRight: '2px' }}
+            popupTitle={
+              peaksViewState.isPeaksVisible ? 'Hide peaks' : 'Show peaks'
+            }
+            popupPlacement="right"
+            onClick={() => toggleViewProperty('isPeaksVisible')}
+            disabled={!peaks?.values || peaks.values.length === 0}
+            value={peaksViewState.isPeaksVisible}
+          >
+            <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+          </ActiveButton>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
@@ -223,16 +248,14 @@ export default function PeaksPanel() {
     view: {
       spectra: { activeTab },
     },
-    toolOptions: {
-      data: { peaksOptions },
-    },
   } = useChartData();
   const { peaks, info } = useSpectrum(emptyData) as Datum1D;
   const preferences = usePreferences();
+  const peaksViewState = useActiveSpectrumPeaksViewState();
 
   return (
     <MemoizedPeaksPanel
-      {...{ peaks, info, xDomain, activeTab, preferences, peaksOptions }}
+      {...{ peaks, info, xDomain, activeTab, preferences, peaksViewState }}
     />
   );
 }

@@ -1,20 +1,17 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { read as readDropFiles, readNMRiumObject } from 'nmr-load-save';
+import { readNMRiumObject } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
-import { initiateDatum1D } from '../../data/data1d/Spectrum1D';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { initiateDatum2D } from '../../data/data2d/Spectrum2D';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
-  FloatingMolecules,
+  MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
-import { Datum1D } from '../../data/types/data1d';
-import { Datum2D } from '../../data/types/data2d';
+import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { useChartData } from '../context/ChartContext';
@@ -92,14 +89,20 @@ interface ZoneToolState extends ToolStateBase {
    */
   showPeaks: boolean;
 }
+
 export interface ViewState {
   /**
-   * Floatings molecules
+   *  Molecules view properties
    * @default []
    */
-  floatingMolecules: Array<FloatingMolecules>;
+  molecules: MoleculesView;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
+  /**
+   * peaks view property
+   * where the key is the id of the spectrum
+   */
+  peaks: Record<string, PeaksViewState>;
   spectra: {
     /**
      * active spectrum id per nucleus
@@ -159,9 +162,10 @@ export const getInitialState = (): State => ({
   mode: 'RTL',
   molecules: [],
   view: {
-    floatingMolecules: [],
+    molecules: {},
     ranges: [],
     zones: [],
+    peaks: {},
     spectra: { activeSpectra: {}, activeTab: '' },
     zoom: {
       levels: {},
@@ -201,10 +205,6 @@ export const getInitialState = (): State => ({
       zonesNoiseFactor: 1,
       activeFilterID: null,
       predictionIndex: 0,
-      peaksOptions: {
-        showPeaksShapes: false,
-        showPeaksSum: false,
-      },
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -418,15 +418,6 @@ export interface State {
        * @default 0
        */
       predictionIndex: number;
-
-      /**
-       * boolean indicator to hide/show peaks shapes
-       * @default false
-       */
-      peaksOptions: {
-        showPeaksShapes: boolean;
-        showPeaksSum: boolean;
-      };
     };
   };
 
@@ -453,7 +444,6 @@ export function initState(state: State): State {
     history: {},
   };
 }
-
 export function dispatchMiddleware(dispatch) {
   let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {
@@ -461,35 +451,11 @@ export function dispatchMiddleware(dispatch) {
       case types.INITIATE: {
         if (action.payload) {
           usedColors = { '1d': [], '2d': [] };
-          void readNMRiumObject(action.payload).then((data) => {
-            const { spectra: spectraIn } = data;
-            const spectra: Array<Datum1D | Datum2D> = [];
-            for (let spectrum of spectraIn) {
-              const { info } = spectrum;
-              if (info.dimension === 1) {
-                spectra.push(initiateDatum1D(spectrum, usedColors));
-              } else if (info.dimension === 2) {
-                spectra.push(initiateDatum2D(spectrum, usedColors));
-              }
-            }
-            action.payload = { ...data, usedColors, spectra };
+          void readNMRiumObject(action.payload).then((nmriumObject) => {
+            action.payload = { ...nmriumObject, usedColors };
             dispatch(action);
           });
         }
-        break;
-      }
-      case types.LOAD_DROP_FILES: {
-        const { fileCollection } = action;
-        action.usedColors = usedColors;
-        readDropFiles(fileCollection)
-          .then((data) => {
-            action.data = data;
-            dispatch(action);
-          })
-          .catch((error) => {
-            dispatch({ type: types.SET_LOADING_FLAG, isLoading: false });
-            reportError(error);
-          });
         break;
       }
       case types.PREDICT_SPECTRA: {
@@ -509,6 +475,11 @@ export function dispatchMiddleware(dispatch) {
 
         break;
       }
+      case types.LOAD_DROP_FILES: {
+        action.payload.usedColors = usedColors;
+        dispatch(action);
+        break;
+      }
 
       default:
         action.usedColors = usedColors;
@@ -521,7 +492,7 @@ export function dispatchMiddleware(dispatch) {
 
 function innerSpectrumReducer(draft: Draft<State>, action) {
   if (
-    ![types.LOAD_JSON_FILE, types.LOAD_NMREDATA_FILE, types.INITIATE].includes(
+    ![types.LOAD_DROP_FILES, types.LOAD_NMREDATA_FILE, types.INITIATE].includes(
       action.type,
     )
   ) {
@@ -535,8 +506,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
-    case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action);
     case types.ADD_PEAK:
@@ -551,8 +520,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.handleOptimizePeaks(draft, action);
     case types.CHANGE_PEAK_SHAPE:
       return PeaksActions.changePeakShapeHandler(draft, action);
-    case types.TOGGLE_PEAKS_SHAPES:
-      return PeaksActions.handleShowPeaksShapes(draft, action);
+    case types.TOGGLE_PEAKS_VIEW_PROPERTY:
+      return PeaksActions.handleTogglePeaksViewProperty(draft, action);
     case types.ADD_INTEGRAL:
       return IntegralsActions.addIntegral(draft, action);
     case types.DELETE_INTEGRAL:
@@ -640,12 +609,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
-
-    case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
-      return SpectrumsActions.handleChangePeaksMarkersVisibility(
-        draft,
-        action.data,
-      );
     case types.CHANGE_ACTIVE_SPECTRUM:
       return SpectrumsActions.handleChangeActiveSpectrum(draft, action.data);
     case types.CHANGE_SPECTRUM_COLOR:
@@ -692,6 +655,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.FLOAT_MOLECULE_OVER_SPECTRUM:
       return MoleculeActions.floatMoleculeOverSpectrum(draft, action);
+
+    case types.TOGGLE_MOLECULE_ATOM_NUMBER:
+      return MoleculeActions.toggleMoleculeAtomsNumbers(draft, action);
 
     case types.CHANGE_FLOAT_MOLECULE_POSITION:
       return MoleculeActions.changeFloatMoleculePosition(draft, action);
@@ -812,6 +778,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return SpectraAnalysisActions.handleSetColumns(draft, action);
     case types.FILTER_SPECTRA_COLUMN:
       return SpectraAnalysisActions.handleFilterColumn(draft, action);
+    case types.ORDER_MULTIPLE_SPECTRA_ANALYSIS:
+      return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 
     case types.RESURRECTING_SPECTRUM_FROM_RANGES:
       return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);

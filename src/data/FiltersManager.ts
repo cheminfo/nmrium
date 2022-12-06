@@ -2,6 +2,14 @@
 import { v4 } from '@lukeed/uuid';
 
 import * as Filters from './Filters';
+import { cloneDatum1D } from './data1d/Spectrum1D/cloneDatum1D';
+import { updateIntegrals } from './data1d/Spectrum1D/integrals/updateIntegrals';
+import { updatePeaks } from './data1d/Spectrum1D/peaks/updatePeaks';
+import { updateRanges } from './data1d/Spectrum1D/ranges/updateRanges';
+import { cloneDatum2D } from './data2d/Spectrum2D/cloneDatum2D';
+import { updateZones } from './data2d/Spectrum2D/zones/updateZones';
+import { Datum1D } from './types/data1d';
+import { Datum2D } from './types/data2d/Datum2D';
 
 export interface Filter {
   id: string;
@@ -12,10 +20,29 @@ export interface Filter {
   value: any;
 }
 
+function resetDataToOrigin(datum) {
+  datum.data =
+    datum.info.dimension === 1
+      ? cloneDatum1D(datum.originalData)
+      : cloneDatum2D(datum.originalData);
+
+  datum.info = { ...datum.originalInfo };
+}
+// update the the part of the data that affected by applying the filters
+function updateData(datum: Datum1D | Datum2D) {
+  if (datum.info.dimension === 1) {
+    updatePeaks(datum as Datum1D);
+    updateRanges(datum as Datum1D);
+    updateIntegrals(datum as Datum1D);
+  } else if (datum.info.dimension === 2) {
+    updateZones(datum as Datum2D);
+  }
+}
+
 /***
  * @param {object} Filters [{name:'',options:{}},{...}]
  */
-function applyFilter(datum, filters: any[] = []) {
+function applyFilter(datum: Datum1D | Datum2D, filters: any[] = []) {
   let isReduced = false;
   for (let filter of filters) {
     const filterOption = {
@@ -67,6 +94,7 @@ function applyFilter(datum, filters: any[] = []) {
       Filters[filter.name].apply(datum, filter.options);
     }
   }
+  updateData(datum);
 }
 
 function isLastFilter(datum, id) {
@@ -94,8 +122,9 @@ function enableFilter(datum, id, checked, filters = null) {
       return { ...filter, flag: filter.id === id ? checked : filter.flag };
     });
   }
-  datum.data = { ...datum.data, ...datum.originalData };
-  datum.info = { ...datum.info, ...datum.originalInfo };
+
+  resetDataToOrigin(datum);
+
   const _filters = filters || datum.filters;
 
   for (let filterIndex in _filters) {
@@ -116,12 +145,14 @@ function enableFilter(datum, id, checked, filters = null) {
       }
     }
   }
+  updateData(datum);
 }
+
 function deleteFilter(datum, id) {
   datum.filters = datum.filters.slice(0);
   datum.filters = datum.filters.filter((filter) => filter.id !== id);
-  datum.data = { ...datum.data, ...datum.originalData };
-  datum.info = { ...datum.info, ...datum.originalInfo };
+
+  resetDataToOrigin(datum);
 
   for (let filterIndex in datum.filters) {
     const filter = datum.filters[filterIndex];
@@ -141,6 +172,7 @@ function deleteFilter(datum, id) {
       }
     }
   }
+  updateData(datum);
 }
 
 function addFilter(datum, filter, isDeleteAllow = true) {

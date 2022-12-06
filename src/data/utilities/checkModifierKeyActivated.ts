@@ -6,11 +6,8 @@ export default function checkModifierKeyActivated(
   const modifiersKeys: ModifierKey[] = [
     'Alt',
     'AltGraph',
-    'CapsLock',
     'Control',
     'Meta',
-    'NumLock',
-    'ScrollLock',
     'Shift',
   ];
   for (const key of modifiersKeys) {

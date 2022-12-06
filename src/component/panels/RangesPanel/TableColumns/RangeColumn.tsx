@@ -1,31 +1,21 @@
-import { CSSProperties, memo } from 'react';
-
 import { formatNumber } from '../../../utility/formatNumber';
+import { RangeColumnProps } from '../RangesTableRow';
 
-interface RangeColumnProps {
+interface RangeColumnInnerProps extends Omit<RangeColumnProps, 'row'> {
   value: any;
-  rowSpanTags: {
-    rowSpan: any;
-    style: CSSProperties;
-  };
-  onHoverRange?: {
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-  };
-  format: string;
 }
 
 function RangeColumn({
   value,
   rowSpanTags,
-  onHoverRange,
+  onHover,
   format,
-}: RangeColumnProps) {
+}: RangeColumnInnerProps) {
   return (
-    <td {...rowSpanTags} {...onHoverRange}>
+    <td {...rowSpanTags} {...onHover}>
       {formatNumber(value, format)}
     </td>
   );
 }
 
-export default memo(RangeColumn);
+export default RangeColumn;

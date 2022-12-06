@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
+import { selectRange } from '../utilities/selectRange';
 
 async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=General');
@@ -180,4 +181,79 @@ test('Processed spectra filters', async ({ page }) => {
     const filters = nmrium.page.locator('_react=FilterTable');
     await expect(filters).toHaveCount(6);
   });
+});
+test('Exclusion zones', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open Coffee example', async () => {
+    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Coffee');
+
+    // wait spectrum to load
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+
+    // select the 1H tab
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+  });
+
+  await test.step('activate exclusision zones tool', async () => {
+    //open general setting
+    await nmrium.clickTool('general-settings');
+
+    //click on the display tab
+    await nmrium.page.click('_react=Tab[tabid="tools"]');
+
+    //enable exclusion zone tool
+    await nmrium.page
+      .locator(':text("Exclusion zones")  + td > div > input')
+      .click();
+
+    // save setting changes
+    await nmrium.page.click('text=Save');
+
+    //check if the exclusion zones tool exists in the main toolbar
+    await expect(
+      nmrium.page.locator(`_react=ToolbarItem[id="exclusionZones"]`),
+    ).toBeVisible();
+  });
+
+  // open filters panel
+  await nmrium.clickPanel('Filters');
+  const filters = nmrium.page.locator('_react=FilterTable');
+
+  await test.step('add exclusision zones', async () => {
+    //select exclusion zones tool
+    await nmrium.clickTool('exclusionZones');
+    //add exclusion zones
+    await selectRange(nmrium, { axis: 'X', startX: 100, endX: 150 });
+    // check that the filters applied to all spectra
+    await expect(
+      nmrium.page.locator('_react=ExclusionZoneAnnotation'),
+    ).toHaveCount(13);
+  });
+
+  await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
+    //select spectrum the last spectrum to be sure that the filter applied to all spectra
+    await nmrium.page
+      .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=11')
+      .click();
+    //Open filters panel
+    await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
+  });
+
+  await test.step('add exclusion zones to the active spectrum', async () => {
+    //add exclusion zones to the last spectrum which is active from the previous step
+    await selectRange(nmrium, { axis: 'X', startX: 200, endX: 220 });
+
+    // the number of exclusion zones  should become 14 since the previous count for all spectra is 13
+    await expect(
+      nmrium.page.locator('_react=ExclusionZoneAnnotation'),
+    ).toHaveCount(14);
+  });
+
+  // the number of exclusion zones should become 2 since we have one from the previous step
+  await expect(
+    nmrium.page.locator(
+      '_react=ExclusionZoneAnnotation >> _react=rect[style.opacity = 1]',
+    ),
+  ).toHaveCount(2);
 });

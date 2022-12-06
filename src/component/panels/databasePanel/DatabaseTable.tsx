@@ -5,6 +5,7 @@ import { ResponsiveChart } from 'react-d3-utils';
 import { FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
+import { PrepareDataResult } from '../../../data/data1d/database';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
@@ -27,7 +28,7 @@ const overFlowStyle: CSSProperties = {
 
 const databaseTableColumns = (
   databasePreferences,
-): (CustomColumn & { showWhen: string })[] => [
+): (CustomColumn<PrepareDataResult> & { showWhen: string })[] => [
   {
     showWhen: 'showNames',
     index: 1,
@@ -60,19 +61,10 @@ const databaseTableColumns = (
     showWhen: 'delta.show',
     index: 3,
     Header: 'δ (ppm)',
-    style: overFlowStyle,
-    accessor: (row) => {
-      if (typeof row.delta === 'string' && !row?.delta) {
-        return row.delta
-          .split(',')
-          .map((value) => formatNumber(value, databasePreferences.delta.format))
-          .join(',');
-      }
-
-      return row?.delta
+    accessor: (row) =>
+      row.delta
         ? formatNumber(row.delta, databasePreferences.delta.format)
-        : '';
-    },
+        : '',
   },
 
   {
@@ -92,10 +84,18 @@ const databaseTableColumns = (
     showWhen: 'coupling.show',
     index: 6,
     Header: 'J (Hz)',
-    accessor: (row) =>
-      row?.coupling
-        ? formatNumber(row.coupling, databasePreferences.coupling.format)
-        : '',
+    accessor: (row) => {
+      if (!row?.coupling) {
+        return '';
+      } else {
+        return row.coupling
+          .split(',')
+          .map((value) =>
+            formatNumber(value, databasePreferences.coupling.format),
+          )
+          .join(',');
+      }
+    },
     style: {
       width: '60px',
       minWidth: '60px',
@@ -201,6 +201,7 @@ function DatabaseTable({ data, onAdd, totalCount }: DatabaseTableProps) {
       approxItemHeight={23.5}
       enableVirtualScroll
       totalCount={totalCount}
+      disableDefaultRowStyle
     />
   );
 }

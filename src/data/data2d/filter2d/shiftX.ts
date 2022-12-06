@@ -10,8 +10,10 @@ export const name = 'Shift 2D X';
  */
 
 export function apply(datum2D: Datum2D, shiftValue = 0) {
-  datum2D.data.minX += shiftValue;
-  datum2D.data.maxX += shiftValue;
+  for (const key in datum2D.data) {
+    datum2D.data[key].minX += shiftValue;
+    datum2D.data[key].maxX += shiftValue;
+  }
 }
 
 export function isApplicable() {

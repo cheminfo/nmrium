@@ -1,15 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  isValidElement,
-  useCallback,
-  useMemo,
-  Children,
-  memo,
-  ReactElement,
-} from 'react';
+import { isValidElement, useMemo, Children, memo, ReactElement } from 'react';
 
-import { InternalTab, TabProps } from './Tab';
+import Tab, { TabEvents, TabProps } from './Tab';
 
 const topStyles = css`
   height: 100%;
@@ -92,12 +85,10 @@ export enum PositionsEnum {
   LEFT = 'LEFT',
 }
 
-interface TabsProps {
+interface TabsProps extends TabEvents {
   children: Array<ReactElement<TabProps> | boolean>;
-  onClick: (element: any) => void;
   activeTab: string;
   position?: PositionsEnum;
-  onDelete?: (element: any) => void;
 }
 
 function Tabs({
@@ -107,13 +98,10 @@ function Tabs({
   onDelete = () => null,
   activeTab,
 }: TabsProps) {
-  const onClickTabHandler = useCallback(
-    (tab) => {
-      const { tablabel, tabid } = tab;
-      onClick({ tablabel, tabid });
-    },
-    [onClick],
-  );
+  function handleClickTab(tab) {
+    const { title, tabid } = tab;
+    onClick?.({ title, tabid });
+  }
 
   let contentChild;
   const tabs = Children.map(children, (child) => {
@@ -126,10 +114,10 @@ function Tabs({
     }
 
     return (
-      <InternalTab
+      <Tab
         {...child.props}
         isActive={tabid === activeTab}
-        onClick={onClickTabHandler}
+        onClick={handleClickTab}
         onDelete={onDelete}
       />
     );

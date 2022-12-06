@@ -1,7 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { memo, CSSProperties } from 'react';
-import { useTable, useSortBy, useFlexLayout } from 'react-table';
+import { CSSProperties } from 'react';
+import {
+  useTable,
+  useSortBy,
+  useFlexLayout,
+  UseSortByOptions,
+} from 'react-table';
 
 import { ReactTableStyle } from './Style';
 
@@ -11,6 +16,9 @@ interface ReactTableFlexLayoutProps {
   onMouseDown?: () => void;
   style?: CSSProperties;
 }
+
+export interface TableOptions<D extends Record<string, unknown>>
+  extends UseSortByOptions<D> {}
 
 function ReactTableFlexLayout({
   data,
@@ -27,6 +35,7 @@ function ReactTableFlexLayout({
       useSortBy,
       useFlexLayout,
     );
+
   return (
     <table
       {...getTableProps()}
@@ -34,24 +43,30 @@ function ReactTableFlexLayout({
       style={{ height: '100%', ...style }}
     >
       <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr
-            key={headerGroup.getHeaderGroupProps().key}
-            {...headerGroup.getHeaderGroupProps()}
-          >
-            {headerGroup.headers.map((column) => (
-              <th
-                key={column.getHeaderProps().key}
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-              >
-                {column.render('Header')}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
-                </span>
-              </th>
-            ))}
-          </tr>
-        ))}
+        {headerGroups.map((headerGroup) => {
+          const { key: headerGroupKey, ...restHeaderGroupProps } =
+            headerGroup.getHeaderGroupProps();
+          return (
+            <tr key={headerGroupKey} {...restHeaderGroupProps}>
+              {headerGroup.headers.map((column: any) => {
+                const { key: headerKey, ...restHeaderProps } =
+                  column.getHeaderProps(column?.getSortByToggleProps());
+                return (
+                  <th key={headerKey} {...restHeaderProps}>
+                    {column.render('Header')}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' ▼'
+                          : ' ▲'
+                        : ''}
+                    </span>
+                  </th>
+                );
+              })}
+            </tr>
+          );
+        })}
       </thead>
       <tbody
         {...getTableBodyProps()}
@@ -59,18 +74,20 @@ function ReactTableFlexLayout({
       >
         {rows.map((row) => {
           prepareRow(row);
+          const { key: rowKey, ...resetRowProps } = row.getRowProps();
           return (
-            <tr
-              key={row.getRowProps().key}
-              {...row.getRowProps()}
-              onMouseDown={onMouseDown}
-            >
+            <tr key={rowKey} {...resetRowProps} onMouseDown={onMouseDown}>
               {row.cells.map((cell) => {
+                const {
+                  key: cellKey,
+                  style: cellStyle,
+                  ...resetCellProps
+                } = cell.getCellProps();
                 return (
                   <td
-                    key={cell.getCellProps().key}
-                    {...cell.getCellProps()}
-                    style={{ ...cell.getCellProps().style, padding: '0px' }}
+                    key={cellKey}
+                    {...resetCellProps}
+                    style={{ ...cellStyle, padding: '0px' }}
                   >
                     {cell.render('Cell')}
                   </td>
@@ -84,4 +101,4 @@ function ReactTableFlexLayout({
   );
 }
 
-export default memo(ReactTableFlexLayout);
+export default ReactTableFlexLayout;

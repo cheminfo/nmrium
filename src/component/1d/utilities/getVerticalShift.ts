@@ -8,7 +8,6 @@ export default function getVerticalShift(
     index: 1,
     align: 'stack',
   };
-
   return verticalAlign.align === align
     ? index * verticalAlign.verticalShift
     : 0;

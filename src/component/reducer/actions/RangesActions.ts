@@ -16,7 +16,6 @@ import {
   updateRangesRelativeValues,
   changeRange,
   changeRangeRelativeValue,
-  updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import { setSumOptions } from '../../../data/data1d/Spectrum1D/SumManager';
 import { Datum1D } from '../../../data/types/data1d';
@@ -397,8 +396,6 @@ function handleChangeRangeSignalValue(draft, action) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.shiftX.id, options: shift },
     ]);
-
-    updateXShift(draft.data[index] as Datum1D);
 
     handleOnChangeRangesData(draft);
     setDomain(draft);

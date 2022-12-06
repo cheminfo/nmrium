@@ -173,16 +173,14 @@ function Provider({
 
   const alertsByPosition = groupBy(alerts, (alert) => alert.options.position);
 
-  const parentStyle = useMemo(() => {
-    return wrapperRef
-      ? wrapperRef.getBoundingClientRect()
-      : {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-  }, [wrapperRef]);
+  const parentStyle = wrapperRef
+    ? wrapperRef.getBoundingClientRect()
+    : {
+        top: 0,
+        left: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
 
   const alertContextValue = useMemo(
     () => ({ show, success, error, info, showLoading }),

@@ -22,7 +22,7 @@ export function apply(datum1D: Datum1D, zones = []) {
 }
 
 export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isComplex && datum1D.info.isFt) return true;
+  if (datum1D.info.isFt) return true;
   return false;
 }
 

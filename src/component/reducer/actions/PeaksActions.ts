@@ -11,6 +11,7 @@ import {
 import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
 import { Peak } from '../../../data/types/data1d/Peak';
+import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -154,14 +155,27 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
   }
 }
 
-function handleShowPeaksShapes(draft: Draft<State>, action) {
+function handleTogglePeaksViewProperty(draft: Draft<State>, action) {
   const { key } = action.payload;
+  togglePeaksViewProperty(draft, key);
+}
 
-  const peaksOptions = draft.toolOptions.data.peaksOptions;
-  draft.toolOptions.data.peaksOptions = {
-    ...peaksOptions,
-    [key]: !peaksOptions[key],
-  };
+function togglePeaksViewProperty(
+  draft: Draft<State>,
+  key: keyof typeof defaultPeaksViewState,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const peaksView = draft.view.peaks;
+    if (peaksView[activeSpectrum.id]) {
+      peaksView[activeSpectrum.id][key] = !peaksView[activeSpectrum.id][key];
+    } else {
+      const defaultPeaksView = { ...defaultPeaksViewState };
+      defaultPeaksView[key] = !defaultPeaksView[key];
+      peaksView[activeSpectrum.id] = defaultPeaksView;
+    }
+  }
 }
 
 export {
@@ -171,5 +185,5 @@ export {
   handleAutoPeakPicking,
   handleOptimizePeaks,
   changePeakShapeHandler,
-  handleShowPeaksShapes,
+  handleTogglePeaksViewProperty,
 };

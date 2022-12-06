@@ -3,7 +3,9 @@ import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import { useEffect, useRef, memo } from 'react';
 
+import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
+import useSpectrum from '../hooks/useSpectrum';
 
 import { get2DYScale } from './utilities/scale';
 
@@ -46,26 +48,22 @@ function YAxis(props: YAxisProps) {
 
   const refAxis = useRef<SVGGElement>(null);
 
-  const state = useChartData();
-  const {
-    yDomain,
-    width,
-    height,
-    view: {
-      spectra: { activeTab, activeSpectra },
-    },
-    margin,
-  } = state;
+  const { yDomain, width, height, margin } = useChartData();
+  const spectrum = useSpectrum() as Datum2D;
 
   useEffect(() => {
     if (!show || !yDomain) return;
-    const scaleY = get2DYScale({ height, yDomain, margin });
+
+    let scaleY = get2DYScale(
+      { height, yDomain, margin },
+      !!spectrum?.info?.isFid,
+    );
 
     const axis = d3.axisRight(scaleY).ticks(8).tickFormat(d3.format('0'));
 
     // @ts-expect-error well typed
     d3.select(refAxis.current).call(axis);
-  }, [show, yDomain, activeTab, activeSpectra, height, margin]);
+  }, [spectrum, height, yDomain, margin, show]);
 
   if (!width || !height) {
     return null;

@@ -1,32 +1,63 @@
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 
+import { NMRiumWorkspace } from '../../../NMRium';
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
-import Workspaces from '../../../workspaces';
+import PredefinedWorkspaces from '../../../workspaces';
 import { PreferencesState } from '../preferencesReducer';
 import { checkKeysExists } from '../utilities/checkKeysExists';
 import { filterObject } from '../utilities/filterObject';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
-import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
+import { mapWorkspaces } from '../utilities/mapWorkspaces';
+
+function getWorkspace(
+  draft: Draft<PreferencesState>,
+  workspace: NMRiumWorkspace,
+) {
+  return draft.workspaces[workspace] ? workspace : 'default';
+}
 
 export function initPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const localData = getLocalStorage('nmr-general-settings');
-    const { dispatch, workspace, ...resProps } = action.payload;
+    const {
+      dispatch,
+      workspace,
+      customWorkspaces: cw,
+      ...resProps
+    } = action.payload;
+    const customWorkspaces = mapWorkspaces(cw);
+    const predefinedWorkspaces = mapWorkspaces(PredefinedWorkspaces as any);
+    const localWorkspaces = mapWorkspaces(draft.workspaces);
+
+    draft.customWorkspaces = customWorkspaces;
+    draft.workspaces = {
+      ...predefinedWorkspaces,
+      ...localWorkspaces,
+      ...customWorkspaces,
+    };
+
     /**
      * set the current workspace what the user-defined in the setting if the workspace is not defined at the level of component, otherwise
      * use the default workspace
      *
      */
-    draft.workspace =
-      !workspace && localData?.currentWorkspace
-        ? { current: localData.currentWorkspace, base: null }
-        : { current: workspace || 'default', base: workspace };
+
+    if (!workspace && localData?.currentWorkspace) {
+      const _workspace = getWorkspace(draft, localData.currentWorkspace);
+      draft.workspace = { current: _workspace, base: null };
+    } else {
+      const _workspace = getWorkspace(draft, workspace);
+      draft.workspace = {
+        current: _workspace,
+        base: _workspace,
+      };
+    }
 
     const workspacePreferences = lodashMerge(
       {},
-      getPreferencesByWorkspace(draft.workspace.current),
-      resProps,
+      draft.workspaces[draft.workspace.current],
+      resProps.display,
     );
 
     const currentWorkspacePreferences = getActiveWorkspace(draft);
@@ -40,7 +71,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
      *    d) if hard code workspace parameters !=  current workspace parameters
      */
     if (
-      (Workspaces[draft.workspace.current] &&
+      (PredefinedWorkspaces[draft.workspace.current] &&
         (!currentWorkspacePreferences ||
           workspacePreferences?.version !==
             currentWorkspacePreferences?.version ||
@@ -54,6 +85,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
         workspaces,
         version,
         workspace: { current },
+        customWorkspaces,
       } = draft || {};
       const display = filterObject(workspacePreferences.display);
 
@@ -63,11 +95,18 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
           currentWorkspace: localData?.currentWorkspace,
         }),
         workspaces: {
-          ...workspaces,
-          [current]: {
-            ...workspacePreferences,
-            display,
-          },
+          ...mapWorkspaces(workspaces, {
+            ignoreKeys: customWorkspaces,
+            mergeWithDefaultProperties: false,
+          }),
+          ...(!customWorkspaces[current]
+            ? {
+                [current]: {
+                  ...workspacePreferences,
+                  display,
+                },
+              }
+            : {}),
         },
       };
 

@@ -1,5 +1,5 @@
-import { useAccordionContext } from 'analysis-ui-components';
 import { useState, useCallback } from 'react';
+import { useAccordionContext } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';

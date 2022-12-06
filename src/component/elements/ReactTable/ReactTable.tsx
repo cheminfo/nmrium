@@ -2,16 +2,24 @@
 /** @jsxImportSource @emotion/react */
 import {
   useRef,
-  useCallback,
   memo,
   forwardRef,
   useState,
   Ref,
-  useEffect,
-  UIEvent,
   CSSProperties,
+  WheelEvent,
+  useLayoutEffect,
+  useEffect,
 } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import {
+  useTable,
+  useSortBy,
+  TableInstance,
+  CellProps,
+  Column as ReactColumn,
+  UseSortByColumnOptions,
+  UseSortByInstanceProps,
+} from 'react-table';
 import { useMeasure } from 'react-use';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
@@ -25,30 +33,62 @@ import {
   ReactTableProvider,
   useReactTableContext,
 } from './utility/ReactTableContext';
-import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
+import useRowSpan, {
+  prepareRowSpan,
+  RowSpanHeaders,
+} from './utility/useRowSpan';
 
-interface ReactTableProps extends ClickEvent {
+interface ExtraColumn<T extends object> {
+  enableRowSpan?: boolean;
+  style?: CSSProperties;
+  Cell?: (cell: CellProps<T, any>) => JSX.Element | string;
+}
+
+export type Column<T extends object> = ReactColumn<T> &
+  ExtraColumn<T> &
+  UseSortByColumnOptions<T>;
+
+type TableInstanceWithHooks = TableInstance & {
+  rowSpanHeaders: RowSpanHeaders;
+} & UseSortByInstanceProps<any>;
+
+interface SortEvent {
+  onSortEnd?: (data: any) => void;
+}
+
+export interface RowStyle {
+  rowStyle?: {
+    active?: CSSProperties;
+    activated?: CSSProperties;
+    hover?: CSSProperties;
+    base?: CSSProperties;
+  };
+  disableDefaultRowStyle?: boolean;
+}
+interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
-  context?: Array<{ label: string; onClick: () => void }> | null;
+  context?: Array<{ label: string; onClick: (data: any) => void }> | null;
   approxItemHeight?: number;
   groupKey?: string;
   indexKey?: string;
   enableVirtualScroll?: boolean;
-  highlightActiveRow?: boolean;
+  activeRow?: (data: any) => boolean;
+  enableDefaultActiveRow?: boolean;
   totalCount?: number;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
-  onScroll: (event: UIEvent<HTMLDivElement>) => void;
+  onScroll: (event: WheelEvent<HTMLDivElement>) => void;
 }
 
 const styles = {
-  table: (enableVirtualScroll: boolean) => {
+  table: (enableVirtualScroll: boolean): CSSProperties => {
     if (enableVirtualScroll) {
       return { position: 'sticky', top: 0 };
     }
+    return {};
   },
 };
 
@@ -78,17 +118,21 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     enableVirtualScroll = false,
     groupKey,
     onClick,
-    highlightActiveRow = false,
+    activeRow,
     totalCount,
     indexKey = 'index',
+    onSortEnd,
+    rowStyle,
+    disableDefaultRowStyle = false,
+    enableDefaultActiveRow = false,
   } = props;
 
   const contextRef = useRef<any>(null);
-  const { index: indexBoundary } = useReactTableContext();
+  const isSortedEventTriggered = useRef<boolean>(false);
+  const virtualBoundary = useReactTableContext();
   const [rowIndex, setRowIndex] = useState<number>();
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   const [isCounterVisible, setCounterVisibility] = useState(false);
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -103,28 +147,18 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     },
     useSortBy,
     useRowSpan,
-  );
-  const contextMenuHandler = useCallback(
-    (e, row) => {
-      if (!checkModifierKeyActivated(e)) {
-        e.preventDefault();
-        contextRef.current.handleContextMenu(e, row.original);
-      }
-    },
-    [contextRef],
-  );
+  ) as TableInstanceWithHooks;
+  function contextMenuHandler(e, row) {
+    if (!checkModifierKeyActivated(e)) {
+      e.preventDefault();
+      contextRef.current.handleContextMenu(e, row.original);
+    }
+  }
 
-  const rowsData = enableVirtualScroll
-    ? rows.slice(indexBoundary.start, indexBoundary.end)
-    : rows;
-
-  const clickHandler = useCallback(
-    (event, row) => {
-      setRowIndex(row.index);
-      onClick?.(event, row);
-    },
-    [onClick],
-  );
+  function clickHandler(event, row) {
+    setRowIndex(row.index);
+    onClick?.(event, row);
+  }
 
   function scrollHandler(e) {
     if (enableVirtualScroll) {
@@ -140,6 +174,26 @@ const ReactTableInner = forwardRef(function ReactTableInner(
       setCounterVisibility(false);
     }, 1000);
   }
+
+  useEffect(() => {
+    if (isSortedEventTriggered.current) {
+      const data = rows.map((row) => row.original);
+      onSortEnd?.(data);
+      isSortedEventTriggered.current = false;
+    }
+  }, [onSortEnd, rows]);
+
+  function headerClickHandler() {
+    isSortedEventTriggered.current = true;
+  }
+
+  const end =
+    virtualBoundary.end === rows.length - 1
+      ? virtualBoundary.end + 1
+      : virtualBoundary.end;
+  const rowsData = enableVirtualScroll
+    ? rows.slice(virtualBoundary.start, end)
+    : rows;
 
   const index =
     rowsData[rowsData.length - 1]?.original[indexKey] ||
@@ -161,7 +215,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
         {enableVirtualScroll && (
           <div
             style={{
-              height: approxItemHeight * data.length,
+              height: approxItemHeight * (data.length + 1),
               position: 'absolute',
               width: '100%',
               pointerEvents: 'none',
@@ -173,27 +227,42 @@ const ReactTableInner = forwardRef(function ReactTableInner(
           css={ReactTableStyle}
           style={styles.table(enableVirtualScroll)}
         >
-          <ReactTableHeader headerGroups={headerGroups} />
+          <ReactTableHeader
+            headerGroups={headerGroups}
+            onClick={headerClickHandler}
+          />
           <tbody {...getTableBodyProps()}>
             {rowsData.map((row, index) => {
               prepareRow(row);
 
               prepareRowSpan(
                 rows,
-                enableVirtualScroll ? index + indexBoundary.start : index,
+                enableVirtualScroll ? index + virtualBoundary.start : index,
                 rowSpanHeaders,
                 groupKey,
               );
-
+              const { key, ...restRowProps } = row.getRowProps();
               return (
                 <ReactTableRow
-                  key={row.key}
+                  key={key}
+                  {...restRowProps}
                   row={row}
-                  {...row.getRowProps()}
                   onContextMenu={(e) => contextMenuHandler(e, row)}
-                  onClick={highlightActiveRow ? clickHandler : onClick}
+                  onClick={
+                    !activeRow && enableDefaultActiveRow
+                      ? clickHandler
+                      : onClick
+                  }
                   highlightedSource={highlightedSource}
-                  isRowActive={rowIndex === index}
+                  isRowActive={
+                    !activeRow
+                      ? enableDefaultActiveRow
+                        ? rowIndex === index
+                        : false
+                      : activeRow(row)
+                  }
+                  rowStyle={rowStyle}
+                  disableDefaultRowStyle={disableDefaultRowStyle}
                 />
               );
             })}
@@ -217,37 +286,30 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   );
 });
 
-export interface TableVirtualConfig {
-  scrollHeight: number;
-  numberOfVisibleRows: number;
-  index: { start: number; end: number };
+export interface TableVirtualBoundary {
+  start: number;
+  end: number;
 }
 
 function ReactTable(props: ReactTableProps) {
-  const { data, approxItemHeight = 40, groupKey } = props;
+  const { data, approxItemHeight = 40, groupKey, onSortEnd } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const visibleRowsCountRef = useRef<number>(0);
   const [mRef, { height }] = useMeasure<HTMLDivElement>();
 
-  const [tableVirtualConfig, setTableVirtualConfig] =
-    useState<TableVirtualConfig>({
-      scrollHeight: 0,
-      numberOfVisibleRows: 0,
-      index: { start: 0, end: 0 },
+  const [tableVirtualBoundary, setTableVirtualBoundary] =
+    useState<TableVirtualBoundary>({
+      start: 1,
+      end: 0,
     });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (containerRef.current) {
-      const { scrollHeight } = containerRef.current;
       const header = containerRef.current.querySelectorAll('thead');
-      const numberOfVisibleRows = Math.ceil(
+      visibleRowsCountRef.current = Math.ceil(
         (height - header[0].clientHeight) / approxItemHeight,
       );
-      setTableVirtualConfig((prev) => ({
-        ...prev,
-        scrollHeight,
-        numberOfVisibleRows: numberOfVisibleRows - 1,
-        index: { start: 0, end: numberOfVisibleRows },
-      }));
+      setTableVirtualBoundary({ start: 0, end: visibleRowsCountRef.current });
     }
   }, [approxItemHeight, height]);
 
@@ -300,23 +362,17 @@ function ReactTable(props: ReactTableProps) {
   }
 
   function scrollHandler() {
-    if (containerRef.current && tableVirtualConfig) {
+    if (containerRef.current) {
       const { scrollTop } = containerRef.current;
-      const { numberOfVisibleRows, index } = tableVirtualConfig;
       const currentIndx = Math.ceil(scrollTop / approxItemHeight);
-      const start = findStartIndex(currentIndx, numberOfVisibleRows);
-      if (currentIndx !== index.start) {
-        const end = findEndIndex(currentIndx, numberOfVisibleRows);
-        setTableVirtualConfig({
-          ...tableVirtualConfig,
-          index: { start, end: end + 1 },
-        });
-      }
+      const start = findStartIndex(currentIndx, visibleRowsCountRef.current);
+      const end = findEndIndex(currentIndx, visibleRowsCountRef.current);
+      setTableVirtualBoundary({ start, end });
     }
   }
 
   return (
-    <ReactTableProvider value={tableVirtualConfig}>
+    <ReactTableProvider value={tableVirtualBoundary}>
       <div
         ref={mRef}
         style={{
@@ -326,6 +382,7 @@ function ReactTable(props: ReactTableProps) {
       >
         <ReactTableInner
           onScroll={scrollHandler}
+          onSortEnd={onSortEnd}
           ref={containerRef}
           {...{ ...props }}
         />

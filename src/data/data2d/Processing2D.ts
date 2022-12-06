@@ -1,6 +1,6 @@
 import { Conrec } from 'ml-conrec';
 
-import { Data2D } from '../types/data2d';
+import { MinMaxContent } from '../types/data2d/Data2D';
 import { calculateSanPlot } from '../utilities/calculateSanPlot';
 
 export const defaultContourOptions = {
@@ -40,7 +40,7 @@ export default class Processing2D {
 
     this.conrec = new Conrec(minMax.z, { xs, ys, swapAxes: false });
 
-    const sanResult = calculateSanPlot('2D', minMax as Data2D);
+    const sanResult = calculateSanPlot('2D', minMax as MinMaxContent);
     this.median = sanResult.positive;
 
     this.minMax = minMax;

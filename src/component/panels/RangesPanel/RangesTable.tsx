@@ -112,9 +112,9 @@ function RangesTable({
             <th>Mult.</th>
             {preferences.coupling.show && <th>J (Hz)</th>}
             <th>
-              <FaLink style={{ fontSize: 10 }} />
+              <FaLink style={{ fontSize: 10, margin: 'auto' }} />
             </th>
-            <th>Σ</th>
+            <th style={{ minWidth: '50px' }}>Σ</th>
             {preferences.showKind && <th>Kind</th>}
             <th>{''}</th>
           </tr>

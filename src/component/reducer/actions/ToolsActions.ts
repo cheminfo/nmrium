@@ -323,10 +323,17 @@ function hasAcceptedSpectrum(draft: Draft<State>, index) {
 }
 
 function setMargin(draft: Draft<State>) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  const spectrum =
+    (activeSpectrum?.id && draft.data[activeSpectrum.index]) || null;
+
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
-    draft.toolOptions.selectedTool !== options.slicing.id
+    (draft.toolOptions.selectedTool === options.slicing.id ||
+      spectrum?.info.isFid)
   ) {
+    draft.margin = MARGIN['2D'];
+  } else if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
       : MARGIN['1D'].top;
@@ -334,8 +341,6 @@ function setMargin(draft: Draft<State>) {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else if (draft.toolOptions.selectedTool === options.slicing.id) {
-    draft.margin = MARGIN['2D'];
   } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     draft.margin = MARGIN['1D'];
   }
@@ -406,9 +411,11 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
     if (tabs2D.length > 0 && tab == null) {
       draft.view.spectra.activeTab = tabs2D[0];
     } else {
-      draft.view.spectra.activeTab = tab;
+      draft.view.spectra.activeTab = !groupByTab.includes(tab)
+        ? groupByTab[0]
+        : tab;
     }
-  } else {
+  } else if (tab) {
     draft.view.spectra.activeTab = tab;
   }
 
@@ -431,13 +438,11 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
 
   const groupByNucleus = groupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data, true);
-  const tabs = Object.keys(dataGroupByNucleus);
-  const currentTab = !tab || !tabs.includes(tab || '') ? tabs[0] : tab;
-  setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
+  setTab(draft, dataGroupByNucleus, tab, refreshActiveTab);
   resetTool(draft);
 
   setDomain(draft, domainOptions);
-  setIntegralsYDomain(draft, dataGroupByNucleus[currentTab]);
+  setIntegralsYDomain(draft, dataGroupByNucleus[draft.view.spectra.activeTab]);
 
   const zoomHistory = zoomHistoryManager(
     draft.zoom.history,
@@ -504,4 +509,5 @@ export {
   setTab,
   setSpectraSameTopHandler,
   resetSpectraScale,
+  setMargin,
 };

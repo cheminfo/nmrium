@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback } from 'react';
+import { MouseEvent } from 'react';
 
 import {
   COLUMNS_TYPES,
@@ -73,9 +73,10 @@ function ColumnHeader({
 }: ColumnHeaderProps) {
   const dispatch = useDispatch();
 
-  const deleteHandler = useCallback(() => {
+  function deleteHandler(e: MouseEvent) {
+    e.stopPropagation();
     dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey: charLabel });
-  }, [charLabel, dispatch]);
+  }
 
   return (
     <div css={styles}>

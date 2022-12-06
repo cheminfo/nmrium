@@ -1,7 +1,15 @@
 import lodashGet from 'lodash/get';
 
 import { Spectra } from '../../component/NMRium';
+import {
+  JpathTableColumn,
+  PredefinedSpectraColumn,
+  PredefinedTableColumn,
+  WorkSpacePanelPreferences,
+} from '../../component/workspaces/Workspace';
 import { RangeDetectionResult } from '../types/data1d';
+import { Datum1D } from '../types/data1d/Datum1D';
+import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject';
 import generateChar from '../utilities/generateChar';
 
 import { detectRange, isSpectrum1D } from './Spectrum1D';
@@ -43,12 +51,19 @@ interface AnalysisRow extends RangeDetectionResult {
   value?: number;
 }
 
-interface SpectraAnalysisData {
+interface SpectraAnalysisInnerData {
   options: AnalysisOptions;
-  values: Record<string, AnalysisRow>;
+  values: Record<string /** spectrum key */, AnalysisRow>;
+}
+export interface SpectraAnalysisData {
+  options: AnalysisOptions;
+  values: AnalysisRow[];
 }
 
-export type SpectraAnalysis = Record<string, SpectraAnalysisData>;
+export type SpectraAnalysis = Record<
+  string /** where the key is the nucleus*/,
+  SpectraAnalysisInnerData
+>;
 
 function addColumnKey(
   spectraAnalysis: SpectraAnalysis,
@@ -327,25 +342,65 @@ function calculate(columns: Columns, data: AnalysisRow, formula = '') {
 }
 
 export function getDataAsString(
-  spectraAnalysis: SpectraAnalysis,
-  nucleus: string,
+  spectraAnalysis: SpectraAnalysisData,
+  spectra: Datum1D[],
+  spectraPanelPreferences: WorkSpacePanelPreferences['spectra'],
 ) {
-  if (spectraAnalysis?.[nucleus]) {
+  const spectraData = convertSpectraArrayToObject(spectra);
+  if (spectraAnalysis) {
     const {
       values,
       options: { columns },
-    } = spectraAnalysis[nucleus];
+    } = spectraAnalysis;
 
     let result = '';
+    // listed the spectra panel columns
+    for (const col of spectraPanelPreferences.columns) {
+      if (col.visible) {
+        const { name } = col as PredefinedTableColumn<PredefinedSpectraColumn>;
+        if ((name && ['name', 'solvent'].includes(name)) || !name) {
+          result += `${col.label}\t`;
+        }
+      }
+    }
 
-    for (const letter in columns) {
+    const letters = Object.keys(columns);
+
+    // listed the spectra analysis panel columns
+    for (const letter of letters) {
       result += `${letter}\t`;
     }
     result += '\n';
 
-    for (const spectrum of Object.values(values)) {
-      for (const letter in columns) {
-        result += `${spectrum[letter][columns[letter].valueKey]}\t`;
+    for (const spectrumAnalysis of Object.values(values)) {
+      const spectrum = spectraData[spectrumAnalysis[letters[0]].SID];
+
+      // listed the spectra cell values
+      for (const col of spectraPanelPreferences.columns) {
+        if (col.visible) {
+          const name = (col as PredefinedTableColumn<PredefinedSpectraColumn>)
+            ?.name;
+          if (name) {
+            switch (name) {
+              case 'name':
+                result += `${spectrum.display.name}\t`;
+                break;
+              case 'solvent':
+                result += `${spectrum.info.solvent || `null`}\t`;
+                break;
+              default:
+                break;
+            }
+          } else {
+            const path = (col as JpathTableColumn)?.jpath;
+            result += `${lodashGet(spectrum, path, `null`)}\t`;
+          }
+        }
+      }
+
+      // listed the spectra analysis cell values
+      for (const letter of letters) {
+        result += `${spectrumAnalysis[letter][columns[letter].valueKey]}\t`;
       }
       result += '\n';
     }

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Formik } from 'formik';
 import { useCallback, useRef } from 'react';
 import * as Yup from 'yup';
 
@@ -12,7 +13,6 @@ import Button from '../../elements/Button';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Label from '../../elements/Label';
 import FormikErrorsSummary from '../../elements/formik/FormikErrorsSummary';
-import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 
@@ -48,7 +48,8 @@ const styles = css`
     width: 100px;
     margin-right: 10px;
     height: initial !important;
-  }
+  }import { Formik } from 'formik';
+
 `;
 
 const predictionFormValidation = Yup.object().shape({
@@ -93,50 +94,52 @@ function PredictionOptions({
   return (
     <div css={styles}>
       <div>
-        <FormikForm
-          ref={refForm}
+        <Formik
+          innerRef={refForm}
           initialValues={defaultPredictionOptions}
           validationSchema={predictionFormValidation}
           onSubmit={submitHandler}
         >
-          <FormikErrorsSummary />
-          <div className="row margin-10">
-            <span className="custom-label">Frequency : </span>
-            <FormikSelect
-              items={FREQUENCIES}
-              style={{ width: 290, height: 30, margin: 0 }}
-              name="frequency"
-            />
-          </div>
+          <>
+            <FormikErrorsSummary />
+            <div className="row margin-10">
+              <span className="custom-label">Frequency : </span>
+              <FormikSelect
+                items={FREQUENCIES}
+                style={{ width: 290, height: 30, margin: 0 }}
+                name="frequency"
+              />
+            </div>
 
-          <div className="row">
-            <IsotopesViewer value="1H" className="custom-label" />
-            <Label title="From">
-              <FormikInput name="1d.1H.from" type="number" />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.1H.to" type="number" />
-            </Label>
-          </div>
-          <div className="row">
-            <IsotopesViewer value="13C" className="custom-label" />
-            <Label title="From">
-              <FormikInput name="1d.13C.from" type="number" />
-            </Label>
-            <Label title="To" style={{ label: { padding: '0 10px' } }}>
-              <FormikInput name="1d.13C.to" type="number" />
-            </Label>
-          </div>
-          <div className="row margin-10 padding-h-10">
-            <span className="custom-label">Line Width : </span>
-            <FormikInput
-              name="1d.lineWidth"
-              type="number"
-              style={{ input: { margin: 0 } }}
-            />
-            <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-          </div>
-        </FormikForm>
+            <div className="row">
+              <IsotopesViewer value="1H" className="custom-label" />
+              <Label title="From">
+                <FormikInput name="1d.1H.from" type="number" />
+              </Label>
+              <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                <FormikInput name="1d.1H.to" type="number" />
+              </Label>
+            </div>
+            <div className="row">
+              <IsotopesViewer value="13C" className="custom-label" />
+              <Label title="From">
+                <FormikInput name="1d.13C.from" type="number" />
+              </Label>
+              <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                <FormikInput name="1d.13C.to" type="number" />
+              </Label>
+            </div>
+            <div className="row margin-10 padding-h-10">
+              <span className="custom-label">Line Width : </span>
+              <FormikInput
+                name="1d.lineWidth"
+                type="number"
+                style={{ input: { margin: 0 } }}
+              />
+              <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
+            </div>
+          </>
+        </Formik>
       </div>
       <div>
         <Button.Done onClick={handleSave} disabled={disabled}>

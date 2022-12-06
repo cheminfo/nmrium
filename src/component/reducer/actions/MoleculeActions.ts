@@ -66,12 +66,11 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
     (molecule) => molecule.id === id,
   );
   draft.molecules.splice(moleculeIndex, 1);
-  const floatingMoleculesIndex = draft.view.floatingMolecules.findIndex(
-    (m) => m.id === id,
-  );
-  if (floatingMoleculesIndex !== -1) {
-    draft.view.floatingMolecules.splice(floatingMoleculesIndex, 1);
-  }
+
+  // delete the molecule view object for this id
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+  delete draft.view.molecules[id];
+
   /**
    * update all spectra that its sum was based on this molecule with the first molecule
    * from molecules list and if no remains molecules it sum will be 100
@@ -99,27 +98,47 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   setActiveTab(draft);
   draft.isLoading = false;
 }
+
+function initMoleculeViewProperties(id: string, draft: Draft<State>) {
+  // check if the molecule is exists in the view object otherwise add it with the default value
+  if (!draft.view.molecules[id]) {
+    draft.view.molecules[id] = {
+      floating: {
+        visible: false,
+        position: DRAGGABLE_STRUCTURE_INITIAL_POSITION,
+      },
+      showAtomNumber: false,
+    };
+  }
+}
+
+function getMoleculeViewObject(id: string, draft: Draft<State>) {
+  return draft.view.molecules[id] || null;
+}
+
 function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
   const { id } = action.payload;
-  const moleculeIndex = draft.view.floatingMolecules.findIndex(
-    (m) => m.id === id,
-  );
-  if (moleculeIndex !== -1) {
-    draft.view.floatingMolecules[moleculeIndex].visible =
-      !draft.view.floatingMolecules[moleculeIndex].visible;
-  } else {
-    draft.view.floatingMolecules.push({
-      id,
-      visible: true,
-      position: DRAGGABLE_STRUCTURE_INITIAL_POSITION,
-    });
+
+  initMoleculeViewProperties(id, draft);
+  const molecule = getMoleculeViewObject(id, draft);
+  if (molecule) {
+    molecule.floating.visible = !molecule.floating.visible;
+  }
+}
+function toggleMoleculeAtomsNumbers(draft: Draft<State>, action) {
+  const { id } = action.payload;
+
+  initMoleculeViewProperties(id, draft);
+  const molecule = getMoleculeViewObject(id, draft);
+  if (molecule) {
+    molecule.showAtomNumber = !molecule.showAtomNumber;
   }
 }
 function changeFloatMoleculePosition(draft: Draft<State>, action) {
   const { id, position } = action.payload;
-  const molecule = draft.view.floatingMolecules.find((m) => m.id === id);
+  const molecule = getMoleculeViewObject(id, draft);
   if (molecule) {
-    molecule.position = position;
+    molecule.floating.position = position;
   } else {
     throw new Error(`Molecule ${id} does not exist`);
   }
@@ -140,4 +159,5 @@ export {
   floatMoleculeOverSpectrum,
   changeFloatMoleculePosition,
   changeMoleculeLabel,
+  toggleMoleculeAtomsNumbers,
 };

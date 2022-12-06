@@ -22,6 +22,10 @@
         "title": "FULL ethylbenzene"
       },
       {
+        "file": "./data/acd/jcampWithAssignment.json",
+        "title": "JCAMP-DX with assignment"
+      },
+      {
         "file": "./data/cytisine/2d/hsqc.json",
         "title": "HSQC cytisine"
       },
@@ -116,6 +120,18 @@
     "groupName": "Simulate",
     "children": [
       {
+        "file": "./data/tests/simulated/d2-5-8-changingAll.json",
+        "title": "δ=2,5,8 Integration test"
+      },
+      {
+        "file": "./data/tests/simulated/d2-changingHeigh.json",
+        "title": "δ=2 Variating heigh"
+      },
+      {
+        "file": "./data/tests/simulated/d2-5-8-changingNbPoints.json",
+        "title": "δ=2,5,8 Variating nbPoints"
+      },
+      {
         "file": "./data/tests/simulated/d1-2-3-4-5-6-7-8.json",
         "title": "δ=1,2,3,4,5,6,7,8"
       },
@@ -184,10 +200,19 @@
   },
   {
     "groupName": "Test",
-    "children": [ 
+    "children": [
       {
         "title": "empty",
         "view": "Test"
+      },
+      {
+        "title": "Metabo workspace",
+        "view": "CustomWorkspace"
+      },
+      {
+        "title": "Metabo coffee workspace",
+        "view": "CustomWorkspace",
+        "file": "./data/coffee/Coffee.json"
       },
       {
         "file": "./data/cytisine/1H.json",
@@ -201,5 +226,4 @@
       }
     ]
   }
-
 ]

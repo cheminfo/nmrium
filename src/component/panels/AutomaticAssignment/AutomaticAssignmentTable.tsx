@@ -20,21 +20,21 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
     (e, row) => {
       e.preventDefault();
       e.stopPropagation();
-      const assignments = row.original.assignment;
+
       dispatch({
         type: SET_AUTOMATIC_ASSIGNMENTS,
-        payload: { assignments },
+        payload: { assignments: row.original.assignment },
       });
     },
     [dispatch],
   );
 
-  const COLUMNS: CustomColumn[] = useMemo(
+  const COLUMNS: CustomColumn<AutoAssignmentsData>[] = useMemo(
     () => [
       {
         index: 1,
         Header: '#',
-        Cell: ({ row }) => row.index + 1,
+        accessor: (_, index) => index + 1,
         style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
       },
       {
@@ -70,7 +70,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
       data={data}
       columns={COLUMNS}
       onClick={assignHandler}
-      highlightActiveRow
+      enableDefaultActiveRow
     />
   ) : (
     <NoTableData />

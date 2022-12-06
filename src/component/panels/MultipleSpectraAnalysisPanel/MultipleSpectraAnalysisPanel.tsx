@@ -7,18 +7,21 @@ import { IoPulseOutline } from 'react-icons/io5';
 
 import {
   getDataAsString,
-  SpectraAnalysis,
+  SpectraAnalysisData,
 } from '../../../data/data1d/MultipleAnalysis';
+import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/export';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -27,30 +30,23 @@ import MultipleSpectraAnalysisPreferences from './MultipleSpectraAnalysisPrefere
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
+  spectraAnalysis: SpectraAnalysisData;
+  spectra: Datum1D[];
   activeTab: string;
-  spectraAnalysis: SpectraAnalysis;
 }
 
 function MultipleSpectraAnalysisPanelInner({
   activeTab,
   spectraAnalysis,
+  spectra,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
+  const spectraPreferences = usePanelPreferences('spectra', activeTab);
+
   const settingRef = useRef<any>();
   const alert = useAlert();
   const modal = useModal();
   const dispatch = useDispatch();
-
-  const data = useMemo<any>(() => {
-    const {
-      values,
-      options: { columns, code },
-    } = spectraAnalysis[activeTab] || {
-      values: {},
-      options: { columns: {}, code: null },
-    };
-    return { values: Object.values(values), columns, code };
-  }, [activeTab, spectraAnalysis]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -78,7 +74,11 @@ function MultipleSpectraAnalysisPanelInner({
 
   const copyToClipboardHandler = useCallback(() => {
     void (async () => {
-      const data = getDataAsString(spectraAnalysis, activeTab);
+      const data = getDataAsString(
+        spectraAnalysis,
+        spectra,
+        spectraPreferences,
+      );
       const success = await copyTextToClipboard(data);
       if (success) {
         alert.success('Data copied to clipboard');
@@ -86,7 +86,7 @@ function MultipleSpectraAnalysisPanelInner({
         alert.error('copy to clipboard failed');
       }
     })();
-  }, [activeTab, alert, spectraAnalysis]);
+  }, [alert, spectra, spectraAnalysis, spectraPreferences]);
 
   return (
     <div
@@ -109,16 +109,11 @@ function MultipleSpectraAnalysisPanelInner({
         >
           <Button
             popupTitle="Copy To Clipboard"
-            // style={styles.button}
             onClick={copyToClipboardHandler}
           >
             <FaFileExport />
           </Button>
-          <Button
-            popupTitle="Spectra calibration"
-            // style={styles.button}
-            onClick={openAlignSpectra}
-          >
+          <Button popupTitle="Spectra calibration" onClick={openAlignSpectra}>
             <SvgNmrOverlay style={{ fontSize: '18px' }} />
           </Button>
           <ToggleButton
@@ -138,10 +133,13 @@ function MultipleSpectraAnalysisPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
+          <MultipleSpectraAnalysisTable
+            data={spectraAnalysis}
+            activeTab={activeTab}
+          />
         ) : (
           <MultipleSpectraAnalysisPreferences
-            data={data}
+            data={spectraAnalysis}
             onAfterSave={afterSaveHandler}
             ref={settingRef}
           />
@@ -157,12 +155,26 @@ const MemoizedMultipleSpectraAnalysisPanel = memo(
 
 export default function MultipleSpectraAnalysisPanel() {
   const {
+    data,
     view: {
       spectra: { activeTab },
     },
-    spectraAnalysis,
+    spectraAnalysis: analysis,
     displayerKey,
   } = useChartData();
+
+  const spectra = getSpectraByNucleus(activeTab, data) as Datum1D[];
+
+  const spectraAnalysis = useMemo<any>(() => {
+    const {
+      values,
+      options: { columns, code },
+    } = analysis[activeTab] || {
+      values: {},
+      options: { columns: {}, code: null },
+    };
+    return { values: Object.values(values), options: { columns, code } };
+  }, [activeTab, analysis]);
 
   if (!activeTab) {
     return <div />;
@@ -170,7 +182,7 @@ export default function MultipleSpectraAnalysisPanel() {
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel
-      {...{ activeTab, spectraAnalysis, displayerKey }}
+      {...{ activeTab, spectraAnalysis, displayerKey, spectra }}
     />
   );
 }

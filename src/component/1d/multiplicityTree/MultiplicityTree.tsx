@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import lodashGet from 'lodash/get';
 import { useMemo, useState, useEffect, CSSProperties } from 'react';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { Signal1D } from '../../../data/types/data1d';
 import {
   AssignmentsData,
@@ -16,6 +16,7 @@ import {
 } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { useActiveSpectrum } from '../../reducer/Reducer';
 import { options } from '../../toolbar/ToolTypes';
+import { assert } from '../../utility/assert';
 
 import LevelNode from './LevelNode';
 import StringNode from './StringNode';
@@ -69,12 +70,11 @@ function MultiplicityTree({
     type: HighlightEventSource.SIGNAL,
   });
 
-  const spectrumData = useMemo(
-    () =>
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      lodashGet(spectraData, `${activeSpectrum?.index}`, null),
-    [activeSpectrum, spectraData],
-  );
+  const spectrumData = activeSpectrum
+    ? spectraData[activeSpectrum.index]
+    : null;
+  assert(spectrumData, 'spectrumData should not be null');
+  assert(isSpectrum1D(spectrumData), 'spectrumData should be a Spectrum1D');
 
   const [xRange, setXRange] = useState({ x1: signal.delta, x2: signal.delta });
   const [treeProps, setTreeProps] = useState({

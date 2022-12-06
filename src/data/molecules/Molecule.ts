@@ -16,19 +16,23 @@ export interface StateMoleculeExtended extends StateMolecule {
   svg: string;
   atoms: Record<string, number>;
 }
-export interface FloatingMolecules {
+
+export type MoleculesView = Record<string, MoleculeView>;
+export interface MoleculeView {
+  floating: {
+    /**
+     * If the floating molecule is shown.
+     */
+    visible: boolean;
+    /**
+     * Floating molecule position.
+     */
+    position: Position;
+  };
   /**
-   * Reference to the id in molecules.
+   * Show/Hide atoms numbers on the molecule.
    */
-  id: string;
-  /**
-   * If the floating molecule is shown.
-   */
-  visible: boolean;
-  /**
-   * Floating molecule position.
-   */
-  position: Position;
+  showAtomNumber: boolean;
 }
 export function initMolecule(
   options: Partial<StateMolecule> = {},

@@ -66,7 +66,7 @@ async function getBoundary(
   }
 }
 
-export async function createPeakInRange(
+export async function selectRange(
   nmrium: NmriumPage,
   options: XOptions | XYOptions | YOptions,
 ) {

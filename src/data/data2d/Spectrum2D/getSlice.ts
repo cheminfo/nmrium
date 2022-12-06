@@ -2,6 +2,7 @@ import { zoneToX } from 'ml-spectra-processing';
 
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
 import { Datum2D } from '../../types/data2d';
+import { Data2DFid, Data2DFt } from '../../types/data2d/Data2D';
 
 /** get 2d projection
  * @param {number} x in ppm
@@ -14,7 +15,10 @@ interface SlicePosition {
 }
 
 export function getSlice(spectrum: Datum2D, position: SlicePosition) {
-  const data = spectrum.data;
+  const { data: spectraData, info } = spectrum;
+  const data = info.isFid
+    ? (spectraData as Data2DFid).re
+    : (spectraData as Data2DFt).rr;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   const xIndex = Math.floor((position.x - data.minX) / xStep);
@@ -24,44 +28,37 @@ export function getSlice(spectrum: Datum2D, position: SlicePosition) {
   if (yIndex < 0 || yIndex >= data.z.length) return;
 
   let infoX = {
-    nucleus: spectrum.info.nucleus[0], // 1H, 13C, 19F, ...
+    nucleus: info.nucleus[0], // 1H, 13C, 19F, ...
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
   };
 
   let dataX = {
-    x: zoneToX(
-      { from: spectrum.data.minX, to: spectrum.data.maxX },
-      spectrum.data.z[0].length,
-    ),
-    re: new Float64Array(spectrum.data.z[0].length),
+    x: zoneToX({ from: data.minX, to: data.maxX }, data.z[0].length),
+    re: new Float64Array(data.z[0].length),
   };
 
-  for (let i = 0; i < spectrum.data.z[0].length; i++) {
-    dataX.re[i] += spectrum.data.z[yIndex][i];
+  for (let i = 0; i < data.z[0].length; i++) {
+    dataX.re[i] += data.z[yIndex][i];
   }
 
   let infoY = {
-    nucleus: spectrum.info.nucleus[1], // 1H, 13C, 19F, ...
+    nucleus: info.nucleus[1], // 1H, 13C, 19F, ...
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
   };
 
   let dataY = {
-    x: zoneToX(
-      { from: spectrum.data.minY, to: spectrum.data.maxY },
-      spectrum.data.z.length,
-    ),
-    re: new Float64Array(spectrum.data.z.length),
+    x: zoneToX({ from: data.minY, to: data.maxY }, data.z.length),
+    re: new Float64Array(data.z.length),
   };
 
-  let index = spectrum.data.z.length - 1;
-  for (let i = 0; i < spectrum.data.z.length; i++) {
-    dataY.re[i] += spectrum.data.z[index--][xIndex];
+  let index = data.z.length - 1;
+  for (let i = 0; i < data.z.length; i++) {
+    dataY.re[i] += data.z[index--][xIndex];
   }
-
   const horizontal = initiateDatum1D({ info: infoX, data: dataX }, {});
   const vertical = initiateDatum1D({ info: infoY, data: dataY }, {});
   return { horizontal, vertical };

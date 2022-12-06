@@ -1,7 +1,7 @@
-import { useToggleAccordion } from 'analysis-ui-components';
 import lodashDebounce from 'lodash/debounce';
 import lodashMap from 'lodash/map';
 import { useCallback, useRef, useState } from 'react';
+import { useToggleAccordion } from 'react-science/ui';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';

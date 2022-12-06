@@ -1,7 +1,7 @@
-import { DropZone } from 'analysis-ui-components';
 import debounce from 'lodash/debounce';
 import { useState, useEffect, useCallback, useReducer } from 'react';
 import { ObjectInspector } from 'react-inspector';
+import { DropZone } from 'react-science/ui';
 
 import NMRium from '../../component/NMRium';
 import { loadFiles } from '../../component/utility/FileUtility';

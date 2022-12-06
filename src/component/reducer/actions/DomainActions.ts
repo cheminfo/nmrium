@@ -5,6 +5,7 @@ import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
+import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -83,32 +84,42 @@ function get2DDomain(state: State) {
   } = state;
 
   const nucleus = activeTab.split(',');
+  const activeSpectrum = getActiveSpectrum(state);
+  const spectrum =
+    data.find((datum) => datum.id === activeSpectrum?.id) || null;
+  if (spectrum?.info.isFid) {
+    const { minX, maxX, minY, maxY } = (spectrum.data as Data2DFid).re;
+    xArray = [minX, maxX];
+    yArray = [minY, maxY];
+  } else {
+    try {
+      xArray = (
+        data.filter(
+          (datum) =>
+            isSpectrum2D(datum) &&
+            datum.info.nucleus?.join(',') === activeTab &&
+            datum.info.isFt,
+        ) as Array<Datum2D>
+      ).flatMap((datum: Datum2D) => {
+        const { minX, maxX } = (datum.data as Data2DFt).rr;
+        return [minX, maxX];
+      });
 
-  try {
-    xArray = (
-      data.filter(
-        (datum) =>
-          isSpectrum2D(datum) &&
-          datum.info.nucleus?.join(',') === activeTab &&
-          datum.info.isFt,
-      ) as Array<Datum2D>
-    ).flatMap((datum: Datum2D) => {
-      return [datum.data.minX, datum.data.maxX];
-    });
-
-    yArray = (
-      data.filter(
-        (d) =>
-          isSpectrum2D(d) &&
-          d.info.nucleus?.join(',') === activeTab &&
-          d.info.isFt,
-      ) as Array<Datum2D>
-    ).flatMap((datum: Datum2D) => {
-      return [datum.data.minY, datum.data.maxY];
-    });
-  } catch (error) {
-    // TODO: handle error
-    reportError(error);
+      yArray = (
+        data.filter(
+          (d) =>
+            isSpectrum2D(d) &&
+            d.info.nucleus?.join(',') === activeTab &&
+            d.info.isFt,
+        ) as Array<Datum2D>
+      ).flatMap((datum: Datum2D) => {
+        const { minY, maxY } = (datum.data as Data2DFt).rr;
+        return [minY, maxY];
+      });
+    } catch (error) {
+      // TODO: handle error
+      reportError(error);
+    }
   }
 
   const spectrumsIDs = new Set(nucleus.map((n) => activeSpectra[n]?.id));

@@ -1,7 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import { useMemo, useCallback, useState, MouseEvent } from 'react';
+import {
+  useMemo,
+  useCallback,
+  useState,
+  MouseEvent,
+  CSSProperties,
+} from 'react';
 
 import { Info1D } from '../../../data/types/data1d';
 import {
@@ -26,6 +32,7 @@ import RelativeColumn from './TableColumns/RelativeColumn';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
+import { RangeData } from './hooks/useMapRanges';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -42,6 +49,28 @@ interface RangesTableRowProps {
   preferences: WorkSpacePanelPreferences['ranges'];
   info: Info1D;
 }
+
+export interface BaseRangeColumnProps {
+  row: RangeData;
+  format: string;
+}
+export interface OnHoverEvent {
+  onHover: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+}
+
+export interface RowSpanTags {
+  rowSpanTags: {
+    rowSpan: any;
+    style: CSSProperties;
+  };
+}
+
+export type RangeColumnProps = BaseRangeColumnProps &
+  OnHoverEvent &
+  RowSpanTags;
 
 function RangesTableRow({
   rowData,
@@ -177,7 +206,7 @@ function RangesTableRow({
         <RangeColumn
           value={rowData.from}
           rowSpanTags={rowSpanTags}
-          onHoverRange={onHoverRange}
+          onHover={onHoverRange}
           format={preferences.from.format}
         />
       )}
@@ -185,41 +214,43 @@ function RangesTableRow({
         <RangeColumn
           value={rowData.to}
           rowSpanTags={rowSpanTags}
-          onHoverRange={onHoverRange}
+          onHover={onHoverRange}
           format={preferences.to.format}
         />
       )}
 
       {preferences.deltaPPM.show && (
         <SignalDeltaColumn
-          rowData={rowData}
-          onHoverSignal={onHoverSignal}
-          deltaPPMFormat={preferences.deltaPPM.format}
+          row={rowData}
+          rowSpanTags={rowSpanTags}
+          onHover={onHoverSignal}
+          format={preferences.deltaPPM.format}
         />
       )}
       {preferences.deltaHz.show && (
         <SignalDeltaHzColumn
-          rowData={rowData}
-          onHoverSignal={onHoverSignal}
-          deltaHzFormat={preferences.deltaHz.format}
+          row={rowData}
+          rowSpanTags={rowSpanTags}
+          onHover={onHoverSignal}
+          format={preferences.deltaHz.format}
           info={info}
         />
       )}
 
       {preferences.relative.show && (
         <RelativeColumn
-          rowData={rowData}
+          row={rowData}
           rowSpanTags={rowSpanTags}
-          onHoverRange={onHoverRange}
+          onHover={onHoverRange}
           format={preferences.relative.format}
         />
       )}
 
       {preferences.absolute.show && (
         <AbsoluteColumn
-          value={rowData.absolute}
+          row={rowData}
           rowSpanTags={rowSpanTags}
-          onHoverRange={onHoverRange}
+          onHover={onHoverRange}
           format={preferences.absolute.format}
         />
       )}
@@ -230,14 +261,14 @@ function RangesTableRow({
 
       {preferences.coupling.show && (
         <CouplingColumn
-          rowData={rowData}
-          onHoverSignal={onHoverSignal}
+          row={rowData}
+          onHover={onHoverSignal}
           format={preferences.coupling.format}
         />
       )}
 
       <SignalAssignmentsColumn
-        rowData={rowData}
+        row={rowData}
         assignment={assignmentSignal}
         highlight={highlightSignal}
         onHover={onHoverSignal}
@@ -248,7 +279,7 @@ function RangesTableRow({
       />
 
       <RangeAssignmentsColumn
-        rowData={rowData}
+        row={rowData}
         assignment={assignmentRange}
         highlight={highlightRangeAssignmentsColumn}
         onHover={onHoverRangeAssignmentsColumn}
@@ -261,7 +292,7 @@ function RangesTableRow({
       />
 
       <ActionsColumn
-        rowData={rowData}
+        row={rowData}
         onHoverSignal={onHoverSignal}
         onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}

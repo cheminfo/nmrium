@@ -14,6 +14,16 @@ export interface DataBaseSignal {
   delta: number;
 }
 
+export interface DataBaseBasic {
+  index: number;
+  names: string[];
+  solvent: string;
+  smiles: string;
+  ocl: {
+    idCode: string;
+    coordinates: string;
+  };
+}
 export interface DataBaseRange {
   from: number;
   to: number;
@@ -34,6 +44,15 @@ export const DATA_BASES: LocalDatabase[] = [
     value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
   },
 ];
+
+interface Coupling {
+  multiplicity: string;
+  coupling: string;
+}
+
+export type PrepareDataResult = Partial<
+  DataBaseBasic & DataBaseRange & DataBaseSignal & Coupling
+>;
 
 export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
@@ -136,10 +155,6 @@ function prepareDataBase(array: Array<DatabaseNMREntry>) {
   });
 }
 
-export type PrepareDataResult = Partial<
-  DataBaseRange | DataBaseSignal | Jcoupling
->;
-
 export function prepareData(
   data: Array<DatabaseNMREntry>,
 ): PrepareDataResult[] {
@@ -173,7 +188,7 @@ export function prepareData(
             id: ids,
             ranges,
           };
-          result.push(data);
+          result.push(data as unknown as PrepareDataResult);
         }
       }
     }

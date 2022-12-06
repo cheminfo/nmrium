@@ -1,4 +1,3 @@
-import { Header, Toolbar } from 'analysis-ui-components';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { useMemo, useCallback, memo } from 'react';
 import {
@@ -6,6 +5,7 @@ import {
   FaWrench,
   FaQuestionCircle,
 } from 'react-icons/fa';
+import { Header, Toolbar } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
@@ -33,10 +33,16 @@ interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
   selectedOptionPanel: string | null;
+  height: number;
 }
 
 function HeaderInner(props: HeaderInnerProps) {
-  const { isFullscreen, onMaximize = () => null, selectedOptionPanel } = props;
+  const {
+    isFullscreen,
+    onMaximize = () => null,
+    selectedOptionPanel,
+    height,
+  } = props;
 
   const modal = useModal();
   const {
@@ -78,9 +84,9 @@ function HeaderInner(props: HeaderInnerProps) {
       position: positions.MIDDLE,
       enableResizing: true,
       width: 600,
-      height: 400,
+      height: height / 2,
     });
-  }, [modal]);
+  }, [height, modal]);
 
   const openAboutUs = useCallback(() => {
     modal.show(<AboutUsModal />, {
@@ -189,6 +195,7 @@ const MemoizedHeader = memo(HeaderInner);
 export default function HeaderWrapper({ isFullscreen, onMaximize }) {
   const {
     toolOptions: { selectedOptionPanel },
+    height,
   } = useChartData();
   return (
     <MemoizedHeader
@@ -196,6 +203,7 @@ export default function HeaderWrapper({ isFullscreen, onMaximize }) {
         selectedOptionPanel,
         isFullscreen,
         onMaximize,
+        height,
       }}
     />
   );
