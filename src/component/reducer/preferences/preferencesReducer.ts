@@ -14,7 +14,7 @@ import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
 
-const LOCAL_STORAGE_VERSION = 11;
+const LOCAL_STORAGE_VERSION = 12;
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
