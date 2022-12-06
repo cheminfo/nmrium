@@ -119,12 +119,14 @@ export function toJSON(
   );
 
   return {
-    ...(target === 'onDataChange' ? { actionType } : {}),
     version: CURRENT_EXPORT_VERSION,
-    spectra,
-    molecules,
-    correlations,
-    multipleAnalysis: multipleAnalysis as SpectraAnalysis,
-    preferences,
+    data: {
+      ...(target === 'onDataChange' ? { actionType } : {}),
+      spectra,
+      molecules,
+      correlations,
+      multipleAnalysis: multipleAnalysis as SpectraAnalysis,
+      preferences,
+    },
   };
 }
