@@ -9,7 +9,10 @@ export function setWorkspace(
 ) {
   const workspaceKey = action.payload.workspace;
   if (!draft.workspaces[workspaceKey]) {
-    draft.workspaces[workspaceKey] = getPreferencesByWorkspace(workspaceKey);
+    draft.workspaces[workspaceKey] = getPreferencesByWorkspace(
+      workspaceKey,
+      draft.customWorkspaces,
+    );
   }
   draft.workspace.current = workspaceKey;
 }

@@ -8,7 +8,6 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../../context/PreferencesContext';
-import ActionButtons from '../../elements/ActionButtons';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
@@ -111,12 +110,15 @@ function isRestButtonDisable(
   workspaceName,
   customWorkspaces,
 ) {
-  if (!PredefinedWorkspaces[workspaceName] || customWorkspaces[workspaceName]) {
+  if (
+    !PredefinedWorkspaces[workspaceName] &&
+    !customWorkspaces[workspaceName]
+  ) {
     return true;
   } else {
     return (
       JSON.stringify(currentWorkspaceSetting) ===
-      JSON.stringify(getPreferencesByWorkspace(workspaceName))
+      JSON.stringify(getPreferencesByWorkspace(workspaceName, customWorkspaces))
     );
   }
 }
@@ -135,7 +137,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   } = usePreferences();
   const alert = useAlert();
   const refForm = useRef<FormikProps<any>>(null);
-  const workspaces = useWorkspacesList(true);
+  const workspaces = useWorkspacesList();
   const workspaceName = preferences.workspace.current;
   const [isRestDisabled, setRestDisabled] = useState(
     isRestButtonDisable(currentWorkspace, workspaceName, customWorkspaces),
@@ -147,24 +149,31 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       {
         key: 'new',
         label: 'Custom workspace',
-      },
+      } as any,
     ]);
   }, [workspaces]);
 
   const handleReset = () => {
-    const workSpaceDisplayPreferences =
-      getPreferencesByWorkspace(workspaceName);
+    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
+      workspaceName,
+      customWorkspaces,
+    );
     refForm.current?.setValues(workSpaceDisplayPreferences);
   };
 
-  const handleClose = () => {
-    onClose?.();
-  };
 
   function submitHandler(values) {
-    dispatch({ type: 'SET_PREFERENCES', payload: values });
-    alert.success('Settings saved successfully');
-    onClose?.();
+    if (
+      !preferences.isCurrentWorkspaceReadOnly
+    ) {
+      dispatch({ type: 'SET_PREFERENCES', payload: values });
+      alert.success('Settings saved successfully');
+      onClose?.();
+    } else {
+      alert.error(
+        'Please enter a new user workspace name in order to save your changes locally',
+      );
+    }
   }
 
   const tabChangeHandler = useCallback((tab) => {
@@ -360,12 +369,10 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         </Formik>
       </div>
       <div className="footer-container">
-        <ActionButtons
-          style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => refForm.current?.submitForm()}
-          doneLabel="Save"
-          onCancel={handleClose}
-        />
+        <Button.Done onClick={() => refForm.current?.submitForm()}>
+          Done
+        </Button.Done>
+
       </div>
     </div>
   );

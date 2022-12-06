@@ -4,6 +4,7 @@ import {
   preferencesInitialState,
   PreferencesState,
 } from '../reducer/preferences/preferencesReducer';
+import { isReadOnlyWorkspace } from '../reducer/preferences/utilities/isReadOnlyWorkspace';
 
 export const PreferencesContext = createContext<PreferencesState>(
   preferencesInitialState,
@@ -16,7 +17,13 @@ export function usePreferences() {
     throw new Error('Preferences context was not found');
   }
 
-  const { workspace, workspaces, customWorkspaces, dispatch } = context;
+  const {
+    workspace,
+    workspaces,
+    customWorkspaces,
+    workspacesTempKeys,
+    dispatch,
+  } = context;
 
   return useMemo(() => {
     return {
@@ -25,19 +32,18 @@ export function usePreferences() {
       workspaces,
       customWorkspaces,
       dispatch,
+      workspacesTempKeys,
+      isCurrentWorkspaceReadOnly: isReadOnlyWorkspace(context)
     };
-  }, [customWorkspaces, dispatch, workspace, workspaces]);
+  }, [workspaces, workspace, customWorkspaces, dispatch, workspacesTempKeys, context]);
 }
 
-export function useWorkspacesList(showVersion = false) {
+export function useWorkspacesList() {
   const { workspaces } = usePreferences();
   return useMemo(() => {
     return Object.keys(workspaces).map((key) => ({
       key,
-      label:
-        showVersion && workspaces[key]?.version
-          ? `${workspaces[key].label} - V${workspaces[key].version}`
-          : workspaces[key].label,
+      ...workspaces[key],
     }));
-  }, [showVersion, workspaces]);
+  }, [workspaces]);
 }
