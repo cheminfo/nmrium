@@ -6,11 +6,12 @@ import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
-import { NMRiumPreferences, Spectra } from '../../NMRium';
+import { Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { getInitialState, State } from '../Reducer';
-import { INITIATE, LOAD_JSON_FILE } from '../types/Types';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
@@ -24,28 +25,7 @@ function setColors(draft: Draft<State>, colors: UsedColors) {
   draft.usedColors['2d'] = draft.usedColors['2d'].concat(colors['2d']);
 }
 
-function setData(
-  draft: Draft<State>,
-  data: {
-    spectra: Spectra;
-    molecules: StateMoleculeExtended[];
-    preferences: NMRiumPreferences;
-    correlations: CorrelationData;
-    usedColors: UsedColors;
-  },
-) {
-  const { spectra, molecules, correlations, usedColors } = data || {
-    spectra: [],
-    molecules: [],
-    correlations: {},
-    multipleAnalysis: {},
-    exclusionZones: [],
-  };
-
-  setColors(draft, usedColors);
-  draft.data = spectra;
-  draft.molecules = MoleculeManager.fromJSON(molecules);
-
+function setCorrelation(draft: Draft<State>, correlations) {
   if (!correlations || Object.keys(correlations).length === 0) {
     draft.correlations = buildCorrelationData([], {
       tolerance: DefaultTolerance,
@@ -58,6 +38,45 @@ function setData(
 
     // draft.correlations = correlations // original command without overwriting
   }
+}
+
+function initSpectra(inputSpectra: (Datum1D | Datum2D)[], usedColors) {
+  const spectra: any = [];
+
+  for (const spectrum of inputSpectra) {
+    const { info } = spectrum;
+    if (info.dimension === 1) {
+      spectra.push(initiateDatum1D(spectrum, usedColors));
+    } else if (info.dimension === 2) {
+      spectra.push(initiateDatum2D({ ...spectrum }, usedColors));
+    }
+  }
+  return spectra;
+}
+
+function setData(
+  draft: Draft<State>,
+  input: {
+    data: {
+      spectra: Spectra;
+      molecules: StateMoleculeExtended[];
+      correlations: CorrelationData;
+    };
+    usedColors: UsedColors;
+  },
+) {
+  const {
+    data: { spectra, molecules, correlations },
+    usedColors,
+  } = input || {
+    data: { spectra: [], molecules: [], correlations: {} },
+    multipleAnalysis: {},
+  };
+
+  setColors(draft, usedColors);
+  draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
+  draft.data = draft.data.concat(initSpectra(spectra, usedColors));
+  setCorrelation(draft, correlations);
 }
 
 function convertHybridizationStringValuesInCorrelations(
@@ -97,80 +116,44 @@ function setPreferences(draft: Draft<State>, data) {
   }
 }
 
-function initiate(draft: Draft<State>, action) {
+function initData(draft: Draft<State>, action) {
   const state = getInitialState();
-  const { spectra, usedColors, ...resPayload } = action.payload;
-  const newSpectra: any = [];
-  for (let spectrum of spectra) {
-    const { info } = spectrum;
-    if (info.dimension === 1) {
-      newSpectra.push(initiateDatum1D(spectrum, usedColors));
-    } else if (info.dimension === 2) {
-      newSpectra.push(initiateDatum2D({ ...spectrum }, usedColors));
-    }
-  }
-  resPayload.usedColors = usedColors;
-  resPayload.spectra = newSpectra;
-  setData(state, resPayload);
-  const preferences = resPayload?.preferences || {};
-  setActiveTab(state, { tab: preferences?.activeTab || '' });
+  const { data } = action.payload;
+  setData(state, action.payload);
+  setActiveTab(state, { tab: data?.preferences?.activeTab || '' });
   state.width = draft.width;
   state.height = draft.height;
-  setPreferences(state, resPayload);
+  setPreferences(state, data?.preferences);
   state.isLoading = false;
-  state.actionType = INITIATE;
+  state.actionType = action.actionType;
   return state;
+}
+
+function initiate(draft: Draft<State>, action) {
+  return initData(draft, action);
 }
 
 function loadJcampFile(draft: Draft<State>, actions) {
   const { files } = actions;
   const spectra = addJcamps(files, draft.usedColors);
-  for (const spectrum of spectra) {
-    draft.data.push(spectrum);
-  }
+  draft.data = draft.data.concat(initSpectra(spectra, draft.usedColors));
   setActiveTab(draft);
   changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
 
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft: Draft<State>, action) {
-  const state = getInitialState();
-
-  setData(state, action.payload);
-  const preferences = action.payload?.preferences || {};
-  setActiveTab(state, { tab: preferences?.activeTab || '' });
-  state.width = draft.width;
-  state.height = draft.height;
-  setPreferences(state, preferences);
-  state.isLoading = false;
-  state.actionType = LOAD_JSON_FILE;
-  return state;
+function loadDropFiles(draft: Draft<State>, action) {
+  const { append } = action.payload;
+  if (append) {
+    setData(draft, action.payload);
+    setActiveTab(draft);
+    changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+    draft.actionType = action.actionType;
+    draft.isLoading = false;
+  } else {
+    return initData(draft, action);
+  }
 }
 
-function loadDropFiles(draft: Draft<State>, actions) {
-  const { data } = actions.payload;
-  const { spectra, molecules } = data;
-  for (let spectrum of spectra) {
-    const { info } = spectrum;
-    if (info.dimension === 1) {
-      draft.data.push(initiateDatum1D(spectrum, draft.usedColors));
-    } else if (info.dimension === 2) {
-      draft.data.push(initiateDatum2D(spectrum, draft.usedColors));
-    }
-  }
-  for (let molecule of molecules) {
-    MoleculeManager.addMolfile(draft.molecules, molecule.molfile);
-  }
-  setActiveTab(draft);
-
-  draft.isLoading = false;
-}
-
-export {
-  setIsLoading,
-  initiate,
-  loadJcampFile,
-  loadDropFiles,
-  handleLoadJsonFile,
-};
+export { setIsLoading, initiate, loadJcampFile, loadDropFiles };

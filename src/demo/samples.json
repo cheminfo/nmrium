@@ -120,6 +120,18 @@
     "groupName": "Simulate",
     "children": [
       {
+        "file": "./data/tests/simulated/d2-5-8-changingAll.json",
+        "title": "δ=2,5,8 Integration test"
+      },
+      {
+        "file": "./data/tests/simulated/d2-changingHeigh.json",
+        "title": "δ=2 Variating heigh"
+      },
+      {
+        "file": "./data/tests/simulated/d2-5-8-changingNbPoints.json",
+        "title": "δ=2,5,8 Variating nbPoints"
+      },
+      {
         "file": "./data/tests/simulated/d1-2-3-4-5-6-7-8.json",
         "title": "δ=1,2,3,4,5,6,7,8"
       },
