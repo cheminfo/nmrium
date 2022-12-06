@@ -23,23 +23,28 @@ const styles = {
 export interface DropDownListItem {
   key: string;
   label: string;
-  index?: number;
 }
 
-export interface DropDownListProps {
-  data: Array<DropDownListItem>;
-  onSelect: (index: number) => void;
+export interface ItemProps {
+  itemKey?: string;
+  labelKey?: string;
+}
+
+export interface DropDownListProps<T> {
+  data: Array<T>;
   renderItem?: ((item: DropDownListItem) => ReactNode) | null;
 }
 
-interface DropDownButtonProps extends Omit<DropDownListProps, 'onSelect'> {
+interface DropDownButtonProps<T> extends DropDownListProps<T>, ItemProps {
   selectedKey?: string;
   onSelect?: (item: DropDownListItem) => void;
   formatSelectedValue?: (Item: DropDownListItem) => string;
   style?: CSSObject;
 }
 
-function DropDownButton(props: DropDownButtonProps) {
+function DropDownButton<T extends DropDownListItem>(
+  props: DropDownButtonProps<T>,
+) {
   const {
     data,
     selectedKey,
@@ -47,6 +52,8 @@ function DropDownButton(props: DropDownButtonProps) {
     formatSelectedValue = (item) => item.label,
     renderItem = null,
     style,
+    itemKey = 'key',
+    labelKey = 'label',
   } = props;
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<DropDownListItem | null>();
@@ -55,10 +62,10 @@ function DropDownButton(props: DropDownButtonProps) {
 
   useEffect(() => {
     if (selectedKey) {
-      const item = data.find((i) => i.key === selectedKey) || null;
+      const item = data.find((i) => i[itemKey] === selectedKey) || null;
       setItem(item);
     }
-  }, [selectedKey, data]);
+  }, [selectedKey, data, itemKey]);
 
   useEffect(() => {
     function handleClick() {
@@ -93,6 +100,8 @@ function DropDownButton(props: DropDownButtonProps) {
           data={data}
           onSelect={selectHandler}
           renderItem={renderItem}
+          itemKey={itemKey}
+          labelKey={labelKey}
         />
       )}
     </div>
