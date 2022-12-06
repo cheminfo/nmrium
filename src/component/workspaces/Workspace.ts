@@ -166,13 +166,18 @@ export interface WorkspaceData {
  * custom : workspace which come form the component level <NMRium customWorkspaces = {} />
  * predefined : workspace which hardcoded in NMRium
  * user: workspaces which the user create from the general settings
- */
-export type WorkSpaceSource = 'custom' | 'predefined' | 'user';
+ * component: workspaces which specified at the level of the component `preferences` property
+ * nmriumFile: workspaces which is come from the the numrium file
+ *
+ * */
+export type WorkSpaceSource =
+  | 'custom'
+  | 'predefined'
+  | 'user'
+  | 'component'
+  | 'nmriumFile';
 
 export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
-export type CustomWorkspaces = Record<
-  string,
-  Omit<WorkspaceMeta, 'version'> & WorkspaceData
->;
+export type CustomWorkspaces = Record<string, InnerWorkspace>;
 
 export type Workspace = WorkspaceMeta & Required<WorkspaceData>;

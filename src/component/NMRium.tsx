@@ -250,7 +250,7 @@ function InnerNMRium({
     dispatchPreferences({
       type: 'INIT_PREFERENCES',
       payload: {
-        display: preferences,
+        preferences,
         workspace,
         customWorkspaces,
         dispatch: dispatchPreferences,

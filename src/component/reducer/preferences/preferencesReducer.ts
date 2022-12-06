@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 
 import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
@@ -88,6 +89,10 @@ export interface PreferencesState {
     current: NMRiumWorkspace;
     base: NMRiumWorkspace | null;
   };
+  workspacesTempKeys: {
+    componentPreferencesKey: string;
+    nmriumWorkspaceKey: string;
+  };
 }
 
 export const preferencesInitialState: PreferencesState = {
@@ -98,6 +103,10 @@ export const preferencesInitialState: PreferencesState = {
   workspace: {
     current: 'default',
     base: null,
+  },
+  workspacesTempKeys: {
+    componentPreferencesKey: `component[${v4()}]`,
+    nmriumWorkspaceKey: `nmrium[${v4()}]`,
   },
 };
 
