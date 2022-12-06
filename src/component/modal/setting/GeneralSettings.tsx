@@ -161,11 +161,8 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
     refForm.current?.setValues(workSpaceDisplayPreferences);
   };
 
-
   function submitHandler(values) {
-    if (
-      !preferences.isCurrentWorkspaceReadOnly
-    ) {
+    if (!preferences.isCurrentWorkspaceReadOnly) {
       dispatch({ type: 'SET_PREFERENCES', payload: values });
       alert.success('Settings saved successfully');
       onClose?.();
@@ -372,7 +369,6 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         <Button.Done onClick={() => refForm.current?.submitForm()}>
           Done
         </Button.Done>
-
       </div>
     </div>
   );
