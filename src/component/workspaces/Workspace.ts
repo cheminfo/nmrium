@@ -5,7 +5,7 @@ interface NucleusFormat {
   ppm: string;
   hz: string;
 }
-interface GeneralPreferences {
+export interface GeneralPreferences {
   dimmedSpectraOpacity: number;
 }
 

@@ -354,7 +354,10 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
             <Tab title="Databases" tabid="databases">
               <div className="inner-content">
-                <DatabasesTabContent currentWorkspace={workspaceName} />
+                <DatabasesTabContent
+                  currentWorkspace={workspaceName}
+                  customWorkspaces={customWorkspaces}
+                />
               </div>
             </Tab>
             <Tab title="Import filters" tabid="importation-filters">
