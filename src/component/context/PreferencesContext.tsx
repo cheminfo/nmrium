@@ -33,9 +33,16 @@ export function usePreferences() {
       customWorkspaces,
       dispatch,
       workspacesTempKeys,
-      isCurrentWorkspaceReadOnly: isReadOnlyWorkspace(context)
+      isCurrentWorkspaceReadOnly: isReadOnlyWorkspace(context),
     };
-  }, [workspaces, workspace, customWorkspaces, dispatch, workspacesTempKeys, context]);
+  }, [
+    workspaces,
+    workspace,
+    customWorkspaces,
+    dispatch,
+    workspacesTempKeys,
+    context,
+  ]);
 }
 
 export function useWorkspacesList() {
