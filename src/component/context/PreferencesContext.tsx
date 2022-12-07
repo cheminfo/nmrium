@@ -6,6 +6,10 @@ import {
 } from '../reducer/preferences/preferencesReducer';
 import { isReadOnlyWorkspace } from '../reducer/preferences/utilities/isReadOnlyWorkspace';
 
+export interface PreferencesContextData extends PreferencesState {
+  isCurrentWorkspaceReadOnly: boolean;
+}
+
 export const PreferencesContext = createContext<PreferencesState>(
   preferencesInitialState,
 );
