@@ -1,16 +1,12 @@
-import { DataExportOptions, DataExportOptionsType } from '../../SpectraManager';
+import { DataExportOptionsType } from '../../SpectraManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
-export function toJSON(
-  datum1D: Datum1D,
-  dataExportOption: DataExportOptionsType,
-) {
+export function toJSON(datum1D: Datum1D, dataType: DataExportOptionsType) {
   return {
     id: datum1D.id,
     display: datum1D.display,
-    ...(dataExportOption === DataExportOptions.ROW_DATA ||
-    (dataExportOption === DataExportOptions.DATA_SOURCE &&
-      !datum1D.source.jcampURL)
+    ...(dataType === 'ROW_DATA' ||
+    (dataType === 'DATA_SOURCE' && !datum1D.source.jcampURL)
       ? {
           data: datum1D.originalData,
           info: datum1D.originalInfo,

@@ -6,16 +6,13 @@ import { useCallback, useRef } from 'react';
 import { DataExportOptions } from '../../data/SpectraManager';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
+import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 
 import { ModalStyles } from './ModalStyle';
 
 const styles = css`
-  .row {
-    align-items: center;
-  }
-
   .inner-content {
     flex: 1;
   }
@@ -30,7 +27,7 @@ const styles = css`
   }
 
   .data-export-group {
-    label:first-child {
+    label {
       margin-right: 10px;
     }
     label {
@@ -46,7 +43,11 @@ const INITIAL_VALUE = {
   name: '',
   compressed: false,
   pretty: false,
-  dataExportOption: DataExportOptions.ROW_DATA,
+  include: {
+    data: DataExportOptions.ROW_DATA,
+    view: false,
+    settings: false,
+  },
 };
 
 interface SaveAsModalProps {
@@ -83,7 +84,6 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
           onSubmit={submitHandler}
         >
           <>
-            {' '}
             <div className="row margin-10">
               <span className="custom-label">Name</span>
               <FormikInput
@@ -104,23 +104,45 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
             </div>
             <div className="row margin-10">
               <span className="custom-label"> Include </span>
-              <div className="data-export-group">
-                <label>
-                  <Field
-                    type="radio"
-                    name="dataExportOption"
-                    value={DataExportOptions.ROW_DATA}
-                  />
-                  Raw Data
-                </label>
-                <label>
-                  <Field
-                    type="radio"
-                    name="dataExportOption"
-                    value={DataExportOptions.DATA_SOURCE}
-                  />
-                  Data Source
-                </label>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="data-export-group">
+                  <label>
+                    <Field
+                      type="radio"
+                      name="include.data"
+                      value={DataExportOptions.ROW_DATA}
+                    />
+                    Raw Data
+                  </label>
+                  <label>
+                    <Field
+                      type="radio"
+                      name="include.data"
+                      value={DataExportOptions.DATA_SOURCE}
+                    />
+                    Data Source
+                  </label>
+                  <label>
+                    <Field
+                      type="radio"
+                      name="include.data"
+                      value={DataExportOptions.NO_DATA}
+                    />
+                    No Data
+                  </label>
+                </div>
+                <div className="row" style={{ paddingTop: '10px' }}>
+                  <Label htmlFor="include.view" title="View">
+                    <FormikCheckBox name="include.view" />
+                  </Label>
+                  <Label
+                    htmlFor="include.settings"
+                    title="Settings"
+                    style={{ container: { marginLeft: '5px' } }}
+                  >
+                    <FormikCheckBox name="include.settings" />
+                  </Label>
+                </div>
               </div>
             </div>
           </>

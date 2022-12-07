@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 
-import { toJSON } from '../../data/SpectraManager';
+import { ExportOptions, toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import { useGlobal } from '../context/GlobalContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { positions, useModal } from '../elements/popup/Modal';
 import SaveAsModal from '../modal/SaveAsModal';
@@ -18,7 +19,7 @@ export default function useExport() {
   const modal = useModal();
   const alert = useAlert();
   const state = useChartData();
-
+  const preferencesState = usePreferences();
   const saveToClipboardHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
       const hideLoading = await alert.showLoading(
@@ -41,7 +42,7 @@ export default function useExport() {
             async function handle() {
               //exported file name by default will be the first spectrum name
               const fileName = state.data[0]?.display?.name;
-              const exportedData = toJSON(state, 'nmrium');
+              const exportedData = toJSON(state, preferencesState, 'nmrium');
               await exportAsJSON(
                 exportedData,
                 fileName,
@@ -56,7 +57,7 @@ export default function useExport() {
           });
       }
     },
-    [alert, state],
+    [alert, preferencesState, state],
   );
 
   const saveAsSVGHandler = useCallback(async () => {
@@ -85,16 +86,28 @@ export default function useExport() {
     }
   }, [rootRef, alert, state.data]);
 
+  interface SaveOptions {
+    include: ExportOptions;
+    name: string;
+    compressed: boolean;
+    pretty: boolean;
+  }
+
   const saveHandler = useCallback(
-    (options) => {
+    (options: SaveOptions) => {
       async function handler() {
-        const { name, pretty, compressed, dataExportOption } = options;
+        const { name, pretty, compressed, include } = options;
         const hideLoading = await alert.showLoading(
           `Exporting as ${name}.nmrium process in progress`,
         );
         setTimeout(() => {
           void (async () => {
-            const exportedData = toJSON(state, 'nmrium', dataExportOption);
+            const exportedData = toJSON(
+              state,
+              preferencesState,
+              'nmrium',
+              include,
+            );
             const spaceIndent = pretty ? 2 : 0;
             await exportAsJSON(exportedData, name, spaceIndent, compressed);
             hideLoading();
@@ -104,7 +117,7 @@ export default function useExport() {
 
       void handler();
     },
-    [alert, state],
+    [alert, preferencesState, state],
   );
   const saveAsHandler = useCallback(async () => {
     if (state.data.length > 0) {
@@ -112,7 +125,7 @@ export default function useExport() {
       modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
         isBackgroundBlur: false,
         position: positions.TOP_CENTER,
-        width: 400,
+        width: 450,
       });
     }
   }, [modal, saveHandler, state.data]);

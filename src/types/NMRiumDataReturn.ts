@@ -1,5 +1,6 @@
 import { CorrelationData } from 'nmr-correlation';
 
+import { Workspace } from '../component/workspaces/Workspace';
 import { SpectraAnalysis } from '../data/data1d/MultipleAnalysis';
 import { StateMolecule } from '../data/molecules/Molecule';
 import { Datum1D } from '../data/types/data1d';
@@ -14,7 +15,8 @@ export interface NMRiumDataReturn {
     spectra: (Datum1D | Datum2D)[];
     molecules: StateMolecule[];
     correlations: CorrelationData;
-    preferences: Preferences;
     multipleAnalysis: SpectraAnalysis;
   };
+  view?: Preferences;
+  settings?: Workspace;
 }
