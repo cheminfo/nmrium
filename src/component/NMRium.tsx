@@ -165,7 +165,6 @@ export interface NMRiumData {
   correlations?: CorrelationData;
 }
 
-const defaultPreferences = {};
 const defaultData: NMRiumData = {
   spectra: [],
 };
@@ -188,7 +187,7 @@ function InnerNMRium({
   data: dataProp = defaultData,
   workspace,
   customWorkspaces,
-  preferences = defaultPreferences,
+  preferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
   onViewChange,

@@ -29,13 +29,6 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
     const predefinedWorkspaces = mapWorkspaces(PredefinedWorkspaces as any);
     const localWorkspaces = mapWorkspaces(draft.workspaces);
 
-    const NMRiumComponentPreferences = lodashMerge(
-      {},
-      workspaceDefaultProperties,
-      preferences,
-      { label: 'NMRium Preferences' },
-    ) as Workspace;
-
     draft.customWorkspaces = customWorkspaces;
 
     const definedWorkplaces = { ...predefinedWorkspaces, ...customWorkspaces };
@@ -63,7 +56,10 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
         base: _workspace,
       };
     } else {
-      const _workspace = preferences ? componentWorkspacesKey : 'default';
+      const _workspace =
+        preferences && componentWorkspacesKey
+          ? componentWorkspacesKey
+          : 'default';
       draft.workspace = {
         current: _workspace,
         base: _workspace,
@@ -72,10 +68,19 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
 
     updateLocalStorageWorkspaces(draft, definedWorkplaces);
 
-    draft.workspaces = {
-      ...draft.workspaces,
-      [componentWorkspacesKey]: NMRiumComponentPreferences,
-    };
+    if (preferences && componentWorkspacesKey) {
+      const NMRiumComponentPreferences = lodashMerge(
+        {},
+        workspaceDefaultProperties,
+        preferences,
+        { label: 'NMRium Preferences' },
+      ) as Workspace;
+
+      draft.workspaces = {
+        ...draft.workspaces,
+        [componentWorkspacesKey]: NMRiumComponentPreferences,
+      };
+    }
 
     draft.dispatch = dispatch;
   }
