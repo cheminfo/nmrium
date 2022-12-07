@@ -136,10 +136,10 @@ export default function View(props: ViewProps) {
               style={
                 isCallbackVisible
                   ? {
-                    backgroundColor: 'white',
-                    width: '25%',
-                    marginLeft: '5px',
-                  }
+                      backgroundColor: 'white',
+                      width: '25%',
+                      marginLeft: '5px',
+                    }
                   : { width: 0, display: 'none' }
               }
             >
