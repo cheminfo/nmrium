@@ -129,6 +129,13 @@ export default function View(props: ViewProps) {
               onDataChange={changeHandler}
               {...(workspace && { workspace })}
               {...(customWorkspaces && { customWorkspaces })}
+              preferences={{
+                panels: {
+                  informationPanel: {
+                    display: true,
+                  },
+                },
+              }}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (
