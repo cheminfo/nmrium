@@ -129,13 +129,6 @@ export default function View(props: ViewProps) {
               onDataChange={changeHandler}
               {...(workspace && { workspace })}
               {...(customWorkspaces && { customWorkspaces })}
-              preferences={{
-                panels: {
-                  informationPanel: {
-                    display: true,
-                  },
-                },
-              }}
             />
           </div>
           {process.env.NODE_ENV !== 'production' && (
@@ -143,10 +136,10 @@ export default function View(props: ViewProps) {
               style={
                 isCallbackVisible
                   ? {
-                      backgroundColor: 'white',
-                      width: '25%',
-                      marginLeft: '5px',
-                    }
+                    backgroundColor: 'white',
+                    width: '25%',
+                    marginLeft: '5px',
+                  }
                   : { width: 0, display: 'none' }
               }
             >
