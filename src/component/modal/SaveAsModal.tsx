@@ -6,7 +6,6 @@ import { useCallback, useRef } from 'react';
 import { DataExportOptions } from '../../data/SpectraManager';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
-import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 
@@ -18,7 +17,7 @@ const styles = css`
   }
 
   .custom-label {
-    width: 80px;
+    width: 100px;
   }
 
   .name {
@@ -103,7 +102,16 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
               <FormikCheckBox name="pretty" />
             </div>
             <div className="row margin-10">
-              <span className="custom-label"> Include </span>
+              <span className="custom-label"> Include view </span>
+              <FormikCheckBox name="include.view" />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label"> Include settings </span>
+              <FormikCheckBox name="include.settings" />
+            </div>
+
+            <div className="row margin-10">
+              <span className="custom-label"> Include Data </span>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className="data-export-group">
                   <label>
@@ -130,18 +138,6 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                     />
                     No Data
                   </label>
-                </div>
-                <div className="row" style={{ paddingTop: '10px' }}>
-                  <Label htmlFor="include.view" title="View">
-                    <FormikCheckBox name="include.view" />
-                  </Label>
-                  <Label
-                    htmlFor="include.settings"
-                    title="Settings"
-                    style={{ container: { marginLeft: '5px' } }}
-                  >
-                    <FormikCheckBox name="include.settings" />
-                  </Label>
                 </div>
               </div>
             </div>
