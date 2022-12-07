@@ -111,8 +111,8 @@ export const preferencesInitialState: PreferencesState = {
     base: null,
   },
   workspacesTempKeys: {
-    componentPreferencesKey: `component[${v4()}]`,
-    nmriumWorkspaceKey: `nmrium[${v4()}]`,
+    componentPreferencesKey: '',
+    nmriumWorkspaceKey: '',
   },
 };
 
@@ -139,6 +139,10 @@ export function initPreferencesState(
   return {
     ...state,
     workspaces: localData?.workspaces || { default: Workspaces.default },
+    workspacesTempKeys: {
+      componentPreferencesKey: `component[${v4()}]`,
+      nmriumWorkspaceKey: `nmrium[${v4()}]`,
+    },
   };
 }
 
