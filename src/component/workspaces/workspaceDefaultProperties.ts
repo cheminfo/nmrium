@@ -73,10 +73,10 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
   },
   nmrLoaders: {
     general: {
-      ignoreFID: false,
-      ignoreFT: false,
-      ignore1D: false,
-      ignore2D: false,
+      keepFID: true,
+      keepFT: true,
+      keep1D: true,
+      keep2D: true,
       onlyReal: false,
     },
     bruker: {

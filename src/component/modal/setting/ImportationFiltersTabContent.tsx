@@ -11,23 +11,23 @@ interface ListItem {
 
 const GENERAL_LIST: ListItem[] = [
   {
-    label: 'Ignore FID',
-    name: 'general.ignoreFID',
+    label: 'Keep FID',
+    name: 'general.keepFID',
     fieldType: 'checkbox',
   },
   {
-    label: 'Ignore FT',
-    name: 'general.ignoreFT',
+    label: 'Keep FT',
+    name: 'general.keepFT',
     fieldType: 'checkbox',
   },
   {
-    label: 'Ignore 1D',
-    name: 'general.ignore1D',
+    label: 'Keep 1D',
+    name: 'general.keep1D',
     fieldType: 'checkbox',
   },
   {
-    label: 'Ignore 2D',
-    name: 'general.ignore2D',
+    label: 'Keep 2D',
+    name: 'general.keep2D',
     fieldType: 'checkbox',
   },
   {
@@ -38,13 +38,13 @@ const GENERAL_LIST: ListItem[] = [
 ];
 const BRUKER_LIST: ListItem[] = [
   {
-    label: 'Processing Number',
-    name: 'bruker.processingNumber',
+    label: 'Processing Numbers',
+    name: 'bruker.processingNumbers',
     fieldType: 'input',
   },
   {
-    label: 'Experiment Number',
-    name: 'bruker.experimentNumber',
+    label: 'Experiment Numbers',
+    name: 'bruker.experimentNumbers',
     fieldType: 'input',
   },
   {
@@ -81,7 +81,7 @@ const COLUMNS: Column<ListItem>[] = [
           return (
             <FormikInput
               name={`nmrLoaders.${row.original.name}`}
-              type="number"
+              type="string"
               style={{ input: { width: '100%', padding: 0 } }}
               nullable
             />
