@@ -34,8 +34,13 @@ type SetPanelsPreferencesAction = ActionType<
   { key: string; value: string }
 >;
 
+export type SetWorkspaceAction = ActionType<
+  'SET_WORKSPACE',
+  | { workspaceSource: 'any'; workspace: string }
+  | { workspaceSource: 'nmriumFile'; data: Workspace }
+>;
 export type WorkspaceAction = ActionType<
-  'SET_WORKSPACE' | 'REMOVE_WORKSPACE',
+  'REMOVE_WORKSPACE',
   { workspace: string }
 >;
 export type AddWorkspaceAction = ActionType<
@@ -47,6 +52,7 @@ type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
   | SetPanelsPreferencesAction
+  | SetWorkspaceAction
   | WorkspaceAction
   | AddWorkspaceAction;
 

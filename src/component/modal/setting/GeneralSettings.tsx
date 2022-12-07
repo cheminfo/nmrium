@@ -201,6 +201,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       type: 'SET_WORKSPACE',
       payload: {
         workspace: option.key,
+        workspaceSource: 'any',
       },
     });
   }
@@ -243,6 +244,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           type: 'SET_WORKSPACE',
           payload: {
             workspace: parseWorkspaceName,
+            workspaceSource: 'any',
           },
         });
       }

@@ -11,7 +11,7 @@ import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
 import { Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
-import { getInitialState, State } from '../Reducer';
+import { getInitialState, State, ViewState } from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
@@ -57,6 +57,7 @@ function initSpectra(inputSpectra: (Datum1D | Datum2D)[], usedColors) {
 function setData(
   draft: Draft<State>,
   input: {
+    view?: ViewState;
     data: {
       spectra: Spectra;
       molecules: StateMoleculeExtended[];
@@ -68,10 +69,14 @@ function setData(
   const {
     data: { spectra, molecules, correlations },
     usedColors,
+    view,
   } = input || {
     data: { spectra: [], molecules: [], correlations: {} },
     multipleAnalysis: {},
   };
+  if (view) {
+    draft.view = view;
+  }
 
   setColors(draft, usedColors);
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));

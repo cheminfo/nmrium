@@ -1,10 +1,8 @@
 import { CURRENT_EXPORT_VERSION, processJcamp } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
-import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
 import { Workspace } from '../component/workspaces/Workspace';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
-import { Preferences } from '../types/Preferences';
 
 import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
@@ -84,17 +82,6 @@ export function addJcamps(files, usedColors) {
   }
   return spectra;
 }
-function getPreferences(state): Preferences {
-  const {
-    activeTab,
-    verticalAlign: { align },
-    displayerMode,
-  } = state;
-  return {
-    activeTab,
-    ...(displayerMode === DISPLAYER_MODE.DM_1D ? { verticalAlign: align } : {}),
-  };
-}
 
 /**
  *
@@ -128,7 +115,6 @@ export function toJSON(
       : (Datum2D.toJSON(ob as Datum2DType, dataType) as Datum2DType);
   });
 
-  const preferences = getPreferences(state);
   const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
   );
@@ -142,7 +128,7 @@ export function toJSON(
       correlations,
       multipleAnalysis: multipleAnalysis as SpectraAnalysis,
     },
-    ...(view && { view: preferences }),
+    ...(view && { view: state.view }),
     ...(settings &&
       !preferencesState.isCurrentWorkspaceReadOnly && {
         settings: preferencesState.current,

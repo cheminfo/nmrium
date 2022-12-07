@@ -50,6 +50,7 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
+  const { dispatch: dispatchPreferences } = usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
   const alert = useAlert();
@@ -63,6 +64,15 @@ function DropZone(props) {
 
       const { nmrLoaders: filter } = preferences.current;
       const data = await readDropFiles(fileCollection, { filter });
+      if ((data as any)?.settings) {
+        dispatchPreferences({
+          type: 'SET_WORKSPACE',
+          payload: {
+            data: (data as any).settings,
+            workspaceSource: 'nmriumFile',
+          },
+        });
+      }
       dispatch({ type: LOAD_DROP_FILES, payload: data });
     } catch (error: any) {
       alert.error(error.message);
