@@ -27,7 +27,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
       .click();
 
     // save changes
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('text=Done');
 
     //check if the database panel is visible after saving the changes in the general setting
     await expect(databaseLocator).toBeVisible();
