@@ -68,7 +68,7 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import { CustomWorkspaces } from './workspaces/Workspace';
+import { CustomWorkspaces, WorkspaceData } from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -138,7 +138,7 @@ export interface NMRiumProps {
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
-  preferences?: NMRiumPreferences;
+  preferences?: WorkspaceData;
   emptyText?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.

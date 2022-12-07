@@ -32,7 +32,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
     const NMRiumComponentPreferences = lodashMerge(
       {},
       workspaceDefaultProperties,
-      { display: preferences },
+      preferences,
       { label: 'NMRium Preferences' },
     ) as Workspace;
 
