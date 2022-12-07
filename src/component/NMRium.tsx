@@ -68,7 +68,7 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import { CustomWorkspaces } from './workspaces/Workspace';
+import { CustomWorkspaces, WorkspaceData } from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -138,7 +138,7 @@ export interface NMRiumProps {
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
-  preferences?: NMRiumPreferences;
+  preferences?: WorkspaceData;
   emptyText?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.
@@ -165,7 +165,6 @@ export interface NMRiumData {
   correlations?: CorrelationData;
 }
 
-const defaultPreferences = {};
 const defaultData: NMRiumData = {
   spectra: [],
 };
@@ -188,7 +187,7 @@ function InnerNMRium({
   data: dataProp = defaultData,
   workspace,
   customWorkspaces,
-  preferences = defaultPreferences,
+  preferences,
   getSpinner = defaultGetSpinner,
   onDataChange,
   onViewChange,
@@ -230,7 +229,7 @@ function InnerNMRium({
 
   useEffect(() => {
     if (checkActionType(actionType)) {
-      handleDataChange.current?.(toJSON(state, 'onDataChange'));
+      handleDataChange.current?.(toJSON(state, {}, 'onDataChange'));
     }
   }, [actionType, state]);
 
@@ -250,7 +249,7 @@ function InnerNMRium({
     dispatchPreferences({
       type: 'INIT_PREFERENCES',
       payload: {
-        display: preferences,
+        preferences,
         workspace,
         customWorkspaces,
         dispatch: dispatchPreferences,

@@ -10,6 +10,7 @@ import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { isGoogleDocument } from '../../utility/isGoogleDocument';
+import { CustomWorkspaces } from '../../workspaces/Workspace';
 
 const style: Record<
   'table' | 'th' | 'input' | 'labelCol' | 'serialCol' | 'checkbox',
@@ -39,9 +40,13 @@ const style: Record<
 
 interface DatabasesTabContentProps {
   currentWorkspace: NMRiumWorkspace;
+  customWorkspaces: CustomWorkspaces;
 }
 
-function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
+function DatabasesTabContent({
+  currentWorkspace,
+  customWorkspaces,
+}: DatabasesTabContentProps) {
   const { values, setFieldValue } = useFormikContext();
 
   const databases = (values as any).databases;
@@ -63,8 +68,10 @@ function DatabasesTabContent({ currentWorkspace }: DatabasesTabContentProps) {
   }
 
   function resetHandler() {
-    const workSpaceDisplayPreferences =
-      getPreferencesByWorkspace(currentWorkspace);
+    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
+      currentWorkspace,
+      customWorkspaces,
+    );
     const database = workSpaceDisplayPreferences.databases.data;
 
     setFieldValue('databases.data', database);

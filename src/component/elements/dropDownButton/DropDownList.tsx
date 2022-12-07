@@ -2,7 +2,11 @@
 import { css } from '@emotion/react';
 import { useLayoutEffect, useRef } from 'react';
 
-import { DropDownListProps } from './DropDownButton';
+import {
+  DropDownListItem,
+  DropDownListProps,
+  ItemProps,
+} from './DropDownButton';
 
 const styles = {
   container: css`
@@ -40,11 +44,19 @@ const styles = {
   `,
 };
 
+interface InnerDropDownListProps<T>
+  extends DropDownListProps<T>,
+    Required<ItemProps> {
+  onSelect: (index: number) => void;
+}
+
 function DropDownList({
   data = [],
   onSelect,
   renderItem = null,
-}: DropDownListProps) {
+  itemKey,
+  labelKey,
+}: InnerDropDownListProps<DropDownListItem>) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     if (ref.current) {
@@ -60,8 +72,14 @@ function DropDownList({
     <div css={styles.container} ref={ref}>
       <ul css={styles.ul}>
         {data.map((item, index) => (
-          <li css={styles.li} key={item.key} onClick={() => onSelect(index)}>
-            {renderItem?.(item) || <span css={styles.label}>{item.label}</span>}
+          <li
+            css={styles.li}
+            key={item[itemKey]}
+            onClick={() => onSelect(index)}
+          >
+            {renderItem?.(item) || (
+              <span css={styles.label}>{item[labelKey]}</span>
+            )}
           </li>
         ))}
       </ul>

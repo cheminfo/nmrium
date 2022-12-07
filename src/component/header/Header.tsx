@@ -103,6 +103,7 @@ function HeaderInner(props: HeaderInnerProps) {
         type: 'SET_WORKSPACE',
         payload: {
           workspace: option.key,
+          workspaceSource: 'any',
         },
       });
     },

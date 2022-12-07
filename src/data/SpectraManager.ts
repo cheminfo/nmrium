@@ -1,9 +1,8 @@
 import { CURRENT_EXPORT_VERSION, processJcamp } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
-import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
+import { Workspace } from '../component/workspaces/Workspace';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
-import { Preferences } from '../types/Preferences';
 
 import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
@@ -15,9 +14,16 @@ import { Datum2D as Datum2DType } from './types/data2d';
 export enum DataExportOptions {
   ROW_DATA = 'ROW_DATA',
   DATA_SOURCE = 'DATA_SOURCE',
+  NO_DATA = 'NO_DATA',
 }
 
 export type DataExportOptionsType = keyof typeof DataExportOptions;
+
+export interface ExportOptions {
+  dataType?: DataExportOptionsType;
+  view?: boolean;
+  settings?: boolean;
+}
 
 function getData(datum, usedColors) {
   const dimension = datum.info.dimension;
@@ -76,17 +82,6 @@ export function addJcamps(files, usedColors) {
   }
   return spectra;
 }
-function getPreferences(state): Preferences {
-  const {
-    activeTab,
-    verticalAlign: { align },
-    displayerMode,
-  } = state;
-  return {
-    activeTab,
-    ...(displayerMode === DISPLAYER_MODE.DM_1D ? { verticalAlign: align } : {}),
-  };
-}
 
 /**
  *
@@ -97,8 +92,12 @@ type JSONTarget = 'nmrium' | 'onDataChange';
 
 export function toJSON(
   state: State,
+  preferencesState: Partial<{
+    current: Workspace;
+    isCurrentWorkspaceReadOnly: boolean;
+  }>,
   target: JSONTarget,
-  dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
+  options: ExportOptions = {},
 ): NMRiumDataReturn {
   const {
     data = [],
@@ -107,13 +106,15 @@ export function toJSON(
     spectraAnalysis: multipleAnalysis = [],
     actionType = '',
   } = state;
+
+  const { dataType = 'DATA_SOURCE', view = false, settings = false } = options;
+
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1
-      ? (Datum1D.toJSON(ob as Datum1DType, dataExportOption) as Datum1DType)
-      : (Datum2D.toJSON(ob as Datum2DType, dataExportOption) as Datum2DType);
+      ? (Datum1D.toJSON(ob as Datum1DType, dataType) as Datum1DType)
+      : (Datum2D.toJSON(ob as Datum2DType, dataType) as Datum2DType);
   });
 
-  const preferences = getPreferences(state);
   const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
   );
@@ -126,7 +127,11 @@ export function toJSON(
       molecules,
       correlations,
       multipleAnalysis: multipleAnalysis as SpectraAnalysis,
-      preferences,
     },
+    ...(view && { view: state.view }),
+    ...(settings &&
+      !preferencesState.isCurrentWorkspaceReadOnly && {
+        settings: preferencesState.current,
+      }),
   };
 }

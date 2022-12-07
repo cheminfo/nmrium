@@ -12,16 +12,12 @@ import FormikInput from '../elements/formik/FormikInput';
 import { ModalStyles } from './ModalStyle';
 
 const styles = css`
-  .row {
-    align-items: center;
-  }
-
   .inner-content {
     flex: 1;
   }
 
   .custom-label {
-    width: 80px;
+    width: 100px;
   }
 
   .name {
@@ -30,7 +26,7 @@ const styles = css`
   }
 
   .data-export-group {
-    label:first-child {
+    label {
       margin-right: 10px;
     }
     label {
@@ -46,7 +42,11 @@ const INITIAL_VALUE = {
   name: '',
   compressed: false,
   pretty: false,
-  dataExportOption: DataExportOptions.ROW_DATA,
+  include: {
+    data: DataExportOptions.ROW_DATA,
+    view: false,
+    settings: false,
+  },
 };
 
 interface SaveAsModalProps {
@@ -83,7 +83,6 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
           onSubmit={submitHandler}
         >
           <>
-            {' '}
             <div className="row margin-10">
               <span className="custom-label">Name</span>
               <FormikInput
@@ -103,24 +102,43 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
               <FormikCheckBox name="pretty" />
             </div>
             <div className="row margin-10">
-              <span className="custom-label"> Include </span>
-              <div className="data-export-group">
-                <label>
-                  <Field
-                    type="radio"
-                    name="dataExportOption"
-                    value={DataExportOptions.ROW_DATA}
-                  />
-                  Raw Data
-                </label>
-                <label>
-                  <Field
-                    type="radio"
-                    name="dataExportOption"
-                    value={DataExportOptions.DATA_SOURCE}
-                  />
-                  Data Source
-                </label>
+              <span className="custom-label"> Include view </span>
+              <FormikCheckBox name="include.view" />
+            </div>
+            <div className="row margin-10">
+              <span className="custom-label"> Include settings </span>
+              <FormikCheckBox name="include.settings" />
+            </div>
+
+            <div className="row margin-10">
+              <span className="custom-label"> Include Data </span>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="data-export-group">
+                  <label>
+                    <Field
+                      type="radio"
+                      name="include.data"
+                      value={DataExportOptions.ROW_DATA}
+                    />
+                    Raw Data
+                  </label>
+                  <label>
+                    <Field
+                      type="radio"
+                      name="include.data"
+                      value={DataExportOptions.DATA_SOURCE}
+                    />
+                    Data Source
+                  </label>
+                  <label>
+                    <Field
+                      type="radio"
+                      name="include.data"
+                      value={DataExportOptions.NO_DATA}
+                    />
+                    No Data
+                  </label>
+                </div>
               </div>
             </div>
           </>

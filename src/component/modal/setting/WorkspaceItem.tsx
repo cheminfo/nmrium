@@ -6,7 +6,12 @@ import Button from '../../elements/Button';
 import workspaces from '../../workspaces';
 
 const styles: Record<
-  'container' | 'workspaceName' | 'workspaceVersion' | 'newContainer' | 'input',
+  | 'container'
+  | 'workspaceName'
+  | 'workspaceVersion'
+  | 'readOnly'
+  | 'newContainer'
+  | 'input',
   CSSProperties
 > = {
   container: {
@@ -23,6 +28,12 @@ const styles: Record<
   workspaceVersion: {
     fontSize: '9px',
     padding: '5px',
+  },
+  readOnly: {
+    fontSize: '10px',
+    padding: '0 3px',
+    border: '1px solid #00d5ff',
+    borderRadius: '10px',
   },
   newContainer: {
     backgroundColor: '#f6f6f6',
@@ -41,8 +52,8 @@ const styles: Record<
 
 function WorkspaceItem({ item, onSave, onDelete }) {
   const [name, setName] = useState<string>('');
-  const { customWorkspaces } = usePreferences();
-
+  const { customWorkspaces, workspacesTempKeys } = usePreferences();
+  const readOnlyWorkspaces = Object.values(workspacesTempKeys);
   // Add new workspace
   function addHandler(e) {
     e.stopPropagation();
@@ -59,8 +70,6 @@ function WorkspaceItem({ item, onSave, onDelete }) {
   function onTextChange(e) {
     setName(e.target.value);
   }
-
-  const [workspaceName, workspaceVersion] = item.label.split('-');
 
   return (
     <div>
@@ -84,14 +93,19 @@ function WorkspaceItem({ item, onSave, onDelete }) {
       ) : (
         <div style={styles.container}>
           <WorkSpaceIndicator workspaceKey={item.key} />
-          <span style={styles.workspaceName}>{workspaceName}</span>
-          {!workspaces[item.key] && !customWorkspaces[item.key] && (
-            <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
-              <FaTimes />
-            </Button.Danger>
+          <span style={styles.workspaceName}>{item.label}</span>
+          {readOnlyWorkspaces.includes(item.key) && (
+            <span style={styles.readOnly}>Read Only</span>
           )}
-          {workspaceVersion && (
-            <span style={styles.workspaceVersion}>{workspaceVersion}</span>
+          {!workspaces[item.key] &&
+            !customWorkspaces[item.key] &&
+            !readOnlyWorkspaces.includes(item.key) && (
+              <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
+                <FaTimes />
+              </Button.Danger>
+            )}
+          {item.version && !item.isReadOnly && (
+            <span style={styles.workspaceVersion}>V{item.version}</span>
           )}
         </div>
       )}
@@ -109,7 +123,7 @@ const style = {
 };
 
 const WorkSpaceIndicator = (props) => {
-  const { customWorkspaces } = usePreferences();
+  const { customWorkspaces, workspacesTempKeys } = usePreferences();
   let letter = 'U';
   let backgroundColor = '#ff6f00';
 
@@ -119,6 +133,14 @@ const WorkSpaceIndicator = (props) => {
   } else if (workspaces[props.workspaceKey]) {
     letter = 'P';
     backgroundColor = '#2dd36f';
+  } else if (
+    workspacesTempKeys.componentPreferencesKey === props.workspaceKey
+  ) {
+    letter = 'NC';
+    backgroundColor = '#cccccc';
+  } else if (workspacesTempKeys.nmriumWorkspaceKey === props.workspaceKey) {
+    letter = 'NF';
+    backgroundColor = '#cccccc';
   }
 
   return (

@@ -1,3 +1,4 @@
+import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 
 import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
@@ -13,7 +14,7 @@ import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
 
-const LOCAL_STORAGE_VERSION = 11;
+const LOCAL_STORAGE_VERSION = 12;
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
@@ -33,8 +34,13 @@ type SetPanelsPreferencesAction = ActionType<
   { key: string; value: string }
 >;
 
+export type SetWorkspaceAction = ActionType<
+  'SET_WORKSPACE',
+  | { workspaceSource: 'any'; workspace: string }
+  | { workspaceSource: 'nmriumFile'; data: Workspace }
+>;
 export type WorkspaceAction = ActionType<
-  'SET_WORKSPACE' | 'REMOVE_WORKSPACE',
+  'REMOVE_WORKSPACE',
   { workspace: string }
 >;
 export type AddWorkspaceAction = ActionType<
@@ -46,6 +52,7 @@ type PreferencesActions =
   | InitPreferencesAction
   | SetPreferencesAction
   | SetPanelsPreferencesAction
+  | SetWorkspaceAction
   | WorkspaceAction
   | AddWorkspaceAction;
 
@@ -88,6 +95,10 @@ export interface PreferencesState {
     current: NMRiumWorkspace;
     base: NMRiumWorkspace | null;
   };
+  workspacesTempKeys: {
+    componentPreferencesKey: string;
+    nmriumWorkspaceKey: string;
+  };
 }
 
 export const preferencesInitialState: PreferencesState = {
@@ -98,6 +109,10 @@ export const preferencesInitialState: PreferencesState = {
   workspace: {
     current: 'default',
     base: null,
+  },
+  workspacesTempKeys: {
+    componentPreferencesKey: '',
+    nmriumWorkspaceKey: '',
   },
 };
 
@@ -124,6 +139,10 @@ export function initPreferencesState(
   return {
     ...state,
     workspaces: localData?.workspaces || { default: Workspaces.default },
+    workspacesTempKeys: {
+      componentPreferencesKey: `component[${v4()}]`,
+      nmriumWorkspaceKey: `nmrium[${v4()}]`,
+    },
   };
 }
 
