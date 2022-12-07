@@ -141,15 +141,15 @@ export interface Databases {
 
 export interface LoadersPreferences {
   general: {
-    ignoreFID: boolean;
-    ignoreFT: boolean;
-    ignore1D: boolean;
-    ignore2D: boolean;
+    keepFID: boolean;
+    keepFT: boolean;
+    keep1D: boolean;
+    keep2D: boolean;
     onlyReal: boolean;
   };
   bruker: {
-    processingNumber?: number | number[];
-    experimentNumber?: number | number[];
+    processingNumbers?: string;
+    experimentNumbers?: string;
     onlyFirstProcessedData: boolean;
   };
 }

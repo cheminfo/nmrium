@@ -73,16 +73,16 @@ const customWorkspaces: CustomWorkspaces = {
     },
     nmrLoaders: {
       general: {
-        ignoreFID: true,
-        ignoreFT: false,
-        ignore1D: false,
-        ignore2D: true,
+        keepFID: false,
+        keepFT: true,
+        keep1D: true,
+        keep2D: false,
         onlyReal: true,
       },
       bruker: {
         onlyFirstProcessedData: true,
-        processingNumber: null,
-        experimentalNumber: null,
+        processingNumbers: '',
+        experimentNumbers: '',
       },
     },
     label: 'Metabolomics',
