@@ -71,12 +71,14 @@ function Provider({
   }, [wrapperRef]);
 
   const close = useCallback(
-    function close(modal) {
-      setModal((prevModals) =>
-        modal
-          ? prevModals.filter((m) => m.id !== modal.id)
-          : modals.slice(0, -1),
-      );
+    (modal?) => {
+      setModal((prevModals) => {
+        if (modal) {
+          return prevModals.filter((m) => m.id !== modal.id);
+        } else {
+          return modals.slice(0, -1);
+        }
+      });
     },
     [modals],
   );
@@ -142,8 +144,7 @@ function Provider({
   useEffect(() => {
     function keyHandler(e) {
       if (['Escape', 'Esc'].includes(e.key)) {
-        const _modal = modals.slice().pop();
-        close(_modal);
+        close();
       }
     }
     document.addEventListener('keydown', keyHandler, false);
@@ -256,7 +257,9 @@ function Provider({
                         >
                           <ModalContent
                             modal={modal}
-                            onClose={() => close(modal)}
+                            onClose={() => {
+                              close(modal);
+                            }}
                             onLayout={contentLayoutHandler}
                           />
                         </Rnd>

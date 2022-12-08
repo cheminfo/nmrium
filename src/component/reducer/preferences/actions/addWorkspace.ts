@@ -3,6 +3,7 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
+import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
 import {
   AddWorkspaceAction,
   PreferencesState,
@@ -17,6 +18,7 @@ export function addWorkspace(
 
   const newWorkSpace = lodashMerge(
     {},
+    workspaceDefaultProperties,
     // eslint-disable-next-line unicorn/prefer-logical-operator-over-ternary
     data ? data : draft.workspaces[draft.workspace.current],
     {
