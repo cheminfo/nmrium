@@ -10,6 +10,7 @@ import { ActionType } from '../types/Types';
 import { addWorkspace } from './actions/addWorkspace';
 import { initPreferences } from './actions/initPreferences';
 import { removeWorkspace } from './actions/removeWorkspace';
+import { setActiveWorkspace } from './actions/setActiveWorkspace';
 import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
@@ -40,7 +41,7 @@ export type SetWorkspaceAction = ActionType<
   | { workspaceSource: 'nmriumFile'; data: Workspace }
 >;
 export type WorkspaceAction = ActionType<
-  'REMOVE_WORKSPACE',
+  'REMOVE_WORKSPACE' | 'SET_ACTIVE_WORKSPACE',
   { workspace: string }
 >;
 export type AddWorkspaceAction = ActionType<
@@ -159,6 +160,8 @@ function innerPreferencesReducer(
       return setPanelsPreferences(draft, action);
     case 'SET_WORKSPACE':
       return setWorkspace(draft, action);
+    case 'SET_ACTIVE_WORKSPACE':
+      return setActiveWorkspace(draft, action);
     case 'ADD_WORKSPACE':
       return addWorkspace(draft, action);
     case 'REMOVE_WORKSPACE':

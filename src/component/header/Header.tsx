@@ -100,10 +100,9 @@ function HeaderInner(props: HeaderInnerProps) {
   const changeWorkspaceHandler = useCallback(
     (option: DropDownListItem) => {
       dispatch({
-        type: 'SET_WORKSPACE',
+        type: 'SET_ACTIVE_WORKSPACE',
         payload: {
           workspace: option.key,
-          workspaceSource: 'any',
         },
       });
     },
