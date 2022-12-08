@@ -17,6 +17,7 @@ import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
 import { useAlert } from '../../elements/popup/Alert';
+import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
@@ -133,15 +134,16 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const {
     dispatch,
     current: currentWorkspace,
-    customWorkspaces,
+    originalWorkspaces,
     ...preferences
   } = usePreferences();
+  const saveSettings = useSaveSettings();
   const alert = useAlert();
   const refForm = useRef<FormikProps<any>>(null);
   const workspaces = useWorkspacesList();
   const workspaceName = preferences.workspace.current;
   const [isRestDisabled, setRestDisabled] = useState(
-    isRestButtonDisable(currentWorkspace, workspaceName, customWorkspaces),
+    isRestButtonDisable(currentWorkspace, workspaceName, originalWorkspaces),
   );
   const pastRef = useRef<Record<string, Workspace> | null>(null);
 
@@ -157,21 +159,13 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const handleReset = () => {
     const workSpaceDisplayPreferences = getPreferencesByWorkspace(
       workspaceName,
-      customWorkspaces,
+      originalWorkspaces,
     );
     refForm.current?.setValues(workSpaceDisplayPreferences);
   };
 
   function submitHandler(values) {
-    if (!preferences.isCurrentWorkspaceReadOnly) {
-      dispatch({ type: 'SET_PREFERENCES', payload: values });
-      alert.success('Settings saved successfully');
-      onClose?.();
-    } else {
-      alert.error(
-        'Please enter a new user workspace name in order to save your changes locally',
-      );
-    }
+    saveSettings(values);
   }
 
   const tabChangeHandler = useCallback((tab) => {
@@ -218,7 +212,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
   function handleDisabledRestButton(values) {
     setRestDisabled(
-      isRestButtonDisable(values, workspaceName, customWorkspaces),
+      isRestButtonDisable(values, workspaceName, originalWorkspaces),
     );
   }
 
@@ -358,7 +352,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
               <div className="inner-content">
                 <DatabasesTabContent
                   currentWorkspace={workspaceName}
-                  customWorkspaces={customWorkspaces}
+                  originalWorkspaces={originalWorkspaces}
                 />
               </div>
             </Tab>

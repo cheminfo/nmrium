@@ -2,11 +2,13 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 
 import { NMRiumWorkspace } from '../../../NMRium';
-import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
-import PredefinedWorkspaces from '../../../workspaces';
-import { Workspace } from '../../../workspaces/Workspace';
+import { getLocalStorage } from '../../../utility/LocalStorage';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
-import { PreferencesState } from '../preferencesReducer';
+import {
+  PreferencesState,
+  WORKSPACES_KEYS,
+  WorkspaceWithSource,
+} from '../preferencesReducer';
 import { mapWorkspaces } from '../utilities/mapWorkspaces';
 
 function getWorkspace(
@@ -25,20 +27,16 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
       customWorkspaces: cw,
       preferences,
     } = action.payload;
-    const customWorkspaces = mapWorkspaces(cw);
-    const predefinedWorkspaces = mapWorkspaces(PredefinedWorkspaces as any);
-    const localWorkspaces = mapWorkspaces(draft.workspaces);
+    const customWorkspaces = mapWorkspaces(cw, { source: 'custom' });
 
-    draft.customWorkspaces = customWorkspaces;
-
-    const definedWorkplaces = { ...predefinedWorkspaces, ...customWorkspaces };
     draft.workspaces = {
-      ...definedWorkplaces,
-      ...localWorkspaces,
+      ...draft.workspaces,
+      ...customWorkspaces,
     };
-
-    const componentWorkspacesKey =
-      draft.workspacesTempKeys.componentPreferencesKey;
+    draft.originalWorkspaces = {
+      ...draft.originalWorkspaces,
+      ...customWorkspaces,
+    };
 
     /**
      *  we have the following priorities
@@ -48,10 +46,10 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
         4- last selected workspace
      */
 
-    if (preferences && componentWorkspacesKey) {
+    if (preferences) {
       draft.workspace = {
-        current: componentWorkspacesKey,
-        base: componentWorkspacesKey,
+        current: WORKSPACES_KEYS.componentKey,
+        base: WORKSPACES_KEYS.componentKey,
       };
     } else if (workspace) {
       const _workspace = getWorkspace(draft, workspace);
@@ -64,71 +62,20 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
       draft.workspace = { current: _workspace, base: null };
     }
 
-    updateLocalStorageWorkspaces(draft, definedWorkplaces);
-
-    if (preferences && componentWorkspacesKey) {
-      const NMRiumComponentPreferences = lodashMerge(
+    if (preferences) {
+      const NMRiumComponentPreferences: WorkspaceWithSource = lodashMerge(
         {},
         workspaceDefaultProperties,
         preferences,
-        { label: 'NMRium Preferences' },
-      ) as Workspace;
+        { label: 'NMRium Preferences', source: 'component' },
+      );
 
       draft.workspaces = {
         ...draft.workspaces,
-        [componentWorkspacesKey]: NMRiumComponentPreferences,
+        [WORKSPACES_KEYS.componentKey]: NMRiumComponentPreferences,
       };
     }
 
     draft.dispatch = dispatch;
-  }
-}
-
-function updateLocalStorageWorkspaces(
-  draft: Draft<PreferencesState>,
-  definedWorkspaces: Record<string, Workspace>,
-) {
-  /**
-   * Update the local storage general preferences
-   * 1- if local storage is empty or the setting version changed
-   * 2- if predefine workspaces.
-   *    a) if workspace not exists in the local storage
-   *    b) if the local setting workspace version != current workspace version number
-   */
-
-  const localData = getLocalStorage('nmr-general-settings');
-  const { version } = draft || {};
-  let saveChanges = false;
-  const data = {
-    version,
-    ...(localData?.currentWorkspace && {
-      currentWorkspace: localData?.currentWorkspace,
-    }),
-  };
-
-  //ignore the keys for component and nmrium file workspaces
-  const ignoreKeys = Object.values(draft.workspacesTempKeys);
-
-  if (!localData || version !== localData.version) {
-    saveChanges = true;
-  } else {
-    for (const key in definedWorkspaces) {
-      const workspace = definedWorkspaces[key];
-      if (
-        (!(key in draft.workspaces) ||
-          workspace.version !== localData.workspaces[key]?.version) &&
-        !ignoreKeys.includes(key)
-      ) {
-        saveChanges = true;
-        draft.workspaces[key] = definedWorkspaces[key];
-      }
-    }
-  }
-
-  if (saveChanges) {
-    storeData(
-      'nmr-general-settings',
-      JSON.stringify({ ...data, workspaces: draft.workspaces }),
-    );
   }
 }

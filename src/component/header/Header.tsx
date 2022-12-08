@@ -13,12 +13,15 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../context/PreferencesContext';
+import Button from '../elements/Button';
 import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
 import { useModal, positions } from '../elements/popup/Modal';
+import { useSaveSettings } from '../hooks/useSaveSettings';
 import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
+import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
@@ -109,6 +112,10 @@ function HeaderInner(props: HeaderInnerProps) {
     [dispatch],
   );
 
+  function renderItem(item) {
+    return <WorkspaceItem item={item} />;
+  }
+
   return (
     <Header>
       <div
@@ -152,8 +159,11 @@ function HeaderInner(props: HeaderInnerProps) {
             data={workspacesList}
             selectedKey={workspace.current}
             onSelect={changeWorkspaceHandler}
+            style={{ padding: '0.15rem 0.3rem', fontSize: '0.75rem' }}
+            renderItem={renderItem}
           />
         )}
+        <SaveButton />
         <div>
           <Toolbar orientation="horizontal">
             <Toolbar.Item
@@ -187,6 +197,34 @@ function HeaderInner(props: HeaderInnerProps) {
         </div>
       </div>
     </Header>
+  );
+}
+
+function SaveButton() {
+  const { workspace, workspaces, originalWorkspaces } = usePreferences();
+  const saveWorkspace = useSaveSettings();
+  const isWorkspaceHasSettingNotSaved =
+    JSON.stringify(workspaces[workspace.current]) !==
+    JSON.stringify(originalWorkspaces[workspace.current]);
+
+  function handleSave() {
+    saveWorkspace();
+  }
+
+  return (
+    <Button.Done
+      onClick={handleSave}
+      fill="outline"
+      size="xSmall"
+      style={{ borderRadius: '10px', marginLeft: '5px' }}
+      {...(!isWorkspaceHasSettingNotSaved && {
+        color: { base: 'gray', hover: 'gray' },
+        backgroundColor: { base: 'gray', hover: 'lightgray' },
+        disabled: true,
+      })}
+    >
+      Save
+    </Button.Done>
   );
 }
 

@@ -1,34 +1,42 @@
 import { Draft } from 'immer';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState } from '../preferencesReducer';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
-import { isReadOnlyWorkspace } from '../utilities/isReadOnlyWorkspace';
 import { mapNucleiFormatting } from '../utilities/mapNucleiFormatting';
 
 export function setPreferences(draft: Draft<PreferencesState>, action) {
-  if (action.payload && !isReadOnlyWorkspace(draft)) {
+  let localData = getLocalStorage('nmr-general-settings');
+  const currentWorkspacePreferences = getActiveWorkspace(draft);
+
+  if (Object.keys(action.payload).length > 0) {
     let { formatting, ...restPreferences } = action.payload;
+
     formatting = mapNucleiFormatting(formatting);
-    let localData = getLocalStorage('nmr-general-settings');
-    localData.currentWorkspace = draft.workspace.current;
 
-    localData.workspaces = {
-      ...localData.workspaces,
-      [draft.workspace.current]: {
-        ...localData.workspaces[draft.workspace.current],
-        ...restPreferences,
-        formatting,
-      },
-    };
-
-    const currentWorkspacePreferences = getActiveWorkspace(draft);
     draft.workspaces[draft.workspace.current] = {
       ...currentWorkspacePreferences,
       ...restPreferences,
       formatting,
     };
-
-    storeData('nmr-general-settings', JSON.stringify(localData));
   }
+
+  if (draft.workspaces[draft.workspace.current].source === 'user') {
+    draft.workspaces[draft.workspace.current].version++;
+    storeData(
+      'nmr-general-settings',
+      JSON.stringify({
+        ...localData,
+        workspaces: {
+          ...localData.workspaces,
+          [draft.workspace.current]: draft.workspaces[draft.workspace.current],
+        },
+      }),
+    );
+  }
+
+  draft.originalWorkspaces[draft.workspace.current] = cloneDeep(
+    draft.workspaces[draft.workspace.current],
+  );
 }

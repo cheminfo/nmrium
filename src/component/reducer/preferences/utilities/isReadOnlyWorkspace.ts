@@ -5,11 +5,5 @@ import { PreferencesState } from '../preferencesReducer';
 export function isReadOnlyWorkspace(
   draft: Draft<PreferencesState> | PreferencesState,
 ) {
-  if (
-    Object.values(draft.workspacesTempKeys).includes(draft.workspace.current)
-  ) {
-    return true;
-  } else {
-    return false;
-  }
+  return draft.workspaces[draft.workspace.current]?.source !== 'user';
 }

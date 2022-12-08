@@ -1,18 +1,14 @@
 import { Draft } from 'immer';
 
-import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState } from '../preferencesReducer';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
-import { isReadOnlyWorkspace } from '../utilities/isReadOnlyWorkspace';
 
 export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {
-  if (action.payload && !isReadOnlyWorkspace(draft)) {
+  if (action.payload) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
     const { key, value } = action.payload;
-    const localData = getLocalStorage('nmr-general-settings');
-    const panels =
-      localData.workspaces[draft.workspace.current].formatting.panels;
+    const panels = currentWorkspacePreferences.formatting.panels;
 
     if (value?.nuclei) {
       const { nuclei, ...commonPreferences } = value;
@@ -23,8 +19,5 @@ export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {
     } else {
       panels[key] = value;
     }
-
-    storeData('nmr-general-settings', JSON.stringify(localData));
-    currentWorkspacePreferences.formatting.panels[key] = panels[key];
   }
 }

@@ -40,12 +40,12 @@ const style: Record<
 
 interface DatabasesTabContentProps {
   currentWorkspace: NMRiumWorkspace;
-  customWorkspaces: CustomWorkspaces;
+  originalWorkspaces: CustomWorkspaces;
 }
 
 function DatabasesTabContent({
   currentWorkspace,
-  customWorkspaces,
+  originalWorkspaces,
 }: DatabasesTabContentProps) {
   const { values, setFieldValue } = useFormikContext();
 
@@ -70,7 +70,7 @@ function DatabasesTabContent({
   function resetHandler() {
     const workSpaceDisplayPreferences = getPreferencesByWorkspace(
       currentWorkspace,
-      customWorkspaces,
+      originalWorkspaces,
     );
     const database = workSpaceDisplayPreferences.databases.data;
 

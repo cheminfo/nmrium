@@ -2,13 +2,12 @@ import { Draft } from 'immer';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState, WorkspaceAction } from '../preferencesReducer';
-import { isReadOnlyWorkspace } from '../utilities/isReadOnlyWorkspace';
 
 export function setActiveWorkspace(
   draft: Draft<PreferencesState>,
   action: WorkspaceAction,
 ) {
-  if (action.payload && !isReadOnlyWorkspace(draft)) {
+  if (action.payload) {
     const { workspace } = action.payload;
     let localData = getLocalStorage('nmr-general-settings');
     draft.workspace.current = workspace;

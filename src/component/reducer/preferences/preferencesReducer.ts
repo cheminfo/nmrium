@@ -1,10 +1,13 @@
-import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 
 import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
-import { getLocalStorage, removeData } from '../../utility/LocalStorage';
+import {
+  getLocalStorage,
+  removeData,
+  storeData,
+} from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
-import { Workspace } from '../../workspaces/Workspace';
+import { Workspace, WorkSpaceSource } from '../../workspaces/Workspace';
 import { ActionType } from '../types/Types';
 
 import { addWorkspace } from './actions/addWorkspace';
@@ -14,8 +17,14 @@ import { setActiveWorkspace } from './actions/setActiveWorkspace';
 import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
+import { mapWorkspaces } from './utilities/mapWorkspaces';
 
 const LOCAL_STORAGE_VERSION = 12;
+
+export const WORKSPACES_KEYS = {
+  componentKey: `nmrium-component-workspace`,
+  nmriumKey: `nmrium-file-workspace`,
+};
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
@@ -26,10 +35,7 @@ type InitPreferencesAction = ActionType<
     dispatch: any;
   }
 >;
-type SetPreferencesAction = ActionType<
-  'SET_PREFERENCES',
-  Omit<Workspace, 'version' | 'label'>
->;
+type SetPreferencesAction = ActionType<'SET_PREFERENCES', Partial<Workspace>>;
 type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
   { key: string; value: string }
@@ -46,7 +52,7 @@ export type WorkspaceAction = ActionType<
 >;
 export type AddWorkspaceAction = ActionType<
   'ADD_WORKSPACE',
-  { workspace: string; data: Omit<Workspace, 'version' | 'label'> }
+  { workspace: string; data?: Omit<Workspace, 'version' | 'label'> }
 >;
 
 type PreferencesActions =
@@ -87,33 +93,28 @@ export const WORKSPACES: Array<{
   },
 ];
 
+export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
+export type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
+
 export interface PreferencesState {
   version: number;
-  workspaces: Record<string, Workspace>;
-  customWorkspaces: Record<string, Workspace>;
+  workspaces: WorkspacesWithSource;
+  originalWorkspaces: WorkspacesWithSource;
   dispatch: (action?: PreferencesActions) => void;
   workspace: {
     current: NMRiumWorkspace;
     base: NMRiumWorkspace | null;
-  };
-  workspacesTempKeys: {
-    componentPreferencesKey: string;
-    nmriumWorkspaceKey: string;
   };
 }
 
 export const preferencesInitialState: PreferencesState = {
   version: LOCAL_STORAGE_VERSION,
   workspaces: {},
-  customWorkspaces: {},
+  originalWorkspaces: {},
   dispatch: () => null,
   workspace: {
     current: 'default',
     base: null,
-  },
-  workspacesTempKeys: {
-    componentPreferencesKey: '',
-    nmriumWorkspaceKey: '',
   },
 };
 
@@ -135,15 +136,28 @@ export function initPreferencesState(
   //  if the local setting version != current settings version number
   if (!localData?.version || localData?.version !== LOCAL_STORAGE_VERSION) {
     removeData('nmr-general-settings');
+
+    const data = {
+      version: LOCAL_STORAGE_VERSION,
+      ...(localData?.currentWorkspace && {
+        currentWorkspace: localData?.currentWorkspace,
+      }),
+      workspaces: {},
+    };
+    storeData('nmr-general-settings', JSON.stringify(data));
   }
+
+  const predefinedWorkspaces = mapWorkspaces(Workspaces as any, {
+    source: 'predefined',
+  });
+  const localWorkspaces = mapWorkspaces(localData?.workspaces || {}, {
+    source: 'user',
+  });
 
   return {
     ...state,
-    workspaces: localData?.workspaces || { default: Workspaces.default },
-    workspacesTempKeys: {
-      componentPreferencesKey: `component[${v4()}]`,
-      nmriumWorkspaceKey: `nmrium[${v4()}]`,
-    },
+    originalWorkspaces: { ...predefinedWorkspaces, ...localWorkspaces },
+    workspaces: { ...predefinedWorkspaces, ...localWorkspaces },
   };
 }
 

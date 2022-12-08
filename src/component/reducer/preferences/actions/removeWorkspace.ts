@@ -2,7 +2,6 @@ import { Draft } from 'immer';
 
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState, WorkspaceAction } from '../preferencesReducer';
-import { filterObject } from '../utilities/filterObject';
 
 export function removeWorkspace(
   draft: Draft<PreferencesState>,
@@ -14,9 +13,10 @@ export function removeWorkspace(
     draft.workspace.current = 'default';
   }
 
-  let localData = getLocalStorage('nmr-general-settings');
+  const localData = getLocalStorage('nmr-general-settings');
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete draft.workspaces[workspace];
-  localData.workspaces = filterObject(draft.workspaces);
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+  delete localData.workspaces[workspace];
   storeData('nmr-general-settings', JSON.stringify(localData));
 }
