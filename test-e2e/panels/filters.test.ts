@@ -208,7 +208,7 @@ test('Exclusion zones', async ({ page }) => {
       .click();
 
     // save setting changes
-    await nmrium.page.click('text=Done');
+    await nmrium.page.click('text=Save');
 
     //check if the exclusion zones tool exists in the main toolbar
     await expect(

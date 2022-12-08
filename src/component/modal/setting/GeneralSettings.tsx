@@ -8,6 +8,7 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../../context/PreferencesContext';
+import ActionButtons from '../../elements/ActionButtons';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
@@ -370,9 +371,14 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         </Formik>
       </div>
       <div className="footer-container">
-        <Button.Done onClick={() => refForm.current?.submitForm()}>
-          Done
-        </Button.Done>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={() => refForm.current?.submitForm()}
+          doneLabel="Save"
+          onCancel={() => {
+            onClose?.();
+          }}
+        />
       </div>
     </div>
   );

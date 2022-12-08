@@ -16,7 +16,7 @@ test('automatic assignment panel', async ({ page }) => {
     await nmrium.page.click(
       '_react=Draggable >> _react=ReactTable >> tr[role="row"] >> nth=13 >> td[role="cell"] >> nth=2 >> input',
     );
-    await nmrium.page.click('_react=Draggable >> text=Done');
+    await nmrium.page.click('_react=Draggable >> text=Save');
   });
   await test.step('check automatic assignment panel', async () => {
     await nmrium.clickPanel('Automatic Assignment');
