@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { v4 } from '@lukeed/uuid';
 import {
   useRef,
   useState,
@@ -54,7 +55,7 @@ function Provider({
 }: ProviderProps) {
   const root = useRef<any>();
   const modalRef = useRef<any>();
-  const [modal, setModal] = useState<any>();
+  const [modals, setModal] = useState<any>([]);
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -70,10 +71,14 @@ function Provider({
   }, [wrapperRef]);
 
   const close = useCallback(
-    function close() {
-      setModal(null);
+    function close(modal) {
+      setModal((prevModals) =>
+        modal
+          ? prevModals.filter((m) => m.id !== modal.id)
+          : modals.slice(0, -1),
+      );
     },
-    [setModal],
+    [modals],
   );
   // todo: optimize this
   const parentStyle = wrapperRef?.getBoundingClientRect() || {
@@ -95,13 +100,14 @@ function Provider({
   const show = useCallback(
     (component, options = {}) => {
       const _modal: any = {
+        id: v4(),
         component,
         options: { isBackgroundBlur: true, enableResizing: false, ...options },
       };
 
-      _modal.close = close;
+      _modal.close = () => close(_modal);
 
-      setModal(_modal);
+      setModal((prevModals) => [...prevModals, _modal]);
       if (_modal.options.onOpen) _modal.options.onOpen();
       return _modal;
     },
@@ -118,13 +124,14 @@ function Provider({
     (dialogOptions, options: any = {}) => {
       const { enableResizing = false, ...otherOptions } = options;
       const _modal: any = {
+        id: v4(),
         component: <ConfirmDialog {...dialogOptions} />,
         options: { isBackgroundBlur: true, enableResizing, ...otherOptions },
       };
 
-      _modal.close = close;
+      _modal.close = () => close(_modal);
 
-      setModal(_modal);
+      setModal((prevModals) => [...prevModals, _modal]);
       if (_modal.options.onOpen) _modal.options.onOpen();
 
       return _modal;
@@ -135,12 +142,13 @@ function Provider({
   useEffect(() => {
     function keyHandler(e) {
       if (['Escape', 'Esc'].includes(e.key)) {
-        close();
+        const _modal = modals.slice().pop();
+        close(_modal);
       }
     }
     document.addEventListener('keydown', keyHandler, false);
     return () => document.removeEventListener('keydown', keyHandler, false);
-  }, [close]);
+  }, [close, modals]);
 
   const styles = css`
     position: absolute;
@@ -161,10 +169,6 @@ function Provider({
       border-radius: 5px;
     }
   `;
-
-  const outerStyle: CSSProperties = modal?.options.isBackgroundBlur
-    ? { backgroundColor: 'rgba(255,255,255,0.8)' }
-    : { pointerEvents: 'none' };
 
   const modalContextValue = useMemo(
     () => ({ show, close, showConfirmDialog }),
@@ -193,69 +197,74 @@ function Provider({
       {root.current &&
         createPortal(
           <Fragment>
-            {modal ? (
-              <div
-                css={styles}
-                style={{
-                  ...outerStyle,
-                }}
-              >
-                <TransitionGroup
-                  appear
-                  key={positions[modal.options.transition || transition]}
-                  options={{
-                    position: modal.options.position || position,
-                  }}
-                  containerStyle={parentStyle}
-                  component={Wrapper}
-                >
-                  <Transition
-                    type={modal.options.transition || transition}
-                    transitionStyles={{
-                      ...transitionStyles,
-                      default: {
-                        width: modal.options.width
-                          ? `${modal.options.width}px`
-                          : 'auto',
-                      },
-                      height: modal.options.height
-                        ? `${modal.options.height}px`
-                        : 'auto',
-                    }}
+            {modals?.length > 0
+              ? modals.map((modal) => (
+                  <div
                     key={modal.id}
+                    css={styles}
+                    style={{
+                      ...(modal?.options.isBackgroundBlur
+                        ? { backgroundColor: 'rgba(255,255,255,0.8)' }
+                        : { pointerEvents: 'none' }),
+                    }}
                   >
-                    <Rnd
-                      maxWidth={parentStyle.width}
-                      maxHeight={parentStyle.height}
-                      ref={modalRef}
-                      default={{
-                        width: modal.options.width || 'auto',
-                        height: modal.options.height || 'auto',
-                        x: 0,
-                        y: 0,
+                    <TransitionGroup
+                      appear
+                      key={positions[modal.options.transition || transition]}
+                      options={{
+                        position: modal.options.position || position,
                       }}
-                      className="rnd-container"
-                      style={{
-                        ...style,
-                        margin: offset,
-                        position: 'static',
-                        pointerEvents: 'all',
-                        userSelect: 'none',
-                      }}
-                      enableResizing={modal.options.enableResizing}
-                      dragHandleClassName="handle"
-                      enableUserSelectHack={false}
+                      containerStyle={parentStyle}
+                      component={Wrapper}
                     >
-                      <ModalContent
-                        modal={modal}
-                        onClose={close}
-                        onLayout={contentLayoutHandler}
-                      />
-                    </Rnd>
-                  </Transition>
-                </TransitionGroup>
-              </div>
-            ) : null}
+                      <Transition
+                        type={modal.options.transition || transition}
+                        transitionStyles={{
+                          ...transitionStyles,
+                          default: {
+                            width: modal.options.width
+                              ? `${modal.options.width}px`
+                              : 'auto',
+                          },
+                          height: modal.options.height
+                            ? `${modal.options.height}px`
+                            : 'auto',
+                        }}
+                        key={modal.id}
+                      >
+                        <Rnd
+                          maxWidth={parentStyle.width}
+                          maxHeight={parentStyle.height}
+                          ref={modalRef}
+                          default={{
+                            width: modal.options.width || 'auto',
+                            height: modal.options.height || 'auto',
+                            x: 0,
+                            y: 0,
+                          }}
+                          className="rnd-container"
+                          style={{
+                            ...style,
+                            margin: offset,
+                            position: 'static',
+                            pointerEvents: 'all',
+                            userSelect: 'none',
+                          }}
+                          enableResizing={modal.options.enableResizing}
+                          dragHandleClassName="handle"
+                          enableUserSelectHack={false}
+                        >
+                          <ModalContent
+                            modal={modal}
+                            onClose={() => close(modal)}
+                            onLayout={contentLayoutHandler}
+                          />
+                        </Rnd>
+                      </Transition>
+                    </TransitionGroup>
+                  </div>
+                ))
+              : null}
           </Fragment>,
           root.current,
         )}
