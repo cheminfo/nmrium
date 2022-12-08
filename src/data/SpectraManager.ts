@@ -94,7 +94,6 @@ export function toJSON(
   state: State,
   preferencesState: Partial<{
     current: Workspace;
-    isCurrentWorkspaceReadOnly: boolean;
   }>,
   target: JSONTarget,
   options: ExportOptions = {},
@@ -129,9 +128,8 @@ export function toJSON(
       multipleAnalysis: multipleAnalysis as SpectraAnalysis,
     },
     ...(view && { view: state.view }),
-    ...(settings &&
-      !preferencesState.isCurrentWorkspaceReadOnly && {
-        settings: preferencesState.current,
-      }),
+    ...(settings && {
+      settings: preferencesState.current,
+    }),
   };
 }
