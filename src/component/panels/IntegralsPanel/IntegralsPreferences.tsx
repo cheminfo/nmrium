@@ -12,7 +12,6 @@ import {
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
-import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -38,7 +37,6 @@ const formatFields: NucleusPreferenceField[] = [
 ];
 
 function IntegralsPreferences(props, ref) {
-  const alert = useAlert();
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
@@ -56,9 +54,8 @@ function IntegralsPreferences(props, ref) {
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'integrals', value: values },
       });
-      alert.success('Integrals preferences saved successfully');
     },
-    [alert, preferences],
+    [preferences],
   );
 
   useImperativeHandle(ref, () => ({

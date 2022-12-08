@@ -1,6 +1,5 @@
 import { Formik } from 'formik';
 import {
-  useEffect,
   useCallback,
   useImperativeHandle,
   useRef,
@@ -10,7 +9,6 @@ import {
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -71,16 +69,11 @@ const formatFields: NucleusPreferenceField[] = [
 ];
 
 function PeaksPreferences(props, ref: any) {
-  const alert = useAlert();
   const formRef = useRef<any>(null);
   const preferences = usePreferences();
   const nucleus = useNucleus();
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('peaks', nuclei);
-
-  useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -88,9 +81,8 @@ function PeaksPreferences(props, ref: any) {
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'peaks', value: values },
       });
-      alert.success('Peaks preferences saved successfully');
     },
-    [alert, preferences],
+    [preferences],
   );
 
   useImperativeHandle(
@@ -105,7 +97,11 @@ function PeaksPreferences(props, ref: any) {
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} ref={formRef}>
+      <Formik
+        initialValues={preferencesByNuclei}
+        onSubmit={saveHandler}
+        innerRef={formRef}
+      >
         <>
           {nuclei?.map((n) => (
             <NucleusPreferences key={n} nucleus={n} fields={formatFields} />

@@ -2,7 +2,6 @@ import { Formik } from 'formik';
 import { useImperativeHandle, useRef, memo, forwardRef } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { PanelsPreferences } from '../../workspaces/Workspace';
@@ -12,7 +11,6 @@ import { PreferencesContainer } from '../extra/preferences/PreferencesContainer'
 import { SpectraColumnsManager } from './base/SpectraColumnsManager';
 
 function SpectraPreferences(props, ref: any) {
-  const alert = useAlert();
   const formRef = useRef<any>(null);
   const preferences = usePreferences();
   const nuclei = useNucleus();
@@ -23,7 +21,6 @@ function SpectraPreferences(props, ref: any) {
       type: 'SET_PANELS_PREFERENCES',
       payload: { key: 'spectra', value: values },
     });
-    alert.success('Peaks preferences saved successfully');
   }
 
   useImperativeHandle(

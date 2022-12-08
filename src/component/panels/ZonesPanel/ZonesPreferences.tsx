@@ -10,7 +10,6 @@ import {
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -31,7 +30,6 @@ const formatFields: NucleusPreferenceField[] = [
 ];
 
 function ZonesPreferences(props, ref) {
-  const alert = useAlert();
   const formRef = useRef<FormikProps<any>>(null);
 
   const preferences = usePreferences();
@@ -49,9 +47,8 @@ function ZonesPreferences(props, ref) {
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'zones', value: values },
       });
-      alert.success('zones preferences saved successfully');
     },
-    [alert, preferences],
+    [preferences],
   );
 
   useImperativeHandle(
