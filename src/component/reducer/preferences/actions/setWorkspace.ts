@@ -27,5 +27,6 @@ export function setWorkspace(
     );
     delete data.version;
     draft.workspaces[draft.workspacesTempKeys.nmriumWorkspaceKey] = data;
+    draft.workspace.current = draft.workspacesTempKeys.nmriumWorkspaceKey;
   }
 }

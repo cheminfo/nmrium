@@ -41,14 +41,18 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
       draft.workspacesTempKeys.componentPreferencesKey;
 
     /**
-     * set the current workspace what the user-defined in the setting if the workspace is not defined at the level of component, otherwise
-     * use the default workspace
-     *
+     *  we have the following priorities
+        1- .nmrium file settings (systematic special name of workspace)
+        2- preferences
+        3- workspace -> if does not exists -> default workspace
+        4- last selected workspace
      */
 
-    if (!workspace && localData?.currentWorkspace) {
-      const _workspace = getWorkspace(draft, localData.currentWorkspace);
-      draft.workspace = { current: _workspace, base: null };
+    if (preferences && componentWorkspacesKey) {
+      draft.workspace = {
+        current: componentWorkspacesKey,
+        base: componentWorkspacesKey,
+      };
     } else if (workspace) {
       const _workspace = getWorkspace(draft, workspace);
       draft.workspace = {
@@ -56,14 +60,8 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
         base: _workspace,
       };
     } else {
-      const _workspace =
-        preferences && componentWorkspacesKey
-          ? componentWorkspacesKey
-          : 'default';
-      draft.workspace = {
-        current: _workspace,
-        base: _workspace,
-      };
+      const _workspace = getWorkspace(draft, localData.currentWorkspace);
+      draft.workspace = { current: _workspace, base: null };
     }
 
     updateLocalStorageWorkspaces(draft, definedWorkplaces);
