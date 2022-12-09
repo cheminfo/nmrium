@@ -1,3 +1,4 @@
+import { AnalysisOptions } from '../../data/data1d/MultipleAnalysis';
 import { NMRiumPreferences } from '../NMRium';
 
 interface NucleusFormat {
@@ -95,6 +96,7 @@ export interface DatabasePanelPreferences {
 
 export interface MultipleSpectraAnalysisPreferences {
   resortSpectra: boolean;
+  analysisOptions: AnalysisOptions;
 }
 
 export interface WorkSpacePanelPreferences {
@@ -115,7 +117,7 @@ export interface PanelsPreferences {
   zones: NucleusPreferences<ZonesNucleusPreferences> &
     ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
-  multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences;
+  multipleSpectraAnalysis: NucleusPreferences<MultipleSpectraAnalysisPreferences>;
 }
 
 export interface Formatting {

@@ -1,11 +1,5 @@
 import { Formik } from 'formik';
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import * as Yup from 'yup';
 
@@ -22,70 +16,72 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import {
-  DELETE_ANALYZE_SPECTRA_RANGE,
-  SET_ANALYZE_SPECTRA_COLUMNS,
-} from '../../reducer/types/Types';
+import { DELETE_ANALYZE_SPECTRA_RANGE } from '../../reducer/types/Types';
+import { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from '../../workspaces/Workspace';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
 import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
 
 const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
+function getMultipleSpectraAnalysisData(
+  preferences: MultipleSpectraAnalysisPreferencesInterface,
+) {
+  return Object.fromEntries(
+    Object.keys(preferences.analysisOptions.columns).map((key) => [
+      key,
+      { ...preferences.analysisOptions.columns[key], tempKey: key },
+    ]),
+  );
+}
+
 interface MultipleSpectraAnalysisPreferencesProps {
   data: SpectraAnalysisData;
+  activeTab: string;
   onAfterSave: (flag: boolean) => void;
 }
 
 // TODO: remove this hacky use of ref.
 function MultipleSpectraAnalysisPreferences(
-  { data, onAfterSave }: MultipleSpectraAnalysisPreferencesProps,
+  { data, activeTab, onAfterSave }: MultipleSpectraAnalysisPreferencesProps,
   ref: any,
 ) {
   const dispatch = useDispatch();
   const refForm = useRef<any>();
-  const [columns, setColumns] = useState({});
-  const panelPreferences = usePanelPreferences('multipleSpectraAnalysis');
+  const panelPreferences = usePanelPreferences(
+    'multipleSpectraAnalysis',
+    activeTab,
+  );
+  const [columns, setColumns] = useState(
+    getMultipleSpectraAnalysisData(panelPreferences),
+  );
   const preferences = usePreferences();
+
   useImperativeHandle(ref, () => ({
     saveSetting() {
       refForm.current.submitForm();
     },
   }));
-
-  useEffect(() => {
-    const result = Object.fromEntries(
-      Object.keys(data.options.columns).map((key) => [
-        key,
-        { ...data.options.columns[key], tempKey: key },
-      ]),
-    );
-    setColumns(result);
-    refForm.current.setValues({ columns: result, code: data.options.code });
-  }, [data]);
-
   const columnsKeys = Object.keys(columns);
 
   const preferencesSchema = Yup.object().shape({
-    columns: Yup.lazy((data) => {
-      return Yup.object().shape(columnSchema(columnsKeys, data));
+    analysisOptions: Yup.object({
+      columns: Yup.lazy((data) => {
+        return Yup.object().shape(columnSchema(columnsKeys, data));
+      }),
     }),
   });
 
   function submitHandler(values) {
     onAfterSave?.(true);
     const result: any = {};
-    for (const [key, value] of Object.entries(values.columns)) {
+    for (const [key, value] of Object.entries(values.analysisOptions.columns)) {
       result[key] = { ...columns[key], ...(value as any) };
     }
 
     preferences.dispatch({
-      type: 'SET_PANELS_PREFERENCES',
-      payload: { key: 'multipleSpectraAnalysis', value: values.preferences },
-    });
-    dispatch({
-      type: SET_ANALYZE_SPECTRA_COLUMNS,
-      payload: { code: values.code, columns: result },
+      type: 'SET_SPECTRA_ANALYSIS_PREFERENCES',
+      payload: { data: values, nucleus: activeTab },
     });
   }
 
@@ -98,7 +94,7 @@ function MultipleSpectraAnalysisPreferences(
         valueKey: 'value',
         formula: '',
         index,
-      },
+      } as any,
     });
   }
 
@@ -118,7 +114,7 @@ function MultipleSpectraAnalysisPreferences(
       Header: 'Label',
       Cell: ({ row }) => (
         <FormikInput
-          name={`columns.${row.original}.tempKey`}
+          name={`analysisOptions.columns.${row.original}.tempKey`}
           style={inputStyle}
         />
       ),
@@ -131,7 +127,7 @@ function MultipleSpectraAnalysisPreferences(
         return (
           <FormikInput
             disabled={!isFormulaColumn}
-            name={`columns.${row.original}.formula`}
+            name={`analysisOptions.columns.${row.original}.formula`}
             style={inputStyle}
           />
         );
@@ -169,8 +165,11 @@ function MultipleSpectraAnalysisPreferences(
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
       <Formik
         innerRef={refForm}
-        key={JSON.stringify(columns)}
-        initialValues={{ columns, code: null, preferences: panelPreferences }}
+        initialValues={{
+          ...panelPreferences,
+          analysisOptions: { ...panelPreferences.analysisOptions, columns },
+        }}
+        enableReinitialize
         validationSchema={preferencesSchema}
         onSubmit={submitHandler}
       >
@@ -182,11 +181,8 @@ function MultipleSpectraAnalysisPreferences(
               container: { padding: '5px' },
             }}
           >
-            <Label
-              title="Enable resort spectra"
-              htmlFor="preferences.resortSpectra"
-            >
-              <FormikCheckBox name="preferences.resortSpectra" />
+            <Label title="Enable resort spectra" htmlFor="resortSpectra">
+              <FormikCheckBox name="resortSpectra" />
             </Label>
           </GroupPane>
           <GroupPane

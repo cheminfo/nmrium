@@ -6,10 +6,8 @@ import {
   COLUMNS_TYPES,
   COLUMNS_VALUES_KEYS,
 } from '../../../data/data1d/MultipleAnalysis';
-import { useDispatch } from '../../context/DispatchContext';
 import DeleteButton from '../../elements/Tab/DeleteButton';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton';
-import { DELETE_ANALYZE_SPECTRA_RANGE } from '../../reducer/types/Types';
 
 const styles = (styles) => css`
   position: relative;
@@ -63,6 +61,7 @@ interface ColumnHeaderProps {
     type: string;
     valueKey: string;
   };
+  onDelete: () => void;
 }
 
 function ColumnHeader({
@@ -70,12 +69,11 @@ function ColumnHeader({
   rangeLabel,
   data,
   onColumnFilter,
+  onDelete,
 }: ColumnHeaderProps) {
-  const dispatch = useDispatch();
-
   function deleteHandler(e: MouseEvent) {
     e.stopPropagation();
-    dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey: charLabel });
+    onDelete();
   }
 
   return (

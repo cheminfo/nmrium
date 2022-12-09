@@ -7,10 +7,20 @@ import {
   storeData,
 } from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
-import { Workspace, WorkSpaceSource } from '../../workspaces/Workspace';
+import {
+  MultipleSpectraAnalysisPreferences,
+  Workspace,
+  WorkSpaceSource,
+} from '../../workspaces/Workspace';
 import { ActionType } from '../types/Types';
 
 import { addWorkspace } from './actions/addWorkspace';
+import {
+  analyzeSpectra,
+  changeAnalysisColumnValueKey,
+  deleteAnalysisColumn,
+  setSpectraAnalysisPanelsPreferences,
+} from './actions/analyzeSpectra';
 import { initPreferences } from './actions/initPreferences';
 import { removeWorkspace } from './actions/removeWorkspace';
 import { setActiveWorkspace } from './actions/setActiveWorkspace';
@@ -54,6 +64,22 @@ export type AddWorkspaceAction = ActionType<
   'ADD_WORKSPACE',
   { workspace: string; data?: Omit<Workspace, 'version' | 'label'> }
 >;
+export type AnalyzeSpectraAction = ActionType<
+  'ANALYZE_SPECTRA',
+  { start: number; end: number; nucleus: string; columnKey?: string }
+>;
+export type ChangeAnalysisColumnValueKeyAction = ActionType<
+  'CHANGE_ANALYSIS_COLUMN_VALUE_KEY',
+  { columnKey: string; valueKey: string; nucleus: string }
+>;
+export type DeleteAnalysisColumn = ActionType<
+  'DELETE_ANALYSIS_COLUMN',
+  { columnKey: string; nucleus: string }
+>;
+export type SetSpectraAnalysisPanelPreferencesAction = ActionType<
+  'SET_SPECTRA_ANALYSIS_PREFERENCES',
+  { nucleus: string; data: MultipleSpectraAnalysisPreferences }
+>;
 
 type PreferencesActions =
   | InitPreferencesAction
@@ -61,7 +87,11 @@ type PreferencesActions =
   | SetPanelsPreferencesAction
   | SetWorkspaceAction
   | WorkspaceAction
-  | AddWorkspaceAction;
+  | AddWorkspaceAction
+  | AnalyzeSpectraAction
+  | ChangeAnalysisColumnValueKeyAction
+  | DeleteAnalysisColumn
+  | SetSpectraAnalysisPanelPreferencesAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -180,6 +210,14 @@ function innerPreferencesReducer(
       return addWorkspace(draft, action);
     case 'REMOVE_WORKSPACE':
       return removeWorkspace(draft, action);
+    case 'ANALYZE_SPECTRA':
+      return analyzeSpectra(draft, action);
+    case 'CHANGE_ANALYSIS_COLUMN_VALUE_KEY':
+      return changeAnalysisColumnValueKey(draft, action);
+    case 'DELETE_ANALYSIS_COLUMN':
+      return deleteAnalysisColumn(draft, action);
+    case 'SET_SPECTRA_ANALYSIS_PREFERENCES':
+      return setSpectraAnalysisPanelsPreferences(draft, action);
     default:
       return draft;
   }

@@ -1,4 +1,5 @@
 import {
+  MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   SpectraNucleusPreferences,
 } from '../../workspaces/Workspace';
@@ -120,10 +121,20 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   color: '#C0B000',
   marginBottom: 30,
 };
-const multipleSpectraAnalysisDefaultValues: PanelsPreferences['multipleSpectraAnalysis'] =
-  {
+const getMultipleSpectraAnalysisDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['multipleSpectraAnalysis'] => {
+  const preferences: MultipleSpectraAnalysisPreferences = {
     resortSpectra: true,
+    analysisOptions: {
+      code: null,
+      columns: {},
+      sum: 100,
+      columnIndex: 0,
+    },
   };
+  return getPreferences(preferences, nucleus);
+};
 
 export {
   getSpectraDefaultValues,
@@ -132,5 +143,5 @@ export {
   getRangeDefaultValues,
   getZoneDefaultValues,
   databaseDefaultValues,
-  multipleSpectraAnalysisDefaultValues,
+  getMultipleSpectraAnalysisDefaultValues,
 };

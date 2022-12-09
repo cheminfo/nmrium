@@ -1,14 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
-import { useCallback, useState, useRef, memo, useMemo } from 'react';
+import { useCallback, useState, useRef, memo } from 'react';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
-import {
-  getDataAsString,
-  SpectraAnalysisData,
-} from '../../../data/data1d/MultipleAnalysis';
+import { getDataAsString } from '../../../data/data1d/MultipleAnalysis';
+import { generateAnalyzeSpectra } from '../../../data/data1d/multipleSpectraAnalysis';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -30,18 +28,22 @@ import MultipleSpectraAnalysisPreferences from './MultipleSpectraAnalysisPrefere
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
-  spectraAnalysis: SpectraAnalysisData;
   spectra: Datum1D[];
   activeTab: string;
 }
 
 function MultipleSpectraAnalysisPanelInner({
   activeTab,
-  spectraAnalysis,
   spectra,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
+  const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
+  const spectraAnalysis = generateAnalyzeSpectra(
+    preferences as any,
+    spectra,
+    activeTab,
+  ) as any;
 
   const settingRef = useRef<any>();
   const alert = useAlert();
@@ -135,11 +137,13 @@ function MultipleSpectraAnalysisPanelInner({
         {!isFlipped ? (
           <MultipleSpectraAnalysisTable
             data={spectraAnalysis}
+            resortSpectra={preferences.resortSpectra}
             activeTab={activeTab}
           />
         ) : (
           <MultipleSpectraAnalysisPreferences
             data={spectraAnalysis}
+            activeTab={activeTab}
             onAfterSave={afterSaveHandler}
             ref={settingRef}
           />
@@ -159,22 +163,10 @@ export default function MultipleSpectraAnalysisPanel() {
     view: {
       spectra: { activeTab },
     },
-    spectraAnalysis: analysis,
     displayerKey,
   } = useChartData();
 
   const spectra = getSpectraByNucleus(activeTab, data) as Datum1D[];
-
-  const spectraAnalysis = useMemo<any>(() => {
-    const {
-      values,
-      options: { columns, code },
-    } = analysis[activeTab] || {
-      values: {},
-      options: { columns: {}, code: null },
-    };
-    return { values: Object.values(values), options: { columns, code } };
-  }, [activeTab, analysis]);
 
   if (!activeTab) {
     return <div />;
@@ -182,7 +174,7 @@ export default function MultipleSpectraAnalysisPanel() {
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel
-      {...{ activeTab, spectraAnalysis, displayerKey, spectra }}
+      {...{ activeTab, displayerKey, spectra }}
     />
   );
 }
