@@ -58,7 +58,7 @@ export function useSaveSettings() {
     alert.success('Preferences saved successfully');
   }
 
-  return (values = {}) => {
+  return (values) => {
     const alertConfig = {
       message:
         'Please enter a new user workspace name in order to save your changes locally',
