@@ -27,7 +27,15 @@ test('should Change the visibility of the panels', async ({ page }) => {
       .click();
 
     // save changes
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('Button >> text=Save');
+
+    // enter a name for the workspace
+    await nmrium.page.locator('input[name="workspaceName"]').fill('test');
+
+    // save the user workspace
+    await nmrium.page.click(
+      'data-test-id=save-workspace-dialog >> button >> text=Save',
+    );
 
     //check if the database panel is visible after saving the changes in the general setting
     await expect(databaseLocator).toBeVisible();

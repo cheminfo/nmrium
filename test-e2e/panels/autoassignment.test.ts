@@ -17,6 +17,14 @@ test('automatic assignment panel', async ({ page }) => {
       '_react=Draggable >> _react=ReactTable >> tr[role="row"] >> nth=13 >> td[role="cell"] >> nth=2 >> input',
     );
     await nmrium.page.click('_react=Draggable >> text=Save');
+
+    // enter a name for the workspace
+    await nmrium.page.locator('input[name="workspaceName"]').fill('test');
+
+    // save the user workspace
+    await nmrium.page.click(
+      'data-test-id=save-workspace-dialog >> button >> text=Save',
+    );
   });
   await test.step('check automatic assignment panel', async () => {
     await nmrium.clickPanel('Automatic Assignment');
