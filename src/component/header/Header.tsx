@@ -4,6 +4,7 @@ import {
   FaRegWindowMaximize,
   FaWrench,
   FaQuestionCircle,
+  FaRegSave,
 } from 'react-icons/fa';
 import { Header, Toolbar } from 'react-science/ui';
 
@@ -159,11 +160,11 @@ function HeaderInner(props: HeaderInnerProps) {
             data={workspacesList}
             selectedKey={workspace.current}
             onSelect={changeWorkspaceHandler}
-            style={{ padding: '0.15rem 0.3rem', fontSize: '0.75rem' }}
             renderItem={renderItem}
           />
         )}
         <SaveButton />
+
         <div>
           <Toolbar orientation="horizontal">
             <Toolbar.Item
@@ -214,16 +215,16 @@ function SaveButton() {
   return (
     <Button.Done
       onClick={handleSave}
-      fill="outline"
-      size="xSmall"
-      style={{ borderRadius: '10px', marginLeft: '5px' }}
+      fill="clear"
+      style={{ fontSize: '1.4em', marginLeft: '5px' }}
       {...(!isWorkspaceHasSettingNotSaved && {
         color: { base: 'gray', hover: 'gray' },
         backgroundColor: { base: 'gray', hover: 'lightgray' },
         disabled: true,
       })}
+      toolTip="Save workspace locally in the browser"
     >
-      Save
+      <FaRegSave />
     </Button.Done>
   );
 }

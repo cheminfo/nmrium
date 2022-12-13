@@ -143,6 +143,10 @@ const styles: Style = {
       flex-direction: row;
       border-width: 1px;
       align-items: center;
+
+      &:hover + .content {
+        display: flex;
+      }
     `;
 
     const fillStyle = getFillStyle(props);
@@ -161,6 +165,7 @@ const styles: Style = {
         opacity: 0.25;
       }
     `;
+
     return css([
       basic,
       sizeConfig[size],
@@ -171,11 +176,43 @@ const styles: Style = {
   },
 };
 
+type TooltipOrientation = 'vertical' | 'horizontal';
+
+//based on the tooltip from react-science
+const toolTipStyle = (orientation: TooltipOrientation) => {
+  const common: CSSObject = {
+    display: 'none',
+    position: 'absolute',
+    backgroundColor: 'gray',
+    borderRadius: '2px',
+    color: 'white',
+    bottom: '0px',
+    right: '0px',
+    width: 'fit-content',
+    height: '100%',
+    fontSize: '0.875em',
+    whiteSpace: 'nowrap',
+    paddingLeft: '3px',
+    paddingRight: '3px',
+    zIndex: 99,
+  };
+
+  return css([
+    common,
+    orientation === 'vertical' && { margin: 'auto', marginLeft: '5px' },
+    orientation === 'horizontal'
+      ? { top: 'calc(100% + 5px)' }
+      : { top: '0px', left: 'calc(100% + 5px)' },
+  ]);
+};
+
 interface ButtonProps
   extends Partial<ButtonStyle>,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
   onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
+  toolTip?: string;
+  tooltipOrientation?: TooltipOrientation;
 }
 
 function Button(props: ButtonProps) {
@@ -188,28 +225,48 @@ function Button(props: ButtonProps) {
     fill,
     borderRadius,
     style = {},
+    toolTip,
+    tooltipOrientation = 'horizontal',
     ...restProps
   } = props;
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      css={[
-        styles.button({
-          size,
-          backgroundColor,
-          color,
-          borderColor,
-          fill,
-          borderRadius,
-        }),
-        style,
-      ]}
-      {...restProps}
-    >
-      <span style={{ flex: 1, pointerEvents: 'none' }}> {props.children}</span>
-    </button>
+    <div style={{ position: 'relative' }}>
+      <button
+        type="button"
+        onClick={onClick}
+        css={[
+          styles.button({
+            size,
+            backgroundColor,
+            color,
+            borderColor,
+            fill,
+            borderRadius,
+          }),
+          style,
+        ]}
+        {...restProps}
+      >
+        <span style={{ flex: 1, pointerEvents: 'none' }}>
+          {' '}
+          {props.children}
+        </span>
+      </button>
+      {toolTip && (
+        <div className="content" css={toolTipStyle(tooltipOrientation)}>
+          <span
+            style={{
+              display: 'flex',
+              margin: 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            {toolTip}
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -98,9 +98,6 @@ const styles = css`
     align-items: center;
     cursor: default;
     padding: 0.5em;
-    .dropdown {
-      padding: 0.4em 1em;
-    }
     & .label {
       font-size: 0.8em;
     }

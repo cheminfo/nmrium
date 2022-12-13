@@ -6,6 +6,7 @@ import { usePreferences } from '../context/PreferencesContext';
 import FormikInput from '../elements/formik/FormikInput';
 import { useAlert } from '../elements/popup/Alert/Context';
 import { useModal } from '../elements/popup/Modal/Context';
+import { Workspace } from '../workspaces/Workspace';
 
 const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
@@ -58,7 +59,7 @@ export function useSaveSettings() {
     alert.success('Preferences saved successfully');
   }
 
-  return (values) => {
+  return (values?: Partial<Workspace>) => {
     const alertConfig = {
       message:
         'Please enter a new user workspace name in order to save your changes locally',
@@ -86,7 +87,7 @@ export function useSaveSettings() {
     } else {
       dispatch({
         type: 'SET_PREFERENCES',
-        payload: values,
+        payload: values as any,
       });
       modal.close();
     }
