@@ -6,8 +6,7 @@ import * as Yup from 'yup';
 import {
   COLUMNS_TYPES,
   SpectraAnalysisData,
-} from '../../../data/data1d/MultipleAnalysis';
-import { useDispatch } from '../../context/DispatchContext';
+} from '../../../data/data1d/multipleSpectraAnalysis';
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
 import { GroupPane } from '../../elements/GroupPane';
@@ -16,7 +15,6 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { DELETE_ANALYZE_SPECTRA_RANGE } from '../../reducer/types/Types';
 import { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from '../../workspaces/Workspace';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
@@ -46,7 +44,6 @@ function MultipleSpectraAnalysisPreferences(
   { data, activeTab, onAfterSave }: MultipleSpectraAnalysisPreferencesProps,
   ref: any,
 ) {
-  const dispatch = useDispatch();
   const refForm = useRef<any>();
   const panelPreferences = usePanelPreferences(
     'multipleSpectraAnalysis',
@@ -76,7 +73,6 @@ function MultipleSpectraAnalysisPreferences(
     for (const [key, value] of Object.entries(values.columns)) {
       result[key] = { ...columns[key], ...(value as any) };
     }
-
     preferences.dispatch({
       type: 'SET_SPECTRA_ANALYSIS_PREFERENCES',
       payload: { data: values, nucleus: activeTab },
@@ -97,9 +93,11 @@ function MultipleSpectraAnalysisPreferences(
   }
 
   function handleDelete(colKey) {
-    dispatch({
-      type: DELETE_ANALYZE_SPECTRA_RANGE,
-      colKey,
+    setColumns((prevColumns) => {
+      const _columns = { ...prevColumns };
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete _columns[colKey];
+      return _columns;
     });
   }
 

@@ -1,5 +1,4 @@
 import lodashGet from 'lodash/get';
-import lodashMerge from 'lodash/merge';
 
 import { Spectra } from '../../component/NMRium';
 import {
@@ -149,11 +148,12 @@ export function setColumn(
       return [value.tempKey, data];
     }),
   );
-  spectraAnalysis.nuclei[nucleus] = lodashMerge(
-    spectraAnalysis.nuclei[nucleus],
-    { code, columns },
-    restSetting,
-  );
+  spectraAnalysis.nuclei[nucleus] = {
+    ...spectraAnalysis.nuclei[nucleus],
+    code,
+    columns,
+    ...restSetting,
+  };
 }
 
 export function changeColumnValueKey(
