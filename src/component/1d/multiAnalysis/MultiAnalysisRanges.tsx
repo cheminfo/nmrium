@@ -52,7 +52,7 @@ export default function MultiAnalysisRanges() {
     'multipleSpectraAnalysis',
     activeTab,
   );
-  const columns = multipleSpectraAnalysis.analysisOptions.columns;
+  const columns = multipleSpectraAnalysis.columns;
   return (
     <MemoizedMultiAnalysisRanges {...{ columns, displayerKey, activeTab }} />
   );

@@ -39,6 +39,7 @@ function MultipleSpectraAnalysisPanelInner({
   const [isFlipped, setFlipStatus] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
+
   const spectraAnalysis = generateAnalyzeSpectra(
     preferences as any,
     spectra,

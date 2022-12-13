@@ -94,9 +94,8 @@ export interface DatabasePanelPreferences {
   marginBottom: number;
 }
 
-export interface MultipleSpectraAnalysisPreferences {
+export interface MultipleSpectraAnalysisPreferences extends AnalysisOptions {
   resortSpectra: boolean;
-  analysisOptions: AnalysisOptions;
 }
 
 export interface WorkSpacePanelPreferences {

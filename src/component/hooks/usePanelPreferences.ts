@@ -61,7 +61,6 @@ function joinWithNucleusPreferences<T extends Exclude<Panel, 'database'>>(
   if (returnOnlyNucleusPreferences) {
     return nuclei?.[nucleus];
   }
-
   return { ...nuclei[nucleus], ...rest };
 }
 

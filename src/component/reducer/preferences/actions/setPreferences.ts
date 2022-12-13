@@ -10,7 +10,7 @@ export function setPreferences(draft: Draft<PreferencesState>, action) {
   let localData = getLocalStorage('nmr-general-settings');
   const currentWorkspacePreferences = getActiveWorkspace(draft);
 
-  if (Object.keys(action.payload).length > 0) {
+  if (action.payload) {
     let { formatting, ...restPreferences } = action.payload;
 
     formatting = mapNucleiFormatting(formatting);

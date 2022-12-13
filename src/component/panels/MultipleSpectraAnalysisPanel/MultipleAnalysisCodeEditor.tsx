@@ -25,7 +25,7 @@ function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
     if (evalResult instanceof Error) {
       setResult(evalResult.message);
     } else {
-      setFieldValue('analysisOptions.code', code);
+      setFieldValue('code', code);
       setResult(evalResult);
     }
   }, [code, data, setFieldValue]);

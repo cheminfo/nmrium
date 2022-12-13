@@ -28,9 +28,9 @@ function getMultipleSpectraAnalysisData(
   preferences: MultipleSpectraAnalysisPreferencesInterface,
 ) {
   return Object.fromEntries(
-    Object.keys(preferences.analysisOptions.columns).map((key) => [
+    Object.keys(preferences.columns).map((key) => [
       key,
-      { ...preferences.analysisOptions.columns[key], tempKey: key },
+      { ...preferences.columns[key], tempKey: key },
     ]),
   );
 }
@@ -65,17 +65,15 @@ function MultipleSpectraAnalysisPreferences(
   const columnsKeys = Object.keys(columns);
 
   const preferencesSchema = Yup.object().shape({
-    analysisOptions: Yup.object({
-      columns: Yup.lazy((data) => {
-        return Yup.object().shape(columnSchema(columnsKeys, data));
-      }),
+    columns: Yup.lazy((data) => {
+      return Yup.object().shape(columnSchema(columnsKeys, data));
     }),
   });
 
   function submitHandler(values) {
     onAfterSave?.(true);
     const result: any = {};
-    for (const [key, value] of Object.entries(values.analysisOptions.columns)) {
+    for (const [key, value] of Object.entries(values.columns)) {
       result[key] = { ...columns[key], ...(value as any) };
     }
 
@@ -114,7 +112,7 @@ function MultipleSpectraAnalysisPreferences(
       Header: 'Label',
       Cell: ({ row }) => (
         <FormikInput
-          name={`analysisOptions.columns.${row.original}.tempKey`}
+          name={`columns.${row.original}.tempKey`}
           style={inputStyle}
         />
       ),
@@ -127,7 +125,7 @@ function MultipleSpectraAnalysisPreferences(
         return (
           <FormikInput
             disabled={!isFormulaColumn}
-            name={`analysisOptions.columns.${row.original}.formula`}
+            name={`columns.${row.original}.formula`}
             style={inputStyle}
           />
         );
@@ -167,7 +165,7 @@ function MultipleSpectraAnalysisPreferences(
         innerRef={refForm}
         initialValues={{
           ...panelPreferences,
-          analysisOptions: { ...panelPreferences.analysisOptions, columns },
+          columns,
         }}
         enableReinitialize
         validationSchema={preferencesSchema}

@@ -74,8 +74,7 @@ function addColumnKey(
   columnProps: Column,
   columnKey: string,
 ) {
-  const spectraAnalysisOptions =
-    spectraAnalysis.nuclei[nucleus].analysisOptions;
+  const spectraAnalysisOptions = spectraAnalysis.nuclei[nucleus];
   const key =
     columnKey || generateChar(spectraAnalysisOptions.columnIndex).toUpperCase();
   spectraAnalysisOptions.columns[key] = columnProps;
@@ -87,7 +86,7 @@ export function getColumns(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
 ) {
-  return spectraAnalysis.nuclei[nucleus].analysisOptions.columns;
+  return spectraAnalysis.nuclei[nucleus].columns;
 }
 
 export function getValue(
@@ -128,12 +127,10 @@ function init(
   if (!spectraAnalysis.nuclei?.[nucleus]) {
     spectraAnalysis.nuclei[nucleus] = {
       resortSpectra: true,
-      analysisOptions: {
-        sum: 100,
-        code: null,
-        columns: {},
-        columnIndex: 0,
-      },
+      sum: 100,
+      code: null,
+      columns: {},
+      columnIndex: 0,
     };
   }
 }
@@ -144,10 +141,7 @@ export function setColumn(
   settings: MultipleSpectraAnalysisPreferences,
 ) {
   init(spectraAnalysis, nucleus);
-  const {
-    analysisOptions: { code, columns: inputColumns },
-    ...restSetting
-  } = settings;
+  const { code, columns: inputColumns, ...restSetting } = settings;
   const columns = Object.fromEntries(
     Object.values(inputColumns).map((value: any) => {
       const data = { ...value };
@@ -157,7 +151,7 @@ export function setColumn(
   );
   spectraAnalysis.nuclei[nucleus] = lodashMerge(
     spectraAnalysis.nuclei[nucleus],
-    { analysisOptions: { code, columns } },
+    { code, columns },
     restSetting,
   );
 }
@@ -168,8 +162,7 @@ export function changeColumnValueKey(
   columnKey: string,
   newKey: COLUMNS_VALUES_KEYS,
 ) {
-  spectraAnalysis.nuclei[nucleus].analysisOptions.columns[columnKey].valueKey =
-    newKey;
+  spectraAnalysis.nuclei[nucleus].columns[columnKey].valueKey = newKey;
 }
 
 export function analyzeSpectra(
@@ -198,7 +191,7 @@ export function generateAnalyzeSpectra(
   nucleus: string,
 ) {
   let data: any = {};
-  const { sum, columns, code } = spectraAnalysisOptions.analysisOptions;
+  const { sum, columns, code } = spectraAnalysisOptions;
 
   for (const columnKey in columns) {
     const { from, to } = columns[columnKey];
@@ -256,7 +249,7 @@ export function deleteSpectraAnalysis(
   nucleus: string,
 ) {
   if (spectraAnalysis.nuclei[nucleus]) {
-    const analysisOptions = spectraAnalysis.nuclei[nucleus].analysisOptions;
+    const analysisOptions = spectraAnalysis.nuclei[nucleus];
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete analysisOptions.columns[colKey];
 

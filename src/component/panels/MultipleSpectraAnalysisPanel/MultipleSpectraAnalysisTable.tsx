@@ -8,6 +8,7 @@ import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { ORDER_MULTIPLE_SPECTRA_ANALYSIS } from '../../reducer/types/Types';
 import evaluate from '../../utility/Evaluate';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -28,8 +29,10 @@ function MultipleSpectraAnalysisTable({
   const format = useFormatNumberByNucleus(activeTab);
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
-
-  // console.log()
+  const panelPreferences = usePanelPreferences(
+    'multipleSpectraAnalysis',
+    activeTab,
+  );
 
   const codeEvaluation = useMemo(() => {
     const code = data.options.code || '';
@@ -94,8 +97,8 @@ function MultipleSpectraAnalysisTable({
       );
     }
 
-    if (data.options.columns) {
-      const analysisColumns = data.options.columns;
+    if (panelPreferences.columns) {
+      const analysisColumns = panelPreferences.columns;
       for (const columnKey in analysisColumns) {
         const { valueKey, index: columnIndex } = analysisColumns[columnKey];
         addCustomColumn(columns, {
@@ -107,7 +110,7 @@ function MultipleSpectraAnalysisTable({
       }
     }
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [activeTab, data.options.columns, dispatchPreferences, format]);
+  }, [activeTab, dispatchPreferences, format, panelPreferences.columns]);
 
   function handleSortEnd(data) {
     if (resortSpectra) {

@@ -126,12 +126,10 @@ const getMultipleSpectraAnalysisDefaultValues = (
 ): PanelsPreferences['multipleSpectraAnalysis'] => {
   const preferences: MultipleSpectraAnalysisPreferences = {
     resortSpectra: true,
-    analysisOptions: {
-      code: null,
-      columns: {},
-      sum: 100,
-      columnIndex: 0,
-    },
+    code: null,
+    columns: {},
+    sum: 100,
+    columnIndex: 0,
   };
   return getPreferences(preferences, nucleus);
 };
