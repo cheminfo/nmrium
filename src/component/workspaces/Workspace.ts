@@ -1,4 +1,4 @@
-import { AnalysisOptions } from '../../data/data1d/MultipleAnalysis';
+import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
 import { NMRiumPreferences } from '../NMRium';
 
 interface NucleusFormat {

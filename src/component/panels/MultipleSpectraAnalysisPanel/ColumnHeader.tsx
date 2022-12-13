@@ -5,7 +5,7 @@ import { MouseEvent } from 'react';
 import {
   COLUMNS_TYPES,
   COLUMNS_VALUES_KEYS,
-} from '../../../data/data1d/MultipleAnalysis';
+} from '../../../data/data1d/multipleSpectraAnalysis';
 import DeleteButton from '../../elements/Tab/DeleteButton';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton';
 

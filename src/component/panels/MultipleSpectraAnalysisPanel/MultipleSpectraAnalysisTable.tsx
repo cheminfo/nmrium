@@ -1,6 +1,6 @@
 import { useMemo, memo, Fragment } from 'react';
 
-import { SpectraAnalysisData } from '../../../data/data1d/MultipleAnalysis';
+import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
