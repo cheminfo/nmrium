@@ -34,6 +34,7 @@ const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
                 color: 'black',
               },
             }}
+            autoFocus
           />
         </Formik>
       </div>
@@ -72,13 +73,13 @@ export function useSaveSettings() {
       ),
       buttons: [
         {
-          text: 'Yes',
+          text: 'Save',
           handler: () => {
             void formRef.current?.submitForm();
           },
           preventClose: true,
         },
-        { text: 'No' },
+        { text: 'Cancel' },
       ],
     };
 

@@ -208,7 +208,7 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
 
 interface ButtonProps
   extends Partial<ButtonStyle>,
-  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
   onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
   toolTip?: string;
