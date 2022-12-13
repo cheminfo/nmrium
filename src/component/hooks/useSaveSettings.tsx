@@ -81,7 +81,7 @@ export function useSaveSettings() {
         },
         { text: 'Cancel' },
       ],
-      id: "save-workspace-dialog"
+      id: 'save-workspace-dialog',
     };
 
     if (current.source !== 'user') {

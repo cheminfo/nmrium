@@ -74,7 +74,7 @@ interface ConfirmationDialogProps {
   onClose: () => void;
   message: string;
   render?: (data: { message: string; className: string }) => ReactNode;
-  id?: string
+  id?: string;
 }
 
 function ConfirmationDialog({
@@ -83,7 +83,7 @@ function ConfirmationDialog({
   onClose,
   message,
   render,
-  id
+  id,
 }: ConfirmationDialogProps) {
   const optionsHandler = useCallback(
     (
