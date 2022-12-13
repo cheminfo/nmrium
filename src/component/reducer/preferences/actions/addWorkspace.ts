@@ -29,7 +29,7 @@ export function addWorkspace(
   );
   const newWorkspaceKey = v4();
   const localData = getLocalStorage('nmr-general-settings');
-
+  localData.currentWorkspace = newWorkspaceKey;
   localData.workspaces[newWorkspaceKey] = newWorkSpace;
   storeData('nmr-general-settings', JSON.stringify(localData));
   draft.workspaces[newWorkspaceKey] = newWorkSpace as WorkspaceWithSource;
