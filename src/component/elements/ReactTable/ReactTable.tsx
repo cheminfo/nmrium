@@ -19,6 +19,8 @@ import {
   Column as ReactColumn,
   UseSortByColumnOptions,
   UseSortByInstanceProps,
+  UseTableOptions,
+  UseSortByOptions,
 } from 'react-table';
 import { useMeasure } from 'react-use';
 
@@ -51,6 +53,8 @@ export type Column<T extends object> = ReactColumn<T> &
 type TableInstanceWithHooks = TableInstance & {
   rowSpanHeaders: RowSpanHeaders;
 } & UseSortByInstanceProps<any>;
+
+type TableOptions = UseTableOptions<any> & UseSortByOptions<any>;
 
 interface SortEvent {
   onSortEnd?: (data: any) => void;
@@ -144,7 +148,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     {
       columns,
       data,
-    },
+      autoResetSortBy: false,
+    } as TableOptions,
     useSortBy,
     useRowSpan,
   ) as TableInstanceWithHooks;
