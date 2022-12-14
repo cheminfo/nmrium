@@ -2,6 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
+import { readNMRiumObject } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -270,7 +271,16 @@ function InnerNMRium({
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
     if (dataProp) {
-      dispatchMiddleWare({ type: INITIATE, payload: dataProp });
+      try {
+        void readNMRiumObject(dataProp).then((nmriumObject) => {
+          dispatchMiddleWare({ type: INITIATE, payload: nmriumObject });
+        });
+      } catch (error: any) {
+        dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+        // eslint-disable-next-line no-alert
+        alert(error.message);
+        reportError(error);
+      }
     }
   }, [dataProp, dispatchMiddleWare]);
 
