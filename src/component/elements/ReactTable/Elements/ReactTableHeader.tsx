@@ -24,7 +24,11 @@ function ReactTableHeader({ headerGroups, onClick }: ReactTableHeaderProps) {
         return (
           <tr key={headerGroupKey} {...restHeaderGroupProps}>
             {headerGroup.headers.map((column) => (
-              <HeaderCell key={column.getHeaderProps(column.getSortByToggleProps()).key} column={column} onClick={onClick} />
+              <HeaderCell
+                key={column.getHeaderProps(column.getSortByToggleProps()).key}
+                column={column}
+                onClick={onClick}
+              />
             ))}
           </tr>
         );
@@ -32,7 +36,6 @@ function ReactTableHeader({ headerGroups, onClick }: ReactTableHeaderProps) {
     </thead>
   );
 }
-
 
 interface HeaderCellProps extends TableCellEvent {
   column: any;

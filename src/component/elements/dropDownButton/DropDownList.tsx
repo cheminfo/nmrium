@@ -46,7 +46,7 @@ const styles = {
 
 interface InnerDropDownListProps<T>
   extends DropDownListProps<T>,
-  Required<ItemProps> {
+    Required<ItemProps> {
   onSelect: (index: number) => void;
 }
 
@@ -62,8 +62,9 @@ function DropDownList({
     if (ref.current) {
       const containerRect = ref.current?.getBoundingClientRect();
       if (containerRect.right > window.innerWidth) {
-        ref.current.style.right = `${containerRect.right - window.innerWidth
-          }px`;
+        ref.current.style.right = `${
+          containerRect.right - window.innerWidth
+        }px`;
       }
     }
   }, []);
@@ -74,7 +75,10 @@ function DropDownList({
           <li
             css={styles.li}
             key={item[itemKey]}
-            onClick={(e) => { e.stopPropagation(); onSelect(index) }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(index);
+            }}
           >
             {renderItem?.(item) || (
               <span css={styles.label}>{item[labelKey]}</span>

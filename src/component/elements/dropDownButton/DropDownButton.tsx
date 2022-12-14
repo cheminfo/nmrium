@@ -86,7 +86,6 @@ function DropDownButton<T extends DropDownListItem>(
       setItem(data[index]);
       onSelect?.(data[index]);
       setOpen(false);
-
     },
     [data, onSelect],
   );
