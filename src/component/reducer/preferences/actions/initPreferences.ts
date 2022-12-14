@@ -1,14 +1,9 @@
 import { Draft } from 'immer';
-import lodashMerge from 'lodash/merge';
 
 import { NMRiumWorkspace } from '../../../NMRium';
 import { getLocalStorage } from '../../../utility/LocalStorage';
-import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
-import {
-  PreferencesState,
-  WORKSPACES_KEYS,
-  WorkspaceWithSource,
-} from '../preferencesReducer';
+import { PreferencesState, WORKSPACES_KEYS } from '../preferencesReducer';
+import { initWorkspace } from '../utilities/initWorkspace';
 import { mapWorkspaces } from '../utilities/mapWorkspaces';
 
 function getWorkspace(
@@ -63,16 +58,23 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
     }
 
     if (preferences) {
-      const NMRiumComponentPreferences: WorkspaceWithSource = lodashMerge(
-        {},
-        workspaceDefaultProperties,
-        preferences,
-        { label: 'NMRium Preferences', source: 'component' },
-      );
-
+      const workspaceData = {
+        label: 'NMRium Preferences',
+        source: 'component',
+      };
       draft.workspaces = {
         ...draft.workspaces,
-        [WORKSPACES_KEYS.componentKey]: NMRiumComponentPreferences,
+        [WORKSPACES_KEYS.componentKey]: initWorkspace(
+          preferences,
+          workspaceData as any,
+        ),
+      };
+      draft.originalWorkspaces = {
+        ...draft.workspaces,
+        [WORKSPACES_KEYS.componentKey]: initWorkspace(
+          preferences,
+          workspaceData as any,
+        ),
       };
     }
 

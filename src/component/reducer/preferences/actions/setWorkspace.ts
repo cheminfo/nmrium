@@ -1,13 +1,12 @@
 import { Draft } from 'immer';
-import lodashMerge from 'lodash/merge';
 
-import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
 import {
   PreferencesState,
   SetWorkspaceAction,
   WORKSPACES_KEYS,
 } from '../preferencesReducer';
 import { getPreferencesByWorkspace } from '../utilities/getPreferencesByWorkspace';
+import { initWorkspace } from '../utilities/initWorkspace';
 
 export function setWorkspace(
   draft: Draft<PreferencesState>,
@@ -23,14 +22,16 @@ export function setWorkspace(
     }
     draft.workspace.current = workspaceKey;
   } else if (action.payload.workspaceSource === 'nmriumFile') {
-    const data: any = lodashMerge(
-      {},
-      workspaceDefaultProperties,
+    const workspaceData = { label: 'NMRium File', source: 'nmriumFile' };
+    draft.workspaces[WORKSPACES_KEYS.nmriumKey] = initWorkspace(
       action.payload.data,
-      { label: 'NMRium File', source: 'nmriumFile' },
+      workspaceData as any,
     );
-    delete data.version;
-    draft.workspaces[WORKSPACES_KEYS.nmriumKey] = data;
+    draft.originalWorkspaces[WORKSPACES_KEYS.nmriumKey] = initWorkspace(
+      action.payload.data,
+      workspaceData as any,
+    );
+
     draft.workspace.current = WORKSPACES_KEYS.nmriumKey;
   }
 }
