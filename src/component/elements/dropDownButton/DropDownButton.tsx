@@ -85,6 +85,8 @@ function DropDownButton<T extends DropDownListItem>(
     (index) => {
       setItem(data[index]);
       onSelect?.(data[index]);
+      setOpen(false);
+
     },
     [data, onSelect],
   );
