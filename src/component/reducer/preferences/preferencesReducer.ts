@@ -1,20 +1,40 @@
-import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 
 import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
-import { getLocalStorage, removeData } from '../../utility/LocalStorage';
+import {
+  getLocalStorage,
+  removeData,
+  storeData,
+} from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
-import { Workspace } from '../../workspaces/Workspace';
+import {
+  MultipleSpectraAnalysisPreferences,
+  Workspace,
+  WorkSpaceSource,
+} from '../../workspaces/Workspace';
 import { ActionType } from '../types/Types';
 
 import { addWorkspace } from './actions/addWorkspace';
+import {
+  analyzeSpectra,
+  changeAnalysisColumnValueKey,
+  deleteAnalysisColumn,
+  setSpectraAnalysisPanelsPreferences,
+} from './actions/analyzeSpectra';
 import { initPreferences } from './actions/initPreferences';
 import { removeWorkspace } from './actions/removeWorkspace';
+import { setActiveWorkspace } from './actions/setActiveWorkspace';
 import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
+import { mapWorkspaces } from './utilities/mapWorkspaces';
 
 const LOCAL_STORAGE_VERSION = 12;
+
+export const WORKSPACES_KEYS = {
+  componentKey: `nmrium-component-workspace`,
+  nmriumKey: `nmrium-file-workspace`,
+};
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
@@ -25,10 +45,7 @@ type InitPreferencesAction = ActionType<
     dispatch: any;
   }
 >;
-type SetPreferencesAction = ActionType<
-  'SET_PREFERENCES',
-  Omit<Workspace, 'version' | 'label'>
->;
+type SetPreferencesAction = ActionType<'SET_PREFERENCES', Partial<Workspace>>;
 type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
   { key: string; value: string }
@@ -40,12 +57,28 @@ export type SetWorkspaceAction = ActionType<
   | { workspaceSource: 'nmriumFile'; data: Workspace }
 >;
 export type WorkspaceAction = ActionType<
-  'REMOVE_WORKSPACE',
+  'REMOVE_WORKSPACE' | 'SET_ACTIVE_WORKSPACE',
   { workspace: string }
 >;
 export type AddWorkspaceAction = ActionType<
   'ADD_WORKSPACE',
-  { workspace: string; data: Omit<Workspace, 'version' | 'label'> }
+  { workspace: string; data?: Omit<Workspace, 'version' | 'label'> }
+>;
+export type AnalyzeSpectraAction = ActionType<
+  'ANALYZE_SPECTRA',
+  { start: number; end: number; nucleus: string; columnKey?: string }
+>;
+export type ChangeAnalysisColumnValueKeyAction = ActionType<
+  'CHANGE_ANALYSIS_COLUMN_VALUE_KEY',
+  { columnKey: string; valueKey: string; nucleus: string }
+>;
+export type DeleteAnalysisColumn = ActionType<
+  'DELETE_ANALYSIS_COLUMN',
+  { columnKey: string; nucleus: string }
+>;
+export type SetSpectraAnalysisPanelPreferencesAction = ActionType<
+  'SET_SPECTRA_ANALYSIS_PREFERENCES',
+  { nucleus: string; data: MultipleSpectraAnalysisPreferences }
 >;
 
 type PreferencesActions =
@@ -54,7 +87,11 @@ type PreferencesActions =
   | SetPanelsPreferencesAction
   | SetWorkspaceAction
   | WorkspaceAction
-  | AddWorkspaceAction;
+  | AddWorkspaceAction
+  | AnalyzeSpectraAction
+  | ChangeAnalysisColumnValueKeyAction
+  | DeleteAnalysisColumn
+  | SetSpectraAnalysisPanelPreferencesAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -86,33 +123,28 @@ export const WORKSPACES: Array<{
   },
 ];
 
+export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
+export type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
+
 export interface PreferencesState {
   version: number;
-  workspaces: Record<string, Workspace>;
-  customWorkspaces: Record<string, Workspace>;
+  workspaces: WorkspacesWithSource;
+  originalWorkspaces: WorkspacesWithSource;
   dispatch: (action?: PreferencesActions) => void;
   workspace: {
     current: NMRiumWorkspace;
     base: NMRiumWorkspace | null;
-  };
-  workspacesTempKeys: {
-    componentPreferencesKey: string;
-    nmriumWorkspaceKey: string;
   };
 }
 
 export const preferencesInitialState: PreferencesState = {
   version: LOCAL_STORAGE_VERSION,
   workspaces: {},
-  customWorkspaces: {},
+  originalWorkspaces: {},
   dispatch: () => null,
   workspace: {
     current: 'default',
     base: null,
-  },
-  workspacesTempKeys: {
-    componentPreferencesKey: '',
-    nmriumWorkspaceKey: '',
   },
 };
 
@@ -134,15 +166,28 @@ export function initPreferencesState(
   //  if the local setting version != current settings version number
   if (!localData?.version || localData?.version !== LOCAL_STORAGE_VERSION) {
     removeData('nmr-general-settings');
+
+    const data = {
+      version: LOCAL_STORAGE_VERSION,
+      ...(localData?.currentWorkspace && {
+        currentWorkspace: localData?.currentWorkspace,
+      }),
+      workspaces: {},
+    };
+    storeData('nmr-general-settings', JSON.stringify(data));
   }
+
+  const predefinedWorkspaces = mapWorkspaces(Workspaces as any, {
+    source: 'predefined',
+  });
+  const localWorkspaces = mapWorkspaces(localData?.workspaces || {}, {
+    source: 'user',
+  });
 
   return {
     ...state,
-    workspaces: localData?.workspaces || { default: Workspaces.default },
-    workspacesTempKeys: {
-      componentPreferencesKey: `component[${v4()}]`,
-      nmriumWorkspaceKey: `nmrium[${v4()}]`,
-    },
+    originalWorkspaces: { ...predefinedWorkspaces, ...localWorkspaces },
+    workspaces: { ...predefinedWorkspaces, ...localWorkspaces },
   };
 }
 
@@ -159,10 +204,20 @@ function innerPreferencesReducer(
       return setPanelsPreferences(draft, action);
     case 'SET_WORKSPACE':
       return setWorkspace(draft, action);
+    case 'SET_ACTIVE_WORKSPACE':
+      return setActiveWorkspace(draft, action);
     case 'ADD_WORKSPACE':
       return addWorkspace(draft, action);
     case 'REMOVE_WORKSPACE':
       return removeWorkspace(draft, action);
+    case 'ANALYZE_SPECTRA':
+      return analyzeSpectra(draft, action);
+    case 'CHANGE_ANALYSIS_COLUMN_VALUE_KEY':
+      return changeAnalysisColumnValueKey(draft, action);
+    case 'DELETE_ANALYSIS_COLUMN':
+      return deleteAnalysisColumn(draft, action);
+    case 'SET_SPECTRA_ANALYSIS_PREFERENCES':
+      return setSpectraAnalysisPanelsPreferences(draft, action);
     default:
       return draft;
   }

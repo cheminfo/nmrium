@@ -8,7 +8,7 @@ import {
   getZoneDefaultValues,
   getRangeDefaultValues,
   databaseDefaultValues,
-  multipleSpectraAnalysisDefaultValues,
+  getMultipleSpectraAnalysisDefaultValues,
   getSpectraDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
@@ -44,16 +44,14 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
     case 'database':
       return databaseDefaultValues;
     case 'multipleSpectraAnalysis':
-      return multipleSpectraAnalysisDefaultValues;
+      return getMultipleSpectraAnalysisDefaultValues(nucleus);
 
     default:
       return {};
   }
 }
 
-function joinWithNucleusPreferences<
-  T extends Exclude<Panel, 'database' | 'multipleSpectraAnalysis'>,
->(
+function joinWithNucleusPreferences<T extends Exclude<Panel, 'database'>>(
   data: PanelsPreferences[T],
   nucleus: string,
   returnOnlyNucleusPreferences = false,
@@ -63,7 +61,6 @@ function joinWithNucleusPreferences<
   if (returnOnlyNucleusPreferences) {
     return nuclei?.[nucleus];
   }
-
   return { ...nuclei[nucleus], ...rest };
 }
 
@@ -82,7 +79,7 @@ function getPanelPreferences(
     panelPreferences = getDefaultPreferences(panelKey, nucleus);
   }
 
-  if (!['database', 'multipleSpectraAnalysis'].includes(panelKey) && nucleus) {
+  if (!['database'].includes(panelKey) && nucleus) {
     return joinWithNucleusPreferences(
       panelPreferences,
       nucleus,
@@ -100,9 +97,6 @@ export function usePanelPreferences<T extends Panel>(
 export function usePanelPreferences<T extends 'database'>(
   panelKey: T,
 ): WorkSpacePanelPreferences['database'];
-export function usePanelPreferences<T extends 'multipleSpectraAnalysis'>(
-  panelKey: T,
-): WorkSpacePanelPreferences['multipleSpectraAnalysis'];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
@@ -126,6 +120,8 @@ export type UsePanelPreferencesByNucleiResult<T extends Panel> =
     ? PanelsPreferences['zones']
     : T extends 'ranges'
     ? PanelsPreferences['ranges']
+    : T extends 'multipleSpectraAnalysis'
+    ? PanelsPreferences['multipleSpectraAnalysis']
     : void;
 
 export function usePanelPreferencesByNuclei<T extends Panel>(

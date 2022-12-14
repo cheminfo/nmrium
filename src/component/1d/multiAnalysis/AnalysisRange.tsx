@@ -2,12 +2,11 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
-import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { useHighlight } from '../../highlight';
-import { RESIZE_ANALYZE_SPECTRA_RANGE } from '../../reducer/types/Types';
 
 const styles = {
   common: css`
@@ -36,33 +35,38 @@ const styles = {
 
 interface AnalysisRangeProps {
   columnKey: string;
+  activeTab: string;
   rangeData: {
     from: number;
     to: number;
   };
 }
 
-function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
+function AnalysisRange({
+  rangeData,
+  columnKey,
+  activeTab,
+}: AnalysisRangeProps) {
   const highlight = useHighlight([columnKey], {
     type: 'MULTIPLE_ANALYSIS_ZONE',
     extra: { colKey: columnKey },
   });
   const { scaleX } = useScaleChecked();
-  const dispatch = useDispatch();
+  const { dispatch } = usePreferences();
   const { viewerRef } = useGlobal();
 
   const resizeEndHandler = useCallback(
     (resized) => {
       const { x1, x2 } = resized;
-      const from = scaleX().invert(x2);
-      const to = scaleX().invert(x1);
+      const start = scaleX().invert(x2);
+      const end = scaleX().invert(x1);
 
       dispatch({
-        type: RESIZE_ANALYZE_SPECTRA_RANGE,
-        payload: { ...rangeData, from, to, columnKey },
+        type: 'ANALYZE_SPECTRA',
+        payload: { start, end, columnKey, nucleus: activeTab },
       });
     },
-    [columnKey, dispatch, rangeData, scaleX],
+    [activeTab, columnKey, dispatch, scaleX],
   );
 
   const from = scaleX()(rangeData.from);

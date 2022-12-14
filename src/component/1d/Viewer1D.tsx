@@ -9,6 +9,7 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
@@ -31,7 +32,6 @@ import {
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
   ADD_RANGE,
-  ANALYZE_SPECTRA,
   ADD_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
@@ -67,10 +67,14 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     yDomains,
     verticalAlign,
     displayerKey,
+    view: {
+      spectra: { activeTab },
+    },
   } = state;
 
   const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
+  const { dispatch: dispatchPreferences } = usePreferences();
   const modal = useModal();
   const alert = useAlert();
 
@@ -181,10 +185,19 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             break;
           }
           case options.multipleSpectraAnalysis.id:
-            dispatch({
-              type: ANALYZE_SPECTRA,
-              ...brushData,
-            });
+            if (scaleState.scaleX) {
+              const { startX, endX } = brushData;
+              const start = scaleState.scaleX().invert(startX);
+              const end = scaleState.scaleX().invert(endX);
+              dispatchPreferences({
+                type: 'ANALYZE_SPECTRA',
+                payload: {
+                  start,
+                  end,
+                  nucleus: activeTab,
+                },
+              });
+            }
             break;
 
           case options.peakPicking.id:
@@ -229,6 +242,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       data,
       activeSpectrum,
       dispatch,
+      dispatchPreferences,
+      activeTab,
       state,
       alert,
     ],

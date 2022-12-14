@@ -208,7 +208,15 @@ test('Exclusion zones', async ({ page }) => {
       .click();
 
     // save setting changes
-    await nmrium.page.click('text=Done');
+    await nmrium.page.click('button >> text=Save');
+
+    // enter a name for the workspace
+    await nmrium.page.locator('input[name="workspaceName"]').fill('test');
+
+    // save the user workspace
+    await nmrium.page.click(
+      'data-test-id=save-workspace-dialog >> button >> text=Save',
+    );
 
     //check if the exclusion zones tool exists in the main toolbar
     await expect(

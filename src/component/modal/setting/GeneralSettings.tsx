@@ -8,6 +8,7 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../../context/PreferencesContext';
+import ActionButtons from '../../elements/ActionButtons';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
@@ -16,6 +17,7 @@ import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
 import { useAlert } from '../../elements/popup/Alert';
+import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
@@ -96,9 +98,6 @@ const styles = css`
     align-items: center;
     cursor: default;
     padding: 0.5em;
-    .dropdown {
-      padding: 0.4em 1em;
-    }
     & .label {
       font-size: 0.8em;
     }
@@ -132,15 +131,16 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const {
     dispatch,
     current: currentWorkspace,
-    customWorkspaces,
+    originalWorkspaces,
     ...preferences
   } = usePreferences();
+  const saveSettings = useSaveSettings();
   const alert = useAlert();
   const refForm = useRef<FormikProps<any>>(null);
   const workspaces = useWorkspacesList();
   const workspaceName = preferences.workspace.current;
   const [isRestDisabled, setRestDisabled] = useState(
-    isRestButtonDisable(currentWorkspace, workspaceName, customWorkspaces),
+    isRestButtonDisable(currentWorkspace, workspaceName, originalWorkspaces),
   );
   const pastRef = useRef<Record<string, Workspace> | null>(null);
 
@@ -156,21 +156,13 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
   const handleReset = () => {
     const workSpaceDisplayPreferences = getPreferencesByWorkspace(
       workspaceName,
-      customWorkspaces,
+      originalWorkspaces,
     );
     refForm.current?.setValues(workSpaceDisplayPreferences);
   };
 
   function submitHandler(values) {
-    if (!preferences.isCurrentWorkspaceReadOnly) {
-      dispatch({ type: 'SET_PREFERENCES', payload: values });
-      alert.success('Settings saved successfully');
-      onClose?.();
-    } else {
-      alert.error(
-        'Please enter a new user workspace name in order to save your changes locally',
-      );
-    }
+    saveSettings(values);
   }
 
   const tabChangeHandler = useCallback((tab) => {
@@ -198,10 +190,9 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
   function ChangeWorkspaceHandler(option: DropDownListItem) {
     dispatch({
-      type: 'SET_WORKSPACE',
+      type: 'SET_ACTIVE_WORKSPACE',
       payload: {
         workspace: option.key,
-        workspaceSource: 'any',
       },
     });
   }
@@ -218,7 +209,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
 
   function handleDisabledRestButton(values) {
     setRestDisabled(
-      isRestButtonDisable(values, workspaceName, customWorkspaces),
+      isRestButtonDisable(values, workspaceName, originalWorkspaces),
     );
   }
 
@@ -358,7 +349,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
               <div className="inner-content">
                 <DatabasesTabContent
                   currentWorkspace={workspaceName}
-                  customWorkspaces={customWorkspaces}
+                  originalWorkspaces={originalWorkspaces}
                 />
               </div>
             </Tab>
@@ -371,9 +362,14 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         </Formik>
       </div>
       <div className="footer-container">
-        <Button.Done onClick={() => refForm.current?.submitForm()}>
-          Done
-        </Button.Done>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={() => refForm.current?.submitForm()}
+          doneLabel="Save"
+          onCancel={() => {
+            onClose?.();
+          }}
+        />
       </div>
     </div>
   );

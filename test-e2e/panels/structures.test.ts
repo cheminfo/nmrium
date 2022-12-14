@@ -30,7 +30,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
       },
     });
     // Save the molecule.
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('button >> text=Save');
   });
 
   await test.step('Check the visibly of the aromatic ring molecule', async () => {
@@ -68,7 +68,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
       },
     });
     // Save the molecule.
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('button >> text=Save');
 
     // Check the visibility.
 
@@ -152,7 +152,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       },
     });
     // Save the molecule.
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('button >> text=Save');
 
     // Check the visibility.
 
@@ -190,7 +190,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       },
     });
     // Save the molecule.
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('button >> text=Save');
 
     // Check the visibility.
 
@@ -537,7 +537,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
       },
     });
     // Save the molecule.
-    await nmrium.page.click('text=Save');
+    await nmrium.page.click('button >> text=Save');
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount));

@@ -1,17 +1,15 @@
-import { useMemo, memo, useCallback, Fragment } from 'react';
+import { useMemo, Fragment } from 'react';
 
-import { SpectraAnalysisData } from '../../../data/data1d/MultipleAnalysis';
+import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import {
-  FILTER_SPECTRA_COLUMN,
-  ORDER_MULTIPLE_SPECTRA_ANALYSIS,
-} from '../../reducer/types/Types';
+import { ORDER_MULTIPLE_SPECTRA_ANALYSIS } from '../../reducer/types/Types';
 import evaluate from '../../utility/Evaluate';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -20,35 +18,48 @@ import ColumnHeader from './ColumnHeader';
 interface MultipleSpectraAnalysisTableProps {
   data: SpectraAnalysisData;
   activeTab: string;
+  resortSpectra: boolean;
 }
 
 function MultipleSpectraAnalysisTable({
   data,
   activeTab,
+  resortSpectra,
 }: MultipleSpectraAnalysisTableProps) {
   const format = useFormatNumberByNucleus(activeTab);
   const dispatch = useDispatch();
-  const preferences = usePanelPreferences('multipleSpectraAnalysis');
+  const { dispatch: dispatchPreferences } = usePreferences();
+  const panelPreferences = usePanelPreferences(
+    'multipleSpectraAnalysis',
+    activeTab,
+  );
 
   const codeEvaluation = useMemo(() => {
     const code = data.options.code || '';
     return evaluate(code, data as any);
   }, [data]);
 
-  const columnFilterHandler = useCallback(
-    (columnKey, valueKey) => {
-      dispatch({
-        type: FILTER_SPECTRA_COLUMN,
+  const tableColumns = useMemo(() => {
+    function handleChangeColumnValueKey(columnKey, valueKey) {
+      dispatchPreferences({
+        type: 'CHANGE_ANALYSIS_COLUMN_VALUE_KEY',
         payload: {
           columnKey,
           valueKey,
+          nucleus: activeTab,
         },
       });
-    },
-    [dispatch],
-  );
+    }
+    function handleDeleteColumn(columnKey) {
+      dispatchPreferences({
+        type: 'DELETE_ANALYSIS_COLUMN',
+        payload: {
+          columnKey,
+          nucleus: activeTab,
+        },
+      });
+    }
 
-  const tableColumns = useMemo(() => {
     const columns: CustomColumn<any>[] = [
       {
         Header: '#',
@@ -71,9 +82,12 @@ function MultipleSpectraAnalysisTable({
     function headerHandler(columnData, columnKey) {
       return (
         <ColumnHeader
+          onDelete={() => handleDeleteColumn(columnKey)}
           charLabel={columnKey}
           data={columnData}
-          onColumnFilter={(item) => columnFilterHandler(columnKey, item.key)}
+          onColumnFilter={(item) =>
+            handleChangeColumnValueKey(columnKey, item.key)
+          }
           rangeLabel={
             columnData.from && columnData.to
               ? `${format(columnData.from)} - ${format(columnData.to)}`
@@ -83,8 +97,8 @@ function MultipleSpectraAnalysisTable({
       );
     }
 
-    if (data.options.columns) {
-      const analysisColumns = data.options.columns;
+    if (panelPreferences.columns) {
+      const analysisColumns = panelPreferences.columns;
       for (const columnKey in analysisColumns) {
         const { valueKey, index: columnIndex } = analysisColumns[columnKey];
         addCustomColumn(columns, {
@@ -96,10 +110,10 @@ function MultipleSpectraAnalysisTable({
       }
     }
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [columnFilterHandler, data.options.columns, format]);
+  }, [activeTab, dispatchPreferences, format, panelPreferences.columns]);
 
   function handleSortEnd(data) {
-    if (preferences.resortSpectra) {
+    if (resortSpectra) {
       dispatch({
         type: ORDER_MULTIPLE_SPECTRA_ANALYSIS,
         payload: {
@@ -129,4 +143,4 @@ function MultipleSpectraAnalysisTable({
   );
 }
 
-export default memo(MultipleSpectraAnalysisTable);
+export default MultipleSpectraAnalysisTable;

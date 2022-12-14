@@ -1,18 +1,17 @@
 import lodashMerge from 'lodash/merge';
 
 import { NMRiumWorkspace } from '../../../NMRium';
-import predefinedWorkspaces from '../../../workspaces';
-import { CustomWorkspaces, Workspace } from '../../../workspaces/Workspace';
+import { CustomWorkspaces } from '../../../workspaces/Workspace';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
+import { WorkspaceWithSource } from '../preferencesReducer';
 
 export function getPreferencesByWorkspace(
   workspace: NMRiumWorkspace,
-  customWorkspaces: CustomWorkspaces,
+  originalWorkspaces: CustomWorkspaces,
 ) {
-  const workspaces = { ...predefinedWorkspaces, ...customWorkspaces };
   return lodashMerge(
     {},
     workspaceDefaultProperties,
-    workspaces?.[workspace],
-  ) as Workspace;
+    originalWorkspaces?.[workspace],
+  ) as WorkspaceWithSource;
 }

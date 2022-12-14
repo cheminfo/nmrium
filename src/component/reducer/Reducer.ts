@@ -1,10 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
-import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
@@ -185,7 +183,6 @@ export const getInitialState = (): State => ({
   isLoading: false,
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
-  spectraAnalysis: {},
   correlations: {},
   displayerKey: '',
   zoom: {
@@ -337,12 +334,6 @@ export interface State {
    * @default '1D'
    */
   displayerMode: DISPLAYER_MODE;
-
-  /**
-   * Multiple spectra analysis data
-   */
-
-  spectraAnalysis: SpectraAnalysis;
   /**
    * unique key identifier per Displayer instance
    */
@@ -448,16 +439,13 @@ export function dispatchMiddleware(dispatch) {
   let usedColors: UsedColors = { '1d': [], '2d': [] };
   return (action) => {
     switch (action.type) {
-      case types.INITIATE: {
-        if (action.payload) {
-          usedColors = { '1d': [], '2d': [] };
-          void readNMRiumObject(action.payload).then((nmriumObject) => {
-            action.payload = { ...nmriumObject, usedColors };
-            dispatch(action);
-          });
-        }
+      case types.INITIATE:
+      case types.LOAD_DROP_FILES: {
+        action.payload.usedColors = usedColors;
+        dispatch(action);
         break;
       }
+
       case types.PREDICT_SPECTRA: {
         const {
           mol: { molfile },
@@ -473,11 +461,6 @@ export function dispatchMiddleware(dispatch) {
           },
         );
 
-        break;
-      }
-      case types.LOAD_DROP_FILES: {
-        action.payload.usedColors = usedColors;
-        dispatch(action);
         break;
       }
 
@@ -768,16 +751,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SAVE_EDITED_ZONE:
       return ZonesActions.handleSaveEditedZone(draft, action);
 
-    case types.ANALYZE_SPECTRA:
-      return SpectraAnalysisActions.analyzeSpectra(draft, action);
-    case types.DELETE_ANALYZE_SPECTRA_RANGE:
-      return SpectraAnalysisActions.handleDeleteSpectraRanges(draft, action);
-    case types.RESIZE_ANALYZE_SPECTRA_RANGE:
-      return SpectraAnalysisActions.handleResizeSpectraRange(draft, action);
-    case types.SET_ANALYZE_SPECTRA_COLUMNS:
-      return SpectraAnalysisActions.handleSetColumns(draft, action);
-    case types.FILTER_SPECTRA_COLUMN:
-      return SpectraAnalysisActions.handleFilterColumn(draft, action);
     case types.ORDER_MULTIPLE_SPECTRA_ANALYSIS:
       return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 

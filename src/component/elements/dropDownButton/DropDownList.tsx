@@ -75,7 +75,10 @@ function DropDownList({
           <li
             css={styles.li}
             key={item[itemKey]}
-            onClick={() => onSelect(index)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(index);
+            }}
           >
             {renderItem?.(item) || (
               <span css={styles.label}>{item[labelKey]}</span>

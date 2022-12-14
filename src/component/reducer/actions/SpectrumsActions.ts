@@ -145,29 +145,15 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
 
 function handleDeleteSpectra(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const activeTab = draft.view.spectra.activeTab;
   if (action.id) {
     const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
     // remove peaks State
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete draft.view.peaks[action.id];
-
-    //delete spectrum analysis record when delete the spectrum
-    if (draft.spectraAnalysis[activeTab]) {
-      const spectraAnalysis = draft.spectraAnalysis[activeTab].values;
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete spectraAnalysis[action.id];
-      if (Object.keys(spectraAnalysis).length === 0) {
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete draft.spectraAnalysis[activeTab];
-      }
-    }
   } else {
     draft.data = [];
     draft.view.peaks = {};
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete draft.spectraAnalysis[activeTab];
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,

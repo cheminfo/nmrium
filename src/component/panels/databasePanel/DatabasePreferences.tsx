@@ -12,14 +12,12 @@ import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikInput from '../../elements/formik/FormikInput';
-import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 import { PreferencesGroup } from '../extra/preferences/PreferencesGroup';
 
 function DatabasePreferences(props, ref) {
   const preferences = usePreferences();
-  const alert = useAlert();
 
   const formRef = useRef<any>();
   const databasePreferences = usePanelPreferences('database');
@@ -34,9 +32,8 @@ function DatabasePreferences(props, ref) {
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'database', value: values },
       });
-      alert.success('database preferences saved successfully');
     },
-    [alert, preferences],
+    [preferences],
   );
 
   useImperativeHandle(ref, () => ({

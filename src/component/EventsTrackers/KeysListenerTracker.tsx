@@ -5,6 +5,7 @@ import { useAssignmentData } from '../assignment/AssignmentsContext';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
@@ -20,14 +21,21 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
-  DELETE_ANALYZE_SPECTRA_RANGE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer, data } =
-    useChartData();
+  const {
+    keysPreferences,
+    displayerMode,
+    overDisplayer,
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const dispatch = useDispatch();
+  const { dispatch: dispatchPreferences } = usePreferences();
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
@@ -149,9 +157,9 @@ function KeysListenerTracker() {
           break;
         }
         case HighlightEventSource.MULTIPLE_ANALYSIS_ZONE: {
-          dispatch({
-            type: DELETE_ANALYZE_SPECTRA_RANGE,
-            colKey,
+          dispatchPreferences({
+            type: 'DELETE_ANALYSIS_COLUMN',
+            payload: { columnKey: colKey, nucleus: activeTab },
           });
           // remove keys from the highlighted list after delete
           remove();
@@ -163,7 +171,15 @@ function KeysListenerTracker() {
           break;
       }
     },
-    [dispatch, remove, assignmentData, modal, alert],
+    [
+      dispatch,
+      remove,
+      assignmentData,
+      modal,
+      alert,
+      dispatchPreferences,
+      activeTab,
+    ],
   );
 
   const keysPreferencesListenerHandler = useCallback(

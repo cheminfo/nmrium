@@ -1,9 +1,8 @@
 import { CSSProperties, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
-import workspaces from '../../workspaces';
+import { WorkSpaceSource } from '../../workspaces/Workspace';
 
 const styles: Record<
   | 'container'
@@ -30,8 +29,8 @@ const styles: Record<
     padding: '5px',
   },
   readOnly: {
-    fontSize: '10px',
-    padding: '0 3px',
+    fontSize: '9px',
+    padding: '0 5px',
     border: '1px solid #00d5ff',
     borderRadius: '10px',
   },
@@ -50,21 +49,25 @@ const styles: Record<
   },
 };
 
-function WorkspaceItem({ item, onSave, onDelete }) {
+interface WorkspaceItemProps {
+  item: any;
+  onSave?: (name: string) => void;
+  onDelete?: (key: string) => void;
+}
+
+function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
   const [name, setName] = useState<string>('');
-  const { customWorkspaces, workspacesTempKeys } = usePreferences();
-  const readOnlyWorkspaces = Object.values(workspacesTempKeys);
   // Add new workspace
   function addHandler(e) {
     e.stopPropagation();
     setName('');
-    onSave(name);
+    onSave?.(name);
   }
 
   // bubble onDelete
   function deleteHandler(e) {
     e.stopPropagation();
-    onDelete(item.key);
+    onDelete?.(item.key);
   }
 
   function onTextChange(e) {
@@ -92,18 +95,16 @@ function WorkspaceItem({ item, onSave, onDelete }) {
         </div>
       ) : (
         <div style={styles.container}>
-          <WorkSpaceIndicator workspaceKey={item.key} />
+          <WorkSpaceIndicator source={item.source} />
           <span style={styles.workspaceName}>{item.label}</span>
-          {readOnlyWorkspaces.includes(item.key) && (
+          {item.source !== 'user' && (
             <span style={styles.readOnly}>Read Only</span>
           )}
-          {!workspaces[item.key] &&
-            !customWorkspaces[item.key] &&
-            !readOnlyWorkspaces.includes(item.key) && (
-              <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
-                <FaTimes />
-              </Button.Danger>
-            )}
+          {item.source === 'user' && onDelete && (
+            <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
+              <FaTimes />
+            </Button.Danger>
+          )}
           {item.version && !item.isReadOnly && (
             <span style={styles.workspaceVersion}>V{item.version}</span>
           )}
@@ -122,25 +123,40 @@ const style = {
   alignItems: 'center',
 };
 
-const WorkSpaceIndicator = (props) => {
-  const { customWorkspaces, workspacesTempKeys } = usePreferences();
-  let letter = 'U';
-  let backgroundColor = '#ff6f00';
+const WorkSpaceIndicator = (props: { source: WorkSpaceSource }) => {
+  let letter = '';
+  let backgroundColor = 'red';
 
-  if (customWorkspaces[props.workspaceKey]) {
-    letter = 'C';
-    backgroundColor = '#ffbe05';
-  } else if (workspaces[props.workspaceKey]) {
-    letter = 'P';
-    backgroundColor = '#2dd36f';
-  } else if (
-    workspacesTempKeys.componentPreferencesKey === props.workspaceKey
-  ) {
-    letter = 'NC';
-    backgroundColor = '#cccccc';
-  } else if (workspacesTempKeys.nmriumWorkspaceKey === props.workspaceKey) {
-    letter = 'NF';
-    backgroundColor = '#cccccc';
+  switch (props.source) {
+    case 'predefined':
+      letter = 'P';
+      backgroundColor = '#2dd36f';
+
+      break;
+    case 'custom':
+      letter = 'C';
+      backgroundColor = '#ffbe05';
+
+      break;
+
+    case 'component':
+      letter = 'NC';
+      backgroundColor = '#cccccc';
+
+      break;
+
+    case 'nmriumFile':
+      letter = 'NF';
+      backgroundColor = '#cccccc';
+      break;
+
+    case 'user':
+      letter = 'U';
+      backgroundColor = '#ff6f00';
+      break;
+
+    default:
+      break;
   }
 
   return (

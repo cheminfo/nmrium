@@ -3,16 +3,18 @@ import lodashGet from 'lodash/get';
 import { Spectra } from '../../component/NMRium';
 import {
   JpathTableColumn,
+  MultipleSpectraAnalysisPreferences,
+  PanelsPreferences,
   PredefinedSpectraColumn,
   PredefinedTableColumn,
   WorkSpacePanelPreferences,
 } from '../../component/workspaces/Workspace';
-import { RangeDetectionResult } from '../types/data1d';
 import { Datum1D } from '../types/data1d/Datum1D';
+import { RangeDetectionResult } from '../types/data1d/index';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject';
 import generateChar from '../utilities/generateChar';
 
-import { detectRange, isSpectrum1D } from './Spectrum1D';
+import { detectRange, isSpectrum1D } from './Spectrum1D/index';
 
 export enum COLUMNS_TYPES {
   NORMAL = 'NORMAL',
@@ -36,12 +38,12 @@ interface Column {
   index: number;
 }
 
-type Columns = Record<string, Column>;
+export type SpectraAnalysisColumns = Record<string, Column>;
 
-interface AnalysisOptions {
+export interface AnalysisOptions {
   sum: number;
   code: string | null;
-  columns: Columns;
+  columns: SpectraAnalysisColumns;
   columnIndex: number;
 }
 
@@ -51,7 +53,7 @@ interface AnalysisRow extends RangeDetectionResult {
   value?: number;
 }
 
-interface SpectraAnalysisInnerData {
+export interface SpectraAnalysisInnerData {
   options: AnalysisOptions;
   values: Record<string /** spectrum key */, AnalysisRow>;
 }
@@ -66,24 +68,31 @@ export type SpectraAnalysis = Record<
 >;
 
 function addColumnKey(
-  spectraAnalysis: SpectraAnalysis,
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
   columnProps: Column,
   columnKey: string,
 ) {
+  const spectraAnalysisOptions = spectraAnalysis.nuclei[nucleus];
   const key =
-    columnKey ||
-    generateChar(spectraAnalysis[nucleus].options.columnIndex).toUpperCase();
-  spectraAnalysis[nucleus].options.columns[key] = columnProps;
-  spectraAnalysis[nucleus].options.columnIndex++;
+    columnKey || generateChar(spectraAnalysisOptions.columnIndex).toUpperCase();
+  spectraAnalysisOptions.columns[key] = columnProps;
+  spectraAnalysisOptions.columnIndex++;
   return key;
 }
 
-export function getColumns(spectraAnalysis: SpectraAnalysis, nucleus: string) {
-  return spectraAnalysis[nucleus].options.columns;
+export function getColumns(
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
+  nucleus: string,
+) {
+  return spectraAnalysis.nuclei[nucleus].columns;
 }
 
-export function getValue(colKey: string, columns: Columns, data) {
+export function getValue(
+  colKey: string,
+  columns: SpectraAnalysisColumns,
+  data,
+) {
   return data[columns[colKey].valueKey];
 }
 
@@ -110,41 +119,28 @@ export function getSpectraAnalysis(
   return result;
 }
 
-function init(spectraAnalysis: SpectraAnalysis, nucleus: string) {
-  if (spectraAnalysis[nucleus] === undefined) {
-    spectraAnalysis[nucleus] = {
-      options: {
-        sum: 100,
-        code: null,
-        columns: {},
-        columnIndex: 0,
-      },
-      values: {},
+function init(
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
+  nucleus: string,
+) {
+  if (!spectraAnalysis.nuclei?.[nucleus]) {
+    spectraAnalysis.nuclei[nucleus] = {
+      resortSpectra: true,
+      sum: 100,
+      code: null,
+      columns: {},
+      columnIndex: 0,
     };
   }
 }
 
-export function changeColumnValueKey(
-  spectraAnalysis: SpectraAnalysis,
-  nucleus: string,
-  columnKey: string,
-  newKey: COLUMNS_VALUES_KEYS,
-) {
-  spectraAnalysis[nucleus].options.columns[columnKey].valueKey = newKey;
-
-  spectraAnalysis[nucleus].values = refreshCalculation(
-    spectraAnalysis,
-    nucleus,
-  );
-}
-
 export function setColumn(
-  spectraAnalysis: SpectraAnalysis,
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
-  { columns: inputColumns, code },
+  settings: MultipleSpectraAnalysisPreferences,
 ) {
   init(spectraAnalysis, nucleus);
-  spectraAnalysis[nucleus].options.code = code;
+  const { code, columns: inputColumns, ...restSetting } = settings;
   const columns = Object.fromEntries(
     Object.values(inputColumns).map((value: any) => {
       const data = { ...value };
@@ -152,39 +148,88 @@ export function setColumn(
       return [value.tempKey, data];
     }),
   );
-  spectraAnalysis[nucleus].options.columns = columns;
+  spectraAnalysis.nuclei[nucleus] = {
+    ...spectraAnalysis.nuclei[nucleus],
+    code,
+    columns,
+    ...restSetting,
+  };
+}
 
-  const { columns: newColumns } = spectraAnalysis[nucleus].options;
+export function changeColumnValueKey(
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
+  nucleus: string,
+  columnKey: string,
+  newKey: COLUMNS_VALUES_KEYS,
+) {
+  spectraAnalysis.nuclei[nucleus].columns[columnKey].valueKey = newKey;
+}
 
-  let data = Object.fromEntries(
-    Object.entries(spectraAnalysis[nucleus].values).map(
-      ([spectraKey, spectra]) => {
-        const result = Object.fromEntries(
-          Object.keys(inputColumns)
-            .filter((k) => spectra[k])
-            .map((key) => {
-              const newKey = inputColumns[key].tempKey;
-              return [newKey, spectra[key]];
-            }),
-        );
-        return [spectraKey, result];
-      },
-    ),
+export function analyzeSpectra(
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
+  options,
+) {
+  const { from, to, nucleus, columnKey = null } = options;
+  init(spectraAnalysis, nucleus);
+  addColumnKey(
+    spectraAnalysis,
+    nucleus,
+    {
+      type: COLUMNS_TYPES.NORMAL,
+      valueKey: COLUMNS_VALUES_KEYS.ABSOLUTE,
+      from,
+      to,
+      index: 1,
+    },
+    columnKey,
   );
+}
+
+export function generateAnalyzeSpectra(
+  spectraAnalysisOptions: MultipleSpectraAnalysisPreferences,
+  spectra: Datum1D[],
+  nucleus: string,
+) {
+  let data: any = {};
+  const { sum, columns, code } = spectraAnalysisOptions;
+
+  for (const columnKey in columns) {
+    const { from, to } = columns[columnKey];
+
+    const { values: result, sum: spectraSum } = getSpectraAnalysis(spectra, {
+      from,
+      to,
+      nucleus,
+    });
+
+    for (const spectrum of result) {
+      const factor = spectraSum > 0 ? sum / spectraSum : 0;
+
+      data[spectrum.SID] = {
+        ...data[spectrum.SID],
+        [columnKey]: {
+          colKey: columnKey,
+          ...spectrum,
+          relative: Math.abs(spectrum.absolute) * factor,
+        },
+      };
+    }
+  }
+
   const newData = Object.fromEntries(
     Object.entries(data).map((spectra: any) => {
       const result = Object.fromEntries(
-        Object.keys(newColumns).map((key) => {
-          const isFormula = newColumns[key].type === COLUMNS_TYPES.FORMULA;
+        Object.keys(columns).map((key) => {
+          const isFormula = columns[key].type === COLUMNS_TYPES.FORMULA;
           return [
             key,
             isFormula
               ? {
                   colKey: key,
                   value: calculate(
-                    newColumns,
+                    columns,
                     data[spectra[0]],
-                    newColumns[key].formula,
+                    columns[key].formula,
                   ),
                 }
               : { ...spectra[1][key], colKey: key },
@@ -194,127 +239,31 @@ export function setColumn(
       return [spectra[0], result];
     }),
   );
-  data = newData;
-  spectraAnalysis[nucleus].values = data;
-}
 
-function refreshByRow(row, columns) {
-  return Object.fromEntries(
-    Object.keys(columns)
-      .filter((k) => columns[k].type === COLUMNS_TYPES.FORMULA)
-      .map((key) => [
-        key,
-        {
-          colKey: key,
-          ...row,
-          value: calculate(columns, row, columns[key].formula),
-        },
-      ]),
-  );
-}
-
-function refreshCalculation(spectraAnalysis: SpectraAnalysis, nucleus: string) {
-  const { columns } = spectraAnalysis[nucleus].options;
-
-  return Object.fromEntries(
-    Object.entries(spectraAnalysis[nucleus].values).map(([id, row]) => [
-      id,
-      {
-        ...row,
-        ...refreshByRow(row, columns),
-      },
-    ]),
-  );
-}
-
-export function analyzeSpectra(
-  spectra,
-  spectraAnalysis: SpectraAnalysis,
-  options,
-) {
-  const { from, to, nucleus, columnKey = null } = options;
-  init(spectraAnalysis, nucleus);
-  const colKey = addColumnKey(
-    spectraAnalysis,
-    nucleus,
-    {
-      type: COLUMNS_TYPES.NORMAL,
-      valueKey: COLUMNS_VALUES_KEYS.RELATIVE,
-      from,
-      to,
-      index: 1,
-    },
-    columnKey,
-  );
-
-  const { sum } = spectraAnalysis[nucleus].options;
-
-  const { values: result, sum: spectraSum } = getSpectraAnalysis(spectra, {
-    from,
-    to,
-    nucleus,
-  });
-
-  const prevNucleusData = lodashGet(spectraAnalysis, `${nucleus}.values`, {});
-
-  const data = Object.fromEntries(
-    result.map((row) => {
-      const factor = spectraSum > 0 ? sum / spectraSum : 0;
-
-      return [
-        row.SID,
-        {
-          ...prevNucleusData[row.SID],
-          [colKey]: {
-            colKey,
-            ...row,
-            relative: Math.abs(row.absolute) * factor,
-          },
-        },
-      ];
-    }),
-  );
-
-  spectraAnalysis[nucleus].values = data;
-  spectraAnalysis[nucleus].values = refreshCalculation(
-    spectraAnalysis,
-    nucleus,
-  );
+  return { values: Object.values(newData), options: { columns, code } };
 }
 
 export function deleteSpectraAnalysis(
-  spectraAnalysis: SpectraAnalysis,
+  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   colKey: string,
   nucleus: string,
 ) {
-  const result = {};
-  const analyses = Object.entries(spectraAnalysis[nucleus].values);
-  for (const item of analyses) {
+  if (spectraAnalysis.nuclei[nucleus]) {
+    const analysisOptions = spectraAnalysis.nuclei[nucleus];
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete item[1][colKey];
-    if (item[1] && Object.keys(item[1]).length > 0) {
-      result[item[0]] = item[1];
+    delete analysisOptions.columns[colKey];
+
+    if (Object.keys(analysisOptions.columns).length === 1) {
+      analysisOptions.columnIndex = 0;
     }
   }
-
-  const { [colKey]: deletedColumnKey, ...resColumns } =
-    spectraAnalysis[nucleus].options.columns;
-
-  const currentColumns = Object.keys(spectraAnalysis[nucleus].options.columns);
-
-  if (currentColumns.length === 1) {
-    spectraAnalysis[nucleus].options.columnIndex = 0;
-  }
-
-  spectraAnalysis[nucleus].options.columns = resColumns;
-  spectraAnalysis[nucleus].values = result;
-  spectraAnalysis[nucleus].values = refreshCalculation(
-    spectraAnalysis,
-    nucleus,
-  );
 }
 
-function calculate(columns: Columns, data: AnalysisRow, formula = '') {
+function calculate(
+  columns: SpectraAnalysisColumns,
+  data: AnalysisRow,
+  formula = '',
+) {
   const array = formula.split(/[%()*+/-]/);
 
   const variables: string[] = [];

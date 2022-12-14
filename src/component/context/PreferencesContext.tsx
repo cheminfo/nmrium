@@ -21,32 +21,18 @@ export function usePreferences() {
     throw new Error('Preferences context was not found');
   }
 
-  const {
-    workspace,
-    workspaces,
-    customWorkspaces,
-    workspacesTempKeys,
-    dispatch,
-  } = context;
+  const { workspace, workspaces, originalWorkspaces, dispatch } = context;
 
   return useMemo(() => {
     return {
       current: workspaces[workspace.current] || {},
       workspace,
       workspaces,
-      customWorkspaces,
+      originalWorkspaces,
       dispatch,
-      workspacesTempKeys,
       isCurrentWorkspaceReadOnly: isReadOnlyWorkspace(context),
     };
-  }, [
-    workspaces,
-    workspace,
-    customWorkspaces,
-    dispatch,
-    workspacesTempKeys,
-    context,
-  ]);
+  }, [workspaces, workspace, originalWorkspaces, dispatch, context]);
 }
 
 export function useWorkspacesList() {

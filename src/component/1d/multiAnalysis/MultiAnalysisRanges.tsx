@@ -1,30 +1,22 @@
 import { memo, useMemo } from 'react';
 
-import { SpectraAnalysis } from '../../../data/data1d/MultipleAnalysis';
+import { SpectraAnalysisColumns } from '../../../data/data1d/multipleSpectraAnalysis';
 import { useChartData } from '../../context/ChartContext';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import AnalysisRange from './AnalysisRange';
 
 interface MultiAnalysisRangesInnerProps {
-  activeTab: string;
   displayerKey: string;
-  spectraAnalysis: SpectraAnalysis;
+  columns: SpectraAnalysisColumns;
+  activeTab: string;
 }
 
 function MultiAnalysisRangesInner({
-  activeTab,
-  spectraAnalysis,
+  columns,
   displayerKey,
+  activeTab,
 }: MultiAnalysisRangesInnerProps) {
-  const columns = useMemo(() => {
-    const {
-      options: { columns },
-    } = spectraAnalysis[activeTab] || {
-      options: { columns: {} },
-    };
-    return columns;
-  }, [activeTab, spectraAnalysis]);
-
   const ranges = useMemo(() => {
     return Object.keys(columns).map((key) => key);
   }, [columns]);
@@ -40,6 +32,7 @@ function MultiAnalysisRangesInner({
           key={columnKey}
           columnKey={columnKey}
           rangeData={columns[columnKey]}
+          activeTab={activeTab}
         />
       ))}
     </g>
@@ -53,13 +46,14 @@ export default function MultiAnalysisRanges() {
     view: {
       spectra: { activeTab },
     },
-    spectraAnalysis,
     displayerKey,
   } = useChartData();
-
+  const multipleSpectraAnalysis = usePanelPreferences(
+    'multipleSpectraAnalysis',
+    activeTab,
+  );
+  const columns = multipleSpectraAnalysis.columns;
   return (
-    <MemoizedMultiAnalysisRanges
-      {...{ activeTab, spectraAnalysis, displayerKey }}
-    />
+    <MemoizedMultiAnalysisRanges {...{ columns, displayerKey, activeTab }} />
   );
 }

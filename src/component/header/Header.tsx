@@ -4,6 +4,7 @@ import {
   FaRegWindowMaximize,
   FaWrench,
   FaQuestionCircle,
+  FaRegSave,
 } from 'react-icons/fa';
 import { Header, Toolbar } from 'react-science/ui';
 
@@ -13,12 +14,15 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../context/PreferencesContext';
+import Button from '../elements/Button';
 import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
 import { useModal, positions } from '../elements/popup/Modal';
+import { useSaveSettings } from '../hooks/useSaveSettings';
 import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
+import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
@@ -100,15 +104,18 @@ function HeaderInner(props: HeaderInnerProps) {
   const changeWorkspaceHandler = useCallback(
     (option: DropDownListItem) => {
       dispatch({
-        type: 'SET_WORKSPACE',
+        type: 'SET_ACTIVE_WORKSPACE',
         payload: {
           workspace: option.key,
-          workspaceSource: 'any',
         },
       });
     },
     [dispatch],
   );
+
+  function renderItem(item) {
+    return <WorkspaceItem item={item} />;
+  }
 
   return (
     <Header>
@@ -153,8 +160,11 @@ function HeaderInner(props: HeaderInnerProps) {
             data={workspacesList}
             selectedKey={workspace.current}
             onSelect={changeWorkspaceHandler}
+            renderItem={renderItem}
           />
         )}
+        <SaveButton />
+
         <div>
           <Toolbar orientation="horizontal">
             <Toolbar.Item
@@ -188,6 +198,34 @@ function HeaderInner(props: HeaderInnerProps) {
         </div>
       </div>
     </Header>
+  );
+}
+
+function SaveButton() {
+  const { workspace, workspaces, originalWorkspaces } = usePreferences();
+  const saveWorkspace = useSaveSettings();
+  const isWorkspaceHasSettingNotSaved =
+    JSON.stringify(workspaces[workspace.current]) !==
+    JSON.stringify(originalWorkspaces[workspace.current]);
+
+  function handleSave() {
+    saveWorkspace();
+  }
+
+  return (
+    <Button.Done
+      onClick={handleSave}
+      fill="clear"
+      style={{ fontSize: '1.4em', marginLeft: '5px' }}
+      {...(!isWorkspaceHasSettingNotSaved && {
+        color: { base: 'gray', hover: 'gray' },
+        backgroundColor: { base: 'gray', hover: 'lightgray' },
+        disabled: true,
+      })}
+      toolTip="Save workspace locally in the browser"
+    >
+      <FaRegSave />
+    </Button.Done>
   );
 }
 

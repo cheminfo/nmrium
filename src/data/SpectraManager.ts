@@ -4,7 +4,6 @@ import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 
-import { SpectraAnalysis } from './data1d/MultipleAnalysis';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Datum2D from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
@@ -94,7 +93,6 @@ export function toJSON(
   state: State,
   preferencesState: Partial<{
     current: Workspace;
-    isCurrentWorkspaceReadOnly: boolean;
   }>,
   target: JSONTarget,
   options: ExportOptions = {},
@@ -103,7 +101,6 @@ export function toJSON(
     data = [],
     molecules: mols = [],
     correlations = {},
-    spectraAnalysis: multipleAnalysis = [],
     actionType = '',
   } = state;
 
@@ -126,12 +123,10 @@ export function toJSON(
       spectra,
       molecules,
       correlations,
-      multipleAnalysis: multipleAnalysis as SpectraAnalysis,
     },
     ...(view && { view: state.view }),
-    ...(settings &&
-      !preferencesState.isCurrentWorkspaceReadOnly && {
-        settings: preferencesState.current,
-      }),
+    ...(settings && {
+      settings: preferencesState.current,
+    }),
   };
 }

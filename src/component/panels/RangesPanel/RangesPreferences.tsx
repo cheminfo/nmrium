@@ -13,7 +13,6 @@ import {
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikInput from '../../elements/formik/FormikInput';
-import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -86,7 +85,6 @@ const formatFields: NucleusPreferenceField[] = [
 ];
 
 function RangesPreferences(props, ref) {
-  const alert = useAlert();
   const formRef = useRef<any>();
   const preferences = usePreferences();
   const nucleus = useNucleus();
@@ -103,9 +101,8 @@ function RangesPreferences(props, ref) {
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'ranges', value: values },
       });
-      alert.success('ranges preferences saved successfully');
     },
-    [alert, preferences],
+    [preferences],
   );
 
   useImperativeHandle(

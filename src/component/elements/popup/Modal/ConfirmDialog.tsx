@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, useCallback } from 'react';
+import { CSSProperties, ReactNode, useCallback } from 'react';
 
 const styles = css`
   display: block;
@@ -62,11 +62,19 @@ const styles = css`
   }
 `;
 
+interface AlertButtonOptions {
+  handler: (e: React.MouseEvent) => void;
+  text: string;
+  style?: CSSProperties;
+  preventClose?: boolean;
+}
 interface ConfirmationDialogProps {
   style?: CSSProperties;
-  buttons: Array<{ handler: () => void; text: string; style?: CSSProperties }>;
+  buttons: Array<AlertButtonOptions>;
   onClose: () => void;
   message: string;
+  render?: (data: { message: string; className: string }) => ReactNode;
+  id?: string;
 }
 
 function ConfirmationDialog({
@@ -74,21 +82,29 @@ function ConfirmationDialog({
   buttons = [],
   onClose,
   message,
+  render,
+  id,
 }: ConfirmationDialogProps) {
   const optionsHandler = useCallback(
     (
       e: React.MouseEvent,
-      { handler = () => null }: { handler: (e: React.MouseEvent) => void },
+      { handler = () => null, preventClose = false }: AlertButtonOptions,
     ) => {
       handler(e);
-      onClose();
+      if (!preventClose) {
+        onClose();
+      }
     },
     [onClose],
   );
 
   return (
-    <div style={style} css={styles}>
-      <p className="message">{message}</p>
+    <div style={style} css={styles} data-test-id={id}>
+      {render ? (
+        render({ message, className: 'message' })
+      ) : (
+        <p className="message">{message}</p>
+      )}
       <div className="buttons-container">
         {buttons.map((option) => (
           <button
