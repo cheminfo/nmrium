@@ -5,8 +5,10 @@ import { useCallback, useState, useRef, memo } from 'react';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
-import { getDataAsString } from '../../../data/data1d/multipleSpectraAnalysis';
-import { generateAnalyzeSpectra } from '../../../data/data1d/multipleSpectraAnalysis';
+import {
+  getDataAsString,
+  generateAnalyzeSpectra,
+} from '../../../data/data1d/multipleSpectraAnalysis';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
