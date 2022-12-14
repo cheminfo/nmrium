@@ -176,7 +176,7 @@ export function analyzeSpectra(
     nucleus,
     {
       type: COLUMNS_TYPES.NORMAL,
-      valueKey: COLUMNS_VALUES_KEYS.RELATIVE,
+      valueKey: COLUMNS_VALUES_KEYS.ABSOLUTE,
       from,
       to,
       index: 1,
