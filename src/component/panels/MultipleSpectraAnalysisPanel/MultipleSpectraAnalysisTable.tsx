@@ -1,4 +1,4 @@
-import { useMemo, memo, Fragment } from 'react';
+import { useMemo, Fragment } from 'react';
 
 import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
@@ -143,4 +143,4 @@ function MultipleSpectraAnalysisTable({
   );
 }
 
-export default memo(MultipleSpectraAnalysisTable);
+export default MultipleSpectraAnalysisTable;
