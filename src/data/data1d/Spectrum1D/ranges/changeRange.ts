@@ -13,7 +13,10 @@ export function changeRange(datum: Datum1D, range: Range) {
   const index = datum.ranges.values.findIndex((i) => i.id === id);
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
-  const signal = detectSignal(x, re, from, to, datum.info.originFrequency);
+  const signal = detectSignal(
+    { x, re },
+    { from, to, frequency: datum.info.originFrequency, checkMaxLength: false },
+  );
 
   if (index !== -1) {
     datum.ranges.values[index] = {
