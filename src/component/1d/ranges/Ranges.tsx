@@ -45,7 +45,7 @@ function RangesInner({
 
 const MemoizedRanges = memo(RangesInner);
 
-const empyData = { ranges: {} };
+const emptyData = { ranges: {} };
 
 export default function Ranges() {
   const {
@@ -65,7 +65,7 @@ export default function Ranges() {
         : rangeStateInit,
     [activeSpectrum, rangeState],
   );
-  const { ranges } = useSpectrum(empyData) as Datum1D;
+  const { ranges } = useSpectrum(emptyData) as Datum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   return (

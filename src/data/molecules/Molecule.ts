@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { Position } from '../../component/elements/draggble/useDraggable';
+import { Position } from '../../component/elements/draggable/useDraggable';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 export interface StateMolecule {

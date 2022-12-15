@@ -700,7 +700,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleSetDiaIDRange(draft, action);
     case types.UPDATE_RANGE:
       return RangesActions.handleUpdateRange(draft, action);
-    case types.SHOW_MULTIPLICTY_TREES:
+    case types.SHOW_MULTIPLICITY_TREES:
       return RangesActions.handleShowMultiplicityTrees(draft, action);
     case types.SHOW_RANGES_INTEGRALS:
       return RangesActions.handleShowRangesIntegrals(draft, action);

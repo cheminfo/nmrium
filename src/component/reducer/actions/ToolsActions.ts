@@ -314,8 +314,8 @@ function zoomOut(draft: Draft<State>, action) {
 }
 
 function hasAcceptedSpectrum(draft: Draft<State>, index) {
-  const nucleuses = draft.view.spectra.activeTab.split(',');
-  const activeSpectrum = draft.view.spectra.activeSpectra[nucleuses[index]];
+  const nuclei = draft.view.spectra.activeTab.split(',');
+  const activeSpectrum = draft.view.spectra.activeSpectra[nuclei[index]];
   return (
     activeSpectrum?.id &&
     !(draft.data[activeSpectrum.index] as Datum1D).info.isFid

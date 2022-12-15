@@ -49,7 +49,7 @@ const styles = css`
     }
   }
 
-  .filter-deactive {
+  .filter-inactive {
     opacity: 0.3;
   }
 `;

@@ -17,7 +17,6 @@ import { ActiveSpectrum, useActiveSpectrum } from '../reducer/Reducer';
 
 const styles = css`
   display: flex;
-  flex-firection: row;
   align-items: center;
   pointer-events: bounding-box;
   user-select: 'none';
@@ -49,10 +48,10 @@ const styles = css`
       font-weight: bold;
       font-size: 10px;
     }
-    .xvalue {
+    .x-value {
       min-width: 50px;
     }
-    .yvalue {
+    .y-value {
       min-width: 80px;
     }
   }
@@ -188,7 +187,7 @@ function FooterBannerInner({
           <IoPulseSharp />
           <div>
             <span className="label">Intensity: </span>
-            <span className="value yvalue">
+            <span className="value y-value">
               {format(getYValue(position.x))}
             </span>
           </div>

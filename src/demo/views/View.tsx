@@ -53,7 +53,7 @@ export default function View(props: ViewProps) {
   }, []);
 
   const showCallbackHandler = useCallback(() => {
-    showCallback((prevflag) => !prevflag);
+    showCallback((prevFlag) => !prevFlag);
   }, []);
 
   const clearHandler = useCallback(() => {

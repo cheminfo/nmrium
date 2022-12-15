@@ -30,7 +30,7 @@ export default function SingleDisplayerLayout(
           marginLeft: 'auto',
           marginRight: 'auto',
           height: '100%',
-          backgroundColor: 'ebecf1',
+          backgroundColor: '#ebecf1',
         }}
       >
         <Suspense fallback={<div>Loading...</div>}>

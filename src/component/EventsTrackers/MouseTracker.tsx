@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 export const MouseContext = createContext<any>({});
-const MouseaProvider = MouseContext.Provider;
+const MouseProvider = MouseContext.Provider;
 
 export function useMouseTracker() {
   return useContext(MouseContext);
@@ -55,7 +55,7 @@ export function MouseTracker({
   );
 
   return (
-    <MouseaProvider value={mouseTrackerState}>
+    <MouseProvider value={mouseTrackerState}>
       <div
         className={className}
         style={style}
@@ -64,6 +64,6 @@ export function MouseTracker({
       >
         {children}
       </div>
-    </MouseaProvider>
+    </MouseProvider>
   );
 }

@@ -44,19 +44,7 @@ const styles = css`
       text-decoration: none;
     }
     button:hover {
-      background: -webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0.05, #f6f6f6),
-        color-stop(1, #ffffff)
-      );
-      background: -moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
-      background: -webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
-      background: -o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
-      background: -ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
       background: linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
       background-color: #f6f6f6;
     }
   }

@@ -29,8 +29,6 @@ const styles: Record<
 
     boxShadow: 'inset 0px 1px 0px 0px #ffffff',
     background: 'linear-gradient(to bottom, #f0f0f0 5%, #e1e1e1 100%)',
-    filter:
-      'progid:DXImageTransform.Microsoft.gradient(startColorstr="#f0f0f0", endColorstr="#e1e1e1",GradientType=0)',
     backgroundColor: '#ffffff',
     color: '#2d2d2d',
     fontFamily: 'Arial',

@@ -36,25 +36,12 @@ export const ModalStyles = css`
     justify-content: end;
 
     background: rgb(242, 242, 242);
-    background: -moz-linear-gradient(
-      0deg,
-      rgba(242, 242, 242, 1) 0%,
-      rgba(245, 245, 245, 1) 37%,
-      rgba(255, 255, 255, 1) 90%
-    );
-    background: -webkit-linear-gradient(
-      0deg,
-      rgba(242, 242, 242, 1) 0%,
-      rgba(245, 245, 245, 1) 37%,
-      rgba(255, 255, 255, 1) 90%
-    );
     background: linear-gradient(
       0deg,
       rgba(242, 242, 242, 1) 0%,
       rgba(245, 245, 245, 1) 37%,
       rgba(255, 255, 255, 1) 90%
     );
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f2f2f2",endColorstr="#ffffff",GradientType=1);
     padding: 6px 15px;
     height: 55px;
   }

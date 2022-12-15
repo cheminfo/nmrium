@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "vite build --outDir build",
+    "cspell": "cspell lint \"**/*.tsx\"",
     "postbuild": "rm build/data/cytisine/2d/HMBC_Cytisin_RI+FT.dx && rm build/data/cytisine/2d/HSQC_Cytisin_RI+FT.dx",
     "build-cloudflare": "npm run set-version-sha && npm run build-with-profiling && npm run copy-samples-toc",
     "build-no-minify": "cross-env NO_MINIFY=true npm run build",
@@ -42,7 +43,7 @@
     "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "volta": {
-    "node": "16.18.1"
+    "node": "16.19.0"
   },
   "overrides": {
     "react": "$react",
@@ -117,6 +118,7 @@
     "@vitejs/plugin-react-swc": "^3.0.0",
     "@vitest/coverage-c8": "^0.25.8",
     "cross-env": "^7.0.3",
+    "cspell": "^6.17.0",
     "eslint": "^8.29.0",
     "eslint-config-zakodium": "^7.0.0",
     "modern-normalize": "^1.1.0",

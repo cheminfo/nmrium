@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { CSSProperties } from 'react';
 
-import { Draggable } from '../draggble/useDraggable';
+import { Draggable } from '../draggable/useDraggable';
 
 import { ResizerProps, Position } from './Resizer';
 import useResizer from './useResizer';

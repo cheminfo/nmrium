@@ -12,7 +12,7 @@ interface Left1DChartProps {
 }
 
 function Left1DChart({
-  margin: marignValue = 10,
+  margin: marginValue = 10,
   data: spectrum,
 }: Left1DChartProps) {
   const {
@@ -33,7 +33,7 @@ function Left1DChart({
         yDomain: [yDomain[0], yDomain[1]],
         margin,
       });
-      const scaleY = get1DYScale(yDomains[spectrum.id], height, marignValue);
+      const scaleY = get1DYScale(yDomains[spectrum.id], height, marginValue);
 
       const { x, re: y } = spectrum.data;
       const pathPoints = xyReduce({ x, y });
@@ -56,7 +56,7 @@ function Left1DChart({
   }, [
     height,
     margin,
-    marignValue,
+    marginValue,
     originHeight,
     spectrum,
     xyReduce,

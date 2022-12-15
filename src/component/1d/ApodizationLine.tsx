@@ -25,7 +25,7 @@ function useWindowYScale() {
   });
 }
 
-function ApdoizationLine() {
+function ApodizationLine() {
   const {
     toolOptions: {
       selectedTool,
@@ -75,4 +75,4 @@ function ApdoizationLine() {
   );
 }
 
-export default ApdoizationLine;
+export default ApodizationLine;

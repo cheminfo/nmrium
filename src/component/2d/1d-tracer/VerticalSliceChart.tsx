@@ -16,7 +16,7 @@ interface VerticalSliceChartProps {
 }
 
 function VerticalSliceChart({
-  margin: marignValue = 10,
+  margin: marginValue = 10,
   data,
   reverseScale = false,
 }: VerticalSliceChartProps) {
@@ -38,7 +38,7 @@ function VerticalSliceChart({
         reverseScale,
       );
 
-      const scaleY = getYScale(height, y, marignValue);
+      const scaleY = getYScale(height, y, marginValue);
 
       const pathPoints = xyReduce({ x, y });
 
@@ -61,7 +61,7 @@ function VerticalSliceChart({
     data,
     height,
     margin,
-    marignValue,
+    marginValue,
     originHeight,
     reverseScale,
     xyReduce,

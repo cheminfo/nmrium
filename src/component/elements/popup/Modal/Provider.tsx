@@ -120,7 +120,7 @@ function Provider({
    * @param {object} dialogOptions
    * @param {object} dialogOptions.message
    * @param {Array<{ handler: Function,text: string,style: object}>} dialogOptions.buttons
-   * @param {object} dialogOptions.tyle
+   * @param {object} dialogOptions.style
    */
   const showConfirmDialog = useCallback(
     (dialogOptions, options: any = {}) => {
