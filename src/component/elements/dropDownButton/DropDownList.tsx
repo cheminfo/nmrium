@@ -58,16 +58,20 @@ function DropDownList({
   labelKey,
 }: InnerDropDownListProps<DropDownListItem>) {
   const ref = useRef<HTMLDivElement>(null);
+  const containerBoundariesRef = useRef<DOMRect>();
   useLayoutEffect(() => {
     if (ref.current) {
-      const containerRect = ref.current?.getBoundingClientRect();
-      if (containerRect.right > window.innerWidth) {
-        ref.current.style.right = `${
-          containerRect.right - window.innerWidth
-        }px`;
+      if (!containerBoundariesRef.current) {
+        containerBoundariesRef.current = ref.current?.getBoundingClientRect();
+      }
+      const right = containerBoundariesRef.current.right;
+      const innerWidth = window.innerWidth - 30;
+      if (right > innerWidth) {
+        ref.current.style.left = `-${right - innerWidth}px`;
       }
     }
   }, []);
+
   return (
     <div css={styles.container} ref={ref}>
       <ul css={styles.ul}>
