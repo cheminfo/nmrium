@@ -131,7 +131,8 @@ const Main = () => {
           break;
         }
         case 'dx':
-        case 'jdx': {
+        case 'jdx':
+        case 'jcamp': {
           setDashBoardType('single');
           setRoutes({
             isLoaded: true,

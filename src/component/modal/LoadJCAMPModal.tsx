@@ -53,7 +53,7 @@ const styles = css`
     }
   }
 `;
-const allowedExtensions = new Set(['dx', 'jdx']);
+const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 
 interface LoadJCAMPModalProps {
   onLoadClick: (element: any) => void;
