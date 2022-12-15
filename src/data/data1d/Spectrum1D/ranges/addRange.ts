@@ -41,11 +41,12 @@ export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
 
   // detectSignal use the advance multiplet-analysis that can crash if too many points
   const signal = detectSignal(
-    x as unknown as Float64Array,
-    re as unknown as Float64Array,
-    from,
-    to,
-    datum.info.originFrequency,
+    { x, re },
+    {
+      from,
+      to,
+      frequency: datum.info.originFrequency,
+    },
   );
 
   let range;

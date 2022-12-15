@@ -4,18 +4,25 @@ import { analyseMultiplet } from 'multiplet-analysis';
 export const MAX_LENGTH = 2048;
 
 export default function detectSignal(
-  x: Float64Array,
-  re: Float64Array,
-  from,
-  to,
-  frequency,
+  data: { x: Float64Array; re: Float64Array },
+  options: {
+    from: number;
+    to: number;
+    frequency: number;
+    checkMaxLength?: boolean;
+  },
 ) {
+  const { x, re } = data;
+  const { from, to, frequency, checkMaxLength = true } = options;
   const { fromIndex, toIndex } = xGetFromToIndex(x, {
     from,
     to,
   });
 
-  if (toIndex - fromIndex <= MAX_LENGTH) {
+  if (
+    !checkMaxLength ||
+    (checkMaxLength && toIndex - fromIndex <= MAX_LENGTH)
+  ) {
     const data = {
       x: x.subarray(fromIndex, toIndex),
       y: re.subarray(fromIndex, toIndex),
