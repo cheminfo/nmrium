@@ -128,13 +128,15 @@ function BasicToolBarInner({
     saveAsHandler,
   } = useExport();
 
-  const LoadJacmpHandler = useCallback(
+  const LoadJcampHandler = useCallback(
     (file) => {
       if (file) {
         dispatch({ type: LOAD_JCAMP_FILE, files: [file] });
         modal.close();
       } else {
-        alert.error('you file must be one of those extensions [ .jdx, dx ] ');
+        alert.error(
+          'you file must be one of those extensions [ .jdx, .dx, .jcamp ] ',
+        );
       }
     },
     [alert, dispatch, modal],
@@ -148,13 +150,13 @@ function BasicToolBarInner({
   const importJCAMPFile = useCallback(() => {
     modal.show(
       <LoadJCAMPModal
-        onLoadClick={LoadJacmpHandler}
+        onLoadClick={LoadJcampHandler}
         onClose={() => modal.close()}
         startLoading={startLoadingHandler}
       />,
       {},
     );
-  }, [LoadJacmpHandler, modal, startLoadingHandler]);
+  }, [LoadJcampHandler, modal, startLoadingHandler]);
 
   const openImportPublicationStringModal = useCallback(() => {
     modal.show(
