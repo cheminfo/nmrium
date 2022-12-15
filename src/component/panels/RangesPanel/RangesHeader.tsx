@@ -29,7 +29,7 @@ import {
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
   SHOW_J_GRAPH,
-  SHOW_MULTIPLICTY_TREES,
+  SHOW_MULTIPLICITY_TREES,
   SHOW_RANGES_INTEGRALS,
 } from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/export';
@@ -132,7 +132,7 @@ function RangesHeader({
   }, [assignmentData, dispatch, modal]);
 
   const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({ type: SHOW_MULTIPLICTY_TREES, payload: { id } });
+    dispatch({ type: SHOW_MULTIPLICITY_TREES, payload: { id } });
   }, [dispatch, id]);
 
   const handleShowIntegrals = useCallback(() => {

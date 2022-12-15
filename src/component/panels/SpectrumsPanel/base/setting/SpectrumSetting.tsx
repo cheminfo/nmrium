@@ -15,7 +15,7 @@ const style = css`
   height:100%;
   left:0;
   top:0;
-  .inner-conatiner{
+  .inner-container{
     position:absolute;
     display: flex;
     flex-direction: row-reverse;
@@ -105,7 +105,7 @@ function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
   return (
     <div css={style} onClick={clickHandler}>
       <div
-        className="inner-conatiner"
+        className="inner-container"
         style={{
           left: info.dimension === 2 ? x - 460 : x - 240,
           width: info.dimension === 2 ? 460 : 240,

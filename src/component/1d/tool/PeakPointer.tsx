@@ -62,7 +62,7 @@ function PeakPointer() {
           return a - b;
         });
 
-        //get the active sepectrum data by looking for it by id
+        // get the active spectrum data by looking for it by id
         const spectrum = data.find(
           (d) => d.id === activeSpectrum.id,
         ) as Datum1D;

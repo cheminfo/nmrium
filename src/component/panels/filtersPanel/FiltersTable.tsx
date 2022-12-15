@@ -127,7 +127,7 @@ function FiltersTableInner({
         selectedFilterRef.current.index != null &&
         index > selectedFilterRef.current.index
       ) {
-        classes.push('filter-deactive');
+        classes.push('filter-inactive');
       }
 
       return classes.join(' ');

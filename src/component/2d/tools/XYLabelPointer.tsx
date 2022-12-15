@@ -46,8 +46,8 @@ function XYLabelPointer({ layout, data1D }) {
       startY: position.y,
     });
 
-  const nucleuses = activeTab.split(',');
-  const [formatX, formatY] = useFormatNumberByNucleus(nucleuses);
+  const nuclei = activeTab.split(',');
+  const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
   const spectrum = useSpectrum();
 
   const scaleX = useMemo(() => {

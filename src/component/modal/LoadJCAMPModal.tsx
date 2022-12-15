@@ -66,10 +66,10 @@ export default function LoadJCAMPModal({
   onClose,
   startLoading,
 }: LoadJCAMPModalProps) {
-  const pathReft = useRef<any>();
+  const pathRef = useRef<any>();
 
   const loadJCAMPHandler = useCallback(() => {
-    const path = pathReft.current.value;
+    const path = pathRef.current.value;
     const { name, extension } = extractFileMetaFromPath(path);
     if (allowedExtensions.has(extension)) {
       startLoading?.();
@@ -95,7 +95,7 @@ export default function LoadJCAMPModal({
       </div>
       <div className="container">
         <input
-          ref={pathReft}
+          ref={pathRef}
           type="text"
           placeholder="Enter URL to JCAMP-DX file"
         />

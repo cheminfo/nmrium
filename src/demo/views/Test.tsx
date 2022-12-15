@@ -119,10 +119,10 @@ export default function Test(props) {
   }, [baseURL, file, props]);
   const [viewCallBack, setViewCallBack] = useState<any>({});
   const [dataCallBack, setDataCallBack] = useState<any>({});
-  const dropFileHandler = useCallback((dropfiles) => {
+  const dropFileHandler = useCallback((dropFiles) => {
     void (async () => {
       try {
-        const files = await loadFiles<{ binary: any }>(dropfiles, {
+        const files = await loadFiles<{ binary: any }>(dropFiles, {
           asBuffer: true,
         });
 

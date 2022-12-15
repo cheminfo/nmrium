@@ -44,8 +44,8 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const dispatch = useDispatch();
 
   const spectrumData: any[] = useMemo(() => {
-    const nucleuses = activeTab.split(',');
-    return nucleuses
+    const nuclei = activeTab.split(',');
+    return nuclei
       .filter((n) => activeSpectra[n]?.id)
       .map((nucleus) => {
         const id = activeSpectra[nucleus]?.id;

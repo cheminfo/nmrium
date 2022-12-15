@@ -18,7 +18,6 @@ import { get2DXScale, get1DYScale, get2DYScale } from './utilities/scale';
 
 const styles = css`
   display: flex;
-  flex-firection: row;
   align-items: center;
   pointer-events: bounding-box;
   user-select: 'none';
@@ -76,8 +75,8 @@ function FooterBanner({ layout, data1D }) {
       startY: position.y,
     });
 
-  const nucleuses = activeTab.split(',');
-  const [formatX, formatY] = useFormatNumberByNucleus(nucleuses);
+  const nuclei = activeTab.split(',');
+  const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -135,7 +134,7 @@ function FooterBanner({ layout, data1D }) {
   ) {
     return <div css={styles} />;
   }
-  const getRealYValue = (cordinate) => {
+  const getRealYValue = (coordinate) => {
     let index: number | null = null;
     if (trackID === LAYOUT.TOP_1D) {
       index = 0;
@@ -144,7 +143,7 @@ function FooterBanner({ layout, data1D }) {
     }
     if (index != null && scaleX != null) {
       const datum = get1DDataXY(data1D[index]);
-      const xIndex = xFindClosestIndex(datum.x, scaleX.invert(cordinate));
+      const xIndex = xFindClosestIndex(datum.x, scaleX.invert(coordinate));
       return datum.y[xIndex];
     }
     return 1;
@@ -216,13 +215,13 @@ function FooterBanner({ layout, data1D }) {
     }
   };
 
-  const getLabel = (label2d, labelld, nucleus) => {
+  const getLabel = (label2d, label1d, nucleus) => {
     return trackID === LAYOUT.CENTER_2D ? (
       <Fragment>
         {label2d} ( <MF mf={nucleus} /> )
       </Fragment>
     ) : (
-      labelld
+      label1d
     );
   };
 
@@ -249,13 +248,13 @@ function FooterBanner({ layout, data1D }) {
   return (
     <div css={styles}>
       <div>
-        <span className="label">{getLabel('F2', 'X', nucleuses[0])} :</span>
+        <span className="label">{getLabel('F2', 'X', nuclei[0])} :</span>
         <span className="value">{formatX(getXValue())}</span>
         <span className="unit">ppm</span>
       </div>
 
       <div>
-        <span className="label">{getLabel('F1', 'Y', nucleuses[1])} :</span>
+        <span className="label">{getLabel('F1', 'Y', nuclei[1])} :</span>
         <span className="value">{formatY(getYValue())}</span>
         <span className="unit">ppm</span>
       </div>

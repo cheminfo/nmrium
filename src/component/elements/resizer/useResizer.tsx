@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import useDraggable, { Draggable } from '../draggble/useDraggable';
+import useDraggable, { Draggable } from '../draggable/useDraggable';
 
 import { ResizerProps, Position } from './Resizer';
 
