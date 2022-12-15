@@ -46,9 +46,11 @@ export function addJcamp(output, jcamp, options, usedColors) {
   const name = options?.display?.name;
   const { spectra: spectraIn } = processJcamp(jcamp, {
     name,
-    noContour: true,
-    keepRecordsRegExp: /.*/,
-    profiling: true,
+    converter: {
+      noContour: true,
+      keepRecordsRegExp: /.*/,
+      profiling: true,
+    },
   });
   if (spectraIn.length === 0) return;
 
