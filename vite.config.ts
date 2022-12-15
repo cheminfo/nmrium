@@ -1,7 +1,6 @@
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import analyze from 'rollup-plugin-analyzer';
-import { AliasOptions, splitVendorChunkPlugin } from 'vite';
-import { defineConfig } from 'vitest/config';
+import { AliasOptions, splitVendorChunkPlugin, defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default () => {
