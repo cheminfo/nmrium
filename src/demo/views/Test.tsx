@@ -4,9 +4,51 @@ import { ObjectInspector } from 'react-inspector';
 import { DropZone } from 'react-science/ui';
 
 import NMRium from '../../component/NMRium';
-import { loadFiles } from '../../component/utility/FileUtility';
 
 import { loadData } from './View';
+
+/**
+ *
+ * @param {Array<File>} acceptedFiles
+ * @param {object} options
+ * @param {boolean} options.asBuffer
+ * @returns
+ */
+function loadFiles<T = unknown>(
+  acceptedFiles,
+  options: { asBuffer?: boolean } = {},
+) {
+  return Promise.all(
+    ([] as Array<T>).map.call(acceptedFiles, (file: any) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('abort', (e) => reject(e));
+        reader.addEventListener('error', (e) => reject(e));
+        reader.addEventListener('load', () => {
+          if (reader.result) {
+            const binary = reader.result;
+            const name = getFileName(file.name);
+            const extension = getFileExtension(file.name);
+            resolve({ binary, name, extension });
+          }
+        });
+        if (options.asBuffer) {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsBinaryString(file);
+        }
+      });
+    }),
+  ) as Promise<Array<T>>;
+}
+
+function getFileExtension(name) {
+  return name.replace(/^.*\./, '').toLowerCase();
+}
+
+function getFileName(name) {
+  return name.slice(0, Math.max(0, name.lastIndexOf('.')));
+}
 
 function searchDeep(obj, searchKey) {
   let result: any = [];
