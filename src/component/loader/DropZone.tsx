@@ -56,9 +56,6 @@ function DropZone(props) {
   const alert = useAlert();
 
   async function loadFilesHandler(files) {
-    for (const file of files) {
-      Object.defineProperty(file, 'webkitRelativePath', { value: file.path });
-    }
     try {
       const fileCollection = await fileCollectionFromFileList(files);
 
