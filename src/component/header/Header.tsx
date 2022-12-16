@@ -15,6 +15,7 @@ import {
   useWorkspacesList,
 } from '../context/PreferencesContext';
 import Button from '../elements/Button';
+import { LabelStyle } from '../elements/Label';
 import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
@@ -32,6 +33,19 @@ import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
+
+export const headerLabelStyle: LabelStyle = {
+  label: {
+    fontWeight: 'normal',
+    fontSize: '12px',
+  },
+  wrapper: {
+    paddingRight: '5px',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+  },
+};
 
 interface HeaderInnerProps {
   onMaximize?: () => void;

@@ -7,22 +7,13 @@ import Label from '../elements/Label';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const hintStyle: CSSProperties = {
-  lineHeight: 2,
+  lineHeight: 2.5,
   userSelect: 'none',
   fontSize: '11px',
-};
-
-const labelStyle = {
-  label: {
-    fontWeight: 'normal',
-    fontSize: '12px',
-  },
-  wrapper: {
-    paddingRight: '5px',
-  },
 };
 
 const inputStyle = {
@@ -35,6 +26,9 @@ const inputStyle = {
   },
   inputContainer: {
     flex: 2,
+  },
+  container: {
+    height: '100%',
   },
 };
 
@@ -55,15 +49,15 @@ function RangesPickingOptionPanel() {
     });
   }, [dispatch]);
   return (
-    <HeaderContainer
-      style={{
-        alignItems: 'baseline',
-      }}
-    >
-      <Label title="Detect negative:" htmlFor="lookNegative" style={labelStyle}>
+    <HeaderContainer>
+      <Label
+        title="Detect negative:"
+        htmlFor="lookNegative"
+        style={headerLabelStyle}
+      >
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </Label>
-      <Label title="Min Max Ratio:" style={labelStyle}>
+      <Label title="Min Max Ratio:" style={headerLabelStyle}>
         <NumberInput
           ref={minMaxRatioRef}
           name="minMaxRatio"
