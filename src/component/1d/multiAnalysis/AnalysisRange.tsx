@@ -82,37 +82,34 @@ function AnalysisRange({
         key={`${columnKey}_${to}_${from}`}
       >
         {({ x1, x2 }, isActive) => (
-          <>
-            <g
-              transform={`translate(0,25)`}
-              css={[
-                styles.common,
-                highlight.isActive || isActive
-                  ? styles.Highlighted
-                  : styles.hover,
-              ]}
+          <g
+            transform={`translate(0,25)`}
+            css={[
+              styles.common,
+              highlight.isActive || isActive
+                ? styles.Highlighted
+                : styles.hover,
+            ]}
+          >
+            <rect
+              x="0"
+              width={x2 - x1}
+              height="6"
+              className="range-area"
+              fill="green"
+            />
+            <text
+              textAnchor="middle"
+              x={(x2 - x1) / 2}
+              y="-5"
+              fontSize="12"
+              fill="red"
+              fontWeight="bolder"
+              fillOpacity={highlight.isActive ? 1 : 0.6}
             >
-              <rect
-                x="0"
-                width={x2 - x1}
-                height="6"
-                className="range-area"
-                fill="green"
-              />
-              <text
-                textAnchor="middle"
-                x={(x2 - x1) / 2}
-                y="-5"
-                fontSize="12"
-                fill="red"
-                fontWeight="bolder"
-                fillOpacity={highlight.isActive ? 1 : 0.6}
-              >
-                {columnKey}
-              </text>
-            </g>
-            {/* <DeleteButton x={-20} y={10} onDelete={deleteHandler} /> */}
-          </>
+              {columnKey}
+            </text>
+          </g>
         )}
       </Resizer>
     </g>
