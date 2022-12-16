@@ -1,8 +1,6 @@
 import { CSSProperties, ReactNode } from 'react';
 
 const containerStyle: CSSProperties = {
-  padding: '5px',
-  height: '100%',
   display: 'flex',
 };
 

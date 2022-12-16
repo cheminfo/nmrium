@@ -9,6 +9,7 @@ import {
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const inputStyle = {
@@ -18,15 +19,8 @@ const inputStyle = {
   inputContainer: {
     flex: '2',
   },
-};
-
-const labelStyle = {
-  label: {
-    fontWeight: 'normal',
-    fontSize: '12px',
-  },
-  wrapper: {
-    paddingRight: '5px',
+  container: {
+    height: '100%',
   },
 };
 
@@ -54,7 +48,11 @@ function Zones2DOptionPanel() {
 
   return (
     <HeaderContainer>
-      <Label title="Noise factor :" htmlFor="livePreview" style={labelStyle}>
+      <Label
+        title="Noise factor :"
+        htmlFor="livePreview"
+        style={headerLabelStyle}
+      >
         <NumberInput
           ref={thresholdFactor}
           name="noiseFactor"

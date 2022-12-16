@@ -20,20 +20,11 @@ import {
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const labelStyle = {
-  label: {
-    fontWeight: 'normal',
-    fontSize: '12px',
-  },
-  wrapper: {
-    paddingRight: '5px',
-  },
-};
-
 const inputStyle = {
-  input: { height: '24px', width: '60px' },
+  input: { height: '100%', width: '60px' },
 };
 
 const validationSchema = Yup.object().shape({
@@ -107,7 +98,7 @@ function ApodizationOptionsInnerPanel(
         validationSchema={validationSchema}
       >
         <>
-          <Label title="Line broadening : " style={labelStyle}>
+          <Label title="Line broadening : " style={headerLabelStyle}>
             <FormikInput
               type="number"
               name="lineBroadening"
@@ -117,7 +108,7 @@ function ApodizationOptionsInnerPanel(
               debounceTime={250}
             />
           </Label>
-          <Label title="Gauss broadening :" style={labelStyle}>
+          <Label title="Gauss broadening :" style={headerLabelStyle}>
             <FormikInput
               type="number"
               name="gaussBroadening"
@@ -127,7 +118,10 @@ function ApodizationOptionsInnerPanel(
               debounceTime={250}
             />
           </Label>
-          <Label title="lineBroadeningCenter [0 - 1] : " style={labelStyle}>
+          <Label
+            title="lineBroadeningCenter [0 - 1] : "
+            style={headerLabelStyle}
+          >
             <FormikInput
               type="number"
               name="lineBroadeningCenter"

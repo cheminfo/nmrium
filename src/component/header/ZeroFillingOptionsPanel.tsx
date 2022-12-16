@@ -18,6 +18,7 @@ import {
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const Sizes = generateNumbersPowerOfX(8, 21);
@@ -89,7 +90,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   return (
     <HeaderContainer>
-      <Label title="Size:  " style={{ label: { padding: '0 5px' } }}>
+      <Label title="Size:  " style={headerLabelStyle}>
         <Select
           items={Sizes}
           style={{ marginLeft: 10, marginRight: 10 }}
@@ -100,7 +101,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
       <Label
         title="live preview "
         htmlFor="livePreview"
-        style={{ label: { padding: '0 5px' } }}
+        style={headerLabelStyle}
       >
         <CheckBox
           name="livePreview"

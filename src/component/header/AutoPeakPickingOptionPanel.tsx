@@ -8,6 +8,7 @@ import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { AUTO_PEAK_PICKING } from '../reducer/types/Types';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const inputStyle = {
@@ -18,15 +19,8 @@ const inputStyle = {
   inputContainer: {
     flex: '2',
   },
-};
-
-const labelStyle = {
-  label: {
-    fontWeight: 'normal',
-    fontSize: '12px',
-  },
-  wrapper: {
-    paddingRight: '5px',
+  container: {
+    height: '100%',
   },
 };
 
@@ -74,7 +68,7 @@ function AutoPeakPickingOptionPanel() {
         onSubmit={handleApplyFilter}
       >
         <>
-          <Label title="Direction : " style={labelStyle}>
+          <Label title="Direction : " style={headerLabelStyle}>
             <FormikSelect
               name="direction"
               items={LookFor}
@@ -82,13 +76,13 @@ function AutoPeakPickingOptionPanel() {
               defaultValue="positive"
             />
           </Label>
-          <Label title="Max Number Of Peaks :" style={labelStyle}>
+          <Label title="Max Number Of Peaks :" style={headerLabelStyle}>
             <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
           </Label>
-          <Label title="Noise factor :" style={labelStyle}>
+          <Label title="Noise factor :" style={headerLabelStyle}>
             <FormikNumberInput name="noiseFactor" style={inputStyle} />
           </Label>
-          <Label title="Min Max Ratio :" style={labelStyle}>
+          <Label title="Min Max Ratio :" style={headerLabelStyle}>
             <FormikNumberInput
               name="minMaxRatio"
               style={inputStyle}

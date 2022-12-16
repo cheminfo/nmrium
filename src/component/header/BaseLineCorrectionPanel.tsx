@@ -21,21 +21,12 @@ import {
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;
 }
-
-const labelStyle = {
-  label: {
-    fontWeight: 'normal',
-    fontSize: '12px',
-  },
-  wrapper: {
-    paddingRight: '5px',
-  },
-};
 
 const getAlgorithmsList = () => {
   return ['airPLS', 'Polynomial'].map((val) => ({
@@ -135,7 +126,7 @@ function BaseLineCorrectionInnerPanel(
 
   return (
     <HeaderContainer>
-      <Label title="Algorithm: " style={labelStyle}>
+      <Label title="Algorithm: " style={headerLabelStyle}>
         <Select
           items={getAlgorithmsList()}
           value={algorithm}
@@ -153,14 +144,14 @@ function BaseLineCorrectionInnerPanel(
         <>
           {algorithm && algorithm === 'airpls' && (
             <div style={{ display: 'flex' }}>
-              <Label title="maxIterations:" style={labelStyle}>
+              <Label title="maxIterations:" style={headerLabelStyle}>
                 <FormikInput
                   type="number"
                   name="maxIterations"
                   debounceTime={250}
                 />
               </Label>
-              <Label title="tolerance:" style={labelStyle}>
+              <Label title="tolerance:" style={headerLabelStyle}>
                 <FormikInput
                   type="number"
                   name="tolerance"
@@ -172,7 +163,7 @@ function BaseLineCorrectionInnerPanel(
 
           {algorithm &&
             ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-              <Label title="degree [ 1 - 6 ]:" style={labelStyle}>
+              <Label title="degree [ 1 - 6 ]:" style={headerLabelStyle}>
                 <FormikInput
                   type="number"
                   name="degree"
@@ -184,7 +175,11 @@ function BaseLineCorrectionInnerPanel(
               </Label>
             )}
 
-          <Label title="live preview " htmlFor="livePreview" style={labelStyle}>
+          <Label
+            title="live preview "
+            htmlFor="livePreview"
+            style={headerLabelStyle}
+          >
             <FormikCheckBox
               name="livePreview"
               onChange={disableLivePreviewHandler}

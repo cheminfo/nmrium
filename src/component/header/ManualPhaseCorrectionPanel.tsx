@@ -19,6 +19,7 @@ import {
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
+import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const selectStyle: CSSProperties = {
@@ -193,7 +194,7 @@ export default function ManualPhaseCorrectionPanel() {
 
       {phaseCorrectionType === phaseCorrectionTypes.manual && (
         <>
-          <Label title="PH0 :" style={{ wrapper: { marginRight: '5px' } }}>
+          <Label title="PH0 :" style={headerLabelStyle}>
             <Input
               name="ph0"
               style={inputStyle}
@@ -203,7 +204,7 @@ export default function ManualPhaseCorrectionPanel() {
               debounceTime={250}
             />
           </Label>
-          <Label title="PH1 :">
+          <Label title="PH1 :" style={headerLabelStyle}>
             <Input
               name="ph1"
               style={inputStyle}
