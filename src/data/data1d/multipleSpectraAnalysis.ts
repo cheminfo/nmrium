@@ -283,8 +283,7 @@ function calculate(
   try {
     // eslint-disable-next-line no-new-func
     result = new Function(...variables, `return ${formula}`)(...params);
-  } catch (error) {
-    reportError(error);
+  } catch {
     result = new Error(`Invalid Formula ( ${formula} ) `);
   }
   return result;
