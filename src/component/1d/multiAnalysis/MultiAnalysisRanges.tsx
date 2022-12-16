@@ -1,6 +1,9 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
-import { SpectraAnalysisColumns } from '../../../data/data1d/multipleSpectraAnalysis';
+import {
+  COLUMNS_TYPES,
+  SpectraAnalysisColumns,
+} from '../../../data/data1d/multipleSpectraAnalysis';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
@@ -17,9 +20,9 @@ function MultiAnalysisRangesInner({
   displayerKey,
   activeTab,
 }: MultiAnalysisRangesInnerProps) {
-  const ranges = useMemo(() => {
-    return Object.keys(columns).map((key) => key);
-  }, [columns]);
+  const ranges = Object.keys(columns).filter(
+    (key) => columns[key].type !== COLUMNS_TYPES.FORMULA,
+  );
 
   if (!ranges || ranges.length === 0) {
     return null;
