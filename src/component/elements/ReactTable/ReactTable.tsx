@@ -28,6 +28,7 @@ import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyA
 import { HighlightEventSource } from '../../highlight';
 import ContextMenu from '../ContextMenu';
 
+import { EmptyDataRow } from './Elements/EmptyDataRow';
 import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow, { ClickEvent } from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
@@ -81,6 +82,7 @@ interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
   activeRow?: (data: any) => boolean;
   enableDefaultActiveRow?: boolean;
   totalCount?: number;
+  emptyDataRowText?: string;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -129,6 +131,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     rowStyle,
     disableDefaultRowStyle = false,
     enableDefaultActiveRow = false,
+    emptyDataRowText = 'No Data',
   } = props;
 
   const contextRef = useRef<any>(null);
@@ -237,6 +240,10 @@ const ReactTableInner = forwardRef(function ReactTableInner(
             onClick={headerClickHandler}
           />
           <tbody {...getTableBodyProps()}>
+            {!rowsData ||
+              (rowsData?.length === 0 && (
+                <EmptyDataRow columns={columns} text={emptyDataRowText} />
+              ))}
             {rowsData.map((row, index) => {
               prepareRow(row);
 
