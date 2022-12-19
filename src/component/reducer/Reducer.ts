@@ -9,6 +9,7 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
+import { MatrixViewState } from '../../data/types/view-state/MatrixViewState';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -96,6 +97,7 @@ export interface ViewState {
   molecules: MoleculesView;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
+  matrixGeneration: MatrixViewState;
   /**
    * peaks view property
    * where the key is the id of the spectrum
@@ -168,6 +170,7 @@ export const getInitialState = (): State => ({
     zoom: {
       levels: {},
     },
+    matrixGeneration: {},
   },
   verticalAlign: {
     align: 'bottom',
