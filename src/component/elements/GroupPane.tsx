@@ -10,12 +10,14 @@ const styles: Record<'header', CSSProperties> = {
   },
 };
 
+export interface GroupPaneStyle {
+  header?: CSSProperties;
+  container?: CSSProperties;
+}
+
 interface GroupPaneProps {
   text: string;
-  style?: {
-    header?: CSSProperties;
-    container?: CSSProperties;
-  };
+  style?: GroupPaneStyle;
   children: ReactNode;
   renderHeader?: (text: string) => ReactNode;
 }
