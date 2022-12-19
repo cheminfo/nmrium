@@ -1,6 +1,11 @@
+import { NmrLoadersFilter } from 'nmr-load-save/lib/types/Options/ParsingOptions';
+
 export interface Source {
-  jcamp: string;
-  jcampURL: string;
-  jcampSpectrumIndex: number;
-  file: File;
+  fileCollection: {
+    relativePath: string;
+    name: string;
+    lastModified: number;
+    size: number;
+  }[];
+  filter: NmrLoadersFilter;
 }
