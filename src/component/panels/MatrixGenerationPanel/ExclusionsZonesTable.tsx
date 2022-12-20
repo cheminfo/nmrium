@@ -26,11 +26,11 @@ export function ExclusionsZonesTable() {
   function handleDelete(index) {
     setFieldValue(
       'exclusionsZones',
-      values.filters.filter((_, i) => i !== index),
+      values.exclusionsZones.filter((_, i) => i !== index),
     );
   }
 
-  const filtersColumns: Column<any>[] = [
+  const exclusionsZonesColumns: Column<any>[] = [
     {
       Header: '#',
       style: { width: '50px' },
@@ -73,7 +73,7 @@ export function ExclusionsZonesTable() {
 
   return (
     <ReactTable
-      columns={filtersColumns}
+      columns={exclusionsZonesColumns}
       data={values.exclusionsZones}
       emptyDataRowText="No Zones"
     />

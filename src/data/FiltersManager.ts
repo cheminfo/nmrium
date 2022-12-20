@@ -42,7 +42,11 @@ function updateData(datum: Datum1D | Datum2D) {
 /***
  * @param {object} Filters [{name:'',options:{}},{...}]
  */
-function applyFilter(datum: Datum1D | Datum2D, filters: any[] = []) {
+function applyFilter(
+  datum: Datum1D | Datum2D,
+  filters: any[] = [],
+  forceReapply = false,
+) {
   let isReduced = false;
   for (let filter of filters) {
     const filterOption = {
@@ -83,7 +87,9 @@ function applyFilter(datum: Datum1D | Datum2D, filters: any[] = []) {
       );
     }
   }
-  if (isReduced) {
+  if (forceReapply) {
+    reapplyFilters(datum);
+  } else if (isReduced) {
     if (filters.length === 1 && isLastFilter(datum, filters[0].name)) {
       Filters[filters[0].name].apply(datum, filters[0].options);
     } else {

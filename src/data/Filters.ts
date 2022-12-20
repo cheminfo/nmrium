@@ -11,6 +11,7 @@ export * as pareto from './data1d/filter1d/pareto';
 export * as phaseCorrection from './data1d/filter1d/phaseCorrection';
 export * as shiftX from './data1d/filter1d/shiftX';
 export * as standardDeviation from './data1d/filter1d/standardDeviation';
+export * as signalProcessing from './data1d/filter1d/signalProcessing';
 export * as zeroFilling from './data1d/filter1d/zeroFilling';
 export * as shift2DX from './data2d/filter2d/shiftX';
 export * as shift2DY from './data2d/filter2d/shiftY';

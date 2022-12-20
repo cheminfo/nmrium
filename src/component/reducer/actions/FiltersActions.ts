@@ -13,12 +13,12 @@ import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCor
 import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
+import { MatrixOptions } from '../../../data/types/view-state/MatrixViewState';
 import { options } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
-import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
@@ -407,75 +407,81 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
   setDomain(draft);
 }
 
-function handleAddExclusionZone(draft: Draft<State>, action) {
-  const { from: startX, to: endX } = action.payload;
-  const range = getRange(draft, { startX, endX });
+function applySignalProcessingFilter(draft: Draft<State>) {
+  const { view, data } = draft;
+  const nucleus = view.spectra.activeTab;
 
-  let spectra: Datum1D[];
-
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const index = activeSpectrum?.index;
-    spectra = [draft.data[index] as Datum1D];
-  } else {
-    spectra = getSpectraByNucleus(
-      draft.view.spectra.activeTab,
-      draft.data,
-    ) as Datum1D[];
-  }
-
+  const spectra = getSpectraByNucleus(nucleus, data) as Datum1D[];
   for (const spectrum of spectra) {
-    FiltersManager.applyFilter(spectrum, [
-      {
-        name: Filters.exclusionZones.id,
-        options: [
-          {
-            id: v4(),
-            from: range[0],
-            to: range[1],
-          },
-        ],
-      },
-    ]);
+    FiltersManager.applyFilter(
+      spectrum,
+      [
+        {
+          name: Filters.signalProcessing.id,
+          options: view.matrixGeneration[nucleus],
+        },
+      ],
+      true,
+    );
   }
 
   setDomain(draft);
 }
 
-function handleDeleteExclusionZone(draft: Draft<State>, action) {
-  const { zone, spectrumID } = action.payload;
+function handleSignalProcessingFilter(draft: Draft<State>, action) {
+  const { view } = draft;
+  const nucleus = view.spectra.activeTab;
 
-  // if spectrum id exists, remove the selected exclusion zone in the spectrum
-  if (spectrumID) {
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === spectrumID,
-    );
-    const filter = draft.data[spectrumIndex].filters.find(
-      (_filter) => _filter.name === Filters.exclusionZones.id,
-    );
-    if (filter) {
-      if (filter.value.length === 1) {
-        FiltersManager.deleteFilter(draft.data[spectrumIndex], filter.id);
-      } else {
-        filter.value = filter.value.filter((_zone) => _zone.id !== zone?.id);
-        FiltersManager.reapplyFilters(draft.data[spectrumIndex]);
-      }
-    }
+  const { options } = action.payload;
+
+  view.matrixGeneration[nucleus] = options;
+
+  applySignalProcessingFilter(draft);
+}
+
+function handleAddExclusionZone(draft: Draft<State>, action) {
+  const { from: startX, to: endX } = action.payload;
+  const range = getRange(draft, { startX, endX });
+  const { view, xDomain } = draft;
+  const nucleus = view.spectra.activeTab;
+
+  const exclusionZone = {
+    id: v4(),
+    from: range[0],
+    to: range[1],
+  };
+
+  if (!view.matrixGeneration?.[nucleus]) {
+    const options: MatrixOptions = {
+      exclusionsZones: [exclusionZone],
+      filters: [],
+      range: { from: xDomain[0], to: xDomain[1] },
+      numberOfPoints: 1024,
+    };
+    view.matrixGeneration[nucleus] = options;
   } else {
-    // remove all exclusion zones that have the same range in all spectra
-    const data = getSpectraByNucleus(draft.view.spectra.activeTab, draft.data);
-    for (const datum of data) {
-      for (const filter of datum.filters) {
-        if (filter.name === Filters.exclusionZones.id) {
-          filter.value = filter.value.filter(
-            (_zone) => zone.from !== _zone.from && zone.to !== _zone.to,
-          );
-          FiltersManager.reapplyFilters(datum);
-        }
-      }
-    }
+    (view.matrixGeneration[nucleus] as MatrixOptions).exclusionsZones.push(
+      exclusionZone,
+    );
+  }
+  applySignalProcessingFilter(draft);
+}
+
+function handleDeleteExclusionZone(draft: Draft<State>, action) {
+  const { zone } = action.payload;
+
+  const { view } = draft;
+  const nucleus = view.spectra.activeTab;
+
+  if (view.matrixGeneration?.[nucleus]) {
+    const options: MatrixOptions = view.matrixGeneration[nucleus];
+    options.exclusionsZones = options.exclusionsZones.filter(
+      (_zone) => _zone.id !== zone.id,
+    );
+    applySignalProcessingFilter(draft);
   }
 }
+
 function handleDisableFilterLivePreview(draft: Draft<State>, action) {
   const { selectedTool } = action.payload;
 
@@ -591,4 +597,5 @@ export {
   handleDeleteExclusionZone,
   handleDisableFilterLivePreview,
   setFilterChanges,
+  handleSignalProcessingFilter,
 };

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { SvgNmrAddFilter, SvgNmrExportAsMatrix } from 'cheminfo-font';
-import { Formik } from 'formik';
-import { useCallback } from 'react';
+import { Formik, FormikProps } from 'formik';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import * as yup from 'yup';
 
 import {
@@ -11,16 +11,20 @@ import {
 import { MatrixOptions } from '../../../data/types/view-state/MatrixViewState';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import StyledButton from '../../elements/Button';
 import Button from '../../elements/ButtonToolTip';
 import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
+import SaveButton from '../../elements/SaveButton';
 import FormikInput from '../../elements/formik/FormikInput';
-import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { positions, useModal } from '../../elements/popup/Modal';
 import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
-import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
+import {
+  APPLY_SIGNAL_PROCESSING_FILTER,
+  RESET_SELECTED_TOOL,
+} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -29,7 +33,6 @@ import { ExclusionsZonesTable } from './ExclusionsZonesTable';
 import { FiltersTable } from './FiltersTable';
 
 const schema = yup.object().shape({
-  filters: yup.array().min(1),
   range: yup.object({
     from: yup.number().required(),
     to: yup.number().required(),
@@ -48,7 +51,7 @@ const inputStyle: InputStyle = {
 export const DEFAULT_MATRIX_FILTERS: MatrixFilters = getDefaultMatrixFilters();
 
 const DEFAULT_MATRIX_OPTIONS: Omit<MatrixOptions, 'range'> = {
-  filters: [DEFAULT_MATRIX_FILTERS[0]],
+  filters: [],
   exclusionsZones: [],
   numberOfPoints: 1024,
 };
@@ -76,10 +79,18 @@ function MatrixGenerationPanel() {
     xDomain,
   } = useChartData();
 
-  const matrixOptions = getMatrixOptions(matrixGeneration[activeTab], {
-    from: xDomain[0],
-    to: xDomain[1],
-  });
+  const formRef = useRef<FormikProps<any>>(null);
+
+  const [matrixOptions, setMatrixGeneration] = useState(
+    getMatrixOptions(matrixGeneration[activeTab], {
+      from: xDomain[0],
+      to: xDomain[1],
+    }),
+  );
+
+  useEffect(() => {
+    setMatrixGeneration(matrixGeneration[activeTab]);
+  }, [activeTab, matrixGeneration, setMatrixGeneration]);
 
   const openFiltersModal = useCallback(() => {
     dispatch({ type: RESET_SELECTED_TOOL });
@@ -100,25 +111,34 @@ function MatrixGenerationPanel() {
     });
   }, [modal, dispatch]);
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  function handleSave(values) {
-    // eslint-disable-next-line no-console
-    console.log(values);
+  function handleSave(options) {
+    dispatch({ type: APPLY_SIGNAL_PROCESSING_FILTER, payload: { options } });
   }
 
-  const handleDataChange = useCallback((data) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
-  }, []);
+  function handleAddFilter() {
+    setMatrixGeneration((prevMatrixOptions) => {
+      const filters = prevMatrixOptions.filters.slice();
+      filters.push(DEFAULT_MATRIX_FILTERS[0]);
+      return { ...prevMatrixOptions, filters };
+    });
+  }
 
-  if (!xDomain[0] || !xDomain[1]) {
+  if (!xDomain[0] || !xDomain[1] || !matrixOptions) {
     return null;
   }
 
   return (
     <div css={tablePanelStyle}>
       {
-        <DefaultPanelHeader canDelete={false}>
+        <DefaultPanelHeader
+          canDelete={false}
+          renderRightButtons={() => (
+            <SaveButton
+              onClick={() => formRef.current?.submitForm()}
+              popupTitle="Signal Processing"
+            />
+          )}
+        >
           <Button popupTitle="Add Filter" onClick={openFiltersModal}>
             <SvgNmrAddFilter style={{ fontSize: '18px' }} />
           </Button>
@@ -134,13 +154,23 @@ function MatrixGenerationPanel() {
       <div className="inner-container">
         <PreferencesContainer style={{ backgroundColor: 'white' }}>
           <Formik
+            innerRef={formRef}
             onSubmit={handleSave}
             initialValues={matrixOptions}
             enableReinitialize
             validationSchema={schema}
           >
             <>
-              <GroupPane text="Filters" style={GroupPanelStyle}>
+              <GroupPane
+                text="Filters"
+                style={GroupPanelStyle}
+                renderHeader={(text) => (
+                  <FiltersPanelGroupHeader
+                    text={text}
+                    onAdd={handleAddFilter}
+                  />
+                )}
+              >
                 <FiltersTable />
               </GroupPane>
               <GroupPane text="Exclusions zones" style={GroupPanelStyle}>
@@ -181,11 +211,24 @@ function MatrixGenerationPanel() {
                   />
                 </Label>
               </GroupPane>
-              <FormikOnChange debounceTime={250} onChange={handleDataChange} />
             </>
           </Formik>
         </PreferencesContainer>
       </div>
+    </div>
+  );
+}
+
+function FiltersPanelGroupHeader({ text, onAdd }) {
+  return (
+    <div
+      className="section-header"
+      style={{ display: 'flex', padding: '5px 0px' }}
+    >
+      <p style={{ flex: 1, ...GroupPanelStyle.header }}>{text}</p>
+      <StyledButton.Done fill="outline" size="xSmall" onClick={onAdd}>
+        Add Filter
+      </StyledButton.Done>
     </div>
   );
 }
