@@ -42,6 +42,7 @@ interface DefaultPanelHeaderProps {
   children?: ReactNode;
   style?: CSSProperties;
   className?: string;
+  renderRightButtons?: () => ReactNode;
 }
 
 function DefaultPanelHeader({
@@ -58,6 +59,7 @@ function DefaultPanelHeader({
   canDelete = true,
   style = {},
   className = '',
+  renderRightButtons,
 }: DefaultPanelHeaderProps) {
   return (
     <div css={styles} {...{ style, className }}>
@@ -91,6 +93,7 @@ function DefaultPanelHeader({
 
         {children}
       </div>
+      {renderRightButtons?.()}
       {counter !== undefined && (
         <p className="counter-label">
           [{' '}
