@@ -24,8 +24,8 @@ export default function detectSignal(
     (checkMaxLength && toIndex - fromIndex <= MAX_LENGTH)
   ) {
     const data = {
-      x: x.subarray(fromIndex, toIndex),
-      y: re.subarray(fromIndex, toIndex),
+      x: x.slice(fromIndex, toIndex),
+      y: re.slice(fromIndex, toIndex),
     };
 
     const result = analyseMultiplet(data, {
