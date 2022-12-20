@@ -584,6 +584,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.filterSnapshotHandler(draft, action);
     case types.APPLY_MULTIPLE_SPECTRA_FILTER:
       return FiltersActions.handleMultipleSpectraFilter(draft, action);
+    case types.APPLY_SIGNAL_PROCESSING_FILTER:
+      return FiltersActions.handleSignalProcessingFilter(draft, action);
     case types.ADD_EXCLUSION_ZONE:
       return FiltersActions.handleAddExclusionZone(draft, action);
     case types.DELETE_EXCLUSION_ZONE:
