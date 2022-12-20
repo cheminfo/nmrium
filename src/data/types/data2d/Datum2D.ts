@@ -1,5 +1,5 @@
 import { Filter } from '../../FiltersManager';
-import { Source } from '../common/Source';
+import { Source } from 'nmr-load-save';
 
 import { Data2D } from './Data2D';
 import { Display2D } from './Display2D';
