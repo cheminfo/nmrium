@@ -309,7 +309,7 @@ function ReactTable(props: ReactTableProps) {
     });
 
   useLayoutEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && height) {
       const header = containerRef.current.querySelectorAll('thead');
       visibleRowsCountRef.current = Math.ceil(
         (height - header[0].clientHeight) / approxItemHeight,
