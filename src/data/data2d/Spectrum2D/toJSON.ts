@@ -6,19 +6,16 @@ export function toJSON(datum: Datum2D, dataType: DataExportOptionsType) {
     id: datum.id,
 
     ...(dataType === 'ROW_DATA' ||
-    (dataType === 'DATA_SOURCE' && !datum.source.jcampURL)
+    (dataType === 'DATA_SOURCE' && !datum.source.fileCollection)
       ? {
           data: datum.originalData,
           info: datum.originalInfo,
           meta: datum.meta,
-          source: {
-            jcampURL: null,
-          },
         }
       : {
           source: {
-            jcampURL: datum.source.jcampURL,
-            jcampSpectrumIndex: datum.source.jcampSpectrumIndex,
+            fileCollection: datum.source.fileCollection,
+            filter: datum.source.filter,
           },
         }),
     zones: datum.zones,

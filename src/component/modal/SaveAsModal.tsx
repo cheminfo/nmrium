@@ -43,7 +43,7 @@ const INITIAL_VALUE = {
   compressed: false,
   pretty: false,
   include: {
-    data: DataExportOptions.ROW_DATA,
+    dataType: DataExportOptions.ROW_DATA,
     view: false,
     settings: false,
   },
@@ -117,7 +117,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                   <label>
                     <Field
                       type="radio"
-                      name="include.data"
+                      name="include.dataType"
                       value={DataExportOptions.ROW_DATA}
                     />
                     Raw Data
@@ -125,7 +125,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                   <label>
                     <Field
                       type="radio"
-                      name="include.data"
+                      name="include.dataType"
                       value={DataExportOptions.DATA_SOURCE}
                     />
                     Data Source
@@ -133,7 +133,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                   <label>
                     <Field
                       type="radio"
-                      name="include.data"
+                      name="include.dataType"
                       value={DataExportOptions.NO_DATA}
                     />
                     No Data

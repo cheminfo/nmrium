@@ -6,7 +6,7 @@ export function toJSON(datum1D: Datum1D, dataType: DataExportOptionsType) {
     id: datum1D.id,
     display: datum1D.display,
     ...(dataType === 'ROW_DATA' ||
-    (dataType === 'DATA_SOURCE' && !datum1D.source.jcampURL)
+    (dataType === 'DATA_SOURCE' && !datum1D.source.fileCollection)
       ? {
           data: datum1D.originalData,
           info: datum1D.originalInfo,
@@ -17,8 +17,8 @@ export function toJSON(datum1D: Datum1D, dataType: DataExportOptionsType) {
         }
       : {
           source: {
-            jcampURL: datum1D.source.jcampURL,
-            jcampSpectrumIndex: datum1D.source.jcampSpectrumIndex,
+            fileCollection: datum1D.source.fileCollection,
+            filter: datum1D.source.filter,
           },
         }),
     peaks: datum1D.peaks,
