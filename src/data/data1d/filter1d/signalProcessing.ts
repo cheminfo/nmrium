@@ -51,8 +51,8 @@ export function filterXY(datum1D: Datum1D, options: MatrixOptions) {
 
   filters.push({
     name: 'equallySpaced',
-    // @ts-expect-error some method have options and some other ones don't have any options
     options: { from, to, numberOfPoints, exclusions },
+    properties: {},
   });
 
   for (const filter of filters) {
