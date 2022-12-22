@@ -6,6 +6,7 @@ import {
   CSSProperties,
   MouseEvent,
 } from 'react';
+import { FaInfoCircle } from 'react-icons/fa';
 
 type Size = 'xSmall' | 'small' | 'medium' | 'large';
 
@@ -199,8 +200,8 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
 
   return css([
     common,
-    orientation === 'vertical' && { margin: 'auto', marginLeft: '5px' },
-    orientation === 'horizontal'
+    orientation === 'horizontal' && { margin: 'auto', marginLeft: '5px' },
+    orientation === 'vertical'
       ? { top: 'calc(100% + 5px)' }
       : { top: '0px', left: 'calc(100% + 5px)' },
   ]);
@@ -231,7 +232,7 @@ function Button(props: ButtonProps) {
   } = props;
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', display: 'inline-block' }}>
       <button
         type="button"
         onClick={onClick}
@@ -295,6 +296,13 @@ Button.Danger = function ButtonDanger(props: ButtonProps) {
 };
 Button.Action = function ButtonAction(props: ButtonProps) {
   return <ThemeButton {...props} colorTheme="medium" />;
+};
+Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
+  return (
+    <Button {...props}>
+      <FaInfoCircle />
+    </Button>
+  );
 };
 
 export default Button;
