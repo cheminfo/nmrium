@@ -11,7 +11,7 @@ import { DEFAULT_MATRIX_FILTERS } from './MatrixGenerationPanel';
 export function FiltersTable() {
   const { values, setFieldValue } = useFormikContext<any>();
 
-  if (!values?.filters && Array.isArray(values.filters)) {
+  if (!values?.filters || !Array.isArray(values.filters)) {
     return null;
   }
 

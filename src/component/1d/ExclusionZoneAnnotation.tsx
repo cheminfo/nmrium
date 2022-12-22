@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { memo } from 'react';
 
+import * as Filters from '../../data/Filters';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useScaleChecked } from '../context/ScaleContext';
 import { HighlightEventSource, useHighlight } from '../highlight';
@@ -12,6 +13,7 @@ interface ExclusionZoneProps {
   color: string;
   vAlign: number;
   spectrumID: string;
+  filterId: string;
 }
 
 const style = css`
@@ -25,10 +27,15 @@ function ExclusionZoneAnnotation({
   color,
   vAlign,
   spectrumID,
+  filterId,
 }: ExclusionZoneProps) {
   const { scaleX, scaleY } = useScaleChecked();
+  const type =
+    filterId === Filters.signalProcessing.id
+      ? HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE
+      : HighlightEventSource.EXCLUSION_ZONE;
   const highlight = useHighlight([], {
-    type: HighlightEventSource.EXCLUSION_ZONE,
+    type,
     extra: { zone, spectrumID },
   });
 
@@ -43,7 +50,7 @@ function ExclusionZoneAnnotation({
         width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
         height="10px"
         style={{
-          fill: color,
+          fill: filterId === Filters.signalProcessing.id ? 'gray' : color,
           opacity,
         }}
         {...highlight.onHover}

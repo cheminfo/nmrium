@@ -33,6 +33,7 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   ADD_RANGE,
   ADD_EXCLUSION_ZONE,
+  ADD_MATRIX_GENERATION_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -217,6 +218,12 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           case options.exclusionZones.id:
             dispatch({
               type: ADD_EXCLUSION_ZONE,
+              payload: { from: brushData.startX, to: brushData.endX },
+            });
+            break;
+          case options.matrixGenerationExclusionZones.id:
+            dispatch({
+              type: ADD_MATRIX_GENERATION_EXCLUSION_ZONE,
               payload: { from: brushData.startX, to: brushData.endX },
             });
             break;

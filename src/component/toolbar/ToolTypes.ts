@@ -32,6 +32,7 @@ type RecordOptions = Record<
       | 'generalSelector'
       | 'editRange'
       | 'databaseRangesSelection'
+      | 'matrixGenerationExclusionZones'
     ),
   ToolOptionItem
 >;
@@ -257,6 +258,23 @@ export const options: RecordOptions = {
   exclusionZones: {
     id: 'exclusionZones',
     label: 'Exclusion Zones',
+    hasOptionPanel: false,
+    isFilter: false,
+    mode: DISPLAYER_MODE.DM_1D,
+    spectraOptions: [
+      {
+        info: [{ key: 'isFt', value: true }],
+        active: true,
+      },
+      {
+        active: false,
+      },
+    ],
+    isToggle: true,
+  },
+  matrixGenerationExclusionZones: {
+    id: 'matrixGenerationExclusionZones',
+    label: 'Matrix Generations Exclusion Zones',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,

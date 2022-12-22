@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { SvgNmrAddFilter, SvgNmrExportAsMatrix } from 'cheminfo-font';
+import {
+  SvgNmrAddFilter,
+  SvgNmrExportAsMatrix,
+  SvgNmrMultipleAnalysis,
+} from 'cheminfo-font';
 import { Formik, FormikProps } from 'formik';
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import * as yup from 'yup';
 
-import {
-  MatrixFilters,
-  getDefaultMatrixFilters,
-} from '../../../data/getDefaultMatrixFilters';
+import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
 import { MatrixOptions } from '../../../data/types/view-state/MatrixViewState';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -17,19 +18,25 @@ import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
 import SaveButton from '../../elements/SaveButton';
+import ToggleButton from '../../elements/ToggleButton';
 import FormikInput from '../../elements/formik/FormikInput';
+import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { positions, useModal } from '../../elements/popup/Modal';
+import useToolsFunctions from '../../hooks/useToolsFunctions';
 import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
 import {
   APPLY_SIGNAL_PROCESSING_FILTER,
   RESET_SELECTED_TOOL,
+  SET_MATRIX_GENERATION_OPTIONS,
 } from '../../reducer/types/Types';
+import { options } from '../../toolbar/ToolTypes';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import { ExclusionsZonesTable } from './ExclusionsZonesTable';
+import { FiltersOptions } from './FiltersOptions';
 import { FiltersTable } from './FiltersTable';
 
 const schema = yup.object().shape({
@@ -48,7 +55,9 @@ const inputStyle: InputStyle = {
   input: { padding: '0.2em 0.1em', width: '100%' },
 };
 
-export const DEFAULT_MATRIX_FILTERS: MatrixFilters = getDefaultMatrixFilters();
+export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters().filter(
+  (filter) => filter.name !== 'equallySpaced',
+);
 
 const DEFAULT_MATRIX_OPTIONS: Omit<MatrixOptions, 'range'> = {
   filters: [],
@@ -63,7 +72,7 @@ function getMatrixOptions(
   return { ...DEFAULT_MATRIX_OPTIONS, range, ...options };
 }
 
-const GroupPanelStyle: GroupPaneStyle = {
+export const GroupPanelStyle: GroupPaneStyle = {
   container: { padding: '10px' },
   header: { color: 'black', fontWeight: 'bolder' },
 };
@@ -81,16 +90,10 @@ function MatrixGenerationPanel() {
 
   const formRef = useRef<FormikProps<any>>(null);
 
-  const [matrixOptions, setMatrixGeneration] = useState(
-    getMatrixOptions(matrixGeneration[activeTab], {
-      from: xDomain[0],
-      to: xDomain[1],
-    }),
-  );
-
-  useEffect(() => {
-    setMatrixGeneration(matrixGeneration[activeTab]);
-  }, [activeTab, matrixGeneration, setMatrixGeneration]);
+  const matrixOptions = getMatrixOptions(matrixGeneration[activeTab], {
+    from: xDomain[0],
+    to: xDomain[1],
+  });
 
   const openFiltersModal = useCallback(() => {
     dispatch({ type: RESET_SELECTED_TOOL });
@@ -115,15 +118,17 @@ function MatrixGenerationPanel() {
     dispatch({ type: APPLY_SIGNAL_PROCESSING_FILTER, payload: { options } });
   }
 
-  function handleAddFilter() {
-    setMatrixGeneration((prevMatrixOptions) => {
-      const filters = prevMatrixOptions.filters.slice();
-      filters.push(DEFAULT_MATRIX_FILTERS[0]);
-      return { ...prevMatrixOptions, filters };
-    });
+  function handleOnChange(options) {
+    dispatch({ type: SET_MATRIX_GENERATION_OPTIONS, payload: { options } });
   }
 
-  if (!xDomain[0] || !xDomain[1] || !matrixOptions) {
+  function handleAddFilter() {
+    const filters = matrixOptions.filters.slice();
+    filters.push(DEFAULT_MATRIX_FILTERS[0]);
+    handleOnChange({ ...matrixOptions, filters });
+  }
+
+  if (!xDomain[0] || !xDomain[1]) {
     return null;
   }
 
@@ -173,9 +178,16 @@ function MatrixGenerationPanel() {
               >
                 <FiltersTable />
               </GroupPane>
-              <GroupPane text="Exclusions zones" style={GroupPanelStyle}>
+              <GroupPane
+                text="Exclusions zones"
+                style={GroupPanelStyle}
+                renderHeader={(text) => (
+                  <ExclusionZonesGroupHeader text={text} />
+                )}
+              >
                 <ExclusionsZonesTable />
               </GroupPane>
+              <FiltersOptions />
               <GroupPane text="More options" style={GroupPanelStyle}>
                 <Label title="Range" style={labelStyle}>
                   <Label title="From">
@@ -211,6 +223,7 @@ function MatrixGenerationPanel() {
                   />
                 </Label>
               </GroupPane>
+              <FormikOnChange onChange={handleOnChange} />
             </>
           </Formik>
         </PreferencesContainer>
@@ -229,6 +242,39 @@ function FiltersPanelGroupHeader({ text, onAdd }) {
       <StyledButton.Done fill="outline" size="xSmall" onClick={onAdd}>
         Add Filter
       </StyledButton.Done>
+    </div>
+  );
+}
+function ExclusionZonesGroupHeader({ text }) {
+  const {
+    toolOptions: { selectedTool },
+  } = useChartData();
+  const { handleChangeOption } = useToolsFunctions();
+
+  return (
+    <div
+      className="section-header"
+      style={{ display: 'flex', padding: '5px 0px' }}
+    >
+      <p style={{ flex: 1, ...GroupPanelStyle.header }}>{text}</p>
+      <ToggleButton
+        key={`${selectedTool}`}
+        defaultValue={
+          selectedTool === options.matrixGenerationExclusionZones.id
+        }
+        popupTitle="Select exclusions zones"
+        popupPlacement="left"
+        onClick={() =>
+          handleChangeOption(options.matrixGenerationExclusionZones.id)
+        }
+      >
+        <SvgNmrMultipleAnalysis
+          style={{
+            pointerEvents: 'none',
+            fontSize: '12px',
+          }}
+        />
+      </ToggleButton>
     </div>
   );
 }

@@ -32,16 +32,19 @@ function ExclusionZonesAnnotationsInner({
       {spectra
         .filter((d) => d.display.isVisible && xDomains[d.id])
         .map((d, index) =>
-          getExclusionZones(d).map((zone) => {
-            return (
-              <ExclusionZoneAnnotation
-                key={zone.id}
-                spectrumID={d.id}
-                vAlign={getVerticalShift(verticalAlign, { index })}
-                zone={zone}
-                color={d.display.color}
-              />
-            );
+          getExclusionZones(d).map((record) => {
+            return record.zones.map((zone) => {
+              return (
+                <ExclusionZoneAnnotation
+                  key={zone.id}
+                  spectrumID={d.id}
+                  vAlign={getVerticalShift(verticalAlign, { index })}
+                  zone={zone}
+                  filterId={record.id}
+                  color={d.display.color}
+                />
+              );
+            });
           }),
         )}
     </g>
@@ -70,10 +73,19 @@ function ExclusionZonesAnnotations() {
 
 export default ExclusionZonesAnnotations;
 
-function getExclusionZones(data: Datum1D): ExclusionZone[] {
-  return (
-    data.filters.find(
-      (filter) => filter.name === Filters.signalProcessing.id && filter.flag,
-    )?.value.exclusionsZones || []
-  );
+function getExclusionZones(
+  data: Datum1D,
+): { id: string; zones: ExclusionZone[] }[] {
+  const zones: { id: string; zones: ExclusionZone[] }[] = [];
+  for (const filter of data.filters) {
+    if (filter.name === Filters.exclusionZones.id && filter.flag) {
+      zones.push({ id: Filters.exclusionZones.id, zones: filter.value });
+    } else if (filter.name === Filters.signalProcessing.id && filter.flag) {
+      zones.push({
+        id: Filters.signalProcessing.id,
+        zones: filter.value.exclusionsZones,
+      });
+    }
+  }
+  return zones;
 }

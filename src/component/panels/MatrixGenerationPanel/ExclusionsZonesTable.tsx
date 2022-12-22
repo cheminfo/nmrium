@@ -19,7 +19,7 @@ const inputStyle: InputStyle = {
 export function ExclusionsZonesTable() {
   const { values, setFieldValue } = useFormikContext<any>();
 
-  if (!values?.exclusionsZones && Array.isArray(values.exclusionsZones)) {
+  if (!values?.exclusionsZones || !Array.isArray(values.exclusionsZones)) {
     return null;
   }
 

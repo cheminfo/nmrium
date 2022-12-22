@@ -1,4 +1,4 @@
-import { MatrixFilters } from '../../getDefaultMatrixFilters';
+import { MatrixFilter } from '../../matrixGeneration';
 import { Nucleus } from '../common/Nucleus';
 import { ExclusionZone } from '../data1d/ExclusionZone';
 
@@ -8,7 +8,7 @@ export interface MatrixOptions {
    * @default []
    *
    */
-  filters: MatrixFilters;
+  filters: (MatrixFilter & { options: object })[];
   /**
    * Exclusion zones
    * @default []
