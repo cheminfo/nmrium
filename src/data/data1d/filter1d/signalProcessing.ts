@@ -1,4 +1,4 @@
-import * as Filters from 'ml-signal-processing/src/filters/filters';
+import * as Filters from 'ml-signal-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
 import { MatrixOptions } from '../../types/view-state/MatrixViewState';

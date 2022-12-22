@@ -31,6 +31,7 @@ import {
 } from './actions/HistoryActions';
 import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
+import * as MatrixGenerationAction from './actions/MatrixGenerationAction';
 import * as MoleculeActions from './actions/MoleculeActions';
 import * as PeaksActions from './actions/PeaksActions';
 import {
@@ -594,6 +595,16 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
     case types.CALCULATE_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.calculateBaseLineCorrection(draft, action);
+
+    case types.SET_MATRIX_GENERATION_OPTIONS:
+      return MatrixGenerationAction.handleSetMatrixGenerationOptions(
+        draft,
+        action,
+      );
+    case types.ADD_MATRIX_GENERATION_EXCLUSION_ZONE:
+      return MatrixGenerationAction.handleAddExclusionZone(draft, action);
+    case types.DELETE_MATRIX_GENERATION_EXCLUSION_ZONE:
+      return MatrixGenerationAction.handleDeleteExclusionZone(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);

@@ -29,6 +29,7 @@ const allowTools = new Set([
   options.multipleSpectraAnalysis.id,
   options.exclusionZones.id,
   options.databaseRangesSelection.id,
+  options.matrixGenerationExclusionZones.id,
 ]);
 
 export const BRUSH_TYPE = {
