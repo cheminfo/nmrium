@@ -1,5 +1,5 @@
 import { MatrixFilter } from '../../matrixGeneration';
-import { Nucleus } from '../common/Nucleus';
+import { Nuclei } from '../common/Nucleus';
 import { ExclusionZone } from '../data1d/ExclusionZone';
 
 export interface MatrixOptions {
@@ -26,4 +26,4 @@ export interface MatrixOptions {
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type MatrixViewState = Record<Nucleus, MatrixOptions> | {};
+export type MatrixViewState = Record<Nuclei, MatrixOptions> | {};

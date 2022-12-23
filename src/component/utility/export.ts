@@ -71,7 +71,7 @@ async function exportAsJSON(
   }
 }
 
-function exportAsMatrix(data, options, fileName = 'experiment') {
+function exportAsMatrix(data, fileName = 'experiment') {
   //columns labels
   const columnsLables = ['name', 'experiment'];
   for (const value of data[0].data.x) {

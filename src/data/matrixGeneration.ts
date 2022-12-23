@@ -153,6 +153,12 @@ export interface MatrixFilter {
   options: any;
 }
 
+const IGNORED_FILERS = new Set<FilterXYType['name']>([
+  'equallySpaced',
+  'filterX',
+  'fromTo',
+]);
+
 export function getMatrixFilters() {
   const result: MatrixFilter[] = [];
 
@@ -160,19 +166,22 @@ export function getMatrixFilters() {
     const filterData = filter.properties;
     const filterProperties = filterData?.options;
     const name = filterData.name.enum[0] as FilterXYType['name'];
-    const properties = flattenFields(
-      name,
-      filterProperties?.properties,
-      {},
-      [],
-      null,
-      0,
-    );
-    result.push({
-      name,
-      properties,
-      options: generateFilterOptions(properties),
-    });
+
+    if (!IGNORED_FILERS.has(name)) {
+      const properties = flattenFields(
+        name,
+        filterProperties?.properties,
+        {},
+        [],
+        null,
+        0,
+      );
+      result.push({
+        name,
+        properties,
+        options: generateFilterOptions(properties),
+      });
+    }
   }
   return result;
 }

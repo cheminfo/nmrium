@@ -164,7 +164,7 @@ function KeysListenerTracker() {
         case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
           const buttons = [
             {
-              text: 'Yes, for all spectra',
+              text: 'Yes',
               handler: async () => {
                 const hideLoading = await alert.showLoading(
                   'Delete all spectra exclusion zones in progress',

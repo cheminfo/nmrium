@@ -12,7 +12,6 @@ const inputStyle: InputStyle = {
     width: '100%',
     fontSize: '1.1em',
     textAlign: 'left',
-    // padding: '0.1em 0.1em',
   },
 };
 
