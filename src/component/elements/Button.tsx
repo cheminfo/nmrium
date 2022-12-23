@@ -227,7 +227,7 @@ function Button(props: ButtonProps) {
     borderRadius,
     style = {},
     toolTip,
-    tooltipOrientation = 'horizontal',
+    tooltipOrientation = 'vertical',
     ...restProps
   } = props;
 
