@@ -80,7 +80,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Matrix Generation',
     component: <MatrixGenerationPanel />,
     hidePreferenceKey: 'matrixGenerationPanel',
-    mode: null,
+    mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Zones',
