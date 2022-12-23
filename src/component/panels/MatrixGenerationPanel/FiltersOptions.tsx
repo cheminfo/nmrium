@@ -1,16 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { useFormikContext } from 'formik';
 import { ReactNode } from 'react';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import { MatrixFilter, normalCase } from '../../../data/matrixGeneration';
+import Button from '../../elements/Button';
 import { GroupPane } from '../../elements/GroupPane';
 import { InputStyle } from '../../elements/Input';
 import Label from '../../elements/Label';
+import Select from '../../elements/Select';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 
-import { GroupPanelStyle } from './MatrixGenerationPanel';
+import {
+  DEFAULT_MATRIX_FILTERS,
+  GroupPanelStyle,
+} from './MatrixGenerationPanel';
 
 const inputStyle: InputStyle = {
   input: { padding: '0.2em 0.1em', width: '100%' },
@@ -29,7 +35,10 @@ export function FiltersOptions() {
         // eslint-disable-next-line react/no-array-index-key
         key={`${index}`}
         text={`${index + 1} - ${normalCase(filter.name)} options`}
-        style={GroupPanelStyle}
+        style={{ ...GroupPanelStyle, container: { padding: 0 } }}
+        renderHeader={(text) => (
+          <FiltersPanelGroupHeader {...{ index, text, name: filter.name }} />
+        )}
       >
         <Fields filter={filter} basePath={`filters.${index}`} />
       </GroupPane>
@@ -39,11 +48,6 @@ export function FiltersOptions() {
 
 function Fields(props: { filter: MatrixFilter; basePath: string }) {
   const fields = Object.entries(props.filter.properties);
-  let level = 0;
-
-  if (!fields || fields.length === 0) {
-    return <span style={{ color: 'lightgray' }}>No Options</span>;
-  }
 
   return (
     <div>
@@ -51,12 +55,11 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
         const keyPath = `${props.basePath}.options.${key}`;
         switch (field.type) {
           case 'label': {
-            const fieldsGroupName = key.split('.')?.[level] || '';
+            const fieldsGroupName = key.split('.')?.[field.level] || '';
 
             return (
               <Label
                 key={key}
-                description={field.description}
                 title={normalCase(fieldsGroupName)}
                 style={{
                   label: { fontWeight: 'bold' },
@@ -83,7 +86,6 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
                     paddingTop: '5px',
                   },
                 }}
-                description={field.description}
               >
                 <FormikInput
                   name={keyPath}
@@ -93,7 +95,6 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
                 />
               </Label>
             );
-            level = field.level;
             return Field;
           }
           case 'boolean': {
@@ -108,7 +109,6 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
                     paddingLeft: `${10 * field.level}px`,
                   },
                 }}
-                description={field.description}
               >
                 <FormikCheckBox name={keyPath} />
               </Label>
@@ -126,7 +126,6 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
                     paddingLeft: `${10 * field.level}px`,
                   },
                 }}
-                description={field.description}
               >
                 <FormikSelect
                   items={mapSelectList(field.choices)}
@@ -145,6 +144,65 @@ function Fields(props: { filter: MatrixFilter; basePath: string }) {
 
 function mapSelectList(array: string[]) {
   return array.map((val) => ({ value: val, label: normalCase(val) }));
+}
+
+function FiltersPanelGroupHeader({ index, name }) {
+  const { values, setFieldValue } = useFormikContext<any>();
+
+  function handelSelectFilter(value, index) {
+    const filters = values.filters.slice(0);
+    filters.splice(index, 1, value);
+    setFieldValue('filters', filters);
+  }
+
+  function handleAdd(index) {
+    if (values.filters) {
+      setFieldValue('filters', [
+        ...values.filters.slice(0, index),
+        DEFAULT_MATRIX_FILTERS[0],
+        ...values.filters.slice(index),
+      ]);
+    }
+  }
+  function handleDelete(index) {
+    setFieldValue(
+      'filters',
+      values.filters.filter((_, i) => i !== index),
+    );
+  }
+
+  return (
+    <div
+      className="section-header"
+      style={{ display: 'flex', padding: '5px 0px' }}
+    >
+      <p style={{ flex: 1, ...GroupPanelStyle.header }}>{index + 1}-</p>
+      <Select
+        value={name}
+        items={DEFAULT_MATRIX_FILTERS}
+        onChange={(value) => handelSelectFilter(value, index)}
+        style={{ width: '100%' }}
+        returnValue={false}
+        itemTextField="name"
+        itemValueField="name"
+        textRender={(text) => normalCase(text)}
+      />
+
+      <div style={{ display: 'flex' }}>
+        <Button.Danger fill="outline" onClick={() => handleDelete(index)}>
+          <FaTimes />
+        </Button.Danger>
+
+        <Button.Done
+          fill="outline"
+          onClick={() => handleAdd(index + 1)}
+          style={{ marginLeft: '5px' }}
+        >
+          <FaPlus />
+        </Button.Done>
+      </div>
+    </div>
+  );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

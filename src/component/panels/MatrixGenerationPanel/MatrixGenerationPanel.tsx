@@ -1,11 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  SvgNmrAddFilter,
-  SvgNmrExportAsMatrix,
-  SvgNmrMultipleAnalysis,
-} from 'cheminfo-font';
+import { SvgNmrExportAsMatrix, SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Formik, FormikProps } from 'formik';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -21,23 +17,19 @@ import SaveButton from '../../elements/SaveButton';
 import ToggleButton from '../../elements/ToggleButton';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
-import { positions, useModal } from '../../elements/popup/Modal';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
-import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
-import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
 import {
   APPLY_SIGNAL_PROCESSING_FILTER,
-  RESET_SELECTED_TOOL,
   SET_MATRIX_GENERATION_OPTIONS,
 } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
+import { exportAsMatrix } from '../../utility/export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import { ExclusionsZonesTable } from './ExclusionsZonesTable';
 import { FiltersOptions } from './FiltersOptions';
-import { FiltersTable } from './FiltersTable';
 
 const schema = yup.object().shape({
   range: yup.object({
@@ -55,9 +47,7 @@ const inputStyle: InputStyle = {
   input: { padding: '0.2em 0.1em', width: '100%' },
 };
 
-export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters().filter(
-  (filter) => filter.name !== 'equallySpaced',
-);
+export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters();
 
 const DEFAULT_MATRIX_OPTIONS: Omit<MatrixOptions, 'range'> = {
   filters: [],
@@ -78,7 +68,6 @@ export const GroupPanelStyle: GroupPaneStyle = {
 };
 
 function MatrixGenerationPanel() {
-  const modal = useModal();
   const dispatch = useDispatch();
   const {
     view: {
@@ -86,6 +75,7 @@ function MatrixGenerationPanel() {
       spectra: { activeTab },
     },
     xDomain,
+    data,
   } = useChartData();
 
   const formRef = useRef<FormikProps<any>>(null);
@@ -95,24 +85,9 @@ function MatrixGenerationPanel() {
     to: xDomain[1],
   });
 
-  const openFiltersModal = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
-    modal.show(<MultipleSpectraFiltersModal />, {
-      isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
-      width: 550,
-      height: 250,
-    });
-  }, [modal, dispatch]);
-
-  const openExportAsMatrixModal = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
-    modal.show(<ExportAsMatrixModal />, {
-      isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
-      width: 500,
-    });
-  }, [modal, dispatch]);
+  function handleExportAsMatrix() {
+    exportAsMatrix(data, 'Spectra Matrix');
+  }
 
   function handleSave(options) {
     dispatch({ type: APPLY_SIGNAL_PROCESSING_FILTER, payload: { options } });
@@ -128,7 +103,7 @@ function MatrixGenerationPanel() {
     handleOnChange({ ...matrixOptions, filters });
   }
 
-  if (!xDomain[0] || !xDomain[1]) {
+  if (xDomain[0] === undefined || xDomain[1] === undefined) {
     return null;
   }
 
@@ -144,12 +119,10 @@ function MatrixGenerationPanel() {
             />
           )}
         >
-          <Button popupTitle="Add Filter" onClick={openFiltersModal}>
-            <SvgNmrAddFilter style={{ fontSize: '18px' }} />
-          </Button>
           <Button
             popupTitle="Export spectra as a Matrix"
-            onClick={openExportAsMatrixModal}
+            onClick={handleExportAsMatrix}
+            style={{ fontSize: '12px', padding: '5px' }}
           >
             <SvgNmrExportAsMatrix />
           </Button>
@@ -176,18 +149,18 @@ function MatrixGenerationPanel() {
                   />
                 )}
               >
-                <FiltersTable />
+                <FiltersOptions />
               </GroupPane>
+
               <GroupPane
-                text="Exclusions zones"
                 style={GroupPanelStyle}
+                text="Exclusions zones"
                 renderHeader={(text) => (
                   <ExclusionZonesGroupHeader text={text} />
                 )}
               >
                 <ExclusionsZonesTable />
               </GroupPane>
-              <FiltersOptions />
               <GroupPane text="More options" style={GroupPanelStyle}>
                 <Label title="Range" style={labelStyle}>
                   <Label title="From">
@@ -223,6 +196,7 @@ function MatrixGenerationPanel() {
                   />
                 </Label>
               </GroupPane>
+
               <FormikOnChange onChange={handleOnChange} />
             </>
           </Formik>

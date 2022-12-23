@@ -1,4 +1,4 @@
-type Nuclei =
+export type Nuclei =
   | '1H'
   | '2H'
   | '3H'
