@@ -43,6 +43,7 @@ export interface SelectProps
   itemValueField?: string;
   itemTextField?: string;
   returnValue?: boolean;
+  textRender?: (text: string) => string;
 }
 
 const Select = forwardRef(function Select(
@@ -61,6 +62,7 @@ const Select = forwardRef(function Select(
     itemValueField = 'value',
     itemTextField = 'label',
     returnValue = true,
+    textRender,
   } = props;
 
   const handleOnChanged = useCallback(
@@ -96,7 +98,7 @@ const Select = forwardRef(function Select(
           value={option[itemValueField]}
           data-value={JSON.stringify(option)}
         >
-          {option[itemTextField]}
+          {textRender?.(option[itemTextField]) || option[itemTextField]}
         </option>
       ))}
     </select>
