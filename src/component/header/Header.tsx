@@ -107,12 +107,7 @@ function HeaderInner(props: HeaderInnerProps) {
   }, [height, modal]);
 
   const openAboutUs = useCallback(() => {
-    modal.show(<AboutUsModal />, {
-      isBackgroundBlur: false,
-      position: positions.MIDDLE,
-      width: 500,
-      height: 480,
-    });
+    modal.show(<AboutUsModal />);
   }, [modal]);
 
   const changeWorkspaceHandler = useCallback(

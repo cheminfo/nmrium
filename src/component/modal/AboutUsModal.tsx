@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Modal } from 'react-science/ui';
 
 import versionInfo from '../../versionInfo';
-import CloseButton from '../elements/CloseButton';
 import Logo from '../elements/Logo';
 
 const styles = css`
@@ -83,6 +83,7 @@ const styles = css`
     height: 1px;
     margin: 10px 0px;
   }
+  width: 500px;
 `;
 
 interface AboutUsModalProps {
@@ -91,48 +92,48 @@ interface AboutUsModalProps {
 
 function AboutUsModal({ onClose = () => null }: AboutUsModalProps) {
   return (
-    <div css={styles}>
-      <div className="header handle">
-        <span>About NMRium</span>
-
-        <CloseButton onClick={onClose} />
+    <Modal isOpen hasCloseButton onRequestClose={onClose}>
+      <div css={styles}>
+        <Modal.Header>
+          <div className="header">
+            <span>About NMRium</span>
+          </div>
+        </Modal.Header>
+        <div className="container">
+          <div className="center-container">
+            <Logo width={160} height={50} />
+            Version <VersionInfo />
+            <span className="separator" />
+            <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
+              GitHub ( https://git.nmrium.org )
+            </a>
+          </div>
+          <div className="center-container">
+            <span className="separator" />
+          </div>
+          <span className="content">
+            This project is developed by Zakodium Sàrl (Switzerland), the
+            University of Cologne (Germany), Johannes Gutenberg University Mainz
+            (Germany) and Universidad del Valle (Colombia).
+          </span>
+          <div className="center-container">
+            <span className="separator" />
+            <span className="title">Funding is provided by</span>
+            <span className="separator" />
+          </div>
+          <div className="content">
+            <ul>
+              <li>
+                IDNMR grant, which part of the Scientific Library Services and
+                Information Systems (LIS) initiative of the DFG.
+              </li>
+              <li>Zakodium Sàrl (Switzerland).</li>
+              <li>Universidad del Valle (Cali, Colombia).</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div className="container">
-        <div className="center-container">
-          <Logo width={160} height={50} />
-          Version <VersionInfo />
-          <span className="separator" />
-          <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
-            GitHub ( https://git.nmrium.org )
-          </a>
-        </div>
-        <div className="center-container">
-          <span className="separator" />
-        </div>
-
-        <span className="content">
-          This project is developed by Zakodium Sàrl (Switzerland), the
-          University of Cologne (Germany), Johannes Gutenberg University Mainz
-          (Germany) and Universidad del Valle (Colombia).
-        </span>
-        <div className="center-container">
-          <span className="separator" />
-          <span className="title">Funding is provided by</span>
-          <span className="separator" />
-        </div>
-
-        <div className="content">
-          <ul>
-            <li>
-              IDNMR grant, which part of the Scientific Library Services and
-              Information Systems (LIS) initiative of the DFG.
-            </li>
-            <li>Zakodium Sàrl (Switzerland).</li>
-            <li>Universidad del Valle (Cali, Colombia).</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 
