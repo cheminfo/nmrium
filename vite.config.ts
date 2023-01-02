@@ -14,12 +14,12 @@ export default () => {
 
   return defineConfig({
     base: './',
-    define: {
-      global: {},
-    },
     esbuild: {
       jsx: 'automatic',
       sourcemap: true,
+    },
+    define: {
+      global: 'globalThis',
     },
     build: {
       sourcemap: true,
