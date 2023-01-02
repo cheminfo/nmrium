@@ -1,5 +1,6 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
+import { xyAutoPeaksPicking } from 'nmr-processing';
 
 export const MAX_LENGTH = 2048;
 
@@ -33,13 +34,27 @@ export default function detectSignal(
       takeBestPartMultiplet: true,
       symmetrizeEachStep: true,
     });
+
     if (result && result.chemShift === undefined) return;
-    return {
+
+    const signal = {
       multiplicity: result.js.map((j) => j.multiplicity).join(''),
       kind: 'signal',
       delta: result.chemShift,
       js: result.js,
     };
+
+    if (result.js.length === 0) {
+      const { x: xData } = data;
+      const { chemShift: delta } = result;
+      const peakList = xyAutoPeaksPicking(data, { frequency });
+      const deltaX = xData[0] - xData[1];
+      const peaks = peakList.filter(
+        (peak) => peak.x < delta - deltaX && peak.x > delta + deltaX,
+      );
+      if (peaks.length === 1) signal.multiplicity = 's';
+    }
+    return signal;
   } else {
     throw new Error(`length of signal should not exceed ${MAX_LENGTH} points`);
   }

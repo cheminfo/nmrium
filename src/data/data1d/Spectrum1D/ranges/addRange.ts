@@ -58,7 +58,7 @@ export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
         to,
         id,
         absolute,
-        signal: { multiplicity: 's', kind: 'signal', delta: 0, js: [] },
+        signal: { multiplicity: '', kind: 'signal', delta: 0, js: [] },
       });
     }
   } else {
