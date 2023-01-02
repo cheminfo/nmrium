@@ -20,6 +20,7 @@ import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
 import { useModal, positions } from '../elements/popup/Modal';
+import { useStepByStepUserGuide } from '../elements/step-by-step-user-guide/index';
 import { useSaveSettings } from '../hooks/useSaveSettings';
 import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
@@ -63,6 +64,7 @@ function HeaderInner(props: HeaderInnerProps) {
   } = props;
 
   const modal = useModal();
+  const { registerStep } = useStepByStepUserGuide();
   const {
     current: {
       display: { general },
@@ -140,7 +142,7 @@ function HeaderInner(props: HeaderInnerProps) {
           alignItems: 'center',
         }}
       >
-        <div>
+        <div ref={(element: any) => registerStep(element, 'about')}>
           <Toolbar orientation="horizontal">
             <Toolbar.Item
               onClick={openAboutUs}

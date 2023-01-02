@@ -11,6 +11,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
+import { useStepByStepUserGuide } from '../elements/step-by-step-user-guide/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
@@ -54,6 +55,7 @@ function DropZone(props) {
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
   const alert = useAlert();
+  const { registerStep } = useStepByStepUserGuide();
 
   async function loadFilesHandler(files) {
     try {
@@ -106,7 +108,12 @@ function DropZone(props) {
 
   return (
     <LoaderProvider value={open}>
-      <div {...getRootProps()} role="none" css={containerStyle}>
+      <div
+        {...getRootProps()}
+        role="none"
+        css={containerStyle}
+        ref={(ref) => registerStep(ref, 'step3')}
+      >
         <input {...getInputProps()} />
         {isDragActive && (
           <div
