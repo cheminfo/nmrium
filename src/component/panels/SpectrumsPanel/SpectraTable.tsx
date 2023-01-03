@@ -95,6 +95,7 @@ export function SpectraTable(props: SpectraTableProps) {
       solvent: {
         Header: '',
         style: columnStyle,
+        accessor: (row) => row.info.solvent,
         Cell: ({ row }) => {
           const info: any = row.original.info;
           return (
