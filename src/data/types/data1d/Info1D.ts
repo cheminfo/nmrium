@@ -1,11 +1,7 @@
-export interface Info1D {
+import { Info } from '../common/Info';
+
+export interface Info1D extends Info {
   nucleus: string;
-  isFid: boolean;
-  isComplex: boolean;
-  dimension: number;
-  isFt: boolean;
-  experiment?: any;
   originFrequency: number;
-  solvent?: string;
   digitalFilter?: number;
 }
