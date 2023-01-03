@@ -8,50 +8,30 @@ import Logo from '../elements/Logo';
 const styles = css`
   display: flex;
   flex-direction: column;
-  user-select:
+  user-select: none;
   button:focus {
     outline: none;
   }
   .header {
-    height: 34px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    padding: 5px;
-
-    span {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-      user-select: none;
-
-    }
-
-    button {
-      background-color: transparent;
-      border: none;
-      svg {
-        height: 16px;
-      }
-    }
+    font-size: 15px;
+    color: #464646;
+    user-select: none;
   }
   .container {
-    width: 100%;
-    height: 100%;
     padding: 20px;
   }
 
   .center-container {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   ul {
     list-style-type: disc;
-    margin-left:20px;
-    }
-  span,li{
+    margin-left: 20px;
+  }
+  span,
+  li {
     user-select: text;
   }
   span.title {
