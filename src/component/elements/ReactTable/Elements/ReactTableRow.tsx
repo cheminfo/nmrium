@@ -20,7 +20,7 @@ function getRowStyle(
     ? (active as CSSObject)
     : { backgroundColor: '#ff6f0070', ...active };
   const baseStyle = disableDefaultRowStyle
-    ? (active as CSSObject)
+    ? (base as CSSObject)
     : { backgroundColor: 'white', ...base };
 
   return css([
