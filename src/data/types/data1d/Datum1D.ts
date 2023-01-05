@@ -15,6 +15,7 @@ export interface Datum1D {
   info: Info1D;
   originalInfo?: Info1D;
   meta: any;
+  metaInfo: any;
   data: Data1D;
   originalData?: Data1D;
   peaks: Peaks;

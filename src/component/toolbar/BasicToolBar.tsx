@@ -22,7 +22,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import ToolbarMenu from '../elements/ToolbarMenu';
 import { useAlert } from '../elements/popup/Alert';
-import { useModal } from '../elements/popup/Modal';
+import { positions, useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
@@ -30,6 +30,7 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
+import MetaImportationModal from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
@@ -48,6 +49,11 @@ const IMPORT_MENU = [
     id: 'importPublicationString',
     icon: <FaFile />,
     label: 'Import from publication string',
+  },
+  {
+    id: 'importMetaInformation',
+    icon: <FaFile />,
+    label: 'Import meta information',
   },
 ];
 
@@ -165,6 +171,15 @@ function BasicToolBarInner({
     );
   }, [modal]);
 
+  const openImportMetaInformationModal = useCallback(() => {
+    modal.show(<MetaImportationModal onClose={() => modal.close()} />, {
+      position: positions.MIDDLE,
+      enableResizing: true,
+      width: 600,
+      height: 600,
+    });
+  }, [modal]);
+
   const importHandler = useCallback(
     ({ id }) => {
       switch (id) {
@@ -177,10 +192,18 @@ function BasicToolBarInner({
         case 'importPublicationString':
           openImportPublicationStringModal();
           break;
+        case 'importMetaInformation':
+          openImportMetaInformationModal();
+          break;
         default:
       }
     },
-    [openLoader, importJCAMPFile, openImportPublicationStringModal],
+    [
+      openLoader,
+      importJCAMPFile,
+      openImportPublicationStringModal,
+      openImportMetaInformationModal,
+    ],
   );
 
   const exportHandler = useCallback(

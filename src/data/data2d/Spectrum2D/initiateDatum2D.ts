@@ -38,7 +38,10 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   };
 
   datum.originalInfo = datum.info;
+
   datum.meta = { ...options.meta };
+
+  datum.metaInfo = { ...options.metaInfo };
 
   datum.data = getData(datum, options);
   datum.originalData = datum.data;
