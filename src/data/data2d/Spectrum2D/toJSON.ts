@@ -11,6 +11,7 @@ export function toJSON(datum: Datum2D, dataType: DataExportOptionsType) {
           data: datum.originalData,
           info: datum.originalInfo,
           meta: datum.meta,
+          metaInfo: datum.metaInfo,
         }
       : {
           source: {

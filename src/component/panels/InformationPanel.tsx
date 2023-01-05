@@ -29,6 +29,7 @@ const styles: Record<
 interface InformationPanelInnerProps {
   info: any;
   meta: any;
+  metaInfo: any;
 }
 
 function filter(
@@ -80,7 +81,11 @@ const columns = [
   },
 ];
 
-function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
+function InformationPanelInner({
+  info,
+  meta,
+  metaInfo,
+}: InformationPanelInnerProps) {
   const [searchKey, setSearchKey] = useState();
 
   function handleSearch(e) {
@@ -90,6 +95,7 @@ function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
 
   const matchesInfo = filter(searchKey, info);
   const matchesMeta = filter(searchKey, meta);
+  const matchesMetaInfo = filter(searchKey, metaInfo);
 
   return (
     <div style={styles.container}>
@@ -117,6 +123,12 @@ function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
           columns={columns}
           style={{ height: 'auto' }}
         />
+        <p style={styles.tableHeader}>Meta Info parameters</p>
+        <ReactTableFlexLayout
+          data={matchesMetaInfo}
+          columns={columns}
+          style={{ height: 'auto' }}
+        />
       </div>
     </div>
   );
@@ -127,7 +139,7 @@ const MemoizedInformationPanel = memo(InformationPanelInner);
 const emptyData = { info: {}, meta: {} };
 
 export default function InformationPanel() {
-  const { info, meta } = useSpectrum(emptyData);
+  const { info, meta, metaInfo } = useSpectrum(emptyData);
 
-  return <MemoizedInformationPanel {...{ info, meta }} />;
+  return <MemoizedInformationPanel {...{ info, meta, metaInfo }} />;
 }
