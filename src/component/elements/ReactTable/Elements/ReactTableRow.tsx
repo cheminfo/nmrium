@@ -4,11 +4,11 @@ import { css, CSSObject } from '@emotion/react';
 import { useMemo, useEffect, useCallback, MouseEvent } from 'react';
 
 import { HighlightEventSource, useHighlight } from '../../../highlight/index';
-import { RowStyle } from '../ReactTable';
+import { BaseRowStyle } from '../ReactTable';
 
 function getRowStyle(
   isActive: boolean,
-  rowStyle: RowStyle['rowStyle'] = {},
+  rowStyle: BaseRowStyle = {},
   disableDefaultRowStyle?: boolean,
 ) {
   const { hover = {}, active = {}, base = {}, activated = {} } = rowStyle;
@@ -35,11 +35,13 @@ function getRowStyle(
 export interface ClickEvent {
   onClick?: (event: Event, data: unknown) => void;
 }
-interface ReactTableRowProps extends ClickEvent, RowStyle {
+interface ReactTableRowProps extends ClickEvent {
   row: any;
   highlightedSource?: HighlightEventSource;
   onContextMenu: (e: MouseEvent<HTMLTableRowElement>) => void;
   isRowActive: boolean;
+  rowStyle: BaseRowStyle | undefined;
+  disableDefaultRowStyle?: boolean;
 }
 
 function getIDs(row: any): string[] {
