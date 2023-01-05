@@ -5,11 +5,21 @@ import { useCallback, useEffect } from 'react';
 import Select, { SelectProps } from '../Select';
 
 const FormikSelect = function FormikSelect(
-  props: SelectProps & { value?: string },
+  props: SelectProps & {
+    value?: string;
+    checkErrorAfterInputTouched?: boolean;
+  },
 ) {
-  const { name = '', value, onChange = () => null, ...resProps } = props;
+  const {
+    name = '',
+    value,
+    onChange = () => null,
+    checkErrorAfterInputTouched = true,
+    style,
+    ...resProps
+  } = props;
 
-  const { values, setFieldValue } = useFormikContext();
+  const { values, errors, touched, setFieldValue } = useFormikContext();
   const changeHandler = useCallback(
     (value) => {
       onChange(value);
@@ -24,11 +34,18 @@ const FormikSelect = function FormikSelect(
     }
   }, [name, setFieldValue, value]);
 
+  let isInvalid = lodashGet(errors, name);
+
+  if (checkErrorAfterInputTouched) {
+    isInvalid = lodashGet(errors, name) && lodashGet(touched, name);
+  }
+
   return (
     <Select
       name={name}
       defaultValue={value || lodashGet(values, name)}
       onChange={changeHandler}
+      style={{ ...style, ...(isInvalid && { border: '1px solid red' }) }}
       {...resProps}
     />
   );
