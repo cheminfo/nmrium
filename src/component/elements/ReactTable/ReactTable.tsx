@@ -62,16 +62,14 @@ interface SortEvent {
   onSortEnd?: (data: any) => void;
 }
 
-export interface RowStyle {
-  rowStyle?: {
-    active?: CSSProperties;
-    activated?: CSSProperties;
-    hover?: CSSProperties;
-    base?: CSSProperties;
-  };
-  disableDefaultRowStyle?: boolean;
+export interface BaseRowStyle {
+  active?: CSSProperties;
+  activated?: CSSProperties;
+  hover?: CSSProperties;
+  base?: CSSProperties;
 }
-interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
+
+interface ReactTableProps extends ClickEvent, SortEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
@@ -82,10 +80,12 @@ interface ReactTableProps extends ClickEvent, SortEvent, RowStyle {
   indexKey?: string;
   enableVirtualScroll?: boolean;
   enableColumnsVirtualScroll?: boolean;
-  activeRow?: (data: any) => { active: boolean; style?: RowStyle['rowStyle'] };
+  activeRow?: (data: any) => boolean;
   enableDefaultActiveRow?: boolean;
   totalCount?: number;
   emptyDataRowText?: string;
+  rowStyle?: BaseRowStyle | ((data: any) => BaseRowStyle | undefined);
+  disableDefaultRowStyle?: boolean;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -289,10 +289,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                 groupKey,
               );
               const { key, ...restRowProps } = row.getRowProps();
-              const activeProperty = activeRow?.(row) || {
-                active: false,
-                style: {},
-              };
 
               return (
                 <ReactTableRow
@@ -311,9 +307,11 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                       ? enableDefaultActiveRow
                         ? rowIndex === index
                         : false
-                      : activeProperty.active
+                      : activeRow(row)
                   }
-                  rowStyle={{ ...rowStyle, ...activeProperty.style }}
+                  rowStyle={
+                    typeof rowStyle === 'function' ? rowStyle(row) : rowStyle
+                  }
                   disableDefaultRowStyle={disableDefaultRowStyle}
                 />
               );
@@ -382,7 +380,7 @@ function ReactTable(props: ReactTableProps) {
       const header = containerRef.current.querySelectorAll('thead');
       const rowsCount = Math.ceil(
         (Math.ceil(height) - Math.ceil(header[0].clientHeight)) /
-        approxItemHeight,
+          approxItemHeight,
       );
       const columnsCount = Math.ceil(Math.ceil(width) / approxColumnWidth);
 
