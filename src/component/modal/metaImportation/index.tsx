@@ -9,21 +9,18 @@ import type { FileWithPath } from 'react-dropzone';
 import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
 
-import { Datum1D } from '../../../data/types/data1d/Datum1D';
-import { Datum2D } from '../../../data/types/data2d/Datum2D';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import Label from '../../elements/Label';
-import { messagesColorPalettes } from '../../elements/Message';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
+import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { ModalStyles } from '../ModalStyle';
-import { useDispatch } from '../../context/DispatchContext';
-import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 
 const styles: Record<'container' | 'column', CSSProperties> = {
   container: {
@@ -45,12 +42,33 @@ const styles: Record<'container' | 'column', CSSProperties> = {
   },
 };
 
-type TargetSpectra = { id: string; color: string }[];
+const rowColors = {
+  match: {
+    activated: {
+      backgroundColor: '#d6ffe6',
+      color: '#28ba62',
+    },
+    hover: {
+      backgroundColor: '#2dd36f',
+      color: 'white',
+    },
+  },
+  noMatch: {
+    activated: {
+      backgroundColor: '#ffd6db',
+      color: '#cf3c4f',
+    },
+    hover: {
+      backgroundColor: '#eb445a',
+      color: 'white',
+    },
+  },
+};
 
 interface CompareResultItem {
   key: string;
   isDuplicated: boolean;
-  spectra: TargetSpectra;
+  spectraIDs: string[];
 }
 type CompareResult = Record<number, CompareResultItem>;
 
@@ -69,16 +87,6 @@ const validationSchema = Yup.object({
   source: Yup.string().required(),
   target: Yup.string().required(),
 });
-
-function getTarget(spectrum: Datum1D | Datum2D) {
-  if (spectrum.info.dimension === 1) {
-    return { id: spectrum.id, color: (spectrum as Datum1D).display.color };
-  }
-  return {
-    id: spectrum.id,
-    color: (spectrum as Datum2D).display.positiveColor,
-  };
-}
 
 function MetaImportationModal({ onClose }: MetaImportationModalProps) {
   const alert = useAlert();
@@ -136,7 +144,7 @@ function MetaImportationModal({ onClose }: MetaImportationModalProps) {
 
   function handleLinkSpectra(field) {
     const { source, target } = field;
-    const targetValues: Record<string, TargetSpectra> = {};
+    const targetValues: Record<string, string[]> = {};
     let isTargetPathExists = true;
 
     for (const spectrum of getSpectraByNucleus(activeTab, data)) {
@@ -149,9 +157,9 @@ function MetaImportationModal({ onClose }: MetaImportationModalProps) {
       if (['string', 'number'].includes(typeof value)) {
         const val = castKey(value);
         if (!targetValues[val]) {
-          targetValues[val] = [getTarget(spectrum)];
+          targetValues[val] = [spectrum.id];
         } else {
-          targetValues[val].push(getTarget(spectrum));
+          targetValues[val].push(spectrum.id);
         }
       }
     }
@@ -185,10 +193,10 @@ function MetaImportationModal({ onClose }: MetaImportationModalProps) {
           result[index] = {
             key,
             isDuplicated,
-            spectra: targetValues[key],
+            spectraIDs: targetValues[key],
           };
           if (!isDuplicated && targetValues[key].length === 1) {
-            matchesResults[targetValues[key][0].id] = parseResult?.data[index];
+            matchesResults[targetValues[key][0]] = parseResult?.data[index];
           }
         }
       }
@@ -209,7 +217,7 @@ function MetaImportationModal({ onClose }: MetaImportationModalProps) {
     const record = compareResults[data.index] || null;
     if (
       record?.isDuplicated ||
-      record?.spectra.length > 0 ||
+      record?.spectraIDs.length > 0 ||
       errors?.[data.index]
     ) {
       return true;
@@ -221,30 +229,12 @@ function MetaImportationModal({ onClose }: MetaImportationModalProps) {
     const record = compareResults[data.index] || null;
     if (
       record?.isDuplicated ||
-      record?.spectra.length > 1 ||
+      record?.spectraIDs.length > 1 ||
       errors?.[data.index]
     ) {
-      return {
-        activated: {
-          backgroundColor: messagesColorPalettes.error.tint,
-          color: messagesColorPalettes.error.shade,
-        },
-        hover: {
-          backgroundColor: messagesColorPalettes.error.base,
-          color: 'white',
-        },
-      };
+      return rowColors.noMatch;
     } else if (record) {
-      return {
-        activated: {
-          backgroundColor: record.spectra[0].color,
-          color: 'white',
-        },
-        hover: {
-          backgroundColor: messagesColorPalettes.success.base,
-          color: 'white',
-        },
-      };
+      return rowColors.match;
     }
   }
 

@@ -175,7 +175,7 @@ function BasicToolBarInner({
     modal.show(<MetaImportationModal onClose={() => modal.close()} />, {
       position: positions.MIDDLE,
       enableResizing: true,
-      width: 600,
+      width: 900,
       height: 600,
     });
   }, [modal]);
