@@ -35,6 +35,7 @@ export default class NmriumPage {
   public async clickTool(id: string) {
     await this.page.click(`_react=ToolbarItem[id="${id}"]`);
   }
+
   public async assertXScaleDomain(min: number, max: number) {
     const xTicks = this.page.locator('.x >> .tick');
     const firstTick = xTicks.first();
@@ -42,11 +43,13 @@ export default class NmriumPage {
     await expect(firstTick).toHaveText(min.toString());
     await expect(lastTick).toHaveText(max.toString());
   }
+
   public async moveMouseToViewer() {
     const { x, y, width, height } =
       (await this.viewerLocator.boundingBox()) as BoundingBox;
     await this.page.mouse.move(x + width / 2, y + height / 2);
   }
+
   public async applyPhaseCorrection(
     options: {
       keyboard?: boolean;
@@ -80,13 +83,7 @@ export default class NmriumPage {
       this.page.locator('_react=FilterPanel >> text=Phase correction'),
     ).toBeVisible();
   }
-  public async checkSVGLength(length: number) {
-    const svgLength = await this.viewerLocator.evaluate(
-      (node) => node.innerHTML.length,
-    );
-    expect(svgLength).toBeGreaterThan(length * 0.8);
-    expect(svgLength).toBeLessThan(length * 1.2);
-  }
+
   public async dropFile(file: string | string[]) {
     const filename: string[] = [];
 

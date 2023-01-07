@@ -10,6 +10,10 @@ const config: PlaywrightTestConfig = {
   retries: 0,
   workers: 1,
   forbidOnly: !!process.env.CI,
+  timeout: 60_000,
+  expect: {
+    timeout: 10_000,
+  },
   use: {
     headless: true,
     ignoreHTTPSErrors: true,

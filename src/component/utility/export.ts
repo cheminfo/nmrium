@@ -1,4 +1,3 @@
-import * as clipboard from 'clipboard-polyfill';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
@@ -20,6 +19,7 @@ async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
         }),
       ]);
     } else {
+      const clipboard = await import('clipboard-polyfill');
       //TODO when Firefox team implement ClipboardItem this code should be removed
       // this library is used mainly to solve the problem of copy HTML to a clipboard in Firefox but we use it for both HTML and plain text
       const item = new clipboard.ClipboardItem({
