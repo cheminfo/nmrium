@@ -12,6 +12,10 @@ import { LoaderProvider } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
+import {
+  useMetaInformationImportationModal,
+  isMetaInformationFile,
+} from '../modal/metaImportation/index';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
 const style = css`
@@ -53,24 +57,29 @@ function DropZone(props) {
   const { dispatch: dispatchPreferences } = usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
+  const openImportMetaInformationModal = useMetaInformationImportationModal();
   const alert = useAlert();
 
   async function loadFilesHandler(files) {
     try {
-      const fileCollection = await fileCollectionFromFileList(files);
+      if (files.length === 1 && isMetaInformationFile(files[0])) {
+        openImportMetaInformationModal(files[0]);
+      } else {
+        const fileCollection = await fileCollectionFromFileList(files);
 
-      const { nmrLoaders: filter } = preferences.current;
-      const data = await readDropFiles(fileCollection, { filter });
-      if ((data as any)?.settings) {
-        dispatchPreferences({
-          type: 'SET_WORKSPACE',
-          payload: {
-            data: (data as any).settings,
-            workspaceSource: 'nmriumFile',
-          },
-        });
+        const { nmrLoaders: filter } = preferences.current;
+        const data = await readDropFiles(fileCollection, { filter });
+        if ((data as any)?.settings) {
+          dispatchPreferences({
+            type: 'SET_WORKSPACE',
+            payload: {
+              data: (data as any).settings,
+              workspaceSource: 'nmriumFile',
+            },
+          });
+        }
+        dispatch({ type: LOAD_DROP_FILES, payload: data });
       }
-      dispatch({ type: LOAD_DROP_FILES, payload: data });
     } catch (error: any) {
       alert.error(error.message);
       reportError(error);
