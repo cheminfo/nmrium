@@ -154,11 +154,6 @@ function KeysListenerTracker() {
             message: 'Are you sure you want to delete the exclusion zone/s?',
             buttons,
           });
-          modal.showConfirmDialog({
-            message: 'Are you sure you want to delete the exclusion zone/s?',
-            buttons,
-          });
-
           break;
         }
         case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
