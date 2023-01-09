@@ -22,7 +22,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import ToolbarMenu from '../elements/ToolbarMenu';
 import { useAlert } from '../elements/popup/Alert';
-import { positions, useModal } from '../elements/popup/Modal';
+import { useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
@@ -30,7 +30,7 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
-import MetaImportationModal from '../modal/metaImportation/index';
+import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
@@ -107,6 +107,7 @@ function BasicToolBarInner({
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
+  const openMetaInformationModal = useMetaInformationImportationModal();
 
   const isExperimentalFeature = useCheckExperimentalFeature();
   const isButtonVisible = useCheckToolsVisibility();
@@ -171,15 +172,6 @@ function BasicToolBarInner({
     );
   }, [modal]);
 
-  const openImportMetaInformationModal = useCallback(() => {
-    modal.show(<MetaImportationModal onClose={() => modal.close()} />, {
-      position: positions.MIDDLE,
-      enableResizing: true,
-      width: 900,
-      height: 600,
-    });
-  }, [modal]);
-
   const importHandler = useCallback(
     ({ id }) => {
       switch (id) {
@@ -193,7 +185,7 @@ function BasicToolBarInner({
           openImportPublicationStringModal();
           break;
         case 'importMetaInformation':
-          openImportMetaInformationModal();
+          openMetaInformationModal();
           break;
         default:
       }
@@ -202,7 +194,7 @@ function BasicToolBarInner({
       openLoader,
       importJCAMPFile,
       openImportPublicationStringModal,
-      openImportMetaInformationModal,
+      openMetaInformationModal,
     ],
   );
 
