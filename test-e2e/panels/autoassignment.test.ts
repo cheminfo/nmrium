@@ -28,18 +28,19 @@ test('automatic assignment panel', async ({ page }) => {
   });
   await test.step('check automatic assignment panel', async () => {
     await nmrium.clickPanel('Automatic Assignment');
+    // Click on the automatic ranges button.
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',
     );
+    // Wait for auto range to be applied.
+    await nmrium.page
+      .locator('#nmrSVG >> text=3.21')
+      .waitFor({ state: 'visible' });
 
-    // wait for auto range to be applied
-    await nmrium.page.waitForTimeout(1000);
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
     );
 
-    // wait for auto assignment to be applied
-    await nmrium.page.waitForTimeout(1000);
     await expect(
       nmrium.page.locator(
         '_react=AutomaticAssignment >> _react=ReactTable >> tr[role="row"]',
