@@ -238,6 +238,9 @@ function importSpectraMetaInfo(draft: Draft<State>, action) {
     }
   }
 }
+function handleToggleSpectraLegend(draft: Draft<State>) {
+  draft.view.spectra.showLegend = !draft.view.spectra.showLegend;
+}
 
 export {
   handleSpectrumVisibility,
@@ -249,4 +252,5 @@ export {
   alignSpectraHandler,
   generateSpectrumFromPublicationStringHandler,
   importSpectraMetaInfo,
+  handleToggleSpectraLegend,
 };

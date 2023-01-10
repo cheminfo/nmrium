@@ -18,8 +18,10 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
-import Events from '../../utility/Events';
+import {
+  RESET_SELECTED_TOOL,
+  TOGGLE_SPECTRA_LEGEND,
+} from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -32,11 +34,13 @@ import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Datum1D[];
   activeTab: string;
+  showLegend: boolean;
 }
 
 function MultipleSpectraAnalysisPanelInner({
   activeTab,
   spectra,
+  showLegend,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
@@ -65,9 +69,9 @@ function MultipleSpectraAnalysisPanelInner({
     setFlipStatus(false);
   }, []);
 
-  const showTrackerHandler = useCallback((flag) => {
-    Events.emit('showYSpectraTrackers', flag);
-  }, []);
+  const showTrackerHandler = useCallback(() => {
+    dispatch({ type: TOGGLE_SPECTRA_LEGEND });
+  }, [dispatch]);
   const openAlignSpectra = useCallback(() => {
     dispatch({ type: RESET_SELECTED_TOOL });
     modal.show(<AlignSpectraModal nucleus={activeTab} />, {
@@ -125,6 +129,9 @@ function MultipleSpectraAnalysisPanelInner({
             popupTitle="Y Spectra Tracker"
             popupPlacement="right"
             onClick={showTrackerHandler}
+            defaultValue={showLegend}
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            key={`${showLegend}`}
           >
             <IoPulseOutline />
           </ToggleButton>
@@ -164,7 +171,7 @@ export default function MultipleSpectraAnalysisPanel() {
   const {
     data,
     view: {
-      spectra: { activeTab },
+      spectra: { activeTab, showLegend },
     },
     displayerKey,
   } = useChartData();
@@ -177,7 +184,7 @@ export default function MultipleSpectraAnalysisPanel() {
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel
-      {...{ activeTab, displayerKey, spectra }}
+      {...{ activeTab, displayerKey, spectra, showLegend }}
     />
   );
 }

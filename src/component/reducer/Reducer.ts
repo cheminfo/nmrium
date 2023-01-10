@@ -115,6 +115,12 @@ export interface ViewState {
      * @default null
      */
     activeTab: string;
+
+    /**
+     * show the spectra legend and the intensity
+     * @default false
+     */
+    showLegend: boolean;
   };
   zoom: {
     levels: ContoursLevels;
@@ -167,7 +173,7 @@ export const getInitialState = (): State => ({
     ranges: [],
     zones: [],
     peaks: {},
-    spectra: { activeSpectra: {}, activeTab: '' },
+    spectra: { activeSpectra: {}, activeTab: '', showLegend: false },
     zoom: {
       levels: {},
     },
@@ -627,6 +633,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       );
     case types.IMPORT_SPECTRA_META_INFO:
       return SpectrumsActions.importSpectraMetaInfo(draft, action);
+    case types.TOGGLE_SPECTRA_LEGEND:
+      return SpectrumsActions.handleToggleSpectraLegend(draft);
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);

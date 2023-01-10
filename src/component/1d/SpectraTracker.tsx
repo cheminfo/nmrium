@@ -1,37 +1,27 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  CSSProperties,
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { Datum1D } from '../../data/types/data1d';
+import { Datum2D } from '../../data/types/data2d/Datum2D';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
-import Events from '../utility/Events';
 
-const styles: Record<
-  'container' | 'value' | 'colorIndicator' | 'name',
-  CSSProperties
-> = {
-  container: {
-    position: 'absolute',
-    left: '10px',
-    top: '10px',
-  },
-  value: {
-    width: '67px',
-    display: 'inline-block',
-    margin: '0 5px',
+const styles: Record<'text' | 'colorIndicator', CSSProperties> = {
+  text: {
     fontSize: '12px',
+    fill: 'black',
   },
   colorIndicator: {
     width: '10px',
-    height: '1px',
-    borderBottom: `2px solid`,
-    display: 'inline-block',
-    marginBottom: '3px',
-  },
-  name: {
-    fontSize: '12px',
+    height: '2px',
   },
 };
 
@@ -40,9 +30,10 @@ interface YTrackerProps {
     x: Float64Array;
     y: Float64Array;
   };
+  dx: number;
 }
 
-function YTracker({ datum }: YTrackerProps) {
+function YTracker({ datum, dx }: YTrackerProps) {
   const { scaleX } = useScale();
   const position = useContext(MouseContext);
 
@@ -52,57 +43,77 @@ function YTracker({ datum }: YTrackerProps) {
 
   const xIndex = xFindClosestIndex(datum.x, scaleX().invert(position.x));
 
-  return <span style={styles.value}>{datum.y[xIndex]}</span>;
+  return (
+    <text
+      data-no-export="true"
+      transform={`translate(${dx + 20},0)`}
+      alignmentBaseline="middle"
+      style={styles.text}
+    >
+      {datum.y[xIndex]}
+    </text>
+  );
+}
+
+function InnerSpectraTracker({ spectra }: { spectra: (Datum1D | Datum2D)[] }) {
+  const refs = useRef<(SVGTextElement | null)[]>([]);
+  const [maxWidth, setMaxWidth] = useState<number>(0);
+
+  useLayoutEffect(() => {
+    let _maxWidth = 0;
+    for (const ref of refs.current) {
+      const width = ref?.getBBox().width || 0;
+      _maxWidth = Math.max(_maxWidth, width);
+    }
+    setMaxWidth(_maxWidth);
+  }, []);
+
+  return (
+    <g className="spectra-intensity-legend">
+      {spectra.map((spectrum, index) => (
+        <g transform={`translate(5,${20 * (index + 1)})`} key={spectrum.id}>
+          <rect
+            style={{
+              ...styles.colorIndicator,
+              fill: (spectrum as Datum1D).display.color,
+            }}
+          />
+          <text
+            ref={(ref) => {
+              refs.current[index] = ref;
+            }}
+            alignmentBaseline="middle"
+            transform="translate(15, 0)"
+            style={styles.text}
+          >
+            {spectrum.display.name}
+          </text>
+          <YTracker dx={maxWidth} datum={get1DDataXY(spectrum as Datum1D)} />
+        </g>
+      ))}
+    </g>
+  );
 }
 
 function SpectraTracker() {
   const {
     data,
     view: {
-      spectra: { activeTab },
+      spectra: { activeTab, showLegend },
     },
     xDomains,
   } = useChartData();
-  const [isVisible, toggleVisibility] = useState(false);
 
-  useEffect(() => {
-    function handler(flag) {
-      toggleVisibility(flag);
-    }
+  if (!showLegend) return null;
 
-    Events.on('showYSpectraTrackers', handler);
+  const spectra = data.filter(
+    (spectrum) =>
+      spectrum.display.isVisible &&
+      xDomains[spectrum.id] &&
+      spectrum.info.nucleus === activeTab,
+  );
 
-    return () => {
-      Events.off('showYSpectraTrackers', handler);
-    };
-  }, []);
-
-  const trackers = useMemo(() => {
-    return (
-      isVisible &&
-      data.map(
-        (spectrum) =>
-          spectrum.display.isVisible &&
-          xDomains[spectrum.id] &&
-          spectrum.info.nucleus === activeTab && (
-            <div style={{ display: 'block' }} key={spectrum.id}>
-              <span
-                style={{
-                  ...styles.colorIndicator,
-                  borderColor: (spectrum as Datum1D).display.color,
-                }}
-              />
-              <YTracker datum={get1DDataXY(spectrum as Datum1D)} />
-              <span style={styles.value}>{spectrum.display.name}</span>
-            </div>
-          ),
-      )
-    );
-  }, [activeTab, data, isVisible, xDomains]);
-
-  if (!isVisible) return null;
-
-  return <div style={styles.container}>{trackers}</div>;
+  return <InnerSpectraTracker spectra={spectra} />;
 }
 
 export default SpectraTracker;
