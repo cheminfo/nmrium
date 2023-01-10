@@ -241,10 +241,15 @@ test('Exclusion zones', async ({ page }) => {
 
   await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
     //select spectrum the last spectrum to be sure that the filter applied to all spectra
+    await nmrium.clickPanel('Spectra', { clickCount: 2 });
+
     await nmrium.page
-      .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=11')
+      .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=12')
       .click();
     //Open filters panel
+
+    await nmrium.clickPanel('Filters');
+
     await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
   });
 
