@@ -46,7 +46,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
-    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+    ).toBeVisible();
   });
 
   await test.step('Add a second molecule and check the visibility', async () => {
@@ -131,7 +133,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
     // Check the existing number of molecules.
-    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+    ).toBeVisible();
   });
   await test.step('Add ring molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
@@ -168,7 +172,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
 
     // Check the number of molecules.
-    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
+    ).toBeVisible();
   });
 
   await test.step('Add a third molecule and check the visibility', async () => {
@@ -206,18 +212,24 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // Check the number of molecules.
-    await expect(nmrium.page.locator('text=3 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
+    ).toBeVisible();
   });
   await test.step('Switch between molecules', async () => {
     // Start with the third molecule.
-    await expect(nmrium.page.locator('text=3 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
+    ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // Go to the previous molecule.
     await nmrium.page.click('_react=Arrow[direction="left"]');
 
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=2 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+    ).toBeVisible();
 
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
@@ -226,7 +238,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await nmrium.page.click('_react=Arrow[direction="left"]');
 
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=1 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 3'),
+    ).toBeVisible();
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await expect(
@@ -236,7 +250,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=2 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+    ).toBeVisible();
 
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
@@ -245,7 +261,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await nmrium.page.click('_react=Arrow[direction="right"]');
 
     // Check the third molecule.
-    await expect(nmrium.page.locator('text=3 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=3 / 3'),
+    ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
     await expect(
       nmrium.page.locator('_react=Arrow[direction="right"]'),
@@ -255,7 +273,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await nmrium.page.click('_react=Arrow[direction="left"]');
 
     // Check selected molecule number.
-    await expect(nmrium.page.locator('text=2 / 3')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 3'),
+    ).toBeVisible();
     // Check selected molecule formula.
     await expect(nmrium.page.locator('text=C6H6 - 78.11')).toBeVisible();
   });
@@ -400,7 +420,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       await nmrium.page.click(
         '_react=ToolTip[title="Paste molfile"] >> button',
       );
-      await expect(nmrium.page.locator('text=4 / 4')).toBeVisible();
+      await expect(
+        nmrium.page.locator('_react=MoleculePanel >> text=4 / 4'),
+      ).toBeVisible();
       await expect(
         nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
       ).toBeVisible();
@@ -430,7 +452,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
     // Check selected molecule.
-    await expect(nmrium.page.locator('text=1 / 2')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
+    ).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await expect(
       nmrium.page.locator('.mol-svg-container #molSVG0'),
@@ -441,7 +465,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check the second molecule.
-    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
+    ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
     await expect(
       nmrium.page.locator('.mol-svg-container #molSVG1'),
@@ -453,7 +479,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     );
 
     // Check selected molecule.
-    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+    ).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await expect(
       nmrium.page.locator('.mol-svg-container #molSVG0'),
@@ -462,7 +490,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Empty panel', async () => {
     // Check selected molecule.
-    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+    ).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
     // Delete molecule.
@@ -515,7 +545,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
-    await expect(nmrium.page.locator('text=1 / 1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+    ).toBeVisible();
   });
 
   await test.step('Add a second molecule and check the visibility', async () => {
@@ -555,7 +587,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
 
     // The number of molecules should now be visible in the panel.
-    await expect(nmrium.page.locator('text=2 / 2')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
+    ).toBeVisible();
   });
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.

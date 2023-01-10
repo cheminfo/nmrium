@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 
 import { Locator, Page, expect } from '@playwright/test';
 
+type ClickOptions = Parameters<Page['click']>[1];
+
 export default class NmriumPage {
   public readonly page: Page;
   public readonly viewerLocator: Locator;
@@ -26,9 +28,10 @@ export default class NmriumPage {
     await this.page.click('li >> text=COSY ethylbenzene');
   }
 
-  public async clickPanel(title: string) {
+  public async clickPanel(title: string, options: ClickOptions = {}) {
     await this.page.click(`_react=AccordionItem[title="${title}"]`, {
       position: { x: 10, y: 10 },
+      ...options,
     });
   }
 
