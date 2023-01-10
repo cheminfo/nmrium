@@ -20,6 +20,7 @@ import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
 import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
+import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { ModalStyles } from '../ModalStyle';
 
 import { isMetaInformationFile } from './utils/isMetaInformationFile';
@@ -102,6 +103,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
       spectra: { activeTab },
     },
   } = useChartData();
+  const datalist = getSpectraObjectPaths(data);
 
   function handleParseFile(file: FileWithPath | File) {
     parse(file, {
@@ -313,6 +315,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                         name="target"
                         style={{ input: { width: '300px', textAlign: 'left' } }}
                         placeholder="Example: info.plus"
+                        datalist={datalist}
                       />
                     </Label>
                   </>
