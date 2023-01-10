@@ -165,7 +165,8 @@ test('should load multiple files using drag and drop', async ({ page }) => {
   // If the file was loaded successfully, there should be many tabs.
   await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
 });
-test.only('should load JCAMP-DX file', async ({ page }) => {
+test('should load JCAMP-DX file', async ({ page }) => {
+
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('ethylbenzene-1h.jdx');
   // If the file was loaded successfully, there should be many tabs.
