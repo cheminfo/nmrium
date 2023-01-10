@@ -75,6 +75,7 @@ export interface InputProps
   onKeyDown?: (event: InputKeyboardEvent) => void;
   onKeyUp?: (event: InputKeyboardEvent) => void;
   nullable?: boolean;
+  datalist?: string[];
 }
 
 function identity<T = unknown>(value: T): T {
@@ -105,6 +106,7 @@ const Input = forwardRef(
       canClear = false,
       nullable = false,
       onClear,
+      datalist = [],
       ...props
     }: InputProps,
     ref: ForwardedRef<HTMLInputElement>,
@@ -252,6 +254,7 @@ const Input = forwardRef(
           onDoubleClick={(e) => e.stopPropagation()}
           onFocus={onFocus}
           onBlur={onBlur}
+          list={`${name || ''}-data-list`}
         />
         {canClear && val && (
           <button
@@ -262,6 +265,12 @@ const Input = forwardRef(
             <span style={{ display: 'block', margin: '0 auto' }}>&#10005;</span>
           </button>
         )}
+
+        <datalist id={`${name || ''}-data-list`}>
+          {datalist.map((value) => (
+            <option key={value} value={value} />
+          ))}
+        </datalist>
       </div>
     );
   },
