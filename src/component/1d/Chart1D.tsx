@@ -3,6 +3,7 @@ import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
 import ApodizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import LinesSeries from './LinesSeries';
+import SpectraTracker from './SpectraTracker';
 import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';
@@ -42,6 +43,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <ExclusionZonesAnnotations />
       <DatabaseElements />
       <PeaksShapes />
+      <SpectraTracker />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
