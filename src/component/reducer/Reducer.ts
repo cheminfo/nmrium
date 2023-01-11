@@ -9,7 +9,6 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
-import { MatrixViewState } from '../../data/types/view-state/MatrixViewState';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -31,7 +30,6 @@ import {
 } from './actions/HistoryActions';
 import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
-import * as MatrixGenerationAction from './actions/MatrixGenerationAction';
 import * as MoleculeActions from './actions/MoleculeActions';
 import * as PeaksActions from './actions/PeaksActions';
 import {
@@ -98,7 +96,6 @@ export interface ViewState {
   molecules: MoleculesView;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
-  matrixGeneration: MatrixViewState;
   /**
    * peaks view property
    * where the key is the id of the spectrum
@@ -171,7 +168,6 @@ export const getInitialState = (): State => ({
     zoom: {
       levels: {},
     },
-    matrixGeneration: {},
   },
   verticalAlign: {
     align: 'bottom',
@@ -595,16 +591,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
     case types.CALCULATE_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.calculateBaseLineCorrection(draft, action);
-
-    case types.SET_MATRIX_GENERATION_OPTIONS:
-      return MatrixGenerationAction.handleSetMatrixGenerationOptions(
-        draft,
-        action,
-      );
-    case types.ADD_MATRIX_GENERATION_EXCLUSION_ZONE:
-      return MatrixGenerationAction.handleAddExclusionZone(draft, action);
-    case types.DELETE_MATRIX_GENERATION_EXCLUSION_ZONE:
-      return MatrixGenerationAction.handleDeleteExclusionZone(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);

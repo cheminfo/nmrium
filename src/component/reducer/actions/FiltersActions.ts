@@ -24,7 +24,6 @@ import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
 
 import { setDomain, setMode } from './DomainActions';
-import { applySignalProcessingFilter } from './MatrixGenerationAction';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
 
@@ -409,14 +408,25 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
 }
 
 function handleSignalProcessingFilter(draft: Draft<State>, action) {
-  const { view } = draft;
+  const { data, view } = draft;
   const nucleus = view.spectra.activeTab;
+  const options = action.payload.options;
 
-  const { options } = action.payload;
+  const spectra = getSpectraByNucleus(nucleus, data) as Datum1D[];
+  for (const spectrum of spectra) {
+    FiltersManager.applyFilter(
+      spectrum,
+      [
+        {
+          name: Filters.signalProcessing.id,
+          options,
+        },
+      ],
+      true,
+    );
+  }
 
-  view.matrixGeneration[nucleus] = options;
-
-  applySignalProcessingFilter(draft);
+  setDomain(draft);
 }
 
 function handleAddExclusionZone(draft: Draft<State>, action) {

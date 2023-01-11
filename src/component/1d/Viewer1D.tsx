@@ -33,7 +33,6 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   ADD_RANGE,
   ADD_EXCLUSION_ZONE,
-  ADD_MATRIX_GENERATION_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -221,12 +220,22 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               payload: { from: brushData.startX, to: brushData.endX },
             });
             break;
-          case options.matrixGenerationExclusionZones.id:
-            dispatch({
-              type: ADD_MATRIX_GENERATION_EXCLUSION_ZONE,
-              payload: { from: brushData.startX, to: brushData.endX },
+          case options.matrixGenerationExclusionZones.id: {
+            const [from, to] = getRange(state, {
+              startX: brushData.startX,
+              endX: brushData.endX,
             });
+            dispatchPreferences({
+              type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+              payload: {
+                zone: { from, to },
+                nucleus: activeTab,
+                range: { from: xDomain[0], to: xDomain[1] },
+              },
+            });
+
             break;
+          }
 
           default:
             propagateEvent();
@@ -251,6 +260,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       dispatch,
       dispatchPreferences,
       activeTab,
+      xDomain,
       state,
       alert,
     ],

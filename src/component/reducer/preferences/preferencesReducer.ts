@@ -1,5 +1,6 @@
 import { Draft, produce } from 'immer';
 
+import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
 import {
   getLocalStorage,
@@ -22,6 +23,11 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra';
 import { initPreferences } from './actions/initPreferences';
+import {
+  setMatrixGenerationOptions,
+  addExclusionZone,
+  deleteExclusionZone,
+} from './actions/matrixGeneration';
 import { removeWorkspace } from './actions/removeWorkspace';
 import { setActiveWorkspace } from './actions/setActiveWorkspace';
 import { setPanelsPreferences } from './actions/setPanelsPreferences';
@@ -80,6 +86,25 @@ export type SetSpectraAnalysisPanelPreferencesAction = ActionType<
   'SET_SPECTRA_ANALYSIS_PREFERENCES',
   { nucleus: string; data: MultipleSpectraAnalysisPreferences }
 >;
+export type setMatrixGenerationOptionsAction = ActionType<
+  'SET_MATRIX_GENERATION_OPTIONS',
+  { nucleus: string; options: MatrixOptions }
+>;
+export type addMatrixGenerationExclusionZoneAction = ActionType<
+  'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+  {
+    zone: {
+      from: number;
+      to: number;
+    };
+    range: { from: number; to: number };
+    nucleus: string;
+  }
+>;
+export type deleteMatrixGenerationExclusionZoneAction = ActionType<
+  'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
+  { zone: { id: string; from: number; to: number }; nucleus: string }
+>;
 
 type PreferencesActions =
   | InitPreferencesAction
@@ -91,7 +116,10 @@ type PreferencesActions =
   | AnalyzeSpectraAction
   | ChangeAnalysisColumnValueKeyAction
   | DeleteAnalysisColumn
-  | SetSpectraAnalysisPanelPreferencesAction;
+  | SetSpectraAnalysisPanelPreferencesAction
+  | setMatrixGenerationOptionsAction
+  | addMatrixGenerationExclusionZoneAction
+  | deleteMatrixGenerationExclusionZoneAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -218,6 +246,13 @@ function innerPreferencesReducer(
       return deleteAnalysisColumn(draft, action);
     case 'SET_SPECTRA_ANALYSIS_PREFERENCES':
       return setSpectraAnalysisPanelsPreferences(draft, action);
+    case 'SET_MATRIX_GENERATION_OPTIONS':
+      return setMatrixGenerationOptions(draft, action);
+    case 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE':
+      return addExclusionZone(draft, action);
+    case 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE':
+      return deleteExclusionZone(draft, action);
+
     default:
       return draft;
   }

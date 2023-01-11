@@ -1,4 +1,6 @@
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
+import { Nuclei } from '../../data/types/common/Nucleus';
+import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { NMRiumPreferences } from '../NMRium';
 
 interface NucleusFormat {
@@ -98,6 +100,9 @@ export interface MultipleSpectraAnalysisPreferences extends AnalysisOptions {
   resortSpectra: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type MatrixGeneration = Record<Nuclei, MatrixOptions> | {};
+
 export interface WorkSpacePanelPreferences {
   spectra: SpectraNucleusPreferences;
   peaks: PeaksNucleusPreferences;
@@ -106,6 +111,7 @@ export interface WorkSpacePanelPreferences {
   zones: ZonesNucleusPreferences & ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
   multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences;
+  matrixGeneration: MatrixGeneration;
 }
 
 export interface PanelsPreferences {
@@ -117,6 +123,7 @@ export interface PanelsPreferences {
     ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
   multipleSpectraAnalysis: NucleusPreferences<MultipleSpectraAnalysisPreferences>;
+  matrixGeneration: MatrixGeneration;
 }
 
 export interface Formatting {
