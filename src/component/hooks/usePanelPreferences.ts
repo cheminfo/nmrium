@@ -1,6 +1,7 @@
 import has from 'lodash/has';
 import { useMemo } from 'react';
 
+import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { usePreferences } from '../context/PreferencesContext';
 import {
   getIntegralDefaultValues,
@@ -27,7 +28,8 @@ type Panel =
   | 'zones'
   | 'ranges'
   | 'database'
-  | 'multipleSpectraAnalysis';
+  | 'multipleSpectraAnalysis'
+  | 'matrixGeneration';
 
 function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
@@ -51,7 +53,9 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   }
 }
 
-function joinWithNucleusPreferences<T extends Exclude<Panel, 'database'>>(
+function joinWithNucleusPreferences<
+  T extends Exclude<Panel, 'database' | 'matrixGeneration'>,
+>(
   data: PanelsPreferences[T],
   nucleus: string,
   returnOnlyNucleusPreferences = false,
@@ -71,7 +75,19 @@ function getPanelPreferences(
   returnOnlyNucleusPreferences = false,
 ) {
   const panelPath = `${basePath}.${panelKey}`;
-  const path = nucleus ? `${panelPath}.nuclei.${nucleus}` : panelPath;
+  let path = panelPath;
+
+  if (nucleus) {
+    switch (panelKey) {
+      case 'matrixGeneration':
+        path = `${panelPath}.${nucleus}`;
+        break;
+      default:
+        path = `${panelPath}.nuclei.${nucleus}`;
+        break;
+    }
+  }
+
   let panelPreferences: any = {};
   if (has(preferences, path)) {
     panelPreferences = getValue(preferences, panelPath, {});
@@ -79,21 +95,26 @@ function getPanelPreferences(
     panelPreferences = getDefaultPreferences(panelKey, nucleus);
   }
 
-  if (!['database'].includes(panelKey) && nucleus) {
-    return joinWithNucleusPreferences(
-      panelPreferences,
-      nucleus,
-      returnOnlyNucleusPreferences,
-    );
+  switch (panelKey) {
+    case 'matrixGeneration':
+      return nucleus ? panelPreferences[nucleus] : {};
+    case 'database':
+      return panelPreferences;
+    default:
+      return nucleus
+        ? joinWithNucleusPreferences(
+            panelPreferences,
+            nucleus,
+            returnOnlyNucleusPreferences,
+          )
+        : {};
   }
-
-  return panelPreferences;
 }
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus: string,
-): WorkSpacePanelPreferences[T];
+): T extends 'matrixGeneration' ? MatrixOptions : WorkSpacePanelPreferences[T];
 export function usePanelPreferences<T extends 'database'>(
   panelKey: T,
 ): WorkSpacePanelPreferences['database'];
@@ -122,6 +143,8 @@ export type UsePanelPreferencesByNucleiResult<T extends Panel> =
     ? PanelsPreferences['ranges']
     : T extends 'multipleSpectraAnalysis'
     ? PanelsPreferences['multipleSpectraAnalysis']
+    : T extends 'matrixGeneration'
+    ? PanelsPreferences['matrixGeneration']
     : void;
 
 export function usePanelPreferencesByNuclei<T extends Panel>(

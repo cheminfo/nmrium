@@ -5,9 +5,10 @@ import { useRef } from 'react';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
-import { MatrixOptions } from '../../../data/types/view-state/MatrixViewState';
+import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import StyledButton from '../../elements/Button';
 import Button from '../../elements/ButtonToolTip';
 import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
@@ -17,11 +18,9 @@ import SaveButton from '../../elements/SaveButton';
 import ToggleButton from '../../elements/ToggleButton';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
-import {
-  APPLY_SIGNAL_PROCESSING_FILTER,
-  SET_MATRIX_GENERATION_OPTIONS,
-} from '../../reducer/types/Types';
+import { APPLY_SIGNAL_PROCESSING_FILTER } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { exportAsMatrix } from '../../utility/export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -69,9 +68,9 @@ export const GroupPanelStyle: GroupPaneStyle = {
 
 function MatrixGenerationPanel() {
   const dispatch = useDispatch();
+  const preferences = usePreferences();
   const {
     view: {
-      matrixGeneration,
       spectra: { activeTab },
     },
     xDomain,
@@ -79,8 +78,12 @@ function MatrixGenerationPanel() {
   } = useChartData();
 
   const formRef = useRef<FormikProps<any>>(null);
+  const nucleusMatrixOptions = usePanelPreferences(
+    'matrixGeneration',
+    activeTab,
+  );
 
-  const matrixOptions = getMatrixOptions(matrixGeneration[activeTab], {
+  const matrixOptions = getMatrixOptions(nucleusMatrixOptions, {
     from: xDomain[0],
     to: xDomain[1],
   });
@@ -94,7 +97,10 @@ function MatrixGenerationPanel() {
   }
 
   function handleOnChange(options) {
-    dispatch({ type: SET_MATRIX_GENERATION_OPTIONS, payload: { options } });
+    preferences.dispatch({
+      type: 'SET_MATRIX_GENERATION_OPTIONS',
+      payload: { options, nucleus: activeTab },
+    });
   }
 
   function handleAddFilter() {
