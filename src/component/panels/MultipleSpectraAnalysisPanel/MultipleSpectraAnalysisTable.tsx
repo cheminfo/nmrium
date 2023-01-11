@@ -13,7 +13,8 @@ import { ORDER_MULTIPLE_SPECTRA_ANALYSIS } from '../../reducer/types/Types';
 import evaluate from '../../utility/Evaluate';
 import NoTableData from '../extra/placeholder/NoTableData';
 
-import ColumnHeader from './ColumnHeader';
+import AnalysisCell from './AnalysisCell';
+import AnalysisColumnHeader from './AnalysisColumnHeader';
 
 interface MultipleSpectraAnalysisTableProps {
   data: SpectraAnalysisData;
@@ -70,20 +71,20 @@ function MultipleSpectraAnalysisTable({
 
     function cellHandler(row, columnKey, valueKey) {
       const value = row[columnKey][valueKey];
-      const result =
-        value instanceof Error ? (
-          <span style={{ color: 'red' }}>{value.message}</span>
-        ) : (
-          format(value)
-        );
-      return result;
+      return (
+        <AnalysisCell
+          value={value}
+          columnKey={columnKey}
+          activeTab={activeTab}
+        />
+      );
     }
 
     function headerHandler(columnData, columnKey) {
       return (
-        <ColumnHeader
+        <AnalysisColumnHeader
           onDelete={() => handleDeleteColumn(columnKey)}
-          charLabel={columnKey}
+          columnKey={columnKey}
           data={columnData}
           onColumnFilter={(item) =>
             handleChangeColumnValueKey(columnKey, item.key)
@@ -106,6 +107,7 @@ function MultipleSpectraAnalysisTable({
           Header: () => headerHandler(analysisColumns[columnKey], columnKey),
           id: columnKey,
           accessor: (row) => cellHandler(row, columnKey, valueKey),
+          style: { padding: 0 },
         });
       }
     }
