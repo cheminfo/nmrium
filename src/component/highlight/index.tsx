@@ -6,6 +6,7 @@ import {
   useCallback,
   useEffect,
   MouseEvent,
+  CSSProperties,
 } from 'react';
 
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
@@ -24,6 +25,10 @@ export enum HighlightEventSource {
   ATOM = 'ATOM',
   UNKNOWN = 'UNKNOWN',
 }
+
+const HightLightStyle: CSSProperties = {
+  backgroundColor: '#ff6f0091',
+};
 
 type HighlightEventSourceType = keyof typeof HighlightEventSource;
 
@@ -283,6 +288,7 @@ export function useHighlight(
   return useMemo(() => {
     return {
       isActive,
+      defaultActiveStyle: isActive ? HightLightStyle : {},
       onHover: {
         onMouseEnter: show,
         onMouseLeave: hide,
