@@ -32,7 +32,7 @@ const getSpectraDefaultValues = (
         visible: true,
       },
       {
-        jpath: 'info.pulse',
+        jpath: 'info.pulseSequence',
         label: 'Pulse',
         visible: true,
       },
