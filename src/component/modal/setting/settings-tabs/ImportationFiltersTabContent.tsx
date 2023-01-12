@@ -1,7 +1,7 @@
-import { CheckBoxCell } from '../../elements/CheckBoxCell';
-import { GroupPane } from '../../elements/GroupPane';
-import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import FormikInput from '../../elements/formik/FormikInput';
+import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import { GroupPane } from '../../../elements/GroupPane';
+import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
+import FormikInput from '../../../elements/formik/FormikInput';
 
 interface ListItem {
   label: string;

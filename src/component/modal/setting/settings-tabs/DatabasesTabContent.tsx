@@ -3,14 +3,14 @@ import { Field, useFormikContext } from 'formik';
 import { CSSProperties } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
-import { NMRiumWorkspace } from '../../NMRium';
-import Button from '../../elements/Button';
-import { GroupPane } from '../../elements/GroupPane';
-import FormikCheckBox from '../../elements/formik/FormikCheckBox';
-import FormikInput from '../../elements/formik/FormikInput';
-import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
-import { isGoogleDocument } from '../../utility/isGoogleDocument';
-import { CustomWorkspaces } from '../../workspaces/Workspace';
+import { NMRiumWorkspace } from '../../../NMRium';
+import Button from '../../../elements/Button';
+import { GroupPane } from '../../../elements/GroupPane';
+import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
+import FormikInput from '../../../elements/formik/FormikInput';
+import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace';
+import { isGoogleDocument } from '../../../utility/isGoogleDocument';
+import { CustomWorkspaces } from '../../../workspaces/Workspace';
 
 const style: Record<
   'table' | 'th' | 'input' | 'labelCol' | 'serialCol' | 'checkbox',

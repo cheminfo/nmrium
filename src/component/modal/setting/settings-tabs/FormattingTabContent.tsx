@@ -5,9 +5,9 @@ import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
-import Button from '../../elements/Button';
-import { GroupPane } from '../../elements/GroupPane';
-import FormikInput from '../../elements/formik/FormikInput';
+import Button from '../../../elements/Button';
+import { GroupPane } from '../../../elements/GroupPane';
+import FormikInput from '../../../elements/formik/FormikInput';
 
 const styles = css`
   .counter-col {
