@@ -1,6 +1,6 @@
-import { CheckBoxCell } from '../../elements/CheckBoxCell';
-import ReactTable from '../../elements/ReactTable/ReactTable';
-import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
+import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import ReactTable from '../../../elements/ReactTable/ReactTable';
+import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
 
 interface ListItem {
   label: string;
