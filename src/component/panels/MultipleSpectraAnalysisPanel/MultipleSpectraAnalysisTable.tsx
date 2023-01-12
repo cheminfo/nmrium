@@ -70,7 +70,7 @@ function MultipleSpectraAnalysisTable({
     ];
 
     function cellHandler(row, columnKey, valueKey) {
-      const value = row[columnKey][valueKey];
+      const value = row.original[columnKey][valueKey];
       return (
         <AnalysisCell
           value={value}
@@ -106,7 +106,8 @@ function MultipleSpectraAnalysisTable({
           index: columnIndex + 1,
           Header: () => headerHandler(analysisColumns[columnKey], columnKey),
           id: columnKey,
-          accessor: (row) => cellHandler(row, columnKey, valueKey),
+          accessor: (row) => row[columnKey][valueKey],
+          Cell: ({ row }) => cellHandler(row, columnKey, valueKey),
           style: { padding: 0 },
         });
       }
