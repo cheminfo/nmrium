@@ -2,6 +2,7 @@ import { useFormikContext } from 'formik';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
+import { useChartData } from '../../../context/ChartContext';
 import Button from '../../../elements/Button';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import { GroupPane } from '../../../elements/GroupPane';
@@ -9,6 +10,7 @@ import Label from '../../../elements/Label';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import FormikInput from '../../../elements/formik/FormikInput';
+import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
 import { InfoBlockField } from '../../../workspaces/Workspace';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
@@ -22,6 +24,8 @@ const styles: Record<'input' | 'column', CSSProperties> = {
 
 function InfoBlockTabContent() {
   const { values, setFieldValue } = useFormikContext();
+  const { data } = useChartData();
+  const datalist = useMemo(() => getSpectraObjectPaths(data), [data]);
 
   const fields = (values as any)?.infoBlock.fields;
 
@@ -65,6 +69,7 @@ function InfoBlockTabContent() {
             <FormikInput
               name={`infoBlock.fields.${row.index}.jpath`}
               style={{ input: styles.input }}
+              datalist={datalist}
             />
           );
         },
@@ -106,7 +111,7 @@ function InfoBlockTabContent() {
         },
       },
     ],
-    [addHandler, deleteHandler],
+    [addHandler, datalist, deleteHandler],
   );
 
   return (
