@@ -162,12 +162,22 @@ export interface LoadersPreferences {
   };
 }
 
+export interface InfoBlockField {
+  jpath: string;
+  visible: boolean;
+}
+export interface InfoBlock {
+  visible: boolean;
+  fields: InfoBlockField[];
+}
+
 export interface WorkspaceData {
   display?: NMRiumPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
   databases?: Databases;
   nmrLoaders?: LoadersPreferences;
+  infoBlock?: InfoBlock;
 }
 
 /**

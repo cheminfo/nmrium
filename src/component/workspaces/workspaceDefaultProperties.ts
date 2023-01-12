@@ -83,4 +83,8 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       onlyFirstProcessedData: true,
     },
   },
+  infoBlock: {
+    visible: false,
+    fields: [{ jpath: 'display.name', visible: true }],
+  },
 };
