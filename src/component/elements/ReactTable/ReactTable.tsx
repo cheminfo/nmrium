@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
+import { CSSObject, SerializedStyles } from '@emotion/react';
 import {
   useRef,
   memo,
@@ -86,6 +87,7 @@ interface ReactTableProps extends ClickEvent, SortEvent {
   emptyDataRowText?: string;
   rowStyle?: BaseRowStyle | ((data: any) => BaseRowStyle | undefined);
   disableDefaultRowStyle?: boolean;
+  style?: CSSObject | SerializedStyles;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -357,6 +359,7 @@ function ReactTable(props: ReactTableProps) {
     groupKey,
     onSortEnd,
     columns,
+    style = {},
   } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const visibleRowsCountRef = useRef<number>(0);
@@ -489,6 +492,7 @@ function ReactTable(props: ReactTableProps) {
           position: 'relative',
           height: '100%',
         }}
+        css={style}
       >
         <ReactTableInner
           onScroll={scrollHandler}
