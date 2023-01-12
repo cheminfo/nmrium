@@ -4,6 +4,7 @@ import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { Margin } from '../reducer/Reducer';
 import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
+import SpectraInfoBlock from '../tool/SpectraInfoBlock';
 
 import XAxis from './XAxis';
 import YAxis from './YAxis';
@@ -61,7 +62,7 @@ function chart2DInner({
       <Zones />
       <IndicationLines axis="X" show />
       <IndicationLines axis="Y" show />
-
+      <SpectraInfoBlock />
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis />
         <YAxis />

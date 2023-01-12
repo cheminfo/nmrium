@@ -30,6 +30,7 @@ import DisplayTabContent from './settings-tabs/DisplayTabContent';
 import FormattingTabContent from './settings-tabs/FormattingTabContent';
 import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
+import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
 import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
@@ -357,6 +358,11 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             <Tab title="Import filters" tabid="importation-filters">
               <div className="inner-content">
                 <ImportationFiltersTabContent />
+              </div>
+            </Tab>
+            <Tab title="Title Block" tabid="title-block">
+              <div className="inner-content">
+                <InfoBlockTabContent />
               </div>
             </Tab>
           </Tabs>
