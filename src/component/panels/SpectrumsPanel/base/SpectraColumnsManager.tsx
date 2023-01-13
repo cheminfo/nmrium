@@ -46,6 +46,17 @@ export function SpectraColumnsManager({
         accessor: (_, index) => index + 1,
       },
       {
+        Header: 'Label',
+        Cell: ({ row }) => {
+          return (
+            <FormikInput
+              name={`nuclei.${nucleus}.columns.${row.index}.label`}
+              style={{ input: { ...style, ...inputStyle } }}
+            />
+          );
+        },
+      },
+      {
         Header: 'Column',
         Cell: ({ row }) => {
           const column: any = row.original;
@@ -59,17 +70,6 @@ export function SpectraColumnsManager({
               name={`nuclei.${nucleus}.columns.${row.index}.jpath`}
               style={{ input: { ...style, ...inputStyle } }}
               datalist={datalist}
-            />
-          );
-        },
-      },
-      {
-        Header: 'Label',
-        Cell: ({ row }) => {
-          return (
-            <FormikInput
-              name={`nuclei.${nucleus}.columns.${row.index}.label`}
-              style={{ input: { ...style, ...inputStyle } }}
             />
           );
         },
