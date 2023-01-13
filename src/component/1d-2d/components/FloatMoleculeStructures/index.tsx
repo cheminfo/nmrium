@@ -4,13 +4,13 @@ import {
   MoleculesView,
   MoleculeView,
   StateMoleculeExtended,
-} from '../../../data/molecules/Molecule';
-import { Datum1D, Ranges } from '../../../data/types/data1d';
-import { Datum2D, Zones } from '../../../data/types/data2d';
-import { useChartData } from '../../context/ChartContext';
-import useSpectrum from '../../hooks/useSpectrum';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import { assert } from '../../utility/assert';
+} from '../../../../data/molecules/Molecule';
+import { Datum1D, Ranges } from '../../../../data/types/data1d/index';
+import { Datum2D, Zones } from '../../../../data/types/data2d/index';
+import { useChartData } from '../../../context/ChartContext';
+import useSpectrum from '../../../hooks/useSpectrum';
+import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
+import { assert } from '../../../utility/assert';
 
 import { DraggableStructure } from './DraggableStructure';
 

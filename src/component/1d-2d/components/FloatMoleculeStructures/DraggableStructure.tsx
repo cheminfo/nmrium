@@ -7,21 +7,21 @@ import OCLnmr from 'react-ocl-nmr';
 import {
   MoleculeView,
   StateMoleculeExtended,
-} from '../../../data/molecules/Molecule';
-import { Ranges } from '../../../data/types/data1d';
-import { Zones } from '../../../data/types/data2d';
-import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
-import SVGDraggable from '../../elements/draggable/SVGDraggable';
-import { Position } from '../../elements/draggable/useDraggable';
-import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
-import useAtomAssignment from '../../panels/MoleculesPanel/useAtomAssignment';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+} from '../../../../data/molecules/Molecule';
+import { Ranges } from '../../../../data/types/data1d/index';
+import { Zones } from '../../../../data/types/data2d/index';
+import { useDispatch } from '../../../context/DispatchContext';
+import { useGlobal } from '../../../context/GlobalContext';
+import SVGDraggable from '../../../elements/draggable/SVGDraggable';
+import { Position } from '../../../elements/draggable/useDraggable';
+import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';
+import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment';
+import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
 import {
   CHANGE_FLOAT_MOLECULE_POSITION,
   FLOAT_MOLECULE_OVER_SPECTRUM,
   SET_MOLECULE,
-} from '../../reducer/types/Types';
+} from '../../../reducer/types/Types';
 
 import ActionsButton from './ActionsButton';
 

@@ -1,5 +1,5 @@
-import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
-import SpectraInfoBlock from '../tool/SpectraInfoBlock';
+import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures/index';
+import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 
 import ApodizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
@@ -45,7 +45,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <DatabaseElements />
       <PeaksShapes />
       <SpectraTracker />
-      <SpectraInfoBlock />
+      <SpectrumInfoBlock />
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
       </g>
