@@ -4,6 +4,8 @@ import { ResponsiveChart } from 'react-d3-utils';
 
 import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
 import { Datum1D } from '../../data/types/data1d';
+import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
+import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
@@ -34,8 +36,6 @@ import {
   ADD_RANGE,
   ADD_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
-import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
-import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 

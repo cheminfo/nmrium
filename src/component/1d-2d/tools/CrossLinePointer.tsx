@@ -1,9 +1,9 @@
 import { CSSProperties, useContext } from 'react';
 
-import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { options } from '../toolbar/ToolTypes';
+import { BrushContext } from '../../EventsTrackers/BrushTracker';
+import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useChartData } from '../../context/ChartContext';
+import { options } from '../../toolbar/ToolTypes';
 
 const styles: Record<'line', CSSProperties> = {
   line: {

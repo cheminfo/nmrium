@@ -33,7 +33,8 @@ function InfoBlockTabContent() {
     (data: readonly any[], index: number) => {
       let columns: any[] = [];
       const emptyField = {
-        jpath: null,
+        label: '',
+        jpath: '',
         visible: true,
       };
       if (data && Array.isArray(data)) {
@@ -60,6 +61,18 @@ function InfoBlockTabContent() {
         Header: '#',
         style: { width: '25px', ...styles.column },
         accessor: (_, index) => index + 1,
+      },
+      {
+        Header: 'Label',
+        style: { padding: 0, ...styles.column },
+        Cell: ({ row }) => {
+          return (
+            <FormikInput
+              name={`infoBlock.fields.${row.index}.label`}
+              style={{ input: styles.input }}
+            />
+          );
+        },
       },
       {
         Header: 'Field',
@@ -117,7 +130,7 @@ function InfoBlockTabContent() {
   return (
     <div>
       <Label
-        title="Display spectra info block"
+        title="Display spectrum info block"
         htmlFor="infoBlock.visible"
         style={{ wrapper: { padding: '10px 0' } }}
       >

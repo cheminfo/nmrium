@@ -163,6 +163,7 @@ export interface LoadersPreferences {
 }
 
 export interface InfoBlockField {
+  label: string;
   jpath: string;
   visible: boolean;
 }

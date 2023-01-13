@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, ReactNode } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
+import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
+import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -14,8 +16,6 @@ import {
   SET_ZOOM,
   ADD_2D_ZONE,
 } from '../reducer/types/Types';
-import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
-import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
 import { assert } from '../utility/assert';
 

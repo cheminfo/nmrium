@@ -1,7 +1,7 @@
 import { BsArrowsMove } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 
-import Button from '../../elements/Button';
+import Button from '../../../elements/Button';
 
 export default function ActionsButton({ onFloatBtnClick }) {
   return (

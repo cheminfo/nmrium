@@ -71,7 +71,12 @@ const databasesValidation = Yup.object().shape({
 });
 
 const infoBlockValidation = Yup.object({
-  fields: Yup.array().of(Yup.object({ jpath: Yup.string().required() })),
+  fields: Yup.array().of(
+    Yup.object({
+      label: Yup.string().required(),
+      jpath: Yup.string().required(),
+    }),
+  ),
 });
 
 export const validation = Yup.lazy((obj: Workspace) =>
