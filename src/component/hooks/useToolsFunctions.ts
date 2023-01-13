@@ -43,7 +43,7 @@ export default function useToolsFunctions() {
 
       dispatch({
         type: SET_SELECTED_TOOL,
-        payload: { selectedTool },
+        payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
     [alert, dispatch, openPanel],
