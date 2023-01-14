@@ -6,7 +6,7 @@ export function toJSON(datum: Datum2D, dataType: DataExportOptionsType) {
     id: datum.id,
 
     ...(dataType === 'ROW_DATA' ||
-    (dataType === 'DATA_SOURCE' && !datum.source.fileCollection)
+    (dataType === 'DATA_SOURCE' && !datum.source.files)
       ? {
           data: datum.originalData,
           info: datum.originalInfo,
@@ -15,7 +15,7 @@ export function toJSON(datum: Datum2D, dataType: DataExportOptionsType) {
         }
       : {
           source: {
-            fileCollection: datum.source.fileCollection,
+            files: datum.source.files,
             filter: datum.source.filter,
           },
         }),
