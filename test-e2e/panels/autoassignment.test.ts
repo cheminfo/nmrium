@@ -34,7 +34,7 @@ test('automatic assignment panel', async ({ page }) => {
     );
     // Wait for auto range to be applied.
     await nmrium.page
-      .locator('#nmrSVG >> text=3.21')
+      .locator('_react=Range >> text=3.21')
       .waitFor({ state: 'visible' });
 
     await nmrium.page.click(
@@ -43,8 +43,8 @@ test('automatic assignment panel', async ({ page }) => {
 
     await expect(
       nmrium.page.locator(
-        '_react=AutomaticAssignment >> _react=ReactTable >> tr[role="row"]',
+        '_react=AutomaticAssignmentTable >> _react=ReactTableRow',
       ),
-    ).toHaveCount(3);
+    ).toHaveCount(2);
   });
 });
