@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 
-import { useHighlight } from '../../highlight/index';
-import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import { useHighlight } from '../../../highlight/index';
+import { useFormatNumberByNucleus } from '../../../hooks/useFormatNumberByNucleus';
 
 const styles: Record<'container' | 'errorLabel', CSSProperties> = {
   container: {
