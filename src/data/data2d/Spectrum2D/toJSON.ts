@@ -14,10 +14,7 @@ export function toJSON(datum: Datum2D, dataType: DataExportOptionsType) {
           metaInfo: datum.metaInfo,
         }
       : {
-          source: {
-            files: datum.source.files,
-            filter: datum.source.filter,
-          },
+          source: datum.source,
         }),
     zones: datum.zones,
     filters: datum.filters,
