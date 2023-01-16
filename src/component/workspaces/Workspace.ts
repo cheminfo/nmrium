@@ -96,9 +96,28 @@ export interface DatabasePanelPreferences {
   marginBottom: number;
 }
 
-export interface MultipleSpectraAnalysisPreferences extends AnalysisOptions {
+type PredefinedLegend = 'intensity' | 'name';
+
+export type JpathLegendField = Omit<JpathTableColumn, 'label'>;
+export type PredefinedLegendField = Omit<
+  PredefinedTableColumn<PredefinedLegend>,
+  'description'
+>;
+
+export type legendField = JpathLegendField | PredefinedLegendField;
+
+export interface AnalysisPreferences extends AnalysisOptions {
   resortSpectra: boolean;
 }
+export interface MultipleSpectraAnalysisPreferences {
+  analysisOptions: AnalysisPreferences;
+  legendsFields: legendField[];
+}
+
+export type MultipleSpectraAnalysis =
+  | Record<Nuclei, MultipleSpectraAnalysisPreferences>
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | {};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type MatrixGeneration = Record<Nuclei, MatrixOptions> | {};
@@ -110,7 +129,7 @@ export interface WorkSpacePanelPreferences {
   ranges: RangesNucleusPreferences;
   zones: ZonesNucleusPreferences & ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
-  multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences;
+  multipleSpectraAnalysis: MultipleSpectraAnalysis;
   matrixGeneration: MatrixGeneration;
 }
 
@@ -122,7 +141,7 @@ export interface PanelsPreferences {
   zones: NucleusPreferences<ZonesNucleusPreferences> &
     ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
-  multipleSpectraAnalysis: NucleusPreferences<MultipleSpectraAnalysisPreferences>;
+  multipleSpectraAnalysis: MultipleSpectraAnalysis;
   matrixGeneration: MatrixGeneration;
 }
 
@@ -162,14 +181,9 @@ export interface LoadersPreferences {
   };
 }
 
-export interface InfoBlockField {
-  label: string;
-  jpath: string;
-  visible: boolean;
-}
 export interface InfoBlock {
   visible: boolean;
-  fields: InfoBlockField[];
+  fields: JpathTableColumn[];
 }
 
 export interface WorkspaceData {

@@ -28,8 +28,8 @@ import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
-import MultipleSpectraAnalysisPreferences from './MultipleSpectraAnalysisPreferences';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
+import MultipleSpectraAnalysisPreferences from './preferences';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Datum1D[];
@@ -147,7 +147,7 @@ function MultipleSpectraAnalysisPanelInner({
         {!isFlipped ? (
           <MultipleSpectraAnalysisTable
             data={spectraAnalysis}
-            resortSpectra={preferences.resortSpectra}
+            resortSpectra={preferences.analysisOptions.resortSpectra}
             activeTab={activeTab}
           />
         ) : (

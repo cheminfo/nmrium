@@ -4,7 +4,7 @@ import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 import ApodizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import LinesSeries from './LinesSeries';
-import SpectraTracker from './SpectraTracker';
+import SpectraTracker from './SpectraLegends';
 import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';

@@ -14,6 +14,7 @@ import {
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 import {
+  MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   Workspace,
   WorkSpacePanelPreferences,
@@ -54,7 +55,10 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
 }
 
 function joinWithNucleusPreferences<
-  T extends Exclude<Panel, 'database' | 'matrixGeneration'>,
+  T extends Exclude<
+    Panel,
+    'database' | 'matrixGeneration' | 'multipleSpectraAnalysis'
+  >,
 >(
   data: PanelsPreferences[T],
   nucleus: string,
@@ -79,6 +83,7 @@ function getPanelPreferences(
 
   if (nucleus) {
     switch (panelKey) {
+      case 'multipleSpectraAnalysis':
       case 'matrixGeneration':
         path = `${panelPath}.${nucleus}`;
         break;
@@ -96,6 +101,7 @@ function getPanelPreferences(
   }
 
   switch (panelKey) {
+    case 'multipleSpectraAnalysis':
     case 'matrixGeneration':
       return nucleus ? panelPreferences[nucleus] : {};
     case 'database':
@@ -114,7 +120,11 @@ function getPanelPreferences(
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus: string,
-): T extends 'matrixGeneration' ? MatrixOptions : WorkSpacePanelPreferences[T];
+): T extends 'matrixGeneration'
+  ? MatrixOptions
+  : T extends 'multipleSpectraAnalysis'
+  ? MultipleSpectraAnalysisPreferences
+  : WorkSpacePanelPreferences[T];
 export function usePanelPreferences<T extends 'database'>(
   panelKey: T,
 ): WorkSpacePanelPreferences['database'];

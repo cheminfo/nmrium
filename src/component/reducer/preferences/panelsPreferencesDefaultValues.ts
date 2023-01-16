@@ -125,13 +125,19 @@ const getMultipleSpectraAnalysisDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['multipleSpectraAnalysis'] => {
   const preferences: MultipleSpectraAnalysisPreferences = {
-    resortSpectra: true,
-    code: null,
-    columns: {},
-    sum: 100,
-    columnIndex: 0,
+    analysisOptions: {
+      resortSpectra: true,
+      code: null,
+      columns: {},
+      sum: 100,
+      columnIndex: 0,
+    },
+    legendsFields: [
+      { name: 'intensity', label: 'Intensity', visible: true },
+      { name: 'name', label: 'Name', visible: true },
+    ],
   };
-  return getPreferences(preferences, nucleus);
+  return nucleus ? { [nucleus]: preferences } : {};
 };
 
 export {

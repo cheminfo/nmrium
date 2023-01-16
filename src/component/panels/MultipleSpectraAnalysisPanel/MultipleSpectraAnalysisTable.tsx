@@ -13,8 +13,8 @@ import { ORDER_MULTIPLE_SPECTRA_ANALYSIS } from '../../reducer/types/Types';
 import evaluate from '../../utility/Evaluate';
 import NoTableData from '../extra/placeholder/NoTableData';
 
-import AnalysisCell from './AnalysisCell';
-import AnalysisColumnHeader from './AnalysisColumnHeader';
+import AnalysisCell from './base/AnalysisCell';
+import AnalysisColumnHeader from './base/AnalysisColumnHeader';
 
 interface MultipleSpectraAnalysisTableProps {
   data: SpectraAnalysisData;
@@ -98,8 +98,8 @@ function MultipleSpectraAnalysisTable({
       );
     }
 
-    if (panelPreferences.columns) {
-      const analysisColumns = panelPreferences.columns;
+    if (panelPreferences?.analysisOptions?.columns) {
+      const analysisColumns = panelPreferences?.analysisOptions?.columns;
       for (const columnKey in analysisColumns) {
         const { valueKey, index: columnIndex } = analysisColumns[columnKey];
         addCustomColumn(columns, {
@@ -113,7 +113,12 @@ function MultipleSpectraAnalysisTable({
       }
     }
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [activeTab, dispatchPreferences, format, panelPreferences.columns]);
+  }, [
+    activeTab,
+    dispatchPreferences,
+    format,
+    panelPreferences?.analysisOptions?.columns,
+  ]);
 
   function handleSortEnd(data) {
     if (resortSpectra) {

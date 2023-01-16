@@ -3,10 +3,10 @@ import { CSSProperties, MouseEvent } from 'react';
 import {
   COLUMNS_TYPES,
   COLUMNS_VALUES_KEYS,
-} from '../../../data/data1d/multipleSpectraAnalysis';
-import DeleteButton from '../../elements/Tab/DeleteButton';
-import DropDownButton from '../../elements/dropDownButton/DropDownButton';
-import { useHighlight } from '../../highlight/index';
+} from '../../../../data/data1d/multipleSpectraAnalysis';
+import DeleteButton from '../../../elements/Tab/DeleteButton';
+import DropDownButton from '../../../elements/dropDownButton/DropDownButton';
+import { useHighlight } from '../../../highlight/index';
 
 const styles: Record<
   | 'container'
