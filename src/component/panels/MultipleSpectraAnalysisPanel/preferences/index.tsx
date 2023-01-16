@@ -15,6 +15,7 @@ import { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreference
 import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer';
 
 import { AnalysisTablePreferences } from './AnalysisTablePreferences';
+import LegendsPreferences from './LegendsPreferences';
 import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
 
 function getMultipleSpectraAnalysisData(
@@ -81,6 +82,15 @@ function MultipleSpectraAnalysisPreferences(
         onSubmit={submitHandler}
       >
         <>
+          <GroupPane
+            text="Legends"
+            style={{
+              header: { color: 'black' },
+              container: { padding: '5px' },
+            }}
+          >
+            <LegendsPreferences />
+          </GroupPane>
           <GroupPane
             text="General"
             style={{
