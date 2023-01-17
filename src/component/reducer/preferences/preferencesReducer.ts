@@ -35,7 +35,7 @@ import { setPreferences } from './actions/setPreferences';
 import { setWorkspace } from './actions/setWorkspace';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
 
-const LOCAL_STORAGE_VERSION = 12;
+const LOCAL_STORAGE_VERSION = 13;
 
 export const WORKSPACES_KEYS = {
   componentKey: `nmrium-component-workspace`,
