@@ -1,0 +1,19 @@
+##TITLE= Parameter file, XWIN-NMR		Version 3.5
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= ocmess
+$$ Tue Jan 31 10:25:34 2006 "MET (UT+1h)  ocmess@dpx300
+$$ /u/data/ocmess/nmr/nes_B/101/pdata/1/curdat2
+##$DU2= </u>
+##$DU3= </u>
+##$EXPNO2= 100
+##$EXPNO3= 101
+##$NAME2= <nes_B>
+##$NAME3= <nes_B>
+##$PROCNO2= 1
+##$PROCNO3= 1
+##$TYPE= <nmr>
+##$USER2= <ocmess>
+##$USER3= <ocmess>
+##END=
