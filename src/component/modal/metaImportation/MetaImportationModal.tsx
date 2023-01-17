@@ -21,6 +21,7 @@ import { useAlert } from '../../elements/popup/Alert/Context';
 import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
+import { jpathToArray } from '../../utility/jpathToArray';
 import { ModalStyles } from '../ModalStyle';
 
 import { isMetaInformationFile } from './utils/isMetaInformationFile';
@@ -162,7 +163,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
     let isTargetPathExists = true;
 
     for (const spectrum of getSpectraByNucleus(activeTab, data)) {
-      const value = lodashGet(spectrum, target, null);
+      const value = lodashGet(spectrum, jpathToArray(target), null);
       if (value === null) {
         isTargetPathExists = false;
         break;

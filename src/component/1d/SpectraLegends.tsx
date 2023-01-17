@@ -10,6 +10,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { SVGGroup } from '../elements/SVGGroup';
 import { usePanelPreferences } from '../hooks/usePanelPreferences';
+import { jpathToArray } from '../utility/jpathToArray';
 import {
   JpathLegendField,
   legendField,
@@ -39,11 +40,7 @@ function YTracker({ datum }: YTrackerProps) {
   const position = useContext(MouseContext);
 
   if (!scaleX || !position) {
-    return (
-      <text style={styles.text} alignmentBaseline="middle">
-        00000000
-      </text>
-    );
+    return null;
   }
 
   const xIndex = xFindClosestIndex(datum.x, scaleX().invert(position.x));
@@ -81,11 +78,8 @@ function InnerSpectraLegends({
               switch (predefinedField?.name) {
                 case 'intensity':
                   return (
-                    <g>
-                      <YTracker
-                        key="intensity"
-                        datum={get1DDataXY(spectrum as Datum1D)}
-                      />
+                    <g key="intensity">
+                      <YTracker datum={get1DDataXY(spectrum as Datum1D)} />
                       <rect width="55" height="1" fill="transparent" />
                     </g>
                   );
@@ -101,17 +95,15 @@ function InnerSpectraLegends({
                   );
                 default: {
                   const jpath = (field as JpathLegendField).jpath;
-                  const value = lodashGet(spectrum, jpath, '');
+                  const value = lodashGet(spectrum, jpathToArray(jpath), '');
                   return (
-                    value && (
-                      <text
-                        alignmentBaseline="middle"
-                        style={styles.text}
-                        key={jpath}
-                      >
-                        {value}
-                      </text>
-                    )
+                    <text
+                      alignmentBaseline="middle"
+                      style={styles.text}
+                      key={jpath}
+                    >
+                      {value}
+                    </text>
                   );
                 }
               }
