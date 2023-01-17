@@ -9,7 +9,7 @@ import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit, useActiveSpectrum } from '../../reducer/Reducer';
+import { rangeStateInit } from '../../reducer/Reducer';
 
 import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
@@ -34,7 +34,6 @@ function InnerJGraph(props: innerJGraphProps) {
   );
 }
 
-const emptyData = { ranges: {} };
 const MemoizedJGraph = memo(InnerJGraph);
 
 export default function JGraph() {
@@ -45,16 +44,14 @@ export default function JGraph() {
       spectra: { activeTab },
     },
   } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
+  const spectrum = useSpectrum() as Datum1D;
+
   const { showJGraph } =
-    rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
-    rangeStateInit;
+    rangeState.find((r) => r.spectrumID === spectrum?.id) || rangeStateInit;
 
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const graphHeight = height / 4;
-
-  const { ranges } = useSpectrum(emptyData) as Datum1D;
 
   const {
     signals,
@@ -62,12 +59,15 @@ export default function JGraph() {
     links,
   } = useMemo(
     () =>
-      generateJGraphData(ranges.values, rangesPreferences.jGraphTolerance) || {
+      generateJGraphData(
+        spectrum?.ranges.values,
+        rangesPreferences.jGraphTolerance,
+      ) || {
         signals: [],
         jCouplingMax: 0,
         links: [],
       },
-    [rangesPreferences.jGraphTolerance, ranges.values],
+    [rangesPreferences.jGraphTolerance, spectrum?.ranges.values],
   );
 
   const scaleY = useMemo(() => {
@@ -79,7 +79,7 @@ export default function JGraph() {
     return { scaleY, height: graphHeight, maxValue };
   }, [graphHeight, scaleY, maxValue]);
 
-  if (!showJGraph) return null;
+  if (!showJGraph || !spectrum?.display?.isVisible) return null;
 
   return (
     <JGraphContextProvider value={JGraphState}>

@@ -45,8 +45,6 @@ function RangesInner({
 
 const MemoizedRanges = memo(RangesInner);
 
-const emptyData = { ranges: {} };
-
 export default function Ranges() {
   const {
     displayerKey,
@@ -65,13 +63,17 @@ export default function Ranges() {
         : rangeStateInit,
     [activeSpectrum, rangeState],
   );
-  const { ranges } = useSpectrum(emptyData) as Datum1D;
+  const spectrum = useSpectrum() as Datum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+
+  if (!spectrum?.display?.isVisible) {
+    return null;
+  }
 
   return (
     <MemoizedRanges
+      ranges={spectrum.ranges}
       {...{
-        ranges,
         showMultiplicityTrees,
         showRangesIntegrals,
         selectedTool,
