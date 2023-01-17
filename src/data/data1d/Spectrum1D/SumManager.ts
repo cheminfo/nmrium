@@ -13,7 +13,6 @@ import {
 import { SumOptions } from '../../types/data1d/SumOptions';
 import getAtom from '../../utilities/getAtom';
 
-
 export interface SumParams {
   nucleus: string;
   molecules: StateMoleculeExtended[];

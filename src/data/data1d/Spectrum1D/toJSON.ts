@@ -14,7 +14,7 @@ export function toJSON(datum1D: Datum1D, dataType: DataExportOptionsType) {
           metaInfo: datum1D.metaInfo,
         }
       : {
-          source: datum1D.source
+          source: datum1D.source,
         }),
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
