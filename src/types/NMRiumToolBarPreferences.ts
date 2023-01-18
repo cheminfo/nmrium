@@ -18,4 +18,5 @@ export interface NMRiumToolBarPreferences {
   fastFourierTransform: boolean;
   multipleSpectraAnalysis: boolean;
   exclusionZones: boolean;
+  autoRangeAndZonePicking: boolean;
 }

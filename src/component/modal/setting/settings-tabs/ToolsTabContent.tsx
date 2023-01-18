@@ -83,6 +83,10 @@ const LIST: ListItem[] = [
     label: 'Multiple spectra analysis',
     name: 'toolBarButtons.multipleSpectraAnalysis',
   },
+  {
+    label: 'Auto range and zone picking',
+    name: 'toolBarButtons.autoRangeAndZonePicking',
+  },
 ];
 
 const COLUMNS: Array<CustomColumn<ListItem>> = [
