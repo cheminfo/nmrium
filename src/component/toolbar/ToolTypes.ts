@@ -380,4 +380,11 @@ export const options: RecordOptions = {
     isFilter: false,
     isToggle: false,
   },
+  autoRangeAndZonePicking: {
+    id: 'autoRangeAndZonePicking',
+    label: 'Auto range and zone picking',
+    hasOptionPanel: false,
+    isFilter: false,
+    isToggle: false,
+  },
 };

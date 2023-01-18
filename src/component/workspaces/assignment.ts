@@ -28,6 +28,7 @@ export const assignment: InnerWorkspace = {
       fastFourierTransform: true,
       phaseCorrection: true,
       baselineCorrection: true,
+      autoRangeAndZonePicking: true,
     },
   },
 };

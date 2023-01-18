@@ -38,6 +38,7 @@ export const embedded: InnerWorkspace = {
       zonePicking: true,
       zoomOut: true,
       zoom: true,
+      autoRangeAndZonePicking: true,
     },
   },
 };

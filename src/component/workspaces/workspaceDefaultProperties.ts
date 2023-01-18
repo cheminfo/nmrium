@@ -43,6 +43,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       zoomOut: false,
       zoom: false,
       peakPicking: false,
+      autoRangeAndZonePicking: false,
     },
   },
 

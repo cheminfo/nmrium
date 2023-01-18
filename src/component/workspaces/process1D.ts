@@ -30,6 +30,7 @@ export const process1D: InnerWorkspace = {
       baselineCorrection: true,
       exclusionZones: true,
       multipleSpectraAnalysis: true,
+      autoRangeAndZonePicking: true,
     },
   },
 };
