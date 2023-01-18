@@ -1,0 +1,15 @@
+##TITLE= Parameter file, XWIN-NMR		Version 3.5
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##ORIGIN= UXNMR, Bruker Analytische Messtechnik GmbH
+##OWNER= root
+$$ Mon Jan 30 14:04:51 2006 "MET (UT+1h)  ocmess@dpx300
+$$ /u/data/ocmess/nmr/nes_B/100/pdata/1/outd
+##$CURPLOT= <hplj6l>
+##$CURPRIN= <$hplj6l>
+##$DFORMAT= <normdp>
+##$LAYOUT= <+/1D_H.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##$SURQMSG= 1
+##END=

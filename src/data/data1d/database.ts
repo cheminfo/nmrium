@@ -5,8 +5,8 @@ import {
   Jcoupling,
   DatabaseNMREntry,
 } from 'nmr-processing';
-import { MoleculesDB } from 'openchemlib-utils';
 import OCL from 'openchemlib/full';
+import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';
 
 export interface DataBaseSignal {

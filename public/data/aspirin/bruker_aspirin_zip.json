@@ -1,7 +1,6 @@
 {
   "version": 4,
   "data": {
-    "baseURL": "https://cheminfo.github.io",
     "spectra": [
       {
         "display": {
@@ -17,7 +16,7 @@
             {
               "name": "aspirin-1h.zip",
               "size": 524,
-              "relativePath": "bruker-data-test/data/zipped/aspirin-1h.zip",
+              "relativePath": "./data/aspirin/aspirin-1h.zip",
               "lastModified": 182116
             }
           ]
