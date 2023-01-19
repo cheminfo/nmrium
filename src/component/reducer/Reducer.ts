@@ -626,6 +626,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
         draft,
         action,
       );
+    case types.ORDER_SPECTRA:
+      return SpectrumsActions.handleOrderSpectra(draft, action);
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
