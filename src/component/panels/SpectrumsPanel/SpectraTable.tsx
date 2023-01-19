@@ -11,6 +11,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   DELETE_SPECTRA,
+  ORDER_SPECTRA,
   RECOLOR_SPECTRA_COLOR,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
@@ -220,6 +221,15 @@ export function SpectraTable(props: SpectraTableProps) {
     return columns;
   }, [COLUMNS, spectraPreferences.columns]);
 
+  function handleSortEnd(data) {
+    dispatch({
+      type: ORDER_SPECTRA,
+      payload: {
+        data,
+      },
+    });
+  }
+
   return (
     <ReactTable
       rowStyle={{
@@ -235,6 +245,7 @@ export function SpectraTable(props: SpectraTableProps) {
       enableVirtualScroll
       approxItemHeight={26}
       context={contextMenu}
+      onSortEnd={handleSortEnd}
     />
   );
 }

@@ -277,6 +277,28 @@ function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
   }
 }
 
+function handleOrderSpectra(draft: Draft<State>, action) {
+  const { data } = action.payload;
+  const spectraIndexes = {};
+  let index = 0;
+  for (const spectrum of draft.data) {
+    spectraIndexes[spectrum.id] = index;
+    index++;
+  }
+  const sortedSpectraKey = {};
+  const sortedSpectra: Datum1D[] = [];
+
+  for (const spectrum of data) {
+    const spectrumId = spectrum.id;
+    sortedSpectraKey[spectrumId] = true;
+    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Datum1D);
+  }
+
+  draft.data = draft.data
+    .filter((s) => !sortedSpectraKey[s.id])
+    .concat(sortedSpectra);
+}
+
 export {
   handleSpectrumVisibility,
   handleChangeActiveSpectrum,
@@ -289,4 +311,5 @@ export {
   importSpectraMetaInfo,
   handleToggleSpectraLegend,
   handleRecolorSpectraBasedOnDistinctValue,
+  handleOrderSpectra,
 };
