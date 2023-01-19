@@ -1,4 +1,6 @@
 import { useMemo, CSSProperties } from 'react';
+import { IoColorPaletteOutline } from 'react-icons/io5';
+import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -7,12 +9,16 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { ActiveSpectrum } from '../../reducer/Reducer';
-import { DELETE_SPECTRA } from '../../reducer/types/Types';
+import {
+  DELETE_SPECTRA,
+  RECOLOR_SPECTRA_COLOR,
+} from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import {
   JpathTableColumn,
   PredefinedSpectraColumn,
   PredefinedTableColumn,
+  SpectraTableColumn,
 } from '../../workspaces/Workspace';
 
 import ColorIndicator from './base/ColorIndicator';
@@ -56,6 +62,14 @@ const columnStyle = {
   paddingTop: 0,
   paddingBottom: 0,
 };
+
+const options: DropdownMenuProps<string>['options'] = [
+  {
+    label: 'Recolor based on distinct value',
+    type: 'option',
+    icon: <IoColorPaletteOutline />,
+  },
+];
 
 export function SpectraTable(props: SpectraTableProps) {
   const {
@@ -188,12 +202,13 @@ export function SpectraTable(props: SpectraTableProps) {
         if (name && COLUMNS[name]) {
           columns.push({
             ...COLUMNS[name],
-            Header: col.label,
+            Header: () => <ColumnHeader label={col.label} col={col} />,
+            id: name,
           });
         } else {
           const path = (col as JpathTableColumn)?.jpath;
           columns.push({
-            Header: col.label,
+            Header: () => <ColumnHeader label={col.label} col={col} />,
             accessor: path as any,
             id: `${index}${path}`,
             style: jPathColumnStyle,
@@ -223,3 +238,43 @@ export function SpectraTable(props: SpectraTableProps) {
     />
   );
 }
+
+const ColumnHeader = ({
+  label,
+  col,
+}: {
+  label: string;
+  col: SpectraTableColumn;
+}) => {
+  const dispatch = useDispatch();
+
+  function selectHandler() {
+    const name = (col as PredefinedTableColumn<any>)?.name;
+    let jpath = '';
+    switch (name) {
+      case 'name':
+        jpath = 'display.name';
+        break;
+      case 'solvent':
+        jpath = 'info.solvent';
+        break;
+      default:
+        jpath = (col as JpathTableColumn)?.jpath || '';
+        break;
+    }
+
+    if (jpath) {
+      dispatch({ type: RECOLOR_SPECTRA_COLOR, payload: { jpath } });
+    }
+  }
+
+  return (
+    <DropdownMenu
+      trigger="contextMenu"
+      options={options}
+      onSelect={selectHandler}
+    >
+      <div>{label}</div>
+    </DropdownMenu>
+  );
+};

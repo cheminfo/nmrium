@@ -1,10 +1,12 @@
 import { Draft, original } from 'immer';
+import lodashGet from 'lodash/get';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
 import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
+  isSpectrum1D,
 } from '../../../data/data1d/Spectrum1D';
 import {
   getMissingProjection,
@@ -17,6 +19,7 @@ import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
+import { jpathToArray } from '../../utility/jpathToArray';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -242,6 +245,38 @@ function handleToggleSpectraLegend(draft: Draft<State>) {
   draft.view.spectra.showLegend = !draft.view.spectra.showLegend;
 }
 
+function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = draft;
+  const { jpath } = action.payload;
+  const spectraByClass: Record<string, Datum1D | Datum2D> = {};
+  for (const spectrum of getSpectraByNucleus(activeTab, data)) {
+    const key = String(lodashGet(spectrum, jpathToArray(jpath), ''))
+      .toLowerCase()
+      .trim()
+      .replace(/\r?\n|\r/, '');
+
+    if (spectraByClass[key]) {
+      if (isSpectrum1D(spectrum)) {
+        spectrum.display.color = (spectraByClass[key] as Datum1D).display.color;
+      } else {
+        spectrum.display.positiveColor = (
+          spectraByClass[key] as Datum2D
+        ).display.positiveColor;
+        spectrum.display.negativeColor = (
+          spectraByClass[key] as Datum2D
+        ).display.negativeColor;
+      }
+    } else {
+      spectraByClass[key] = spectrum;
+    }
+  }
+}
+
 export {
   handleSpectrumVisibility,
   handleChangeActiveSpectrum,
@@ -253,4 +288,5 @@ export {
   generateSpectrumFromPublicationStringHandler,
   importSpectraMetaInfo,
   handleToggleSpectraLegend,
+  handleRecolorSpectraBasedOnDistinctValue,
 };
