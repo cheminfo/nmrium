@@ -621,6 +621,11 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return SpectrumsActions.importSpectraMetaInfo(draft, action);
     case types.TOGGLE_SPECTRA_LEGEND:
       return SpectrumsActions.handleToggleSpectraLegend(draft);
+    case types.RECOLOR_SPECTRA_COLOR:
+      return SpectrumsActions.handleRecolorSpectraBasedOnDistinctValue(
+        draft,
+        action,
+      );
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
