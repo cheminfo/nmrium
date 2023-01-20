@@ -21,3 +21,4 @@ export { mapRanges } from './ranges/mapRanges';
 export { updateRangesRelativeValues } from './ranges/updateRangesRelativeValues';
 export { getShiftX } from './getShiftX';
 export { toJSON } from './toJSON';
+export { get1DColor } from './get1DColor';

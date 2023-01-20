@@ -3,9 +3,9 @@ import { v4 } from '@lukeed/uuid';
 import * as FiltersTypes from '../../Filters';
 import * as FiltersManager from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
-import get1dColor from '../../utilities/getColor';
 
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
+import { get1DColor } from './get1DColor';
 import { initiateIntegrals } from './integrals/initiateIntegrals';
 import { initiatePeaks } from './peaks/initiatePeaks';
 import { initiateRanges } from './ranges/initiateRanges';
@@ -25,10 +25,10 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
 
   datum.display = {
     name: options.display?.name || v4(),
-    ...getColor(options, usedColors),
     isVisible: true,
     isRealSpectrumVisible: true,
     ...options.display,
+    ...get1DColor(options, usedColors),
   };
 
   datum.info = {
@@ -64,21 +64,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
 
   preprocessing(datum);
   return datum as Datum1D;
-}
-
-function getColor(options, usedColors) {
-  let color = 'black';
-  if (options?.display?.color === undefined) {
-    color = get1dColor(false, usedColors['1d'] || []);
-  } else {
-    color = options.display.color;
-  }
-
-  if (usedColors['1d']) {
-    usedColors['1d'].push(color);
-  }
-
-  return { color };
 }
 
 function preprocessing(datum) {

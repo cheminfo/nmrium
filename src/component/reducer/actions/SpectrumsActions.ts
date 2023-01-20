@@ -7,10 +7,12 @@ import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
   isSpectrum1D,
+  get1DColor,
 } from '../../../data/data1d/Spectrum1D';
 import {
   getMissingProjection,
   isSpectrum2D,
+  get2DColor,
 } from '../../../data/data2d/Spectrum2D';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
@@ -252,27 +254,51 @@ function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
       spectra: { activeTab },
     },
   } = draft;
-  const { jpath } = action.payload;
-  const spectraByClass: Record<string, Datum1D | Datum2D> = {};
-  for (const spectrum of getSpectraByNucleus(activeTab, data)) {
-    const key = String(lodashGet(spectrum, jpathToArray(jpath), ''))
-      .toLowerCase()
-      .trim()
-      .replace(/\r?\n|\r/, '');
+  const { jpath = null } = action.payload;
+  const spectra = getSpectraByNucleus(activeTab, data);
+  if (jpath) {
+    //recolor spectra based on distinct value
 
-    if (spectraByClass[key]) {
-      if (isSpectrum1D(spectrum)) {
-        spectrum.display.color = (spectraByClass[key] as Datum1D).display.color;
+    const spectraByClass: Record<string, Datum1D | Datum2D> = {};
+    for (const spectrum of spectra) {
+      const key = String(lodashGet(spectrum, jpathToArray(jpath), ''))
+        .toLowerCase()
+        .trim()
+        .replace(/\r?\n|\r/, '');
+
+      if (spectraByClass[key]) {
+        if (isSpectrum1D(spectrum)) {
+          spectrum.display.color = (
+            spectraByClass[key] as Datum1D
+          ).display.color;
+        } else {
+          spectrum.display.positiveColor = (
+            spectraByClass[key] as Datum2D
+          ).display.positiveColor;
+          spectrum.display.negativeColor = (
+            spectraByClass[key] as Datum2D
+          ).display.negativeColor;
+        }
       } else {
-        spectrum.display.positiveColor = (
-          spectraByClass[key] as Datum2D
-        ).display.positiveColor;
-        spectrum.display.negativeColor = (
-          spectraByClass[key] as Datum2D
-        ).display.negativeColor;
+        spectraByClass[key] = spectrum;
       }
-    } else {
-      spectraByClass[key] = spectrum;
+    }
+  } else {
+    //reset spectra colors
+    const usedColor = { '1d': [], '2d': [] };
+
+    for (const spectrum of spectra) {
+      if (isSpectrum1D(spectrum)) {
+        spectrum.display.color = get1DColor(spectrum, usedColor, true).color;
+      } else {
+        const { positiveColor, negativeColor } = get2DColor(
+          spectrum,
+          usedColor,
+          true,
+        );
+        spectrum.display.positiveColor = positiveColor;
+        spectrum.display.negativeColor = negativeColor;
+      }
     }
   }
 }
