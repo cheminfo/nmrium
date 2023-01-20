@@ -43,6 +43,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       zoomOut: false,
       zoom: false,
       peakPicking: false,
+      autoRangeAndZonePicking: false,
     },
   },
 
@@ -82,5 +83,18 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
     bruker: {
       onlyFirstProcessedData: true,
     },
+  },
+  infoBlock: {
+    visible: false,
+    fields: [
+      { label: 'name', jpath: 'display.name', visible: true },
+      { label: 'Number Of Scan', jpath: 'info.numberOfScans', visible: true },
+      {
+        label: 'Acquisition Time',
+        jpath: 'info.acquisitionTime',
+        visible: true,
+      },
+      { label: 'Pulse Sequence', jpath: 'info.pulseSequence', visible: true },
+    ],
   },
 };

@@ -1,0 +1,27 @@
+{
+  "version": 4,
+  "data": {
+    "spectra": [
+      {
+        "display": {
+          "name": "1H",
+          "color": "#FFB300",
+          "isVisible": true,
+          "isRealSpectrumVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isVisibleInDomain": true
+        },
+        "source": {
+          "fileCollection": [
+            {
+              "name": "aspirin-1h.zip",
+              "size": 524,
+              "relativePath": "./data/aspirin/aspirin-1h.zip",
+              "lastModified": 182116
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

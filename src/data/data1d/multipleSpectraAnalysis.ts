@@ -73,7 +73,7 @@ function addColumnKey(
   columnProps: Column,
   columnKey: string,
 ) {
-  const spectraAnalysisOptions = spectraAnalysis.nuclei[nucleus];
+  const spectraAnalysisOptions = spectraAnalysis[nucleus].analysisOptions;
   const key =
     columnKey || generateChar(spectraAnalysisOptions.columnIndex).toUpperCase();
   spectraAnalysisOptions.columns[key] = columnProps;
@@ -85,7 +85,7 @@ export function getColumns(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
 ) {
-  return spectraAnalysis.nuclei[nucleus].columns;
+  return spectraAnalysis[nucleus].analysisOptions.columns;
 }
 
 export function getValue(
@@ -123,24 +123,24 @@ function init(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
 ) {
-  if (!spectraAnalysis.nuclei?.[nucleus]) {
-    spectraAnalysis.nuclei[nucleus] = {
-      resortSpectra: true,
-      sum: 100,
-      code: null,
-      columns: {},
-      columnIndex: 0,
+  if (!spectraAnalysis?.[nucleus]) {
+    spectraAnalysis[nucleus] = {
+      ...spectraAnalysis[nucleus],
+      analysisOptions: {
+        resortSpectra: true,
+        sum: 100,
+        code: null,
+        columns: {},
+        columnIndex: 0,
+      },
     };
   }
 }
 
-export function setColumn(
-  spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
-  nucleus: string,
-  settings: MultipleSpectraAnalysisPreferences,
+export function mapColumns(
+  options: MultipleSpectraAnalysisPreferences['analysisOptions'],
 ) {
-  init(spectraAnalysis, nucleus);
-  const { code, columns: inputColumns, ...restSetting } = settings;
+  const { code, columns: inputColumns, ...restSetting } = options;
   const columns = Object.fromEntries(
     Object.values(inputColumns).map((value: any) => {
       const data = { ...value };
@@ -148,8 +148,7 @@ export function setColumn(
       return [value.tempKey, data];
     }),
   );
-  spectraAnalysis.nuclei[nucleus] = {
-    ...spectraAnalysis.nuclei[nucleus],
+  return {
     code,
     columns,
     ...restSetting,
@@ -162,7 +161,7 @@ export function changeColumnValueKey(
   columnKey: string,
   newKey: COLUMNS_VALUES_KEYS,
 ) {
-  spectraAnalysis.nuclei[nucleus].columns[columnKey].valueKey = newKey;
+  spectraAnalysis[nucleus].analysisOptions.columns[columnKey].valueKey = newKey;
 }
 
 export function analyzeSpectra(
@@ -186,12 +185,12 @@ export function analyzeSpectra(
 }
 
 export function generateAnalyzeSpectra(
-  spectraAnalysisOptions: MultipleSpectraAnalysisPreferences,
+  multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences,
   spectra: Datum1D[],
   nucleus: string,
 ) {
   let data: any = {};
-  const { sum, columns, code } = spectraAnalysisOptions;
+  const { sum, columns, code } = multipleSpectraAnalysis.analysisOptions;
 
   for (const columnKey in columns) {
     const { from, to } = columns[columnKey];
@@ -248,8 +247,8 @@ export function deleteSpectraAnalysis(
   colKey: string,
   nucleus: string,
 ) {
-  if (spectraAnalysis.nuclei[nucleus]) {
-    const analysisOptions = spectraAnalysis.nuclei[nucleus];
+  if (spectraAnalysis?.[nucleus]) {
+    const analysisOptions = spectraAnalysis[nucleus].analysisOptions;
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete analysisOptions.columns[colKey];
 

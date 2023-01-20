@@ -42,6 +42,9 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   datum.originalInfo = datum.info;
 
   datum.meta = { ...options.meta };
+
+  datum.metaInfo = { ...options.metaInfo };
+
   datum.data = convertDataToFloat64Array(options.data);
 
   datum.originalData = datum.data;

@@ -29,6 +29,7 @@ export const prediction: InnerWorkspace = {
       zonePicking: true,
       zoomOut: true,
       zoom: true,
+      autoRangeAndZonePicking: true,
     },
   },
 };

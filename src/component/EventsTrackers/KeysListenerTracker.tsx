@@ -21,7 +21,6 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
-  DELETE_MATRIX_GENERATION_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -154,11 +153,6 @@ function KeysListenerTracker() {
             message: 'Are you sure you want to delete the exclusion zone/s?',
             buttons,
           });
-          modal.showConfirmDialog({
-            message: 'Are you sure you want to delete the exclusion zone/s?',
-            buttons,
-          });
-
           break;
         }
         case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
@@ -169,10 +163,11 @@ function KeysListenerTracker() {
                 const hideLoading = await alert.showLoading(
                   'Delete all spectra exclusion zones in progress',
                 );
-                dispatch({
-                  type: DELETE_MATRIX_GENERATION_EXCLUSION_ZONE,
+                dispatchPreferences({
+                  type: 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
                   payload: {
                     zone,
+                    nucleus: activeTab,
                   },
                 });
                 hideLoading();

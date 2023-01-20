@@ -30,6 +30,7 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
+import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
@@ -48,6 +49,11 @@ const IMPORT_MENU = [
     id: 'importPublicationString',
     icon: <FaFile />,
     label: 'Import from publication string',
+  },
+  {
+    id: 'importMetaInformation',
+    icon: <FaFile />,
+    label: 'Import meta information',
   },
 ];
 
@@ -101,6 +107,7 @@ function BasicToolBarInner({
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
+  const openMetaInformationModal = useMetaInformationImportationModal();
 
   const isExperimentalFeature = useCheckExperimentalFeature();
   const isButtonVisible = useCheckToolsVisibility();
@@ -177,10 +184,18 @@ function BasicToolBarInner({
         case 'importPublicationString':
           openImportPublicationStringModal();
           break;
+        case 'importMetaInformation':
+          openMetaInformationModal();
+          break;
         default:
       }
     },
-    [openLoader, importJCAMPFile, openImportPublicationStringModal],
+    [
+      openLoader,
+      importJCAMPFile,
+      openImportPublicationStringModal,
+      openMetaInformationModal,
+    ],
   );
 
   const exportHandler = useCallback(

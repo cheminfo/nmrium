@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { CSSProperties } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 const styles = css`
@@ -31,11 +32,22 @@ const styles = css`
 interface DeleteButtonProps {
   onDelete: (element: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   className?: string;
+  style?: CSSProperties;
 }
 
-function DeleteButton({ onDelete, className = 'delete' }: DeleteButtonProps) {
+function DeleteButton({
+  onDelete,
+  className = 'delete',
+  style = {},
+}: DeleteButtonProps) {
   return (
-    <button css={styles} className={className} type="button" onClick={onDelete}>
+    <button
+      css={styles}
+      className={className}
+      style={style}
+      type="button"
+      onClick={onDelete}
+    >
       <FaTimes className="icon" />
     </button>
   );

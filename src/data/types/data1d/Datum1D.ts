@@ -1,4 +1,5 @@
 import { Source } from 'nmr-load-save';
+
 import { Filter } from '../../FiltersManager';
 
 import { Data1D } from './Data1D';
@@ -15,6 +16,7 @@ export interface Datum1D {
   info: Info1D;
   originalInfo?: Info1D;
   meta: any;
+  metaInfo: any;
   data: Data1D;
   originalData?: Data1D;
   peaks: Peaks;

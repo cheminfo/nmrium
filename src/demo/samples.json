@@ -50,6 +50,18 @@
         "title": "Linked jcamp"
       },
       {
+        "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
+        "title": "FileCollection with link to jcamp"
+      },
+      {
+        "file": "./data/aspirin/bruker_aspirin_zip.json",
+        "title": "FileCollection with link to zip"
+      },
+      {
+        "file": "./data/aspirin/aspirin_bruker_files.json",
+        "title": "FileCollection with bruker folder"
+      },
+      {
         "file": "./data/cytisine/1Honly.json",
         "title": "1H only jcamp"
       },

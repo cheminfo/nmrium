@@ -1,0 +1,10 @@
+   Current data set:
+   NAME =	Displayer_50-78-2	EXPNO =	1	PROCNO = 1
+   DU   =	D:/SciPrograms/Bruker/TopSpin3.5.b.91pl7/data/nes/nmr
+
+   Number   Integrated Region     Integral
+     1      8.379      8.001         2.57899
+     2      7.598      7.468         1.00000
+     3      7.345      7.227         1.06864
+     4      7.128      7.010         0.97164
+     5      2.341      2.211         2.95309

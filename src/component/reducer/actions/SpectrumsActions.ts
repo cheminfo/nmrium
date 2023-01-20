@@ -223,6 +223,24 @@ function generateSpectrumFromPublicationStringHandler(
   setActiveTab(draft);
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
+function importSpectraMetaInfo(draft: Draft<State>, action) {
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+    data,
+  } = draft;
+  const metaSpectra = action.payload.spectraMeta;
+
+  for (const spectrum of getSpectraByNucleus(activeTab, data)) {
+    if (metaSpectra[spectrum.id]) {
+      spectrum.metaInfo = metaSpectra[spectrum.id];
+    }
+  }
+}
+function handleToggleSpectraLegend(draft: Draft<State>) {
+  draft.view.spectra.showLegend = !draft.view.spectra.showLegend;
+}
 
 export {
   handleSpectrumVisibility,
@@ -233,4 +251,6 @@ export {
   addMissingProjectionHandler,
   alignSpectraHandler,
   generateSpectrumFromPublicationStringHandler,
+  importSpectraMetaInfo,
+  handleToggleSpectraLegend,
 };

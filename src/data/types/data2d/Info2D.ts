@@ -1,8 +1,5 @@
-export interface Info2D {
+import { Info } from '../common/Info';
+
+export interface Info2D extends Info {
   nucleus: Array<string>;
-  isFid: boolean;
-  isComplex: boolean;
-  dimension: number;
-  isFt: boolean;
-  experiment?: any;
 }

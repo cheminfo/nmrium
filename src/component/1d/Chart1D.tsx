@@ -1,8 +1,10 @@
-import FloatMoleculeStructures from '../tool/FloatMoleculeStructures';
+import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures/index';
+import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 
 import ApodizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import LinesSeries from './LinesSeries';
+import SpectraTracker from './SpectraLegends';
 import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';
@@ -42,7 +44,8 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <ExclusionZonesAnnotations />
       <DatabaseElements />
       <PeaksShapes />
-
+      <SpectraTracker />
+      <SpectrumInfoBlock />
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
       </g>

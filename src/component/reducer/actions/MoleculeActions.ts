@@ -4,7 +4,7 @@ import { generateSpectra } from '../../../data/PredictionManager';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import getColor from '../../../data/utilities/getColor';
-import { DRAGGABLE_STRUCTURE_INITIAL_POSITION } from '../../tool/FloatMoleculeStructures/DraggableStructure';
+import { DRAGGABLE_STRUCTURE_INITIAL_POSITION } from '../../1d-2d/components/FloatMoleculeStructures/DraggableStructure';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';

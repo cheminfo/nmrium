@@ -24,13 +24,14 @@ import PredefinedWorkspaces from '../../workspaces';
 import { Workspace } from '../../workspaces/Workspace';
 import { ModalStyles } from '../ModalStyle';
 
-import DatabasesTabContent from './DatabasesTabContent';
-import DisplayTabContent from './DisplayTabContent';
-import FormattingTabContent from './FormattingTabContent';
-import GeneralTabContent from './GeneralTabContent';
-import ImportationFiltersTabContent from './ImportationFiltersTabContent';
-import ToolsTabContent from './ToolsTabContent';
 import WorkspaceItem from './WorkspaceItem';
+import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
+import DisplayTabContent from './settings-tabs/DisplayTabContent';
+import FormattingTabContent from './settings-tabs/FormattingTabContent';
+import GeneralTabContent from './settings-tabs/GeneralTabContent';
+import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
+import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
+import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
@@ -339,6 +340,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
                 <DisplayTabContent />
               </div>
             </Tab>
+
             <Tab title="Tools" tabid="tools">
               <div className="inner-content">
                 <ToolsTabContent />
@@ -356,6 +358,11 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             <Tab title="Import filters" tabid="importation-filters">
               <div className="inner-content">
                 <ImportationFiltersTabContent />
+              </div>
+            </Tab>
+            <Tab title="Title Block" tabid="title-block">
+              <div className="inner-content">
+                <InfoBlockTabContent />
               </div>
             </Tab>
           </Tabs>

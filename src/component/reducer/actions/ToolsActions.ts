@@ -10,6 +10,7 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
@@ -463,13 +464,23 @@ function handelSetActiveTab(draft: Draft<State>, tab) {
 }
 
 function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+      zoom: { levels },
+    },
+  } = draft;
   const activeSpectrum = getSpectrum(draft) as Datum2D;
   try {
-    if (activeSpectrum?.id) {
-      const { levels } = draft.view.zoom;
-      const contourOptions = activeSpectrum.display.contourOptions;
-      const zoom = contoursManager(activeSpectrum.id, levels, contourOptions);
-      levels[activeSpectrum.id] = zoom.wheel(deltaY, shiftKey);
+    const spectra = activeSpectrum?.id
+      ? [activeSpectrum]
+      : getSpectraByNucleus(activeTab, data);
+
+    for (const spectrum of spectra as Datum2D[]) {
+      const contourOptions = spectrum.display.contourOptions;
+      const zoom = contoursManager(spectrum.id, levels, contourOptions);
+      levels[spectrum.id] = zoom.wheel(deltaY, shiftKey);
     }
   } catch (error) {
     // TODO: handle error.

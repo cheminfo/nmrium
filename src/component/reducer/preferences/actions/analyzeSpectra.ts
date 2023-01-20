@@ -74,8 +74,15 @@ export function setSpectraAnalysisPanelsPreferences(
     const { nucleus, data } = action.payload;
     const panels = currentWorkspacePreferences.formatting.panels;
 
-    if (panels?.multipleSpectraAnalysis) {
-      MultipleAnalysis.setColumn(panels.multipleSpectraAnalysis, nucleus, data);
+    if (!panels?.multipleSpectraAnalysis) {
+      panels.multipleSpectraAnalysis =
+        getMultipleSpectraAnalysisDefaultValues(nucleus);
     }
+
+    const { analysisOptions, legendsFields } = data;
+    panels.multipleSpectraAnalysis[nucleus] = {
+      legendsFields,
+      analysisOptions: MultipleAnalysis.mapColumns(analysisOptions),
+    };
   }
 }

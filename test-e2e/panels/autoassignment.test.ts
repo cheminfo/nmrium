@@ -28,22 +28,35 @@ test('automatic assignment panel', async ({ page }) => {
   });
   await test.step('check automatic assignment panel', async () => {
     await nmrium.clickPanel('Automatic Assignment');
+    // Click on the automatic ranges button.
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',
     );
 
-    // wait for auto range to be applied
-    await nmrium.page.waitForTimeout(1000);
+    await nmrium.page
+      .locator(
+        'text=Automatic Ranges/Zones detection for all spectra in progress',
+      )
+      .waitFor({ state: 'hidden' });
+
+    // Wait for auto range to be applied.
+    await nmrium.page
+      .locator('_react=Range >> text=3.21')
+      .waitFor({ state: 'visible' });
+
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
     );
 
-    // wait for auto assignment to be applied
-    await nmrium.page.waitForTimeout(1000);
+    // Wait for auto assignments process completed.
+    await nmrium.page
+      .locator('text=Auto Assignments')
+      .waitFor({ state: 'hidden' });
+
     await expect(
       nmrium.page.locator(
-        '_react=AutomaticAssignment >> _react=ReactTable >> tr[role="row"]',
+        '_react=AutomaticAssignmentTable >> _react=ReactTableRow',
       ),
-    ).toHaveCount(3);
+    ).toHaveCount(2);
   });
 });

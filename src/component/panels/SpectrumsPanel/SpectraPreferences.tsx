@@ -1,9 +1,18 @@
 import { Formik } from 'formik';
-import { useImperativeHandle, useRef, memo, forwardRef } from 'react';
+import {
+  useImperativeHandle,
+  useRef,
+  memo,
+  forwardRef,
+  useCallback,
+  useMemo,
+} from 'react';
 
+import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { PanelsPreferences } from '../../workspaces/Workspace';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
@@ -12,9 +21,13 @@ import { SpectraColumnsManager } from './base/SpectraColumnsManager';
 
 function SpectraPreferences(props, ref: any) {
   const formRef = useRef<any>(null);
+  const { data } = useChartData();
   const preferences = usePreferences();
   const nuclei = useNucleus();
+
   const preferencesByNuclei = usePanelPreferencesByNuclei('spectra', nuclei);
+
+  const datalist = useMemo(() => getSpectraObjectPaths(data), [data]);
 
   function saveHandler(values) {
     preferences.dispatch({
@@ -33,7 +46,7 @@ function SpectraPreferences(props, ref: any) {
     [],
   );
 
-  function handleAdd(nucleus, index) {
+  const handleAdd = useCallback((nucleus, index) => {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
     let columns = data.nuclei[nucleus].columns;
 
@@ -57,9 +70,9 @@ function SpectraPreferences(props, ref: any) {
         },
       },
     });
-  }
+  }, []);
 
-  function handleDelete(nucleus, index) {
+  const handleDelete = useCallback((nucleus, index) => {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
     const columns = data.nuclei[nucleus].columns.filter(
       (_, columnIndex) => columnIndex !== index,
@@ -74,7 +87,7 @@ function SpectraPreferences(props, ref: any) {
         },
       },
     });
-  }
+  }, []);
 
   return (
     <PreferencesContainer>
@@ -90,6 +103,7 @@ function SpectraPreferences(props, ref: any) {
                 nucleus={n}
                 onAdd={handleAdd}
                 onDelete={handleDelete}
+                datalist={datalist}
               />
             </NucleusGroup>
           ))}

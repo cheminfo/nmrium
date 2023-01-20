@@ -1,0 +1,16 @@
+##TITLE= Audit trail, XWIN-NMR		Version 3.5
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= ocmess
+$$ /u/data/ocmess/nmr/nes_B/101/audita.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, WHAT)
+(   1,<2006-01-31 10:24:52.91 +0100>,<ocmess>,<dpx300>,
+      <created by zg, POWCHK disabled, PULCHK disabled
+       configuration hash MD5:
+       A7 B5 FF 07 D5 71 34 A5 08 FB F4 8A 61 ED EF 83
+       data hash MD5: 16K
+       DB 6D 92 7F D8 58 BC E0 13 A8 C6 3F F7 4D 56 4A>)
+##END=
+
+$$ hash MD5
+$$ A4 11 88 68 26 3D FF A5 62 6C AE EF 6C 6E 47 BF

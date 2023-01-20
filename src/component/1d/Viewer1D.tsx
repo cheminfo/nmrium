@@ -4,6 +4,8 @@ import { ResponsiveChart } from 'react-d3-utils';
 
 import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
 import { Datum1D } from '../../data/types/data1d';
+import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
+import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
@@ -33,16 +35,12 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   ADD_RANGE,
   ADD_EXCLUSION_ZONE,
-  ADD_MATRIX_GENERATION_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
-import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
-import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
-import SpectraTracker from './SpectraTracker';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
@@ -221,12 +219,22 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               payload: { from: brushData.startX, to: brushData.endX },
             });
             break;
-          case options.matrixGenerationExclusionZones.id:
-            dispatch({
-              type: ADD_MATRIX_GENERATION_EXCLUSION_ZONE,
-              payload: { from: brushData.startX, to: brushData.endX },
+          case options.matrixGenerationExclusionZones.id: {
+            const [from, to] = getRange(state, {
+              startX: brushData.startX,
+              endX: brushData.endX,
             });
+            dispatchPreferences({
+              type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+              payload: {
+                zone: { from, to },
+                nucleus: activeTab,
+                range: { from: xDomain[0], to: xDomain[1] },
+              },
+            });
+
             break;
+          }
 
           default:
             propagateEvent();
@@ -251,6 +259,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       dispatch,
       dispatchPreferences,
       activeTab,
+      xDomain,
       state,
       alert,
     ],
@@ -341,7 +350,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                         position: 'absolute',
                       }}
                     >
-                      <SpectraTracker />
                       <CrossLinePointer />
                       <BrushXY brushType={BRUSH_TYPE.X} />
                       <XLabelPointer />

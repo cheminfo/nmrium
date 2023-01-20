@@ -1,4 +1,6 @@
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
+import { Nuclei } from '../../data/types/common/Nucleus';
+import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { NMRiumPreferences } from '../NMRium';
 
 interface NucleusFormat {
@@ -94,9 +96,31 @@ export interface DatabasePanelPreferences {
   marginBottom: number;
 }
 
-export interface MultipleSpectraAnalysisPreferences extends AnalysisOptions {
+type PredefinedLegend = 'intensity' | 'name';
+
+export type JpathLegendField = Omit<JpathTableColumn, 'label'>;
+export type PredefinedLegendField = Omit<
+  PredefinedTableColumn<PredefinedLegend>,
+  'description'
+>;
+
+export type legendField = JpathLegendField | PredefinedLegendField;
+
+export interface AnalysisPreferences extends AnalysisOptions {
   resortSpectra: boolean;
 }
+export interface MultipleSpectraAnalysisPreferences {
+  analysisOptions: AnalysisPreferences;
+  legendsFields: legendField[];
+}
+
+export type MultipleSpectraAnalysis =
+  | Record<Nuclei, MultipleSpectraAnalysisPreferences>
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | {};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type MatrixGeneration = Record<Nuclei, MatrixOptions> | {};
 
 export interface WorkSpacePanelPreferences {
   spectra: SpectraNucleusPreferences;
@@ -105,7 +129,8 @@ export interface WorkSpacePanelPreferences {
   ranges: RangesNucleusPreferences;
   zones: ZonesNucleusPreferences & ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
-  multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences;
+  multipleSpectraAnalysis: MultipleSpectraAnalysis;
+  matrixGeneration: MatrixGeneration;
 }
 
 export interface PanelsPreferences {
@@ -116,7 +141,8 @@ export interface PanelsPreferences {
   zones: NucleusPreferences<ZonesNucleusPreferences> &
     ZonesGeneralPanelPreferences;
   database: DatabasePanelPreferences;
-  multipleSpectraAnalysis: NucleusPreferences<MultipleSpectraAnalysisPreferences>;
+  multipleSpectraAnalysis: MultipleSpectraAnalysis;
+  matrixGeneration: MatrixGeneration;
 }
 
 export interface Formatting {
@@ -155,12 +181,18 @@ export interface LoadersPreferences {
   };
 }
 
+export interface InfoBlock {
+  visible: boolean;
+  fields: JpathTableColumn[];
+}
+
 export interface WorkspaceData {
   display?: NMRiumPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
   databases?: Databases;
   nmrLoaders?: LoadersPreferences;
+  infoBlock?: InfoBlock;
 }
 
 /**

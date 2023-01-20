@@ -36,6 +36,14 @@ export const SpectraTableButtonStyle: CSSProperties = {
   margin: 'auto',
 };
 
+const jPathColumnStyle: CSSProperties = {
+  width: '10%',
+  maxWidth: 0,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
+
 interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
   activeSpectrum: ActiveSpectrum | null;
@@ -95,6 +103,7 @@ export function SpectraTable(props: SpectraTableProps) {
       solvent: {
         Header: '',
         style: columnStyle,
+        accessor: (row) => row.info.solvent,
         Cell: ({ row }) => {
           const info: any = row.original.info;
           return (
@@ -187,6 +196,7 @@ export function SpectraTable(props: SpectraTableProps) {
             Header: col.label,
             accessor: path as any,
             id: `${index}${path}`,
+            style: jPathColumnStyle,
           });
         }
       }
@@ -207,6 +217,8 @@ export function SpectraTable(props: SpectraTableProps) {
       onClick={(e, data: any) =>
         onChangeActiveSpectrum(e, data.original as Datum1D | Datum2D)
       }
+      enableVirtualScroll
+      approxItemHeight={26}
       context={contextMenu}
     />
   );

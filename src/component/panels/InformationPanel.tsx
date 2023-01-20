@@ -23,12 +23,64 @@ const styles: Record<
     backgroundColor: ' #f8f8f8',
     borderBottom: '1px solid gray',
     fontSize: '1em',
+    cursor: 'pointer',
   },
 };
 
 interface InformationPanelInnerProps {
   info: any;
   meta: any;
+  metaInfo: any;
+}
+
+function Arrow(props: { isOpen?: boolean }) {
+  const { isOpen = true } = props;
+  return (
+    <div
+      style={{
+        fontSize: '1.3em',
+        transform: `rotate(${isOpen ? 90 : 0}deg)`,
+        transformOrigin: '50% 50%',
+        display: 'inline-block',
+        lineHeight: 1,
+        padding: isOpen ? '5px 0 0 0' : '0 5px 0 0',
+        verticalAlign: 'middle',
+      }}
+    >
+      &#8227;
+    </div>
+  );
+}
+
+type InformationData = { key: string; value: string }[];
+
+interface InformationTableProps {
+  data: InformationData;
+  columns: any;
+  title: string;
+  onClick: (e: React.MouseEvent<Element, MouseEvent>) => void;
+  isOpen: boolean;
+}
+
+function InformationTable(props: InformationTableProps) {
+  const { data, columns, title, onClick, isOpen = true } = props;
+  return (
+    <>
+      <div style={styles.tableHeader} onClick={onClick}>
+        <Arrow isOpen={isOpen} />
+        <span style={{ verticalAlign: 'middle', display: 'inline-block' }}>
+          {title}
+        </span>
+      </div>
+      {isOpen && (
+        <ReactTableFlexLayout
+          data={data}
+          columns={columns}
+          style={{ height: 'auto' }}
+        />
+      )}
+    </>
+  );
 }
 
 function filter(
@@ -80,8 +132,19 @@ const columns = [
   },
 ];
 
-function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
+type DataSetKey = 'info' | 'meta' | 'metaInfo';
+
+function InformationPanelInner({
+  info,
+  meta,
+  metaInfo,
+}: InformationPanelInnerProps) {
   const [searchKey, setSearchKey] = useState();
+  const [panelsStatus, openPanel] = useState<Record<DataSetKey, boolean>>({
+    info: true,
+    meta: true,
+    metaInfo: true,
+  });
 
   function handleSearch(e) {
     const searchKey = e.target.value.toLowerCase();
@@ -90,6 +153,14 @@ function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
 
   const matchesInfo = filter(searchKey, info);
   const matchesMeta = filter(searchKey, meta);
+  const matchesMetaInfo = filter(searchKey, metaInfo);
+
+  function handleOpen(key: DataSetKey) {
+    openPanel((prevPanelsStatus) => ({
+      ...prevPanelsStatus,
+      [key]: !prevPanelsStatus[key],
+    }));
+  }
 
   return (
     <div style={styles.container}>
@@ -105,17 +176,26 @@ function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
         />
       </div>
       <div style={styles.tableContainer}>
-        <p style={styles.tableHeader}>Spectrum information</p>
-        <ReactTableFlexLayout
+        <InformationTable
           data={matchesInfo}
           columns={columns}
-          style={{ height: 'auto' }}
+          title="Spectrum information"
+          onClick={() => handleOpen('info')}
+          isOpen={panelsStatus.info}
         />
-        <p style={styles.tableHeader}>Other parameters</p>
-        <ReactTableFlexLayout
+        <InformationTable
           data={matchesMeta}
           columns={columns}
-          style={{ height: 'auto' }}
+          title="Other parameters"
+          onClick={() => handleOpen('meta')}
+          isOpen={panelsStatus.meta}
+        />
+        <InformationTable
+          data={matchesMetaInfo}
+          columns={columns}
+          title="Meta Info parameters"
+          onClick={() => handleOpen('metaInfo')}
+          isOpen={panelsStatus.metaInfo}
         />
       </div>
     </div>
@@ -127,7 +207,7 @@ const MemoizedInformationPanel = memo(InformationPanelInner);
 const emptyData = { info: {}, meta: {} };
 
 export default function InformationPanel() {
-  const { info, meta } = useSpectrum(emptyData);
+  const { info, meta, metaInfo } = useSpectrum(emptyData);
 
-  return <MemoizedInformationPanel {...{ info, meta }} />;
+  return <MemoizedInformationPanel {...{ info, meta, metaInfo }} />;
 }

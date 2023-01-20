@@ -26,12 +26,14 @@ interface SpectraColumnsManagerProps {
   nucleus: string;
   onAdd: (nucleus: string, index: number) => void;
   onDelete: (nucleus: string, index: number) => void;
+  datalist?: string[];
 }
 
 export function SpectraColumnsManager({
   nucleus,
   onAdd,
   onDelete,
+  datalist,
 }: SpectraColumnsManagerProps) {
   const { values: nucleiPreferences } =
     useFormikContext<PanelsPreferences['spectra']>();
@@ -44,7 +46,18 @@ export function SpectraColumnsManager({
         accessor: (_, index) => index + 1,
       },
       {
-        Header: 'column',
+        Header: 'Label',
+        Cell: ({ row }) => {
+          return (
+            <FormikInput
+              name={`nuclei.${nucleus}.columns.${row.index}.label`}
+              style={{ input: { ...style, ...inputStyle } }}
+            />
+          );
+        },
+      },
+      {
+        Header: 'Column',
         Cell: ({ row }) => {
           const column: any = row.original;
 
@@ -56,17 +69,7 @@ export function SpectraColumnsManager({
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.jpath`}
               style={{ input: { ...style, ...inputStyle } }}
-            />
-          );
-        },
-      },
-      {
-        Header: 'Label',
-        Cell: ({ row }) => {
-          return (
-            <FormikInput
-              name={`nuclei.${nucleus}.columns.${row.index}.label`}
-              style={{ input: { ...style, ...inputStyle } }}
+              datalist={datalist}
             />
           );
         },
@@ -108,7 +111,7 @@ export function SpectraColumnsManager({
         },
       },
     ],
-    [nucleus, onAdd, onDelete],
+    [datalist, nucleus, onAdd, onDelete],
   );
 
   return (

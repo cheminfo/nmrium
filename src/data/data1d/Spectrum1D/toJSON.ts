@@ -6,20 +6,15 @@ export function toJSON(datum1D: Datum1D, dataType: DataExportOptionsType) {
     id: datum1D.id,
     display: datum1D.display,
     ...(dataType === 'ROW_DATA' ||
-    (dataType === 'DATA_SOURCE' && !datum1D.source.fileCollection)
+    (dataType === 'DATA_SOURCE' && !datum1D.source.files)
       ? {
           data: datum1D.originalData,
           info: datum1D.originalInfo,
           meta: datum1D.meta,
-          source: {
-            jcampURL: null,
-          },
+          metaInfo: datum1D.metaInfo,
         }
       : {
-          source: {
-            fileCollection: datum1D.source.fileCollection,
-            filter: datum1D.source.filter,
-          },
+          source: datum1D.source,
         }),
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
