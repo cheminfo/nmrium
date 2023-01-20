@@ -260,22 +260,8 @@ const ColumnHeader = ({
   const dispatch = useDispatch();
 
   function selectHandler() {
-    const name = (col as PredefinedTableColumn<any>)?.name;
-    let jpath = '';
-    switch (name) {
-      case 'name':
-        jpath = 'display.name';
-        break;
-      case 'solvent':
-        jpath = 'info.solvent';
-        break;
-      default:
-        jpath = (col as JpathTableColumn)?.jpath || '';
-        break;
-    }
-
-    if (jpath) {
-      dispatch({ type: RECOLOR_SPECTRA_COLOR, payload: { jpath } });
+    if (col?.jpath) {
+      dispatch({ type: RECOLOR_SPECTRA_COLOR, payload: { jpath: col?.jpath } });
     }
   }
 
