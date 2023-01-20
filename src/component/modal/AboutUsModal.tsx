@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Modal } from 'react-science/ui';
+import { SvgLogoNmrium } from 'cheminfo-font';
+import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
 import versionInfo from '../../versionInfo';
 import Logo from '../elements/Logo';
@@ -66,54 +67,69 @@ const styles = css`
   width: 500px;
 `;
 
-interface AboutUsModalProps {
-  onClose?: () => null;
-}
-
-function AboutUsModal({ onClose = () => null }: AboutUsModalProps) {
+function AboutUsModal() {
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
-    <Modal isOpen hasCloseButton onRequestClose={onClose}>
-      <div css={styles}>
-        <Modal.Header>
-          <div className="header">
-            <span>About NMRium</span>
-          </div>
-        </Modal.Header>
-        <div className="container">
-          <div className="center-container">
-            <Logo width={160} height={50} />
-            Version <VersionInfo />
-            <span className="separator" />
-            <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
-              GitHub ( https://git.nmrium.org )
-            </a>
-          </div>
-          <div className="center-container">
-            <span className="separator" />
-          </div>
-          <span className="content">
-            This project is developed by Zakodium Sàrl (Switzerland), the
-            University of Cologne (Germany), Johannes Gutenberg University Mainz
-            (Germany) and Universidad del Valle (Colombia).
-          </span>
-          <div className="center-container">
-            <span className="separator" />
-            <span className="title">Funding is provided by</span>
-            <span className="separator" />
-          </div>
-          <div className="content">
-            <ul>
-              <li>
-                IDNMR grant, which part of the Scientific Library Services and
-                Information Systems (LIS) initiative of the DFG.
-              </li>
-              <li>Zakodium Sàrl (Switzerland).</li>
-              <li>Universidad del Valle (Cali, Colombia).</li>
-            </ul>
+    <>
+      <Toolbar.Item
+        onClick={openDialog}
+        titleOrientation="horizontal"
+        id="logo"
+        title="About NMRium"
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <SvgLogoNmrium />
+        </div>
+      </Toolbar.Item>
+      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
+        <div css={styles}>
+          <Modal.Header>
+            <div className="header">
+              <span>About NMRium</span>
+            </div>
+          </Modal.Header>
+          <div className="container">
+            <div className="center-container">
+              <Logo width={160} height={50} />
+              Version <VersionInfo />
+              <span className="separator" />
+              <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
+                GitHub ( https://git.nmrium.org )
+              </a>
+            </div>
+            <div className="center-container">
+              <span className="separator" />
+            </div>
+            <span className="content">
+              This project is developed by Zakodium Sàrl (Switzerland), the
+              University of Cologne (Germany), Johannes Gutenberg University
+              Mainz (Germany) and Universidad del Valle (Colombia).
+            </span>
+            <div className="center-container">
+              <span className="separator" />
+              <span className="title">Funding is provided by</span>
+              <span className="separator" />
+            </div>
+            <div className="content">
+              <ul>
+                <li>
+                  IDNMR grant, which part of the Scientific Library Services and
+                  Information Systems (LIS) initiative of the DFG.
+                </li>
+                <li>Zakodium Sàrl (Switzerland).</li>
+                <li>Universidad del Valle (Cali, Colombia).</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+    </>
   );
 }
 

@@ -1,4 +1,3 @@
-import { SvgLogoNmrium } from 'cheminfo-font';
 import { useMemo, useCallback, memo } from 'react';
 import {
   FaRegWindowMaximize,
@@ -106,10 +105,6 @@ function HeaderInner(props: HeaderInnerProps) {
     });
   }, [height, modal]);
 
-  const openAboutUs = useCallback(() => {
-    modal.show(<AboutUsModal />);
-  }, [modal]);
-
   const changeWorkspaceHandler = useCallback(
     (option: DropDownListItem) => {
       dispatch({
@@ -137,22 +132,7 @@ function HeaderInner(props: HeaderInnerProps) {
       >
         <div>
           <Toolbar orientation="horizontal">
-            <Toolbar.Item
-              onClick={openAboutUs}
-              titleOrientation="horizontal"
-              id="logo"
-              title="About NMRium"
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <SvgLogoNmrium />
-              </div>
-            </Toolbar.Item>
+            <AboutUsModal />
           </Toolbar>
         </div>
         <div className="toolOptionsPanel">{selectedPanel}</div>
