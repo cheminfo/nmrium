@@ -16,7 +16,7 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
 import { Datum2D, Signal2D, Zone } from './types/data2d';
-import { adjustAlpha } from './utilities/getColor';
+import { adjustAlpha } from './utilities/generateColor';
 
 export interface PredictionOptions {
   name: string;

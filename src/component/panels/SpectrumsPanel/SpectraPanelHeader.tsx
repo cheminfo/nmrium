@@ -5,6 +5,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from 'react-icons/fa';
+import { IoColorPaletteOutline } from 'react-icons/io5';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -19,6 +20,7 @@ import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
+  RECOLOR_SPECTRA_COLOR,
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
@@ -108,6 +110,13 @@ function SpectraPanelHeaderInner({
     dispatch({ type: RESET_SPECTRA_SCALE });
   }
 
+  function recolorSpectraHandler() {
+    dispatch({
+      type: RECOLOR_SPECTRA_COLOR,
+      payload: {},
+    });
+  }
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
@@ -141,6 +150,9 @@ function SpectraPanelHeaderInner({
         </>
       )}
       <SpectraAutomaticPickingButton />
+      <Button popupTitle="Recolor spectra" onClick={recolorSpectraHandler}>
+        <IoColorPaletteOutline />
+      </Button>
     </DefaultPanelHeader>
   );
 }

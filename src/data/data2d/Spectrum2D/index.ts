@@ -7,3 +7,4 @@ export { toJSON } from './toJSON';
 export { changeZoneSignal } from './zones/changeZoneSignal';
 export { detectZones } from './zones/detectZones';
 export { detectZonesManual } from './zones/detectZonesManual';
+export { get2DColor } from './get2DColor';

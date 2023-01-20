@@ -1,3 +1,5 @@
+import { Color2D } from '../types/data2d/Display2D';
+
 export const COLORS: string[] = [
   '#C10020',
   '#007D34',
@@ -21,12 +23,7 @@ export const COLORS: string[] = [
   '#F13A13',
 ];
 
-interface TwoDColors {
-  positiveColor: string;
-  negativeColor: string;
-}
-
-const color2D: Record<string, TwoDColors> = {
+const color2D: Record<string, Color2D> = {
   cosy: { positiveColor: 'darkblue', negativeColor: 'blue' },
   roesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
   noesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
@@ -35,9 +32,9 @@ const color2D: Record<string, TwoDColors> = {
   hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
 };
 
-export function get2DColor(experiment: string, colors = []): TwoDColors {
+export function generate2DColor(experiment: string, colors = []): Color2D {
   if (!color2D[experiment]) {
-    const positiveColor = getColor(false, colors);
+    const positiveColor = generateColor(false, colors);
     const negativeColor = adjustAlpha(positiveColor, 50);
     return { positiveColor, negativeColor };
   }
@@ -55,7 +52,7 @@ export function adjustAlpha(color: string, factor: number): string {
   return color + percentToHex(factor);
 }
 
-export default function getColor(
+export function generateColor(
   isRandom = false,
   usedColors: string[] = [],
   opacity = 100,

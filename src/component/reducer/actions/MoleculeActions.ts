@@ -3,7 +3,7 @@ import { Draft } from 'immer';
 import { generateSpectra } from '../../../data/PredictionManager';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
-import getColor from '../../../data/utilities/getColor';
+import { generateColor } from '../../../data/utilities/generateColor';
 import { DRAGGABLE_STRUCTURE_INITIAL_POSITION } from '../../1d-2d/components/FloatMoleculeStructures/DraggableStructure';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
@@ -83,7 +83,7 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   if (!data) {
     draft.isLoading = false;
   } else {
-    const color = getColor(false, draft.usedColors['1d']);
+    const color = generateColor(false, draft.usedColors['1d']);
     for (const spectrum of generateSpectra(data, options, color)) {
       draft.data.push(spectrum);
       draft.view.spectra.activeSpectra[nucleusToString(spectrum.info.nucleus)] =
