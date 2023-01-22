@@ -12,7 +12,7 @@
           "isVisibleInDomain": true
         },
         "source": {
-          "fileCollection": [
+          "files": [
             {
               "name": "aspirin-1h.zip",
               "size": 524,
