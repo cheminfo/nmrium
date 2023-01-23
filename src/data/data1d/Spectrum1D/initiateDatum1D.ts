@@ -13,15 +13,7 @@ import { initiateRanges } from './ranges/initiateRanges';
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: Partial<Datum1D> = {};
   datum.id = options.id || v4();
-  datum.source = {
-    jcampURL: null,
-    file: {
-      binary: null,
-      name: '',
-      extension: '',
-    },
-    ...options.source,
-  };
+  datum.source = options?.source || {};
 
   datum.display = {
     name: options.display?.name || v4(),
