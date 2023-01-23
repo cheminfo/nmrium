@@ -130,7 +130,7 @@ function initData(draft: Draft<State>, action) {
   state.height = draft.height;
   setPreferences(state, data?.preferences);
   state.isLoading = false;
-  state.actionType = action.actionType;
+  state.actionType = action.type;
   return state;
 }
 
@@ -154,7 +154,7 @@ function loadDropFiles(draft: Draft<State>, action) {
     setData(draft, action.payload);
     setActiveTab(draft);
     changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
-    draft.actionType = action.actionType;
+    draft.actionType = action.type;
     draft.isLoading = false;
   } else {
     return initData(draft, action);
