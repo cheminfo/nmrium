@@ -1,6 +1,6 @@
-import { WorkspaceData } from './Workspace';
+import { WorkspacePreferences } from './Workspace';
 
-export const workspaceDefaultProperties: Required<WorkspaceData> = {
+export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   display: {
     general: {
       hideGeneralSettings: false,
