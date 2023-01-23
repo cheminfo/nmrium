@@ -13,10 +13,8 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || v4();
-  datum.source = {
-    jcampURL: null,
-    ...options.source,
-  };
+  datum.source = options?.source || {};
+
   datum.display = {
     name: options.display?.name || v4(),
     isPositiveVisible: true,
