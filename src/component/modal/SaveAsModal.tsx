@@ -4,6 +4,7 @@ import { Field, Formik } from 'formik';
 import { useCallback, useRef } from 'react';
 
 import { DataExportOptions } from '../../data/SpectraManager';
+import { useChartData } from '../context/ChartContext';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
@@ -57,6 +58,10 @@ interface SaveAsModalProps {
 
 function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
   const refForm = useRef<any>();
+  const { data } = useChartData();
+  const enableExportAsDataSource = data.every(
+    (spectrum) => spectrum?.source?.baseURL,
+  );
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
@@ -122,11 +127,16 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                     />
                     Raw Data
                   </label>
-                  <label>
+                  <label
+                    style={{
+                      color: enableExportAsDataSource ? 'black' : 'lightgray',
+                    }}
+                  >
                     <Field
                       type="radio"
                       name="include.dataType"
                       value={DataExportOptions.DATA_SOURCE}
+                      disabled={!enableExportAsDataSource}
                     />
                     Data Source
                   </label>
