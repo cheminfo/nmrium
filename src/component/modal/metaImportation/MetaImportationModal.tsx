@@ -19,9 +19,9 @@ import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
 import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
+import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
-import { jpathToArray } from '../../utility/jpathToArray';
 import { ModalStyles } from '../ModalStyle';
 
 import { isMetaInformationFile } from './utils/isMetaInformationFile';
@@ -86,7 +86,7 @@ interface MetaImportationModalProps {
 
 const validationSchema = Yup.object({
   source: Yup.string().required(),
-  target: Yup.string().required(),
+  target: Yup.array(Yup.string()).min(1),
 });
 
 function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
@@ -104,7 +104,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
       spectra: { activeTab },
     },
   } = useChartData();
-  const datalist = getSpectraObjectPaths(data);
+  const { datalist, paths } = getSpectraObjectPaths(data);
 
   function handleParseFile(file: FileWithPath | File) {
     parse(file, {
@@ -163,7 +163,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
     let isTargetPathExists = true;
 
     for (const spectrum of getSpectraByNucleus(activeTab, data)) {
-      const value = lodashGet(spectrum, jpathToArray(target), null);
+      const value = lodashGet(spectrum, target, null);
       if (value === null) {
         isTargetPathExists = false;
         break;
@@ -317,6 +317,8 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                         style={{ input: { width: '300px', textAlign: 'left' } }}
                         placeholder="Example: info.plus"
                         datalist={datalist}
+                        mapOnChangeValue={(key) => paths?.[key] || null}
+                        mapValue={(paths) => convertPathArrayToString(paths)}
                       />
                     </Label>
                   </>

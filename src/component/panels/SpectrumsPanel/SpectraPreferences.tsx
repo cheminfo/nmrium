@@ -12,6 +12,7 @@ import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
+import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { PanelsPreferences } from '../../workspaces/Workspace';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup';
@@ -27,7 +28,10 @@ function SpectraPreferences(props, ref: any) {
 
   const preferencesByNuclei = usePanelPreferencesByNuclei('spectra', nuclei);
 
-  const datalist = useMemo(() => getSpectraObjectPaths(data), [data]);
+  const { datalist, paths } = useMemo(
+    () => getSpectraObjectPaths(data),
+    [data],
+  );
 
   function saveHandler(values) {
     preferences.dispatch({
@@ -53,7 +57,7 @@ function SpectraPreferences(props, ref: any) {
     columns = [
       ...columns.slice(0, index),
       {
-        jpath: '',
+        jpath: [],
         label: '',
         visible: true,
       },
@@ -88,6 +92,8 @@ function SpectraPreferences(props, ref: any) {
       },
     });
   }, []);
+  const mapOnChangeValueHandler = useCallback((key) => paths[key], [paths]);
+  const mapValue = useCallback((value) => convertPathArrayToString(value), []);
 
   return (
     <PreferencesContainer>
@@ -103,6 +109,8 @@ function SpectraPreferences(props, ref: any) {
                 nucleus={n}
                 onAdd={handleAdd}
                 onDelete={handleDelete}
+                mapOnChangeValue={mapOnChangeValueHandler}
+                mapValue={mapValue}
                 datalist={datalist}
               />
             </NucleusGroup>

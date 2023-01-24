@@ -4,7 +4,7 @@ import { Datum2D } from '../../data/types/data2d/Datum2D';
 export function getSpectraObjectPaths(spectra: (Datum1D | Datum2D)[]) {
   const keys = ['display', 'meta', 'info', 'metaInfo'];
 
-  const paths = new Set<string>();
+  const paths = {};
 
   for (const spectrum of spectra) {
     for (const key of keys) {
@@ -12,12 +12,17 @@ export function getSpectraObjectPaths(spectra: (Datum1D | Datum2D)[]) {
     }
   }
 
-  return Array.from(paths);
+  return { datalist: Object.keys(paths), paths };
 }
 
-function lookForObjectsPaths(obj: any, path: string[], output: Set<string>) {
+function lookForObjectsPaths(
+  obj: any,
+  path: string[],
+  output: Record<string, string[]>,
+) {
   if (['string', 'number', 'boolean'].includes(typeof obj)) {
-    output.add(path.join('.'));
+    const key = path.join('.');
+    output[key] = path;
     path = [];
   } else {
     for (let key in obj) {

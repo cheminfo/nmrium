@@ -45,11 +45,11 @@ export type PredefinedSpectraColumn = 'visible' | 'name' | 'color' | 'solvent';
 export interface PredefinedTableColumn<T> extends BasicColumnPreferences {
   name: T;
   description: string;
-  jpath?: string;
+  jpath?: string[];
 }
 
 export interface JpathTableColumn extends BasicColumnPreferences {
-  jpath: string;
+  jpath: string[];
 }
 
 export type SpectraTableColumn =

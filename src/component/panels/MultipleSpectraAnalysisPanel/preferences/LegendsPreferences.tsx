@@ -7,9 +7,9 @@ import Button from '../../../elements/Button';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../elements/formik/FormikInput';
+import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
 import {
-  JpathLegendField,
   legendField,
   PredefinedLegendField,
 } from '../../../workspaces/Workspace';
@@ -31,15 +31,18 @@ const styles: Record<'input' | 'column', CSSProperties> = {
 function LegendsPreferences() {
   const { values, setFieldValue } = useFormikContext();
   const { data } = useChartData();
-  const datalist = useMemo(() => getSpectraObjectPaths(data), [data]);
+  const { datalist, paths } = useMemo(
+    () => getSpectraObjectPaths(data),
+    [data],
+  );
 
   const fields = (values as any)?.legendsFields;
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {
       let columns: any[] = [];
-      const emptyField: JpathLegendField = {
-        jpath: '',
+      const emptyField = {
+        jpath: null,
         visible: true,
       };
       if (data && Array.isArray(data)) {
@@ -69,7 +72,6 @@ function LegendsPreferences() {
       },
       {
         Header: 'Field',
-        style: styles.column,
         Cell: ({ row }) => {
           const predefinedColumn = row.original as PredefinedLegendField;
           if (predefinedColumn?.name) {
@@ -80,6 +82,8 @@ function LegendsPreferences() {
             <FormikInput
               name={`legendsFields.${row.index}.jpath`}
               style={{ input: styles.input }}
+              mapOnChangeValue={(key) => paths?.[key] || null}
+              mapValue={(paths) => convertPathArrayToString(paths)}
               datalist={datalist}
             />
           );
@@ -122,10 +126,16 @@ function LegendsPreferences() {
         },
       },
     ],
-    [addHandler, datalist, deleteHandler],
+    [addHandler, datalist, deleteHandler, paths],
   );
 
-  return <ReactTable data={fields} columns={COLUMNS} />;
+  return (
+    <ReactTable
+      data={fields}
+      columns={COLUMNS}
+      style={{ table: { height: '100%' } }}
+    />
+  );
 }
 
 export default LegendsPreferences;

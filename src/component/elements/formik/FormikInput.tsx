@@ -3,7 +3,11 @@ import lodashGet from 'lodash/get';
 
 import Input, { InputProps } from '../Input';
 
-interface FormikInputProps extends InputProps {
+export interface InputMapValueFunctions {
+  mapOnChangeValue?: (value: string | number) => any;
+  mapValue?: (value: any) => string | number;
+}
+interface FormikInputProps extends InputProps, InputMapValueFunctions {
   name: string;
   checkErrorAfterInputTouched?: boolean;
 }
@@ -23,14 +27,21 @@ function FormikInput(props: FormikInputProps) {
     value = null,
     format = () => identity,
     checkErrorAfterInputTouched = true,
+    mapOnChangeValue,
+    mapValue,
     ...resProps
   } = props;
 
-  const { values, handleChange, errors, touched } = useFormikContext();
+  const { values, handleChange, errors, touched, setFieldValue } =
+    useFormikContext();
 
   function changeHandler(e) {
     onChange(e);
-    handleChange(e);
+    if (mapOnChangeValue) {
+      setFieldValue(name, mapOnChangeValue(e.target.value));
+    } else {
+      handleChange(e);
+    }
   }
 
   let isInvalid = lodashGet(errors, name);
@@ -39,10 +50,12 @@ function FormikInput(props: FormikInputProps) {
     isInvalid = lodashGet(errors, name) && lodashGet(touched, name);
   }
 
+  let val = value || lodashGet(values, name);
+  val = mapValue ? mapValue(val) : val;
   return (
     <Input
       name={name}
-      value={value || lodashGet(values, name)}
+      value={val}
       onChange={changeHandler}
       type={type}
       style={{
@@ -50,8 +63,7 @@ function FormikInput(props: FormikInputProps) {
         inputWrapper: {
           ...style.input,
           ...(isInvalid && {
-            borderWidth: '1px',
-            borderColor: 'red',
+            border: '1px solid red',
             outline: 'none',
           }),
         },
