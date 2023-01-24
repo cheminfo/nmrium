@@ -38,14 +38,8 @@ test('automatic assignment panel', async ({ page }) => {
       .locator('_react=Range >> text=3.21')
       .waitFor({ state: 'visible' });
 
-    const automaticAssignmentLocator = nmrium.page.locator(
-      '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
-    );
-
-    await expect(automaticAssignmentLocator).toBeEnabled();
-
     await nmrium.page.click(
-      '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
+      '_react=AutomaticAssignment >> _react=ButtonToolTip[popupTitle="automatic assignment"] >> button',
     );
 
     // Wait for auto assignments process completed.
