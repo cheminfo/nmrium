@@ -33,12 +33,11 @@ test('automatic assignment panel', async ({ page }) => {
       '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',
     );
 
-    const loaderLocator = nmrium.page.locator(
-      'text=Automatic Ranges/Zones detection for all spectra in progress',
-    );
-
-    await loaderLocator.waitFor({ state: 'visible' });
-    await loaderLocator.waitFor({ state: 'hidden' });
+    await nmrium.page
+      .locator(
+        'text=Automatic Ranges/Zones detection for all spectra in progress',
+      )
+      .waitFor({ state: 'hidden' });
 
     // Wait for auto range to be applied.
     await nmrium.page
