@@ -74,7 +74,7 @@ const infoBlockValidation = Yup.object({
   fields: Yup.array().of(
     Yup.object({
       label: Yup.string().required(),
-      jpath: Yup.string().required(),
+      jpath: Yup.array().of(Yup.string()).min(1),
     }),
   ),
 });

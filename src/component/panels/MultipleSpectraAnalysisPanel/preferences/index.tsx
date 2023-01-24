@@ -33,6 +33,11 @@ const preferencesSchema = Yup.object({
       return Yup.array().of(columnSchema(data));
     }),
   }),
+  legendsFields: Yup.array().of(
+    Yup.object({
+      jpath: Yup.array().of(Yup.string()).min(1),
+    }),
+  ),
 });
 
 interface MultipleSpectraAnalysisPreferencesProps {

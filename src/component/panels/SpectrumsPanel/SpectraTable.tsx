@@ -1,3 +1,4 @@
+import lodashGet from 'lodash/get';
 import { useMemo, CSSProperties } from 'react';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
@@ -210,8 +211,8 @@ export function SpectraTable(props: SpectraTableProps) {
           const path = (col as JpathTableColumn)?.jpath;
           columns.push({
             Header: () => <ColumnHeader label={col.label} col={col} />,
-            accessor: path as any,
-            id: `${index}${path}`,
+            accessor: (row) => lodashGet(row, path, ''),
+            id: `${index}`,
             style: jPathColumnStyle,
           });
         }
