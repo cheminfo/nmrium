@@ -6,7 +6,7 @@ test('automatic assignment panel', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('open 1H ethylvinylether spectrum', async () => {
     await nmrium.page.click('li >> text=General');
-    await nmrium.page.click('li >> text=1H ethylvinylether >> nth=0');
+    await nmrium.page.click('li >> text=1H ethylvinylether');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('activate automatic assignment panel', async () => {
@@ -37,6 +37,12 @@ test('automatic assignment panel', async ({ page }) => {
     await nmrium.page
       .locator('_react=Range >> text=3.21')
       .waitFor({ state: 'visible' });
+
+    const automaticAssignmentLocator = nmrium.page.locator(
+      '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
+    );
+
+    await expect(automaticAssignmentLocator).toBeEnabled();
 
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
