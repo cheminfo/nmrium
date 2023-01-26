@@ -1,7 +1,6 @@
 import { memo } from 'react';
 
 import { Datum1D } from '../../data/types/data1d';
-import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures/index';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 import { useChartData } from '../context/ChartContext';
 import { Margin } from '../reducer/Reducer';
@@ -67,7 +66,6 @@ function chart2DInner({
         <XAxis />
         <YAxis />
       </g>
-      <FloatMoleculeStructures />
     </svg>
   );
 }

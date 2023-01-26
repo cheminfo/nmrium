@@ -238,17 +238,17 @@ function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   let _svg: any = (rootRef.getRootNode() as Document)
     .querySelector(`#${elementID}`)
     ?.cloneNode(true);
+
   const width = Number(_svg?.getAttribute('width').replace('px', ''));
   const height = Number(_svg?.getAttribute('height').replace('px', ''));
   for (const element of _svg.querySelectorAll('[data-no-export="true"]')) {
     element.remove();
   }
-  const elements = _svg.querySelectorAll(
-    '[data-replace-float-structure="true"]',
-  );
-  for (const element of elements) {
-    element.replaceWith(element.childNodes[0].childNodes[0]);
-  }
+
+  //append the floating molecules in svg element
+  const floatingMoleculesGroup = getMoleculesElement(rootRef);
+  _svg.append(floatingMoleculesGroup);
+
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;
@@ -266,6 +266,37 @@ function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   const svg = `${head + style + _svg.innerHTML}</svg>`;
   const blob = new Blob([svg], { type: 'image/svg+xml' });
   return { blob, width, height };
+}
+
+function getMoleculesElement(rootRef) {
+  const nmriumViewer: any = (rootRef.getRootNode() as Document).querySelector(
+    `#nmrium-viewer`,
+  );
+
+  const floatingMoleculesGroup = document.createElement('g');
+
+  for (const element of nmriumViewer.querySelectorAll('.draggable-molecule')) {
+    const transform = window
+      .getComputedStyle(element)
+      .getPropertyValue('transform');
+    const matrix = new DOMMatrix(transform);
+    const actionHeaderElement = element.querySelector(
+      '.float-molecule-actions',
+    );
+    const molElement = element
+      .cloneNode(true)
+      .querySelector('svg[id^="molSVG"]');
+    const group = document.createElement('g');
+    group.append(molElement);
+    group.setAttribute(
+      'transform',
+      `translate(${matrix.m41} ${
+        matrix.m42 + actionHeaderElement.clientHeight
+      })`,
+    );
+    floatingMoleculesGroup.append(group);
+  }
+  return floatingMoleculesGroup;
 }
 
 export {
