@@ -28,6 +28,7 @@ import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivat
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 
 import Viewer1D from './1d/Viewer1D';
+import FloatMoleculeStructures from './1d-2d/components/FloatMoleculeStructures';
 import Viewer2D from './2d/Viewer2D';
 import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
@@ -355,13 +356,16 @@ function InnerNMRium({
                                   <div css={viewerContainerStyle}>
                                     <KeysListenerTracker />
                                     <div
+                                      id="nmrium-viewer"
                                       data-test-id="viewer"
                                       ref={viewerRef}
                                       style={{
                                         width: '100%',
                                         height: '100%',
+                                        position: 'relative',
                                       }}
                                     >
+                                      <FloatMoleculeStructures />
                                       {displayerMode ===
                                       DISPLAYER_MODE.DM_1D ? (
                                         <Viewer1D emptyText={emptyText} />
@@ -380,7 +384,7 @@ function InnerNMRium({
                                   style={{
                                     position: 'absolute',
                                     pointerEvents: 'none',
-                                    zIndex: 0,
+                                    zIndex: 2,
                                     left: 0,
                                     right: 0,
                                     top: 0,
