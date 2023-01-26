@@ -208,6 +208,8 @@ export default function MoleculePanelHeader({
     });
   }
 
+  const hasMolecules = molecules && molecules.length > 0;
+
   return (
     <div css={toolbarStyle}>
       {!actionsOptions.hideExport && (
@@ -244,7 +246,7 @@ export default function MoleculePanelHeader({
           </button>
         </ToolTip>
       )}
-      {!actionsOptions.hidePredict && molecules && molecules.length > 0 && (
+      {!actionsOptions.hidePredict && hasMolecules && (
         <ButtonToolTip
           popupTitle="Predict Spectra"
           popupPlacement="left"
@@ -259,6 +261,7 @@ export default function MoleculePanelHeader({
         popupTitle="Float Molecule"
         popupPlacement="left"
         onClick={floatMoleculeHandler}
+        disabled={!hasMolecules}
       >
         <IoOpenOutline />
       </ActiveButton>
@@ -268,6 +271,7 @@ export default function MoleculePanelHeader({
         popupTitle="Show atom number"
         popupPlacement="left"
         onClick={showAtomNumbersHandler}
+        disabled={!hasMolecules}
       >
         <p style={atomLabelStyle}>#</p>
       </ActiveButton>
