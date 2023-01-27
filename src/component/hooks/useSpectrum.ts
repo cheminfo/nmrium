@@ -3,7 +3,8 @@ import { useMemo } from 'react';
 import { Datum1D } from '../../data/types/data1d';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+
+import { useActiveSpectrum } from './useActiveSpectrum';
 
 export default function useSpectrum(defaultValue: any = null) {
   const { data } = useChartData();

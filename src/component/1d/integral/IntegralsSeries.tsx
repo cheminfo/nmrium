@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrum } from '../../reducer/Reducer';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 
 import Integral from './Integral';
 

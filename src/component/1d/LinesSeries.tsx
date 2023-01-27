@@ -1,6 +1,6 @@
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 
 import Line from './Line';
 

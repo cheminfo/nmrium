@@ -6,9 +6,9 @@ import {
 import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useSpectrum from '../hooks/useSpectrum';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
-import { useActiveSpectrum } from '../reducer/Reducer';
 import { PathBuilder } from '../utility/PathBuilder';
 
 import { getYScale } from './utilities/scale';

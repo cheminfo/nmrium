@@ -1,8 +1,8 @@
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useSpectrum from '../../hooks/useSpectrum';
-import { useActiveSpectrum } from '../../reducer/Reducer';
 import getVerticalShift from '../utilities/getVerticalShift';
 
 import { usePeakShapesPath } from './usePeakShapesPath';
