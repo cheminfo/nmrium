@@ -19,7 +19,6 @@ import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
 
@@ -30,7 +29,7 @@ import { resetSelectedTool } from './ToolsActions';
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
 
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum?.index;
 
@@ -43,7 +42,7 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
 }
 
 function applyZeroFillingFilter(draft: Draft<State>, action) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
     const { size } = action.payload;
@@ -61,7 +60,7 @@ function applyZeroFillingFilter(draft: Draft<State>, action) {
 }
 
 function calculateApodizationFilter(draft: Draft<State>, action) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
     const options = action.payload;
@@ -80,7 +79,7 @@ function calculateApodizationFilter(draft: Draft<State>, action) {
 }
 
 function applyApodizationFilter(draft: Draft<State>, action) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
     const options = action.payload;
@@ -98,7 +97,7 @@ function applyApodizationFilter(draft: Draft<State>, action) {
 }
 
 function calculateZeroFillingFilter(draft: Draft<State>, action) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
     const { size } = action.payload;
@@ -118,7 +117,7 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
   }
 }
 function applyFFTFilter(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
 
@@ -134,7 +133,7 @@ function applyFFTFilter(draft: Draft<State>) {
   }
 }
 function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const { ph0, ph1 } = filterOptions;
@@ -152,7 +151,7 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
   }
 }
 function applyAbsoluteFilter(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     FiltersManager.applyFilter(draft.data[index], [
@@ -169,7 +168,7 @@ function applyAbsoluteFilter(draft: Draft<State>) {
 }
 
 function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
 
@@ -189,7 +188,7 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 }
 
 function calculateBaseLineCorrection(draft: Draft<State>, action?) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const {
@@ -217,7 +216,7 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
   }
 }
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const datum = draft.data[index] as Datum1D;
@@ -237,7 +236,7 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
 }
 
 function enableFilter(draft: Draft<State>, filterID, checked) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum) {
     //apply filter into the spectrum
@@ -265,7 +264,7 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 
 function deleteFilter(draft: Draft<State>, actions) {
   const filterID = actions.payload.id;
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     //apply filter into the spectrum
     FiltersManager.deleteFilter(draft.data[activeSpectrum.index], filterID);
@@ -299,7 +298,7 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
 }
 
 function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { zones } = draft.toolOptions.data.baselineCorrection;
     const { livePreview, ...options } = action.options;
@@ -352,7 +351,7 @@ function resetSpectrumByFilter(
 
   let currentDatum: any = null;
 
-  const currentActiveSpectrum = getActiveSpectrumOrFail(draft);
+  const currentActiveSpectrum = getActiveSpectrum(draft);
 
   if (currentActiveSpectrum) {
     const index = currentActiveSpectrum.index;
@@ -545,7 +544,7 @@ function checkFilterHasTempData(selectedToolId: string) {
 }
 
 function setFilterChanges(draft: Draft<State>, selectedFilterID) {
-  const activeSpectrum = getActiveSpectrumOrFail(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
 
   // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
   if (checkFilterHasTempData(selectedFilterID)) {

@@ -2,14 +2,14 @@ import { Draft } from 'immer';
 
 import { State } from '../Reducer';
 
+import { getActiveSpectrum } from './getActiveSpectrum';
+
 export function getSpectrum(state: Draft<State>);
 export function getSpectrum(state: Draft<State>, index: number);
 export function getSpectrum(state: Draft<State>, id: string);
 
 export function getSpectrum(state: Draft<State>, value?: number | string) {
-  const { activeSpectra, activeTab } = state.view.spectra;
-
-  const activeSpectrum = activeSpectra[activeTab]?.[0];
+  const activeSpectrum = getActiveSpectrum(state);
 
   if (value === undefined && activeSpectrum?.id) {
     const index = activeSpectrum.index;

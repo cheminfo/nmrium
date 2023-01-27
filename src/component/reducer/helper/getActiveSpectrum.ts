@@ -4,5 +4,11 @@ import { State } from '../Reducer';
 
 export function getActiveSpectrum(state: Draft<State> | State) {
   const { activeSpectra, activeTab } = state.view.spectra;
-  return activeSpectra[activeTab]?.[0] || null;
+
+  const spectra = activeSpectra[activeTab];
+  if (spectra?.length === 1) {
+    return spectra[0];
+  }
+
+  return null;
 }
