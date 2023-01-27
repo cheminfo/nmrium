@@ -122,7 +122,7 @@ function get2DDomain(state: State) {
     }
   }
 
-  const spectrumsIDs = new Set(nucleus.map((n) => activeSpectra[n]?.id));
+  const spectrumsIDs = new Set(nucleus.map((n) => activeSpectra[n]?.[0]?.id));
 
   const filteredData = data
     .filter((d) => spectrumsIDs.has(d.id) && d.info.dimension === 1)

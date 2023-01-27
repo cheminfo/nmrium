@@ -67,18 +67,19 @@ function setSelectedTool(draft: Draft<State>, action) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
         const activeSpectrum = getActiveSpectrumOrFail(draft);
-
-        const range = draft.view.ranges.find(
-          (r) => r.spectrumID === activeSpectrum?.id,
-        );
-        if (range) {
-          range.showMultiplicityTrees = true;
-        } else {
-          draft.view.ranges.push({
-            spectrumID: activeSpectrum.id,
-            ...rangeStateInit,
-            showMultiplicityTrees: true,
-          });
+        if (activeSpectrum) {
+          const range = draft.view.ranges.find(
+            (r) => r.spectrumID === activeSpectrum?.id,
+          );
+          if (range) {
+            range.showMultiplicityTrees = true;
+          } else {
+            draft.view.ranges.push({
+              spectrumID: activeSpectrum.id,
+              ...rangeStateInit,
+              showMultiplicityTrees: true,
+            });
+          }
         }
       }
 
@@ -216,10 +217,9 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
 }
 
 function getSpectrumID(draft: Draft<State>, index): string | null {
-  const spectrum =
-    draft.view.spectra.activeSpectra[
-      draft.view.spectra.activeTab.split(',')[index]
-    ];
+  const { activeSpectra, activeTab } = draft.view.spectra;
+
+  const spectrum = activeSpectra[activeTab.split(',')[index]]?.[0];
   return spectrum?.id || null;
 }
 
@@ -316,7 +316,7 @@ function zoomOut(draft: Draft<State>, action) {
 
 function hasAcceptedSpectrum(draft: Draft<State>, index) {
   const nuclei = draft.view.spectra.activeTab.split(',');
-  const activeSpectrum = draft.view.spectra.activeSpectra[nuclei[index]];
+  const activeSpectrum = draft.view.spectra.activeSpectra[nuclei[index]]?.[0];
   return (
     activeSpectrum?.id &&
     !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
@@ -370,7 +370,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
 
     if (data.length === 1) {
       const index = draft.data.findIndex((datum) => datum.id === data[0].id);
-      tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+      tabActiveSpectrum[tabKey] = [{ id: data[0].id, index }];
     } else {
       const tabSpectra = dataGroupByTab[tabKey];
       const tabSpectraLength = tabSpectra.length;
@@ -384,7 +384,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
           const index = draft.data.findIndex(
             (datum) => datum.id === FTSpectrums[0].id,
           );
-          tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
+          tabActiveSpectrum[tabKey] = [{ id: FTSpectrums[0].id, index }];
         } else {
           tabActiveSpectrum[tabKey] = null;
         }

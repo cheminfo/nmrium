@@ -106,7 +106,7 @@ export interface ViewState {
      * active spectrum id per nucleus
      * @default {}
      */
-    activeSpectra: Record<string, ActiveSpectrum | null>;
+    activeSpectra: Record<string, ActiveSpectrum[] | null>;
     /**
      * current select tab (nucleus)
      * @default null
@@ -426,7 +426,7 @@ export function useActiveSpectrum() {
       spectra: { activeSpectra, activeTab },
     },
   } = useChartData();
-  return activeSpectra[activeTab] || null;
+  return activeSpectra[activeTab]?.[0] || null;
 }
 export function initState(state: State): State {
   const displayerKey = v4();

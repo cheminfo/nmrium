@@ -7,8 +7,10 @@ export function getSpectrum(state: Draft<State>, index: number);
 export function getSpectrum(state: Draft<State>, id: string);
 
 export function getSpectrum(state: Draft<State>, value?: number | string) {
-  const activeSpectrum =
-    state.view.spectra.activeSpectra[state.view.spectra.activeTab];
+  const { activeSpectra, activeTab } = state.view.spectra;
+
+  const activeSpectrum = activeSpectra[activeTab]?.[0];
+
   if (value === undefined && activeSpectrum?.id) {
     const index = activeSpectrum.index;
     return state.data[index];

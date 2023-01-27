@@ -46,9 +46,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const spectrumData: any[] = useMemo(() => {
     const nuclei = activeTab.split(',');
     return nuclei
-      .filter((n) => activeSpectra[n]?.id)
+      .filter((n) => activeSpectra[n]?.[0]?.id)
       .map((nucleus) => {
-        const id = activeSpectra[nucleus]?.id;
+        const id = activeSpectra[nucleus]?.[0]?.id;
         assert(id, `Error in Viewer2D: id is not defined`);
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
