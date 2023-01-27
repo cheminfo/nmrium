@@ -1,4 +1,8 @@
-import { CURRENT_EXPORT_VERSION, processJcamp } from 'nmr-load-save';
+import {
+  NmriumState,
+  processJcamp,
+  serializeNmriumState,
+} from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
@@ -99,6 +103,7 @@ export function toJSON(
   target: JSONTarget,
   options: ExportOptions = {},
 ): NMRiumDataReturn {
+  console.log(target, 'target');
   const {
     data = [],
     molecules: mols = [],
@@ -106,29 +111,51 @@ export function toJSON(
     actionType = '',
   } = state;
 
-  const { dataType = 'DATA_SOURCE', view = false, settings = false } = options;
+  const { dataType = 'ROW_DATA', view = false, settings = false } = options;
 
-  const spectra = data.map((ob) => {
-    return ob.info.dimension === 1
-      ? (Datum1D.toJSON(ob as Datum1DType, dataType) as Datum1DType)
-      : (Datum2D.toJSON(ob as Datum2DType, dataType) as Datum2DType);
-  });
+  // const spectra = data.map((ob) => {
+  //   return ob.info.dimension === 1
+  //     ? (Datum1D.toJSON(ob as Datum1DType, dataType) as Datum1DType)
+  //     : (Datum2D.toJSON(ob as Datum2DType, dataType) as Datum2DType);
+  // });
 
   const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
   );
 
-  return {
-    version: CURRENT_EXPORT_VERSION,
+  const nmriumState: NmriumState = {
     data: {
       ...(target === 'onDataChange' ? { actionType } : {}),
-      spectra,
+      spectra: data,
       molecules,
       correlations,
     },
-    ...(view && { view: state.view }),
-    ...(settings && {
-      settings: preferencesState.current,
-    }),
+    view: state.view,
+    settings: preferencesState.current,
   };
+
+  const includeData =
+    dataType === 'ROW_DATA'
+      ? 'rawData'
+      : dataType === 'NO_DATA'
+      ? 'noData'
+      : 'dataSource';
+  return serializeNmriumState(nmriumState, {
+    includeData,
+    includeSettings: settings,
+    includeView: view,
+  });
+  // return {
+  //   version: CURRENT_EXPORT_VERSION,
+  //   data: {
+  //     ...(target === 'onDataChange' ? { actionType } : {}),
+  //     spectra,
+  //     molecules,
+  //     correlations,
+  //   },
+  //   ...(view && { view: state.view }),
+  //   ...(settings && {
+  //     settings: preferencesState.current,
+  //   }),
+  // };
 }
