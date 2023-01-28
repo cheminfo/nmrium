@@ -1,3 +1,4 @@
+import { CURRENT_EXPORT_VERSION } from 'nmr-load-save';
 import {
   NmriumState,
   processJcamp,
@@ -124,6 +125,7 @@ export function toJSON(
   );
 
   const nmriumState: NmriumState = {
+    version: CURRENT_EXPORT_VERSION,
     data: {
       ...(target === 'onDataChange' ? { actionType } : {}),
       spectra: data,
