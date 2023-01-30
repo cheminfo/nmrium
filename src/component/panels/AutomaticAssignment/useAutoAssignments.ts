@@ -5,7 +5,7 @@ import {
   SpectraData2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d/Datum2D';
@@ -43,14 +43,14 @@ export function useAutoAssignments() {
   const alert = useAlert();
   const [assignments, setAssignments] = useState<AutoAssignmentsData[]>([]);
 
-  const restAssignments = useCallback(() => {
+  function restAssignments() {
     dispatch({
       type: SET_AUTOMATIC_ASSIGNMENTS,
       payload: { assignments: originData.current },
     });
-  }, [dispatch]);
+  }
 
-  const getAssignments = useCallback(() => {
+  function getAssignments() {
     void (async () => {
       const hideLoading = await alert.showLoading('Auto Assignments');
       const molecule = OCL.Molecule.fromMolfile(molecules[0]?.molfile || '');
@@ -82,15 +82,7 @@ export function useAutoAssignments() {
       setAssignments(result);
       hideLoading();
     })();
-  }, [alert, data, dispatch, molecules]);
+  }
 
-  return useMemo(
-    () => ({
-      getAssignments,
-      assignments,
-      restAssignments,
-    }),
-
-    [assignments, getAssignments, restAssignments],
-  );
+  return { getAssignments, assignments, restAssignments };
 }

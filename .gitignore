@@ -32,3 +32,4 @@ pnpm-lock.yaml
 .vscode
 
 test-e2e/videos
+/test-results
