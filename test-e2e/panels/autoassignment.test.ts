@@ -34,9 +34,9 @@ test('automatic assignment panel', async ({ page }) => {
     );
 
     // Wait for auto range to be applied.
-    await nmrium.page
-      .locator('_react=Range >> text=3.21')
-      .waitFor({ state: 'visible' });
+    await expect(
+      nmrium.page.locator('_react=Range >> text=3.21'),
+    ).toBeVisible();
 
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=ButtonToolTip[popupTitle="automatic assignment"] >> button',
