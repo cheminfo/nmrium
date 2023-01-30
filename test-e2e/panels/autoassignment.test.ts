@@ -51,9 +51,7 @@ test('automatic assignment panel', async ({ page }) => {
     });
 
     await expect(
-      nmrium.page.locator(
-        '_react=AutomaticAssignmentTable >> _react=ReactTableRow',
-      ),
+      nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
     ).toHaveCount(2);
   });
 });
