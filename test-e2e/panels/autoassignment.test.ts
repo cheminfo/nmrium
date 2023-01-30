@@ -43,10 +43,12 @@ test('automatic assignment panel', async ({ page }) => {
     );
 
     // Wait for auto assignments process completed.
-    const autoAssignmentsLoader = nmrium.page.locator('text=Auto Assignments');
-
-    await autoAssignmentsLoader.waitFor({ state: 'visible' });
-    await autoAssignmentsLoader.waitFor({ state: 'hidden' });
+    await nmrium.page.waitForSelector('text=Auto Assignments', {
+      state: 'visible',
+    });
+    await nmrium.page.waitForSelector('text=Auto Assignments', {
+      state: 'hidden',
+    });
 
     await expect(
       nmrium.page.locator(
