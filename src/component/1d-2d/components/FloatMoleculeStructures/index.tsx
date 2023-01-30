@@ -34,10 +34,10 @@ export function FloatMoleculeStructuresInner(
   if (floatingMolecules.length === 0) return null;
 
   return (
-    <g>
+    <>
       {floatingMolecules
         .filter(([, view]) => view.floating.visible)
-        .map(([id, moleculeView]) => {
+        .map(([id, moleculeView], index) => {
           const molecule = molecules.find((m) => m.id === id);
           assert(molecule !== undefined, 'molecule should be defined');
           return (
@@ -50,11 +50,12 @@ export function FloatMoleculeStructuresInner(
                 displayerMode,
                 moleculeView,
                 molecule,
+                index,
               }}
             />
           );
         })}
-    </g>
+    </>
   );
 }
 

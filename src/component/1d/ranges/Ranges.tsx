@@ -2,9 +2,10 @@ import { Fragment, memo, useMemo } from 'react';
 
 import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit, useActiveSpectrum } from '../../reducer/Reducer';
+import { rangeStateInit } from '../../reducer/Reducer';
 
 import Range from './Range';
 import RangeIntegral from './RangeIntegral';

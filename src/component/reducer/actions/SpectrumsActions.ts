@@ -88,8 +88,9 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       }
     }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] =
-      activeSpectrum;
+    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = [
+      activeSpectrum,
+    ];
   } else {
     if (currentActiveSpectrum) {
       const index = draft.data.findIndex(

@@ -28,8 +28,11 @@ import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivat
 import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
 import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
 import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
+import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+
 
 import Viewer1D from './1d/Viewer1D';
+import FloatMoleculeStructures from './1d-2d/components/FloatMoleculeStructures';
 import Viewer2D from './2d/Viewer2D';
 import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
@@ -68,7 +71,10 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import { CustomWorkspaces, WorkspaceData } from './workspaces/Workspace';
+import {
+  CustomWorkspaces,
+  WorkspacePreferences as NMRiumPreferences,
+} from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -120,6 +126,8 @@ const containerStyles = css`
   }
 `;
 
+export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
+
 export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
@@ -136,19 +144,13 @@ export interface NMRiumProps {
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
-  preferences?: WorkspaceData;
+  preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
   getSpinner?: () => ReactElement;
 }
-
-export type NMRiumPreferences = Partial<{
-  general: Partial<NMRiumGeneralPreferences>;
-  panels: Partial<NMRiumPanelPreferences>;
-  toolBarButtons: Partial<NMRiumToolBarPreferences>;
-}>;
 
 export type Molecules = Array<{ molfile: string }>;
 export type Spectra = Array<Datum1D | Datum2D>;
@@ -357,13 +359,16 @@ function InnerNMRium({
                                   <div css={viewerContainerStyle}>
                                     <KeysListenerTracker />
                                     <div
+                                      id="nmrium-viewer"
                                       data-test-id="viewer"
                                       ref={viewerRef}
                                       style={{
                                         width: '100%',
                                         height: '100%',
+                                        position: 'relative',
                                       }}
                                     >
+                                      <FloatMoleculeStructures />
                                       {displayerMode ===
                                       DISPLAYER_MODE.DM_1D ? (
                                         <Viewer1D emptyText={emptyText} />
@@ -382,7 +387,7 @@ function InnerNMRium({
                                   style={{
                                     position: 'absolute',
                                     pointerEvents: 'none',
-                                    zIndex: 0,
+                                    zIndex: 2,
                                     left: 0,
                                     right: 0,
                                     top: 0,

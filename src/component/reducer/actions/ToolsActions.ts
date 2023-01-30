@@ -16,7 +16,6 @@ import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { getActiveSpectrumOrFail } from '../helper/getActiveSpectrumOrFail';
 import { getSpectrum } from '../helper/getSpectrum';
 
 import {
@@ -66,19 +65,20 @@ function setSelectedTool(draft: Draft<State>, action) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
-        const activeSpectrum = getActiveSpectrumOrFail(draft);
-
-        const range = draft.view.ranges.find(
-          (r) => r.spectrumID === activeSpectrum?.id,
-        );
-        if (range) {
-          range.showMultiplicityTrees = true;
-        } else {
-          draft.view.ranges.push({
-            spectrumID: activeSpectrum.id,
-            ...rangeStateInit,
-            showMultiplicityTrees: true,
-          });
+        const activeSpectrum = getActiveSpectrum(draft);
+        if (activeSpectrum) {
+          const range = draft.view.ranges.find(
+            (r) => r.spectrumID === activeSpectrum?.id,
+          );
+          if (range) {
+            range.showMultiplicityTrees = true;
+          } else {
+            draft.view.ranges.push({
+              spectrumID: activeSpectrum.id,
+              ...rangeStateInit,
+              showMultiplicityTrees: true,
+            });
+          }
         }
       }
 
@@ -216,11 +216,15 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
 }
 
 function getSpectrumID(draft: Draft<State>, index): string | null {
-  const spectrum =
-    draft.view.spectra.activeSpectra[
-      draft.view.spectra.activeTab.split(',')[index]
-    ];
-  return spectrum?.id || null;
+  const { activeSpectra, activeTab } = draft.view.spectra;
+
+  const spectra = activeSpectra[activeTab.split(',')[index]];
+
+  if (spectra?.length === 1) {
+    return spectra[0].id;
+  }
+
+  return null;
 }
 
 function handleZoom(draft: Draft<State>, action) {
@@ -315,12 +319,19 @@ function zoomOut(draft: Draft<State>, action) {
 }
 
 function hasAcceptedSpectrum(draft: Draft<State>, index) {
-  const nuclei = draft.view.spectra.activeTab.split(',');
-  const activeSpectrum = draft.view.spectra.activeSpectra[nuclei[index]];
-  return (
-    activeSpectrum?.id &&
-    !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
-  );
+  const { activeTab, activeSpectra } = draft.view.spectra;
+  const nuclei = activeTab.split(',');
+  const spectra = activeSpectra[nuclei[index]];
+
+  if (spectra?.length === 1) {
+    const activeSpectrum = spectra[0];
+    return (
+      activeSpectrum?.id &&
+      !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
+    );
+  }
+
+  return false;
 }
 
 function setMargin(draft: Draft<State>) {
@@ -370,7 +381,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
 
     if (data.length === 1) {
       const index = draft.data.findIndex((datum) => datum.id === data[0].id);
-      tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+      tabActiveSpectrum[tabKey] = [{ id: data[0].id, index }];
     } else {
       const tabSpectra = dataGroupByTab[tabKey];
       const tabSpectraLength = tabSpectra.length;
@@ -384,7 +395,7 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
           const index = draft.data.findIndex(
             (datum) => datum.id === FTSpectrums[0].id,
           );
-          tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
+          tabActiveSpectrum[tabKey] = [{ id: FTSpectrums[0].id, index }];
         } else {
           tabActiveSpectrum[tabKey] = null;
         }

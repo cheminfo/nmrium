@@ -9,7 +9,8 @@ import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
-import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   SET_ACTIVE_TAB,
   CHANGE_VISIBILITY,

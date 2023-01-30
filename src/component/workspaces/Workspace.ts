@@ -1,7 +1,9 @@
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
 import { Nuclei } from '../../data/types/common/Nucleus';
 import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
-import { NMRiumPreferences } from '../NMRium';
+import { NMRiumGeneralPreferences } from '../../types/NMRiumGeneralPreferences';
+import { NMRiumPanelPreferences } from '../../types/NMRiumPanelPreferences';
+import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 
 interface NucleusFormat {
   name: string;
@@ -187,8 +189,13 @@ export interface InfoBlock {
   fields: JpathTableColumn[];
 }
 
-export interface WorkspaceData {
-  display?: NMRiumPreferences;
+export interface DisplayPreferences {
+  general?: Partial<NMRiumGeneralPreferences>;
+  panels?: Partial<NMRiumPanelPreferences>;
+  toolBarButtons?: Partial<NMRiumToolBarPreferences>;
+}
+export interface WorkspacePreferences {
+  display?: DisplayPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
   databases?: Databases;
@@ -211,7 +218,7 @@ export type WorkSpaceSource =
   | 'component'
   | 'nmriumFile';
 
-export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
+export type InnerWorkspace = WorkspaceMeta & WorkspacePreferences;
 export type CustomWorkspaces = Record<string, InnerWorkspace>;
 
-export type Workspace = WorkspaceMeta & Required<WorkspaceData>;
+export type Workspace = WorkspaceMeta & Required<WorkspacePreferences>;

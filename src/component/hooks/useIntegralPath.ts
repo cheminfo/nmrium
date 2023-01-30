@@ -5,9 +5,9 @@ import { useMemo } from 'react';
 import { Data1D } from '../../data/types/data1d';
 import { getIntegralYScale } from '../1d/utilities/scale';
 import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
 import { PathBuilder } from '../utility/PathBuilder';
 
+import { useActiveSpectrum } from './useActiveSpectrum';
 import { useXScale } from './useXScale';
 
 function useIntegralYDomain(): ScaleLinear<number, number, number> {

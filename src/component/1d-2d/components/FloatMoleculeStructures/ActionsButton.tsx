@@ -5,7 +5,10 @@ import Button from '../../../elements/Button';
 
 export default function ActionsButton({ onFloatBtnClick }) {
   return (
-    <div data-no-export="true" style={{ display: 'flex', zIndex: 0 }}>
+    <div
+      className="float-molecule-actions"
+      style={{ display: 'flex', zIndex: 0 }}
+    >
       <Button.Action
         style={{ fontSize: '14px' }}
         fill="clear"

@@ -1,4 +1,3 @@
-import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures/index';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 
 import ApodizationLine from './ApodizationLine';
@@ -49,7 +48,6 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
       </g>
-      <FloatMoleculeStructures />
     </svg>
   );
 }

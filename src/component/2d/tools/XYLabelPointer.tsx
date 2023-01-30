@@ -3,9 +3,9 @@ import { useContext, useMemo, CSSProperties } from 'react';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
-import { useActiveSpectrum } from '../../reducer/Reducer';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
 import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
 

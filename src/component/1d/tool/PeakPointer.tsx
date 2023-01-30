@@ -7,7 +7,7 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../reducer/Reducer';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { options } from '../../toolbar/ToolTypes';
 import getVerticalShift from '../utilities/getVerticalShift';
 

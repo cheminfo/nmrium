@@ -12,7 +12,6 @@ import {
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
-import { useChartData } from '../context/ChartContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -106,7 +105,7 @@ export interface ViewState {
      * active spectrum id per nucleus
      * @default {}
      */
-    activeSpectra: Record<string, ActiveSpectrum | null>;
+    activeSpectra: Record<string, ActiveSpectrum[] | null>;
     /**
      * current select tab (nucleus)
      * @default null
@@ -420,14 +419,7 @@ export interface State {
 
   usedColors: UsedColors;
 }
-export function useActiveSpectrum() {
-  const {
-    view: {
-      spectra: { activeSpectra, activeTab },
-    },
-  } = useChartData();
-  return activeSpectra[activeTab] || null;
-}
+
 export function initState(state: State): State {
   const displayerKey = v4();
   const correlations = buildCorrelationData([], {

@@ -2,7 +2,7 @@ import { Correlation } from 'nmr-correlation';
 import { useMemo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
-import { useActiveSpectrum } from '../../../reducer/Reducer';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
 
 import { isInView } from './Utilities';
 

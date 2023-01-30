@@ -45,17 +45,18 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const spectrumData: any[] = useMemo(() => {
     const nuclei = activeTab.split(',');
-    return nuclei
-      .filter((n) => activeSpectra[n]?.id)
-      .map((nucleus) => {
-        const id = activeSpectra[nucleus]?.id;
-        assert(id, `Error in Viewer2D: id is not defined`);
+    return nuclei.map((nucleus) => {
+      const spectra = activeSpectra[nucleus];
+      if (spectra?.length === 1) {
+        const id = spectra[0].id;
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
         );
         assert(spectrum, `Spectrum with id ${id} not found`);
         return spectrum;
-      });
+      }
+      return null;
+    });
   }, [activeTab, data, activeSpectra]);
 
   const DIMENSION = get2DDimensionLayout(state);
@@ -166,14 +167,14 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                   dimensionBorder={DIMENSION.CENTER_2D}
                 />
                 <>
-                  {spectrumData?.[0] && (
+                  {spectrumData[0] && (
                     <BrushXY
                       brushType={BRUSH_TYPE.X}
                       dimensionBorder={DIMENSION.TOP_1D}
                       height={margin.top}
                     />
                   )}
-                  {spectrumData?.[1] && (
+                  {spectrumData[1] && (
                     <BrushXY
                       brushType={BRUSH_TYPE.Y}
                       dimensionBorder={DIMENSION.LEFT_1D}
