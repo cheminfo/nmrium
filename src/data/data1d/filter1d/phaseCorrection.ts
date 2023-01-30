@@ -1,6 +1,7 @@
 import { reimAbsolute, reimPhaseCorrection } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
+import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 export const id = 'phaseCorrection';
 export const name = 'Phase correction';
@@ -18,6 +19,7 @@ export function apply(datum1D: Datum1D, options: any = {}) {
     throw new Error('phaseCorrection not applicable on this data');
   }
 
+  isComplexData1D(datum1D.data);
   let { ph0, ph1, absolute } = options;
   if (absolute) {
     datum1D.data.re = reimAbsolute(datum1D.data);

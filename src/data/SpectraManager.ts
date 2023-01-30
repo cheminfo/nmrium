@@ -1,5 +1,4 @@
 import {
-  NmriumState,
   processJcamp,
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
@@ -7,7 +6,6 @@ import {
 
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
-import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Datum2D from './data2d/Spectrum2D';
@@ -103,7 +101,7 @@ export function toJSON(
   }>,
   target: JSONTarget,
   options: ExportOptions = {},
-): NMRiumDataReturn {
+) {
   const {
     data = [],
     molecules: mols = [],
@@ -117,7 +115,7 @@ export function toJSON(
     Molecule.toJSON(mol),
   );
 
-  const nmriumState: NmriumState = {
+  const nmriumState: any = {
     version: CURRENT_EXPORT_VERSION,
     data: {
       ...(target === 'onDataChange' ? { actionType } : {}),

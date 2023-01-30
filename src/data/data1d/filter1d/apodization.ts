@@ -1,6 +1,7 @@
 import { apodization } from 'nmr-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
+import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 export const id = 'apodization';
 export const name = 'Apodization';
@@ -57,9 +58,13 @@ export function apodizationFilter(
     pointsToShift = 0;
   }
 
-  const re = datum1D.data.re;
-  const im = datum1D.data.im;
-  const t = datum1D.data.x;
+  const { data } = datum1D;
+
+  isComplexData1D(data);
+
+  const re = data.re;
+  const im = data.im;
+  const t = data.x;
 
   const length = re.length;
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...

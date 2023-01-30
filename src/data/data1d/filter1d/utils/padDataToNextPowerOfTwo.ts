@@ -1,11 +1,13 @@
 import { xSequentialFill } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../types/data1d';
+import { isComplexData1D } from '../../../utilities/isComplexData1D';
 
 export function padDataToNextPowerOfTwo(
   datum1D: Datum1D,
   digitalFilterApplied: boolean,
 ) {
+  isComplexData1D(datum1D.data);
   const { x, re, im } = datum1D.data;
   const size = nextPowerOfTwo(x.length);
 

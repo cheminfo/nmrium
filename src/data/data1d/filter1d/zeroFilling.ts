@@ -1,4 +1,5 @@
 import { Datum1D } from '../../types/data1d';
+import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 export const id = 'zeroFilling';
 export const name = 'Zero Filling';
@@ -23,6 +24,8 @@ export function apply(datum1D: Datum1D, size) {
   } else {
     pointsToShift = 0;
   }
+
+  isComplexData1D(datum1D.data);
 
   const { re, im, x } = datum1D.data;
 

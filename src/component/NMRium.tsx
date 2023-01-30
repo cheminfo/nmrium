@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject } from 'nmr-load-save';
+import { readNMRiumObject, SerializedNmriumState } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -25,7 +25,6 @@ import { toJSON } from '../data/SpectraManager';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
-import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
 import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
 import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
@@ -121,8 +120,6 @@ const containerStyles = css`
   }
 `;
 
-export type { NMRiumDataReturn } from '../types/NMRiumDataReturn';
-
 export type NMRiumWorkspace =
   | 'exercise'
   | 'process1D'
@@ -135,7 +132,7 @@ export type NMRiumWorkspace =
 
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: NMRiumDataReturn) => void;
+  onDataChange?: (data: SerializedNmriumState) => void;
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;

@@ -1,6 +1,7 @@
 import { reimFFT, reimPhaseCorrection, xMean } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
+import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 import { padDataToNextPowerOfTwo } from './utils/padDataToNextPowerOfTwo';
 
@@ -20,6 +21,8 @@ export function apply(datum1D: Datum1D) {
   let digitalFilterApplied = datum1D.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
   );
+
+  isComplexData1D(datum1D.data);
 
   const data =
     datum1D.meta.AQ_mod === 1

@@ -8,11 +8,11 @@ import { Datum2D } from '../data/types/data2d';
 
 export interface NMRiumDataReturn {
   version: number;
-  data: {
+  data?: {
     actionType?: string;
     spectra: (Datum1D | Datum2D)[];
     molecules: StateMolecule[];
-    correlations: CorrelationData;
+    correlations?: CorrelationData;
   };
   view?: ViewState;
   settings?: Workspace;

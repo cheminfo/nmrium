@@ -11,7 +11,7 @@ import { Ranges } from './Ranges';
 
 export interface Datum1D {
   id: string;
-  source: Source;
+  source?: Source;
   display: Display1D;
   info: Info1D;
   originalInfo?: Info1D;

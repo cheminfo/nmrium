@@ -1,6 +1,7 @@
 import { reimAutoPhaseCorrection } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
+import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 export const id = 'autoPhaseCorrection';
 export const name = 'Automatic phase correction';
@@ -24,6 +25,7 @@ export function apply(datum1D: Datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not applicable on this data');
   }
+  isComplexData1D(datum1D.data);
   return reimAutoPhaseCorrection(datum1D.data, {
     ...defaultOptions,
     ...options,

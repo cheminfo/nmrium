@@ -9,7 +9,7 @@ import { Zones } from './Zones';
 
 export interface Datum2D {
   id: string;
-  source: Source;
+  source?: Source;
   display: Display2D;
   info: Info2D;
   originalInfo?: Info2D;
