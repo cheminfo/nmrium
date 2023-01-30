@@ -26,9 +26,6 @@ import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
 import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
-import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
-import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
-import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
@@ -69,7 +66,10 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import { CustomWorkspaces, WorkspaceData } from './workspaces/Workspace';
+import {
+  CustomWorkspaces,
+  WorkspacePreferences as NMRiumPreferences,
+} from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -122,6 +122,7 @@ const containerStyles = css`
 `;
 
 export type { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
   | 'exercise'
@@ -139,19 +140,13 @@ export interface NMRiumProps {
   onViewChange?: (view: ViewState) => void;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
-  preferences?: WorkspaceData;
+  preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
   getSpinner?: () => ReactElement;
 }
-
-export type NMRiumPreferences = Partial<{
-  general: Partial<NMRiumGeneralPreferences>;
-  panels: Partial<NMRiumPanelPreferences>;
-  toolBarButtons: Partial<NMRiumToolBarPreferences>;
-}>;
 
 export type Molecules = Array<{ molfile: string }>;
 export type Spectra = Array<Datum1D | Datum2D>;
