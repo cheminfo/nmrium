@@ -38,6 +38,9 @@ test('automatic assignment panel', async ({ page }) => {
       nmrium.page.locator('_react=Range >> text=3.21'),
     ).toBeVisible();
 
+    //just for de debugging
+    await nmrium.page.waitForTimeout(3000);
+
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=ButtonToolTip[popupTitle="automatic assignment"] >> button',
     );
