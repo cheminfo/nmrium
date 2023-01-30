@@ -42,14 +42,6 @@ test('automatic assignment panel', async ({ page }) => {
       '_react=AutomaticAssignment >> _react=ButtonToolTip[popupTitle="automatic assignment"] >> button',
     );
 
-    // Wait for auto assignments process completed.
-    await nmrium.page.waitForSelector('text=Auto Assignments', {
-      state: 'visible',
-    });
-    await nmrium.page.waitForSelector('text=Auto Assignments', {
-      state: 'hidden',
-    });
-
     await expect(
       nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
     ).toHaveCount(2);
