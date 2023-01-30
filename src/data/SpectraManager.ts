@@ -114,12 +114,6 @@ export function toJSON(
 
   const { dataType = 'ROW_DATA', view = false, settings = false } = options;
 
-  // const spectra = data.map((ob) => {
-  //   return ob.info.dimension === 1
-  //     ? (Datum1D.toJSON(ob as Datum1DType, dataType) as Datum1DType)
-  //     : (Datum2D.toJSON(ob as Datum2DType, dataType) as Datum2DType);
-  // });
-
   const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
   );
@@ -142,22 +136,10 @@ export function toJSON(
       : dataType === 'NO_DATA'
       ? 'noData'
       : 'dataSource';
+
   return serializeNmriumState(nmriumState, {
     includeData,
     includeSettings: settings,
     includeView: view,
   });
-  // return {
-  //   version: CURRENT_EXPORT_VERSION,
-  //   data: {
-  //     ...(target === 'onDataChange' ? { actionType } : {}),
-  //     spectra,
-  //     molecules,
-  //     correlations,
-  //   },
-  //   ...(view && { view: state.view }),
-  //   ...(settings && {
-  //     settings: preferencesState.current,
-  //   }),
-  // };
 }
