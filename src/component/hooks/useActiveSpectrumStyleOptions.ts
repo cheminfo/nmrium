@@ -2,7 +2,8 @@ import get from 'lodash/get';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+
+import { useActiveSpectrum } from './useActiveSpectrum';
 
 interface ActiveSpectrumOptionsResult {
   isActive: boolean;

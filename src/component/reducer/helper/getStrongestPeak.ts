@@ -4,9 +4,11 @@ import { Draft } from 'immer';
 import { Data1D } from '../../../data/types/data1d';
 import { State } from '../Reducer';
 
+import { getActiveSpectrum } from './getActiveSpectrum';
+
 export function getStrongestPeak(draft: Draft<State>) {
-  const activeSpectrum =
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab];
+  const activeSpectrum = getActiveSpectrum(draft);
+
   if (activeSpectrum) {
     const activeData = draft.data[activeSpectrum?.index].data as Data1D;
     const strongestPeakValue = max(activeData.re) as number;

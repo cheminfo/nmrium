@@ -3,6 +3,8 @@ import { Draft } from 'immer';
 
 import { State } from '../Reducer';
 
+import { getActiveSpectrum } from './getActiveSpectrum';
+
 export const ZoomType = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL',
@@ -36,8 +38,8 @@ function setZoom(
     spectrumID?: string;
   } = {},
 ) {
-  const { height, margin, view, originDomain, yDomains } = draft;
-  const activeSpectrum = view.spectra.activeSpectra[view.spectra.activeTab];
+  const { height, margin, originDomain, yDomains } = draft;
+  const activeSpectrum = getActiveSpectrum(draft);
   const { scale = 1, spectrumID = null } = options;
 
   if (activeSpectrum === null && spectrumID === null) {

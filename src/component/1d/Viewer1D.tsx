@@ -15,9 +15,9 @@ import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { useActiveSpectrum } from '../reducer/Reducer';
 import { ZoomType } from '../reducer/helper/Zoom1DManager';
 import getRange from '../reducer/helper/getRange';
 import scaleReducer, {

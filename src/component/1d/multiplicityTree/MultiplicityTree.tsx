@@ -10,11 +10,11 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import {
   hasCouplingConstant,
   checkMultiplicity,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
-import { useActiveSpectrum } from '../../reducer/Reducer';
 import { options } from '../../toolbar/ToolTypes';
 import { assert } from '../../utility/assert';
 

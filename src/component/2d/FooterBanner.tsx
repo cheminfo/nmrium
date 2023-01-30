@@ -9,8 +9,8 @@ import { Data2DFid, Data2DFt } from '../../data/types/data2d/Data2D';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
-import { useActiveSpectrum } from '../reducer/Reducer';
 import { options } from '../toolbar/ToolTypes';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
