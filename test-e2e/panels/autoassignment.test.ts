@@ -48,6 +48,7 @@ test('automatic assignment panel', async ({ page }) => {
 
     await progressLocator.waitFor({
       state: 'hidden',
+      timeout: 10000,
     });
 
     await expect(
