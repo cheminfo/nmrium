@@ -25,11 +25,6 @@ import { toJSON } from '../data/SpectraManager';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
-import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
-import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
-import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
-import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
-
 
 import Viewer1D from './1d/Viewer1D';
 import FloatMoleculeStructures from './1d-2d/components/FloatMoleculeStructures';
