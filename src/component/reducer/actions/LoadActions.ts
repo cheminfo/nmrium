@@ -66,17 +66,13 @@ function setData(
     usedColors: UsedColors;
   },
 ) {
-  const {
-    data,
-    usedColors,
-    view,
-  } = input || {
+  const { data, usedColors, view } = input || {
     data: { spectra: [], molecules: [], correlations: {} },
     multipleAnalysis: {},
   };
 
   const { spectra = [], molecules = [], correlations = {} } = data || {};
-  
+
   if (view) {
     draft.view = view;
   }
@@ -152,14 +148,14 @@ function loadJcampFile(draft: Draft<State>, actions) {
 }
 
 function loadDropFiles(draft: Draft<State>, action) {
-  const { containsNmrium } = action;
+  const { containsNmrium, payload, type } = action;
   if (containsNmrium) {
     return initData(draft, action);
   } else {
-    setData(draft, action.payload);
+    setData(draft, payload);
     setActiveTab(draft);
     changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
-    draft.actionType = action.type;
+    draft.actionType = type;
     draft.isLoading = false;
   }
 }

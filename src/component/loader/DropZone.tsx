@@ -68,7 +68,10 @@ function DropZone(props) {
         const fileCollection = await fileCollectionFromFileList(files);
 
         const { nmrLoaders: filter } = preferences.current;
-        const { nmriumState, containsNmrium} = await readDropFiles(fileCollection, { filter });
+        const { nmriumState, containsNmrium } = await readDropFiles(
+          fileCollection,
+          { filter },
+        );
         if ((nmriumState as any)?.settings) {
           dispatchPreferences({
             type: 'SET_WORKSPACE',
@@ -78,7 +81,11 @@ function DropZone(props) {
             },
           });
         }
-        dispatch({ type: LOAD_DROP_FILES, payload: nmriumState, containsNmrium });
+        dispatch({
+          type: LOAD_DROP_FILES,
+          payload: nmriumState,
+          containsNmrium,
+        });
       }
     } catch (error: any) {
       alert.error(error.message);

@@ -1,8 +1,8 @@
-import { CURRENT_EXPORT_VERSION } from 'nmr-load-save';
 import {
   NmriumState,
   processJcamp,
   serializeNmriumState,
+  CURRENT_EXPORT_VERSION,
 } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
@@ -104,7 +104,6 @@ export function toJSON(
   target: JSONTarget,
   options: ExportOptions = {},
 ): NMRiumDataReturn {
-  console.log(target, 'target');
   const {
     data = [],
     molecules: mols = [],
