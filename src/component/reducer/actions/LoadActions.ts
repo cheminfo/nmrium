@@ -58,7 +58,7 @@ function setData(
   draft: Draft<State>,
   input: {
     view?: ViewState;
-    data: {
+    data?: {
       spectra: Spectra;
       molecules: StateMoleculeExtended[];
       correlations: CorrelationData;
@@ -67,13 +67,16 @@ function setData(
   },
 ) {
   const {
-    data: { spectra, molecules, correlations },
+    data,
     usedColors,
     view,
   } = input || {
     data: { spectra: [], molecules: [], correlations: {} },
     multipleAnalysis: {},
   };
+
+  const { spectra = [], molecules = [], correlations = {} } = data || {};
+  
   if (view) {
     draft.view = view;
   }
