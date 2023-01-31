@@ -149,7 +149,6 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await test.step('Add default peaks', async () => {
     await addPeaks(nmrium, { keyboard: true });
   });
-
   await test.step('Check peaks table', async () => {
     await checkPeakNumber(nmrium, 15);
   });
@@ -159,7 +158,6 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await test.step('Check peaks table', async () => {
     await checkPeakNumber(nmrium, 16);
   });
-
   await test.step('Check filters panel', async () => {
     await expect(
       nmrium.page.locator('_react=FilterPanel >> .filter-row'),
