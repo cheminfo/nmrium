@@ -67,10 +67,10 @@ function DropZone(props) {
       } else {
         const fileCollection = await fileCollectionFromFileList(files);
 
-        const { nmrLoaders: filter } = preferences.current;
+        const { nmrLoaders: selector } = preferences.current;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
-          { filter },
+          { selector },
         );
         if ((nmriumState as any)?.settings) {
           dispatchPreferences({
