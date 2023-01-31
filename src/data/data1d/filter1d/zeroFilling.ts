@@ -1,4 +1,5 @@
-import { Datum1D } from '../../types/data1d';
+import { Data1D } from '../../types/data1d/Data1D';
+import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'zeroFilling';
 export const name = 'Zero Filling';
@@ -51,8 +52,12 @@ export function apply(datum1D: Datum1D, size) {
   datum1D.data = { ...datum1D.data, re: newRE, im: newIM, x: newX };
 }
 
-export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
+export function isApplicable(
+  datum1D: Datum1D,
+): datum1D is Datum1D & { data: Required<Data1D> } {
+  if (datum1D.info.isComplex && datum1D.info.isFid) {
+    return true;
+  }
   return false;
 }
 

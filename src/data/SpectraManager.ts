@@ -1,8 +1,11 @@
-import { CURRENT_EXPORT_VERSION, processJcamp } from 'nmr-load-save';
+import {
+  processJcamp,
+  serializeNmriumState,
+  CURRENT_EXPORT_VERSION,
+} from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
-import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
 
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Datum2D from './data2d/Spectrum2D';
@@ -98,7 +101,7 @@ export function toJSON(
   }>,
   target: JSONTarget,
   options: ExportOptions = {},
-): NMRiumDataReturn {
+) {
   const {
     data = [],
     molecules: mols = [],
@@ -106,29 +109,34 @@ export function toJSON(
     actionType = '',
   } = state;
 
-  const { dataType = 'DATA_SOURCE', view = false, settings = false } = options;
-
-  const spectra = data.map((ob) => {
-    return ob.info.dimension === 1
-      ? (Datum1D.toJSON(ob as Datum1DType, dataType) as Datum1DType)
-      : (Datum2D.toJSON(ob as Datum2DType, dataType) as Datum2DType);
-  });
+  const { dataType = 'ROW_DATA', view = false, settings = false } = options;
 
   const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
   );
 
-  return {
+  const nmriumState: any = {
     version: CURRENT_EXPORT_VERSION,
     data: {
       ...(target === 'onDataChange' ? { actionType } : {}),
-      spectra,
+      spectra: data,
       molecules,
       correlations,
     },
-    ...(view && { view: state.view }),
-    ...(settings && {
-      settings: preferencesState.current,
-    }),
+    view: state.view,
+    settings: preferencesState.current,
   };
+
+  const includeData =
+    dataType === 'ROW_DATA'
+      ? 'rawData'
+      : dataType === 'NO_DATA'
+      ? 'noData'
+      : 'dataSource';
+
+  return serializeNmriumState(nmriumState, {
+    includeData,
+    includeSettings: settings,
+    includeView: view,
+  });
 }

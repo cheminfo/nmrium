@@ -67,18 +67,25 @@ function DropZone(props) {
       } else {
         const fileCollection = await fileCollectionFromFileList(files);
 
-        const { nmrLoaders: filter } = preferences.current;
-        const data = await readDropFiles(fileCollection, { filter });
-        if ((data as any)?.settings) {
+        const { nmrLoaders: selector } = preferences.current;
+        const { nmriumState, containsNmrium } = await readDropFiles(
+          fileCollection,
+          { selector },
+        );
+        if ((nmriumState as any)?.settings) {
           dispatchPreferences({
             type: 'SET_WORKSPACE',
             payload: {
-              data: (data as any).settings,
+              data: (nmriumState as any).settings,
               workspaceSource: 'nmriumFile',
             },
           });
         }
-        dispatch({ type: LOAD_DROP_FILES, payload: data });
+        dispatch({
+          type: LOAD_DROP_FILES,
+          payload: nmriumState,
+          containsNmrium,
+        });
       }
     } catch (error: any) {
       alert.error(error.message);

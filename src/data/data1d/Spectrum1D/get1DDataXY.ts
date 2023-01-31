@@ -21,5 +21,5 @@ export function get1DDataXY(spectrum: Datum1D): {
     data: { x, re, im },
   } = spectrum;
 
-  return { x, y: isRealSpectrumVisible ? re : im };
+  return { x, y: isRealSpectrumVisible || !im ? re : im };
 }
