@@ -132,8 +132,13 @@ function Provider({
 
   const error = useCallback(
     (message = '', options: any = {}) => {
-      options.type = types.ERROR;
-      options = { backgroundColor: '#cf3c4f', color: 'white', ...options };
+      options = {
+        type: types.ERROR,
+        backgroundColor: '#cf3c4f',
+        color: 'white',
+        timeout: 0,
+        ...options,
+      };
       return show(message, options);
     },
     [show],
