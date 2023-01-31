@@ -1,7 +1,7 @@
 import { apodization } from 'nmr-processing';
 
+import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
-import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 export const id = 'apodization';
 export const name = 'Apodization';
@@ -58,9 +58,7 @@ export function apodizationFilter(
     pointsToShift = 0;
   }
 
-  const { data } = datum1D;
-
-  isComplexData1D(data);
+  const data = datum1D.data as Required<Data1D>;
 
   const re = data.re;
   const im = data.im;

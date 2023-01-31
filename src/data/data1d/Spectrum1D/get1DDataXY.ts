@@ -1,5 +1,4 @@
 import { Datum1D } from '../../types/data1d';
-import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 /**
  * @typedef {Object} datum
@@ -17,12 +16,10 @@ export function get1DDataXY(spectrum: Datum1D): {
   x: Float64Array;
   y: Float64Array;
 } {
-  isComplexData1D(spectrum.data);
-
   const {
     display: { isRealSpectrumVisible },
     data: { x, re, im },
   } = spectrum;
 
-  return { x, y: isRealSpectrumVisible ? re : im };
+  return { x, y: isRealSpectrumVisible || !im ? re : im };
 }

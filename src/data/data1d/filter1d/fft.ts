@@ -1,7 +1,7 @@
 import { reimFFT, reimPhaseCorrection, xMean } from 'ml-spectra-processing';
+import { Data1D } from 'nmr-load-save/lib/types/Data1D';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
-import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 import { padDataToNextPowerOfTwo } from './utils/padDataToNextPowerOfTwo';
 
@@ -21,8 +21,6 @@ export function apply(datum1D: Datum1D) {
   let digitalFilterApplied = datum1D.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
   );
-
-  isComplexData1D(datum1D.data);
 
   const data =
     datum1D.meta.AQ_mod === 1
@@ -48,7 +46,9 @@ export function apply(datum1D: Datum1D) {
   datum1D.info = { ...datum1D.info, isFid: false, isFt: true };
 }
 
-export function isApplicable(datum1D: Datum1D) {
+export function isApplicable(
+  datum1D: Datum1D,
+): datum1D is Datum1D & { data: Required<Data1D> } {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }

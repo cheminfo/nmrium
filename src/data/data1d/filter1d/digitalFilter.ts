@@ -1,5 +1,5 @@
+import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
-import { isComplexData1D } from '../../utilities/isComplexData1D';
 
 export const id = 'digitalFilter';
 export const name = 'Digital Filter';
@@ -13,7 +13,7 @@ export function apply(datum1D: Datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('Digital Filter is not applicable on this data');
   }
-  isComplexData1D(datum1D.data);
+
   let { digitalFilterValue = 0 } = options;
   let re = new Float64Array(datum1D.data.re);
   let im = new Float64Array(datum1D.data.im);
@@ -34,8 +34,12 @@ export function apply(datum1D: Datum1D, options: any = {}) {
   datum1D.data.im = newIm;
 }
 
-export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
+export function isApplicable(
+  datum1D: Datum1D,
+): datum1D is Datum1D & { data: Required<Data1D> } {
+  if (datum1D.info.isComplex && datum1D.info.isFid) {
+    return true;
+  }
   return false;
 }
 
