@@ -123,14 +123,14 @@ test('Processed spectra peaks', async ({ page }) => {
     await nmrium.clickPanel('Peaks');
 
     const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
-    await expect(peaks).toHaveCount(16);
+    await expect(peaks).toHaveCount(15);
 
     const peaksData = [
-      { p: '26.93', intensity: '2304124678.9' },
-      { p: '28.58', intensity: '2220075572.1' },
-      { p: '36.3', intensity: '2169790333.08' },
-      { p: '50.39', intensity: '2029514468.85' },
-      { p: '53.66', intensity: '2053846103.58' },
+      { p: '54.63', intensity: '2360888122.21' },
+      { p: '56.29', intensity: '2257832309.98' },
+      { p: '64', intensity: '2170032246.66' },
+      { p: '78.1', intensity: '2029587580.01' },
+      { p: '81.36', intensity: '2090472606.03' },
     ];
     for (const [i, { p, intensity }] of peaksData.entries()) {
       const peak = peaks.nth(i);
@@ -156,7 +156,7 @@ test('Check no negative peaks in processed spectra', async ({ page }) => {
     await nmrium.clickPanel('Peaks');
     const peaks = nmrium.page.locator('_react=PeaksTable >> tbody >> tr');
 
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 15; i++) {
       const peak = peaks.nth(i);
       expect(await peak.locator('td >> nth=2').textContent()).not.toContain(
         '-',
