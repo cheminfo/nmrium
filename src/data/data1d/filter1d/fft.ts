@@ -38,12 +38,19 @@ export function apply(datum1D: Datum1D) {
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = datum1D.info;
     let ph1 = (digitalFilter - Math.floor(digitalFilter)) * Math.PI * 2;
-    Object.assign(data, reimPhaseCorrection(data, 0, ph1));
+    Object.assign(data, reimPhaseCorrection(data, Math.PI, ph1));
   }
+
+  const { info } = datum1D;
 
   Object.assign(datum1D.data, data);
   datum1D.data.x = generateXAxis(datum1D);
-  datum1D.info = { ...datum1D.info, isFid: false, isFt: true };
+  if (info.reverse && info.reverse[0]) {
+    datum1D.data.re.reverse();
+    datum1D.data.im.reverse();
+  }
+
+  datum1D.info = { ...info, isFid: false, isFt: true };
 }
 
 export function isApplicable(

@@ -1,6 +1,6 @@
 import { reimAbsolute, reimPhaseCorrection } from 'ml-spectra-processing';
-import { Data1D } from '../../types/data1d/Data1D';
 
+import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'phaseCorrection';
