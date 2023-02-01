@@ -1,0 +1,15 @@
+{
+  "version": 4,
+  "data": {
+    "spectra": [
+      {
+        "source": {
+          "files": [{ 
+            "name": "j-resolv.dx", 
+            "relativePath": "./data/cytisine/2d/j-resolv.jdx"
+          }]
+        }
+      }
+    ]
+  }
+}
