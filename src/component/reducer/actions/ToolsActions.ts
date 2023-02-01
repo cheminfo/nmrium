@@ -17,7 +17,6 @@ import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { getSpectrum } from '../helper/getSpectrum';
 
 import {
   setDomain,
@@ -493,12 +492,20 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
       zoom: { levels },
     },
   } = draft;
-  const activeSpectrum = getSpectrum(draft) as Datum2D;
-  try {
-    const spectra = activeSpectrum?.id
-      ? [activeSpectrum]
-      : getSpectraByNucleus(activeTab, data);
+  const activeSpectra = getActiveSpectra(draft) || [];
 
+  const activeSpectraObj = {};
+  for (const activeSpectrum of activeSpectra) {
+    activeSpectraObj[activeSpectrum.id] = true;
+  }
+
+  const spectra = getSpectraByNucleus(activeTab, data).filter(
+    (spectrum) =>
+      spectrum.info.isFt &&
+      (activeSpectraObj?.[spectrum.id] || activeSpectra.length === 0),
+  );
+
+  try {
     for (const spectrum of spectra as Datum2D[]) {
       const contourOptions = spectrum.display.contourOptions;
       const zoom = contoursManager(spectrum.id, levels, contourOptions);
