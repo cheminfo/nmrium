@@ -24,6 +24,7 @@ import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { jpathToArray } from '../../utility/jpathToArray';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
+import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
@@ -65,48 +66,155 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
   }
 }
 
-function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
-  let refreshDomain = false;
-  const currentActiveSpectrum = getActiveSpectrum(draft);
+interface MultipleSelectOptions {
+  spectra: (Datum1D | Datum2D)[];
+  nexId: string;
+  referenceId: string;
+  append?: boolean;
+}
 
-  if (activeSpectrum) {
-    const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
-    const oldIndex = draft.data.findIndex(
-      (d) => d.id === currentActiveSpectrum?.id,
-    );
-    if (newIndex !== -1) {
-      const newActiveSpectrum = draft.data[newIndex] as Datum1D | Datum2D;
-
-      newActiveSpectrum.display.isVisible = true;
-
-      if (oldIndex !== -1) {
-        refreshDomain =
-          (draft.data[oldIndex] as Datum1D | Datum2D).info.isFid !==
-          newActiveSpectrum.info.isFid;
-      } else {
-        refreshDomain = newActiveSpectrum.info.isFid || false;
-      }
-    }
-    activeSpectrum = { ...activeSpectrum, index: newIndex };
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = [
-      activeSpectrum,
-    ];
-  } else {
-    if (currentActiveSpectrum) {
-      const index = draft.data.findIndex(
-        (d) => d.id === currentActiveSpectrum.id,
-      );
-      refreshDomain = draft.data[index].info.isFid;
-    } else {
-      refreshDomain = false;
-    }
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = null;
+function multipleSelect(
+  spectraIds: Set<string>,
+  options: MultipleSelectOptions,
+) {
+  const { spectra, nexId, referenceId, append = false } = options;
+  const startIndex = spectra.findIndex((s) => s.id === referenceId);
+  const endIndex = spectra.findIndex((s) => s.id === nexId);
+  if (!append) {
+    spectraIds.clear();
   }
 
-  if (options[draft.toolOptions.selectedTool].isFilter) {
-    draft.toolOptions.selectedTool = options.zoom.id;
-    draft.toolOptions.data.baselineCorrection = { zones: [], options: {} };
-    draft.toolOptions.selectedOptionPanel = null;
+  if (endIndex > startIndex) {
+    for (const spectrum of spectra.slice(startIndex, endIndex + 1)) {
+      spectraIds.add(spectrum.id);
+    }
+  } else {
+    for (const spectrum of spectra.slice(endIndex, startIndex + 1)) {
+      spectraIds.add(spectrum.id);
+    }
+  }
+}
+
+function handleChangeActiveSpectrum(
+  draft: Draft<State>,
+  action: { payload: { modifier: string; id: string } },
+) {
+  const {
+    view: {
+      spectra: { activeTab, selectReferences, activeSpectra },
+    },
+    data,
+    toolOptions,
+  } = draft;
+  const { modifier, id } = action.payload;
+  const spectra = getActiveSpectra(draft);
+
+  //get the spectra that its nucleus match the active tab
+  const spectraPerNucleus = getSpectraByNucleus(activeTab, data);
+
+  //set of the current active spectra
+  let spectraIds: Set<string> = new Set<string>(
+    spectra?.map((s) => s.id) || [],
+  );
+
+  /*
+   * looking for the last selected spectrum id which we set when selecting a spectrum by pressing the Mouse Left button or pressing Ctrl + Mouse Left button
+   * if there is not yet selected a spectrum we use the first spectrum
+   */
+  const referenceId = selectReferences[activeTab] || spectraPerNucleus[0].id;
+
+  /**
+   * we apply the same selection behavior like what we have in the files system
+   * we have four cases for the modifiers
+   *  1- Mouse Left button
+   *  2- Mouse Left button + Ctrl
+   *  3- Mouse Left button + Shift
+   *  4- Mouse Left button + Shift + Ctrl
+   */
+
+  switch (modifier) {
+    case 'shift[false]_ctrl[true]':
+      if (!spectraIds.has(id) || spectraIds.size === 0) {
+        spectraIds.add(id);
+      } else {
+        spectraIds.delete(id);
+      }
+      selectReferences[activeTab] = id;
+
+      break;
+    case 'shift[true]_ctrl[false]':
+      multipleSelect(spectraIds, {
+        spectra: spectraPerNucleus,
+        nexId: id,
+        referenceId,
+      });
+      break;
+    case 'shift[true]_ctrl[true]':
+      multipleSelect(spectraIds, {
+        spectra: spectraPerNucleus,
+        nexId: id,
+        referenceId,
+        append: true,
+      });
+      break;
+
+    default:
+      if (spectraIds.has(id) && spectra?.length === 1) {
+        spectraIds.clear();
+      } else {
+        spectraIds = new Set([id]);
+      }
+      selectReferences[activeTab] = id;
+
+      break;
+  }
+
+  // convert the spectra array to an Object where the key is the spectrum id and value is the `index` and `spectrum`
+  const spectraObj: Record<
+    string,
+    { spectrum: Datum1D | Datum2D; index: number }
+  > = {};
+
+  for (let i = 0; i < data?.length; i++) {
+    spectraObj[data[i].id] = { spectrum: data[i], index: i };
+  }
+
+  //set the index of the active spectra and make it visible
+  const newActiveSpectra: any[] = [];
+  for (const spectrumId of spectraIds) {
+    newActiveSpectra.push({
+      id: spectrumId,
+      index: spectraObj[spectrumId].index,
+    });
+    spectraObj[spectrumId].spectrum.display.isVisible = true;
+  }
+
+  //set the active spectra
+  activeSpectra[activeTab] = newActiveSpectra;
+
+  //check if the previous selected spectra contain FT
+  const previousActiveSpectraHasFT = spectra?.some(
+    (active) => spectraObj[active.id].spectrum.info.isFt,
+  );
+
+  //check if the nex selected spectra contain FT
+  const newActiveSpectraHasFT = Array.from(spectraIds)?.some(
+    (id) => spectraObj[id].spectrum.info.isFt,
+  );
+
+  /**
+   * not refresh the y domain if the next and previous selected spectra have Ft or we do not have previous or next active spectra
+   */
+  const refreshDomain =
+    previousActiveSpectraHasFT !== newActiveSpectraHasFT &&
+    spectra &&
+    spectra?.length > 0 &&
+    spectraIds.size > 0;
+
+  if (options[toolOptions.selectedTool].isFilter) {
+    toolOptions.selectedTool = options.zoom.id;
+    toolOptions.data.baselineCorrection = { zones: [], options: {} };
+    toolOptions.selectedOptionPanel = null;
     draft.tempData = null;
   }
 
@@ -115,7 +223,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
 
-  if (draft.toolOptions.data.activeFilterID) {
+  if (toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   } else if (refreshDomain) {
     setDomain(draft);

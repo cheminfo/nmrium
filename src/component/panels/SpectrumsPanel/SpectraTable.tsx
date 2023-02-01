@@ -36,6 +36,16 @@ function formatValueAsHTML(value) {
   return value;
 }
 
+function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
+  const result = {};
+  if (activeSpectra) {
+    for (const activeSpectrum of activeSpectra) {
+      result[activeSpectrum.id] = true;
+    }
+  }
+  return result;
+}
+
 export const SpectraTableButtonStyle: CSSProperties = {
   backgroundColor: 'transparent',
   border: 'none',
@@ -54,7 +64,7 @@ const jPathColumnStyle: CSSProperties = {
 
 interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
-  activeSpectrum: ActiveSpectrum | null;
+  activeSpectra: ActiveSpectrum[] | null;
   onOpenSettingModal: (event: Event, data: Datum1D | Datum2D) => void;
   onChangeActiveSpectrum: (event: Event, data: Datum1D | Datum2D) => void;
   nucleus: string;
@@ -76,7 +86,7 @@ const options: DropdownMenuProps<string>['options'] = [
 export function SpectraTable(props: SpectraTableProps) {
   const {
     data,
-    activeSpectrum,
+    activeSpectra,
     onChangeVisibility,
     onOpenSettingModal,
     onChangeActiveSpectrum,
@@ -85,6 +95,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const alert = useAlert();
   const dispatch = useDispatch();
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
+  const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
 
   const COLUMNS: Record<
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -192,7 +203,7 @@ export function SpectraTable(props: SpectraTableProps) {
   );
 
   function handleActiveRow(row) {
-    return row?.original.id === activeSpectrum?.id;
+    return activeSpectraObj?.[row?.original.id] || false;
   }
 
   const tableColumns = useMemo(() => {
@@ -231,12 +242,16 @@ export function SpectraTable(props: SpectraTableProps) {
     });
   }
 
+  function handleRowStyle(data) {
+    return {
+      base: activeSpectraObj?.[data?.original.id] ? { opacity: 0.2 } : {},
+      activated: { opacity: 1 },
+    };
+  }
+
   return (
     <ReactTable
-      rowStyle={{
-        base: activeSpectrum?.id ? { opacity: 0.2 } : {},
-        activated: { opacity: 1 },
-      }}
+      rowStyle={handleRowStyle}
       activeRow={handleActiveRow}
       data={data}
       columns={tableColumns}
