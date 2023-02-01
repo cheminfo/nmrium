@@ -106,6 +106,7 @@ export interface ViewState {
      * @default {}
      */
     activeSpectra: Record<string, ActiveSpectrum[] | null>;
+    selectReferences: Record<string, string>;
     /**
      * current select tab (nucleus)
      * @default null
@@ -169,7 +170,12 @@ export const getInitialState = (): State => ({
     ranges: [],
     zones: [],
     peaks: {},
-    spectra: { activeSpectra: {}, activeTab: '', showLegend: false },
+    spectra: {
+      activeSpectra: {},
+      activeTab: '',
+      showLegend: false,
+      selectReferences: {},
+    },
     zoom: {
       levels: {},
     },
@@ -593,7 +599,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
     case types.CHANGE_ACTIVE_SPECTRUM:
-      return SpectrumsActions.handleChangeActiveSpectrum(draft, action.data);
+      return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
     case types.CHANGE_SPECTRUM_COLOR:
       return SpectrumsActions.handleChangeSpectrumColor(draft, action.data);
     case types.CHANGE_SPECTRUM_SETTING:

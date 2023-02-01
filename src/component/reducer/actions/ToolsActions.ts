@@ -15,6 +15,7 @@ import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getSpectrum } from '../helper/getSpectrum';
 
@@ -236,10 +237,8 @@ function handleZoom(draft: Draft<State>, action) {
     integralsYDomains,
   } = draft;
 
-  const activeSpectrum = getActiveSpectrum(draft);
-  const { showRangesIntegrals } =
-    rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
-    rangeStateInit;
+  const activeSpectra = getActiveSpectra(draft);
+
   if (displayerMode === DISPLAYER_MODE.DM_2D) {
     const index =
       trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
@@ -250,18 +249,30 @@ function handleZoom(draft: Draft<State>, action) {
         yDomains[id] = wheelZoom(event, domain);
       }
     }
-  } else if (activeSpectrum?.id) {
-    if (
-      (showRangesIntegrals || selectedTool === options.integral.id) &&
-      event.shiftKey
-    ) {
-      const domain = integralsYDomains[activeSpectrum?.id];
-      integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+  } else if (activeSpectra && activeSpectra?.length > 0) {
+    // rescale the active spectra integrals;
+    if (selectedTool === options.integral.id && event.shiftKey) {
+      for (const activeSpectrum of activeSpectra) {
+        //check if the integrals is visible
+        const { showRangesIntegrals } =
+          rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
+          rangeStateInit;
+        const domain = integralsYDomains?.[activeSpectrum?.id];
+        if (showRangesIntegrals && domain) {
+          integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+        }
+      }
     } else {
-      const domain = yDomains[activeSpectrum?.id];
-      yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+      // rescale the active spectra
+      for (const activeSpectrum of activeSpectra) {
+        const domain = yDomains?.[activeSpectrum?.id];
+        if (domain) {
+          yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+        }
+      }
     }
   } else {
+    // rescale the spectra
     for (const key of Object.keys(yDomains)) {
       const domain = yDomains[key];
       yDomains[key] = wheelZoom(event, domain);
