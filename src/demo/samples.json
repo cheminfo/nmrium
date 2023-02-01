@@ -207,15 +207,6 @@
       {
         "title": "Prediction",
         "view": "Prediction"
-      }
-    ]
-  },
-  {
-    "groupName": "Test",
-    "children": [
-      {
-        "title": "empty",
-        "view": "Test"
       },
       {
         "title": "Metabo workspace",
@@ -225,6 +216,15 @@
         "title": "Metabo coffee workspace",
         "view": "CustomWorkspace",
         "file": "./data/coffee/Coffee.json"
+      }
+    ]
+  },
+  {
+    "groupName": "Test",
+    "children": [
+      {
+        "title": "empty",
+        "view": "Test"
       },
       {
         "file": "./data/cytisine/1H.json",
