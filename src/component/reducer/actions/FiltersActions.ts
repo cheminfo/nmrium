@@ -125,6 +125,7 @@ function applyFFTFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.fft.id, options: {} },
     ]);
+
     resetSelectedTool(draft);
     changeSpectrumVerticalAlignment(draft, { align: 'bottom' });
 
