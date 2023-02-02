@@ -19,6 +19,7 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { SpectraTable } from './SpectraTable';
 import SpectrumSetting from './base/setting/SpectrumSetting';
+import { useKbs } from 'react-kbs';
 
 interface SpectrumsTabsInnerProps {
   data: Array<Datum1D | Datum2D>;
@@ -85,6 +86,19 @@ function SpectrumsTabsInner({
     setIsSettingModalDisplayed(false);
   }
 
+  const shortcutProps = useKbs([
+    {
+      shortcut: [{ ctrl: true, key: 'a' }],
+      handler: (e) => {
+        e.stopPropagation();
+        dispatch({
+          type: CHANGE_ACTIVE_SPECTRUM,
+          payload: {},
+        });
+      },
+    },
+  ]);
+
   return (
     <div
       style={{ height: 'calc(100% - 25px)' }}
@@ -93,6 +107,9 @@ function SpectrumsTabsInner({
           height: 20px;
         }
       `}
+      {...shortcutProps}
+      onMouseEnter={(e) => e.currentTarget.focus()}
+      onMouseLeave={(e) => e.currentTarget.blur()}
     >
       <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
