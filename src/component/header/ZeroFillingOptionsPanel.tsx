@@ -26,11 +26,10 @@ const Sizes = generateNumbersPowerOfX(8, 21);
 function useInitZeroFillingSize() {
   const filter = useFilter(Filters.zeroFilling.id);
   const { data } = useSpectrum();
-
   if (filter) {
     return filter.value;
   } else if (data) {
-    return 2 ** Math.round(Math.log2((data as Data1D).x.length));
+    return 2 ** Math.round(Math.log2((data as Data1D).x.length * 2));
   }
   return 0;
 }
