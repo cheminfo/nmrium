@@ -203,7 +203,7 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
     orientation === 'horizontal' && { margin: 'auto', marginLeft: '5px' },
     orientation === 'vertical'
       ? { top: 'calc(100% + 5px)' }
-      : { top: '0px', left: 'calc(100% + 5px)' },
+      : { top: '0px', left: 'calc(100%)' },
   ]);
 };
 
@@ -302,6 +302,23 @@ Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
     <Button {...props}>
       <FaInfoCircle />
     </Button>
+  );
+};
+
+Button.BarButton = function BarButton(props: ButtonProps) {
+  const { ...otherProps } = props;
+  return (
+    <Button
+      {...{
+        backgroundColor: { base: 'white', hover: '#f7f7f7', active: '#e7e7e7' },
+        color: {
+          base: 'black',
+          hover: 'black',
+        },
+        style: { padding: '0.25rem' },
+        ...otherProps,
+      }}
+    />
   );
 };
 

@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/ButtonToolTip';
+import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility';
 import {
@@ -38,11 +38,12 @@ export function SpectraAutomaticPickingButton() {
   }
 
   return (
-    <Button
-      popupTitle="Automatic Ranges/Zones picking for all spectra"
+    <Button.BarButton
+      tooltipOrientation="horizontal"
+      toolTip="Automatic Ranges/Zones picking for all spectra"
       onClick={automaticPickingHandler}
     >
       <SvgNmrRangePicking />
-    </Button>
+    </Button.BarButton>
   );
 }
