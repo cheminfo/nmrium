@@ -131,17 +131,6 @@ function applyFFTFilter(draft: Draft<State>) {
 
     setDomain(draft, { yDomain: { isChanged: true } });
     setMode(draft);
-
-    const { info } = draft.data[index];
-    if ('phc0' in info) {
-      const { phc0: ph0, phc1: ph1 } = info;
-      FiltersManager.applyFilter(draft.data[index], [
-        {
-          name: Filters.phaseCorrection.id,
-          options: { ph0, ph1, absolute: false },
-        },
-      ]);
-    }
   }
 }
 function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
