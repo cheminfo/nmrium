@@ -1,5 +1,7 @@
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
+import omitBy from 'lodash/omitBy';
+import lodashSet from 'lodash/set';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
@@ -25,17 +27,15 @@ import { jpathToArray } from '../../utility/jpathToArray';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
+import {
+  getActiveSpectraAsObject,
+  isActiveSpectrum,
+} from '../helper/getActiveSpectraAsObject';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab, setMargin } from './ToolsActions';
-import {
-  getActiveSpectraAsObject,
-  isActiveSpectrum,
-} from '../helper/getActiveSpectraAsObject';
-import omitBy from 'lodash/omitBy';
-import lodashSet from 'lodash/set';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
@@ -201,7 +201,6 @@ function handleChangeActiveSpectrum(
       id: spectrumId,
       index: spectraObj[spectrumId].index,
     });
-    spectraObj[spectrumId].spectrum.display.isVisible = true;
   }
 
   //set the active spectra

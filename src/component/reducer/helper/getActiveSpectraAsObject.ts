@@ -1,6 +1,7 @@
 import { Draft } from 'immer';
 
 import { State } from '../Reducer';
+
 import { getActiveSpectra } from './getActiveSpectra';
 
 export function getActiveSpectraAsObject(
@@ -22,5 +23,5 @@ export function isActiveSpectrum(
   activeSpectra: Record<string, number> | null,
   id: string,
 ) {
-  return activeSpectra && id in activeSpectra ? true : false;
+  return !!(activeSpectra && id in activeSpectra);
 }
