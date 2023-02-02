@@ -3,6 +3,7 @@ export interface Info {
   isComplex: boolean;
   dimension: number;
   isFt: boolean;
+  reverse?: boolean[];
   experiment?: any;
   solvent?: string;
 }
