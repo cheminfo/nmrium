@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/tests/simulated/d1-2-3-4-5-6-7-8_baseline.jdx"
+        "jcampURL": "data/tests/simulated/d1-2-3-4-5-6-7-8_baseline.jdx"
       },
       "display": {
         "name": "test",
