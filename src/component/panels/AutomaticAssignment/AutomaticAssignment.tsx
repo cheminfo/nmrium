@@ -4,7 +4,7 @@ import { FaBolt } from 'react-icons/fa';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D';
 import { useChartData } from '../../context/ChartContext';
-import Button from '../../elements/ButtonToolTip';
+import Button from '../../elements/Button';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
@@ -25,24 +25,26 @@ function useCheckEnableAutomaticAssignments() {
 function AutomaticAssignment() {
   const { getAssignments, assignments, restAssignments } = useAutoAssignments();
   const enabled = useCheckEnableAutomaticAssignments();
-
   return (
     <div css={tablePanelStyle}>
-      {
-        <DefaultPanelHeader showSettingButton={false} canDelete={false}>
-          <SpectraAutomaticPickingButton />
-          <Button
-            popupTitle="automatic assignment"
-            onClick={getAssignments}
-            disabled={!enabled}
-          >
-            <SvgNmrAssignment2 style={{ fontSize: '18px' }} />
-          </Button>
-          <Button popupTitle="reset assignment" onClick={restAssignments}>
-            <FaBolt />
-          </Button>
-        </DefaultPanelHeader>
-      }
+      <DefaultPanelHeader showSettingButton={false} canDelete={false}>
+        <SpectraAutomaticPickingButton />
+        <Button.BarButton
+          tooltipOrientation="horizontal"
+          toolTip="automatic assignment"
+          onClick={getAssignments}
+          disabled={!enabled}
+        >
+          <SvgNmrAssignment2 />
+        </Button.BarButton>
+        <Button.BarButton
+          tooltipOrientation="horizontal"
+          toolTip="reset assignment"
+          onClick={restAssignments}
+        >
+          <FaBolt />
+        </Button.BarButton>
+      </DefaultPanelHeader>
 
       <div className="inner-container">
         <AutomaticAssignmentTable data={assignments} />

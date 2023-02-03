@@ -1,5 +1,7 @@
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
+import omitBy from 'lodash/omitBy';
+import lodashSet from 'lodash/set';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
@@ -25,6 +27,10 @@ import { jpathToArray } from '../../utility/jpathToArray';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
+import {
+  getActiveSpectraAsObject,
+  isActiveSpectrum,
+} from '../helper/getActiveSpectraAsObject';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
@@ -51,8 +57,11 @@ function setVisible(datum, flag) {
 function handleSpectrumVisibility(draft: Draft<State>, action) {
   const { id, key, nucleus, flag } = action.payload;
   if (nucleus) {
+    const activeSpectra = getActiveSpectraAsObject(draft);
     for (const datum of getSpectraByNucleus(nucleus, draft.data)) {
-      setVisible(datum, flag);
+      if (activeSpectra && datum.id in activeSpectra) {
+        setVisible(datum, flag);
+      }
     }
   } else {
     const spectrum = draft.data.find((d) => d.id === id);
@@ -113,60 +122,66 @@ function handleChangeActiveSpectrum(
   const spectraPerNucleus = getSpectraByNucleus(activeTab, data);
 
   //set of the current active spectra
-  let spectraIds: Set<string> = new Set<string>(
-    spectra?.map((s) => s.id) || [],
-  );
+  let spectraIds = spectra?.map((s) => s.id) || [];
 
-  /*
-   * looking for the last selected spectrum id which we set when selecting a spectrum by pressing the Mouse Left button or pressing Ctrl + Mouse Left button
-   * if there is not yet selected a spectrum we use the first spectrum
-   */
-  const referenceId = selectReferences[activeTab] || spectraPerNucleus[0].id;
+  // select all spectra per nucleus
+  if (!id) {
+    spectraIds = spectraPerNucleus.map((spectrum) => spectrum.id);
+  } else {
+    let spectraIdsSet: Set<string> = new Set<string>(spectraIds);
+    /*
+     * looking for the last selected spectrum id which we set when selecting a spectrum by pressing the Mouse Left button or pressing Ctrl + Mouse Left button
+     * if there is not yet selected a spectrum we use the first spectrum
+     */
+    const referenceId = selectReferences[activeTab] || spectraPerNucleus[0].id;
 
-  /**
-   * we apply the same selection behavior like what we have in the files system
-   * we have four cases for the modifiers
-   *  1- Mouse Left button
-   *  2- Mouse Left button + Ctrl
-   *  3- Mouse Left button + Shift
-   *  4- Mouse Left button + Shift + Ctrl
-   */
+    /**
+     * we apply the same selection behavior like what we have in the files system
+     * we have four cases for the modifiers
+     *  1- Mouse Left button
+     *  2- Mouse Left button + Ctrl
+     *  3- Mouse Left button + Shift
+     *  4- Mouse Left button + Shift + Ctrl
+     */
 
-  switch (modifier) {
-    case 'shift[false]_ctrl[true]':
-      if (!spectraIds.has(id) || spectraIds.size === 0) {
-        spectraIds.add(id);
-      } else {
-        spectraIds.delete(id);
-      }
-      selectReferences[activeTab] = id;
+    switch (modifier) {
+      case 'shift[false]_ctrl[true]':
+        if (!spectraIdsSet.has(id) || spectraIdsSet.size === 0) {
+          spectraIdsSet.add(id);
+        } else {
+          spectraIdsSet.delete(id);
+        }
+        selectReferences[activeTab] = id;
 
-      break;
-    case 'shift[true]_ctrl[false]':
-      multipleSelect(spectraIds, {
-        spectra: spectraPerNucleus,
-        nexId: id,
-        referenceId,
-      });
-      break;
-    case 'shift[true]_ctrl[true]':
-      multipleSelect(spectraIds, {
-        spectra: spectraPerNucleus,
-        nexId: id,
-        referenceId,
-        append: true,
-      });
-      break;
+        break;
+      case 'shift[true]_ctrl[false]':
+        multipleSelect(spectraIdsSet, {
+          spectra: spectraPerNucleus,
+          nexId: id,
+          referenceId,
+        });
+        break;
+      case 'shift[true]_ctrl[true]':
+        multipleSelect(spectraIdsSet, {
+          spectra: spectraPerNucleus,
+          nexId: id,
+          referenceId,
+          append: true,
+        });
+        break;
 
-    default:
-      if (spectraIds.has(id) && spectra?.length === 1) {
-        spectraIds.clear();
-      } else {
-        spectraIds = new Set([id]);
-      }
-      selectReferences[activeTab] = id;
+      default:
+        if (spectraIdsSet.has(id) && spectra?.length === 1) {
+          spectraIdsSet.clear();
+        } else {
+          spectraIdsSet = new Set([id]);
+        }
+        selectReferences[activeTab] = id;
 
-      break;
+        break;
+    }
+
+    spectraIds = Array.from(spectraIdsSet);
   }
 
   // convert the spectra array to an Object where the key is the spectrum id and value is the `index` and `spectrum`
@@ -186,7 +201,6 @@ function handleChangeActiveSpectrum(
       id: spectrumId,
       index: spectraObj[spectrumId].index,
     });
-    spectraObj[spectrumId].spectrum.display.isVisible = true;
   }
 
   //set the active spectra
@@ -209,7 +223,7 @@ function handleChangeActiveSpectrum(
     previousActiveSpectraHasFT !== newActiveSpectraHasFT &&
     spectra &&
     spectra?.length > 0 &&
-    spectraIds.size > 0;
+    spectraIds?.length > 0;
 
   if (options[toolOptions.selectedTool].isFilter) {
     toolOptions.selectedTool = options.zoom.id;
@@ -257,6 +271,32 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   }
 }
 
+function removeActiveSpectra(
+  draft: Draft<State>,
+  relatedTargets: ({ jpath: string; key: string } | { jpath: string })[],
+) {
+  const activeSpectra = getActiveSpectraAsObject(draft);
+
+  // remove the active spectra
+  relatedTargets.unshift({ jpath: 'data', key: 'id' });
+
+  for (const target of relatedTargets) {
+    const { jpath } = target;
+    const targetObj = lodashGet(draft, jpath);
+    if (Array.isArray(targetObj)) {
+      const data = targetObj.filter(
+        (datum) => !isActiveSpectrum(activeSpectra, datum[(target as any).key]),
+      );
+      lodashSet(draft, jpath, data);
+    } else {
+      const data = omitBy(draft.view.peaks, (_, id) =>
+        isActiveSpectrum(activeSpectra, id),
+      );
+      lodashSet(draft, jpath, data);
+    }
+  }
+}
+
 function handleDeleteSpectra(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (action.id) {
@@ -266,8 +306,13 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete draft.view.peaks[action.id];
   } else {
-    draft.data = [];
-    draft.view.peaks = {};
+    // remove spectra and it related data in the view object
+    removeActiveSpectra(draft, [
+      { jpath: 'view.ranges', key: 'spectrumID' },
+      { jpath: 'view.zones', key: 'spectrumID' },
+      { jpath: 'view.peaks' },
+      { jpath: 'view.zoom.levels' },
+    ]);
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,

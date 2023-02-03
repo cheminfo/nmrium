@@ -21,6 +21,7 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
+  CHANGE_ACTIVE_SPECTRUM,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -243,7 +244,7 @@ function KeysListenerTracker() {
   const toolsListenerHandler = useCallback(
     (e) => {
       try {
-        if (!e.shiftKey && !e.metaKey) {
+        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
           switch (e.key) {
             case 'f':
               if (isToolVisible('zoomOut')) {
@@ -300,12 +301,6 @@ function KeysListenerTracker() {
 
               break;
             }
-            default:
-          }
-        }
-
-        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
-          switch (e.key) {
             case 'c': {
               if (allow1DTool && isToolVisible('spectraCenterAlignments')) {
                 alignSpectrumsVerticallyHandler();
@@ -338,6 +333,14 @@ function KeysListenerTracker() {
               openLoader();
               e.preventDefault();
               break;
+            case 'a': {
+              dispatch({
+                type: CHANGE_ACTIVE_SPECTRUM,
+                payload: {},
+              });
+              e.preventDefault();
+              break;
+            }
             default:
           }
         }
@@ -361,6 +364,7 @@ function KeysListenerTracker() {
       alignSpectrumsVerticallyHandler,
       allow1DTool,
       changeDisplayViewModeHandler,
+      dispatch,
       handleChangeOption,
       handleFullZoomOut,
       isToolVisible,

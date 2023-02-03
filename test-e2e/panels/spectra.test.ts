@@ -295,7 +295,10 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.page.click('_react=SpectraTable >> _react=ReactTableRow ', {
       button: 'right',
     });
-    await nmrium.page.click('text=Delete');
+    await nmrium.page.click('_react=Button[toolTip="Delete selected spectra"]');
+    //confirm delete the selected
+    await nmrium.page.click('_react=ConfirmationDialog >> text=Yes');
+
     // Check tabs
     const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
     await expect(Tabs).toHaveCount(1);
@@ -317,7 +320,7 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Add projection', async () => {
     // Click add missing projection btn
-    await nmrium.page.click('_react=ToolTip[title="Add missing projection"]');
+    await nmrium.page.click('_react=Button[toolTip="Add missing projection"]');
 
     // Check tabs
     const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');

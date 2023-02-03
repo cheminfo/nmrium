@@ -11,11 +11,13 @@ import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/ButtonToolTip';
+import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
@@ -48,12 +50,14 @@ interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   data: Array<Datum1D | Datum2D>;
   activeTab: string;
   activeSpectrum: Datum2D | null;
+  activeSpectra: ActiveSpectrum[] | null;
   displayerMode: string;
 }
 
 function SpectraPanelHeaderInner({
   data,
   activeSpectrum,
+  activeSpectra,
   activeTab,
   displayerMode,
   onSettingClick,
@@ -66,7 +70,7 @@ function SpectraPanelHeaderInner({
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
-      message: 'All records will be deleted, Are You sure?',
+      message: 'The selected records will be deleted, Are You sure?',
       buttons: [
         {
           text: 'Yes',
@@ -117,42 +121,68 @@ function SpectraPanelHeaderInner({
     });
   }
 
+  const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
       counter={spectra?.length}
-      deleteToolTip="Delete all spectra"
+      deleteToolTip="Delete selected spectra"
+      disableDelete={!hasActiveSpectra}
       showSettingButton
       onSettingClick={onSettingClick}
     >
-      <Button popupTitle="Hide all spectra" onClick={hideAllSpectrumsHandler}>
+      <Button.BarButton
+        toolTip="Hide selected spectra"
+        onClick={hideAllSpectrumsHandler}
+        tooltipOrientation="horizontal"
+        disabled={!hasActiveSpectra}
+      >
         <FaEyeSlash />
-      </Button>
-      <Button popupTitle="Show all spectra" onClick={showAllSpectrumsHandler}>
+      </Button.BarButton>
+      <Button.BarButton
+        onClick={showAllSpectrumsHandler}
+        toolTip="Show selected spectra"
+        tooltipOrientation="horizontal"
+        disabled={!hasActiveSpectra}
+      >
         <FaEye />
-      </Button>
+      </Button.BarButton>
       {displayerMode === DISPLAYER_MODE.DM_2D && activeSpectrum?.info.isFt && (
-        <Button
-          popupTitle="Add missing projection"
+        <Button.BarButton
+          toolTip="Add missing projection"
+          tooltipOrientation="horizontal"
           onClick={addMissingProjectionHandler}
         >
           <FaCreativeCommonsSamplingPlus />
-        </Button>
+        </Button.BarButton>
       )}
       {displayerMode === DISPLAYER_MODE.DM_1D && spectra.length > 1 && (
         <>
-          <Button popupTitle="Reset Scale" onClick={resetScaleHandler}>
+          <Button.BarButton
+            tooltipOrientation="horizontal"
+            toolTip="Reset Scale"
+            onClick={resetScaleHandler}
+          >
             <SvgNmrResetScale />
-          </Button>
-          <Button popupTitle="Same Top" onClick={setSameTopHandler}>
+          </Button.BarButton>
+          <Button.BarButton
+            tooltipOrientation="horizontal"
+            toolTip="Same Top"
+            onClick={setSameTopHandler}
+          >
             <SvgNmrSameTop />
-          </Button>
+          </Button.BarButton>
         </>
       )}
       <SpectraAutomaticPickingButton />
-      <Button popupTitle="Recolor spectra" onClick={recolorSpectraHandler}>
+      <Button.BarButton
+        tooltipOrientation="horizontal"
+        toolTip="Recolor spectra"
+        onClick={recolorSpectraHandler}
+      >
         <IoColorPaletteOutline />
-      </Button>
+      </Button.BarButton>
     </DefaultPanelHeader>
   );
 }
@@ -170,11 +200,13 @@ export default function SpectrumsTabs({
     displayerMode,
   } = useChartData();
   const spectrum = useSpectrum() as Datum2D;
+  const activeSpectra = useActiveSpectra();
   return (
     <MemoizedSpectraPanelHeader
       {...{
         data,
         activeSpectrum: spectrum,
+        activeSpectra,
         activeTab,
         displayerMode,
         onSettingClick,
