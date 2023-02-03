@@ -195,6 +195,7 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
     whiteSpace: 'nowrap',
     paddingLeft: '3px',
     paddingRight: '3px',
+    pointerEvents: 'none',
     zIndex: 99,
   };
 
