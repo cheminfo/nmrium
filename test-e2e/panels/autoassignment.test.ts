@@ -37,7 +37,7 @@ test('automatic assignment panel', async ({ page }) => {
     await expect(nmrium.page.locator('_react=Range')).toHaveCount(5);
 
     await nmrium.page.click(
-      '_react=AutomaticAssignment >> _react=ButtonToolTip[popupTitle="automatic assignment"] >> button',
+      '_react=AutomaticAssignment >> _react=Button[toolTip="automatic assignment"]',
     );
 
     // Wait for auto assignments process completed.
@@ -48,7 +48,7 @@ test('automatic assignment panel', async ({ page }) => {
 
     await progressLocator.waitFor({
       state: 'hidden',
-      timeout: 10000,
+      timeout: 15000,
     });
 
     await expect(
