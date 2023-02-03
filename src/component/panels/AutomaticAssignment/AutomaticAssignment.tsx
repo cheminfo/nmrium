@@ -2,6 +2,8 @@
 import { SvgNmrAssignment2 } from 'cheminfo-font';
 import { FaBolt } from 'react-icons/fa';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D';
+import { useChartData } from '../../context/ChartContext';
 import Button from '../../elements/Button';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -10,9 +12,19 @@ import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPicking
 import AutomaticAssignmentTable from './AutomaticAssignmentTable';
 import { useAutoAssignments } from './useAutoAssignments';
 
+function useCheckEnableAutomaticAssignments() {
+  const { data } = useChartData();
+  return data.some((spectrum) => {
+    if (isSpectrum1D(spectrum)) {
+      return spectrum?.ranges?.values.length > 0;
+    }
+    return spectrum?.zones?.values.length > 0;
+  });
+}
+
 function AutomaticAssignment() {
   const { getAssignments, assignments, restAssignments } = useAutoAssignments();
-
+  const enabled = useCheckEnableAutomaticAssignments();
   return (
     <div css={tablePanelStyle}>
       <DefaultPanelHeader showSettingButton={false} canDelete={false}>
@@ -21,6 +33,7 @@ function AutomaticAssignment() {
           tooltipOrientation="horizontal"
           toolTip="automatic assignment"
           onClick={getAssignments}
+          disabled={!enabled}
         >
           <SvgNmrAssignment2 />
         </Button.BarButton>
