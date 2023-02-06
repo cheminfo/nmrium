@@ -9,17 +9,20 @@ import { Datum1D } from '../../types/data1d/Datum1D';
 export const id = 'shiftX';
 export const name = 'Shift X';
 
-export function apply(datum1D: Datum1D, shiftValue = 0) {
-  datum1D.data.x = datum1D.data.x.map((val) => val + shiftValue);
+export function apply(datum1D: Datum1D, options: { shift?: number } = {}) {
+  const { shift = 0 } = options;
+  datum1D.data.x = datum1D.data.x.map((val) => val + shift);
 }
 
 export function isApplicable() {
   return true;
 }
 
-export function reduce(previousValue, newValue) {
+export function reduce(previous, next) {
+  const { shift: previousValue = 0 } = previous;
+  const { shift: nextShift = 0 } = next;
   return {
     once: true,
-    reduce: previousValue + newValue,
+    reduce: { shift: previousValue + nextShift },
   };
 }

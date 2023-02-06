@@ -13,55 +13,55 @@
           "files": [
             {
               "name": "acqu",
-              "relativePath": "./data/aspirin/aspirinFiles/1/acqu",
+              "relativePath": "data/aspirin/aspirinFiles/1/acqu",
               "lastModified": 1152814230000,
               "size": 7735
             },
             {
               "name": "acqus",
-              "relativePath": "./data/aspirin/aspirinFiles/1/acqus",
+              "relativePath": "data/aspirin/aspirinFiles/1/acqus",
               "lastModified": 1152814230000,
               "size": 7857
             },
             {
               "name": "audita.txt",
-              "relativePath": "./data/aspirin/aspirinFiles/1/audita.txt",
+              "relativePath": "data/aspirin/aspirinFiles/1/audita.txt",
               "lastModified": 1152814230000,
               "size": 568
             },
             {
               "name": "fid",
-              "relativePath": "./data/aspirin/aspirinFiles/1/fid",
+              "relativePath": "data/aspirin/aspirinFiles/1/fid",
               "lastModified": 1152814230000,
               "size": 65536
             },
             {
               "name": "format.temp",
-              "relativePath": "./data/aspirin/aspirinFiles/1/format.temp",
+              "relativePath": "data/aspirin/aspirinFiles/1/format.temp",
               "lastModified": 1152814230000,
               "size": 2445
             },
             {
               "name": "pulseprogram",
-              "relativePath": "./data/aspirin/aspirinFiles/1/pulseprogram",
+              "relativePath": "data/aspirin/aspirinFiles/1/pulseprogram",
               "lastModified": 1152814230000,
               "size": 1402
             },
             {
               "name": "scon",
-              "relativePath": "./data/aspirin/aspirinFiles/1/scon",
+              "relativePath": "data/aspirin/aspirinFiles/1/scon",
               "lastModified": 1152814230000,
               "size": 613
             },
             {
               "name": "uxnmr.par",
-              "relativePath": "./data/aspirin/aspirinFiles/1/uxnmr.par",
+              "relativePath": "data/aspirin/aspirinFiles/1/uxnmr.par",
               "lastModified": 1152814230000,
               "size": 5858
             },
             {
               "name": "procs",
-              "relativePath": "./data/aspirin/aspirinFiles/1/pdata/1/procs",
+              "relativePath": "data/aspirin/aspirinFiles/1/pdata/1/procs",
               "lastModified": 1580890568000,
               "size": 2452
             }

@@ -2,22 +2,22 @@
   "spectra": [
     {
       "source": {
-        "jcampURL": "./data/ethylbenzene/1h.jdx"
+        "jcampURL": "data/ethylbenzene/1h.jdx"
       }
     },
     {
 	"source": {
-	  "jcampURL": "./data/ethylbenzene/cosy.jdx"
+	  "jcampURL": "data/ethylbenzene/cosy.jdx"
 	}
       },
     {
 	"source": {
-	  "jcampURL": "./data/ethylbenzene/hsqc.jdx"
+	  "jcampURL": "data/ethylbenzene/hsqc.jdx"
 	}
       },
     {
 	"source": {
-	  "jcampURL": "./data/ethylbenzene/hmbc.jdx"
+	  "jcampURL": "data/ethylbenzene/hmbc.jdx"
 	}
       }
   ],

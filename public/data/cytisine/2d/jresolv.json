@@ -6,7 +6,7 @@
         "source": {
           "files": [{ 
             "name": "j-resolv.dx", 
-            "relativePath": "./data/cytisine/2d/j-resolv.jdx"
+            "relativePath": "data/cytisine/2d/j-resolv.jdx"
           }]
         }
       }

@@ -5,7 +5,7 @@
       "id": "4ygVXHGn",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_10244ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_10244ms.dx"
       },
       "display": {
         "name": "13C_t2_10244ms",
@@ -96,7 +96,7 @@
       "id": "3cGIv3mz",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_1281ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_1281ms.dx"
       },
       "display": {
         "name": "13C_t2_1281ms",
@@ -187,7 +187,7 @@
       "id": "ip7hK98C",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_160ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_160ms.dx"
       },
       "display": {
         "name": "13C_t2_160ms",
@@ -278,7 +278,7 @@
       "id": "fVO5EzDf",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_20489ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_20489ms.dx"
       },
       "display": {
         "name": "13C_t2_20489ms",
@@ -369,7 +369,7 @@
       "id": "h2tq05dG",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_2561ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_2561ms.dx"
       },
       "display": {
         "name": "13C_t2_2561ms",
@@ -460,7 +460,7 @@
       "id": "lfHbVVq9",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_320ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_320ms.dx"
       },
       "display": {
         "name": "13C_t2_320ms",
@@ -551,7 +551,7 @@
       "id": "6f7xT9pL",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_40ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_40ms.dx"
       },
       "display": {
         "name": "13C_t2_40ms",
@@ -642,7 +642,7 @@
       "id": "lMPQAqVy",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_5122ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_5122ms.dx"
       },
       "display": {
         "name": "13C_t2_5122ms",
@@ -733,7 +733,7 @@
       "id": "iRfdQJmP",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_640ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_640ms.dx"
       },
       "display": {
         "name": "13C_t2_640ms",
@@ -824,7 +824,7 @@
       "id": "dbPiAxKb",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/13c/13C_t2_80ms.dx"
+        "jcampURL": "data/t2/13c/13C_t2_80ms.dx"
       },
       "display": {
         "name": "13C_t2_80ms",
@@ -915,7 +915,7 @@
       "id": "h1NdInW3",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_10244ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_10244ms.dx"
       },
       "display": {
         "name": "1H_t2_10244ms",
@@ -1006,7 +1006,7 @@
       "id": "jMjrbV9q",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_1281ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_1281ms.dx"
       },
       "display": {
         "name": "1H_t2_1281ms",
@@ -1097,7 +1097,7 @@
       "id": "cQzcyzOO",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_160ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_160ms.dx"
       },
       "display": {
         "name": "1H_t2_160ms",
@@ -1188,7 +1188,7 @@
       "id": "3aDfUS7T",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_20489ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_20489ms.dx"
       },
       "display": {
         "name": "1H_t2_20489ms",
@@ -1279,7 +1279,7 @@
       "id": "8z4kRbE8",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_2561ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_2561ms.dx"
       },
       "display": {
         "name": "1H_t2_2561ms",
@@ -1370,7 +1370,7 @@
       "id": "lCN0h4lG",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_320ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_320ms.dx"
       },
       "display": {
         "name": "1H_t2_320ms",
@@ -1461,7 +1461,7 @@
       "id": "gvbIZf8b",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_40978ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_40978ms.dx"
       },
       "display": {
         "name": "1H_t2_40978ms",
@@ -1552,7 +1552,7 @@
       "id": "daZswnvm",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_40ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_40ms.dx"
       },
       "display": {
         "name": "1H_t2_40ms",
@@ -1643,7 +1643,7 @@
       "id": "2ej0quDK",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_5122ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_5122ms.dx"
       },
       "display": {
         "name": "1H_t2_5122ms",
@@ -1734,7 +1734,7 @@
       "id": "c0HUH4uO",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_640ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_640ms.dx"
       },
       "display": {
         "name": "1H_t2_640ms",
@@ -1825,7 +1825,7 @@
       "id": "gOHJ0Rst",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_80ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_80ms.dx"
       },
       "display": {
         "name": "1H_t2_80ms",
@@ -1916,7 +1916,7 @@
       "id": "9SCIgIIf",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t2/1h/1H_t2_81956ms.dx"
+        "jcampURL": "data/t2/1h/1H_t2_81956ms.dx"
       },
       "display": {
         "name": "1H_t2_81956ms",

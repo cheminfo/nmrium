@@ -5,7 +5,7 @@
       "id": "j06eG8yb",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_1s.dx"
+        "jcampURL": "data/t1/1H_t1_1s.dx"
       },
       "display": {
         "name": "1H_t1_1s",
@@ -96,7 +96,7 @@
       "id": "1WJ72f0C",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_2s.dx"
+        "jcampURL": "data/t1/1H_t1_2s.dx"
       },
       "display": {
         "name": "1H_t1_2s",
@@ -187,7 +187,7 @@
       "id": "8oysix2X",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_3s.dx"
+        "jcampURL": "data/t1/1H_t1_3s.dx"
       },
       "display": {
         "name": "1H_t1_3s",
@@ -278,7 +278,7 @@
       "id": "2vYpPtXb",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_4s.dx"
+        "jcampURL": "data/t1/1H_t1_4s.dx"
       },
       "display": {
         "name": "1H_t1_4s",
@@ -369,7 +369,7 @@
       "id": "4721KG78",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_5s.dx"
+        "jcampURL": "data/t1/1H_t1_5s.dx"
       },
       "display": {
         "name": "1H_t1_5s",
@@ -460,7 +460,7 @@
       "id": "geklnmfK",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_10s.dx"
+        "jcampURL": "data/t1/1H_t1_10s.dx"
       },
       "display": {
         "name": "1H_t1_10s",
@@ -551,7 +551,7 @@
       "id": "3YF850Fi",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_100ms.dx"
+        "jcampURL": "data/t1/1H_t1_100ms.dx"
       },
       "display": {
         "name": "1H_t1_100ms",
@@ -642,7 +642,7 @@
       "id": "8mHIhskn",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_250ms.dx"
+        "jcampURL": "data/t1/1H_t1_250ms.dx"
       },
       "display": {
         "name": "1H_t1_250ms",
@@ -733,7 +733,7 @@
       "id": "5jYfA1oz",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/1H_t1_500ms.dx"
+        "jcampURL": "data/t1/1H_t1_500ms.dx"
       },
       "display": {
         "name": "1H_t1_500ms",
@@ -824,7 +824,7 @@
       "id": "dIls8JPV",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_1s.dx"
+        "jcampURL": "data/t1/13C_t1_1s.dx"
       },
       "display": {
         "name": "13C_t1_1s",
@@ -915,7 +915,7 @@
       "id": "dmueABmN",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_2s.dx"
+        "jcampURL": "data/t1/13C_t1_2s.dx"
       },
       "display": {
         "name": "13C_t1_2s",
@@ -1006,7 +1006,7 @@
       "id": "f9e7zEIY",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_3s.dx"
+        "jcampURL": "data/t1/13C_t1_3s.dx"
       },
       "display": {
         "name": "13C_t1_3s",
@@ -1097,7 +1097,7 @@
       "id": "kKk42d97",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_4s.dx"
+        "jcampURL": "data/t1/13C_t1_4s.dx"
       },
       "display": {
         "name": "13C_t1_4s",
@@ -1188,7 +1188,7 @@
       "id": "hg2Un7my",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_5s.dx"
+        "jcampURL": "data/t1/13C_t1_5s.dx"
       },
       "display": {
         "name": "13C_t1_5s",
@@ -1279,7 +1279,7 @@
       "id": "aatUj35C",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_10s.dx"
+        "jcampURL": "data/t1/13C_t1_10s.dx"
       },
       "display": {
         "name": "13C_t1_10s",
@@ -1370,7 +1370,7 @@
       "id": "7uDFVAPL",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_100ms.dx"
+        "jcampURL": "data/t1/13C_t1_100ms.dx"
       },
       "display": {
         "name": "13C_t1_100ms",
@@ -1461,7 +1461,7 @@
       "id": "3Igr75tr",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_250ms.dx"
+        "jcampURL": "data/t1/13C_t1_250ms.dx"
       },
       "display": {
         "name": "13C_t1_250ms",
@@ -1552,7 +1552,7 @@
       "id": "8YtXVGdM",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/t1/13C_t1_500ms.dx"
+        "jcampURL": "data/t1/13C_t1_500ms.dx"
       },
       "display": {
         "name": "13C_t1_500ms",

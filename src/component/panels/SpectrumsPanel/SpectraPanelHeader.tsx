@@ -16,8 +16,8 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { ActiveSpectrum } from '../../reducer/Reducer';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,

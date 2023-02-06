@@ -11,10 +11,10 @@ export function getShift(datum: Datum2D): Shift2D {
   if (datum?.filters) {
     for (const filter of datum.filters) {
       if (filter.name === Filters.shift2DX.id) {
-        shift.x = filter?.flag ? filter.value : 0;
+        shift.x = filter?.flag ? filter.value.shift : 0;
       }
       if (filter.name === Filters.shift2DY.id) {
-        shift.y = filter?.flag ? filter.value : 0;
+        shift.y = filter?.flag ? filter.value.shift : 0;
       }
     }
   }

@@ -5,7 +5,7 @@
       "id": "2AbMrs5w",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/ethylbenzene/1h.jdx"
+        "jcampURL": "data/ethylbenzene/1h.jdx"
       },
       "display": {
         "name": "1h",
@@ -467,7 +467,7 @@
       "id": "38bg0GCg",
       "source": {
         "jcamp": null,
-        "jcampURL": "./data/ethylbenzene/cosy.jdx"
+        "jcampURL": "data/ethylbenzene/cosy.jdx"
       },
       "display": {
         "name": "cosy",

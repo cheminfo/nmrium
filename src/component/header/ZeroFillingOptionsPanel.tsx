@@ -43,7 +43,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     dispatch({
       type: APPLY_ZERO_FILLING_FILTER,
       payload: {
-        size,
+        nbPoints: size,
       },
     });
   }
@@ -54,11 +54,11 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     });
   }
 
-  function dispatchLiveChanges(value) {
+  function dispatchLiveChanges(nbPoints) {
     dispatch({
       type: CALCULATE_ZERO_FILLING_FILTER,
       payload: {
-        size: value,
+        nbPoints,
       },
     });
   }
