@@ -80,7 +80,7 @@
     "multiplet-analysis": "^2.0.0",
     "nmr-correlation": "^2.3.3",
     "nmr-load-save": "^0.7.20",
-    "nmr-processing": "^9.3.3",
+    "nmr-processing": "^9.3.4",
     "nmredata": "^0.9.2",
     "numeral": "^2.0.6",
     "openchemlib": "^8.1.0",
