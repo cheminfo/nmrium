@@ -139,6 +139,24 @@ export interface Margin {
   bottom: number;
   left: number;
 }
+
+export function getDefaultViewState() {
+  return {
+    molecules: {},
+    ranges: [],
+    zones: [],
+    peaks: {},
+    spectra: {
+      activeSpectra: {},
+      activeTab: '',
+      showLegend: false,
+      selectReferences: {},
+    },
+    zoom: {
+      levels: {},
+    },
+  };
+}
 export const getInitialState = (): State => ({
   actionType: '',
   data: [],
@@ -165,21 +183,7 @@ export const getInitialState = (): State => ({
   },
   mode: 'RTL',
   molecules: [],
-  view: {
-    molecules: {},
-    ranges: [],
-    zones: [],
-    peaks: {},
-    spectra: {
-      activeSpectra: {},
-      activeTab: '',
-      showLegend: false,
-      selectReferences: {},
-    },
-    zoom: {
-      levels: {},
-    },
-  },
+  view: getDefaultViewState(),
   verticalAlign: {
     align: 'bottom',
     verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
