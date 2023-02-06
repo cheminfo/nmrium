@@ -9,8 +9,9 @@ import { Datum1D } from '../../types/data1d/Datum1D';
 export const id = 'shiftX';
 export const name = 'Shift X';
 
-export function apply(datum1D: Datum1D, shiftValue = 0) {
-  datum1D.data.x = datum1D.data.x.map((val) => val + shiftValue);
+export function apply(datum1D: Datum1D, options: { shift?: number } = {}) {
+  const { shift = 0 } = options;
+  datum1D.data.x = datum1D.data.x.map((val) => val + shift);
 }
 
 export function isApplicable() {

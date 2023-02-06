@@ -8,10 +8,12 @@ export const name = 'Zero Filling';
  * @param {Datum1d} datum1d
  * @param {Object} [size]
  */
-export function apply(datum1D: Datum1D, size) {
+export function apply(datum1D: Datum1D, options: { nbPoints: number }) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not applicable on this data');
   }
+
+  const { nbPoints: size } = options;
 
   let digitalFilterApplied = datum1D.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
