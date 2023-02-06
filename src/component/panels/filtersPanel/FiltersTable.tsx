@@ -2,11 +2,13 @@ import { useMemo, useCallback, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
+import { Filter } from '../../../data/FiltersManager';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
 import CheckBox from '../../elements/CheckBox';
-import TableCell from '../../elements/Table/TableCell';
-import TableRow from '../../elements/Table/TableRow';
+import { ColumnWrapper } from '../../elements/ColumnWrapper';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
@@ -18,7 +20,32 @@ import {
   DELETE_SPECTRA_FILTER,
 } from '../../reducer/types/Types';
 
-import { FiltersProps } from './FilterPanel';
+interface FiltersProps extends Filter {
+  error?: any;
+}
+
+const rowColors = {
+  selected: {
+    activated: {
+      backgroundColor: '#f7f7f7',
+      color: 'black',
+    },
+  },
+  active: {
+    activated: {
+      backgroundColor: '#707070',
+      color: 'white',
+    },
+  },
+  deActive: {
+    base: {
+      opacity: 0.2,
+    },
+    activated: {
+      opacity: 1,
+    },
+  },
+};
 
 interface FiltersTableInnerProps {
   filters: Array<FiltersProps>;
@@ -36,9 +63,7 @@ function FiltersTableInner({
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
-  const selectedFilterRef = useRef<{ index: string | number | null }>({
-    index: null,
-  });
+  const selectedFilterIndex = useRef<number>();
 
   const handelFilterCheck = useCallback(
     (id, checked) => {
@@ -94,13 +119,17 @@ function FiltersTableInner({
     [alert, dispatch, modal, spectraCounter],
   );
   const filterSnapShotHandler = useCallback(
-    (filterId) => {
+    (id, index) => {
+      selectedFilterIndex.current =
+        selectedFilterIndex.current && index === selectedFilterIndex.current
+          ? null
+          : index;
       void (async () => {
         const hideLoading = await alert.showLoading(
           'Filter snapshot process in progress',
         );
         setTimeout(() => {
-          dispatch({ type: SET_FILTER_SNAPSHOT, payload: { filterId } });
+          dispatch({ type: SET_FILTER_SNAPSHOT, payload: { filterId: id } });
           hideLoading();
         }, 0);
       })();
@@ -108,78 +137,111 @@ function FiltersTableInner({
     [alert, dispatch],
   );
 
-  const getStyle = useCallback(
-    (filter, index) => {
-      const { id, name } = filter;
+  const COLUMNS: Column<any>[] = useMemo(
+    () => [
+      {
+        Header: '#',
+        style: { width: '25px' },
+        accessor: (_, index) => index + 1,
+        disableSortBy: true,
+      },
+      {
+        Header: 'Label',
+        accessor: 'label',
+        disableSortBy: true,
+      },
 
-      if (activeFilterID && activeFilterID === id) {
-        selectedFilterRef.current.index = index;
-      } else if (!activeFilterID) {
-        selectedFilterRef.current.index = null;
-      }
+      {
+        Header: 'Properties',
+        Cell: ({ row }) => {
+          const { error, value } = row.original;
+          return (
+            <ColumnWrapper>
+              <ObjectInspector data={error || value} />{' '}
+            </ColumnWrapper>
+          );
+        },
+      },
+      {
+        Header: 'Enable',
+        style: { width: '30px' },
+        Cell: ({ row }) => {
+          const { flag, id, isDeleteAllow } = row.original;
 
-      const classes: string[] = ['filter-row'];
-      if (activeFilterID === id) {
-        classes.push('filter-active');
-      } else if (selectedTool === name) {
-        classes.push('filter-current');
-      } else if (
-        selectedFilterRef.current.index != null &&
-        index > selectedFilterRef.current.index
-      ) {
-        classes.push('filter-inactive');
-      }
-
-      return classes.join(' ');
-    },
-    [activeFilterID, selectedTool],
-  );
-
-  const filtersTableRow = useMemo(() => {
-    return filters?.map((d, index) => {
-      return (
-        <TableRow key={d.id} className={getStyle(d, index)}>
-          <TableCell
-            align="center"
-            size={2}
-            onClick={() => filterSnapShotHandler(d.id)}
-          >
-            {d.label}
-          </TableCell>
-          <TableCell align="left" size={3}>
-            <div onClick={(e) => e.stopPropagation()}>
-              <ObjectInspector data={d.error || d.value} />
-            </div>
-          </TableCell>
-          <TableCell align="center" vAlign="center" size={1}>
-            <CheckBox
-              checked={d.flag}
-              onChange={(event) =>
-                handelFilterCheck(d.id, event.target.checked)
-              }
-            />
-            {d.isDeleteAllow && (
-              <button
-                className="btn"
-                type="button"
-                onClick={() => handelDeleteFilter(d)}
+          return (
+            <ColumnWrapper>
+              <CheckBox
+                onChange={(event) =>
+                  handelFilterCheck(id, event.target.checked)
+                }
+                checked={flag}
+                style={{ display: 'block', margin: 'auto' }}
+                disabled={!isDeleteAllow}
+              />
+            </ColumnWrapper>
+          );
+        },
+      },
+      {
+        Header: '',
+        style: { width: '20px' },
+        id: 'delete-button',
+        Cell: ({ row }) => {
+          const { isDeleteAllow } = row.original;
+          return (
+            <ColumnWrapper>
+              <Button.Danger
+                fill="outline"
+                onClick={() => handelDeleteFilter(row.original)}
+                disabled={!isDeleteAllow}
               >
                 <FaRegTrashAlt />
-              </button>
-            )}
-          </TableCell>
-        </TableRow>
-      );
-    });
-  }, [
-    filterSnapShotHandler,
-    filters,
-    getStyle,
-    handelDeleteFilter,
-    handelFilterCheck,
-  ]);
+              </Button.Danger>
+            </ColumnWrapper>
+          );
+        },
+      },
+    ],
+    [handelDeleteFilter, handelFilterCheck],
+  );
 
-  return <>{filtersTableRow}</>;
+  function handleRowStyle(data) {
+    const { original, index } = data;
+    const { id, name } = original;
+
+    if (activeFilterID === id) {
+      return rowColors.selected;
+    } else if (selectedTool === name) {
+      return rowColors.active;
+    } else if (
+      selectedFilterIndex.current &&
+      index > selectedFilterIndex.current
+    ) {
+      return rowColors.deActive;
+    }
+  }
+
+  function handleActiveRow(row) {
+    const { id, name } = row.original;
+    if (activeFilterID === id || selectedTool === name) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return (
+    <ReactTable
+      rowStyle={handleRowStyle}
+      activeRow={handleActiveRow}
+      data={filters}
+      columns={COLUMNS}
+      emptyDataRowText="No Filters"
+      onClick={(e, data: any) =>
+        filterSnapShotHandler(data.original.id, data.index)
+      }
+    />
+  );
 }
 
 const emptyData = { filters: [] };
