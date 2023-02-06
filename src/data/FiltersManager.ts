@@ -154,9 +154,11 @@ function enableFilter(datum, id, checked, filters = null) {
   updateData(datum);
 }
 
-function deleteFilter(datum, id) {
-  datum.filters = datum.filters.slice(0);
-  datum.filters = datum.filters.filter((filter) => filter.id !== id);
+function deleteFilter(datum, id?: string) {
+  // delete the specified filter otherwise delete all filters where isDeleteAllow is true
+  datum.filters = datum.filters
+    .slice(0)
+    .filter((filter) => (id ? filter.id !== id : !filter.isDeleteAllow));
 
   resetDataToOrigin(datum);
 
