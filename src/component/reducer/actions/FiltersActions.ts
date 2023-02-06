@@ -45,11 +45,10 @@ function applyZeroFillingFilter(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
-    const { size } = action.payload;
     const filters = [
       {
         name: Filters.zeroFilling.id,
-        options: size,
+        options: action.payload,
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
@@ -100,7 +99,6 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
-    const { size } = action.payload;
     const {
       data: { x, re, im },
       filters,
@@ -108,7 +106,7 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
     } = draft.data[index] as Datum1D;
 
     let _data = { data: { x, re, im }, filters, info };
-    zeroFilling(_data as Datum1D, size);
+    zeroFilling(_data as Datum1D, action.payload);
     const { im: newIm, re: newRe, x: newX } = _data.data;
     draft.tempData[index].data.x = newX;
     draft.tempData[index].data.im = newIm;
