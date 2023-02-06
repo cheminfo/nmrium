@@ -262,7 +262,7 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 }
 
 function deleteFilter(draft: Draft<State>, actions) {
-  const filterID = actions.payload.id;
+  const filterID = actions.payload?.id;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     //apply filter into the spectrum
