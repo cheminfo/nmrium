@@ -26,7 +26,7 @@ import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
 
-function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
+function shiftSpectrumAlongXAxis(draft: Draft<State>, shift) {
   //apply filter into the spectrum
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -34,7 +34,7 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
     const index = activeSpectrum?.index;
 
     FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.shiftX.id, options: shiftValue },
+      { name: Filters.shiftX.id, options: { shift } },
     ]);
     resetSelectedTool(draft);
     setDomain(draft);
