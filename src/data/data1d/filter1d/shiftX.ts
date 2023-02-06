@@ -18,9 +18,11 @@ export function isApplicable() {
   return true;
 }
 
-export function reduce(previousValue, newValue) {
+export function reduce(previous, next) {
+  const { shift: previousValue = 0 } = previous;
+  const { shift: nextShift = 0 } = next;
   return {
     once: true,
-    reduce: previousValue + newValue,
+    reduce: { shift: previousValue + nextShift },
   };
 }

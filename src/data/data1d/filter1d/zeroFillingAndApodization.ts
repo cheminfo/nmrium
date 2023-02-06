@@ -13,9 +13,7 @@ export function apply(datum1D: Datum1D, options) {
 
   const { apodization, zeroFilling } = options;
   applyApodization(datum1D, apodization);
-
-  const { size } = zeroFilling;
-  applyZeroFilling(datum1D, size);
+  applyZeroFilling(datum1D, zeroFilling);
 }
 
 export function isApplicable(datum1D: Datum1D) {
