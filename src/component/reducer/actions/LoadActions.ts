@@ -1,4 +1,5 @@
 import { Draft } from 'immer';
+import lodashMerge from 'lodash/merge';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 
 import { addJcamps } from '../../../data/SpectraManager';
@@ -11,7 +12,12 @@ import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
 import { Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
-import { getInitialState, State, ViewState } from '../Reducer';
+import {
+  getDefaultViewState,
+  getInitialState,
+  State,
+  ViewState,
+} from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
@@ -74,7 +80,8 @@ function setData(
   const { spectra = [], molecules = [], correlations = {} } = data || {};
 
   if (view) {
-    draft.view = view;
+    const defaultViewState = getDefaultViewState();
+    draft.view = lodashMerge(defaultViewState, view);
   }
 
   setColors(draft, usedColors);
@@ -121,16 +128,25 @@ function setPreferences(draft: Draft<State>, data) {
 }
 
 function initData(draft: Draft<State>, action) {
-  const state = getInitialState();
-  const { data } = action.payload;
-  setData(state, action.payload);
-  setActiveTab(state, { tab: data?.preferences?.activeTab || '' });
-  state.width = draft.width;
-  state.height = draft.height;
-  setPreferences(state, data?.preferences);
-  state.isLoading = false;
-  state.actionType = action.type;
-  return state;
+  const { data, view } = action.payload;
+  if (data?.spectra?.length) {
+    const state = getInitialState();
+    setData(state, action.payload);
+    setActiveTab(state, { tab: data?.preferences?.activeTab || '' });
+    state.width = draft.width;
+    state.height = draft.height;
+    setPreferences(state, data?.preferences);
+    state.isLoading = false;
+    state.actionType = action.type;
+    return state;
+  } else {
+    if (view) {
+      const defaultViewState = getDefaultViewState();
+      draft.view = lodashMerge(defaultViewState, view);
+    }
+    draft.actionType = action.type;
+    draft.isLoading = false;
+  }
 }
 
 function initiate(draft: Draft<State>, action) {
@@ -148,8 +164,8 @@ function loadJcampFile(draft: Draft<State>, actions) {
 }
 
 function loadDropFiles(draft: Draft<State>, action) {
-  const { containsNmrium, payload, type } = action;
-  if (containsNmrium) {
+  const { payload, type } = action;
+  if (payload?.containsNmrium) {
     return initData(draft, action);
   } else {
     setData(draft, payload);

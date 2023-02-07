@@ -42,7 +42,7 @@ test('check callbacks count', async ({ page }) => {
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
 
   await expect(dataCount).toContainText(/[3-5]/);
-  await expect(viewCount).toContainText(/[3-5]/);
+  await expect(viewCount).toContainText(/[2-4]/);
 
   //switch to 1d
   await nmrium.page.click('_react=Tab[tabid="1H"]');
@@ -56,7 +56,7 @@ test('check callbacks count', async ({ page }) => {
   expect(path).not.toContain('NaN');
 
   await expect(dataCount).toContainText(/[3-5]/);
-  await expect(viewCount).toContainText(/[5-7]/);
+  await expect(viewCount).toContainText(/[3-5]/);
 
   const spectrumLineLocator = nmrium.page.locator(
     'data-test-id=spectrum-line >> nth=0',
