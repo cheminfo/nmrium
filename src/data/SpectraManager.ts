@@ -50,7 +50,6 @@ export function addJcamp(output, jcamp, options, usedColors) {
   const { spectra: spectraIn } = processJcamp(jcamp, {
     name,
     converter: {
-      noContour: true,
       keepRecordsRegExp: /.*/,
       profiling: true,
     },
