@@ -133,7 +133,8 @@ function handleChangeActiveSpectrum(
      * looking for the last selected spectrum id which we set when selecting a spectrum by pressing the Mouse Left button or pressing Ctrl + Mouse Left button
      * if there is not yet selected a spectrum we use the first spectrum
      */
-    const referenceId = selectReferences[activeTab] || spectraPerNucleus[0].id;
+    const referenceId =
+      selectReferences?.[activeTab] || spectraPerNucleus?.[0].id;
 
     /**
      * we apply the same selection behavior like what we have in the files system

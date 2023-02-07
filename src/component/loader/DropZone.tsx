@@ -83,8 +83,7 @@ function DropZone(props) {
         }
         dispatch({
           type: LOAD_DROP_FILES,
-          payload: nmriumState,
-          containsNmrium,
+          payload: { ...nmriumState, containsNmrium },
         });
       }
     } catch (error: any) {

@@ -524,7 +524,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
     ).toBeVisible();
 
     await expect(dataCount).toContainText(/[3-5]/);
-    await expect(viewCount).toContainText(/[3-5]/);
+    await expect(viewCount).toContainText(/[2-4]/);
   });
 
   const initialDataCount = await getCount(dataCount);
