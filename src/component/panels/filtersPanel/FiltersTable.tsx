@@ -166,7 +166,7 @@ function FiltersTableInner({
         Header: 'Enable',
         style: { width: '30px' },
         Cell: ({ row }) => {
-          const { flag, id, isDeleteAllow } = row.original;
+          const { flag, id } = row.original;
 
           return (
             <ColumnWrapper>
@@ -176,7 +176,6 @@ function FiltersTableInner({
                 }
                 checked={flag}
                 style={{ display: 'block', margin: 'auto' }}
-                disabled={!isDeleteAllow}
               />
             </ColumnWrapper>
           );
