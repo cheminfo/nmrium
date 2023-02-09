@@ -11,7 +11,12 @@ import { useActiveSpectrum } from './useActiveSpectrum';
 import { useXScale } from './useXScale';
 
 function useIntegralYDomain(): ScaleLinear<number, number, number> {
-  const { height, margin, verticalAlign, integralsYDomains } = useChartData();
+  const {
+    height,
+    margin,
+    integralsYDomains,
+    view: { verticalAlign },
+  } = useChartData();
 
   const activeSpectrum = useActiveSpectrum();
   return useMemo(

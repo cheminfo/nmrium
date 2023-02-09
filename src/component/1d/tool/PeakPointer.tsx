@@ -33,7 +33,7 @@ function PeakPointer() {
     data,
     mode,
     toolOptions: { selectedTool },
-    verticalAlign,
+    view: { verticalAlign },
   } = useChartData();
   const { scaleX, scaleY } = useScaleChecked();
 

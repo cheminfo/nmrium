@@ -308,10 +308,10 @@ const MemoizedBasicToolBar = memo(BasicToolBarInner);
 
 export default function BasicToolBar() {
   const {
-    verticalAlign,
     displayerMode,
     view: {
       spectra: { activeTab },
+      verticalAlign,
     },
   } = useChartData();
 

@@ -21,9 +21,9 @@ function changeSpectrumVerticalAlignment(
 ) {
   function stack(spectra: Datum1D[] = []) {
     if (spectra.length > 1) {
-      draft.verticalAlign.align = 'stack';
+      draft.view.verticalAlign.align = 'stack';
       const visibleSpectra = spectra.filter((datum) => datum.display.isVisible);
-      draft.verticalAlign.verticalShift = Math.abs(
+      draft.view.verticalAlign.verticalShift = Math.abs(
         Math.floor(
           (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
         ),
@@ -33,13 +33,13 @@ function changeSpectrumVerticalAlignment(
 
   function center() {
     const YAxisShift = draft.height / 2;
-    draft.verticalAlign.align = 'center';
-    draft.verticalAlign.verticalShift = YAxisShift;
+    draft.view.verticalAlign.align = 'center';
+    draft.view.verticalAlign.verticalShift = YAxisShift;
   }
 
   function bottom() {
-    draft.verticalAlign.align = 'bottom';
-    draft.verticalAlign.verticalShift = DEFAULT_YAXIS_SHIFT_VALUE;
+    draft.view.verticalAlign.align = 'bottom';
+    draft.view.verticalAlign.verticalShift = DEFAULT_YAXIS_SHIFT_VALUE;
   }
 
   if (draft.data && draft.data.length > 0) {

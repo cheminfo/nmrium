@@ -13,7 +13,10 @@ import PeakAnnotation from './PeakAnnotation';
 const emptyData = { peaks: {}, info: {}, display: {} };
 
 function PeakAnnotations() {
-  const { verticalAlign, displayerKey } = useChartData();
+  const {
+    displayerKey,
+    view: { verticalAlign },
+  } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { scaleX, scaleY } = useScaleChecked();
   const spectrum = useSpectrum(emptyData) as Datum1D;

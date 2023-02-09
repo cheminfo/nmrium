@@ -132,10 +132,10 @@ function initData(draft: Draft<State>, action) {
   if (data?.spectra?.length) {
     const state = getInitialState();
     setData(state, action.payload);
-    setActiveTab(state, { tab: data?.preferences?.activeTab || '' });
+    setActiveTab(state, { tab: data?.view?.activeTab || '' });
     state.width = draft.width;
     state.height = draft.height;
-    setPreferences(state, data?.preferences);
+    setPreferences(state, data?.view);
     state.isLoading = false;
     state.actionType = action.type;
     return state;

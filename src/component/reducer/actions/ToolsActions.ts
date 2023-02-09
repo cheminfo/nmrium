@@ -107,14 +107,14 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  const align = ['stack', 'bottom'].includes(draft.verticalAlign.align)
+  const align = ['stack', 'bottom'].includes(draft.view.verticalAlign.align)
     ? 'center'
     : 'bottom';
   changeSpectrumVerticalAlignment(draft, { align });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
-  const align = draft.verticalAlign.align === 'stack' ? 'bottom' : 'stack';
+  const align = draft.view.verticalAlign.align === 'stack' ? 'bottom' : 'stack';
   changeSpectrumVerticalAlignment(draft, { align });
 }
 
@@ -165,9 +165,25 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 
 function handleBrushEnd(draft: Draft<State>, action) {
   const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
-  const xScale = getXScale(draft);
 
-  const yScale = is2D ? get2DYScale(draft) : getYScale(draft);
+  const {
+    height,
+    margin,
+    yDomain,
+    yDomains,
+    view: { verticalAlign },
+    width,
+    xDomains,
+    xDomain,
+    mode,
+    displayerMode,
+  } = draft;
+
+  const xScale = getXScale({ width, xDomains, xDomain, mode, margin });
+
+  const yScale = is2D
+    ? get2DYScale(draft)
+    : getYScale({ height, margin, yDomain, yDomains, verticalAlign });
 
   const startX = xScale.invert(action.startX);
   const endX = xScale.invert(action.endX);
@@ -176,10 +192,12 @@ function handleBrushEnd(draft: Draft<State>, action) {
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
   const brushHistory = zoomHistoryManager(
+    // eslint-disable-next-line unicorn/consistent-destructuring
     draft.zoom.history,
+    // eslint-disable-next-line unicorn/consistent-destructuring
     draft.view.spectra.activeTab,
   );
-  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+  if (displayerMode === DISPLAYER_MODE.DM_2D) {
     switch (action.trackID) {
       case LAYOUT.CENTER_2D:
         draft.xDomain = domainX;
@@ -195,7 +213,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
         break;
     }
     if (brushHistory) {
-      brushHistory.push({ xDomain: draft.xDomain, yDomain: draft.yDomain });
+      brushHistory.push({ xDomain, yDomain });
     }
   } else {
     draft.xDomain = domainX;

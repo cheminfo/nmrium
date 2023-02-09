@@ -54,8 +54,12 @@ function ExclusionZonesAnnotationsInner({
 const MemoizedPeakAnnotations = memo(ExclusionZonesAnnotationsInner);
 
 function ExclusionZonesAnnotations() {
-  const { displayerKey, xDomains, displayerMode, verticalAlign } =
-    useChartData();
+  const {
+    displayerKey,
+    xDomains,
+    displayerMode,
+    view: { verticalAlign },
+  } = useChartData();
 
   const spectra = useSpectraByActiveNucleus() as Datum1D[];
 

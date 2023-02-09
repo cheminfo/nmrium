@@ -64,10 +64,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     xDomains,
     yDomain,
     yDomains,
-    verticalAlign,
     displayerKey,
     view: {
       spectra: { activeTab },
+      verticalAlign,
     },
   } = state;
 

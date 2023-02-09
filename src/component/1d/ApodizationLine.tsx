@@ -16,7 +16,11 @@ import { getYScale } from './utilities/scale';
 const emptyData = { data: {}, info: {} };
 
 function useWindowYScale() {
-  const { height, margin, verticalAlign } = useChartData();
+  const {
+    height,
+    margin,
+    view: { verticalAlign },
+  } = useChartData();
   return getYScale({
     height,
     margin,

@@ -14,8 +14,13 @@ import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
 function DatabaseSpectrum() {
-  const { displayerKey, height, verticalAlign, yDomain, margin } =
-    useChartData();
+  const {
+    displayerKey,
+    height,
+    yDomain,
+    margin,
+    view: { verticalAlign },
+  } = useChartData();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();

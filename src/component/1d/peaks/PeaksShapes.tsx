@@ -10,7 +10,10 @@ import { usePeakShapesPath } from './usePeakShapesPath';
 const emptyData = { peaks: {}, display: {} };
 
 function PeaksShapes() {
-  const { verticalAlign, displayerKey } = useChartData();
+  const {
+    displayerKey,
+    view: { verticalAlign },
+  } = useChartData();
   const { showPeaksShapes, showPeaksSum } = useActiveSpectrumPeaksViewState();
   const activeSpectrum = useActiveSpectrum();
   const spectrum = useSpectrum(emptyData) as Datum1D;

@@ -122,6 +122,11 @@ export interface ViewState {
   zoom: {
     levels: ContoursLevels;
   };
+  /**
+   * options to control spectra vertical alignment
+   * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
+   */
+  verticalAlign: VerticalAlign;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -140,7 +145,7 @@ export interface Margin {
   left: number;
 }
 
-export function getDefaultViewState() {
+export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
     ranges: [],
@@ -154,6 +159,10 @@ export function getDefaultViewState() {
     },
     zoom: {
       levels: {},
+    },
+    verticalAlign: {
+      align: 'bottom',
+      verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
     },
   };
 }
@@ -184,10 +193,6 @@ export const getInitialState = (): State => ({
   mode: 'RTL',
   molecules: [],
   view: getDefaultViewState(),
-  verticalAlign: {
-    align: 'bottom',
-    verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
-  },
   history: {
     past: [],
     present: null,
@@ -317,11 +322,6 @@ export interface State {
    * @default { floatingMolecules: [], ranges: [], zones: [] };
    */
   view: ViewState;
-  /**
-   * options to control spectra vertical alignment
-   * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
-   */
-  verticalAlign: VerticalAlign;
   /**
    * @todo for undo /redo features
    */

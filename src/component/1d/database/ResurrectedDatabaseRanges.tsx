@@ -13,7 +13,12 @@ import { getYScale } from '../utilities/scale';
 const emptyData = { info: { originFrequency: 400 } };
 
 function ResurrectedDatabaseRanges() {
-  const { displayerKey, verticalAlign, height, margin } = useChartData();
+  const {
+    displayerKey,
+    height,
+    margin,
+    view: { verticalAlign },
+  } = useChartData();
   const { info } = useSpectrum(emptyData) as Datum1D;
   const { highlight } = useHighlightData();
   const { scaleX } = useScaleChecked();

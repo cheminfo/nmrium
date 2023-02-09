@@ -21,7 +21,9 @@ interface LineProps {
 }
 
 function Line({ data, id, display, index }: LineProps) {
-  const { verticalAlign } = useChartData();
+  const {
+    view: { verticalAlign },
+  } = useChartData();
   const { scaleX, scaleY } = useScaleChecked();
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const { opacity } = useActiveSpectrumStyleOptions(id);
