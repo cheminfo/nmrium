@@ -59,7 +59,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
   const refForm = useRef<any>();
   const { data } = useChartData();
   const enableExportAsDataSource = data.every(
-    (spectrum) => spectrum?.source?.baseURL,
+    (spectrum) => spectrum?.source?.baseURL !== undefined,
   );
 
   const handleSave = useCallback(() => {
