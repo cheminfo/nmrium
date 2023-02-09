@@ -12,6 +12,7 @@
           "isVisibleInDomain": true
         },
         "source": {
+          "baseURL": "",
           "files": [
             {
               "name": "aspirin-1h.zip",
