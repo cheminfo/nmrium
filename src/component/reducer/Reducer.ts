@@ -40,7 +40,7 @@ import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
+import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -124,9 +124,9 @@ export interface ViewState {
   };
   /**
    * options to control spectra vertical alignment
-   * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
+   * @default  'bottom'
    */
-  verticalAlign: VerticalAlign;
+  align: VerticalAlignment;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -160,10 +160,7 @@ export function getDefaultViewState(): ViewState {
     zoom: {
       levels: {},
     },
-    verticalAlign: {
-      align: 'bottom',
-      verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
-    },
+    align: 'bottom',
   };
 }
 export const getInitialState = (): State => ({

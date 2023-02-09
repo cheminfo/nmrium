@@ -67,7 +67,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     displayerKey,
     view: {
       spectra: { activeTab },
-      verticalAlign,
+      align,
     },
   } = state;
 
@@ -94,16 +94,16 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           margin,
           height: heightProp,
           width: widthProp,
-          verticalAlign,
+          align,
           mode,
         },
       });
     }
   }, [
+    align,
     heightProp,
     margin,
     mode,
-    verticalAlign,
     widthProp,
     xDomain,
     xDomains,

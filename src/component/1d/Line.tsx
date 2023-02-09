@@ -1,12 +1,9 @@
 import { CSSProperties, useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
-
-import getVerticalShift from './utilities/getVerticalShift';
 
 interface LineProps {
   data?: {
@@ -21,16 +18,9 @@ interface LineProps {
 }
 
 function Line({ data, id, display, index }: LineProps) {
-  const {
-    view: { verticalAlign },
-  } = useChartData();
-  const { scaleX, scaleY } = useScaleChecked();
+  const { scaleX, scaleY, shiftY } = useScaleChecked();
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const { opacity } = useActiveSpectrumStyleOptions(id);
-
-  const vAlign = useMemo(() => {
-    return getVerticalShift(verticalAlign, { index });
-  }, [index, verticalAlign]);
 
   const paths = useMemo(() => {
     const _scaleX = scaleX();
@@ -62,7 +52,7 @@ function Line({ data, id, display, index }: LineProps) {
         opacity,
       }}
       d={paths}
-      transform={`translate(0,-${vAlign})`}
+      transform={`translate(0,-${shiftY * index})`}
     />
   );
 }

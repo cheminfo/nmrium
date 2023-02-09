@@ -107,14 +107,14 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  const align = ['stack', 'bottom'].includes(draft.view.verticalAlign.align)
+  const align = ['stack', 'bottom'].includes(draft.view.align)
     ? 'center'
     : 'bottom';
   changeSpectrumVerticalAlignment(draft, { align });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
-  const align = draft.view.verticalAlign.align === 'stack' ? 'bottom' : 'stack';
+  const align = draft.view.align === 'stack' ? 'bottom' : 'stack';
   changeSpectrumVerticalAlignment(draft, { align });
 }
 
@@ -171,7 +171,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
     margin,
     yDomain,
     yDomains,
-    view: { verticalAlign },
+    view: { align },
     width,
     xDomains,
     xDomain,
@@ -183,7 +183,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
 
   const yScale = is2D
     ? get2DYScale(draft)
-    : getYScale({ height, margin, yDomain, yDomains, verticalAlign });
+    : getYScale({ height, margin, yDomain, yDomains, align });
 
   const startX = xScale.invert(action.startX);
   const endX = xScale.invert(action.endX);

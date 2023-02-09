@@ -19,12 +19,12 @@ function useWindowYScale() {
   const {
     height,
     margin,
-    view: { verticalAlign },
+    view: { align },
   } = useChartData();
   return getYScale({
     height,
     margin,
-    verticalAlign,
+    align,
     yDomain: [0, 1],
   });
 }

@@ -14,11 +14,13 @@ type ScaleLinearNumberFunction = (
 export interface ScaleState {
   scaleX: ScaleLinearNumberFunction | null;
   scaleY: ScaleLinearNumberFunction | null;
+  shiftY: number;
 }
 
 export const scaleInitialState: ScaleState = {
   scaleX: null,
   scaleY: null,
+  shiftY: 0,
 };
 
 function innerScaleReducer(draft: ScaleState, action) {
@@ -32,6 +34,14 @@ function innerScaleReducer(draft: ScaleState, action) {
       break;
 
     case SET_SCALE: {
+      const { yDomains, align, height } = action.payload;
+
+      if (align === 'stack') {
+        draft.shiftY = height / (Object.keys(yDomains).length + 2);
+      } else {
+        draft.shiftY = 0;
+      }
+
       draft.scaleX = (spectrumId = null) =>
         getXScale(action.payload, spectrumId);
       draft.scaleY = (spectrumId = null) =>

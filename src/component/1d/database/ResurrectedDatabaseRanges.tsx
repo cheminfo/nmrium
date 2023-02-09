@@ -17,7 +17,7 @@ function ResurrectedDatabaseRanges() {
     displayerKey,
     height,
     margin,
-    view: { verticalAlign },
+    view: { align },
   } = useChartData();
   const { info } = useSpectrum(emptyData) as Datum1D;
   const { highlight } = useHighlightData();
@@ -58,7 +58,7 @@ function ResurrectedDatabaseRanges() {
   const scaleY = getYScale({
     height: blockHight,
     margin: { top: 0, bottom: 0 },
-    verticalAlign,
+    align,
     yDomain,
   });
 
