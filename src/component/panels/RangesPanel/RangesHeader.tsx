@@ -246,7 +246,7 @@ function RangesHeader({
           popupTitle="Remove all Assignments"
           popupPlacement="right"
           onClick={handleOnRemoveAssignments}
-          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+          disabled={!ranges?.values || ranges.values.length === 0}
           className="btn icon"
         >
           <FaUnlink />
@@ -260,7 +260,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
           value={showMultiplicityTrees}
-          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+          disabled={!ranges?.values || ranges.values.length === 0}
         >
           <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
@@ -269,7 +269,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowJGraph}
           value={showJGraph}
-          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+          disabled={!ranges?.values || ranges.values.length === 0}
         >
           <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
@@ -278,7 +278,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowIntegrals}
           value={showRangesIntegrals}
-          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+          disabled={!ranges?.values || ranges.values.length === 0}
         >
           <SvgNmrIntegrate
             style={{ pointerEvents: 'none', fontSize: '12px' }}
