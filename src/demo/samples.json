@@ -54,6 +54,10 @@
         "title": "Linked jcamp"
       },
       {
+        "file": "./data/nmriumFromSource.nmrium",
+        "title": "Zip file as source with multiple spectra"
+      },
+      {
         "file": "./data/brukerFolders/brukerFolderWithoutExpno.nmrium",
         "title": "Bruker Directory without expno level"
       },
