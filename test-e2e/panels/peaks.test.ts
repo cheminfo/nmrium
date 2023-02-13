@@ -45,7 +45,7 @@ async function shiftX(nmrium: NmriumPage) {
   await peakInputLocator.type('10');
   await peakInputLocator.press('Enter');
 
-  await expect(peakInputLocator).toHaveValue('10');
+  await expect(peakInputLocator).toHaveValue('10.00');
 }
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
@@ -62,7 +62,7 @@ async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   const peakInputLocator = nmrium.page.locator(
     '_react=PeakAnnotation >> nth=0 >> input',
   );
-  await expect(peakInputLocator).toHaveValue('20');
+  await expect(peakInputLocator).toHaveValue('20.00');
 }
 
 async function deletePeak(nmrium: NmriumPage) {

@@ -88,8 +88,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         showWhen: 'deltaPPM.show',
         index: 3,
         Header: 'δ (ppm)',
-        accessor: (row) =>
-          formatNumber(row.x, peaksPreferences.deltaPPM.format),
+        accessor: 'x',
         Cell: ({ row }) => (
           <EditableColumn
             value={formatNumber(
@@ -105,23 +104,26 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         showWhen: 'deltaHz.show',
         index: 4,
         Header: 'δ (Hz)',
-        accessor: (row) =>
-          formatNumber(row.xHz, peaksPreferences.deltaHz.format),
+        accessor: 'xHz',
+        Cell: ({ row }) =>
+          formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
       },
       {
         showWhen: 'intensity.show',
         index: 5,
         Header: 'Intensity',
         style: { maxWidth: '80px' },
-        accessor: (row) =>
-          formatNumber(row.y, peaksPreferences.intensity.format),
+        accessor: 'y',
+        Cell: ({ row }) =>
+          formatNumber(row.original.y, peaksPreferences.intensity.format),
       },
       {
         showWhen: 'peakWidth.show',
         index: 6,
         Header: 'Width (Hz)',
-        accessor: (row) =>
-          formatNumber(row.width, peaksPreferences.peakWidth.format),
+        accessor: 'width',
+        Cell: ({ row }) =>
+          formatNumber(row.original.width, peaksPreferences.peakWidth.format),
       },
       {
         showWhen: 'showKind',
@@ -133,9 +135,11 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         showWhen: 'fwhm.show',
         index: 8,
         Header: 'fwhm',
-        accessor: (row) => {
-          if (row?.shape?.fwhm) {
-            return formatNumber(row.shape.fwhm, peaksPreferences.fwhm.format);
+        accessor: (row) => row?.shape?.fwhm || '',
+        Cell: ({ row }) => {
+          const fwhm = row.original?.shape?.fwhm;
+          if (fwhm) {
+            return formatNumber(fwhm, peaksPreferences.fwhm.format);
           }
           return '';
         },
@@ -144,9 +148,14 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
         showWhen: 'mu.show',
         index: 9,
         Header: 'mu',
-        accessor: (row) => {
-          if (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) {
-            return formatNumber(row.shape.mu, peaksPreferences.mu.format);
+        accessor: (row) =>
+          (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
+        Cell: ({ row }) => {
+          const mu =
+            row.original?.shape?.kind === 'pseudoVoigt' &&
+            row.original?.shape?.mu;
+          if (mu) {
+            return formatNumber(mu, peaksPreferences.mu.format);
           }
           return '';
         },

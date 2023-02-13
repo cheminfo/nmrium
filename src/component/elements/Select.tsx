@@ -17,7 +17,6 @@ const styles = {
     background-position-x: calc(100% - 5px);
     background-size: 15px 15px;
     border-radius: 5px;
-    margin: 0px 5px;
     align-self: center;
     &:focus,
     input:focus {

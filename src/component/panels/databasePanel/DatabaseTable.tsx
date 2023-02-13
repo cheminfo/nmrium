@@ -61,9 +61,10 @@ const databaseTableColumns = (
     showWhen: 'delta.show',
     index: 3,
     Header: 'δ (ppm)',
-    accessor: (row) =>
-      row.delta
-        ? formatNumber(row.delta, databasePreferences.delta.format)
+    accessor: 'delta',
+    Cell: ({ row }) =>
+      row.original.delta
+        ? formatNumber(row.original.delta, databasePreferences.delta.format)
         : '',
   },
 
