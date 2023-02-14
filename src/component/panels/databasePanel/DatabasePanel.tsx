@@ -45,11 +45,13 @@ import DatabaseTable from './DatabaseTable';
 const style = css`
   .header {
     height: 30px;
-    padding: 2px 0px 2px 5px;
+    padding: 2px 0 2px 5px;
   }
+
   .input-container {
     width: 100%;
   }
+
   .search-input {
     width: 100% !important;
     border-radius: 5px;

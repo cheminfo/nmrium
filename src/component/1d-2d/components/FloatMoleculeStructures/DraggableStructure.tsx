@@ -37,6 +37,7 @@ interface DraggableStructureProps {
 
 const style = css`
   border: 1px solid transparent;
+
   button {
     visibility: hidden;
   }
@@ -49,6 +50,7 @@ const style = css`
   &:hover {
     border: 1px solid #ebecf1;
     background-color: white;
+
     button {
       visibility: visible;
     }

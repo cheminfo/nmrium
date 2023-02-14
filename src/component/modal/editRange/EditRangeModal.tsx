@@ -28,14 +28,17 @@ const styles = css`
   width: 600px;
   height: 500px;
   padding: 5px;
+
   button:focus {
     outline: none;
   }
+
   .header {
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
     align-items: center;
+
     .title {
       color: #464646;
       font-size: 15px;

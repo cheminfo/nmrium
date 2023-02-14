@@ -92,32 +92,25 @@ const containerStyles = css`
 
   button {
     cursor: pointer;
-    &:disabled {
-      cursor: default;
-    }
   }
 
+  button,
   button:active,
   button:hover,
   button:focus,
-  [type='button']:focus,
-  button {
+  [type='button']:focus {
     outline: none !important;
+  }
+
+  button:disabled {
+    cursor: default;
   }
 
   * {
     -webkit-user-drag: none;
     -moz-user-drag: none;
     -o-user-drag: none;
-    user-drag: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
     user-select: none;
-  }
-
-  .SplitPane {
-    height: 100%;
   }
 `;
 

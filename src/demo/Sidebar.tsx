@@ -28,10 +28,7 @@ const sidebarClosedCss = css`
 `;
 
 const menuBtCss = css`
-  margin-left: 4px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  margin-right: 4px;
+  margin: 2px 4px;
   z-index: 7;
   font-size: 18px;
   background-color: transparent;
@@ -49,11 +46,12 @@ const menuBtCss = css`
   }
 
   &:active {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgb(0 0 0 / 50%);
     border-radius: 50%;
   }
+
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgb(0 0 0 / 20%);
     border-radius: 50%;
   }
 `;

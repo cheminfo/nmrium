@@ -12,7 +12,7 @@ const styles = {
   common: css`
     pointer-events: bounding-box;
 
-    @-moz-document url-prefix() {
+    @-moz-document url-prefix("") {
       pointer-events: fill;
     }
   `,
@@ -26,6 +26,7 @@ const styles = {
       height: 100%;
       fill: #ff6f0057;
     }
+
     .delete-button {
       visibility: visible;
       cursor: pointer;

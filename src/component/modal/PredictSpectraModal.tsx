@@ -50,6 +50,7 @@ const styles = css`
       color: black;
     }
   }
+
   .warning {
     color: #c40000;
     font-weight: bold;
@@ -61,6 +62,7 @@ const styles = css`
   .warning-container {
     margin-top: 5px;
     display: flex;
+
     input {
       margin: 5px 5px 5px 0;
     }

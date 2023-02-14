@@ -12,8 +12,9 @@ const styles = css`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+
     .title {
-      padding: 0px 10px;
+      padding: 0 10px;
       width: 100%;
       text-align: center;
     }
@@ -24,11 +25,10 @@ const styles = css`
       margin: 0 auto;
     }
 
-    .newSumText {
+    .new-sum-text {
       margin-top: 15px;
-      padding: 0px 10px;
+      padding: 0 10px;
       width: 100%;
-
       text-align: center;
     }
   }
@@ -105,7 +105,7 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
               molecules={molecules}
               onChange={onChangeMoleculeSelectionHandler}
             />
-            <p className="newSumText">
+            <p className="new-sum-text">
               New sum for {element} will be {newSum}!
             </p>
           </div>

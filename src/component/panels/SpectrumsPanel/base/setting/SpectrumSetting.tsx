@@ -11,28 +11,26 @@ import Spectrum2DSetting from './Spectrum2DSetting';
 const style = css`
   position: fixed;
   z-index: 999999999;
-  width:100%;
-  height:100%;
-  left:0;
-  top:0;
-  .inner-container{
-    position:absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+
+  .inner-container {
+    position: absolute;
     display: flex;
     flex-direction: row-reverse;
     border-radius: 4px;
     background-color: white;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px,
-      rgba(0, 0, 0, 0.15) 0px 8px 16px;
-      overflow: auto;
-      height: 350px;
+    box-shadow: rgb(0 0 0 / 15%) 0 0 0 1px, rgb(0 0 0 / 15%) 0 8px 16px;
+    overflow: auto;
+    height: 350px;
   }
-
 
   .sketch-picker {
     border-radius: none !important;
     box-shadow: none !important;
   }
-
 
   .horizontal-slider {
     width: 80%;
@@ -48,8 +46,7 @@ const style = css`
     border-radius: 5px;
     cursor: grab;
     font-size: 10px;
-    background-image: -webkit-linear-gradient(top, #f4f1ee, #fff);
-    background-image: linear-gradient(top, #f4f1ee, #fff);
+    background-image: linear-gradient(to top, #f4f1ee, #fff);
   }
 
   .track {
@@ -63,13 +60,11 @@ const style = css`
   .track-1 {
     background: red;
   }
-   
-  .label{
+
+  .label {
     font-size: 12px;
     margin: 8px 0;
     display: block;
-  }
- 
   }
 `;
 

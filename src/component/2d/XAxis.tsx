@@ -17,7 +17,7 @@ const axisStyles = css`
     fill: none;
     stroke: black;
     stroke-width: 1;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
     user-select: none;
   }
 `;

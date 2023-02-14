@@ -5,7 +5,8 @@ const styles = css`
   width: 40px;
   height: 40px;
   margin: 0 auto;
-  :after {
+
+  ::after {
     content: ' ';
     display: block;
     width: 30px;
@@ -13,13 +14,15 @@ const styles = css`
     margin-top: 10px;
     border-radius: 50%;
     border: 4px solid;
-    border-color: #fff transparent #fff transparent;
+    border-color: #fff transparent;
     animation: ring-animation 1s linear infinite;
   }
+
   @keyframes ring-animation {
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }

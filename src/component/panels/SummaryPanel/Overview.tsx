@@ -11,6 +11,7 @@ const styles = css`
   font-size: 15px;
   font-weight: 300;
   white-space: nowrap;
+
   span {
     margin-left: 8px;
   }

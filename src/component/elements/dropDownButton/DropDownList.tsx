@@ -14,7 +14,7 @@ const styles = {
     position: absolute;
     height: auto;
     z-index: 99999999999999;
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 19px 38px rgb(0 0 0 / 30%), 0 15px 12px rgb(0 0 0 / 22%);
     border-radius: 10px;
     margin-bottom: 20px;
     overflow: hidden;
@@ -29,6 +29,7 @@ const styles = {
     white-space: nowrap;
     color: black;
     border-bottom: 0.55px solid #f9f9f9;
+
     &:last-of-type {
       border-bottom: none;
     }

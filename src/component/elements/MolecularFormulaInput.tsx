@@ -12,7 +12,7 @@ const inputStyle = css`
     width: 200px;
     border-radius: 5px;
     border: 0.55px solid #c7c7c7;
-    margin: 0px 5px 0px 5px;
+    margin: 0 5px;
     text-align: center;
   }
 
@@ -26,7 +26,6 @@ const inputStyle = css`
     margin-top: 15px;
     display: block;
     width: 20%;
-
     color: white;
     background-color: gray;
   }

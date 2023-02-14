@@ -31,7 +31,6 @@ const moveLinkStyles = css`
     margin-top: 15px;
     display: block;
     width: 60px;
-
     color: white;
     background-color: gray;
   }

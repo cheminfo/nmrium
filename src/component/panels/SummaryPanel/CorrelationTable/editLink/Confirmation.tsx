@@ -11,10 +11,6 @@ const styles = css`
     font-size: 14px;
   }
 
-  button:focus {
-    outline: none;
-  }
-
   button {
     flex: 2;
     padding: 5px;
@@ -25,9 +21,12 @@ const styles = css`
     margin-top: 15px;
     display: block;
     width: 90px;
-
     color: white;
     background-color: gray;
+  }
+
+  button:focus {
+    outline: none;
   }
 `;
 

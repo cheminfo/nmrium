@@ -14,12 +14,15 @@ import { IntegralIndicator } from './IntegralIndicator';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
-  @-moz-document url-prefix() {
+
+  @-moz-document url-prefix("") {
     pointer-events: fill;
   }
+
   .highlight {
     fill: transparent;
   }
+
   .target {
     visibility: hidden;
   }
@@ -28,9 +31,10 @@ const stylesOnHover = css`
 const stylesHighlighted = css`
   pointer-events: bounding-box;
 
-  @-moz-document url-prefix() {
+  @-moz-document url-prefix("") {
     pointer-events: fill;
   }
+
   fill: #ff6f0057;
 
   .target {

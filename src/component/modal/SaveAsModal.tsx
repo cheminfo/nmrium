@@ -29,10 +29,9 @@ const styles = css`
   .data-export-group {
     label {
       margin-right: 10px;
-    }
-    label {
       display: inline-block;
     }
+
     input[type='radio'] {
       margin-right: 5px;
     }

@@ -137,7 +137,12 @@ function getFillStyle(props: ButtonStyle) {
 
 const styles: Style = {
   button: (props) => {
-    const { size, backgroundColor, color, borderRadius } = props;
+    const {
+      size,
+      backgroundColor: { hover, active },
+      color,
+      borderRadius,
+    } = props;
 
     const basic = css`
       display: flex;
@@ -153,17 +158,18 @@ const styles: Style = {
     const fillStyle = getFillStyle(props);
 
     const colorStyle = css`
-      &:not([disabled]):hover {
-        background-color: ${backgroundColor.hover};
-        color: ${color.hover};
-      }
-      &:not([disabled]):active {
-        background-color: ${backgroundColor?.active || backgroundColor.hover};
-        color: ${color?.active || color.hover};
-      }
-
       &:disabled {
         opacity: 0.25;
+      }
+
+      &:not([disabled]):hover {
+        background-color: ${hover};
+        color: ${color.hover};
+      }
+
+      &:not([disabled]):active {
+        background-color: ${active || hover};
+        color: ${color?.active || color.hover};
       }
     `;
 

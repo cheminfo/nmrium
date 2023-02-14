@@ -13,9 +13,8 @@ import { createPortal } from 'react-dom';
 import { useGlobal } from '../context/GlobalContext';
 
 const styles = css`
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-  padding: 0px;
-  margin: 0px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 25%);
+  margin: 0;
   border-radius: 2px;
   display: flex;
   flex-direction: column;
@@ -35,6 +34,7 @@ const styles = css`
     text-align: left;
     outline: none;
   }
+
   button:hover {
     background-color: #fafafa;
     outline: none;

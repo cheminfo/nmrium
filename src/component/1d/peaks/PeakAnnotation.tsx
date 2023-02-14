@@ -17,20 +17,17 @@ import { formatNumber } from '../../utility/formatNumber';
 
 const styles = css`
   input {
-    -webkit-user-select: text; /* Safari 3.1+ */
-    -moz-user-select: text; /* Firefox 2+ */
-    -ms-user-select: text; /* IE 10+ */
-    user-select: text; /* Standard syntax */
+    user-select: text;
   }
 
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+    appearance: none;
     margin: 0;
   }
 
   input[type='number'] {
-    -moz-appearance: textfield;
+    appearance: textfield;
   }
 
   .notification-input-normal {
