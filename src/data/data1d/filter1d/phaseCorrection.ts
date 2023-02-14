@@ -27,26 +27,26 @@ export function apply(datum1D: Datum1D, options: PhaseCorrectionOptions) {
     throw new Error('phaseCorrection not applicable on this data');
   }
 
-  const { absolute } = options;
-  const filter = datum1D.filters.find((filter) => filter.name === id);
+  const { absolute = false } = options;
+  const filter = datum1D.filters?.find((filter) => filter.name === id);
 
   if (absolute) {
     datum1D.data.re = reimAbsolute(datum1D.data);
     datum1D.data.im = new Float64Array(0);
     if (filter) {
-      filter.value = { ...filter.value, ph0: 0, ph1: 0 };
+      filter.value = { ...filter.value, ph0: 0, ph1: 0, absolute };
     }
   } else if ('ph0' in options && 'ph1' in options) {
     let { ph0, ph1 } = options;
     phaseCorrection(datum1D, { ph0, ph1 });
     if (filter) {
-      filter.value = { ...filter.value, absolute: false };
+      filter.value = { ...filter.value, absolute };
     }
   } else {
     let { ph0, ph1 } = autoPhaseCorrection(datum1D);
     phaseCorrection(datum1D, { ph0, ph1 });
     if (filter) {
-      filter.value = { ...filter.value, absolute: false, ph0, ph1 };
+      filter.value = { ...filter.value, absolute, ph0, ph1 };
     }
   }
 }
