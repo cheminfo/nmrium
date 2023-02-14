@@ -54,7 +54,7 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences } = usePreferences();
+  const { dispatch: dispatchPreferences, current } = usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
   const openImportMetaInformationModal = useMetaInformationImportationModal();
@@ -72,6 +72,7 @@ function DropZone(props) {
           fileCollection,
           { selector },
         );
+
         if ((nmriumState as any)?.settings) {
           dispatchPreferences({
             type: 'SET_WORKSPACE',
@@ -83,7 +84,11 @@ function DropZone(props) {
         }
         dispatch({
           type: LOAD_DROP_FILES,
-          payload: { ...nmriumState, containsNmrium },
+          payload: {
+            ...nmriumState,
+            containsNmrium,
+            onLoadProcessing: current.onLoadProcessing,
+          },
         });
       }
     } catch (error: any) {

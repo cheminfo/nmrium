@@ -13,9 +13,9 @@ export const name = 'Apodization';
  */
 
 export interface ApodizationOptions {
-  lineBroadening: number;
-  gaussBroadening: number;
-  lineBroadeningCenter: number;
+  lineBroadening?: number;
+  gaussBroadening?: number;
+  lineBroadeningCenter?: number;
 }
 
 export const defaultApodizationOptions: ApodizationOptions = {
@@ -24,8 +24,25 @@ export const defaultApodizationOptions: ApodizationOptions = {
   lineBroadeningCenter: 0,
 };
 
-export function apply(datum1D: Datum1D, options: ApodizationOptions) {
-  const newData = apodizationFilter(datum1D, options);
+export function apply(datum1D: Datum1D, options: ApodizationOptions = {}) {
+  const {
+    lineBroadening = 1,
+    gaussBroadening = 0,
+    lineBroadeningCenter = 0,
+  } = options;
+
+  // if no options is set, we add the default value to filter
+  if (Object.keys(options).length === 0) {
+    const filter = datum1D.filters.find((filter) => filter.name === id);
+    if (filter) {
+      filter.value = { lineBroadening, gaussBroadening, lineBroadeningCenter };
+    }
+  }
+  const newData = apodizationFilter(datum1D, {
+    lineBroadening,
+    gaussBroadening,
+    lineBroadeningCenter,
+  });
 
   datum1D.data = {
     ...datum1D.data,
@@ -47,9 +64,14 @@ export function reduce(previousValue, newValue) {
 
 export function apodizationFilter(
   datum1D: Datum1D,
-  options: ApodizationOptions,
+  options: ApodizationOptions = {},
 ) {
-  const { lineBroadening, gaussBroadening, lineBroadeningCenter } = options;
+  const {
+    lineBroadening = 1,
+    gaussBroadening = 0,
+    lineBroadeningCenter = 0,
+  } = options;
+
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0) {

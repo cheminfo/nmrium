@@ -8,12 +8,25 @@ export const name = 'Zero Filling';
  * @param {Datum1d} datum1d
  * @param {Object} [nbPoints]
  */
-export function apply(datum1D: Datum1D, options: { nbPoints: number }) {
+export interface ZeroFillingOptions {
+  nbPoints?: number;
+  factor?: number;
+}
+
+export function apply(datum1D: Datum1D, options: ZeroFillingOptions) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not applicable on this data');
   }
 
-  const { nbPoints } = options;
+  let { nbPoints, factor = 2 } = options;
+
+  if (!nbPoints) {
+    nbPoints = 2 ** Math.round(Math.log2(datum1D.data.x.length * factor));
+    const filter = datum1D.filters.find((filter) => filter.name === id);
+    if (filter) {
+      filter.value = { nbPoints };
+    }
+  }
 
   let digitalFilterApplied = datum1D.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
@@ -64,6 +77,8 @@ export function isApplicable(
 }
 
 export function reduce(_previousValue, newValue) {
+  delete newValue.factor;
+
   return {
     once: true,
     reduce: newValue,

@@ -3,6 +3,8 @@ import { reimAbsolute, reimPhaseCorrection } from 'ml-spectra-processing';
 import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
+import { apply as autoPhaseCorrection } from './autoPhaseCorrection';
+
 export const id = 'phaseCorrection';
 export const name = 'Phase correction';
 
@@ -14,19 +16,38 @@ export const name = 'Phase correction';
  * @param {number} [options.ph1=0]
  */
 
-export function apply(datum1D: Datum1D, options: any = {}) {
+interface PhaseCorrectionOptions {
+  ph0?: number;
+  ph1?: number;
+  absolute?: boolean;
+}
+
+export function apply(datum1D: Datum1D, options: PhaseCorrectionOptions) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not applicable on this data');
   }
 
-  let { ph0, ph1, absolute } = options;
+  const { absolute } = options;
+  const filter = datum1D.filters.find((filter) => filter.name === id);
+
   if (absolute) {
     datum1D.data.re = reimAbsolute(datum1D.data);
     datum1D.data.im = new Float64Array(0);
+    if (filter) {
+      filter.value = { ...filter.value, ph0: 0, ph1: 0 };
+    }
+  } else if ('ph0' in options && 'ph1' in options) {
+    let { ph0, ph1 } = options;
+    phaseCorrection(datum1D, { ph0, ph1 });
+    if (filter) {
+      filter.value = { ...filter.value, absolute: false };
+    }
   } else {
-    ph0 *= Math.PI / 180;
-    ph1 *= Math.PI / 180;
-    Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, ph0, ph1));
+    let { ph0, ph1 } = autoPhaseCorrection(datum1D);
+    phaseCorrection(datum1D, { ph0, ph1 });
+    if (filter) {
+      filter.value = { ...filter.value, absolute: false, ph0, ph1 };
+    }
   }
 }
 
@@ -42,4 +63,10 @@ export function reduce(previousValue, newValue) {
     once: true,
     reduce: newValue,
   };
+}
+
+function phaseCorrection(datum1D, { ph0, ph1 }) {
+  ph0 *= Math.PI / 180;
+  ph1 *= Math.PI / 180;
+  Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, ph0, ph1));
 }

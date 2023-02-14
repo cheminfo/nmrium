@@ -31,6 +31,7 @@ import FormattingTabContent from './settings-tabs/FormattingTabContent';
 import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
 import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
+import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabContent';
 import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
@@ -363,6 +364,11 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             <Tab title="Title Block" tabid="title-block">
               <div className="inner-content">
                 <InfoBlockTabContent />
+              </div>
+            </Tab>
+            <Tab title="On Load Processing" tabid="on-load-processing">
+              <div className="inner-content">
+                <OnLoadProcessingTabContent />
               </div>
             </Tab>
           </Tabs>

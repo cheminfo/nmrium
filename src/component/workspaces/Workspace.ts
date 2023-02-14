@@ -1,5 +1,6 @@
+import { BaseFilter } from '../../data/FiltersManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
-import { Nuclei } from '../../data/types/common/Nucleus';
+import { Nuclei, Nucleus } from '../../data/types/common/Nucleus';
 import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { NMRiumGeneralPreferences } from '../../types/NMRiumGeneralPreferences';
 import { NMRiumPanelPreferences } from '../../types/NMRiumPanelPreferences';
@@ -189,6 +190,8 @@ export interface InfoBlock {
   fields: JpathTableColumn[];
 }
 
+export type OnLoadProcessing = Partial<Record<Nucleus, BaseFilter[]>>;
+
 export interface DisplayPreferences {
   general?: Partial<NMRiumGeneralPreferences>;
   panels?: Partial<NMRiumPanelPreferences>;
@@ -201,6 +204,7 @@ export interface WorkspacePreferences {
   databases?: Databases;
   nmrLoaders?: LoadersPreferences;
   infoBlock?: InfoBlock;
+  onLoadProcessing?: OnLoadProcessing;
 }
 
 /**

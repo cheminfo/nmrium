@@ -168,7 +168,7 @@ function generated1DSpectrum(params: {
         isFt: true,
       },
     },
-    [],
+    {},
   );
   datum.ranges.values = mapRanges(ranges, datum);
   updateIntegralsRelativeValues(datum);

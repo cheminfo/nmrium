@@ -30,9 +30,9 @@ export interface ExportOptions {
 function getData(datum, usedColors) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
-    return Datum1D.initiateDatum1D(datum, usedColors);
+    return Datum1D.initiateDatum1D(datum, { usedColors });
   } else if (dimension === 2) {
-    return Datum2D.initiateDatum2D(datum, usedColors);
+    return Datum2D.initiateDatum2D(datum, { usedColors });
   }
 }
 

@@ -358,7 +358,7 @@ function alignSpectraHandler(draft: Draft<State>, action) {
         applyFilter(datum, [
           {
             name: Filters.shiftX.id,
-            options: { shift },
+            value: { shift },
           },
         ]);
       }
