@@ -16,13 +16,16 @@ const styles = css`
   width: 900px;
   height: 400px;
   padding: 5px;
+
   button:focus {
     outline: none;
   }
+
   .header {
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
+
     span {
       color: #464646;
       font-size: 15px;
@@ -32,11 +35,13 @@ const styles = css`
     button {
       background-color: transparent;
       border: none;
+
       svg {
         height: 16px;
       }
     }
   }
+
   .container {
     overflow-y: auto;
     background-color: white;
@@ -47,9 +52,11 @@ const styles = css`
       display: flex !important;
       flex-direction: row;
       margin: 0;
+
       div {
         flex: 4;
       }
+
       .multiplicity {
         flex: 2;
         display: flex;
@@ -74,8 +81,7 @@ const loaderStyles = css`
   height: 400px;
 
   svg {
-    animation-duration: 0.5s;
-    animation-name: spinAnimation;
+    animation-name: spin-animation;
     animation-iteration-count: infinite;
     animation-fill-mode: forwards;
     animation-direction: inherit;
@@ -85,7 +91,7 @@ const loaderStyles = css`
     height: 100px;
   }
 
-  @keyframes spinAnimation {
+  @keyframes spin-animation {
     from {
       transform: rotate(0deg);
     }

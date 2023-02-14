@@ -9,6 +9,11 @@ const styles = css`
   border: none;
   border-radius: 5px;
   padding: 5px;
+
+  &:disabled {
+    opacity: 0.3;
+  }
+
   &:not([disabled]) {
     &:hover {
       background-color: lightgray !important;
@@ -19,10 +24,6 @@ const styles = css`
       background-color: gray;
       color: white;
     }
-  }
-
-  &:disabled {
-    opacity: 0.3;
   }
 `;
 

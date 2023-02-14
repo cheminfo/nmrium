@@ -14,10 +14,10 @@ const styles = css`
     font-size: 14px;
     text-align: center;
     color: #af0000;
-    text-align: center;
     padding: 25px;
     display: block;
   }
+
   .buttons-container {
     display: flex;
     flex-direction: row-reverse;
@@ -25,16 +25,9 @@ const styles = css`
     padding: 5px;
     border-top: 1px solid #efefef;
 
-    button:last-of-type {
-      border-radius: 5px 0 0 5px;
-    }
-    button:first-of-type {
-      border-radius: 0px 5px 5px 0px;
-      border-width: 1px;
-    }
     button {
       border-color: #dcdcdc;
-      border-width: 1px 0px 1px 1px;
+      border-width: 1px 0 1px 1px;
       background-color: white;
       display: inline-block;
       cursor: pointer;
@@ -43,9 +36,19 @@ const styles = css`
       padding: 6px 24px;
       text-decoration: none;
     }
+
     button:hover {
-      background: linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+      background: linear-gradient(to bottom, #f6f6f6 5%, #fff 100%);
       background-color: #f6f6f6;
+    }
+
+    button:first-of-type {
+      border-radius: 0 5px 5px 0;
+      border-width: 1px;
+    }
+
+    button:last-of-type {
+      border-radius: 5px 0 0 5px;
     }
   }
 `;

@@ -11,9 +11,8 @@ import { Toolbar } from 'react-science/ui';
 
 const menuStyles = css`
   .menu {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    padding: 0px;
-    margin: 0px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 50%);
+    margin: 0;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -54,9 +53,10 @@ const menuStyles = css`
     :focus {
       outline: none !important;
     }
+
     span {
       font-size: 10px;
-      padding: 0px 10px;
+      padding: 0 10px;
     }
   }
 `;

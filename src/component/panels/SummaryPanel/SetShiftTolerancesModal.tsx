@@ -10,6 +10,20 @@ const modalContainer = css`
   padding: 5px;
   text-align: center;
 
+  button {
+    flex: 2;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 30px;
+    margin: 0 auto;
+    margin-top: 15px;
+    display: block;
+    width: 20%;
+    color: white;
+    background-color: gray;
+  }
+
   button:focus {
     outline: none;
   }
@@ -32,25 +46,11 @@ const modalContainer = css`
       margin: 2px;
       background-color: transparent;
       border: none;
+
       svg {
         height: 16px;
       }
     }
-  }
-
-  button {
-    flex: 2;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 30px;
-    margin: 0 auto;
-    margin-top: 15px;
-    display: block;
-    width: 20%;
-
-    color: white;
-    background-color: gray;
   }
 
   table {
@@ -59,7 +59,7 @@ const modalContainer = css`
 
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+      appearance: none;
     }
 
     input {

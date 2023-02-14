@@ -10,7 +10,7 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 const styles = css`
   display: flex;
   flex-direction: row;
-  border-bottom: 0.55px solid rgb(240, 240, 240);
+  border-bottom: 0.55px solid rgb(240 240 240);
   padding: 2px 5px;
 
   .left-container {
@@ -18,11 +18,12 @@ const styles = css`
     flex-direction: row;
     flex: 1;
   }
+
   .counter-label {
     margin: 0;
     text-align: right;
     line-height: 22px;
-    padding: 0px 10px;
+    padding: 0 10px;
     white-space: nowrap;
   }
 `;

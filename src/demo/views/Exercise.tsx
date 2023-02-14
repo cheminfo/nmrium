@@ -33,7 +33,7 @@ const titleCss = css`
 
   p {
     font-size: 10px;
-    margin: 0px;
+    margin: 0;
   }
 `;
 

@@ -30,10 +30,10 @@ const style = css`
 
   p {
     color: white;
-    background-color: rgb(104, 104, 104);
+    background-color: rgb(104 104 104);
     padding: 1.5%;
     border-radius: 30px;
-    margin: 0px;
+    margin: 0;
   }
 
   svg {

@@ -15,8 +15,8 @@ import useEditRangeModal from '../hooks/useEditRangeModal';
 const styles = css`
   width: 66px;
   padding: 0 !important;
-  button {import useEditRangeModal from './../../../hooks/useEditRangeModal';
 
+  button {
     background-color: transparent;
     border: none;
     padding: 5px;

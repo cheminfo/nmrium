@@ -42,8 +42,8 @@ import {
 const toolbarStyle = css`
   display: flex;
   flex-direction: row;
-  border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 0px 5px;
+  border-bottom: 0.55px solid rgb(240 240 240);
+  padding: 0 5px;
 
   button svg {
     fill: #4e4e4e;
@@ -60,7 +60,7 @@ const toolbarStyle = css`
     text-align: right;
     width: 100%;
     line-height: 22px;
-    padding: 0px 10px;
+    padding: 0 10px;
   }
 `;
 

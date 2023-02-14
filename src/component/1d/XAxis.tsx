@@ -14,7 +14,7 @@ const axisStyles = css`
     fill: none;
     stroke: black;
     stroke-width: 1;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
     user-select: none;
   }
 `;
@@ -23,9 +23,9 @@ const gridStyles = css`
   user-select: none;
 
   line {
-    stroke: rgb(104, 104, 104);
+    stroke: rgb(104 104 104);
     stroke-opacity: 0.2;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
     stroke-dasharray: 3;
     stroke-width: 1;
     user-select: none;

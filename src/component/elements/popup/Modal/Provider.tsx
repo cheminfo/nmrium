@@ -159,6 +159,7 @@ function Provider({
     right: 0;
     z-index: 0;
     pointer-events: all;
+
     .handle {
       cursor: move;
     }
@@ -166,7 +167,7 @@ function Provider({
     .rnd-container {
       box-sizing: initial;
       background-color: #fff;
-      box-shadow: 0 0 0 0, 0 8px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 0 0, 0 8px 16px rgb(0 0 0 / 30%);
       border-radius: 5px;
     }
   `;

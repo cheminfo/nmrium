@@ -28,7 +28,7 @@ const CouplingsTableStyle = css`
     padding: 0.3rem;
     border-bottom: 1px solid #f5f5f5;
 
-    .selectBox {
+    .select-box {
       background-color: transparent;
       border: 0.5px solid #dedede;
       height: 100%;
@@ -103,7 +103,7 @@ function CouplingsTable({
               <td>{i + 1}</td>
               <td>
                 <FormikSelect
-                  className="selectBox"
+                  className="select-box"
                   name={`signals.${values.activeTab}.js.${i}.multiplicity`}
                   items={Multiplets}
                   itemValueField="label"

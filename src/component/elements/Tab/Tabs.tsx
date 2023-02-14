@@ -34,7 +34,7 @@ const topStyles = css`
   .tab-list-active {
     background-color: white;
     border: solid #ccc;
-    border-width: 1px 1px 0 1px;
+    border-width: 1px 1px 0;
   }
 
   .tab-content {
@@ -47,6 +47,7 @@ const leftStyles = css`
   display: flex;
   height: 100%;
   width: 100%;
+
   .tab-list {
     border-right: 1px solid #ccc;
     padding-left: 0;
@@ -71,7 +72,7 @@ const leftStyles = css`
   .tab-list-active {
     background-color: white;
     border: solid #ccc;
-    border-width: 1px 0px 1px 1px;
+    border-width: 1px 0 1px 1px;
   }
 
   .tab-content {

@@ -43,8 +43,10 @@ function Arrow({ direction, onClick }: ArrowProps) {
           background-color: #607d8b !important;
           color: white;
         }
+
         img {
           transform: translateX(${direction === 'left' ? '-2' : '2'}px);
+
           &:focus {
             outline: 0;
           }
@@ -135,6 +137,10 @@ function NextPrev({
   }, [loop, onChange]);
 
   if (!width && !Sliders) return null;
+
+  const translation = width * activeIndex;
+  const slidersWidth = width * (Sliders ? Sliders.length : 1);
+
   return (
     <div
       css={css`
@@ -149,10 +155,10 @@ function NextPrev({
     >
       <div
         css={css`
-          transform: translateX(-${width * activeIndex}px);
+          transform: translateX(-${translation}px);
           transition: transform ease-out ${transition}s;
           height: 100%;
-          width: ${width * (Sliders ? Sliders.length : 1)}px;
+          width: ${slidersWidth}px;
           display: flex;
         `}
       >

@@ -5,7 +5,7 @@ const styles = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgb(255 255 255 / 25%);
   height: 100%;
   flex-direction: column;
   user-select: none;
@@ -13,8 +13,7 @@ const styles = css`
   width: 100%;
 
   svg {
-    animation-duration: 0.5s;
-    animation-name: spinAnimation;
+    animation-name: spin-animation;
     animation-iteration-count: infinite;
     animation-fill-mode: forwards;
     animation-direction: inherit;
@@ -24,7 +23,7 @@ const styles = css`
     height: 100px;
   }
 
-  @keyframes spinAnimation {
+  @keyframes spin-animation {
     from {
       transform: rotate(0deg);
     }

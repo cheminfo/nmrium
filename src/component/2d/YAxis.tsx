@@ -10,19 +10,15 @@ import useSpectrum from '../hooks/useSpectrum';
 import { get2DYScale } from './utilities/scale';
 
 const axisStyles = css`
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+  user-select: none;
 
   path,
   line {
     fill: none;
     stroke: black;
     stroke-width: 1;
-    shape-rendering: crispEdges;
-    user-select: 'none';
-    -webkit-user-select: none; /* Chrome all / Safari all */
-    -moz-user-select: none; /* Firefox all */
+    shape-rendering: crispedges;
+    user-select: none;
   }
 `;
 

@@ -12,18 +12,8 @@ const textStyles = css`
   text-align: center;
   width: 100%;
 
-  .errorText {
+  .error-text {
     color: red;
-  }
-
-  .infoText {
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 14px;
-    text-align: left;
-    color: white;
-    background-color: #5f5f5f;
-    border-radius: 5px;
   }
 `;
 

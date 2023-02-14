@@ -17,6 +17,20 @@ const modalContainer = css`
   height: 220px;
   padding: 5px;
 
+  button {
+    flex: 2;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 30px;
+    margin: 0 auto;
+    margin-top: 15px;
+    display: block;
+    width: 20%;
+    color: white;
+    background-color: gray;
+  }
+
   button:focus {
     outline: none;
   }
@@ -32,6 +46,7 @@ const modalContainer = css`
       margin: 2px;
       background-color: transparent;
       border: none;
+
       svg {
         height: 16px;
       }
@@ -39,29 +54,12 @@ const modalContainer = css`
 
     p {
       font-weight: bold;
-
       margin-bottom: 5px;
       margin-right: 30px;
-      padding: 0px 10px;
+      padding: 0 10px;
       width: 100%;
-
       text-align: center;
     }
-  }
-
-  button {
-    flex: 2;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 30px;
-    margin: 0 auto;
-    margin-top: 15px;
-    display: block;
-    width: 20%;
-
-    color: white;
-    background-color: gray;
   }
 
   .tabs-container {

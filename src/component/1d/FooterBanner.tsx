@@ -20,9 +20,7 @@ const styles = css`
   display: flex;
   align-items: center;
   pointer-events: bounding-box;
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+  user-select: none;
   background-color: #f7f7f7;
   height: 30px;
   padding: 6px;
@@ -32,7 +30,7 @@ const styles = css`
   bottom: 0;
 
   div {
-    margin: 0px 10px;
+    margin: 0 10px;
     display: inline-block;
 
     .label {
@@ -40,18 +38,22 @@ const styles = css`
       color: #4d4d4d;
       font-weight: bold;
     }
+
     .value {
       font-weight: bold;
       font-size: 14px;
       display: inline-block;
     }
+
     .unit {
       font-weight: bold;
       font-size: 10px;
     }
+
     .x-value {
       min-width: 50px;
     }
+
     .y-value {
       min-width: 80px;
     }

@@ -13,12 +13,12 @@ import Signal from './Signal';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
-  @-moz-document url-prefix() {
+
+  @-moz-document url-prefix("") {
     pointer-events: fill;
   }
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+
+  user-select: none;
 
   .delete-button {
     visibility: hidden;
@@ -28,12 +28,14 @@ const stylesOnHover = css`
 const stylesHighlighted = css`
   pointer-events: bounding-box;
 
-  @-moz-document url-prefix() {
+  @-moz-document url-prefix("") {
     pointer-events: fill;
   }
-  .Integral-area {
+
+  .integral-area {
     fill: #ff6f0057;
   }
+
   .delete-button {
     visibility: visible;
     cursor: pointer;
@@ -90,7 +92,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
             x="0"
             width={scaleX(x1) - scaleX(x2)}
             height={scaleY(y2) - scaleY(y1)}
-            className="Integral-area"
+            className="integral-area"
             fill="#0000000f"
             stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
             strokeWidth={reduceOpacity ? '0' : '1'}

@@ -17,22 +17,18 @@ const tableStyle = css`
   border: 1px solid #dedede;
   width: 100%;
   font-size: 12px;
+
   .react-contextmenu-wrapper {
     display: contents;
   }
-  tr {
-    :last-child {
-      td {
-        border-bottom: 0;
-      }
-    }
-  }
+
   th {
     position: sticky;
     top: 0;
     background-color: white;
     z-index: 1;
   }
+
   th,
   td {
     white-space: nowrap;
@@ -45,9 +41,18 @@ const tableStyle = css`
     :last-child {
       border-right: 0;
     }
+
     button {
       background-color: transparent;
       border: none;
+    }
+  }
+
+  tr {
+    :last-child {
+      td {
+        border-bottom: 0;
+      }
     }
   }
 `;

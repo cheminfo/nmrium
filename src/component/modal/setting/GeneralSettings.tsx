@@ -63,7 +63,7 @@ const styles = css`
   .input {
     font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     padding: 5px;
     width: 100px;
     margin-right: 10px;
@@ -99,6 +99,7 @@ const styles = css`
     align-items: center;
     cursor: default;
     padding: 0.5em;
+
     & .label {
       font-size: 0.8em;
     }

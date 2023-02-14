@@ -16,6 +16,7 @@ interface Spectrum2DSettingProps {
 
 const style = (color: string) => css`
   display: inline-block;
+
   .track-1 {
     background-color: ${color} !important;
   }

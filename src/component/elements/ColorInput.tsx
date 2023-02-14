@@ -5,9 +5,9 @@ import { ColorPicker } from 'react-science/ui';
 
 const style = css`
   display: flex;
-  margin: 5px 0px;
+  margin: 5px 0;
 
-  .inputLabel {
+  .input-label {
     flex: 2;
     font-size: 11px;
     font-weight: bold;
@@ -29,10 +29,11 @@ const style = css`
     padding: 5px;
     background: #fff;
     border-radius: 1px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 10%);
     display: inline-block;
     cursor: pointer;
   }
+
   .color-popover {
     position: absolute;
     z-index: 2;
@@ -40,23 +41,27 @@ const style = css`
 
   .cover {
     position: fixed;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
+
   .chrome-picker {
     border-radius: none !important;
     width: 200px !important;
     height: 60px !important;
     display: flex;
   }
+
   .chrome-picker > div:first-of-type {
-    padding: 0px !important;
+    padding: 0 !important;
   }
+
   .chrome-picker > div:last-child > div:first-of-type {
     width: 120px;
   }
+
   .chrome-picker > div:last-child > div:last-child {
     display: none !important;
   }
@@ -104,7 +109,7 @@ function ColorInput(props: ColorInputProps) {
   );
   return (
     <div css={style}>
-      <span className="inputLabel">{label}</span>
+      <span className="input-label">{label}</span>
       <div style={{ flex: 4 }}>
         <div className="swatch" onClick={handleClick}>
           <div className="color" style={{ backgroundColor: selectedColor }} />

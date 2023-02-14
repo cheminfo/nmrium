@@ -7,15 +7,16 @@ import CloseButton from '../elements/CloseButton';
 const styles = css`
   overflow: auto;
   width: 400px;
-  .innerContainer {
+
+  .inner-container {
     padding: 5px;
     width: 100%;
     height: 180px;
     border: none;
   }
 
-  .mainButtonsContainer {
-    padding: 5px 0px;
+  .main-buttons-container {
+    padding: 5px 0;
     border-bottom: 0.55px solid #ebebeb;
     display: flex;
     justify-content: space-between;
@@ -45,7 +46,7 @@ function CopyClipboardModal({
 }: CopyClipboardModalProps) {
   return (
     <div css={styles}>
-      <div className="mainButtonsContainer handle">
+      <div className="main-buttons-container handle">
         <button type="button" onClick={() => onCopyClick(text)}>
           <FaCopy />
         </button>
@@ -53,7 +54,7 @@ function CopyClipboardModal({
         <CloseButton onClick={onClose} />
       </div>
       <div
-        className="innerContainer"
+        className="inner-container"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: text }}
       />

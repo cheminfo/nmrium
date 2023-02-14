@@ -19,14 +19,17 @@ const styles = css`
   width: 500px;
   height: 250px;
   padding: 5px;
+
   button:focus {
     outline: none;
   }
+
   .header {
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
     align-items: center;
+
     span {
       color: #464646;
       font-size: 15px;
@@ -45,6 +48,7 @@ const styles = css`
       }
     }
   }
+
   .container {
     display: flex;
     margin: 30px 5px;

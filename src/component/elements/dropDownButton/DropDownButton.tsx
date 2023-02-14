@@ -16,7 +16,7 @@ const styles = {
     border: 0.55px solid lightgray;
     font-size: 0.9em;
     background: ${arrowDownIcon} no-repeat right white;
-    -webkit-appearance: none;
+    appearance: none;
     background-position-x: calc(100% - 0.5em);
     background-size: 1em 1em;
   `,

@@ -1,0 +1,9 @@
+{
+  "extends": "stylelint-config-standard",
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "customSyntax": "postcss-styled-syntax"
+    }
+  ]
+}

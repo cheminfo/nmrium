@@ -11,13 +11,16 @@ const styles = css`
   flex-direction: column;
   width: 450px;
   padding: 5px;
+
   button:focus {
     outline: none;
   }
+
   .header {
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
+
     span {
       color: #464646;
       font-size: 15px;
@@ -27,11 +30,13 @@ const styles = css`
     button {
       background-color: transparent;
       border: none;
+
       svg {
         height: 16px;
       }
     }
   }
+
   .container {
     display: flex;
     margin: 30px 5px;
@@ -43,10 +48,9 @@ const styles = css`
       border: 1px solid gray;
       border-radius: 5px;
       margin: 2px;
-    }
-    input {
       flex: 10;
     }
+
     button {
       flex: 2;
       height: 100%;
