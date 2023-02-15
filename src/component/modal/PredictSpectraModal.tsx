@@ -92,12 +92,12 @@ const predictionFormValidation = Yup.object().shape({
   frequency: Yup.number().integer().required().label('Frequency'),
   '1d': Yup.object({
     '1H': Yup.object({
-      from: Yup.number().integer().required().label("1H ' From ' "),
-      to: Yup.number().integer().required().label("1H ' To ' "),
+      from: Yup.number().required().label("1H ' From ' "),
+      to: Yup.number().required().label("1H ' To ' "),
     }),
     '13C': Yup.object().shape({
-      from: Yup.number().integer().required().label("13C ' From ' "),
-      to: Yup.number().integer().required().label("13C ' To ' "),
+      from: Yup.number().required().label("13C ' From ' "),
+      to: Yup.number().required().label("13C ' To ' "),
     }),
     lineWidth: Yup.number().integer().min(1).required().label('Line Width'),
     nbPoints: Yup.number().integer().required().label('1D Number Of Points'),
