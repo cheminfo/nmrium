@@ -19,7 +19,7 @@ function DatabaseSpectrum() {
     height,
     yDomain,
     margin,
-    view: { align },
+    view: { verticalAlign },
   } = useChartData();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -36,10 +36,10 @@ function DatabaseSpectrum() {
       getYScale({
         height,
         margin: { top: margin.top, bottom: margin.bottom + marginBottom },
-        align,
+        verticalAlign,
         yDomain,
       }),
-    [align, height, margin.bottom, margin.top, marginBottom, yDomain],
+    [verticalAlign, height, margin.bottom, margin.top, marginBottom, yDomain],
   );
 
   const loadSpectrum = useRef(

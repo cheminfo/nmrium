@@ -93,11 +93,11 @@ const EXPORT_MENU = [
 interface BasicToolBarInnerProps {
   fidCounter: number;
   ftCounter: number;
-  align: VerticalAlignment;
+  verticalAlign: VerticalAlignment;
 }
 
 function BasicToolBarInner({
-  align,
+  verticalAlign,
   ftCounter,
   fidCounter,
 }: BasicToolBarInnerProps) {
@@ -260,7 +260,11 @@ function BasicToolBarInner({
           title="Spectra alignment ( Press s )"
           onClick={changeDisplayViewModeHandler}
         >
-          {align === 'stack' ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}
+          {verticalAlign === 'stack' ? (
+            <SvgNmrOverlay3Aligned />
+          ) : (
+            <SvgNmrOverlay3 />
+          )}
         </Toolbar.Item>
       )}
       {isButtonVisible('realImaginary') && (
@@ -278,7 +282,7 @@ function BasicToolBarInner({
           <Toolbar.Item
             id="baseline-position"
             title={
-              align === 'bottom'
+              verticalAlign === 'bottom'
                 ? 'Baseline  Center ( Press c )'
                 : 'Baseline  Bottom ( Press c )'
             }
@@ -286,7 +290,7 @@ function BasicToolBarInner({
             className="cheminfo"
           >
             <div style={{ fontSize: 24 }}>
-              {align === 'bottom' ? (
+              {verticalAlign === 'bottom' ? (
                 <SvgNmrAlignCenter />
               ) : (
                 <SvgNmrAlignBottom />
@@ -305,7 +309,7 @@ export default function BasicToolBar() {
     displayerMode,
     view: {
       spectra: { activeTab },
-      align,
+      verticalAlign,
     },
   } = useChartData();
 
@@ -315,7 +319,7 @@ export default function BasicToolBar() {
       {...{
         fidCounter,
         ftCounter,
-        align,
+        verticalAlign,
         displayerMode,
         activeTab,
       }}

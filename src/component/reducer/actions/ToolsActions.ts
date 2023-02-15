@@ -107,15 +107,16 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  const align = ['stack', 'bottom'].includes(draft.view.align)
+  const verticalAlign = ['stack', 'bottom'].includes(draft.view.verticalAlign)
     ? 'center'
     : 'bottom';
-  changeSpectrumVerticalAlignment(draft, { align });
+  changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
-  const align = draft.view.align === 'stack' ? 'bottom' : 'stack';
-  changeSpectrumVerticalAlignment(draft, { align });
+  const verticalAlign =
+    draft.view.verticalAlign === 'stack' ? 'bottom' : 'stack';
+  changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
 function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
@@ -171,7 +172,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
     margin,
     yDomain,
     yDomains,
-    view: { align },
+    view: { verticalAlign },
     width,
     xDomains,
     xDomain,
@@ -183,7 +184,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
 
   const yScale = is2D
     ? get2DYScale(draft)
-    : getYScale({ height, margin, yDomain, yDomains, align });
+    : getYScale({ height, margin, yDomain, yDomains, verticalAlign });
 
   const startX = xScale.invert(action.startX);
   const endX = xScale.invert(action.endX);

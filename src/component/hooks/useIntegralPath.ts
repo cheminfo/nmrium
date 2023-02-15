@@ -15,7 +15,7 @@ function useIntegralYDomain(): ScaleLinear<number, number, number> {
     height,
     margin,
     integralsYDomains,
-    view: { align },
+    view: { verticalAlign },
   } = useChartData();
 
   const activeSpectrum = useActiveSpectrum();
@@ -24,11 +24,11 @@ function useIntegralYDomain(): ScaleLinear<number, number, number> {
       getIntegralYScale({
         height,
         margin,
-        align,
+        verticalAlign,
         activeSpectrum,
         integralsYDomains,
       }),
-    [activeSpectrum, height, integralsYDomains, margin, align],
+    [activeSpectrum, height, integralsYDomains, margin, verticalAlign],
   );
 }
 

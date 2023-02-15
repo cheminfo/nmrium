@@ -34,9 +34,9 @@ function innerScaleReducer(draft: ScaleState, action) {
       break;
 
     case SET_SCALE: {
-      const { yDomains, align, height } = action.payload;
+      const { yDomains, verticalAlign, height } = action.payload;
 
-      if (align === 'stack') {
+      if (verticalAlign === 'stack') {
         draft.shiftY = height / (Object.keys(yDomains).length + 2);
       } else {
         draft.shiftY = 0;

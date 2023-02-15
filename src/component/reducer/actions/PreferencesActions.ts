@@ -10,7 +10,7 @@ import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { setDomain } from './DomainActions';
 
 interface AlignmentOptions {
-  align?: VerticalAlignment | 'auto-check';
+  verticalAlign?: VerticalAlignment | 'auto-check';
   activeTab?: string;
 }
 
@@ -18,27 +18,27 @@ function changeSpectrumVerticalAlignment(
   draft: Draft<State>,
   options: AlignmentOptions,
 ) {
-  const { align = 'bottom', activeTab } = options;
+  const { verticalAlign = 'bottom', activeTab } = options;
   if (draft.data && draft.data.length > 0) {
     let dataPerNucleus: Datum1D[] = [];
-    if (['auto-check', 'stack'].includes(options.align || '')) {
+    if (['auto-check', 'stack'].includes(options.verticalAlign || '')) {
       dataPerNucleus = (draft.data as Datum1D[]).filter((datum) =>
         datum.info.nucleus === activeTab
           ? activeTab
           : draft.view.spectra.activeTab && datum.info.dimension === 1,
       );
     }
-    if (align === 'auto-check') {
+    if (verticalAlign === 'auto-check') {
       const isFid =
         dataPerNucleus[0]?.info.isFid &&
         !dataPerNucleus.some((d) => !d.info.isFid);
       if (isFid) {
-        draft.view.align = 'center';
+        draft.view.verticalAlign = 'center';
       } else if (dataPerNucleus.length > 1) {
-        draft.view.align = 'stack';
+        draft.view.verticalAlign = 'stack';
       }
     } else {
-      draft.view.align = align;
+      draft.view.verticalAlign = verticalAlign;
     }
   }
 }

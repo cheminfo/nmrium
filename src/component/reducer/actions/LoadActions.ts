@@ -120,10 +120,10 @@ function setPreferences(draft: Draft<State>, data) {
 
   if (verticalAlign) {
     changeSpectrumVerticalAlignment(draft, {
-      align: verticalAlign,
+      verticalAlign,
     });
   } else {
-    changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+    changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
   }
 }
 
@@ -158,7 +158,7 @@ function loadJcampFile(draft: Draft<State>, actions) {
   const spectra = addJcamps(files, draft.usedColors);
   draft.data = draft.data.concat(initSpectra(spectra, draft.usedColors));
   setActiveTab(draft);
-  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+  changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
 
   draft.isLoading = false;
 }
@@ -170,7 +170,7 @@ function loadDropFiles(draft: Draft<State>, action) {
   } else {
     setData(draft, payload);
     setActiveTab(draft);
-    changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+    changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
     draft.actionType = type;
     draft.isLoading = false;
   }

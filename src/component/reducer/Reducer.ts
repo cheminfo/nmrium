@@ -126,7 +126,7 @@ export interface ViewState {
    * options to control spectra vertical alignment
    * @default  'bottom'
    */
-  align: VerticalAlignment;
+  verticalAlign: VerticalAlignment;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -160,7 +160,7 @@ export function getDefaultViewState(): ViewState {
     zoom: {
       levels: {},
     },
-    align: 'bottom',
+    verticalAlign: 'bottom',
   };
 }
 export const getInitialState = (): State => ({
@@ -227,10 +227,7 @@ export const getInitialState = (): State => ({
 export const initialState = getInitialState();
 
 export type VerticalAlignment = 'bottom' | 'center' | 'stack';
-export interface VerticalAlign {
-  align: VerticalAlignment;
-  verticalShift: number;
-}
+
 export interface State {
   /**
    * Last action type
