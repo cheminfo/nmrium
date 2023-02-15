@@ -252,15 +252,18 @@ function get2DWidth(nucleus: string[]) {
 function calculateFrequency(
   nucleus: string | string[],
   frequency: number,
-): number | string {
+): number | number[] {
   if (typeof nucleus === 'string') {
     return getFrequency(nucleus, { nucleus: '1H', frequency });
   } else if (nucleus[0] === nucleus[1]) {
-    return `${frequency},${frequency}`;
+    return [frequency, frequency];
   } else {
-    return `${frequency},${getFrequency(nucleus[1], {
-      nucleus: nucleus[0],
+    return [
       frequency,
-    })}`;
+      getFrequency(nucleus[1], {
+        nucleus: nucleus[0],
+        frequency,
+      }),
+    ];
   }
 }
