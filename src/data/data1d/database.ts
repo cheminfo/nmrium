@@ -210,6 +210,6 @@ function mapJs(js: Jcoupling[]) {
     const { coupling, multiplicity } = result;
     return { multiplicity, coupling: coupling.join(',') };
   } else {
-    return { multiplicity: '', coupling: '' };
+    return { coupling: '' };
   }
 }
