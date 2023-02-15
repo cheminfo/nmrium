@@ -1,9 +1,11 @@
-import { reimAbsolute, reimPhaseCorrection } from 'ml-spectra-processing';
+import {
+  reimAbsolute,
+  reimPhaseCorrection,
+  reimAutoPhaseCorrection,
+} from 'ml-spectra-processing';
 
 import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
-
-import { apply as autoPhaseCorrection } from './autoPhaseCorrection';
 
 export const id = 'phaseCorrection';
 export const name = 'Phase correction';
@@ -68,5 +70,34 @@ export function reduce(previousValue, newValue) {
 function phaseCorrection(datum1D, { ph0, ph1 }) {
   ph0 *= Math.PI / 180;
   ph1 *= Math.PI / 180;
-  Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, ph0, ph1));
+  datum1D.data = {
+    ...datum1D.data,
+    ...reimPhaseCorrection(datum1D.data, ph0, ph1),
+  };
+}
+
+interface AutoPhaseCorrectionOptions {
+  minRegSize?: number;
+  maxDistanceToJoin?: number;
+  magnitudeMode?: boolean;
+  factorNoise?: number;
+}
+
+function autoPhaseCorrection(
+  datum1D: Datum1D,
+  options: AutoPhaseCorrectionOptions = {},
+) {
+  const {
+    minRegSize = 5,
+    maxDistanceToJoin = 128,
+    magnitudeMode = true,
+    factorNoise = 5,
+  } = options;
+
+  return reimAutoPhaseCorrection(datum1D.data as any, {
+    minRegSize,
+    maxDistanceToJoin,
+    magnitudeMode,
+    factorNoise,
+  });
 }
