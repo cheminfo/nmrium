@@ -11,13 +11,15 @@ import { updateZones } from './data2d/Spectrum2D/zones/updateZones';
 import { Datum1D } from './types/data1d';
 import { Datum2D } from './types/data2d/Datum2D';
 
-export interface Filter {
-  id: string;
+export interface BaseFilter {
   name: string;
-  label: string;
-  isDeleteAllow: boolean;
-  flag: boolean;
   value: any;
+  isDeleteAllow?: boolean;
+  flag?: boolean;
+  label?: string;
+}
+export interface Filter extends Required<BaseFilter> {
+  id: string;
 }
 
 function resetDataToOrigin(datum) {
@@ -39,12 +41,9 @@ function updateData(datum: Datum1D | Datum2D) {
   }
 }
 
-/***
- * @param {object} Filters [{name:'',options:{}},{...}]
- */
 function applyFilter(
   datum: Datum1D | Datum2D,
-  filters: any[] = [],
+  filters: BaseFilter[] = [],
   forceReapply = false,
 ) {
   let isReduced = false;
@@ -52,7 +51,7 @@ function applyFilter(
     const filterOption = {
       name: filter.name,
       label: Filters[filter.name].name,
-      value: filter.options,
+      value: filter.value,
     };
     const previousFilter = lookupForFilter(datum, filter.name);
     if (previousFilter) {
@@ -91,13 +90,13 @@ function applyFilter(
     reapplyFilters(datum);
   } else if (isReduced) {
     if (filters.length === 1 && isLastFilter(datum, filters[0].name)) {
-      Filters[filters[0].name].apply(datum, filters[0].options);
+      Filters[filters[0].name].apply(datum, filters[0].value);
     } else {
       reapplyFilters(datum);
     }
   } else {
     for (let filter of filters) {
-      Filters[filter.name].apply(datum, filter.options);
+      Filters[filter.name].apply(datum, filter.value);
     }
   }
   updateData(datum);

@@ -1,3 +1,5 @@
+import * as Filters from '../../data/Filters';
+
 import { WorkspacePreferences } from './Workspace';
 
 export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
@@ -102,6 +104,79 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
         label: 'Pulse Sequence',
         jpath: ['info', 'pulseSequence'],
         visible: true,
+      },
+    ],
+  },
+  onLoadProcessing: {
+    '1H': [
+      {
+        name: Filters.digitalFilter.id,
+        label: Filters.digitalFilter.name,
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.apodization.id,
+        label: Filters.apodization.name,
+        value: {},
+        flag: false,
+      },
+      {
+        name: Filters.zeroFilling.id,
+        label: Filters.zeroFilling.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.fft.id,
+        label: Filters.fft.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.phaseCorrection.id,
+        label: Filters.phaseCorrection.name,
+
+        value: {},
+        flag: true,
+      },
+    ],
+    '13C': [
+      {
+        name: Filters.digitalFilter.id,
+        label: Filters.digitalFilter.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.apodization.id,
+        label: Filters.apodization.name,
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.zeroFilling.id,
+        label: Filters.zeroFilling.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.fft.id,
+        label: Filters.fft.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.phaseCorrection.id,
+        label: Filters.phaseCorrection.name,
+
+        value: {},
+        flag: true,
       },
     ],
   },

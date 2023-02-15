@@ -45,7 +45,7 @@ export function apply(datum1D: Datum1D) {
 
   Object.assign(datum1D.data, data);
   datum1D.data.x = generateXAxis(datum1D);
-  if (info.reverse && info.reverse[0]) {
+  if (info?.reverse?.[0]) {
     datum1D.data.re.reverse();
     datum1D.data.im.reverse();
   }

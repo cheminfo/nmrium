@@ -7,7 +7,6 @@ import {
   apply as apodization,
   defaultApodizationOptions,
 } from '../../../data/data1d/filter1d/apodization';
-import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
@@ -34,7 +33,7 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shift) {
     const index = activeSpectrum?.index;
 
     FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.shiftX.id, options: { shift } },
+      { name: Filters.shiftX.id, value: { shift } },
     ]);
     resetSelectedTool(draft);
     setDomain(draft);
@@ -48,7 +47,7 @@ function applyZeroFillingFilter(draft: Draft<State>, action) {
     const filters = [
       {
         name: Filters.zeroFilling.id,
-        options: action.payload,
+        value: action.payload,
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
@@ -81,11 +80,10 @@ function applyApodizationFilter(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
-    const options = action.payload;
     const filters = [
       {
         name: Filters.apodization.id,
-        options,
+        value: action.payload,
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
@@ -121,7 +119,7 @@ function applyFFTFilter(draft: Draft<State>) {
 
     //apply filter into the spectrum
     FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.fft.id, options: {} },
+      { name: Filters.fft.id, value: {} },
     ]);
 
     resetSelectedTool(draft);
@@ -140,7 +138,7 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.phaseCorrection.id,
-        options: { ph0, ph1, absolute: false },
+        value: { ph0, ph1 },
       },
     ]);
 
@@ -156,7 +154,7 @@ function applyAbsoluteFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.phaseCorrection.id,
-        options: { absolute: true, ph0: 0, ph1: 0 },
+        value: { absolute: true },
       },
     ]);
 
@@ -171,12 +169,10 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   if (activeSpectrum) {
     const { index } = activeSpectrum;
 
-    const { ph0, ph1 } = autoPhaseCorrection(draft.data[index] as Datum1D);
-
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.phaseCorrection.id,
-        options: { ph0, ph1, absolute: false },
+        value: {},
       },
     ]);
 
@@ -304,7 +300,7 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     FiltersManager.applyFilter(draft.data[activeSpectrum.index], [
       {
         name: Filters.baselineCorrection.id,
-        options: {
+        value: {
           zones,
           ...options,
         },
@@ -377,10 +373,10 @@ function resetSpectrumByFilter(
         FiltersManager.reapplyFilters(datum, filters);
 
         if (applyFilter) {
-          const { name, value: options } = datum.filters[filterIndex];
+          const { name, value } = datum.filters[filterIndex];
           const newDatum = current(draft).data[index];
           if (newDatum.info?.dimension === 1) {
-            FiltersManager.applyFilter(newDatum, [{ name, options }]);
+            FiltersManager.applyFilter(newDatum, [{ name, value }]);
           }
 
           currentDatum = { datum: newDatum, index };
@@ -435,7 +431,7 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
 function handleSignalProcessingFilter(draft: Draft<State>, action) {
   const { data, view } = draft;
   const nucleus = view.spectra.activeTab;
-  const options = action.payload.options;
+  const value = action.payload.options;
 
   const spectra = getSpectraByNucleus(nucleus, data) as Datum1D[];
   for (const spectrum of spectra) {
@@ -444,7 +440,7 @@ function handleSignalProcessingFilter(draft: Draft<State>, action) {
       [
         {
           name: Filters.signalProcessing.id,
-          options,
+          value,
         },
       ],
       true,
@@ -475,7 +471,7 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
     FiltersManager.applyFilter(spectrum, [
       {
         name: Filters.exclusionZones.id,
-        options: [
+        value: [
           {
             id: v4(),
             from: range[0],
@@ -604,7 +600,6 @@ function setFilterChanges(draft: Draft<State>, selectedFilterID) {
         draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
         break;
       }
-
       default:
         break;
     }

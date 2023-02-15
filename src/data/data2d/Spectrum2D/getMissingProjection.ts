@@ -48,5 +48,5 @@ export function getMissingProjection(
     x: zoneToX({ from, to }, nbPoints),
     re: projection,
   };
-  return initiateDatum1D({ info, data }, usedColors);
+  return initiateDatum1D({ info, data }, { usedColors });
 }

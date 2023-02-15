@@ -12,6 +12,8 @@ import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
 import { Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
+import nucleusToString from '../../utility/nucleusToString';
+import { OnLoadProcessing } from '../../workspaces/Workspace';
 import {
   getDefaultViewState,
   getInitialState,
@@ -46,15 +48,19 @@ function setCorrelation(draft: Draft<State>, correlations) {
   }
 }
 
-function initSpectra(inputSpectra: (Datum1D | Datum2D)[], usedColors) {
+function initSpectra(
+  inputSpectra: (Datum1D | Datum2D)[],
+  options: { usedColors: UsedColors; onLoadProcessing: OnLoadProcessing },
+) {
   const spectra: any = [];
-
+  const { usedColors, onLoadProcessing } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
-      spectra.push(initiateDatum1D(spectrum, usedColors));
+      const filters = onLoadProcessing?.[nucleusToString(info.nucleus)] || [];
+      spectra.push(initiateDatum1D(spectrum, { usedColors, filters }));
     } else if (info.dimension === 2) {
-      spectra.push(initiateDatum2D({ ...spectrum }, usedColors));
+      spectra.push(initiateDatum2D({ ...spectrum }, { usedColors }));
     }
   }
   return spectra;
@@ -70,9 +76,15 @@ function setData(
       correlations: CorrelationData;
     };
     usedColors: UsedColors;
+    onLoadProcessing?: OnLoadProcessing;
   },
 ) {
-  const { data, usedColors, view } = input || {
+  const {
+    data,
+    usedColors,
+    view,
+    onLoadProcessing = {},
+  } = input || {
     data: { spectra: [], molecules: [], correlations: {} },
     multipleAnalysis: {},
   };
@@ -86,7 +98,9 @@ function setData(
 
   setColors(draft, usedColors);
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
-  draft.data = draft.data.concat(initSpectra(spectra, usedColors));
+  draft.data = draft.data.concat(
+    initSpectra(spectra, { usedColors, onLoadProcessing }),
+  );
   setCorrelation(draft, correlations);
 }
 
@@ -155,8 +169,11 @@ function initiate(draft: Draft<State>, action) {
 
 function loadJcampFile(draft: Draft<State>, actions) {
   const { files } = actions;
-  const spectra = addJcamps(files, draft.usedColors);
-  draft.data = draft.data.concat(initSpectra(spectra, draft.usedColors));
+  const { data, usedColors } = draft;
+  const spectra = addJcamps(files, usedColors);
+  draft.data = data.concat(
+    initSpectra(spectra, { usedColors, onLoadProcessing: {} }),
+  );
   setActiveTab(draft);
   changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
 
