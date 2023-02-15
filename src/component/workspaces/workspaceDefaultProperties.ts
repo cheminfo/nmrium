@@ -119,7 +119,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
         name: Filters.apodization.id,
         label: Filters.apodization.name,
         value: {},
-        flag: true,
+        flag: false,
       },
       {
         name: Filters.zeroFilling.id,
@@ -155,7 +155,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
         name: Filters.apodization.id,
         label: Filters.apodization.name,
         value: {},
-        flag: false,
+        flag: true,
       },
       {
         name: Filters.zeroFilling.id,
