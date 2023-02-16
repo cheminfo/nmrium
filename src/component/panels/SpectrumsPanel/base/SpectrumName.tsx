@@ -22,25 +22,41 @@ const styles: Record<'info' | 'icon', CSSProperties> = {
     height: '16px',
     display: 'inline-block',
     verticalAlign: 'middle',
+    position: 'relative',
   },
 };
 
 export function SpectrumName(props: SpectrumNameProps) {
-  const { data } = props;
-
   return (
     <div style={styles.info}>
-      {' '}
       <div style={styles.icon}>
-        {data.info.isFid ? (
-          <SvgNmrFid />
-        ) : data.info.dimension === 2 ? (
-          <SvgNmr2D />
-        ) : (
-          <SvgNmrFt />
-        )}
+        <SpectraIcon {...props} />
       </div>
-      <span>{data.display.name}</span>
+      <span>{props.data.display.name}</span>
     </div>
   );
+}
+
+function SpectraIcon(props: SpectrumNameProps) {
+  const {
+    data: {
+      info: { isFt, isFid, dimension },
+      originalInfo,
+    },
+  } = props;
+
+  if (dimension === 1 && isFt && originalInfo?.isFid) {
+    return (
+      <>
+        <SvgNmrFid style={{ opacity: '0.3', position: 'absolute' }} />
+        <SvgNmrFt />
+      </>
+    );
+  } else if (dimension === 1 && isFt) {
+    return <SvgNmrFt />;
+  } else if (isFid) {
+    return <SvgNmrFid />;
+  } else {
+    return <SvgNmr2D />;
+  }
 }
