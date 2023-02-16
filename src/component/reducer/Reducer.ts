@@ -9,6 +9,7 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
+import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -40,7 +41,7 @@ import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
+import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -122,6 +123,11 @@ export interface ViewState {
   zoom: {
     levels: ContoursLevels;
   };
+  /**
+   * options to control spectra vertical alignment
+   * @default  'bottom'
+   */
+  verticalAlign: Partial<Record<Nuclei, VerticalAlignment>>;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -140,7 +146,7 @@ export interface Margin {
   left: number;
 }
 
-export function getDefaultViewState() {
+export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
     ranges: [],
@@ -155,6 +161,7 @@ export function getDefaultViewState() {
     zoom: {
       levels: {},
     },
+    verticalAlign: {},
   };
 }
 export const getInitialState = (): State => ({
@@ -184,10 +191,6 @@ export const getInitialState = (): State => ({
   mode: 'RTL',
   molecules: [],
   view: getDefaultViewState(),
-  verticalAlign: {
-    align: 'bottom',
-    verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
-  },
   history: {
     past: [],
     present: null,
@@ -225,10 +228,7 @@ export const getInitialState = (): State => ({
 export const initialState = getInitialState();
 
 export type VerticalAlignment = 'bottom' | 'center' | 'stack';
-export interface VerticalAlign {
-  align: VerticalAlignment;
-  verticalShift: number;
-}
+
 export interface State {
   /**
    * Last action type
@@ -317,11 +317,6 @@ export interface State {
    * @default { floatingMolecules: [], ranges: [], zones: [] };
    */
   view: ViewState;
-  /**
-   * options to control spectra vertical alignment
-   * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
-   */
-  verticalAlign: VerticalAlign;
   /**
    * @todo for undo /redo features
    */

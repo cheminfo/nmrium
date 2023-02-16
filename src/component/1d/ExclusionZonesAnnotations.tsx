@@ -4,25 +4,24 @@ import * as Filters from '../../data/Filters';
 import { Datum1D } from '../../data/types/data1d';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
-import { VerticalAlign } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
-import getVerticalShift from './utilities/getVerticalShift';
 
 interface ExclusionZonesAnnotationsInnerProps {
   displayerKey: string;
   spectra: Datum1D[];
   xDomains: any;
-  verticalAlign: VerticalAlign;
+  shiftY: number;
 }
 
 function ExclusionZonesAnnotationsInner({
   displayerKey,
   xDomains,
   spectra,
-  verticalAlign,
+  shiftY,
 }: ExclusionZonesAnnotationsInnerProps) {
   return (
     <g
@@ -38,7 +37,7 @@ function ExclusionZonesAnnotationsInner({
                 <ExclusionZoneAnnotation
                   key={zone.id}
                   spectrumID={d.id}
-                  vAlign={getVerticalShift(verticalAlign, { index })}
+                  vAlign={shiftY * index}
                   zone={zone}
                   filterId={record.id}
                   color={d.display.color}
@@ -54,8 +53,8 @@ function ExclusionZonesAnnotationsInner({
 const MemoizedPeakAnnotations = memo(ExclusionZonesAnnotationsInner);
 
 function ExclusionZonesAnnotations() {
-  const { displayerKey, xDomains, displayerMode, verticalAlign } =
-    useChartData();
+  const { displayerKey, xDomains, displayerMode } = useChartData();
+  const { shiftY } = useScale();
 
   const spectra = useSpectraByActiveNucleus() as Datum1D[];
 
@@ -66,7 +65,7 @@ function ExclusionZonesAnnotations() {
       spectra={spectra}
       displayerKey={displayerKey}
       xDomains={xDomains}
-      verticalAlign={verticalAlign}
+      shiftY={shiftY}
     />
   );
 }

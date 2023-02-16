@@ -8,6 +8,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useSpectrum from '../hooks/useSpectrum';
+import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
 
@@ -16,7 +17,8 @@ import { getYScale } from './utilities/scale';
 const emptyData = { data: {}, info: {} };
 
 function useWindowYScale() {
-  const { height, margin, verticalAlign } = useChartData();
+  const { height, margin } = useChartData();
+  const verticalAlign = useVerticalAlign();
   return getYScale({
     height,
     margin,
