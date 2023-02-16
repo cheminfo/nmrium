@@ -17,6 +17,7 @@ import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { getVerticalAlign } from '../helper/getVerticalAlign';
 
 import {
   setDomain,
@@ -107,15 +108,16 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  const verticalAlign = ['stack', 'bottom'].includes(draft.view.verticalAlign)
+  const currentVerticalAlign = getVerticalAlign(draft);
+  const verticalAlign = ['stack', 'bottom'].includes(currentVerticalAlign)
     ? 'center'
     : 'bottom';
   changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
-  const verticalAlign =
-    draft.view.verticalAlign === 'stack' ? 'bottom' : 'stack';
+  const currentVerticalAlign = getVerticalAlign(draft);
+  const verticalAlign = currentVerticalAlign === 'stack' ? 'bottom' : 'stack';
   changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
@@ -172,7 +174,6 @@ function handleBrushEnd(draft: Draft<State>, action) {
     margin,
     yDomain,
     yDomains,
-    view: { verticalAlign },
     width,
     xDomains,
     xDomain,
@@ -181,7 +182,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
   } = draft;
 
   const xScale = getXScale({ width, xDomains, xDomain, mode, margin });
-
+  const verticalAlign = getVerticalAlign(draft);
   const yScale = is2D
     ? get2DYScale(draft)
     : getYScale({ height, margin, yDomain, yDomains, verticalAlign });

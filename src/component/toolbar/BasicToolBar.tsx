@@ -28,6 +28,7 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
+import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
@@ -309,9 +310,10 @@ export default function BasicToolBar() {
     displayerMode,
     view: {
       spectra: { activeTab },
-      verticalAlign,
     },
   } = useChartData();
+
+  const verticalAlign = useVerticalAlign();
 
   const { fidCounter, ftCounter } = useDatumWithSpectraStatistics();
   return (

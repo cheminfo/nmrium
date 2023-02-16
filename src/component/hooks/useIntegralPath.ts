@@ -8,16 +8,12 @@ import { useChartData } from '../context/ChartContext';
 import { PathBuilder } from '../utility/PathBuilder';
 
 import { useActiveSpectrum } from './useActiveSpectrum';
+import { useVerticalAlign } from './useVerticalAlign';
 import { useXScale } from './useXScale';
 
 function useIntegralYDomain(): ScaleLinear<number, number, number> {
-  const {
-    height,
-    margin,
-    integralsYDomains,
-    view: { verticalAlign },
-  } = useChartData();
-
+  const { height, margin, integralsYDomains } = useChartData();
+  const verticalAlign = useVerticalAlign();
   const activeSpectrum = useActiveSpectrum();
   return useMemo(
     () =>

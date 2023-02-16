@@ -9,6 +9,7 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
+import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -126,7 +127,7 @@ export interface ViewState {
    * options to control spectra vertical alignment
    * @default  'bottom'
    */
-  verticalAlign: VerticalAlignment;
+  verticalAlign: Partial<Record<Nuclei, VerticalAlignment>>;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -160,7 +161,7 @@ export function getDefaultViewState(): ViewState {
     zoom: {
       levels: {},
     },
-    verticalAlign: 'bottom',
+    verticalAlign: {},
   };
 }
 export const getInitialState = (): State => ({

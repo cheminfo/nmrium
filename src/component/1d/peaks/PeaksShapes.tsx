@@ -20,12 +20,12 @@ function PeaksShapes() {
     return null;
   }
 
-  const verticalAlign = (activeSpectrum?.index || 0) * shiftY;
+  const shift = (activeSpectrum?.index || 0) * shiftY;
 
   return (
     <g className="peaks-shapes" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
-      {showPeaksShapes && <PeaksShapesItems vAlign={verticalAlign} />}
-      {showPeaksSum && <PeaksShapesSum vAlign={verticalAlign} />}
+      {showPeaksShapes && <PeaksShapesItems vAlign={shift} />}
+      {showPeaksSum && <PeaksShapesSum vAlign={shift} />}
     </g>
   );
 }

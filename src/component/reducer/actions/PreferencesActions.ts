@@ -19,26 +19,28 @@ function changeSpectrumVerticalAlignment(
   options: AlignmentOptions,
 ) {
   const { verticalAlign = 'bottom', activeTab } = options;
+  const nucleus = activeTab || draft.view.spectra.activeTab;
+
   if (draft.data && draft.data.length > 0) {
     let dataPerNucleus: Datum1D[] = [];
     if (['auto-check', 'stack'].includes(options.verticalAlign || '')) {
-      dataPerNucleus = (draft.data as Datum1D[]).filter((datum) =>
-        datum.info.nucleus === activeTab
-          ? activeTab
-          : draft.view.spectra.activeTab && datum.info.dimension === 1,
+      dataPerNucleus = (draft.data as Datum1D[]).filter(
+        (datum) => datum.info.nucleus === nucleus && datum.info.dimension === 1,
       );
     }
-    if (verticalAlign === 'auto-check') {
-      const isFid =
-        dataPerNucleus[0]?.info.isFid &&
-        !dataPerNucleus.some((d) => !d.info.isFid);
-      if (isFid) {
-        draft.view.verticalAlign = 'center';
-      } else if (dataPerNucleus.length > 1) {
-        draft.view.verticalAlign = 'stack';
+    if (nucleus) {
+      if (verticalAlign === 'auto-check') {
+        const isFid =
+          dataPerNucleus[0]?.info.isFid &&
+          !dataPerNucleus.some((d) => !d.info.isFid);
+        if (isFid) {
+          draft.view.verticalAlign[nucleus] = 'center';
+        } else if (dataPerNucleus.length > 1) {
+          draft.view.verticalAlign[nucleus] = 'stack';
+        }
+      } else {
+        draft.view.verticalAlign[nucleus] = verticalAlign;
       }
-    } else {
-      draft.view.verticalAlign = verticalAlign;
     }
   }
 }
