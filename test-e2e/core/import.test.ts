@@ -65,7 +65,7 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
   // If the file was loaded successfully, there should be a 13C tab.
   await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
 
-  await nmrium.clickPanel('Filters');
+  await nmrium.clickPanel('Processings');
 
   await expect(
     nmrium.page.locator('_react=FilterTable >> text=Apodization'),
