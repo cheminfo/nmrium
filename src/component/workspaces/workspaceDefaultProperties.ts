@@ -16,7 +16,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       integralsPanel: { display: false, open: false },
       rangesPanel: { display: false, open: false },
       structuresPanel: { display: false, open: false },
-      filtersPanel: { display: false, open: false },
+      processingsPanel: { display: false, open: false },
       zonesPanel: { display: false, open: false },
       automaticAssignmentPanel: { display: false, open: false },
       databasePanel: { display: false, open: false },

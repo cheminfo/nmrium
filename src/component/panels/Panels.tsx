@@ -53,9 +53,9 @@ const accordionItems: AccordionItem[] = [
     mode: null,
   },
   {
-    title: 'Filters',
+    title: 'Processings',
     component: <FilterPanel />,
-    hidePreferenceKey: 'filtersPanel',
+    hidePreferenceKey: 'processingsPanel',
     mode: null,
   },
   {

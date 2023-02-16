@@ -98,7 +98,7 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
 test('process 1d FID 13c spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
-  await nmrium.clickPanel('Filters');
+  await nmrium.clickPanel('Processings');
 
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium);
@@ -132,7 +132,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
 test('process 13c spectrum with shortcuts', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await open13CFidSpectrum(nmrium);
-  await nmrium.clickPanel('Filters');
+  await nmrium.clickPanel('Processings');
 
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium);
@@ -176,7 +176,7 @@ test('Processed spectra filters', async ({ page }) => {
   });
   await test.step('Check filters panel', async () => {
     //Open peaks panel
-    await nmrium.clickPanel('Filters');
+    await nmrium.clickPanel('Processings');
 
     const filters = nmrium.page.locator(
       '_react=FilterTable >> _react=ReactTableRow',
@@ -227,7 +227,7 @@ test('Exclusion zones', async ({ page }) => {
   });
 
   // open filters panel
-  await nmrium.clickPanel('Filters');
+  await nmrium.clickPanel('Processings');
   const filters = nmrium.page.locator('_react=FilterTable');
 
   await test.step('add exclusision zones', async () => {
@@ -250,7 +250,7 @@ test('Exclusion zones', async ({ page }) => {
       .click();
     //Open filters panel
 
-    await nmrium.clickPanel('Filters');
+    await nmrium.clickPanel('Processings');
 
     await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
   });

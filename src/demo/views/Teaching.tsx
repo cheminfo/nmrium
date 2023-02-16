@@ -86,7 +86,7 @@ export default function Teaching(props) {
                   informationPanel: { display: true },
                   peaksPanel: { display: true },
                   integralsPanel: { display: true },
-                  filtersPanel: { display: true },
+                  processingsPanel: { display: true },
                   multipleSpectraAnalysisPanel: { display: true },
                 },
               }}
