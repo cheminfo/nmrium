@@ -181,6 +181,15 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
       },
     });
   }
+  function applyPreferencesHandler() {
+    dispatch({
+      type: 'APPLY_General_PREFERENCES',
+      payload: {
+        data: refForm.current?.values,
+      },
+    });
+    onClose?.();
+  }
 
   function deleteWorkSpaceHandler(key) {
     dispatch({
@@ -384,6 +393,12 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
             onClose?.();
           }}
         />
+        <Button.Secondary
+          style={{ margin: '0 10px' }}
+          onClick={applyPreferencesHandler}
+        >
+          Apply
+        </Button.Secondary>
       </div>
     </div>
   );
