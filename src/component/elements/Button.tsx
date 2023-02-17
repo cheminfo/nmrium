@@ -20,7 +20,13 @@ interface BaseColor {
 
 type Fill = 'clear' | 'outline' | 'solid';
 
-type ColorTheme = 'success' | 'danger' | 'warning' | 'medium' | 'light';
+type ColorTheme =
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'medium'
+  | 'light'
+  | 'secondary';
 
 type ColorPalettes = Record<
   ColorTheme,
@@ -56,6 +62,11 @@ const colorPalettes: ColorPalettes = {
     base: '#f4f5f8',
     shade: '#d7d8da',
     tint: '#f5f6f9',
+  },
+  secondary: {
+    base: '#3880ff',
+    shade: '#3171e0',
+    tint: '#4c8dff',
   },
 };
 
@@ -303,6 +314,9 @@ Button.Danger = function ButtonDanger(props: ButtonProps) {
 };
 Button.Action = function ButtonAction(props: ButtonProps) {
   return <ThemeButton {...props} colorTheme="medium" />;
+};
+Button.Secondary = function ButtonAction(props: ButtonProps) {
+  return <ThemeButton {...props} colorTheme="secondary" />;
 };
 Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
   return (
