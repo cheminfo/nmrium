@@ -1,6 +1,14 @@
 {
   "version": 4,
   "data": {
+    "source": {
+      "baseURL": "https://cheminfo.github.io",
+      "entries": [
+        {
+          "relativePath": "nmr-dataset-demo/cytisine/1h.jdx"
+        }
+      ]
+    },
     "spectra": [
       {
         "id": "3a189b97-9a96-4f94-9920-4b1edcdc3bc6",
@@ -12,18 +20,7 @@
           "isPeaksMarkersVisible": true,
           "isVisibleInDomain": true
         },
-        "source": {
-          "baseURL": "https://cheminfo.github.io",
-          "files": [
-            {
-              "name": "1h.jdx",
-              "size": 524,
-              "relativePath": "nmr-dataset-demo/cytisine/1h.jdx",
-              "lastModified": 182116
-            }
-          ],
-          "filter": { "jcamp": { "index": 0 } }
-        }
+        "selector": { "jcamp": { "index": 0 } }
       }
     ]
   }
