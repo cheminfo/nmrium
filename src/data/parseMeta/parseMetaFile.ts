@@ -1,11 +1,12 @@
+import { FileCollectionItem } from 'filelist-utils';
 import { parse, ParseResult } from 'papaparse';
-import { FileWithPath } from 'react-dropzone';
 
 export async function parseMetaFile(
-  file: FileWithPath | File,
+  file: FileCollectionItem | File,
 ): Promise<ParseResult<any>> {
+  const data = file instanceof File ? file : await file.text();
   return new Promise((complete, error) => {
-    parse(file, {
+    parse(data, {
       header: true,
       dynamicTyping: true,
       complete,

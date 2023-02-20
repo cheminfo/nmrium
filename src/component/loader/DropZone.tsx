@@ -2,11 +2,12 @@
 import { css } from '@emotion/react';
 import { fileCollectionFromFileList } from 'filelist-utils';
 import { read as readDropFiles } from 'nmr-load-save';
+import { ParseResult } from 'papaparse';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
-import { isMetaFile } from '../../data/parseMeta';
+import { isMetaFile, parseMetaFile } from '../../data/parseMeta';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
@@ -64,6 +65,13 @@ function DropZone(props) {
         openImportMetaInformationModal(files[0]);
       } else {
         const fileCollection = await fileCollectionFromFileList(files);
+        const metaFile = Object.values(fileCollection.files).find((file) =>
+          isMetaFile(file),
+        );
+        let parseMetaFileResult: ParseResult<any> | null = null;
+        if (metaFile) {
+          parseMetaFileResult = await parseMetaFile(metaFile);
+        }
 
         const { nmrLoaders: selector } = preferences.current;
         const { nmriumState, containsNmrium } = await readDropFiles(
@@ -86,6 +94,7 @@ function DropZone(props) {
             ...nmriumState,
             containsNmrium,
             onLoadProcessing: current.onLoadProcessing,
+            parseMetaFileResult,
           },
         });
       }
