@@ -23,6 +23,7 @@ import {
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
+import { Source } from 'nmr-load-save';
 
 function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
@@ -71,6 +72,7 @@ function setData(
   input: {
     view?: ViewState;
     data?: {
+      source?: Source;
       spectra: Spectra;
       molecules: StateMoleculeExtended[];
       correlations: CorrelationData;
