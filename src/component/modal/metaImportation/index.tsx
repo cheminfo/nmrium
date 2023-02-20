@@ -6,7 +6,6 @@ import { positions } from '../../elements/popup/options';
 import MetaImportationModal from './MetaImportationModal';
 
 export { default as MetaImportationModal } from './MetaImportationModal';
-export { isMetaInformationFile } from './utils/isMetaInformationFile';
 
 export function useMetaInformationImportationModal() {
   const modal = useModal();

@@ -6,16 +6,14 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
+import { isMetaFile } from '../../data/parseMeta';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import {
-  useMetaInformationImportationModal,
-  isMetaInformationFile,
-} from '../modal/metaImportation/index';
+import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
 const style = css`
@@ -62,7 +60,7 @@ function DropZone(props) {
 
   async function loadFilesHandler(files) {
     try {
-      if (files.length === 1 && isMetaInformationFile(files[0])) {
+      if (files.length === 1 && isMetaFile(files[0])) {
         openImportMetaInformationModal(files[0]);
       } else {
         const fileCollection = await fileCollectionFromFileList(files);
