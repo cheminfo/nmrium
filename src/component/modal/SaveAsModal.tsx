@@ -57,10 +57,8 @@ interface SaveAsModalProps {
 
 function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
   const refForm = useRef<any>();
-  const { data } = useChartData();
-  const enableExportAsDataSource = data.every(
-    (spectrum) => spectrum?.source?.baseURL !== undefined,
-  );
+  const state = useChartData();
+  const enableExportAsDataSource = state.source !== undefined;
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();

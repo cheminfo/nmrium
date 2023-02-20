@@ -2,6 +2,7 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { ParseResult } from 'papaparse';
+import { Source } from 'nmr-load-save';
 
 import { addJcamps } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
@@ -74,6 +75,7 @@ function setData(
   input: {
     view?: ViewState;
     data?: {
+      source?: Source;
       spectra: Spectra;
       molecules: StateMoleculeExtended[];
       correlations: CorrelationData;
@@ -94,7 +96,12 @@ function setData(
     multipleAnalysis: {},
   };
 
-  const { spectra = [], molecules = [], correlations = {} } = data || {};
+  const {
+    source,
+    spectra = [],
+    molecules = [],
+    correlations = {},
+  } = data || {};
 
   if (view) {
     const defaultViewState = getDefaultViewState();
@@ -102,6 +109,7 @@ function setData(
   }
 
   setColors(draft, usedColors);
+  if (source) draft.source = source;
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
   draft.data = draft.data.concat(
     initSpectra(spectra, { usedColors, onLoadProcessing }),

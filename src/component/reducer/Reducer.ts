@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { Source } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
@@ -235,6 +236,10 @@ export interface State {
    *  base on the action type we can decide to trigger or not the callback function (onDataChange)
    */
   actionType: string;
+  /**
+   * web source of data
+   */
+  source?: Source;
   /**
    * spectra list (1d and 2d)
    */
