@@ -3,7 +3,6 @@ export { getSlice } from './getSlice';
 export { initiateDatum2D } from './initiateDatum2D';
 export { isSpectrum2D } from './isSpectrum2D';
 export { getShift } from './getShift';
-export { toJSON } from './toJSON';
 export { changeZoneSignal } from './zones/changeZoneSignal';
 export { detectZones } from './zones/detectZones';
 export { detectZonesManual } from './zones/detectZonesManual';
