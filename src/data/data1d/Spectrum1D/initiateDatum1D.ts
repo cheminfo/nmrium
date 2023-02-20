@@ -24,7 +24,7 @@ export function initiateDatum1D(
 
   const datum: Partial<Datum1D> = {};
   datum.id = spectrum.id || v4();
-  datum.source = spectrum?.source || {};
+  datum.selector = spectrum?.selector || {};
 
   datum.display = {
     name: spectrum.display?.name || v4(),
