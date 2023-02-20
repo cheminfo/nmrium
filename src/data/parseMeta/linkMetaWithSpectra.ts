@@ -17,16 +17,22 @@ function linkMetaWithSpectra(options: {
   source?: string;
   target?: string;
   autolink?: boolean;
-  meta: ParseResult<any>;
+  parseMetaFileResult: ParseResult<any>;
   spectra: (Datum1D | Datum2D)[];
 }) {
-  let { source, target, autolink = false, meta, spectra } = options;
+  let {
+    source,
+    target,
+    autolink = false,
+    parseMetaFileResult,
+    spectra,
+  } = options;
   const targetValues: Record<string, string[]> = {};
 
   const {
     data,
     meta: { fields = [] },
-  } = meta;
+  } = parseMetaFileResult;
   let findMatchField = false;
 
   if (!autolink) {
@@ -40,21 +46,17 @@ function linkMetaWithSpectra(options: {
   }
 
   if (autolink) {
-    // eslint-disable-next-line no-unreachable-loop
-    for (const spectrum of spectra) {
-      for (const sourceField of fields) {
-        if (lodashGet(spectrum, sourceField, null)) {
-          source = sourceField;
-          target = sourceField;
-          findMatchField = true;
-          break;
-        }
-      }
-      if (findMatchField) {
+    for (const sourceField of fields) {
+      if (lodashGet(spectra[0], sourceField, null)) {
+        source = sourceField;
+        target = sourceField;
+        findMatchField = true;
         break;
-      } else {
-        throw new AutomaticPathsMatchesError();
       }
+    }
+
+    if (!findMatchField) {
+      throw new AutomaticPathsMatchesError();
     }
   }
 
@@ -104,7 +106,6 @@ function linkMetaWithSpectra(options: {
       }
     }
   }
-
   return { matches, compareResult };
 }
 

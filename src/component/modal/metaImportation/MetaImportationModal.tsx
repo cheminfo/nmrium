@@ -26,7 +26,6 @@ import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
 import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { ModalStyles } from '../ModalStyle';
 
@@ -101,12 +100,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   const [compareResults, setCompareResults] = useState<CompareResult>({});
   const [matches, setMatchesResults] = useState<Record<string, any>>({});
 
-  const {
-    data,
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const { data } = useChartData();
   const { datalist, paths } = getSpectraObjectPaths(data);
 
   function handleParseFile(file: FileWithPath | File) {
@@ -160,13 +154,12 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   function handleLinkSpectra(fields) {
     let { source, target } = fields;
     if (data && parseResult) {
-      const spectra = getSpectraByNucleus(activeTab, data);
       try {
         const { compareResult, matches } = linkMetaWithSpectra({
           source,
           target,
-          spectra,
-          meta: parseResult,
+          spectra: data,
+          parseMetaFileResult: parseResult,
         });
         setMatchesResults(matches);
         if (Object.keys(compareResult).length > 0) {
