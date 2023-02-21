@@ -57,8 +57,7 @@ interface SaveAsModalProps {
 
 function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
   const refForm = useRef<any>();
-  const state = useChartData();
-  const enableExportAsDataSource = state.source !== undefined;
+  const { source } = useChartData();
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
@@ -126,14 +125,14 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                   </label>
                   <label
                     style={{
-                      color: enableExportAsDataSource ? 'black' : 'lightgray',
+                      color: source ? 'black' : 'lightgray',
                     }}
                   >
                     <Field
                       type="radio"
                       name="include.dataType"
                       value={DataExportOptions.DATA_SOURCE}
-                      disabled={!enableExportAsDataSource}
+                      disabled={!source}
                     />
                     Data Source
                   </label>
