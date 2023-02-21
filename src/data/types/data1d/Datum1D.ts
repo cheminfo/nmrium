@@ -1,4 +1,4 @@
-import { Spectrum1D, NmrLoaderSelectors } from 'nmr-load-save';
+import { NmrLoaderSelectors } from 'nmr-load-save';
 
 import { Filter } from '../../FiltersManager';
 
@@ -9,7 +9,8 @@ import { Integrals } from './Integrals';
 import { Peaks } from './Peaks';
 import { Ranges } from './Ranges';
 
-export interface Datum1D extends Spectrum1D {
+//TODO refactor all interfaces and use the ones from nmr-load-save
+export interface Datum1D {
   id: string;
   selector?: NmrLoaderSelectors;
   display: Display1D;

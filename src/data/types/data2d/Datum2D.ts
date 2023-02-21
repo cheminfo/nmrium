@@ -1,4 +1,4 @@
-import { NmrLoaderSelectors, Spectrum2D } from 'nmr-load-save';
+import { NmrLoaderSelectors } from 'nmr-load-save';
 
 import { Filter } from '../../FiltersManager';
 
@@ -7,7 +7,8 @@ import { Display2D } from './Display2D';
 import { Info2D } from './Info2D';
 import { Zones } from './Zones';
 
-export interface Datum2D extends Spectrum2D {
+//TODO refactor all interfaces and use the ones from nmr-load-save
+export interface Datum2D {
   id: string;
   selector?: NmrLoaderSelectors;
   display: Display2D;
