@@ -1,8 +1,8 @@
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { ParseResult } from 'papaparse';
 import { Source } from 'nmr-load-save';
+import { ParseResult } from 'papaparse';
 
 import { addJcamps } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
@@ -27,7 +27,6 @@ import {
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { importSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
-import { Source } from 'nmr-load-save';
 
 function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
