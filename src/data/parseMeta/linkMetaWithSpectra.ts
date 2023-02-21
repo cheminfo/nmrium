@@ -33,7 +33,6 @@ function linkMetaWithSpectra(options: {
     data,
     meta: { fields = [] },
   } = parseMetaFileResult;
-  let findMatchField = false;
 
   if (!autolink) {
     if (target && !lodashGet(spectra[0], target)) {
@@ -50,13 +49,8 @@ function linkMetaWithSpectra(options: {
       if (lodashGet(spectra[0], sourceField, null)) {
         source = sourceField;
         target = sourceField;
-        findMatchField = true;
         break;
       }
-    }
-
-    if (!findMatchField) {
-      throw new AutomaticPathsMatchesError();
     }
   }
 
