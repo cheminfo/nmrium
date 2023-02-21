@@ -164,9 +164,10 @@ function columnSchema(columns) {
         }
         return new Yup.ValidationError(errors);
       }),
-    formula: Yup.string()
-      .required()
-      .test('required', 'Pease enter formula field', function checkRequired() {
+    formula: Yup.string().test(
+      'required',
+      'Pease enter formula field',
+      function checkRequired() {
         const errors: Yup.ValidationError[] = [];
         for (const column of columns) {
           if (
@@ -183,7 +184,8 @@ function columnSchema(columns) {
           }
         }
         return new Yup.ValidationError(errors);
-      }),
+      },
+    ),
     index: Yup.string().required(),
   });
 }
