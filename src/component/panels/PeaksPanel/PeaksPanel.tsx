@@ -191,20 +191,13 @@ function PeaksPanelInner({
                 <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
               </ActiveButton>
 
-              <Button.Done
-                fill="clear"
+              <Button.BarButton
                 onClick={optimizePeaksHandler}
-                style={{ width: '24px', padding: 0 }}
+                toolTip="Optimize Peaks"
+                tooltipOrientation="horizontal"
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <FaThinkPeaks />
-                </div>
-              </Button.Done>
+                <FaThinkPeaks />
+              </Button.BarButton>
             </>
           )}
           <ActiveButton
