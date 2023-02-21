@@ -84,6 +84,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     },
     bruker: {
       onlyFirstProcessedData: true,
+      dataSelection: 'both',
     },
   },
   infoBlock: {

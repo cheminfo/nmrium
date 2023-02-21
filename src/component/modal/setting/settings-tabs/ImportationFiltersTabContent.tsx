@@ -2,12 +2,29 @@ import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import { GroupPane } from '../../../elements/GroupPane';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../elements/formik/FormikInput';
+import FormikSelect from '../../../elements/formik/FormikSelect';
 
-interface ListItem {
+const DataSelectionOptions = [
+  { label: 'FT', value: 'ft' },
+  { label: 'FID', value: 'fid' },
+  { label: 'Both', value: 'both' },
+  { label: 'Prefer FT', value: 'preferFT' },
+  { label: 'Prefer FID', value: 'preferFID' },
+];
+
+interface BaseListItem {
   label: string;
   name: string;
+}
+interface BasicListItem extends BaseListItem {
   fieldType: 'input' | 'checkbox';
 }
+interface SelectListItem extends BaseListItem {
+  fieldType: 'select';
+  options: any[];
+}
+
+type ListItem = BasicListItem | SelectListItem;
 
 const GENERAL_LIST: ListItem[] = [
   {
@@ -52,8 +69,13 @@ const BRUKER_LIST: ListItem[] = [
     name: 'bruker.onlyFirstProcessedData',
     fieldType: 'checkbox',
   },
+  {
+    label: 'Data Selection',
+    name: 'bruker.dataSelection',
+    fieldType: 'select',
+    options: DataSelectionOptions,
+  },
 ];
-
 const COLUMNS: Column<ListItem>[] = [
   {
     Header: '#',
@@ -84,6 +106,14 @@ const COLUMNS: Column<ListItem>[] = [
               type="string"
               style={{ input: { width: '100%', padding: 0 } }}
               nullable
+            />
+          );
+        case 'select':
+          return (
+            <FormikSelect
+              name={`nmrLoaders.${row.original.name}`}
+              style={{ width: '100%' }}
+              items={row.original.options}
             />
           );
         default:
