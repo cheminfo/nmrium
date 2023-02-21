@@ -2,13 +2,19 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
-import lodashGet from 'lodash/get';
-import { parse, ParseResult } from 'papaparse';
+import { ParseResult } from 'papaparse';
 import { CSSProperties, useState, useMemo, useRef, useEffect } from 'react';
 import type { FileWithPath } from 'react-dropzone';
 import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
 
+import {
+  isMetaFile,
+  linkMetaWithSpectra,
+  parseMetaFile,
+  TargetPathError,
+  mapErrors,
+} from '../../../data/parseMeta';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
@@ -20,14 +26,10 @@ import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
 import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { ModalStyles } from '../ModalStyle';
 
-import { isMetaInformationFile } from './utils/isMetaInformationFile';
 import { mapColumnToSelectItems } from './utils/mapColumnToSelectItems';
-import { mapError } from './utils/mapError';
-import { prepareKey } from './utils/prepareKey';
 
 const styles: Record<'container' | 'column', CSSProperties> = {
   container: {
@@ -98,22 +100,14 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   const [compareResults, setCompareResults] = useState<CompareResult>({});
   const [matches, setMatchesResults] = useState<Record<string, any>>({});
 
-  const {
-    data,
-    view: {
-      spectra: { activeTab },
-    },
-  } = useChartData();
+  const { data } = useChartData();
   const { datalist, paths } = getSpectraObjectPaths(data);
 
   function handleParseFile(file: FileWithPath | File) {
-    parse(file, {
-      header: true,
-      dynamicTyping: true,
-      complete: (results) => {
-        setParseResult(results);
-      },
-    });
+    void (async () => {
+      const results = await parseMetaFile(file);
+      setParseResult(results);
+    })();
   }
 
   useEffect(() => {
@@ -129,7 +123,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
     handleParseFile(files[0]);
   }
 
-  const errors = mapError(parseResult?.errors || []);
+  const errors = mapErrors(parseResult?.errors || []);
 
   const metaData: ParseResult<any>['data'] = parseResult?.data || [];
 
@@ -157,73 +151,30 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
     return columns;
   }, [parseResult?.meta.fields]);
 
-  function handleLinkSpectra(field) {
-    const { source, target } = field;
-    const targetValues: Record<string, string[]> = {};
-    let isTargetPathExists = true;
-
-    for (const spectrum of getSpectraByNucleus(activeTab, data)) {
-      const value = lodashGet(spectrum, target, null);
-      if (value === null) {
-        isTargetPathExists = false;
-        break;
-      }
-
-      if (['string', 'number'].includes(typeof value)) {
-        const val = prepareKey(value);
-        if (!targetValues[val]) {
-          targetValues[val] = [spectrum.id];
+  function handleLinkSpectra(fields) {
+    let { source, target } = fields;
+    if (data && parseResult) {
+      try {
+        const { compareResult, matches } = linkMetaWithSpectra({
+          source,
+          target,
+          spectra: data,
+          parseMetaFileResult: parseResult,
+        });
+        setMatchesResults(matches);
+        if (Object.keys(compareResult).length > 0) {
+          setCompareResults(compareResult);
         } else {
-          targetValues[val].push(spectrum.id);
+          alert.error(
+            `No matches found:  Source field [${source}] => Target field [${target}]`,
+          );
         }
-      }
-    }
-
-    if (!isTargetPathExists) {
-      alert.error(`Target field path [ ${target} ] is not exists`);
-      formRef.current?.setFieldValue('target', null);
-      formRef.current?.setFieldError('target', '');
-    } else {
-      const sourceValues = {};
-      let index = 0;
-      for (const metaRow of metaData) {
-        const sourceValue = prepareKey(metaRow[source]);
-        if (targetValues[sourceValue]) {
-          if (!sourceValues[sourceValue]) {
-            sourceValues[sourceValue] = [index];
-          } else {
-            sourceValues[sourceValue].push(index);
-          }
+      } catch (error: any) {
+        if (error instanceof TargetPathError) {
+          formRef.current?.setFieldValue('target', null);
+          formRef.current?.setFieldError('target', '');
         }
-        index++;
-      }
-
-      const result: CompareResult = {};
-      const matchesResults: Record<string, any> =
-        {}; /** where the `key` is the spectra id and the `value` is the meta object  */
-
-      for (const key in sourceValues) {
-        for (const index of sourceValues[key]) {
-          const isDuplicated = sourceValues[key].length > 1;
-          result[index] = {
-            key,
-            isDuplicated,
-            spectraIDs: targetValues[key],
-          };
-          if (!isDuplicated && targetValues[key].length === 1) {
-            matchesResults[targetValues[key][0]] = parseResult?.data[index];
-          }
-        }
-      }
-
-      setMatchesResults(matchesResults);
-
-      if (Object.keys(result).length > 0) {
-        setCompareResults(result);
-      } else {
-        alert.error(
-          `No matches found:  Source field [${source}] => Target field [${target}]`,
-        );
+        alert.error(error.message);
       }
     }
   }
@@ -356,7 +307,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
 }
 
 function fileValidator(file: File) {
-  if (!isMetaInformationFile(file)) {
+  if (!isMetaFile(file)) {
     return {
       message: 'import a CSV or tab-delimited file',
       code: 'file - not - allow',

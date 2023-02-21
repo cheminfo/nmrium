@@ -388,7 +388,7 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
           onDone={() => refForm.current?.submitForm()}
-          doneLabel="Save"
+          doneLabel="Apply and Save"
           onCancel={() => {
             onClose?.();
           }}

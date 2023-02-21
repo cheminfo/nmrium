@@ -1,12 +1,15 @@
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { ParseResult } from 'papaparse';
+import { Source } from 'nmr-load-save';
 
 import { addJcamps } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
@@ -22,6 +25,7 @@ import {
 } from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { importSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
 import { Source } from 'nmr-load-save';
 
@@ -79,6 +83,7 @@ function setData(
     };
     usedColors: UsedColors;
     onLoadProcessing?: OnLoadProcessing;
+    parseMetaFileResult: ParseResult<any> | null;
   },
 ) {
   const {
@@ -86,12 +91,18 @@ function setData(
     usedColors,
     view,
     onLoadProcessing = {},
+    parseMetaFileResult = null,
   } = input || {
     data: { spectra: [], molecules: [], correlations: {} },
     multipleAnalysis: {},
   };
 
-  const { spectra = [], molecules = [], correlations = {} } = data || {};
+  const {
+    source,
+    spectra = [],
+    molecules = [],
+    correlations = {},
+  } = data || {};
 
   if (view) {
     const defaultViewState = getDefaultViewState();
@@ -99,11 +110,21 @@ function setData(
   }
 
   setColors(draft, usedColors);
+  if (source) draft.source = source;
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
   draft.data = draft.data.concat(
     initSpectra(spectra, { usedColors, onLoadProcessing }),
   );
   setCorrelation(draft, correlations);
+
+  if (parseMetaFileResult) {
+    const { matches } = linkMetaWithSpectra({
+      autolink: true,
+      spectra: draft.data,
+      parseMetaFileResult,
+    });
+    importSpectraMetaInfo(draft, { payload: { spectraMeta: matches } });
+  }
 }
 
 function convertHybridizationStringValuesInCorrelations(

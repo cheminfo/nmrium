@@ -27,7 +27,7 @@ function useInitZeroFillingSize() {
   const filter = useFilter(Filters.zeroFilling.id);
   const { data } = useSpectrum();
   if (filter) {
-    return filter.value;
+    return filter.value.nbPoints;
   } else if (data) {
     return 2 ** Math.round(Math.log2((data as Data1D).x.length * 2));
   }
