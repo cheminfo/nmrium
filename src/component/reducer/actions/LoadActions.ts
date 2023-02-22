@@ -155,9 +155,9 @@ function setPreferences(draft: Draft<State>, data) {
   }
 }
 
-function initData(draft: Draft<State>, action) {
+function initData(draft: Draft<State>, action, forceInitialize = false) {
   const { data, view } = action.payload;
-  if (data?.spectra?.length) {
+  if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
     setData(state, action.payload);
     setActiveTab(state, { tab: data?.view?.activeTab || '' });
@@ -178,7 +178,7 @@ function initData(draft: Draft<State>, action) {
 }
 
 function initiate(draft: Draft<State>, action) {
-  return initData(draft, action);
+  return initData(draft, action, true);
 }
 
 function loadJcampFile(draft: Draft<State>, actions) {
