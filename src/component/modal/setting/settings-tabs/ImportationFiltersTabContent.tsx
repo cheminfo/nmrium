@@ -28,16 +28,6 @@ type ListItem = BasicListItem | SelectListItem;
 
 const GENERAL_LIST: ListItem[] = [
   {
-    label: 'Keep FID',
-    name: 'general.keepFID',
-    fieldType: 'checkbox',
-  },
-  {
-    label: 'Keep FT',
-    name: 'general.keepFT',
-    fieldType: 'checkbox',
-  },
-  {
     label: 'Keep 1D',
     name: 'general.keep1D',
     fieldType: 'checkbox',
@@ -51,6 +41,12 @@ const GENERAL_LIST: ListItem[] = [
     label: 'Only Real',
     name: 'general.onlyReal',
     fieldType: 'checkbox',
+  },
+  {
+    label: 'Data Selection',
+    name: 'general.dataSelection',
+    fieldType: 'select',
+    options: DataSelectionOptions,
   },
 ];
 const BRUKER_LIST: ListItem[] = [
@@ -68,12 +64,6 @@ const BRUKER_LIST: ListItem[] = [
     label: 'Only First Processed Data',
     name: 'bruker.onlyFirstProcessedData',
     fieldType: 'checkbox',
-  },
-  {
-    label: 'Data Selection',
-    name: 'bruker.dataSelection',
-    fieldType: 'select',
-    options: DataSelectionOptions,
   },
 ];
 const COLUMNS: Column<ListItem>[] = [
