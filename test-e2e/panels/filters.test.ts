@@ -210,7 +210,7 @@ test('Exclusion zones', async ({ page }) => {
       .click();
 
     // save setting changes
-    await nmrium.page.click('button >> text=Save');
+    await nmrium.page.click('button >> text=Apply and Save');
 
     // enter a name for the workspace
     await nmrium.page.locator('input[name="workspaceName"]').fill('test');

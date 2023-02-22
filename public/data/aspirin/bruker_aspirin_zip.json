@@ -1,6 +1,14 @@
 {
   "version": 4,
   "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/aspirin/aspirin-1h.zip"
+        }
+      ]
+    },
     "spectra": [
       {
         "display": {
@@ -11,14 +19,12 @@
           "isPeaksMarkersVisible": true,
           "isVisibleInDomain": true
         },
-        "source": {
+        "selector": {
           "files": [
-            {
-              "name": "aspirin-1h.zip",
-              "size": 524,
-              "relativePath": "data/aspirin/aspirin-1h.zip",
-              "lastModified": 182116
-            }
+            "data/aspirin/aspirin-1h.zip/1/acqu",
+            "data/aspirin/aspirin-1h.zip/1/acqus",
+            "data/aspirin/aspirin-1h.zip/1/fid",
+            "data/aspirin/aspirin-1h.zip/1/pdata/1/procs"
           ]
         }
       }

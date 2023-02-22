@@ -76,11 +76,10 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   },
   nmrLoaders: {
     general: {
-      keepFID: true,
-      keepFT: true,
       keep1D: true,
       keep2D: true,
       onlyReal: false,
+      dataSelection: 'both',
     },
     bruker: {
       onlyFirstProcessedData: true,

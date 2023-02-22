@@ -54,6 +54,14 @@
         "title": "Linked jcamp"
       },
       {
+        "file": "./data/nmriumFromSource.json",
+        "title": "Zip file as source with multiple spectra"
+      },
+      {
+        "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
+        "title": "Bruker Directory without expno level"
+      },
+      {
         "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
         "title": "FileCollection with link to jcamp"
       },

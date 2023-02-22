@@ -13,7 +13,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || v4();
-  datum.source = options?.source || {};
+  datum.selector = options?.selector || {};
 
   datum.display = {
     name: options.display?.name || v4(),

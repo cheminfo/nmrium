@@ -54,6 +54,7 @@ function autoZonesDetection(data, options) {
     nuclei,
     observedFrequencies: originFrequency,
     thresholdFactor,
+    realTopDetection: true,
     clean,
     maxPercentCutOff,
     enhanceSymmetry,

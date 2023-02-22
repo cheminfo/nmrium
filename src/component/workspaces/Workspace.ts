@@ -1,3 +1,5 @@
+import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
+
 import { BaseFilter } from '../../data/FiltersManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
 import { Nuclei, Nucleus } from '../../data/types/common/Nucleus';
@@ -171,18 +173,8 @@ export interface Databases {
 }
 
 export interface LoadersPreferences {
-  general: {
-    keepFID: boolean;
-    keepFT: boolean;
-    keep1D: boolean;
-    keep2D: boolean;
-    onlyReal: boolean;
-  };
-  bruker: {
-    processingNumbers?: string;
-    experimentNumbers?: string;
-    onlyFirstProcessedData: boolean;
-  };
+  general: GeneralLoadersSelector;
+  bruker: BrukerLoaderSelector;
 }
 
 export interface InfoBlock {

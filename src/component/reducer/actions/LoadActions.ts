@@ -1,6 +1,7 @@
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { Source } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { addJcamps } from '../../../data/SpectraManager';
@@ -74,6 +75,7 @@ function setData(
   input: {
     view?: ViewState;
     data?: {
+      source?: Source;
       spectra: Spectra;
       molecules: StateMoleculeExtended[];
       correlations: CorrelationData;
@@ -94,7 +96,12 @@ function setData(
     multipleAnalysis: {},
   };
 
-  const { spectra = [], molecules = [], correlations = {} } = data || {};
+  const {
+    source,
+    spectra = [],
+    molecules = [],
+    correlations = {},
+  } = data || {};
 
   if (view) {
     const defaultViewState = getDefaultViewState();
@@ -102,6 +109,7 @@ function setData(
   }
 
   setColors(draft, usedColors);
+  if (source) draft.source = source;
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
   draft.data = draft.data.concat(
     initSpectra(spectra, { usedColors, onLoadProcessing }),
@@ -196,12 +204,24 @@ function loadJcampFile(draft: Draft<State>, actions) {
 
 function loadDropFiles(draft: Draft<State>, action) {
   const { payload, type } = action;
-  if (payload?.containsNmrium) {
+
+  const {
+    data: { spectra = [] },
+    containsNmrium,
+  } = payload;
+
+  if (containsNmrium) {
     return initData(draft, action);
   } else {
     setData(draft, payload);
     setActiveTab(draft);
     changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
+
+    // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
+    if (spectra?.length > 0) {
+      draft.source = undefined;
+    }
+
     draft.actionType = type;
     draft.isLoading = false;
   }
