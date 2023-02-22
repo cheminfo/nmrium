@@ -122,7 +122,7 @@ function AddSignalFormTab(
               <Button.Done
                 style={{
                   marginLeft: '5px',
-                  padding: '0 15px',
+                  height: '30px',
                 }}
                 onClick={triggerSubmitHandler}
               >
