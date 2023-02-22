@@ -23,7 +23,6 @@ import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { jpathToArray } from '../../utility/jpathToArray';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
@@ -410,7 +409,7 @@ function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
 
     const spectraByClass: Record<string, Datum1D | Datum2D> = {};
     for (const spectrum of spectra) {
-      const key = String(lodashGet(spectrum, jpathToArray(jpath), ''))
+      const key = String(lodashGet(spectrum, jpath, ''))
         .toLowerCase()
         .trim()
         .replace(/\r?\n|\r/, '');
