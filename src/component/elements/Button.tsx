@@ -250,7 +250,7 @@ function Button(props: ButtonProps) {
   } = props;
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <div style={{ position: 'relative' }}>
       <button
         type="button"
         onClick={onClick}
