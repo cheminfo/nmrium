@@ -27,7 +27,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
       .click();
 
     // save changes
-    await nmrium.page.click('Button >> text=Save');
+    await nmrium.page.click('Button >> text=Apply and Save');
 
     // enter a name for the workspace
     await nmrium.page.locator('input[name="workspaceName"]').fill('test');
