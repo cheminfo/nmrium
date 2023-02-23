@@ -79,7 +79,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       keep1D: true,
       keep2D: true,
       onlyReal: false,
-      dataSelection: 'both',
+      dataSelection: 'preferFT',
     },
     bruker: {
       onlyFirstProcessedData: true,
