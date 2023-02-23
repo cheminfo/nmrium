@@ -32,7 +32,7 @@ export default function FiltersPanel() {
     ];
 
     modal.showConfirmDialog({
-      message: 'Are you sure you want to delete all spectra?',
+      message: 'You are about to delete all processing steps, Are you sure?',
       buttons,
     });
   }
