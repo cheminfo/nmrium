@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo, useCallback } from 'react';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -49,7 +49,7 @@ function SpectrumsTabsInner({
     dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
   }
 
-  function openSettingHandler(event, selectedSpectrum) {
+  const openSettingHandler = useCallback((event, selectedSpectrum) => {
     event.stopPropagation();
     setSettingModalPosition({
       x: event.nativeEvent.clientX,
@@ -57,17 +57,20 @@ function SpectrumsTabsInner({
     });
     setSelectedSpectrum(selectedSpectrum);
     setIsSettingModalDisplayed(true);
-  }
+  }, []);
 
-  function handleChangeVisibility(d, key) {
-    dispatch({
-      type: CHANGE_VISIBILITY,
-      payload: {
-        id: d.id,
-        key,
-      },
-    });
-  }
+  const handleChangeVisibility = useCallback(
+    (d, key) => {
+      dispatch({
+        type: CHANGE_VISIBILITY,
+        payload: {
+          id: d.id,
+          key,
+        },
+      });
+    },
+    [dispatch],
+  );
 
   function handleChangeActiveSpectrum(e, spectrum) {
     setTimeout(() => {
