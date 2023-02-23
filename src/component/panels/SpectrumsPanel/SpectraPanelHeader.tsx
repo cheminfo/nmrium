@@ -70,9 +70,13 @@ function SpectraPanelHeaderInner({
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
-      message: `You are about to delete ${
-        activeSpectra?.length || ''
-      } spectra, Are you sure?`,
+      message: (
+        <span>
+          You are about to delete
+          <span style={{ color: 'black' }}> {activeSpectra?.length} </span>
+          spectra, Are you sure?
+        </span>
+      ),
       buttons: [
         {
           text: 'Yes',
