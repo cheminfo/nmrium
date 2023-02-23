@@ -70,7 +70,9 @@ function SpectraPanelHeaderInner({
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
-      message: 'The selected records will be deleted, Are You sure?',
+      message: `You are about to delete ${
+        activeSpectra?.length || ''
+      } spectra, Are you sure?`,
       buttons: [
         {
           text: 'Yes',
@@ -81,7 +83,7 @@ function SpectraPanelHeaderInner({
         { text: 'No' },
       ],
     });
-  }, [dispatch, modal]);
+  }, [activeSpectra?.length, dispatch, modal]);
 
   function showAllSpectrumsHandler() {
     dispatch({
