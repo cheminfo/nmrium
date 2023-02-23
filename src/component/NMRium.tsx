@@ -58,6 +58,7 @@ import preferencesReducer, {
   preferencesInitialState,
   PreferencesState,
   initPreferencesState,
+  WorkspacesWithSource,
 } from './reducer/preferences/preferencesReducer';
 import {
   INITIATE,
@@ -113,7 +114,7 @@ const containerStyles = css`
     user-select: none;
   }
 `;
-
+export { serializeNmriumState } from 'nmr-load-save';
 export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
@@ -126,10 +127,20 @@ export type NMRiumWorkspace =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
+export type OnDataChange = (
+  data: SerializedNmriumState,
+  source: 'data',
+) => void;
+export type OnViewChange = (data: ViewState, source: 'view') => void;
+export type OnSettingsChange = (
+  data: WorkspacesWithSource,
+  source: 'settings',
+) => void;
+export type OnNMRiumChange = OnDataChange | OnViewChange | OnSettingsChange;
+
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: SerializedNmriumState) => void;
-  onViewChange?: (view: ViewState) => void;
+  onChange?: OnNMRiumChange;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
@@ -178,8 +189,7 @@ function InnerNMRium({
   customWorkspaces,
   preferences,
   getSpinner = defaultGetSpinner,
-  onDataChange,
-  onViewChange,
+  onChange,
   emptyText,
   innerRef,
 }: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
@@ -188,14 +198,10 @@ function InnerNMRium({
   const viewerRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
-  const handleDataChange = useRef(onDataChange);
+  const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
-    handleDataChange.current = onDataChange;
-  }, [onDataChange]);
-  const handleViewChange = useRef(onViewChange);
-  useEffect(() => {
-    handleViewChange.current = onViewChange;
-  }, [onViewChange]);
+    handleChange.current = onChange;
+  }, [onChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
@@ -218,13 +224,23 @@ function InnerNMRium({
 
   useEffect(() => {
     if (checkActionType(actionType)) {
-      handleDataChange.current?.(toJSON(state, {}, 'onDataChange'));
+      (handleChange.current as OnDataChange)?.(
+        toJSON(state, {}, 'onDataChange'),
+        'data',
+      );
     }
   }, [actionType, state]);
 
   useEffect(() => {
-    handleViewChange.current?.(view);
+    (handleChange.current as OnViewChange)?.(view, 'view');
   }, [view]);
+
+  useEffect(() => {
+    (handleChange.current as OnSettingsChange)?.(
+      preferencesState.workspaces,
+      'settings',
+    );
+  }, [preferencesState.workspaces]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

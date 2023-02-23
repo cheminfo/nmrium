@@ -136,19 +136,28 @@ export default function Test(props) {
       }
     })();
   }, []);
-  const viewChangeHandler = (data) => {
-    incrementViewCount();
-    setViewCallBack({ activate: true, data });
-    setTimeout(() => {
-      setViewCallBack(({ data }) => ({ data, activate: false }));
-    }, 500);
-  };
-  const dataChangeHandler = useCallback((data) => {
-    incrementDataCount();
-    setDataCallBack({ activate: true, data });
-    setTimeout(() => {
-      setDataCallBack(({ data }) => ({ data, activate: false }));
-    }, 500);
+
+  const changeHandler = useCallback((data, source) => {
+    switch (source) {
+      case 'view': {
+        incrementViewCount();
+        setViewCallBack({ activate: true, data });
+        setTimeout(() => {
+          setViewCallBack(({ data }) => ({ data, activate: false }));
+        }, 500);
+        break;
+      }
+      case 'data': {
+        incrementDataCount();
+        setDataCallBack({ activate: true, data });
+        setTimeout(() => {
+          setDataCallBack(({ data }) => ({ data, activate: false }));
+        }, 500);
+        break;
+      }
+      default:
+        break;
+    }
   }, []);
 
   return (
@@ -200,8 +209,7 @@ export default function Test(props) {
         <div style={{ flex: 9 }}>
           <NMRium
             data={data}
-            onViewChange={viewChangeHandler}
-            onDataChange={dataChangeHandler}
+            onChange={changeHandler}
             workspace={workspace || null}
           />
         </div>
