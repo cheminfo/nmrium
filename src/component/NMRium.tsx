@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, SerializedNmriumState, Source } from 'nmr-load-save';
+import { readNMRiumObject, Source, NmriumState } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -51,14 +51,12 @@ import {
   dispatchMiddleware,
   initState,
   State,
-  ViewState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
   PreferencesState,
   initPreferencesState,
-  WorkspacesWithSource,
 } from './reducer/preferences/preferencesReducer';
 import {
   INITIATE,
@@ -127,16 +125,10 @@ export type NMRiumWorkspace =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
-export type OnDataChange = (
-  data: SerializedNmriumState,
-  source: 'data',
+export type OnNMRiumChange = (
+  state: NmriumState,
+  source: 'data' | 'view' | 'settings',
 ) => void;
-export type OnViewChange = (data: ViewState, source: 'view') => void;
-export type OnSettingsChange = (
-  data: WorkspacesWithSource,
-  source: 'settings',
-) => void;
-export type OnNMRiumChange = OnDataChange | OnViewChange | OnSettingsChange;
 
 export interface NMRiumProps {
   data?: NMRiumData;
@@ -220,27 +212,44 @@ function InnerNMRium({
     PreferencesState
   >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
-  const { displayerMode, data: spectraData, actionType, view } = state;
+  const {
+    displayerMode,
+    source,
+    data: spectraData,
+    molecules,
+    correlations,
+    actionType,
+    view,
+  } = state;
+
+  const stateRef = useRef<NmriumState>();
 
   useEffect(() => {
+    const { workspace, workspaces = {} } = preferencesState;
+    stateRef.current = toJSON(
+      { data: spectraData, molecules, correlations, source, view },
+      { current: workspaces[workspace.current] },
+      { serialize: false, exportTarget: 'onChange' },
+    );
+  }, [correlations, molecules, preferencesState, source, spectraData, view]);
+
+  useEffect(() => {
+    // trigger onChange callback if data object changed
     if (checkActionType(actionType)) {
-      (handleChange.current as OnDataChange)?.(
-        toJSON(state, {}, 'onDataChange'),
-        'data',
-      );
+      handleChange.current?.(stateRef.current as NmriumState, 'data');
     }
-  }, [actionType, state]);
+  }, [actionType, correlations, molecules, source, spectraData]);
 
   useEffect(() => {
-    (handleChange.current as OnViewChange)?.(view, 'view');
+    // trigger onChange callback if view object changed
+
+    handleChange.current?.(stateRef.current as NmriumState, 'view');
   }, [view]);
 
   useEffect(() => {
-    (handleChange.current as OnSettingsChange)?.(
-      preferencesState.workspaces,
-      'settings',
-    );
-  }, [preferencesState.workspaces]);
+    // trigger onChange callback if settings changed
+    handleChange.current?.(stateRef.current as NmriumState, 'settings');
+  }, [preferencesState]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

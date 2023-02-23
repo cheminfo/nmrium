@@ -107,6 +107,7 @@ export default function Test(props) {
   const [data, setData] = useState<any>();
   const [viewCount, incrementViewCount] = useReducer((a) => a + 1, 0);
   const [dataCount, incrementDataCount] = useReducer((a) => a + 1, 0);
+  const [settingsCount, incrementSettingsCount] = useReducer((a) => a + 1, 0);
   useEffect(() => {
     if (file) {
       void loadData(file).then((d) => {
@@ -119,6 +120,7 @@ export default function Test(props) {
   }, [baseURL, file, props]);
   const [viewCallBack, setViewCallBack] = useState<any>({});
   const [dataCallBack, setDataCallBack] = useState<any>({});
+  const [settingsCallBack, setSettingsCallBack] = useState<any>({});
   const dropFileHandler = useCallback((dropFiles) => {
     void (async () => {
       try {
@@ -137,11 +139,11 @@ export default function Test(props) {
     })();
   }, []);
 
-  const changeHandler = useCallback((data, source) => {
+  const changeHandler = useCallback(({ data, view, settings }, source) => {
     switch (source) {
       case 'view': {
         incrementViewCount();
-        setViewCallBack({ activate: true, data });
+        setViewCallBack({ activate: true, data: view });
         setTimeout(() => {
           setViewCallBack(({ data }) => ({ data, activate: false }));
         }, 500);
@@ -152,6 +154,14 @@ export default function Test(props) {
         setDataCallBack({ activate: true, data });
         setTimeout(() => {
           setDataCallBack(({ data }) => ({ data, activate: false }));
+        }, 500);
+        break;
+      }
+      case 'settings': {
+        incrementSettingsCount();
+        setSettingsCallBack({ activate: true, data: settings });
+        setTimeout(() => {
+          setSettingsCallBack(({ data }) => ({ data, activate: false }));
         }, 500);
         break;
       }
@@ -245,6 +255,17 @@ export default function Test(props) {
               <span data-test-id="view-count">{viewCount}</span> - View Change:
             </h3>
             <Inspector data={viewCallBack.data} />
+            <h3
+              style={
+                settingsCallBack.activate
+                  ? { color: 'red', fontWeight: 'bold' }
+                  : {}
+              }
+            >
+              <span data-test-id="settings-count">{settingsCount}</span> -
+              Settings Change:
+            </h3>
+            <Inspector data={settingsCallBack.data} />
           </div>
         </div>
       </div>

@@ -126,7 +126,7 @@ export default function View(props: ViewProps) {
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
             <NMRium
               data={data}
-              onDataChange={changeHandler}
+              onChange={changeHandler}
               {...(workspace && { workspace })}
               {...(customWorkspaces && { customWorkspaces })}
             />
