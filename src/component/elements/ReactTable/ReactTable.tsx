@@ -498,7 +498,7 @@ function ReactTable(props: ReactTableProps) {
           onScroll={scrollHandler}
           onSortEnd={onSortEnd}
           ref={containerRef}
-          {...{ ...props }}
+          {...props}
         />
       </div>
     </ReactTableProvider>
