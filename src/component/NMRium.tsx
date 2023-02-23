@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, SerializedNmriumState, Source } from 'nmr-load-save';
+import { readNMRiumObject, Source, NmriumState } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -51,7 +51,6 @@ import {
   dispatchMiddleware,
   initState,
   State,
-  ViewState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
@@ -113,7 +112,7 @@ const containerStyles = css`
     user-select: none;
   }
 `;
-
+export { serializeNmriumState } from 'nmr-load-save';
 export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
@@ -126,10 +125,14 @@ export type NMRiumWorkspace =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
+export type OnNMRiumChange = (
+  state: NmriumState,
+  source: 'data' | 'view' | 'settings',
+) => void;
+
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: SerializedNmriumState) => void;
-  onViewChange?: (view: ViewState) => void;
+  onChange?: OnNMRiumChange;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
@@ -178,8 +181,7 @@ function InnerNMRium({
   customWorkspaces,
   preferences,
   getSpinner = defaultGetSpinner,
-  onDataChange,
-  onViewChange,
+  onChange,
   emptyText,
   innerRef,
 }: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
@@ -188,14 +190,10 @@ function InnerNMRium({
   const viewerRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
-  const handleDataChange = useRef(onDataChange);
+  const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
-    handleDataChange.current = onDataChange;
-  }, [onDataChange]);
-  const handleViewChange = useRef(onViewChange);
-  useEffect(() => {
-    handleViewChange.current = onViewChange;
-  }, [onViewChange]);
+    handleChange.current = onChange;
+  }, [onChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
@@ -214,17 +212,44 @@ function InnerNMRium({
     PreferencesState
   >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
-  const { displayerMode, data: spectraData, actionType, view } = state;
+  const {
+    displayerMode,
+    source,
+    data: spectraData,
+    molecules,
+    correlations,
+    actionType,
+    view,
+  } = state;
+
+  const stateRef = useRef<NmriumState>();
 
   useEffect(() => {
+    const { workspace, workspaces = {} } = preferencesState;
+    stateRef.current = toJSON(
+      { data: spectraData, molecules, correlations, source, view },
+      { current: workspaces[workspace.current] },
+      { serialize: false, exportTarget: 'onChange' },
+    );
+  }, [correlations, molecules, preferencesState, source, spectraData, view]);
+
+  useEffect(() => {
+    // trigger onChange callback if data object changed
     if (checkActionType(actionType)) {
-      handleDataChange.current?.(toJSON(state, {}, 'onDataChange'));
+      handleChange.current?.(stateRef.current as NmriumState, 'data');
     }
-  }, [actionType, state]);
+  }, [actionType, correlations, molecules, source, spectraData]);
 
   useEffect(() => {
-    handleViewChange.current?.(view);
+    // trigger onChange callback if view object changed
+
+    handleChange.current?.(stateRef.current as NmriumState, 'view');
   }, [view]);
+
+  useEffect(() => {
+    // trigger onChange callback if settings changed
+    handleChange.current?.(stateRef.current as NmriumState, 'settings');
+  }, [preferencesState]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);

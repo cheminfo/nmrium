@@ -41,7 +41,9 @@ export default function useExport() {
           async function handle() {
             //exported file name by default will be the first spectrum name
             const fileName = state.data[0]?.display?.name;
-            const exportedData = toJSON(state, preferencesState, 'nmrium');
+            const exportedData = toJSON(state, preferencesState, {
+              exportTarget: 'nmrium',
+            });
             await exportAsJSON(
               exportedData,
               fileName,
@@ -100,12 +102,10 @@ export default function useExport() {
         );
         setTimeout(() => {
           void (async () => {
-            const exportedData = toJSON(
-              state,
-              preferencesState,
-              'nmrium',
-              include,
-            );
+            const exportedData = toJSON(state, preferencesState, {
+              ...include,
+              exportTarget: 'nmrium',
+            });
             const spaceIndent = pretty ? 2 : 0;
             await exportAsJSON(exportedData, name, spaceIndent, compressed);
             hideLoading();
