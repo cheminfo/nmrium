@@ -340,7 +340,7 @@ function addMissingProjectionHandler(draft, action) {
     }
     const groupByNucleus = groupByInfoKey('nucleus');
     const dataGroupByNucleus = groupByNucleus(draft.data);
-    setTab(draft, dataGroupByNucleus, draft.activeTab, true);
+    setTab(draft, dataGroupByNucleus, draft.view.spectra.activeTab, true);
     setDomain(draft);
     setMode(draft);
   }
