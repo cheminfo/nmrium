@@ -80,7 +80,7 @@ function FiltersTableInner({
     [alert, dispatch],
   );
   const handelDeleteFilter = useCallback(
-    ({ id, name }) => {
+    ({ id, name, label }) => {
       const buttons = [
         {
           text: 'Yes',
@@ -112,7 +112,12 @@ function FiltersTableInner({
       }
 
       modal.showConfirmDialog({
-        message: 'Are you sure you want to delete the spectrum?',
+        message: (
+          <span>
+            You are about to delete this processing step
+            <span style={{ color: 'black' }}> {label} </span> , Are you sure?
+          </span>
+        ),
         buttons,
       });
     },
