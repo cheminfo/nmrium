@@ -385,7 +385,7 @@ function InnerNMRium({
                                     >
                                       <FloatMoleculeStructures />
                                       {displayerMode ===
-                                        DISPLAYER_MODE.DM_1D ? (
+                                      DISPLAYER_MODE.DM_1D ? (
                                         <Viewer1D emptyText={emptyText} />
                                       ) : (
                                         <Viewer2D emptyText={emptyText} />
