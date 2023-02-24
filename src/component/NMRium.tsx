@@ -113,6 +113,7 @@ const containerStyles = css`
   }
 `;
 export { serializeNmriumState } from 'nmr-load-save';
+export type { NmriumState } from 'nmr-load-save';
 export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
