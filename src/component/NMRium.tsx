@@ -113,6 +113,7 @@ const containerStyles = css`
   }
 `;
 export { serializeNmriumState } from 'nmr-load-save';
+export type { NmriumState } from 'nmr-load-save';
 export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
@@ -384,7 +385,7 @@ function InnerNMRium({
                                     >
                                       <FloatMoleculeStructures />
                                       {displayerMode ===
-                                      DISPLAYER_MODE.DM_1D ? (
+                                        DISPLAYER_MODE.DM_1D ? (
                                         <Viewer1D emptyText={emptyText} />
                                       ) : (
                                         <Viewer2D emptyText={emptyText} />
