@@ -9,7 +9,7 @@
     },
     "spectra": [
       {
-        "selector": {
+        "sourceSelector": {
           "files": ["data/cytisine/2d/j-resolv.jdx"]
         }
       }
