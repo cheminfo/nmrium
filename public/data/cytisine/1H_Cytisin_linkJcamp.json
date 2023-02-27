@@ -20,7 +20,7 @@
           "isPeaksMarkersVisible": true,
           "isVisibleInDomain": true
         },
-        "selector": { "jcamp": { "index": 0 } }
+        "sourceSelector": { "jcamp": { "index": 0 } }
       }
     ]
   }
