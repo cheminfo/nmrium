@@ -73,10 +73,10 @@ function DropZone(props) {
           parseMetaFileResult = await parseMetaFile(metaFile);
         }
 
-        const { nmrLoaders: selector } = preferences.current;
+        const { nmrLoaders: sourceSelector } = preferences.current;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
-          { selector },
+          { sourceSelector },
         );
 
         if ((nmriumState as any)?.settings) {
