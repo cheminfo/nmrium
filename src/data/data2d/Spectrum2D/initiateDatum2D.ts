@@ -31,7 +31,6 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Datum2D {
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 2,
-    name: spectrum.info?.name || v4(),
     ...spectrum.info,
   };
 
