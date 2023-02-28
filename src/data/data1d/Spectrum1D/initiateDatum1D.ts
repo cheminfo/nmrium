@@ -27,7 +27,6 @@ export function initiateDatum1D(
   datum.selector = spectrum?.selector || {};
 
   datum.display = {
-    name: spectrum.display?.name || v4(),
     isVisible: true,
     isRealSpectrumVisible: true,
     ...spectrum.display,
@@ -39,6 +38,7 @@ export function initiateDatum1D(
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
+    name: spectrum.info?.name || v4(),
     ...spectrum.info,
   };
 

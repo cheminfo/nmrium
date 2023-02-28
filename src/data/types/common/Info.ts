@@ -6,4 +6,5 @@ export interface Info {
   reverse?: boolean[];
   experiment?: any;
   solvent?: string;
+  name: string;
 }
