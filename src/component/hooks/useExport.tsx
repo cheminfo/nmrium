@@ -40,7 +40,7 @@ export default function useExport() {
         .then((hideLoading) => {
           async function handle() {
             //exported file name by default will be the first spectrum name
-            const fileName = state.data[0]?.display?.name;
+            const fileName = state.data[0]?.info?.name;
             const exportedData = toJSON(state, preferencesState, {
               exportTarget: 'nmrium',
             });
@@ -66,7 +66,7 @@ export default function useExport() {
         'Exporting as SVG process in progress',
       );
       setTimeout(() => {
-        const fileName = state.data[0]?.display?.name;
+        const fileName = state.data[0]?.info?.name;
         exportAsSVG(rootRef, 'nmrSVG', fileName);
         hideLoading();
       }, 0);
@@ -79,7 +79,7 @@ export default function useExport() {
         'Exporting as PNG process in progress',
       );
       setTimeout(() => {
-        const fileName = state.data[0]?.display?.name;
+        const fileName = state.data[0]?.info?.name;
         exportAsPng(rootRef, 'nmrSVG', fileName);
         hideLoading();
       }, 0);
@@ -118,7 +118,7 @@ export default function useExport() {
     [alert, preferencesState, state],
   );
   const saveAsHandler = useCallback(async () => {
-    const fileName = state.data[0]?.display?.name;
+    const fileName = state.data[0]?.info?.name;
     modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,

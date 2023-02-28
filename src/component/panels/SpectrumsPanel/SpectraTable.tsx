@@ -122,7 +122,7 @@ export function SpectraTable(props: SpectraTableProps) {
       name: {
         Header: '',
         style: { width: '50%', maxWidth: 0, ...columnStyle },
-        accessor: (row) => row.display.name,
+        accessor: (row) => row.info.name,
         Cell: ({ row }) => {
           return <SpectrumName data={row.original} />;
         },

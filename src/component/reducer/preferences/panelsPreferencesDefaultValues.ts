@@ -23,7 +23,7 @@ const getSpectraDefaultValues = (
         name: 'name',
         label: 'Spectrum Name',
         description: 'Spectrum Name',
-        jpath: ['display', 'name'],
+        jpath: ['info', 'name'],
         visible: true,
       },
       {

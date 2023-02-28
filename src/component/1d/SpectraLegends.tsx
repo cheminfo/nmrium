@@ -90,7 +90,7 @@ function InnerSpectraLegends({
                       alignmentBaseline="middle"
                       style={styles.text}
                     >
-                      {spectrum.display.name}
+                      {spectrum.info.name}
                     </text>
                   );
                 default: {

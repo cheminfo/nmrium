@@ -50,7 +50,7 @@ export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
 
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
-  const name = options?.display?.name;
+  const name = options?.info?.name;
   const { spectra: spectraIn } = processJcamp(jcamp, {
     name,
     converter: {
@@ -76,7 +76,7 @@ export function addJcamps(files, usedColors) {
       spectra,
       file.binary,
       {
-        display: {
+        info: {
           name: file.name,
         },
         source: {

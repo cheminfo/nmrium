@@ -227,11 +227,11 @@ function generated2DSpectrum(params: {
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },
       display: {
-        name: inputOptions.name,
         positiveColor: color,
         negativeColor: adjustAlpha(color, 40),
       },
       info: {
+        name: inputOptions.name,
         nucleus: nuclei,
         originFrequency: frequency,
         baseFrequency: frequency,
