@@ -6,5 +6,5 @@ export function getShiftX(datum: Datum1D): number {
     datum?.filters &&
     datum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
 
-  return filter?.flag ? filter.value : 0;
+  return filter?.flag ? filter.value.shift : 0;
 }

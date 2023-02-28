@@ -23,7 +23,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';
 
-const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
+const selectStyle = { width: '100%', border: 'none' };
 
 interface IntegralTableProps
   extends Pick<IntegralPanelInnerProps, 'activeTab'> {
@@ -130,8 +130,12 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         showWhen: 'absolute.show',
         index: 4,
         Header: 'Absolute',
-        accessor: (row) =>
-          formatNumber(row.absolute, integralsPreferences.absolute.format),
+        accessor: 'absolute',
+        Cell: ({ row }) =>
+          formatNumber(
+            row.original.absolute,
+            integralsPreferences.absolute.format,
+          ),
       },
       {
         showWhen: 'relative.show',
@@ -141,11 +145,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
           const n = activeTab?.replace(/\d/g, '');
           return <span>{`Relative ${n}`}</span>;
         },
-        accessor: (row) => {
-          return row?.integral
-            ? formatNumber(row.integral, integralsPreferences.relative.format)
-            : '';
-        },
+        accessor: 'integral',
         Cell: ({ row }) => {
           let integral: string | number = '';
 

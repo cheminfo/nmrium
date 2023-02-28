@@ -14,6 +14,11 @@ const styles = css`
   align-items: center;
   justify-content: center;
 
+  .icon {
+    color: #252525;
+    width: 8px;
+  }
+
   :hover {
     background-color: red;
     border-radius: 50%;
@@ -21,11 +26,6 @@ const styles = css`
     .icon {
       color: white;
     }
-  }
-
-  .icon {
-    color: #252525;
-    width: 8px;
   }
 `;
 

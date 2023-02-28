@@ -20,7 +20,13 @@ interface BaseColor {
 
 type Fill = 'clear' | 'outline' | 'solid';
 
-type ColorTheme = 'success' | 'danger' | 'warning' | 'medium' | 'light';
+type ColorTheme =
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'medium'
+  | 'light'
+  | 'secondary';
 
 type ColorPalettes = Record<
   ColorTheme,
@@ -56,6 +62,11 @@ const colorPalettes: ColorPalettes = {
     base: '#f4f5f8',
     shade: '#d7d8da',
     tint: '#f5f6f9',
+  },
+  secondary: {
+    base: '#3880ff',
+    shade: '#3171e0',
+    tint: '#4c8dff',
   },
 };
 
@@ -137,7 +148,12 @@ function getFillStyle(props: ButtonStyle) {
 
 const styles: Style = {
   button: (props) => {
-    const { size, backgroundColor, color, borderRadius } = props;
+    const {
+      size,
+      backgroundColor: { hover, active },
+      color,
+      borderRadius,
+    } = props;
 
     const basic = css`
       display: flex;
@@ -153,17 +169,18 @@ const styles: Style = {
     const fillStyle = getFillStyle(props);
 
     const colorStyle = css`
-      &:not([disabled]):hover {
-        background-color: ${backgroundColor.hover};
-        color: ${color.hover};
-      }
-      &:not([disabled]):active {
-        background-color: ${backgroundColor?.active || backgroundColor.hover};
-        color: ${color?.active || color.hover};
-      }
-
       &:disabled {
         opacity: 0.25;
+      }
+
+      &:not([disabled]):hover {
+        background-color: ${hover};
+        color: ${color.hover};
+      }
+
+      &:not([disabled]):active {
+        background-color: ${active || hover};
+        color: ${color?.active || color.hover};
       }
     `;
 
@@ -195,6 +212,7 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
     whiteSpace: 'nowrap',
     paddingLeft: '3px',
     paddingRight: '3px',
+    pointerEvents: 'none',
     zIndex: 99,
   };
 
@@ -203,7 +221,7 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
     orientation === 'horizontal' && { margin: 'auto', marginLeft: '5px' },
     orientation === 'vertical'
       ? { top: 'calc(100% + 5px)' }
-      : { top: '0px', left: 'calc(100% + 5px)' },
+      : { top: '0px', left: 'calc(100%)' },
   ]);
 };
 
@@ -232,7 +250,7 @@ function Button(props: ButtonProps) {
   } = props;
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <div style={{ position: 'relative' }}>
       <button
         type="button"
         onClick={onClick}
@@ -297,11 +315,31 @@ Button.Danger = function ButtonDanger(props: ButtonProps) {
 Button.Action = function ButtonAction(props: ButtonProps) {
   return <ThemeButton {...props} colorTheme="medium" />;
 };
+Button.Secondary = function ButtonAction(props: ButtonProps) {
+  return <ThemeButton {...props} colorTheme="secondary" />;
+};
 Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
   return (
     <Button {...props}>
       <FaInfoCircle />
     </Button>
+  );
+};
+
+Button.BarButton = function BarButton(props: ButtonProps) {
+  const { ...otherProps } = props;
+  return (
+    <Button
+      {...{
+        backgroundColor: { base: 'white', hover: '#f7f7f7', active: '#e7e7e7' },
+        color: {
+          base: 'black',
+          hover: 'black',
+        },
+        style: { padding: '0.25rem' },
+        ...otherProps,
+      }}
+    />
   );
 };
 

@@ -101,10 +101,10 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
     );
     let filters: any = [];
     if (xShift !== 0) {
-      filters.push({ name: Filters.shift2DX.id, options: xShift });
+      filters.push({ name: Filters.shift2DX.id, value: { shift: xShift } });
     }
     if (yShift !== 0) {
-      filters.push({ name: Filters.shift2DY.id, options: yShift });
+      filters.push({ name: Filters.shift2DY.id, value: { shift: yShift } });
     }
 
     FiltersManager.applyFilter(draft.data[index], filters);

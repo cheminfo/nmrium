@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/cytisine/1H_Cytisin_600MHz-R+I.dx"
+        "jcampURL": "data/cytisine/1H_Cytisin_600MHz-R+I.dx"
       },
       "display": {
         "name": "test",
@@ -50,7 +50,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/cytisine/dept/DEPT45_Cytisin.dx"
+        "jcampURL": "data/cytisine/dept/DEPT45_Cytisin.dx"
       },
       "display": {
         "name": "test",

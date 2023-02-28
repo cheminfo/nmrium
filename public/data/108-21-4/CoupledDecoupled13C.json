@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/108-21-4/13c-coupled.jdx"
+        "jcampURL": "data/108-21-4/13c-coupled.jdx"
       },
       "display": {
         "name": "13C coupled",
@@ -49,7 +49,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/108-21-4/13c-decoupled.jdx"
+        "jcampURL": "data/108-21-4/13c-decoupled.jdx"
       },
       "display": {
         "name": "13C decoupled",

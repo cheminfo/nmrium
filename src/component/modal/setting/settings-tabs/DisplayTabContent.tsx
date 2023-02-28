@@ -33,8 +33,8 @@ const LIST: ListItem[] = [
     name: 'panels.structuresPanel',
   },
   {
-    label: 'Filters panel',
-    name: 'panels.filtersPanel',
+    label: 'Processings panel',
+    name: 'panels.processingsPanel',
   },
   {
     label: '2D zones peak picking',

@@ -2,20 +2,19 @@
 import { css } from '@emotion/react';
 import { fileCollectionFromFileList } from 'filelist-utils';
 import { read as readDropFiles } from 'nmr-load-save';
+import { ParseResult } from 'papaparse';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
+import { isMetaFile, parseMetaFile } from '../../data/parseMeta';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import {
-  useMetaInformationImportationModal,
-  isMetaInformationFile,
-} from '../modal/metaImportation/index';
+import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
 const style = css`
@@ -30,10 +29,10 @@ const style = css`
 
   p {
     color: white;
-    background-color: rgb(104, 104, 104);
+    background-color: rgb(104 104 104);
     padding: 1.5%;
     border-radius: 30px;
-    margin: 0px;
+    margin: 0;
   }
 
   svg {
@@ -54,7 +53,7 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences } = usePreferences();
+  const { dispatch: dispatchPreferences, current } = usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
   const openImportMetaInformationModal = useMetaInformationImportationModal();
@@ -62,23 +61,42 @@ function DropZone(props) {
 
   async function loadFilesHandler(files) {
     try {
-      if (files.length === 1 && isMetaInformationFile(files[0])) {
+      if (files.length === 1 && isMetaFile(files[0])) {
         openImportMetaInformationModal(files[0]);
       } else {
         const fileCollection = await fileCollectionFromFileList(files);
+        const metaFile = Object.values(fileCollection.files).find((file) =>
+          isMetaFile(file),
+        );
+        let parseMetaFileResult: ParseResult<any> | null = null;
+        if (metaFile) {
+          parseMetaFileResult = await parseMetaFile(metaFile);
+        }
 
-        const { nmrLoaders: filter } = preferences.current;
-        const data = await readDropFiles(fileCollection, { filter });
-        if ((data as any)?.settings) {
+        const { nmrLoaders: sourceSelector } = preferences.current;
+        const { nmriumState, containsNmrium } = await readDropFiles(
+          fileCollection,
+          { sourceSelector },
+        );
+
+        if ((nmriumState as any)?.settings) {
           dispatchPreferences({
             type: 'SET_WORKSPACE',
             payload: {
-              data: (data as any).settings,
+              data: (nmriumState as any).settings,
               workspaceSource: 'nmriumFile',
             },
           });
         }
-        dispatch({ type: LOAD_DROP_FILES, payload: data });
+        dispatch({
+          type: LOAD_DROP_FILES,
+          payload: {
+            ...nmriumState,
+            containsNmrium,
+            onLoadProcessing: current.onLoadProcessing,
+            parseMetaFileResult,
+          },
+        });
       }
     } catch (error: any) {
       alert.error(error.message);

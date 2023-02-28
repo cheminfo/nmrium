@@ -1,34 +1,37 @@
 import { v4 } from '@lukeed/uuid';
 
-import * as FiltersTypes from '../../Filters';
+import { UsedColors } from '../../../types/UsedColors';
+import * as Filters from '../../Filters';
 import * as FiltersManager from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
-import get1dColor from '../../utilities/getColor';
 
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
+import { get1DColor } from './get1DColor';
 import { initiateIntegrals } from './integrals/initiateIntegrals';
 import { initiatePeaks } from './peaks/initiatePeaks';
 import { initiateRanges } from './ranges/initiateRanges';
 
-export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
+export interface InitiateDatum1DOptions {
+  usedColors?: UsedColors;
+  filters?: any[];
+}
+
+export function initiateDatum1D(
+  spectrum: any,
+  options: InitiateDatum1DOptions = {},
+): Datum1D {
+  const { usedColors = {}, filters = [] } = options;
+
   const datum: Partial<Datum1D> = {};
-  datum.id = options.id || v4();
-  datum.source = {
-    jcampURL: null,
-    file: {
-      binary: null,
-      name: '',
-      extension: '',
-    },
-    ...options.source,
-  };
+  datum.id = spectrum.id || v4();
+  datum.selector = spectrum?.selector || {};
 
   datum.display = {
-    name: options.display?.name || v4(),
-    ...getColor(options, usedColors),
+    name: spectrum.display?.name || v4(),
     isVisible: true,
     isRealSpectrumVisible: true,
-    ...options.display,
+    ...spectrum.display,
+    ...get1DColor(spectrum, usedColors),
   };
 
   datum.info = {
@@ -36,66 +39,64 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
-    ...options.info,
+    ...spectrum.info,
   };
 
   datum.originalInfo = datum.info;
 
-  datum.meta = { ...options.meta };
+  datum.meta = { ...spectrum.meta };
 
-  datum.metaInfo = { ...options.metaInfo };
+  datum.metaInfo = { ...spectrum.metaInfo };
 
-  datum.data = convertDataToFloat64Array(options.data);
+  datum.data = convertDataToFloat64Array(spectrum.data);
 
   datum.originalData = datum.data;
 
-  datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
+  datum.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
-  datum.peaks = initiatePeaks(options, datum as Datum1D);
+  datum.peaks = initiatePeaks(spectrum, datum as Datum1D);
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  datum.integrals = initiateIntegrals(options, datum as Datum1D); // array of object (from: xIndex, to: xIndex)
-  datum.ranges = initiateRanges(options, datum as Datum1D);
+  datum.integrals = initiateIntegrals(spectrum, datum as Datum1D); // array of object (from: xIndex, to: xIndex)
+  datum.ranges = initiateRanges(spectrum, datum as Datum1D);
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(datum);
 
-  preprocessing(datum);
+  preprocessing(datum, filters);
   return datum as Datum1D;
 }
 
-function getColor(options, usedColors) {
-  let color = 'black';
-  if (options?.display?.color === undefined) {
-    color = get1dColor(false, usedColors['1d'] || []);
-  } else {
-    color = options.display.color;
-  }
-
-  if (usedColors['1d']) {
-    usedColors['1d'].push(color);
-  }
-
-  return { color };
-}
-
-function preprocessing(datum) {
-  if (
-    datum.info.isFid &&
-    datum.filters.findIndex((f) => f.name === FiltersTypes.digitalFilter.id) ===
-      -1 &&
-    datum.info.digitalFilter
-  ) {
-    FiltersManager.applyFilter(datum, [
-      {
-        name: FiltersTypes.digitalFilter.id,
-        options: {
-          digitalFilterValue: datum.info.digitalFilter,
+function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
+  if (datum.info.isFid) {
+    if (onLoadFilters?.length === 0) {
+      FiltersManager.applyFilter(datum, [
+        {
+          name: Filters.digitalFilter.id,
+          value: {},
+          isDeleteAllow: false,
         },
-        isDeleteAllow: false,
-      },
-    ]);
+      ]);
+    } else {
+      const filters: FiltersManager.BaseFilter[] = [];
+      for (let filter of onLoadFilters) {
+        if (filter.name === Filters.digitalFilter.id) {
+          filter = { ...filter, isDeleteAllow: false };
+        }
+
+        if (
+          !datum.info?.digitalFilter &&
+          filter.name === Filters.digitalFilter.id
+        ) {
+          continue;
+        }
+
+        filters.push(filter);
+      }
+
+      FiltersManager.applyFilter(datum, filters);
+    }
   }
 }

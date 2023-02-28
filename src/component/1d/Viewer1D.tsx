@@ -15,9 +15,10 @@ import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
+import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { useActiveSpectrum } from '../reducer/Reducer';
 import { ZoomType } from '../reducer/helper/Zoom1DManager';
 import getRange from '../reducer/helper/getRange';
 import scaleReducer, {
@@ -64,13 +65,12 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     xDomains,
     yDomain,
     yDomains,
-    verticalAlign,
     displayerKey,
     view: {
       spectra: { activeTab },
     },
   } = state;
-
+  const verticalAlign = useVerticalAlign();
   const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
@@ -100,10 +100,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       });
     }
   }, [
+    verticalAlign,
     heightProp,
     margin,
     mode,
-    verticalAlign,
     widthProp,
     xDomain,
     xDomains,

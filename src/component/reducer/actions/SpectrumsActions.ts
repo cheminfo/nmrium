@@ -1,14 +1,20 @@
 import { Draft, original } from 'immer';
+import lodashGet from 'lodash/get';
+import omitBy from 'lodash/omitBy';
+import lodashSet from 'lodash/set';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
 import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
+  isSpectrum1D,
+  get1DColor,
 } from '../../../data/data1d/Spectrum1D';
 import {
   getMissingProjection,
   isSpectrum2D,
+  get2DColor,
 } from '../../../data/data2d/Spectrum2D';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Datum1D } from '../../../data/types/data1d';
@@ -19,6 +25,11 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
+import { getActiveSpectra } from '../helper/getActiveSpectra';
+import {
+  getActiveSpectraAsObject,
+  isActiveSpectrum,
+} from '../helper/getActiveSpectraAsObject';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
@@ -45,8 +56,11 @@ function setVisible(datum, flag) {
 function handleSpectrumVisibility(draft: Draft<State>, action) {
   const { id, key, nucleus, flag } = action.payload;
   if (nucleus) {
+    const activeSpectra = getActiveSpectraAsObject(draft);
     for (const datum of getSpectraByNucleus(nucleus, draft.data)) {
-      setVisible(datum, flag);
+      if (activeSpectra && datum.id in activeSpectra) {
+        setVisible(datum, flag);
+      }
     }
   } else {
     const spectrum = draft.data.find((d) => d.id === id);
@@ -60,47 +74,161 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
   }
 }
 
-function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
-  let refreshDomain = false;
-  const currentActiveSpectrum = getActiveSpectrum(draft);
+interface MultipleSelectOptions {
+  spectra: (Datum1D | Datum2D)[];
+  nexId: string;
+  referenceId: string;
+  append?: boolean;
+}
 
-  if (activeSpectrum) {
-    const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
-    const oldIndex = draft.data.findIndex(
-      (d) => d.id === currentActiveSpectrum?.id,
-    );
-    if (newIndex !== -1) {
-      const newActiveSpectrum = draft.data[newIndex] as Datum1D | Datum2D;
-
-      newActiveSpectrum.display.isVisible = true;
-
-      if (oldIndex !== -1) {
-        refreshDomain =
-          (draft.data[oldIndex] as Datum1D | Datum2D).info.isFid !==
-          newActiveSpectrum.info.isFid;
-      } else {
-        refreshDomain = newActiveSpectrum.info.isFid || false;
-      }
-    }
-    activeSpectrum = { ...activeSpectrum, index: newIndex };
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] =
-      activeSpectrum;
-  } else {
-    if (currentActiveSpectrum) {
-      const index = draft.data.findIndex(
-        (d) => d.id === currentActiveSpectrum.id,
-      );
-      refreshDomain = draft.data[index].info.isFid;
-    } else {
-      refreshDomain = false;
-    }
-    draft.view.spectra.activeSpectra[draft.view.spectra.activeTab] = null;
+function multipleSelect(
+  spectraIds: Set<string>,
+  options: MultipleSelectOptions,
+) {
+  const { spectra, nexId, referenceId, append = false } = options;
+  const startIndex = spectra.findIndex((s) => s.id === referenceId);
+  const endIndex = spectra.findIndex((s) => s.id === nexId);
+  if (!append) {
+    spectraIds.clear();
   }
 
-  if (options[draft.toolOptions.selectedTool].isFilter) {
-    draft.toolOptions.selectedTool = options.zoom.id;
-    draft.toolOptions.data.baselineCorrection = { zones: [], options: {} };
-    draft.toolOptions.selectedOptionPanel = null;
+  if (endIndex > startIndex) {
+    for (const spectrum of spectra.slice(startIndex, endIndex + 1)) {
+      spectraIds.add(spectrum.id);
+    }
+  } else {
+    for (const spectrum of spectra.slice(endIndex, startIndex + 1)) {
+      spectraIds.add(spectrum.id);
+    }
+  }
+}
+
+function handleChangeActiveSpectrum(
+  draft: Draft<State>,
+  action: { payload: { modifier: string; id: string } },
+) {
+  const {
+    view: {
+      spectra: { activeTab, selectReferences, activeSpectra },
+    },
+    data,
+    toolOptions,
+  } = draft;
+  const { modifier, id } = action.payload;
+  const spectra = getActiveSpectra(draft);
+
+  //get the spectra that its nucleus match the active tab
+  const spectraPerNucleus = getSpectraByNucleus(activeTab, data);
+
+  //set of the current active spectra
+  let spectraIds = spectra?.map((s) => s.id) || [];
+
+  // select all spectra per nucleus
+  if (!id) {
+    spectraIds = spectraPerNucleus.map((spectrum) => spectrum.id);
+  } else {
+    let spectraIdsSet: Set<string> = new Set<string>(spectraIds);
+    /*
+     * looking for the last selected spectrum id which we set when selecting a spectrum by pressing the Mouse Left button or pressing Ctrl + Mouse Left button
+     * if there is not yet selected a spectrum we use the first spectrum
+     */
+    const referenceId =
+      selectReferences?.[activeTab] || spectraPerNucleus?.[0].id;
+
+    /**
+     * we apply the same selection behavior like what we have in the files system
+     * we have four cases for the modifiers
+     *  1- Mouse Left button
+     *  2- Mouse Left button + Ctrl
+     *  3- Mouse Left button + Shift
+     *  4- Mouse Left button + Shift + Ctrl
+     */
+
+    switch (modifier) {
+      case 'shift[false]_ctrl[true]':
+        if (!spectraIdsSet.has(id) || spectraIdsSet.size === 0) {
+          spectraIdsSet.add(id);
+        } else {
+          spectraIdsSet.delete(id);
+        }
+        selectReferences[activeTab] = id;
+
+        break;
+      case 'shift[true]_ctrl[false]':
+        multipleSelect(spectraIdsSet, {
+          spectra: spectraPerNucleus,
+          nexId: id,
+          referenceId,
+        });
+        break;
+      case 'shift[true]_ctrl[true]':
+        multipleSelect(spectraIdsSet, {
+          spectra: spectraPerNucleus,
+          nexId: id,
+          referenceId,
+          append: true,
+        });
+        break;
+
+      default:
+        if (spectraIdsSet.has(id) && spectra?.length === 1) {
+          spectraIdsSet.clear();
+        } else {
+          spectraIdsSet = new Set([id]);
+        }
+        selectReferences[activeTab] = id;
+
+        break;
+    }
+
+    spectraIds = Array.from(spectraIdsSet);
+  }
+
+  // convert the spectra array to an Object where the key is the spectrum id and value is the `index` and `spectrum`
+  const spectraObj: Record<
+    string,
+    { spectrum: Datum1D | Datum2D; index: number }
+  > = {};
+
+  for (let i = 0; i < data?.length; i++) {
+    spectraObj[data[i].id] = { spectrum: data[i], index: i };
+  }
+
+  //set the index of the active spectra and make it visible
+  const newActiveSpectra: any[] = [];
+  for (const spectrumId of spectraIds) {
+    newActiveSpectra.push({
+      id: spectrumId,
+      index: spectraObj[spectrumId].index,
+    });
+  }
+
+  //set the active spectra
+  activeSpectra[activeTab] = newActiveSpectra;
+
+  //check if the previous selected spectra contain FT
+  const previousActiveSpectraHasFT = spectra?.some(
+    (active) => spectraObj[active.id].spectrum.info.isFt,
+  );
+
+  //check if the nex selected spectra contain FT
+  const newActiveSpectraHasFT = Array.from(spectraIds)?.some(
+    (id) => spectraObj[id].spectrum.info.isFt,
+  );
+
+  /**
+   * not refresh the y domain if the next and previous selected spectra have Ft or we do not have previous or next active spectra
+   */
+  const refreshDomain =
+    previousActiveSpectraHasFT !== newActiveSpectraHasFT &&
+    spectra &&
+    spectra?.length > 0 &&
+    spectraIds?.length > 0;
+
+  if (options[toolOptions.selectedTool].isFilter) {
+    toolOptions.selectedTool = options.zoom.id;
+    toolOptions.data.baselineCorrection = { zones: [], options: {} };
+    toolOptions.selectedOptionPanel = null;
     draft.tempData = null;
   }
 
@@ -109,7 +237,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
 
-  if (draft.toolOptions.data.activeFilterID) {
+  if (toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   } else if (refreshDomain) {
     setDomain(draft);
@@ -143,6 +271,32 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   }
 }
 
+function removeActiveSpectra(
+  draft: Draft<State>,
+  relatedTargets: ({ jpath: string; key: string } | { jpath: string })[],
+) {
+  const activeSpectra = getActiveSpectraAsObject(draft);
+
+  // remove the active spectra
+  relatedTargets.unshift({ jpath: 'data', key: 'id' });
+
+  for (const target of relatedTargets) {
+    const { jpath } = target;
+    const targetObj = lodashGet(draft, jpath);
+    if (Array.isArray(targetObj)) {
+      const data = targetObj.filter(
+        (datum) => !isActiveSpectrum(activeSpectra, datum[(target as any).key]),
+      );
+      lodashSet(draft, jpath, data);
+    } else {
+      const data = omitBy(draft.view.peaks, (_, id) =>
+        isActiveSpectrum(activeSpectra, id),
+      );
+      lodashSet(draft, jpath, data);
+    }
+  }
+}
+
 function handleDeleteSpectra(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (action.id) {
@@ -152,8 +306,13 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete draft.view.peaks[action.id];
   } else {
-    draft.data = [];
-    draft.view.peaks = {};
+    // remove spectra and it related data in the view object
+    removeActiveSpectra(draft, [
+      { jpath: 'view.ranges', key: 'spectrumID' },
+      { jpath: 'view.zones', key: 'spectrumID' },
+      { jpath: 'view.peaks' },
+      { jpath: 'view.zoom.levels' },
+    ]);
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,
@@ -181,7 +340,7 @@ function addMissingProjectionHandler(draft, action) {
     }
     const groupByNucleus = groupByInfoKey('nucleus');
     const dataGroupByNucleus = groupByNucleus(draft.data);
-    setTab(draft, dataGroupByNucleus, draft.activeTab, true);
+    setTab(draft, dataGroupByNucleus, draft.view.spectra.activeTab, true);
     setDomain(draft);
     setMode(draft);
   }
@@ -198,7 +357,7 @@ function alignSpectraHandler(draft: Draft<State>, action) {
         applyFilter(datum, [
           {
             name: Filters.shiftX.id,
-            options: shift,
+            value: { shift },
           },
         ]);
       }
@@ -224,15 +383,9 @@ function generateSpectrumFromPublicationStringHandler(
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
 function importSpectraMetaInfo(draft: Draft<State>, action) {
-  const {
-    view: {
-      spectra: { activeTab },
-    },
-    data,
-  } = draft;
+  const { data } = draft;
   const metaSpectra = action.payload.spectraMeta;
-
-  for (const spectrum of getSpectraByNucleus(activeTab, data)) {
+  for (const spectrum of data) {
     if (metaSpectra[spectrum.id]) {
       spectrum.metaInfo = metaSpectra[spectrum.id];
     }
@@ -240,6 +393,84 @@ function importSpectraMetaInfo(draft: Draft<State>, action) {
 }
 function handleToggleSpectraLegend(draft: Draft<State>) {
   draft.view.spectra.showLegend = !draft.view.spectra.showLegend;
+}
+
+function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = draft;
+  const { jpath = null } = action.payload;
+  const spectra = getSpectraByNucleus(activeTab, data);
+  if (jpath) {
+    //recolor spectra based on distinct value
+
+    const spectraByClass: Record<string, Datum1D | Datum2D> = {};
+    for (const spectrum of spectra) {
+      const key = String(lodashGet(spectrum, jpath, ''))
+        .toLowerCase()
+        .trim()
+        .replace(/\r?\n|\r/, '');
+
+      if (spectraByClass[key]) {
+        if (isSpectrum1D(spectrum)) {
+          spectrum.display.color = (
+            spectraByClass[key] as Datum1D
+          ).display.color;
+        } else {
+          spectrum.display.positiveColor = (
+            spectraByClass[key] as Datum2D
+          ).display.positiveColor;
+          spectrum.display.negativeColor = (
+            spectraByClass[key] as Datum2D
+          ).display.negativeColor;
+        }
+      } else {
+        spectraByClass[key] = spectrum;
+      }
+    }
+  } else {
+    //reset spectra colors
+    const usedColor = { '1d': [], '2d': [] };
+
+    for (const spectrum of spectra) {
+      if (isSpectrum1D(spectrum)) {
+        spectrum.display.color = get1DColor(spectrum, usedColor, true).color;
+      } else {
+        const { positiveColor, negativeColor } = get2DColor(
+          spectrum,
+          usedColor,
+          true,
+        );
+        spectrum.display.positiveColor = positiveColor;
+        spectrum.display.negativeColor = negativeColor;
+      }
+    }
+  }
+}
+
+function handleOrderSpectra(draft: Draft<State>, action) {
+  const { data } = action.payload;
+  const spectraIndexes = {};
+  let index = 0;
+  for (const spectrum of draft.data) {
+    spectraIndexes[spectrum.id] = index;
+    index++;
+  }
+  const sortedSpectraKey = {};
+  const sortedSpectra: Datum1D[] = [];
+
+  for (const spectrum of data) {
+    const spectrumId = spectrum.id;
+    sortedSpectraKey[spectrumId] = true;
+    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Datum1D);
+  }
+
+  draft.data = draft.data
+    .filter((s) => !sortedSpectraKey[s.id])
+    .concat(sortedSpectra);
 }
 
 export {
@@ -253,4 +484,6 @@ export {
   generateSpectrumFromPublicationStringHandler,
   importSpectraMetaInfo,
   handleToggleSpectraLegend,
+  handleRecolorSpectraBasedOnDistinctValue,
+  handleOrderSpectra,
 };

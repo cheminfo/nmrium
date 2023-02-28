@@ -2,9 +2,9 @@ import { v4 } from '@lukeed/uuid';
 
 import * as FiltersManager from '../../FiltersManager';
 import { Datum2D } from '../../types/data2d/Datum2D';
-import { get2DColor } from '../../utilities/getColor';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
+import { get2DColor } from './get2DColor';
 import { initiateZones } from './zones/initiateZones';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
@@ -13,19 +13,17 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || v4();
-  datum.source = {
-    jcampURL: null,
-    ...options.source,
-  };
+  datum.selector = options?.selector || {};
+
   datum.display = {
     name: options.display?.name || v4(),
-    ...getColor(options, usedColors),
     isPositiveVisible: true,
     isNegativeVisible: true,
     isVisible: true,
     contourOptions: DEFAULT_CONTOURS_OPTIONS,
     dimension: 2,
     ...options.display,
+    ...get2DColor(options, usedColors),
   };
 
   datum.info = {
@@ -61,19 +59,4 @@ function getData(datum, options) {
     return { re, im };
   }
   return { rr: defaultMinMax, ...options.data };
-}
-
-function getColor(options, usedColors) {
-  let color = { positiveColor: 'red', negativeColor: 'blue' };
-  if (
-    options?.display?.negativeColor === undefined ||
-    options?.display?.positiveColor === undefined
-  ) {
-    color = get2DColor(options.info.experiment, usedColors['2d'] || []);
-  }
-
-  if (usedColors['2d']) {
-    usedColors['2d'].push(color.positiveColor);
-  }
-  return color;
 }

@@ -1,0 +1,181 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/multiSpectra.zip"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "UV1010_M1-1003-1002_6268756_ErISKLIoeB/10",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "cdb2c073-9739-4f96-87d1-3f9bb1bad475",
+        "filters": [],
+        "sourceSelector": {
+          "files": [
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/fid",
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/acqus",
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/procs"
+          ]
+        },
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        }
+      },
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "UV1010_M1-1003-1002_6268756_ErISKLIoeB/10",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "b2c07397-396f-46c7-913f-9bb1bad475bb",
+        "filters": [],
+        "sourceSelector": {
+          "files": [
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/1r",
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/1i",
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/acqus",
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/procs",
+            "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/proc"
+          ]
+        },
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        }
+      },
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "exam1d_1H.dx",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "c0739739-6f96-47d1-bf9b-b1bad475bbf3",
+        "filters": [],
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        },
+        "sourceSelector": {
+          "jcamp": {
+            "index": 0
+          },
+          "files": [
+            "data/multiSpectra.zip/exam1d_1H.dx"
+          ]
+        }
+      },
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "exam1d_1H.dx",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "7397396f-96c7-413f-9bb1-bad475bbf37d",
+        "filters": [],
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        },
+        "sourceSelector": {
+          "jcamp": {
+            "index": 1
+          },
+          "files": [
+            "data/multiSpectra.zip/exam1d_1H.dx"
+          ]
+        }
+      },
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "exam1d_13C.dx",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "97396f96-c7d1-4f9b-b1ba-d475bbf37d5c",
+        "filters": [],
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        },
+        "sourceSelector": {
+          "jcamp": {
+            "index": 0
+          },
+          "files": [
+            "data/multiSpectra.zip/exam1d_13C.dx"
+          ]
+        }
+      }
+    ],
+    "molecules": []
+  },
+  "version": 4
+}

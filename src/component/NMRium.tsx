@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject } from 'nmr-load-save';
+import { readNMRiumObject, Source, NmriumState } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -25,12 +25,9 @@ import { toJSON } from '../data/SpectraManager';
 import { Datum1D } from '../data/types/data1d';
 import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
-import { NMRiumDataReturn } from '../types/NMRiumDataReturn';
-import { NMRiumGeneralPreferences } from '../types/NMRiumGeneralPreferences';
-import { NMRiumPanelPreferences } from '../types/NMRiumPanelPreferences';
-import { NMRiumToolBarPreferences } from '../types/NMRiumToolBarPreferences';
 
 import Viewer1D from './1d/Viewer1D';
+import FloatMoleculeStructures from './1d-2d/components/FloatMoleculeStructures';
 import Viewer2D from './2d/Viewer2D';
 import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
@@ -54,7 +51,6 @@ import {
   dispatchMiddleware,
   initState,
   State,
-  ViewState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
@@ -69,7 +65,10 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import { CustomWorkspaces, WorkspaceData } from './workspaces/Workspace';
+import {
+  CustomWorkspaces,
+  WorkspacePreferences as NMRiumPreferences,
+} from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -92,36 +91,30 @@ const containerStyles = css`
 
   button {
     cursor: pointer;
-    &:disabled {
-      cursor: default;
-    }
   }
 
+  button,
   button:active,
   button:hover,
   button:focus,
-  [type='button']:focus,
-  button {
+  [type='button']:focus {
     outline: none !important;
+  }
+
+  button:disabled {
+    cursor: default;
   }
 
   * {
     -webkit-user-drag: none;
     -moz-user-drag: none;
     -o-user-drag: none;
-    user-drag: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
     user-select: none;
   }
-
-  .SplitPane {
-    height: 100%;
-  }
 `;
-
-export type { NMRiumDataReturn } from '../types/NMRiumDataReturn';
+export { serializeNmriumState } from 'nmr-load-save';
+export type { NmriumState } from 'nmr-load-save';
+export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
   | 'exercise'
@@ -133,25 +126,23 @@ export type NMRiumWorkspace =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
+export type OnNMRiumChange = (
+  state: NmriumState,
+  source: 'data' | 'view' | 'settings',
+) => void;
+
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: NMRiumDataReturn) => void;
-  onViewChange?: (view: ViewState) => void;
+  onChange?: OnNMRiumChange;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
-  preferences?: WorkspaceData;
+  preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
   getSpinner?: () => ReactElement;
 }
-
-export type NMRiumPreferences = Partial<{
-  general: Partial<NMRiumGeneralPreferences>;
-  panels: Partial<NMRiumPanelPreferences>;
-  toolBarButtons: Partial<NMRiumToolBarPreferences>;
-}>;
 
 export type Molecules = Array<{ molfile: string }>;
 export type Spectra = Array<Datum1D | Datum2D>;
@@ -161,6 +152,7 @@ type DeepPartial<T> = {
 };
 
 export interface NMRiumData {
+  source?: Source;
   molecules?: Molecules;
   spectra: DeepPartial<Spectra>;
   correlations?: CorrelationData;
@@ -190,8 +182,7 @@ function InnerNMRium({
   customWorkspaces,
   preferences,
   getSpinner = defaultGetSpinner,
-  onDataChange,
-  onViewChange,
+  onChange,
   emptyText,
   innerRef,
 }: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
@@ -200,14 +191,10 @@ function InnerNMRium({
   const viewerRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
-  const handleDataChange = useRef(onDataChange);
+  const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
-    handleDataChange.current = onDataChange;
-  }, [onDataChange]);
-  const handleViewChange = useRef(onViewChange);
-  useEffect(() => {
-    handleViewChange.current = onViewChange;
-  }, [onViewChange]);
+    handleChange.current = onChange;
+  }, [onChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
@@ -226,17 +213,44 @@ function InnerNMRium({
     PreferencesState
   >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
-  const { displayerMode, data: spectraData, actionType, view } = state;
+  const {
+    displayerMode,
+    source,
+    data: spectraData,
+    molecules,
+    correlations,
+    actionType,
+    view,
+  } = state;
+
+  const stateRef = useRef<NmriumState>();
 
   useEffect(() => {
+    const { workspace, workspaces = {} } = preferencesState;
+    stateRef.current = toJSON(
+      { data: spectraData, molecules, correlations, source, view },
+      { current: workspaces[workspace.current] },
+      { serialize: false, exportTarget: 'onChange' },
+    );
+  }, [correlations, molecules, preferencesState, source, spectraData, view]);
+
+  useEffect(() => {
+    // trigger onChange callback if data object changed
     if (checkActionType(actionType)) {
-      handleDataChange.current?.(toJSON(state, {}, 'onDataChange'));
+      handleChange.current?.(stateRef.current as NmriumState, 'data');
     }
-  }, [actionType, state]);
+  }, [actionType, correlations, molecules, source, spectraData]);
 
   useEffect(() => {
-    handleViewChange.current?.(view);
+    // trigger onChange callback if view object changed
+
+    handleChange.current?.(stateRef.current as NmriumState, 'view');
   }, [view]);
+
+  useEffect(() => {
+    // trigger onChange callback if settings changed
+    handleChange.current?.(stateRef.current as NmriumState, 'settings');
+  }, [preferencesState]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);
@@ -360,13 +374,16 @@ function InnerNMRium({
                                   <div css={viewerContainerStyle}>
                                     <KeysListenerTracker />
                                     <div
+                                      id="nmrium-viewer"
                                       data-test-id="viewer"
                                       ref={viewerRef}
                                       style={{
                                         width: '100%',
                                         height: '100%',
+                                        position: 'relative',
                                       }}
                                     >
+                                      <FloatMoleculeStructures />
                                       {displayerMode ===
                                       DISPLAYER_MODE.DM_1D ? (
                                         <Viewer1D emptyText={emptyText} />
@@ -385,7 +402,7 @@ function InnerNMRium({
                                   style={{
                                     position: 'absolute',
                                     pointerEvents: 'none',
-                                    zIndex: 0,
+                                    zIndex: 2,
                                     left: 0,
                                     right: 0,
                                     top: 0,

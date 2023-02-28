@@ -1,0 +1,18 @@
+{
+  "version": 4,
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [{ 
+        "relativePath": "data/cytisine/2d/j-resolv.jdx"
+      }]
+    },
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": ["data/cytisine/2d/j-resolv.jdx"]
+        }
+      }
+    ]
+  }
+}

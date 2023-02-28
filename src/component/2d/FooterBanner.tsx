@@ -9,8 +9,8 @@ import { Data2DFid, Data2DFt } from '../../data/types/data2d/Data2D';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
-import { useActiveSpectrum } from '../reducer/Reducer';
 import { options } from '../toolbar/ToolTypes';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
@@ -20,9 +20,7 @@ const styles = css`
   display: flex;
   align-items: center;
   pointer-events: bounding-box;
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+  user-select: none;
   background-color: #f7f7f7;
   height: 30px;
   padding: 6px;
@@ -30,8 +28,9 @@ const styles = css`
   position: absolute;
   width: 100%;
   bottom: 0;
+
   div {
-    margin: 0px 10px;
+    margin: 0 10px;
     display: inline-block;
 
     .label {
@@ -39,10 +38,12 @@ const styles = css`
       color: #4d4d4d;
       font-weight: bold;
     }
+
     .value {
       font-weight: bold;
       font-size: 14px;
     }
+
     .unit {
       font-weight: bold;
       font-size: 10px;

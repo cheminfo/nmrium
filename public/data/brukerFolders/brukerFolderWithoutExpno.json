@@ -1,0 +1,115 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "name": "acqus",
+          "size": 9607,
+          "relativePath": "data/brukerFolders/brukerWithoutExpno/acqus",
+          "lastModified": 1675953739714
+        },
+        {
+          "name": "fid",
+          "size": 262144,
+          "relativePath": "data/brukerFolders/brukerWithoutExpno/fid",
+          "lastModified": 1675953739716
+        },
+        {
+          "name": "1i",
+          "size": 131072,
+          "relativePath": "data/brukerFolders/brukerWithoutExpno/pdata/1/1i",
+          "lastModified": 1675953739718
+        },
+        {
+          "name": "1r",
+          "size": 131072,
+          "relativePath": "data/brukerFolders/brukerWithoutExpno/pdata/1/1r",
+          "lastModified": 1675953739720
+        },
+        {
+          "name": "proc",
+          "size": 1947,
+          "relativePath": "data/brukerFolders/brukerWithoutExpno/pdata/1/proc",
+          "lastModified": 1675953739720
+        },
+        {
+          "name": "procs",
+          "size": 1906,
+          "relativePath": "data/brukerFolders/brukerWithoutExpno/pdata/1/procs",
+          "lastModified": 1675953739720
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "withoutExpno/0",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "d64a545d-b974-44e3-bcc9-cfa52c2fb18a",
+        "filters": [],
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        },
+        "sourceSelector": {
+          "files": [
+            "data/brukerFolders/brukerWithoutExpno/acqus",
+            "data/brukerFolders/brukerWithoutExpno/fid",
+            "data/brukerFolders/brukerWithoutExpno/pdata/1/procs"
+          ]
+        }
+      },
+      {
+        "data": {},
+        "info": {},
+        "meta": {},
+        "display": {
+          "name": "withoutExpno/0",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "id": "4a545db9-7444-437c-89cf-a52c2fb18ae4",
+        "filters": [],
+        "sourceSelector": {
+          "files": [
+            "data/brukerFolders/brukerWithoutExpno/pdata/1/1i",
+            "data/brukerFolders/brukerWithoutExpno/pdata/1/1r",
+            "data/brukerFolders/brukerWithoutExpno/acqus",
+            "data/brukerFolders/brukerWithoutExpno/pdata/1/proc",
+            "data/brukerFolders/brukerWithoutExpno/pdata/1/procs"
+          ]
+        },
+        "peaks": {
+          "values": [],
+          "options": {}
+        },
+        "ranges": {
+          "values": []
+        },
+        "integrals": {
+          "values": [],
+          "options": {}
+        }
+      }
+    ],
+    "molecules": []
+  },
+  "version": 4
+}

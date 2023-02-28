@@ -8,13 +8,14 @@ import SaveButton from '../../elements/SaveButton';
 const styles = css`
   display: flex;
   flex-direction: row-reverse;
-  border-bottom: 0.55px solid rgb(240, 240, 240);
+  border-bottom: 0.55px solid rgb(240 240 240);
 
   button {
     background-color: transparent;
     border: none;
     padding: 5px;
   }
+
   button:disabled {
     opacity: 0.6;
   }

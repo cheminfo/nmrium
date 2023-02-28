@@ -9,6 +9,7 @@ const styles = css`
   background-color: transparent;
   border: none;
   height: 100%;
+
   svg {
     fill: green;
     font-size: 16px;

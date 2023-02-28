@@ -9,7 +9,7 @@
 }
 
 .rc-menu-item:hover {
-  color: #ffffff;
+  color: #fff;
   background-color: #37adff;
   font-weight: bold;
   transform: translate(2px);
@@ -18,7 +18,6 @@
 
 .rc-menu li {
   user-select: none;
-  -webkit-user-select: none;
 }
 
 .rc-menu-submenu.rc-menu-submenu-active,
@@ -30,6 +29,6 @@
 
 .rc-menu-submenu > .rc-menu {
   background-color: #28a4fb;
-  color: #000000;
+  color: #000;
   font-size: 12px;
 }

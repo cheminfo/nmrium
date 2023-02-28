@@ -1,3 +1,4 @@
+import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'digitalFilter';
@@ -8,12 +9,24 @@ export const name = 'Digital Filter';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D: Datum1D, options: any = {}) {
+export interface DigitalFilterOptions {
+  digitalFilterValue?: number;
+}
+
+export function apply(datum1D: Datum1D, options: DigitalFilterOptions = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('Digital Filter is not applicable on this data');
   }
+  let { digitalFilterValue } = options;
 
-  let { digitalFilterValue = 0 } = options;
+  if (!digitalFilterValue) {
+    digitalFilterValue = datum1D.info.digitalFilter || 0;
+    const filter = datum1D.filters.find((filter) => filter.name === id);
+    if (filter) {
+      filter.value = { digitalFilterValue };
+    }
+  }
+
   let re = new Float64Array(datum1D.data.re);
   let im = new Float64Array(datum1D.data.im);
 
@@ -33,8 +46,12 @@ export function apply(datum1D: Datum1D, options: any = {}) {
   datum1D.data.im = newIm;
 }
 
-export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
+export function isApplicable(
+  datum1D: Datum1D,
+): datum1D is Datum1D & { data: Required<Data1D> } {
+  if (datum1D.info.isComplex && datum1D.info.isFid) {
+    return true;
+  }
   return false;
 }
 

@@ -17,9 +17,11 @@ import SelectMolecule from './SelectMolecule';
 const styles = css`
   width: 450px;
   height: 400px;
+
   .header {
     display: flex;
     padding: 10px;
+
     span {
       font-size: 14px;
       flex: 1;
@@ -38,7 +40,8 @@ const styles = css`
       height: 36px;
       margin: 0 auto;
     }
-    .input Input {
+
+    .input input {
       padding: 5px;
       text-align: center;
     }
@@ -50,12 +53,12 @@ const styles = css`
       color: white;
       background-color: gray !important;
     }
+
     button:hover {
       border: 1px solid gray;
       color: gray;
       background-color: white !important;
-    }import { Formik } from 'formik';
-
+    }
   }
 `;
 

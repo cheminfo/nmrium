@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/19f/19F_baseline_Re.dx"
+        "jcampURL": "data/19f/19F_baseline_Re.dx"
       },
       "display": {
         "name": "19F",

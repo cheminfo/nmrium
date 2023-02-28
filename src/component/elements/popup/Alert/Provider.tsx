@@ -132,30 +132,41 @@ function Provider({
 
   const error = useCallback(
     (message = '', options: any = {}) => {
-      options.type = types.ERROR;
-      options = { backgroundColor: '#cf3c4f', color: 'white', ...options };
-      return show(message, options);
+      const alertOptions = {
+        type: types.ERROR,
+        backgroundColor: '#cf3c4f',
+        color: 'white',
+        timeout: 0,
+        ...options,
+      };
+      return show(message, alertOptions);
     },
     [show],
   );
 
   const info = useCallback(
     (message = '', options: any = {}) => {
-      options.type = types.INFO;
-      options.color = '#28ba62';
-      return show(message, options);
+      const alertOptions = {
+        type: types.INFO,
+        backgroundColor: '#28ba62',
+        ...options,
+      };
+      return show(message, alertOptions);
     },
     [show],
   );
 
   const showLoading = useCallback(
     (message = 'Process in progress', options: any = {}) => {
-      options.type = types.PROGRESS_INDICATOR;
-      options.timeout = 0;
-      options.backgroundColor = '#232323';
+      const alertOptions = {
+        type: types.PROGRESS_INDICATOR,
+        backgroundColor: '#232323',
+        timeout: 0,
+        ...options,
+      };
 
       return new Promise((resolve) => {
-        const alert = show(message, options);
+        const alert = show(message, alertOptions);
         setTimeout(() => {
           resolve(() => remove(alert));
         }, 500);

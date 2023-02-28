@@ -73,7 +73,6 @@ const panelStyle = css`
       align-items: center;
       justify-content: flex-end;
       margin-right: 2px;
-
       white-space: nowrap;
 
       label {

@@ -54,7 +54,7 @@ export function SignalFormInfo() {
       {errors.signals &&
       (errors.signals.noSignals || errors.signals.noCouplings) ? (
         <div>
-          <p className="errorText">
+          <p className="error-text">
             {errors.signals.noSignals || errors.signals.noCouplings[0].message}
           </p>
           {errors.signals.noSignals && (

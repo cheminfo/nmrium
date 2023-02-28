@@ -7,9 +7,8 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../reducer/Reducer';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { options } from '../../toolbar/ToolTypes';
-import getVerticalShift from '../utilities/getVerticalShift';
 
 const styles = {
   radius: 10,
@@ -33,9 +32,8 @@ function PeakPointer() {
     data,
     mode,
     toolOptions: { selectedTool },
-    verticalAlign,
   } = useChartData();
-  const { scaleX, scaleY } = useScaleChecked();
+  const { scaleX, scaleY, shiftY } = useScaleChecked();
 
   const activeSpectrum = useActiveSpectrum();
   let position = useContext(MouseContext);
@@ -43,12 +41,6 @@ function PeakPointer() {
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 
   useEffect(() => {
-    const vShift = activeSpectrum?.id
-      ? getVerticalShift(verticalAlign, {
-          index: activeSpectrum?.index || 1,
-        })
-      : 0;
-
     const getClosePeak = (xShift, mouseCoordinates) => {
       if (
         activeSpectrum &&
@@ -79,7 +71,9 @@ function PeakPointer() {
           const xValue = datum.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
-            y: scaleY(activeSpectrum.id)(yValue) - vShift,
+            y:
+              scaleY(activeSpectrum.id)(yValue) -
+              activeSpectrum?.index * shiftY,
             xIndex: minIndex + xIndex,
           };
         }
@@ -97,7 +91,7 @@ function PeakPointer() {
     scaleX,
     scaleY,
     selectedTool,
-    verticalAlign,
+    shiftY,
   ]);
 
   if (

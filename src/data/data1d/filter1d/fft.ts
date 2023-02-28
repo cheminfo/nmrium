@@ -1,4 +1,5 @@
 import { reimFFT, reimPhaseCorrection, xMean } from 'ml-spectra-processing';
+import { Data1D } from 'nmr-load-save/lib/types/Data1D';
 
 import { Datum1D } from '../../types/data1d/Datum1D';
 
@@ -17,35 +18,46 @@ export function apply(datum1D: Datum1D) {
     throw new Error('fft not applicable on this data');
   }
 
+  checkSameLength(datum1D);
+
   let digitalFilterApplied = datum1D.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
   );
 
-  const data =
-    datum1D.meta.AQ_mod === 1
-      ? removeDCOffset(datum1D, digitalFilterApplied)
-      : { ...datum1D.data };
+  const {
+    meta: { AQ_mod: aqMod },
+  } = datum1D;
 
-  if (data.x.length !== data.re.length || data.x.length !== data.im.length) {
-    throw new Error('The length of data should be equal');
-  } else if (!isPowerOfTwo(datum1D.data.x.length)) {
+  if (aqMod === 1) {
+    removeDCOffset(datum1D, digitalFilterApplied);
+  }
+
+  if (!isPowerOfTwo(datum1D.data.x.length)) {
     padDataToNextPowerOfTwo(datum1D, digitalFilterApplied);
   }
 
+  const { data, info } = datum1D;
   Object.assign(data, reimFFT(data, { applyZeroShift: true }));
 
   if (digitalFilterApplied) {
-    let { digitalFilter = 0 } = datum1D.info;
+    let { digitalFilter = 0 } = info;
     let ph1 = (digitalFilter - Math.floor(digitalFilter)) * Math.PI * 2;
     Object.assign(data, reimPhaseCorrection(data, 0, ph1));
   }
 
-  Object.assign(datum1D.data, data);
-  datum1D.data.x = generateXAxis(datum1D);
-  datum1D.info = { ...datum1D.info, isFid: false, isFt: true };
+  data.x = generateXAxis(datum1D);
+  if (info?.reverse?.[0]) {
+    data.re.reverse();
+    data.im.reverse();
+  }
+
+  // Object.assign(datum1D.data, data);
+  datum1D.info = { ...info, isFid: false, isFt: true };
 }
 
-export function isApplicable(datum1D: Datum1D) {
+export function isApplicable(
+  datum1D: Datum1D,
+): datum1D is Datum1D & { data: Required<Data1D> } {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }
@@ -81,7 +93,7 @@ function isPowerOfTwo(n) {
 
 function removeDCOffset(datum1D, digitalFilterApplied) {
   let { digitalFilter = 0 } = digitalFilterApplied ? datum1D.info : {};
-  const data = { ...datum1D.data };
+  const data = datum1D.data;
   const nbPoints = data.re.length;
   const newRe = new Float64Array(data.re);
   const newIm = new Float64Array(data.im);
@@ -99,5 +111,14 @@ function removeDCOffset(datum1D, digitalFilterApplied) {
     newRe[i] -= averageRe;
     newIm[i] -= averageIm;
   }
-  return { x: data.x, re: newRe, im: newIm };
+
+  Object.assign(datum1D.data, { re: newRe, im: newIm });
+  return datum1D;
+}
+
+function checkSameLength(datum1D: Datum1D) {
+  const { data } = datum1D;
+  if (data.x.length !== data.re.length || data.x.length !== data.im?.length) {
+    throw new Error('The length of data should be equal');
+  }
 }

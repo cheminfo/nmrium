@@ -5,7 +5,7 @@
        "source": {
          "original": [],
          "jcamp": null,
-         "jcampURL": "./data/acd/assignment.jdx"
+         "jcampURL": "data/acd/assignment.jdx"
        },
        "info": {
          "nucleus": "1H",

@@ -42,8 +42,8 @@ import {
 const toolbarStyle = css`
   display: flex;
   flex-direction: row;
-  border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 0px 5px;
+  border-bottom: 0.55px solid rgb(240 240 240);
+  padding: 0 5px;
 
   button svg {
     fill: #4e4e4e;
@@ -60,7 +60,7 @@ const toolbarStyle = css`
     text-align: right;
     width: 100%;
     line-height: 22px;
-    padding: 0px 10px;
+    padding: 0 10px;
   }
 `;
 
@@ -208,6 +208,8 @@ export default function MoleculePanelHeader({
     });
   }
 
+  const hasMolecules = molecules && molecules.length > 0;
+
   return (
     <div css={toolbarStyle}>
       {!actionsOptions.hideExport && (
@@ -244,7 +246,7 @@ export default function MoleculePanelHeader({
           </button>
         </ToolTip>
       )}
-      {!actionsOptions.hidePredict && molecules && molecules.length > 0 && (
+      {!actionsOptions.hidePredict && hasMolecules && (
         <ButtonToolTip
           popupTitle="Predict Spectra"
           popupPlacement="left"
@@ -259,6 +261,7 @@ export default function MoleculePanelHeader({
         popupTitle="Float Molecule"
         popupPlacement="left"
         onClick={floatMoleculeHandler}
+        disabled={!hasMolecules}
       >
         <IoOpenOutline />
       </ActiveButton>
@@ -268,6 +271,7 @@ export default function MoleculePanelHeader({
         popupTitle="Show atom number"
         popupPlacement="left"
         onClick={showAtomNumbersHandler}
+        disabled={!hasMolecules}
       >
         <p style={atomLabelStyle}>#</p>
       </ActiveButton>

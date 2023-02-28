@@ -6,7 +6,7 @@ test('automatic assignment panel', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('open 1H ethylvinylether spectrum', async () => {
     await nmrium.page.click('li >> text=General');
-    await nmrium.page.click('li >> text=1H ethylvinylether >> nth=0');
+    await nmrium.page.click('li >> text=1H ethylvinylether');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
   });
   await test.step('activate automatic assignment panel', async () => {
@@ -16,7 +16,7 @@ test('automatic assignment panel', async ({ page }) => {
     await nmrium.page.click(
       '_react=Draggable >> _react=ReactTable >> tr[role="row"] >> nth=13 >> td[role="cell"] >> nth=2 >> input',
     );
-    await nmrium.page.click('_react=Draggable >> text=Save');
+    await nmrium.page.click('_react=Draggable >> text=Apply and Save');
 
     // enter a name for the workspace
     await nmrium.page.locator('input[name="workspaceName"]').fill('test');
@@ -33,30 +33,26 @@ test('automatic assignment panel', async ({ page }) => {
       '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',
     );
 
-    await nmrium.page
-      .locator(
-        'text=Automatic Ranges/Zones detection for all spectra in progress',
-      )
-      .waitFor({ state: 'hidden' });
-
     // Wait for auto range to be applied.
-    await nmrium.page
-      .locator('_react=Range >> text=3.21')
-      .waitFor({ state: 'visible' });
+    await expect(nmrium.page.locator('_react=Range')).toHaveCount(5);
 
     await nmrium.page.click(
-      '_react=AutomaticAssignment >> _react=ButtonToolTip >> nth=0',
+      '_react=AutomaticAssignment >> _react=Button[toolTip="automatic assignment"]',
     );
 
     // Wait for auto assignments process completed.
-    await nmrium.page
-      .locator('text=Auto Assignments')
-      .waitFor({ state: 'hidden' });
+    const progressLocator = nmrium.page.locator('text=Auto Assignments');
+    await progressLocator.waitFor({
+      state: 'attached',
+    });
+
+    await progressLocator.waitFor({
+      state: 'hidden',
+      timeout: 15000,
+    });
 
     await expect(
-      nmrium.page.locator(
-        '_react=AutomaticAssignmentTable >> _react=ReactTableRow',
-      ),
+      nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
     ).toHaveCount(2);
   });
 });

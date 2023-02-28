@@ -1,4 +1,4 @@
-import { Source } from 'nmr-load-save';
+import { NmrLoaderSelectors } from 'nmr-load-save';
 
 import { Filter } from '../../FiltersManager';
 
@@ -9,9 +9,10 @@ import { Integrals } from './Integrals';
 import { Peaks } from './Peaks';
 import { Ranges } from './Ranges';
 
+//TODO refactor all interfaces and use the ones from nmr-load-save
 export interface Datum1D {
   id: string;
-  source: Source;
+  selector?: NmrLoaderSelectors;
   display: Display1D;
   info: Info1D;
   originalInfo?: Info1D;

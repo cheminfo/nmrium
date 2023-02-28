@@ -10,7 +10,7 @@ export const process1D: InnerWorkspace = {
       spectraPanel: { display: true, open: true },
       informationPanel: { display: true },
       peaksPanel: { display: true },
-      filtersPanel: { display: true },
+      processingsPanel: { display: true },
       multipleSpectraAnalysisPanel: { display: true },
       matrixGenerationPanel: { display: true },
     },

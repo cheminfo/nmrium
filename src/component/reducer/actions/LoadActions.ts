@@ -1,19 +1,31 @@
 import { Draft } from 'immer';
+import lodashMerge from 'lodash/merge';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { Source } from 'nmr-load-save';
+import { ParseResult } from 'papaparse';
 
 import { addJcamps } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
 import { Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
-import { getInitialState, State, ViewState } from '../Reducer';
+import nucleusToString from '../../utility/nucleusToString';
+import { OnLoadProcessing } from '../../workspaces/Workspace';
+import {
+  getDefaultViewState,
+  getInitialState,
+  State,
+  ViewState,
+} from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { importSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
 
 function setIsLoading(draft: Draft<State>, isLoading: boolean) {
@@ -40,15 +52,19 @@ function setCorrelation(draft: Draft<State>, correlations) {
   }
 }
 
-function initSpectra(inputSpectra: (Datum1D | Datum2D)[], usedColors) {
+function initSpectra(
+  inputSpectra: (Datum1D | Datum2D)[],
+  options: { usedColors: UsedColors; onLoadProcessing: OnLoadProcessing },
+) {
   const spectra: any = [];
-
+  const { usedColors, onLoadProcessing } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
-      spectra.push(initiateDatum1D(spectrum, usedColors));
+      const filters = onLoadProcessing?.[nucleusToString(info.nucleus)] || [];
+      spectra.push(initiateDatum1D(spectrum, { usedColors, filters }));
     } else if (info.dimension === 2) {
-      spectra.push(initiateDatum2D({ ...spectrum }, usedColors));
+      spectra.push(initiateDatum2D({ ...spectrum }, { usedColors }));
     }
   }
   return spectra;
@@ -58,30 +74,56 @@ function setData(
   draft: Draft<State>,
   input: {
     view?: ViewState;
-    data: {
+    data?: {
+      source?: Source;
       spectra: Spectra;
       molecules: StateMoleculeExtended[];
       correlations: CorrelationData;
     };
     usedColors: UsedColors;
+    onLoadProcessing?: OnLoadProcessing;
+    parseMetaFileResult: ParseResult<any> | null;
   },
 ) {
   const {
-    data: { spectra, molecules, correlations },
+    data,
     usedColors,
     view,
+    onLoadProcessing = {},
+    parseMetaFileResult = null,
   } = input || {
     data: { spectra: [], molecules: [], correlations: {} },
     multipleAnalysis: {},
   };
+
+  const {
+    source,
+    spectra = [],
+    molecules = [],
+    correlations = {},
+  } = data || {};
+
   if (view) {
-    draft.view = view;
+    const defaultViewState = getDefaultViewState();
+    draft.view = lodashMerge(defaultViewState, view);
   }
 
   setColors(draft, usedColors);
+  if (source) draft.source = source;
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
-  draft.data = draft.data.concat(initSpectra(spectra, usedColors));
+  draft.data = draft.data.concat(
+    initSpectra(spectra, { usedColors, onLoadProcessing }),
+  );
   setCorrelation(draft, correlations);
+
+  if (parseMetaFileResult) {
+    const { matches } = linkMetaWithSpectra({
+      autolink: true,
+      spectra: draft.data,
+      parseMetaFileResult,
+    });
+    importSpectraMetaInfo(draft, { payload: { spectraMeta: matches } });
+  }
 }
 
 function convertHybridizationStringValuesInCorrelations(
@@ -114,50 +156,74 @@ function setPreferences(draft: Draft<State>, data) {
 
   if (verticalAlign) {
     changeSpectrumVerticalAlignment(draft, {
-      align: verticalAlign,
+      verticalAlign,
     });
   } else {
-    changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+    changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
   }
 }
 
-function initData(draft: Draft<State>, action) {
-  const state = getInitialState();
-  const { data } = action.payload;
-  setData(state, action.payload);
-  setActiveTab(state, { tab: data?.preferences?.activeTab || '' });
-  state.width = draft.width;
-  state.height = draft.height;
-  setPreferences(state, data?.preferences);
-  state.isLoading = false;
-  state.actionType = action.actionType;
-  return state;
+function initData(draft: Draft<State>, action, forceInitialize = false) {
+  const { data, view } = action.payload;
+  if (data?.spectra?.length || forceInitialize) {
+    const state = getInitialState();
+    setData(state, action.payload);
+    setActiveTab(state, { tab: data?.view?.activeTab || '' });
+    state.width = draft.width;
+    state.height = draft.height;
+    setPreferences(state, data?.view);
+    state.isLoading = false;
+    state.actionType = action.type;
+    return state;
+  } else {
+    if (view) {
+      const defaultViewState = getDefaultViewState();
+      draft.view = lodashMerge(defaultViewState, view);
+    }
+    draft.actionType = action.type;
+    draft.isLoading = false;
+  }
 }
 
 function initiate(draft: Draft<State>, action) {
-  return initData(draft, action);
+  return initData(draft, action, true);
 }
 
 function loadJcampFile(draft: Draft<State>, actions) {
   const { files } = actions;
-  const spectra = addJcamps(files, draft.usedColors);
-  draft.data = draft.data.concat(initSpectra(spectra, draft.usedColors));
+  const { data, usedColors } = draft;
+  const spectra = addJcamps(files, usedColors);
+  draft.data = data.concat(
+    initSpectra(spectra, { usedColors, onLoadProcessing: {} }),
+  );
   setActiveTab(draft);
-  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+  changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
 
   draft.isLoading = false;
 }
 
 function loadDropFiles(draft: Draft<State>, action) {
-  const { append } = action.payload;
-  if (append) {
-    setData(draft, action.payload);
-    setActiveTab(draft);
-    changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
-    draft.actionType = action.actionType;
-    draft.isLoading = false;
-  } else {
+  const { payload, type } = action;
+
+  const {
+    data: { spectra = [] },
+    containsNmrium,
+  } = payload;
+
+  if (containsNmrium) {
     return initData(draft, action);
+  } else {
+    setData(draft, payload);
+    setActiveTab(draft);
+    changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
+
+    // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
+    if (spectra?.length > 0) {
+      draft.source = undefined;
+    }
+
+    draft.actionType = type;
+    draft.isLoading = false;
   }
 }
 

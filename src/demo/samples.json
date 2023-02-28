@@ -26,6 +26,10 @@
         "title": "JCAMP-DX with assignment"
       },
       {
+        "file": "./data/cytisine/2d/jresolv.json",
+        "title": "jResolv cytisine"
+      },
+      {
         "file": "./data/cytisine/2d/hsqc.json",
         "title": "HSQC cytisine"
       },
@@ -48,6 +52,14 @@
       {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
+      },
+      {
+        "file": "./data/nmriumFromSource.json",
+        "title": "Zip file as source with multiple spectra"
+      },
+      {
+        "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
+        "title": "Bruker Directory without expno level"
       },
       {
         "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
@@ -207,15 +219,6 @@
       {
         "title": "Prediction",
         "view": "Prediction"
-      }
-    ]
-  },
-  {
-    "groupName": "Test",
-    "children": [
-      {
-        "title": "empty",
-        "view": "Test"
       },
       {
         "title": "Metabo workspace",
@@ -225,6 +228,15 @@
         "title": "Metabo coffee workspace",
         "view": "CustomWorkspace",
         "file": "./data/coffee/Coffee.json"
+      }
+    ]
+  },
+  {
+    "groupName": "Test",
+    "children": [
+      {
+        "title": "empty",
+        "view": "Test"
       },
       {
         "file": "./data/cytisine/1H.json",

@@ -27,6 +27,7 @@ const styles = css`
     flex-direction: column;
     align-items: center;
   }
+
   ul {
     list-style-type: disc;
     margin-left: 20px;
@@ -35,10 +36,12 @@ const styles = css`
   li {
     user-select: text;
   }
+
   span.title {
     font-weight: bold;
     color: #ea580c;
   }
+
   span.content {
     color: #2b143e;
     font-size: 14px;
@@ -62,7 +65,30 @@ const styles = css`
     border-bottom: 1px solid gray;
     width: 15px;
     height: 1px;
-    margin: 10px 0px;
+    margin: 10px 0;
+  }
+
+  .header {
+    height: 34px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    padding: 5px;
+
+    span {
+      color: #464646;
+      font-size: 15px;
+      flex: 1;
+      user-select: none;
+    }
+
+    button {
+      background-color: transparent;
+      border: none;
+
+      svg {
+        height: 16px;
+      }
+    }
   }
   width: 500px;
 `;

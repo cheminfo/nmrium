@@ -39,6 +39,7 @@ const style = css`
     padding: 0;
     background-color: transparent;
   }
+
   .toggle {
     width: 22px;
     height: 22px;

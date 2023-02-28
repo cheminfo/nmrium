@@ -10,6 +10,7 @@ import Label from '../../../elements/Label';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import FormikInput from '../../../elements/formik/FormikInput';
+import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
@@ -24,7 +25,10 @@ const styles: Record<'input' | 'column', CSSProperties> = {
 function InfoBlockTabContent() {
   const { values, setFieldValue } = useFormikContext();
   const { data } = useChartData();
-  const datalist = useMemo(() => getSpectraObjectPaths(data), [data]);
+  const { datalist, paths } = useMemo(
+    () => getSpectraObjectPaths(data),
+    [data],
+  );
 
   const fields = (values as any)?.infoBlock.fields;
 
@@ -33,7 +37,7 @@ function InfoBlockTabContent() {
       let columns: any[] = [];
       const emptyField = {
         label: '',
-        jpath: '',
+        jpath: null,
         visible: true,
       };
       if (data && Array.isArray(data)) {
@@ -81,6 +85,8 @@ function InfoBlockTabContent() {
             <FormikInput
               name={`infoBlock.fields.${row.index}.jpath`}
               style={{ input: styles.input }}
+              mapOnChangeValue={(key) => paths?.[key] || null}
+              mapValue={(paths) => convertPathArrayToString(paths)}
               datalist={datalist}
             />
           );
@@ -123,7 +129,7 @@ function InfoBlockTabContent() {
         },
       },
     ],
-    [addHandler, datalist, deleteHandler],
+    [addHandler, datalist, deleteHandler, paths],
   );
 
   return (

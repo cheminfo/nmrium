@@ -5,7 +5,6 @@ import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { SVGGroup } from '../../elements/SVGGroup';
 import useSpectrum from '../../hooks/useSpectrum';
-import { jpathToArray } from '../../utility/jpathToArray';
 
 const styles: Record<'value' | 'label' | 'colorIndicator', CSSProperties> = {
   label: {
@@ -42,7 +41,7 @@ function SpectrumInfoBlock() {
       {fields
         .filter((field) => field.visible)
         .map((field, index) => {
-          const value = lodashGet(spectrum, jpathToArray(field.jpath), '');
+          const value = lodashGet(spectrum, field.jpath, '');
           return (
             <SVGGroup
               transform={`translate(0,${20 * (index + 1)})`}

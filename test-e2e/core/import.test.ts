@@ -65,10 +65,10 @@ test('should load and migrate .nmrium data from version 2 to version 3', async (
   // If the file was loaded successfully, there should be a 13C tab.
   await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
 
-  await nmrium.clickPanel('Filters');
+  await nmrium.clickPanel('Processings');
 
   await expect(
-    nmrium.page.locator('_react=FilterPanel >> text=Apodization'),
+    nmrium.page.locator('_react=FilterTable >> text=Apodization'),
   ).toBeVisible();
 });
 test('should load .nmrium data from version 3', async ({ page }) => {
@@ -80,6 +80,9 @@ test('should load .nmrium data from version 3', async ({ page }) => {
 
   // If the file was loaded successfully, there should be a 13C tab.
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
+  await nmrium.page
+    .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=1')
+    .click();
 
   await test.step('check Peaks', async () => {
     await nmrium.clickPanel('Peaks');
@@ -166,7 +169,6 @@ test('should load multiple files using drag and drop', async ({ page }) => {
   await expect(nmrium.page.locator('_react=Tab[tabid = "13C"]')).toBeVisible();
 });
 test('should load JCAMP-DX file', async ({ page }) => {
-
   const nmrium = await NmriumPage.create(page);
   await nmrium.dropFile('ethylbenzene-1h.jdx');
   // If the file was loaded successfully, there should be many tabs.

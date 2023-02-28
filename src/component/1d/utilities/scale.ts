@@ -12,7 +12,7 @@ function getXScale(state, spectrumId: number | null | string = null) {
 function getYScale(state, spectrumId: number | null | string = null) {
   const { height, margin, verticalAlign, yDomain, yDomains } = state;
   const _height =
-    verticalAlign.align === 'center'
+    verticalAlign === 'center'
       ? (height - 40) / 2
       : height - margin.bottom - 40;
   let domainY: [number, number] | [] = [];
@@ -27,7 +27,7 @@ function getYScale(state, spectrumId: number | null | string = null) {
 function getIntegralYScale(state) {
   const { height, margin, verticalAlign, integralsYDomains, activeSpectrum } =
     state;
-  const _height = verticalAlign.align === 'center' ? height / 2 : height;
+  const _height = verticalAlign === 'center' ? height / 2 : height;
   return scaleLinear(
     activeSpectrum?.id &&
       integralsYDomains &&

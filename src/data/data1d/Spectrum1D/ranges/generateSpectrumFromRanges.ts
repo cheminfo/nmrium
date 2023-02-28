@@ -38,7 +38,7 @@ export function generateSpectrumFromRanges(
         isFt: true,
       },
     },
-    usedColors,
+    { usedColors },
   );
   datum.ranges.values = mapRanges(ranges, datum);
 

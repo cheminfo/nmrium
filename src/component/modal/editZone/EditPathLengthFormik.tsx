@@ -15,7 +15,6 @@ const editPathLengthsStyles = css`
     width: 100%;
     margin-top: 5px;
     text-align: center;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,7 +22,7 @@ const editPathLengthsStyles = css`
 
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+      appearance: none;
     }
   }
 
@@ -37,7 +36,6 @@ const editPathLengthsStyles = css`
     margin-top: 15px;
     display: block;
     width: 60px;
-
     color: white;
     background-color: gray;
   }

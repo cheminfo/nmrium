@@ -22,6 +22,8 @@ jobs:
         run: npm run prettier
       - name: Check types
         run: npm run check-types
+      - name: Run Stylelint
+        run: npm run stylelint
   test:
     runs-on: ubuntu-latest
     steps:

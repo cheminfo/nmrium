@@ -10,18 +10,19 @@ import { DELETE_BASE_LINE_ZONE } from '../../reducer/types/Types';
 const styles = css`
   pointer-events: bounding-box;
   user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+  user-select: none;
 
   .zone-area {
     height: 100%;
     fill: #b8b8b857;
     cursor: pointer;
   }
+
   .delete-button {
     display: none;
     cursor: pointer;
   }
+
   :hover .delete-button {
     display: block;
   }

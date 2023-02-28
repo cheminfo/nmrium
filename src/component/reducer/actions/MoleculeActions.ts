@@ -2,9 +2,9 @@ import { Draft } from 'immer';
 
 import { generateSpectra } from '../../../data/PredictionManager';
 import { changeSpectraRelativeSum } from '../../../data/data1d/Spectrum1D/SumManager';
+import { DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
-import getColor from '../../../data/utilities/getColor';
-import { DRAGGABLE_STRUCTURE_INITIAL_POSITION } from '../../1d-2d/components/FloatMoleculeStructures/DraggableStructure';
+import { generateColor } from '../../../data/utilities/generateColor';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -83,14 +83,16 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   if (!data) {
     draft.isLoading = false;
   } else {
-    const color = getColor(false, draft.usedColors['1d']);
+    const color = generateColor(false, draft.usedColors['1d']);
     for (const spectrum of generateSpectra(data, options, color)) {
       draft.data.push(spectrum);
       draft.view.spectra.activeSpectra[nucleusToString(spectrum.info.nucleus)] =
-        {
-          id: spectrum.id,
-          index: draft.data.length - 1,
-        };
+        [
+          {
+            id: spectrum.id,
+            index: draft.data.length - 1,
+          },
+        ];
     }
     draft.usedColors['1d'].push(color);
   }
@@ -105,7 +107,7 @@ function initMoleculeViewProperties(id: string, draft: Draft<State>) {
     draft.view.molecules[id] = {
       floating: {
         visible: false,
-        position: DRAGGABLE_STRUCTURE_INITIAL_POSITION,
+        bounding: DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
       },
       showAtomNumber: false,
     };
@@ -135,10 +137,10 @@ function toggleMoleculeAtomsNumbers(draft: Draft<State>, action) {
   }
 }
 function changeFloatMoleculePosition(draft: Draft<State>, action) {
-  const { id, position } = action.payload;
+  const { id, bounding } = action.payload;
   const molecule = getMoleculeViewObject(id, draft);
   if (molecule) {
-    molecule.floating.position = position;
+    molecule.floating.bounding = { ...molecule.floating.bounding, ...bounding };
   } else {
     throw new Error(`Molecule ${id} does not exist`);
   }

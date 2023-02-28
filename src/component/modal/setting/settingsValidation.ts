@@ -1,5 +1,11 @@
-import * as Yup from 'yup';
-import { ObjectShape } from 'yup/lib/object';
+import {
+  array,
+  lazy,
+  object,
+  string,
+  ValidationError,
+  type ObjectShape,
+} from 'yup';
 
 import { Workspace } from '../../workspaces/Workspace';
 
@@ -7,18 +13,18 @@ const formattingElementValidation = (obj: Workspace): ObjectShape => {
   return Object.fromEntries(
     Object.keys(obj.formatting.nuclei).map((key) => [
       key,
-      Yup.object().shape({
-        name: Yup.string().trim().required('Nucleus is a required field'),
-        ppm: Yup.string().trim().required('PPM format is a required field'),
-        hz: Yup.string().trim().required('Hz format  is a required field'),
+      object().shape({
+        name: string().trim().required('Nucleus is a required field'),
+        ppm: string().trim().required('PPM format is a required field'),
+        hz: string().trim().required('Hz format  is a required field'),
       }),
     ]),
   );
 };
 
 const formattingValidation = (obj: Workspace) =>
-  Yup.object().shape<any>({
-    nuclei: Yup.object()
+  object().shape<any>({
+    nuclei: object()
       .shape(formattingElementValidation(obj))
       .test(
         'Unique',
@@ -40,13 +46,13 @@ const formattingValidation = (obj: Workspace) =>
             }
           }
 
-          const errors: Yup.ValidationError[] = [];
+          const errors: ValidationError[] = [];
           for (const key in nucleusFrequencies) {
             const { value, fields } = nucleusFrequencies[key];
             if (value > 1) {
               for (let field of fields) {
                 errors.push(
-                  new Yup.ValidationError(
+                  new ValidationError(
                     `${key} nucleus must te be unique`,
                     nuclei[key].name,
                     `${this.path}.${field}.name`,
@@ -56,31 +62,31 @@ const formattingValidation = (obj: Workspace) =>
             }
           }
 
-          return new Yup.ValidationError(errors);
+          return new ValidationError(errors);
         },
       ),
   });
 
-const databasesValidation = Yup.object().shape({
-  data: Yup.array().of(
-    Yup.object().shape({
-      label: Yup.string().trim().required('Label is a required field'),
-      url: Yup.string().trim().url().required('URL is a required field'),
+const databasesValidation = object().shape({
+  data: array().of(
+    object().shape({
+      label: string().trim().required('Label is a required field'),
+      url: string().trim().url().required('URL is a required field'),
     }),
   ),
 });
 
-const infoBlockValidation = Yup.object({
-  fields: Yup.array().of(
-    Yup.object({
-      label: Yup.string().required(),
-      jpath: Yup.string().required(),
+const infoBlockValidation = object({
+  fields: array().of(
+    object({
+      label: string().required(),
+      jpath: array().of(string()).min(1),
     }),
   ),
 });
 
-export const validation = Yup.lazy((obj: Workspace) =>
-  Yup.object().shape({
+export const validation: any = lazy((obj: Workspace) =>
+  object().shape({
     formatting: formattingValidation(obj),
     databases: databasesValidation,
     infoBlock: infoBlockValidation,

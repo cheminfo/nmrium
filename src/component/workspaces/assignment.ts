@@ -9,7 +9,7 @@ export const assignment: InnerWorkspace = {
       informationPanel: { display: true, open: false },
       rangesPanel: { display: true, open: false },
       structuresPanel: { display: true, open: false },
-      filtersPanel: { display: true, open: false },
+      processingsPanel: { display: true, open: false },
       zonesPanel: { display: true, open: false },
     },
     toolBarButtons: {

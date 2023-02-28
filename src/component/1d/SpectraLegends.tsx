@@ -10,7 +10,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { SVGGroup } from '../elements/SVGGroup';
 import { usePanelPreferences } from '../hooks/usePanelPreferences';
-import { jpathToArray } from '../utility/jpathToArray';
+import { convertPathArrayToString } from '../utility/convertPathArrayToString';
 import {
   JpathLegendField,
   legendField,
@@ -95,12 +95,12 @@ function InnerSpectraLegends({
                   );
                 default: {
                   const jpath = (field as JpathLegendField).jpath;
-                  const value = lodashGet(spectrum, jpathToArray(jpath), '');
+                  const value = lodashGet(spectrum, jpath, '');
                   return (
                     <text
                       alignmentBaseline="middle"
                       style={styles.text}
-                      key={jpath}
+                      key={convertPathArrayToString(jpath)}
                     >
                       {value}
                     </text>

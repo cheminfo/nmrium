@@ -11,25 +11,6 @@ const modalContainer = css`
   width: 400px;
   height: 550px;
   padding: 5px;
-  button:focus {
-    outline: none;
-  }
-  .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-
-    button {
-      height: 36px;
-      margin: 2px;
-      background-color: transparent;
-      border: none;
-      svg {
-        height: 16px;
-      }
-    }
-  }
 
   button {
     flex: 2;
@@ -41,35 +22,54 @@ const modalContainer = css`
     margin-top: 15px;
     display: block;
     width: 20%;
-
     color: white;
     background-color: gray;
+  }
+
+  button:focus {
+    outline: none;
+  }
+
+  .header {
+    height: 24px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+
+    button {
+      height: 36px;
+      margin: 2px;
+      background-color: transparent;
+      border: none;
+
+      svg {
+        height: 16px;
+      }
+    }
   }
 
   .info {
     margin-top: 0;
     margin-bottom: 10px;
-    padding: 0px 10px;
+    padding: 0 10px;
     width: 100%;
-
     text-align: center;
   }
 
   .optional {
     margin-top: 20px;
     margin-bottom: 5px;
-    padding: 0px 10px;
-
+    padding: 0 10px;
     text-align: center;
     font-size: 18px;
     font-weight: bold;
   }
+
   .optional2 {
     margin-top: 5px;
     margin-bottom: 25px;
-    padding: 0px 10px;
+    padding: 0 10px;
     width: 100%;
-
     text-align: center;
   }
 `;

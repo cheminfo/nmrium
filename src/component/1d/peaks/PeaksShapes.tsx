@@ -1,16 +1,17 @@
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
+import { useScale } from '../../context/ScaleContext';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useSpectrum from '../../hooks/useSpectrum';
-import { useActiveSpectrum } from '../../reducer/Reducer';
-import getVerticalShift from '../utilities/getVerticalShift';
 
 import { usePeakShapesPath } from './usePeakShapesPath';
 
 const emptyData = { peaks: {}, display: {} };
 
 function PeaksShapes() {
-  const { verticalAlign, displayerKey } = useChartData();
+  const { displayerKey } = useChartData();
+  const { shiftY } = useScale();
   const { showPeaksShapes, showPeaksSum } = useActiveSpectrumPeaksViewState();
   const activeSpectrum = useActiveSpectrum();
   const spectrum = useSpectrum(emptyData) as Datum1D;
@@ -19,14 +20,12 @@ function PeaksShapes() {
     return null;
   }
 
-  const vAlign = getVerticalShift(verticalAlign, {
-    index: activeSpectrum?.index,
-  });
+  const shift = (activeSpectrum?.index || 0) * shiftY;
 
   return (
     <g className="peaks-shapes" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
-      {showPeaksShapes && <PeaksShapesItems vAlign={vAlign} />}
-      {showPeaksSum && <PeaksShapesSum vAlign={vAlign} />}
+      {showPeaksShapes && <PeaksShapesItems vAlign={shift} />}
+      {showPeaksSum && <PeaksShapesSum vAlign={shift} />}
     </g>
   );
 }

@@ -1,99 +1,52 @@
 /** @jsxImportSource @emotion/react */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { css } from '@emotion/react';
-import { useMemo, memo } from 'react';
 
-import { Filter } from '../../../data/FiltersManager';
-import Table from '../../elements/Table/Table';
-import TableBody from '../../elements/Table/TableBody';
-import TableCell from '../../elements/Table/TableCell';
-import TableHead from '../../elements/Table/TableHead';
-import TableRow from '../../elements/Table/TableRow';
-import useSpectrum from '../../hooks/useSpectrum';
-import NoTableData from '../extra/placeholder/NoTableData';
+import { useDispatch } from '../../context/DispatchContext';
+import { useAlert } from '../../elements/popup/Alert/Context';
+import { useModal } from '../../elements/popup/Modal/Context';
+import { DELETE_FILTER } from '../../reducer/types/Types';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import FiltersTable from './FiltersTable';
 
-const styles = css`
-  .btn {
-    background-color: transparent;
-    border: none;
-    height: 25;
-    width: 25;
-    padding: 5px;
-  }
-  .filter-row {
-    padding: 5px !important;
-  }
-  .filter-active {
-    background-color: #f7f7f7;
-    div,
-    span,
-    .btn {
-      color: black !important;
-    }
+export default function FiltersPanel() {
+  const dispatch = useDispatch();
+  const modal = useModal();
+  const alert = useAlert();
 
-    li {
-      background-color: transparent !important;
-    }
-  }
-  .filter-current {
-    background-color: #707070;
-    div,
-    span,
-    .btn {
-      color: white !important;
-    }
+  function handelDeleteFilter() {
+    const buttons = [
+      {
+        text: 'Yes',
+        handler: async () => {
+          const hideLoading = await alert.showLoading(
+            'Delete filters process in progress',
+          );
+          dispatch({ type: DELETE_FILTER, payload: {} });
+          hideLoading();
+        },
+      },
+      { text: 'No' },
+    ];
 
-    li {
-      background-color: transparent !important;
-    }
+    modal.showConfirmDialog({
+      message: 'You are about to delete all processing steps, Are you sure?',
+      buttons,
+    });
   }
 
-  .filter-inactive {
-    opacity: 0.3;
-  }
-`;
-
-export interface FiltersProps extends Filter {
-  error?: any;
-}
-
-interface FiltersPanelInnerProps {
-  filters: Array<FiltersProps>;
-}
-
-function FilterPanelInner({ filters }: FiltersPanelInnerProps) {
-  const filtersTable = useMemo(() => {
-    return filters ? (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align="center" size={1}>
-              Label
-            </TableCell>
-            <TableCell align="center" size={2}>
-              Properties
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody css={styles}>
-          <FiltersTable />
-        </TableBody>
-      </Table>
-    ) : (
-      <NoTableData />
-    );
-  }, [filters]);
-
-  return filtersTable;
-}
-
-const emptyData = { filters: [] };
-
-const MemoizedFilterPanel = memo(FilterPanelInner);
-
-export default function FilterPanel() {
-  const { filters } = useSpectrum(emptyData);
-
-  return <MemoizedFilterPanel filters={filters} />;
+  return (
+    <div css={tablePanelStyle}>
+      <DefaultPanelHeader
+        showSettingButton={false}
+        deleteToolTip="Delete all filters"
+        onDelete={handelDeleteFilter}
+      />
+      <div className="inner-container">
+        <FiltersTable />
+      </div>
+    </div>
+  );
 }

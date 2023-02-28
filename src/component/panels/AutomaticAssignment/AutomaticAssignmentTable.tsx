@@ -5,7 +5,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
 import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
-import NoTableData from '../extra/placeholder/NoTableData';
 
 import { AutoAssignmentsData } from './useAutoAssignments';
 
@@ -65,15 +64,14 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
     [assignHandler],
   );
 
-  return data && data.length > 0 ? (
+  return (
     <ReactTable
       data={data}
       columns={COLUMNS}
       onClick={assignHandler}
       enableDefaultActiveRow
+      emptyDataRowText="No Data"
     />
-  ) : (
-    <NoTableData />
   );
 }
 

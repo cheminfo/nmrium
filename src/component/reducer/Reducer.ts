@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { Source } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
@@ -9,10 +10,10 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
+import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
-import { useChartData } from '../context/ChartContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -41,7 +42,7 @@ import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
+import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -106,7 +107,8 @@ export interface ViewState {
      * active spectrum id per nucleus
      * @default {}
      */
-    activeSpectra: Record<string, ActiveSpectrum | null>;
+    activeSpectra: Record<string, ActiveSpectrum[] | null>;
+    selectReferences: Record<string, string>;
     /**
      * current select tab (nucleus)
      * @default null
@@ -122,6 +124,11 @@ export interface ViewState {
   zoom: {
     levels: ContoursLevels;
   };
+  /**
+   * options to control spectra vertical alignment
+   * @default  'bottom'
+   */
+  verticalAlign: Partial<Record<Nuclei, VerticalAlignment>>;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -138,6 +145,25 @@ export interface Margin {
   right: number;
   bottom: number;
   left: number;
+}
+
+export function getDefaultViewState(): ViewState {
+  return {
+    molecules: {},
+    ranges: [],
+    zones: [],
+    peaks: {},
+    spectra: {
+      activeSpectra: {},
+      activeTab: '',
+      showLegend: false,
+      selectReferences: {},
+    },
+    zoom: {
+      levels: {},
+    },
+    verticalAlign: {},
+  };
 }
 export const getInitialState = (): State => ({
   actionType: '',
@@ -165,20 +191,7 @@ export const getInitialState = (): State => ({
   },
   mode: 'RTL',
   molecules: [],
-  view: {
-    molecules: {},
-    ranges: [],
-    zones: [],
-    peaks: {},
-    spectra: { activeSpectra: {}, activeTab: '', showLegend: false },
-    zoom: {
-      levels: {},
-    },
-  },
-  verticalAlign: {
-    align: 'bottom',
-    verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
-  },
+  view: getDefaultViewState(),
   history: {
     past: [],
     present: null,
@@ -216,16 +229,17 @@ export const getInitialState = (): State => ({
 export const initialState = getInitialState();
 
 export type VerticalAlignment = 'bottom' | 'center' | 'stack';
-export interface VerticalAlign {
-  align: VerticalAlignment;
-  verticalShift: number;
-}
+
 export interface State {
   /**
    * Last action type
    *  base on the action type we can decide to trigger or not the callback function (onDataChange)
    */
   actionType: string;
+  /**
+   * web source of data
+   */
+  source?: Source;
   /**
    * spectra list (1d and 2d)
    */
@@ -308,11 +322,6 @@ export interface State {
    * @default { floatingMolecules: [], ranges: [], zones: [] };
    */
   view: ViewState;
-  /**
-   * options to control spectra vertical alignment
-   * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
-   */
-  verticalAlign: VerticalAlign;
   /**
    * @todo for undo /redo features
    */
@@ -420,14 +429,7 @@ export interface State {
 
   usedColors: UsedColors;
 }
-export function useActiveSpectrum() {
-  const {
-    view: {
-      spectra: { activeSpectra, activeTab },
-    },
-  } = useChartData();
-  return activeSpectra[activeTab] || null;
-}
+
 export function initState(state: State): State {
   const displayerKey = v4();
   const correlations = buildCorrelationData([], {
@@ -601,7 +603,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
     case types.CHANGE_ACTIVE_SPECTRUM:
-      return SpectrumsActions.handleChangeActiveSpectrum(draft, action.data);
+      return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
     case types.CHANGE_SPECTRUM_COLOR:
       return SpectrumsActions.handleChangeSpectrumColor(draft, action.data);
     case types.CHANGE_SPECTRUM_SETTING:
@@ -621,6 +623,13 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return SpectrumsActions.importSpectraMetaInfo(draft, action);
     case types.TOGGLE_SPECTRA_LEGEND:
       return SpectrumsActions.handleToggleSpectraLegend(draft);
+    case types.RECOLOR_SPECTRA_COLOR:
+      return SpectrumsActions.handleRecolorSpectraBasedOnDistinctValue(
+        draft,
+        action,
+      );
+    case types.ORDER_SPECTRA:
+      return SpectrumsActions.handleOrderSpectra(draft, action);
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);

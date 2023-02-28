@@ -5,7 +5,9 @@ import { FaPlus, FaTimes } from 'react-icons/fa';
 import Button from '../../../elements/Button';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../elements/formik/FormikInput';
+import FormikInput, {
+  InputMapValueFunctions,
+} from '../../../elements/formik/FormikInput';
 import {
   PanelsPreferences,
   SpectraTableColumn,
@@ -22,7 +24,7 @@ const inputStyle: CSSProperties = {
   border: 'none',
 };
 
-interface SpectraColumnsManagerProps {
+interface SpectraColumnsManagerProps extends InputMapValueFunctions {
   nucleus: string;
   onAdd: (nucleus: string, index: number) => void;
   onDelete: (nucleus: string, index: number) => void;
@@ -34,6 +36,8 @@ export function SpectraColumnsManager({
   onAdd,
   onDelete,
   datalist,
+  mapOnChangeValue,
+  mapValue,
 }: SpectraColumnsManagerProps) {
   const { values: nucleiPreferences } =
     useFormikContext<PanelsPreferences['spectra']>();
@@ -62,7 +66,11 @@ export function SpectraColumnsManager({
           const column: any = row.original;
 
           if (column?.name) {
-            return <span style={style}>{column?.description}</span>;
+            return (
+              <span style={style}>
+                {column?.jpath?.join('.') || column.description}
+              </span>
+            );
           }
 
           return (
@@ -70,6 +78,8 @@ export function SpectraColumnsManager({
               name={`nuclei.${nucleus}.columns.${row.index}.jpath`}
               style={{ input: { ...style, ...inputStyle } }}
               datalist={datalist}
+              mapOnChangeValue={mapOnChangeValue}
+              mapValue={mapValue}
             />
           );
         },
@@ -111,7 +121,7 @@ export function SpectraColumnsManager({
         },
       },
     ],
-    [datalist, nucleus, onAdd, onDelete],
+    [datalist, mapOnChangeValue, mapValue, nucleus, onAdd, onDelete],
   );
 
   return (

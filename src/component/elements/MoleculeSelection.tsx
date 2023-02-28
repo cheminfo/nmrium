@@ -11,32 +11,33 @@ import NextPrev from './NextPrev';
 const toolbarStyle = css`
   display: flex;
   flex-direction: row;
-  border-top: 0.55px solid rgb(240, 240, 240);
-  border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 0px 5px;
+  border-top: 0.55px solid rgb(240 240 240);
+  border-bottom: 0.55px solid rgb(240 240 240);
+  padding: 0 5px;
 
   p {
     margin: 0;
     text-align: right;
     width: 100%;
     line-height: 22px;
-    padding: 0px 10px;
+    padding: 0 10px;
   }
 `;
 
 const moleculeContainerStyle = css`
   width: 100%;
   position: relative;
+
   .slider {
     height: 180px;
     width: 100%;
-    padding: 0px;
-    padding: 0px;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
   }
+
   .slider p {
     width: 100%;
     margin: 0 auto;
@@ -44,9 +45,11 @@ const moleculeContainerStyle = css`
     position: relative;
     text-align: center;
   }
+
   .slider svg polygon {
     fill: gray !important;
   }
+
   button {
     flex: 2;
     padding: 5px;
@@ -57,7 +60,6 @@ const moleculeContainerStyle = css`
     margin-top: 15px;
     display: block;
     width: 20%;
-
     color: white;
     background-color: gray;
   }

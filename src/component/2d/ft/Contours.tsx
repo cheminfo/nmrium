@@ -12,7 +12,7 @@ import { Datum2D } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { useActiveSpectrum } from '../../reducer/Reducer';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { get2DXScale, get2DYScale } from '../utilities/scale';

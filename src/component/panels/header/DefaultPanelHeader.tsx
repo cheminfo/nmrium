@@ -10,7 +10,7 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 const styles = css`
   display: flex;
   flex-direction: row;
-  border-bottom: 0.55px solid rgb(240, 240, 240);
+  border-bottom: 0.55px solid rgb(240 240 240);
   padding: 2px 5px;
 
   .left-container {
@@ -18,11 +18,12 @@ const styles = css`
     flex-direction: row;
     flex: 1;
   }
+
   .counter-label {
     margin: 0;
     text-align: right;
     line-height: 22px;
-    padding: 0px 10px;
+    padding: 0 10px;
     white-space: nowrap;
   }
 `;
@@ -37,6 +38,7 @@ interface DefaultPanelHeaderProps {
   onSettingClick?: () => void;
   filterIsActive?: boolean;
   canDelete?: boolean;
+  disableDelete?: boolean;
   showSettingButton?: boolean;
   showCounter?: boolean;
   children?: ReactNode;
@@ -57,6 +59,7 @@ function DefaultPanelHeader({
   onSettingClick = () => null,
   showSettingButton = false,
   canDelete = true,
+  disableDelete = false,
   style = {},
   className = '',
   renderRightButtons,
@@ -65,18 +68,15 @@ function DefaultPanelHeader({
     <div css={styles} {...{ style, className }}>
       <div className="left-container">
         {canDelete && (
-          <ToolTip title={deleteToolTip} popupPlacement="right">
-            <Button
-              type="button"
-              fill="clear"
-              backgroundColor={{ base: 'white', hover: 'white' }}
-              color={{ base: 'black', hover: 'red' }}
-              onClick={onDelete}
-              disabled={counter === 0}
-            >
-              <FaRegTrashAlt />
-            </Button>
-          </ToolTip>
+          <Button.BarButton
+            color={{ base: 'black', hover: 'red' }}
+            onClick={onDelete}
+            disabled={counter === 0 || disableDelete}
+            toolTip={deleteToolTip}
+            tooltipOrientation="horizontal"
+          >
+            <FaRegTrashAlt />
+          </Button.BarButton>
         )}
 
         {/* Optional if there is no filter needed, e.g. in spectra panel */}

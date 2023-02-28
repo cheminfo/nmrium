@@ -394,7 +394,7 @@ function handleChangeRangeSignalValue(draft, action) {
       newSignalValue: value,
     });
     FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.shiftX.id, options: shift },
+      { name: Filters.shiftX.id, value: { shift } },
     ]);
 
     handleOnChangeRangesData(draft);

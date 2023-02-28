@@ -7,7 +7,7 @@ export interface NMRiumPanelPreferences {
   integralsPanel: PanelPreferencesType;
   rangesPanel: PanelPreferencesType;
   structuresPanel: PanelPreferencesType;
-  filtersPanel: PanelPreferencesType;
+  processingsPanel: PanelPreferencesType;
   zonesPanel: PanelPreferencesType;
   summaryPanel: PanelPreferencesType;
   multipleSpectraAnalysisPanel: PanelPreferencesType;

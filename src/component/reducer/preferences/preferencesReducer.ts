@@ -22,6 +22,7 @@ import {
   deleteAnalysisColumn,
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra';
+import { applyGeneralPreferences } from './actions/applyGeneralPreferences';
 import { initPreferences } from './actions/initPreferences';
 import {
   setMatrixGenerationOptions,
@@ -70,6 +71,10 @@ export type AddWorkspaceAction = ActionType<
   'ADD_WORKSPACE',
   { workspace: string; data?: Omit<Workspace, 'version' | 'label'> }
 >;
+export type ApplyGeneralPreferences = ActionType<
+  'APPLY_General_PREFERENCES',
+  { data: Omit<Workspace, 'version' | 'label'> }
+>;
 export type AnalyzeSpectraAction = ActionType<
   'ANALYZE_SPECTRA',
   { start: number; end: number; nucleus: string; columnKey?: string }
@@ -113,6 +118,7 @@ type PreferencesActions =
   | SetWorkspaceAction
   | WorkspaceAction
   | AddWorkspaceAction
+  | ApplyGeneralPreferences
   | AnalyzeSpectraAction
   | ChangeAnalysisColumnValueKeyAction
   | DeleteAnalysisColumn
@@ -238,6 +244,8 @@ function innerPreferencesReducer(
       return addWorkspace(draft, action);
     case 'REMOVE_WORKSPACE':
       return removeWorkspace(draft, action);
+    case 'APPLY_General_PREFERENCES':
+      return applyGeneralPreferences(draft, action);
     case 'ANALYZE_SPECTRA':
       return analyzeSpectra(draft, action);
     case 'CHANGE_ANALYSIS_COLUMN_VALUE_KEY':

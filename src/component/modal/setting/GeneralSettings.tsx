@@ -31,6 +31,7 @@ import FormattingTabContent from './settings-tabs/FormattingTabContent';
 import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
 import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
+import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabContent';
 import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
@@ -63,7 +64,7 @@ const styles = css`
   .input {
     font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     padding: 5px;
     width: 100px;
     margin-right: 10px;
@@ -99,6 +100,7 @@ const styles = css`
     align-items: center;
     cursor: default;
     padding: 0.5em;
+
     & .label {
       font-size: 0.8em;
     }
@@ -178,6 +180,15 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         data: refForm.current?.values,
       },
     });
+  }
+  function applyPreferencesHandler() {
+    dispatch({
+      type: 'APPLY_General_PREFERENCES',
+      payload: {
+        data: refForm.current?.values,
+      },
+    });
+    onClose?.();
   }
 
   function deleteWorkSpaceHandler(key) {
@@ -365,6 +376,11 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
                 <InfoBlockTabContent />
               </div>
             </Tab>
+            <Tab title="On Load Processing" tabid="on-load-processing">
+              <div className="inner-content">
+                <OnLoadProcessingTabContent />
+              </div>
+            </Tab>
           </Tabs>
         </Formik>
       </div>
@@ -372,11 +388,17 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
           onDone={() => refForm.current?.submitForm()}
-          doneLabel="Save"
+          doneLabel="Apply and Save"
           onCancel={() => {
             onClose?.();
           }}
         />
+        <Button.Secondary
+          style={{ margin: '0 10px' }}
+          onClick={applyPreferencesHandler}
+        >
+          Apply
+        </Button.Secondary>
       </div>
     </div>
   );

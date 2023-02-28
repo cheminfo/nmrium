@@ -21,7 +21,7 @@ const styles = css`
     flex: 1;
     border: none;
     overflow: hidden;
-    padding: 0px;
+    padding: 0;
   }
 
   .text-area {

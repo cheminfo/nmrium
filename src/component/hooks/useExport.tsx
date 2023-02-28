@@ -35,27 +35,27 @@ export default function useExport() {
 
   const saveAsJSONHandler = useCallback(
     (spaceIndent = 0, isCompressed = true) => {
-      if (state.data.length > 0) {
-        alert
-          .showLoading('Exporting as NMRium process in progress')
-          .then((hideLoading) => {
-            async function handle() {
-              //exported file name by default will be the first spectrum name
-              const fileName = state.data[0]?.display?.name;
-              const exportedData = toJSON(state, preferencesState, 'nmrium');
-              await exportAsJSON(
-                exportedData,
-                fileName,
-                spaceIndent,
-                isCompressed,
-              );
-              hideLoading();
-            }
-            setTimeout(() => {
-              void handle();
-            }, 0);
-          });
-      }
+      alert
+        .showLoading('Exporting as NMRium process in progress')
+        .then((hideLoading) => {
+          async function handle() {
+            //exported file name by default will be the first spectrum name
+            const fileName = state.data[0]?.display?.name;
+            const exportedData = toJSON(state, preferencesState, {
+              exportTarget: 'nmrium',
+            });
+            await exportAsJSON(
+              exportedData,
+              fileName,
+              spaceIndent,
+              isCompressed,
+            );
+            hideLoading();
+          }
+          setTimeout(() => {
+            void handle();
+          }, 0);
+        });
     },
     [alert, preferencesState, state],
   );
@@ -102,12 +102,10 @@ export default function useExport() {
         );
         setTimeout(() => {
           void (async () => {
-            const exportedData = toJSON(
-              state,
-              preferencesState,
-              'nmrium',
-              include,
-            );
+            const exportedData = toJSON(state, preferencesState, {
+              ...include,
+              exportTarget: 'nmrium',
+            });
             const spaceIndent = pretty ? 2 : 0;
             await exportAsJSON(exportedData, name, spaceIndent, compressed);
             hideLoading();
@@ -120,14 +118,12 @@ export default function useExport() {
     [alert, preferencesState, state],
   );
   const saveAsHandler = useCallback(async () => {
-    if (state.data.length > 0) {
-      const fileName = state.data[0]?.display?.name;
-      modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
-        isBackgroundBlur: false,
-        position: positions.TOP_CENTER,
-        width: 450,
-      });
-    }
+    const fileName = state.data[0]?.display?.name;
+    modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+      width: 450,
+    });
   }, [modal, saveHandler, state.data]);
 
   return {

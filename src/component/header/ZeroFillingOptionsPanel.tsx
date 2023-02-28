@@ -26,11 +26,10 @@ const Sizes = generateNumbersPowerOfX(8, 21);
 function useInitZeroFillingSize() {
   const filter = useFilter(Filters.zeroFilling.id);
   const { data } = useSpectrum();
-
   if (filter) {
-    return filter.value;
+    return filter.value.nbPoints;
   } else if (data) {
-    return 2 ** Math.round(Math.log2((data as Data1D).x.length));
+    return 2 ** Math.round(Math.log2((data as Data1D).x.length * 2));
   }
   return 0;
 }
@@ -44,7 +43,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     dispatch({
       type: APPLY_ZERO_FILLING_FILTER,
       payload: {
-        size,
+        nbPoints: size,
       },
     });
   }
@@ -55,11 +54,11 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     });
   }
 
-  function dispatchLiveChanges(value) {
+  function dispatchLiveChanges(nbPoints) {
     dispatch({
       type: CALCULATE_ZERO_FILLING_FILTER,
       payload: {
-        size: value,
+        nbPoints,
       },
     });
   }

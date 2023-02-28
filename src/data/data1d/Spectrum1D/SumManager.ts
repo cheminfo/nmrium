@@ -3,15 +3,14 @@ import { Draft } from 'immer';
 import { State } from '../../../component/reducer/Reducer';
 import { StateMoleculeExtended } from '../../molecules/Molecule';
 import { Datum1D, Integrals, Ranges } from '../../types/data1d';
+import { SumOptions } from '../../types/data1d/SumOptions';
+import getAtom from '../../utilities/getAtom';
 
 import {
   isSpectrum1D,
   updateRangesRelativeValues,
   updateIntegralsRelativeValues,
 } from '.';
-
-import { SumOptions } from '../../types/data1d/SumOptions';
-import getAtom from '../../utilities/getAtom';
 
 export interface SumParams {
   nucleus: string;

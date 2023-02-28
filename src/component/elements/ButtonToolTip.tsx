@@ -20,7 +20,12 @@ function ButtonToolTip({
 }: ButtonToolTipProps) {
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
-      <button style={style} type="button" onClick={onClick} {...props}>
+      <button
+        style={{ ...style, opacity: props?.disabled ? '0.2' : '1' }}
+        type="button"
+        onClick={onClick}
+        {...props}
+      >
         {children}
       </button>
     </ToolTip>

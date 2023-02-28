@@ -3,26 +3,22 @@ import { useMemo } from 'react';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useSpectrum from '../../hooks/useSpectrum';
-import { useActiveSpectrum } from '../../reducer/Reducer';
-import getVerticalShift from '../utilities/getVerticalShift';
 
 import PeakAnnotation from './PeakAnnotation';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 
 function PeakAnnotations() {
-  const { verticalAlign, displayerKey } = useChartData();
+  const { displayerKey } = useChartData();
   const activeSpectrum = useActiveSpectrum();
-  const { scaleX, scaleY } = useScaleChecked();
+  const { scaleX, scaleY, shiftY } = useScaleChecked();
   const spectrum = useSpectrum(emptyData) as Datum1D;
   const peaksViewState = useActiveSpectrumPeaksViewState();
 
   const Peaks = useMemo(() => {
-    const getVerticalAlign = () => {
-      return getVerticalShift(verticalAlign, { index: activeSpectrum?.index });
-    };
     if (
       !spectrum?.peaks?.values ||
       !spectrum.display.isVisible ||
@@ -32,7 +28,7 @@ function PeakAnnotations() {
     }
 
     return (
-      <g transform={`translate(0,-${getVerticalAlign()})`}>
+      <g transform={`translate(0,-${(activeSpectrum?.index || 0) * shiftY})`}>
         {spectrum.peaks.values.map(({ x, y, id }) => (
           <PeakAnnotation
             key={id}
@@ -53,8 +49,8 @@ function PeakAnnotations() {
     spectrum.id,
     spectrum.info.nucleus,
     peaksViewState.isPeaksVisible,
-    verticalAlign,
     activeSpectrum?.index,
+    shiftY,
     scaleX,
     scaleY,
   ]);

@@ -28,6 +28,7 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
+import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
@@ -93,9 +94,7 @@ const EXPORT_MENU = [
 interface BasicToolBarInnerProps {
   fidCounter: number;
   ftCounter: number;
-  verticalAlign: {
-    align: VerticalAlignment;
-  };
+  verticalAlign: VerticalAlignment;
 }
 
 function BasicToolBarInner({
@@ -262,7 +261,7 @@ function BasicToolBarInner({
           title="Spectra alignment ( Press s )"
           onClick={changeDisplayViewModeHandler}
         >
-          {verticalAlign.align === 'stack' ? (
+          {verticalAlign === 'stack' ? (
             <SvgNmrOverlay3Aligned />
           ) : (
             <SvgNmrOverlay3 />
@@ -284,7 +283,7 @@ function BasicToolBarInner({
           <Toolbar.Item
             id="baseline-position"
             title={
-              verticalAlign.align === 'bottom'
+              verticalAlign === 'bottom'
                 ? 'Baseline  Center ( Press c )'
                 : 'Baseline  Bottom ( Press c )'
             }
@@ -292,7 +291,7 @@ function BasicToolBarInner({
             className="cheminfo"
           >
             <div style={{ fontSize: 24 }}>
-              {verticalAlign.align === 'bottom' ? (
+              {verticalAlign === 'bottom' ? (
                 <SvgNmrAlignCenter />
               ) : (
                 <SvgNmrAlignBottom />
@@ -308,12 +307,13 @@ const MemoizedBasicToolBar = memo(BasicToolBarInner);
 
 export default function BasicToolBar() {
   const {
-    verticalAlign,
     displayerMode,
     view: {
       spectra: { activeTab },
     },
   } = useChartData();
+
+  const verticalAlign = useVerticalAlign();
 
   const { fidCounter, ftCounter } = useDatumWithSpectraStatistics();
   return (

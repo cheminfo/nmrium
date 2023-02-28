@@ -1,7 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { Position } from '../../component/elements/draggable/useDraggable';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 export interface StateMolecule {
@@ -17,6 +16,21 @@ export interface StateMoleculeExtended extends StateMolecule {
   atoms: Record<string, number>;
 }
 
+export interface MoleculeBoundingRect {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
+export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
+  {
+    x: 100,
+    y: 50,
+    width: 100,
+    height: 100,
+  };
+
 export type MoleculesView = Record<string, MoleculeView>;
 export interface MoleculeView {
   floating: {
@@ -27,7 +41,7 @@ export interface MoleculeView {
     /**
      * Floating molecule position.
      */
-    position: Position;
+    bounding: MoleculeBoundingRect;
   };
   /**
    * Show/Hide atoms numbers on the molecule.

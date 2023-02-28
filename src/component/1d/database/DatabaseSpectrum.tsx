@@ -8,14 +8,15 @@ import { useScaleChecked } from '../../context/ScaleContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 import { spinnerContext } from '../../loader/SpinnerContext';
 import { loadFile } from '../../utility/FileUtility';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
 function DatabaseSpectrum() {
-  const { displayerKey, height, verticalAlign, yDomain, margin } =
-    useChartData();
+  const { displayerKey, height, yDomain, margin } = useChartData();
+  const verticalAlign = useVerticalAlign();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();
@@ -34,7 +35,7 @@ function DatabaseSpectrum() {
         verticalAlign,
         yDomain,
       }),
-    [height, margin, marginBottom, verticalAlign, yDomain],
+    [verticalAlign, height, margin.bottom, margin.top, marginBottom, yDomain],
   );
 
   const loadSpectrum = useRef(

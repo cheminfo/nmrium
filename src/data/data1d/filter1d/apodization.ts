@@ -1,5 +1,6 @@
 import { apodization } from 'nmr-processing';
 
+import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'apodization';
@@ -12,9 +13,9 @@ export const name = 'Apodization';
  */
 
 export interface ApodizationOptions {
-  lineBroadening: number;
-  gaussBroadening: number;
-  lineBroadeningCenter: number;
+  lineBroadening?: number;
+  gaussBroadening?: number;
+  lineBroadeningCenter?: number;
 }
 
 export const defaultApodizationOptions: ApodizationOptions = {
@@ -23,8 +24,25 @@ export const defaultApodizationOptions: ApodizationOptions = {
   lineBroadeningCenter: 0,
 };
 
-export function apply(datum1D: Datum1D, options: ApodizationOptions) {
-  const newData = apodizationFilter(datum1D, options);
+export function apply(datum1D: Datum1D, options: ApodizationOptions = {}) {
+  const {
+    lineBroadening = 1,
+    gaussBroadening = 0,
+    lineBroadeningCenter = 0,
+  } = options;
+
+  // if no options is set, we add the default value to filter
+  if (Object.keys(options).length === 0) {
+    const filter = datum1D.filters.find((filter) => filter.name === id);
+    if (filter) {
+      filter.value = { lineBroadening, gaussBroadening, lineBroadeningCenter };
+    }
+  }
+  const newData = apodizationFilter(datum1D, {
+    lineBroadening,
+    gaussBroadening,
+    lineBroadeningCenter,
+  });
 
   datum1D.data = {
     ...datum1D.data,
@@ -46,9 +64,14 @@ export function reduce(previousValue, newValue) {
 
 export function apodizationFilter(
   datum1D: Datum1D,
-  options: ApodizationOptions,
+  options: ApodizationOptions = {},
 ) {
-  const { lineBroadening, gaussBroadening, lineBroadeningCenter } = options;
+  const {
+    lineBroadening = 1,
+    gaussBroadening = 0,
+    lineBroadeningCenter = 0,
+  } = options;
+
   let grpdly = datum1D.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0) {
@@ -57,9 +80,11 @@ export function apodizationFilter(
     pointsToShift = 0;
   }
 
-  const re = datum1D.data.re;
-  const im = datum1D.data.im;
-  const t = datum1D.data.x;
+  const data = datum1D.data as Required<Data1D>;
+
+  const re = data.re;
+  const im = data.im;
+  const t = data.x;
 
   const length = re.length;
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...

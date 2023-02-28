@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo, useCallback } from 'react';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -9,7 +9,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
-import { ActiveSpectrum, useActiveSpectrum } from '../../reducer/Reducer';
+import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   SET_ACTIVE_TAB,
   CHANGE_VISIBILITY,
@@ -23,12 +23,12 @@ import SpectrumSetting from './base/setting/SpectrumSetting';
 interface SpectrumsTabsInnerProps {
   data: Array<Datum1D | Datum2D>;
   activeTab: string;
-  activeSpectrum: ActiveSpectrum | null;
+  activeSpectra: Record<string, ActiveSpectrum[] | null>;
 }
 
 function SpectrumsTabsInner({
   data,
-  activeSpectrum,
+  activeSpectra,
   activeTab,
 }: SpectrumsTabsInnerProps) {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
@@ -49,7 +49,7 @@ function SpectrumsTabsInner({
     dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
   }
 
-  function openSettingHandler(event, selectedSpectrum) {
+  const openSettingHandler = useCallback((event, selectedSpectrum) => {
     event.stopPropagation();
     setSettingModalPosition({
       x: event.nativeEvent.clientX,
@@ -57,25 +57,30 @@ function SpectrumsTabsInner({
     });
     setSelectedSpectrum(selectedSpectrum);
     setIsSettingModalDisplayed(true);
-  }
+  }, []);
 
-  function handleChangeVisibility(d, key) {
-    dispatch({
-      type: CHANGE_VISIBILITY,
-      payload: {
-        id: d.id,
-        key,
-      },
-    });
-  }
+  const handleChangeVisibility = useCallback(
+    (d, key) => {
+      dispatch({
+        type: CHANGE_VISIBILITY,
+        payload: {
+          id: d.id,
+          key,
+        },
+      });
+    },
+    [dispatch],
+  );
 
-  function handleChangeActiveSpectrum(_, spectrum) {
+  function handleChangeActiveSpectrum(e, spectrum) {
     setTimeout(() => {
-      if (activeSpectrum && activeSpectrum.id === spectrum.id) {
-        dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
-      } else {
-        dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: spectrum.id } });
-      }
+      const modifier = `shift[${e.shiftKey ? 'true' : 'false'}]_ctrl[${
+        e.ctrlKey ? 'true' : 'false'
+      }]`;
+      dispatch({
+        type: CHANGE_ACTIVE_SPECTRUM,
+        payload: { modifier, id: spectrum.id },
+      });
     }, 0);
   }
 
@@ -104,7 +109,7 @@ function SpectrumsTabsInner({
               <SpectraTable
                 nucleus={nucleus}
                 data={spectrumsGroupByNucleus[nucleus]}
-                activeSpectrum={activeSpectrum}
+                activeSpectra={activeSpectra?.[nucleus] || null}
                 onChangeVisibility={handleChangeVisibility}
                 onChangeActiveSpectrum={handleChangeActiveSpectrum}
                 onOpenSettingModal={openSettingHandler}
@@ -130,10 +135,9 @@ export default function SpectrumsTabs() {
   const {
     data,
     view: {
-      spectra: { activeTab },
+      spectra: { activeTab, activeSpectra },
     },
   } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
 
-  return <MemoizedSpectra {...{ data, activeSpectrum, activeTab }} />;
+  return <MemoizedSpectra {...{ data, activeSpectra, activeTab }} />;
 }

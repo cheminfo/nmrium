@@ -16,7 +16,7 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
 import { Datum2D, Signal2D, Zone } from './types/data2d';
-import { adjustAlpha } from './utilities/getColor';
+import { adjustAlpha } from './utilities/generateColor';
 
 export interface PredictionOptions {
   name: string;
@@ -168,7 +168,7 @@ function generated1DSpectrum(params: {
         isFt: true,
       },
     },
-    [],
+    {},
   );
   datum.ranges.values = mapRanges(ranges, datum);
   updateIntegralsRelativeValues(datum);
@@ -252,15 +252,18 @@ function get2DWidth(nucleus: string[]) {
 function calculateFrequency(
   nucleus: string | string[],
   frequency: number,
-): number | string {
+): number | number[] {
   if (typeof nucleus === 'string') {
     return getFrequency(nucleus, { nucleus: '1H', frequency });
   } else if (nucleus[0] === nucleus[1]) {
-    return `${frequency},${frequency}`;
+    return [frequency, frequency];
   } else {
-    return `${frequency},${getFrequency(nucleus[1], {
-      nucleus: nucleus[0],
+    return [
       frequency,
-    })}`;
+      getFrequency(nucleus[1], {
+        nucleus: nucleus[0],
+        frequency,
+      }),
+    ];
   }
 }

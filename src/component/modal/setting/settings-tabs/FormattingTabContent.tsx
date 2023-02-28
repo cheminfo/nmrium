@@ -13,6 +13,7 @@ const styles = css`
   .counter-col {
     width: 30px;
   }
+
   .nucleus-label-col {
     display: flex;
     justify-content: center;
@@ -21,7 +22,7 @@ const styles = css`
 
   .input {
     width: 100% !important;
-    margin: 0px !important;
+    margin: 0 !important;
   }
 
   .nucleus-format-input-col {
@@ -33,15 +34,18 @@ const styles = css`
     font-size: 11px;
     font-weight: 600;
   }
+
   .operation-container {
     display: flex;
   }
+
   .add {
     background-color: transparent;
     border: 0;
     outline: none;
+
     svg {
-      font-szie: 14px;
+      font-size: 14px;
       fill: green;
     }
   }

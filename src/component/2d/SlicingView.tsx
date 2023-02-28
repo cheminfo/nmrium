@@ -4,7 +4,7 @@ import { getSlice } from '../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../data/types/data2d/Datum2D';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 
 import HorizontalSliceChart from './1d-tracer/HorizontalSliceChart';
 import VerticalSliceChart from './1d-tracer/VerticalSliceChart';

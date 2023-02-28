@@ -1,6 +1,8 @@
-import { WorkspaceData } from './Workspace';
+import * as Filters from '../../data/Filters';
 
-export const workspaceDefaultProperties: Required<WorkspaceData> = {
+import { WorkspacePreferences } from './Workspace';
+
+export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   display: {
     general: {
       hideGeneralSettings: false,
@@ -14,7 +16,7 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
       integralsPanel: { display: false, open: false },
       rangesPanel: { display: false, open: false },
       structuresPanel: { display: false, open: false },
-      filtersPanel: { display: false, open: false },
+      processingsPanel: { display: false, open: false },
       zonesPanel: { display: false, open: false },
       automaticAssignmentPanel: { display: false, open: false },
       databasePanel: { display: false, open: false },
@@ -74,11 +76,10 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
   },
   nmrLoaders: {
     general: {
-      keepFID: true,
-      keepFT: true,
       keep1D: true,
       keep2D: true,
       onlyReal: false,
+      dataSelection: 'preferFT',
     },
     bruker: {
       onlyFirstProcessedData: true,
@@ -87,14 +88,95 @@ export const workspaceDefaultProperties: Required<WorkspaceData> = {
   infoBlock: {
     visible: false,
     fields: [
-      { label: 'name', jpath: 'display.name', visible: true },
-      { label: 'Number Of Scan', jpath: 'info.numberOfScans', visible: true },
+      { label: 'name', jpath: ['display', 'name'], visible: true },
       {
-        label: 'Acquisition Time',
-        jpath: 'info.acquisitionTime',
+        label: 'Number Of Scan',
+        jpath: ['info', 'numberOfScans'],
         visible: true,
       },
-      { label: 'Pulse Sequence', jpath: 'info.pulseSequence', visible: true },
+      {
+        label: 'Acquisition Time',
+        jpath: ['info', 'acquisitionTime'],
+        visible: true,
+      },
+      {
+        label: 'Pulse Sequence',
+        jpath: ['info', 'pulseSequence'],
+        visible: true,
+      },
+    ],
+  },
+  onLoadProcessing: {
+    '1H': [
+      {
+        name: Filters.digitalFilter.id,
+        label: Filters.digitalFilter.name,
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.apodization.id,
+        label: Filters.apodization.name,
+        value: {},
+        flag: false,
+      },
+      {
+        name: Filters.zeroFilling.id,
+        label: Filters.zeroFilling.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.fft.id,
+        label: Filters.fft.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.phaseCorrection.id,
+        label: Filters.phaseCorrection.name,
+
+        value: {},
+        flag: true,
+      },
+    ],
+    '13C': [
+      {
+        name: Filters.digitalFilter.id,
+        label: Filters.digitalFilter.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.apodization.id,
+        label: Filters.apodization.name,
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.zeroFilling.id,
+        label: Filters.zeroFilling.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.fft.id,
+        label: Filters.fft.name,
+
+        value: {},
+        flag: true,
+      },
+      {
+        name: Filters.phaseCorrection.id,
+        label: Filters.phaseCorrection.name,
+
+        value: {},
+        flag: true,
+      },
     ],
   },
 };

@@ -7,13 +7,16 @@ import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
 const emptyData = { info: { originFrequency: 400 } };
 
 function ResurrectedDatabaseRanges() {
-  const { displayerKey, verticalAlign, height, margin } = useChartData();
+  const { displayerKey, height, margin } = useChartData();
+  const verticalAlign = useVerticalAlign();
+
   const { info } = useSpectrum(emptyData) as Datum1D;
   const { highlight } = useHighlightData();
   const { scaleX } = useScaleChecked();

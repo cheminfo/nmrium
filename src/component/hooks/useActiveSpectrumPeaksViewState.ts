@@ -1,6 +1,7 @@
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+
+import { useActiveSpectrum } from './useActiveSpectrum';
 
 export const defaultPeaksViewState: PeaksViewState = {
   isPeaksVisible: true,

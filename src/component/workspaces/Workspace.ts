@@ -1,7 +1,12 @@
+import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
+
+import { BaseFilter } from '../../data/FiltersManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
-import { Nuclei } from '../../data/types/common/Nucleus';
+import { Nuclei, Nucleus } from '../../data/types/common/Nucleus';
 import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
-import { NMRiumPreferences } from '../NMRium';
+import { NMRiumGeneralPreferences } from '../../types/NMRiumGeneralPreferences';
+import { NMRiumPanelPreferences } from '../../types/NMRiumPanelPreferences';
+import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 
 interface NucleusFormat {
   name: string;
@@ -45,10 +50,11 @@ export type PredefinedSpectraColumn = 'visible' | 'name' | 'color' | 'solvent';
 export interface PredefinedTableColumn<T> extends BasicColumnPreferences {
   name: T;
   description: string;
+  jpath?: string[];
 }
 
 export interface JpathTableColumn extends BasicColumnPreferences {
-  jpath: string;
+  jpath: string[];
 }
 
 export type SpectraTableColumn =
@@ -167,18 +173,8 @@ export interface Databases {
 }
 
 export interface LoadersPreferences {
-  general: {
-    keepFID: boolean;
-    keepFT: boolean;
-    keep1D: boolean;
-    keep2D: boolean;
-    onlyReal: boolean;
-  };
-  bruker: {
-    processingNumbers?: string;
-    experimentNumbers?: string;
-    onlyFirstProcessedData: boolean;
-  };
+  general: GeneralLoadersSelector;
+  bruker: BrukerLoaderSelector;
 }
 
 export interface InfoBlock {
@@ -186,13 +182,21 @@ export interface InfoBlock {
   fields: JpathTableColumn[];
 }
 
-export interface WorkspaceData {
-  display?: NMRiumPreferences;
+export type OnLoadProcessing = Partial<Record<Nucleus, BaseFilter[]>>;
+
+export interface DisplayPreferences {
+  general?: Partial<NMRiumGeneralPreferences>;
+  panels?: Partial<NMRiumPanelPreferences>;
+  toolBarButtons?: Partial<NMRiumToolBarPreferences>;
+}
+export interface WorkspacePreferences {
+  display?: DisplayPreferences;
   general?: GeneralPreferences;
   formatting?: Formatting;
   databases?: Databases;
   nmrLoaders?: LoadersPreferences;
   infoBlock?: InfoBlock;
+  onLoadProcessing?: OnLoadProcessing;
 }
 
 /**
@@ -210,7 +214,7 @@ export type WorkSpaceSource =
   | 'component'
   | 'nmriumFile';
 
-export type InnerWorkspace = WorkspaceMeta & WorkspaceData;
+export type InnerWorkspace = WorkspaceMeta & WorkspacePreferences;
 export type CustomWorkspaces = Record<string, InnerWorkspace>;
 
-export type Workspace = WorkspaceMeta & Required<WorkspaceData>;
+export type Workspace = WorkspaceMeta & Required<WorkspacePreferences>;

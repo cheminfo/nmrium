@@ -15,27 +15,17 @@ const tableStyle = css`
   border: 1px solid #dedede;
   width: 100%;
   font-size: 12px;
+
   .react-contextmenu-wrapper {
     display: contents;
   }
-  tr {
-    :last-child {
-      td {
-        border-bottom: 0;
-      }
-    }
-  }
-  thead tr:nth-of-type(1) th {
-    top: 0;
-  }
-  thead tr:nth-of-type(2) th {
-    top: 21px;
-  }
+
   th {
     position: sticky;
     background-color: white;
     z-index: 2;
   }
+
   th,
   td {
     white-space: nowrap;
@@ -48,11 +38,28 @@ const tableStyle = css`
     :last-child {
       border-right: 0;
     }
+
     button {
       background-color: transparent;
       border: none;
       padding: 0 5px;
     }
+  }
+
+  tr {
+    :last-child {
+      td {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  thead tr:nth-of-type(1) th {
+    top: 0;
+  }
+
+  thead tr:nth-of-type(2) th {
+    top: 21px;
   }
 `;
 

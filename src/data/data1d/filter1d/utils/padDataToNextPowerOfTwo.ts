@@ -1,12 +1,12 @@
 import { xSequentialFill } from 'ml-spectra-processing';
 
-import { Datum1D } from '../../../types/data1d';
+import { Data1D, Datum1D } from '../../../types/data1d';
 
 export function padDataToNextPowerOfTwo(
   datum1D: Datum1D,
   digitalFilterApplied: boolean,
 ) {
-  const { x, re, im } = datum1D.data;
+  const { x, re, im } = datum1D.data as Required<Data1D>;
   const size = nextPowerOfTwo(x.length);
 
   let newRE = new Float64Array(size);

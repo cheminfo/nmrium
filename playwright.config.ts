@@ -24,6 +24,7 @@ const config: PlaywrightTestConfig = {
     contextOptions: {
       strictSelectors: true,
     },
+    trace: 'retain-on-failure',
   },
   webServer: {
     command: process.env.CI

@@ -1,4 +1,7 @@
+import lodashGet from 'lodash/get';
 import { useMemo, CSSProperties } from 'react';
+import { IoColorPaletteOutline } from 'react-icons/io5';
+import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -7,12 +10,17 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { ActiveSpectrum } from '../../reducer/Reducer';
-import { DELETE_SPECTRA } from '../../reducer/types/Types';
+import {
+  DELETE_SPECTRA,
+  ORDER_SPECTRA,
+  RECOLOR_SPECTRA_COLOR,
+} from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import {
   JpathTableColumn,
   PredefinedSpectraColumn,
   PredefinedTableColumn,
+  SpectraTableColumn,
 } from '../../workspaces/Workspace';
 
 import ColorIndicator from './base/ColorIndicator';
@@ -26,6 +34,16 @@ function formatValueAsHTML(value) {
     value = value.replace(/(?<value>\d+)/g, '<sub>$<value></sub>');
   }
   return value;
+}
+
+function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
+  const result = {};
+  if (activeSpectra) {
+    for (const activeSpectrum of activeSpectra) {
+      result[activeSpectrum.id] = true;
+    }
+  }
+  return result;
 }
 
 export const SpectraTableButtonStyle: CSSProperties = {
@@ -46,7 +64,7 @@ const jPathColumnStyle: CSSProperties = {
 
 interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
-  activeSpectrum: ActiveSpectrum | null;
+  activeSpectra: ActiveSpectrum[] | null;
   onOpenSettingModal: (event: Event, data: Datum1D | Datum2D) => void;
   onChangeActiveSpectrum: (event: Event, data: Datum1D | Datum2D) => void;
   nucleus: string;
@@ -57,10 +75,18 @@ const columnStyle = {
   paddingBottom: 0,
 };
 
+const options: DropdownMenuProps<string>['options'] = [
+  {
+    label: 'Recolor based on distinct value',
+    type: 'option',
+    icon: <IoColorPaletteOutline />,
+  },
+];
+
 export function SpectraTable(props: SpectraTableProps) {
   const {
     data,
-    activeSpectrum,
+    activeSpectra,
     onChangeVisibility,
     onOpenSettingModal,
     onChangeActiveSpectrum,
@@ -69,6 +95,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const alert = useAlert();
   const dispatch = useDispatch();
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
+  const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
 
   const COLUMNS: Record<
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -176,7 +203,7 @@ export function SpectraTable(props: SpectraTableProps) {
   );
 
   function handleActiveRow(row) {
-    return row?.original.id === activeSpectrum?.id;
+    return activeSpectraObj?.[row?.original.id] || false;
   }
 
   const tableColumns = useMemo(() => {
@@ -188,14 +215,15 @@ export function SpectraTable(props: SpectraTableProps) {
         if (name && COLUMNS[name]) {
           columns.push({
             ...COLUMNS[name],
-            Header: col.label,
+            Header: () => <ColumnHeader label={col.label} col={col} />,
+            id: name,
           });
         } else {
           const path = (col as JpathTableColumn)?.jpath;
           columns.push({
-            Header: col.label,
-            accessor: path as any,
-            id: `${index}${path}`,
+            Header: () => <ColumnHeader label={col.label} col={col} />,
+            accessor: (row) => lodashGet(row, path, ''),
+            id: `${index}`,
             style: jPathColumnStyle,
           });
         }
@@ -205,12 +233,25 @@ export function SpectraTable(props: SpectraTableProps) {
     return columns;
   }, [COLUMNS, spectraPreferences.columns]);
 
+  function handleSortEnd(data) {
+    dispatch({
+      type: ORDER_SPECTRA,
+      payload: {
+        data,
+      },
+    });
+  }
+
+  function handleRowStyle(data) {
+    return {
+      base: activeSpectraObj?.[data?.original.id] ? { opacity: 0.2 } : {},
+      activated: { opacity: 1 },
+    };
+  }
+
   return (
     <ReactTable
-      rowStyle={{
-        base: activeSpectrum?.id ? { opacity: 0.2 } : {},
-        activated: { opacity: 1 },
-      }}
+      rowStyle={handleRowStyle}
       activeRow={handleActiveRow}
       data={data}
       columns={tableColumns}
@@ -220,6 +261,33 @@ export function SpectraTable(props: SpectraTableProps) {
       enableVirtualScroll
       approxItemHeight={26}
       context={contextMenu}
+      onSortEnd={handleSortEnd}
     />
   );
 }
+
+const ColumnHeader = ({
+  label,
+  col,
+}: {
+  label: string;
+  col: SpectraTableColumn;
+}) => {
+  const dispatch = useDispatch();
+
+  function selectHandler() {
+    if (col?.jpath) {
+      dispatch({ type: RECOLOR_SPECTRA_COLOR, payload: { jpath: col?.jpath } });
+    }
+  }
+
+  return (
+    <DropdownMenu
+      trigger="contextMenu"
+      options={options}
+      onSelect={selectHandler}
+    >
+      <div>{label}</div>
+    </DropdownMenu>
+  );
+};

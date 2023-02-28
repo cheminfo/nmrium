@@ -1,12 +1,12 @@
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { useChartData } from '../context/ChartContext';
-import { useActiveSpectrum } from '../reducer/Reducer';
+import { useActiveSpectra } from '../hooks/useActiveSpectra';
 
 import Line from './Line';
 
 function LinesSeries() {
   const { data, tempData, displayerKey, xDomains } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
+  const activeSpectra = useActiveSpectra();
   let _data = tempData || data;
 
   return (
@@ -24,7 +24,9 @@ function LinesSeries() {
           </g>
         ))}
 
-      {activeSpectrum?.id && <use href={`#${activeSpectrum?.id}`} />}
+      {activeSpectra?.map((activeSpectrum) => (
+        <use key={activeSpectrum.id} href={`#${activeSpectrum.id}`} />
+      ))}
     </g>
   );
 }

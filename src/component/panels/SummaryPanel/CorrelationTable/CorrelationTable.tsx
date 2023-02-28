@@ -12,6 +12,7 @@ const tableStyle = css`
   overflow: auto;
   height: 100%;
   display: block;
+
   table {
     border-spacing: 0;
     border: 1px solid #dedede;
@@ -19,16 +20,7 @@ const tableStyle = css`
     font-size: 12px;
     height: 100%;
   }
-  tr {
-    :last-child {
-      td {
-        border-bottom: 0;
-      }
-    }
-  }
-  thead tr {
-    background-color: white !important;
-  }
+
   th {
     position: sticky;
     background-color: white;
@@ -47,10 +39,23 @@ const tableStyle = css`
     :last-child {
       border-right: 0;
     }
+
     button {
       background-color: transparent;
       border: none;
     }
+  }
+
+  tr {
+    :last-child {
+      td {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  thead tr {
+    background-color: white !important;
   }
 `;
 

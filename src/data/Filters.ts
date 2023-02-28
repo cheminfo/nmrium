@@ -1,5 +1,4 @@
 export * as apodization from './data1d/filter1d/apodization';
-export * as autoPhaseCorrection from './data1d/filter1d/autoPhaseCorrection';
 export * as baselineCorrection from './data1d/filter1d/baselineCorrection';
 export * as centerMean from './data1d/filter1d/centerMean';
 export * as digitalFilter from './data1d/filter1d/digitalFilter';
