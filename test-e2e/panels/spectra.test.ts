@@ -389,7 +389,7 @@ test('show/hide spectrum', async ({ page }) => {
     );
   });
 });
-test.only('Multiple spectra analysis', async ({ page }) => {
+test('Multiple spectra analysis', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open Coffee spectrum and check 13 spectra', async () => {
@@ -412,65 +412,41 @@ test.only('Multiple spectra analysis', async ({ page }) => {
       ).toBeVisible();
     }
   });
-  await test.step('Check Recolour', async () => {
+  await test.step('Check spectra colors', async () => {
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
+  });
+  await test.step('Check Recolour based on spectrum name', async () => {
     await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
       button: 'right',
     });
     await nmrium.page.click('text="Recolor based on distinct value"');
-    const spectraColors = [
-      'FFB300',
-      '803E75',
-      'FF6800',
-      'A6BDD7',
-      'C10020',
-      'CEA262',
-      '817066',
-      '007D34',
-      'F6768E',
-      '00538A',
-      'FF7A5C',
-      '53377A',
-      'FF8E00',
-    ];
-
-    const uniqueColors = [...new Set(spectraColors)];
-    expect(uniqueColors).toHaveLength(13);
-    for (const color of spectraColors) {
-      await expect(
-        nmrium.page.locator(
-          `data-test-id=spectrum-line >> _react=Line[display.color="#${color}"]`,
-        ),
-      ).toBeVisible();
-    }
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
+  });
+  await test.step('Check recolour based on pulse', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Pulse"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
+  });
+  await test.step('Check again recolour based on spectrum name', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
+  });
+  await test.step('Check recolour based on solvent', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Solvent"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
   });
   await test.step('Check Recolour BarButton', async () => {
     await nmrium.page.click(
       '_react=SpectrumsTabs >> _react=BarButton[toolTip="Recolor spectra"]',
     );
-    const spectraColors = [
-      'C10020',
-      '007D34',
-      '803E75',
-      'FF6800',
-      'B32851',
-      '7F180D',
-      '232C16',
-      'A6BDD7',
-      'CEA262',
-      '817066',
-      'FF8E00',
-      'F6768E',
-      '00538A',
-    ];
-
-    const uniqueColors = [...new Set(spectraColors)];
-    expect(uniqueColors).toHaveLength(13);
-    for (const color of spectraColors) {
-      await expect(
-        nmrium.page.locator(
-          `data-test-id=spectrum-line >> _react=Line[display.color="#${color}"]`,
-        ),
-      ).toBeVisible();
-    }
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
 });

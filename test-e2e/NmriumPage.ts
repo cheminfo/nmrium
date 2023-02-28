@@ -52,7 +52,23 @@ export default class NmriumPage {
       (await this.viewerLocator.boundingBox()) as BoundingBox;
     await this.page.mouse.move(x + width / 2, y + height / 2);
   }
-
+  public async getNumberOfDistinctColors() {
+    const Lines = this.page.locator(
+      `data-test-id=spectrum-line >> _react=Line`,
+    );
+    // get all lines from locator
+    const lines = await Lines.all();
+    // get all colors from lines
+    const colors = await Promise.all(
+      lines.map(async (line) => {
+        const color = await line.getAttribute('stroke');
+        return color;
+      }),
+    );
+    // remove duplicates
+    const distinctColors = [...new Set(colors)];
+    return distinctColors.length;
+  }
   public async applyPhaseCorrection(
     options: {
       keyboard?: boolean;
