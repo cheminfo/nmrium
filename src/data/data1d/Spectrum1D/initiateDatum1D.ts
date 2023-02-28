@@ -27,6 +27,7 @@ export function initiateDatum1D(
   datum.selector = spectrum?.selector || {};
 
   datum.display = {
+    name: spectrum.display?.name || v4(),
     isVisible: true,
     isRealSpectrumVisible: true,
     ...spectrum.display,

@@ -330,7 +330,7 @@ export function getDataAsString(
           if (name) {
             switch (name) {
               case 'name':
-                result += `${spectrum.info.name}\t`;
+                result += `${spectrum.display.name}\t`;
                 break;
               case 'solvent':
                 result += `${spectrum.info.solvent || `null`}\t`;
