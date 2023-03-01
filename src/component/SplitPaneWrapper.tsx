@@ -4,10 +4,16 @@ import { usePreferences } from './context/PreferencesContext';
 
 export function SplitPaneWrapper({ children }) {
   const { current, dispatch } = usePreferences();
-  let { general: { verticalSplitterPosition, verticalSplitterCloseThreshold }, display: { general = {} } } = current
+  const {
+    general: { verticalSplitterPosition, verticalSplitterCloseThreshold },
+    display: { general = {} },
+  } = current;
 
   function resizeHandler(position: SplitPaneSize) {
-    dispatch({ type: "SET_VERTICAL_SPLITTER_POSITION", payload: { value: position } })
+    dispatch({
+      type: 'SET_VERTICAL_SPLITTER_POSITION',
+      payload: { value: position },
+    });
   }
 
   return (
@@ -15,7 +21,9 @@ export function SplitPaneWrapper({ children }) {
       initialSize={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
-      initialClosed={general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold}
+      initialClosed={
+        general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold
+      }
       onResize={resizeHandler}
     >
       {children}
