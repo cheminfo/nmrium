@@ -13,11 +13,6 @@ const styles = css`
   button:focus {
     outline: none;
   }
-  .header {
-    font-size: 15px;
-    color: #464646;
-    user-select: none;
-  }
   .container {
     padding: 20px;
   }
@@ -69,10 +64,7 @@ const styles = css`
   }
 
   .header {
-    height: 34px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    padding: 5px;
+    color: #464646;
 
     span {
       color: #464646;
