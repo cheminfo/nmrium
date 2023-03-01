@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrFt } from 'cheminfo-font';
+import { Molecule as OCLMolecule } from 'openchemlib/full';
 import { CSSProperties, useCallback } from 'react';
 import {
   FaCopy,
@@ -75,9 +76,14 @@ const atomLabelStyle: CSSProperties = {
 
 const MOL_EXPORT_MENU = [
   {
-    id: 'molfile',
+    id: 'molfileV3',
     icon: <FaCopy />,
-    label: 'Copy as molfile',
+    label: 'Copy as molfile V3',
+  },
+  {
+    id: 'molfileV2',
+    icon: <FaCopy />,
+    label: 'Copy as molfile V2',
   },
   {
     id: 'png',
@@ -133,24 +139,32 @@ export default function MoleculePanelHeader({
     alert.success('MOL copied as PNG to clipboard');
   }, [rootRef, alert, currentIndex]);
 
-  const saveAsMolHandler = useCallback(() => {
-    if (molecules[currentIndex]) {
-      void copyTextToClipboard(molecules[currentIndex].molfile).then((flag) => {
+  const saveAsMolHandler = useCallback(
+    (molfile) => {
+      void copyTextToClipboard(molfile).then((flag) => {
         if (flag) {
           alert.success('MOLFile copied to clipboard');
         } else {
           alert.error('copied not completed');
         }
       });
-    }
-  }, [alert, currentIndex, molecules]);
+    },
+    [alert],
+  );
 
   const exportHandler = useCallback(
     ({ id }) => {
       switch (id) {
-        case 'molfile':
-          saveAsMolHandler();
+        case 'molfileV3': {
+          const molfile = molecules?.[currentIndex].molfile || '';
+          saveAsMolHandler(molfile);
           break;
+        }
+        case 'molfileV2': {
+          const molfile = molecules?.[currentIndex].molfile || '';
+          saveAsMolHandler(OCLMolecule.fromMolfile(molfile).toMolfile());
+          break;
+        }
         case 'png':
           saveAsPNGHandler();
           break;
@@ -161,7 +175,13 @@ export default function MoleculePanelHeader({
           break;
       }
     },
-    [saveAsMolHandler, saveAsPNGHandler, saveAsSVGHandler],
+    [
+      currentIndex,
+      molecules,
+      saveAsMolHandler,
+      saveAsPNGHandler,
+      saveAsSVGHandler,
+    ],
   );
 
   const handlePaste = useCallback(() => {
