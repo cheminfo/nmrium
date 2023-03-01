@@ -22,8 +22,9 @@ export function SplitPaneWrapper({ children }) {
 
   return (
     <SplitPane
-      key={`${general?.hidePanelOnLoad ? 'true' : 'false'
-        }${verticalSplitterPosition}`}
+      key={`${
+        general?.hidePanelOnLoad ? 'true' : 'false'
+      }${verticalSplitterPosition}`}
       initialSize={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
