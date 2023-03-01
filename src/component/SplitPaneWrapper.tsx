@@ -12,12 +12,18 @@ export function SplitPaneWrapper({ children }) {
   function resizeHandler(position: SplitPaneSize) {
     dispatch({
       type: 'SET_VERTICAL_SPLITTER_POSITION',
-      payload: { value: position },
+      payload: {
+        value: `${Number(position.replace(/\D+$/g, '')).toFixed(
+          0,
+        )}px` as SplitPaneSize,
+      },
     });
   }
 
   return (
     <SplitPane
+      key={`${general?.hidePanelOnLoad ? 'true' : 'false'
+        }${verticalSplitterPosition}`}
       initialSize={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
