@@ -51,6 +51,8 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
 
   general: {
     dimmedSpectraOpacity: 0.1,
+    verticalSplitterPosition: '560px',
+    verticalSplitterCloseThreshold: 600,
   },
   formatting: {
     nuclei: {

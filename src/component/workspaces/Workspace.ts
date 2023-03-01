@@ -1,4 +1,5 @@
 import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
+import { SplitPaneSize } from 'react-science/ui';
 
 import { BaseFilter } from '../../data/FiltersManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
@@ -15,6 +16,8 @@ interface NucleusFormat {
 }
 export interface GeneralPreferences {
   dimmedSpectraOpacity: number;
+  verticalSplitterPosition: SplitPaneSize;
+  verticalSplitterCloseThreshold: number;
 }
 
 interface ColumnPreferences {
