@@ -7,12 +7,10 @@ import versionInfo from '../../versionInfo';
 import Logo from '../elements/Logo';
 
 const styles = css`
-  display: flex;
-  flex-direction: column;
-  user-select: none;
   button:focus {
     outline: none;
   }
+
   .container {
     padding: 20px;
   }
@@ -27,6 +25,7 @@ const styles = css`
     list-style-type: disc;
     margin-left: 20px;
   }
+
   span,
   li {
     user-select: text;
@@ -64,8 +63,6 @@ const styles = css`
   }
 
   .header {
-    color: #464646;
-
     span {
       color: #464646;
       font-size: 15px;
@@ -82,6 +79,10 @@ const styles = css`
       }
     }
   }
+
+  display: flex;
+  flex-direction: column;
+  user-select: none;
   width: 500px;
 `;
 
