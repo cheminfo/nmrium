@@ -99,7 +99,7 @@ const styles = {
     enableVirtualScroll: boolean,
     enableColumnsVirtualScroll,
   ): CSSProperties => {
-    const style: CSSProperties = {};
+    const style: CSSProperties = { tableLayout: 'auto' };
 
     if (enableVirtualScroll) {
       style.position = 'sticky';

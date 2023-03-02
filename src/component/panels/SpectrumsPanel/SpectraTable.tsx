@@ -55,11 +55,8 @@ export const SpectraTableButtonStyle: CSSProperties = {
 };
 
 const jPathColumnStyle: CSSProperties = {
-  width: '10%',
+  minWidth: '80px',
   maxWidth: 0,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
 };
 
 interface SpectraTableProps extends OnChangeVisibilityEvent {
@@ -107,7 +104,8 @@ export function SpectraTable(props: SpectraTableProps) {
         id: 'hide-show-spectrum',
         Header: '',
         style: {
-          width: '20px',
+          width: '35px',
+          maxWidth: '35px',
           ...columnStyle,
         },
         Cell: ({ row }) => {
@@ -121,7 +119,7 @@ export function SpectraTable(props: SpectraTableProps) {
       },
       name: {
         Header: '',
-        style: { width: '50%', maxWidth: 0, ...columnStyle },
+        style: { maxWidth: 0, minWidth: '200px', ...columnStyle },
         accessor: (row) => row.info.name,
         Cell: ({ row }) => {
           return <SpectrumName data={row.original} />;
@@ -129,7 +127,7 @@ export function SpectraTable(props: SpectraTableProps) {
       },
       solvent: {
         Header: '',
-        style: columnStyle,
+        style: { ...columnStyle, ...jPathColumnStyle },
         accessor: (row) => row.info.solvent,
         Cell: ({ row }) => {
           const info: any = row.original.info;
@@ -150,6 +148,7 @@ export function SpectraTable(props: SpectraTableProps) {
         id: 'spectrum-actions',
         style: {
           width: '30px',
+          maxWidth: '30px',
           ...columnStyle,
         },
         Cell: ({ row }) => {
@@ -287,7 +286,15 @@ const ColumnHeader = ({
       options={options}
       onSelect={selectHandler}
     >
-      <div>{label}</div>
+      <div
+        style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {label}
+      </div>
     </DropdownMenu>
   );
 };
