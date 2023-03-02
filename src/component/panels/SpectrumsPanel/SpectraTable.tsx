@@ -105,7 +105,7 @@ export function SpectraTable(props: SpectraTableProps) {
         Header: '',
         style: {
           width: '35px',
-          maxWidth: '35px',
+          maxWidth: '55px',
           ...columnStyle,
         },
         Cell: ({ row }) => {
