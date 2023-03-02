@@ -292,6 +292,8 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
         <Button.Action
           size="xSmall"
           onClick={handleReset}
+          toolTip="Reset workspace preferences"
+          tooltipOrientation="horizontal"
           style={{
             marginLeft: '10px',
           }}
@@ -303,6 +305,8 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           size="xSmall"
           fill="outline"
           onClick={handleCopyWorkspace}
+          toolTip="Copy workspace preferences"
+          tooltipOrientation="horizontal"
           style={{
             marginLeft: '10px',
           }}
@@ -313,6 +317,8 @@ function GeneralSettings({ onClose }: GeneralSettingsProps) {
           size="xSmall"
           fill="outline"
           onClick={handlePastWorkspace}
+          toolTip="Past workspace preferences"
+          tooltipOrientation="horizontal"
           style={{
             marginLeft: '10px',
           }}
