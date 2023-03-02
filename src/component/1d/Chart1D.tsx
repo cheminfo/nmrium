@@ -1,4 +1,5 @@
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
+import { usePreferences } from '../context/PreferencesContext';
 
 import ApodizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
@@ -15,12 +16,18 @@ import Ranges from './ranges/Ranges';
 import BaseLineZones from './tool/BaseLineZones';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
+  const {
+    current: {
+      general: { shapeRendering },
+    },
+  } = usePreferences();
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
       id="nmrSVG"
+      shapeRendering={shapeRendering}
     >
       <defs>
         <clipPath id={`${displayerKey}clip-chart-1d`}>

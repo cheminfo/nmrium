@@ -14,10 +14,17 @@ interface NucleusFormat {
   ppm: string;
   hz: string;
 }
+
+export type ShapeRendering =
+  | 'auto'
+  | 'optimizeSpeed'
+  | 'crispEdges'
+  | 'geometricPrecision';
 export interface GeneralPreferences {
   dimmedSpectraOpacity: number;
   verticalSplitterPosition: SplitPaneSize;
   verticalSplitterCloseThreshold: number;
+  shapeRendering: ShapeRendering;
 }
 
 interface ColumnPreferences {
