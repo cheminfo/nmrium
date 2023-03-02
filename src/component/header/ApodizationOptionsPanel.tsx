@@ -98,7 +98,7 @@ function ApodizationOptionsInnerPanel(
         validationSchema={validationSchema}
       >
         <>
-          <Label title="Line broadening : " style={headerLabelStyle}>
+          <Label title="LB: " style={headerLabelStyle}>
             <FormikInput
               type="number"
               name="lineBroadening"
@@ -108,7 +108,7 @@ function ApodizationOptionsInnerPanel(
               debounceTime={250}
             />
           </Label>
-          <Label title="Gauss broadening :" style={headerLabelStyle}>
+          <Label title="Gauss broadening:" style={headerLabelStyle}>
             <FormikInput
               type="number"
               name="gaussBroadening"
@@ -118,10 +118,7 @@ function ApodizationOptionsInnerPanel(
               debounceTime={250}
             />
           </Label>
-          <Label
-            title="lineBroadeningCenter [0 - 1] : "
-            style={headerLabelStyle}
-          >
+          <Label title="LB center [0-1]: " style={headerLabelStyle}>
             <FormikInput
               type="number"
               name="lineBroadeningCenter"
@@ -132,7 +129,7 @@ function ApodizationOptionsInnerPanel(
             />
           </Label>
           <Label
-            title="live preview "
+            title="Live preview "
             htmlFor="livePreview"
             style={{ label: { padding: '0 5px' } }}
           >

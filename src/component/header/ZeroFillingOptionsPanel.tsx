@@ -98,7 +98,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
         />
       </Label>
       <Label
-        title="live preview "
+        title="Live preview "
         htmlFor="livePreview"
         style={headerLabelStyle}
       >
