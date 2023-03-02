@@ -141,7 +141,7 @@ function ApodizationOptionsInnerPanel(
             />
           </Label>
           <Label
-            title="live preview "
+            title="Live preview "
             htmlFor="livePreview"
             style={{ label: { padding: '0 5px' } }}
           >
