@@ -46,9 +46,14 @@ const customWorkspaces: CustomWorkspaces = {
         zoomOut: true,
         zoom: true,
         peakPicking: false,
+        autoRangeAndZonePicking: false,
       },
     },
-    general: { dimmedSpectraOpacity: 0.1 },
+    general: {
+      dimmedSpectraOpacity: 0.1,
+      verticalSplitterPosition: '560px',
+      verticalSplitterCloseThreshold: 600,
+    },
     formatting: {
       nuclei: {
         '1h': { name: '1H', ppm: '0.00', hz: '0.00' },
@@ -73,11 +78,12 @@ const customWorkspaces: CustomWorkspaces = {
     },
     nmrLoaders: {
       general: {
-        keepFID: false,
-        keepFT: true,
         keep1D: true,
         keep2D: false,
         onlyReal: true,
+        dataSelection: 'preferFT',
+        keepFID: false,
+        keepFT: true,
       },
       bruker: {
         onlyFirstProcessedData: true,
@@ -85,8 +91,66 @@ const customWorkspaces: CustomWorkspaces = {
         experimentNumbers: '',
       },
     },
+    infoBlock: {
+      visible: false,
+      fields: [
+        { label: 'name', jpath: ['display', 'name'], visible: true },
+        {
+          label: 'Number Of Scan',
+          jpath: ['info', 'numberOfScans'],
+          visible: true,
+        },
+        {
+          label: 'Acquisition Time',
+          jpath: ['info', 'acquisitionTime'],
+          visible: true,
+        },
+        {
+          label: 'Pulse Sequence',
+          jpath: ['info', 'pulseSequence'],
+          visible: true,
+        },
+      ],
+    },
+    onLoadProcessing: {
+      '1H': [
+        {
+          name: 'digitalFilter',
+          label: 'Digital Filter',
+          value: {},
+          flag: true,
+        },
+        { name: 'apodization', label: 'Apodization', value: {}, flag: false },
+        { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
+        { name: 'fft', label: 'FFT', value: {}, flag: true },
+        {
+          name: 'phaseCorrection',
+          label: 'Phase correction',
+          value: {},
+          flag: true,
+        },
+      ],
+      '13C': [
+        {
+          name: 'digitalFilter',
+          label: 'Digital Filter',
+          value: {},
+          flag: true,
+        },
+        { name: 'apodization', label: 'Apodization', value: {}, flag: true },
+        { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
+        { name: 'fft', label: 'FFT', value: {}, flag: true },
+        {
+          name: 'phaseCorrection',
+          label: 'Phase correction',
+          value: {},
+          flag: true,
+        },
+      ],
+    },
     label: 'Metabolomics',
     version: 1,
+    source: 'custom',
   },
 };
 
