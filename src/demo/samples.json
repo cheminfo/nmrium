@@ -3,12 +3,65 @@
     "title": "Empty"
   },
   {
-    "groupName": "General",
+    "groupName": "Cytisine",
     "children": [
       {
         "file": "./data/cytisine/1H.json",
-        "title": "1H spectrum test"
+        "title": "1H spectrum"
       },
+      {
+        "file": "./data/cytisine/13CFID.json",
+        "title": "13C FID"
+      },
+      {
+        "file": "./data/cytisine/Big13C.json",
+        "title": "13C"
+      },
+      {
+        "file": "./data/cytisine/Dept.json",
+        "title": "DEPT"
+      },
+      {
+        "file": "./data/cytisine/1D.json",
+        "title": "1D spectra (H + C)"
+      },
+      {
+        "file": "./data/cytisine/processed13C.json",
+        "title": "Processed 13C FID"
+      },
+      {
+        "file": "./data/cytisine/2d/all.json",
+        "title": "Full cytisine"
+      },
+      {
+        "file": "./data/cytisine/2d/cosy.json",
+        "title": "2D cosy"
+      },
+      {
+        "file": "./data/cytisine/2d/hsqc.json",
+        "title": "HSQC cytisine + 1D spectra"
+      },
+      {
+        "file": "./data/cytisine/2d/hmbc-only.json",
+        "title": "HMBC only cytisine"
+      },
+      {
+        "file": "./data/cytisine/2d/hsqc_hmbc.json",
+        "title": "HSQC / HMBC cytisine"
+      },
+      {
+        "file": "./data/cytisine/2d/jresolv.json",
+        "title": "jResolv cytisine"
+      },
+      {
+        "file": "./data/cytisine/2d/HMBC_HN_Cytisin.json",
+        "title": "1H, 15N HMQC cytisine"
+      }
+    ]
+  },
+  {
+    "groupName": "Simple spectra",
+    "children": [
       {
         "file": "./data/ethylbenzene/1h.json",
         "title": "1H ethylbenzene"
@@ -22,126 +75,75 @@
         "title": "FULL ethylbenzene"
       },
       {
-        "file": "./data/acd/jcampWithAssignment.json",
-        "title": "JCAMP-DX with assignment"
-      },
-      {
-        "file": "./data/cytisine/2d/jresolv.json",
-        "title": "jResolv cytisine"
-      },
-      {
-        "file": "./data/cytisine/2d/hsqc.json",
-        "title": "HSQC cytisine"
-      },
-      {
-        "file": "./data/cytisine/2d/hmbc-only.json",
-        "title": "HMBC only cytisine"
-      },
-      {
-        "file": "./data/cytisine/2d/hsqc_hmbc.json",
-        "title": "HSQC / HMBC cytisine"
-      },
-      {
-        "file": "./data/cytisine/2d/all.json",
-        "title": "Full cytisine"
-      },
-      {
-        "file": "./data/cytisine/2d/HMBC_HN_Cytisin.json",
-        "title": "1H, 15N HMQC cytisine"
-      },
-      {
-        "file": "./data/50-78-2/linked-jcamp.json",
-        "title": "Linked jcamp"
-      },
-      {
-        "file": "./data/nmriumFromSource.json",
-        "title": "Zip file as source with multiple spectra"
-      },
-      {
-        "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
-        "title": "Bruker Directory without expno level"
-      },
-      {
-        "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
-        "title": "FileCollection with link to jcamp"
-      },
-      {
-        "file": "./data/aspirin/bruker_aspirin_zip.json",
-        "title": "FileCollection with link to zip"
-      },
-      {
-        "file": "./data/aspirin/aspirin_bruker_files.json",
-        "title": "FileCollection with bruker folder"
-      },
-      {
-        "file": "./data/cytisine/1Honly.json",
-        "title": "1H only jcamp"
-      },
-      {
-        "file": "./data/cytisine/2d/cosy.json",
-        "title": "2D cosy"
-      },
-      {
-        "file": "./data/cytisine/1D.json",
-        "title": "1D spectra test"
-      },
-      {
-        "file": "./data/ethylvinylether/1h.json",
-        "title": "1H ethylvinylether"
-      },
-      {
-        "file": "./data/cytisine/13CFID.json",
-        "title": "13C Spectrum"
-      },
-      {
-        "file": "./data/cytisine/processed13C.json",
-        "title": "Processed 13C Spectrum"
-      },
-      {
-        "file": "./data/cytisine/Big13C.json",
-        "title": "Big 13C"
-      },
-      {
-        "file": "./data/xtc/XTC.json",
-        "title": "XTC"
-      },
-      {
-        "file": "./data/xtc/XTClight.json",
-        "title": "XTC just links"
-      },
-      {
-        "file": "./data/coffee/Coffee.json",
-        "title": "Coffee"
+        "file": "./data/19f/19f.json",
+        "title": "19F with baseline problems"
       },
       {
         "file": "./data/108-21-4/CoupledDecoupled13C.json",
         "title": "13C Coupled / Decoupled"
       },
       {
-        "file": "./data/cytisine/Dept.json",
-        "title": "DEPT"
-      },
-      {
-        "file": "./data/19f/19f.json",
-        "title": "19F with baseline problems"
-      },
-      {
-        "file": "./data/t1/t1.json",
-        "title": "T1 samples (1H + 13C)"
-      },
-      {
-        "file": "./data/t2/t2.json",
-        "title": "T2 samples (1H + 13C)"
-      },
-      {
-        "file": "",
-        "title": "Two instances",
-        "view": "TwoInstances"
+        "file": "./data/ethylvinylether/1h.json",
+        "title": "1H ethylvinylether"
       }
     ]
   },
   {
-    "groupName": "Simulate",
+    "groupName": "Multiple spectra",
+    "children":[      {
+      "file": "./data/xtc/XTC.json",
+      "title": "XTC"
+    },
+    {
+      "file": "./data/xtc/XTClight.json",
+      "title": "XTC just links"
+    },
+    {
+      "file": "./data/coffee/Coffee.json",
+      "title": "Coffee"
+    },      {
+      "file": "./data/t1/t1.json",
+      "title": "T1 samples (1H + 13C)"
+    },
+    {
+      "file": "./data/t2/t2.json",
+      "title": "T2 samples (1H + 13C)"
+    }]
+  },
+  {
+    "groupName": "Various formats",
+    "children":[      {
+      "file": "./data/nmriumFromSource.json",
+      "title": "Zip file as source with multiple spectra"
+    },
+    {
+      "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
+      "title": "Bruker Directory without expno level"
+    },
+    {
+      "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
+      "title": "FileCollection with link to jcamp"
+    },
+    {
+      "file": "./data/aspirin/bruker_aspirin_zip.json",
+      "title": "FileCollection with link to zip"
+    },
+    {
+      "file": "./data/aspirin/aspirin_bruker_files.json",
+      "title": "FileCollection with bruker folder"
+    } ,      {
+      "file": "./data/50-78-2/linked-jcamp.json",
+      "title": "Linked jcamp"
+    },      {
+      "file": "./data/acd/jcampWithAssignment.json",
+      "title": "JCAMP-DX with assignment"
+    },
+    {
+      "file": "./data/cytisine/1Honly.json",
+      "title": "1H no meta info"
+    } ]},
+  {
+    "groupName": "Simulation",
     "children": [
       {
         "file": "./data/tests/simulated/d2-5-8-changingAll.json",
@@ -217,6 +219,11 @@
         "view": "Exam"
       },
       {
+        "file": "",
+        "title": "Two instances",
+        "view": "TwoInstances"
+      },
+      {
         "title": "Prediction",
         "view": "Prediction"
       },
@@ -240,7 +247,7 @@
       },
       {
         "file": "./data/cytisine/1H.json",
-        "title": "1H spectrum test",
+        "title": "1H spectrum cytisine",
         "view": "Test"
       },
       {

@@ -132,7 +132,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Simple spectra');
     await nmrium.page.click('li >> text=FULL ethylbenzene');
   });
 
@@ -190,7 +190,7 @@ test('Multiplicity should be visible', async ({ page }) => {
 test('Range state', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Various formats');
     await nmrium.page.click('li >> text=Linked jcamp');
   });
 

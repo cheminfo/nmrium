@@ -112,7 +112,7 @@ test('2d spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open COSY ethylbenzene 2D spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Simple spectra');
     await nmrium.page.click('li >> text=COSY ethylbenzene');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
@@ -348,7 +348,7 @@ test('show/hide spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open Coffee spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Multiple spectra');
     await nmrium.page.click('li >> text=Coffee');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
