@@ -109,9 +109,9 @@ test('Automatic peak picking should work', async ({ page }) => {
 });
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  await test.step('Open Processed 13C Spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
-    await nmrium.page.click('li >> text=Processed 13C Spectrum');
+  await test.step('Open Processed 13C FID', async () => {
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=Processed 13C FID');
 
     // wait specturm to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
@@ -143,8 +143,8 @@ test('Processed spectra peaks', async ({ page }) => {
 test('Check no negative peaks in processed spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 13c spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
-    await nmrium.page.click('li >> text=Processed 13C Spectrum');
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=Processed 13C FID');
 
     // wait specturm to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
