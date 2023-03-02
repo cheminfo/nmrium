@@ -18,7 +18,7 @@ import BaseLineZones from './tool/BaseLineZones';
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   const {
     current: {
-      general: { shapeRendering },
+      general: { spectraRendering },
     },
   } = usePreferences();
   return (
@@ -27,7 +27,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       width={width}
       height={height}
       id="nmrSVG"
-      shapeRendering={shapeRendering}
+      shapeRendering={spectraRendering}
     >
       <defs>
         <clipPath id={`${displayerKey}clip-chart-1d`}>

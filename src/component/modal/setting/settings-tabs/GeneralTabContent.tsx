@@ -44,10 +44,10 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Rendering">
-        <Label title="Shape rendering " htmlFor="general.shapeRendering">
+        <Label title="Spectra rendering ">
           <FormikSelect
             items={SHAPE_RENDERING}
-            name="general.shapeRendering"
+            name="general.spectraRendering"
             style={{ width: '150px' }}
           />
         </Label>

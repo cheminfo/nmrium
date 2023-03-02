@@ -53,7 +53,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     dimmedSpectraOpacity: 0.1,
     verticalSplitterPosition: '560px',
     verticalSplitterCloseThreshold: 600,
-    shapeRendering: 'auto',
+    spectraRendering: 'auto',
   },
   formatting: {
     nuclei: {

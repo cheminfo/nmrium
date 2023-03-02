@@ -15,7 +15,7 @@ interface NucleusFormat {
   hz: string;
 }
 
-export type ShapeRendering =
+export type spectraRendering =
   | 'auto'
   | 'optimizeSpeed'
   | 'crispEdges'
@@ -24,7 +24,7 @@ export interface GeneralPreferences {
   dimmedSpectraOpacity: number;
   verticalSplitterPosition: SplitPaneSize;
   verticalSplitterCloseThreshold: number;
-  shapeRendering: ShapeRendering;
+  spectraRendering: spectraRendering;
 }
 
 interface ColumnPreferences {
