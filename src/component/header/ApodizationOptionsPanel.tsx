@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { useRef, memo } from 'react';
 import * as Yup from 'yup';
@@ -41,6 +43,27 @@ const initialValues = {
 interface ApodizationOptionsInnerPanelProps {
   filter: Filter | null;
 }
+
+const styles = css`
+  container-type: inline-size;
+
+  @container (max-width:800px) {
+    .small-label {
+      display: block;
+    }
+    .large-label {
+      display: none;
+    }
+  }
+  @container (min-width:800px) {
+    .small-label {
+      display: none;
+    }
+    .large-label {
+      display: block;
+    }
+  }
+`;
 
 function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
@@ -90,70 +113,81 @@ function ApodizationOptionsInnerPanel(
   }
 
   return (
-    <HeaderContainer>
-      <Formik
-        innerRef={formRef}
-        onSubmit={(values) => handleApplyFilter(values)}
-        initialValues={formData}
-        validationSchema={validationSchema}
-      >
-        <>
-          <Label title="Line broadening : " style={headerLabelStyle}>
-            <FormikInput
-              type="number"
-              name="lineBroadening"
-              min={0}
-              max={1}
-              style={inputStyle}
-              debounceTime={250}
-            />
-          </Label>
-          <Label title="Gauss broadening :" style={headerLabelStyle}>
-            <FormikInput
-              type="number"
-              name="gaussBroadening"
-              min={0}
-              max={1}
-              style={inputStyle}
-              debounceTime={250}
-            />
-          </Label>
-          <Label
-            title="lineBroadeningCenter [0 - 1] : "
-            style={headerLabelStyle}
-          >
-            <FormikInput
-              type="number"
-              name="lineBroadeningCenter"
-              min={0}
-              max={1}
-              style={inputStyle}
-              debounceTime={250}
-            />
-          </Label>
-          <Label
-            title="live preview "
-            htmlFor="livePreview"
-            style={{ label: { padding: '0 5px' } }}
-          >
-            <FormikCheckBox
-              name="livePreview"
-              onChange={disableLivePreviewHandler}
-            />
-          </Label>
+    <div css={styles}>
+      <HeaderContainer>
+        <Formik
+          innerRef={formRef}
+          onSubmit={(values) => handleApplyFilter(values)}
+          initialValues={formData}
+          validationSchema={validationSchema}
+        >
+          <>
+            <Label
+              title="Line broadening : "
+              shortTitle="LB :"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="lineBroadening"
+                min={0}
+                max={1}
+                style={inputStyle}
+                debounceTime={250}
+              />
+            </Label>
+            <Label
+              title="Gauss broadening :"
+              shortTitle="GB :"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="gaussBroadening"
+                min={0}
+                max={1}
+                style={inputStyle}
+                debounceTime={250}
+              />
+            </Label>
+            <Label
+              title="lineBroadeningCenter [0 - 1] : "
+              shortTitle="LB Center :"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="lineBroadeningCenter"
+                min={0}
+                max={1}
+                style={inputStyle}
+                debounceTime={250}
+              />
+            </Label>
+            <Label
+              title="live preview "
+              htmlFor="livePreview"
+              style={{ label: { padding: '0 5px' } }}
+            >
+              <FormikCheckBox
+                name="livePreview"
+                onChange={disableLivePreviewHandler}
+              />
+            </Label>
 
-          <FormikOnChange
-            onChange={(values) => handleApplyFilter(values, 'onChange')}
-            enableOnload
-          />
-        </>
-      </Formik>
+            <FormikOnChange
+              onChange={(values) => handleApplyFilter(values, 'onChange')}
+              enableOnload
+            />
+          </>
+        </Formik>
 
-      <ActionButtons
-        onDone={() => formRef.current?.submitForm()}
-        onCancel={handleCancelFilter}
-      />
-    </HeaderContainer>
+        <ActionButtons
+          onDone={() => formRef.current?.submitForm()}
+          onCancel={handleCancelFilter}
+        />
+      </HeaderContainer>
+    </div>
   );
 }
 

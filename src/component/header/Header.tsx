@@ -5,7 +5,7 @@ import {
   FaQuestionCircle,
   FaRegSave,
 } from 'react-icons/fa';
-import { Header, Toolbar } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
@@ -14,6 +14,7 @@ import {
   useWorkspacesList,
 } from '../context/PreferencesContext';
 import Button from '../elements/Button';
+import { Header } from '../elements/Header';
 import { LabelStyle } from '../elements/Label';
 import DropDownButton, {
   DropDownListItem,
@@ -122,7 +123,7 @@ function HeaderInner(props: HeaderInnerProps) {
   }
 
   return (
-    <Header>
+    <Header style={{ leftStyle: { flex: 1 } }}>
       <div
         style={{
           display: 'flex',
@@ -135,7 +136,9 @@ function HeaderInner(props: HeaderInnerProps) {
             <AboutUsModal />
           </Toolbar>
         </div>
-        <div className="toolOptionsPanel">{selectedPanel}</div>
+        <div className="toolOptionsPanel" style={{ flex: 1 }}>
+          {selectedPanel}
+        </div>
       </div>
       <div
         style={{
