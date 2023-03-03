@@ -31,6 +31,7 @@ import { options } from '../toolbar/ToolTypes';
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
+import { HeaderContainer } from './HeaderContainer';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
@@ -150,74 +151,72 @@ function HeaderInner(props: HeaderInnerProps) {
   }
 
   return (
-    <Header style={{ leftStyle: { flex: 1 } }}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-        css={styles}
-      >
-        <div>
-          <Toolbar orientation="horizontal">
-            <AboutUsModal />
-          </Toolbar>
-        </div>
-        <div className="toolOptionsPanel" style={{ flex: 1 }}>
-          {selectedPanel}
-        </div>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        {!hideGeneralSettings && (
-          <DropDownButton
-            data={workspacesList}
-            selectedKey={workspace.current}
-            onSelect={changeWorkspaceHandler}
-            renderItem={renderItem}
-          />
-        )}
-        <SaveButton />
+    <div css={styles}>
+      <Header style={{ leftStyle: { flex: 1 } }}>
+        <HeaderContainer
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <Toolbar orientation="horizontal">
+              <AboutUsModal />
+            </Toolbar>
+          </div>
+          <div className="toolOptionsPanel" style={{ flex: 1 }}>
+            {selectedPanel}
+          </div>
+        </HeaderContainer>
+        <HeaderContainer
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          {!hideGeneralSettings && (
+            <DropDownButton
+              data={workspacesList}
+              selectedKey={workspace.current}
+              onSelect={changeWorkspaceHandler}
+              renderItem={renderItem}
+              className="small-width-none"
+            />
+          )}
+          <SaveButton />
 
-        <div>
-          <Toolbar orientation="horizontal">
-            <Toolbar.Item
-              id="user-manual"
-              title="User manual"
-              onClick={() => window.open(docsBaseUrl, '_blank')}
-            >
-              <FaQuestionCircle />
-            </Toolbar.Item>
-            {!hideGeneralSettings && (
+          <div>
+            <Toolbar orientation="horizontal">
               <Toolbar.Item
-                id="general-settings"
-                onClick={openGeneralSettingsHandler}
-                title="General settings"
+                id="user-manual"
+                title="User manual"
+                onClick={() => window.open(docsBaseUrl, '_blank')}
               >
-                <FaWrench />
+                <FaQuestionCircle />
               </Toolbar.Item>
-            )}
+              {!hideGeneralSettings && (
+                <Toolbar.Item
+                  id="general-settings"
+                  onClick={openGeneralSettingsHandler}
+                  title="General settings"
+                >
+                  <FaWrench />
+                </Toolbar.Item>
+              )}
 
-            {!isFullscreen && (
-              <Toolbar.Item
-                id="full-screen"
-                onClick={onMaximize}
-                title="Full Screen"
-                className="windowButton"
-              >
-                <FaRegWindowMaximize />
-              </Toolbar.Item>
-            )}
-          </Toolbar>
-        </div>
-      </div>
-    </Header>
+              {!isFullscreen && (
+                <Toolbar.Item
+                  id="full-screen"
+                  onClick={onMaximize}
+                  title="Full Screen"
+                  className="windowButton"
+                >
+                  <FaRegWindowMaximize />
+                </Toolbar.Item>
+              )}
+            </Toolbar>
+          </div>
+        </HeaderContainer>
+      </Header>
+    </div>
   );
 }
 
@@ -234,6 +233,7 @@ function SaveButton() {
 
   return (
     <Button.Done
+      wrapperClassName="small-width-none"
       onClick={handleSave}
       fill="clear"
       style={{ fontSize: '1.4em', marginLeft: '5px' }}
