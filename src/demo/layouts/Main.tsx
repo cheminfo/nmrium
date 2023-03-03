@@ -80,6 +80,11 @@ function getFileExtension(url = '') {
   return url.slice(url.lastIndexOf('.') + 1);
 }
 
+export interface PageConfig {
+  width: string;
+  height: string;
+}
+
 const Main = () => {
   const [data, setRoutes] = useState<{
     isLoaded: boolean;
@@ -92,6 +97,10 @@ const Main = () => {
     status: 200,
     routes: [],
   });
+  const [pageConfig, setPageConfig] = useState<PageConfig>({
+    width: '100%',
+    height: '100%',
+  });
 
   const [dashBoardType, setDashBoardType] = useState('');
 
@@ -102,6 +111,9 @@ const Main = () => {
   const href = window.location.href;
   useEffect(() => {
     const qs = new URL(href).searchParams;
+    const width = qs.get('width') || '100';
+    const height = qs.get('height') || '100';
+    setPageConfig({ width, height });
     if (qs.has('sampleURL')) {
       const sampleURL = qs.get('sampleURL') as string;
       const extension = getFileExtension(sampleURL).toLowerCase();
@@ -181,9 +193,13 @@ const Main = () => {
       </div>
     </div>
   ) : dashBoardType && dashBoardType === 'single' ? (
-    <SingleDisplayerLayout path={data.path} />
+    <SingleDisplayerLayout path={data.path} pageConfig={pageConfig} />
   ) : (
-    <AdminLayout routes={data.routes} baseURL={data.baseURL} />
+    <AdminLayout
+      routes={data.routes}
+      baseURL={data.baseURL}
+      pageConfig={pageConfig}
+    />
   );
 };
 

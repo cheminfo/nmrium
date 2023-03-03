@@ -8,6 +8,8 @@ import Sidebar from '../Sidebar';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
 import { possibleViews } from '../views';
 
+import { PageConfig } from './Main';
+
 const mainPanelCss = css`
   position: relative;
   float: right;
@@ -27,10 +29,11 @@ const mainPanelClosedCss = css`
 interface DashboardProps {
   routes?: any[];
   baseURL?: string;
+  pageConfig: PageConfig;
 }
 
 export function Dashboard(props: DashboardProps) {
-  const { routes = [], baseURL } = props;
+  const { routes = [], baseURL, pageConfig } = props;
   const routesList = useMemo(() => mapTreeToFlatArray(routes), [routes]);
   const [menuIsClosed, setMenuIsClosed] = useState(false);
   const toggleMenu = useCallback(
@@ -46,7 +49,7 @@ export function Dashboard(props: DashboardProps) {
     rootRoute = (
       <Route
         path="/"
-        element={<RenderedView {...route[0]} />}
+        element={<RenderedView {...route[0]} pageConfig={pageConfig} />}
         key={getKey(routesList[0].file)}
       />
     );
@@ -81,7 +84,13 @@ export function Dashboard(props: DashboardProps) {
                     path={`/SamplesDashboard/:id/${
                       (prop.view || 'View') + getKey(prop.file)
                     }`}
-                    element={<RenderView prop={prop} baseURL={baseURL} />}
+                    element={
+                      <RenderView
+                        prop={prop}
+                        baseURL={baseURL}
+                        pageConfig={pageConfig}
+                      />
+                    }
                     key={getKey(prop.file)}
                   />
                 );
@@ -97,10 +106,17 @@ export function Dashboard(props: DashboardProps) {
 }
 
 function RenderView(props) {
-  const { prop, baseURL } = props;
+  const { prop, baseURL, pageConfig } = props;
   const viewName = prop.view || 'View';
   const RenderedView = possibleViews[viewName];
-  return <RenderedView {...prop} id={getKey(prop.file)} baseURL={baseURL} />;
+  return (
+    <RenderedView
+      {...prop}
+      id={getKey(prop.file)}
+      baseURL={baseURL}
+      pageConfig={pageConfig}
+    />
+  );
 }
 
 export default Dashboard;

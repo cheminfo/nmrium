@@ -3,6 +3,7 @@ import { ObjectInspector } from 'react-inspector';
 
 import NMRium, { NMRiumWorkspace } from '../../component/NMRium';
 import { CustomWorkspaces } from '../../component/workspaces/Workspace';
+import { PageConfig } from '../layouts/Main';
 
 export async function loadData(file) {
   const response = await fetch(file);
@@ -24,11 +25,20 @@ interface ViewProps {
   baseURL: string;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
+  pageConfig: PageConfig;
 }
 
 export default function View(props: ViewProps) {
   const [data, setData] = useState();
-  const { file, title, baseURL, workspace, customWorkspaces } = props;
+  const {
+    file,
+    title,
+    baseURL,
+    workspace,
+    customWorkspaces,
+    pageConfig: { width, height },
+  } = props;
+
   const [callbackData, setCallbackData] = useState<Array<any>>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
@@ -117,9 +127,9 @@ export default function View(props: ViewProps) {
       </div>
       <div
         style={{
-          height: 'calc(100% - 75px)',
+          height: height.endsWith('px') ? height : `calc(${height}% - 75px)`,
           display: 'flex',
-          width: '100%',
+          width: height.endsWith('px') ? width : `${width}%`,
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
