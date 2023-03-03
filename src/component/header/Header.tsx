@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useMemo, useCallback, memo } from 'react';
 import {
   FaRegWindowMaximize,
@@ -46,6 +48,27 @@ export const headerLabelStyle: LabelStyle = {
     alignItems: 'center',
   },
 };
+
+const styles = css`
+  container-type: inline-size;
+
+  @container (max-width:800px) {
+    .small-label {
+      display: block;
+    }
+    .large-label {
+      display: none;
+    }
+  }
+  @container (min-width:800px) {
+    .small-label {
+      display: none;
+    }
+    .large-label {
+      display: block;
+    }
+  }
+`;
 
 interface HeaderInnerProps {
   onMaximize?: () => void;
@@ -130,6 +153,7 @@ function HeaderInner(props: HeaderInnerProps) {
           flexDirection: 'row',
           alignItems: 'center',
         }}
+        css={styles}
       >
         <div>
           <Toolbar orientation="horizontal">
