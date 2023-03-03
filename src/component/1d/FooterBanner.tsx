@@ -28,6 +28,18 @@ const styles = css`
   position: absolute;
   width: 100%;
   bottom: 0;
+  container-type: inline-size;
+
+  @container (max-width:600px) {
+    .small-width-none {
+      display: none !important;
+    }
+  }
+
+  .flex-row {
+    display: flex;
+    align-items: center;
+  }
 
   div {
     margin: 0 10px;
@@ -140,15 +152,17 @@ function FooterBannerInner({
             </span>
             <span className="unit">Hz</span>
             <span className="value">) </span>
-            <span>,</span>
-            <span className="label"> Index: </span>
-            <span className="value">{getXIndex(position.x)}</span>
+            <span className="small-width-none">
+              <span>,</span>
+              <span className="label"> Index: </span>
+              <span className="value">{getXIndex(position.x)}</span>
+            </span>
           </>
         )}
       </div>
 
       {step === 'brushing' && (
-        <div>
+        <div className="flex-row small-width-none">
           <span className="label"> Δppm: </span>
           <span className="value">
             {(scaleX().invert(startX) - scaleX().invert(endX)).toPrecision(6)}
@@ -157,7 +171,7 @@ function FooterBannerInner({
       )}
 
       {activeSpectrum && (
-        <Fragment>
+        <div className=" flex-row small-width-none">
           {spectrum?.info?.originFrequency && step === 'brushing' && (
             <div>
               <span className="label"> ΔHz: </span>
@@ -181,11 +195,11 @@ function FooterBannerInner({
               </span>
             </div>
           )}
-        </Fragment>
+        </div>
       )}
 
       {activeSpectrum && (
-        <Fragment>
+        <div className="flex-row small-width-none">
           <div className="separator" />
           <IoPulseSharp />
           <div>
@@ -194,7 +208,7 @@ function FooterBannerInner({
               {format(getYValue(position.x))}
             </span>
           </div>
-        </Fragment>
+        </div>
       )}
     </div>
   );
