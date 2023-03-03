@@ -1,9 +1,15 @@
-import { memo } from 'react';
+import { CSSProperties, memo } from 'react';
 
 import { Display1D } from '../../../../data/types/data1d';
 import { Display2D } from '../../../../data/types/data2d';
-import { SpectraTableButtonStyle } from '../SpectraTable';
 
+const buttonStyle: CSSProperties = {
+  backgroundColor: 'transparent',
+  border: 'none',
+  width: '20px',
+  height: '20px',
+  margin: 'auto',
+};
 interface ColorIndicator1DProps {
   display: Display1D;
 }
@@ -46,7 +52,7 @@ function ColorIndicator(props: ColorIndicatorProps) {
   const { onClick = () => null, display, dimension } = props;
 
   return (
-    <button style={SpectraTableButtonStyle} type="button" onClick={onClick}>
+    <button style={buttonStyle} type="button" onClick={onClick}>
       {dimension === 2 ? (
         <ColorIndicator2D display={display as Display2D} />
       ) : (
