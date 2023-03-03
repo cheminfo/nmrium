@@ -163,7 +163,11 @@ function BaseLineCorrectionInnerPanel(
 
           {algorithm &&
             ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-              <Label title="degree [ 1 - 6 ]:" style={headerLabelStyle}>
+              <Label
+                title="degree [ 1 - 6 ]:"
+                shortTitle="degree :"
+                style={headerLabelStyle}
+              >
                 <FormikInput
                   type="number"
                   name="degree"

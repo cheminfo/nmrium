@@ -42,7 +42,7 @@ export default function Label(props: LabelProps) {
         }}
         {...otherProps}
       >
-        <span className="large-label">{title}</span>
+        <span className={shortTitle ? 'large-label' : ''}>{title}</span>
         {shortTitle && (
           <span className="small-label" css={css({ display: 'none' })}>
             {shortTitle}

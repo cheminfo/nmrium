@@ -56,8 +56,9 @@ const styles = css`
     .small-label {
       display: block;
     }
-    .large-label {
-      display: none;
+    .large-label,
+    .small-width-none {
+      display: none !important;
     }
   }
   @container (min-width:800px) {

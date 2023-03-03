@@ -220,6 +220,7 @@ export default function ManualPhaseCorrectionPanel() {
             label="Change Ph0 By mouse click and drag"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
+            className="small-width-none"
           />
           <InputRange
             ref={ph1Ref}
@@ -227,6 +228,7 @@ export default function ManualPhaseCorrectionPanel() {
             label="Change Ph1 By mouse click and drag"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
+            className="small-width-none"
           />
         </>
       )}
