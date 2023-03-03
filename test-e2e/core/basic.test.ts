@@ -32,7 +32,7 @@ test('should load and display the 1D and 2D spectrum', async ({ page }) => {
 test('check callbacks count', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
-  await nmrium.page.click('li >> text=Test');
+  await nmrium.page.click('li >> text=Callback');
   await nmrium.page.click('li >> text=Full cytisine');
 
   // wait the spectrum to load
