@@ -91,7 +91,7 @@ function InputRange(props: InputRangeProps, ref: any) {
   return (
     <div
       style={{ ...styles.container, ...style }}
-      className={className}
+      {...(className && { className })}
       onMouseDown={mouseDownCallback}
     >
       <span className={shortLabel ? 'large-label' : ''} style={styles.label}>

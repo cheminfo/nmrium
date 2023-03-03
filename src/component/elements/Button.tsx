@@ -256,7 +256,7 @@ function Button(props: ButtonProps) {
   return (
     <div
       style={{ position: 'relative', ...wrapperStyle }}
-      className={wrapperClassName}
+      {...(wrapperClassName && { className: wrapperClassName })}
     >
       <button
         type="button"
