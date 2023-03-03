@@ -35,6 +35,8 @@ const getAlgorithmsList = () => {
   }));
 };
 
+const inputStyle = { input: { width: '50px' } };
+
 const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
   switch (algorithm) {
     case 'airpls': {
@@ -149,6 +151,7 @@ function BaseLineCorrectionInnerPanel(
                   type="number"
                   name="maxIterations"
                   debounceTime={250}
+                  style={inputStyle}
                 />
               </Label>
               <Label title="tolerance:" style={headerLabelStyle}>
@@ -156,6 +159,7 @@ function BaseLineCorrectionInnerPanel(
                   type="number"
                   name="tolerance"
                   debounceTime={250}
+                  style={inputStyle}
                 />
               </Label>
             </div>
@@ -163,13 +167,17 @@ function BaseLineCorrectionInnerPanel(
 
           {algorithm &&
             ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-              <Label title="degree [ 1 - 6 ]:" style={headerLabelStyle}>
+              <Label
+                title="degree [ 1 - 6 ]:"
+                shortTitle="degree :"
+                style={headerLabelStyle}
+              >
                 <FormikInput
                   type="number"
                   name="degree"
                   min={1}
                   max={6}
-                  style={{ inputWrapper: { height: '100%' } }}
+                  style={inputStyle}
                   debounceTime={250}
                 />
               </Label>

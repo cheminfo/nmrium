@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useMemo, useCallback, memo } from 'react';
 import {
   FaRegWindowMaximize,
@@ -5,7 +7,7 @@ import {
   FaQuestionCircle,
   FaRegSave,
 } from 'react-icons/fa';
-import { Header, Toolbar } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
@@ -14,6 +16,7 @@ import {
   useWorkspacesList,
 } from '../context/PreferencesContext';
 import Button from '../elements/Button';
+import { Header } from '../elements/Header';
 import { LabelStyle } from '../elements/Label';
 import DropDownButton, {
   DropDownListItem,
@@ -28,6 +31,7 @@ import { options } from '../toolbar/ToolTypes';
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
+import { HeaderContainer } from './HeaderContainer';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
@@ -45,6 +49,31 @@ export const headerLabelStyle: LabelStyle = {
     alignItems: 'center',
   },
 };
+
+const styles = css`
+  container-type: inline-size;
+
+  @container (max-width:800px) {
+    .small-label {
+      display: block;
+    }
+
+    .large-label,
+    .small-width-none {
+      display: none !important;
+    }
+  }
+
+  @container (min-width:800px) {
+    .small-label {
+      display: none;
+    }
+
+    .large-label {
+      display: block;
+    }
+  }
+`;
 
 interface HeaderInnerProps {
   onMaximize?: () => void;
@@ -122,71 +151,72 @@ function HeaderInner(props: HeaderInnerProps) {
   }
 
   return (
-    <Header>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <div>
-          <Toolbar orientation="horizontal">
-            <AboutUsModal />
-          </Toolbar>
-        </div>
-        <div className="toolOptionsPanel">{selectedPanel}</div>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        {!hideGeneralSettings && (
-          <DropDownButton
-            data={workspacesList}
-            selectedKey={workspace.current}
-            onSelect={changeWorkspaceHandler}
-            renderItem={renderItem}
-          />
-        )}
-        <SaveButton />
+    <div css={styles}>
+      <Header style={{ leftStyle: { flex: 1 } }}>
+        <HeaderContainer
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <Toolbar orientation="horizontal">
+              <AboutUsModal />
+            </Toolbar>
+          </div>
+          <div className="toolOptionsPanel" style={{ flex: 1 }}>
+            {selectedPanel}
+          </div>
+        </HeaderContainer>
+        <HeaderContainer
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          {!hideGeneralSettings && (
+            <DropDownButton
+              data={workspacesList}
+              selectedKey={workspace.current}
+              onSelect={changeWorkspaceHandler}
+              renderItem={renderItem}
+              className="small-width-none"
+            />
+          )}
+          <SaveButton />
 
-        <div>
-          <Toolbar orientation="horizontal">
-            <Toolbar.Item
-              id="user-manual"
-              title="User manual"
-              onClick={() => window.open(docsBaseUrl, '_blank')}
-            >
-              <FaQuestionCircle />
-            </Toolbar.Item>
-            {!hideGeneralSettings && (
+          <div>
+            <Toolbar orientation="horizontal">
               <Toolbar.Item
-                id="general-settings"
-                onClick={openGeneralSettingsHandler}
-                title="General settings"
+                id="user-manual"
+                title="User manual"
+                onClick={() => window.open(docsBaseUrl, '_blank')}
               >
-                <FaWrench />
+                <FaQuestionCircle />
               </Toolbar.Item>
-            )}
+              {!hideGeneralSettings && (
+                <Toolbar.Item
+                  id="general-settings"
+                  onClick={openGeneralSettingsHandler}
+                  title="General settings"
+                >
+                  <FaWrench />
+                </Toolbar.Item>
+              )}
 
-            {!isFullscreen && (
-              <Toolbar.Item
-                id="full-screen"
-                onClick={onMaximize}
-                title="Full Screen"
-                className="windowButton"
-              >
-                <FaRegWindowMaximize />
-              </Toolbar.Item>
-            )}
-          </Toolbar>
-        </div>
-      </div>
-    </Header>
+              {!isFullscreen && (
+                <Toolbar.Item
+                  id="full-screen"
+                  onClick={onMaximize}
+                  title="Full Screen"
+                  className="windowButton"
+                >
+                  <FaRegWindowMaximize />
+                </Toolbar.Item>
+              )}
+            </Toolbar>
+          </div>
+        </HeaderContainer>
+      </Header>
+    </div>
   );
 }
 
@@ -203,6 +233,7 @@ function SaveButton() {
 
   return (
     <Button.Done
+      wrapperClassName="small-width-none"
       onClick={handleSave}
       fill="clear"
       style={{ fontSize: '1.4em', marginLeft: '5px' }}

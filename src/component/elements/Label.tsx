@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React, { CSSProperties, ReactNode } from 'react';
 
 import Button from './Button';
@@ -10,6 +12,7 @@ export interface LabelStyle {
 interface LabelProps
   extends Omit<React.LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
   title: string;
+  shortTitle?: string;
   children: ReactNode;
   className?: string;
   style?: LabelStyle;
@@ -19,6 +22,7 @@ interface LabelProps
 export default function Label(props: LabelProps) {
   const {
     title,
+    shortTitle,
     className = '',
     children,
     style,
@@ -38,7 +42,12 @@ export default function Label(props: LabelProps) {
         }}
         {...otherProps}
       >
-        {title}
+        <span className={shortTitle ? 'large-label' : ''}>{title}</span>
+        {shortTitle && (
+          <span className="small-label" css={css({ display: 'none' })}>
+            {shortTitle}
+          </span>
+        )}
         {description && (
           <Button.Info
             toolTip={description}

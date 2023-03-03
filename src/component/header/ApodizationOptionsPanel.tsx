@@ -98,7 +98,11 @@ function ApodizationOptionsInnerPanel(
         validationSchema={validationSchema}
       >
         <>
-          <Label title="Line broadening : " style={headerLabelStyle}>
+          <Label
+            title="Line broadening : "
+            shortTitle="LB :"
+            style={headerLabelStyle}
+          >
             <FormikInput
               type="number"
               name="lineBroadening"
@@ -108,7 +112,11 @@ function ApodizationOptionsInnerPanel(
               debounceTime={250}
             />
           </Label>
-          <Label title="Gauss broadening :" style={headerLabelStyle}>
+          <Label
+            title="Gauss broadening :"
+            shortTitle="GB :"
+            style={headerLabelStyle}
+          >
             <FormikInput
               type="number"
               name="gaussBroadening"
@@ -120,6 +128,7 @@ function ApodizationOptionsInnerPanel(
           </Label>
           <Label
             title="lineBroadeningCenter [0 - 1] : "
+            shortTitle="LB Center :"
             style={headerLabelStyle}
           >
             <FormikInput

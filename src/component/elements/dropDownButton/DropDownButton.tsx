@@ -46,6 +46,7 @@ interface DropDownButtonProps<T> extends DropDownListProps<T>, ItemProps {
   onSelect?: (item: DropDownListItem) => void;
   formatSelectedValue?: (Item: DropDownListItem) => string;
   style?: CSSObject;
+  className?: string;
 }
 
 function DropDownButton<T extends DropDownListItem>(
@@ -60,6 +61,7 @@ function DropDownButton<T extends DropDownListItem>(
     style,
     itemKey = 'key',
     labelKey = 'label',
+    className = '',
   } = props;
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<DropDownListItem | null>();
@@ -91,7 +93,11 @@ function DropDownButton<T extends DropDownListItem>(
   );
 
   return (
-    <div className="dropdown" ref={drop} css={[styles.container, style]}>
+    <div
+      className={`dropdown ${className}`}
+      ref={drop}
+      css={[styles.container, style]}
+    >
       <button
         css={styles.button}
         type="button"

@@ -68,21 +68,33 @@ function AutoPeakPickingOptionPanel() {
         onSubmit={handleApplyFilter}
       >
         <>
-          <Label title="Direction : " style={headerLabelStyle}>
+          <Label title="Direction : " shortTitle="" style={headerLabelStyle}>
             <FormikSelect
               name="direction"
               items={LookFor}
-              style={{ marginLeft: 10, marginRight: 10 }}
               defaultValue="positive"
+              style={{ width: '85px' }}
             />
           </Label>
-          <Label title="Max Number Of Peaks :" style={headerLabelStyle}>
+          <Label
+            title="Max Number Of Peaks :"
+            shortTitle="Peaks number :"
+            style={headerLabelStyle}
+          >
             <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
           </Label>
-          <Label title="Noise factor :" style={headerLabelStyle}>
+          <Label
+            title="Noise factor :"
+            shortTitle="Noise :"
+            style={headerLabelStyle}
+          >
             <FormikNumberInput name="noiseFactor" style={inputStyle} />
           </Label>
-          <Label title="Min Max Ratio :" style={headerLabelStyle}>
+          <Label
+            title="Min Max Ratio :"
+            shortTitle="Ratio :"
+            style={headerLabelStyle}
+          >
             <FormikNumberInput
               name="minMaxRatio"
               style={inputStyle}
