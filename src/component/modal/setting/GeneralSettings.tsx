@@ -37,6 +37,7 @@ import { validation } from './settingsValidation';
 
 const styles = css`
   width: 600px;
+
   .main-content {
     width: 100%;
     flex: 1;
