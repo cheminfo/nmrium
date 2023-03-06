@@ -3,12 +3,6 @@ export type ActionType<Action, Payload = void> = Payload extends void
   : { type: Action; payload: Payload };
 
 export const INITIATE = 'INITIATE';
-export const SAVE_DATA_AS_JSON = 'SAVE_DATA_AS_JSON';
-export const LOAD_JCAMP_FILE = 'LOAD_JCAMP_FILE';
-export const LOAD_NMREDATA_FILE = 'LOAD_NMREDATA_FILE';
-export const LOAD_MOL_FILE = 'LOAD_MOL_FILE';
-export const LOAD_ZIP_FILE = 'LOAD_ZIP_FILE';
-export const LOAD_JDF_FILE = 'LOAD_JDF_FILE';
 export const LOAD_DROP_FILES = 'LOAD_DROP_FILES';
 export const ADD_PEAK = 'ADD_PEAK';
 export const ADD_PEAKS = 'ADD_PEAKS';
