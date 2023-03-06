@@ -40,14 +40,6 @@ function getData(datum, usedColors) {
   }
 }
 
-export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
-  return fetch(jcampURL)
-    .then((response) => response.arrayBuffer())
-    .then((jcamp) => {
-      addJcamp(spectra, jcamp, options, usedColors);
-    });
-}
-
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
   const name = options?.info?.name;

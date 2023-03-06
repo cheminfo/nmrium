@@ -23,7 +23,6 @@ const ignoreActions = new Set([
   types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   types.FULL_ZOOM_OUT,
   types.SAVE_AS_SVG,
-  types.SAVE_DATA_AS_JSON,
   types.SET_ACTIVE_TAB,
   types.CHANGE_VISIBILITY,
   types.CHANGE_ACTIVE_SPECTRUM,
