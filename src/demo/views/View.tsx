@@ -30,6 +30,7 @@ interface ViewProps {
 
 export default function View(props: ViewProps) {
   const [data, setData] = useState();
+
   const {
     file,
     title,

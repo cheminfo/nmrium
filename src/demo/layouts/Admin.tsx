@@ -2,13 +2,11 @@
 
 import { css } from '@emotion/react';
 import { Suspense, useMemo, useState, useCallback, StrictMode } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
 import { possibleViews } from '../views';
-
-import { PageConfig } from './Main';
 
 const mainPanelCss = css`
   position: relative;
@@ -29,11 +27,10 @@ const mainPanelClosedCss = css`
 interface DashboardProps {
   routes?: any[];
   baseURL?: string;
-  pageConfig: PageConfig;
 }
 
 export function Dashboard(props: DashboardProps) {
-  const { routes = [], baseURL, pageConfig } = props;
+  const { routes = [], baseURL } = props;
   const routesList = useMemo(() => mapTreeToFlatArray(routes), [routes]);
   const [menuIsClosed, setMenuIsClosed] = useState(false);
   const toggleMenu = useCallback(
@@ -49,7 +46,7 @@ export function Dashboard(props: DashboardProps) {
     rootRoute = (
       <Route
         path="/"
-        element={<RenderedView {...route[0]} pageConfig={pageConfig} />}
+        element={<RenderedView {...route[0]} />}
         key={getKey(routesList[0].file)}
       />
     );
@@ -84,13 +81,7 @@ export function Dashboard(props: DashboardProps) {
                     path={`/SamplesDashboard/:id/${
                       (prop.view || 'View') + getKey(prop.file)
                     }`}
-                    element={
-                      <RenderView
-                        prop={prop}
-                        baseURL={baseURL}
-                        pageConfig={pageConfig}
-                      />
-                    }
+                    element={<RenderView prop={prop} baseURL={baseURL} />}
                     key={getKey(prop.file)}
                   />
                 );
@@ -106,15 +97,20 @@ export function Dashboard(props: DashboardProps) {
 }
 
 function RenderView(props) {
-  const { prop, baseURL, pageConfig } = props;
+  const { prop, baseURL } = props;
   const viewName = prop.view || 'View';
   const RenderedView = possibleViews[viewName];
+  const { search = '' } = useLocation();
+  const qs = new URLSearchParams(search);
+
+  const width = qs.get('width') || '100';
+  const height = qs.get('height') || '100';
+
   return (
     <RenderedView
-      {...prop}
+      {...{ ...prop, pageConfig: { width, height } }}
       id={getKey(prop.file)}
       baseURL={baseURL}
-      pageConfig={pageConfig}
     />
   );
 }

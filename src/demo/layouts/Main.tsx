@@ -97,11 +97,6 @@ const Main = () => {
     status: 200,
     routes: [],
   });
-  const [pageConfig, setPageConfig] = useState<PageConfig>({
-    width: '100%',
-    height: '100%',
-  });
-
   const [dashBoardType, setDashBoardType] = useState('');
 
   const loadHandler = useCallback(() => {
@@ -111,9 +106,6 @@ const Main = () => {
   const href = window.location.href;
   useEffect(() => {
     const qs = new URL(href).searchParams;
-    const width = qs.get('width') || '100';
-    const height = qs.get('height') || '100';
-    setPageConfig({ width, height });
     if (qs.has('sampleURL')) {
       const sampleURL = qs.get('sampleURL') as string;
       const extension = getFileExtension(sampleURL).toLowerCase();
@@ -193,13 +185,9 @@ const Main = () => {
       </div>
     </div>
   ) : dashBoardType && dashBoardType === 'single' ? (
-    <SingleDisplayerLayout path={data.path} pageConfig={pageConfig} />
+    <SingleDisplayerLayout path={data.path} />
   ) : (
-    <AdminLayout
-      routes={data.routes}
-      baseURL={data.baseURL}
-      pageConfig={pageConfig}
-    />
+    <AdminLayout routes={data.routes} baseURL={data.baseURL} />
   );
 };
 

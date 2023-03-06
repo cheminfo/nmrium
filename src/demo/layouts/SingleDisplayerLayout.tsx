@@ -4,11 +4,8 @@ import { Routes, Route } from 'react-router-dom';
 import { getKey } from '../utility/menu';
 import { possibleViews } from '../views';
 
-import { PageConfig } from './Main';
-
 interface SingleDisplayerLayoutProps {
   path: any;
-  pageConfig: PageConfig;
 }
 
 export default function SingleDisplayerLayout(
@@ -18,7 +15,6 @@ export default function SingleDisplayerLayout(
 
   const RenderedView = possibleViews[viewName];
 
-  const { width, height } = props.pageConfig;
   return (
     <div
       style={{
@@ -33,8 +29,8 @@ export default function SingleDisplayerLayout(
           display: 'block',
           marginLeft: 'auto',
           marginRight: 'auto',
-          width,
-          height,
+          width: '100%',
+          height: '100%',
           backgroundColor: '#ebecf1',
         }}
       >
