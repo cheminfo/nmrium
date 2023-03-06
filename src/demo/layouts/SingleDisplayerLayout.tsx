@@ -14,6 +14,7 @@ export default function SingleDisplayerLayout(
   const viewName = 'SingleView';
 
   const RenderedView = possibleViews[viewName];
+
   return (
     <div
       style={{
@@ -26,9 +27,9 @@ export default function SingleDisplayerLayout(
         style={{
           position: 'absolute',
           display: 'block',
-          width: '99%',
           marginLeft: 'auto',
           marginRight: 'auto',
+          width: '100%',
           height: '100%',
           backgroundColor: '#ebecf1',
         }}

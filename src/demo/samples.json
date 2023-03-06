@@ -90,58 +90,66 @@
   },
   {
     "groupName": "Multiple spectra",
-    "children":[      {
-      "file": "./data/xtc/XTC.json",
-      "title": "XTC"
-    },
-    {
-      "file": "./data/xtc/XTClight.json",
-      "title": "XTC just links"
-    },
-    {
-      "file": "./data/coffee/Coffee.json",
-      "title": "Coffee"
-    },      {
-      "file": "./data/t1/t1.json",
-      "title": "T1 samples (1H + 13C)"
-    },
-    {
-      "file": "./data/t2/t2.json",
-      "title": "T2 samples (1H + 13C)"
-    }]
+    "children": [
+      {
+        "file": "./data/xtc/XTC.json",
+        "title": "XTC"
+      },
+      {
+        "file": "./data/xtc/XTClight.json",
+        "title": "XTC just links"
+      },
+      {
+        "file": "./data/coffee/Coffee.json",
+        "title": "Coffee"
+      },
+      {
+        "file": "./data/t1/t1.json",
+        "title": "T1 samples (1H + 13C)"
+      },
+      {
+        "file": "./data/t2/t2.json",
+        "title": "T2 samples (1H + 13C)"
+      }
+    ]
   },
   {
     "groupName": "Various formats",
-    "children":[      {
-      "file": "./data/nmriumFromSource.json",
-      "title": "Zip file as source with multiple spectra"
-    },
-    {
-      "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
-      "title": "Bruker Directory without expno level"
-    },
-    {
-      "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
-      "title": "FileCollection with link to jcamp"
-    },
-    {
-      "file": "./data/aspirin/bruker_aspirin_zip.json",
-      "title": "FileCollection with link to zip"
-    },
-    {
-      "file": "./data/aspirin/aspirin_bruker_files.json",
-      "title": "FileCollection with bruker folder"
-    } ,      {
-      "file": "./data/50-78-2/linked-jcamp.json",
-      "title": "Linked jcamp"
-    },      {
-      "file": "./data/acd/jcampWithAssignment.json",
-      "title": "JCAMP-DX with assignment"
-    },
-    {
-      "file": "./data/cytisine/1Honly.json",
-      "title": "1H no meta info"
-    } ]},
+    "children": [
+      {
+        "file": "./data/nmriumFromSource.json",
+        "title": "Zip file as source with multiple spectra"
+      },
+      {
+        "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
+        "title": "Bruker Directory without expno level"
+      },
+      {
+        "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
+        "title": "FileCollection with link to jcamp"
+      },
+      {
+        "file": "./data/aspirin/bruker_aspirin_zip.json",
+        "title": "FileCollection with link to zip"
+      },
+      {
+        "file": "./data/aspirin/aspirin_bruker_files.json",
+        "title": "FileCollection with bruker folder"
+      },
+      {
+        "file": "./data/50-78-2/linked-jcamp.json",
+        "title": "Linked jcamp"
+      },
+      {
+        "file": "./data/acd/jcampWithAssignment.json",
+        "title": "JCAMP-DX with assignment"
+      },
+      {
+        "file": "./data/cytisine/1Honly.json",
+        "title": "1H no meta info"
+      }
+    ]
+  },
   {
     "groupName": "Simulation",
     "children": [
@@ -256,5 +264,13 @@
         "view": "Test"
       }
     ]
+  },
+  {
+    "title": "Snapshot",
+    "view": "SnapshotView",
+    "queryParams": {
+      "width": "1000px",
+      "height": "600px"
+    }
   }
 ]
