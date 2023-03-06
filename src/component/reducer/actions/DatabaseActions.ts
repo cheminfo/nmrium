@@ -1,30 +1,23 @@
 import { Draft } from 'immer';
 
-import { addJcamp } from '../../../data/SpectraManager';
-import { mapRanges } from '../../../data/data1d/Spectrum1D';
+import { get1DColor, mapRanges } from '../../../data/data1d/Spectrum1D';
 import { generateSpectrumFromRanges } from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
-import { Datum1D } from '../../../data/types/data1d';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 
 import { setDomain, setIntegralsYDomain } from './DomainActions';
 
 function handleResurrectSpectrumFromJcamp(draft: Draft<State>, action) {
-  const { ranges, file, jcampURL } = action.payload;
-  let spectra: Datum1D[] = [];
-  addJcamp(
-    spectra,
-    file,
-    {
-      source: {
-        jcampURL,
-      },
+  let { ranges, spectrum } = action.payload;
+  spectrum = {
+    ...spectrum,
+    ranges: { ...spectrum.ranges, values: mapRanges(ranges, spectrum) },
+    display: {
+      ...spectrum.display,
+      ...get1DColor(spectrum.display, draft.usedColors),
     },
-    draft.usedColors,
-  );
-  const spectrum = spectra[0];
+  };
 
-  spectrum.ranges.values = mapRanges(ranges, spectrum);
   draft.data.push(spectrum);
   setDomain(draft);
   setIntegralsYDomain(draft, [spectrum]);

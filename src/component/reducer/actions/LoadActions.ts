@@ -226,4 +226,4 @@ function loadDropFiles(draft: Draft<State>, action) {
   }
 }
 
-export { setIsLoading, initiate, loadDropFiles };
+export { setIsLoading, initSpectra, initiate, loadDropFiles };

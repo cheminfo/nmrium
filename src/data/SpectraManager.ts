@@ -61,27 +61,6 @@ export function addJcamp(output, jcamp, options, usedColors) {
   output.push(...spectra);
 }
 
-export function addJcamps(files, usedColors) {
-  const spectra = [];
-  for (const file of files) {
-    addJcamp(
-      spectra,
-      file.binary,
-      {
-        info: {
-          name: file.name,
-        },
-        source: {
-          jcampURL: file.jcampURL || null,
-          file,
-        },
-      },
-      usedColors,
-    );
-  }
-  return spectra;
-}
-
 /**
  *
  * @param {object} state

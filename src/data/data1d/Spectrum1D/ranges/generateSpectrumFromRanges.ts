@@ -28,7 +28,6 @@ export function generateSpectrumFromRanges(
   const datum = initiateDatum1D(
     {
       data: { x, im: null, re: y },
-      display: { name },
       info: {
         nucleus,
         originFrequency: frequency,
@@ -36,6 +35,7 @@ export function generateSpectrumFromRanges(
         pulseSequence: '',
         solvent,
         isFt: true,
+        name,
       },
     },
     { usedColors },
