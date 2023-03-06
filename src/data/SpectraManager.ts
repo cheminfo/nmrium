@@ -40,14 +40,6 @@ function getData(datum, usedColors) {
   }
 }
 
-export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
-  return fetch(jcampURL)
-    .then((response) => response.arrayBuffer())
-    .then((jcamp) => {
-      addJcamp(spectra, jcamp, options, usedColors);
-    });
-}
-
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
   const name = options?.info?.name;
@@ -67,27 +59,6 @@ export function addJcamp(output, jcamp, options, usedColors) {
     spectra.push(data);
   }
   output.push(...spectra);
-}
-
-export function addJcamps(files, usedColors) {
-  const spectra = [];
-  for (const file of files) {
-    addJcamp(
-      spectra,
-      file.binary,
-      {
-        info: {
-          name: file.name,
-        },
-        source: {
-          jcampURL: file.jcampURL || null,
-          file,
-        },
-      },
-      usedColors,
-    );
-  }
-  return spectra;
 }
 
 /**

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { readFromWebSource } from 'nmr-load-save';
 import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
@@ -31,7 +32,6 @@ import {
 } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
-import { loadFile } from '../../utility/FileUtility';
 import { Database } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -260,13 +260,12 @@ function DatabasePanelInner({
           );
 
           try {
-            const jcampURL = new URL(jcampRelativeURL, baseURL);
-
-            const result = await loadFile(jcampURL);
-
+            const { data } = await readFromWebSource({
+              entries: [{ baseURL, relativePath: jcampRelativeURL }],
+            });
             dispatch({
               type: RESURRECTING_SPECTRUM_FROM_JCAMP,
-              payload: { file: result, ranges, jcampURL },
+              payload: { ranges, spectrum: data?.spectra?.[0] || null },
             });
           } catch {
             alert.error(`Failed to load Jcamp`);
