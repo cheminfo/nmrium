@@ -53,7 +53,7 @@ export const headerLabelStyle: LabelStyle = {
 const styles = css`
   container-type: inline-size;
 
-  @container (max-width:800px) {
+  @container (max-width:1200px) {
     .small-label {
       display: block;
     }
@@ -64,7 +64,7 @@ const styles = css`
     }
   }
 
-  @container (min-width:800px) {
+  @container (min-width:1200px) {
     .small-label {
       display: none;
     }
