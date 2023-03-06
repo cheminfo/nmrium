@@ -46,7 +46,11 @@ export function Dashboard(props: DashboardProps) {
     rootRoute = (
       <Route
         path="/"
-        element={<RenderedView {...route[0]} />}
+        element={
+          <RenderedView
+            {...{ ...route[0], pageConfig: { width: '100', height: '100' } }}
+          />
+        }
         key={getKey(routesList[0].file)}
       />
     );
