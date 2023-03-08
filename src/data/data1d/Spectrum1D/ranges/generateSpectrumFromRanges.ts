@@ -4,8 +4,6 @@ import { UsedColors } from '../../../../types/UsedColors';
 import { Datum1D, Range } from '../../../types/data1d';
 import { initiateDatum1D } from '../initiateDatum1D';
 
-import { mapRanges } from './mapRanges';
-
 export function generateSpectrumFromRanges(
   ranges: Range[],
   info: {
@@ -37,10 +35,10 @@ export function generateSpectrumFromRanges(
         isFt: true,
         name,
       },
+      ranges: { values: ranges, options: { sum: 100 } },
     },
     { usedColors },
   );
-  datum.ranges.values = mapRanges(ranges, datum);
 
   return datum;
 }
