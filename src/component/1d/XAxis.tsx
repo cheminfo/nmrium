@@ -94,6 +94,7 @@ function XAxis(props: XAxisProps) {
       )}
       {showGrid && (
         <g
+          data-no-export="true"
           css={gridStyles}
           className="grid"
           ref={refGrid}
