@@ -389,3 +389,97 @@ test('show/hide spectrum', async ({ page }) => {
     );
   });
 });
+
+test('Export source from 1H spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Load 1H spectrum', async () => {
+    await nmrium.open1D();
+  });
+  await test.step('Open Save as window ', async () => {
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+  });
+  await test.step('Check include data options', async () => {
+    const fields = nmrium.page.locator('_react=ModalContent >> _react=Field');
+    await expect(fields).toHaveCount(3);
+    // number of fields who does not have disabled attribute or disabled="false"
+    const disabledFields = nmrium.page.locator(
+      '_react=ModalContent >> _react=Field[disabled=true]',
+    );
+    await expect(disabledFields).toHaveCount(0);
+  });
+  await test.step('Check export Raw Data', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="ROW_DATA"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).not.toBeUndefined();
+    expect(data.source).toBeUndefined();
+    expect(data.spectra[0].data).not.toBeUndefined();
+  });
+  await test.step('Check export DATA SOURCE', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="DATA_SOURCE"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).not.toBeUndefined();
+    expect(data.source).not.toBeUndefined();
+    expect(data.spectra[0].data).toBeUndefined();
+  });
+  await test.step('Check export NO Data', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="NO_DATA"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).toBeUndefined();
+  });
+});
