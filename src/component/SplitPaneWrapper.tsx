@@ -9,28 +9,21 @@ export function SplitPaneWrapper({ children }) {
     display: { general = {} },
   } = current;
 
-  function resizeHandler(position: SplitPaneSize) {
+  function resizeHandler(value: SplitPaneSize) {
     dispatch({
       type: 'SET_VERTICAL_SPLITTER_POSITION',
       payload: {
-        value: `${Number(position.replace(/\D+$/g, '')).toFixed(
-          0,
-        )}px` as SplitPaneSize,
+        value,
       },
     });
   }
 
   return (
     <SplitPane
-      key={`${
-        general?.hidePanelOnLoad ? 'true' : 'false'
-      }${verticalSplitterPosition}`}
-      initialSize={verticalSplitterPosition}
+      size={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
-      initialClosed={
-        general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold
-      }
+      closed={general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold}
       onResize={resizeHandler}
     >
       {children}
