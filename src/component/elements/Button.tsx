@@ -274,10 +274,7 @@ function Button(props: ButtonProps) {
         ]}
         {...restProps}
       >
-        <span style={{ flex: 1, pointerEvents: 'none' }}>
-          {' '}
-          {props.children}
-        </span>
+        <span style={{ flex: 1, pointerEvents: 'none' }}>{props.children}</span>
       </button>
       {toolTip && (
         <div className="content" css={toolTipStyle(tooltipOrientation)}>

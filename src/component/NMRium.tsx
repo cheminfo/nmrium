@@ -36,6 +36,7 @@ import { AssignmentProvider } from './assignment';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
+import { LoggerProvider } from './context/LoggerContext';
 import { PreferencesProvider } from './context/PreferencesContext';
 import { AlertProvider } from './elements/popup/Alert';
 import { ModalProvider } from './elements/popup/Modal';
@@ -334,92 +335,94 @@ function InnerNMRium({
     >
       <PreferencesProvider value={preferencesState}>
         <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
-          <AlertProvider wrapperRef={elementsWrapperRef.current}>
-            <DispatchProvider value={dispatchMiddleWare}>
-              <ChartDataProvider value={state}>
-                <ModalProvider wrapperRef={elementsWrapperRef.current}>
-                  <HighlightProvider>
-                    <AssignmentProvider spectraData={spectraData}>
-                      <SpinnerProvider value={getSpinner}>
-                        <div
-                          className="nmrium-container"
-                          ref={rootRef}
-                          css={containerStyles}
-                          onContextMenu={preventContextMenuHandler}
-                          style={{ height: '100%', width: '100%' }}
-                        >
-                          <DropZone>
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                backgroundColor: 'white',
-                                width: '100%',
-                              }}
-                            >
-                              <Header
-                                isFullscreen={isFullscreen}
-                                onMaximize={toggle}
-                              />
-
+          <LoggerProvider>
+            <AlertProvider wrapperRef={elementsWrapperRef.current}>
+              <DispatchProvider value={dispatchMiddleWare}>
+                <ChartDataProvider value={state}>
+                  <ModalProvider wrapperRef={elementsWrapperRef.current}>
+                    <HighlightProvider>
+                      <AssignmentProvider spectraData={spectraData}>
+                        <SpinnerProvider value={getSpinner}>
+                          <div
+                            className="nmrium-container"
+                            ref={rootRef}
+                            css={containerStyles}
+                            onContextMenu={preventContextMenuHandler}
+                            style={{ height: '100%', width: '100%' }}
+                          >
+                            <DropZone>
                               <div
                                 style={{
                                   display: 'flex',
-                                  flexDirection: 'row',
-                                  height: '100%',
+                                  flexDirection: 'column',
+                                  backgroundColor: 'white',
+                                  width: '100%',
                                 }}
                               >
-                                <ToolBar />
-                                <SplitPaneWrapper>
-                                  <div css={viewerContainerStyle}>
-                                    <KeysListenerTracker />
-                                    <div
-                                      id="nmrium-viewer"
-                                      data-test-id="viewer"
-                                      ref={viewerRef}
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        position: 'relative',
-                                      }}
-                                    >
-                                      <FloatMoleculeStructures />
-                                      {displayerMode ===
-                                      DISPLAYER_MODE.DM_1D ? (
-                                        <Viewer1D emptyText={emptyText} />
-                                      ) : (
-                                        <Viewer2D emptyText={emptyText} />
-                                      )}
-                                    </div>
-                                  </div>
-                                  <Panels />
-                                </SplitPaneWrapper>
+                                <Header
+                                  isFullscreen={isFullscreen}
+                                  onMaximize={toggle}
+                                />
 
                                 <div
-                                  ref={elementsWrapperRef}
-                                  key={String(isFullscreen)}
-                                  id="main-wrapper"
                                   style={{
-                                    position: 'absolute',
-                                    pointerEvents: 'none',
-                                    zIndex: 2,
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0,
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    height: '100%',
                                   }}
-                                />
+                                >
+                                  <ToolBar />
+                                  <SplitPaneWrapper>
+                                    <div css={viewerContainerStyle}>
+                                      <KeysListenerTracker />
+                                      <div
+                                        id="nmrium-viewer"
+                                        data-test-id="viewer"
+                                        ref={viewerRef}
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          position: 'relative',
+                                        }}
+                                      >
+                                        <FloatMoleculeStructures />
+                                        {displayerMode ===
+                                          DISPLAYER_MODE.DM_1D ? (
+                                          <Viewer1D emptyText={emptyText} />
+                                        ) : (
+                                          <Viewer2D emptyText={emptyText} />
+                                        )}
+                                      </div>
+                                    </div>
+                                    <Panels />
+                                  </SplitPaneWrapper>
+
+                                  <div
+                                    ref={elementsWrapperRef}
+                                    key={String(isFullscreen)}
+                                    id="main-wrapper"
+                                    style={{
+                                      position: 'absolute',
+                                      pointerEvents: 'none',
+                                      zIndex: 2,
+                                      left: 0,
+                                      right: 0,
+                                      top: 0,
+                                      bottom: 0,
+                                    }}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </DropZone>
-                        </div>
-                      </SpinnerProvider>
-                    </AssignmentProvider>
-                  </HighlightProvider>
-                </ModalProvider>
-              </ChartDataProvider>
-            </DispatchProvider>
-          </AlertProvider>
+                            </DropZone>
+                          </div>
+                        </SpinnerProvider>
+                      </AssignmentProvider>
+                    </HighlightProvider>
+                  </ModalProvider>
+                </ChartDataProvider>
+              </DispatchProvider>
+            </AlertProvider>
+          </LoggerProvider>
         </div>
       </PreferencesProvider>
     </GlobalProvider>
