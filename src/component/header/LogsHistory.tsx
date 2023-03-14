@@ -62,21 +62,48 @@ const COLUMNS: Column<LogEntry>[] = [
 
 function handleRowStyle(data) {
   const level = data?.original.level;
-  switch (level) {
-    case 60: {
-      return { base: { backgroundColor: 'pink' } };
-    }
-    case 40: {
-      return { base: { backgroundColor: 'lightyellow' } };
-    }
-    default:
-      return { base: { backgroundColor: 'lightgreen' } };
+  let backgroundColor = 'lightgreen';
+  if (level > 40) {
+    backgroundColor = 'pink';
+  } else if (level === 40) {
+    backgroundColor = 'lightyellow';
   }
+
+  return { base: { backgroundColor } };
+}
+
+function getMaxLevelLogs(logs: LogEntry[]) {
+  const logsCounts: Record<string, number> = {};
+  for (const log of logs) {
+    logsCounts[log.level] = ++logsCounts[log.level] || 1;
+  }
+
+  let maxLevel = 0;
+
+  for (const levelKey in logsCounts) {
+    const level = Number(levelKey);
+
+    if (level > maxLevel) {
+      maxLevel = level;
+    }
+  }
+
+  let backgroundColor = '#2dd36f';
+
+  if (maxLevel > 40) {
+    backgroundColor = '#ff0000';
+  } else if (maxLevel === 40) {
+    backgroundColor = '#ffc409';
+  }
+
+  return { backgroundColor, count: logsCounts[maxLevel] };
 }
 
 export function LogsHistory() {
   const { logsHistory, logger } = useLogger();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+
+  const { count, backgroundColor } = getMaxLevelLogs(logsHistory);
 
   return (
     <>
@@ -87,20 +114,22 @@ export function LogsHistory() {
       >
         <div style={{ position: 'relative' }}>
           <IoBugOutline fontSize="1.4em" />
-          <span
-            style={{
-              position: 'absolute',
-              top: '-0.4em',
-              left: '-0.4em',
-              backgroundColor: '#ff0000c7',
-              borderRadius: '50%',
-              minWidth: '14px',
-              fontSize: '0.75em',
-              color: 'white',
-            }}
-          >
-            {logsHistory.length}
-          </span>
+          {count && (
+            <span
+              style={{
+                position: 'absolute',
+                top: '-0.4em',
+                left: '-0.4em',
+                backgroundColor,
+                borderRadius: '50%',
+                minWidth: '14px',
+                fontSize: '0.75em',
+                color: 'white',
+              }}
+            >
+              {count}
+            </span>
+          )}
         </div>
       </Button.BarButton>
 
