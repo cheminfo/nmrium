@@ -11,6 +11,7 @@ import {
 } from '../../context/PreferencesContext';
 import ActionButtons from '../../elements/ActionButtons';
 import Button from '../../elements/Button';
+import Label from '../../elements/Label';
 import Tab from '../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import DropDownButton, {
@@ -22,7 +23,6 @@ import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/g
 import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
 import { Workspace } from '../../workspaces/Workspace';
-import { ModalStyles } from '../ModalStyle';
 
 import WorkspaceItem from './WorkspaceItem';
 import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
@@ -36,7 +36,7 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
-  width: 600px;
+  width: 800px;
 
   .main-content {
     width: 100%;
@@ -96,16 +96,10 @@ const styles = css`
     }
   }
 
-  .workspace-container {
-    display: flex;
-    background-color: #f4f4f4;
-    align-items: center;
-    cursor: default;
-    padding: 0.5em;
-
-    & .label {
-      font-size: 0.8em;
-    }
+  .inner-content {
+    padding: 15px 30px;
+    width: 100%;
+    overflow: auto;
   }
 `;
 
@@ -285,57 +279,72 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         <FaWrench />
       </Toolbar.Item>
       <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
-        <div css={[ModalStyles, styles]} style={{ height }}>
-          <div className="header handle">
+        <Modal.Header>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
             <span>General Settings</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'default',
+                paddingTop: '10px',
+              }}
+            >
+              <Label title="Workspace">
+                <DropDownButton
+                  data={workspacesList}
+                  renderItem={renderItem}
+                  selectedKey={preferences?.workspace.current}
+                  onSelect={ChangeWorkspaceHandler}
+                />
+              </Label>
+              <Button.Action
+                size="xSmall"
+                onClick={handleReset}
+                toolTip="Reset workspace preferences"
+                tooltipOrientation="horizontal"
+                style={{
+                  marginLeft: '10px',
+                }}
+                disabled={isRestDisabled}
+              >
+                <FaBolt />
+              </Button.Action>
+              <Button.Done
+                size="xSmall"
+                fill="outline"
+                onClick={handleCopyWorkspace}
+                toolTip="Copy workspace preferences"
+                tooltipOrientation="horizontal"
+                style={{
+                  marginLeft: '10px',
+                }}
+              >
+                <FaRegCopy />
+              </Button.Done>
+              <Button.Action
+                size="xSmall"
+                fill="outline"
+                onClick={handlePastWorkspace}
+                toolTip="Past workspace preferences"
+                tooltipOrientation="horizontal"
+                style={{
+                  marginLeft: '10px',
+                }}
+              >
+                <FaPaste />
+              </Button.Action>
+            </div>
           </div>
-          <div className="workspace-container">
-            <span className="label">Workspace : </span>
-            <DropDownButton
-              data={workspacesList}
-              renderItem={renderItem}
-              selectedKey={preferences?.workspace.current}
-              onSelect={ChangeWorkspaceHandler}
-            />
-
-            <Button.Action
-              size="xSmall"
-              onClick={handleReset}
-              toolTip="Reset workspace preferences"
-              tooltipOrientation="horizontal"
-              style={{
-                marginLeft: '10px',
-              }}
-              disabled={isRestDisabled}
-            >
-              <FaBolt />
-            </Button.Action>
-            <Button.Done
-              size="xSmall"
-              fill="outline"
-              onClick={handleCopyWorkspace}
-              toolTip="Copy workspace preferences"
-              tooltipOrientation="horizontal"
-              style={{
-                marginLeft: '10px',
-              }}
-            >
-              <FaRegCopy />
-            </Button.Done>
-            <Button.Action
-              size="xSmall"
-              fill="outline"
-              onClick={handlePastWorkspace}
-              toolTip="Past workspace preferences"
-              tooltipOrientation="horizontal"
-              style={{
-                marginLeft: '10px',
-              }}
-            >
-              <FaPaste />
-            </Button.Action>
-          </div>
-          <div className="main-content">
+        </Modal.Header>
+        <Modal.Body>
+          <div css={styles} style={{ height }}>
             <Formik
               enableReinitialize
               innerRef={refForm}
@@ -399,7 +408,9 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               </Tabs>
             </Formik>
           </div>
-          <div className="footer-container">
+        </Modal.Body>
+        <Modal.Footer>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ActionButtons
               style={{ flexDirection: 'row-reverse', margin: 0 }}
               onDone={() => refForm.current?.submitForm()}
@@ -415,7 +426,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               Apply
             </Button.Secondary>
           </div>
-        </div>
+        </Modal.Footer>
       </Modal>
       <SaveSettingsModal />
     </>

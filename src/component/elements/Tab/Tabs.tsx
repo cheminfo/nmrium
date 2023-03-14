@@ -67,6 +67,7 @@ const leftStyles = css`
     list-style: none;
     margin-right: -1px;
     padding: 0.5rem 0.75rem;
+    white-space: nowrap;
   }
 
   .tab-list-active {
