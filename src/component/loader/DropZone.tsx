@@ -78,7 +78,7 @@ function DropZone(props) {
         const { nmrLoaders: sourceSelector } = preferences.current;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
-          { sourceSelector },
+          { sourceSelector, logger },
         );
 
         if ((nmriumState as any)?.settings) {
