@@ -429,6 +429,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
       });
     });
     expect(data).not.toBeUndefined();
+    // TODO: Save raw data should not have source property
     expect(data.source).toBeUndefined();
     expect(data.spectra[0].data).not.toBeUndefined();
   });
@@ -525,6 +526,7 @@ test('Export source from imported spectrum', async ({ page }) => {
         resolve(data);
       });
     });
+    // TODO: Save raw data should not have source property
     expect(data).not.toBeUndefined();
     expect(data.source).toBeUndefined();
     expect(data.spectra[0].data).not.toBeUndefined();
