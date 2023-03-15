@@ -32,6 +32,7 @@ import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
+import { LogsHistory } from './LogsHistory';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
@@ -183,6 +184,7 @@ function HeaderInner(props: HeaderInnerProps) {
             />
           )}
           <SaveButton />
+          <LogsHistory />
 
           <div>
             <Toolbar orientation="horizontal">
