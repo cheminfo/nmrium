@@ -402,7 +402,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator('_react=ModalContent >> _react=Field');
     await expect(fields).toHaveCount(3);
-    // number of fields who does not have disabled attribute or disabled="false"
+
     const disabledFields = nmrium.page.locator(
       '_react=ModalContent >> _react=Field[disabled=true]',
     );
