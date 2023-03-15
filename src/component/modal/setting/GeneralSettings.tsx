@@ -162,6 +162,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
 
   function submitHandler(values) {
     saveSettings(values);
+    closeDialog?.();
   }
 
   const tabChangeHandler = useCallback((tab) => {
@@ -177,14 +178,19 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       },
     });
   }
-  function applyPreferencesHandler() {
-    dispatch({
-      type: 'APPLY_General_PREFERENCES',
-      payload: {
-        data: refForm.current?.values,
-      },
-    });
-    closeDialog?.();
+  async function applyPreferencesHandler() {
+    const errors = await refForm.current?.validateForm();
+    if (Object.keys(errors || {}).length > 0) {
+      refForm.current?.handleSubmit();
+    } else {
+      dispatch({
+        type: 'APPLY_General_PREFERENCES',
+        payload: {
+          data: refForm.current?.values,
+        },
+      });
+      closeDialog?.();
+    }
   }
 
   function deleteWorkSpaceHandler(key) {
