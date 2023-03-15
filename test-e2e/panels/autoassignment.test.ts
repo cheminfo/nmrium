@@ -11,12 +11,13 @@ test('automatic assignment panel', async ({ page }) => {
   });
   await test.step('activate automatic assignment panel', async () => {
     await nmrium.page.click('_react=ToolbarItem[id="general-settings"]');
-    await nmrium.page.click('_react=Draggable >> text=Panels');
+    await nmrium.page.click('_react=Modal >> text=Panels');
+
     // scroll to the bottom of the panel
     await nmrium.page.click(
-      '_react=Draggable >> _react=ReactTable >> tr[role="row"] >> nth=13 >> td[role="cell"] >> nth=2 >> input',
+      '_react=Modal >> _react=ReactTable >> tr[role="row"] >> nth=13 >> td[role="cell"] >> nth=2 >> input',
     );
-    await nmrium.page.click('_react=Draggable >> text=Apply and Save');
+    await nmrium.page.click('_react=Modal >> text=Apply and Save');
 
     // enter a name for the workspace
     await nmrium.page.locator('input[name="workspaceName"]').fill('test');
