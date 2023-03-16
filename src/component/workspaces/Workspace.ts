@@ -1,3 +1,4 @@
+import { FifoLoggerOptions } from 'fifo-logger';
 import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
 import { SplitPaneSize } from 'react-science/ui';
 
@@ -25,6 +26,7 @@ export interface GeneralPreferences {
   verticalSplitterPosition: SplitPaneSize;
   verticalSplitterCloseThreshold: number;
   spectraRendering: spectraRendering;
+  loggingLevel: FifoLoggerOptions['level'];
 }
 
 interface ColumnPreferences {

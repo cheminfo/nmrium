@@ -7,7 +7,10 @@ import {
   useMemo,
   useState,
   useCallback,
+  useEffect,
 } from 'react';
+
+import { usePreferences } from './PreferencesContext';
 
 export const LoggerContext = createContext<{
   logger: FifoLogger;
@@ -30,6 +33,11 @@ interface LoggerProviderProps {
 }
 
 export function LoggerProvider({ children }: LoggerProviderProps) {
+  const {
+    current: {
+      general: { loggingLevel },
+    },
+  } = usePreferences();
   const [lastReadLogId, setLastLogId] = useState(0);
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(
@@ -39,6 +47,13 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
       },
     }),
   );
+
+  useEffect(() => {
+    if (loggingLevel) {
+      loggerRef.current.setLevel(loggingLevel);
+    }
+  }, [loggingLevel]);
+
   const markAsRead = useCallback(() => {
     const id = logsHistory[logsHistory.length - 1].id;
     setLastLogId(id);
