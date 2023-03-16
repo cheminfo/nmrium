@@ -55,8 +55,10 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   }, [loggingLevel]);
 
   const markAsRead = useCallback(() => {
-    const id = logsHistory[logsHistory.length - 1].id;
-    setLastLogId(id);
+    if (logsHistory.length > 0) {
+      const id = logsHistory[logsHistory.length - 1].id;
+      setLastLogId(id);
+    }
   }, [logsHistory]);
 
   const loggerState = useMemo(() => {
