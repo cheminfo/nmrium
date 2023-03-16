@@ -63,7 +63,7 @@
     "clipboard-polyfill": "^4.0.0",
     "d3": "^7.8.2",
     "eventemitter3": "^5.0.0",
-    "fifo-logger": "^0.5.0",
+    "fifo-logger": "^0.6.0",
     "file-saver": "^2.0.5",
     "filelist-utils": "^1.7.1",
     "formik": "^2.2.9",
