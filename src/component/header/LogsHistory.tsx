@@ -120,6 +120,8 @@ export function LogsHistory() {
     [lastReadLogId],
   );
 
+  const sortedLogs = logsHistory.slice().sort((a, b) => b.time - a.time);
+
   return (
     <>
       <Button.BarButton
@@ -158,10 +160,10 @@ export function LogsHistory() {
       >
         <Modal.Header>Logs History </Modal.Header>
         <Modal.Body>
-          <div style={{ width: '60vw', height: '50vh', padding: '0.5em' }}>
+          <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
             <ReactTable
               columns={COLUMNS}
-              data={logsHistory}
+              data={sortedLogs}
               emptyDataRowText="No Logs"
               rowStyle={handleRowStyle}
             />
