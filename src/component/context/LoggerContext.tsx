@@ -6,11 +6,14 @@ import {
   useRef,
   useMemo,
   useState,
+  useCallback,
 } from 'react';
 
 export const LoggerContext = createContext<{
   logger: FifoLogger;
   logsHistory: LogEntry[];
+  markAsRead: () => void;
+  lastReadLogId: number;
 } | null>(null);
 
 export function useLogger() {
@@ -27,6 +30,7 @@ interface LoggerProviderProps {
 }
 
 export function LoggerProvider({ children }: LoggerProviderProps) {
+  const [lastReadLogId, setLastLogId] = useState(0);
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
@@ -35,10 +39,19 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
       },
     }),
   );
+  const markAsRead = useCallback(() => {
+    const id = logsHistory[logsHistory.length - 1].id;
+    setLastLogId(id);
+  }, [logsHistory]);
 
   const loggerState = useMemo(() => {
-    return { logger: loggerRef.current, logsHistory };
-  }, [logsHistory]);
+    return {
+      logger: loggerRef.current,
+      logsHistory,
+      markAsRead,
+      lastReadLogId,
+    };
+  }, [lastReadLogId, logsHistory, markAsRead]);
 
   return (
     <LoggerContext.Provider value={loggerState}>
