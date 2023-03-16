@@ -2,7 +2,8 @@ import { InnerWorkspace } from './Workspace';
 
 export const assignment: InnerWorkspace = {
   version: 2,
-  label: 'Assignment',
+  label: 'NMR spectra assignment',
+  visible: true,
   display: {
     panels: {
       spectraPanel: { display: true, open: true },
