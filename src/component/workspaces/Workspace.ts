@@ -180,7 +180,7 @@ export interface WorkspaceMeta {
    * boolean indicator to hide/show Workspace
    * @default false
    */
-  visible: boolean;
+  visible?: boolean;
 }
 
 export interface Databases {
