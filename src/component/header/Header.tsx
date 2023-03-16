@@ -60,8 +60,7 @@ const styles = css`
       display: block;
     }
 
-    .large-label,
-    .small-width-none {
+    .large-label {
       display: none !important;
     }
   }
@@ -180,7 +179,6 @@ function HeaderInner(props: HeaderInnerProps) {
               selectedKey={workspace.current}
               onSelect={changeWorkspaceHandler}
               renderItem={renderItem}
-              className="small-width-none"
             />
           )}
           <SaveButton />
@@ -236,7 +234,6 @@ function SaveButton() {
 
   return (
     <Button.Done
-      wrapperClassName="small-width-none"
       onClick={handleSave}
       fill="clear"
       style={{ fontSize: '1.4em', marginLeft: '5px' }}
