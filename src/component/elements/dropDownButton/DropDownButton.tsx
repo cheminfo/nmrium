@@ -34,6 +34,7 @@ export interface DropDownListItem {
 export interface ItemProps {
   itemKey?: string;
   labelKey?: string;
+  visibleKey?: string;
 }
 
 export interface DropDownListProps<T> {
@@ -61,6 +62,7 @@ function DropDownButton<T extends DropDownListItem>(
     style,
     itemKey = 'key',
     labelKey = 'label',
+    visibleKey = 'visible',
     className = '',
   } = props;
   const [open, setOpen] = useState(false);
@@ -115,6 +117,7 @@ function DropDownButton<T extends DropDownListItem>(
           renderItem={renderItem}
           itemKey={itemKey}
           labelKey={labelKey}
+          visibleKey={visibleKey}
         />
       )}
     </div>
