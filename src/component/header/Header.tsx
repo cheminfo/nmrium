@@ -58,8 +58,7 @@ const styles = css`
       display: block;
     }
 
-    .large-label,
-    .small-width-none {
+    .large-label {
       display: none !important;
     }
   }
@@ -168,7 +167,6 @@ function HeaderInner(props: HeaderInnerProps) {
               selectedKey={workspace.current}
               onSelect={changeWorkspaceHandler}
               renderItem={renderItem}
-              className="small-width-none"
             />
           )}
           <SaveButton />

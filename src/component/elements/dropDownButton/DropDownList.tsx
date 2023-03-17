@@ -57,6 +57,7 @@ function DropDownList({
   renderItem = null,
   itemKey,
   labelKey,
+  visibleKey,
 }: InnerDropDownListProps<DropDownListItem>) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -87,6 +88,10 @@ function DropDownList({
             onClick={(e) => {
               e.stopPropagation();
               onSelect(index);
+            }}
+            style={{
+              display:
+                !(visibleKey in item) || item[visibleKey] ? 'block' : 'none',
             }}
           >
             {renderItem?.(item) || (

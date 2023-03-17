@@ -176,7 +176,13 @@ export interface Database {
 export interface WorkspaceMeta {
   version: number;
   label: string;
+  /**
+   * boolean indicator to hide/show Workspace
+   * @default false
+   */
+  visible?: boolean;
 }
+
 export interface Databases {
   data: Database[];
   defaultDatabase: string;
