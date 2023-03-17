@@ -89,7 +89,30 @@ interface ZoneToolState extends ToolStateBase {
   showPeaks: boolean;
 }
 
+export interface ViewNuclei {
+  activeSpectra: ActiveSpectrum[] | null;
+  selectReferences: string;
+}
+
+export interface ViewNuclei1D extends ViewNuclei {
+  verticalAlign: VerticalAlignment;
+}
+export interface ViewNuclei2D extends ViewNuclei {
+  contoursLevels: ContoursLevels;
+}
+export interface ViewSpectra1D {
+  ranges: RangeToolState;
+  peaks: PeaksViewState;
+}
+export interface ViewSpectra2D {
+  zones: ZoneToolState;
+}
 export interface ViewState {
+  nuclei1D: Partial<Record<Nuclei, ViewNuclei1D>>;
+  nuclei2D: Partial<Record<`${Nuclei},${Nuclei}`, ViewNuclei2D>>;
+  spectra1D: Record<string, ViewSpectra1D>;
+  spectra2D: Record<string, ViewSpectra2D>;
+
   /**
    *  Molecules view properties
    * @default []
@@ -149,6 +172,10 @@ export interface Margin {
 
 export function getDefaultViewState(): ViewState {
   return {
+    nuclei1D: {},
+    nuclei2D: {},
+    spectra1D: {},
+    spectra2D: {},
     molecules: {},
     ranges: [],
     zones: [],
