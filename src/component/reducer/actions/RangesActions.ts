@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
+import lodashMerge from 'lodash/merge';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import * as Filters from '../../../data/Filters';
@@ -23,7 +24,11 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
-import { rangeStateInit, State } from '../Reducer';
+import {
+  RangesViewState,
+  State,
+  getDefaultSpectra1DViewState,
+} from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 
@@ -38,24 +43,14 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     molecules,
     view: {
       spectra: { activeTab: nucleus },
-      ranges,
     },
   } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
-    const { index, id } = activeSpectrum;
+    const { index } = activeSpectrum;
     const datum = data[index] as Datum1D;
-
-    // add range intial state
-    const range = ranges.find((r) => r.spectrumID === id);
-    if (!range) {
-      ranges.push({
-        spectrumID: id,
-        ...rangeStateInit,
-      });
-    }
 
     const [from, to] = xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
@@ -332,7 +327,6 @@ function addNewRange(
     data,
     view: {
       spectra: { activeTab: nucleus },
-      ranges,
     },
     molecules,
   } = draft;
@@ -340,14 +334,7 @@ function addNewRange(
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    // add range intial state
-    const rangeState = ranges.find((r) => r.spectrumID === activeSpectrum.id);
-    if (!rangeState) {
-      ranges.push({
-        spectrumID: activeSpectrum.id,
-        ...rangeStateInit,
-      });
-    }
+
     addRange(data[index] as Datum1D, {
       from,
       to,
@@ -432,45 +419,31 @@ function handleUpdateRange(draft: Draft<State>, action) {
   }
 }
 
-function handleShowMultiplicityTrees(draft: Draft<State>, action) {
-  const { id } = action.payload;
-  const range = draft.view.ranges.find((r) => r.spectrumID === id);
-  if (range) {
-    range.showMultiplicityTrees = !range.showMultiplicityTrees;
-  } else {
-    draft.view.ranges.push({
-      spectrumID: id,
-      ...rangeStateInit,
-      showMultiplicityTrees: !rangeStateInit.showMultiplicityTrees,
-    });
-  }
+function handleToggleRangesViewProperty(draft: Draft<State>, action) {
+  const { key } = action.payload;
+  toggleRangesViewProperty(draft, key);
 }
 
-function handleShowRangesIntegrals(draft: Draft<State>, action) {
-  const { id } = action.payload;
-  const range = draft.view.ranges.find((r) => r.spectrumID === id);
-  if (range) {
-    range.showRangesIntegrals = !range.showRangesIntegrals;
-  } else {
-    draft.view.ranges.push({
-      spectrumID: id,
-      ...rangeStateInit,
-      showRangesIntegrals: !rangeStateInit.showRangesIntegrals,
-    });
-  }
-}
+function toggleRangesViewProperty(
+  draft: Draft<State>,
+  key: keyof RangesViewState,
+  value?: boolean,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
 
-function handleShowJGraph(draft: Draft<State>, action) {
-  const { id } = action.payload;
-  const range = draft.view.ranges.find((r) => r.spectrumID === id);
-  if (range) {
-    range.showJGraph = !range.showJGraph;
-  } else {
-    draft.view.ranges.push({
-      spectrumID: id,
-      ...rangeStateInit,
-      showJGraph: !rangeStateInit.showJGraph,
-    });
+  if (activeSpectrum?.id) {
+    const rangesView = draft.view.spectra1D?.[activeSpectrum.id]?.ranges;
+    if (rangesView) {
+      rangesView[key] = value !== undefined ? value : !rangesView[key];
+    } else {
+      const defaultViewState = getDefaultSpectra1DViewState();
+      defaultViewState.ranges[key] =
+        value !== undefined ? value : !defaultViewState.ranges[key];
+      draft.view.spectra1D[activeSpectrum.id] = lodashMerge(
+        draft.view.spectra1D[activeSpectrum.id],
+        defaultViewState,
+      );
+    }
   }
 }
 
@@ -489,8 +462,7 @@ export {
   handleSetDiaIDRange,
   handleChangeRangesSumFlag,
   handleUpdateRange,
-  handleShowMultiplicityTrees,
-  handleShowRangesIntegrals,
+  handleToggleRangesViewProperty,
   handleAutoSpectraRangesDetection,
-  handleShowJGraph,
+  toggleRangesViewProperty,
 };

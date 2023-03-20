@@ -7,9 +7,9 @@ import generateJGraphData, {
 import { Signal1D } from '../../../data/types/data1d';
 import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrum1DViewState } from '../../hooks/useActiveSpectrum1DViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 
 import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
@@ -40,14 +40,11 @@ export default function JGraph() {
   const {
     height,
     view: {
-      ranges: rangeState,
       spectra: { activeTab },
     },
   } = useChartData();
   const spectrum = useSpectrum() as Datum1D;
-
-  const { showJGraph } =
-    rangeState.find((r) => r.spectrumID === spectrum?.id) || rangeStateInit;
+  const { ranges: rangesView } = useActiveSpectrum1DViewState();
 
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
@@ -79,7 +76,7 @@ export default function JGraph() {
     return { scaleY, height: graphHeight, maxValue };
   }, [graphHeight, scaleY, maxValue]);
 
-  if (!showJGraph || !spectrum?.display?.isVisible) return null;
+  if (!rangesView?.showJGraph || !spectrum?.display?.isVisible) return null;
 
   return (
     <JGraphContextProvider value={JGraphState}>

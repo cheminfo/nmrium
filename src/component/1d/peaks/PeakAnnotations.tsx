@@ -4,7 +4,7 @@ import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { useActiveSpectrum1DViewState } from '../../hooks/useActiveSpectrum1DViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 
 import PeakAnnotation from './PeakAnnotation';
@@ -16,13 +16,13 @@ function PeakAnnotations() {
   const activeSpectrum = useActiveSpectrum();
   const { scaleX, scaleY, shiftY } = useScaleChecked();
   const spectrum = useSpectrum(emptyData) as Datum1D;
-  const peaksViewState = useActiveSpectrumPeaksViewState();
+  const { peaks: PeaksViewState } = useActiveSpectrum1DViewState();
 
   const Peaks = useMemo(() => {
     if (
       !spectrum?.peaks?.values ||
       !spectrum.display.isVisible ||
-      !peaksViewState.isPeaksVisible
+      !PeaksViewState.isPeaksVisible
     ) {
       return null;
     }
@@ -48,7 +48,7 @@ function PeakAnnotations() {
     spectrum.display.isVisible,
     spectrum.id,
     spectrum.info.nucleus,
-    peaksViewState.isPeaksVisible,
+    PeaksViewState.isPeaksVisible,
     activeSpectrum?.index,
     shiftY,
     scaleX,

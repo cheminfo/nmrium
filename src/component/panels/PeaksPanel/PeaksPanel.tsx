@@ -15,7 +15,7 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { useActiveSpectrum1DViewState } from '../../hooks/useActiveSpectrum1DViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -241,7 +241,7 @@ export default function PeaksPanel() {
   } = useChartData();
   const { peaks, info } = useSpectrum(emptyData) as Datum1D;
   const preferences = usePreferences();
-  const peaksViewState = useActiveSpectrumPeaksViewState();
+  const { peaks: peaksViewState } = useActiveSpectrum1DViewState();
 
   return (
     <MemoizedPeaksPanel

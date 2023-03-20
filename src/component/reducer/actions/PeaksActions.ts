@@ -13,9 +13,8 @@ import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
 import { Peak } from '../../../data/types/data1d/Peak';
 import { PeaksViewState } from '../../../data/types/view-state/PeaksViewState';
-import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import { options } from '../../toolbar/ToolTypes';
-import { State } from '../Reducer';
+import { getDefaultSpectra1DViewState, State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 
@@ -173,11 +172,11 @@ function togglePeaksViewProperty(
     if (peaksView) {
       peaksView[key] = !peaksView[key];
     } else {
-      const defaultPeaksView = { ...defaultPeaksViewState };
-      defaultPeaksView[key] = !defaultPeaksView[key];
+      const defaultViewState = getDefaultSpectra1DViewState();
+      defaultViewState.peaks[key] = !defaultViewState.peaks[key];
       draft.view.spectra1D[activeSpectrum.id] = lodashMerge(
         draft.view.spectra1D[activeSpectrum.id],
-        { peaks: defaultPeaksView },
+        defaultViewState,
       );
     }
   }

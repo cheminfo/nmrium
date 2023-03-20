@@ -23,14 +23,13 @@ import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
+import { RangesViewState } from '../../reducer/Reducer';
 import {
   ADD_RANGE,
   CHANGE_RANGES_SUM_FLAG,
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
-  SHOW_J_GRAPH,
-  SHOW_MULTIPLICITY_TREES,
-  SHOW_RANGES_INTEGRALS,
+  TOGGLE_RANGES_VIEW_PROPERTY,
 } from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/export';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
@@ -58,7 +57,6 @@ const style = css`
 `;
 
 function RangesHeader({
-  id,
   ranges,
   info,
   onUnlink,
@@ -131,17 +129,19 @@ function RangesHeader({
     });
   }, [assignmentData, dispatch, modal]);
 
-  const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({ type: SHOW_MULTIPLICITY_TREES, payload: { id } });
-  }, [dispatch, id]);
+  function toggleViewProperty(key: keyof RangesViewState) {
+    dispatch({ type: TOGGLE_RANGES_VIEW_PROPERTY, payload: { key } });
+  }
 
-  const handleShowIntegrals = useCallback(() => {
-    dispatch({ type: SHOW_RANGES_INTEGRALS, payload: { id } });
-  }, [dispatch, id]);
-
-  const handleShowJGraph = useCallback(() => {
-    dispatch({ type: SHOW_J_GRAPH, payload: { id } });
-  }, [dispatch, id]);
+  function handleSetShowMultiplicityTrees() {
+    toggleViewProperty('showMultiplicityTrees');
+  }
+  function handleShowIntegrals() {
+    toggleViewProperty('showRangesIntegrals');
+  }
+  function handleShowJGraph() {
+    toggleViewProperty('showJGraph');
+  }
 
   const saveToClipboardHandler = useCallback(
     (value) => {

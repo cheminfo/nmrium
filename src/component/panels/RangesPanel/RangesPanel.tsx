@@ -9,9 +9,9 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
+import { useActiveSpectrum1DViewState } from '../../hooks/useActiveSpectrum1DViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
@@ -24,7 +24,6 @@ import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
 
 interface RangesTablePanelInnerProps {
-  id: string;
   ranges: Ranges;
   data: Data1D;
   info: Info1D;
@@ -38,7 +37,6 @@ interface RangesTablePanelInnerProps {
 }
 
 function RangesTablePanelInner({
-  id,
   ranges,
   data,
   info,
@@ -172,7 +170,6 @@ function RangesTablePanelInner({
       {!isFlipped && (
         <RangesHeader
           {...{
-            id,
             ranges,
             info,
             activeTab,
@@ -223,7 +220,7 @@ const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
 const emptyData = { ranges: {}, data: {}, info: {} };
 
 export default function RangesTablePanel() {
-  const { ranges, data, info, id } = useSpectrum(emptyData) as Datum1D;
+  const { ranges, data, info } = useSpectrum(emptyData) as Datum1D;
   const {
     displayerKey,
     xDomain,
@@ -232,19 +229,16 @@ export default function RangesTablePanel() {
     },
     molecules,
     toolOptions: { selectedTool },
-    view: { ranges: rangeState },
   } = useChartData();
-  const { showMultiplicityTrees, showRangesIntegrals, showJGraph } = useMemo(
-    () => rangeState.find((r) => r.spectrumID === id) || rangeStateInit,
-    [id, rangeState],
-  );
 
+  const {
+    ranges: { showMultiplicityTrees, showRangesIntegrals, showJGraph },
+  } = useActiveSpectrum1DViewState();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   return (
     <MemoizedRangesTablePanel
       {...{
-        id,
         ranges,
         data,
         info,
