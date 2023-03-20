@@ -54,6 +54,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     verticalSplitterPosition: '560px',
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
+    loggingLevel: 'info',
   },
   formatting: {
     nuclei: {

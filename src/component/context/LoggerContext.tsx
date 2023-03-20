@@ -6,11 +6,17 @@ import {
   useRef,
   useMemo,
   useState,
+  useCallback,
+  useEffect,
 } from 'react';
+
+import { usePreferences } from './PreferencesContext';
 
 export const LoggerContext = createContext<{
   logger: FifoLogger;
   logsHistory: LogEntry[];
+  markAsRead: () => void;
+  lastReadLogId: number;
 } | null>(null);
 
 export function useLogger() {
@@ -27,6 +33,12 @@ interface LoggerProviderProps {
 }
 
 export function LoggerProvider({ children }: LoggerProviderProps) {
+  const {
+    current: {
+      general: { loggingLevel },
+    },
+  } = usePreferences();
+  const [lastReadLogId, setLastLogId] = useState(0);
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
@@ -36,9 +48,27 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
     }),
   );
 
-  const loggerState = useMemo(() => {
-    return { logger: loggerRef.current, logsHistory };
+  useEffect(() => {
+    if (loggingLevel) {
+      loggerRef.current.setLevel(loggingLevel);
+    }
+  }, [loggingLevel]);
+
+  const markAsRead = useCallback(() => {
+    if (logsHistory.length > 0) {
+      const id = logsHistory[logsHistory.length - 1].id;
+      setLastLogId(id);
+    }
   }, [logsHistory]);
+
+  const loggerState = useMemo(() => {
+    return {
+      logger: loggerRef.current,
+      logsHistory,
+      markAsRead,
+      lastReadLogId,
+    };
+  }, [lastReadLogId, logsHistory, markAsRead]);
 
   return (
     <LoggerContext.Provider value={loggerState}>

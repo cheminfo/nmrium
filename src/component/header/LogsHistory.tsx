@@ -1,4 +1,5 @@
 import { LogEntry } from 'fifo-logger';
+import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoBugOutline } from 'react-icons/io5';
 import { ObjectInspector } from 'react-inspector';
@@ -9,59 +10,14 @@ import Button from '../elements/Button';
 import { ColumnWrapper } from '../elements/ColumnWrapper';
 import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
 
-const COLUMNS: Column<LogEntry>[] = [
-  {
-    Header: '#',
-    accessor: (_, index) => index + 1,
-    style: { width: '1%', maxWidth: '40px' },
-  },
-  {
-    Header: 'Time',
-    accessor: (row) => new Date(row.time).toUTCString(),
-    style: { width: '200px' },
-  },
-  {
-    Header: 'Level',
-    accessor: 'level',
-    style: { width: '50px' },
-  },
-  {
-    Header: 'Label',
-    accessor: 'levelLabel',
-    style: { width: '50px' },
-  },
-  {
-    Header: 'Meta',
-    style: { width: '10%' },
-    Cell: ({ row }) => {
-      const { meta } = row.original;
-      return (
-        <ColumnWrapper>
-          <ObjectInspector data={meta || {}} />
-        </ColumnWrapper>
-      );
-    },
-  },
-  {
-    Header: 'Message',
-    accessor: 'message',
-  },
-
-  {
-    Header: 'Error',
-    Cell: ({ row }) => {
-      const { error } = row.original;
-      return (
-        <ColumnWrapper>
-          <ObjectInspector data={error || {}} />
-        </ColumnWrapper>
-      );
-    },
-  },
-];
+const logsDataFormat = new Intl.DateTimeFormat('default', {
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+});
 
 function handleRowStyle(data) {
-  const level = data?.original.level;
+  const level = (data?.original as LogEntry).level;
   let backgroundColor = 'lightgreen';
   if (level > 40) {
     backgroundColor = 'pink';
@@ -72,10 +28,12 @@ function handleRowStyle(data) {
   return { base: { backgroundColor } };
 }
 
-function getMaxLevelLogs(logs: LogEntry[]) {
+function getMaxLevelLogs(logs: LogEntry[], lastReadLogId: number) {
   const logsCounts: Record<string, number> = {};
   for (const log of logs) {
-    logsCounts[log.level] = ++logsCounts[log.level] || 1;
+    if (log.id > lastReadLogId) {
+      logsCounts[log.level] = ++logsCounts[log.level] || 1;
+    }
   }
 
   let maxLevel = 0;
@@ -100,10 +58,69 @@ function getMaxLevelLogs(logs: LogEntry[]) {
 }
 
 export function LogsHistory() {
-  const { logsHistory, logger } = useLogger();
+  const { logsHistory, logger, markAsRead, lastReadLogId } = useLogger();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
 
-  const { count, backgroundColor } = getMaxLevelLogs(logsHistory);
+  const { count, backgroundColor } = getMaxLevelLogs(
+    logsHistory,
+    lastReadLogId,
+  );
+
+  const COLUMNS: Column<LogEntry>[] = useMemo(
+    () => [
+      {
+        Header: '#',
+        accessor: (_, index) => index + 1,
+        Cell: ({ row }) => (
+          <span>
+            {row.original.id > lastReadLogId && (
+              <div
+                style={{
+                  width: '5px',
+                  height: '5px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ffc409',
+                  display: 'inline-block',
+                  margin: '0 3px',
+                }}
+              />
+            )}
+            {row.index + 1}
+          </span>
+        ),
+        style: { width: '40px' },
+      },
+      {
+        Header: 'Time',
+        accessor: (row) => logsDataFormat.format(row.time),
+        style: { width: '100px' },
+      },
+      {
+        Header: 'Label',
+        accessor: 'levelLabel',
+        style: { width: '60px' },
+      },
+      {
+        Header: 'Message',
+        accessor: 'message',
+      },
+
+      {
+        Header: 'Error',
+        Cell: ({ row }) => {
+          const { error } = row.original;
+          return (
+            <ColumnWrapper>
+              <ObjectInspector data={error || {}} />
+            </ColumnWrapper>
+          );
+        },
+      },
+    ],
+    [lastReadLogId],
+  );
+
+  const sortedLogs = logsHistory.slice().sort((a, b) => b.time - a.time);
 
   return (
     <>
@@ -133,13 +150,20 @@ export function LogsHistory() {
         </div>
       </Button.BarButton>
 
-      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
+      <Modal
+        hasCloseButton
+        isOpen={isOpenDialog}
+        onRequestClose={() => {
+          markAsRead();
+          closeDialog();
+        }}
+      >
         <Modal.Header>Logs History </Modal.Header>
         <Modal.Body>
-          <div style={{ width: '60vw', height: '50vh', padding: '0.5em' }}>
+          <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
             <ReactTable
               columns={COLUMNS}
-              data={logsHistory}
+              data={sortedLogs}
               emptyDataRowText="No Logs"
               rowStyle={handleRowStyle}
             />

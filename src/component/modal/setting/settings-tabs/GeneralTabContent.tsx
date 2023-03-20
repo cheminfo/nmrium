@@ -23,6 +23,19 @@ const SHAPE_RENDERING = [
   },
 ];
 
+const LOGS_LEVELS = [
+  'fatal',
+  'error',
+  'warn',
+  'info',
+  'debug',
+  'trace',
+  'silent',
+].map((level) => ({
+  label: level.replace(/^\w/, (c) => c.toUpperCase()),
+  value: level,
+}));
+
 function GeneralTabContent() {
   return (
     <>
@@ -49,6 +62,15 @@ function GeneralTabContent() {
             items={SHAPE_RENDERING}
             name="general.spectraRendering"
             style={{ width: '150px' }}
+          />
+        </Label>
+      </GroupPane>
+      <GroupPane text="Logging settings">
+        <Label title="Level ">
+          <FormikSelect
+            items={LOGS_LEVELS}
+            name="general.logsLevel"
+            style={{ width: '100px' }}
           />
         </Label>
       </GroupPane>
