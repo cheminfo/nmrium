@@ -1,7 +1,5 @@
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
-import omitBy from 'lodash/omitBy';
-import lodashSet from 'lodash/set';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
@@ -26,10 +24,7 @@ import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
-import {
-  getActiveSpectraAsObject,
-  isActiveSpectrum,
-} from '../helper/getActiveSpectraAsObject';
+import { getActiveSpectraAsObject } from '../helper/getActiveSpectraAsObject';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
@@ -271,28 +266,17 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   }
 }
 
-function removeActiveSpectra(
-  draft: Draft<State>,
-  relatedTargets: ({ jpath: string; key: string } | { jpath: string })[],
-) {
-  const activeSpectra = getActiveSpectraAsObject(draft);
+function removeViewLinkWithSpectra(draft: Draft<State>, spectraIds: string[]) {
+  const { spectra1D, spectra2D } = draft.view;
 
-  // remove the active spectra
-  relatedTargets.unshift({ jpath: 'data', key: 'id' });
-
-  for (const target of relatedTargets) {
-    const { jpath } = target;
-    const targetObj = lodashGet(draft, jpath);
-    if (Array.isArray(targetObj)) {
-      const data = targetObj.filter(
-        (datum) => !isActiveSpectrum(activeSpectra, datum[(target as any).key]),
-      );
-      lodashSet(draft, jpath, data);
-    } else {
-      const data = omitBy(draft.view.peaks, (_, id) =>
-        isActiveSpectrum(activeSpectra, id),
-      );
-      lodashSet(draft, jpath, data);
+  for (const spectrumId of spectraIds) {
+    if (spectrumId in spectra1D) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete, unicorn/consistent-destructuring
+      delete draft.view.spectra1D[spectrumId];
+    }
+    if (spectrumId in spectra2D) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete, unicorn/consistent-destructuring
+      delete draft.view.spectra2D[spectrumId];
     }
   }
 }
@@ -302,17 +286,13 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   if (action.id) {
     const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
-    // remove peaks State
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete draft.view.peaks[action.id];
+    removeViewLinkWithSpectra(draft, [action.id]);
   } else {
     // remove spectra and it related data in the view object
-    removeActiveSpectra(draft, [
-      { jpath: 'view.ranges', key: 'spectrumID' },
-      { jpath: 'view.zones', key: 'spectrumID' },
-      { jpath: 'view.peaks' },
-      { jpath: 'view.zoom.levels' },
-    ]);
+    const activeSpectra = getActiveSpectraAsObject(draft);
+    draft.data = draft.data.filter((spectrum) => !activeSpectra?.[spectrum.id]);
+
+    removeViewLinkWithSpectra(draft, Object.keys(activeSpectra || {}));
   }
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,

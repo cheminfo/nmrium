@@ -15,10 +15,7 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import {
-  defaultPeaksViewState,
-  useActiveSpectrumPeaksViewState,
-} from '../../hooks/useActiveSpectrumPeaksViewState';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -127,7 +124,7 @@ function PeaksPanelInner({
     }
   };
 
-  function toggleViewProperty(key: keyof typeof defaultPeaksViewState) {
+  function toggleViewProperty(key: keyof PeaksViewState) {
     dispatch({ type: TOGGLE_PEAKS_VIEW_PROPERTY, payload: { key } });
   }
 

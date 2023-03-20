@@ -120,11 +120,6 @@ export interface ViewState {
   molecules: MoleculesView;
   ranges: Array<RangeToolState>;
   zones: Array<ZoneToolState>;
-  /**
-   * peaks view property
-   * where the key is the id of the spectrum
-   */
-  peaks: Record<string, PeaksViewState>;
   spectra: {
     /**
      * active spectrum id per nucleus
@@ -179,7 +174,6 @@ export function getDefaultViewState(): ViewState {
     molecules: {},
     ranges: [],
     zones: [],
-    peaks: {},
     spectra: {
       activeSpectra: {},
       activeTab: '',

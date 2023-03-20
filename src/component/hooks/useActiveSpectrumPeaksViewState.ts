@@ -12,11 +12,11 @@ export const defaultPeaksViewState: PeaksViewState = {
 export function useActiveSpectrumPeaksViewState() {
   const activeSpectrum = useActiveSpectrum();
   const {
-    view: { peaks },
+    view: { spectra1D },
   } = useChartData();
 
-  if (activeSpectrum?.id && peaks[activeSpectrum?.id]) {
-    return peaks[activeSpectrum?.id];
+  if (activeSpectrum?.id && spectra1D[activeSpectrum?.id]?.peaks) {
+    return spectra1D[activeSpectrum?.id]?.peaks;
   } else {
     return defaultPeaksViewState;
   }
