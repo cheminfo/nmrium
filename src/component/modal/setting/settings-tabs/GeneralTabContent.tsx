@@ -69,7 +69,7 @@ function GeneralTabContent() {
         <Label title="Level ">
           <FormikSelect
             items={LOGS_LEVELS}
-            name="general.logsLevel"
+            name="general.loggingLevel"
             style={{ width: '100px' }}
           />
         </Label>
