@@ -33,7 +33,7 @@ function addAssignment(state: AssignmentState, action: AddAction) {
         ...state.assignments[id],
         [axis]: [atomID],
         ...(dimension === '2D' && {
-          [otherAxis]: assignment?.[otherAxis] ? assignment[otherAxis] : [],
+          [otherAxis]: assignment?.[otherAxis] || [],
         }),
       },
     };
