@@ -28,7 +28,10 @@ function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
   if (multiplicity === undefined || multiplicity.length === 0) {
     return false;
   }
-  return multiplicity
+  
+  const isBroad = multiplicity.match(/(?<broad>br s)/);
+
+  return isBroad ? true : multiplicity
     .split('')
     .every((_multiplet) => checkMultiplet(_multiplet, rejected));
 }
