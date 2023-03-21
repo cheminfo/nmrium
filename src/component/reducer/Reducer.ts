@@ -51,9 +51,6 @@ export interface ActiveSpectrum {
   id: string;
   index: number;
 }
-interface ToolStateBase {
-  spectrumID: string;
-}
 export interface RangesViewState {
   /**
    * boolean indicator to hide/show multiplicity tree
@@ -71,15 +68,15 @@ export interface RangesViewState {
    */
   showRangesIntegrals: boolean;
 }
-interface ZoneToolState extends ToolStateBase {
+export interface ZonesViewState {
   /**
    * boolean indicator to hide/show zones
-   * @default false
+   * @default true
    */
   showZones: boolean;
   /**
    * boolean indicator to hide/show signals for spectrum zones
-   * @default false
+   * @default true
    */
   showSignals: boolean;
   /**
@@ -112,6 +109,13 @@ export const getDefaultSpectra1DViewState = (): ViewSpectra1D => ({
     showRangesIntegrals: true,
   },
 });
+export const getDefaultSpectra2DViewState = (): ViewSpectra2D => ({
+  zones: {
+    showZones: true,
+    showSignals: true,
+    showPeaks: true,
+  },
+});
 
 export interface ViewNuclei {
   activeSpectra: ActiveSpectrum[] | null;
@@ -129,7 +133,7 @@ export interface ViewSpectra1D {
   peaks: PeaksViewState;
 }
 export interface ViewSpectra2D {
-  zones: ZoneToolState;
+  zones: ZonesViewState;
 }
 export interface ViewState {
   nuclei1D: Partial<Record<Nuclei, ViewNuclei1D>>;
@@ -142,7 +146,6 @@ export interface ViewState {
    * @default []
    */
   molecules: MoleculesView;
-  zones: Array<ZoneToolState>;
   spectra: {
     /**
      * active spectrum id per nucleus
@@ -191,7 +194,6 @@ export function getDefaultViewState(): ViewState {
     spectra1D: {},
     spectra2D: {},
     molecules: {},
-    zones: [],
     spectra: {
       activeSpectra: {},
       activeTab: '',
@@ -791,12 +793,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleSetDiaIDZone(draft, action);
     case types.AUTO_ZONES_SPECTRA_PICKING:
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
-    case types.SHOW_ZONES:
-      return ZonesActions.handleShowZones(draft, action);
-    case types.SHOW_ZONES_SIGNALS:
-      return ZonesActions.handleShowSignals(draft, action);
-    case types.SHOW_ZONES_PEAKS:
-      return ZonesActions.handleShowPeaks(draft, action);
+    case types.TOGGLE_ZONES_VIEW_PROPERTY:
+      return ZonesActions.handleToggleZonesViewProperty(draft, action);
     case types.SAVE_EDITED_ZONE:
       return ZonesActions.handleSaveEditedZone(draft, action);
 
