@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useChartData } from '../context/ChartContext';
 import {
   ViewSpectra1D,
@@ -11,10 +13,11 @@ export function useActiveSpectrum1DViewState(): ViewSpectra1D {
   const {
     view: { spectra1D },
   } = useChartData();
-
-  if (activeSpectrum?.id && spectra1D?.[activeSpectrum.id]) {
-    return spectra1D[activeSpectrum.id];
-  } else {
-    return getDefaultSpectra1DViewState();
-  }
+  return useMemo(() => {
+    if (activeSpectrum?.id && spectra1D?.[activeSpectrum.id]) {
+      return spectra1D[activeSpectrum.id];
+    } else {
+      return getDefaultSpectra1DViewState();
+    }
+  }, [activeSpectrum?.id, spectra1D]);
 }
