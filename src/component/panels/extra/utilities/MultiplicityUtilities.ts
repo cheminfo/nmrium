@@ -31,11 +31,12 @@ function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
 
   const isBroad = multiplicity.match(/(?<broad>br s)/);
 
-  return isBroad
-    ? true
-    : multiplicity
-        .split('')
-        .every((_multiplet) => checkMultiplet(_multiplet, rejected));
+  return (
+    isBroad ||
+    multiplicity
+      .split('')
+      .every((_multiplet) => checkMultiplet(_multiplet, rejected))
+  );
 }
 
 function translateMultiplet(multiplet) {
