@@ -173,11 +173,12 @@ function togglePeaksViewProperty(
       peaksView[key] = !peaksView[key];
     } else {
       const defaultViewState = getDefaultSpectra1DViewState();
-      defaultViewState.peaks[key] = !defaultViewState.peaks[key];
       draft.view.spectra1D[activeSpectrum.id] = lodashMerge(
-        draft.view.spectra1D[activeSpectrum.id],
         defaultViewState,
+        draft.view.spectra1D[activeSpectrum.id],
       );
+      draft.view.spectra1D[activeSpectrum.id].peaks[key] =
+        !draft.view.spectra1D[activeSpectrum.id].peaks[key];
     }
   }
 }

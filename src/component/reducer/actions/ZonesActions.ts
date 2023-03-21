@@ -348,12 +348,14 @@ function toggleZonesViewProperty(
       zonesView[key] = value !== undefined ? value : !zonesView[key];
     } else {
       const defaultViewState = getDefaultSpectra2DViewState();
-      defaultViewState.zones[key] =
-        value !== undefined ? value : !defaultViewState.zones[key];
       draft.view.spectra2D[activeSpectrum.id] = lodashMerge(
-        draft.view.spectra2D[activeSpectrum.id],
         defaultViewState,
+        draft.view.spectra2D[activeSpectrum.id],
       );
+      draft.view.spectra2D[activeSpectrum.id].zones[key] =
+        value !== undefined
+          ? value
+          : !draft.view.spectra2D[activeSpectrum.id].zones[key];
     }
   }
 }

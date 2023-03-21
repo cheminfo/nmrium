@@ -437,12 +437,14 @@ function toggleRangesViewProperty(
       rangesView[key] = value !== undefined ? value : !rangesView[key];
     } else {
       const defaultViewState = getDefaultSpectra1DViewState();
-      defaultViewState.ranges[key] =
-        value !== undefined ? value : !defaultViewState.ranges[key];
       draft.view.spectra1D[activeSpectrum.id] = lodashMerge(
-        draft.view.spectra1D[activeSpectrum.id],
         defaultViewState,
+        draft.view.spectra1D[activeSpectrum.id],
       );
+      draft.view.spectra1D[activeSpectrum.id].ranges[key] =
+        value !== undefined
+          ? value
+          : !draft.view.spectra1D[activeSpectrum.id].ranges[key];
     }
   }
 }
