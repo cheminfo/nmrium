@@ -5,7 +5,7 @@ import { Source } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
+import { ContoursLevel } from '../../data/data2d/Spectrum2D/contours';
 import {
   MoleculesView,
   StateMoleculeExtended,
@@ -115,6 +115,7 @@ export const getDefaultSpectra2DViewState = (): ViewSpectra2D => ({
     showSignals: true,
     showPeaks: true,
   },
+  contoursLevel: { negative: 10, positive: 10 },
 });
 
 export interface ViewNuclei {
@@ -125,15 +126,14 @@ export interface ViewNuclei {
 export interface ViewNuclei1D extends ViewNuclei {
   verticalAlign: VerticalAlignment;
 }
-export interface ViewNuclei2D extends ViewNuclei {
-  contoursLevels: ContoursLevels;
-}
+export interface ViewNuclei2D extends ViewNuclei {}
 export interface ViewSpectra1D {
   ranges: RangesViewState;
   peaks: PeaksViewState;
 }
 export interface ViewSpectra2D {
   zones: ZonesViewState;
+  contoursLevel: ContoursLevel;
 }
 export interface ViewState {
   nuclei1D: Partial<Record<Nuclei, ViewNuclei1D>>;
@@ -164,9 +164,6 @@ export interface ViewState {
      * @default false
      */
     showLegend: boolean;
-  };
-  zoom: {
-    levels: ContoursLevels;
   };
   /**
    * options to control spectra vertical alignment
@@ -199,9 +196,6 @@ export function getDefaultViewState(): ViewState {
       activeTab: '',
       showLegend: false,
       selectReferences: {},
-    },
-    zoom: {
-      levels: {},
     },
     verticalAlign: {},
   };

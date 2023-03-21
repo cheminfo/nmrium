@@ -74,16 +74,14 @@ function usePath(datum: Datum2D, contours) {
 
 const useContoursLevel = (datum: Datum2D, sign: LevelSign) => {
   const {
-    view: {
-      zoom: { levels },
-    },
+    view: { spectra2D },
   } = useChartData();
   const {
     id,
     display: { contourOptions },
   } = datum;
   const defaultLevel = getDefaultContoursLevel(contourOptions);
-  const level = levels?.[id]?.[sign];
+  const level = spectra2D[id]?.contoursLevel?.[sign];
   return typeof level !== 'number' ? defaultLevel[sign] : level;
 };
 

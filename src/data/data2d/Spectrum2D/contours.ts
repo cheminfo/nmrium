@@ -1,10 +1,12 @@
+import lodashMerge from 'lodash/merge';
 import { Conrec } from 'ml-conrec';
 
+import { ViewState } from '../../../component/reducer/Reducer';
 import { Datum2D } from '../../types/data2d';
 import { MinMaxContent } from '../../types/data2d/Data2D';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
-interface Level {
+interface ContoursLevel {
   positive: number;
   negative: number;
 }
@@ -20,12 +22,9 @@ interface ContourOptions {
 interface WheelOptions {
   shiftKey: boolean;
   contourOptions: ContourOptions;
-  currentLevel: Level;
+  currentLevel: ContoursLevel;
 }
 
-interface ContoursLevels {
-  [key: string]: Level;
-}
 const DEFAULT_CONTOURS_OPTIONS = {
   positive: {
     contourLevels: [0, 21],
@@ -36,17 +35,17 @@ const DEFAULT_CONTOURS_OPTIONS = {
     numberOfLayers: 10,
   },
 };
-type LevelSign = keyof Level;
+type LevelSign = keyof ContoursLevel;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
 interface ReturnContoursManager {
-  wheel: (value: number, shift: boolean) => Level;
-  getLevel: () => Level;
-  checkLevel: () => Level;
+  wheel: (value: number, shift: boolean) => ContoursLevel;
+  getLevel: () => ContoursLevel;
+  checkLevel: () => ContoursLevel;
 }
 
 function getDefaultContoursLevel(options: ContourOptions) {
-  const defaultLevel: Level = { negative: 10, positive: 10 };
+  const defaultLevel: ContoursLevel = { negative: 10, positive: 10 };
   for (const sign of LEVEL_SIGNS) {
     const [min, max] = options[sign].contourLevels;
     defaultLevel[sign] = min + max / 2;
@@ -56,18 +55,22 @@ function getDefaultContoursLevel(options: ContourOptions) {
 
 function contoursManager(
   spectrumID: string,
-  state: ContoursLevels,
+  state: ViewState['spectra2D'],
   options: ContourOptions,
 ): ReturnContoursManager {
-  const spectraLevels = { ...state };
   const contourOptions = { ...options };
 
-  if (!state?.[spectrumID]) {
+  if (!state?.[spectrumID]?.contoursLevel) {
     const defaultLevel = getDefaultContoursLevel(contourOptions);
-    spectraLevels[spectrumID] = defaultLevel;
+    state[spectrumID] = lodashMerge(
+      { contoursLevel: defaultLevel },
+      state[spectrumID],
+    );
   }
 
-  const currentLevel = spectraLevels[spectrumID];
+  const spectraLevels = { ...state };
+
+  const currentLevel = spectraLevels[spectrumID].contoursLevel;
 
   const wheel = (value, shiftKey) =>
     prepareWheel(value, { shiftKey, contourOptions, currentLevel });
@@ -108,7 +111,10 @@ function prepareWheel(value: number, options: WheelOptions) {
   return currentLevel;
 }
 
-function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
+function prepareCheckLevel(
+  currentLevel: ContoursLevel,
+  options: ContourOptions,
+) {
   const level = { ...currentLevel };
   for (const sign of LEVEL_SIGNS) {
     const [min, max] = options[sign].contourLevels;
@@ -224,4 +230,4 @@ export {
   getDefaultContoursLevel,
   DEFAULT_CONTOURS_OPTIONS,
 };
-export type { ContoursLevels, ReturnContoursManager, Level, LevelSign };
+export type { ReturnContoursManager, ContoursLevel, LevelSign };

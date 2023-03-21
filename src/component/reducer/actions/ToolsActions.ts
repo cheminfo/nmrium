@@ -495,7 +495,7 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
     data,
     view: {
       spectra: { activeTab },
-      zoom: { levels },
+      spectra2D,
     },
   } = draft;
   const activeSpectra = getActiveSpectra(draft) || [];
@@ -514,8 +514,8 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   try {
     for (const spectrum of spectra as Datum2D[]) {
       const contourOptions = spectrum.display.contourOptions;
-      const zoom = contoursManager(spectrum.id, levels, contourOptions);
-      levels[spectrum.id] = zoom.wheel(deltaY, shiftKey);
+      const zoom = contoursManager(spectrum.id, spectra2D, contourOptions);
+      spectra2D[spectrum.id].contoursLevel = zoom.wheel(deltaY, shiftKey);
     }
   } catch (error) {
     // TODO: handle error.
