@@ -37,7 +37,7 @@ interface NoDataProps {
 
 function NoData({
   isEmpty = true,
-  emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
+  emptyText = 'Drag and drop here a JCAMP-DX, Bruker folder, Jeol jdf or NMRium file',
   canOpenLoader = true,
   style,
 }: NoDataProps) {
