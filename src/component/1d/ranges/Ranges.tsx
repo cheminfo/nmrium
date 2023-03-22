@@ -1,11 +1,10 @@
-import { Fragment, memo, useMemo } from 'react';
+import { Fragment, memo } from 'react';
 
 import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import { useActiveSpectrum1DViewState } from '../../hooks/useActiveSpectrum1DViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 
 import Range from './Range';
 import RangeIntegral from './RangeIntegral';
@@ -50,20 +49,13 @@ export default function Ranges() {
   const {
     displayerKey,
     view: {
-      ranges: rangeState,
       spectra: { activeTab },
     },
     toolOptions: { selectedTool },
   } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
-  const { showMultiplicityTrees, showRangesIntegrals } = useMemo(
-    () =>
-      activeSpectrum
-        ? rangeState.find((r) => r.spectrumID === activeSpectrum.id) ||
-          rangeStateInit
-        : rangeStateInit,
-    [activeSpectrum, rangeState],
-  );
+  const {
+    ranges: { showMultiplicityTrees, showRangesIntegrals },
+  } = useActiveSpectrum1DViewState();
   const spectrum = useSpectrum() as Datum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 

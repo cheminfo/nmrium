@@ -7,20 +7,17 @@ import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
+import { ZonesViewState } from '../../reducer/Reducer';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import SignalCrosshair from './SignalCrosshair';
 
 interface SignalProps {
   signal: Signal2D;
-  isVisible: {
-    signals?: boolean;
-    peaks?: boolean;
-    zones?: boolean;
-  };
+  zonesViewState: ZonesViewState;
 }
 
-function Signal({ signal, isVisible }: SignalProps) {
+function Signal({ signal, zonesViewState }: SignalProps) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
@@ -57,7 +54,7 @@ function Signal({ signal, isVisible }: SignalProps) {
 
   return (
     <g className="zone-signal">
-      {isVisible.signals && (
+      {zonesViewState.showSignals && (
         <g>
           <SignalCrosshair signal={signal} />
           <circle
@@ -78,7 +75,7 @@ function Signal({ signal, isVisible }: SignalProps) {
         </g>
       )}
       <g className="zone-signal-peak" style={{ pointerEvents: 'none' }}>
-        {isVisible.peaks &&
+        {zonesViewState.showPeaks &&
           signal.peaks &&
           signal.peaks.map((peak, i) => (
             <circle

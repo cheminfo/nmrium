@@ -11,7 +11,7 @@ import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { rangeStateInit, State } from '../Reducer';
+import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { setZoom, wheelZoom, ZoomType } from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
@@ -31,6 +31,7 @@ import {
   setFilterChanges,
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { toggleRangesViewProperty } from './RangesActions';
 
 function resetTool(draft: Draft<State>, setDefaultTool = true) {
   // reset temp range
@@ -66,21 +67,7 @@ function setSelectedTool(draft: Draft<State>, action) {
     if (selectedTool) {
       // start Range edit mode
       if (selectedTool === options.editRange.id) {
-        const activeSpectrum = getActiveSpectrum(draft);
-        if (activeSpectrum) {
-          const range = draft.view.ranges.find(
-            (r) => r.spectrumID === activeSpectrum?.id,
-          );
-          if (range) {
-            range.showMultiplicityTrees = true;
-          } else {
-            draft.view.ranges.push({
-              spectrumID: activeSpectrum.id,
-              ...rangeStateInit,
-              showMultiplicityTrees: true,
-            });
-          }
-        }
+        toggleRangesViewProperty(draft, 'showMultiplicityTrees', true);
       }
 
       if (selectedTool !== draft.toolOptions.selectedTool) {
@@ -250,7 +237,7 @@ function getSpectrumID(draft: Draft<State>, index): string | null {
 function handleZoom(draft: Draft<State>, action) {
   const { event, trackID, selectedTool } = action;
   const {
-    view: { ranges: rangeState },
+    view: { spectra1D },
     displayerMode,
     yDomains,
     integralsYDomains,
@@ -273,9 +260,8 @@ function handleZoom(draft: Draft<State>, action) {
     if (selectedTool === options.integral.id && event.shiftKey) {
       for (const activeSpectrum of activeSpectra) {
         //check if the integrals is visible
-        const { showRangesIntegrals } =
-          rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
-          rangeStateInit;
+        const { showRangesIntegrals = false } =
+          spectra1D?.[activeSpectrum.id].ranges || {};
         const domain = integralsYDomains?.[activeSpectrum?.id];
         if (showRangesIntegrals && domain) {
           integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
@@ -509,7 +495,7 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
     data,
     view: {
       spectra: { activeTab },
-      zoom: { levels },
+      spectra2D,
     },
   } = draft;
   const activeSpectra = getActiveSpectra(draft) || [];
@@ -528,8 +514,8 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   try {
     for (const spectrum of spectra as Datum2D[]) {
       const contourOptions = spectrum.display.contourOptions;
-      const zoom = contoursManager(spectrum.id, levels, contourOptions);
-      levels[spectrum.id] = zoom.wheel(deltaY, shiftKey);
+      const zoom = contoursManager(spectrum.id, spectra2D, contourOptions);
+      spectra2D[spectrum.id].contoursLevel = zoom.wheel(deltaY, shiftKey);
     }
   } catch (error) {
     // TODO: handle error.

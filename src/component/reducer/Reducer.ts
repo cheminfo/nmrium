@@ -5,7 +5,7 @@ import { Source } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
+import { ContoursLevel } from '../../data/data2d/Spectrum2D/contours';
 import {
   MoleculesView,
   StateMoleculeExtended,
@@ -51,10 +51,7 @@ export interface ActiveSpectrum {
   id: string;
   index: number;
 }
-interface ToolStateBase {
-  spectrumID: string;
-}
-interface RangeToolState extends ToolStateBase {
+export interface RangesViewState {
   /**
    * boolean indicator to hide/show multiplicity tree
    * @default false
@@ -71,15 +68,15 @@ interface RangeToolState extends ToolStateBase {
    */
   showRangesIntegrals: boolean;
 }
-interface ZoneToolState extends ToolStateBase {
+export interface ZonesViewState {
   /**
    * boolean indicator to hide/show zones
-   * @default false
+   * @default true
    */
   showZones: boolean;
   /**
    * boolean indicator to hide/show signals for spectrum zones
-   * @default false
+   * @default true
    */
   showSignals: boolean;
   /**
@@ -89,19 +86,66 @@ interface ZoneToolState extends ToolStateBase {
   showPeaks: boolean;
 }
 
+export const defaultPeaksViewState: PeaksViewState = {
+  isPeaksVisible: true,
+  showPeaksShapes: false,
+  showPeaksSum: false,
+};
+export const defaultRangesViewState: RangesViewState = {
+  showMultiplicityTrees: false,
+  showJGraph: false,
+  showRangesIntegrals: true,
+};
+
+export const getDefaultSpectra1DViewState = (): ViewSpectra1D => ({
+  peaks: {
+    isPeaksVisible: true,
+    showPeaksShapes: false,
+    showPeaksSum: false,
+  },
+  ranges: {
+    showMultiplicityTrees: false,
+    showJGraph: false,
+    showRangesIntegrals: true,
+  },
+});
+export const getDefaultSpectra2DViewState = (): ViewSpectra2D => ({
+  zones: {
+    showZones: true,
+    showSignals: true,
+    showPeaks: true,
+  },
+  contoursLevel: { negative: 10, positive: 10 },
+});
+
+export interface ViewNuclei {
+  activeSpectra: ActiveSpectrum[] | null;
+  selectReferences: string;
+}
+
+export interface ViewNuclei1D extends ViewNuclei {
+  verticalAlign: VerticalAlignment;
+}
+export interface ViewNuclei2D extends ViewNuclei {}
+export interface ViewSpectra1D {
+  ranges: RangesViewState;
+  peaks: PeaksViewState;
+}
+export interface ViewSpectra2D {
+  zones: ZonesViewState;
+  contoursLevel: ContoursLevel;
+}
 export interface ViewState {
+  nuclei1D: Partial<Record<Nuclei, ViewNuclei1D>>;
+  nuclei2D: Partial<Record<`${Nuclei},${Nuclei}`, ViewNuclei2D>>;
+  spectra1D: Record<string, ViewSpectra1D>;
+  spectra2D: Record<string, ViewSpectra2D>;
+
   /**
    *  Molecules view properties
    * @default []
    */
   molecules: MoleculesView;
-  ranges: Array<RangeToolState>;
-  zones: Array<ZoneToolState>;
-  /**
-   * peaks view property
-   * where the key is the id of the spectrum
-   */
-  peaks: Record<string, PeaksViewState>;
   spectra: {
     /**
      * active spectrum id per nucleus
@@ -121,20 +165,13 @@ export interface ViewState {
      */
     showLegend: boolean;
   };
-  zoom: {
-    levels: ContoursLevels;
-  };
   /**
    * options to control spectra vertical alignment
    * @default  'bottom'
    */
   verticalAlign: Partial<Record<Nuclei, VerticalAlignment>>;
 }
-export const rangeStateInit = {
-  showMultiplicityTrees: false,
-  showRangesIntegrals: true,
-  showJGraph: false,
-};
+
 export const zoneStateInit = {
   showZones: true,
   showSignals: true,
@@ -149,18 +186,16 @@ export interface Margin {
 
 export function getDefaultViewState(): ViewState {
   return {
+    nuclei1D: {},
+    nuclei2D: {},
+    spectra1D: {},
+    spectra2D: {},
     molecules: {},
-    ranges: [],
-    zones: [],
-    peaks: {},
     spectra: {
       activeSpectra: {},
       activeTab: '',
       showLegend: false,
       selectReferences: {},
-    },
-    zoom: {
-      levels: {},
     },
     verticalAlign: {},
   };
@@ -715,15 +750,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleSetDiaIDRange(draft, action);
     case types.UPDATE_RANGE:
       return RangesActions.handleUpdateRange(draft, action);
-    case types.SHOW_MULTIPLICITY_TREES:
-      return RangesActions.handleShowMultiplicityTrees(draft, action);
-    case types.SHOW_RANGES_INTEGRALS:
-      return RangesActions.handleShowRangesIntegrals(draft, action);
+    case types.TOGGLE_RANGES_VIEW_PROPERTY:
+      return RangesActions.handleToggleRangesViewProperty(draft, action);
     case types.AUTO_RANGES_SPECTRA_PICKING:
       return RangesActions.handleAutoSpectraRangesDetection(draft);
-    case types.SHOW_J_GRAPH:
-      return RangesActions.handleShowJGraph(draft, action);
-
     case types.SET_ACTIVE_TAB:
       return ToolsActions.handelSetActiveTab(draft, action.tab);
     case types.ADD_BASE_LINE_ZONE:
@@ -757,12 +787,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleSetDiaIDZone(draft, action);
     case types.AUTO_ZONES_SPECTRA_PICKING:
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
-    case types.SHOW_ZONES:
-      return ZonesActions.handleShowZones(draft, action);
-    case types.SHOW_ZONES_SIGNALS:
-      return ZonesActions.handleShowSignals(draft, action);
-    case types.SHOW_ZONES_PEAKS:
-      return ZonesActions.handleShowPeaks(draft, action);
+    case types.TOGGLE_ZONES_VIEW_PROPERTY:
+      return ZonesActions.handleToggleZonesViewProperty(draft, action);
     case types.SAVE_EDITED_ZONE:
       return ZonesActions.handleSaveEditedZone(draft, action);
 

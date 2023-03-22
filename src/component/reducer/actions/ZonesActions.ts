@@ -1,6 +1,7 @@
 import { FromTo } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
+import lodashMerge from 'lodash/merge';
 import { setPathLength } from 'nmr-correlation';
 
 import * as Filters from '../../../data/Filters';
@@ -20,7 +21,11 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
-import { State, zoneStateInit } from '../Reducer';
+import {
+  getDefaultSpectra2DViewState,
+  State,
+  ZonesViewState,
+} from '../Reducer';
 import get2DRange from '../helper/get2DRange';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
@@ -320,47 +325,39 @@ function handleSaveEditedZone(draft: Draft<State>, action) {
     handleOnChangeZonesData(draft);
   }
 }
-function handleShowZones(draft: Draft<State>, action) {
-  const { id } = action.payload;
-  const zone = draft.view.zones.find((r) => r.spectrumID === id);
-  if (zone) {
-    zone.showZones = !zone.showZones;
-  } else {
-    draft.view.zones.push({
-      spectrumID: id,
-      ...zoneStateInit,
-      showZones: !zoneStateInit.showZones,
-    });
-  }
-}
-function handleShowSignals(draft: Draft<State>, action) {
-  const { id } = action.payload;
-  const zone = draft.view.zones.find((r) => r.spectrumID === id);
-  if (zone) {
-    zone.showSignals = !zone.showSignals;
-  } else {
-    draft.view.zones.push({
-      spectrumID: id,
-      ...zoneStateInit,
-      showSignals: !zoneStateInit.showSignals,
-    });
-  }
-}
-function handleShowPeaks(draft: Draft<State>, action) {
-  const { id } = action.payload;
-  const zone = draft.view.zones.find((r) => r.spectrumID === id);
-  if (zone) {
-    zone.showPeaks = !zone.showPeaks;
-  } else {
-    draft.view.zones.push({
-      spectrumID: id,
-      ...zoneStateInit,
-      showPeaks: !zoneStateInit.showPeaks,
-    });
-  }
-}
+
 function handleOnChangeZonesData(draft) {
   handleUpdateCorrelations(draft);
+}
+
+function handleToggleZonesViewProperty(draft: Draft<State>, action) {
+  const { key } = action.payload;
+  toggleZonesViewProperty(draft, key);
+}
+
+function toggleZonesViewProperty(
+  draft: Draft<State>,
+  key: keyof ZonesViewState,
+  value?: boolean,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const zonesView = draft.view.spectra2D?.[activeSpectrum.id]?.zones;
+    if (zonesView) {
+      zonesView[key] = value !== undefined ? value : !zonesView[key];
+    } else {
+      const defaultViewState = getDefaultSpectra2DViewState();
+      draft.view.spectra2D[activeSpectrum.id] = lodashMerge(
+        defaultViewState,
+        draft.view.spectra2D[activeSpectrum.id],
+      );
+      draft.view.spectra2D[activeSpectrum.id].zones[key] =
+        value !== undefined
+          ? value
+          : !draft.view.spectra2D[activeSpectrum.id].zones[key];
+    }
+  }
 }
 
 export {
@@ -376,7 +373,5 @@ export {
   handleSetSignalPathLength,
   changeZonesFactorHandler,
   handleAutoSpectraZonesDetection,
-  handleShowZones,
-  handleShowSignals,
-  handleShowPeaks,
+  handleToggleZonesViewProperty,
 };

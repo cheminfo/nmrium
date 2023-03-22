@@ -7,6 +7,7 @@ import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
+import { ZonesViewState } from '../../reducer/Reducer';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -44,12 +45,10 @@ const stylesHighlighted = css`
 
 interface ZoneProps {
   zoneData: ZoneDataProps;
-  isVisible: {
-    zones: boolean;
-  };
+  zonesViewState: ZonesViewState;
 }
 
-function Zone({ zoneData, isVisible }: ZoneProps) {
+function Zone({ zoneData, zonesViewState }: ZoneProps) {
   const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight([assignmentZone.id], {
@@ -86,7 +85,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
         highlightZone.hide();
       }}
     >
-      {isVisible.zones && (
+      {zonesViewState.showZones && (
         <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
           <rect
             x="0"
@@ -100,7 +99,11 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
         </g>
       )}
       {signals.map((_signal, i) => (
-        <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
+        <Signal
+          key={`${id + i}`}
+          signal={_signal}
+          zonesViewState={zonesViewState}
+        />
       ))}
     </g>
   );

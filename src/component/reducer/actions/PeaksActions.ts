@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
+import lodashMerge from 'lodash/merge';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import {
@@ -11,9 +12,9 @@ import {
 import { Datum1D } from '../../../data/types/data1d';
 import { Data1D } from '../../../data/types/data1d/Data1D';
 import { Peak } from '../../../data/types/data1d/Peak';
-import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { PeaksViewState } from '../../../data/types/view-state/PeaksViewState';
 import { options } from '../../toolbar/ToolTypes';
-import { State } from '../Reducer';
+import { getDefaultSpectra1DViewState, State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 
@@ -162,18 +163,22 @@ function handleTogglePeaksViewProperty(draft: Draft<State>, action) {
 
 function togglePeaksViewProperty(
   draft: Draft<State>,
-  key: keyof typeof defaultPeaksViewState,
+  key: keyof PeaksViewState,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
-    const peaksView = draft.view.peaks;
-    if (peaksView[activeSpectrum.id]) {
-      peaksView[activeSpectrum.id][key] = !peaksView[activeSpectrum.id][key];
+    const peaksView = draft.view.spectra1D?.[activeSpectrum.id]?.peaks;
+    if (peaksView) {
+      peaksView[key] = !peaksView[key];
     } else {
-      const defaultPeaksView = { ...defaultPeaksViewState };
-      defaultPeaksView[key] = !defaultPeaksView[key];
-      peaksView[activeSpectrum.id] = defaultPeaksView;
+      const defaultViewState = getDefaultSpectra1DViewState();
+      draft.view.spectra1D[activeSpectrum.id] = lodashMerge(
+        defaultViewState,
+        draft.view.spectra1D[activeSpectrum.id],
+      );
+      draft.view.spectra1D[activeSpectrum.id].peaks[key] =
+        !draft.view.spectra1D[activeSpectrum.id].peaks[key];
     }
   }
 }

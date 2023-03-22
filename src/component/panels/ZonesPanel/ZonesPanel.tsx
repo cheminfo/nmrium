@@ -10,13 +10,12 @@ import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectrum2DViewState } from '../../hooks/useActiveSpectrum2DViewState';
 import useSpectrum from '../../hooks/useSpectrum';
-import { zoneStateInit } from '../../reducer/Reducer';
+import { ZonesViewState } from '../../reducer/Reducer';
 import {
   DELETE_2D_ZONE,
-  SHOW_ZONES,
-  SHOW_ZONES_PEAKS,
-  SHOW_ZONES_SIGNALS,
+  TOGGLE_ZONES_VIEW_PROPERTY,
   UNLINK_ZONE,
 } from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -59,7 +58,6 @@ function ZonesPanelInner({
   showZones,
   showSignals,
   showPeaks,
-  id,
 }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -171,14 +169,18 @@ function ZonesPanelInner({
     setFlipStatus(false);
   }, []);
 
+  function toggleViewProperty(key: keyof ZonesViewState) {
+    dispatch({ type: TOGGLE_ZONES_VIEW_PROPERTY, payload: { key } });
+  }
+
   const handleSetShowZones = () => {
-    dispatch({ type: SHOW_ZONES, payload: { id } });
+    toggleViewProperty('showZones');
   };
   const handleSetShowSignals = () => {
-    dispatch({ type: SHOW_ZONES_SIGNALS, payload: { id } });
+    toggleViewProperty('showSignals');
   };
   const handleSetShowPeaks = () => {
-    dispatch({ type: SHOW_ZONES_PEAKS, payload: { id } });
+    toggleViewProperty('showPeaks');
   };
 
   return (
@@ -286,23 +288,21 @@ export default function ZonesPanel() {
     xDomain,
     yDomain,
     view: {
-      zones: zoneState,
       spectra: { activeTab },
     },
   } = useChartData();
-  const { zones, info, id } = useSpectrum(emptyData) as Datum2D;
-  const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
+  const { zones, info } = useSpectrum(emptyData) as Datum2D;
+  const { zones: zonesViewState } = useActiveSpectrum2DViewState();
   return (
     <MemoizedZonesPanel
       {...{
-        id,
         xDomain,
         yDomain,
         activeTab,
         displayerKey,
         zones,
         experiment: info.experiment,
-        ...zoneProps,
+        ...zonesViewState,
       }}
     />
   );
