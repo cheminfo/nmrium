@@ -117,15 +117,10 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
           entry.ocl.idCode,
           entry.ocl.coordinates,
         );
-        moleculesDB.pushEntry(
-          molecule,
-          entry,
-          {},
-          {
-            idCode: entry.ocl.idCode,
-            index: entry.ocl.index,
-          },
-        );
+        moleculesDB.pushEntry(molecule, entry, {
+          idCode: entry.ocl.idCode,
+          index: entry.ocl.index,
+        });
       } catch (error) {
         reportError(error);
         // eslint-disable-next-line no-console
