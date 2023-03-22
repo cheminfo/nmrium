@@ -80,16 +80,18 @@ function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
       ]);
     } else {
       const filters: FiltersManager.BaseFilter[] = [];
-      for (let filter of onLoadFilters) {
-        if (filter.name === Filters.digitalFilter.id) {
-          filter = { ...filter, isDeleteAllow: false };
-        }
 
+      for (let filter of onLoadFilters) {
         if (
-          !datum.info?.digitalFilter &&
-          filter.name === Filters.digitalFilter.id
+          (!datum.info?.digitalFilter &&
+            filter.name === Filters.digitalFilter.id) ||
+          !filter.flag
         ) {
           continue;
+        }
+
+        if (filter.name === Filters.digitalFilter.id) {
+          filter = { ...filter, isDeleteAllow: false };
         }
 
         filters.push(filter);
