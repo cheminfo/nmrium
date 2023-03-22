@@ -75,7 +75,10 @@ export default function View(props: ViewProps) {
     <div
       style={{
         height: '100%',
-        marginLeft: 30,
+        paddingLeft: 30,
+        ...((width !== '100' || height !== '100') && {
+          backgroundColor: 'white',
+        }),
       }}
     >
       <div
