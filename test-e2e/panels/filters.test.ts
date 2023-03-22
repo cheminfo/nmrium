@@ -47,7 +47,9 @@ async function baselineCorrectionFilter(
   } else {
     await nmrium.clickTool('baselineCorrection');
   }
-  await nmrium.page.click('button >> text=Apply');
+  await nmrium.page.click('button >> text=Apply', {
+    position: { x: 0, y: 0 },
+  });
 
   await expect(
     nmrium.page.locator('_react=FilterTable >> text=Baseline correction'),
