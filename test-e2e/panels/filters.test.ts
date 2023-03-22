@@ -47,6 +47,7 @@ async function baselineCorrectionFilter(
   } else {
     await nmrium.clickTool('baselineCorrection');
   }
+  // TODO: find why the click event in the button center was being intercepted by a <dialog> element in firefox test
   await nmrium.page.click('button >> text=Apply', {
     position: { x: 0, y: 0 },
   });
