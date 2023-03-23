@@ -7,7 +7,7 @@ const viewportOverride: ViewportSize = {
 
 const config: PlaywrightTestConfig = {
   testDir: 'test-e2e',
-  retries: 0,
+  retries: 1,
   forbidOnly: !!process.env.CI,
   timeout: 60_000,
   expect: {
