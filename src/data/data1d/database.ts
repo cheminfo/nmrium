@@ -200,9 +200,10 @@ function mapJs(js: Jcoupling[]) {
     };
     for (const { coupling, multiplicity } of js) {
       result.coupling.push(coupling);
-      result.multiplicity += multiplicity;
+      result.multiplicity += multiplicity || '';
     }
     const { coupling, multiplicity } = result;
+    if (multiplicity.length === 0) return { coupling: coupling.join(',') };
     return { multiplicity, coupling: coupling.join(',') };
   } else {
     return { coupling: '' };

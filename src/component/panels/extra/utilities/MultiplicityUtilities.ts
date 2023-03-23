@@ -28,9 +28,15 @@ function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
   if (multiplicity === undefined || multiplicity.length === 0) {
     return false;
   }
-  return multiplicity
-    .split('')
-    .every((_multiplet) => checkMultiplet(_multiplet, rejected));
+
+  const isBroad = multiplicity.match(/(?<broad>br s)/);
+
+  return (
+    isBroad ||
+    multiplicity
+      .split('')
+      .every((_multiplet) => checkMultiplet(_multiplet, rejected))
+  );
 }
 
 function translateMultiplet(multiplet) {

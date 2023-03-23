@@ -7,6 +7,7 @@ export interface MultipletDefinition {
 export const Multiplets: MultipletDefinition[] = [
   { label: 'massive (m)', value: 'm', multiplicity: null },
   { label: 'singlet (s)', value: 's', multiplicity: 1 },
+  { label: 'broad singlet (br s)', value: 'br s', multiplicity: 1 },
   { label: 'doublet (d)', value: 'd', multiplicity: 2 },
   { label: 'triplet (t)', value: 't', multiplicity: 3 },
   { label: 'quartet (q)', value: 'q', multiplicity: 4 },
