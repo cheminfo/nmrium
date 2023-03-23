@@ -1,10 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { readFromWebSource } from 'nmr-load-save';
 import { useRef, useCallback } from 'react';
 
+import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
-import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';
+import { useAlert } from '../elements/popup/Alert/Context';
+import { LOAD_DROP_FILES } from '../reducer/types/Types';
+import { extractFileMetaFromPath } from '../utility/FileUtility';
 
 const styles = css`
   display: flex;
@@ -60,36 +64,39 @@ const styles = css`
 const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 
 interface LoadJCAMPModalProps {
-  onLoadClick: (element: any) => void;
   startLoading: () => void;
   onClose: (element?: string) => void;
 }
 
 export default function LoadJCAMPModal({
-  onLoadClick,
   onClose,
   startLoading,
 }: LoadJCAMPModalProps) {
-  const pathRef = useRef<any>();
+  const urlRef = useRef<any>();
+  const dispatch = useDispatch();
+  const alert = useAlert();
 
   const loadJCAMPHandler = useCallback(() => {
-    const path = pathRef.current.value;
-    const { name, extension } = extractFileMetaFromPath(path);
+    const url = urlRef.current.value;
+    const { extension } = extractFileMetaFromPath(url);
     if (allowedExtensions.has(extension)) {
       startLoading?.();
-      void loadFile(path, { asBuffer: true }).then((data) => {
-        const file = {
-          binary: data,
-          name,
-          extension,
-          jcampURL: path,
-        };
-        onLoadClick(file);
+      const { pathname, origin } = new URL(url);
+      void readFromWebSource({
+        entries: [{ relativePath: pathname, baseURL: origin }],
+      }).then((nmriumState) => {
+        dispatch({
+          type: LOAD_DROP_FILES,
+          payload: { ...nmriumState, resetSourceObject: false },
+        });
+        onClose?.();
       });
     } else {
-      onLoadClick(null);
+      alert.error(
+        'Imported file must be one of those extensions [ .jdx, .dx, .jcamp ] ',
+      );
     }
-  }, [onLoadClick, startLoading]);
+  }, [alert, dispatch, onClose, startLoading]);
   return (
     <div css={styles}>
       <div className="header handle">
@@ -99,7 +106,7 @@ export default function LoadJCAMPModal({
       </div>
       <div className="container">
         <input
-          ref={pathRef}
+          ref={urlRef}
           type="text"
           placeholder="Enter URL to JCAMP-DX file"
         />

@@ -21,10 +21,14 @@ export enum DataExportOptions {
 
 export type DataExportOptionsType = keyof typeof DataExportOptions;
 
+type ExportTarget = 'nmrium' | 'onChange';
+
 export interface ExportOptions {
   dataType?: DataExportOptionsType;
   view?: boolean;
   settings?: boolean;
+  serialize?: boolean;
+  exportTarget?: ExportTarget;
 }
 
 function getData(datum, usedColors) {
@@ -36,17 +40,9 @@ function getData(datum, usedColors) {
   }
 }
 
-export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
-  return fetch(jcampURL)
-    .then((response) => response.arrayBuffer())
-    .then((jcamp) => {
-      addJcamp(spectra, jcamp, options, usedColors);
-    });
-}
-
 export function addJcamp(output, jcamp, options, usedColors) {
   options = options || {};
-  const name = options?.display?.name;
+  const name = options?.info?.name;
   const { spectra: spectraIn } = processJcamp(jcamp, {
     name,
     converter: {
@@ -65,40 +61,16 @@ export function addJcamp(output, jcamp, options, usedColors) {
   output.push(...spectra);
 }
 
-export function addJcamps(files, usedColors) {
-  const spectra = [];
-  for (const file of files) {
-    addJcamp(
-      spectra,
-      file.binary,
-      {
-        display: {
-          name: file.name,
-        },
-        source: {
-          jcampURL: file.jcampURL || null,
-          file,
-        },
-      },
-      usedColors,
-    );
-  }
-  return spectra;
-}
-
 /**
  *
  * @param {object} state
  */
 
-type JSONTarget = 'nmrium' | 'onDataChange';
-
 export function toJSON(
-  state: State,
+  state: Partial<State>,
   preferencesState: Partial<{
     current: Workspace;
   }>,
-  target: JSONTarget,
   options: ExportOptions = {},
 ) {
   const {
@@ -109,7 +81,13 @@ export function toJSON(
     actionType = '',
   } = state;
 
-  const { dataType = 'ROW_DATA', view = false, settings = false } = options;
+  const {
+    dataType = 'ROW_DATA',
+    view = false,
+    settings = false,
+    serialize = true,
+    exportTarget = 'nmrium',
+  } = options;
 
   const molecules = mols.map((mol: Molecule.StateMoleculeExtended) =>
     Molecule.toJSON(mol),
@@ -118,7 +96,7 @@ export function toJSON(
   const nmriumState: any = {
     version: CURRENT_EXPORT_VERSION,
     data: {
-      ...(target === 'onDataChange' ? { actionType } : {}),
+      ...(exportTarget === 'onChange' ? { actionType } : {}),
       source,
       spectra: data,
       molecules,
@@ -128,16 +106,20 @@ export function toJSON(
     settings: preferencesState.current,
   };
 
-  const includeData =
-    dataType === 'ROW_DATA'
-      ? 'rawData'
-      : dataType === 'NO_DATA'
-      ? 'noData'
-      : 'dataSource';
+  if (!serialize) {
+    return nmriumState;
+  } else {
+    const includeData =
+      dataType === 'ROW_DATA'
+        ? 'rawData'
+        : dataType === 'NO_DATA'
+        ? 'noData'
+        : 'dataSource';
 
-  return serializeNmriumState(nmriumState, {
-    includeData,
-    includeSettings: settings,
-    includeView: view,
-  });
+    return serializeNmriumState(nmriumState, {
+      includeData,
+      includeSettings: settings,
+      includeView: view,
+    });
+  }
 }

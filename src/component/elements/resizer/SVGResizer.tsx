@@ -38,11 +38,7 @@ export default function SVGResizer(props: ResizerProps) {
   const { left, right, currentPosition, isActive } = useResizer(props);
 
   return (
-    <g
-      style={{
-        transform: `translateX(${currentPosition.x1}px)`,
-      }}
-    >
+    <g transform={`translate(${currentPosition.x1} 0)`}>
       {typeof children === 'function'
         ? children(currentPosition, isActive)
         : children}

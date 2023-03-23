@@ -32,6 +32,7 @@ export default function useToolsFunctions() {
           options.integral.id,
           options.zonePicking.id,
           options.exclusionZones.id,
+          options.rangePicking.id,
         ].includes(selectedTool)
       ) {
         alert.show('Press Shift + Left Mouse button to select zone');

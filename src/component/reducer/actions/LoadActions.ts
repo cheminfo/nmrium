@@ -1,10 +1,10 @@
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
+import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Source } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
-import { addJcamps } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
@@ -109,7 +109,18 @@ function setData(
   }
 
   setColors(draft, usedColors);
-  if (source) draft.source = source;
+
+  if (source) {
+    draft.source = lodashMergeWith(
+      draft.source,
+      source,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          return objValue.concat(srcValue);
+        }
+      },
+    );
+  }
   draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
   draft.data = draft.data.concat(
     initSpectra(spectra, { usedColors, onLoadProcessing }),
@@ -189,25 +200,13 @@ function initiate(draft: Draft<State>, action) {
   return initData(draft, action, true);
 }
 
-function loadJcampFile(draft: Draft<State>, actions) {
-  const { files } = actions;
-  const { data, usedColors } = draft;
-  const spectra = addJcamps(files, usedColors);
-  draft.data = data.concat(
-    initSpectra(spectra, { usedColors, onLoadProcessing: {} }),
-  );
-  setActiveTab(draft);
-  changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
-
-  draft.isLoading = false;
-}
-
 function loadDropFiles(draft: Draft<State>, action) {
   const { payload, type } = action;
 
   const {
     data: { spectra = [] },
-    containsNmrium,
+    containsNmrium = false,
+    resetSourceObject = true,
   } = payload;
 
   if (containsNmrium) {
@@ -218,7 +217,7 @@ function loadDropFiles(draft: Draft<State>, action) {
     changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
 
     // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.
-    if (spectra?.length > 0) {
+    if (resetSourceObject && spectra?.length > 0) {
       draft.source = undefined;
     }
 
@@ -227,4 +226,4 @@ function loadDropFiles(draft: Draft<State>, action) {
   }
 }
 
-export { setIsLoading, initiate, loadJcampFile, loadDropFiles };
+export { setIsLoading, initSpectra, initiate, loadDropFiles };

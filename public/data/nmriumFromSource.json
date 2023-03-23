@@ -22,7 +22,7 @@
         },
         "id": "cdb2c073-9739-4f96-87d1-3f9bb1bad475",
         "filters": [],
-        "selector": {
+        "sourceSelector": {
           "files": [
             "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/fid",
             "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/acqus",
@@ -54,7 +54,7 @@
         },
         "id": "b2c07397-396f-46c7-913f-9bb1bad475bb",
         "filters": [],
-        "selector": {
+        "sourceSelector": {
           "files": [
             "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/1r",
             "data/multiSpectra.zip/bruker/UV1010_M1-1003-1002_6268756_ErISKLIoeB/10/pdata/1/1i",
@@ -99,7 +99,7 @@
           "values": [],
           "options": {}
         },
-        "selector": {
+        "sourceSelector": {
           "jcamp": {
             "index": 0
           },
@@ -132,7 +132,7 @@
           "values": [],
           "options": {}
         },
-        "selector": {
+        "sourceSelector": {
           "jcamp": {
             "index": 1
           },
@@ -165,7 +165,7 @@
           "values": [],
           "options": {}
         },
-        "selector": {
+        "sourceSelector": {
           "jcamp": {
             "index": 0
           },

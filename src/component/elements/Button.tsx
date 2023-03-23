@@ -104,6 +104,7 @@ interface ButtonStyle {
   borderRadius?: CSSProperties['borderRadius'];
   fill?: Fill;
   style?: CSSObject;
+  wrapperStyle?: CSSProperties;
 }
 
 interface Style {
@@ -232,6 +233,7 @@ interface ButtonProps
   children: ReactNode;
   toolTip?: string;
   tooltipOrientation?: TooltipOrientation;
+  wrapperClassName?: string;
 }
 
 function Button(props: ButtonProps) {
@@ -244,13 +246,18 @@ function Button(props: ButtonProps) {
     fill,
     borderRadius,
     style = {},
+    wrapperStyle = {},
     toolTip,
     tooltipOrientation = 'vertical',
+    wrapperClassName,
     ...restProps
   } = props;
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div
+      style={{ position: 'relative', ...wrapperStyle }}
+      {...(wrapperClassName && { className: wrapperClassName })}
+    >
       <button
         type="button"
         onClick={onClick}
@@ -267,10 +274,7 @@ function Button(props: ButtonProps) {
         ]}
         {...restProps}
       >
-        <span style={{ flex: 1, pointerEvents: 'none' }}>
-          {' '}
-          {props.children}
-        </span>
+        <span style={{ flex: 1, pointerEvents: 'none' }}>{props.children}</span>
       </button>
       {toolTip && (
         <div className="content" css={toolTipStyle(tooltipOrientation)}>

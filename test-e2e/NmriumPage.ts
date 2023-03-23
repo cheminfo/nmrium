@@ -19,12 +19,12 @@ export default class NmriumPage {
   }
 
   public async open1D() {
-    await this.page.click('li >> text=General');
-    await this.page.click('li >> text=1H spectrum test');
+    await this.page.click('li >> text=Cytisine');
+    await this.page.click('li >> text=1H spectrum');
   }
 
   public async open2D() {
-    await this.page.click('li >> text=General');
+    await this.page.click('li >> text=Simple spectra');
     await this.page.click('li >> text=COSY ethylbenzene');
   }
 

@@ -66,7 +66,7 @@
           "values": [],
           "options": {}
         },
-        "selector": {
+        "sourceSelector": {
           "files": [
             "data/brukerFolders/brukerWithoutExpno/acqus",
             "data/brukerFolders/brukerWithoutExpno/fid",
@@ -87,7 +87,7 @@
         },
         "id": "4a545db9-7444-437c-89cf-a52c2fb18ae4",
         "filters": [],
-        "selector": {
+        "sourceSelector": {
           "files": [
             "data/brukerFolders/brukerWithoutExpno/pdata/1/1i",
             "data/brukerFolders/brukerWithoutExpno/pdata/1/1r",

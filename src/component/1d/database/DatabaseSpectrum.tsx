@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
+import { readFromWebSource } from 'nmr-load-save';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { addJcamp } from '../../../data/SpectraManager';
 import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
@@ -10,7 +10,6 @@ import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 import { spinnerContext } from '../../loader/SpinnerContext';
-import { loadFile } from '../../utility/FileUtility';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
@@ -42,12 +41,11 @@ function DatabaseSpectrum() {
     throttle(async (baseURL: string | undefined, jcampRelativeURL: string) => {
       try {
         setLoading(true);
-        const jcampURL = new URL(jcampRelativeURL, baseURL);
-        const result = await loadFile(jcampURL);
-        const spectra = [];
-        addJcamp(spectra, result, {}, {});
+        const { data } = await readFromWebSource({
+          entries: [{ relativePath: jcampRelativeURL, baseURL }],
+        });
         setLoading(false);
-        const spectrum = spectra?.[0] || null;
+        const spectrum = data?.spectra?.[0] || null;
         if (spectrum) {
           const pathBuilder = new PathBuilder();
           const finalScaleX = scaleX();

@@ -1,4 +1,6 @@
+import { FifoLoggerOptions } from 'fifo-logger';
 import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
+import { SplitPaneSize } from 'react-science/ui';
 
 import { BaseFilter } from '../../data/FiltersManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
@@ -13,8 +15,18 @@ interface NucleusFormat {
   ppm: string;
   hz: string;
 }
+
+export type spectraRendering =
+  | 'auto'
+  | 'optimizeSpeed'
+  | 'crispEdges'
+  | 'geometricPrecision';
 export interface GeneralPreferences {
   dimmedSpectraOpacity: number;
+  verticalSplitterPosition: SplitPaneSize;
+  verticalSplitterCloseThreshold: number;
+  spectraRendering: spectraRendering;
+  loggingLevel: FifoLoggerOptions['level'];
 }
 
 interface ColumnPreferences {
@@ -166,7 +178,13 @@ export interface Database {
 export interface WorkspaceMeta {
   version: number;
   label: string;
+  /**
+   * boolean indicator to hide/show Workspace
+   * @default false
+   */
+  visible?: boolean;
 }
+
 export interface Databases {
   data: Database[];
   defaultDatabase: string;

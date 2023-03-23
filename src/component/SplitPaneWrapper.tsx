@@ -1,18 +1,30 @@
-import { SplitPane } from 'react-science/ui';
+import { SplitPane, SplitPaneSize } from 'react-science/ui';
 
 import { usePreferences } from './context/PreferencesContext';
 
 export function SplitPaneWrapper({ children }) {
-  const { current } = usePreferences();
-  const { hidePanelOnLoad = false, initialPanelWidth = '560px' } =
-    current?.display?.general || {};
+  const { current, dispatch } = usePreferences();
+  const {
+    general: { verticalSplitterPosition, verticalSplitterCloseThreshold },
+    display: { general = {} },
+  } = current;
+
+  function resizeHandler(value: SplitPaneSize) {
+    dispatch({
+      type: 'SET_VERTICAL_SPLITTER_POSITION',
+      payload: {
+        value,
+      },
+    });
+  }
+
   return (
     <SplitPane
-      key={hidePanelOnLoad ? 'true' : 'false'}
-      initialSize={initialPanelWidth}
+      size={verticalSplitterPosition}
       direction="horizontal"
       controlledSide="end"
-      initialClosed={hidePanelOnLoad ? true : 600}
+      closed={general?.hidePanelOnLoad ? true : verticalSplitterCloseThreshold}
+      onResize={resizeHandler}
     >
       {children}
     </SplitPane>

@@ -1,4 +1,5 @@
 import { Draft, produce } from 'immer';
+import { SplitPaneSize } from 'react-science/ui';
 
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
@@ -33,6 +34,7 @@ import { removeWorkspace } from './actions/removeWorkspace';
 import { setActiveWorkspace } from './actions/setActiveWorkspace';
 import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
+import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition';
 import { setWorkspace } from './actions/setWorkspace';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
 
@@ -110,6 +112,10 @@ export type deleteMatrixGenerationExclusionZoneAction = ActionType<
   'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
   { zone: { id: string; from: number; to: number }; nucleus: string }
 >;
+export type SetVerticalSplitterPositionAction = ActionType<
+  'SET_VERTICAL_SPLITTER_POSITION',
+  { value: SplitPaneSize }
+>;
 
 type PreferencesActions =
   | InitPreferencesAction
@@ -125,7 +131,8 @@ type PreferencesActions =
   | SetSpectraAnalysisPanelPreferencesAction
   | setMatrixGenerationOptionsAction
   | addMatrixGenerationExclusionZoneAction
-  | deleteMatrixGenerationExclusionZoneAction;
+  | deleteMatrixGenerationExclusionZoneAction
+  | SetVerticalSplitterPositionAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -222,6 +229,10 @@ export function initPreferencesState(
     ...state,
     originalWorkspaces: { ...predefinedWorkspaces, ...localWorkspaces },
     workspaces: { ...predefinedWorkspaces, ...localWorkspaces },
+    workspace: {
+      current: localData?.currentWorkspace || 'default',
+      base: null,
+    },
   };
 }
 
@@ -260,6 +271,8 @@ function innerPreferencesReducer(
       return addExclusionZone(draft, action);
     case 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE':
       return deleteExclusionZone(draft, action);
+    case 'SET_VERTICAL_SPLITTER_POSITION':
+      return setVerticalSplitterPosition(draft, action);
 
     default:
       return draft;

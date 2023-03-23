@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import Menu from 'rc-menu';
 import { memo, useMemo } from 'react';
 import { FaBars } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import 'rc-menu/assets/index.css';
 
 import { buildMenu, getKey } from './utility/menu';
@@ -119,14 +119,16 @@ function Sidebar(props) {
       <div css={sidebarWrapperCss} style={{ display: subDisplay }}>
         <Menu
           onClick={(e) => {
-            navigate(
-              `/SamplesDashboard/${Math.random()
+            navigate({
+              pathname: `/SamplesDashboard/${Math.random()
                 .toString(36)
                 .replace('0.', '')}/${
                 // @ts-expect-error This will be fixed by updating use of rc-menu
                 (e.item.props.view || 'View') + getKey(e.item.props.file)
               }`,
-            );
+              // @ts-expect-error This will be fixed by updating use of rc-menu
+              search: createSearchParams(e.item.props?.query || {}).toString(),
+            });
           }}
           mode="inline"
         >

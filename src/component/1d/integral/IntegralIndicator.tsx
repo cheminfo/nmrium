@@ -13,9 +13,6 @@ interface IntegralIndicatorProps {
 const styles: Record<'text' | 'path', CSSProperties> = {
   text: {
     fontSize: '11px',
-    textAnchor: 'middle',
-    dominantBaseline: 'middle',
-    writingMode: 'vertical-rl',
     fill: 'black',
   },
   path: {
@@ -33,12 +30,10 @@ export function IntegralIndicator(props: IntegralIndicatorProps) {
   const bottom = height - margin.bottom;
 
   return (
-    <g style={{ transform: `translate(0,${bottom - 10}px) `, opacity }}>
+    <g transform={`translate(0 ${bottom - 10})`} style={{ opacity }}>
       <text
-        style={{
-          ...styles.text,
-          transform: `translate(${width / 2}px,-12px) scale(-1)`,
-        }}
+        transform={`rotate(-90) translate(5 ${Math.round(width / 2) + 4})`}
+        style={styles.text}
       >
         {value ? formatNumber(value, format) : ''}
       </text>

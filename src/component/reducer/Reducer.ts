@@ -482,11 +482,7 @@ export function dispatchMiddleware(dispatch) {
 }
 
 function innerSpectrumReducer(draft: Draft<State>, action) {
-  if (
-    ![types.LOAD_DROP_FILES, types.LOAD_NMREDATA_FILE, types.INITIATE].includes(
-      action.type,
-    )
-  ) {
+  if (![types.LOAD_DROP_FILES, types.INITIATE].includes(action.type)) {
     draft.actionType = action.type;
   }
 
@@ -497,8 +493,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
-    case types.LOAD_JCAMP_FILE:
-      return LoadActions.loadJcampFile(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:

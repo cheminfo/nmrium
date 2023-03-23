@@ -80,6 +80,11 @@ function getFileExtension(url = '') {
   return url.slice(url.lastIndexOf('.') + 1);
 }
 
+export interface PageConfig {
+  width: string;
+  height: string;
+}
+
 const Main = () => {
   const [data, setRoutes] = useState<{
     isLoaded: boolean;
@@ -92,7 +97,6 @@ const Main = () => {
     status: 200,
     routes: [],
   });
-
   const [dashBoardType, setDashBoardType] = useState('');
 
   const loadHandler = useCallback(() => {

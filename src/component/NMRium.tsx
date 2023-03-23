@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, SerializedNmriumState, Source } from 'nmr-load-save';
+import { readNMRiumObject, Source, NmriumState } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -36,6 +36,7 @@ import { AssignmentProvider } from './assignment';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
+import { LoggerProvider } from './context/LoggerContext';
 import { PreferencesProvider } from './context/PreferencesContext';
 import { AlertProvider } from './elements/popup/Alert';
 import { ModalProvider } from './elements/popup/Modal';
@@ -51,7 +52,6 @@ import {
   dispatchMiddleware,
   initState,
   State,
-  ViewState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
@@ -113,7 +113,8 @@ const containerStyles = css`
     user-select: none;
   }
 `;
-
+export { serializeNmriumState } from 'nmr-load-save';
+export type { NmriumState } from 'nmr-load-save';
 export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
 
 export type NMRiumWorkspace =
@@ -126,10 +127,14 @@ export type NMRiumWorkspace =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
+export type OnNMRiumChange = (
+  state: NmriumState,
+  source: 'data' | 'view' | 'settings',
+) => void;
+
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: SerializedNmriumState) => void;
-  onViewChange?: (view: ViewState) => void;
+  onChange?: OnNMRiumChange;
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
@@ -178,8 +183,7 @@ function InnerNMRium({
   customWorkspaces,
   preferences,
   getSpinner = defaultGetSpinner,
-  onDataChange,
-  onViewChange,
+  onChange,
   emptyText,
   innerRef,
 }: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
@@ -188,14 +192,10 @@ function InnerNMRium({
   const viewerRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
 
-  const handleDataChange = useRef(onDataChange);
+  const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
-    handleDataChange.current = onDataChange;
-  }, [onDataChange]);
-  const handleViewChange = useRef(onViewChange);
-  useEffect(() => {
-    handleViewChange.current = onViewChange;
-  }, [onViewChange]);
+    handleChange.current = onChange;
+  }, [onChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
@@ -214,17 +214,44 @@ function InnerNMRium({
     PreferencesState
   >(preferencesReducer, preferencesInitialState, initPreferencesState);
 
-  const { displayerMode, data: spectraData, actionType, view } = state;
+  const {
+    displayerMode,
+    source,
+    data: spectraData,
+    molecules,
+    correlations,
+    actionType,
+    view,
+  } = state;
+
+  const stateRef = useRef<NmriumState>();
 
   useEffect(() => {
+    const { workspace, workspaces = {} } = preferencesState;
+    stateRef.current = toJSON(
+      { data: spectraData, molecules, correlations, source, view },
+      { current: workspaces[workspace.current] },
+      { serialize: false, exportTarget: 'onChange' },
+    );
+  }, [correlations, molecules, preferencesState, source, spectraData, view]);
+
+  useEffect(() => {
+    // trigger onChange callback if data object changed
     if (checkActionType(actionType)) {
-      handleDataChange.current?.(toJSON(state, {}, 'onDataChange'));
+      handleChange.current?.(stateRef.current as NmriumState, 'data');
     }
-  }, [actionType, state]);
+  }, [actionType, correlations, molecules, source, spectraData]);
 
   useEffect(() => {
-    handleViewChange.current?.(view);
+    // trigger onChange callback if view object changed
+
+    handleChange.current?.(stateRef.current as NmriumState, 'view');
   }, [view]);
+
+  useEffect(() => {
+    // trigger onChange callback if settings changed
+    handleChange.current?.(stateRef.current as NmriumState, 'settings');
+  }, [preferencesState]);
 
   const dispatchMiddleWare = useMemo(() => {
     return dispatchMiddleware(dispatch);
@@ -308,92 +335,94 @@ function InnerNMRium({
     >
       <PreferencesProvider value={preferencesState}>
         <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
-          <AlertProvider wrapperRef={elementsWrapperRef.current}>
-            <DispatchProvider value={dispatchMiddleWare}>
-              <ChartDataProvider value={state}>
-                <ModalProvider wrapperRef={elementsWrapperRef.current}>
-                  <HighlightProvider>
-                    <AssignmentProvider spectraData={spectraData}>
-                      <SpinnerProvider value={getSpinner}>
-                        <div
-                          className="nmrium-container"
-                          ref={rootRef}
-                          css={containerStyles}
-                          onContextMenu={preventContextMenuHandler}
-                          style={{ height: '100%', width: '100%' }}
-                        >
-                          <DropZone>
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                backgroundColor: 'white',
-                                width: '100%',
-                              }}
-                            >
-                              <Header
-                                isFullscreen={isFullscreen}
-                                onMaximize={toggle}
-                              />
-
+          <LoggerProvider>
+            <AlertProvider wrapperRef={elementsWrapperRef.current}>
+              <DispatchProvider value={dispatchMiddleWare}>
+                <ChartDataProvider value={state}>
+                  <ModalProvider wrapperRef={elementsWrapperRef.current}>
+                    <HighlightProvider>
+                      <AssignmentProvider spectraData={spectraData}>
+                        <SpinnerProvider value={getSpinner}>
+                          <div
+                            className="nmrium-container"
+                            ref={rootRef}
+                            css={containerStyles}
+                            onContextMenu={preventContextMenuHandler}
+                            style={{ height: '100%', width: '100%' }}
+                          >
+                            <DropZone>
                               <div
                                 style={{
                                   display: 'flex',
-                                  flexDirection: 'row',
-                                  height: '100%',
+                                  flexDirection: 'column',
+                                  backgroundColor: 'white',
+                                  width: '100%',
                                 }}
                               >
-                                <ToolBar />
-                                <SplitPaneWrapper>
-                                  <div css={viewerContainerStyle}>
-                                    <KeysListenerTracker />
-                                    <div
-                                      id="nmrium-viewer"
-                                      data-test-id="viewer"
-                                      ref={viewerRef}
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        position: 'relative',
-                                      }}
-                                    >
-                                      <FloatMoleculeStructures />
-                                      {displayerMode ===
-                                      DISPLAYER_MODE.DM_1D ? (
-                                        <Viewer1D emptyText={emptyText} />
-                                      ) : (
-                                        <Viewer2D emptyText={emptyText} />
-                                      )}
-                                    </div>
-                                  </div>
-                                  <Panels />
-                                </SplitPaneWrapper>
+                                <Header
+                                  isFullscreen={isFullscreen}
+                                  onMaximize={toggle}
+                                />
 
                                 <div
-                                  ref={elementsWrapperRef}
-                                  key={String(isFullscreen)}
-                                  id="main-wrapper"
                                   style={{
-                                    position: 'absolute',
-                                    pointerEvents: 'none',
-                                    zIndex: 2,
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0,
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    height: '100%',
                                   }}
-                                />
+                                >
+                                  <ToolBar />
+                                  <SplitPaneWrapper>
+                                    <div css={viewerContainerStyle}>
+                                      <KeysListenerTracker />
+                                      <div
+                                        id="nmrium-viewer"
+                                        data-test-id="viewer"
+                                        ref={viewerRef}
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          position: 'relative',
+                                        }}
+                                      >
+                                        <FloatMoleculeStructures />
+                                        {displayerMode ===
+                                        DISPLAYER_MODE.DM_1D ? (
+                                          <Viewer1D emptyText={emptyText} />
+                                        ) : (
+                                          <Viewer2D emptyText={emptyText} />
+                                        )}
+                                      </div>
+                                    </div>
+                                    <Panels />
+                                  </SplitPaneWrapper>
+
+                                  <div
+                                    ref={elementsWrapperRef}
+                                    key={String(isFullscreen)}
+                                    id="main-wrapper"
+                                    style={{
+                                      position: 'absolute',
+                                      pointerEvents: 'none',
+                                      zIndex: 2,
+                                      left: 0,
+                                      right: 0,
+                                      top: 0,
+                                      bottom: 0,
+                                    }}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </DropZone>
-                        </div>
-                      </SpinnerProvider>
-                    </AssignmentProvider>
-                  </HighlightProvider>
-                </ModalProvider>
-              </ChartDataProvider>
-            </DispatchProvider>
-          </AlertProvider>
+                            </DropZone>
+                          </div>
+                        </SpinnerProvider>
+                      </AssignmentProvider>
+                    </HighlightProvider>
+                  </ModalProvider>
+                </ChartDataProvider>
+              </DispatchProvider>
+            </AlertProvider>
+          </LoggerProvider>
         </div>
       </PreferencesProvider>
     </GlobalProvider>

@@ -27,7 +27,7 @@ export function DatabaseStructureSearchModal({
           initialIDCode={idCode}
           svgMenu
           fragment
-          onChange={(mplFile, molecule, idCode) => onChange(idCode)}
+          onChange={(molFile, molecule, idCode) => onChange(idCode)}
         />
       </div>
     </div>

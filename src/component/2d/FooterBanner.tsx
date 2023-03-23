@@ -28,6 +28,13 @@ const styles = css`
   position: absolute;
   width: 100%;
   bottom: 0;
+  container-type: inline-size;
+
+  @container (max-width:600px) {
+    .small-width-none {
+      display: none !important;
+    }
+  }
 
   div {
     margin: 0 10px;
@@ -259,19 +266,19 @@ function FooterBanner({ layout, data1D }) {
         <span className="value">{formatY(getYValue())}</span>
         <span className="unit">ppm</span>
       </div>
-      <div>
+      <div className="small-width-none">
         <span className="label">Intensity :</span>
         <span className="value">{getZValue()}</span>
       </div>
       {step === 'brushing' && (
-        <div>
+        <div className="small-width-none">
           <span className="label"> Δppm :</span>
           <span className="value">{getDeltaX()}</span>
         </div>
       )}
 
       {step === 'brushing' && (
-        <div>
+        <div className="small-width-none">
           <span className="label"> ratio :</span>
           <span className="value">{getRation()}%</span>
         </div>

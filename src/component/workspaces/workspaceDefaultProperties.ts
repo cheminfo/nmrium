@@ -51,6 +51,10 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
 
   general: {
     dimmedSpectraOpacity: 0.1,
+    verticalSplitterPosition: '560px',
+    verticalSplitterCloseThreshold: 600,
+    spectraRendering: 'auto',
+    loggingLevel: 'info',
   },
   formatting: {
     nuclei: {
@@ -79,7 +83,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       keep1D: true,
       keep2D: true,
       onlyReal: false,
-      dataSelection: 'both',
+      dataSelection: 'preferFT',
     },
     bruker: {
       onlyFirstProcessedData: true,

@@ -410,23 +410,27 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     ).toBeVisible();
   });
   if (browserName === 'chromium') {
-    await test.step('Check copy as molfile and paste', async () => {
-      // Copy the molecule.
-      await nmrium.page.click(
-        '_react=MoleculePanelHeader >> _react=MenuButton',
-      );
-      await nmrium.page.click('text=Copy as molfile');
-      // Paste the molecule.
+    await test.step('Check copy as molfile V3 or V2 and paste', async () => {
+      await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
+
+      // Paste the molecule (not working on Firefox).
       await nmrium.page.click(
         '_react=ToolTip[title="Paste molfile"] >> button',
       );
+      await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
+
+      // Paste the molecule (not working on Firefox).
+      await nmrium.page.click(
+        '_react=ToolTip[title="Paste molfile"] >> button',
+      );
+
       await expect(
-        nmrium.page.locator('_react=MoleculePanel >> text=4 / 4'),
+        nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),
       ).toBeVisible();
       await expect(
         nmrium.page.locator('text=C6H6 - 78.11 >> nth=1'),
       ).toBeVisible();
-      await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
+      await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(3);
       await expect(
         nmrium.page.locator('.mol-svg-container #molSVG3'),
       ).toBeVisible();
@@ -437,13 +441,15 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
         '_react=ToolTip[title="Delete Molecule"] >> button',
       );
       // Check deleted molecule.
-      await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(1);
+      await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
       // Check floated molecule.
       await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     });
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
   }
+  const moleculePanelLocator = nmrium.page.locator('_react=MoleculePanel');
+
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
     await nmrium.page.click(
@@ -452,8 +458,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
     // Check selected molecule.
+
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 2'),
+      moleculePanelLocator.locator('p:has-text("1 / 2"), p:has-text("1 / 3")'),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await expect(
@@ -465,8 +472,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Go to the next molecule.
     await nmrium.page.click('_react=Arrow[direction="right"]');
     // Check the second molecule.
+
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=2 / 2'),
+      moleculePanelLocator.locator('p:has-text("2 / 2"), p:has-text("2 / 3")'),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C6H12 - 84.16')).toBeVisible();
     await expect(
@@ -479,8 +487,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     );
 
     // Check selected molecule.
+
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+      moleculePanelLocator.locator('p:has-text("1 / 1"), p:has-text("1 / 2")'),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
     await expect(
@@ -490,11 +499,16 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Empty panel', async () => {
     // Check selected molecule.
+
     await expect(
-      nmrium.page.locator('_react=MoleculePanel >> text=1 / 1'),
+      moleculePanelLocator.locator('p:has-text("1 / 1"), p:has-text("1 / 2")'),
     ).toBeVisible();
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
+    // Delete molecule.
+    await nmrium.page.click(
+      '_react=ToolTip[title="Delete Molecule"] >> button',
+    );
     // Delete molecule.
     await nmrium.page.click(
       '_react=ToolTip[title="Delete Molecule"] >> button',
@@ -516,15 +530,15 @@ test('check callbacks count on changing structures', async ({ page }) => {
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
   const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
   await test.step('open test page', async () => {
-    await nmrium.page.click('li >> text=Test');
-    await nmrium.page.click('li >> text=1H spectrum test');
+    await nmrium.page.click('li >> text=Callback');
+    await nmrium.page.click('li >> text=1H spectrum cytisine');
     // wait the spectrum to load
     await expect(
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
 
     await expect(dataCount).toContainText(/[3-5]/);
-    await expect(viewCount).toContainText(/[2-4]/);
+    await expect(viewCount).toContainText(/[2-5]/);
   });
 
   const initialDataCount = await getCount(dataCount);
@@ -620,3 +634,8 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(viewCount).toContainText(String(initialViewCount + 2));
   });
 });
+
+async function clickExportMenuOption(nmrium: NmriumPage, selector: string) {
+  await nmrium.page.click('_react=MoleculePanelHeader >> _react=MenuButton');
+  await nmrium.page.click(selector);
+}

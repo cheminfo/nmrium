@@ -99,7 +99,7 @@ const styles = {
     enableVirtualScroll: boolean,
     enableColumnsVirtualScroll,
   ): CSSProperties => {
-    const style: CSSProperties = {};
+    const style: CSSProperties = { tableLayout: 'auto' };
 
     if (enableVirtualScroll) {
       style.position = 'sticky';
@@ -498,7 +498,7 @@ function ReactTable(props: ReactTableProps) {
           onScroll={scrollHandler}
           onSortEnd={onSortEnd}
           ref={containerRef}
-          {...{ ...props }}
+          {...props}
         />
       </div>
     </ReactTableProvider>

@@ -1,10 +1,18 @@
+import { CSSProperties } from 'react';
 import { FaEye } from 'react-icons/fa';
 
 import { Datum1D } from '../../../../data/types/data1d';
 import { Display1D } from '../../../../data/types/data1d/Display1D';
 import { Datum2D } from '../../../../data/types/data2d';
 import { Display2D } from '../../../../data/types/data2d/Display2D';
-import { SpectraTableButtonStyle } from '../SpectraTable';
+
+const buttonStyle: CSSProperties = {
+  backgroundColor: 'transparent',
+  border: 'none',
+  width: '20px',
+  height: '20px',
+  margin: 'auto',
+};
 
 type VisibleKey = 'isVisible' | 'isPositiveVisible' | 'isNegativeVisible';
 export interface OnChangeVisibilityEvent {
@@ -61,7 +69,7 @@ function DisplayButtons1D(props: ShowHideSpectrumButtonProps) {
   return (
     <button
       data-test-id="hide-show-spectrum-button"
-      style={SpectraTableButtonStyle}
+      style={buttonStyle}
       type="button"
       onClick={(e) => {
         e.stopPropagation();
@@ -91,7 +99,7 @@ function DisplayButtons2D(props: ShowHideSpectrumButtonProps) {
   return (
     <div style={{ minWidth: '40px' }}>
       <button
-        style={SpectraTableButtonStyle}
+        style={buttonStyle}
         type="button"
         onClick={(e) => {
           e.stopPropagation();
@@ -107,7 +115,7 @@ function DisplayButtons2D(props: ShowHideSpectrumButtonProps) {
         />
       </button>
       <button
-        style={SpectraTableButtonStyle}
+        style={buttonStyle}
         type="button"
         onClick={(e) => {
           e.stopPropagation();

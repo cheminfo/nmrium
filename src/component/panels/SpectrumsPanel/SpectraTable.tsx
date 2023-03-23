@@ -46,20 +46,9 @@ function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
   return result;
 }
 
-export const SpectraTableButtonStyle: CSSProperties = {
-  backgroundColor: 'transparent',
-  border: 'none',
-  width: '20px',
-  height: '20px',
-  margin: 'auto',
-};
-
-const jPathColumnStyle: CSSProperties = {
-  width: '10%',
+const columnStyle: CSSProperties = {
   maxWidth: 0,
-  whiteSpace: 'nowrap',
   overflow: 'hidden',
-  textOverflow: 'ellipsis',
 };
 
 interface SpectraTableProps extends OnChangeVisibilityEvent {
@@ -69,11 +58,6 @@ interface SpectraTableProps extends OnChangeVisibilityEvent {
   onChangeActiveSpectrum: (event: Event, data: Datum1D | Datum2D) => void;
   nucleus: string;
 }
-
-const columnStyle = {
-  paddingTop: 0,
-  paddingBottom: 0,
-};
 
 const options: DropdownMenuProps<string>['options'] = [
   {
@@ -107,8 +91,8 @@ export function SpectraTable(props: SpectraTableProps) {
         id: 'hide-show-spectrum',
         Header: '',
         style: {
-          width: '20px',
-          ...columnStyle,
+          width: '35px',
+          maxWidth: '55px',
         },
         Cell: ({ row }) => {
           return (
@@ -121,8 +105,8 @@ export function SpectraTable(props: SpectraTableProps) {
       },
       name: {
         Header: '',
-        style: { width: '50%', maxWidth: 0, ...columnStyle },
-        accessor: (row) => row.display.name,
+        style: columnStyle,
+        accessor: (row) => row.info.name,
         Cell: ({ row }) => {
           return <SpectrumName data={row.original} />;
         },
@@ -150,7 +134,7 @@ export function SpectraTable(props: SpectraTableProps) {
         id: 'spectrum-actions',
         style: {
           width: '30px',
-          ...columnStyle,
+          maxWidth: '30px',
         },
         Cell: ({ row }) => {
           return (
@@ -209,24 +193,33 @@ export function SpectraTable(props: SpectraTableProps) {
   const tableColumns = useMemo(() => {
     let columns: Array<Column<Datum1D | Datum2D>> = [];
     let index = 0;
-    for (const col of spectraPreferences.columns) {
-      if (col.visible) {
-        const name = (col as PredefinedTableColumn<any>)?.name;
-        if (name && COLUMNS[name]) {
-          columns.push({
-            ...COLUMNS[name],
-            Header: () => <ColumnHeader label={col.label} col={col} />,
-            id: name,
-          });
-        } else {
-          const path = (col as JpathTableColumn)?.jpath;
-          columns.push({
-            Header: () => <ColumnHeader label={col.label} col={col} />,
-            accessor: (row) => lodashGet(row, path, ''),
-            id: `${index}`,
-            style: jPathColumnStyle,
-          });
-        }
+    const visibleColumns = spectraPreferences.columns.filter(
+      (col) => col.visible,
+    );
+    for (const col of visibleColumns) {
+      const name = (col as PredefinedTableColumn<any>)?.name;
+      const path = (col as JpathTableColumn)?.jpath;
+
+      if (name && COLUMNS[name]) {
+        columns.push({
+          ...COLUMNS[name],
+          Header: () => <ColumnHeader label={col.label} col={col} />,
+          id: name,
+          style:
+            name === 'name' && visibleColumns.length > 3
+              ? {
+                  ...COLUMNS[name].style,
+                  width: '50%',
+                }
+              : COLUMNS[name].style,
+        });
+      } else {
+        columns.push({
+          Header: () => <ColumnHeader label={col.label} col={col} />,
+          accessor: (row) => lodashGet(row, path, ''),
+          id: `${index}`,
+          style: columnStyle,
+        });
       }
       index++;
     }
@@ -262,6 +255,7 @@ export function SpectraTable(props: SpectraTableProps) {
       approxItemHeight={26}
       context={contextMenu}
       onSortEnd={handleSortEnd}
+      style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
     />
   );
 }
@@ -287,7 +281,15 @@ const ColumnHeader = ({
       options={options}
       onSelect={selectHandler}
     >
-      <div>{label}</div>
+      <div
+        style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {label}
+      </div>
     </DropdownMenu>
   );
 };

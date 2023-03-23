@@ -3,6 +3,7 @@ import { InnerWorkspace } from './Workspace';
 export const process1D: InnerWorkspace = {
   version: 2,
   label: '1D multiple spectra analysis',
+  visible: true,
   display: {
     general: {},
 

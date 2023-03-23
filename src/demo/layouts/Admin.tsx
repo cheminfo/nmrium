@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { Suspense, useMemo, useState, useCallback, StrictMode } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
@@ -46,7 +46,11 @@ export function Dashboard(props: DashboardProps) {
     rootRoute = (
       <Route
         path="/"
-        element={<RenderedView {...route[0]} />}
+        element={
+          <RenderedView
+            {...{ ...route[0], pageConfig: { width: '100', height: '100' } }}
+          />
+        }
         key={getKey(routesList[0].file)}
       />
     );
@@ -100,7 +104,19 @@ function RenderView(props) {
   const { prop, baseURL } = props;
   const viewName = prop.view || 'View';
   const RenderedView = possibleViews[viewName];
-  return <RenderedView {...prop} id={getKey(prop.file)} baseURL={baseURL} />;
+  const { search = '' } = useLocation();
+  const qs = new URLSearchParams(search);
+
+  const width = qs.get('width') || '100';
+  const height = qs.get('height') || '100';
+
+  return (
+    <RenderedView
+      {...{ ...prop, pageConfig: { width, height } }}
+      id={getKey(prop.file)}
+      baseURL={baseURL}
+    />
+  );
 }
 
 export default Dashboard;

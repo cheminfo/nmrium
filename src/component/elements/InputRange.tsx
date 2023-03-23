@@ -36,13 +36,22 @@ interface InputRangeProps {
   value?: number;
   onChange: (element: any) => void;
   label?: string;
+  shortLabel?: string;
   style?: CSSProperties;
   className?: string;
 }
 
 // TODO: remove this hacky ref usage.
 function InputRange(props: InputRangeProps, ref: any) {
-  const { name, value = 0, onChange, label, style, className } = props;
+  const {
+    name,
+    value = 0,
+    onChange,
+    label,
+    shortLabel,
+    style,
+    className,
+  } = props;
   const previousPosition = useRef(0);
   const valueRef = useRef(value);
 
@@ -82,10 +91,17 @@ function InputRange(props: InputRangeProps, ref: any) {
   return (
     <div
       style={{ ...styles.container, ...style }}
-      className={className}
+      {...(className && { className })}
       onMouseDown={mouseDownCallback}
     >
-      <span style={styles.label}>{label}</span>
+      <span className={shortLabel ? 'large-label' : ''} style={styles.label}>
+        {label}
+      </span>
+      {shortLabel && (
+        <span className="small-label" style={styles.label}>
+          {shortLabel}
+        </span>
+      )}
     </div>
   );
 }

@@ -2,7 +2,8 @@ import { InnerWorkspace } from './Workspace';
 
 export const basic: InnerWorkspace = {
   version: 2,
-  label: 'Default workspace',
+  label: 'Simple NMR analysis',
+  visible: true,
   display: {
     panels: {
       spectraPanel: { display: true, open: true },

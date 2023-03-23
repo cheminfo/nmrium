@@ -11,6 +11,7 @@ import { isMetaFile, parseMetaFile } from '../../data/parseMeta';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
+import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
@@ -58,6 +59,7 @@ function DropZone(props) {
   const isToolEnabled = useCheckToolsVisibility();
   const openImportMetaInformationModal = useMetaInformationImportationModal();
   const alert = useAlert();
+  const { logger } = useLogger();
 
   async function loadFilesHandler(files) {
     try {
@@ -73,10 +75,13 @@ function DropZone(props) {
           parseMetaFileResult = await parseMetaFile(metaFile);
         }
 
-        const { nmrLoaders: selector } = preferences.current;
+        const { nmrLoaders: sourceSelector } = preferences.current;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
-          { selector },
+          {
+            sourceSelector,
+            logger: logger.child({ context: 'nmr-load-save' }),
+          },
         );
 
         if ((nmriumState as any)?.settings) {
@@ -100,6 +105,7 @@ function DropZone(props) {
       }
     } catch (error: any) {
       alert.error(error.message);
+      logger.error(error);
       reportError(error);
     } finally {
       dispatch({ type: SET_LOADING_FLAG, isLoading: false });

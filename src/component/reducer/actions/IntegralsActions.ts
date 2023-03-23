@@ -139,8 +139,9 @@ function handleChangeIntegralsRelativeValue(draft: Draft<State>, action) {
 
 function handleChangeIntegralsSumFlag(draft, action) {
   const flag = action.payload;
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
     draft.data[index].integrals.options.isSumConstant = !flag;
   }
 }

@@ -63,8 +63,8 @@ interface ConfirmationDialogProps {
   style?: CSSProperties;
   buttons: Array<AlertButtonOptions>;
   onClose: () => void;
-  message: string;
-  render?: (data: { message: string; className: string }) => ReactNode;
+  message: ReactNode;
+  render?: (data: { message: ReactNode; className: string }) => ReactNode;
   id?: string;
 }
 

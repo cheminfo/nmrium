@@ -32,7 +32,7 @@ export function SpectrumName(props: SpectrumNameProps) {
       <div style={styles.icon}>
         <SpectraIcon {...props} />
       </div>
-      <span>{props.data.display.name}</span>
+      <span>{props.data.info.name}</span>
     </div>
   );
 }

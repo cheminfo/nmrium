@@ -30,8 +30,8 @@ const selectStyle: CSSProperties = {
 };
 
 const inputStyle = {
-  input: {
-    width: '100px',
+  inputWrapper: {
+    width: '70px',
   },
 };
 
@@ -217,14 +217,16 @@ export default function ManualPhaseCorrectionPanel() {
           <InputRange
             ref={ph0Ref}
             name="ph0"
-            label="Change Ph0 By mouse click and drag"
+            label="Change PH0 (click and drag)"
+            shortLabel="Ph0"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
           />
           <InputRange
             ref={ph1Ref}
             name="ph1"
-            label="Change Ph1 By mouse click and drag"
+            label="Change PH1 (click and drag)"
+            shortLabel="Ph1"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
           />

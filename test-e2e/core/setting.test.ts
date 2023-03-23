@@ -6,8 +6,8 @@ test('should Change the visibility of the panels', async ({ page }) => {
   const nmrium = await NMriumPage.create(page);
 
   // navigate to "1H spectrum test" example
-  await nmrium.page.click('li >> text=General');
-  await nmrium.page.click('li >> text=1H spectrum test');
+  await nmrium.page.click('li >> text=Cytisine');
+  await nmrium.page.click('li >> text=1H spectrum');
 
   //hold a locator reference to database panel
   const databaseLocator = nmrium.page.locator(
@@ -43,6 +43,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
 
   //Switch to another example from the same workspace to test if the database panel still visible or not
   await test.step('"database panel" should still visible after switching  to another 1D example with "default" workspace', async () => {
+    await nmrium.page.click('li >> text=Simple spectra');
     await nmrium.page.click('li >> text=1H ethylbenzene');
     await expect(databaseLocator).toBeVisible();
   });
@@ -69,8 +70,8 @@ test('should Change the visibility of the panels', async ({ page }) => {
 
   await test.step('"database panel" should be visible after switching  back to "default" workspace', async () => {
     // navigate to "1H spectrum test" example
-    await nmrium.page.click('li >> text=General');
-    await nmrium.page.click('li >> text=1H spectrum test');
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=1H spectrum');
 
     //check if the database panel is visible or not
     await expect(databaseLocator).toBeVisible();

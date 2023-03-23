@@ -4,8 +4,8 @@ import NmriumPage from '../NmriumPage';
 import { selectRange } from '../utilities/selectRange';
 
 async function open13CFidSpectrum(nmrium: NmriumPage) {
-  await nmrium.page.click('li >> text=General');
-  await nmrium.page.click('li >> text=13C Spectrum >> nth=0');
+  await nmrium.page.click('li >> text=Cytisine');
+  await nmrium.page.click('li >> text=13C FID >> nth=0');
 }
 
 async function apodizationFilter(nmrium: NmriumPage) {
@@ -168,8 +168,8 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
 test('Processed spectra filters', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 13c spectrum', async () => {
-    await nmrium.page.click('li >> text=General');
-    await nmrium.page.click('li >> text=Processed 13C Spectrum');
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=Processed 13C FID');
 
     // wait specturm to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
@@ -187,7 +187,7 @@ test('Processed spectra filters', async ({ page }) => {
 test('Exclusion zones', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open Coffee example', async () => {
-    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Multiple spectra');
     await nmrium.page.click('li >> text=Coffee');
 
     // wait spectrum to load
@@ -197,7 +197,7 @@ test('Exclusion zones', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
   });
 
-  await test.step('activate exclusision zones tool', async () => {
+  await test.step('activate exclusion zones tool', async () => {
     //open general setting
     await nmrium.clickTool('general-settings');
 

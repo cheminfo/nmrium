@@ -21,7 +21,6 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import ToolbarMenu from '../elements/ToolbarMenu';
-import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
@@ -33,7 +32,7 @@ import ImportPublicationStringModal from '../modal/ImportPublicationStringModal'
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
-import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
+import { SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const IMPORT_MENU = [
   {
@@ -103,7 +102,6 @@ function BasicToolBarInner({
   fidCounter,
 }: BasicToolBarInnerProps) {
   const dispatch = useDispatch();
-  const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
   const openMetaInformationModal = useMetaInformationImportationModal();
@@ -134,20 +132,6 @@ function BasicToolBarInner({
     saveAsHandler,
   } = useExport();
 
-  const LoadJcampHandler = useCallback(
-    (file) => {
-      if (file) {
-        dispatch({ type: LOAD_JCAMP_FILE, files: [file] });
-        modal.close();
-      } else {
-        alert.error(
-          'you file must be one of those extensions [ .jdx, .dx, .jcamp ] ',
-        );
-      }
-    },
-    [alert, dispatch, modal],
-  );
-
   const startLoadingHandler = useCallback(() => {
     modal.close();
     dispatch({ type: SET_LOADING_FLAG, isLoading: true });
@@ -156,13 +140,12 @@ function BasicToolBarInner({
   const importJCAMPFile = useCallback(() => {
     modal.show(
       <LoadJCAMPModal
-        onLoadClick={LoadJcampHandler}
         onClose={() => modal.close()}
         startLoading={startLoadingHandler}
       />,
       {},
     );
-  }, [LoadJcampHandler, modal, startLoadingHandler]);
+  }, [modal, startLoadingHandler]);
 
   const openImportPublicationStringModal = useCallback(() => {
     modal.show(

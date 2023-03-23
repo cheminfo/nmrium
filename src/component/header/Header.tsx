@@ -1,12 +1,12 @@
-import { SvgLogoNmrium } from 'cheminfo-font';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useMemo, useCallback, memo } from 'react';
 import {
   FaRegWindowMaximize,
-  FaWrench,
   FaQuestionCircle,
   FaRegSave,
 } from 'react-icons/fa';
-import { Header, Toolbar } from 'react-science/ui';
+import { Toolbar } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
@@ -15,20 +15,22 @@ import {
   useWorkspacesList,
 } from '../context/PreferencesContext';
 import Button from '../elements/Button';
+import { Header } from '../elements/Header';
 import { LabelStyle } from '../elements/Label';
 import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
-import { useModal, positions } from '../elements/popup/Modal';
 import { useSaveSettings } from '../hooks/useSaveSettings';
 import AboutUsModal from '../modal/AboutUsModal';
-import GeneralSettings from '../modal/setting/GeneralSettings';
+import GeneralSettingsModal from '../modal/setting/GeneralSettings';
 import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
+import { HeaderContainer } from './HeaderContainer';
+import { LogsHistory } from './LogsHistory';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
@@ -47,6 +49,31 @@ export const headerLabelStyle: LabelStyle = {
   },
 };
 
+const styles = css`
+  container-type: inline-size;
+  z-index: 1;
+
+  @container (max-width:1200px) {
+    .small-label {
+      display: block;
+    }
+
+    .large-label {
+      display: none !important;
+    }
+  }
+
+  @container (min-width:1200px) {
+    .small-label {
+      display: none;
+    }
+
+    .large-label {
+      display: block;
+    }
+  }
+`;
+
 interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
@@ -62,7 +89,6 @@ function HeaderInner(props: HeaderInnerProps) {
     height,
   } = props;
 
-  const modal = useModal();
   const {
     current: {
       display: { general },
@@ -97,24 +123,6 @@ function HeaderInner(props: HeaderInnerProps) {
     }
   }, [selectedOptionPanel]);
 
-  const openGeneralSettingsHandler = useCallback(() => {
-    modal.show(<GeneralSettings />, {
-      position: positions.MIDDLE,
-      enableResizing: true,
-      width: 600,
-      height: height / 2,
-    });
-  }, [height, modal]);
-
-  const openAboutUs = useCallback(() => {
-    modal.show(<AboutUsModal />, {
-      isBackgroundBlur: false,
-      position: positions.MIDDLE,
-      width: 500,
-      height: 480,
-    });
-  }, [modal]);
-
   const changeWorkspaceHandler = useCallback(
     (option: DropDownListItem) => {
       dispatch({
@@ -132,114 +140,98 @@ function HeaderInner(props: HeaderInnerProps) {
   }
 
   return (
-    <Header>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <div>
-          <Toolbar orientation="horizontal">
-            <Toolbar.Item
-              onClick={openAboutUs}
-              titleOrientation="horizontal"
-              id="logo"
-              title="About NMRium"
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <SvgLogoNmrium />
-              </div>
-            </Toolbar.Item>
-          </Toolbar>
-        </div>
-        <div className="toolOptionsPanel">{selectedPanel}</div>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        {!hideGeneralSettings && (
-          <DropDownButton
-            data={workspacesList}
-            selectedKey={workspace.current}
-            onSelect={changeWorkspaceHandler}
-            renderItem={renderItem}
-          />
-        )}
-        <SaveButton />
+    <div css={styles}>
+      <Header style={{ leftStyle: { flex: 1 } }}>
+        <HeaderContainer
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <Toolbar orientation="horizontal">
+              <AboutUsModal />
+            </Toolbar>
+          </div>
+          <div className="toolOptionsPanel" style={{ flex: 1 }}>
+            {selectedPanel}
+          </div>
+        </HeaderContainer>
+        <HeaderContainer
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          {!hideGeneralSettings && (
+            <DropDownButton
+              data={workspacesList}
+              selectedKey={workspace.current}
+              onSelect={changeWorkspaceHandler}
+              renderItem={renderItem}
+            />
+          )}
+          <SaveButton />
+          <LogsHistory />
 
-        <div>
-          <Toolbar orientation="horizontal">
-            <Toolbar.Item
-              id="user-manual"
-              title="User manual"
-              onClick={() => window.open(docsBaseUrl, '_blank')}
-            >
-              <FaQuestionCircle />
-            </Toolbar.Item>
-            {!hideGeneralSettings && (
+          <div>
+            <Toolbar orientation="horizontal">
               <Toolbar.Item
-                id="general-settings"
-                onClick={openGeneralSettingsHandler}
-                title="General settings"
+                id="user-manual"
+                title="User manual"
+                onClick={() => window.open(docsBaseUrl, '_blank')}
               >
-                <FaWrench />
+                <FaQuestionCircle />
               </Toolbar.Item>
-            )}
+              {!hideGeneralSettings && (
+                <GeneralSettingsModal height={height / 2} />
+              )}
 
-            {!isFullscreen && (
-              <Toolbar.Item
-                id="full-screen"
-                onClick={onMaximize}
-                title="Full Screen"
-                className="windowButton"
-              >
-                <FaRegWindowMaximize />
-              </Toolbar.Item>
-            )}
-          </Toolbar>
-        </div>
-      </div>
-    </Header>
+              {!isFullscreen && (
+                <Toolbar.Item
+                  id="full-screen"
+                  onClick={onMaximize}
+                  title="Full Screen"
+                  className="windowButton"
+                >
+                  <FaRegWindowMaximize />
+                </Toolbar.Item>
+              )}
+            </Toolbar>
+          </div>
+        </HeaderContainer>
+      </Header>
+    </div>
   );
 }
 
 function SaveButton() {
   const { workspace, workspaces, originalWorkspaces } = usePreferences();
-  const saveWorkspace = useSaveSettings();
+  const { saveSettings, SaveSettingsModal } = useSaveSettings();
   const isWorkspaceHasSettingNotSaved =
     JSON.stringify(workspaces[workspace.current]) !==
     JSON.stringify(originalWorkspaces[workspace.current]);
 
   function handleSave() {
-    saveWorkspace();
+    saveSettings();
   }
 
   return (
-    <Button.Done
-      onClick={handleSave}
-      fill="clear"
-      style={{ fontSize: '1.4em', marginLeft: '5px' }}
-      {...(!isWorkspaceHasSettingNotSaved && {
-        color: { base: 'gray', hover: 'gray' },
-        backgroundColor: { base: 'gray', hover: 'lightgray' },
-        disabled: true,
-      })}
-      toolTip="Save workspace locally in the browser"
-    >
-      <FaRegSave />
-    </Button.Done>
+    <>
+      <Button.Done
+        wrapperClassName="small-width-none"
+        onClick={handleSave}
+        fill="clear"
+        style={{ fontSize: '1.4em', marginLeft: '5px' }}
+        {...(!isWorkspaceHasSettingNotSaved && {
+          color: { base: 'gray', hover: 'gray' },
+          backgroundColor: { base: 'gray', hover: 'lightgray' },
+          disabled: true,
+        })}
+        toolTip="Save workspace locally in the browser"
+      >
+        <FaRegSave />
+      </Button.Done>
+      <SaveSettingsModal />
+    </>
   );
 }
 

@@ -41,7 +41,7 @@
           "isRealSpectrumVisible": true,
           "isVisibleInDomain": true
         },
-        "selector": {
+        "sourceSelector": {
           "files": [
             "data/aspirin/aspirinFiles/1/acqu",
             "data/aspirin/aspirinFiles/1/acqus",

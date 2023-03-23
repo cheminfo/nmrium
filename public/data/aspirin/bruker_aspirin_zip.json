@@ -19,7 +19,7 @@
           "isPeaksMarkersVisible": true,
           "isVisibleInDomain": true
         },
-        "selector": {
+        "sourceSelector": {
           "files": [
             "data/aspirin/aspirin-1h.zip/1/acqu",
             "data/aspirin/aspirin-1h.zip/1/acqus",

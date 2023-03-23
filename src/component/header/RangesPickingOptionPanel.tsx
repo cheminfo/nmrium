@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
@@ -9,12 +9,6 @@ import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-
-const hintStyle: CSSProperties = {
-  lineHeight: 2.5,
-  userSelect: 'none',
-  fontSize: '11px',
-};
 
 const inputStyle = {
   input: {
@@ -70,9 +64,6 @@ function RangesPickingOptionPanel() {
       <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
         Auto ranges picking
       </Button.Done>
-      <span style={hintStyle}>
-        Manual selection using SHIFT + select zone or click on Auto peak picking
-      </span>
     </HeaderContainer>
   );
 }

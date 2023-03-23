@@ -4,6 +4,7 @@ import { useScaleChecked } from '../context/ScaleContext';
 import useActiveSpectrumStyleOptions from '../hooks/useActiveSpectrumStyleOptions';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
+import { parseColor } from '../utility/parseColor';
 
 interface LineProps {
   data?: {
@@ -41,16 +42,18 @@ function Line({ data, id, display, index }: LineProps) {
     }
   }, [scaleX, scaleY, id, data, xyReduce]);
 
+  const { color: stroke, opacity: strokeOpacity } = parseColor(
+    display?.color || 'black',
+  );
+
   return (
     <path
       className="line"
       data-test-id="spectrum-line"
       key={id}
-      stroke={display.color}
+      stroke={stroke}
       fill="none"
-      style={{
-        opacity,
-      }}
+      strokeOpacity={opacity === 1 ? strokeOpacity : opacity}
       d={paths}
       transform={`translate(0,-${shiftY * index})`}
     />

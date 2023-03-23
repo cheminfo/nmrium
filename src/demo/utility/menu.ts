@@ -7,8 +7,13 @@ function buildMenu(array: Array<any> = []) {
     if (item.children && Array.isArray(item.children)) {
       menu.push(getMenu(item.groupName, [item], []));
     } else {
+      const { queryParams: query, ...itemProps } = item;
       menu.push(
-        createElement(MenuItem, { key: item.title, ...item }, item.title),
+        createElement(
+          MenuItem,
+          { key: itemProps.title, query, ...itemProps },
+          itemProps.title,
+        ),
       );
     }
   }
@@ -38,11 +43,13 @@ function getMenu(
       _nodes.push(node);
       return getMenu(index + key, array[index].children, _nodes, 0);
     } else {
+      const { queryParams: query, ...itemProps } = array[index];
+
       children.push(
         createElement(
           MenuItem,
-          { key: index + key, ...array[index] },
-          array[index].title,
+          { key: index + key, query, ...itemProps },
+          itemProps.title,
         ),
       );
     }
