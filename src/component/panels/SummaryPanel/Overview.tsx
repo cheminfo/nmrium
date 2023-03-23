@@ -40,7 +40,7 @@ function Overview({ correlationsData }: OverviewProps) {
         const error = stateAtomType ? stateAtomType.error : undefined;
         const errorColorIndex = error
           ? Errors.findIndex((_error) => error[_error] !== undefined)
-          : 'black';
+          : -1;
 
         return (
           <span
