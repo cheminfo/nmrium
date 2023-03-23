@@ -197,7 +197,7 @@ test('Exclusion zones', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
   });
 
-  await test.step('activate exclusision zones tool', async () => {
+  await test.step('activate exclusion zones tool', async () => {
     //open general setting
     await nmrium.clickTool('general-settings');
 

@@ -1,11 +1,12 @@
 import { Formik, FormikProps } from 'formik';
-import { useRef, forwardRef } from 'react';
+import { useRef, forwardRef, useState } from 'react';
+import { Modal, useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../context/PreferencesContext';
 import FormikInput from '../elements/formik/FormikInput';
 import { useAlert } from '../elements/popup/Alert/Context';
-import { useModal } from '../elements/popup/Modal/Context';
+import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
 import { Workspace } from '../workspaces/Workspace';
 
 const schema = Yup.object().shape({
@@ -43,9 +44,11 @@ const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
 );
 
 export function useSaveSettings() {
-  const modal = useModal();
   const alert = useAlert();
-
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+  const [values, setValues] = useState<Partial<Workspace> | undefined>(
+    undefined,
+  );
   const { dispatch, current } = usePreferences();
   const formRef = useRef<FormikProps<any>>(null);
   function addNewWorkspace(workspaceName, values) {
@@ -56,42 +59,59 @@ export function useSaveSettings() {
         data: values,
       },
     });
-    modal.close();
+    closeDialog();
     alert.success('Preferences saved successfully');
   }
 
-  return (values?: Partial<Workspace>) => {
-    const alertConfig = {
-      message:
-        'Please enter a new user workspace name in order to save your changes locally',
-      render: (props) => (
-        <WorkspaceAddForm
-          {...props}
-          onSave={({ workspaceName }) => addNewWorkspace(workspaceName, values)}
-          ref={formRef}
-        />
-      ),
-      buttons: [
-        {
-          text: 'Save',
-          handler: () => {
-            void formRef.current?.submitForm();
-          },
-          preventClose: true,
-        },
-        { text: 'Cancel' },
-      ],
-      id: 'save-workspace-dialog',
-    };
+  return {
+    saveSettings: (values?: Partial<Workspace>) => {
+      setValues(values);
 
-    if (current.source !== 'user') {
-      modal.showConfirmDialog(alertConfig);
-    } else {
-      dispatch({
-        type: 'SET_PREFERENCES',
-        payload: values as any,
-      });
-      modal.close();
-    }
+      if (current.source !== 'user') {
+        openDialog();
+      } else {
+        dispatch({
+          type: 'SET_PREFERENCES',
+          payload: values as any,
+        });
+        closeDialog();
+      }
+    },
+    SaveSettingsModal: () => {
+      const alertConfig: any = {
+        message:
+          'Please enter a new user workspace name in order to save your changes locally',
+        render: (props) => (
+          <WorkspaceAddForm
+            {...props}
+            onSave={({ workspaceName }) =>
+              addNewWorkspace(workspaceName, values)
+            }
+            ref={formRef}
+          />
+        ),
+        buttons: [
+          {
+            text: 'Save',
+            handler: () => {
+              void formRef.current?.submitForm();
+            },
+            preventClose: true,
+          },
+          { text: 'Cancel' },
+        ],
+        id: 'save-workspace-dialog',
+        onClose: closeDialog,
+      };
+      return (
+        <Modal
+          hasCloseButton
+          isOpen={isOpenDialog}
+          onRequestClose={closeDialog}
+        >
+          <ConfirmationDialog {...alertConfig} />
+        </Modal>
+      );
+    },
   };
 }

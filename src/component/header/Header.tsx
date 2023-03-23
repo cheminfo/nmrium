@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { useMemo, useCallback, memo } from 'react';
 import {
   FaRegWindowMaximize,
-  FaWrench,
   FaQuestionCircle,
   FaRegSave,
 } from 'react-icons/fa';
@@ -21,10 +20,9 @@ import { LabelStyle } from '../elements/Label';
 import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
-import { useModal, positions } from '../elements/popup/Modal';
 import { useSaveSettings } from '../hooks/useSaveSettings';
 import AboutUsModal from '../modal/AboutUsModal';
-import GeneralSettings from '../modal/setting/GeneralSettings';
+import GeneralSettingsModal from '../modal/setting/GeneralSettings';
 import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
@@ -91,7 +89,6 @@ function HeaderInner(props: HeaderInnerProps) {
     height,
   } = props;
 
-  const modal = useModal();
   const {
     current: {
       display: { general },
@@ -125,15 +122,6 @@ function HeaderInner(props: HeaderInnerProps) {
         break;
     }
   }, [selectedOptionPanel]);
-
-  const openGeneralSettingsHandler = useCallback(() => {
-    modal.show(<GeneralSettings />, {
-      position: positions.MIDDLE,
-      enableResizing: true,
-      width: 600,
-      height: height / 2,
-    });
-  }, [height, modal]);
 
   const changeWorkspaceHandler = useCallback(
     (option: DropDownListItem) => {
@@ -194,13 +182,7 @@ function HeaderInner(props: HeaderInnerProps) {
                 <FaQuestionCircle />
               </Toolbar.Item>
               {!hideGeneralSettings && (
-                <Toolbar.Item
-                  id="general-settings"
-                  onClick={openGeneralSettingsHandler}
-                  title="General settings"
-                >
-                  <FaWrench />
-                </Toolbar.Item>
+                <GeneralSettingsModal height={height / 2} />
               )}
 
               {!isFullscreen && (
@@ -223,29 +205,33 @@ function HeaderInner(props: HeaderInnerProps) {
 
 function SaveButton() {
   const { workspace, workspaces, originalWorkspaces } = usePreferences();
-  const saveWorkspace = useSaveSettings();
+  const { saveSettings, SaveSettingsModal } = useSaveSettings();
   const isWorkspaceHasSettingNotSaved =
     JSON.stringify(workspaces[workspace.current]) !==
     JSON.stringify(originalWorkspaces[workspace.current]);
 
   function handleSave() {
-    saveWorkspace();
+    saveSettings();
   }
 
   return (
-    <Button.Done
-      onClick={handleSave}
-      fill="clear"
-      style={{ fontSize: '1.4em', marginLeft: '5px' }}
-      {...(!isWorkspaceHasSettingNotSaved && {
-        color: { base: 'gray', hover: 'gray' },
-        backgroundColor: { base: 'gray', hover: 'lightgray' },
-        disabled: true,
-      })}
-      toolTip="Save workspace locally in the browser"
-    >
-      <FaRegSave />
-    </Button.Done>
+    <>
+      <Button.Done
+        wrapperClassName="small-width-none"
+        onClick={handleSave}
+        fill="clear"
+        style={{ fontSize: '1.4em', marginLeft: '5px' }}
+        {...(!isWorkspaceHasSettingNotSaved && {
+          color: { base: 'gray', hover: 'gray' },
+          backgroundColor: { base: 'gray', hover: 'lightgray' },
+          disabled: true,
+        })}
+        toolTip="Save workspace locally in the browser"
+      >
+        <FaRegSave />
+      </Button.Done>
+      <SaveSettingsModal />
+    </>
   );
 }
 
