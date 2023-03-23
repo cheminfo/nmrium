@@ -141,7 +141,7 @@ function DatabasePanelInner({
 
           setResult((prevResult) => ({ ...prevResult, data, solvents }));
         } else {
-          const values = [...searchKeywords.split(' ')];
+          const values = searchKeywords.split(' ');
           if (solvent !== '-1') {
             values.unshift(`solvent:${solvent}`);
           }

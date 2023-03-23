@@ -54,6 +54,7 @@ export interface BaseRangeColumnProps {
   row: RangeData;
   format: string;
 }
+
 export interface OnHoverEvent {
   onHover: {
     onMouseEnter: () => void;
