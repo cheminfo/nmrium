@@ -393,7 +393,7 @@ test('Multiple spectra analysis', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await test.step('Open Coffee spectrum and check 13 spectra', async () => {
-    await nmrium.page.click('li >> text=General');
+    await nmrium.page.click('li >> text=Multiple spectra');
     await nmrium.page.click('li >> text=Coffee');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
