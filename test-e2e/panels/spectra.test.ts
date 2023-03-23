@@ -445,7 +445,7 @@ test('Multiple spectra analysis', async ({ page }) => {
   });
   await test.step('Check Recolour BarButton', async () => {
     await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=BarButton[toolTip="Recolor spectra"]',
+      '_react=SpectrumsTabs >> _react=Button[toolTip="Recolor spectra"]',
     );
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
