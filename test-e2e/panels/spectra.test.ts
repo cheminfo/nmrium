@@ -433,6 +433,7 @@ test('Multiple spectra analysis', async ({ page }) => {
     await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
       button: 'right',
     });
+    // TODO: this is a bug, it should be 13
     await nmrium.page.click('text="Recolor based on distinct value"');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
