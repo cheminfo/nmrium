@@ -43,7 +43,7 @@ function GeneralTabContent() {
         <Label title="Opacity of dimmed spectra [ 0 - 1 ]">
           <FormikInput
             name="general.dimmedSpectraOpacity"
-            checkValue={(value) => value >= 0 && value <= 1}
+            checkValue={(value) => Number(value) >= 0 && Number(value) <= 1}
             type="number"
           />
         </Label>

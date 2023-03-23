@@ -6,6 +6,7 @@ extends:
 rules:
   'import/default': off
   'import/no-unresolved': off
+  'react-refresh/only-export-components': off
   '@typescript-eslint/no-explicit-any': off
   '@typescript-eslint/naming-convention': off
   '@typescript-eslint/no-implied-eval': off
