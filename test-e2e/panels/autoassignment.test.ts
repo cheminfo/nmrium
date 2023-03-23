@@ -43,14 +43,9 @@ test('automatic assignment panel', async ({ page }) => {
 
     // Wait for auto assignments process completed.
     const progressLocator = nmrium.page.locator('text=Auto Assignments');
-    await progressLocator.waitFor({
-      state: 'attached',
-    });
+    await expect(progressLocator).toBeVisible();
 
-    await progressLocator.waitFor({
-      state: 'hidden',
-      timeout: 15000,
-    });
+    await expect(progressLocator).toBeHidden();
 
     await expect(
       nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),
