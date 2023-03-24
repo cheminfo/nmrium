@@ -42,7 +42,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
     case 'airpls': {
       const validation = Yup.object().shape({
         maxIterations: Yup.number().integer().min(1).required(),
-        tolerance: Yup.number().moreThan(0).required(),
+        factorCriterion: Yup.number().moreThan(0).required(),
       });
       return {
         validation,
@@ -50,7 +50,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
           algorithm,
           livePreview: true,
           maxIterations: 100,
-          tolerance: 0.001,
+          factorCriterion: 0.001,
           ...(filterValues?.algorithm === 'airpls' ? filterValues : {}),
         },
       };
@@ -157,7 +157,7 @@ function BaseLineCorrectionInnerPanel(
               <Label title="tolerance:" style={headerLabelStyle}>
                 <FormikInput
                   type="number"
-                  name="tolerance"
+                  name="factorCriterion"
                   debounceTime={250}
                   style={inputStyle}
                 />

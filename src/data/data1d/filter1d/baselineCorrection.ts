@@ -24,7 +24,7 @@ export interface AirplsOptions {
   zones: Array<{ from: number; to: number; id: string }>;
   algorithm: 'airpls';
   maxIterations: number;
-  tolerance: number;
+  factorCriterion: number;
 }
 
 export type BaselineCorrectionOptions = PolynomialOptions | AirplsOptions;
