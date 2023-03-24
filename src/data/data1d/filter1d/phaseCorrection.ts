@@ -90,7 +90,7 @@ function autoPhaseCorrection(
   const {
     minRegSize = 5,
     maxDistanceToJoin = 128,
-    magnitudeMode = true,
+    magnitudeMode = false,
     factorNoise = 5,
   } = options;
 
