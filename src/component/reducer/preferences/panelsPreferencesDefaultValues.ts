@@ -122,6 +122,7 @@ const databaseDefaultValues: PanelsPreferences['database'] = {
   showMultiplicity: true,
   color: '#C0B000',
   marginBottom: 30,
+  allowSaveAsNMRium: false,
 };
 const getMultipleSpectraAnalysisDefaultValues = (
   nucleus?: string,

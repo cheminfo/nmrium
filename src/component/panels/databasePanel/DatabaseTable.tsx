@@ -175,6 +175,7 @@ function DatabaseTable({
           width: '1%',
           maxWidth: '60px',
           minWidth: '60px',
+          padding: 0,
         },
         accessor: 'index',
         enableRowSpan: true,
@@ -182,7 +183,7 @@ function DatabaseTable({
           const { jcampURL } = row.original;
           return (
             <ColumnWrapper
-              style={{ display: 'flex', justifyContent: 'space-between' }}
+              style={{ display: 'flex', justifyContent: 'space-evenly' }}
             >
               <Button.Done
                 style={{ padding: '0.25rem', fontSize: '0.7rem' }}
@@ -191,20 +192,22 @@ function DatabaseTable({
               >
                 <FaPlus />
               </Button.Done>
-              <Button.Action
-                style={{ padding: '0.25rem', fontSize: '0.7rem' }}
-                fill="outline"
-                onClick={() => onSave(row.original)}
-                disabled={!jcampURL}
-              >
-                <FaDownload />
-              </Button.Action>
+              {databasePreferences?.allowSaveAsNMRium && (
+                <Button.Action
+                  style={{ padding: '0.25rem', fontSize: '0.7rem' }}
+                  fill="outline"
+                  onClick={() => onSave(row.original)}
+                  disabled={!jcampURL}
+                >
+                  <FaDownload />
+                </Button.Action>
+              )}
             </ColumnWrapper>
           );
         },
       },
     ],
-    [onAdd, onSave],
+    [databasePreferences?.allowSaveAsNMRium, onAdd, onSave],
   );
 
   const tableColumns = useMemo(() => {

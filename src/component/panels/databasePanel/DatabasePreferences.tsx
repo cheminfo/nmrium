@@ -101,6 +101,11 @@ function DatabasePreferences(props, ref) {
               checkControllerName="showMultiplicity"
               hideFormatField
             />
+            <FormikColumnFormatField
+              label="Save as nmrium"
+              checkControllerName="allowSaveAsNMRium"
+              hideFormatField
+            />
           </PreferencesGroup>
         </>
       </Formik>
