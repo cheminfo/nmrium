@@ -6,13 +6,15 @@ import {
   serializeNmriumState,
 } from 'nmr-load-save';
 import { DatabaseNMREntry } from 'nmr-processing';
+import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
-import { mapRanges } from '../../../data/data1d/Spectrum1D/ranges/mapRanges';
+import { mapRanges } from '../../../data/data1d/Spectrum1D';
+import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import {
   initiateDatabase,
   InitiateDatabaseResult,
@@ -39,6 +41,7 @@ import {
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
+import nucleusToString from '../../utility/nucleusToString';
 import { Database } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -355,7 +358,7 @@ function DatabasePanelInner({
         tablePanelStyle,
         style,
         isFlipped &&
-          css`
+        css`
             .table-container {
               table,
               th {
@@ -506,7 +509,14 @@ function mapSolventsToSelect(solvents: string[]) {
 }
 
 async function saveJcampAsJson(rowData, filteredData) {
-  const { index, baseURL, jcampURL: jcampRelativeURL, names } = rowData;
+  const {
+    index,
+    baseURL,
+    jcampURL: jcampRelativeURL,
+    names,
+    ocl = {},
+    smiles,
+  } = rowData;
   const { ranges } = filteredData.data[index];
 
   const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
@@ -514,14 +524,32 @@ async function saveJcampAsJson(rowData, filteredData) {
       entries: [{ baseURL, relativePath: jcampRelativeURL }],
     });
 
+  let molfile = '';
+  let molecule: OCL.Molecule | null = null;
+  if (ocl?.idCode) {
+    molecule = OCL.Molecule.fromIDCode(ocl.idCode);
+    molfile = molecule.toMolfileV3();
+  } else if (smiles) {
+    molecule = OCL.Molecule.fromSmiles(smiles);
+    molfile = molecule.toMolfileV3();
+  }
+
   const spectraData: any[] = [];
 
   for (const spectrum of spectra) {
     if (spectrum.info.dimension === 1) {
+      let sum = 0;
+      if (molecule) {
+        sum = getSum(
+          molecule.getMolecularFormula().formula,
+          nucleusToString(spectrum.info.nucleus),
+        );
+      }
+
       spectraData.push({
         ...spectrum,
         ranges: {
-          ...(spectrum as Datum1D).ranges,
+          options: { sum: sum || 100 },
           values: mapRanges(ranges, spectrum as Datum1D),
         },
       });
@@ -529,7 +557,14 @@ async function saveJcampAsJson(rowData, filteredData) {
   }
 
   const exportedData = serializeNmriumState(
-    { version, data: { source, spectra: spectraData } } as NmriumState,
+    {
+      version,
+      data: {
+        source,
+        spectra: spectraData,
+        ...(molfile && { molecules: [{ molfile }] }),
+      },
+    } as NmriumState,
     { includeData: 'dataSource' },
   );
 
