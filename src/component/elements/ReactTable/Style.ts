@@ -31,14 +31,6 @@ const ReactTableStyle = css`
     padding: 0.15rem 0.4rem;
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
-
-    // :last-child {
-    //   border-right: 0;
-    // }
-    button {
-      background-color: transparent;
-      border: none;
-    }
   }
 `;
 
