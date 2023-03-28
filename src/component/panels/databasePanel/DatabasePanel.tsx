@@ -1,6 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { readFromWebSource } from 'nmr-load-save';
+import {
+  NmriumState,
+  readFromWebSource,
+  serializeNmriumState,
+} from 'nmr-load-save';
 import { DatabaseNMREntry } from 'nmr-processing';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
@@ -8,6 +12,7 @@ import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
+import { mapRanges } from '../../../data/data1d/Spectrum1D/ranges/mapRanges';
 import {
   initiateDatabase,
   InitiateDatabaseResult,
@@ -15,6 +20,7 @@ import {
   DATA_BASES,
   LocalDatabase,
 } from '../../../data/data1d/database';
+import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -32,6 +38,7 @@ import {
 } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
+import { exportAsJSON } from '../../utility/export';
 import { Database } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -249,8 +256,8 @@ function DatabasePanelInner({
   }, [result.data]);
 
   const resurrectHandler = useCallback(
-    (row) => {
-      const { index, baseURL, jcampURL: jcampRelativeURL } = row.original;
+    (rowData) => {
+      const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
       const { ranges, solvent, names = [] } = result.data[index];
 
       if (jcampRelativeURL) {
@@ -281,6 +288,29 @@ function DatabasePanelInner({
       }
     },
     [alert, dispatch, nucleus, result.data],
+  );
+  const saveHandler = useCallback(
+    (row) => {
+      if (row?.jcampURL) {
+        setTimeout(async () => {
+          const hideLoading = await alert.showLoading(
+            `Download jcamp in progress...`,
+          );
+
+          try {
+            await saveJcampAsJson(row, result);
+            hideLoading();
+          } catch {
+            alert.error(`Failed to download the jcamp`);
+          } finally {
+            hideLoading();
+          }
+        }, 0);
+      } else {
+        alert.error(`No jcamp file to save`);
+      }
+    },
+    [alert, result],
   );
 
   const clearHandler = useCallback(() => {
@@ -419,6 +449,7 @@ function DatabasePanelInner({
               data={tableData}
               totalCount={result.data.length}
               onAdd={resurrectHandler}
+              onSave={saveHandler}
             />
           ) : (
             <NoTableData
@@ -472,4 +503,35 @@ function mapSolventsToSelect(solvents: string[]) {
   });
   result.unshift({ label: 'All', value: '-1' });
   return result;
+}
+
+async function saveJcampAsJson(rowData, filteredData) {
+  const { index, baseURL, jcampURL: jcampRelativeURL, names } = rowData;
+  const { ranges } = filteredData.data[index];
+
+  const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
+    await readFromWebSource({
+      entries: [{ baseURL, relativePath: jcampRelativeURL }],
+    });
+
+  const spectraData: any[] = [];
+
+  for (const spectrum of spectra) {
+    if (spectrum.info.dimension === 1) {
+      spectraData.push({
+        ...spectrum,
+        ranges: {
+          ...(spectrum as Datum1D).ranges,
+          values: mapRanges(ranges, spectrum as Datum1D),
+        },
+      });
+    }
+  }
+
+  const exportedData = serializeNmriumState(
+    { version, data: { source, spectra: spectraData } } as NmriumState,
+    { includeData: 'dataSource' },
+  );
+
+  await exportAsJSON(exportedData, names?.[0], 1);
 }
