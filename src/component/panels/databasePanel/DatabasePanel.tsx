@@ -358,7 +358,7 @@ function DatabasePanelInner({
         tablePanelStyle,
         style,
         isFlipped &&
-        css`
+          css`
             .table-container {
               table,
               th {
