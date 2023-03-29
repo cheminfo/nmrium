@@ -2,10 +2,12 @@
 import lodashGet from 'lodash/get';
 import { useMemo, memo, CSSProperties } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { FaPlus } from 'react-icons/fa';
+import { FaDownload, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
 
 import { PrepareDataResult } from '../../../data/data1d/database';
+import Button from '../../elements/Button';
+import { ColumnWrapper } from '../../elements/ColumnWrapper';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
@@ -17,6 +19,7 @@ import { formatNumber } from '../../utility/formatNumber';
 interface DatabaseTableProps {
   data: any;
   onAdd: (row: any) => void;
+  onSave: (row: any) => void;
   totalCount: number;
 }
 
@@ -154,32 +157,57 @@ const databaseTableColumns = (
   },
 ];
 
-function DatabaseTable({ data, onAdd, totalCount }: DatabaseTableProps) {
+function DatabaseTable({
+  data,
+  onAdd,
+  onSave,
+  totalCount,
+}: DatabaseTableProps) {
   const databasePreferences = usePanelPreferences('database');
 
   const initialColumns = useMemo(
     () => [
       {
         index: 10,
-        Header: '',
-        width: '1%',
-        maxWidth: '24px',
-        minWidth: '24px',
         id: 'add-button',
+        Header: '',
+        style: {
+          width: '1%',
+          maxWidth: '60px',
+          minWidth: '60px',
+          padding: 0,
+        },
         accessor: 'index',
         enableRowSpan: true,
-        Cell: ({ row }) => (
-          <button
-            type="button"
-            className="add-button"
-            onClick={() => onAdd(row)}
-          >
-            <FaPlus />
-          </button>
-        ),
+        Cell: ({ row }) => {
+          const { jcampURL } = row.original;
+          return (
+            <ColumnWrapper
+              style={{ display: 'flex', justifyContent: 'space-evenly' }}
+            >
+              <Button.Done
+                style={{ padding: '0.25rem', fontSize: '0.7rem' }}
+                fill="outline"
+                onClick={() => onAdd(row.original)}
+              >
+                <FaPlus />
+              </Button.Done>
+              {databasePreferences?.allowSaveAsNMRium && (
+                <Button.Action
+                  style={{ padding: '0.25rem', fontSize: '0.7rem' }}
+                  fill="outline"
+                  onClick={() => onSave(row.original)}
+                  disabled={!jcampURL}
+                >
+                  <FaDownload />
+                </Button.Action>
+              )}
+            </ColumnWrapper>
+          );
+        },
       },
     ],
-    [onAdd],
+    [databasePreferences?.allowSaveAsNMRium, onAdd, onSave],
   );
 
   const tableColumns = useMemo(() => {
