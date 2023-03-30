@@ -8,11 +8,21 @@ async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=13C FID >> nth=0');
 }
 
-async function apodizationFilter(nmrium: NmriumPage) {
-  await nmrium.clickTool('apodization');
+async function apodizationFilter(
+  nmrium: NmriumPage,
+  { keyboard = false } = {},
+) {
+  if (keyboard) {
+    await nmrium.moveMouseToViewer();
+    await nmrium.page.keyboard.press('KeyA');
+  } else {
+    await nmrium.clickTool('apodization');
+  }
+
   await expect(
     nmrium.page.locator('data-test-id=apodization-line'),
   ).toBeVisible();
+
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
@@ -135,7 +145,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await nmrium.clickPanel('Processings');
 
   await test.step('Apply Apodization filter', async () => {
-    await apodizationFilter(nmrium);
+    await apodizationFilter(nmrium, { keyboard: true });
   });
   await test.step('Apply Zero filling filter', async () => {
     await zeroFillingFilter(nmrium);
@@ -165,7 +175,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await test.step('Check filters panel', async () => {
     await expect(
       nmrium.page.locator('_react=FilterTable >> _react=ReactTableRow'),
-    ).toHaveCount(5);
+    ).toHaveCount(6);
   });
 });
 
