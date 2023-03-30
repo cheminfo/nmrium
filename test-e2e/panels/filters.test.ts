@@ -137,9 +137,13 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await test.step('Apply Apodization filter', async () => {
     await apodizationFilter(nmrium);
   });
+  await test.step('Apply Zero filling filter', async () => {
+    await zeroFillingFilter(nmrium);
+  });
   await test.step('Apply fourier Transform filter', async () => {
     await fourierTransformFilter(nmrium);
   });
+
   await test.step('Apply phase correction filter', async () => {
     await nmrium.applyPhaseCorrection({ keyboard: true, mode: 'automatic' });
   });
@@ -150,7 +154,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     await addPeaks(nmrium, { keyboard: true });
   });
   await test.step('Check peaks table', async () => {
-    await checkPeakNumber(nmrium, 15);
+    await checkPeakNumber(nmrium, 14);
   });
   await test.step('Add peaks with 0.05 ratio', async () => {
     await addPeaks(nmrium, { keyboard: true, ratio: 0.05 });
