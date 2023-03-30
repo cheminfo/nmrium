@@ -70,7 +70,7 @@ const customWorkspaces: CustomWorkspaces = {
         baselineCorrection: true,
         exclusionZones: false,
         exportAs: true,
-        fastFourierTransform: true,
+        fft: true,
         import: true,
         integral: true,
         multipleSpectraAnalysis: false,
@@ -432,7 +432,7 @@ const customWorkspaces: CustomWorkspaces = {
           flag: true,
         },
         {
-          name: 'fastFourierTransform',
+          name: 'fft',
           label: 'Fast fourier transform',
           value: {},
           flag: true,
@@ -464,7 +464,7 @@ const customWorkspaces: CustomWorkspaces = {
           flag: true,
         },
         {
-          name: 'fastFourierTransform',
+          name: 'fft',
           label: 'Fast fourier transform',
           value: {},
           flag: true,

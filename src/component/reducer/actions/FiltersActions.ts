@@ -12,7 +12,7 @@ import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCor
 import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
-import { options } from '../../toolbar/ToolTypes';
+import { options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
@@ -23,7 +23,11 @@ import { getStrongestPeak } from '../helper/getStrongestPeak';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { resetSelectedTool } from './ToolsActions';
+import {
+  activateTool,
+  resetSelectedTool,
+  setSpectrumsVerticalAlign,
+} from './ToolsActions';
 
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shift) {
   //apply filter into the spectrum
@@ -36,7 +40,8 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shift) {
       { name: Filters.shiftX.id, value: { shift } },
     ]);
     resetSelectedTool(draft);
-    setDomain(draft);
+    const { updateXDomain, updateYDomain } = Filters.shiftX.DOMAIN_UPDATE_RULES;
+    setDomain(draft, { updateXDomain, updateYDomain });
   }
 }
 
@@ -51,8 +56,11 @@ function applyZeroFillingFilter(draft: Draft<State>, action) {
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
+    const { updateXDomain, updateYDomain } =
+      Filters.zeroFilling.DOMAIN_UPDATE_RULES;
+
     resetSelectedTool(draft);
-    setDomain(draft);
+    setDomain(draft, { updateXDomain, updateYDomain });
     setMode(draft);
   }
 }
@@ -65,14 +73,15 @@ function calculateApodizationFilter(draft: Draft<State>, action) {
     const {
       data: { x, re, im },
       info,
-    } = draft.data[index] as Datum1D;
+    } = draft.tempData[index] as Datum1D;
 
     let _data = { data: { x, re, im }, info };
     draft.toolOptions.data.apodizationOptions = options;
     apodization(_data as Datum1D, options);
     const { im: newIm, re: newRe } = _data.data;
-    draft.tempData[index].data.im = newIm;
-    draft.tempData[index].data.re = newRe;
+    const datum = draft.data[index] as Datum1D;
+    datum.data.im = newIm;
+    datum.data.re = newRe;
   }
 }
 
@@ -87,8 +96,11 @@ function applyApodizationFilter(draft: Draft<State>, action) {
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
+    const { updateXDomain, updateYDomain } =
+      Filters.apodization.DOMAIN_UPDATE_RULES;
+
     resetSelectedTool(draft);
-    setDomain(draft);
+    setDomain(draft, { updateXDomain, updateYDomain });
     setMode(draft);
   }
 }
@@ -101,14 +113,15 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
       data: { x, re, im },
       filters,
       info,
-    } = draft.data[index] as Datum1D;
+    } = draft.tempData[index] as Datum1D;
 
     let _data = { data: { x, re, im }, filters, info };
     zeroFilling(_data as Datum1D, action.payload);
     const { im: newIm, re: newRe, x: newX } = _data.data;
-    draft.tempData[index].data.x = newX;
-    draft.tempData[index].data.im = newIm;
-    draft.tempData[index].data.re = newRe;
+    const datum = draft.data[index] as Datum1D;
+    datum.data.x = newX;
+    datum.data.im = newIm;
+    datum.data.re = newRe;
     draft.xDomain = [newX[0], newX[newX.length - 1]];
   }
 }
@@ -121,11 +134,12 @@ function applyFFTFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.fft.id, value: {} },
     ]);
+    const { updateXDomain, updateYDomain } = Filters.fft.DOMAIN_UPDATE_RULES;
 
     resetSelectedTool(draft);
     changeSpectrumVerticalAlignment(draft, { verticalAlign: 'bottom' });
 
-    setDomain(draft, { yDomain: { isChanged: true } });
+    setDomain(draft, { updateXDomain, updateYDomain });
     setMode(draft);
   }
 }
@@ -134,7 +148,7 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const { ph0, ph1 } = filterOptions;
-
+    draft.data = draft.tempData;
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.phaseCorrection.id,
@@ -157,10 +171,12 @@ function applyAbsoluteFilter(draft: Draft<State>) {
         value: { absolute: true },
       },
     ]);
+    const { updateXDomain, updateYDomain } =
+      Filters.phaseCorrection.DOMAIN_UPDATE_RULES;
 
     resetSelectedTool(draft);
     draft.tempData = null;
-    setDomain(draft);
+    setDomain(draft, { updateXDomain, updateYDomain });
   }
 }
 
@@ -175,10 +191,12 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
         value: {},
       },
     ]);
+    const { updateXDomain, updateYDomain } =
+      Filters.phaseCorrection.DOMAIN_UPDATE_RULES;
 
     resetSelectedTool(draft);
     draft.tempData = null;
-    setDomain(draft);
+    setDomain(draft, { updateXDomain, updateYDomain });
   }
 }
 
@@ -189,7 +207,7 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
     const {
       data: { x, re, im },
       info,
-    } = draft.data[index] as Datum1D;
+    } = draft.tempData[index] as Datum1D;
     // save the baseline options temporary
     draft.toolOptions.data.baselineCorrection = {
       ...draft.toolOptions.data.baselineCorrection,
@@ -205,8 +223,9 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
         ...filterOptions,
       });
       const { im: newIm, re: newRe } = _data.data;
-      draft.tempData[index].data.im = newIm;
-      draft.tempData[index].data.re = newRe;
+      const datum = draft.data[index] as Datum1D;
+      datum.data.im = newIm;
+      datum.data.re = newRe;
     }
   }
 }
@@ -214,19 +233,20 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
 
     const {
       data: { x, re, im },
       info,
-    } = datum;
+    } = draft.tempData[index] as Datum1D;
 
     const { ph0, ph1 } = filterOptions;
     let _data = { data: { x, re, im }, info };
     phaseCorrection(_data as Datum1D, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
-    draft.tempData[index].data.im = newIm;
-    draft.tempData[index].data.re = newRe;
+    const datum = draft.data[index] as Datum1D;
+
+    datum.data.im = newIm;
+    datum.data.re = newRe;
   }
 }
 
@@ -263,7 +283,7 @@ function deleteFilter(draft: Draft<State>, actions) {
   if (activeSpectrum) {
     //apply filter into the spectrum
     FiltersManager.deleteFilter(draft.data[activeSpectrum.index], filterID);
-
+    draft.toolOptions.data.activeFilterID = null;
     resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
@@ -306,11 +326,13 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
         },
       },
     ]);
+    const { updateXDomain, updateYDomain } =
+      Filters.baselineCorrection.DOMAIN_UPDATE_RULES;
 
     const xDomainSnapshot = draft.xDomain.slice();
 
     resetSelectedTool(draft);
-    setDomain(draft);
+    setDomain(draft, { updateXDomain, updateYDomain });
     draft.xDomain = xDomainSnapshot;
   }
 }
@@ -325,82 +347,98 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
  * @param {boolean=} options.rollback
  */
 
+function getFilterUpdateDomainRules(filterName: string) {
+  return (
+    // eslint-disable-next-line import/namespace
+    Filters[filterName]?.DOMAIN_UPDATE_RULES || {
+      updateXDomain: false,
+      updateYDomain: false,
+    }
+  );
+}
+
 function resetSpectrumByFilter(
   draft: Draft<State>,
   options?: {
-    rollback?: boolean;
-    resetTool?: boolean;
-    updateDomain?: boolean;
     applyFilter?: boolean;
+    resetTool?: boolean;
     searchBy?: 'id' | 'name';
-    filterId?: string | null;
+    key?: string | null;
   },
 ) {
-  const {
-    updateDomain = true,
-    rollback = false,
-    searchBy = 'id',
-    applyFilter = false, // the filter that we rollback and return the affect data for the selected spectrum
-    filterId,
-  } = options || {};
-
-  let currentDatum: any = null;
+  const { applyFilter = true, searchBy = 'id', key } = options || {};
 
   const currentActiveSpectrum = getActiveSpectrum(draft);
+  let updateDomainOptions: FiltersManager.FilterDomainUpdateRules = {
+    updateXDomain: false,
+    updateYDomain: false,
+  };
+  let previousIsFid = false;
+  let currentIsFid = false;
 
   if (currentActiveSpectrum) {
     const index = currentActiveSpectrum.index;
     const datum = draft.data[index] as Datum1D | Datum2D;
+    previousIsFid = datum.info.isFid;
+    const filterIndex = datum.filters.findIndex((f) => f[searchBy] === key);
+    if (
+      filterIndex !== -1 &&
+      draft.toolOptions.data.activeFilterID !== datum.filters[filterIndex].id
+    ) {
+      const filters: any[] = datum.filters.slice(0, filterIndex || 1);
 
-    if (filterId && draft.toolOptions.data.activeFilterID !== filterId) {
-      const filterIndex = datum.filters.findIndex(
-        (f) => f[searchBy] === filterId,
-      );
-      let filters: any[] = [];
-      if (filterIndex !== -1) {
-        filters = datum.filters.slice(
-          0,
-          rollback ? filterIndex : filterIndex + 1,
-        );
+      //set active filter
+      draft.toolOptions.data.activeFilterID = datum.filters[filterIndex]?.id;
 
-        if (filters.length > 0) {
-          draft.toolOptions.data.activeFilterID =
-            datum.filters[rollback ? filterIndex - 1 : filterIndex]?.id;
-        } else {
-          draft.toolOptions.data.activeFilterID = null;
+      if (filters.length > 0) {
+        for (let i = 0; i <= filterIndex; i++) {
+          const { updateXDomain, updateYDomain } = getFilterUpdateDomainRules(
+            datum.filters[i].name,
+          );
+          updateDomainOptions.updateXDomain =
+            updateXDomain || updateDomainOptions.updateXDomain;
+          updateDomainOptions.updateYDomain =
+            updateYDomain || updateDomainOptions.updateYDomain;
         }
-
         FiltersManager.reapplyFilters(datum, filters);
-
-        if (applyFilter) {
-          const { name, value } = datum.filters[filterIndex];
-          const newDatum = current(draft).data[index];
-          if (newDatum.info?.dimension === 1) {
-            FiltersManager.applyFilter(newDatum, [{ name, value }]);
-          }
-
-          currentDatum = { datum: newDatum, index };
-        }
       }
-    } else {
-      //close filter snapshot mode and replay all enabled filters
+
+      draft.tempData = current(draft).data;
+
+      // apply the current Filters
+      if (applyFilter) {
+        FiltersManager.reapplyFilters(
+          datum,
+          datum.filters.slice(0, filterIndex + 1),
+        );
+      }
+
+      currentIsFid = datum.info.isFid;
+    } else if (draft.toolOptions.data.activeFilterID) {
       draft.toolOptions.data.activeFilterID = null;
+      draft.toolOptions.selectedOptionPanel = null;
+      draft.toolOptions.selectedTool = Tools.zoom.id;
       FiltersManager.reapplyFilters(datum);
+      updateDomainOptions = { updateXDomain: true, updateYDomain: true };
+    } else {
+      draft.tempData = current(draft).data;
     }
   }
-
-  if (updateDomain) {
-    setDomain(draft);
+  setDomain(draft, updateDomainOptions);
+  if (previousIsFid !== currentIsFid) {
     setMode(draft);
-  }
-  if (applyFilter) {
-    return currentDatum;
+    setSpectrumsVerticalAlign(draft);
   }
 }
 
 function filterSnapshotHandler(draft: Draft<State>, action) {
-  const { filterId } = action.payload;
-  resetSpectrumByFilter(draft, { filterId });
+  const { name } = action.payload;
+  if (Tools?.[name]?.isFilter) {
+    activateTool(draft, name);
+  } else {
+    resetSelectedTool(draft);
+    setFilterChanges(draft, name);
+  }
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
@@ -446,8 +484,10 @@ function handleSignalProcessingFilter(draft: Draft<State>, action) {
       true,
     );
   }
+  const { updateXDomain, updateYDomain } =
+    Filters.signalProcessing.DOMAIN_UPDATE_RULES;
 
-  setDomain(draft);
+  setDomain(draft, { updateXDomain, updateYDomain });
 }
 
 function handleAddExclusionZone(draft: Draft<State>, action) {
@@ -482,7 +522,10 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
     ]);
   }
 
-  setDomain(draft);
+  const { updateXDomain, updateYDomain } =
+    Filters.exclusionZones.DOMAIN_UPDATE_RULES;
+
+  setDomain(draft, { updateXDomain, updateYDomain });
 }
 
 function handleDeleteExclusionZone(draft: Draft<State>, action) {
@@ -522,93 +565,62 @@ function handleDeleteExclusionZone(draft: Draft<State>, action) {
 
 function handleDisableFilterLivePreview(draft: Draft<State>, action) {
   const { selectedTool } = action.payload;
-
   setFilterChanges(draft, selectedTool);
-  if (selectedTool === options.zeroFilling.id) {
-    setDomain(draft, { yDomain: { isChanged: false } });
-  }
 }
 
-function checkFilterHasTempData(selectedToolId: string) {
-  return [
-    options.phaseCorrection.id,
-    options.baselineCorrection.id,
-    options.apodization.id,
-    options.zeroFilling.id,
-  ].includes(selectedToolId);
-}
-
-function setFilterChanges(draft: Draft<State>, selectedFilterID) {
+function setFilterChanges(draft: Draft<State>, filterKey) {
   const activeSpectrum = getActiveSpectrum(draft);
 
-  // If the user selects the filter from the filters list or selects its tool and has a record in the filter list for preview and edit
-  if (checkFilterHasTempData(selectedFilterID)) {
-    //return back the spectra data to point of time before applying a specific filter
+  //return back the spectra data to point of time before applying a specific filter
 
-    const isPhaseCorrection = selectedFilterID === options.phaseCorrection.id;
-    const updateDomain = [
-      options.zeroFilling.id,
-      options.apodization.id,
-    ].includes(selectedFilterID);
+  const applyFilter = [
+    Filters.phaseCorrection.id,
+    Filters.fft.id,
+    Filters.shiftX.id,
+    Filters.shift2DX.id,
+    Filters.shift2DY.id,
+    Filters.signalProcessing.id,
+  ].includes(filterKey);
 
-    const rollbackSpectrumData = resetSpectrumByFilter(draft, {
-      updateDomain,
-      rollback: true,
-      searchBy: 'name',
-      filterId: selectedFilterID,
-      applyFilter: isPhaseCorrection,
-    });
+  resetSpectrumByFilter(draft, {
+    searchBy: 'name',
+    key: filterKey,
+    applyFilter,
+  });
 
-    // create a temporary clone of the data
+  switch (filterKey) {
+    case Filters.phaseCorrection.id: {
+      // look for the strongest peak to set it as a pivot
+      const { xValue, index } = getStrongestPeak(draft) || {
+        xValue: 0,
+        index: 0,
+      };
 
-    draft.tempData = current(draft).data;
+      draft.toolOptions.data.pivot = { value: xValue, index };
 
-    if (rollbackSpectrumData) {
-      draft.tempData[rollbackSpectrumData?.index] = rollbackSpectrumData?.datum;
+      break;
     }
+    case Filters.baselineCorrection.id: {
+      if (activeSpectrum) {
+        const baselineCorrectionFilter: any = current(draft).data[
+          activeSpectrum.index
+        ].filters.find((filter) => filter.name === Tools.baselineCorrection.id);
 
-    switch (selectedFilterID) {
-      case options.phaseCorrection.id: {
-        // look for the strongest peak to set it as a pivot
-        const { xValue, index } = getStrongestPeak(draft) || {
-          xValue: 0,
-          index: 0,
-        };
-
-        draft.toolOptions.data.pivot = { value: xValue, index };
-
-        break;
-      }
-      case options.baselineCorrection.id: {
-        if (activeSpectrum) {
-          const baselineCorrectionFilter: any = current(draft).data[
-            activeSpectrum.index
-          ].filters.find(
-            (filter) => filter.name === options.baselineCorrection.id,
-          );
-
-          if (baselineCorrectionFilter) {
-            draft.toolOptions.data.baselineCorrection.zones =
-              baselineCorrectionFilter
-                ? baselineCorrectionFilter.value.zones
-                : [];
-          }
+        if (baselineCorrectionFilter) {
+          draft.toolOptions.data.baselineCorrection.zones =
+            baselineCorrectionFilter
+              ? baselineCorrectionFilter.value.zones
+              : [];
         }
-        break;
       }
-      case options.apodization.id: {
-        draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
-        break;
-      }
-      default:
-        break;
+      break;
     }
-  } else if (checkFilterHasTempData(draft.toolOptions.selectedTool)) {
-    draft.toolOptions.data.activeFilterID = null;
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrum?.id,
-    );
-    draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
+    case Filters.apodization.id: {
+      draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+      break;
+    }
+    default:
+      break;
   }
 }
 

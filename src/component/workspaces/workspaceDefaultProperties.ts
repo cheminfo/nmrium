@@ -29,7 +29,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       baselineCorrection: false,
       exclusionZones: false,
       exportAs: false,
-      fastFourierTransform: false,
+      fft: false,
       import: false,
       integral: false,
       multipleSpectraAnalysis: false,

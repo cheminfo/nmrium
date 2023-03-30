@@ -59,9 +59,7 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
   }
 }
 
-function setSelectedTool(draft: Draft<State>, action) {
-  const { selectedTool } = action.payload;
-
+function activateTool(draft, selectedTool) {
   if (draft?.data.length > 0) {
     if (selectedTool) {
       // start Range edit mode
@@ -88,12 +86,11 @@ function setSelectedTool(draft: Draft<State>, action) {
       }
 
       draft.toolOptions.selectedTool = selectedTool;
-
-      if (options[selectedTool].hasOptionPanel) {
+      if (options[selectedTool]?.hasOptionPanel) {
         setSelectedOptionPanel(draft, selectedTool);
       }
 
-      if (options[selectedTool].isFilter) {
+      if (options?.[selectedTool]?.isFilter) {
         setFilterChanges(draft, selectedTool);
       }
     } else {
@@ -101,6 +98,11 @@ function setSelectedTool(draft: Draft<State>, action) {
     }
     setMargin(draft);
   }
+}
+
+function setSelectedTool(draft: Draft<State>, action) {
+  const { selectedTool } = action.payload;
+  activateTool(draft, selectedTool);
 }
 
 function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
@@ -553,6 +555,7 @@ function resetSpectraScale(draft: Draft<State>) {
 export {
   resetSelectedTool,
   setSelectedTool,
+  activateTool,
   setSelectedOptionPanel,
   setSpectrumsVerticalAlign,
   handleChangeSpectrumDisplayMode,

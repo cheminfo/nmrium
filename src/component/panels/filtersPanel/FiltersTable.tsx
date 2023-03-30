@@ -25,14 +25,8 @@ interface FiltersProps extends Filter {
 }
 
 const rowColors = {
-  selected: {
-    activated: {
-      backgroundColor: '#f7f7f7',
-      color: 'black',
-    },
-  },
   active: {
-    activated: {
+    base: {
       backgroundColor: '#707070',
       color: 'white',
     },
@@ -124,7 +118,7 @@ function FiltersTableInner({
     [alert, dispatch, modal, spectraCounter],
   );
   const filterSnapShotHandler = useCallback(
-    (id, index) => {
+    (filter, index) => {
       selectedFilterIndex.current =
         selectedFilterIndex.current && index === selectedFilterIndex.current
           ? null
@@ -134,7 +128,7 @@ function FiltersTableInner({
           'Filter snapshot process in progress',
         );
         setTimeout(() => {
-          dispatch({ type: SET_FILTER_SNAPSHOT, payload: { filterId: id } });
+          dispatch({ type: SET_FILTER_SNAPSHOT, payload: filter });
           hideLoading();
         }, 0);
       })();
@@ -212,10 +206,7 @@ function FiltersTableInner({
   function handleRowStyle(data) {
     const { original, index } = data;
     const { id, name } = original;
-
-    if (activeFilterID === id) {
-      return rowColors.selected;
-    } else if (selectedTool === name) {
+    if (activeFilterID === id || selectedTool === name) {
       return rowColors.active;
     } else if (
       selectedFilterIndex.current &&
@@ -225,24 +216,14 @@ function FiltersTableInner({
     }
   }
 
-  function handleActiveRow(row) {
-    const { id, name } = row.original;
-    if (activeFilterID === id || selectedTool === name) {
-      return true;
-    }
-
-    return false;
-  }
-
   return (
     <ReactTable
       rowStyle={handleRowStyle}
-      activeRow={handleActiveRow}
       data={filters}
       columns={COLUMNS}
       emptyDataRowText="No Filters"
       onClick={(e, data: any) =>
-        filterSnapShotHandler(data.original.id, data.index)
+        filterSnapShotHandler(data.original, data.index)
       }
     />
   );

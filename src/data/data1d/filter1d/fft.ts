@@ -6,8 +6,8 @@ import { Datum1D } from '../../types/data1d/Datum1D';
 
 import { padDataToNextPowerOfTwo } from './utils/padDataToNextPowerOfTwo';
 
-export const id = 'fastFourierTransform';
-export const name = 'Fast fourier transform';
+export const id = 'fft';
+export const name = 'FFT';
 
 export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
   updateXDomain: true,

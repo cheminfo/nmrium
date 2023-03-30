@@ -310,7 +310,7 @@ export const options: RecordOptions = {
     isFilter: false,
     isToggle: false,
   },
-  fastFourierTransform: {
+  fft: {
     id: 'fft',
     label: 'Fourier transform',
     hasOptionPanel: false,

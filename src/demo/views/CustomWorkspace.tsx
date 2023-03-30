@@ -30,7 +30,7 @@ const customWorkspaces: CustomWorkspaces = {
         baselineCorrection: false,
         exclusionZones: true,
         exportAs: true,
-        fastFourierTransform: false,
+        fft: false,
         import: true,
         integral: false,
         multipleSpectraAnalysis: true,
@@ -123,7 +123,7 @@ const customWorkspaces: CustomWorkspaces = {
         { name: 'apodization', label: 'Apodization', value: {}, flag: false },
         { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
         {
-          name: 'fastFourierTransform',
+          name: 'fft',
           label: 'Fast fourier transform',
           value: {},
           flag: true,
@@ -145,7 +145,7 @@ const customWorkspaces: CustomWorkspaces = {
         { name: 'apodization', label: 'Apodization', value: {}, flag: true },
         { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
         {
-          name: 'fastFourierTransform',
+          name: 'fft',
           label: 'Fast fourier transform',
           value: {},
           flag: true,
