@@ -94,6 +94,7 @@ const customWorkspaces: CustomWorkspaces = {
       verticalSplitterPosition: '364px',
       verticalSplitterCloseThreshold: 600,
       spectraRendering: 'auto',
+      loggingLevel: 'info',
     },
     formatting: {
       nuclei: {
@@ -431,8 +432,8 @@ const customWorkspaces: CustomWorkspaces = {
           flag: true,
         },
         {
-          name: 'fft',
-          label: 'FFT',
+          name: 'fastFourierTransform',
+          label: 'Fast fourier transform',
           value: {},
           flag: true,
         },
@@ -463,8 +464,8 @@ const customWorkspaces: CustomWorkspaces = {
           flag: true,
         },
         {
-          name: 'fft',
-          label: 'FFT',
+          name: 'fastFourierTransform',
+          label: 'Fast fourier transform',
           value: {},
           flag: true,
         },
