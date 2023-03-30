@@ -29,7 +29,7 @@ function handleResurrectSpectrumFromRanges(draft: Draft<State>, action) {
 
   const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
   draft.data.push(datum);
-  setDomain(draft, { yDomain: { isShared: false } });
+  setDomain(draft, { isYDomainShared: false });
   setIntegralsYDomain(draft, [datum]);
   setZoom(draft, { scale: 0.8, spectrumID: datum.id });
 }
