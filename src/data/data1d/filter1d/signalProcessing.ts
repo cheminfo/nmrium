@@ -1,10 +1,16 @@
 import * as Filters from 'ml-signal-processing';
 
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 import { MatrixOptions } from '../../types/data1d/MatrixOptions';
 
 export const id = 'signalProcessing';
 export const name = 'Signal processing';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: true,
+  updateYDomain: true,
+};
 
 /**
  *

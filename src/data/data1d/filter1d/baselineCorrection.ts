@@ -2,10 +2,16 @@ import airPLS from 'ml-airpls';
 import equallySpaced from 'ml-array-xy-equally-spaced';
 import baselineRegression from 'ml-baseline-correction-regression';
 
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'baselineCorrection';
 export const name = 'Baseline correction';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: false,
+  updateYDomain: true,
+};
 
 /**
  *

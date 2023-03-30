@@ -1,3 +1,4 @@
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 /**
@@ -8,6 +9,11 @@ import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'shiftX';
 export const name = 'Shift X';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: true,
+  updateYDomain: false,
+};
 
 export function apply(datum1D: Datum1D, options: { shift?: number } = {}) {
   const { shift = 0 } = options;

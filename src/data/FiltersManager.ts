@@ -11,6 +11,10 @@ import { updateZones } from './data2d/Spectrum2D/zones/updateZones';
 import { Datum1D } from './types/data1d';
 import { Datum2D } from './types/data2d/Datum2D';
 
+export interface FilterDomainUpdateRules {
+  updateYDomain: boolean;
+  updateXDomain: boolean;
+}
 export interface BaseFilter {
   name: string;
   value: any;

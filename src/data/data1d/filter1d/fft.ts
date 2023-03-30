@@ -1,12 +1,18 @@
 import { reimFFT, reimPhaseCorrection, xMean } from 'ml-spectra-processing';
 import { Data1D } from 'nmr-load-save/lib/types/Data1D';
 
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 import { padDataToNextPowerOfTwo } from './utils/padDataToNextPowerOfTwo';
 
-export const id = 'fft';
-export const name = 'FFT';
+export const id = 'fastFourierTransform';
+export const name = 'Fast fourier transform';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: true,
+  updateYDomain: true,
+};
 
 /**
  *
