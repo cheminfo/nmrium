@@ -86,9 +86,6 @@ export default class NmriumPage {
     if (mode === 'manual') {
       await this.page.fill('input[name="ph1"]', '-100');
       await this.page.fill('input[name="ph0"]', '-104');
-
-      await expect(this.page.locator('input[name="ph1"]')).toHaveValue('-100');
-      await expect(this.page.locator('input[name="ph0"]')).toHaveValue('-104');
     }
     if (mode === 'automatic') {
       const select = this.page.locator('select');
@@ -99,9 +96,11 @@ export default class NmriumPage {
       await select.selectOption('absolute');
     }
     await this.page.click('button >> text=Apply');
+    await expect(this.page.locator('button >> text=Apply')).toBeHidden();
+
     await expect(
       this.page.locator('_react=FilterTable >> text=Phase correction'),
-    ).toBeVisible({ timeout: 60000 });
+    ).toBeVisible();
   }
 
   public async dropFile(file: string | string[]) {
