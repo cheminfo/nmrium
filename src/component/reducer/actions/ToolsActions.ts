@@ -302,15 +302,17 @@ function handleZoom(draft: Draft<State>, action) {
 function zoomOut(draft: Draft<State>, action) {
   if (draft?.data.length > 0) {
     const { zoomType, trackID } = action;
+    const { xDomain, yDomain } = draft.originDomain;
     const zoomHistory = zoomHistoryManager(
       draft.zoom.history,
       draft.view.spectra.activeTab,
+      { xDomain, yDomain },
     );
 
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       switch (zoomType) {
         case ZoomType.HORIZONTAL: {
-          draft.xDomain = draft.originDomain.xDomain;
+          draft.xDomain = xDomain;
           zoomHistory.clear();
           break;
         }
@@ -319,14 +321,15 @@ function zoomOut(draft: Draft<State>, action) {
           break;
         case ZoomType.STEP_HORIZONTAL: {
           const zoomValue = zoomHistory.pop();
-          draft.xDomain = zoomValue
-            ? zoomValue.xDomain
-            : draft.originDomain.xDomain;
-          setZoom(draft, { scale: 0.8 });
+          if (zoomValue) {
+            draft.xDomain = zoomValue.xDomain;
+          } else {
+            setZoom(draft, { scale: 0.8 });
+          }
           break;
         }
         default: {
-          draft.xDomain = draft.originDomain.xDomain;
+          draft.xDomain = xDomain;
           setZoom(draft, { scale: 0.8 });
           break;
         }
@@ -485,7 +488,6 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
 
   setDomain(draft, domainOptions);
   setIntegralsYDomain(draft, dataGroupByNucleus[draft.view.spectra.activeTab]);
-
   const zoomHistory = zoomHistoryManager(
     draft.zoom.history,
     draft.view.spectra.activeTab,

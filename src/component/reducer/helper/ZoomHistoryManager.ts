@@ -17,13 +17,14 @@ interface ZoomHistoryManager {
 export default function zoomHistoryManager(
   zoomHistory: ZoomHistory,
   nucleus: string,
+  baseZoom?: HistoryItem,
 ): ZoomHistoryManager {
   if (!zoomHistory[nucleus] && !Array.isArray(zoomHistory[nucleus])) {
     zoomHistory[nucleus] = [];
   }
 
   const push = preparePush(zoomHistory[nucleus]);
-  const pop = preparePop(zoomHistory[nucleus]);
+  const pop = preparePop(zoomHistory[nucleus], baseZoom);
   const getLast = prepareGetLast(zoomHistory[nucleus]);
   const clear = () => (zoomHistory[nucleus] = []);
   return { historyStack: zoomHistory[nucleus], push, pop, getLast, clear };
@@ -35,9 +36,14 @@ function preparePush(historyStack) {
   };
 }
 
-function preparePop(historyStack) {
+function preparePop(historyStack, baseZoom?: HistoryItem) {
   return () => {
     const val = historyStack.pop();
+
+    if (val && historyStack.length === 0) {
+      return baseZoom || null;
+    }
+
     return val ? historyStack[historyStack.length - 1] : null;
   };
 }

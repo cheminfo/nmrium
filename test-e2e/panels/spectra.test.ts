@@ -389,3 +389,230 @@ test('show/hide spectrum', async ({ page }) => {
     );
   });
 });
+
+test('Export source from 1H spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Load 1H spectrum', async () => {
+    await nmrium.open1D();
+  });
+  await test.step('Open Save as window ', async () => {
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+  });
+  await test.step('Check include data options', async () => {
+    const fields = nmrium.page.locator('_react=ModalContent >> _react=Field');
+    await expect(fields).toHaveCount(3);
+
+    const disabledFields = nmrium.page.locator(
+      '_react=ModalContent >> _react=Field[disabled=true]',
+    );
+    await expect(disabledFields).toHaveCount(0);
+  });
+  await test.step('Check export Raw Data', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="ROW_DATA"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).not.toBeUndefined();
+    // TODO: Save raw data should not have source property
+    expect(data.source).toBeUndefined();
+    expect(data.spectra[0].data).not.toBeUndefined();
+  });
+  await test.step('Check export DATA SOURCE', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="DATA_SOURCE"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).not.toBeUndefined();
+    expect(data.source).not.toBeUndefined();
+    expect(data.spectra[0].data).toBeUndefined();
+  });
+  await test.step('Check export NO Data', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="NO_DATA"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).toBeUndefined();
+  });
+});
+
+test('Export source from imported spectrum', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Drag and drop spectrum', async () => {
+    await nmrium.page.setInputFiles(
+      '_react=DropZone >> input[type=file]',
+      'test-e2e/data/ethylbenzene-1h.jdx',
+    );
+  });
+  await test.step('Open Save as window ', async () => {
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+  });
+  await test.step('Check include data options', async () => {
+    const fields = nmrium.page.locator('_react=ModalContent >>_react=Field');
+    await expect(fields).toHaveCount(3);
+    const disabledFields = nmrium.page.locator(
+      '_react=ModalContent >>_react=Field[disabled=true]',
+    );
+    await expect(disabledFields).toHaveCount(1);
+    await expect(disabledFields).toHaveAttribute('value', 'DATA_SOURCE');
+  });
+  await test.step('Check export Raw Data', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="ROW_DATA"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    // TODO: Save raw data should not have source property
+    expect(data).not.toBeUndefined();
+    expect(data.source).toBeUndefined();
+    expect(data.spectra[0].data).not.toBeUndefined();
+  });
+  await test.step('Check export NO Data', async () => {
+    const downloadPromise = nmrium.page.waitForEvent('download');
+    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
+    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Field[value="NO_DATA"]',
+    );
+    await nmrium.page.click(
+      '_react=ModalContent >> _react=Button >> text=Save',
+    );
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const data: any = await new Promise((resolve) => {
+      const chunks: any[] = [];
+      stream?.on('data', (chunk) => chunks.push(chunk));
+      stream?.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const { data } = JSON.parse(buffer.toString());
+        resolve(data);
+      });
+    });
+    expect(data).toBeUndefined();
+  });
+});
+
+test('Multiple spectra analysis', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+
+  await test.step('Open Coffee spectrum and check 13 spectra', async () => {
+    await nmrium.page.click('li >> text=Multiple spectra');
+    await nmrium.page.click('li >> text=Coffee');
+    // Wait the spectrum to load
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+      13,
+    );
+  });
+  await test.step('Check spectra names', async () => {
+    for (let i = 0; i < 13; i++) {
+      await expect(
+        nmrium.page.locator(
+          `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=Coffee ${
+            i + 1
+          }`,
+        ),
+      ).toBeVisible();
+    }
+  });
+  await test.step('Check spectra colors', async () => {
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
+  });
+  await test.step('Check Recolour based on spectrum name', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
+  });
+  await test.step('Check recolour based on pulse', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Pulse"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
+  });
+  await test.step('Check again recolour based on spectrum name', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Spectrum Name"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
+  });
+  await test.step('Check recolour based on solvent', async () => {
+    await nmrium.page.click('_react=SpectraTable >> text="Solvent"', {
+      button: 'right',
+    });
+    await nmrium.page.click('text="Recolor based on distinct value"');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
+  });
+  await test.step('Check Recolour BarButton', async () => {
+    await nmrium.page.click('_react=Button[toolTip="Recolor spectra"]');
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
+  });
+});

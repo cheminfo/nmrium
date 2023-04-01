@@ -112,6 +112,7 @@ export interface DatabasePanelPreferences {
   showMultiplicity: boolean;
   color: string;
   marginBottom: number;
+  allowSaveAsNMRium: boolean;
 }
 
 type PredefinedLegend = 'intensity' | 'name';
