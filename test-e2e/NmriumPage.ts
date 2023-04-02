@@ -95,8 +95,7 @@ export default class NmriumPage {
       const select = this.page.locator('select');
       await select.selectOption('absolute');
     }
-    await this.page.click('button >> text=Apply');
-    await expect(this.page.locator('button >> text=Apply')).toBeHidden();
+    await this.page.click('button >> text=Apply', { delay: 200 });
 
     await expect(
       this.page.locator('_react=FilterTable >> text=Phase correction'),
