@@ -33,7 +33,7 @@ test('check callbacks count', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
 
   await nmrium.page.click('li >> text=Callback');
-  await nmrium.page.click('li >> text=Full cytisine', { delay: 200 });
+  await nmrium.page.click('li >> text=Full cytisine');
   await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
   const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
