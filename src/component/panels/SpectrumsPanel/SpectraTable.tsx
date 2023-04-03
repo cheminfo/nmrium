@@ -5,6 +5,7 @@ import { FaCopy, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
+import { exportAsJcamp } from '../../../data/SpectraManager';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
@@ -70,6 +71,7 @@ const options: DropdownMenuProps<string, any>['options'] = [
 enum SpectraContextMenuOptionsKeys {
   CopyToClipboard = 'CopyToClipboard',
   Delete = 'Delete',
+  ExportAsJcamp = 'ExportAsJcamp',
 }
 
 const SpectraContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
@@ -200,12 +202,28 @@ export function SpectraTable(props: SpectraTableProps) {
           }, 0);
           break;
         }
+        case SpectraContextMenuOptionsKeys.ExportAsJcamp: {
+          void (async () => {
+            const hideLoading = await alert.showLoading(
+              'export as JCAMP in progress',
+            );
+            try {
+              exportAsJcamp(spectrum);
+            } catch (error: any) {
+              alert.error(error.message);
+            } finally {
+              hideLoading();
+            }
+          })();
+          break;
+        }
 
         default: {
           break;
         }
       }
     },
+
     [alert, dispatch],
   );
 
@@ -231,9 +249,9 @@ export function SpectraTable(props: SpectraTableProps) {
           style:
             name === 'name' && visibleColumns.length > 3
               ? {
-                  ...COLUMNS[name].style,
-                  width: '50%',
-                }
+                ...COLUMNS[name].style,
+                width: '50%',
+              }
               : COLUMNS[name].style,
         });
       } else {

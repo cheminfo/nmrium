@@ -1,15 +1,17 @@
+import { saveAs } from 'file-saver';
 import {
   processJcamp,
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
   Spectrum,
+  spectrum1DToJcamp,
 } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
 
-import * as Datum1D from './data1d/Spectrum1D';
-import * as Datum2D from './data2d/Spectrum2D';
+import { isSpectrum1D, initiateDatum1D } from './data1d/Spectrum1D';
+import { initiateDatum2D } from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
 
 export enum DataExportOptions {
@@ -33,9 +35,9 @@ export interface ExportOptions {
 function getData(datum, usedColors) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
-    return Datum1D.initiateDatum1D(datum, { usedColors });
+    return initiateDatum1D(datum, { usedColors });
   } else if (dimension === 2) {
-    return Datum2D.initiateDatum2D(datum, { usedColors });
+    return initiateDatum2D(datum, { usedColors });
   }
 }
 
@@ -121,4 +123,16 @@ export function toJSON(
       includeView: view,
     });
   }
+}
+
+export function exportAsJcamp(spectrum: Spectrum) {
+  let jcamp: string | null = null;
+  if (isSpectrum1D(spectrum)) {
+    jcamp = spectrum1DToJcamp(spectrum);
+  } else {
+    throw new Error('convert 2D spectrum to JCAMP is not supported');
+  }
+
+  const blob = new Blob([jcamp], { type: 'text/plain' });
+  saveAs(blob, `${spectrum.info.name}.jdx`);
 }
