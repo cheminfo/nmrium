@@ -48,8 +48,6 @@ interface ExtraColumn<T extends object> {
   Cell?: (cell: CellProps<T, any>) => JSX.Element | string;
 }
 
-
-
 export type Column<T extends object> = ReactColumn<T> &
   ExtraColumn<T> &
   UseSortByColumnOptions<T>;
@@ -71,9 +69,11 @@ export interface BaseRowStyle {
   base?: CSSProperties;
 }
 
-
 export interface ContextMenuProps {
-  onContextMenuSelect?: (selected: Parameters<DropdownMenuProps<any>['onSelect']>[0], data: any) => void;
+  onContextMenuSelect?: (
+    selected: Parameters<DropdownMenuProps<any>['onSelect']>[0],
+    data: any,
+  ) => void;
   contextMenu?: DropdownMenuProps<any>['options'];
 }
 interface ReactTableProps extends ContextMenuProps, ClickEvent, SortEvent {
@@ -93,7 +93,6 @@ interface ReactTableProps extends ContextMenuProps, ClickEvent, SortEvent {
   rowStyle?: BaseRowStyle | ((data: any) => BaseRowStyle | undefined);
   style?: CSSObject | SerializedStyles;
   disableDefaultRowStyle?: boolean;
-
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -383,7 +382,7 @@ function ReactTable(props: ReactTableProps) {
       const header = containerRef.current.querySelectorAll('thead');
       const rowsCount = Math.ceil(
         (Math.ceil(height) - Math.ceil(header[0].clientHeight)) /
-        approxItemHeight,
+          approxItemHeight,
       );
       const columnsCount = Math.ceil(Math.ceil(width) / approxColumnWidth);
 
