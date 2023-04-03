@@ -1,5 +1,6 @@
 import lodashGet from 'lodash/get';
-import { useMemo, CSSProperties } from 'react';
+import { useMemo, CSSProperties, useCallback } from 'react';
+import { FaCopy, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
@@ -64,6 +65,26 @@ const options: DropdownMenuProps<string>['options'] = [
     label: 'Recolor based on distinct value',
     type: 'option',
     icon: <IoColorPaletteOutline />,
+  },
+];
+
+enum SpectraContextMenuOptionsKeys {
+  CopyToClipboard = "CopyToClipboard",
+  Delete = "Delete"
+}
+
+const SpectraContextMenuOptions: DropdownMenuProps<any>['options'] = [
+  {
+    label: 'Copy to Clipboard',
+    type: 'option',
+    icon: <FaCopy />,
+    data: { id: SpectraContextMenuOptionsKeys.CopyToClipboard }
+  },
+  {
+    label: 'Delete',
+    type: 'option',
+    icon: <FaRegTrashAlt />,
+    data: { id: SpectraContextMenuOptionsKeys.Delete }
   },
 ];
 
@@ -150,41 +171,43 @@ export function SpectraTable(props: SpectraTableProps) {
     [onChangeVisibility, onOpenSettingModal],
   );
 
-  const contextMenu = useMemo(
-    () => [
-      {
-        label: 'Copy to Clipboard',
-        onClick: (spectrumData) => {
-          void (async () => {
-            const { data, info } = spectrumData;
-            const success = await copyTextToClipboard(
-              JSON.stringify(
-                { data, info },
-                (_, value) =>
-                  ArrayBuffer.isView(value) ? Array.from(value as any) : value,
-                2,
-              ),
-            );
+  const selectContextMenuHandler = useCallback((option, spectrum) => {
+    const { id } = option.data;
+    switch (id) {
+      case SpectraContextMenuOptionsKeys.CopyToClipboard: {
+        void (async () => {
+          const { data, info } = spectrum;
+          const success = await copyTextToClipboard(
+            JSON.stringify(
+              { data, info },
+              (_, value) =>
+                ArrayBuffer.isView(value) ? Array.from(value as any) : value,
+              2,
+            ),
+          );
 
-            if (success) {
-              alert.success('Data copied to clipboard');
-            } else {
-              alert.error('Copy to clipboard failed');
-            }
-          })();
-        },
-      },
-      {
-        label: 'Delete',
-        onClick: (spectrumData) => {
-          setTimeout(() => {
-            dispatch({ type: DELETE_SPECTRA, id: spectrumData.id });
-          }, 0);
-        },
-      },
-    ],
-    [alert, dispatch],
-  );
+          if (success) {
+            alert.success('Data copied to clipboard');
+          } else {
+            alert.error('Copy to clipboard failed');
+          }
+        })();
+        break;
+      }
+      case SpectraContextMenuOptionsKeys.Delete: {
+        setTimeout(() => {
+          dispatch({ type: DELETE_SPECTRA, id: spectrum.id });
+        }, 0);
+        break;
+      }
+
+      default: {
+        break;
+      }
+
+    }
+
+  }, [alert, dispatch])
 
   function handleActiveRow(row) {
     return activeSpectraObj?.[row?.original.id] || false;
@@ -208,9 +231,9 @@ export function SpectraTable(props: SpectraTableProps) {
           style:
             name === 'name' && visibleColumns.length > 3
               ? {
-                  ...COLUMNS[name].style,
-                  width: '50%',
-                }
+                ...COLUMNS[name].style,
+                width: '50%',
+              }
               : COLUMNS[name].style,
         });
       } else {
@@ -253,7 +276,8 @@ export function SpectraTable(props: SpectraTableProps) {
       }
       enableVirtualScroll
       approxItemHeight={26}
-      context={contextMenu}
+      contextMenu={SpectraContextMenuOptions}
+      onContextMenuSelect={selectContextMenuHandler}
       onSortEnd={handleSortEnd}
       style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
     />
