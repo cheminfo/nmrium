@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Fragment, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import { Info1D } from '../../../data/types/data1d/Info1D';
-import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import ContextMenu, { ContextMenuProps } from '../../elements/ContextMenu';
+import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import useTableSortBy from '../../hooks/useTableSortBy';
 import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 
@@ -56,11 +54,10 @@ const tableStyle = css`
     }
   }
 `;
-interface RangesTableProps {
+interface RangesTableProps extends ContextMenuProps {
   onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
   tableData: any;
-  context: ContextMenuProps['context'];
   activeTab: string;
   info: Info1D;
 }
@@ -68,79 +65,67 @@ interface RangesTableProps {
 function RangesTable({
   tableData,
   onUnlink,
-  context,
+  contextMenu = [],
+  onContextMenuSelect,
   activeTab,
   preferences,
   info,
 }: RangesTableProps) {
   const element = activeTab?.replace(/\d/g, '');
-  const contextRef = useRef<any>();
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
 
-  const contextMenuHandler = useCallback(
-    (e, rowData) => {
-      if (!checkModifierKeyActivated(e)) {
-        e.preventDefault();
-        contextRef.current.handleContextMenu(e, rowData);
-      }
-    },
-    [contextRef],
-  );
-
   return (
-    <Fragment>
-      <table css={tableStyle}>
-        <thead>
-          <tr>
-            <th>#</th>
-            {preferences.from.show && (
-              <th id="from" {...onSort}>
-                From
-                {isSortedDesc('from').content}
-              </th>
-            )}
-            {preferences.to.show && (
-              <th id="to" {...onSort}>
-                To {isSortedDesc('to').content}
-              </th>
-            )}
-            {preferences.deltaPPM.show && <th>δ (ppm) </th>}
-            {preferences.deltaHz.show && <th>δ (Hz) </th>}
-
-            {preferences.relative.show && (
-              <th id="integration" {...onSort}>
-                Rel. {element} {isSortedDesc('integration').content}
-              </th>
-            )}
-            {preferences.absolute.show && <th>Absolute</th>}
-            <th>Mult.</th>
-            {preferences.coupling.show && <th>J (Hz)</th>}
-            <th>
-              <FaLink style={{ fontSize: 10, margin: 'auto' }} />
+    <table css={tableStyle}>
+      <thead>
+        <tr>
+          <th>#</th>
+          {preferences.from.show && (
+            <th id="from" {...onSort}>
+              From
+              {isSortedDesc('from').content}
             </th>
-            <th style={{ minWidth: '50px' }}>Σ</th>
-            {preferences.showKind && <th>Kind</th>}
-            <th>{''}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data?.map((range) => {
-            return (
-              <RangesTableRow
-                key={range.rowKey}
-                rowData={range}
-                onUnlink={onUnlink}
-                onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
-                preferences={preferences}
-                info={info}
-              />
-            );
-          })}
-        </tbody>
-      </table>
-      <ContextMenu ref={contextRef} context={context} />
-    </Fragment>
+          )}
+          {preferences.to.show && (
+            <th id="to" {...onSort}>
+              To {isSortedDesc('to').content}
+            </th>
+          )}
+          {preferences.deltaPPM.show && <th>δ (ppm) </th>}
+          {preferences.deltaHz.show && <th>δ (Hz) </th>}
+
+          {preferences.relative.show && (
+            <th id="integration" {...onSort}>
+              Rel. {element} {isSortedDesc('integration').content}
+            </th>
+          )}
+          {preferences.absolute.show && <th>Absolute</th>}
+          <th>Mult.</th>
+          {preferences.coupling.show && <th>J (Hz)</th>}
+          <th>
+            <FaLink style={{ fontSize: 10, margin: 'auto' }} />
+          </th>
+          <th style={{ minWidth: '50px' }}>Σ</th>
+          {preferences.showKind && <th>Kind</th>}
+          <th>{''}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data?.map((range) => {
+          return (
+            <RangesTableRow
+              key={range.rowKey}
+              rowData={range}
+              onUnlink={onUnlink}
+              preferences={preferences}
+              info={info}
+              contextMenu={contextMenu}
+              onContextMenuSelect={onContextMenuSelect}
+            />
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
 
