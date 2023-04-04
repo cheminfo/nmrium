@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
 import { css, CSSObject } from '@emotion/react';
-import { useMemo, useEffect, useCallback, MouseEvent } from 'react';
+import { useMemo, useEffect, useCallback } from 'react';
+import { DropdownMenu } from 'react-science/ui';
 
 import { HighlightEventSource, useHighlight } from '../../../highlight/index';
-import { BaseRowStyle } from '../ReactTable';
+import { BaseRowStyle, ContextMenuProps } from '../ReactTable';
 
 function getRowStyle(
   isActive: boolean,
@@ -35,10 +36,9 @@ function getRowStyle(
 export interface ClickEvent {
   onClick?: (event: Event, data: unknown) => void;
 }
-interface ReactTableRowProps extends ClickEvent {
+interface ReactTableRowProps extends ClickEvent, ContextMenuProps {
   row: any;
   highlightedSource?: HighlightEventSource;
-  onContextMenu: (e: MouseEvent<HTMLTableRowElement>) => void;
   isRowActive: boolean;
   rowStyle: BaseRowStyle | undefined;
   disableDefaultRowStyle?: boolean;
@@ -59,7 +59,8 @@ function ReactTableRow(props: ReactTableRowProps) {
   const {
     row,
     highlightedSource = HighlightEventSource.UNKNOWN,
-    onContextMenu,
+    onContextMenuSelect,
+    contextMenu = [],
     onClick,
     isRowActive = false,
     rowStyle,
@@ -89,7 +90,6 @@ function ReactTableRow(props: ReactTableRowProps) {
   );
   return (
     <tr
-      onContextMenu={onContextMenu}
       key={row.getRowProps().key}
       css={getRowStyle(
         highlight.isActive || isRowActive,
@@ -99,30 +99,36 @@ function ReactTableRow(props: ReactTableRowProps) {
       {...row.getRowProps()}
       {...highlight.onHover}
     >
-      {row.cells.map((cell) => {
-        const { style, padding } = cell.column;
+      <DropdownMenu
+        trigger="contextMenu"
+        options={contextMenu}
+        onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
+      >
+        {row.cells.map((cell) => {
+          const { style, padding } = cell.column;
 
-        if (cell.isRowSpanned) {
-          return null;
-        } else {
-          return (
-            <td
-              rowSpan={cell.rowSpan}
-              key={cell.key}
-              {...cell.getCellProps()}
-              onContextMenu={(e) => {
-                e.preventDefault();
+          if (cell.isRowSpanned) {
+            return null;
+          } else {
+            return (
+              <td
+                rowSpan={cell.rowSpan}
+                key={cell.key}
+                {...cell.getCellProps()}
+                onContextMenu={(e) => {
+                  e.preventDefault();
 
-                return false;
-              }}
-              style={{ padding, ...style }}
-              onClick={clickHandler}
-            >
-              {cell.render('Cell')}
-            </td>
-          );
-        }
-      })}
+                  return false;
+                }}
+                style={{ padding, ...style }}
+                onClick={clickHandler}
+              >
+                {cell.render('Cell')}
+              </td>
+            );
+          }
+        })}
+      </DropdownMenu>
     </tr>
   );
 }

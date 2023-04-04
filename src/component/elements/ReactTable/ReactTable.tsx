@@ -13,6 +13,7 @@ import {
   useEffect,
   useMemo,
 } from 'react';
+import { DropdownMenuProps } from 'react-science/ui';
 import {
   useTable,
   useSortBy,
@@ -26,9 +27,7 @@ import {
 } from 'react-table';
 import { useMeasure } from 'react-use';
 
-import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { HighlightEventSource } from '../../highlight';
-import ContextMenu from '../ContextMenu';
 
 import { EmptyDataRow } from './Elements/EmptyDataRow';
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -70,11 +69,17 @@ export interface BaseRowStyle {
   base?: CSSProperties;
 }
 
-interface ReactTableProps extends ClickEvent, SortEvent {
+export interface ContextMenuProps {
+  onContextMenuSelect?: (
+    selected: Parameters<DropdownMenuProps<any>['onSelect']>[0],
+    data: any,
+  ) => void;
+  contextMenu?: DropdownMenuProps<any>['options'];
+}
+interface ReactTableProps extends ContextMenuProps, ClickEvent, SortEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
-  context?: Array<{ label: string; onClick: (data: any) => void }> | null;
   approxItemHeight?: number;
   approxColumnWidth?: number;
   groupKey?: string;
@@ -86,8 +91,8 @@ interface ReactTableProps extends ClickEvent, SortEvent {
   totalCount?: number;
   emptyDataRowText?: string;
   rowStyle?: BaseRowStyle | ((data: any) => BaseRowStyle | undefined);
-  disableDefaultRowStyle?: boolean;
   style?: CSSObject | SerializedStyles;
+  disableDefaultRowStyle?: boolean;
 }
 
 interface ReactTableInnerProps extends ReactTableProps {
@@ -133,7 +138,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     data,
     columns,
     highlightedSource,
-    context = null,
+    contextMenu = [],
+    onContextMenuSelect,
     onScroll,
     approxItemHeight = 40,
     enableVirtualScroll = false,
@@ -151,7 +157,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     emptyDataRowText = 'No Data',
   } = props;
 
-  const contextRef = useRef<any>(null);
   const isSortedEventTriggered = useRef<boolean>(false);
   const virtualBoundary = useReactTableContext();
   const [rowIndex, setRowIndex] = useState<number>();
@@ -185,12 +190,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     useSortBy,
     useRowSpan,
   ) as TableInstanceWithHooks;
-  function contextMenuHandler(e, row) {
-    if (!checkModifierKeyActivated(e)) {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e, row.original);
-    }
-  }
 
   function clickHandler(event, row) {
     setRowIndex(row.index);
@@ -297,7 +296,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
                   key={key}
                   {...restRowProps}
                   row={row}
-                  onContextMenu={(e) => contextMenuHandler(e, row)}
+                  contextMenu={contextMenu}
+                  onContextMenuSelect={onContextMenuSelect}
                   onClick={
                     !activeRow && enableDefaultActiveRow
                       ? clickHandler
@@ -320,7 +320,6 @@ const ReactTableInner = forwardRef(function ReactTableInner(
             })}
           </tbody>
         </table>
-        <ContextMenu ref={contextRef} context={context} />
       </div>
       {(enableVirtualScroll || enableColumnsVirtualScroll) && (
         <p

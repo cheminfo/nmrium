@@ -16,6 +16,7 @@ import {
   useAssignmentData,
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
+import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import {
   HighlightEventSource,
   useHighlight,
@@ -33,6 +34,7 @@ import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
 import { RangeData } from './hooks/useMapRanges';
+import { DropdownMenu } from 'react-science/ui';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -42,10 +44,9 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-interface RangesTableRowProps {
+interface RangesTableRowProps extends ContextMenuProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
-  onContextMenu: (element: any, data: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
   info: Info1D;
 }
@@ -76,7 +77,8 @@ export type RangeColumnProps = BaseRangeColumnProps &
 function RangesTableRow({
   rowData,
   onUnlink,
-  onContextMenu,
+  onContextMenuSelect,
+  contextMenu = [],
   preferences,
   info,
 }: RangesTableRowProps) {
@@ -198,107 +200,113 @@ function RangesTableRow({
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
-    <tr onContextMenu={(e) => onContextMenu(e, rowData)} css={trCss}>
-      <td {...rowSpanTags} {...onHoverRange}>
-        {rowData.tableMetaInfo.rowIndex + 1}
-      </td>
+    <tr css={trCss}>
+      <DropdownMenu
+        trigger="contextMenu"
+        options={contextMenu}
+        onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
+      >
+        <td {...rowSpanTags} {...onHoverRange}>
+          {rowData.tableMetaInfo.rowIndex + 1}
+        </td>
 
-      {preferences.from.show && (
-        <RangeColumn
-          value={rowData.from}
-          rowSpanTags={rowSpanTags}
-          onHover={onHoverRange}
-          format={preferences.from.format}
-        />
-      )}
-      {preferences.to.show && (
-        <RangeColumn
-          value={rowData.to}
-          rowSpanTags={rowSpanTags}
-          onHover={onHoverRange}
-          format={preferences.to.format}
-        />
-      )}
+        {preferences.from.show && (
+          <RangeColumn
+            value={rowData.from}
+            rowSpanTags={rowSpanTags}
+            onHover={onHoverRange}
+            format={preferences.from.format}
+          />
+        )}
+        {preferences.to.show && (
+          <RangeColumn
+            value={rowData.to}
+            rowSpanTags={rowSpanTags}
+            onHover={onHoverRange}
+            format={preferences.to.format}
+          />
+        )}
 
-      {preferences.deltaPPM.show && (
-        <SignalDeltaColumn
+        {preferences.deltaPPM.show && (
+          <SignalDeltaColumn
+            row={rowData}
+            rowSpanTags={rowSpanTags}
+            onHover={onHoverSignal}
+            format={preferences.deltaPPM.format}
+          />
+        )}
+        {preferences.deltaHz.show && (
+          <SignalDeltaHzColumn
+            row={rowData}
+            rowSpanTags={rowSpanTags}
+            onHover={onHoverSignal}
+            format={preferences.deltaHz.format}
+            info={info}
+          />
+        )}
+
+        {preferences.relative.show && (
+          <RelativeColumn
+            row={rowData}
+            rowSpanTags={rowSpanTags}
+            onHover={onHoverRange}
+            format={preferences.relative.format}
+          />
+        )}
+
+        {preferences.absolute.show && (
+          <AbsoluteColumn
+            row={rowData}
+            rowSpanTags={rowSpanTags}
+            onHover={onHoverRange}
+            format={preferences.absolute.format}
+          />
+        )}
+
+        <td {...onHoverSignal}>
+          {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
+        </td>
+
+        {preferences.coupling.show && (
+          <CouplingColumn
+            row={rowData}
+            onHover={onHoverSignal}
+            format={preferences.coupling.format}
+          />
+        )}
+
+        <SignalAssignmentsColumn
           row={rowData}
-          rowSpanTags={rowSpanTags}
+          assignment={assignmentSignal}
+          highlight={highlightSignal}
           onHover={onHoverSignal}
-          format={preferences.deltaPPM.format}
+          unlinkVisibility={unlinkSignalButtonVisibility}
+          onUnlinkVisibilityChange={(flag) => showUnlinkSignalButton(flag)}
+          onLink={linkHandler}
+          onUnlink={unlinkHandler}
         />
-      )}
-      {preferences.deltaHz.show && (
-        <SignalDeltaHzColumn
+
+        <RangeAssignmentsColumn
           row={rowData}
+          assignment={assignmentRange}
+          highlight={highlightRangeAssignmentsColumn}
+          onHover={onHoverRangeAssignmentsColumn}
+          unlinkVisibility={unlinkRangeButtonVisibility}
+          onUnlinkVisibilityChange={(flag) => showUnlinkRangeButton(flag)}
+          onLink={linkHandler}
+          onUnlink={unlinkHandler}
           rowSpanTags={rowSpanTags}
-          onHover={onHoverSignal}
-          format={preferences.deltaHz.format}
-          info={info}
+          highlightData={highlightData}
         />
-      )}
 
-      {preferences.relative.show && (
-        <RelativeColumn
+        <ActionsColumn
           row={rowData}
+          onHoverSignal={onHoverSignal}
+          onHoverRange={onHoverRange}
           rowSpanTags={rowSpanTags}
-          onHover={onHoverRange}
-          format={preferences.relative.format}
+          showKind={preferences.showKind}
         />
-      )}
-
-      {preferences.absolute.show && (
-        <AbsoluteColumn
-          row={rowData}
-          rowSpanTags={rowSpanTags}
-          onHover={onHoverRange}
-          format={preferences.absolute.format}
-        />
-      )}
-
-      <td {...onHoverSignal}>
-        {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
-      </td>
-
-      {preferences.coupling.show && (
-        <CouplingColumn
-          row={rowData}
-          onHover={onHoverSignal}
-          format={preferences.coupling.format}
-        />
-      )}
-
-      <SignalAssignmentsColumn
-        row={rowData}
-        assignment={assignmentSignal}
-        highlight={highlightSignal}
-        onHover={onHoverSignal}
-        unlinkVisibility={unlinkSignalButtonVisibility}
-        onUnlinkVisibilityChange={(flag) => showUnlinkSignalButton(flag)}
-        onLink={linkHandler}
-        onUnlink={unlinkHandler}
-      />
-
-      <RangeAssignmentsColumn
-        row={rowData}
-        assignment={assignmentRange}
-        highlight={highlightRangeAssignmentsColumn}
-        onHover={onHoverRangeAssignmentsColumn}
-        unlinkVisibility={unlinkRangeButtonVisibility}
-        onUnlinkVisibilityChange={(flag) => showUnlinkRangeButton(flag)}
-        onLink={linkHandler}
-        onUnlink={unlinkHandler}
-        rowSpanTags={rowSpanTags}
-        highlightData={highlightData}
-      />
-
-      <ActionsColumn
-        row={rowData}
-        onHoverSignal={onHoverSignal}
-        onHoverRange={onHoverRange}
-        rowSpanTags={rowSpanTags}
-        showKind={preferences.showKind}
-      />
+      </DropdownMenu>
     </tr>
   );
 }

@@ -2,6 +2,8 @@
 import { css } from '@emotion/react';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
+import { FaCopy } from 'react-icons/fa';
+import { DropdownMenuProps } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
@@ -22,6 +24,14 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
+
+const rangesContextMenuOptions: DropdownMenuProps<any>['options'] = [
+  {
+    label: 'Copy to Clipboard',
+    type: 'option',
+    icon: <FaCopy />,
+  },
+];
 
 interface RangesTablePanelInnerProps {
   id: string;
@@ -134,13 +144,10 @@ function RangesTablePanelInner({
     [data, alert],
   );
 
-  const contextMenu = useMemo(
-    () => [
-      {
-        label: 'Copy to clipboard',
-        onClick: saveJSONToClipboardHandler,
-      },
-    ],
+  const contextMenuSelectHandler = useCallback(
+    (option, data) => {
+      void saveJSONToClipboardHandler(data);
+    },
     [saveJSONToClipboardHandler],
   );
 
@@ -202,7 +209,8 @@ function RangesTablePanelInner({
                 activeTab={activeTab}
                 tableData={rangesData}
                 onUnlink={unlinkRangeHandler}
-                context={contextMenu}
+                contextMenu={rangesContextMenuOptions}
+                onContextMenuSelect={contextMenuSelectHandler}
                 preferences={preferences}
                 info={info}
               />

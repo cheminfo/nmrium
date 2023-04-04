@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useMemo, useCallback, useRef, ReactNode } from 'react';
+import { useMemo, ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
-import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import ContextMenu from '../../elements/ContextMenu';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useTableSortBy from '../../hooks/useTableSortBy';
 
@@ -77,7 +75,6 @@ interface ZonesTableProps {
     signalIndex: any,
     axis: any,
   ) => void;
-  context?: any;
   nuclei: string[];
   experiment: string;
 }
@@ -85,22 +82,9 @@ interface ZonesTableProps {
 function ZonesTable({
   tableData,
   onUnlink,
-  context,
   nuclei,
   experiment,
 }: ZonesTableProps) {
-  const contextRef = useRef<any>(null);
-
-  const contextMenuHandler = useCallback(
-    (e, rowData) => {
-      if (!checkModifierKeyActivated(e)) {
-        e.preventDefault();
-        contextRef.current.handleContextMenu(e, rowData);
-      }
-    },
-    [contextRef],
-  );
-
   const data = useMemo(() => {
     const data: Array<any> = [];
     for (const [i, zone] of tableData.entries()) {
@@ -154,21 +138,6 @@ function ZonesTable({
   const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
   const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);
 
-  const rows = useMemo(
-    () =>
-      sortedData.map((rowData, index) => (
-        <ZonesTableRow
-          rowIndex={index}
-          key={`${rowData.tableMetaInfo.id}`}
-          rowData={rowData}
-          onUnlink={onUnlink}
-          onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
-          format={{ x: deltaX.format, y: deltaY.format }}
-        />
-      )),
-    [sortedData, onUnlink, deltaX.format, deltaY.format, contextMenuHandler],
-  );
-
   return (
     <div>
       <table css={tableStyle}>
@@ -210,9 +179,18 @@ function ZonesTable({
             </th>
           </tr>
         </thead>
-        <tbody>{rows}</tbody>
+        <tbody>
+          {sortedData.map((rowData, index) => (
+            <ZonesTableRow
+              rowIndex={index}
+              key={`${rowData.tableMetaInfo.id}`}
+              rowData={rowData}
+              onUnlink={onUnlink}
+              format={{ x: deltaX.format, y: deltaY.format }}
+            />
+          ))}
+        </tbody>
       </table>
-      <ContextMenu ref={contextRef} context={context} />
     </div>
   );
 }
