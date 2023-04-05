@@ -667,11 +667,6 @@ function handleDeleteExclusionZone(draft: Draft<State>, action) {
   }
 }
 
-function handleDisableFilterLivePreview(draft: Draft<State>, action) {
-  const { selectedTool } = action.payload;
-  rollbackSpectrum(draft, selectedTool);
-}
-
 interface RollbackSpectrumOptions {
   updateFilterViewOptions?: boolean;
 }
@@ -777,7 +772,6 @@ export {
   rollbackSpectrumByFilter,
   handleAddExclusionZone,
   handleDeleteExclusionZone,
-  handleDisableFilterLivePreview,
   rollbackSpectrum,
   handleSignalProcessingFilter,
 };

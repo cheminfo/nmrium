@@ -17,9 +17,7 @@ import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
   CALCULATE_BASE_LINE_CORRECTION_FILTER,
-  DISABLE_FILTER_LIVE_PREVIEW,
 } from '../reducer/types/Types';
-import { options } from '../toolbar/ToolTypes';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -108,18 +106,6 @@ function BaseLineCorrectionInnerPanel(
     });
   };
 
-  const disableLivePreviewHandler = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    //disable filter Live preview
-    if (!event.target.checked) {
-      dispatch({
-        type: DISABLE_FILTER_LIVE_PREVIEW,
-        payload: { selectedTool: options.baselineCorrection.id },
-      });
-    }
-  };
-
   function handleChangeAlgorithm(selectedAlgorithm) {
     setAlgorithm(selectedAlgorithm);
   }
@@ -188,10 +174,7 @@ function BaseLineCorrectionInnerPanel(
             htmlFor="livePreview"
             style={headerLabelStyle}
           >
-            <FormikCheckBox
-              name="livePreview"
-              onChange={disableLivePreviewHandler}
-            />
+            <FormikCheckBox name="livePreview" />
           </Label>
 
           <FormikOnChange

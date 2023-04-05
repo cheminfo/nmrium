@@ -548,8 +548,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       );
     case types.FULL_ZOOM_OUT:
       return ToolsActions.zoomOut(draft, action);
-    case types.DISABLE_FILTER_LIVE_PREVIEW:
-      return FiltersActions.handleDisableFilterLivePreview(draft, action);
     case types.SHIFT_SPECTRUM:
       return FiltersActions.shiftSpectrumAlongXAxis(draft, action.shiftValue);
     case types.APPLY_APODIZATION_FILTER:
