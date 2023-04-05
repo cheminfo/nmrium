@@ -61,7 +61,6 @@
     "cheminfo-font": "^1.9.0",
     "cheminfo-types": "^1.4.0",
     "clipboard-polyfill": "^4.0.0",
-    "convert-to-jcamp": "^5.4.2",
     "d3": "^7.8.3",
     "eventemitter3": "^5.0.0",
     "fifo-logger": "^0.6.1",
