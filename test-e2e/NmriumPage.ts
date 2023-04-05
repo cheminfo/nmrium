@@ -86,8 +86,6 @@ export default class NmriumPage {
     if (mode === 'manual') {
       await this.page.fill('input[name="ph1"]', '-100');
       await this.page.fill('input[name="ph0"]', '-104');
-      // input debounce for 250ms
-      await this.page.waitForTimeout(250);
     }
     if (mode === 'automatic') {
       const select = this.page.locator('select');
@@ -97,7 +95,8 @@ export default class NmriumPage {
       const select = this.page.locator('select');
       await select.selectOption('absolute');
     }
-    await this.page.click('button >> text=Apply');
+    await this.page.click('button >> text=Apply', { delay: 200 });
+
     await expect(
       this.page.locator('_react=FilterTable >> text=Phase correction'),
     ).toBeVisible();
