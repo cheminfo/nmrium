@@ -133,6 +133,10 @@ export function exportAsJcamp(spectrum: Spectrum) {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
 
+  if (!jcamp) {
+    throw new Error('convert spectrum to JCAMP failed');
+  }
+
   const blob = new Blob([jcamp], { type: 'text/plain' });
   saveAs(blob, `${spectrum.info.name}.jdx`);
 }
