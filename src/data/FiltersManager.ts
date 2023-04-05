@@ -45,11 +45,17 @@ function updateData(datum: Datum1D | Datum2D) {
   }
 }
 
+interface ApplyFilterOptions {
+  forceReapply?: boolean;
+  filterIndex?: number | -1;
+}
+
 function applyFilter(
   datum: Datum1D | Datum2D,
   filters: BaseFilter[] = [],
-  forceReapply = false,
+  options: ApplyFilterOptions = {},
 ) {
+  const { forceReapply = false, filterIndex } = options;
   let isReduced = false;
   for (let filter of filters) {
     const filterOption = {
@@ -58,6 +64,8 @@ function applyFilter(
       value: filter.value,
     };
     const previousFilter = lookupForFilter(datum, filter.name);
+    const isDeleteAllow =
+      'isDeleteAllow' in filter ? filter.isDeleteAllow : true;
     if (previousFilter) {
       // eslint-disable-next-line unicorn/no-array-reduce
       const reduceResult = Filters[filter.name].reduce(
@@ -72,22 +80,10 @@ function applyFilter(
           replaceFilter(datum, previousFilter.id, reduceResult.reduce);
         }
       } else {
-        addFilter(
-          datum,
-          filterOption,
-          Object.prototype.hasOwnProperty.call(filter, 'isDeleteAllow')
-            ? filter.isDeleteAllow
-            : true,
-        );
+        addFilter(datum, filterOption, { isDeleteAllow, filterIndex });
       }
     } else {
-      addFilter(
-        datum,
-        filterOption,
-        Object.prototype.hasOwnProperty.call(filter, 'isDeleteAllow')
-          ? filter.isDeleteAllow
-          : true,
-      );
+      addFilter(datum, filterOption, { isDeleteAllow, filterIndex });
     }
   }
   if (forceReapply) {
@@ -186,16 +182,31 @@ function deleteFilter(datum, id?: string) {
   updateData(datum);
 }
 
-function addFilter(datum, filter, isDeleteAllow = true) {
+interface AddFilterOptions {
+  filterIndex?: number;
+  isDeleteAllow?: boolean;
+}
+
+function addFilter(datum, filterOptions, options: AddFilterOptions = {}) {
+  const { filterIndex, isDeleteAllow = true } = options;
   const id = v4();
-  datum.filters = datum.filters.slice(0);
-  delete filter.isSnapshot;
-  datum.filters.push({
-    ...filter,
+
+  const filter = {
+    ...filterOptions,
     id,
     flag: true,
     isDeleteAllow,
-  });
+  };
+
+  if (typeof filterIndex === 'number' && filterIndex !== -1) {
+    datum.filters = [
+      ...datum.filters.slice(0, filterIndex + 1),
+      filter,
+      ...datum.filters.slice(filterIndex + 1),
+    ];
+  } else {
+    datum.filters.push(filter);
+  }
 }
 
 function replaceFilter(datum, filterID, value) {

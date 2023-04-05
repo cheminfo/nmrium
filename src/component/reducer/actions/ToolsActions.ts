@@ -27,8 +27,8 @@ import {
 } from './DomainActions';
 import {
   calculateBaseLineCorrection,
-  resetSpectrumByFilter,
-  setFilterChanges,
+  rollbackSpectrumByFilter,
+  rollbackSpectrum,
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
@@ -38,14 +38,9 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
   if (setDefaultTool) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
-  draft.toolOptions.data.baselineCorrection = { zones: [], options: [] };
-  if (draft.toolOptions.data.activeFilterID) {
-    resetSpectrumByFilter(draft);
-  }
 
-  if (draft.tempData) {
-    draft.tempData = null;
-    setDomain(draft);
+  if (draft.toolOptions.data.activeFilterID || draft.tempData) {
+    rollbackSpectrumByFilter(draft, { reset: true });
   }
 }
 
@@ -91,7 +86,7 @@ function activateTool(draft, selectedTool) {
       }
 
       if (options?.[selectedTool]?.isFilter) {
-        setFilterChanges(draft, selectedTool);
+        rollbackSpectrum(draft, selectedTool);
       }
     } else {
       resetTool(draft, false);

@@ -33,7 +33,7 @@ import {
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
-import { resetSpectrumByFilter } from './FiltersActions';
+import { rollbackSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab, setMargin } from './ToolsActions';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
@@ -238,7 +238,7 @@ function handleChangeActiveSpectrum(
    */
 
   if (toolOptions.data.activeFilterID) {
-    resetSpectrumByFilter(draft);
+    rollbackSpectrumByFilter(draft);
   } else if (refreshDomain) {
     setDomain(draft);
     setMargin(draft);

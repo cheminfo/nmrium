@@ -44,14 +44,12 @@ const rowColors = {
 interface FiltersTableInnerProps {
   filters: Array<FiltersProps>;
   spectraCounter: number;
-  selectedTool: string | null;
   activeFilterID: string | null;
 }
 
 function FiltersTableInner({
   filters,
   spectraCounter,
-  selectedTool,
   activeFilterID,
 }: FiltersTableInnerProps) {
   const dispatch = useDispatch();
@@ -205,14 +203,16 @@ function FiltersTableInner({
 
   function handleRowStyle(data) {
     const { original, index } = data;
-    const { id, name } = original;
-    if (activeFilterID === id || selectedTool === name) {
-      return rowColors.active;
-    } else if (
-      selectedFilterIndex.current &&
-      index > selectedFilterIndex.current
-    ) {
-      return rowColors.deActive;
+    const { id } = original;
+    if (activeFilterID) {
+      if (activeFilterID === id) {
+        return rowColors.active;
+      } else if (
+        selectedFilterIndex.current &&
+        index > selectedFilterIndex.current
+      ) {
+        return rowColors.deActive;
+      }
     }
   }
 
@@ -236,7 +236,6 @@ const MemoizedFiltersTable = memo(FiltersTableInner);
 export default function FilterTable() {
   const {
     toolOptions: {
-      selectedTool,
       data: { activeFilterID },
     },
   } = useChartData();
@@ -244,8 +243,6 @@ export default function FilterTable() {
   const spectraCounter = useSpectraByActiveNucleus().length;
 
   return (
-    <MemoizedFiltersTable
-      {...{ selectedTool, filters, spectraCounter, activeFilterID }}
-    />
+    <MemoizedFiltersTable {...{ filters, spectraCounter, activeFilterID }} />
   );
 }

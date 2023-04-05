@@ -37,6 +37,8 @@ function changeSpectrumVerticalAlignment(
           draft.view.verticalAlign[nucleus] = 'center';
         } else if (dataPerNucleus.length > 1) {
           draft.view.verticalAlign[nucleus] = 'stack';
+        } else {
+          draft.view.verticalAlign[nucleus] = 'bottom';
         }
       } else {
         draft.view.verticalAlign[nucleus] = verticalAlign;

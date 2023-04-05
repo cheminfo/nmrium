@@ -80,16 +80,21 @@ export default function ManualPhaseCorrectionPanel() {
   );
 
   useEffect(() => {
-    if (filter) {
+    if (filter && phaseCorrectionType === phaseCorrectionTypes.manual) {
       valueRef.current = filter.value;
       setValue(filter.value);
-      ph0Ref.current.setValue(filter.value.ph0);
-      ph1Ref.current.setValue(filter.value.ph1);
-    } else {
-      ph0Ref.current.setValue(valueRef.current.ph0);
-      ph1Ref.current.setValue(valueRef.current.ph1);
     }
-  }, [filter]);
+
+    if (ph0Ref.current && ph1Ref.current) {
+      if (filter) {
+        ph0Ref.current.setValue(filter.value.ph0);
+        ph1Ref.current.setValue(filter.value.ph1);
+      } else {
+        ph0Ref.current.setValue(valueRef.current.ph0);
+        ph1Ref.current.setValue(valueRef.current.ph1);
+      }
+    }
+  }, [filter, phaseCorrectionType]);
 
   const handleApplyFilter = useCallback(() => {
     switch (phaseCorrectionType) {
