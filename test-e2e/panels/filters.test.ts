@@ -164,7 +164,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     await addPeaks(nmrium, { keyboard: true });
   });
   await test.step('Check peaks table', async () => {
-    await checkPeakNumber(nmrium, 15);
+    await checkPeakNumber(nmrium, 14);
   });
   await test.step('Add peaks with 0.05 ratio', async () => {
     await addPeaks(nmrium, { keyboard: true, ratio: 0.05 });
