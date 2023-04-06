@@ -226,7 +226,7 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
   ]);
 };
 
-interface ButtonProps
+export interface ButtonProps
   extends Partial<ButtonStyle>,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
   onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
@@ -234,16 +234,24 @@ interface ButtonProps
   toolTip?: string;
   tooltipOrientation?: TooltipOrientation;
   wrapperClassName?: string;
+  theme?: ColorTheme;
 }
 
 function Button(props: ButtonProps) {
+  const { theme = 'light', ...buttonProps } = props;
+  const { base, shade, tint } = colorPalettes[theme];
+
   const {
     onClick,
     size = 'small',
-    color = { base: 'black', hover: 'white' },
-    backgroundColor = { base: 'white', hover: 'black', active: 'black' },
+    color = { base: shade, hover: 'white' },
+    backgroundColor = {
+      base,
+      hover: shade,
+      active: tint,
+    },
     borderColor = 'transparent',
-    fill,
+    fill = 'solid',
     borderRadius,
     style = {},
     wrapperStyle = {},
@@ -251,7 +259,7 @@ function Button(props: ButtonProps) {
     tooltipOrientation = 'vertical',
     wrapperClassName,
     ...restProps
-  } = props;
+  } = buttonProps;
 
   return (
     <div
@@ -293,34 +301,34 @@ function Button(props: ButtonProps) {
   );
 }
 
-function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
-  const { colorTheme, ...buttonProps } = props;
-  const { base, shade, tint } = colorPalettes[colorTheme];
+// function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
+//   const { colorTheme, ...buttonProps } = props;
+//   const { base, shade, tint } = colorPalettes[colorTheme];
 
-  const {
-    color = { base: shade, hover: 'white' },
-    backgroundColor = {
-      base,
-      hover: shade,
-      active: tint,
-    },
-    fill = 'solid',
-    ...restProps
-  } = buttonProps;
-  return <Button {...{ fill, ...restProps, backgroundColor, color }} />;
-}
+//   const {
+//     color = { base: shade, hover: 'white' },
+//     backgroundColor = {
+//       base,
+//       hover: shade,
+//       active: tint,
+//     },
+//     fill = 'solid',
+//     ...restProps
+//   } = buttonProps;
+//   return <Button {...{ fill, ...restProps, backgroundColor, color }} />;
+// }
 
 Button.Done = function ButtonDone(props: ButtonProps) {
-  return <ThemeButton {...props} colorTheme="success" />;
+  return <Button {...props} theme="success" />;
 };
 Button.Danger = function ButtonDanger(props: ButtonProps) {
-  return <ThemeButton {...props} colorTheme="danger" />;
+  return <Button {...props} theme="danger" />;
 };
 Button.Action = function ButtonAction(props: ButtonProps) {
-  return <ThemeButton {...props} colorTheme="medium" />;
+  return <Button {...props} theme="medium" />;
 };
 Button.Secondary = function ButtonAction(props: ButtonProps) {
-  return <ThemeButton {...props} colorTheme="secondary" />;
+  return <Button {...props} theme="secondary" />;
 };
 Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
   return (
