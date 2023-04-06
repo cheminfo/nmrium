@@ -8,7 +8,7 @@ import { Datum2D } from '../../../data/types/data2d';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
-import { options } from '../../toolbar/ToolTypes';
+import { options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { rangeStateInit, State } from '../Reducer';
@@ -32,14 +32,32 @@ import {
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
-function resetTool(draft: Draft<State>, setDefaultTool = true) {
+interface ResetToolOptions {
+  resetToDefaultTool?: boolean;
+  defaultToolId?: string;
+  resetSpectrum?: boolean;
+  resetFiltersOptionPanel?: boolean;
+}
+
+function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
+  const {
+    resetToDefaultTool = true,
+    resetFiltersOptionPanel = true,
+    defaultToolId = Tools.zoom.id,
+    resetSpectrum = false,
+  } = options;
   // reset temp range
-  setSelectedOptionPanel(draft, null);
-  if (setDefaultTool) {
-    draft.toolOptions.selectedTool = options.zoom.id;
+  if (resetFiltersOptionPanel) {
+    draft.toolOptions.selectedOptionPanel = null;
+  }
+  if (resetToDefaultTool) {
+    draft.toolOptions.selectedTool = defaultToolId;
   }
 
-  if (draft.toolOptions.data.activeFilterID || draft.tempData) {
+  if (
+    (draft.toolOptions.data.activeFilterID || draft.tempData) &&
+    resetSpectrum
+  ) {
     rollbackSpectrumByFilter(draft, { reset: true });
   }
 }
@@ -47,18 +65,25 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
 function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
   if (
     (draft.toolOptions.selectedTool &&
-      options[draft.toolOptions.selectedTool].isFilter) ||
+      Tools[draft.toolOptions.selectedTool].isFilter) ||
     !filterOnly
   ) {
-    resetTool(draft);
+    resetTool(draft, { resetSpectrum: true });
   }
 }
 
-function activateTool(draft, selectedTool) {
+interface ActivateToolOptions {
+  toolId: string;
+  reset?: boolean;
+}
+
+function activateTool(draft, options: ActivateToolOptions) {
+  const { toolId, reset = false } = options;
+
   if (draft?.data.length > 0) {
-    if (selectedTool) {
+    if (toolId) {
       // start Range edit mode
-      if (selectedTool === options.editRange.id) {
+      if (toolId === Tools.editRange.id) {
         const activeSpectrum = getActiveSpectrum(draft);
         if (activeSpectrum) {
           const range = draft.view.ranges.find(
@@ -76,20 +101,20 @@ function activateTool(draft, selectedTool) {
         }
       }
 
-      if (selectedTool !== draft.toolOptions.selectedTool) {
-        resetTool(draft, false);
+      if (toolId !== draft.toolOptions.selectedTool) {
+        resetTool(draft, { resetToDefaultTool: false });
       }
 
-      draft.toolOptions.selectedTool = selectedTool;
-      if (options[selectedTool]?.hasOptionPanel) {
-        setSelectedOptionPanel(draft, selectedTool);
+      draft.toolOptions.selectedTool = toolId;
+      if (Tools[toolId]?.hasOptionPanel) {
+        draft.toolOptions.selectedOptionPanel = toolId;
       }
 
-      if (options?.[selectedTool]?.isFilter) {
-        rollbackSpectrum(draft, selectedTool);
+      if (Tools?.[toolId]?.isFilter) {
+        rollbackSpectrum(draft, { filterKey: toolId, reset });
       }
     } else {
-      resetTool(draft, false);
+      resetTool(draft, { resetToDefaultTool: false });
     }
     setMargin(draft);
   }
@@ -97,11 +122,7 @@ function activateTool(draft, selectedTool) {
 
 function setSelectedTool(draft: Draft<State>, action) {
   const { selectedTool } = action.payload;
-  activateTool(draft, selectedTool);
-}
-
-function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
-  draft.toolOptions.selectedOptionPanel = selectedOptionPanel;
+  activateTool(draft, { toolId: selectedTool });
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
@@ -267,7 +288,7 @@ function handleZoom(draft: Draft<State>, action) {
     }
   } else if (activeSpectra && activeSpectra?.length > 0) {
     // rescale the active spectra integrals;
-    if (selectedTool === options.integral.id && event.shiftKey) {
+    if (selectedTool === Tools.integral.id && event.shiftKey) {
       for (const activeSpectrum of activeSpectra) {
         //check if the integrals is visible
         const { showRangesIntegrals } =
@@ -368,7 +389,7 @@ function setMargin(draft: Draft<State>) {
 
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
-    (draft.toolOptions.selectedTool === options.slicing.id ||
+    (draft.toolOptions.selectedTool === Tools.slicing.id ||
       spectrum?.info.isFid)
   ) {
     draft.margin = MARGIN['2D'];
@@ -551,7 +572,6 @@ export {
   resetSelectedTool,
   setSelectedTool,
   activateTool,
-  setSelectedOptionPanel,
   setSpectrumsVerticalAlign,
   handleChangeSpectrumDisplayMode,
   handleAddBaseLineZone,
