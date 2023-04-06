@@ -13,38 +13,21 @@ import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight';
-import { RESIZE_RANGE } from '../../reducer/types/Types';
+import { RESIZE_RANGE, UNLINK_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 
-const stylesOnHover = css`
-  pointer-events: bounding-box;
+import { LinkButton } from './LinkButton';
 
-  @-moz-document url-prefix("") {
-    pointer-events: fill;
-  }
-
-  .highlight {
-    fill: transparent;
-  }
-
+const style = css`
   .target {
     visibility: hidden;
   }
-`;
-
-const stylesHighlighted = css`
-  pointer-events: bounding-box;
-
-  @-moz-document url-prefix("") {
-    pointer-events: fill;
-  }
-
-  fill: #ff6f0057;
-
-  .target {
-    visibility: visible;
+  &:hover {
+    .target {
+      visibility: visible;
+    }
   }
 `;
 
@@ -54,6 +37,7 @@ export interface RangeData {
   to: number;
   integration: number;
   signals: Signal1D[];
+  diaIDs?: string[];
 }
 
 interface RangeProps {
@@ -70,7 +54,7 @@ function Range({
   relativeFormat,
 }: RangeProps) {
   const { viewerRef } = useGlobal();
-  const { id, integration, signals } = rangeData;
+  const { id, integration, signals, diaIDs } = rangeData;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -110,19 +94,28 @@ function Range({
     highlightRange.hide();
   }
 
-  function assignHandler(e) {
-    if (
-      selectedTool === options.rangePicking.id &&
-      e.shiftKey &&
-      !isBlockedByEditing
-    ) {
-      assignmentRange.setActive('x');
+  function assignHandler() {
+    if (!isBlockedByEditing) {
+      if (!diaIDs) {
+        assignmentRange.setActive('x');
+      } else {
+        dispatch({
+          type: UNLINK_RANGE,
+          payload: {
+            rangeData,
+            assignmentData,
+            signalIndex: -1,
+          },
+        });
+      }
     }
   }
   const from = scaleX()(rangeData.from);
   const to = scaleX()(rangeData.to);
 
   const isNotSignal = !checkRangeKind(rangeData);
+  const isHighlighted =
+    isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
   return (
     <g
@@ -131,7 +124,7 @@ function Range({
       key={id}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
-      onClick={assignHandler}
+      {...(!assignmentRange.isActive && { css: style })}
     >
       <Resizer
         tag="svg"
@@ -144,22 +137,14 @@ function Range({
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;
           return (
-            <g
-              css={
-                isBlockedByEditing ||
-                highlightRange.isActive ||
-                assignmentRange.isActive ||
-                isActive
-                  ? stylesHighlighted
-                  : stylesOnHover
-              }
-            >
+            <g>
               <rect
                 width={width}
                 height="100%"
-                className="highlight"
+                fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                 data-no-export="true"
               />
+
               <IntegralIndicator
                 value={integration}
                 format={relativeFormat}
@@ -182,6 +167,11 @@ function Range({
             key={_signal.id}
           />
         ))}
+      <LinkButton
+        isActive={!!(assignmentRange.isActive || diaIDs)}
+        x={from - 16}
+        onLink={assignHandler}
+      />
     </g>
   );
 }
