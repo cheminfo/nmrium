@@ -128,7 +128,7 @@ export function toJSON(
 export function exportAsJcamp(spectrum: Spectrum) {
   let jcamp: string | null = null;
   if (isSpectrum1D(spectrum)) {
-   jcamp = spectrum1DToJcamp(spectrum);
+    jcamp = spectrum1DToJcamp(spectrum);
   } else {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
