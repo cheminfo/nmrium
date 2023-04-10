@@ -1,7 +1,7 @@
 import lodashGet from 'lodash/get';
 import { Spectrum } from 'nmr-load-save';
 import { useMemo, CSSProperties, useCallback } from 'react';
-import { FaCopy, FaRegTrashAlt } from 'react-icons/fa';
+import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
@@ -87,6 +87,12 @@ const SpectraContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
     icon: <FaRegTrashAlt />,
     data: { id: SpectraContextMenuOptionsKeys.Delete },
   },
+  {
+    label: 'Export as jcamp',
+    type: 'option',
+    icon: <FaFileExport />,
+    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
+  }
 ];
 
 export function SpectraTable(props: SpectraTableProps) {
