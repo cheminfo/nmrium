@@ -33,8 +33,13 @@ import {
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
 import { setDomain, setMode } from './DomainActions';
-import { resetSpectrumByFilter } from './FiltersActions';
-import { setTab, setActiveTab, setMargin } from './ToolsActions';
+import { rollbackSpectrumByFilter } from './FiltersActions';
+import {
+  setTab,
+  setActiveTab,
+  setMargin,
+  resetSelectedTool,
+} from './ToolsActions';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
@@ -225,24 +230,28 @@ function handleChangeActiveSpectrum(
     spectra?.length > 0 &&
     spectraIds?.length > 0;
 
-  if (options[toolOptions.selectedTool].isFilter) {
-    toolOptions.selectedTool = options.zoom.id;
-    toolOptions.data.baselineCorrection = { zones: [], options: {} };
-    toolOptions.selectedOptionPanel = null;
-    draft.tempData = null;
-  }
-
   /**
-   * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
-   * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
+   * if the active spectrum not is FID then do not refresh the domain and the mode when the first time you activate spectrum
+   * if the new active spectrum different than the previous active spectrum fid then refresh the domain and the mode.
    */
 
   if (toolOptions.data.activeFilterID) {
-    resetSpectrumByFilter(draft);
+    const previousActiveSpectrum = spectra?.length === 1 ? spectra[0] : null;
+    rollbackSpectrumByFilter(draft, {
+      activeSpectrum: previousActiveSpectrum,
+      reset: true,
+    });
   } else if (refreshDomain) {
     setDomain(draft);
     setMargin(draft);
     setMode(draft);
+  }
+
+  if (
+    options[toolOptions.selectedTool].isFilter &&
+    !toolOptions.data.activeFilterID
+  ) {
+    resetSelectedTool(draft);
   }
 }
 

@@ -1,8 +1,15 @@
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'zeroFilling';
 export const name = 'Zero Filling';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: true,
+  updateYDomain: false,
+};
+
 /**
  *
  * @param {Datum1d} datum1d

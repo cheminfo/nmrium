@@ -8,11 +8,21 @@ async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=13C FID >> nth=0');
 }
 
-async function apodizationFilter(nmrium: NmriumPage) {
-  await nmrium.clickTool('apodization');
+async function apodizationFilter(
+  nmrium: NmriumPage,
+  { keyboard = false } = {},
+) {
+  if (keyboard) {
+    await nmrium.moveMouseToViewer();
+    await nmrium.page.keyboard.press('KeyA');
+  } else {
+    await nmrium.clickTool('apodization');
+  }
+
   await expect(
     nmrium.page.locator('data-test-id=apodization-line'),
   ).toBeVisible();
+
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
@@ -135,11 +145,15 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await nmrium.clickPanel('Processings');
 
   await test.step('Apply Apodization filter', async () => {
-    await apodizationFilter(nmrium);
+    await apodizationFilter(nmrium, { keyboard: true });
+  });
+  await test.step('Apply Zero filling filter', async () => {
+    await zeroFillingFilter(nmrium);
   });
   await test.step('Apply fourier Transform filter', async () => {
     await fourierTransformFilter(nmrium);
   });
+
   await test.step('Apply phase correction filter', async () => {
     await nmrium.applyPhaseCorrection({ keyboard: true, mode: 'automatic' });
   });
@@ -150,7 +164,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
     await addPeaks(nmrium, { keyboard: true });
   });
   await test.step('Check peaks table', async () => {
-    await checkPeakNumber(nmrium, 15);
+    await checkPeakNumber(nmrium, 14);
   });
   await test.step('Add peaks with 0.05 ratio', async () => {
     await addPeaks(nmrium, { keyboard: true, ratio: 0.05 });
@@ -161,7 +175,7 @@ test('process 13c spectrum with shortcuts', async ({ page }) => {
   await test.step('Check filters panel', async () => {
     await expect(
       nmrium.page.locator('_react=FilterTable >> _react=ReactTableRow'),
-    ).toHaveCount(5);
+    ).toHaveCount(6);
   });
 });
 

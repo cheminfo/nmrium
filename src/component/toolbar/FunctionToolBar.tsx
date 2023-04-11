@@ -204,11 +204,11 @@ function FunctionToolBarInner({
           )}
       </ToggleButtonGroup>
 
-      {isButtonVisible('fastFourierTransform') && (
+      {isButtonVisible('fft') && (
         <Toolbar.Item
-          id={options.fastFourierTransform.id}
+          id={options.fft.id}
           className="cheminfo"
-          title={options.fastFourierTransform.label}
+          title={options.fft.label}
           onClick={handleOnFFTFilter}
         >
           <SvgNmrFourierTransform />

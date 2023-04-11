@@ -1,9 +1,14 @@
 import { xySetYValue, zonesNormalize } from 'ml-spectra-processing';
 
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'exclusionZones';
 export const name = 'Exclusion Zones';
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: false,
+  updateYDomain: false,
+};
 
 /**
  *

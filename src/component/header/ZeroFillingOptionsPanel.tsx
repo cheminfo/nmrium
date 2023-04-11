@@ -13,7 +13,6 @@ import useSpectrum from '../hooks/useSpectrum';
 import {
   APPLY_ZERO_FILLING_FILTER,
   CALCULATE_ZERO_FILLING_FILTER,
-  DISABLE_FILTER_LIVE_PREVIEW,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
@@ -81,7 +80,6 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     if (!checked) {
       //disable filter Live preview
       dispatch({
-        type: DISABLE_FILTER_LIVE_PREVIEW,
         payload: { selectedTool: options.zeroFilling.id },
       });
     }

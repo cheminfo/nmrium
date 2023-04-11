@@ -65,7 +65,7 @@ const LIST: ListItem[] = [
   },
   {
     label: 'Fourier transform',
-    name: 'toolBarButtons.fastFourierTransform',
+    name: 'toolBarButtons.fft',
   },
   {
     label: 'Phase correction',

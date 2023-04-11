@@ -1,8 +1,14 @@
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'digitalFilter';
 export const name = 'Digital Filter';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: true,
+  updateYDomain: true,
+};
 
 /**
  * Move points from the beginning to the end of FID and performs a first order phase correction

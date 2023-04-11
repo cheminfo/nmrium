@@ -70,7 +70,7 @@ const customWorkspaces: CustomWorkspaces = {
         baselineCorrection: true,
         exclusionZones: false,
         exportAs: true,
-        fastFourierTransform: true,
+        fft: true,
         import: true,
         integral: true,
         multipleSpectraAnalysis: false,
@@ -94,6 +94,7 @@ const customWorkspaces: CustomWorkspaces = {
       verticalSplitterPosition: '364px',
       verticalSplitterCloseThreshold: 600,
       spectraRendering: 'auto',
+      loggingLevel: 'info',
     },
     formatting: {
       nuclei: {
@@ -432,7 +433,7 @@ const customWorkspaces: CustomWorkspaces = {
         },
         {
           name: 'fft',
-          label: 'FFT',
+          label: 'Fast fourier transform',
           value: {},
           flag: true,
         },
@@ -464,7 +465,7 @@ const customWorkspaces: CustomWorkspaces = {
         },
         {
           name: 'fft',
-          label: 'FFT',
+          label: 'Fast fourier transform',
           value: {},
           flag: true,
         },

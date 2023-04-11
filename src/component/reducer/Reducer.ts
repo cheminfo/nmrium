@@ -541,15 +541,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.setSelectedTool(draft, action);
     case types.RESET_SELECTED_TOOL:
       return ToolsActions.resetSelectedTool(draft);
-    case types.SET_SELECTED_OPTIONS_PANEL:
-      return ToolsActions.setSelectedOptionPanel(
-        draft,
-        action.selectedOptionPanel,
-      );
     case types.FULL_ZOOM_OUT:
       return ToolsActions.zoomOut(draft, action);
-    case types.DISABLE_FILTER_LIVE_PREVIEW:
-      return FiltersActions.handleDisableFilterLivePreview(draft, action);
     case types.SHIFT_SPECTRUM:
       return FiltersActions.shiftSpectrumAlongXAxis(draft, action.shiftValue);
     case types.APPLY_APODIZATION_FILTER:

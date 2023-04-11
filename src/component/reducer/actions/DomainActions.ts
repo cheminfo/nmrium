@@ -159,14 +159,17 @@ function get2DDomain(state: State) {
 }
 
 export interface SetDomainOptions {
-  yDomain?: {
-    isChanged?: boolean;
-    isShared?: boolean;
-  };
+  updateYDomain?: boolean;
+  isYDomainShared?: boolean;
+  updateXDomain?: boolean;
 }
 
 function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
-  const { yDomain = { isChanged: true, isShared: true } } = options || {};
+  const {
+    updateYDomain = true,
+    isYDomainShared = true,
+    updateXDomain = true,
+  } = options || {};
   let domain;
 
   if (draft.view.spectra.activeTab) {
@@ -175,13 +178,16 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
     } else {
       domain = get2DDomain(draft);
     }
-    draft.xDomain = domain.xDomain;
-    draft.xDomains = domain.xDomains;
-    draft.originDomain = domain;
 
-    if (yDomain.isChanged) {
+    if (updateXDomain) {
+      draft.xDomain = domain.xDomain;
+      draft.xDomains = domain.xDomains;
+    }
+    // draft.originDomain = domain;
+
+    if (updateYDomain) {
       draft.yDomain = domain.yDomain;
-      if (draft.displayerMode === DISPLAYER_MODE.DM_1D && yDomain.isShared) {
+      if (draft.displayerMode === DISPLAYER_MODE.DM_1D && isYDomainShared) {
         draft.yDomains = Object.fromEntries(
           Object.keys(domain.yDomains).map((key) => {
             return [key, domain.yDomain];
@@ -190,13 +196,19 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
       } else {
         draft.yDomains = domain.yDomains;
       }
-    } else {
-      draft.originDomain = {
-        ...draft.originDomain,
+    }
+
+    draft.originDomain = {
+      ...draft.originDomain,
+      ...(updateXDomain && {
         xDomain: domain.xDomain,
         xDomains: domain.xDomains,
-      };
-    }
+      }),
+      ...(updateYDomain && {
+        yDomain: domain.yDomain,
+        yDomains: domain.yDomains,
+      }),
+    };
   }
 }
 

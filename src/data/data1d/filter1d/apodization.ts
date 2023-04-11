@@ -1,10 +1,15 @@
 import { apodization } from 'nmr-processing';
 
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
-export const id = 'apodization';
+export const id = 'apodization' as const;
 export const name = 'Apodization';
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: true,
+  updateYDomain: false,
+};
 
 /**
  *

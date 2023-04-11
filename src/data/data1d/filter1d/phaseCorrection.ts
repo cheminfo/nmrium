@@ -4,11 +4,17 @@ import {
   reimAutoPhaseCorrection,
 } from 'ml-spectra-processing';
 
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Data1D } from '../../types/data1d/Data1D';
 import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'phaseCorrection';
 export const name = 'Phase correction';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: false,
+  updateYDomain: false,
+};
 
 /**
  *

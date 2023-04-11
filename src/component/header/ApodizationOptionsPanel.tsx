@@ -15,10 +15,8 @@ import { useFilter } from '../hooks/useFilter';
 import {
   APPLY_APODIZATION_FILTER,
   CALCULATE_APODIZATION_FILTER,
-  DISABLE_FILTER_LIVE_PREVIEW,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
-import { options } from '../toolbar/ToolTypes';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -70,18 +68,6 @@ function ApodizationOptionsInnerPanel(
     dispatch({
       type: RESET_SELECTED_TOOL,
     });
-  }
-
-  function disableLivePreviewHandler(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    //disable filter Live preview
-    if (!event.target.checked) {
-      dispatch({
-        type: DISABLE_FILTER_LIVE_PREVIEW,
-        payload: { selectedTool: options.apodization.id },
-      });
-    }
   }
 
   let formData = initialValues;
@@ -145,10 +131,7 @@ function ApodizationOptionsInnerPanel(
             htmlFor="livePreview"
             style={{ label: { padding: '0 5px' } }}
           >
-            <FormikCheckBox
-              name="livePreview"
-              onChange={disableLivePreviewHandler}
-            />
+            <FormikCheckBox name="livePreview" />
           </Label>
 
           <FormikOnChange

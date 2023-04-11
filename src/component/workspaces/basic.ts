@@ -30,7 +30,7 @@ export const basic: InnerWorkspace = {
       slicing: true,
       apodization: true,
       zeroFilling: true,
-      fastFourierTransform: true,
+      fft: true,
       phaseCorrection: true,
       baselineCorrection: true,
       autoRangeAndZonePicking: true,

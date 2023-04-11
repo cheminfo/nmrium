@@ -30,7 +30,7 @@ const customWorkspaces: CustomWorkspaces = {
         baselineCorrection: false,
         exclusionZones: true,
         exportAs: true,
-        fastFourierTransform: false,
+        fft: false,
         import: true,
         integral: false,
         multipleSpectraAnalysis: true,
@@ -53,6 +53,8 @@ const customWorkspaces: CustomWorkspaces = {
       dimmedSpectraOpacity: 0.1,
       verticalSplitterPosition: '560px',
       verticalSplitterCloseThreshold: 600,
+      spectraRendering: 'auto',
+      loggingLevel: 'info',
     },
     formatting: {
       nuclei: {
@@ -82,8 +84,6 @@ const customWorkspaces: CustomWorkspaces = {
         keep2D: false,
         onlyReal: true,
         dataSelection: 'preferFT',
-        keepFID: false,
-        keepFT: true,
       },
       bruker: {
         onlyFirstProcessedData: true,
@@ -122,7 +122,12 @@ const customWorkspaces: CustomWorkspaces = {
         },
         { name: 'apodization', label: 'Apodization', value: {}, flag: false },
         { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
-        { name: 'fft', label: 'FFT', value: {}, flag: true },
+        {
+          name: 'fft',
+          label: 'Fast fourier transform',
+          value: {},
+          flag: true,
+        },
         {
           name: 'phaseCorrection',
           label: 'Phase correction',
@@ -139,7 +144,12 @@ const customWorkspaces: CustomWorkspaces = {
         },
         { name: 'apodization', label: 'Apodization', value: {}, flag: true },
         { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
-        { name: 'fft', label: 'FFT', value: {}, flag: true },
+        {
+          name: 'fft',
+          label: 'Fast fourier transform',
+          value: {},
+          flag: true,
+        },
         {
           name: 'phaseCorrection',
           label: 'Phase correction',
@@ -150,7 +160,6 @@ const customWorkspaces: CustomWorkspaces = {
     },
     label: 'Metabolomics',
     version: 1,
-    source: 'custom',
   },
 };
 

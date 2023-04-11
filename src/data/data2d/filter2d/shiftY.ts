@@ -1,7 +1,14 @@
+import { FilterDomainUpdateRules } from '../../FiltersManager';
 import { Datum2D } from '../../types/data2d';
 
 export const id = 'shift2DY';
 export const name = 'Shift 2D Y';
+
+export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
+  updateXDomain: false,
+  updateYDomain: true,
+};
+
 /**
  *
  * @param {Object} datum2d
