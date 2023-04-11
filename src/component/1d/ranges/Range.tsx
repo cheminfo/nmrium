@@ -19,7 +19,6 @@ import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
 
 import { LinkButton } from './LinkButton';
-import { useCallback } from 'react';
 
 const style = css`
   .target {
@@ -86,19 +85,16 @@ function Range({
     highlightRange.hide();
   }
 
-  const unAssignHandler = useCallback(
-    (signalIndex: number) => {
-      dispatch({
-        type: UNLINK_RANGE,
-        payload: {
-          rangeData: range,
-          assignmentData,
-          signalIndex,
-        },
-      });
-    },
-    [assignmentData, dispatch, range],
-  );
+  function unAssignHandler(signalIndex: number) {
+    dispatch({
+      type: UNLINK_RANGE,
+      payload: {
+        rangeData: range,
+        assignmentData,
+        signalIndex,
+      },
+    });
+  }
   function assignHandler() {
     if (!isBlockedByEditing) {
       if (!diaIDs) {
