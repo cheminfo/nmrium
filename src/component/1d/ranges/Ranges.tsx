@@ -32,7 +32,7 @@ function RangesInner({
       {ranges?.values?.map((range) => (
         <Fragment key={range.id}>
           <Range
-            rangeData={range}
+            range={range}
             selectedTool={selectedTool}
             showMultiplicityTrees={showMultiplicityTrees}
             relativeFormat={relativeFormat}

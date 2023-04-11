@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Signal1D } from '../../../data/types/data1d';
+import { Range as RangeType } from '../../../data/types/data1d';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
   useAssignment,
@@ -13,64 +13,40 @@ import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight';
-import { RESIZE_RANGE } from '../../reducer/types/Types';
+import { RESIZE_RANGE, UNLINK_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
-import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
+import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
 
-const stylesOnHover = css`
-  pointer-events: bounding-box;
+import { LinkButton } from './LinkButton';
 
-  @-moz-document url-prefix("") {
-    pointer-events: fill;
-  }
-
-  .highlight {
-    fill: transparent;
-  }
-
+const style = css`
   .target {
     visibility: hidden;
   }
-`;
 
-const stylesHighlighted = css`
-  pointer-events: bounding-box;
-
-  @-moz-document url-prefix("") {
-    pointer-events: fill;
-  }
-
-  fill: #ff6f0057;
-
-  .target {
-    visibility: visible;
+  &:hover {
+    .target {
+      visibility: visible;
+    }
   }
 `;
-
-export interface RangeData {
-  id: string;
-  from: number;
-  to: number;
-  integration: number;
-  signals: Signal1D[];
-}
 
 interface RangeProps {
   showMultiplicityTrees: boolean;
   selectedTool: string;
-  rangeData: RangeData;
+  range: RangeType;
   relativeFormat: string;
 }
 
 function Range({
-  rangeData,
+  range,
   showMultiplicityTrees,
   selectedTool,
   relativeFormat,
 }: RangeProps) {
   const { viewerRef } = useGlobal();
-  const { id, integration, signals } = rangeData;
+  const { id, integration, signals, diaIDs } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -93,7 +69,7 @@ function Range({
     dispatch({
       type: RESIZE_RANGE,
       data: {
-        ...rangeData,
+        ...range,
         from: scaleX().invert(position.x2),
         to: scaleX().invert(position.x1),
       },
@@ -110,19 +86,31 @@ function Range({
     highlightRange.hide();
   }
 
-  function assignHandler(e) {
-    if (
-      selectedTool === options.rangePicking.id &&
-      e.shiftKey &&
-      !isBlockedByEditing
-    ) {
-      assignmentRange.setActive('x');
+  function unAssignHandler(signalIndex: number) {
+    dispatch({
+      type: UNLINK_RANGE,
+      payload: {
+        rangeData: range,
+        assignmentData,
+        signalIndex,
+      },
+    });
+  }
+  function assignHandler() {
+    if (!isBlockedByEditing) {
+      if (!diaIDs) {
+        assignmentRange.setActive('x');
+      } else {
+        unAssignHandler(-1);
+      }
     }
   }
-  const from = scaleX()(rangeData.from);
-  const to = scaleX()(rangeData.to);
+  const from = scaleX()(range.from);
+  const to = scaleX()(range.to);
 
-  const isNotSignal = !checkRangeKind(rangeData);
+  const isNotSignal = !checkRangeKind(range);
+  const isHighlighted =
+    isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
   return (
     <g
@@ -131,7 +119,7 @@ function Range({
       key={id}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
-      onClick={assignHandler}
+      {...(!assignmentRange.isActive && { css: style })}
     >
       <Resizer
         tag="svg"
@@ -144,22 +132,14 @@ function Range({
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;
           return (
-            <g
-              css={
-                isBlockedByEditing ||
-                highlightRange.isActive ||
-                assignmentRange.isActive ||
-                isActive
-                  ? stylesHighlighted
-                  : stylesOnHover
-              }
-            >
+            <g>
               <rect
                 width={width}
                 height="100%"
-                className="highlight"
+                fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                 data-no-export="true"
               />
+
               <IntegralIndicator
                 value={integration}
                 format={relativeFormat}
@@ -171,17 +151,14 @@ function Range({
         }}
       </Resizer>
 
-      {showMultiplicityTrees &&
-        signals &&
-        signals.length > 0 &&
-        signals.map((_signal) => (
-          <MultiplicityTree
-            rangeFrom={rangeData.from}
-            rangeTo={rangeData.to}
-            signal={_signal}
-            key={_signal.id}
-          />
-        ))}
+      {showMultiplicityTrees && (
+        <MultiplicityTree range={range} onUnlink={unAssignHandler} />
+      )}
+      <LinkButton
+        isActive={!!(assignmentRange.isActive || diaIDs)}
+        x={from - 16}
+        onClick={() => assignHandler()}
+      />
     </g>
   );
 }

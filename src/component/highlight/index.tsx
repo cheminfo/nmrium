@@ -9,8 +9,8 @@ import {
   CSSProperties,
 } from 'react';
 
+import { Range } from '../../data/types/data1d';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
-import { RangeData } from '../1d/ranges/Range';
 
 export enum HighlightEventSource {
   PEAK = 'PEAK',
@@ -40,7 +40,7 @@ interface SourceData {
     id?: string;
     jcampURL?: string;
     baseURL?: string;
-    ranges?: RangeData[];
+    ranges?: Range[];
     colKey?: string;
   } | null;
 }
