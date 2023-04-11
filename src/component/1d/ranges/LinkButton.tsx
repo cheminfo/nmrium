@@ -19,7 +19,14 @@ export function LinkButton(props: LinkButtonProps) {
     ...otherProps
   } = props;
   return (
-    <foreignObject width="16px" height="16px" x={x} y={y} className={className}>
+    <foreignObject
+      width="16px"
+      height="16px"
+      x={x}
+      y={y}
+      className={className}
+      data-no-export="true"
+    >
       <Button
         theme={isActive ? 'danger' : 'success'}
         style={{ width: '16px', height: '16px', padding: 0 }}
