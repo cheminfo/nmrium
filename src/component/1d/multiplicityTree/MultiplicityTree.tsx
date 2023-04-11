@@ -32,6 +32,7 @@ const cssStyle = css`
   .signal-target {
     visibility: hidden;
   }
+
   &:hover {
     .signal-target {
       visibility: visible;

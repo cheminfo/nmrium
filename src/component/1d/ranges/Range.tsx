@@ -24,6 +24,7 @@ const style = css`
   .target {
     visibility: hidden;
   }
+
   &:hover {
     .target {
       visibility: visible;
