@@ -220,7 +220,7 @@ test('Exclusion zones', async ({ page }) => {
 
     //enable exclusion zone tool
     await nmrium.page
-      .locator(':text("Exclusion zones")  + td > div > input')
+      .locator('td:has-text("Exclusion zones")  + td input')
       .click();
 
     // save setting changes
