@@ -99,36 +99,38 @@ function ReactTableRow(props: ReactTableRowProps) {
       {...row.getRowProps()}
       {...highlight.onHover}
     >
-      <DropdownMenu
-        trigger="contextMenu"
-        options={contextMenu}
-        onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
-      >
-        {row.cells.map((cell) => {
-          const { style, padding } = cell.column;
+      {row.cells.map((cell) => {
+        const { style, padding } = cell.column;
 
-          if (cell.isRowSpanned) {
-            return null;
-          } else {
-            return (
-              <td
-                rowSpan={cell.rowSpan}
-                key={cell.key}
-                {...cell.getCellProps()}
-                onContextMenu={(e) => {
-                  e.preventDefault();
+        if (cell.isRowSpanned) {
+          return null;
+        } else {
+          return (
+            <td
+              rowSpan={cell.rowSpan}
+              key={cell.key}
+              {...cell.getCellProps()}
+              onContextMenu={(e) => {
+                e.preventDefault();
 
-                  return false;
-                }}
-                style={{ padding, ...style }}
-                onClick={clickHandler}
+                return false;
+              }}
+              style={{ padding, ...style }}
+              onClick={clickHandler}
+            >
+              <DropdownMenu
+                trigger="contextMenu"
+                options={contextMenu}
+                onSelect={(selected) =>
+                  onContextMenuSelect?.(selected, row.original)
+                }
               >
                 {cell.render('Cell')}
-              </td>
-            );
-          }
-        })}
-      </DropdownMenu>
+              </DropdownMenu>
+            </td>
+          );
+        }
+      })}
     </tr>
   );
 }
