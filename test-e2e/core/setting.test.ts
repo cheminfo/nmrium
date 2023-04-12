@@ -23,7 +23,7 @@ test('should Change the visibility of the panels', async ({ page }) => {
 
     //change  the checkbox value to tru
     await nmrium.page
-      .locator(':text("Databases panel")  + td > div > input')
+      .locator('td:has-text("Databases panel")  + td input')
       .click();
 
     // save changes
