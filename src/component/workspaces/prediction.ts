@@ -30,6 +30,8 @@ export const prediction: InnerWorkspace = {
       zoomOut: true,
       zoom: true,
       autoRangeAndZonePicking: true,
+      fftDimension1: true,
+      fftDimension2: true,
     },
   },
   formatting: {

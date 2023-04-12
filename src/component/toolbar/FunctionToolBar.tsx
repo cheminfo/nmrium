@@ -57,6 +57,18 @@ function FunctionToolBarInner({
     });
   }, [dispatch]);
 
+  const handleFFtDimension1Filter = useCallback(() => {
+    dispatch({
+      type: 'APPLY_FFT_DIMENSION_1_FILTER',
+    });
+  }, [dispatch]);
+
+  const handleFFtDimension2Filter = useCallback(() => {
+    dispatch({
+      type: 'APPLY_FFT_DIMENSION_2_FILTER',
+    });
+  }, [dispatch]);
+
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
@@ -207,6 +219,26 @@ function FunctionToolBarInner({
           className="cheminfo"
           title={options.fft.label}
           onClick={handleOnFFTFilter}
+        >
+          <SvgNmrFourierTransform />
+        </Toolbar.Item>
+      )}
+      {isButtonVisible('fftDimension1') && (
+        <Toolbar.Item
+          id={options.fftDimension1.id}
+          className="cheminfo"
+          title={options.fftDimension1.label}
+          onClick={handleFFtDimension1Filter}
+        >
+          <SvgNmrFourierTransform />
+        </Toolbar.Item>
+      )}
+      {isButtonVisible('fftDimension2') && (
+        <Toolbar.Item
+          id={options.fftDimension2.id}
+          className="cheminfo"
+          title={options.fftDimension2.label}
+          onClick={handleFFtDimension2Filter}
         >
           <SvgNmrFourierTransform />
         </Toolbar.Item>

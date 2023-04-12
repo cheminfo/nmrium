@@ -106,6 +106,8 @@ export type FiltersActions =
   | ApplySignalProcessingAction
   | ActionType<
       | 'APPLY_FFT_FILTER'
+      | 'APPLY_FFT_DIMENSION_1_FILTER'
+      | 'APPLY_FFT_DIMENSION_2_FILTER'
       | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
       | 'APPLY_ABSOLUTE_FILTER'
     >;
@@ -482,6 +484,54 @@ function handleApplyFFTFilter(draft: Draft<State>) {
       });
     } else {
       updateView(draft, fft.DOMAIN_UPDATE_RULES);
+    }
+  }
+}
+
+function handleApplyFFtDimension1Filter(draft: Draft<State>) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
+    const activeFilterIndex = getActiveFilterIndex(draft);
+
+    //apply filter into the spectrum
+    FiltersManager.applyFilter(
+      draft.data[index],
+      [{ name: Filters.fftDimension1.id, value: {} }],
+      { filterIndex: activeFilterIndex },
+    );
+
+    if (activeFilterIndex !== -1) {
+      rollbackSpectrumByFilter(draft, {
+        searchBy: 'name',
+        key: Filters.fftDimension1.id,
+      });
+    } else {
+      updateView(draft, Filters.fftDimension1.DOMAIN_UPDATE_RULES);
+    }
+  }
+}
+
+function handleApplyFFtDimension2Filter(draft: Draft<State>) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
+    const activeFilterIndex = getActiveFilterIndex(draft);
+
+    //apply filter into the spectrum
+    FiltersManager.applyFilter(
+      draft.data[index],
+      [{ name: Filters.fftDimension2.id, value: {} }],
+      { filterIndex: activeFilterIndex },
+    );
+
+    if (activeFilterIndex !== -1) {
+      rollbackSpectrumByFilter(draft, {
+        searchBy: 'name',
+        key: Filters.fftDimension2.id,
+      });
+    } else {
+      updateView(draft, Filters.fftDimension2.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -882,6 +932,8 @@ export {
   handleApplyZeroFillingFilter,
   handleApplyApodizationFilter,
   handleApplyFFTFilter,
+  handleApplyFFtDimension1Filter,
+  handleApplyFFtDimension2Filter,
   handleApplyManualPhaseCorrectionFilter,
   handleApplyAutoPhaseCorrectionFilter,
   handleApplyAbsoluteFilter,

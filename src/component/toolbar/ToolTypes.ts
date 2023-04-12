@@ -323,6 +323,40 @@ export const options: RecordOptions = {
     ],
     isToggle: false,
   },
+  fftDimension1: {
+    id: 'fftDimension1',
+    label: 'Fourier transform dimension 1',
+    hasOptionPanel: false,
+    isFilter: true,
+    mode: DISPLAYER_MODE.DM_2D,
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
+    isToggle: false,
+  },
+  fftDimension2: {
+    id: 'fftDimension2',
+    label: 'Fourier transform dimension 2',
+    hasOptionPanel: false,
+    isFilter: true,
+    mode: DISPLAYER_MODE.DM_2D,
+    spectraOptions: [
+      {
+        info: [
+          { key: 'isFid', value: true },
+          { key: 'isComplex', value: true },
+        ],
+        active: true,
+      },
+    ],
+    isToggle: false,
+  },
   import: {
     id: 'import',
     label: 'Import',
