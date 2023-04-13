@@ -51,6 +51,17 @@ const styles: Record<
   },
 };
 
+function check(value, type) {
+  if (type === 'number') {
+    const pattern = /^(?:-?\d*|\d+)(?:\.\d{0,20})?$/;
+    if (value.trim() === '' || pattern.test(value)) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
 export type InputKeyboardEvent = React.KeyboardEvent & {
   target: { name: string; value: string | number };
 };
@@ -82,9 +93,13 @@ function identity<T = unknown>(value: T): T {
   return value;
 }
 
+function preventPropagate(event) {
+  event.stopPropagation();
+}
+
 const Input = forwardRef(
-  (
-    {
+  (props: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
+    const {
       value = '',
       name,
       style = {
@@ -107,20 +122,20 @@ const Input = forwardRef(
       nullable = false,
       onClear,
       datalist = [],
-      ...props
-    }: InputProps,
-    ref: ForwardedRef<HTMLInputElement>,
-  ) => {
+      ...otherProps
+    } = props;
     const [val, setVal] = useState(value);
     const valueRef = useRef(value);
     const localRef = useRef<any>();
     const combinedRef = useCombinedRefs([ref, localRef]);
 
-    const debounceOnChange = useRef(
-      debounce((value) => {
-        onChange(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debounceOnChange = useCallback(
+      debounce((val) => {
+        onChange?.(val);
       }, debounceTime),
-    ).current;
+      [onChange],
+    );
 
     useEffect(() => {
       setVal(value);
@@ -132,101 +147,67 @@ const Input = forwardRef(
       }
     }, [enableAutoSelect, combinedRef]);
 
-    const getValue = useCallback(
-      (value) => {
-        const formatValue = format();
-
-        return formatValue(
-          type === 'number'
-            ? String(value).trim() === '-'
-              ? Number(0)
-              : nullable && !value
-              ? null
-              : Number(value)
+    function getValue(value) {
+      const val =
+        type === 'number'
+          ? String(value).trim() === '-'
+            ? Number(0)
             : nullable && !value
             ? null
-            : value,
-        );
-      },
-      [format, nullable, type],
-    );
+            : Number(value)
+          : nullable && !value
+          ? null
+          : value;
 
-    const onChangeHandler = useCallback(
-      (e) => {
-        e.persist();
-        e.stopPropagation();
-        e.preventDefault();
-        function check(value) {
-          if (type === 'number') {
-            const pattern = /^(?:-?\d*|\d+)(?:\.\d{0,20})?$/;
-            if (value.trim() === '' || pattern.test(value)) {
-              return true;
-            }
-            return false;
-          }
-          return true;
+      return format()(val);
+    }
+
+    function onChangeHandler(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      const _value: string = e.target.value;
+      if (check(_value, type) && checkValue(_value)) {
+        const formatValue = format();
+        setVal(formatValue(_value));
+
+        valueRef.current = _value;
+        const val = {
+          ...e,
+          target: { name: e.target.name, value: getValue(_value) },
+        };
+
+        if (debounceTime) {
+          debounceOnChange(val);
+        } else {
+          onChange?.(val);
         }
+      }
+    }
 
-        const _value: string = e.target.value;
-        if (check(_value) && checkValue(_value)) {
-          const formatValue = format();
-          setVal(formatValue(_value));
-          valueRef.current = _value;
-          const val = {
-            ...e,
-            target: { name: e.target.name, value: getValue(_value) },
-          };
+    function handleKeyDown(event) {
+      onKeyDown({
+        ...event,
+        target: {
+          name: event.target.name,
+          value: getValue(valueRef.current),
+        },
+      });
+    }
 
-          if (debounceTime) {
-            debounceOnChange(val);
-          } else {
-            onChange(val);
-          }
-        }
-      },
-      [
-        checkValue,
-        debounceOnChange,
-        debounceTime,
-        format,
-        getValue,
-        onChange,
-        type,
-      ],
-    );
+    function handleKeyUp(event) {
+      onKeyUp({
+        ...event,
+        target: {
+          name: event.target.name,
+          value: getValue(valueRef.current),
+        },
+      });
+    }
 
-    const handleKeyDown = useCallback(
-      (event) => {
-        onKeyDown({
-          ...event,
-          target: {
-            name: event.target.name,
-            value: getValue(valueRef.current),
-          },
-        });
-      },
-      [getValue, onKeyDown],
-    );
-    const handleKeyUp = useCallback(
-      (event) => {
-        onKeyUp({
-          ...event,
-          target: {
-            name: event.target.name,
-            value: getValue(valueRef.current),
-          },
-        });
-      },
-      [getValue, onKeyUp],
-    );
-    const preventPropagate = useCallback((event) => {
-      event.stopPropagation();
-    }, []);
-
-    const clearHandler = useCallback(() => {
+    function clearHandler() {
       setVal('');
       onClear?.();
-    }, [onClear]);
+    }
 
     return (
       <div
@@ -238,7 +219,7 @@ const Input = forwardRef(
       >
         {renderIcon?.()}
         <input
-          {...props}
+          {...otherProps}
           ref={combinedRef}
           name={name}
           style={{
