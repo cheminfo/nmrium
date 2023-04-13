@@ -2,12 +2,12 @@ import debounce from 'lodash/debounce';
 import {
   useState,
   useEffect,
-  useCallback,
   useRef,
   CSSProperties,
   forwardRef,
   ForwardedRef,
   ReactElement,
+  useMemo,
 } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs';
@@ -129,12 +129,12 @@ const Input = forwardRef(
     const localRef = useRef<any>();
     const combinedRef = useCombinedRefs([ref, localRef]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const debounceOnChange = useCallback(
-      debounce((val) => {
-        onChange?.(val);
-      }, debounceTime),
-      [onChange],
+    const debounceOnChange = useMemo(
+      () =>
+        debounce((val) => {
+          onChange?.(val);
+        }, debounceTime),
+      [debounceTime, onChange],
     );
 
     useEffect(() => {
