@@ -1,6 +1,5 @@
+import { Spectrum2D } from 'nmr-load-save';
 import { xyzAutoZonesPicking } from 'nmr-processing';
-
-import { Datum2D } from '../../../types/data2d';
 
 export interface DetectionZonesOptions {
   selectedZone: {
@@ -26,17 +25,17 @@ export interface DetectionZonesOptions {
  * @param {boolean} options.convolutionByFFT
  */
 export function getDetectionZones(
-  datum: Datum2D,
+  spectrum: Spectrum2D,
   options: DetectionZonesOptions,
 ) {
   let dataMatrix = {};
   if (options.selectedZone) {
     options.enhanceSymmetry = false;
-    dataMatrix = getSubMatrix(datum, options.selectedZone);
+    dataMatrix = getSubMatrix(spectrum, options.selectedZone);
   } else {
-    dataMatrix = datum.data;
+    dataMatrix = spectrum.data;
   }
-  return autoZonesDetection(dataMatrix, { ...options, info: datum.info });
+  return autoZonesDetection(dataMatrix, { ...options, info: spectrum.info });
 }
 
 function autoZonesDetection(data, options) {

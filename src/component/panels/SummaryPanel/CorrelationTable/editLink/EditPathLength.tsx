@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { FromTo } from 'cheminfo-types';
+import { Signal2D } from 'nmr-load-save';
 import { useCallback, useEffect, useState } from 'react';
 
 import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths';
-import { Signal2D } from '../../../../../data/types/data2d';
 import Button from '../../../../elements/Button';
 import Input from '../../../../elements/Input';
 import Label from '../../../../elements/Label';

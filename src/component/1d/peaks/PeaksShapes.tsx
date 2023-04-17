@@ -1,4 +1,5 @@
-import { Datum1D } from '../../../data/types/data1d';
+import { Spectrum1D } from 'nmr-load-save';
+
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
@@ -14,7 +15,7 @@ function PeaksShapes() {
   const { shiftY } = useScale();
   const { showPeaksShapes, showPeaksSum } = useActiveSpectrumPeaksViewState();
   const activeSpectrum = useActiveSpectrum();
-  const spectrum = useSpectrum(emptyData) as Datum1D;
+  const spectrum = useSpectrum(emptyData) as Spectrum1D;
 
   if (!spectrum?.peaks?.values || !spectrum.display.isVisible) {
     return null;
@@ -31,7 +32,7 @@ function PeaksShapes() {
 }
 
 function PeaksShapesItems(props: { vAlign: number }) {
-  const spectrum = useSpectrum(emptyData) as Datum1D;
+  const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const getPath = usePeakShapesPath(spectrum);
 
   return (
@@ -54,7 +55,7 @@ function PeaksShapesItems(props: { vAlign: number }) {
 }
 
 function PeaksShapesSum(props: { vAlign: number }) {
-  const spectrum = useSpectrum(emptyData) as Datum1D;
+  const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const getPath = usePeakShapesPath(spectrum);
 
   const { fill, path } = getPath({

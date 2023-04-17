@@ -1,9 +1,8 @@
 import { Draft } from 'immer';
+import { Spectrum1D, Integrals, Ranges, SumOptions } from 'nmr-load-save';
 
 import { State } from '../../../component/reducer/Reducer';
 import { StateMoleculeExtended } from '../../molecules/Molecule';
-import { Datum1D, Integrals, Ranges } from '../../types/data1d';
-import { SumOptions } from '../../types/data1d/SumOptions';
 import getAtom from '../../utilities/getAtom';
 
 import {
@@ -94,7 +93,7 @@ export function changeSpectraRelativeSum(
   molId: string,
   molecule: StateMoleculeExtended,
 ) {
-  const keys: (keyof Datum1D)[] = ['ranges', 'integrals'];
+  const keys: (keyof Spectrum1D)[] = ['ranges', 'integrals'];
 
   for (const spectrum of draft.data) {
     if (isSpectrum1D(spectrum)) {

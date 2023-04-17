@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, Source, NmriumState } from 'nmr-load-save';
+import { readNMRiumObject, Source, NmriumState, Spectrum } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -22,8 +22,6 @@ import { RootLayout } from 'react-science/ui';
 import { useToggle, useFullscreen } from 'react-use';
 
 import { toJSON } from '../data/SpectraManager';
-import { Datum1D } from '../data/types/data1d';
-import { Datum2D } from '../data/types/data2d';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
 
 import Viewer1D from './1d/Viewer1D';
@@ -146,7 +144,6 @@ export interface NMRiumProps {
 }
 
 export type Molecules = Array<{ molfile: string }>;
-export type Spectra = Array<Datum1D | Datum2D>;
 
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
@@ -155,7 +152,7 @@ type DeepPartial<T> = {
 export interface NMRiumData {
   source?: Source;
   molecules?: Molecules;
-  spectra: DeepPartial<Spectra>;
+  spectra: DeepPartial<Spectrum>[];
   correlations?: CorrelationData;
 }
 

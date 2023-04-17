@@ -1,12 +1,11 @@
 import { xyReduce } from 'ml-spectra-processing';
+import { Data1D, Data2DFt } from 'nmr-load-save';
 
-import { Data1D } from '../../../../../data/types/data1d';
-import { MinMaxContent } from '../../../../../data/types/data2d/Data2D';
 import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot';
 
 export function processSnapPlot<T extends '1D' | '2D'>(
   dimension: T,
-  data: T extends '1D' ? Data1D : MinMaxContent,
+  data: T extends '1D' ? Data1D : Data2DFt['rr'],
   yLogBase: number,
 ) {
   const sanResult = calculateSanPlot(dimension, data);

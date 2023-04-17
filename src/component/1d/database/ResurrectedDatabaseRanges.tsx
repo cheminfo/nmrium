@@ -1,7 +1,7 @@
 import { extent } from 'd3';
+import { Spectrum1D } from 'nmr-load-save';
 import { rangesToXY } from 'nmr-processing';
 
-import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
@@ -17,7 +17,7 @@ function ResurrectedDatabaseRanges() {
   const { displayerKey, height, margin } = useChartData();
   const verticalAlign = useVerticalAlign();
 
-  const { info } = useSpectrum(emptyData) as Datum1D;
+  const { info } = useSpectrum(emptyData) as Spectrum1D;
   const { highlight } = useHighlightData();
   const { scaleX } = useScaleChecked();
   const { color, marginBottom } = usePanelPreferences('database');

@@ -1,8 +1,13 @@
-import { reimFFT, reimPhaseCorrection, xMean } from 'ml-spectra-processing';
+import {
+  DataReIm,
+  reimFFT,
+  reimPhaseCorrection,
+  xMean,
+} from 'ml-spectra-processing';
+import { Spectrum1D } from 'nmr-load-save';
 import { Data1D } from 'nmr-load-save/lib/types/Data1D';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 import { padDataToNextPowerOfTwo } from './utils/padDataToNextPowerOfTwo';
 
@@ -16,55 +21,55 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} spectrum
  */
 
-export function apply(datum1D: Datum1D) {
-  if (!isApplicable(datum1D)) {
+export function apply(spectrum: Spectrum1D) {
+  if (!isApplicable(spectrum)) {
     throw new Error('fft not applicable on this data');
   }
 
-  checkSameLength(datum1D);
+  checkSameLength(spectrum);
 
-  let digitalFilterApplied = datum1D.filters.some(
+  let digitalFilterApplied = spectrum.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
   );
 
   const {
     meta: { AQ_mod: aqMod },
-  } = datum1D;
+  } = spectrum;
 
   if (aqMod === 1) {
-    removeDCOffset(datum1D, digitalFilterApplied);
+    removeDCOffset(spectrum, digitalFilterApplied);
   }
 
-  if (!isPowerOfTwo(datum1D.data.x.length)) {
-    padDataToNextPowerOfTwo(datum1D, digitalFilterApplied);
+  if (!isPowerOfTwo(spectrum.data.x.length)) {
+    padDataToNextPowerOfTwo(spectrum, digitalFilterApplied);
   }
 
-  const { data, info } = datum1D;
-  Object.assign(data, reimFFT(data, { applyZeroShift: true }));
+  const { data, info } = spectrum;
+  Object.assign(data, reimFFT(data as DataReIm, { applyZeroShift: true }));
 
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = info;
     let ph1 = (digitalFilter - Math.floor(digitalFilter)) * Math.PI * 2;
-    Object.assign(data, reimPhaseCorrection(data, 0, ph1));
+    Object.assign(data, reimPhaseCorrection(data as DataReIm, 0, ph1));
   }
 
-  data.x = generateXAxis(datum1D);
+  data.x = generateXAxis(spectrum);
   if (info?.reverse?.[0]) {
     data.re.reverse();
     data.im.reverse();
   }
 
   // Object.assign(datum1D.data, data);
-  datum1D.info = { ...info, isFid: false, isFt: true };
+  spectrum.info = { ...info, isFid: false, isFt: true };
 }
 
 export function isApplicable(
-  datum1D: Datum1D,
-): datum1D is Datum1D & { data: Required<Data1D> } {
-  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
+  spectrum: Spectrum1D,
+): spectrum is Spectrum1D & { data: Required<Data1D> } {
+  if (spectrum.info.isComplex && spectrum.info.isFid) return true;
   return false;
 }
 
@@ -97,9 +102,9 @@ function isPowerOfTwo(n) {
   return n !== 0 && (n & (n - 1)) === 0;
 }
 
-function removeDCOffset(datum1D, digitalFilterApplied) {
-  let { digitalFilter = 0 } = digitalFilterApplied ? datum1D.info : {};
-  const data = datum1D.data;
+function removeDCOffset(spectrum, digitalFilterApplied) {
+  let { digitalFilter = 0 } = digitalFilterApplied ? spectrum.info : {};
+  const data = spectrum.data;
   const nbPoints = data.re.length;
   const newRe = new Float64Array(data.re);
   const newIm = new Float64Array(data.im);
@@ -118,12 +123,12 @@ function removeDCOffset(datum1D, digitalFilterApplied) {
     newIm[i] -= averageIm;
   }
 
-  Object.assign(datum1D.data, { re: newRe, im: newIm });
-  return datum1D;
+  Object.assign(spectrum.data, { re: newRe, im: newIm });
+  return spectrum;
 }
 
-function checkSameLength(datum1D: Datum1D) {
-  const { data } = datum1D;
+function checkSameLength(spectrum: Spectrum1D) {
+  const { data } = spectrum;
   if (data.x.length !== data.re.length || data.x.length !== data.im?.length) {
     throw new Error('The length of data should be equal');
   }

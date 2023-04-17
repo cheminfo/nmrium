@@ -1,16 +1,15 @@
 import { zoneToX } from 'ml-spectra-processing';
+import { Data2DFt, Info2D } from 'nmr-load-save';
 
 import { UsedColors } from '../../../types/UsedColors';
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
-import { Info2D } from '../../types/data2d';
-import { MinMaxContent } from '../../types/data2d/Data2D';
 
 /**
  * calculate the missing projection
  */
 
 export function getMissingProjection(
-  datum: MinMaxContent,
+  datum: Data2DFt['rr'],
   nucleus: string,
   datumInfo: Info2D,
   usedColors: UsedColors,

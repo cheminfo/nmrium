@@ -1,6 +1,6 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { useMemo, memo } from 'react';
 
-import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
 import { PathBuilder } from '../../utility/PathBuilder';
@@ -8,7 +8,7 @@ import { get1DYScale, get2DXScale } from '../utilities/scale';
 
 interface Top1DChartProps {
   margin?: number;
-  data: Datum1D;
+  data: Spectrum1D;
 }
 
 function Top1DChart({

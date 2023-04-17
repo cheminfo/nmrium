@@ -1,6 +1,6 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
@@ -15,7 +15,7 @@ function PeakAnnotations() {
   const { displayerKey } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { scaleX, scaleY, shiftY } = useScaleChecked();
-  const spectrum = useSpectrum(emptyData) as Datum1D;
+  const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const peaksViewState = useActiveSpectrumPeaksViewState();
 
   const Peaks = useMemo(() => {

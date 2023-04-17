@@ -1,12 +1,11 @@
 import merge from 'lodash/merge';
-
-import { Datum2D, Zones } from '../../../types/data2d';
+import { Spectrum2D, Zones } from 'nmr-load-save';
 
 import { mapZones } from './mapZones';
 
 export function initiateZones(
   options: Partial<{ zones: Zones }>,
-  datum: Datum2D,
+  spectrum: Spectrum2D,
 ) {
   return merge(
     {
@@ -19,7 +18,7 @@ export function initiateZones(
     },
     options.zones,
     {
-      values: mapZones(options?.zones?.values || [], datum),
+      values: mapZones(options?.zones?.values || [], spectrum),
     },
   );
 }

@@ -1,3 +1,4 @@
+import { Range } from 'nmr-load-save';
 import {
   createContext,
   useReducer,
@@ -9,7 +10,6 @@ import {
   CSSProperties,
 } from 'react';
 
-import { Range } from '../../data/types/data1d';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 
 export enum HighlightEventSource {

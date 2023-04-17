@@ -1,10 +1,9 @@
 import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
@@ -176,7 +175,7 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 
   if (activeSpectrum != null) {
     const { index } = activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
 
     datum.display.isRealSpectrumVisible = !datum.display.isRealSpectrumVisible;
 
@@ -247,7 +246,7 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
   if (activeSpectrum?.id) {
     const scaleX = getXScale(draft);
     const value = scaleX.invert(position);
-    const datum = draft.data[activeSpectrum.index] as Datum1D;
+    const datum = draft.data[activeSpectrum.index] as Spectrum1D;
     const index = xFindClosestIndex(datum.data.x, value);
     draft.toolOptions.data.pivot = { value, index };
   }
@@ -378,7 +377,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index) {
     const activeSpectrum = spectra[0];
     return (
       activeSpectrum?.id &&
-      !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
+      !(draft.data[activeSpectrum.index] as Spectrum1D).info.isFid
     );
   }
 
@@ -411,7 +410,7 @@ function setMargin(draft: Draft<State>) {
 
 function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
-    data && (data as Datum1D[] | Datum2D[]).some((d) => d.info.dimension === 2)
+    data && (data as Spectrum[]).some((d) => d.info.dimension === 2)
       ? DISPLAYER_MODE.DM_2D
       : DISPLAYER_MODE.DM_1D;
 }
@@ -546,7 +545,7 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   );
 
   try {
-    for (const spectrum of spectra as Datum2D[]) {
+    for (const spectrum of spectra as Spectrum2D[]) {
       const contourOptions = spectrum.display.contourOptions;
       const zoom = contoursManager(spectrum.id, levels, contourOptions);
       levels[spectrum.id] = zoom.wheel(deltaY, shiftKey);

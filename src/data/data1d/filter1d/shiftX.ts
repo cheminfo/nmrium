@@ -1,9 +1,10 @@
+import { Spectrum1D } from 'nmr-load-save';
+
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 /**
  *
- * @param {Object} datum1d
+ * @param {Spectrum1D} spectrum
  * @param {number} [shiftValue=0]
  */
 
@@ -15,9 +16,9 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
   updateYDomain: false,
 };
 
-export function apply(datum1D: Datum1D, options: { shift?: number } = {}) {
+export function apply(spectrum: Spectrum1D, options: { shift?: number } = {}) {
   const { shift = 0 } = options;
-  datum1D.data.x = datum1D.data.x.map((val) => val + shift);
+  spectrum.data.x = spectrum.data.x.map((val) => val + shift);
 }
 
 export function isApplicable() {

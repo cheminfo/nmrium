@@ -1,4 +1,5 @@
-import { Integral, Range, Integrals, Ranges } from '../../../types/data1d';
+import { Integral, Range, Integrals, Ranges } from 'nmr-load-save';
+
 import { getSum } from '../../../utilities/getSum';
 
 export function updateRelatives<Type extends Integral | Range>(

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
+import { Spectrum1D, Ranges, Spectrum2D, Zones } from 'nmr-load-save';
 import OCL from 'openchemlib/full';
 import {
   useState,
@@ -16,8 +17,6 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
-import { Datum1D, Ranges } from '../../../data/types/data1d';
-import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import NextPrev from '../../elements/NextPrev';
@@ -241,8 +240,8 @@ export default function MoleculePanel({
   } = useChartData();
 
   const data = useSpectrum(emptyData);
-  const ranges: Ranges = (data as Datum1D)?.ranges || {};
-  const zones: Zones = (data as Datum2D)?.zones || {};
+  const ranges: Ranges = (data as Spectrum1D)?.ranges || {};
+  const zones: Zones = (data as Spectrum2D)?.zones || {};
 
   return (
     <MemoizedMoleculePanel

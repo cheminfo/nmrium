@@ -1,14 +1,13 @@
+import { Info1D, Info2D, Data1D, Data2D } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { Info1D as Datum1DInfo, Data1D } from '../../data/types/data1d';
-import { Info2D as Datum2DInfo, Data2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import nucleusToString from '../utility/nucleusToString';
 
 import { useActiveSpectrum } from './useActiveSpectrum';
 
 interface SpectrumWithStatisticsProps {
-  info: Datum1DInfo | Datum2DInfo;
+  info: Info1D | Info2D;
   datum: Data1D | Data2D;
   ftCounter: number;
   fidCounter: number;

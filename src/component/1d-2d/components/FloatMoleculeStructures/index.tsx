@@ -1,3 +1,4 @@
+import { Spectrum1D, Spectrum2D, Zones, Ranges } from 'nmr-load-save';
 import { memo } from 'react';
 
 import {
@@ -5,8 +6,6 @@ import {
   MoleculeView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule';
-import { Datum1D, Ranges } from '../../../../data/types/data1d/index';
-import { Datum2D, Zones } from '../../../../data/types/data2d/index';
 import { useChartData } from '../../../context/ChartContext';
 import useSpectrum from '../../../hooks/useSpectrum';
 import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
@@ -73,8 +72,8 @@ export default function FloatMoleculeStructures() {
   } = useChartData();
 
   const data = useSpectrum(emptyData);
-  const ranges: Ranges = (data as Datum1D)?.ranges || {};
-  const zones: Zones = (data as Datum2D)?.zones || {};
+  const ranges: Ranges = (data as Spectrum1D)?.ranges || {};
+  const zones: Zones = (data as Spectrum2D)?.zones || {};
 
   return (
     <MemoizedFloatMoleculeStructures

@@ -1,9 +1,9 @@
-import { Datum2D } from '../../../types/data2d';
+import { Spectrum2D } from 'nmr-load-save';
 
 import { mapZones } from './mapZones';
 
-export function updateZones(datum: Datum2D) {
-  datum.zones.values = mapZones(datum.zones.values, datum, {
+export function updateZones(spectrum: Spectrum2D) {
+  spectrum.zones.values = mapZones(spectrum.zones.values, spectrum, {
     checkIsExisting: false,
     shiftTarget: 'current',
   });

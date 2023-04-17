@@ -1,7 +1,6 @@
 import { Conrec } from 'ml-conrec';
+import { Data2DFt, Spectrum2D } from 'nmr-load-save';
 
-import { Datum2D } from '../../types/data2d';
-import { MinMaxContent } from '../../types/data2d/Data2D';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 interface Level {
@@ -160,7 +159,7 @@ function range(from: number, to: number, step: number) {
 
 function drawContours(
   level: number,
-  datum: Datum2D,
+  spectrum: Spectrum2D,
   negative = false,
   quadrant = 'rr',
 ): { contours: any; timeout: boolean } {
@@ -168,19 +167,19 @@ function drawContours(
   const {
     positive: { numberOfLayers: numberOfPositiveLayer },
     negative: { numberOfLayers: numberOfNegativeLayer },
-  } = datum.display.contourOptions;
+  } = spectrum.display.contourOptions;
 
   if (negative) {
     return getContours(zoom, {
       negative,
       nbLevels: numberOfNegativeLayer,
-      data: datum.data[quadrant],
+      data: spectrum.data[quadrant],
     });
   }
 
   return getContours(zoom, {
     nbLevels: numberOfPositiveLayer,
-    data: datum.data[quadrant],
+    data: spectrum.data[quadrant],
   });
 }
 
@@ -188,7 +187,7 @@ interface ContoursCalcOptions {
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
-  data: MinMaxContent;
+  data: Data2DFt['rr'];
 }
 
 function getContours(zoomLevel, options: ContoursCalcOptions) {
@@ -197,7 +196,7 @@ function getContours(zoomLevel, options: ContoursCalcOptions) {
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
 
   const ys = getRange(data.minY, data.maxY, data.z.length);
-
+  // @ts-expect-error refactor Conrect class to accept Float32Array Array instead of an array of number
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
 
   const sanResult = calculateSanPlot('2D', data);

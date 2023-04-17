@@ -1,7 +1,7 @@
 import * as Filters from 'ml-signal-processing';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Datum1D } from '../../types/data1d/Datum1D';
 import { MatrixOptions } from '../../types/data1d/MatrixOptions';
 
 export const id = 'signalProcessing';
@@ -14,19 +14,19 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} spectrum
  * @param {MatrixOptions} options
  */
 
-export function apply(datum1D: Datum1D, options: MatrixOptions) {
-  if (!isApplicable(datum1D)) {
+export function apply(spectrum: Spectrum1D, options: MatrixOptions) {
+  if (!isApplicable(spectrum)) {
     throw new Error('Signal Processing is not applicable on this data');
   }
 
-  datum1D.data = filterXY(datum1D, options);
+  spectrum.data = filterXY(spectrum, options);
 }
-export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isFt) return true;
+export function isApplicable(spectrum: Spectrum1D) {
+  if (spectrum.info.isFt) return true;
   return false;
 }
 
@@ -41,11 +41,11 @@ export function reduce(previousValue, newValue) {
  * Apply filters on {x:[], y:[]}
  * @returns A very important number
  */
-export function filterXY(datum1D: Datum1D, options: MatrixOptions) {
-  let x = datum1D.data.x.slice(0);
-  let cloneX = datum1D.data.x.slice(0);
-  let re = datum1D.data.re.slice(0);
-  let im = datum1D.data.im?.slice(0);
+export function filterXY(spectrum: Spectrum1D, options: MatrixOptions) {
+  let x = spectrum.data.x.slice(0);
+  let cloneX = spectrum.data.x.slice(0);
+  let re = spectrum.data.re.slice(0);
+  let im = spectrum.data.im?.slice(0);
 
   const filters = options.filters.slice();
 

@@ -1,10 +1,9 @@
 import lodashGet from 'lodash/get';
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Spectrum, Spectrum1D } from 'nmr-load-save';
 import { CSSProperties, useContext } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { Datum1D } from '../../data/types/data1d/index';
-import { Datum2D } from '../../data/types/data2d/Datum2D';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -53,7 +52,7 @@ function YTracker({ datum }: YTrackerProps) {
 }
 
 interface InnerSpectraLegendsProps {
-  spectra: (Datum1D | Datum2D)[];
+  spectra: Spectrum[];
   legendsFields: legendField[];
 }
 
@@ -68,7 +67,7 @@ function InnerSpectraLegends({
           <rect
             style={{
               ...styles.colorIndicator,
-              fill: (spectrum as Datum1D).display.color,
+              fill: (spectrum as Spectrum1D).display.color,
             }}
           />
           <SVGGroup space={5} style={{ transform: 'translate(12px,0)' }}>
@@ -79,7 +78,7 @@ function InnerSpectraLegends({
                 case 'intensity':
                   return (
                     <g key="intensity">
-                      <YTracker datum={get1DDataXY(spectrum as Datum1D)} />
+                      <YTracker datum={get1DDataXY(spectrum as Spectrum1D)} />
                       <rect width="55" height="1" fill="transparent" />
                     </g>
                   );

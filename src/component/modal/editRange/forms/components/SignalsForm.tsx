@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
+import { Range } from 'nmr-load-save';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
-import { Range } from '../../../../../data/types/data1d';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';

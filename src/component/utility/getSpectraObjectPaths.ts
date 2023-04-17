@@ -1,7 +1,6 @@
-import { Datum1D } from '../../data/types/data1d/Datum1D';
-import { Datum2D } from '../../data/types/data2d/Datum2D';
+import { Spectrum } from 'nmr-load-save';
 
-export function getSpectraObjectPaths(spectra: (Datum1D | Datum2D)[]) {
+export function getSpectraObjectPaths(spectra: Spectrum[]) {
   const keys = ['display', 'meta', 'info', 'metaInfo'];
 
   const paths = {};

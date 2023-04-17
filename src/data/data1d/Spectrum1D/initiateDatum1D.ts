@@ -1,9 +1,9 @@
 import { v4 } from '@lukeed/uuid';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { UsedColors } from '../../../types/UsedColors';
 import * as Filters from '../../Filters';
 import * as FiltersManager from '../../FiltersManager';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
 import { get1DColor } from './get1DColor';
@@ -19,21 +19,20 @@ export interface InitiateDatum1DOptions {
 export function initiateDatum1D(
   spectrum: any,
   options: InitiateDatum1DOptions = {},
-): Datum1D {
+): Spectrum1D {
   const { usedColors = {}, filters = [] } = options;
 
-  const datum: Partial<Datum1D> = {};
-  datum.id = spectrum.id || v4();
-  datum.selector = spectrum?.selector || {};
+  const spectrumObj: Partial<Spectrum1D> = {};
+  spectrumObj.id = spectrum.id || v4();
 
-  datum.display = {
+  spectrumObj.display = {
     isVisible: true,
     isRealSpectrumVisible: true,
     ...spectrum.display,
     ...get1DColor(spectrum, usedColors),
   };
 
-  datum.info = {
+  spectrumObj.info = {
     nucleus: '1H', // 1H, 13C, 19F, ...
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
@@ -41,31 +40,34 @@ export function initiateDatum1D(
     ...spectrum.info,
   };
 
-  datum.originalInfo = datum.info;
+  spectrumObj.originalInfo = spectrumObj.info;
 
-  datum.meta = { ...spectrum.meta };
+  spectrumObj.meta = { ...spectrum.meta };
 
-  datum.metaInfo = { ...spectrum.metaInfo };
+  spectrumObj.metaInfo = { ...spectrum.metaInfo };
 
-  datum.data = convertDataToFloat64Array(spectrum.data);
+  spectrumObj.data = convertDataToFloat64Array(spectrum.data);
 
-  datum.originalData = datum.data;
+  spectrumObj.originalData = spectrumObj.data;
 
-  datum.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
+  spectrumObj.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
-  datum.peaks = initiatePeaks(spectrum, datum as Datum1D);
+  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj as Spectrum1D);
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  datum.integrals = initiateIntegrals(spectrum, datum as Datum1D); // array of object (from: xIndex, to: xIndex)
-  datum.ranges = initiateRanges(spectrum, datum as Datum1D);
+  spectrumObj.integrals = initiateIntegrals(
+    spectrum,
+    spectrumObj as Spectrum1D,
+  ); // array of object (from: xIndex, to: xIndex)
+  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj as Spectrum1D);
 
   //reapply filters after load the original data
-  FiltersManager.reapplyFilters(datum);
+  FiltersManager.reapplyFilters(spectrumObj);
 
-  preprocessing(datum, filters);
-  return datum as Datum1D;
+  preprocessing(spectrumObj, filters);
+  return spectrumObj as Spectrum1D;
 }
 
 function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {

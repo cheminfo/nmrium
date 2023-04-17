@@ -1,11 +1,9 @@
 import { SvgNmr2D, SvgNmrFid, SvgNmrFt } from 'cheminfo-font';
+import { Spectrum } from 'nmr-load-save';
 import { CSSProperties } from 'react';
 
-import { Datum1D } from '../../../../data/types/data1d';
-import { Datum2D } from '../../../../data/types/data2d';
-
 interface SpectrumNameProps {
-  data: Datum1D | Datum2D;
+  data: Spectrum;
 }
 
 const styles: Record<'info' | 'icon', CSSProperties> = {

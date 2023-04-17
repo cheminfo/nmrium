@@ -1,10 +1,10 @@
-import { Datum1D } from '../../types/data1d';
-
 /**
  * @typedef {Object} datum
  * @property {number[]} x - The X points series
  * @property {number[]} y - The Y points series
  */
+
+import { Spectrum1D } from 'nmr-load-save';
 
 /**
  *
@@ -12,7 +12,7 @@ import { Datum1D } from '../../types/data1d';
  * @returns {datum} datum object includes x and y series
  */
 
-export function get1DDataXY(spectrum: Datum1D): {
+export function get1DDataXY(spectrum: Spectrum1D): {
   x: Float64Array;
   y: Float64Array;
 } {

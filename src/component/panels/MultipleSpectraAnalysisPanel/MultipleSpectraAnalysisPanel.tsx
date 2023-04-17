@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
+import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
@@ -9,7 +10,6 @@ import {
   getDataAsString,
   generateAnalyzeSpectra,
 } from '../../../data/data1d/multipleSpectraAnalysis';
-import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
@@ -32,7 +32,7 @@ import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
-  spectra: Datum1D[];
+  spectra: Spectrum1D[];
   activeTab: string;
   showLegend: boolean;
 }
@@ -176,7 +176,7 @@ export default function MultipleSpectraAnalysisPanel() {
     displayerKey,
   } = useChartData();
 
-  const spectra = getSpectraByNucleus(activeTab, data) as Datum1D[];
+  const spectra = getSpectraByNucleus(activeTab, data) as Spectrum1D[];
 
   if (!activeTab) {
     return <div />;

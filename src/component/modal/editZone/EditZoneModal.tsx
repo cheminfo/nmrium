@@ -2,11 +2,11 @@
 import { css } from '@emotion/react';
 import { FromTo } from 'cheminfo-types';
 import { Formik } from 'formik';
+import { Signal2D } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
-import { Signal2D } from '../../../data/types/data2d';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';

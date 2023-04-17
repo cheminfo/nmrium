@@ -1,4 +1,4 @@
-import { Datum1D } from '../../../types/data1d';
+import { Spectrum1D } from 'nmr-load-save';
 
 interface RangeProps {
   id: string; // id of the selected range
@@ -7,26 +7,29 @@ interface RangeProps {
 
 /**
  * Change Range relative value and re-calculate the relative values for the other ranges
- * @param {Datum1D} datum  spectrum 1d
+ * @param {Spectrum1D} spectrum  spectrum 1d
  * @param {RangeProps} newRange
  */
-export function changeRangeRelativeValue(datum: Datum1D, newRange: RangeProps) {
-  const index = datum.ranges.values.findIndex(
+export function changeRangeRelativeValue(
+  spectrum: Spectrum1D,
+  newRange: RangeProps,
+) {
+  const index = spectrum.ranges.values.findIndex(
     (range) => range.id === newRange.id,
   );
-  if (index !== -1 && datum.ranges.options.sum) {
-    const { absolute, integration } = datum.ranges.values[index];
+  if (index !== -1 && spectrum.ranges.options.sum) {
+    const { absolute, integration } = spectrum.ranges.values[index];
     const ratio = absolute / newRange.value;
-    const sum = (newRange.value / integration) * datum.ranges.options.sum;
-    datum.ranges.options = {
-      ...datum.ranges.options,
+    const sum = (newRange.value / integration) * spectrum.ranges.options.sum;
+    spectrum.ranges.options = {
+      ...spectrum.ranges.options,
       mf: undefined,
       moleculeId: undefined,
       sumAuto: false,
       sum,
     };
 
-    datum.ranges.values = datum.ranges.values.map((range) => {
+    spectrum.ranges.values = spectrum.ranges.values.map((range) => {
       return {
         ...range,
         integration: range.absolute / ratio,

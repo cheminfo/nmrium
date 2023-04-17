@@ -1,8 +1,6 @@
 import lodashGet from 'lodash/get';
+import { Spectrum } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
-
-import { Datum1D } from '../types/data1d/Datum1D';
-import { Datum2D } from '../types/data2d/Datum2D';
 
 import { prepareKey } from './prepareKey';
 
@@ -18,7 +16,7 @@ function linkMetaWithSpectra(options: {
   target?: string;
   autolink?: boolean;
   parseMetaFileResult: ParseResult<any>;
-  spectra: (Datum1D | Datum2D)[];
+  spectra: Spectrum[];
 }) {
   let {
     source,

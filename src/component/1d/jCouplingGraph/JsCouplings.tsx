@@ -1,4 +1,5 @@
-import { Signal1D } from '../../../data/types/data1d';
+import { Signal1D } from 'nmr-load-save';
+
 import { useScaleChecked } from '../../context/ScaleContext';
 
 import { useJGraph } from './JGraphContext';

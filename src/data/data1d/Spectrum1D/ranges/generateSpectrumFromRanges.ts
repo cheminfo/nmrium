@@ -1,7 +1,7 @@
+import { Range, Spectrum1D } from 'nmr-load-save';
 import { rangesToXY } from 'nmr-processing';
 
 import { UsedColors } from '../../../../types/UsedColors';
-import { Datum1D, Range } from '../../../types/data1d';
 import { initiateDatum1D } from '../initiateDatum1D';
 
 export function generateSpectrumFromRanges(
@@ -14,7 +14,7 @@ export function generateSpectrumFromRanges(
     color?: string;
   },
   usedColors: UsedColors,
-): Datum1D {
+): Spectrum1D {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
 
   const { x, y } = rangesToXY(ranges, {

@@ -1,9 +1,9 @@
 import airPLS from 'ml-airpls';
 import equallySpaced from 'ml-array-xy-equally-spaced';
 import baselineRegression from 'ml-baseline-correction-regression';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'baselineCorrection';
 export const name = 'Baseline correction';
@@ -15,7 +15,7 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} spectrum
  */
 
 export type BaselineAlgorithms = 'airpls' | 'polynomial';
@@ -35,7 +35,7 @@ export interface AirplsOptions {
 
 export type BaselineCorrectionOptions = PolynomialOptions | AirplsOptions;
 
-export function apply(datum1D: Datum1D, options: BaselineCorrectionOptions) {
+export function apply(datum1D: Spectrum1D, options: BaselineCorrectionOptions) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }
@@ -73,7 +73,7 @@ export function apply(datum1D: Datum1D, options: BaselineCorrectionOptions) {
   Object.assign(datum1D.data, { re: corrected });
 }
 
-export function isApplicable(datum1D: Datum1D) {
+export function isApplicable(datum1D: Spectrum1D) {
   if (!datum1D.info.isFid) return true;
   return false;
 }

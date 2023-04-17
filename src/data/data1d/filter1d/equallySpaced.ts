@@ -1,6 +1,5 @@
 import equallySpaced from 'ml-array-xy-equally-spaced';
-
-import { Datum1D } from '../../types/data1d/Datum1D';
+import { Spectrum1D } from 'nmr-load-save';
 
 export const id = 'equallySpaced';
 export const name = 'Equally Spaced';
@@ -23,37 +22,37 @@ export const name = 'Equally Spaced';
  * value. The smooth variant is the same but takes the integral of the range
  * of the slot and divide by the step size between two points in the new array.
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} spectrum
  * @param {Object} options.from
  * @param {number} options.to
  * @param {number} options.numberOfPoints
  * @param {Array<{from:number;to:number}>} options.exclusions
  */
 
-export function apply(datum1D: Datum1D, options: any = {}) {
-  if (!isApplicable(datum1D)) {
+export function apply(spectrum: Spectrum1D, options: any = {}) {
+  if (!isApplicable(spectrum)) {
     throw new Error('Equally Spaced is not applicable on this data');
   }
   const { from, to, numberOfPoints, exclusions } = options;
-  const { x, re, im } = datum1D.data;
+  const { x, re, im } = spectrum.data;
   const XREdata = equallySpaced(
     { x, y: re },
     { from, to, numberOfPoints, exclusions },
   );
 
-  datum1D.data.x = XREdata.x;
-  datum1D.data.re = XREdata.y;
+  spectrum.data.x = XREdata.x;
+  spectrum.data.re = XREdata.y;
   if (im) {
     const XIMdata = equallySpaced(
       { x, y: re },
       { from, to, numberOfPoints, exclusions },
     );
-    datum1D.data.im = XIMdata.y;
+    spectrum.data.im = XIMdata.y;
   }
 }
 
-export function isApplicable(datum1D: Datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
+export function isApplicable(spectrum: Spectrum1D) {
+  if (spectrum.info.isComplex && !spectrum.info.isFid) return true;
   return false;
 }
 

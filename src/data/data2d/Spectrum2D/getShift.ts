@@ -1,15 +1,16 @@
+import { Spectrum2D } from 'nmr-load-save';
+
 import * as Filters from '../../Filters';
-import { Datum2D } from '../../types/data2d';
 
 export interface Shift2D {
   x: number;
   y: number;
 }
 
-export function getShift(datum: Datum2D): Shift2D {
+export function getShift(spectrum: Spectrum2D): Shift2D {
   let shift = { x: 0, y: 0 };
-  if (datum?.filters) {
-    for (const filter of datum.filters) {
+  if (spectrum?.filters) {
+    for (const filter of spectrum.filters) {
       if (filter.name === Filters.shift2DX.id) {
         shift.x = filter?.flag ? filter.value.shift : 0;
       }

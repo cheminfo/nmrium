@@ -1,5 +1,6 @@
+import { Spectrum2D } from 'nmr-load-save';
+
 import { getSlice } from '../../../data/data2d/Spectrum2D';
-import { Datum2D } from '../../../data/types/data2d';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -10,7 +11,7 @@ import { get2DXScale, get2DYScale } from '../utilities/scale';
 import { FidCanvas } from './FidCanvas';
 
 export function FidContainer() {
-  const spectrum = useSpectrum() as Datum2D;
+  const spectrum = useSpectrum() as Spectrum2D;
 
   if (!spectrum || spectrum?.info?.isFt) return null;
 
@@ -23,7 +24,7 @@ export function FidContainer() {
 }
 
 function TrackerContainer() {
-  const spectrum = useSpectrum() as Datum2D;
+  const spectrum = useSpectrum() as Spectrum2D;
   const { margin, width, xDomain, height, yDomain } = useChartData();
 
   const position = useMouseTracker();

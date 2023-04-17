@@ -1,11 +1,10 @@
 import { scaleLinear } from 'd3';
+import { Signal1D, Spectrum1D } from 'nmr-load-save';
 import { memo, useMemo } from 'react';
 
 import generateJGraphData, {
   CouplingLink,
 } from '../../../data/data1d/Spectrum1D/generateJGraphData';
-import { Signal1D } from '../../../data/types/data1d';
-import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -44,7 +43,7 @@ export default function JGraph() {
       spectra: { activeTab },
     },
   } = useChartData();
-  const spectrum = useSpectrum() as Datum1D;
+  const spectrum = useSpectrum() as Spectrum1D;
 
   const { showJGraph } =
     rangeState.find((r) => r.spectrumID === spectrum?.id) || rangeStateInit;

@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Data1D, Peak1D, Spectrum1D } from 'nmr-load-save';
 
 import {
   getShiftX,
@@ -8,9 +9,6 @@ import {
   autoPeakPicking,
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
-import { Datum1D } from '../../../data/types/data1d';
-import { Data1D } from '../../../data/types/data1d/Data1D';
-import { Peak } from '../../../data/types/data1d/Peak';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
@@ -33,17 +31,17 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
       to,
     });
 
-    const shiftX = getShiftX(draft.data[index] as Datum1D);
+    const shiftX = getShiftX(draft.data[index] as Spectrum1D);
 
     if (candidatePeak) {
-      const peak: Peak = {
+      const peak: Peak1D = {
         id: v4(),
         originalX: candidatePeak.x - shiftX,
         x: candidatePeak.x,
         y: candidatePeak.y,
         width: 0,
       };
-      (draft.data[index] as Datum1D).peaks.values.push(peak);
+      (draft.data[index] as Spectrum1D).peaks.values.push(peak);
     }
   }
 }
@@ -55,7 +53,7 @@ function addPeaks(draft: Draft<State>, action) {
 
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    const datumOriginal = state.data[index] as Datum1D;
+    const datumOriginal = state.data[index] as Spectrum1D;
 
     const { startX, endX } = action;
     const [from, to] = getRange(draft, { startX, endX });
@@ -63,17 +61,17 @@ function addPeaks(draft: Draft<State>, action) {
     if (from !== to) {
       const peak = lookupPeak(datumOriginal.data, { from, to });
 
-      const shiftX = getShiftX(draft.data[index] as Datum1D);
+      const shiftX = getShiftX(draft.data[index] as Spectrum1D);
 
       if (peak && !datumOriginal.peaks.values.some((p) => p.x === peak.x)) {
-        const newPeak: Peak = {
+        const newPeak: Peak1D = {
           id: v4(),
           originalX: peak.x - shiftX,
           x: peak.x,
           y: peak.y,
           width: 0,
         };
-        (draft.data[index] as Datum1D).peaks.values.push(newPeak);
+        (draft.data[index] as Spectrum1D).peaks.values.push(newPeak);
       }
     }
   }
@@ -87,12 +85,12 @@ function deletePeak(draft: Draft<State>, peakData) {
     const state = original(draft) as State;
 
     if (peakData == null) {
-      (draft.data[index] as Datum1D).peaks.values = [];
+      (draft.data[index] as Spectrum1D).peaks.values = [];
     } else {
-      const peakIndex = (state.data[index] as Datum1D).peaks.values.findIndex(
-        (p) => p.id === peakData.id,
-      );
-      (draft.data[index] as Datum1D).peaks.values.splice(peakIndex, 1);
+      const peakIndex = (
+        state.data[index] as Spectrum1D
+      ).peaks.values.findIndex((p) => p.id === peakData.id);
+      (draft.data[index] as Spectrum1D).peaks.values.splice(peakIndex, 1);
     }
   }
 }
@@ -104,11 +102,11 @@ function handleOptimizePeaks(draft: Draft<State>, action) {
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
 
     const [from, to] = draft.xDomain;
 
-    const newPeaks = optimizePeaks(draft.data[index] as Datum1D, {
+    const newPeaks = optimizePeaks(draft.data[index] as Spectrum1D, {
       from,
       to,
       peaks,
@@ -123,13 +121,13 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
     draft.toolOptions.selectedTool = options.zoom.id;
     draft.toolOptions.selectedOptionPanel = null;
     const { index } = activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
 
     const [from, to] = draft.xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
     const windowToIndex = xFindClosestIndex(datum.data.x, to);
 
-    const peaks = autoPeakPicking(draft.data[index] as Datum1D, {
+    const peaks = autoPeakPicking(draft.data[index] as Spectrum1D, {
       ...autOptions,
       windowFromIndex,
       windowToIndex,
@@ -146,7 +144,7 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
     const peakIndex = datum.peaks.values.findIndex((peak) => peak.id === id);
 
     if (peakIndex !== -1) {

@@ -1,6 +1,6 @@
+import { Data1D, Spectrum1D } from 'nmr-load-save';
+
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Data1D } from '../../types/data1d/Data1D';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'digitalFilter';
 export const name = 'Digital Filter';
@@ -12,29 +12,32 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  * Move points from the beginning to the end of FID and performs a first order phase correction
- * @param {Datum1d} datum1d
+ * @param {Datum1d} spectrum
  */
 
 export interface DigitalFilterOptions {
   digitalFilterValue?: number;
 }
 
-export function apply(datum1D: Datum1D, options: DigitalFilterOptions = {}) {
-  if (!isApplicable(datum1D)) {
+export function apply(
+  spectrum: Spectrum1D,
+  options: DigitalFilterOptions = {},
+) {
+  if (!isApplicable(spectrum)) {
     throw new Error('Digital Filter is not applicable on this data');
   }
   let { digitalFilterValue } = options;
 
   if (!digitalFilterValue) {
-    digitalFilterValue = datum1D.info.digitalFilter || 0;
-    const filter = datum1D.filters.find((filter) => filter.name === id);
+    digitalFilterValue = spectrum.info.digitalFilter || 0;
+    const filter = spectrum.filters.find((filter) => filter.name === id);
     if (filter) {
       filter.value = { digitalFilterValue };
     }
   }
 
-  let re = new Float64Array(datum1D.data.re);
-  let im = new Float64Array(datum1D.data.im);
+  let re = new Float64Array(spectrum.data.re);
+  let im = new Float64Array(spectrum.data.im);
 
   let pointsToShift = Math.floor(digitalFilterValue);
 
@@ -48,14 +51,14 @@ export function apply(datum1D: Datum1D, options: DigitalFilterOptions = {}) {
   newIm.set(im.slice(pointsToShift));
   newIm.set(im.slice(skip, pointsToShift), im.length - pointsToShift);
 
-  datum1D.data.re = newRe;
-  datum1D.data.im = newIm;
+  spectrum.data.re = newRe;
+  spectrum.data.im = newIm;
 }
 
 export function isApplicable(
-  datum1D: Datum1D,
-): datum1D is Datum1D & { data: Required<Data1D> } {
-  if (datum1D.info.isComplex && datum1D.info.isFid) {
+  spectrum: Spectrum1D,
+): spectrum is Spectrum1D & { data: Required<Data1D> } {
+  if (spectrum.info.isComplex && spectrum.info.isFid) {
     return true;
   }
   return false;

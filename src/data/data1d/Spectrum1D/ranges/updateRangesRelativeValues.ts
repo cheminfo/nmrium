@@ -1,14 +1,15 @@
-import { Datum1D } from '../../../types/data1d/Datum1D';
+import { Spectrum1D } from 'nmr-load-save';
+
 import { updateRelatives } from '../integrals/updateRelatives';
 
 import { checkRangeKind } from './checkRangeKind';
 
 export function updateRangesRelativeValues(
-  datum: Datum1D,
+  spectrum: Spectrum1D,
   forceCalculateIntegral = false,
 ) {
   updateRelatives(
-    datum.ranges,
+    spectrum.ranges,
     'integration',
     checkRangeKind,
     forceCalculateIntegral,

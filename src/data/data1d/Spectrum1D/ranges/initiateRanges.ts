@@ -1,12 +1,11 @@
 import merge from 'lodash/merge';
-
-import { Datum1D, Ranges } from '../../../types/data1d';
+import { Ranges, Spectrum1D } from 'nmr-load-save';
 
 import { mapRanges } from './mapRanges';
 
 export function initiateRanges(
   options: Partial<{ ranges: Ranges }>,
-  datum: Datum1D,
+  spectrum: Spectrum1D,
 ) {
   return merge(
     {
@@ -19,7 +18,7 @@ export function initiateRanges(
     },
     options.ranges,
     {
-      values: mapRanges(options?.ranges?.values || [], datum),
+      values: mapRanges(options?.ranges?.values || [], spectrum),
     },
   );
 }

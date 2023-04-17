@@ -1,7 +1,6 @@
 import { v4 } from '@lukeed/uuid';
+import { Range } from 'nmr-load-save';
 import { useMemo } from 'react';
-
-import { Range } from '../../../../data/types/data1d';
 
 export interface RangeData extends Range {
   rowKey: string;

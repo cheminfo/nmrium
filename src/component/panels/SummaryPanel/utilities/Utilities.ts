@@ -11,14 +11,13 @@ import {
   Correlation,
   Link,
 } from 'nmr-correlation';
+import { Spectrum2D, Spectrum } from 'nmr-load-save';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
-import { Datum2D } from '../../../../data/types/data2d';
 import {
   findSignal2D,
   findSpectrum,
 } from '../../../../data/utilities/FindUtilities';
-import { Spectra } from '../../../NMRium';
 import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPathLength';
 import { ActiveSpectrum } from '../../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
@@ -53,7 +52,7 @@ function getLabelColor(correlationData, correlation) {
 }
 
 function findSignalMatch1D(
-  spectrum: Datum2D,
+  spectrum: Spectrum2D,
   link: Link,
   factor: number,
   xDomain0: number,
@@ -73,7 +72,7 @@ function findSignalMatch1D(
 }
 
 function findSignalMatch2D(
-  spectrum: Datum2D,
+  spectrum: Spectrum2D,
   link: Link,
   factor: number,
   xDomain0: number,
@@ -471,7 +470,7 @@ function convertValuesString(
 }
 
 function isInView(
-  spectraData: Spectra,
+  spectraData: Spectrum[],
   activeTab: string,
   activeSpectrum: ActiveSpectrum | null,
   xDomain: number[],
@@ -524,7 +523,7 @@ function isInView(
           spectraData,
           link.experimentID,
           true,
-        ) as Datum2D;
+        ) as Spectrum2D;
         return findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1);
       })
     ) {
@@ -542,7 +541,7 @@ function isInView(
       spectraData,
       firstLink2D.experimentID,
       true,
-    ) as Datum2D;
+    ) as Spectrum2D;
     // correlation is represented by a 2D signal
     if (
       findSignalMatch2D(
@@ -564,7 +563,7 @@ function isInView(
           spectraData,
           link.experimentID,
           true,
-        ) as Datum2D;
+        ) as Spectrum2D;
         return findSignalMatch2D(
           spectrum,
           link,

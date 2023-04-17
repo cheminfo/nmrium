@@ -1,6 +1,5 @@
 import max from 'ml-array-max';
-
-import { Data1D } from '../../../types/data1d/Data1D';
+import { Data1D } from 'nmr-load-save';
 
 // Lookup for apeak while the mouse move
 /**

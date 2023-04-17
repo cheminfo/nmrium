@@ -1,8 +1,8 @@
 import max from 'ml-array-max';
+import { Spectrum1D } from 'nmr-load-save';
 import { useContext, useEffect, useState } from 'react';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
-import { Datum1D } from '../../../data/types/data1d';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
@@ -57,7 +57,7 @@ function PeakPointer() {
         // get the active spectrum data by looking for it by id
         const spectrum = data.find(
           (d) => d.id === activeSpectrum.id,
-        ) as Datum1D;
+        ) as Spectrum1D;
 
         if (!spectrum) throw new Error('Unreachable');
         const datum = get1DDataXY(spectrum);

@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
+import { Signal2D } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { Signal2D } from '../../../data/types/data2d';
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useHighlight } from '../../highlight';
 import SignalDeltaLine from '../SignalDeltaLine';

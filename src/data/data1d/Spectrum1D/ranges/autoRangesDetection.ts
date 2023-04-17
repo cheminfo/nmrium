@@ -1,6 +1,5 @@
+import { Range, Spectrum1D } from 'nmr-load-save';
 import { xyAutoRangesPicking } from 'nmr-processing';
-
-import { Datum1D, Range } from '../../../types/data1d';
 
 const defaultPeakPickingOptions = {
   minMaxRatio: 1,
@@ -15,14 +14,14 @@ const defaultPeakPickingOptions = {
 };
 
 export default function autoRangesDetection(
-  datum1D: Datum1D,
+  spectrum: Spectrum1D,
   options: any = {},
 ): Range[] {
   // we calculate the noise but this could be improved
 
-  let { re, x } = datum1D.data;
+  let { re, x } = spectrum.data;
 
-  const { originFrequency, nucleus } = datum1D.info;
+  const { originFrequency, nucleus } = spectrum.info;
 
   const { windowFromIndex, windowToIndex, peakPicking } = options;
 

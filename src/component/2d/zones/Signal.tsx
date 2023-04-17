@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
+import { Signal2D } from 'nmr-load-save';
 import { memo, useState, useEffect, useCallback } from 'react';
 
-import { Signal2D } from '../../../data/types/data2d';
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
@@ -79,7 +79,7 @@ function Signal({ signal, isVisible }: SignalProps) {
       )}
       <g className="zone-signal-peak" style={{ pointerEvents: 'none' }}>
         {isVisible.peaks &&
-          signal.peaks &&
+          signal?.peaks &&
           signal.peaks.map((peak, i) => (
             <circle
               key={`${signal.id + i}`}

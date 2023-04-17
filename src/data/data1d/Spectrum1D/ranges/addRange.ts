@@ -1,9 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
+import { Signal1D, Spectrum1D } from 'nmr-load-save';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
-import { Signal1D } from '../../../types/data1d';
-import { Datum1D } from '../../../types/data1d/Datum1D';
 import { initSumOptions, SumParams } from '../SumManager';
 
 import detectSignal from './detectSignal';
@@ -34,9 +33,12 @@ export function createRangeObj({
   };
 }
 
-export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
+export function addRange(
+  spectrum: Spectrum1D,
+  options: RangeOptions & SumParams,
+) {
   const { from, to, id, molecules, nucleus } = options;
-  const { x, re } = datum.data;
+  const { x, re } = spectrum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
   // detectSignal use the advance multiplet-analysis that can crash if too many points
@@ -45,7 +47,7 @@ export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
     {
       from,
       to,
-      frequency: datum.info.originFrequency,
+      frequency: spectrum.info.originFrequency,
     },
   );
 
@@ -58,7 +60,13 @@ export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
         to,
         id,
         absolute,
-        signal: { multiplicity: '', kind: 'signal', delta: 0, js: [] },
+        signal: {
+          multiplicity: '',
+          kind: 'signal',
+          delta: 0,
+          js: [],
+          diaIDs: [],
+        },
       });
     }
   } else {
@@ -73,15 +81,15 @@ export function addRange(datum: Datum1D, options: RangeOptions & SumParams) {
 
   try {
     if (range) {
-      datum.ranges.options = initSumOptions(datum.ranges.options, {
+      spectrum.ranges.options = initSumOptions(spectrum.ranges.options, {
         molecules,
         nucleus,
       });
 
-      datum.ranges.values = datum.ranges.values.concat(
-        mapRanges([range], datum),
+      spectrum.ranges.values = spectrum.ranges.values.concat(
+        mapRanges([range], spectrum),
       );
-      updateRangesRelativeValues(datum);
+      updateRangesRelativeValues(spectrum);
     }
   } catch (error) {
     reportError(error);

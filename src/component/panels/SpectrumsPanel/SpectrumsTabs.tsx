@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Spectrum } from 'nmr-load-save';
 import { useState, useMemo, memo, useCallback } from 'react';
 
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
@@ -21,7 +20,7 @@ import { SpectraTable } from './SpectraTable';
 import SpectrumSetting from './base/setting/SpectrumSetting';
 
 interface SpectrumsTabsInnerProps {
-  data: Array<Datum1D | Datum2D>;
+  data: Spectrum[];
   activeTab: string;
   activeSpectra: Record<string, ActiveSpectrum[] | null>;
 }

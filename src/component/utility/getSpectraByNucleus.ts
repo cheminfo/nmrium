@@ -1,12 +1,8 @@
-import { Datum1D } from '../../data/types/data1d/Datum1D';
-import { Datum2D } from '../../data/types/data2d';
+import { Spectrum } from 'nmr-load-save';
 
 import nucleusToString from './nucleusToString';
 
-export function getSpectraByNucleus(
-  nucleus: string,
-  data: (Datum1D | Datum2D)[],
-) {
+export function getSpectraByNucleus(nucleus: string, data: Spectrum[]) {
   return data.filter(
     (spectrum) => nucleusToString(spectrum.info.nucleus) === nucleus,
   );

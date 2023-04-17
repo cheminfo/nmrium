@@ -1,8 +1,8 @@
 import { ScaleLinear } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
+import { Data1D } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { Data1D } from '../../data/types/data1d';
 import { getIntegralYScale } from '../1d/utilities/scale';
 import { useChartData } from '../context/ChartContext';
 import { PathBuilder } from '../utility/PathBuilder';

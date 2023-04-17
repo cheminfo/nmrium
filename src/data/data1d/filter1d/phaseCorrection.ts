@@ -2,11 +2,11 @@ import {
   reimAbsolute,
   reimPhaseCorrection,
   reimAutoPhaseCorrection,
+  DataReIm,
 } from 'ml-spectra-processing';
+import { Data1D, Spectrum1D } from 'nmr-load-save';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Data1D } from '../../types/data1d/Data1D';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'phaseCorrection';
 export const name = 'Phase correction';
@@ -18,7 +18,7 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} spectrum
  * @param {Object} [options={}]
  * @param {number} [options.ph0=0]
  * @param {number} [options.ph1=0]
@@ -30,29 +30,29 @@ interface PhaseCorrectionOptions {
   absolute?: boolean;
 }
 
-export function apply(datum1D: Datum1D, options: PhaseCorrectionOptions) {
-  if (!isApplicable(datum1D)) {
+export function apply(spectrum: Spectrum1D, options: PhaseCorrectionOptions) {
+  if (!isApplicable(spectrum)) {
     throw new Error('phaseCorrection not applicable on this data');
   }
 
   const { absolute = false } = options;
-  const filter = datum1D.filters?.find((filter) => filter.name === id);
+  const filter = spectrum.filters?.find((filter) => filter.name === id);
 
   if (absolute) {
-    datum1D.data.re = reimAbsolute(datum1D.data);
-    datum1D.data.im = new Float64Array(0);
+    spectrum.data.re = reimAbsolute(spectrum.data as DataReIm);
+    spectrum.data.im = new Float64Array(0);
     if (filter) {
       filter.value = { ...filter.value, ph0: 0, ph1: 0, absolute };
     }
   } else if ('ph0' in options && 'ph1' in options) {
     let { ph0, ph1 } = options;
-    phaseCorrection(datum1D, { ph0, ph1 });
+    phaseCorrection(spectrum, { ph0, ph1 });
     if (filter) {
       filter.value = { ...filter.value, absolute };
     }
   } else {
-    let { ph0, ph1 } = autoPhaseCorrection(datum1D);
-    phaseCorrection(datum1D, { ph0, ph1 });
+    let { ph0, ph1 } = autoPhaseCorrection(spectrum);
+    phaseCorrection(spectrum, { ph0, ph1 });
     if (filter) {
       filter.value = { ...filter.value, absolute, ph0, ph1 };
     }
@@ -60,9 +60,9 @@ export function apply(datum1D: Datum1D, options: PhaseCorrectionOptions) {
 }
 
 export function isApplicable(
-  datum1D: Datum1D,
-): datum1D is Datum1D & { data: Required<Data1D> } {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
+  spectrum: Spectrum1D,
+): spectrum is Spectrum1D & { data: Required<Data1D> } {
+  if (spectrum.info.isComplex && !spectrum.info.isFid) return true;
   return false;
 }
 
@@ -73,12 +73,12 @@ export function reduce(previousValue, newValue) {
   };
 }
 
-function phaseCorrection(datum1D, { ph0, ph1 }) {
+function phaseCorrection(spectrum, { ph0, ph1 }) {
   ph0 *= Math.PI / 180;
   ph1 *= Math.PI / 180;
-  datum1D.data = {
-    ...datum1D.data,
-    ...reimPhaseCorrection(datum1D.data, ph0, ph1),
+  spectrum.data = {
+    ...spectrum.data,
+    ...reimPhaseCorrection(spectrum.data, ph0, ph1),
   };
 }
 
@@ -90,7 +90,7 @@ interface AutoPhaseCorrectionOptions {
 }
 
 function autoPhaseCorrection(
-  datum1D: Datum1D,
+  spectrum: Spectrum1D,
   options: AutoPhaseCorrectionOptions = {},
 ) {
   const {
@@ -100,7 +100,7 @@ function autoPhaseCorrection(
     factorNoise = 5,
   } = options;
 
-  return reimAutoPhaseCorrection(datum1D.data as any, {
+  return reimAutoPhaseCorrection(spectrum.data as any, {
     minRegSize,
     maxDistanceToJoin,
     magnitudeMode,

@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Spectrum1D, Range } from 'nmr-load-save';
 import { CSSProperties, useMemo } from 'react';
 
-import { Datum1D, Range } from '../../../data/types/data1d';
 import {
   AssignmentsData,
   useAssignment,
@@ -136,7 +136,7 @@ export function MultiplicityTree(props: MultiplicityTreeProps) {
   const treeData = useMemo(
     () =>
       spectrum
-        ? getTree(props.range, spectrum as Datum1D, { scaleX, scaleY })
+        ? getTree(props.range, spectrum as Spectrum1D, { scaleX, scaleY })
         : [],
     [props.range, scaleX, scaleY, spectrum],
   );
@@ -158,7 +158,7 @@ export function MultiplicityTree(props: MultiplicityTreeProps) {
   );
 }
 
-function getTree(range: Range, spectrum: Datum1D, scale) {
+function getTree(range: Range, spectrum: Spectrum1D, scale) {
   const SHIFT_X = 30;
 
   const treeResult: any[] = [];

@@ -1,19 +1,19 @@
-import { Datum1D, Integral } from '../../../types/data1d';
+import { Spectrum1D, Integral } from 'nmr-load-save';
 
 export function changeIntegralsRelative(
-  datum: Datum1D,
+  spectrum: Spectrum1D,
   newIntegral: { id: string; value: number },
 ) {
-  const index = datum.integrals.values.findIndex(
+  const index = spectrum.integrals.values.findIndex(
     (integral) => integral.id === newIntegral.id,
   );
   if (index !== -1) {
-    const ratio = datum.integrals.values[index].absolute / newIntegral.value;
+    const ratio = spectrum.integrals.values[index].absolute / newIntegral.value;
     const result: {
       sum: number;
       values: Integral[];
     } = { values: [], sum: 0 };
-    for (const [index, integral] of datum.integrals.values.entries()) {
+    for (const [index, integral] of spectrum.integrals.values.entries()) {
       const newIntegralValue = integral.absolute / ratio;
       result.sum += newIntegralValue;
       result.values[index] = {
@@ -22,9 +22,9 @@ export function changeIntegralsRelative(
       };
     }
     const { values, sum } = result;
-    datum.integrals.values = values;
-    datum.integrals.options = {
-      ...datum.integrals.options,
+    spectrum.integrals.values = values;
+    spectrum.integrals.options = {
+      ...spectrum.integrals.options,
       mf: undefined,
       moleculeId: undefined,
       sumAuto: false,

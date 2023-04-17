@@ -2,7 +2,7 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Source } from 'nmr-load-save';
+import { Source, Spectrum } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
@@ -10,10 +10,7 @@ import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra';
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import { UsedColors } from '../../../types/UsedColors';
-import { Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import nucleusToString from '../../utility/nucleusToString';
 import { OnLoadProcessing } from '../../workspaces/Workspace';
@@ -53,7 +50,7 @@ function setCorrelation(draft: Draft<State>, correlations) {
 }
 
 function initSpectra(
-  inputSpectra: (Datum1D | Datum2D)[],
+  inputSpectra: Spectrum[],
   options: { usedColors: UsedColors; onLoadProcessing: OnLoadProcessing },
 ) {
   const spectra: any = [];
@@ -76,7 +73,7 @@ function setData(
     view?: ViewState;
     data?: {
       source?: Source;
-      spectra: Spectra;
+      spectra: Spectrum[];
       molecules: StateMoleculeExtended[];
       correlations: CorrelationData;
     };

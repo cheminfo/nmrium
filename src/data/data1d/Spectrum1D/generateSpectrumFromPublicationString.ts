@@ -1,14 +1,14 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { resurrect } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
-import { Datum1D } from '../../types/data1d';
 
 import { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
 
 export function generateSpectrumFromPublicationString(
   publicationString: string,
   usedColors: UsedColors,
-): Datum1D {
+): Spectrum1D {
   const {
     ranges,
     experiment: { nucleus, solvent },

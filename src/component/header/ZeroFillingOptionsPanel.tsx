@@ -1,7 +1,7 @@
+import { Data1D } from 'nmr-load-save';
 import { useEffect, useState, memo } from 'react';
 
 import * as Filters from '../../data/Filters';
-import { Data1D } from '../../data/types/data1d';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';

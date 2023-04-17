@@ -1,6 +1,6 @@
-import { Datum1D } from '../../types/data1d/Datum1D';
+import { Spectrum1D } from 'nmr-load-save';
 
-export function getSpectrumErrorValue(datum: Datum1D) {
-  const { x } = datum.data;
+export function getSpectrumErrorValue(spectrum: Spectrum1D) {
+  const { x } = spectrum.data;
   return (x[x.length - 1] - x[0]) / 10000;
 }

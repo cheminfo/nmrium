@@ -1,11 +1,10 @@
 import median from 'ml-array-median';
+import { Spectrum1D, Peak1D } from 'nmr-load-save';
 import { xyAutoPeaksPicking } from 'nmr-processing';
-
-import { Datum1D, Peak } from '../../../types/data1d';
 
 import { mapPeaks } from './mapPeaks';
 
-export function autoPeakPicking(datum1D: Datum1D, options) {
+export function autoPeakPicking(spectrum: Spectrum1D, options) {
   const {
     minMaxRatio,
     maxNumberOfPeaks,
@@ -15,10 +14,10 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
     windowToIndex,
   } = options;
   // we calculate the noise but this could be improved
-  const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
+  const noise = median(spectrum.data.re.map((y) => Math.abs(y)));
 
-  let { re, x } = datum1D.data;
-  const { originFrequency: frequency } = datum1D.info;
+  let { re, x } = spectrum.data;
+  const { originFrequency: frequency } = spectrum.info;
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {
     x = x.slice(windowFromIndex, windowToIndex);
@@ -40,5 +39,5 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
 
   peaks.sort((a, b) => b.y - a.y);
   if (maxNumberOfPeaks < peaks.length) peaks = peaks.slice(0, maxNumberOfPeaks);
-  return mapPeaks(peaks as Peak[], datum1D);
+  return mapPeaks(peaks as Peak1D[], spectrum);
 }

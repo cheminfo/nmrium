@@ -1,4 +1,4 @@
-import { Datum1D } from '../../../types/data1d/Datum1D';
+import { Spectrum1D } from 'nmr-load-save';
 import { initSumOptions, SumParams } from '../SumManager';
 
 import autoRangesDetection from './autoRangesDetection';
@@ -23,16 +23,18 @@ interface DetectRangesOptions {
 }
 
 export function detectRanges(
-  datum: Datum1D,
+  spectrum: Spectrum1D,
   options: DetectRangesOptions & SumParams,
 ) {
   const { molecules, nucleus, ...detectOptions } = options;
-  detectOptions.impurities = { solvent: datum.info.solvent || '' };
-  const ranges = autoRangesDetection(datum, detectOptions);
-  datum.ranges.options = initSumOptions(datum.ranges.options, {
+  detectOptions.impurities = { solvent: spectrum.info.solvent || '' };
+  const ranges = autoRangesDetection(spectrum, detectOptions);
+  spectrum.ranges.options = initSumOptions(spectrum.ranges.options, {
     molecules,
     nucleus,
   });
-  datum.ranges.values = datum.ranges.values.concat(mapRanges(ranges, datum));
-  updateRangesRelativeValues(datum);
+  spectrum.ranges.values = spectrum.ranges.values.concat(
+    mapRanges(ranges, spectrum),
+  );
+  updateRangesRelativeValues(spectrum);
 }

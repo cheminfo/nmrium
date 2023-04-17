@@ -1,5 +1,6 @@
+import { Zone } from 'nmr-load-save';
+
 import { DatumKind } from '../constants/SignalsKinds';
-import { Zone } from '../types/data2d';
 
 export function getDiaIDs(zone: Zone, axis: string): string[] {
   return ([] as string[]).concat(

@@ -1,12 +1,12 @@
-import { Datum1D } from '../../../types/data1d';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { mapRanges } from './mapRanges';
 import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 
-export function updateRanges(datum: Datum1D) {
-  datum.ranges.values = mapRanges(datum.ranges.values, datum, {
+export function updateRanges(spectrum: Spectrum1D) {
+  spectrum.ranges.values = mapRanges(spectrum.ranges.values, spectrum, {
     checkIsExisting: false,
     shiftTarget: 'current',
   });
-  updateRangesRelativeValues(datum, true);
+  updateRangesRelativeValues(spectrum, true);
 }

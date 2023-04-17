@@ -1,5 +1,5 @@
-import { Data1D } from '../../data/types/data1d';
-import { Data2D } from '../../data/types/data2d';
+import { Data1D, Data2D } from 'nmr-load-save';
+
 import { ActionType } from '../reducer/types/Types';
 
 import {

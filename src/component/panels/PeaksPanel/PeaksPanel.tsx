@@ -2,10 +2,10 @@
 import { css } from '@emotion/react';
 import { SvgNmrFt, SvgNmrPeaks } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
+import { Spectrum1D, Info1D, Peak1D, Peaks } from 'nmr-load-save';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 
-import { Datum1D, Info1D, Peak, Peaks } from '../../../data/types/data1d';
 import { PeaksViewState } from '../../../data/types/view-state/PeaksViewState';
 import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
@@ -42,7 +42,7 @@ interface PeaksPanelInnerProps {
   peaksViewState: PeaksViewState;
 }
 
-export interface PeakRecord extends Peak {
+export interface PeakRecord extends Peak1D {
   xHz: number;
   isConstantlyHighlighted: boolean;
 }
@@ -242,7 +242,7 @@ export default function PeaksPanel() {
       spectra: { activeTab },
     },
   } = useChartData();
-  const { peaks, info } = useSpectrum(emptyData) as Datum1D;
+  const { peaks, info } = useSpectrum(emptyData) as Spectrum1D;
   const preferences = usePreferences();
   const peaksViewState = useActiveSpectrumPeaksViewState();
 

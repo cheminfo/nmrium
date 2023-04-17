@@ -1,4 +1,5 @@
-import { Datum1D } from '../../../data/types/data1d';
+import { Spectrum1D } from 'nmr-load-save';
+
 import useSpectrum from '../../hooks/useSpectrum';
 import Left1DChart from '../1d-tracer/Left1DChart';
 import Top1DChart from '../1d-tracer/Top1DChart';
@@ -6,7 +7,7 @@ import Top1DChart from '../1d-tracer/Top1DChart';
 import Contours from './Contours';
 
 interface FTContainerProps {
-  spectra?: Datum1D[];
+  spectra?: Spectrum1D[];
 }
 
 export function FTContainer(props: FTContainerProps) {

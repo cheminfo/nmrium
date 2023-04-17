@@ -1,6 +1,6 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { useContext, useCallback, useMemo, CSSProperties } from 'react';
 
-import { Datum1D } from '../../../data/types/data1d';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
@@ -34,7 +34,7 @@ function XLabelPointer() {
   }, [activeSpectrum, data]);
 
   const format = useFormatNumberByNucleus(
-    (activeSpectrumData as Datum1D)?.info.nucleus,
+    (activeSpectrumData as Spectrum1D)?.info.nucleus,
   );
 
   const getXValue = useCallback(

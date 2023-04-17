@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Info1D } from 'nmr-load-save';
 import { FaLink } from 'react-icons/fa';
 
-import { Info1D } from '../../../data/types/data1d/Info1D';
 import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import useTableSortBy from '../../hooks/useTableSortBy';
 import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';

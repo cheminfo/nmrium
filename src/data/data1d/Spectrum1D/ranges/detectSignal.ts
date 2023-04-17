@@ -42,6 +42,7 @@ export default function detectSignal(
       kind: 'signal',
       delta: result.chemShift,
       js: result.js,
+      diaIDs: [],
     };
 
     if (result.js.length === 0) {

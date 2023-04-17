@@ -1,4 +1,5 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
+import { Spectrum, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
@@ -7,8 +8,6 @@ import {
 } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
@@ -47,9 +46,9 @@ interface SpectraPanelHeaderProps {
 }
 
 interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
-  data: Array<Datum1D | Datum2D>;
+  data: Spectrum[];
   activeTab: string;
-  activeSpectrum: Datum2D | null;
+  activeSpectrum: Spectrum2D | null;
   activeSpectra: ActiveSpectrum[] | null;
   displayerMode: string;
 }
@@ -205,7 +204,7 @@ export default function SpectrumsTabs({
     },
     displayerMode,
   } = useChartData();
-  const spectrum = useSpectrum() as Datum2D;
+  const spectrum = useSpectrum() as Spectrum2D;
   const activeSpectra = useActiveSpectra();
   return (
     <MemoizedSpectraPanelHeader

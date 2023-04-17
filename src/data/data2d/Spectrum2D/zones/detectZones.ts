@@ -1,4 +1,4 @@
-import { Zone } from '../../../types/data2d';
+import { Zone } from 'nmr-load-save';
 
 import { DetectionZonesOptions, getDetectionZones } from './getDetectionZones';
 import { mapZones } from './mapZones';

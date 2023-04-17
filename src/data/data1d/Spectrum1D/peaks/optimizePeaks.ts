@@ -1,20 +1,22 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Peak1D, Spectrum1D } from 'nmr-load-save';
 import { xyPeaksOptimization } from 'nmr-processing';
-
-import { Datum1D, Peak } from '../../../types/data1d';
 
 import { mapPeaks } from './mapPeaks';
 
 interface OptimizePeaksOptions {
   from: number;
   to: number;
-  peaks: Peak[];
+  peaks: Peak1D[];
 }
 
-export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
+export function optimizePeaks(
+  spectrum: Spectrum1D,
+  options: OptimizePeaksOptions,
+) {
   const { from, to, peaks } = options;
-  const { originFrequency: frequency } = datum1D.info;
-  let { re, x } = datum1D.data;
+  const { originFrequency: frequency } = spectrum.info;
+  let { re, x } = spectrum.data;
 
   const fromIndex = xFindClosestIndex(x, from);
   const ToIndex = xFindClosestIndex(x, to);
@@ -25,7 +27,7 @@ export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
     ids[peak.id] = peak;
   }
   //remove peaks before start the optimization from the original list
-  datum1D.peaks.values = datum1D.peaks.values.filter((peak) => !ids[peak.id]);
+  spectrum.peaks.values = spectrum.peaks.values.filter((peak) => !ids[peak.id]);
 
   x = x.subarray(fromIndex, ToIndex);
   re = re.subarray(fromIndex, ToIndex);
@@ -34,7 +36,11 @@ export function optimizePeaks(datum1D: Datum1D, options: OptimizePeaksOptions) {
     frequency,
     groupingFactor: 3,
   });
-  return mapPeaks(datum1D.peaks.values.concat(newPeaks as Peak[]), datum1D, {
-    checkIsExisting: false,
-  });
+  return mapPeaks(
+    spectrum.peaks.values.concat(newPeaks as Peak1D[]),
+    spectrum,
+    {
+      checkIsExisting: false,
+    },
+  );
 }

@@ -1,10 +1,11 @@
-import * as FiltersTypes from '../../Filters';
-import { Datum1D } from '../../types/data1d/Datum1D';
+import { Spectrum1D } from 'nmr-load-save';
 
-export function getShiftX(datum: Datum1D): number {
+import * as FiltersTypes from '../../Filters';
+
+export function getShiftX(spectrum: Spectrum1D): number {
   const filter =
-    datum?.filters &&
-    datum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
+    spectrum?.filters &&
+    spectrum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
 
   return filter?.flag ? filter.value.shift : 0;
 }

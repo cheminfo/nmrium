@@ -1,7 +1,7 @@
 import { max } from 'd3';
 import { Draft } from 'immer';
+import { Data1D } from 'nmr-load-save';
 
-import { Data1D } from '../../../data/types/data1d';
 import { State } from '../Reducer';
 
 import { getActiveSpectrum } from './getActiveSpectrum';

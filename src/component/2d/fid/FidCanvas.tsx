@@ -1,8 +1,7 @@
 import { matrixZPivotRescale } from 'ml-spectra-processing';
+import { Data2DFid, Data2DFt, Spectrum2D } from 'nmr-load-save';
 import { useEffect, useRef, useMemo } from 'react';
 
-import { Datum2D } from '../../../data/types/data2d';
-import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
@@ -11,7 +10,7 @@ export function FidCanvas() {
   const { width, height, margin, xDomain, yDomain, originDomain } =
     useChartData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const spectrum = useSpectrum() as Datum2D;
+  const spectrum = useSpectrum() as Spectrum2D;
   const { left, top, right, bottom } = margin;
 
   const canvasWidth = width - right - left;
@@ -102,7 +101,7 @@ export function FidCanvas() {
   );
 }
 
-function getImageData(spectrum: Datum2D) {
+function getImageData(spectrum: Spectrum2D) {
   const { isFid } = spectrum.info;
   const matrix = matrixZPivotRescale(
     isFid

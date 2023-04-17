@@ -1,14 +1,13 @@
 import merge from 'lodash/merge';
-
-import { Datum1D, Peaks } from '../../../types/data1d';
+import { Spectrum1D, Peaks } from 'nmr-load-save';
 
 import { mapPeaks } from './mapPeaks';
 
 export function initiatePeaks(
   options: Partial<{ peaks: Peaks }>,
-  datum: Datum1D,
+  spectrum: Spectrum1D,
 ) {
   return merge({ values: [], options: {} }, options.peaks, {
-    values: mapPeaks(options?.peaks?.values || [], datum),
+    values: mapPeaks(options?.peaks?.values || [], spectrum),
   });
 }

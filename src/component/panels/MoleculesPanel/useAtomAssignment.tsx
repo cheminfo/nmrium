@@ -1,7 +1,6 @@
+import { Range, Zone } from 'nmr-load-save';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Range } from '../../../data/types/data1d';
-import { Zone } from '../../../data/types/data2d';
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import {

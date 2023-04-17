@@ -1,7 +1,7 @@
 import { DataXY, DoubleArray } from 'cheminfo-types';
+import { Spectrum1D, Peak1D } from 'nmr-load-save';
 import { peakToXY, peaksToXY } from 'nmr-processing';
 
-import { Datum1D, Peak } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { PathBuilder } from '../../utility/PathBuilder';
@@ -9,14 +9,14 @@ import { PathBuilder } from '../../utility/PathBuilder';
 type PeaksShapesOptions =
   | {
       target: 'peakShape';
-      peak: Peak;
+      peak: Peak1D;
     }
   | {
       target: 'peaksSum';
-      peaks: Peak[];
+      peaks: Peak1D[];
     };
 
-export function usePeakShapesPath(spectrum: Datum1D) {
+export function usePeakShapesPath(spectrum: Spectrum1D) {
   const { scaleX, scaleY } = useScaleChecked();
   const { width, xDomain } = useChartData();
   return function getPath(options: PeaksShapesOptions): {

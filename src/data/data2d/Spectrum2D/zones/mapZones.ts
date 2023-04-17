@@ -1,9 +1,8 @@
 import { v4 } from '@lukeed/uuid';
+import { Spectrum2D, Zone, Signal2D } from 'nmr-load-save';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';
-import { Datum2D, Zone } from '../../../types/data2d';
-import { Signal2D } from '../../../types/data2d/Signal2D';
 import { get2DSpectrumErrorValue } from '../get2DSpectrumErrorValue';
 import { getShift, Shift2D } from '../getShift';
 
@@ -41,7 +40,7 @@ function getSignal(signal: Signal2D, shiftTarget: ShiftTarget, shift: Shift2D) {
 
 export function mapZones(
   zones: Zone[],
-  datum: Datum2D,
+  datum: Spectrum2D,
   options: MapOptions = {},
 ) {
   const { checkIsExisting = true, shiftTarget = 'origin' } = options;
@@ -68,6 +67,7 @@ export function mapZones(
     });
 
     return {
+      ...zone,
       id: zone.id || v4(),
       x: { from: x.from, to: x.to },
       y: { from: y.from, to: y.to },

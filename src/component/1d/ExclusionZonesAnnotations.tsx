@@ -1,7 +1,7 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 
 import * as Filters from '../../data/Filters';
-import { Datum1D } from '../../data/types/data1d';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -12,7 +12,7 @@ import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
 
 interface ExclusionZonesAnnotationsInnerProps {
   displayerKey: string;
-  spectra: Datum1D[];
+  spectra: Spectrum1D[];
   xDomains: any;
   shiftY: number;
 }
@@ -56,7 +56,7 @@ function ExclusionZonesAnnotations() {
   const { displayerKey, xDomains, displayerMode } = useChartData();
   const { shiftY } = useScale();
 
-  const spectra = useSpectraByActiveNucleus() as Datum1D[];
+  const spectra = useSpectraByActiveNucleus() as Spectrum1D[];
 
   if (displayerMode !== DISPLAYER_MODE.DM_1D) return null;
 
@@ -73,7 +73,7 @@ function ExclusionZonesAnnotations() {
 export default ExclusionZonesAnnotations;
 
 function getExclusionZones(
-  data: Datum1D,
+  data: Spectrum1D,
 ): { id: string; zones: ExclusionZone[] }[] {
   const zones: { id: string; zones: ExclusionZone[] }[] = [];
   for (const filter of data.filters) {

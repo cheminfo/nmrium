@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
+import { Spectrum1D } from 'nmr-load-save';
 
-import { Datum1D } from '../../../data/types/data1d';
 import { State } from '../Reducer';
 
 function handleOrderSpectra(draft: Draft<State>, action) {
@@ -12,13 +12,13 @@ function handleOrderSpectra(draft: Draft<State>, action) {
     index++;
   }
   const sortedSpectraKey = {};
-  const sortedSpectra: Datum1D[] = [];
+  const sortedSpectra: Spectrum1D[] = [];
 
   for (const record of data) {
     const key = Object.keys(record)[0];
     const spectrumId = record[key].SID;
     sortedSpectraKey[spectrumId] = true;
-    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Datum1D);
+    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Spectrum1D);
   }
   draft.data = draft.data
     .filter((s) => !sortedSpectraKey[s.id])
