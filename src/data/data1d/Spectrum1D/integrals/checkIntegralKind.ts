@@ -1,5 +1,6 @@
+import { Integral } from 'nmr-load-save';
+
 import { SignalKindsToInclude } from '../../../constants/SignalsKinds';
-import { Integral } from '../../../types/data1d';
 
 /**
  * check whether integral based on its kind can be included in another operation or not

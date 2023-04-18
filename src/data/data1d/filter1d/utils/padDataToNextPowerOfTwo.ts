@@ -1,18 +1,17 @@
 import { xSequentialFill } from 'ml-spectra-processing';
-
-import { Data1D, Datum1D } from '../../../types/data1d';
+import { Data1D, Spectrum1D } from 'nmr-load-save';
 
 export function padDataToNextPowerOfTwo(
-  datum1D: Datum1D,
+  spectrum: Spectrum1D,
   digitalFilterApplied: boolean,
 ) {
-  const { x, re, im } = datum1D.data as Required<Data1D>;
+  const { x, re, im } = spectrum.data as Required<Data1D>;
   const size = nextPowerOfTwo(x.length);
 
   let newRE = new Float64Array(size);
   let newIM = new Float64Array(size);
 
-  const pointsToShift = getPointsToShift(datum1D);
+  const pointsToShift = getPointsToShift(spectrum);
 
   newRE.set(re.slice(0, length - pointsToShift));
   newIM.set(im.slice(0, length - pointsToShift));
@@ -28,11 +27,11 @@ export function padDataToNextPowerOfTwo(
     step: x[1] - x[0],
   }) as Float64Array;
 
-  datum1D.data = { ...datum1D.data, re: newRE, im: newIM, x: newX };
+  spectrum.data = { ...spectrum.data, re: newRE, im: newIM, x: newX };
 }
 
-function getPointsToShift(datum1D: Datum1D) {
-  let grpdly = datum1D.info?.digitalFilter || 0;
+function getPointsToShift(spectrum: Spectrum1D) {
+  let grpdly = spectrum.info?.digitalFilter || 0;
   return grpdly > 0 ? Math.floor(grpdly) : 0;
 }
 

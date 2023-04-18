@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Zone as ZoneType } from 'nmr-load-save';
 import { useState, useEffect } from 'react';
 
-import { Zone as ZoneDataProps } from '../../../data/types/data2d';
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
@@ -43,7 +43,7 @@ const stylesHighlighted = css`
 `;
 
 interface ZoneProps {
-  zoneData: ZoneDataProps;
+  zoneData: ZoneType;
   isVisible: {
     zones: boolean;
   };

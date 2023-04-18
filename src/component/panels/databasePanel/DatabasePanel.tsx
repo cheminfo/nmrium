@@ -4,6 +4,7 @@ import {
   NmriumState,
   readFromWebSource,
   serializeNmriumState,
+  Spectrum1D,
 } from 'nmr-load-save';
 import { DatabaseNMREntry } from 'nmr-processing';
 import OCL from 'openchemlib/full';
@@ -22,7 +23,6 @@ import {
   DATA_BASES,
   LocalDatabase,
 } from '../../../data/data1d/database';
-import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -550,7 +550,7 @@ async function saveJcampAsJson(rowData, filteredData) {
         ...spectrum,
         ranges: {
           options: { sum: sum || 100 },
-          values: mapRanges(ranges, spectrum as Datum1D),
+          values: mapRanges(ranges, spectrum as Spectrum1D),
         },
       });
     }

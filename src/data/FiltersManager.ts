@@ -1,5 +1,6 @@
 /* eslint-disable import/namespace */
 import { v4 } from '@lukeed/uuid';
+import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import * as Filters from './Filters';
 import { cloneDatum1D } from './data1d/Spectrum1D/cloneDatum1D';
@@ -8,8 +9,6 @@ import { updatePeaks } from './data1d/Spectrum1D/peaks/updatePeaks';
 import { updateRanges } from './data1d/Spectrum1D/ranges/updateRanges';
 import { cloneDatum2D } from './data2d/Spectrum2D/cloneDatum2D';
 import { updateZones } from './data2d/Spectrum2D/zones/updateZones';
-import { Datum1D } from './types/data1d';
-import { Datum2D } from './types/data2d/Datum2D';
 
 export interface FilterDomainUpdateRules {
   updateYDomain: boolean;
@@ -35,13 +34,13 @@ function resetDataToOrigin(datum) {
   datum.info = { ...datum.originalInfo };
 }
 // update the the part of the data that affected by applying the filters
-function updateData(datum: Datum1D | Datum2D) {
+function updateData(datum: Spectrum) {
   if (datum.info.dimension === 1) {
-    updatePeaks(datum as Datum1D);
-    updateRanges(datum as Datum1D);
-    updateIntegrals(datum as Datum1D);
+    updatePeaks(datum as Spectrum1D);
+    updateRanges(datum as Spectrum1D);
+    updateIntegrals(datum as Spectrum1D);
   } else if (datum.info.dimension === 2) {
-    updateZones(datum as Datum2D);
+    updateZones(datum as Spectrum2D);
   }
 }
 
@@ -51,7 +50,7 @@ interface ApplyFilterOptions {
 }
 
 function applyFilter(
-  datum: Datum1D | Datum2D,
+  datum: Spectrum,
   filters: BaseFilter[] = [],
   options: ApplyFilterOptions = {},
 ) {

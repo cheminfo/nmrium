@@ -1,10 +1,10 @@
 import lodashGet from 'lodash/get';
+import { Integral } from 'nmr-load-save';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../data/constants/SignalsKinds';
 import { checkIntegralKind } from '../../../data/data1d/Spectrum1D';
-import { Integral } from '../../../data/types/data1d';
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';

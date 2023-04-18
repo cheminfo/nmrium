@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
+import { Info1D } from 'nmr-load-save';
 import {
   useMemo,
   useCallback,
@@ -8,8 +9,8 @@ import {
   MouseEvent,
   CSSProperties,
 } from 'react';
+import { DropdownMenu } from 'react-science/ui';
 
-import { Info1D } from '../../../data/types/data1d';
 import {
   AssignmentsData,
   useAssignment,
@@ -34,7 +35,6 @@ import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import SignalDeltaHzColumn from './TableColumns/SignalDeltaHzColumn';
 import { RangeData } from './hooks/useMapRanges';
-import { DropdownMenu } from 'react-science/ui';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;

@@ -2,10 +2,10 @@
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { Formik } from 'formik';
+import { Spectrum1D, Range } from 'nmr-load-save';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
-import { Datum1D, Range } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
@@ -231,7 +231,7 @@ function EditRangeModal({
 function useRange(range: Range, isNew: boolean) {
   const { ranges } = useSpectrum({
     ranges: { values: [] },
-  }) as Datum1D;
+  }) as Spectrum1D;
 
   const id = isNew ? 'new' : range.id;
   const index = ranges.values.findIndex((rangeRecord) => rangeRecord.id === id);

@@ -1,9 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
+import { Integral, Spectrum1D } from 'nmr-load-save';
 
 import { ShiftTarget } from '../../../types/common/MapOptions';
-import { Datum1D } from '../../../types/data1d';
-import { Integral } from '../../../types/data1d/Integral';
 import { getShiftX } from '../getShiftX';
 
 function getRange(integral: Integral, shiftTarget: ShiftTarget, shift: number) {
@@ -27,11 +26,11 @@ function getRange(integral: Integral, shiftTarget: ShiftTarget, shift: number) {
 
 export function mapIntegrals(
   integrals: Integral[],
-  datum: Datum1D,
+  spectrum: Spectrum1D,
   shiftTarget: ShiftTarget = 'origin',
 ) {
-  const { x, re } = datum.data;
-  const shiftX = getShiftX(datum);
+  const { x, re } = spectrum.data;
+  const shiftX = getShiftX(spectrum);
 
   return integrals.map((integral) => {
     const integralBoundary = getRange(integral, shiftTarget, shiftX);

@@ -1,5 +1,6 @@
+import { Range } from 'nmr-load-save';
+
 import { SignalKindsToInclude } from '../../../constants/SignalsKinds';
-import { Range } from '../../../types/data1d';
 import { checkSignalKinds } from '../../../utilities/RangeUtilities';
 
 export function checkRangeKind(range: Range): boolean {

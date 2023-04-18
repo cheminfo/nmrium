@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Data2DFid, Data2DFt } from 'nmr-load-save';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { Data2DFid, Data2DFt } from '../../data/types/data2d/Data2D';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';

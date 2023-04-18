@@ -1,11 +1,10 @@
 import lodashGet from 'lodash/get';
+import { Spectrum } from 'nmr-load-save';
 import { useMemo, CSSProperties, useCallback } from 'react';
 import { FaCopy, FaRegTrashAlt } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
@@ -55,8 +54,8 @@ const columnStyle: CSSProperties = {
 interface SpectraTableProps extends OnChangeVisibilityEvent {
   data: any;
   activeSpectra: ActiveSpectrum[] | null;
-  onOpenSettingModal: (event: Event, data: Datum1D | Datum2D) => void;
-  onChangeActiveSpectrum: (event: Event, data: Datum1D | Datum2D) => void;
+  onOpenSettingModal: (event: Event, data: Spectrum) => void;
+  onChangeActiveSpectrum: (event: Event, data: Spectrum) => void;
   nucleus: string;
 }
 
@@ -105,7 +104,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const COLUMNS: Record<
     // eslint-disable-next-line @typescript-eslint/ban-types
     (string & {}) | PredefinedSpectraColumn,
-    Column<Datum1D | Datum2D>
+    Column<Spectrum>
   > = useMemo(
     () => ({
       visible: {
@@ -215,7 +214,7 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   const tableColumns = useMemo(() => {
-    let columns: Array<Column<Datum1D | Datum2D>> = [];
+    let columns: Column<Spectrum>[] = [];
     let index = 0;
     const visibleColumns = spectraPreferences.columns.filter(
       (col) => col.visible,
@@ -272,9 +271,7 @@ export function SpectraTable(props: SpectraTableProps) {
       activeRow={handleActiveRow}
       data={data}
       columns={tableColumns}
-      onClick={(e, data: any) =>
-        onChangeActiveSpectrum(e, data.original as Datum1D | Datum2D)
-      }
+      onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
       enableVirtualScroll
       approxItemHeight={26}
       contextMenu={SpectraContextMenuOptions}

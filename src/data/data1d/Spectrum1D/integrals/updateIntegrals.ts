@@ -1,13 +1,13 @@
-import { Datum1D } from '../../../types/data1d';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { mapIntegrals } from './mapIntegrals';
 import { updateIntegralsRelativeValues } from './updateIntegralsRelativeValues';
 
-export function updateIntegrals(datum: Datum1D) {
-  datum.integrals.values = mapIntegrals(
-    datum.integrals.values,
-    datum,
+export function updateIntegrals(spectrum: Spectrum1D) {
+  spectrum.integrals.values = mapIntegrals(
+    spectrum.integrals.values,
+    spectrum,
     'current',
   );
-  updateIntegralsRelativeValues(datum, true);
+  updateIntegralsRelativeValues(spectrum, true);
 }

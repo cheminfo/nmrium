@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { useContext, Fragment, memo } from 'react';
+import { Spectrum1D } from 'nmr-load-save';
+import { useContext, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { Datum1D } from '../../data/types/data1d';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -89,7 +89,7 @@ interface FooterBannerInnerProps {
   width: number;
   height: number;
   activeSpectrum: ActiveSpectrum | null;
-  spectrum: Datum1D;
+  spectrum: Spectrum1D;
   activeTab: string;
 }
 
@@ -226,7 +226,7 @@ export default function FooterBanner() {
     },
   } = useChartData();
   const activeSpectrum = useActiveSpectrum();
-  const spectrum = useSpectrum(null) as Datum1D;
+  const spectrum = useSpectrum(null) as Spectrum1D;
   return (
     <MemoizedFooterBanner
       {...{ margin, width, height, activeSpectrum, spectrum, activeTab }}

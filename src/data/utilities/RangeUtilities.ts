@@ -1,8 +1,7 @@
 import omit from 'lodash/omit';
+import { Range, Signal1D } from 'nmr-load-save';
 
 import { DatumKind } from '../constants/SignalsKinds';
-import { Range } from '../types/data1d';
-import { Signal1D } from '../types/data1d/Signal1D';
 
 export function getDiaIDs(range: Range): string[] {
   return ([] as string[]).concat(
@@ -50,22 +49,28 @@ export function resetDiaIDs(range: Range): void {
  * @param {number} [options.signalIndex]
  * @returns {object}
  */
-export function unlink(
-  range: Range,
-  unlinkType = 'both',
-  options: any = {},
-): Range {
+
+interface UnlinkOptions {
+  unlinkType?: 'both' | 'range' | 'signal';
+  signalIndex?: number;
+}
+export function unlink(range: Range, options: UnlinkOptions = {}): Range {
+  const { unlinkType = 'both', signalIndex } = options;
+  const keys = ['diaIDs', 'nbAtoms'];
   switch (unlinkType) {
     case 'both':
       resetDiaIDs(range);
       break;
     case 'range':
-      delete range.diaIDs;
-      delete range.nbAtoms;
+      range = omit(range, keys) as Range;
       break;
     case 'signal':
-      delete range.signals[options.signalIndex].diaIDs;
-      delete range.signals[options.signalIndex].nbAtoms;
+      if (signalIndex) {
+        range.signals[signalIndex] = omit(
+          range.signals[signalIndex],
+          keys,
+        ) as Signal1D;
+      }
       break;
     default:
       break;

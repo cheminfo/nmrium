@@ -1,7 +1,6 @@
+import { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
-import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import nucleusToString from '../utility/nucleusToString';
 
@@ -13,7 +12,7 @@ export default function useSpectraByActiveNucleus() {
     },
   } = useChartData();
 
-  return useMemo<Array<Datum1D | Datum2D>>(() => {
+  return useMemo<Array<Spectrum>>(() => {
     if (data) {
       return (
         data.filter(

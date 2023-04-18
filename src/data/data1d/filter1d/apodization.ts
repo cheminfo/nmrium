@@ -1,8 +1,7 @@
+import { Data1D, Spectrum1D } from 'nmr-load-save';
 import { apodization } from 'nmr-processing';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Data1D } from '../../types/data1d/Data1D';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'apodization' as const;
 export const name = 'Apodization';
@@ -13,7 +12,7 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} datum1d
  * @param {Object} [value]
  */
 
@@ -29,7 +28,7 @@ export const defaultApodizationOptions: ApodizationOptions = {
   lineBroadeningCenter: 0,
 };
 
-export function apply(datum1D: Datum1D, options: ApodizationOptions = {}) {
+export function apply(datum1D: Spectrum1D, options: ApodizationOptions = {}) {
   const {
     lineBroadening = 1,
     gaussBroadening = 0,
@@ -55,7 +54,7 @@ export function apply(datum1D: Datum1D, options: ApodizationOptions = {}) {
     im: newData.im as Float64Array,
   };
 }
-export function isApplicable(datum1D: Datum1D) {
+export function isApplicable(datum1D: Spectrum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }
@@ -68,7 +67,7 @@ export function reduce(previousValue, newValue) {
 }
 
 export function apodizationFilter(
-  datum1D: Datum1D,
+  datum1D: Spectrum1D,
   options: ApodizationOptions = {},
 ) {
   const {

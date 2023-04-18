@@ -1,17 +1,15 @@
 import { extent } from 'd3';
 import { Draft } from 'immer';
+import { Spectrum1D, Spectrum2D, Data2DFt, Data2DFid } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
-import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 
-function getActiveData(draft: Draft<State>): Array<Datum1D> {
+function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
   let data = draft.data.filter(
     (datum) =>
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
@@ -33,7 +31,7 @@ function getActiveData(draft: Draft<State>): Array<Datum1D> {
     data = data.filter((datum) => !datum.info.isFid);
   }
 
-  return data as Array<Datum1D>;
+  return data as Array<Spectrum1D>;
 }
 
 function getDomain(draft: Draft<State>) {
@@ -73,7 +71,8 @@ function getDomain(draft: Draft<State>) {
 function get2DDomain(state: State) {
   let xArray: Array<number> = [];
   let yArray: Array<number> = [];
-  const yDomains: Record<string, [number | undefined, number | undefined]> = {};
+  const yDomains: Record<string, [number, number] | [undefined, undefined]> =
+    {};
   const xDomains: Record<string, number[]> = {};
 
   const {
@@ -99,8 +98,8 @@ function get2DDomain(state: State) {
             isSpectrum2D(datum) &&
             datum.info.nucleus?.join(',') === activeTab &&
             datum.info.isFt,
-        ) as Array<Datum2D>
-      ).flatMap((datum: Datum2D) => {
+        ) as Array<Spectrum2D>
+      ).flatMap((datum: Spectrum2D) => {
         const { minX, maxX } = (datum.data as Data2DFt).rr;
         return [minX, maxX];
       });
@@ -111,8 +110,8 @@ function get2DDomain(state: State) {
             isSpectrum2D(d) &&
             d.info.nucleus?.join(',') === activeTab &&
             d.info.isFt,
-        ) as Array<Datum2D>
-      ).flatMap((datum: Datum2D) => {
+        ) as Array<Spectrum2D>
+      ).flatMap((datum: Spectrum2D) => {
         const { minY, maxY } = (datum.data as Data2DFt).rr;
         return [minY, maxY];
       });
@@ -133,8 +132,8 @@ function get2DDomain(state: State) {
 
   const filteredData = data
     .filter((d) => spectrumsIDs.has(d.id) && d.info.dimension === 1)
-    .map((datum: Datum1D | Datum2D) => {
-      return datum as Datum1D;
+    .map((datum) => {
+      return datum as Spectrum1D;
     });
 
   try {
@@ -212,7 +211,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   }
 }
 
-function getSpectrumIntegralsDomain(datum: Datum1D) {
+function getSpectrumIntegralsDomain(datum: Spectrum1D) {
   const { integrals, ranges } = datum;
   let max = Number.NEGATIVE_INFINITY;
   for (const integral of integrals.values) {
@@ -223,7 +222,10 @@ function getSpectrumIntegralsDomain(datum: Datum1D) {
   }
   return [0, max];
 }
-function setIntegralsYDomain(draft: Draft<State>, data: Datum1D[] | Datum1D) {
+function setIntegralsYDomain(
+  draft: Draft<State>,
+  data: Spectrum1D[] | Spectrum1D,
+) {
   for (const spectrum of Array.isArray(data) ? data : [data]) {
     if (spectrum?.info?.dimension === 1) {
       draft.integralsYDomains[spectrum.id] =
@@ -258,7 +260,7 @@ function setMode(draft: Draft<State>) {
       draft.xDomains[datum.id] &&
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab,
   );
-  draft.mode = (datum_ as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
+  draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
 export {

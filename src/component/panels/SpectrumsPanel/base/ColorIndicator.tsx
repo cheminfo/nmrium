@@ -1,7 +1,5 @@
+import { Display1D, Display2D } from 'nmr-load-save';
 import { CSSProperties, memo } from 'react';
-
-import { Display1D } from '../../../../data/types/data1d';
-import { Display2D } from '../../../../data/types/data2d';
 
 const buttonStyle: CSSProperties = {
   backgroundColor: 'transparent',

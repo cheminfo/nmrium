@@ -1,8 +1,7 @@
 import { Draft } from 'immer';
+import { Range, Spectrum1D, Spectrum2D, Zone } from 'nmr-load-save';
 import { SpectraData1D, SpectraData2D } from 'nmr-processing';
 
-import { Datum1D, Range } from '../../../data/types/data1d';
-import { Datum2D, Zone } from '../../../data/types/data2d';
 import { State } from '../Reducer';
 
 function setAutomaticAssignmentsHandler(
@@ -16,11 +15,13 @@ function setAutomaticAssignmentsHandler(
     if (index !== -1) {
       const dimension = draft.data[index].info.dimension;
       if (dimension === 1) {
-        (draft.data[index] as Datum1D).ranges.values = (datum as SpectraData1D)
-          .ranges as Range[];
+        (draft.data[index] as Spectrum1D).ranges.values = (
+          datum as SpectraData1D
+        ).ranges as Range[];
       } else if (dimension === 2) {
-        (draft.data[index] as Datum2D).zones.values = (datum as SpectraData2D)
-          .zones as Zone[];
+        (draft.data[index] as Spectrum2D).zones.values = (
+          datum as SpectraData2D
+        ).zones as Zone[];
       }
     }
   }

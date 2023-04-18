@@ -1,6 +1,6 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 
-import { Datum1D } from '../../data/types/data1d';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -15,7 +15,7 @@ import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
 
 interface Chart2DProps {
-  spectra?: Datum1D[];
+  spectra?: Spectrum1D[];
 }
 
 interface Chart2DInnerProps extends Chart2DProps {

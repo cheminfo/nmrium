@@ -1,6 +1,5 @@
-import { Datum1D } from '../../types/data1d';
-import { Datum2D } from '../../types/data2d';
+import { Spectrum, Spectrum1D } from 'nmr-load-save';
 
-export function isSpectrum1D(spectrum: Datum1D | Datum2D): spectrum is Datum1D {
+export function isSpectrum1D(spectrum: Spectrum): spectrum is Spectrum1D {
   return spectrum.info.dimension === 1;
 }

@@ -2,6 +2,7 @@ import { FromTo } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { setPathLength } from 'nmr-correlation';
+import { Spectrum2D, Data2DFid, Data2DFt } from 'nmr-load-save';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -14,8 +15,6 @@ import {
   detectZones,
   detectZonesManual,
 } from '../../../data/data2d/Spectrum2D';
-import { Datum2D } from '../../../data/types/data2d';
-import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -37,7 +36,7 @@ function add2dZoneHandler(draft: Draft<State>, action) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const drawnZone = get2DRange(draft, action);
-    const datum = draft.data[index] as Datum2D;
+    const datum = draft.data[index] as Spectrum2D;
 
     const zones = detectZonesManual(original(datum), {
       selectedZone: drawnZone,
@@ -59,7 +58,7 @@ function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
     const [fromX, toX] = draft.xDomain;
     const [fromY, toY] = draft.yDomain;
     detectionOptions.selectedZone = { fromX, toX, fromY, toY };
-    const datum = draft.data[index] as Datum2D;
+    const datum = draft.data[index] as Spectrum2D;
     const zones = detectZones(original(datum), detectionOptions);
     datum.zones.values = datum.zones.values.concat(zones);
     handleOnChangeZonesData(draft);
@@ -78,9 +77,9 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
       };
 
       const zones = detectZones(original(datum), detectionOptions);
-      (datum as Datum2D).zones.values = (datum as Datum2D).zones.values.concat(
-        zones,
-      );
+      (datum as Spectrum2D).zones.values = (
+        datum as Spectrum2D
+      ).zones.values.concat(zones);
 
       handleOnChangeZonesData(draft);
     }
@@ -95,7 +94,7 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const { xShift, yShift } = changeZoneSignal(
-      draft.data[index] as Datum2D,
+      draft.data[index] as Spectrum2D,
       zoneID,
       signal,
     );
@@ -129,7 +128,7 @@ function handleChangeZoneSignalKind(draft: Draft<State>, action) {
     const { index } = activeSpectrum;
     const { rowData, value } = action.payload;
     const zoneIndex = getZoneIndex(state, index, rowData.id);
-    const _zone = (draft.data[index] as Datum2D).zones.values[zoneIndex];
+    const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
     _zone.signals[rowData.tableMetaInfo.signalIndex].kind = value;
     _zone.kind = SignalKindsToInclude.includes(value)
       ? DatumKind.signal
@@ -147,18 +146,18 @@ function handleDeleteZone(draft: Draft<State>, action) {
     const { index } = activeSpectrum;
     const { id, assignmentData } = action.payload;
     if (id) {
-      const zone = (draft.data[index] as Datum2D).zones.values.find(
+      const zone = (draft.data[index] as Spectrum2D).zones.values.find(
         (zone) => zone.id === id,
       );
       unlinkInAssignmentData(assignmentData, [zone || {}]);
       const zoneIndex = getZoneIndex(state, index, id);
-      (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
+      (draft.data[index] as Spectrum2D).zones.values.splice(zoneIndex, 1);
     } else {
       unlinkInAssignmentData(
         assignmentData,
-        (draft.data[index] as Datum2D).zones.values,
+        (draft.data[index] as Spectrum2D).zones.values,
       );
-      (draft.data[index] as Datum2D).zones.values = [];
+      (draft.data[index] as Spectrum2D).zones.values = [];
     }
     handleOnChangeZonesData(draft);
   }
@@ -176,7 +175,7 @@ function handleDeleteSignal(draft: Draft<State>, action) {
   if (spectrum && zone) {
     const datum2D = draft.data.find(
       (datum) => datum.id === spectrum.id,
-    ) as Datum2D;
+    ) as Spectrum2D;
     const zoneIndex = datum2D.zones.values.findIndex(
       (_zone) => _zone.id === zone.id,
     );
@@ -209,7 +208,7 @@ function handleSetSignalPathLength(draft: Draft<State>, action) {
   if (spectrum && zone) {
     const datum2D = draft.data.find(
       (datum) => datum.id === spectrum.id,
-    ) as Datum2D;
+    ) as Spectrum2D;
     const zoneIndex = datum2D.zones.values.findIndex(
       (_zone) => _zone.id === zone.id,
     );
@@ -248,7 +247,7 @@ function handleUnlinkZone(draft: Draft<State>, action) {
       const zoneIndex = getZoneIndex(state, index, zoneData.id);
 
       const zone = lodashCloneDeep(
-        (draft.data[index] as Datum2D).zones.values[zoneIndex],
+        (draft.data[index] as Spectrum2D).zones.values[zoneIndex],
       );
       const _zoneData = unlink(zone, isOnZoneLevel, signalIndex, axis);
 
@@ -257,12 +256,14 @@ function handleUnlinkZone(draft: Draft<State>, action) {
         [{ id: zoneData.signals[signalIndex].id }],
         axis,
       );
-      (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
+      (draft.data[index] as Spectrum2D).zones.values[zoneIndex] = _zoneData;
     } else {
-      const zones = (draft.data[index] as Datum2D).zones.values.map((zone) => {
-        return unlink(zone);
-      });
-      (draft.data[index] as Datum2D).zones.values = zones;
+      const zones = (draft.data[index] as Spectrum2D).zones.values.map(
+        (zone) => {
+          return unlink(zone);
+        },
+      );
+      (draft.data[index] as Spectrum2D).zones.values = zones;
 
       unlinkInAssignmentData(assignmentData, zones);
     }
@@ -279,7 +280,7 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
     const { zoneData, diaIDs, axis, signalIndex, nbAtoms } = action.payload;
     const getNbAtoms = (input, current = 0) => input + current;
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
-    const _zone = (draft.data[index] as Datum2D).zones.values[zoneIndex];
+    const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
     if (signalIndex === undefined) {
       _zone[axis].diaIDs = diaIDs;
       _zone[axis].nbAtoms = getNbAtoms(nbAtoms, _zone[axis].nbAtoms);
@@ -305,7 +306,7 @@ function handleSaveEditedZone(draft: Draft<State>, action) {
     delete editedRowData.tableMetaInfo;
 
     const zoneIndex = getZoneIndex(state, index, editedRowData.id);
-    (draft.data[index] as Datum2D).zones.values[zoneIndex] = editedRowData;
+    (draft.data[index] as Spectrum2D).zones.values[zoneIndex] = editedRowData;
 
     if (editedRowData.signals) {
       for (const signal of editedRowData.signals) {

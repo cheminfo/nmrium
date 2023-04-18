@@ -1,6 +1,7 @@
+import { Spectrum1D } from 'nmr-load-save';
+
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D';
-import { Datum1D } from '../../data/types/data1d/Datum1D';
 import { useChartData } from '../context/ChartContext';
 import { useActiveSpectra } from '../hooks/useActiveSpectra';
 
@@ -12,7 +13,7 @@ function LinesSeries() {
 
   const spectra = (data?.filter(
     (d) => isSpectrum1D(d) && d.display.isVisible && xDomains[d.id],
-  ) || []) as Datum1D[];
+  ) || []) as Spectrum1D[];
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="spectrums">
       {spectra.map((d, i) => (

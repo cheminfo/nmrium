@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
+import { Range, Signal1D } from 'nmr-load-save';
 import { Jcoupling } from 'nmr-processing';
 
-import { Range, Signal1D } from '../../types/data1d';
 /**
  * Links object that use coupling as key and value is an array of objects {id:signal id ,x:signal delta,y:coupling}
  */

@@ -1,12 +1,18 @@
-import { Spectra } from '../../component/NMRium';
-import { Datum1D, Range, Signal1D } from '../types/data1d';
-import { Datum2D, Signal2D, Zone } from '../types/data2d';
+import {
+  Range,
+  Signal1D,
+  Signal2D,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+  Zone,
+} from 'nmr-load-save';
 
 function findSpectrum(
-  spectraData: Spectra,
+  spectraData: Spectrum[],
   spectrumID: string,
   checkIsVisible: boolean,
-): Datum1D | Datum2D | undefined {
+): Spectrum | undefined {
   const spectrum = spectraData.find((_spectrum) => _spectrum.id === spectrumID);
   if (spectrum && checkIsVisible && !spectrum.display.isVisible) {
     return undefined;
@@ -16,7 +22,7 @@ function findSpectrum(
 }
 
 function findSignal1D(
-  spectrum: Datum1D,
+  spectrum: Spectrum1D,
   signalID: string,
 ): Signal1D | undefined {
   for (let range of spectrum.ranges.values) {
@@ -30,7 +36,7 @@ function findSignal1D(
 }
 
 function findSignal2D(
-  spectrum: Datum2D,
+  spectrum: Spectrum2D,
   signalID: string,
 ): Signal2D | undefined {
   for (let zone of spectrum.zones.values) {
@@ -43,7 +49,7 @@ function findSignal2D(
   }
 }
 
-function findRange(spectrum: Datum1D, signalID: string): Range | undefined {
+function findRange(spectrum: Spectrum1D, signalID: string): Range | undefined {
   for (let range of spectrum.ranges.values) {
     const signalIndex = range.signals.findIndex(
       (_signal) => _signal.id === signalID,
@@ -54,7 +60,7 @@ function findRange(spectrum: Datum1D, signalID: string): Range | undefined {
   }
 }
 
-function findZone(spectrum: Datum2D, signalID: string): Zone | undefined {
+function findZone(spectrum: Spectrum2D, signalID: string): Zone | undefined {
   for (let zone of spectrum.zones.values) {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === signalID,
@@ -66,7 +72,7 @@ function findZone(spectrum: Datum2D, signalID: string): Zone | undefined {
 }
 
 function findRangeOrZoneID(
-  spectraData: Spectra,
+  spectraData: Spectrum[],
   experimentID: string,
   signalID: string,
   checkIsVisible: boolean,
@@ -74,10 +80,10 @@ function findRangeOrZoneID(
   const spectrum = findSpectrum(spectraData, experimentID, checkIsVisible);
   if (spectrum) {
     if (spectrum.info.dimension === 1) {
-      const range = findRange(spectrum as Datum1D, signalID);
+      const range = findRange(spectrum as Spectrum1D, signalID);
       if (range) return range.id;
     } else if (spectrum.info.dimension === 2) {
-      const zone = findZone(spectrum as Datum2D, signalID);
+      const zone = findZone(spectrum as Spectrum2D, signalID);
       if (zone) return zone.id;
     }
   }

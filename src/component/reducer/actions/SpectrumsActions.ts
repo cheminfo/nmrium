@@ -2,6 +2,13 @@ import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
 import lodashSet from 'lodash/set';
+import {
+  Spectrum1D,
+  Spectrum2D,
+  Data2DFid,
+  Data2DFt,
+  Spectrum,
+} from 'nmr-load-save';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
@@ -17,9 +24,6 @@ import {
   get2DColor,
 } from '../../../data/data2d/Spectrum2D';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
-import { Data2DFid, Data2DFt } from '../../../data/types/data2d/Data2D';
 import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
@@ -41,7 +45,7 @@ import {
   resetSelectedTool,
 } from './ToolsActions';
 
-function checkIsVisible2D(datum: Datum2D): boolean {
+function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;
   }
@@ -50,11 +54,13 @@ function checkIsVisible2D(datum: Datum2D): boolean {
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
-    (datum as Datum2D).display.isPositiveVisible = flag;
-    (datum as Datum2D).display.isNegativeVisible = flag;
-    (datum as Datum2D).display.isVisible = checkIsVisible2D(datum as Datum2D);
+    (datum as Spectrum2D).display.isPositiveVisible = flag;
+    (datum as Spectrum2D).display.isNegativeVisible = flag;
+    (datum as Spectrum2D).display.isVisible = checkIsVisible2D(
+      datum as Spectrum2D,
+    );
   } else {
-    (datum as Datum1D).display.isVisible = flag;
+    (datum as Spectrum1D).display.isVisible = flag;
   }
 }
 
@@ -73,14 +79,14 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
       spectrum.display[key] = !spectrum.display[key];
 
       if (spectrum.info.dimension === 2) {
-        spectrum.display.isVisible = checkIsVisible2D(spectrum as Datum2D);
+        spectrum.display.isVisible = checkIsVisible2D(spectrum as Spectrum2D);
       }
     }
   }
 }
 
 interface MultipleSelectOptions {
-  spectra: (Datum1D | Datum2D)[];
+  spectra: Spectrum[];
   nexId: string;
   referenceId: string;
   append?: boolean;
@@ -190,10 +196,7 @@ function handleChangeActiveSpectrum(
   }
 
   // convert the spectra array to an Object where the key is the spectrum id and value is the `index` and `spectrum`
-  const spectraObj: Record<
-    string,
-    { spectrum: Datum1D | Datum2D; index: number }
-  > = {};
+  const spectraObj: Record<string, { spectrum: Spectrum; index: number }> = {};
 
   for (let i = 0; i < data?.length; i++) {
     spectraObj[data[i].id] = { spectrum: data[i], index: i };
@@ -276,7 +279,7 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   const state = original(draft) as State;
   const index = state.data.findIndex((d) => d.id === id);
   if (index !== -1) {
-    (draft.data[index] as Datum1D | Datum2D).display[key] = color;
+    draft.data[index].display[key] = color;
   }
 }
 
@@ -336,8 +339,8 @@ function addMissingProjectionHandler(draft, action) {
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const datum2D = state.data[index];
-    const { info, data } = datum2D;
+    const Spectrum2D = state.data[index];
+    const { info, data } = Spectrum2D;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
         info.isFid ? (data as Data2DFid).re : (data as Data2DFt).rr,
@@ -416,7 +419,7 @@ function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
   if (jpath) {
     //recolor spectra based on distinct value
 
-    const spectraByClass: Record<string, Datum1D | Datum2D> = {};
+    const spectraByClass: Record<string, Spectrum> = {};
     for (const spectrum of spectra) {
       const key = String(lodashGet(spectrum, jpath, ''))
         .toLowerCase()
@@ -426,14 +429,14 @@ function handleRecolorSpectraBasedOnDistinctValue(draft: Draft<State>, action) {
       if (spectraByClass[key]) {
         if (isSpectrum1D(spectrum)) {
           spectrum.display.color = (
-            spectraByClass[key] as Datum1D
+            spectraByClass[key] as Spectrum1D
           ).display.color;
         } else {
           spectrum.display.positiveColor = (
-            spectraByClass[key] as Datum2D
+            spectraByClass[key] as Spectrum2D
           ).display.positiveColor;
           spectrum.display.negativeColor = (
-            spectraByClass[key] as Datum2D
+            spectraByClass[key] as Spectrum2D
           ).display.negativeColor;
         }
       } else {
@@ -469,12 +472,12 @@ function handleOrderSpectra(draft: Draft<State>, action) {
     index++;
   }
   const sortedSpectraKey = {};
-  const sortedSpectra: Datum1D[] = [];
+  const sortedSpectra: Spectrum1D[] = [];
 
   for (const spectrum of data) {
     const spectrumId = spectrum.id;
     sortedSpectraKey[spectrumId] = true;
-    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Datum1D);
+    sortedSpectra.push(draft.data[spectraIndexes[spectrumId]] as Spectrum1D);
   }
 
   draft.data = draft.data

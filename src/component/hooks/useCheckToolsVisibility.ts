@@ -1,8 +1,7 @@
 import lodashGet from 'lodash/get';
+import { Info1D, Info2D } from 'nmr-load-save';
 import { useCallback } from 'react';
 
-import { Info1D } from '../../data/types/data1d/Info1D';
-import { Info2D } from '../../data/types/data2d';
 import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';

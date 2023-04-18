@@ -1,4 +1,5 @@
-import { Color2D } from '../../types/data2d/Display2D';
+import { Color2D } from 'nmr-load-save';
+
 import { generate2DColor } from '../../utilities/generateColor';
 
 export function get2DColor(options, usedColors, regenerate = false): Color2D {

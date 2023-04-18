@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Ranges, Zones } from 'nmr-load-save';
 import OCL from 'openchemlib/full';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
@@ -10,8 +11,6 @@ import {
   MoleculeView,
   StateMoleculeExtended,
 } from '../../../../data/molecules/Molecule';
-import { Ranges } from '../../../../data/types/data1d/index';
-import { Zones } from '../../../../data/types/data2d/index';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useGlobal } from '../../../context/GlobalContext';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';

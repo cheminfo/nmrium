@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xGetFromToIndex } from 'ml-spectra-processing';
+import { Spectrum1D, Data1D, Info1D, Ranges } from 'nmr-load-save';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
 import { DropdownMenuProps } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
-import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -231,7 +231,7 @@ const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
 const emptyData = { ranges: {}, data: {}, info: {} };
 
 export default function RangesTablePanel() {
-  const { ranges, data, info, id } = useSpectrum(emptyData) as Datum1D;
+  const { ranges, data, info, id } = useSpectrum(emptyData) as Spectrum1D;
   const {
     displayerKey,
     xDomain,

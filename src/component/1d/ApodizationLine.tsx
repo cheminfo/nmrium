@@ -1,9 +1,10 @@
+import { Spectrum1D } from 'nmr-load-save';
+
 import * as Filters from '../../data/Filters';
 import {
   apodizationFilter,
   defaultApodizationOptions,
 } from '../../data/data1d/filter1d/apodization';
-import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
@@ -36,7 +37,7 @@ function ApodizationLine() {
   } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { scaleX } = useScaleChecked();
-  const spectrum = useSpectrum({ emptyData }) as Datum1D;
+  const spectrum = useSpectrum({ emptyData }) as Spectrum1D;
   const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const scaleY = useWindowYScale();
 

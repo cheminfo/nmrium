@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
+import { Spectrum2D } from 'nmr-load-save';
 import { memo, useMemo, useRef } from 'react';
 
 import { getShift } from '../../../data/data2d/Spectrum2D';
@@ -8,7 +9,6 @@ import {
   getDefaultContoursLevel,
   LevelSign,
 } from '../../../data/data2d/Spectrum2D/contours';
-import { Datum2D } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useAlert } from '../../elements/popup/Alert';
@@ -21,18 +21,18 @@ interface ContoursPathsProps {
   id: string;
   color: string;
   sign: LevelSign;
-  datum: Datum2D;
+  spectrum: Spectrum2D;
   onTimeout: () => void;
 }
 
 interface ContoursInnerProps {
-  data: Array<Datum2D>;
+  spectra: Array<Spectrum2D>;
   displayerKey: string;
 }
 
-function usePath(datum: Datum2D, contours) {
+function usePath(spectrum: Spectrum2D, contours) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
-  const shift = getShift(datum);
+  const shift = getShift(spectrum);
 
   const _scaleX = get2DXScale({ margin, width, xDomain });
   const _scaleY = get2DYScale({ margin, height, yDomain });
@@ -72,7 +72,7 @@ function usePath(datum: Datum2D, contours) {
   return pathBuilder.toString();
 }
 
-const useContoursLevel = (datum: Datum2D, sign: LevelSign) => {
+const useContoursLevel = (spectrum: Spectrum2D, sign: LevelSign) => {
   const {
     view: {
       zoom: { levels },
@@ -81,7 +81,7 @@ const useContoursLevel = (datum: Datum2D, sign: LevelSign) => {
   const {
     id,
     display: { contourOptions },
-  } = datum;
+  } = spectrum;
   const defaultLevel = getDefaultContoursLevel(contourOptions);
   const level = levels?.[id]?.[sign];
   return typeof level !== 'number' ? defaultLevel[sign] : level;
@@ -91,27 +91,27 @@ function ContoursPaths({
   id: spectrumID,
   sign,
   color,
-  datum,
+  spectrum,
   onTimeout,
 }: ContoursPathsProps) {
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
 
-  const level = useContoursLevel(datum, sign);
+  const level = useContoursLevel(spectrum, sign);
 
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
       level,
-      datum,
+      spectrum,
       sign === 'negative',
     );
     if (timeout) {
       onTimeout();
     }
     return contours;
-  }, [datum, level, onTimeout, sign]);
+  }, [spectrum, level, onTimeout, sign]);
 
-  const path = usePath(datum, contours);
+  const path = usePath(spectrum, contours);
 
   const opacity =
     activeSpectrum === null || spectrumID === activeSpectrum.id
@@ -130,7 +130,7 @@ function ContoursPaths({
   );
 }
 
-function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
+function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
   const alert = useAlert();
   const debounceAlert = useRef(
     debounce(() => {
@@ -144,23 +144,23 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
-      {data?.map((datum) => (
-        <g key={datum.id}>
-          {datum.display.isPositiveVisible && (
+      {spectra?.map((spectrum) => (
+        <g key={spectrum.id}>
+          {spectrum.display.isPositiveVisible && (
             <ContoursPaths
-              id={datum.id}
+              id={spectrum.id}
               sign="positive"
-              datum={datum}
-              color={datum.display.positiveColor}
+              spectrum={spectrum}
+              color={spectrum.display.positiveColor}
               onTimeout={timeoutHandler}
             />
           )}
-          {datum.display.isNegativeVisible && (
+          {spectrum.display.isNegativeVisible && (
             <ContoursPaths
-              id={datum.id}
+              id={spectrum.id}
               sign="negative"
-              datum={datum}
-              color={datum.display.negativeColor}
+              spectrum={spectrum}
+              color={spectrum.display.negativeColor}
               onTimeout={timeoutHandler}
             />
           )}
@@ -180,11 +180,11 @@ export default function Contours() {
       spectra: { activeTab },
     },
   } = useChartData();
-  const data = useMemo<Array<Datum2D>>(() => {
+  const spectra2d = useMemo<Array<Spectrum2D>>(() => {
     return getSpectraByNucleus(activeTab, spectra).filter(
       (datum) => datum.info.isFt,
-    ) as Array<Datum2D>;
+    ) as Array<Spectrum2D>;
   }, [activeTab, spectra]);
 
-  return <MemoizedContours {...{ data, displayerKey }} />;
+  return <MemoizedContours {...{ spectra: spectra2d, displayerKey }} />;
 }

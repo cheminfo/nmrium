@@ -2,10 +2,10 @@
 import { css } from '@emotion/react';
 import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
+import { Spectrum1D, Info1D, Integrals } from 'nmr-load-save';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
 
-import { Datum1D, Info1D, Integrals } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ToggleButton from '../../elements/ToggleButton';
@@ -230,7 +230,7 @@ export default function IntegralPanel() {
     },
   } = useChartData();
 
-  const { integrals, info } = useSpectrum(emptyData) as Datum1D;
+  const { integrals, info } = useSpectrum(emptyData) as Spectrum1D;
 
   return (
     <MemoizedIntegralPanel

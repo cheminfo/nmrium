@@ -1,5 +1,5 @@
-import { Range } from '../../../data/types/data1d';
-import { Zone } from '../../../data/types/data2d';
+import { Range, Zone } from 'nmr-load-save';
+
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 
 export interface Atom {

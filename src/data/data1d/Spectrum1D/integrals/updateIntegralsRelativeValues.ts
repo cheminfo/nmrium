@@ -1,14 +1,14 @@
-import { Datum1D, Integral } from '../../../types/data1d';
+import { Integral, Spectrum1D } from 'nmr-load-save';
 
 import { checkIntegralKind } from './checkIntegralKind';
 import { updateRelatives } from './updateRelatives';
 
 export function updateIntegralsRelativeValues(
-  datum: Datum1D,
+  spectrum: Spectrum1D,
   forceCalculateIntegral = false,
 ) {
   updateRelatives<Integral>(
-    datum.integrals,
+    spectrum.integrals,
     'integral',
     checkIntegralKind,
     forceCalculateIntegral,

@@ -1,8 +1,7 @@
 import throttle from 'lodash/throttle';
-import { readFromWebSource } from 'nmr-load-save';
+import { readFromWebSource, Spectrum1D } from 'nmr-load-save';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { Datum1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useAlert } from '../../elements/popup/Alert';
@@ -50,7 +49,7 @@ function DatabaseSpectrum() {
           const pathBuilder = new PathBuilder();
           const finalScaleX = scaleX();
           const finalScaleY = scaleY();
-          const { x, re: y } = (spectrum as Datum1D).data;
+          const { x, re: y } = (spectrum as Spectrum1D).data;
           pathBuilder.moveTo(finalScaleX(x[0]), finalScaleY(y[0]));
           for (let i = 1; i < x.length; i++) {
             pathBuilder.lineTo(finalScaleX(x[i]), finalScaleY(y[i]));

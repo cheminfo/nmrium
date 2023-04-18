@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
+import { Spectrum, Spectrum1D } from 'nmr-load-save';
 
-import { Spectra } from '../../component/NMRium';
 import {
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
@@ -9,7 +9,6 @@ import {
   PredefinedTableColumn,
   WorkSpacePanelPreferences,
 } from '../../component/workspaces/Workspace';
-import { Datum1D } from '../types/data1d/Datum1D';
 import { RangeDetectionResult } from '../types/data1d/index';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject';
 import generateChar from '../utilities/generateChar';
@@ -97,7 +96,7 @@ export function getValue(
 }
 
 export function getSpectraAnalysis(
-  spectra: Spectra,
+  spectra: Spectrum[],
   options,
 ): { values: Array<AnalysisRow>; sum: number } {
   const { from, to, nucleus } = options;
@@ -186,7 +185,7 @@ export function analyzeSpectra(
 
 export function generateAnalyzeSpectra(
   multipleSpectraAnalysis: MultipleSpectraAnalysisPreferences,
-  spectra: Datum1D[],
+  spectra: Spectrum1D[],
   nucleus: string,
 ) {
   let data: any = {};
@@ -290,7 +289,7 @@ function calculate(
 
 export function getDataAsString(
   spectraAnalysis: SpectraAnalysisData,
-  spectra: Datum1D[],
+  spectra: Spectrum1D[],
   spectraPanelPreferences: WorkSpacePanelPreferences['spectra'],
 ) {
   const spectraData = convertSpectraArrayToObject(spectra);

@@ -1,4 +1,5 @@
-import { Info1D } from '../../../../data/types/data1d';
+import { Info1D } from 'nmr-load-save';
+
 import { formatNumber } from '../../../utility/formatNumber';
 import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 import { RangeColumnProps } from '../RangesTableRow';

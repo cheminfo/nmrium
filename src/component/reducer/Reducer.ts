@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Source } from 'nmr-load-save';
+import { Source, Spectrum } from 'nmr-load-save';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
@@ -13,7 +13,6 @@ import {
 import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
-import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -243,7 +242,7 @@ export interface State {
   /**
    * spectra list (1d and 2d)
    */
-  data: Spectra;
+  data: Spectrum[];
   /**
    * snapshot of the spectra data once phase correction activated
    *

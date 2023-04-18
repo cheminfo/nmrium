@@ -1,7 +1,7 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 
 import * as Filters from '../../data/Filters';
-import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
@@ -64,7 +64,7 @@ export default function ManualPhaseCorrectionPanel() {
     },
   } = useChartData();
 
-  const { data } = useSpectrum(emptyData) as Datum1D;
+  const { data } = useSpectrum(emptyData) as Spectrum1D;
 
   const filter = useFilter(Filters.phaseCorrection.id);
 

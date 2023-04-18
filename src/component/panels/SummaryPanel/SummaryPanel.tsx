@@ -8,11 +8,10 @@ import {
   Options as CorrelationOptions,
   Link,
 } from 'nmr-correlation';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import {
   findRange,
   findSignal1D,
@@ -154,7 +153,7 @@ function SummaryPanel() {
               spectraData,
               link.experimentID,
               true,
-            ) as Datum2D;
+            ) as Spectrum2D;
             return findSignalMatch1D(
               spectrum,
               link,
@@ -180,7 +179,7 @@ function SummaryPanel() {
           spectraData,
           firstLink2D.experimentID,
           true,
-        ) as Datum2D;
+        ) as Spectrum2D;
         // correlation is represented by a 2D signal
         if (
           findSignalMatch2D(
@@ -202,7 +201,7 @@ function SummaryPanel() {
               spectraData,
               link.experimentID,
               true,
-            ) as Datum2D;
+            ) as Spectrum2D;
             return findSignalMatch2D(
               spectrum,
               link,
@@ -399,7 +398,7 @@ function SummaryPanel() {
           spectraData,
           link.experimentID,
           false,
-        ) as Datum1D;
+        ) as Spectrum1D;
         const range = findRange(spectrum, link.signal.id);
         const signal = findSignal1D(spectrum, link.signal.id);
 
@@ -417,7 +416,7 @@ function SummaryPanel() {
           spectraData,
           link.experimentID,
           false,
-        ) as Datum2D;
+        ) as Spectrum2D;
         const zone = findZone(spectrum, link.signal.id);
         const signal = findSignal2D(spectrum, link.signal.id);
 
@@ -443,7 +442,7 @@ function SummaryPanel() {
           spectraData,
           link.experimentID,
           false,
-        ) as Datum2D;
+        ) as Spectrum2D;
         const zone = findZone(spectrum, link.signal.id);
         const signal = findSignal2D(spectrum, link.signal.id);
 

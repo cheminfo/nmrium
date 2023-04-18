@@ -1,13 +1,12 @@
-import { Datum2D } from '../../types/data2d';
-import { Data2DFid, Data2DFt } from '../../types/data2d/Data2D';
+import { Spectrum2D, Data2DFid, Data2DFt } from 'nmr-load-save';
 
 export interface Zone2DError {
   x: number;
   y: number;
 }
 
-export function get2DSpectrumErrorValue(datum: Datum2D): Zone2DError {
-  const { data, info } = datum;
+export function get2DSpectrumErrorValue(spectrum: Spectrum2D): Zone2DError {
+  const { data, info } = spectrum;
   const { minX, maxX, minY, maxY } = info.isFid
     ? (data as Data2DFid).re
     : (data as Data2DFt).rr;

@@ -1,4 +1,4 @@
-import { Datum1D } from '../../../types/data1d/Datum1D';
+import { Spectrum1D } from 'nmr-load-save';
 
 interface RangeSignalOption {
   rangeID: string;
@@ -6,21 +6,25 @@ interface RangeSignalOption {
   newSignalValue: number;
 }
 
-export function changeRangeSignal(datum: Datum1D, options: RangeSignalOption) {
+export function changeRangeSignal(
+  spectrum: Spectrum1D,
+  options: RangeSignalOption,
+) {
   const { rangeID, signalID, newSignalValue } = options;
 
   let shiftValue = 0;
-  const rangeIndex = datum.ranges.values.findIndex(
+  const rangeIndex = spectrum.ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
   if (rangeIndex !== -1) {
-    const signalIndex = datum.ranges.values[rangeIndex].signals.findIndex(
+    const signalIndex = spectrum.ranges.values[rangeIndex].signals.findIndex(
       (signal) => signal.id === signalID,
     );
     shiftValue =
       newSignalValue -
-      datum.ranges.values[rangeIndex].signals[signalIndex].delta;
-    datum.ranges.values[rangeIndex].signals[signalIndex].delta = newSignalValue;
+      spectrum.ranges.values[rangeIndex].signals[signalIndex].delta;
+    spectrum.ranges.values[rangeIndex].signals[signalIndex].delta =
+      newSignalValue;
   }
   return shiftValue;
 }

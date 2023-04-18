@@ -1,6 +1,6 @@
+import { Spectrum1D, Ranges as RangesProps } from 'nmr-load-save';
 import { Fragment, memo, useMemo } from 'react';
 
-import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -64,7 +64,7 @@ export default function Ranges() {
         : rangeStateInit,
     [activeSpectrum, rangeState],
   );
-  const spectrum = useSpectrum() as Datum1D;
+  const spectrum = useSpectrum() as Spectrum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   if (!spectrum?.display?.isVisible) {

@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { Signal2D, Spectrum, Zone } from 'nmr-load-save';
 import {
   predictAll,
   signalsToXY,
@@ -14,8 +15,6 @@ import {
   updateIntegralsRelativeValues,
 } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
-import { Datum1D } from './types/data1d';
-import { Datum2D, Signal2D, Zone } from './types/data2d';
 import { adjustAlpha } from './utilities/generateColor';
 
 export interface PredictionOptions {
@@ -91,8 +90,8 @@ export function generateSpectra(
   data: Record<string, any>,
   inputOptions: PredictionOptions,
   color: string,
-): Array<Datum1D | Datum2D> {
-  const spectra: Array<Datum1D | Datum2D> = [];
+): Spectrum[] {
+  const spectra: Spectrum[] = [];
   for (const experiment in data) {
     if (inputOptions.spectra[experiment]) {
       const spectrum = data[experiment];

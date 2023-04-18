@@ -1,10 +1,6 @@
+import { Display2D, Spectrum2D, Zones as ZonesType } from 'nmr-load-save';
 import { memo, useMemo } from 'react';
 
-import {
-  Datum2D,
-  Display2D,
-  Zones as ZonesProps,
-} from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 import { zoneStateInit } from '../../reducer/Reducer';
@@ -12,7 +8,7 @@ import { zoneStateInit } from '../../reducer/Reducer';
 import Zone from './Zone';
 
 interface ZonesInnerProps {
-  zones: ZonesProps;
+  zones: ZonesType;
   display: Display2D;
   displayerKey: string;
   isVisible: {
@@ -50,7 +46,7 @@ export default function Zones() {
     view: { zones: zoneState },
   } = useChartData();
 
-  const { zones, display, id } = useSpectrum(emptyData) as Datum2D;
+  const { zones, display, id } = useSpectrum(emptyData) as Spectrum2D;
 
   const isVisible = useMemo(() => {
     const { showPeaks, showSignals, showZones } =

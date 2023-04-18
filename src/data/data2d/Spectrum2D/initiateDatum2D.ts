@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
+import { Spectrum2D } from 'nmr-load-save';
 
 import * as FiltersManager from '../../FiltersManager';
-import { Datum2D } from '../../types/data2d/Datum2D';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 import { get2DColor } from './get2DColor';
@@ -9,7 +9,7 @@ import { initiateZones } from './zones/initiateZones';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
-export function initiateDatum2D(spectrum: any, usedColors = {}): Datum2D {
+export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
   const datum: any = {};
 
   datum.id = spectrum.id || v4();
@@ -44,7 +44,7 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Datum2D {
   datum.originalData = datum.data;
   datum.filters = Object.assign([], spectrum.filters);
 
-  datum.zones = initiateZones(spectrum, datum as Datum2D);
+  datum.zones = initiateZones(spectrum, datum as Spectrum2D);
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(datum);

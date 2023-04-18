@@ -1,16 +1,15 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
+import { Range, Signal1D, Spectrum1D } from 'nmr-load-save';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';
-import { Datum1D, Range } from '../../../types/data1d';
-import { Signal1D } from '../../../types/data1d/Signal1D';
 import { getShiftX } from '../getShiftX';
 import { getSpectrumErrorValue } from '../getSpectrumErrorValue';
 
-function checkRange(range: Range, datum: Datum1D, error) {
+function checkRange(range: Range, spectrum: Spectrum1D, error) {
   // check if the range is already exists
-  for (const { from, to } of datum.ranges?.values || []) {
+  for (const { from, to } of spectrum.ranges?.values || []) {
     if (
       Math.abs(range.from - from) < error &&
       Math.abs(range.to - to) < error
@@ -63,18 +62,18 @@ function getSignalDelta(
 
 export function mapRanges(
   ranges: Range[],
-  datum: Datum1D,
+  spectrum: Spectrum1D,
   options: MapOptions = {},
 ) {
   const { checkIsExisting = true, shiftTarget = 'origin' } = options;
-  const { x, re } = datum.data;
-  const shiftX = getShiftX(datum);
-  const error = getSpectrumErrorValue(datum);
+  const { x, re } = spectrum.data;
+  const shiftX = getShiftX(spectrum);
+  const error = getSpectrumErrorValue(spectrum);
 
   if (checkIsExisting) {
     ranges = ranges.filter(
       (r) =>
-        (checkIsExisting && !checkRange(r, datum, error)) || r.id === 'new',
+        (checkIsExisting && !checkRange(r, spectrum, error)) || r.id === 'new',
     );
   }
   return ranges.map((range) => {

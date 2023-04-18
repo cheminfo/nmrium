@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Spectrum2D } from 'nmr-load-save';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 
-import { Datum2D } from '../../../data/types/data2d';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -290,7 +290,7 @@ export default function ZonesPanel() {
       spectra: { activeTab },
     },
   } = useChartData();
-  const { zones, info, id } = useSpectrum(emptyData) as Datum2D;
+  const { zones, info, id } = useSpectrum(emptyData) as Spectrum2D;
   const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
   return (
     <MemoizedZonesPanel

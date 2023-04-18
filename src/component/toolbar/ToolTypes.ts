@@ -1,6 +1,6 @@
+import { Info1D, Info2D } from 'nmr-load-save';
+
 import * as Filters from '../../data/Filters';
-import { Info1D } from '../../data/types/data1d';
-import { Info2D } from '../../data/types/data2d';
 import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 

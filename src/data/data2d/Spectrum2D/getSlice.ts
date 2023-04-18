@@ -1,8 +1,7 @@
 import { zoneToX } from 'ml-spectra-processing';
+import { Spectrum2D, Data2DFid, Data2DFt } from 'nmr-load-save';
 
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
-import { Datum2D } from '../../types/data2d';
-import { Data2DFid, Data2DFt } from '../../types/data2d/Data2D';
 
 /** get 2d projection
  * @param {number} x in ppm
@@ -14,7 +13,7 @@ interface SlicePosition {
   y: number;
 }
 
-export function getSlice(spectrum: Datum2D, position: SlicePosition) {
+export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
   const { data: spectraData, info } = spectrum;
   const data = info.isFid
     ? (spectraData as Data2DFid).re

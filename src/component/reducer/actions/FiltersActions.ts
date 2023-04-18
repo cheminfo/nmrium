@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
+import { Spectrum, Spectrum1D } from 'nmr-load-save';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -10,8 +11,6 @@ import {
 import { apply as baselineCorrection } from '../../../data/data1d/filter1d/baselineCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import { options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
@@ -85,13 +84,13 @@ function calculateApodizationFilter(draft: Draft<State>, action) {
     const {
       data: { x, re, im },
       info,
-    } = draft.tempData[index] as Datum1D;
+    } = draft.tempData[index] as Spectrum1D;
 
     let _data = { data: { x, re, im }, info };
     draft.toolOptions.data.apodizationOptions = options;
-    apodization(_data as Datum1D, options);
+    apodization(_data as Spectrum1D, options);
     const { im: newIm, re: newRe } = _data.data;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
     datum.data.im = newIm;
     datum.data.re = newRe;
   }
@@ -134,12 +133,12 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
       data: { x, re, im },
       filters,
       info,
-    } = draft.tempData[index] as Datum1D;
+    } = draft.tempData[index] as Spectrum1D;
 
     let _data = { data: { x, re, im }, filters, info };
-    zeroFilling(_data as Datum1D, action.payload);
+    zeroFilling(_data as Spectrum1D, action.payload);
     const { im: newIm, re: newRe, x: newX } = _data.data;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
     datum.data.x = newX;
     datum.data.im = newIm;
     datum.data.re = newRe;
@@ -264,7 +263,7 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
     const {
       data: { x, re, im },
       info,
-    } = draft.tempData[index] as Datum1D;
+    } = draft.tempData[index] as Spectrum1D;
     // save the baseline options temporary
     draft.toolOptions.data.baselineCorrection = {
       ...draft.toolOptions.data.baselineCorrection,
@@ -275,12 +274,12 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
     const { livePreview, ...filterOptions } = options;
     if (livePreview) {
       let _data = { data: { x, re, im }, info };
-      baselineCorrection(_data as Datum1D, {
+      baselineCorrection(_data as Spectrum1D, {
         zones,
         ...filterOptions,
       });
       const { im: newIm, re: newRe } = _data.data;
-      const datum = draft.data[index] as Datum1D;
+      const datum = draft.data[index] as Spectrum1D;
       datum.data.im = newIm;
       datum.data.re = newRe;
     }
@@ -294,13 +293,13 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
     const {
       data: { x, re, im },
       info,
-    } = draft.tempData[index] as Datum1D;
+    } = draft.tempData[index] as Spectrum1D;
 
     const { ph0, ph1 } = filterOptions;
     let _data = { data: { x, re, im }, info };
-    phaseCorrection(_data as Datum1D, { ph0, ph1 });
+    phaseCorrection(_data as Spectrum1D, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
 
     datum.data.im = newIm;
     datum.data.re = newRe;
@@ -452,7 +451,7 @@ function rollbackSpectrumByFilter(
 
   if (currentActiveSpectrum) {
     const index = currentActiveSpectrum.index;
-    const datum = draft.data[index] as Datum1D | Datum2D;
+    const datum = draft.data[index] as Spectrum;
     previousIsFid = datum.info.isFid;
     const filterIndex = datum.filters.findIndex((f) => f[searchBy] === key);
 
@@ -565,7 +564,7 @@ function handleSignalProcessingFilter(draft: Draft<State>, action) {
   const value = action.payload.options;
   const activeFilterIndex = getActiveFilterIndex(draft);
 
-  const spectra = getSpectraByNucleus(nucleus, data) as Datum1D[];
+  const spectra = getSpectraByNucleus(nucleus, data) as Spectrum1D[];
   for (const spectrum of spectra) {
     FiltersManager.applyFilter(
       spectrum,
@@ -588,17 +587,17 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
   const { from: startX, to: endX } = action.payload;
   const range = getRange(draft, { startX, endX });
 
-  let spectra: Datum1D[];
+  let spectra: Spectrum1D[];
 
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const index = activeSpectrum?.index;
-    spectra = [draft.data[index] as Datum1D];
+    spectra = [draft.data[index] as Spectrum1D];
   } else {
     spectra = getSpectraByNucleus(
       draft.view.spectra.activeTab,
       draft.data,
-    ) as Datum1D[];
+    ) as Spectrum1D[];
   }
 
   for (const spectrum of spectra) {

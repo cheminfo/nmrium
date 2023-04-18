@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
+import { Signal1D } from 'nmr-load-save';
 
-import { Signal1D } from '../../../data/types/data1d';
 import {
   getMultiplicityNumber,
   getPascal,

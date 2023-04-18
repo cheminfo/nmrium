@@ -2,6 +2,7 @@ import {
   processJcamp,
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
+  Spectrum,
 } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
@@ -10,8 +11,6 @@ import { Workspace } from '../component/workspaces/Workspace';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Datum2D from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
-import { Datum1D as Datum1DType } from './types/data1d';
-import { Datum2D as Datum2DType } from './types/data2d';
 
 export enum DataExportOptions {
   ROW_DATA = 'ROW_DATA',
@@ -52,7 +51,7 @@ export function addJcamp(output, jcamp, options, usedColors) {
   });
   if (spectraIn.length === 0) return;
 
-  const spectra: Array<Datum1DType | Datum2DType> = [];
+  const spectra: Spectrum[] = [];
   for (let spectrum of spectraIn) {
     const data = getData(spectrum, usedColors);
     if (!data) continue;

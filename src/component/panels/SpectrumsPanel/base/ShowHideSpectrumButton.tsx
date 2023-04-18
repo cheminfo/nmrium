@@ -1,10 +1,6 @@
+import { Display1D, Display2D, Spectrum } from 'nmr-load-save';
 import { CSSProperties } from 'react';
 import { FaEye } from 'react-icons/fa';
-
-import { Datum1D } from '../../../../data/types/data1d';
-import { Display1D } from '../../../../data/types/data1d/Display1D';
-import { Datum2D } from '../../../../data/types/data2d';
-import { Display2D } from '../../../../data/types/data2d/Display2D';
 
 const buttonStyle: CSSProperties = {
   backgroundColor: 'transparent',
@@ -16,11 +12,11 @@ const buttonStyle: CSSProperties = {
 
 type VisibleKey = 'isVisible' | 'isPositiveVisible' | 'isNegativeVisible';
 export interface OnChangeVisibilityEvent {
-  onChangeVisibility: (data: Datum1D | Datum2D, is: VisibleKey) => void;
+  onChangeVisibility: (data: Spectrum, is: VisibleKey) => void;
 }
 
 interface ShowHideSpectrumButtonProps extends OnChangeVisibilityEvent {
-  data: Datum1D | Datum2D;
+  data: Spectrum;
 }
 
 function getStyle(display, key: VisibleKey) {

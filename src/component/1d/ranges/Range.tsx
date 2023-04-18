@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Range as RangeType } from 'nmr-load-save';
 
-import { Range as RangeType } from '../../../data/types/data1d';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
   useAssignment,

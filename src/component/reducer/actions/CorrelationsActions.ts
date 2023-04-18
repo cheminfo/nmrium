@@ -6,12 +6,11 @@ import {
   Tolerance,
   Options as CorrelationOptions,
   Correlation,
-  Spectra,
+  Spectrum,
   Values as CorrelationValues,
 } from 'nmr-correlation';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
-import { Datum1D } from '../../../data/types/data1d';
-import { Datum2D } from '../../../data/types/data2d';
 import {
   findRange,
   findSignal1D,
@@ -26,7 +25,7 @@ import { handleDeleteSignal as handleDeleteSignal2D } from './ZonesActions';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
-  draft.correlations = buildCorrelationData(spectra as Spectra, {
+  draft.correlations = buildCorrelationData(spectra as Spectrum, {
     ...correlations.options,
     values: lodashCloneDeep(correlations.values),
   });
@@ -38,7 +37,7 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
   const { mf } = payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = buildCorrelationData(spectra as Spectra, {
+    draft.correlations = buildCorrelationData(spectra, {
       ...correlations.options,
       mf,
       values: lodashCloneDeep(correlations.values),
@@ -53,7 +52,7 @@ function handleSetTolerance(
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = payload;
-  draft.correlations = buildCorrelationData(spectra as Spectra, {
+  draft.correlations = buildCorrelationData(spectra, {
     ...correlations.options,
     tolerance,
     values: lodashCloneDeep(correlations.values),
@@ -118,8 +117,8 @@ function handleDeleteCorrelation(
     const spectrum = findSpectrum(draft.data, link.experimentID, false);
     if (spectrum) {
       if (spectrum.info.dimension === 1) {
-        const range = findRange(spectrum as Datum1D, link.signal.id);
-        const signal = findSignal1D(spectrum as Datum1D, link.signal.id);
+        const range = findRange(spectrum as Spectrum1D, link.signal.id);
+        const signal = findSignal1D(spectrum as Spectrum1D, link.signal.id);
         handleDeleteSignal1D(draft, {
           payload: {
             spectrum,
@@ -129,8 +128,8 @@ function handleDeleteCorrelation(
           },
         });
       } else if (spectrum.info.dimension === 2) {
-        const zone = findZone(spectrum as Datum2D, link.signal.id);
-        const signal = findSignal2D(spectrum as Datum2D, link.signal.id);
+        const zone = findZone(spectrum as Spectrum2D, link.signal.id);
+        const signal = findSignal2D(spectrum as Spectrum2D, link.signal.id);
         handleDeleteSignal2D(draft, {
           payload: {
             spectrum,

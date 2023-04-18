@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik } from 'formik';
+import { Peak1D } from 'nmr-load-save';
 import { useCallback, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
-import { Peak } from '../../data/types/data1d';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
@@ -34,7 +34,7 @@ const getKindDefaultValues = (kind: string) => {
     ...(kind === 'pseudoVoigt' && { mu: 0.5 }),
   };
 };
-const getValues = (peak: Peak, kind: string) => {
+const getValues = (peak: Peak1D, kind: string) => {
   const { shape } = peak;
   const shapeData =
     (shape?.kind || '').toLocaleLowerCase() !== kind
@@ -77,7 +77,7 @@ const inputStyle: InputStyle = { input: { width: '200px', textAlign: 'left' } };
 
 interface EditPeakShapeModalProps {
   onClose?: (element?: string) => void;
-  peak: Peak;
+  peak: Peak1D;
   peaksPreferences: PeaksNucleusPreferences;
 }
 

@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
+import { Spectrum2D } from 'nmr-load-save';
 import { useEffect, useRef, memo } from 'react';
 
-import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import useSpectrum from '../hooks/useSpectrum';
 
@@ -45,7 +45,7 @@ function YAxis(props: YAxisProps) {
   const refAxis = useRef<SVGGElement>(null);
 
   const { yDomain, width, height, margin } = useChartData();
-  const spectrum = useSpectrum() as Datum2D;
+  const spectrum = useSpectrum() as Spectrum2D;
 
   useEffect(() => {
     if (!show || !yDomain) return;

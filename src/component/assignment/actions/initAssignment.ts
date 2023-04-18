@@ -1,7 +1,6 @@
+import { Spectrum, Ranges, Zones } from 'nmr-load-save';
+
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum1D } from '../../../data/types/data1d';
-import { Ranges } from '../../../data/types/data1d/Ranges';
-import { Datum2D, Zones } from '../../../data/types/data2d';
 import { assignmentState, AssignmentState, Axis } from '../AssignmentsContext';
 
 export default function initAssignment(action) {
@@ -9,7 +8,7 @@ export default function initAssignment(action) {
     ...assignmentState,
   };
 
-  const spectra = (action.payload.spectra || []) as (Datum1D | Datum2D)[];
+  const spectra = (action.payload.spectra || []) as Spectrum[];
   for (const spectrum of spectra) {
     if (isSpectrum1D(spectrum)) {
       setRangesAssignments(newState, spectrum.ranges);

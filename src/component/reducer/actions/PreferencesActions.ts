@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
+import { Spectrum1D } from 'nmr-load-save';
 
-import { Datum1D } from '../../../data/types/data1d';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
@@ -22,9 +22,9 @@ function changeSpectrumVerticalAlignment(
   const nucleus = activeTab || draft.view.spectra.activeTab;
 
   if (draft.data && draft.data.length > 0) {
-    let dataPerNucleus: Datum1D[] = [];
+    let dataPerNucleus: Spectrum1D[] = [];
     if (['auto-check', 'stack'].includes(options.verticalAlign || '')) {
-      dataPerNucleus = (draft.data as Datum1D[]).filter(
+      dataPerNucleus = (draft.data as Spectrum1D[]).filter(
         (datum) => datum.info.nucleus === nucleus && datum.info.dimension === 1,
       );
     }

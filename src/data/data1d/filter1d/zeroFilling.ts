@@ -1,6 +1,5 @@
+import { Data1D, Spectrum1D } from 'nmr-load-save';
 import { FilterDomainUpdateRules } from '../../FiltersManager';
-import { Data1D } from '../../types/data1d/Data1D';
-import { Datum1D } from '../../types/data1d/Datum1D';
 
 export const id = 'zeroFilling';
 export const name = 'Zero Filling';
@@ -12,7 +11,7 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 /**
  *
- * @param {Datum1d} datum1d
+ * @param {Spectrum1D} spectrum
  * @param {Object} [nbPoints]
  */
 export interface ZeroFillingOptions {
@@ -20,26 +19,26 @@ export interface ZeroFillingOptions {
   factor?: number;
 }
 
-export function apply(datum1D: Datum1D, options: ZeroFillingOptions) {
-  if (!isApplicable(datum1D)) {
+export function apply(spectrum: Spectrum1D, options: ZeroFillingOptions) {
+  if (!isApplicable(spectrum)) {
     throw new Error('zeroFilling not applicable on this data');
   }
 
   let { nbPoints, factor = 2 } = options;
 
   if (!nbPoints) {
-    nbPoints = 2 ** Math.round(Math.log2(datum1D.data.x.length * factor));
-    const filter = datum1D.filters.find((filter) => filter.name === id);
+    nbPoints = 2 ** Math.round(Math.log2(spectrum.data.x.length * factor));
+    const filter = spectrum.filters.find((filter) => filter.name === id);
     if (filter) {
       filter.value = { nbPoints };
     }
   }
 
-  let digitalFilterApplied = datum1D.filters.some(
+  let digitalFilterApplied = spectrum.filters.some(
     (e) => e.name === 'digitalFilter' && e.flag,
   );
 
-  let grpdly = datum1D.info?.digitalFilter || 0;
+  let grpdly = spectrum.info?.digitalFilter || 0;
   let pointsToShift;
   if (grpdly > 0 && digitalFilterApplied) {
     pointsToShift = Math.floor(grpdly);
@@ -47,7 +46,7 @@ export function apply(datum1D: Datum1D, options: ZeroFillingOptions) {
     pointsToShift = 0;
   }
 
-  const { re, im, x } = datum1D.data;
+  const { re, im = [], x } = spectrum.data;
 
   let newRE = new Float64Array(nbPoints);
   let newIM = new Float64Array(nbPoints);
@@ -71,13 +70,13 @@ export function apply(datum1D: Datum1D, options: ZeroFillingOptions) {
     newIM.set(im.slice(re.length - pointsToShift), nbPoints - pointsToShift);
   }
 
-  datum1D.data = { ...datum1D.data, re: newRE, im: newIM, x: newX };
+  spectrum.data = { ...spectrum.data, re: newRE, im: newIM, x: newX };
 }
 
 export function isApplicable(
-  datum1D: Datum1D,
-): datum1D is Datum1D & { data: Required<Data1D> } {
-  if (datum1D.info.isComplex && datum1D.info.isFid) {
+  spectrum: Spectrum1D,
+): spectrum is Spectrum1D & { data: Required<Data1D> } {
+  if (spectrum.info.isComplex && spectrum.info.isFid) {
     return true;
   }
   return false;
