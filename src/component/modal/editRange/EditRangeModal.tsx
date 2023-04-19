@@ -208,7 +208,7 @@ function EditRangeModal({
         </span>
         <SaveButton
           onClick={() => formRef.current.submitForm()}
-          popupTitle="Save and exit"
+          popupTitle="Save and Exit"
         />
 
         <CloseButton onClick={handleOnClose} />

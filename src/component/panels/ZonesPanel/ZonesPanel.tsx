@@ -227,7 +227,7 @@ function ZonesPanelInner({
             <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
           </ActiveButton>
           <ActiveButton
-            popupTitle="Show/hide signals"
+            popupTitle="Show/Hide signals"
             popupPlacement="right"
             value={showSignals}
             onClick={handleSetShowSignals}

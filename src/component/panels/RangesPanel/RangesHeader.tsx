@@ -233,8 +233,8 @@ function RangesHeader({
         <Button
           popupTitle={
             currentSum
-              ? `Change Ranges Sum (${Number(currentSum).toFixed(2)})`
-              : 'Change Ranges Sum'
+              ? `Change ranges sum (${Number(currentSum).toFixed(2)})`
+              : 'Change ranges sum'
           }
           popupPlacement="right"
           onClick={showChangeRangesSumModal}
@@ -254,8 +254,8 @@ function RangesHeader({
         <ActiveButton
           popupTitle={
             showMultiplicityTrees
-              ? 'Hide Multiplicity Trees in Spectrum'
-              : 'Show Multiplicity Trees in Spectrum'
+              ? 'Hide multiplicity trees in spectrum'
+              : 'Show multiplicity trees in spectrum'
           }
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
