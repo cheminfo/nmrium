@@ -187,7 +187,7 @@ function ZonesPanelInner({
         tablePanelStyle,
         style,
         isFlipped &&
-        css`
+          css`
             th {
               position: relative;
             }
