@@ -9,7 +9,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
       '_react=AccordionItem[title="Spectra"] >> _react=ToolTip[title="preferences"]',
     );
     await nmrium.page.click(
-      '_react=AccordionItem[title="Spectra"] >> _react=ToolTip[title="save Preferences"]',
+      '_react=AccordionItem[title="Spectra"] >> _react=ToolTip[title="Save preferences" i]',
     );
     await nmrium.clickPanel('Spectra');
   });
@@ -19,7 +19,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
       '_react=AccordionItem[title="Peaks"] >> _react=ToolTip[title="preferences"]',
     );
     await nmrium.page.click(
-      '_react=AccordionItem[title="Peaks"] >> _react=ToolTip[title="save Preferences"]',
+      '_react=AccordionItem[title="Peaks"] >> _react=ToolTip[title="Save preferences" i]',
     );
     await nmrium.clickPanel('Peaks');
   });
@@ -29,7 +29,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
       '_react=AccordionItem[title="Integrals"] >> _react=ToolTip[title="preferences"]',
     );
     await nmrium.page.click(
-      '_react=AccordionItem[title="Integrals"] >> _react=ToolTip[title="save Preferences"]',
+      '_react=AccordionItem[title="Integrals"] >> _react=ToolTip[title="Save preferences" i]',
     );
     await nmrium.clickPanel('Integrals');
   });
@@ -39,7 +39,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
       '_react=AccordionItem[title="Ranges"] >> _react=ToolTip[title="preferences"]',
     );
     await nmrium.page.click(
-      '_react=AccordionItem[title="Ranges"] >> _react=ToolTip[title="save Preferences"]',
+      '_react=AccordionItem[title="Ranges"] >> _react=ToolTip[title="Save preferences" i]',
     );
     await nmrium.clickPanel('Ranges');
   });
