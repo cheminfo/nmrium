@@ -92,7 +92,7 @@ const SpectraContextMenuOptions: DropdownMenuProps<any>['options'] = [
     type: 'option',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
-  }
+  },
 ];
 
 export function SpectraTable(props: SpectraTableProps) {
@@ -255,9 +255,9 @@ export function SpectraTable(props: SpectraTableProps) {
           style:
             name === 'name' && visibleColumns.length > 3
               ? {
-                ...COLUMNS[name].style,
-                width: '50%',
-              }
+                  ...COLUMNS[name].style,
+                  width: '50%',
+                }
               : COLUMNS[name].style,
         });
       } else {
