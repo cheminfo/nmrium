@@ -4,7 +4,7 @@ import { Spectrum1D } from 'nmr-load-save';
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 
 export const id = 'exclusionZones';
-export const name = 'Exclusion Zones';
+export const name = 'Exclusion zones';
 export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
   updateXDomain: false,
   updateYDomain: false,

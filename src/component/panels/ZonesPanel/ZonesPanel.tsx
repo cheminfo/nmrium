@@ -187,7 +187,7 @@ function ZonesPanelInner({
         tablePanelStyle,
         style,
         isFlipped &&
-          css`
+        css`
             th {
               position: relative;
             }
@@ -208,7 +208,7 @@ function ZonesPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          <ToolTip title={`Remove all Assignments`} popupPlacement="right">
+          <ToolTip title={`Remove all assignments`} popupPlacement="right">
             <button
               className="remove-assignments-btn"
               type="button"

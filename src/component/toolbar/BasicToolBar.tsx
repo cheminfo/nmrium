@@ -254,7 +254,7 @@ function BasicToolBarInner({
       {isButtonVisible('realImaginary') && (
         <Toolbar.Item
           id="display"
-          title={isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary'}
+          title={isRealSpectrumShown ? 'Display real ' : 'Display imaginary'}
           onClick={changeSpectrumViewHandler}
           className="cheminfo"
         >
@@ -267,8 +267,8 @@ function BasicToolBarInner({
             id="baseline-position"
             title={
               verticalAlign === 'bottom'
-                ? 'Baseline  Center ( Press c )'
-                : 'Baseline  Bottom ( Press c )'
+                ? 'Baseline  center ( Press c )'
+                : 'Baseline  bottom ( Press c )'
             }
             onClick={alignSpectrumsVerticallyHandler}
             className="cheminfo"

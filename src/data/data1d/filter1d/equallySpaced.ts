@@ -2,7 +2,7 @@ import equallySpaced from 'ml-array-xy-equally-spaced';
 import { Spectrum1D } from 'nmr-load-save';
 
 export const id = 'equallySpaced';
-export const name = 'Equally Spaced';
+export const name = 'Equally spaced';
 
 /**
  * Equally Spaced

@@ -136,7 +136,7 @@ function PeaksPanelInner({
       css={[
         tablePanelStyle,
         isFlipped &&
-          css`
+        css`
             .table-container {
               table,
               th {
@@ -193,7 +193,7 @@ function PeaksPanelInner({
 
               <Button.BarButton
                 onClick={optimizePeaksHandler}
-                toolTip="Optimize Peaks"
+                toolTip="Optimize peaks"
                 tooltipOrientation="horizontal"
               >
                 <FaThinkPeaks />

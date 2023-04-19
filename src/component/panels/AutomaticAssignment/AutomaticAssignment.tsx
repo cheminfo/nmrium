@@ -31,7 +31,7 @@ function AutomaticAssignment() {
         <SpectraAutomaticPickingButton />
         <Button.BarButton
           tooltipOrientation="horizontal"
-          toolTip="automatic assignment"
+          toolTip="Automatic assignment"
           onClick={getAssignments}
           disabled={!enabled}
         >
@@ -39,7 +39,7 @@ function AutomaticAssignment() {
         </Button.BarButton>
         <Button.BarButton
           tooltipOrientation="horizontal"
-          toolTip="reset assignment"
+          toolTip="Reset assignment"
           onClick={restAssignments}
         >
           <FaBolt />
