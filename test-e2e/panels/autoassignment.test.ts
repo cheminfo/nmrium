@@ -38,7 +38,7 @@ test('automatic assignment panel', async ({ page }) => {
     await expect(nmrium.page.locator('_react=Range')).toHaveCount(5);
 
     await nmrium.page.click(
-      '_react=AutomaticAssignment >> _react=Button[toolTip="automatic assignment"]',
+      '_react=AutomaticAssignment >> _react=Button[toolTip="Automatic assignment"]',
     );
 
     // Wait for auto assignments process completed.

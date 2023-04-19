@@ -13,7 +13,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
   });
   await test.step('Add ring molecule', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click('_react=ToolTip[title="Add molecule"] >>  button');
 
     // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -53,7 +53,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click('_react=ToolTip[title="Add molecule"] >>  button');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -139,7 +139,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Add ring molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click('_react=ToolTip[title="Add molecule"] >>  button');
 
     // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -179,7 +179,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Add a third molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click('_react=ToolTip[title="Add molecule"] >>  button');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -566,7 +566,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click('_react=ToolTip[title="Add molecule"] >>  button');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
