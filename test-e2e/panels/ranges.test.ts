@@ -161,7 +161,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum" i] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
     // Check multiplicity tree is visible
@@ -183,7 +183,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     // Check that MultiplicityTree btn still on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
   });
@@ -234,7 +234,7 @@ test('Range state', async ({ page }) => {
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum" i] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
     // Check multiplicity tree is visible
@@ -260,7 +260,7 @@ test('Range state', async ({ page }) => {
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum" i] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
 
