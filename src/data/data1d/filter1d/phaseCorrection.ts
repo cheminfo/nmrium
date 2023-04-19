@@ -78,7 +78,7 @@ function phaseCorrection(spectrum, { ph0, ph1 }) {
   ph1 *= Math.PI / 180;
   spectrum.data = {
     ...spectrum.data,
-    ...reimPhaseCorrection(spectrum.data, ph0, ph1),
+    ...reimPhaseCorrection(spectrum.data, ph0, ph1, { reverse: true }),
   };
 }
 
