@@ -121,12 +121,12 @@ function MatrixGenerationPanel() {
           renderRightButtons={() => (
             <SaveButton
               onClick={() => formRef.current?.submitForm()}
-              popupTitle="Signal Processing"
+              popupTitle="Signal processing"
             />
           )}
         >
           <Button
-            popupTitle="Export spectra as a Matrix"
+            popupTitle="Export spectra as a matrix"
             onClick={handleExportAsMatrix}
             style={{ fontSize: '12px', padding: '5px' }}
           >

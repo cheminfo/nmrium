@@ -243,7 +243,7 @@ function RangesHeader({
           <SvgNmrSum />
         </Button>
         <Button
-          popupTitle="Remove all Assignments"
+          popupTitle="Remove all assignments"
           popupPlacement="right"
           onClick={handleOnRemoveAssignments}
           disabled={!ranges?.values || ranges.values.length === 0}
@@ -287,7 +287,7 @@ function RangesHeader({
 
         <ToggleButton
           className="icon"
-          popupTitle="fix integral values"
+          popupTitle="Fix integral values"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
         >

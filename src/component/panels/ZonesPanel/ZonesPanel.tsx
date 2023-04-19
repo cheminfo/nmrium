@@ -219,7 +219,7 @@ function ZonesPanelInner({
             </button>
           </ToolTip>
           <ActiveButton
-            popupTitle="show/hide zones"
+            popupTitle="Show/Hide zones"
             popupPlacement="right"
             value={showZones}
             onClick={handleSetShowZones}
@@ -227,7 +227,7 @@ function ZonesPanelInner({
             <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
           </ActiveButton>
           <ActiveButton
-            popupTitle="show/hide signals"
+            popupTitle="Show/hide signals"
             popupPlacement="right"
             value={showSignals}
             onClick={handleSetShowSignals}
@@ -235,7 +235,7 @@ function ZonesPanelInner({
             <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
           </ActiveButton>
           <ActiveButton
-            popupTitle="show/hide peaks"
+            popupTitle="Show/Hide peaks"
             popupPlacement="right"
             value={showPeaks}
             onClick={handleSetShowPeaks}

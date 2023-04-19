@@ -193,7 +193,7 @@ function IntegralPanelInner({
           </ToolTip>
           <ToggleButton
             className="fix-integral-toggle-btn"
-            popupTitle="fix integral values"
+            popupTitle="Fix integral values"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
           >
