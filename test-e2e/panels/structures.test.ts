@@ -13,7 +13,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
   });
   await test.step('Add ring molecule', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Add molecule" i] >>  button',
+    );
 
     // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -53,7 +55,9 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Add molecule" i] >>  button',
+    );
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -139,7 +143,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Add ring molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Add molecule" i] >>  button',
+    );
 
     // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -179,7 +185,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Add a third molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Add molecule" i] >>  button',
+    );
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -282,7 +290,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
     await nmrium.page.click(
-      '_react=ToolTip[title="Change Integrals Sum"] >> button',
+      '_react=ToolTip[title="Change integrals sum" i] >> button',
     );
     await expect(
       nmrium.page.locator('_react=Draggable >> #molSVG0'),
@@ -318,13 +326,13 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       nmrium.page.locator('_react=Draggable >> text=New sum for H will be 12!'),
     ).toBeVisible();
     await nmrium.page.click(
-      '_react=Draggable >> _react=ToolTip[title="Close"] >> button',
+      '_react=Draggable >> _react=ToolTip[title="Close" i] >> button',
     );
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
     await nmrium.page.click(
-      '_react=ToolTip[title="Change Ranges Sum"] >> button',
+      '_react=ToolTip[title="Change Ranges Sum" i] >> button',
     );
     await expect(
       nmrium.page.locator('_react=Draggable >> #molSVG0'),
@@ -360,24 +368,26 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       nmrium.page.locator('_react=Draggable >> text=New sum for H will be 12!'),
     ).toBeVisible();
     await nmrium.page.click(
-      '_react=Draggable >> _react=ToolTip[title="Close"] >> button',
+      '_react=Draggable >> _react=ToolTip[title="Close" i] >> button',
     );
   });
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
       ),
     ).toBeHidden();
     // Click on float molecule button.
-    await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Float molecule" i] >> button',
+    );
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
       ),
     ).toBeVisible();
   });
@@ -395,17 +405,19 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     // Check float molecule btn is off.
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
       ),
     ).toBeHidden();
     // Click on float molecule button.
-    await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Float molecule" i] >> button',
+    );
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
       ),
     ).toBeVisible();
   });
@@ -438,7 +450,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await test.step('Delete the copy', async () => {
       // Delete molecule.
       await nmrium.page.click(
-        '_react=ToolTip[title="Delete Molecule"] >> button',
+        '_react=ToolTip[title="Delete molecule" i] >> button',
       );
       // Check deleted molecule.
       await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
@@ -453,7 +465,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
     await nmrium.page.click(
-      '_react=ToolTip[title="Delete Molecule"] >> button',
+      '_react=ToolTip[title="Delete molecule" i] >> button',
     );
     // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
@@ -483,7 +495,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
     // Delete molecule.
     await nmrium.page.click(
-      '_react=ToolTip[title="Delete Molecule"] >> button',
+      '_react=ToolTip[title="Delete molecule" i] >> button',
     );
 
     // Check selected molecule.
@@ -507,11 +519,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
     // Delete molecule.
     await nmrium.page.click(
-      '_react=ToolTip[title="Delete Molecule"] >> button',
+      '_react=ToolTip[title="Delete molecule" i] >> button',
     );
     // Delete molecule.
     await nmrium.page.click(
-      '_react=ToolTip[title="Delete Molecule"] >> button',
+      '_react=ToolTip[title="Delete molecule" i] >> button',
     );
 
     // The SVG container should not be rendered when there are no molecules.
@@ -566,7 +578,9 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=ToolTip[title="Add Molecule"] >>  button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Add molecule" i] >>  button',
+    );
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -609,17 +623,19 @@ test('check callbacks count on changing structures', async ({ page }) => {
     // Check float molecule btn is off.
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
       ),
     ).toBeHidden();
     // Click on float molecule button.
-    await nmrium.page.click('_react=ToolTip[title="Float Molecule"] >> button');
+    await nmrium.page.click(
+      '_react=ToolTip[title="Float molecule" i] >> button',
+    );
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Float Molecule"] >> .toggle-active',
+        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
       ),
     ).toBeVisible();
 

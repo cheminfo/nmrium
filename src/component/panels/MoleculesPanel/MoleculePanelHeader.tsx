@@ -249,7 +249,7 @@ export default function MoleculePanelHeader({
         </ToolTip>
       )}
       {!actionsOptions.hideAdd && (
-        <ToolTip title="Add Molecule" popupPlacement="left">
+        <ToolTip title="Add molecule" popupPlacement="left">
           <button
             className="bar-button"
             type="button"
@@ -260,7 +260,7 @@ export default function MoleculePanelHeader({
         </ToolTip>
       )}
       {!actionsOptions.hideDelete && (
-        <ToolTip title="Delete Molecule" popupPlacement="left">
+        <ToolTip title="Delete molecule" popupPlacement="left">
           <button className="bar-button" type="button" onClick={handleDelete}>
             <FaRegTrashAlt />
           </button>
@@ -268,7 +268,7 @@ export default function MoleculePanelHeader({
       )}
       {!actionsOptions.hidePredict && hasMolecules && (
         <ButtonToolTip
-          popupTitle="Predict Spectra"
+          popupTitle="Predict spectra"
           popupPlacement="left"
           onClick={openPredictSpectraModal}
         >
@@ -278,7 +278,7 @@ export default function MoleculePanelHeader({
 
       <ActiveButton
         value={moleculesView?.[moleculeKey]?.floating.visible || false}
-        popupTitle="Float Molecule"
+        popupTitle="Float molecule"
         popupPlacement="left"
         onClick={floatMoleculeHandler}
         disabled={!hasMolecules}

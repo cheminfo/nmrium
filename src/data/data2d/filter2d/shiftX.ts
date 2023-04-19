@@ -3,7 +3,7 @@ import { Spectrum2D } from 'nmr-load-save';
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 
 export const id = 'shift2DX';
-export const name = 'Shift 2D X';
+export const name = 'Shift X';
 
 export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
   updateXDomain: true,

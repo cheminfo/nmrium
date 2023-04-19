@@ -91,10 +91,10 @@ function IntegralPanelInner({
         onSave={changeIntegralSumHandler}
         header={
           currentSum
-            ? `Set new Integrals Sum (Current: ${Number(currentSum).toFixed(
+            ? `Set new integrals Sum (Current: ${Number(currentSum).toFixed(
                 2,
               )})`
-            : 'Set new Integrals Sum'
+            : 'Set new integrals Sum'
         }
         sumOptions={integrals?.options}
       />,
@@ -193,7 +193,7 @@ function IntegralPanelInner({
           </ToolTip>
           <ToggleButton
             className="fix-integral-toggle-btn"
-            popupTitle="fix integral values"
+            popupTitle="Fix integral values"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
           >

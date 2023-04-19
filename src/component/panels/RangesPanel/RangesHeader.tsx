@@ -233,8 +233,8 @@ function RangesHeader({
         <Button
           popupTitle={
             currentSum
-              ? `Change Ranges Sum (${Number(currentSum).toFixed(2)})`
-              : 'Change Ranges Sum'
+              ? `Change ranges sum (${Number(currentSum).toFixed(2)})`
+              : 'Change ranges sum'
           }
           popupPlacement="right"
           onClick={showChangeRangesSumModal}
@@ -243,7 +243,7 @@ function RangesHeader({
           <SvgNmrSum />
         </Button>
         <Button
-          popupTitle="Remove all Assignments"
+          popupTitle="Remove all assignments"
           popupPlacement="right"
           onClick={handleOnRemoveAssignments}
           disabled={!ranges?.values || ranges.values.length === 0}
@@ -254,8 +254,8 @@ function RangesHeader({
         <ActiveButton
           popupTitle={
             showMultiplicityTrees
-              ? 'Hide Multiplicity Trees in Spectrum'
-              : 'Show Multiplicity Trees in Spectrum'
+              ? 'Hide multiplicity trees in spectrum'
+              : 'Show multiplicity trees in spectrum'
           }
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
@@ -287,7 +287,7 @@ function RangesHeader({
 
         <ToggleButton
           className="icon"
-          popupTitle="fix integral values"
+          popupTitle="Fix integral values"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
         >

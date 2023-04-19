@@ -151,17 +151,17 @@ test('Multiplicity should be visible', async ({ page }) => {
     // Check that the multiplicity tree btn is off
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >> .toggle-active',
       ),
     ).toBeHidden();
     //show multiplicity trees
     await nmrium.page.click(
-      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >>  button',
+      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >>  button',
     );
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
     // Check multiplicity tree is visible
@@ -183,7 +183,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     // Check that MultiplicityTree btn still on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
   });
@@ -209,13 +209,13 @@ test('Range state', async ({ page }) => {
     // Check that the integrals btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide integrals"] >> .toggle-active',
+        '_react=ToolTip[title="Hide integrals" i] >> .toggle-active',
       ),
     ).toBeVisible();
     // Check that the multiplicity tree btn is off
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >> .toggle-active',
       ),
     ).toBeHidden();
 
@@ -229,12 +229,12 @@ test('Range state', async ({ page }) => {
 
     //show multiplicity trees
     await nmrium.page.click(
-      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum"] >>  button',
+      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >>  button',
     );
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
     // Check multiplicity tree is visible
@@ -254,13 +254,13 @@ test('Range state', async ({ page }) => {
     // Check that the integrals btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide integrals"] >> .toggle-active',
+        '_react=ToolTip[title="Hide integrals" i] >> .toggle-active',
       ),
     ).toBeVisible();
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide Multiplicity Trees in Spectrum"] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
 

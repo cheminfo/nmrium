@@ -126,7 +126,7 @@ function MultipleSpectraAnalysisPanelInner({
             <SvgNmrOverlay style={{ fontSize: '18px' }} />
           </Button>
           <ToggleButton
-            popupTitle="Y Spectra Tracker"
+            popupTitle="Y spectra tracker"
             popupPlacement="right"
             onClick={showTrackerHandler}
             defaultValue={showLegend}

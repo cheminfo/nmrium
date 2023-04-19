@@ -104,7 +104,7 @@ function DefaultPanelHeader({
         </p>
       )}
       {showSettingButton && (
-        <ToolTip title="preferences" popupPlacement="left">
+        <ToolTip title="Preferences" popupPlacement="left">
           <button type="button" onClick={onSettingClick}>
             <FaCog />
           </button>

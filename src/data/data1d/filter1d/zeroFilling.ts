@@ -2,7 +2,7 @@ import { Data1D, Spectrum1D } from 'nmr-load-save';
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 
 export const id = 'zeroFilling';
-export const name = 'Zero Filling';
+export const name = 'Zero filling';
 
 export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
   updateXDomain: true,

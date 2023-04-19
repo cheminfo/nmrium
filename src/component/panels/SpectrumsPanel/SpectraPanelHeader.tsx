@@ -166,14 +166,14 @@ function SpectraPanelHeaderInner({
         <>
           <Button.BarButton
             tooltipOrientation="horizontal"
-            toolTip="Reset Scale"
+            toolTip="Reset scale"
             onClick={resetScaleHandler}
           >
             <SvgNmrResetScale />
           </Button.BarButton>
           <Button.BarButton
             tooltipOrientation="horizontal"
-            toolTip="Same Top"
+            toolTip="Same top"
             onClick={setSameTopHandler}
           >
             <SvgNmrSameTop />

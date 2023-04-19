@@ -193,7 +193,7 @@ function PeaksPanelInner({
 
               <Button.BarButton
                 onClick={optimizePeaksHandler}
-                toolTip="Optimize Peaks"
+                toolTip="Optimize peaks"
                 tooltipOrientation="horizontal"
               >
                 <FaThinkPeaks />

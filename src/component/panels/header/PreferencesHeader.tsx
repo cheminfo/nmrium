@@ -29,8 +29,8 @@ interface PreferencesHeaderProps {
 function PreferencesHeader({ onClose, onSave }: PreferencesHeaderProps) {
   return (
     <div css={styles}>
-      <CloseButton onClick={onClose} popupTitle="close Preferences" />
-      <SaveButton onClick={onSave} popupTitle="save Preferences" />
+      <CloseButton onClick={onClose} popupTitle="Close preferences" />
+      <SaveButton onClick={onSave} popupTitle="Save preferences" />
     </div>
   );
 }

@@ -152,7 +152,7 @@ function FunctionToolBarInner({
             key={options.apodization.id}
             value={options.apodization.id}
             id={options.apodization.id}
-            title={options.apodization.label}
+            title={`${options.apodization.label} (Press a)`}
           >
             <SvgNmrApodization />
           </ToggleButton>

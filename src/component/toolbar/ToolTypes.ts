@@ -47,7 +47,7 @@ export const options: RecordOptions = {
   },
   peakPicking: {
     id: 'peakPicking',
-    label: 'Peaks Picking',
+    label: 'Peaks picking',
     hasOptionPanel: true,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -61,7 +61,7 @@ export const options: RecordOptions = {
   },
   integral: {
     id: 'integral',
-    label: 'integral Tool',
+    label: 'Integral Tool',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -75,7 +75,7 @@ export const options: RecordOptions = {
   },
   zonePicking: {
     id: 'zonePicking',
-    label: 'Zone Tool',
+    label: 'Zone tool',
     hasOptionPanel: true,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_2D,
@@ -89,7 +89,7 @@ export const options: RecordOptions = {
   },
   slicing: {
     id: 'slicing',
-    label: 'Slicing Tool',
+    label: 'Slicing tool',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_2D,
@@ -117,7 +117,7 @@ export const options: RecordOptions = {
   },
   equalizer: {
     id: 'equalizer',
-    label: 'Equalizer Tool',
+    label: 'Equalizer tool',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -240,7 +240,7 @@ export const options: RecordOptions = {
 
   multipleSpectraAnalysis: {
     id: 'multipleSpectraAnalysis',
-    label: 'Multiple Spectra Analysis',
+    label: 'Multiple spectra analysis',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -257,7 +257,7 @@ export const options: RecordOptions = {
   },
   exclusionZones: {
     id: 'exclusionZones',
-    label: 'Exclusion Zones',
+    label: 'Exclusion zones',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -274,7 +274,7 @@ export const options: RecordOptions = {
   },
   matrixGenerationExclusionZones: {
     id: 'matrixGenerationExclusionZones',
-    label: 'Matrix Generations Exclusion Zones',
+    label: 'Matrix generations exclusion zones',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -291,7 +291,7 @@ export const options: RecordOptions = {
   },
   databaseRangesSelection: {
     id: 'databaseRangesSelection',
-    label: 'Filter Database',
+    label: 'Filter database',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,
@@ -305,7 +305,7 @@ export const options: RecordOptions = {
   },
   exportAs: {
     id: 'exportAs',
-    label: 'export as',
+    label: 'Export as',
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
@@ -329,14 +329,14 @@ export const options: RecordOptions = {
   },
   import: {
     id: 'import',
-    label: 'import',
+    label: 'Import',
     hasOptionPanel: false,
     isFilter: false,
     isToggle: false,
   },
   realImaginary: {
     id: 'realImaginary',
-    label: 'real/imaginary',
+    label: 'Real / Imaginary',
     hasOptionPanel: false,
     isFilter: false,
     mode: DISPLAYER_MODE.DM_1D,

@@ -3,7 +3,7 @@ import { Data1D, Spectrum1D } from 'nmr-load-save';
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 
 export const id = 'digitalFilter';
-export const name = 'Digital Filter';
+export const name = 'Digital filter';
 
 export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
   updateXDomain: true,
