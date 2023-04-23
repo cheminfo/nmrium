@@ -10,6 +10,7 @@ import {
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
 
+import { lookupForFilter } from './FiltersManager';
 import { isSpectrum1D, initiateDatum1D } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
@@ -128,7 +129,68 @@ export function toJSON(
 export function exportAsJcamp(spectrum: Spectrum) {
   let jcamp: string | null = null;
   if (isSpectrum1D(spectrum)) {
-    jcamp = spectrum1DToJcamp(spectrum);
+    const { info, data } = spectrum;
+    const {
+      pulseSequence,
+      offset,
+      isFid,
+      spectralWidth,
+      frequencyOffset,
+      DECIM,
+      DSPFVS,
+    } = info;
+    const nucleus = getFirstIfArray(info.nucleus);
+    const baseFrequency = getFirstIfArray(info.baseFrequency);
+    const originFrequency = getFirstIfArray(info.originFrequency);
+    const infoToExport: any = {
+      nucleus,
+      pulseSequence,
+      baseFrequency,
+      originFrequency,
+      offset,
+      isFid,
+    };
+    let newMeta: any = {};
+    const { re, im } = data;
+    const newRe = new Float64Array(re);
+    const newIm = im ? new Float64Array(im) : null;
+    if (isFid) {
+      maybeAdd(newMeta, 'BF1', baseFrequency);
+      maybeAdd(newMeta, 'SW', spectralWidth);
+      const digitalFiltering = lookupForFilter(spectrum, 'digitalFilter');
+
+      if (digitalFiltering) {
+        const {
+          value: { digitalFilterValue },
+          flag: digitalFilterIsApplied,
+        } = digitalFiltering;
+
+        if (digitalFilterIsApplied) {
+          let pointsToShift = Math.floor(digitalFilterValue);
+          newRe.set(re.slice(re.length - pointsToShift));
+          newRe.set(re.slice(0, re.length - pointsToShift), pointsToShift);
+          if (newIm) {
+            newIm.set(im.slice(im.length - pointsToShift));
+            newIm.set(im.slice(0, im.length - pointsToShift), pointsToShift);
+          }
+        }
+        maybeAdd(newMeta, 'GRPDLY', digitalFilterValue);
+        maybeAdd(newMeta, 'DECIM', DECIM);
+        maybeAdd(newMeta, 'DSPFVS', DSPFVS);
+      }
+      const offset = frequencyOffset / baseFrequency;
+      infoToExport.shiftReference = offset + 0.5 * spectralWidth;
+    }
+    jcamp = spectrum1DToJcamp({
+      ...spectrum,
+      data: {
+        ...data,
+        re: newRe,
+        im: newIm,
+      },
+      info: infoToExport,
+      meta: newMeta,
+    });
   } else {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
@@ -139,4 +201,17 @@ export function exportAsJcamp(spectrum: Spectrum) {
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
   saveAs(blob, `${spectrum.info.name}.jdx`);
+}
+
+function getFirstIfArray(data: any) {
+  return Array.isArray(data) ? data[0] : data;
+}
+
+function maybeAdd(
+  obj: any,
+  name: string,
+  value: string | number | Array<string | number>,
+) {
+  if (value === undefined) return;
+  obj[name] = getFirstIfArray(value);
 }
