@@ -15,7 +15,6 @@ export interface NumberInputProps
   min?: any;
   max?: any;
   value?: number;
-  defaultValue?: number;
   style?: CSSProperties;
 }
 
@@ -24,7 +23,6 @@ const NumberInput = forwardRef(
     {
       name,
       value: valueProp,
-      defaultValue = 0,
       style = {},
       onChange,
       pattern = '^\\d*.\\d*$',
@@ -42,7 +40,6 @@ const NumberInput = forwardRef(
         type="number"
         pattern={pattern}
         value={valueProp}
-        defaultValue={defaultValue}
         step={step}
         onChange={onChange}
         min={min}
