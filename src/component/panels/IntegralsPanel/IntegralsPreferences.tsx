@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
+import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import useNucleus from '../../hooks/useNucleus';
@@ -20,7 +21,6 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import Label from '../../elements/Label';
 
 const formatFields: NucleusPreferenceField[] = [
   {

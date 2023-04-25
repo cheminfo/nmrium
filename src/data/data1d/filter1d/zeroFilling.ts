@@ -1,4 +1,5 @@
 import { Data1D, Spectrum1D } from 'nmr-load-save';
+
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 
 export const id = 'zeroFilling';
