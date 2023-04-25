@@ -499,7 +499,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.DELETE_PEAK_NOTATION:
       return PeaksActions.deletePeak(draft, action.data);
     case types.AUTO_PEAK_PICKING:
-      return PeaksActions.handleAutoPeakPicking(draft, action.options);
+      return PeaksActions.handleAutoPeakPicking(draft, action);
     case types.OPTIMIZE_PEAKS:
       return PeaksActions.handleOptimizePeaks(draft, action);
     case types.CHANGE_PEAK_SHAPE:
@@ -676,11 +676,11 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.setSpectrumsVerticalAlign(draft);
 
     case types.AUTO_ZONES_DETECTION:
-      return ZonesActions.handleAutoZonesDetection(draft, action.options);
+      return ZonesActions.handleAutoZonesDetection(draft, action);
     case types.CHANGE_ZONES_NOISE_FACTOR:
       return ZonesActions.changeZonesFactorHandler(draft, action);
     case types.AUTO_RANGES_DETECTION:
-      return RangesActions.handleAutoRangesDetection(draft, action.options);
+      return RangesActions.handleAutoRangesDetection(draft, action);
     case types.ADD_RANGE:
       return RangesActions.handleAddRange(draft, action);
     case types.DELETE_RANGE:
