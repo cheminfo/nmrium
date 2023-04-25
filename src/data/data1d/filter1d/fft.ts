@@ -53,7 +53,7 @@ export function apply(spectrum: Spectrum1D) {
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = info;
     let ph1 = (digitalFilter - Math.floor(digitalFilter)) * Math.PI * 2;
-    Object.assign(data, reimPhaseCorrection(data as DataReIm, 0, ph1));
+    Object.assign(data, reimPhaseCorrection(data as DataReIm, 0, -ph1, { reverse: true }));
   }
 
   data.x = generateXAxis(spectrum);
