@@ -226,11 +226,19 @@ function InnerNMRium({
   useEffect(() => {
     const { workspace, workspaces = {} } = preferencesState;
     stateRef.current = toJSON(
-      { data: spectraData, molecules, correlations, source, view },
+      { data: spectraData, molecules, correlations, source, view, actionType },
       { current: workspaces[workspace.current] },
       { serialize: false, exportTarget: 'onChange' },
     );
-  }, [correlations, molecules, preferencesState, source, spectraData, view]);
+  }, [
+    actionType,
+    correlations,
+    molecules,
+    preferencesState,
+    source,
+    spectraData,
+    view,
+  ]);
 
   useEffect(() => {
     // trigger onChange callback if data object changed
