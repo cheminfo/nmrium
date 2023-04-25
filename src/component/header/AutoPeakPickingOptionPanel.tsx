@@ -78,14 +78,22 @@ function AutoPeakPickingOptionPanel() {
               shortTitle="Peaks number :"
               style={headerLabelStyle}
             >
-              <FormikNumberInput name="maxNumberOfPeaks" style={inputStyle} />
+              <FormikNumberInput
+                name="maxNumberOfPeaks"
+                style={inputStyle}
+                min={0}
+              />
             </Label>
             <Label
               title="Noise factor :"
               shortTitle="Noise :"
               style={headerLabelStyle}
             >
-              <FormikNumberInput name="noiseFactor" style={inputStyle} />
+              <FormikNumberInput
+                name="noiseFactor"
+                style={inputStyle}
+                min={0}
+              />
             </Label>
             <Label
               title="Min Max Ratio :"
@@ -96,6 +104,7 @@ function AutoPeakPickingOptionPanel() {
                 name="minMaxRatio"
                 style={inputStyle}
                 step="0.01"
+                min={0}
               />
             </Label>
             <Button.Done

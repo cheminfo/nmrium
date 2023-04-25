@@ -5,7 +5,6 @@ const inputStyle: CSSProperties = {
   width: '100px',
   borderRadius: '5px',
   border: '0.55px solid #c7c7c7',
-  margin: '0px 5px 0px 5px',
   textAlign: 'center',
 };
 export interface NumberInputProps

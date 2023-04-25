@@ -56,6 +56,7 @@ function RangesPickingOptionPanel() {
                   width: '70px',
                 }}
                 step="0.01"
+                min={0}
               />
             </Label>
 

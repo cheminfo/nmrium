@@ -60,6 +60,7 @@ function Zones2DOptionPanel() {
               <FormikNumberInput
                 name="thresholdFactor"
                 style={{ width: '50px' }}
+                min={0}
               />
             </Label>
             <FormikOnChange
