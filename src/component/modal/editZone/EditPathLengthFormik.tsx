@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
+import Label from '../../elements/Label';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 
 const editPathLengthsStyles = css`
@@ -68,50 +69,48 @@ function EditPathLengthFormik({ signalIndex }: InputProps) {
     <div css={editPathLengthsStyles}>
       <p>Setting of the minimum and maximum path length (J coupling).</p>
       <div className="input-container">
-        <FormikNumberInput
-          name={`signals[${signalIndex}].j.pathLength.from`}
-          defaultValue={
-            values.signals[signalIndex].j?.pathLength?.from ||
-            DefaultPathLengths[values.experimentType]?.from ||
-            1
-          }
-          label="Min: "
-          style={{
-            input: {
+        <Label title="Min: ">
+          <FormikNumberInput
+            name={`signals[${signalIndex}].j.pathLength.from`}
+            defaultValue={
+              values.signals[signalIndex].j?.pathLength?.from ||
+              DefaultPathLengths[values.experimentType]?.from ||
+              1
+            }
+            style={{
               color: errors.signals?.[signalIndex].j?.pathLength?.from
                 ? 'red'
                 : 'black',
-            },
-          }}
-          min={1}
-          max={
-            values.signals[signalIndex].j?.pathLength?.to ||
-            DefaultPathLengths[values.experimentType]?.to
-          }
-          pattern="[1-9]+"
-        />
-        <FormikNumberInput
-          name={`signals[${signalIndex}].j.pathLength.to`}
-          defaultValue={
-            values.signals[signalIndex].j?.pathLength?.to ||
-            DefaultPathLengths[values.experimentType]?.to ||
-            1
-          }
-          label="Max: "
-          style={{
-            input: {
+            }}
+            min={1}
+            max={
+              values.signals[signalIndex].j?.pathLength?.to ||
+              DefaultPathLengths[values.experimentType]?.to
+            }
+            pattern="[1-9]+"
+          />
+        </Label>
+        <Label title="Max: ">
+          <FormikNumberInput
+            name={`signals[${signalIndex}].j.pathLength.to`}
+            defaultValue={
+              values.signals[signalIndex].j?.pathLength?.to ||
+              DefaultPathLengths[values.experimentType]?.to ||
+              1
+            }
+            style={{
               color: errors.signals?.[signalIndex].j?.pathLength?.to
                 ? 'red'
                 : 'black',
-            },
-          }}
-          min={
-            values.signals[signalIndex].j?.pathLength?.from ||
-            DefaultPathLengths[values.experimentType]?.from ||
-            1
-          }
-          pattern="[1-9]+"
-        />
+            }}
+            min={
+              values.signals[signalIndex].j?.pathLength?.from ||
+              DefaultPathLengths[values.experimentType]?.from ||
+              1
+            }
+            pattern="[1-9]+"
+          />
+        </Label>
       </div>
     </div>
   );

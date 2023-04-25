@@ -20,6 +20,7 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import Label from '../../elements/Label';
 
 const formatFields: NucleusPreferenceField[] = [
   {
@@ -76,25 +77,31 @@ function IntegralsPreferences(props, ref) {
               renderTop={() => (
                 <>
                   <FormikColorInput name={`nuclei.${n}.color`} />
-                  <FormikNumberInput
-                    name={`nuclei.${n}.strokeWidth`}
-                    label="stroke width :"
+                  <Label
+                    title="stroke width :"
                     style={{
                       label: {
                         fontSize: '11px',
                         fontWeight: 'bold',
                         color: '#232323',
+                        flex: 2,
                       },
-                      input: {
-                        width: '60%',
-                        textAlign: 'center',
-                        borderRadius: '5px',
+                      wrapper: {
+                        flex: 4,
                       },
                     }}
-                    min={1}
-                    max={9}
-                    pattern="[1-9]+"
-                  />
+                  >
+                    <FormikNumberInput
+                      name={`nuclei.${n}.strokeWidth`}
+                      style={{
+                        width: '60%',
+                        textAlign: 'center',
+                      }}
+                      min={1}
+                      max={9}
+                      pattern="[1-9]+"
+                    />
+                  </Label>
                 </>
               )}
             />

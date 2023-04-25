@@ -1,69 +1,75 @@
-import { useCallback, useRef } from 'react';
+import { Formik } from 'formik';
+import { useCallback } from 'react';
+import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
-import CheckBox from '../elements/CheckBox';
 import Label from '../elements/Label';
-import NumberInput from '../elements/NumberInput';
+import FormikCheckBox from '../elements/formik/FormikCheckBox';
+import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const inputStyle = {
-  input: {
-    height: '100%',
-    width: '50px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px',
-  },
-  inputContainer: {
-    flex: 2,
-  },
-  container: {
-    height: '100%',
-  },
+const validationSchema = Yup.object().shape({
+  minMaxRatio: Yup.number().min(0).required(),
+});
+
+const initialValues = {
+  minMaxRatio: 0.05,
+  lookNegative: false,
 };
 
 function RangesPickingOptionPanel() {
   const dispatch = useDispatch();
-  const lookNegativeRef = useRef<any>();
-  const minMaxRatioRef = useRef<any>();
 
-  const handleApplyFilter = useCallback(() => {
-    dispatch({
-      type: AUTO_RANGES_DETECTION,
-      options: {
-        peakPicking: {
-          minMaxRatio: Number(minMaxRatioRef.current.value) || 0.05,
-          lookNegative: lookNegativeRef.current.checked,
-        },
-      },
-    });
-  }, [dispatch]);
+  const handleRangesPicking = useCallback(
+    (values) => {
+      dispatch({
+        type: AUTO_RANGES_DETECTION,
+        payload: values,
+      });
+    },
+    [dispatch],
+  );
   return (
     <HeaderContainer>
-      <Label
-        title="Detect negative:"
-        htmlFor="lookNegative"
-        style={headerLabelStyle}
+      <Formik
+        onSubmit={handleRangesPicking}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
-        <CheckBox name="lookNegative" ref={lookNegativeRef} />
-      </Label>
-      <Label title="Min Max Ratio:" style={headerLabelStyle}>
-        <NumberInput
-          ref={minMaxRatioRef}
-          name="minMaxRatio"
-          style={inputStyle}
-          defaultValue={0.05}
-          step="0.01"
-        />
-      </Label>
+        {({ handleSubmit, isValid }) => (
+          <>
+            <Label
+              title="Detect negative:"
+              htmlFor="lookNegative"
+              style={headerLabelStyle}
+            >
+              <FormikCheckBox name="lookNegative" />
+            </Label>
+            <Label title="Min Max Ratio:" style={headerLabelStyle}>
+              <FormikNumberInput
+                name="minMaxRatio"
+                style={{
+                  width: '70px',
+                }}
+                step="0.01"
+                min={0}
+              />
+            </Label>
 
-      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
-        Auto ranges picking
-      </Button.Done>
+            <Button.Done
+              onClick={() => handleSubmit()}
+              style={{ margin: '0 10px' }}
+              disabled={!isValid}
+            >
+              Auto ranges picking
+            </Button.Done>
+          </>
+        )}
+      </Formik>
     </HeaderContainer>
   );
 }
