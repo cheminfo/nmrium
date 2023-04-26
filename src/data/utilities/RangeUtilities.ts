@@ -55,8 +55,9 @@ interface UnlinkOptions {
   signalIndex?: number;
 }
 export function unlink(range: Range, options: UnlinkOptions = {}): Range {
-  const { unlinkType = 'both', signalIndex } = options;
+  const { unlinkType = 'both', signalIndex = -1 } = options;
   const keys = ['diaIDs', 'nbAtoms'];
+
   switch (unlinkType) {
     case 'both':
       resetDiaIDs(range);
@@ -65,7 +66,7 @@ export function unlink(range: Range, options: UnlinkOptions = {}): Range {
       range = omit(range, keys) as Range;
       break;
     case 'signal':
-      if (signalIndex) {
+      if (signalIndex !== -1) {
         range.signals[signalIndex] = omit(
           range.signals[signalIndex],
           keys,
@@ -112,8 +113,9 @@ export function unlinkInAssignmentData(
     }
     return [];
   });
+
   assignmentData.dispatch({
-    type: 'REMOVE_ALL',
-    payload: { id: ids, axis: 'x' },
+    type: 'REMOVE',
+    payload: { ids, axis: 'x' },
   });
 }

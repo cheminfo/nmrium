@@ -16,11 +16,11 @@ export function removeAssignment(
 ) {
   const { id, atomID = '', axis } = options;
 
-  const atomIDs = state.assignments?.[id]?.[axis] || null;
+  let atomIDs = state.assignments?.[id]?.[axis] || null;
 
   if (atomIDs) {
     if (atomID) {
-      atomIDs.filter((id) => id !== atomID);
+      atomIDs = atomIDs.filter((id) => id !== atomID);
       state.assignments[id][axis] = atomIDs;
     } else {
       state.assignments[id][axis] = [];
