@@ -149,7 +149,7 @@ export function exportAsJcamp(spectrum: Spectrum) {
       isFid,
     };
     let newMeta: any = {};
-    const { re, im } = data;
+    const { x, re, im } = data;
     const newRe = new Float64Array(re);
     const newIm = im ? new Float64Array(im) : undefined;
     if (isFid) {
@@ -178,11 +178,10 @@ export function exportAsJcamp(spectrum: Spectrum) {
       }
       if (frequencyOffset && baseFrequency) {
         const offset = frequencyOffset / baseFrequency;
-        infoToExport.shiftReference = offset + 0.5 * spectralWidth; 
+        infoToExport.shiftReference = offset + 0.5 * spectralWidth;
       } else {
-        infoToExport.shiftReference = data.x[re.length - 1];
+        infoToExport.shiftReference = x[x.length - 1];
       }
-      
     }
     jcamp = spectrum1DToJcamp({
       ...spectrum,
