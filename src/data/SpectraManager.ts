@@ -132,7 +132,6 @@ export function exportAsJcamp(spectrum: Spectrum) {
     const { info, data } = spectrum;
     const {
       pulseSequence,
-      offset,
       isFid,
       spectralWidth,
       frequencyOffset,
@@ -147,13 +146,12 @@ export function exportAsJcamp(spectrum: Spectrum) {
       pulseSequence,
       baseFrequency,
       originFrequency,
-      offset,
       isFid,
     };
     let newMeta: any = {};
     const { re, im } = data;
     const newRe = new Float64Array(re);
-    const newIm = im ? new Float64Array(im) : null;
+    const newIm = im ? new Float64Array(im) : undefined;
     if (isFid) {
       maybeAdd(newMeta, 'BF1', baseFrequency);
       maybeAdd(newMeta, 'SW', spectralWidth);
@@ -169,7 +167,7 @@ export function exportAsJcamp(spectrum: Spectrum) {
           let pointsToShift = Math.floor(digitalFilterValue);
           newRe.set(re.slice(re.length - pointsToShift));
           newRe.set(re.slice(0, re.length - pointsToShift), pointsToShift);
-          if (newIm) {
+          if (im && newIm) {
             newIm.set(im.slice(im.length - pointsToShift));
             newIm.set(im.slice(0, im.length - pointsToShift), pointsToShift);
           }
@@ -178,8 +176,13 @@ export function exportAsJcamp(spectrum: Spectrum) {
         maybeAdd(newMeta, 'DECIM', DECIM);
         maybeAdd(newMeta, 'DSPFVS', DSPFVS);
       }
-      const offset = frequencyOffset / baseFrequency;
-      infoToExport.shiftReference = offset + 0.5 * spectralWidth;
+      if (frequencyOffset && baseFrequency) {
+        const offset = frequencyOffset / baseFrequency;
+        infoToExport.shiftReference = offset + 0.5 * spectralWidth; 
+      } else {
+        infoToExport.shiftReference = data.x[re.length - 1];
+      }
+      
     }
     jcamp = spectrum1DToJcamp({
       ...spectrum,
@@ -210,7 +213,7 @@ function getFirstIfArray(data: any) {
 function maybeAdd(
   obj: any,
   name: string,
-  value: string | number | Array<string | number>,
+  value?: string | number | Array<string | number>,
 ) {
   if (value === undefined) return;
   obj[name] = getFirstIfArray(value);
