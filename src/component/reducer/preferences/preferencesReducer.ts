@@ -38,7 +38,7 @@ import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPositi
 import { setWorkspace } from './actions/setWorkspace';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
 
-const LOCAL_STORAGE_VERSION = 14;
+const LOCAL_STORAGE_VERSION = 16;
 
 export const WORKSPACES_KEYS = {
   componentKey: `nmrium-component-workspace`,
@@ -165,7 +165,9 @@ export const WORKSPACES: Array<{
 ];
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
-export type WorkspacesWithSource = Record<string, WorkspaceWithSource>;
+export type WorkspacesWithSource =
+  | Record<NMRiumWorkspace, WorkspaceWithSource>
+  | Record<string, WorkspaceWithSource>;
 
 export interface PreferencesState {
   version: number;
@@ -210,9 +212,6 @@ export function initPreferencesState(
 
     const data = {
       version: LOCAL_STORAGE_VERSION,
-      ...(localData?.currentWorkspace && {
-        currentWorkspace: localData?.currentWorkspace,
-      }),
       workspaces: {},
     };
     storeData('nmr-general-settings', JSON.stringify(data));
