@@ -87,6 +87,7 @@ interface AutoPhaseCorrectionOptions {
   maxDistanceToJoin?: number;
   magnitudeMode?: boolean;
   factorNoise?: number;
+  reverse?: boolean;
 }
 
 function autoPhaseCorrection(
@@ -98,6 +99,7 @@ function autoPhaseCorrection(
     maxDistanceToJoin = 128,
     magnitudeMode = true,
     factorNoise = 5,
+    reverse = true,
   } = options;
 
   return reimAutoPhaseCorrection(spectrum.data as any, {
@@ -105,6 +107,6 @@ function autoPhaseCorrection(
     maxDistanceToJoin,
     magnitudeMode,
     factorNoise,
-    reverse: true,
+    reverse,
   });
 }
