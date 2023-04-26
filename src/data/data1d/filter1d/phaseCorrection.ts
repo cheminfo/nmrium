@@ -105,5 +105,6 @@ function autoPhaseCorrection(
     maxDistanceToJoin,
     magnitudeMode,
     factorNoise,
+    reverse: true,
   });
 }
