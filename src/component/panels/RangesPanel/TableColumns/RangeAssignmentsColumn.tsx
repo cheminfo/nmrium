@@ -1,24 +1,29 @@
-import { CSSProperties, useMemo, useCallback, memo } from 'react';
-import { FaMinusCircle } from 'react-icons/fa';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+import { CSSProperties, useMemo, memo } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import { HighlightEventSource } from '../../../highlight';
-import { RangeColumnProps } from '../RangesTableRow';
+import { AssignmentColumnCssStyle, RangeColumnProps } from '../RangesTableRow';
+import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
 
 const spanStyle: CSSProperties = {
   color: 'red',
   fontWeight: 'bold',
 };
 
-interface RangAssignmentColumnProps extends Omit<RangeColumnProps, 'format'> {
+interface RemoveAssignmentsButtonProps {
+  onUnlink?: (element: any, b: boolean) => void;
+}
+interface RangAssignmentColumnProps
+  extends Omit<RangeColumnProps, 'format'>,
+    RemoveAssignmentsButtonProps {
   assignment: AssignmentsData;
   highlight: {
     isActive: boolean;
   };
-  onUnlinkVisibilityChange?: (element: any) => void;
-  unlinkVisibility: boolean;
   onLink?: (a: any, b: any) => void;
-  onUnlink?: (element: any, b: boolean) => void;
   highlightData: any;
 }
 
@@ -26,8 +31,6 @@ function RangeAssignmentsColumn({
   row,
   assignment,
   highlight,
-  onUnlinkVisibilityChange,
-  unlinkVisibility,
   onLink,
   onUnlink,
   rowSpanTags,
@@ -35,13 +38,6 @@ function RangeAssignmentsColumn({
   highlightData,
 }: RangAssignmentColumnProps) {
   const diaIDs = row.diaIDs || [];
-
-  const visibilityChangeHandler = useCallback(
-    (flag) => {
-      onUnlinkVisibilityChange?.(flag);
-    },
-    [onUnlinkVisibilityChange],
-  );
 
   const spanCss: CSSProperties = useMemo(() => {
     const flag =
@@ -63,53 +59,37 @@ function RangeAssignmentsColumn({
     highlightData.highlight.sourceData?.type,
   ]);
 
+  const totalNumberOfAtoms =
+    (row?.nbAtoms || 0) +
+    row.signals.reduce(
+      (signalAtoms, signal) => (signalAtoms += signal?.nbAtoms || 0),
+      0,
+    );
+  if (totalNumberOfAtoms > 0) {
+    console.log(totalNumberOfAtoms);
+  }
   return (
     <td
       {...rowSpanTags}
-      style={{ padding: '0', ...rowSpanTags.style }}
+      style={{
+        padding: 0,
+        ...rowSpanTags.style,
+        textAlign: 'center',
+        verticalAlign: 'middle',
+      }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
+      css={!assignment.isActive && AssignmentColumnCssStyle}
     >
-      {row.nbAtoms !== undefined && row.nbAtoms > 0 ? (
-        row.diaIDs && row.diaIDs.length > 0 ? (
-          <div
-            onMouseEnter={() => visibilityChangeHandler(true)}
-            onMouseLeave={() => visibilityChangeHandler(false)}
-          >
-            {row.nbAtoms} {' ( '}
-            <span style={spanCss}>{diaIDs.length}</span>
-            {' ) '}
-            <sup>
-              <button
-                type="button"
-                style={{
-                  visibility: unlinkVisibility ? 'visible' : 'hidden',
-                  padding: 0,
-                  margin: 0,
-                }}
-                onClick={(e) => onUnlink?.(e, true)}
-              >
-                <FaMinusCircle color="red" />
-              </button>
-            </sup>
-          </div>
-        ) : assignment.isActive ? (
-          <div>
-            {`${row.nbAtoms} (`}
-            <span style={spanStyle}>0</span>
-            {')'}
-          </div>
-        ) : (
-          row.nbAtoms
-        )
-      ) : assignment.isActive ? (
-        <div>
-          {'0 ('}
-          <span style={spanStyle}>0</span>
-          {')'}
-        </div>
-      ) : (
-        ''
+      {(totalNumberOfAtoms > 0 || assignment.isActive) && (
+        <>
+          {totalNumberOfAtoms} {' ( '}
+          <span style={assignment.isActive ? spanStyle : spanCss}>
+            {diaIDs?.length || 0}
+          </span>
+          {' ) '}
+          <RemoveAssignmentsButton onClick={(e) => onUnlink?.(e, true)} />
+        </>
       )}
     </td>
   );
