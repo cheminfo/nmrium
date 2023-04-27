@@ -39,18 +39,15 @@ const ConstantlyHighlightedRowStyle = css`
 `;
 
 export const AssignmentColumnCssStyle = css`
-   
-  .remove-assignment{
-    visibility:hidden;
+  .remove-assignment {
+    visibility: hidden;
+  }
+
+  &:hover {
+    .remove-assignment {
+      visibility: visible;
     }
-  
-    &:hover {
-      .remove-assignment{
-        visibility:visible;
-      }
-      
-     }
-} 
+  }
 `;
 
 interface RangesTableRowProps extends ContextMenuProps {
