@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 
 import lodashGet from 'lodash/get';
 import { CSSProperties, memo, MouseEvent } from 'react';
-import { FaMinusCircle } from 'react-icons/fa';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import {
@@ -11,6 +9,7 @@ import {
   BaseRangeColumnProps,
   AssignmentColumnCssStyle,
 } from '../RangesTableRow';
+
 import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
 
 interface SignalAssignmentsColumnProps

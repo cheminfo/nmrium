@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 
 import { CSSProperties, useMemo, memo } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import { HighlightEventSource } from '../../../highlight';
 import { AssignmentColumnCssStyle, RangeColumnProps } from '../RangesTableRow';
+
 import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
 
 const spanStyle: CSSProperties = {
@@ -59,15 +59,11 @@ function RangeAssignmentsColumn({
     highlightData.highlight.sourceData?.type,
   ]);
 
-  const totalNumberOfAtoms =
-    (row?.nbAtoms || 0) +
-    row.signals.reduce(
-      (signalAtoms, signal) => (signalAtoms += signal?.nbAtoms || 0),
-      0,
-    );
-  if (totalNumberOfAtoms > 0) {
-    console.log(totalNumberOfAtoms);
+  let totalNumberOfAtoms = row?.nbAtoms || 0;
+  for (const signal of row?.signals || []) {
+    totalNumberOfAtoms += signal?.nbAtoms || 0;
   }
+
   return (
     <td
       {...rowSpanTags}
