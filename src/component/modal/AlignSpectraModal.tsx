@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
+import { SvgNmrOverlay } from 'cheminfo-font';
 import { Formik } from 'formik';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Modal, useOnOff } from 'react-science/ui';
 
 import { REFERENCES } from '../../data/constants/References';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
-import CloseButton from '../elements/CloseButton';
+import ButtonToolTip from '../elements/ButtonToolTip';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikInput from '../elements/formik/FormikInput';
@@ -75,54 +77,62 @@ function AlignSpectraModal({
     [nucleus],
   );
 
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
-    <div css={ModalStyles}>
-      <div className="header handle">
-        <span>Spectra calibration</span>
-        <CloseButton onClick={onClose} className="close-bt" />
-      </div>
-      <div className="inner-content" style={{ flex: 1 }}>
-        <Formik
-          innerRef={refForm}
-          initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
-          onSubmit={submitHandler}
-        >
-          <>
-            <div className="row margin-10">
-              <span className="custom-label">Options :</span>
+    <>
+      <ButtonToolTip popupTitle="Spectra calibration" onClick={openDialog}>
+        <SvgNmrOverlay style={{ fontSize: '18px' }} />
+      </ButtonToolTip>
 
-              <Select
-                items={List}
-                style={{ width: 270, height: 30, marginBottom: '20px' }}
-                onChange={optionChangeHandler}
-              />
-            </div>
-            <div className="row margin-10">
-              <span className="custom-label">Range :</span>
-              <Label title="From : ">
-                <FormikInput name="from" type="number" />
-              </Label>
-              <Label title="To : ">
-                <FormikInput name="to" type="number" />
-              </Label>
-            </div>
-            <div className=" margin-10">
-              <Label className="custom-label" title="Number of Peaks : ">
-                <FormikInput name="nbPeaks" type="number" />
-              </Label>
-            </div>
-            <div className=" margin-10">
-              <Label className="custom-label" title="Target PPM :">
-                <FormikInput name="targetX" type="number" />
-              </Label>
-            </div>
-          </>
-        </Formik>
-      </div>
-      <div className="footer-container">
-        <Button.Done onClick={handleSave}>Done</Button.Done>
-      </div>
-    </div>
+      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
+        <div css={ModalStyles}>
+          <Modal.Header>
+            <span className="header">Spectra calibration</span>
+          </Modal.Header>
+          <div className="inner-content" style={{ flex: 1 }}>
+            <Formik
+              innerRef={refForm}
+              initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
+              onSubmit={submitHandler}
+            >
+              <>
+                <div className="row margin-10">
+                  <span className="custom-label">Options :</span>
+
+                  <Select
+                    items={List}
+                    style={{ width: 270, height: 30, marginBottom: '20px' }}
+                    onChange={optionChangeHandler}
+                  />
+                </div>
+                <div className="row margin-10">
+                  <span className="custom-label">Range :</span>
+                  <Label title="From : ">
+                    <FormikInput name="from" type="number" />
+                  </Label>
+                  <Label title="To : ">
+                    <FormikInput name="to" type="number" />
+                  </Label>
+                </div>
+                <div className=" margin-10">
+                  <Label className="custom-label" title="Number of Peaks : ">
+                    <FormikInput name="nbPeaks" type="number" />
+                  </Label>
+                </div>
+                <div className=" margin-10">
+                  <Label className="custom-label" title="Target PPM :">
+                    <FormikInput name="targetX" type="number" />
+                  </Label>
+                </div>
+              </>
+            </Formik>
+          </div>
+          <div className="footer-container">
+            <Button.Done onClick={handleSave}>Done</Button.Done>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 

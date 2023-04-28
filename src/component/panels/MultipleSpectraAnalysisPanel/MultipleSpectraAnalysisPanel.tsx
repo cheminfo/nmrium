@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrOverlay } from 'cheminfo-font';
 import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
 import { FaFileExport } from 'react-icons/fa';
@@ -14,14 +13,10 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
-import { positions, useAlert } from '../../elements/popup/Alert';
-import { useModal } from '../../elements/popup/Modal';
+import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import {
-  RESET_SELECTED_TOOL,
-  TOGGLE_SPECTRA_LEGEND,
-} from '../../reducer/types/Types';
+import { TOGGLE_SPECTRA_LEGEND } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -54,7 +49,6 @@ function MultipleSpectraAnalysisPanelInner({
 
   const settingRef = useRef<any>();
   const alert = useAlert();
-  const modal = useModal();
   const dispatch = useDispatch();
 
   const settingsPanelHandler = useCallback(() => {
@@ -72,14 +66,6 @@ function MultipleSpectraAnalysisPanelInner({
   const showTrackerHandler = useCallback(() => {
     dispatch({ type: TOGGLE_SPECTRA_LEGEND });
   }, [dispatch]);
-  const openAlignSpectra = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
-    modal.show(<AlignSpectraModal nucleus={activeTab} />, {
-      isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
-      width: 500,
-    });
-  }, [activeTab, modal, dispatch]);
 
   const copyToClipboardHandler = useCallback(() => {
     void (async () => {
@@ -122,9 +108,7 @@ function MultipleSpectraAnalysisPanelInner({
           >
             <FaFileExport />
           </Button>
-          <Button popupTitle="Spectra calibration" onClick={openAlignSpectra}>
-            <SvgNmrOverlay style={{ fontSize: '18px' }} />
-          </Button>
+          <AlignSpectraModal nucleus={activeTab} />
           <ToggleButton
             popupTitle="Y spectra tracker"
             popupPlacement="right"
