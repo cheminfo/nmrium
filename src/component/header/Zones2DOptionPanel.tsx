@@ -1,9 +1,12 @@
-import { useCallback, useRef } from 'react';
+import { Formik } from 'formik';
+import { useCallback } from 'react';
+import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
-import NumberInput from '../elements/NumberInput';
+import FormikNumberInput from '../elements/formik/FormikNumberInput';
+import FormikOnChange from '../elements/formik/FormikOnChange';
 import {
   AUTO_ZONES_DETECTION,
   CHANGE_ZONES_NOISE_FACTOR,
@@ -12,58 +15,68 @@ import {
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const inputStyle = {
-  input: {
-    width: '50px',
-  },
-  inputContainer: {
-    flex: '2',
-  },
-  container: {
-    height: '100%',
-  },
+const validationSchema = Yup.object().shape({
+  thresholdFactor: Yup.number().min(0).required(),
+});
+
+const initialValues = {
+  thresholdFactor: 1,
 };
 
 function Zones2DOptionPanel() {
   const dispatch = useDispatch();
-  const thresholdFactor = useRef<any>();
 
-  const handleApplyFilter = useCallback(() => {
-    dispatch({
-      type: AUTO_ZONES_DETECTION,
-      options: {
-        thresholdFactor: thresholdFactor.current.value,
-      },
-    });
-  }, [dispatch]);
+  const handleZonesPicking = useCallback(
+    (values) => {
+      dispatch({
+        type: AUTO_ZONES_DETECTION,
+        payload: values,
+      });
+    },
+    [dispatch],
+  );
 
-  const handleInput = useCallback(
-    (e) => {
-      if (e.target) {
-        dispatch({ type: CHANGE_ZONES_NOISE_FACTOR, payload: e.target.value });
-      }
+  const handleChangeNoiseFactory = useCallback(
+    (values) => {
+      dispatch({ type: CHANGE_ZONES_NOISE_FACTOR, payload: values });
     },
     [dispatch],
   );
 
   return (
     <HeaderContainer>
-      <Label
-        title="Noise factor :"
-        htmlFor="livePreview"
-        style={headerLabelStyle}
+      <Formik
+        onSubmit={handleZonesPicking}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
-        <NumberInput
-          ref={thresholdFactor}
-          name="noiseFactor"
-          style={inputStyle}
-          defaultValue={1}
-          onChange={handleInput}
-        />
-      </Label>
-      <Button.Done onClick={handleApplyFilter} style={{ margin: '0 10px' }}>
-        Auto Zones Picking
-      </Button.Done>
+        {({ handleSubmit, isValid }) => (
+          <>
+            <Label
+              title="Noise factor :"
+              htmlFor="livePreview"
+              style={headerLabelStyle}
+            >
+              <FormikNumberInput
+                name="thresholdFactor"
+                style={{ width: '50px' }}
+                min={0}
+              />
+            </Label>
+            <FormikOnChange
+              enableValidation
+              onChange={handleChangeNoiseFactory}
+            />
+            <Button.Done
+              onClick={() => handleSubmit()}
+              style={{ margin: '0 10px' }}
+              disabled={!isValid}
+            >
+              Auto Zones Picking
+            </Button.Done>
+          </>
+        )}
+      </Formik>
     </HeaderContainer>
   );
 }

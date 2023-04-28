@@ -25,7 +25,7 @@ import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
 
-const rangesContextMenuOptions: DropdownMenuProps<any>['options'] = [
+const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {
     label: 'Copy to Clipboard',
     type: 'option',

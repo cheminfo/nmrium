@@ -31,7 +31,7 @@ import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain, setIntegralsYDomain } from './DomainActions';
 import { resetSelectedTool } from './ToolsActions';
 
-function handleAutoRangesDetection(draft: Draft<State>, options) {
+function handleAutoRangesDetection(draft: Draft<State>, action) {
   const {
     data,
     xDomain,
@@ -61,14 +61,20 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
     const windowToIndex = xFindClosestIndex(datum.data.x, to);
 
-    const detectionOptions = {
-      factorStd: 8,
-      integrationSum: 100,
-      compile: true,
-      frequencyCluster: 16,
-      clean: true,
-      keepPeaks: true,
-      ...options, // minMaxRatio default 0.05, lookNegative default false,
+    // minMaxRatio default 0.05, lookNegative default false,
+    const { minMaxRatio, lookNegative } = action.payload;
+
+    const detectionOptions: any = {
+      peakPicking: {
+        factorStd: 8,
+        integrationSum: 100,
+        compile: true,
+        frequencyCluster: 16,
+        clean: true,
+        keepPeaks: true,
+        minMaxRatio,
+        lookNegative,
+      },
     };
 
     detectRanges(datum, {

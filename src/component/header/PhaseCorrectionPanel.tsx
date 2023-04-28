@@ -128,7 +128,8 @@ export default function PhaseCorrectionPanel() {
       if (filedName === 'ph1' && data.re) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
-        newValues.ph0 += diff0 - (diff1 * pivot?.index) / data.re.length;
+        newValues.ph0 +=
+          diff0 - (diff1 * (data.re.length - pivot?.index)) / data.re.length;
       }
 
       dispatch({

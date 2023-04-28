@@ -115,7 +115,9 @@ function handleOptimizePeaks(draft: Draft<State>, action) {
     datum.peaks.values = newPeaks;
   }
 }
-function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
+function handleAutoPeakPicking(draft: Draft<State>, action) {
+  const { maxNumberOfPeaks, minMaxRatio, noiseFactor, direction } =
+    action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     draft.toolOptions.selectedTool = options.zoom.id;
@@ -128,7 +130,10 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
     const windowToIndex = xFindClosestIndex(datum.data.x, to);
 
     const peaks = autoPeakPicking(draft.data[index] as Spectrum1D, {
-      ...autOptions,
+      maxNumberOfPeaks,
+      minMaxRatio,
+      noiseFactor,
+      direction,
       windowFromIndex,
       windowToIndex,
     });

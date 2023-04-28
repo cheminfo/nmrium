@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Source, Spectrum } from 'nmr-load-save';
+import { Reducer } from 'react';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
@@ -499,7 +500,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.DELETE_PEAK_NOTATION:
       return PeaksActions.deletePeak(draft, action.data);
     case types.AUTO_PEAK_PICKING:
-      return PeaksActions.handleAutoPeakPicking(draft, action.options);
+      return PeaksActions.handleAutoPeakPicking(draft, action);
     case types.OPTIMIZE_PEAKS:
       return PeaksActions.handleOptimizePeaks(draft, action);
     case types.CHANGE_PEAK_SHAPE:
@@ -676,11 +677,11 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.setSpectrumsVerticalAlign(draft);
 
     case types.AUTO_ZONES_DETECTION:
-      return ZonesActions.handleAutoZonesDetection(draft, action.options);
+      return ZonesActions.handleAutoZonesDetection(draft, action);
     case types.CHANGE_ZONES_NOISE_FACTOR:
       return ZonesActions.changeZonesFactorHandler(draft, action);
     case types.AUTO_RANGES_DETECTION:
-      return RangesActions.handleAutoRangesDetection(draft, action.options);
+      return RangesActions.handleAutoRangesDetection(draft, action);
     case types.ADD_RANGE:
       return RangesActions.handleAddRange(draft, action);
     case types.DELETE_RANGE:
@@ -785,4 +786,5 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
   }
 }
 
-export const spectrumReducer = produce(innerSpectrumReducer);
+export const spectrumReducer: Reducer<State, any> =
+  produce(innerSpectrumReducer);
