@@ -59,7 +59,7 @@ interface SpectraTableProps extends OnChangeVisibilityEvent {
   nucleus: string;
 }
 
-const options: DropdownMenuProps<string>['options'] = [
+const options: DropdownMenuProps<string, any>['options'] = [
   {
     label: 'Recolor based on distinct value',
     type: 'option',
@@ -72,7 +72,7 @@ enum SpectraContextMenuOptionsKeys {
   Delete = 'Delete',
 }
 
-const SpectraContextMenuOptions: DropdownMenuProps<any>['options'] = [
+const SpectraContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {
     label: 'Copy to Clipboard',
     type: 'option',
