@@ -10,7 +10,6 @@ import {
   useMemo,
   useRef,
   memo,
-  Reducer,
   ReactElement,
   ReactNode,
   forwardRef,
@@ -49,12 +48,10 @@ import {
   initialState,
   dispatchMiddleware,
   initState,
-  State,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
-  PreferencesState,
   initPreferencesState,
 } from './reducer/preferences/preferencesReducer';
 import {
@@ -200,16 +197,17 @@ function InnerNMRium({
     },
   });
 
-  const [state, dispatch] = useReducer<Reducer<State, any>, State>(
+  const [state, dispatch] = useReducer(
     spectrumReducer,
     initialState,
     initState,
   );
 
-  const [preferencesState, dispatchPreferences] = useReducer<
-    Reducer<PreferencesState, any>,
-    PreferencesState
-  >(preferencesReducer, preferencesInitialState, initPreferencesState);
+  const [preferencesState, dispatchPreferences] = useReducer(
+    preferencesReducer,
+    preferencesInitialState,
+    initPreferencesState,
+  );
 
   const {
     displayerMode,
