@@ -89,7 +89,11 @@ function ReactTableRow(props: ReactTableRowProps) {
     [onClick, row],
   );
   return (
-    <tr
+    <DropdownMenu
+      trigger="contextMenu"
+      options={contextMenu}
+      onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
+      as="tr"
       key={row.getRowProps().key}
       css={getRowStyle(
         highlight.isActive || isRowActive,
@@ -118,20 +122,12 @@ function ReactTableRow(props: ReactTableRowProps) {
               style={{ padding, ...style }}
               onClick={clickHandler}
             >
-              <DropdownMenu
-                trigger="contextMenu"
-                options={contextMenu}
-                onSelect={(selected) =>
-                  onContextMenuSelect?.(selected, row.original)
-                }
-              >
-                {cell.render('Cell')}
-              </DropdownMenu>
+              {cell.render('Cell')}
             </td>
           );
         }
       })}
-    </tr>
+    </DropdownMenu>
   );
 }
 

@@ -194,7 +194,11 @@ function ZonesTableRow({
   }, [assignmentSignal, highlightSignalY]);
 
   return (
-    <tr
+    <DropdownMenu
+      trigger="contextMenu"
+      options={contextMenu}
+      onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
+      as="tr"
       style={
         highlightZone.isActive || assignmentZone.isActive
           ? (HighlightedRowStyle as any)
@@ -204,54 +208,44 @@ function ZonesTableRow({
       }
       {...highlightZone.onHover}
     >
-      <DropdownMenu
-        trigger="contextMenu"
-        options={contextMenu}
-        onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
-      >
-        <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>
-        <SignalDeltaColumn
-          rowData={rowData}
-          onHoverSignalX={onHoverSignalX}
-          onHoverSignalY={onHoverSignalY}
-          format={format}
-        />
-        <SignalAssignmentsColumns
-          rowData={rowData}
-          assignmentSignal={assignmentSignal}
-          onHoverSignalX={onHoverSignalX}
-          onHoverSignalY={onHoverSignalY}
-          showUnlinkButtonSignalX={showUnlinkButtonSignalX}
-          showUnlinkButtonSignalY={showUnlinkButtonSignalY}
-          setShowUnlinkButtonSignalX={(show) =>
-            setShowUnlinkButtonSignalX(show)
-          }
-          setShowUnlinkButtonSignalY={(show) =>
-            setShowUnlinkButtonSignalY(show)
-          }
-          onClick={clickHandler}
-          onUnlink={unlinkHandler}
-          highlightSignalX={highlightSignalX}
-          highlightSignalY={highlightSignalY}
-        />
-        <ZoneAssignmentsColumns
-          rowData={rowData}
-          assignmentZone={assignmentZone}
-          onHoverZoneX={onHoverZoneX}
-          onHoverZoneY={onHoverZoneY}
-          showUnlinkButtonZoneX={showUnlinkButtonZoneX}
-          showUnlinkButtonZoneY={showUnlinkButtonZoneY}
-          setShowUnlinkButtonZoneX={(show) => setShowUnlinkButtonZoneX(show)}
-          setShowUnlinkButtonZoneY={(show) => setShowUnlinkButtonZoneY(show)}
-          rowSpanTags={rowSpanTags}
-          onClick={clickHandler}
-          onUnlink={unlinkHandler}
-          highlightZoneX={highlightZoneX}
-          highlightZoneY={highlightZoneY}
-        />
-        <ActionsColumn rowData={rowData} rowSpanTags={rowSpanTags} />
-      </DropdownMenu>
-    </tr>
+      <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>
+      <SignalDeltaColumn
+        rowData={rowData}
+        onHoverSignalX={onHoverSignalX}
+        onHoverSignalY={onHoverSignalY}
+        format={format}
+      />
+      <SignalAssignmentsColumns
+        rowData={rowData}
+        assignmentSignal={assignmentSignal}
+        onHoverSignalX={onHoverSignalX}
+        onHoverSignalY={onHoverSignalY}
+        showUnlinkButtonSignalX={showUnlinkButtonSignalX}
+        showUnlinkButtonSignalY={showUnlinkButtonSignalY}
+        setShowUnlinkButtonSignalX={(show) => setShowUnlinkButtonSignalX(show)}
+        setShowUnlinkButtonSignalY={(show) => setShowUnlinkButtonSignalY(show)}
+        onClick={clickHandler}
+        onUnlink={unlinkHandler}
+        highlightSignalX={highlightSignalX}
+        highlightSignalY={highlightSignalY}
+      />
+      <ZoneAssignmentsColumns
+        rowData={rowData}
+        assignmentZone={assignmentZone}
+        onHoverZoneX={onHoverZoneX}
+        onHoverZoneY={onHoverZoneY}
+        showUnlinkButtonZoneX={showUnlinkButtonZoneX}
+        showUnlinkButtonZoneY={showUnlinkButtonZoneY}
+        setShowUnlinkButtonZoneX={(show) => setShowUnlinkButtonZoneX(show)}
+        setShowUnlinkButtonZoneY={(show) => setShowUnlinkButtonZoneY(show)}
+        rowSpanTags={rowSpanTags}
+        onClick={clickHandler}
+        onUnlink={unlinkHandler}
+        highlightZoneX={highlightZoneX}
+        highlightZoneY={highlightZoneY}
+      />
+      <ActionsColumn rowData={rowData} rowSpanTags={rowSpanTags} />
+    </DropdownMenu>
   );
 }
 
