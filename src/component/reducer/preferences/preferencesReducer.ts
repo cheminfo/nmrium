@@ -1,4 +1,5 @@
 import { Draft, produce } from 'immer';
+import { Reducer } from 'react';
 import { SplitPaneSize } from 'react-science/ui';
 
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
@@ -277,6 +278,8 @@ function innerPreferencesReducer(
       return draft;
   }
 }
-const preferencesReducer = produce(innerPreferencesReducer);
+const preferencesReducer: Reducer<PreferencesState, any> = produce(
+  innerPreferencesReducer,
+);
 
 export default preferencesReducer;

@@ -53,7 +53,6 @@ const style = css`
     top: 0;
     bottom: 0;
     background: #eaeaea;
-    border-radius: 999px;
     border-radius: 5px;
   }
 

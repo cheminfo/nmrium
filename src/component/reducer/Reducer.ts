@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Source, Spectrum } from 'nmr-load-save';
+import { Reducer } from 'react';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
@@ -785,4 +786,5 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
   }
 }
 
-export const spectrumReducer = produce(innerSpectrumReducer);
+export const spectrumReducer: Reducer<State, any> =
+  produce(innerSpectrumReducer);
