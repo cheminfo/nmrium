@@ -382,7 +382,7 @@ function ReactTable(props: ReactTableProps) {
       const header = containerRef.current.querySelectorAll('thead');
       const rowsCount = Math.ceil(
         (Math.ceil(height) - Math.ceil(header[0].clientHeight)) /
-        approxItemHeight,
+          approxItemHeight,
       );
       const columnsCount = Math.ceil(Math.ceil(width) / approxColumnWidth);
 

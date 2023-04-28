@@ -169,7 +169,7 @@ function RangesTablePanelInner({
       css={[
         tablePanelStyle,
         isFlipped &&
-        css`
+          css`
             th {
               position: relative;
             }
