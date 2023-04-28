@@ -71,10 +71,10 @@ export interface BaseRowStyle {
 
 export interface ContextMenuProps {
   onContextMenuSelect?: (
-    selected: Parameters<DropdownMenuProps<any>['onSelect']>[0],
+    selected: Parameters<DropdownMenuProps<any, any>['onSelect']>[0],
     data: any,
   ) => void;
-  contextMenu?: DropdownMenuProps<any>['options'];
+  contextMenu?: DropdownMenuProps<any, any>['options'];
 }
 interface ReactTableProps extends ContextMenuProps, ClickEvent, SortEvent {
   data: any;
@@ -382,7 +382,7 @@ function ReactTable(props: ReactTableProps) {
       const header = containerRef.current.querySelectorAll('thead');
       const rowsCount = Math.ceil(
         (Math.ceil(height) - Math.ceil(header[0].clientHeight)) /
-          approxItemHeight,
+        approxItemHeight,
       );
       const columnsCount = Math.ceil(Math.ceil(width) / approxColumnWidth);
 
