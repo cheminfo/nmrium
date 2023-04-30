@@ -10,7 +10,6 @@ import {
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';
 
-import { lookupForFilter } from './FiltersManager';
 import { isSpectrum1D, initiateDatum1D } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
@@ -126,73 +125,28 @@ export function toJSON(
   }
 }
 
-export function exportAsJcamp(spectrum: Spectrum) {
+export function exportAsJcamp(
+  spectrum: Spectrum,
+  options: { onlyReal?: string; useOriginal?: boolean } = {},
+) {
   let jcamp: string | null = null;
   if (isSpectrum1D(spectrum)) {
-    const { info, data } = spectrum;
-    const {
-      pulseSequence,
-      isFid,
-      spectralWidth,
-      frequencyOffset,
-      DECIM,
-      DSPFVS,
-    } = info;
-    const nucleus = getFirstIfArray(info.nucleus);
-    const baseFrequency = getFirstIfArray(info.baseFrequency);
-    const originFrequency = getFirstIfArray(info.originFrequency);
-    const infoToExport: any = {
-      nucleus,
-      pulseSequence,
-      baseFrequency,
-      originFrequency,
-      isFid,
-    };
-    let newMeta: any = {};
-    const { x, re, im } = data;
-    const newRe = new Float64Array(re);
-    const newIm = im ? new Float64Array(im) : undefined;
-    if (isFid) {
-      maybeAdd(newMeta, 'BF1', baseFrequency);
-      maybeAdd(newMeta, 'SW', spectralWidth);
-      const digitalFiltering = lookupForFilter(spectrum, 'digitalFilter');
+    const { useOriginal = false, onlyReal = true } = options;
+    const { originalData, originalInfo, data, info, filters } = spectrum;
 
-      if (digitalFiltering) {
-        const {
-          value: { digitalFilterValue },
-          flag: digitalFilterIsApplied,
-        } = digitalFiltering;
-
-        if (digitalFilterIsApplied) {
-          let pointsToShift = Math.floor(digitalFilterValue);
-          newRe.set(re.slice(re.length - pointsToShift));
-          newRe.set(re.slice(0, re.length - pointsToShift), pointsToShift);
-          if (im && newIm) {
-            newIm.set(im.slice(im.length - pointsToShift));
-            newIm.set(im.slice(0, im.length - pointsToShift), pointsToShift);
-          }
-        }
-        maybeAdd(newMeta, 'GRPDLY', digitalFilterValue);
-        maybeAdd(newMeta, 'DECIM', DECIM);
-        maybeAdd(newMeta, 'DSPFVS', DSPFVS);
-      }
-      if (frequencyOffset && baseFrequency) {
-        const offset = frequencyOffset / baseFrequency;
-        infoToExport.shiftReference = offset + 0.5 * spectralWidth;
-      } else {
-        infoToExport.shiftReference = x[x.length - 1];
-      }
+    if (onlyReal && info.isFid) {
+      throw new Error('FID data should be complex');
     }
-    jcamp = spectrum1DToJcamp({
-      ...spectrum,
-      data: {
-        ...data,
-        re: newRe,
-        im: newIm,
+
+    jcamp = spectrum1DToJcamp(
+      {
+        ...spectrum,
+        data: useOriginal ? originalData : data,
+        info: useOriginal ? originalInfo : info,
+        filters: useOriginal ? [] : filters,
       },
-      info: infoToExport,
-      meta: newMeta,
-    });
+      { onlyReal: true },
+    );
   } else {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
   }
@@ -203,17 +157,4 @@ export function exportAsJcamp(spectrum: Spectrum) {
 
   const blob = new Blob([jcamp], { type: 'text/plain' });
   saveAs(blob, `${spectrum.info.name}.jdx`);
-}
-
-function getFirstIfArray(data: any) {
-  return Array.isArray(data) ? data[0] : data;
-}
-
-function maybeAdd(
-  obj: any,
-  name: string,
-  value?: string | number | Array<string | number>,
-) {
-  if (value === undefined) return;
-  obj[name] = getFirstIfArray(value);
 }
