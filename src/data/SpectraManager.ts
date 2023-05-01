@@ -127,15 +127,19 @@ export function toJSON(
 
 export function exportAsJcamp(
   spectrum: Spectrum,
-  options: { onlyReal?: string; useOriginal?: boolean } = {},
+  options: { onlyReal?: boolean; useOriginal?: boolean } = {},
 ) {
   let jcamp: string | null = null;
   if (isSpectrum1D(spectrum)) {
-    const { useOriginal = false, onlyReal = true } = options;
+    const { useOriginal, onlyReal } = options;
     const { originalData, originalInfo, data, info, filters } = spectrum;
 
     if (onlyReal && info.isFid) {
       throw new Error('FID data should be complex');
+    }
+
+    if (!originalData || !originalInfo) {
+      throw new Error('original data shoult exists');
     }
 
     jcamp = spectrum1DToJcamp(
@@ -145,7 +149,7 @@ export function exportAsJcamp(
         info: useOriginal ? originalInfo : info,
         filters: useOriginal ? [] : filters,
       },
-      { onlyReal: true },
+      { onlyReal },
     );
   } else {
     throw new Error('convert 2D spectrum to JCAMP is not supported');
