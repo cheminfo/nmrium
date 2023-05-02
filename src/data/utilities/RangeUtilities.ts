@@ -76,9 +76,6 @@ export function unlink(range: Range, options: UnlinkOptions = {}): Range {
     default:
       break;
   }
-  //todo check if we have  to remove the atom number from ranges once we remove the signal assignment, disable it for now and check with Luc
-  // setNbAtoms(range);
-
   return range;
 }
 
