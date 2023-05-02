@@ -2,8 +2,11 @@ import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import { initMolecule, StateMoleculeExtended } from './Molecule';
 
-export function fromJSON(mols: StateMoleculeExtended[] = []) {
-  const reservedNumbers = extractLabelsNumbers(mols);
+export function fromJSON(
+  mols: StateMoleculeExtended[],
+  reservedMolecules: StateMoleculeExtended[] = [],
+) {
+  const reservedNumbers = extractLabelsNumbers(reservedMolecules.concat(mols));
 
   const molecules: StateMoleculeExtended[] = [];
   for (const mol of mols) {
