@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { CSSProperties, useMemo, memo } from 'react';
+import { CSSProperties, memo } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import { HighlightEventSource } from '../../../highlight';
@@ -8,11 +8,24 @@ import { AssignmentColumnCssStyle, RangeColumnProps } from '../RangesTableRow';
 
 import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
 
-const spanStyle: CSSProperties = {
-  color: 'red',
-  fontWeight: 'bold',
+const columnStyle: CSSProperties = {
+  padding: 0,
+  textAlign: 'center',
+  verticalAlign: 'middle',
 };
 
+function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
+  if (flag) {
+    return {
+      color: 'red',
+      fontWeight: 'bold',
+    };
+  } else if (isCompletelyAssigned) {
+    return { color: 'green', fontWeight: 'bold' };
+  } else {
+    return { color: 'black', fontWeight: 'normal' };
+  }
+}
 interface RemoveAssignmentsButtonProps {
   onUnlink?: (element: any, b: boolean) => void;
 }
@@ -39,25 +52,13 @@ function RangeAssignmentsColumn({
 }: RangAssignmentColumnProps) {
   const diaIDs = row.diaIDs || [];
 
-  const spanCss: CSSProperties = useMemo(() => {
-    const flag =
-      assignment.isActive ||
-      assignment.isOver ||
-      (highlight.isActive &&
-        highlightData.highlight.sourceData?.type !==
-          HighlightEventSource.SIGNAL);
-    return flag
-      ? {
-          color: 'red',
-          fontWeight: 'bold',
-        }
-      : { color: 'black', fontWeight: 'normal' };
-  }, [
-    assignment.isActive,
-    assignment.isOver,
-    highlight.isActive,
-    highlightData.highlight.sourceData?.type,
-  ]);
+  const flag =
+    assignment.isActive ||
+    assignment.isOver ||
+    (highlight.isActive &&
+      highlightData.highlight.sourceData?.type !== HighlightEventSource.SIGNAL);
+
+  const isCompletelyAssigned = Math.round(row.integration) === row?.nbAtoms;
 
   let totalNumberOfAtoms = row?.nbAtoms || 0;
   for (const signal of row?.signals || []) {
@@ -68,10 +69,8 @@ function RangeAssignmentsColumn({
     <td
       {...rowSpanTags}
       style={{
-        padding: 0,
+        ...columnStyle,
         ...rowSpanTags.style,
-        textAlign: 'center',
-        verticalAlign: 'middle',
       }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
@@ -80,7 +79,7 @@ function RangeAssignmentsColumn({
       {(totalNumberOfAtoms > 0 || assignment.isActive) && (
         <>
           {totalNumberOfAtoms} {' ( '}
-          <span style={assignment.isActive ? spanStyle : spanCss}>
+          <span style={getStyle(flag, isCompletelyAssigned)}>
             {diaIDs?.length || 0}
           </span>
           {' ) '}
