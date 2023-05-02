@@ -118,7 +118,9 @@ function setData(
       },
     );
   }
-  draft.molecules = draft.molecules.concat(MoleculeManager.fromJSON(molecules));
+  draft.molecules = draft.molecules.concat(
+    MoleculeManager.fromJSON(molecules, draft.molecules),
+  );
   draft.data = draft.data.concat(
     initSpectra(spectra, { usedColors, onLoadProcessing }),
   );
