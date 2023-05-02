@@ -15,7 +15,7 @@ import {
   hasCouplingConstant,
   checkMultiplicity,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
-import { LinkButton } from '../ranges/LinkButton';
+import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
 
 import LevelNode from './LevelNode';
 import StringNode from './StringNode';
@@ -73,11 +73,11 @@ function InnerMultiplicityTree({
   });
 
   function assignHandler() {
-    if (!signal?.diaIDs) {
-      assignment.setActive('x');
-    } else {
-      onUnlink(index);
-    }
+    assignment.setActive('x');
+  }
+
+  function unAssignHandler() {
+    onUnlink(index);
   }
 
   const isHighlighted = highlight.isActive || assignment.isActive;
@@ -108,12 +108,13 @@ function InnerMultiplicityTree({
         fill={isHighlighted ? '#ff6f0057' : 'transparent'}
         data-no-export="true"
       />
-      <LinkButton
+      <AssignmentActionsButtons
         className="signal-target"
         isActive={!!(assignment.isActive || signal?.diaIDs)}
         y={startY}
         x={scaleX()(signal.delta) - 30}
-        onClick={assignHandler}
+        onAssign={assignHandler}
+        onUnAssign={unAssignHandler}
         borderRadius={16}
       />
     </g>
