@@ -135,33 +135,35 @@ function AdditionalColumnField({
   const contextMenu = useMemo(() => {
     // allow the edition of correlations
     const commonLinksMenu = commonLinks.flatMap((commonLink) => {
-      const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
-        }, ${commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'})${commonLink.edited?.moved === true ? '[MOVED]' : ''
-        }`;
+      const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
+        commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
+      }, ${commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'})${
+        commonLink.edited?.moved === true ? '[MOVED]' : ''
+      }`;
 
       return commonLink.pseudo === false
         ? [
-          {
-            label: `edit ${commonLinkContextMenuLabel}`,
-            onClick: () => {
-              highlightCommonLinks.hide();
-              modal.show(
-                <EditLinkModal
-                  onClose={() => modal.close()}
-                  onEdit={onEdit}
-                  link={commonLink}
-                  correlationDim1={columnCorrelation}
-                  correlationDim2={rowCorrelation}
-                  correlations={correlations}
-                />,
-                {
-                  position: positions.MIDDLE_RIGHT,
-                  isBackgroundBlur: false,
-                },
-              );
+            {
+              label: `edit ${commonLinkContextMenuLabel}`,
+              onClick: () => {
+                highlightCommonLinks.hide();
+                modal.show(
+                  <EditLinkModal
+                    onClose={() => modal.close()}
+                    onEdit={onEdit}
+                    link={commonLink}
+                    correlationDim1={columnCorrelation}
+                    correlationDim2={rowCorrelation}
+                    correlations={correlations}
+                  />,
+                  {
+                    position: positions.MIDDLE_RIGHT,
+                    isBackgroundBlur: false,
+                  },
+                );
+              },
             },
-          },
-        ]
+          ]
         : [];
     });
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
@@ -215,7 +217,6 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
-
   const isInViewRow = useInView({ correlation: rowCorrelation });
   const isInViewColumn = useInView({ correlation: columnCorrelation });
 
@@ -230,8 +231,8 @@ function AdditionalColumnField({
         backgroundColor: highlightCommonLinks.isActive
           ? '#ff6f0057'
           : isInViewColumn || isInViewRow
-            ? '#f5f5dc'
-            : 'inherit',
+          ? '#f5f5dc'
+          : 'inherit',
       }}
       title={getTitle(commonLinks)}
       onMouseEnter={mouseEnterHandler}
@@ -243,9 +244,10 @@ function AdditionalColumnField({
   );
 }
 
-
 function getTitle(commonLinks) {
-  if (commonLinks?.length === 0) { return ""; }
+  if (commonLinks?.length === 0) {
+    return '';
+  }
 
   return [
     ...new Set(
