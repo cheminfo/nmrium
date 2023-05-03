@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Formik, FormikProps } from 'formik';
 import { Spectrum } from 'nmr-load-save';
 import { useRef, CSSProperties } from 'react';
@@ -50,13 +49,12 @@ const DATA_STAGES = Object.keys(DataExportStage).map((key) => ({
 }));
 
 interface ExportAsJCAMPProps {
-  isOpenDialog: boolean;
   closeDialog: () => void;
   spectrum: Spectrum;
 }
 
 function ExportAsJcampModal(props: ExportAsJCAMPProps) {
-  const { isOpenDialog, closeDialog, spectrum } = props;
+  const { closeDialog, spectrum } = props;
   const refForm = useRef<FormikProps<any>>(null);
   const alert = useAlert();
 
@@ -77,7 +75,7 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
   }
 
   return (
-    <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
+    <Modal hasCloseButton isOpen onRequestClose={closeDialog}>
       <Modal.Header>
         <span>Export as JCAMP</span>
       </Modal.Header>
