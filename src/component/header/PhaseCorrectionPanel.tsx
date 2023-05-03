@@ -57,7 +57,7 @@ const algorithms = [
 ];
 const emptyData = { datum: {}, filter: null };
 
-export default function ManualPhaseCorrectionPanel() {
+export default function PhaseCorrectionPanel() {
   const {
     toolOptions: {
       data: { pivot },
@@ -128,7 +128,8 @@ export default function ManualPhaseCorrectionPanel() {
       if (filedName === 'ph1' && data.re) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
-        newValues.ph0 += diff0 - (diff1 * pivot?.index) / data.re.length;
+        newValues.ph0 +=
+          diff0 - (diff1 * (data.re.length - pivot?.index)) / data.re.length;
       }
 
       dispatch({
@@ -139,6 +140,12 @@ export default function ManualPhaseCorrectionPanel() {
     [data.re, dispatch, pivot?.index],
   );
 
+  const updateInputRangeInitialValue = useCallback((value) => {
+    // update InputRange initial value
+    ph0Ref.current.setValue(value.ph0);
+    ph1Ref.current.setValue(value.ph1);
+  }, []);
+
   const handleInput = useCallback(
     (e) => {
       const { name, value } = e.target;
@@ -148,34 +155,23 @@ export default function ManualPhaseCorrectionPanel() {
         if (String(value).trim() !== '-') {
           calcPhaseCorrectionHandler(newValue, name);
         }
-
-        // update InputRange initial value
-        switch (name) {
-          case 'ph0':
-            ph0Ref.current.setValue(newValue.ph0);
-            break;
-          case 'ph1':
-            ph1Ref.current.setValue(newValue.ph1);
-            break;
-          default:
-            break;
-        }
-
+        updateInputRangeInitialValue(newValue);
         valueRef.current = newValue;
         setValue(valueRef.current);
       }
     },
-    [calcPhaseCorrectionHandler],
+    [calcPhaseCorrectionHandler, updateInputRangeInitialValue],
   );
 
   const handleRangeChange = useCallback(
     (e) => {
       const newValue = { ...valueRef.current, [e.name]: e.value };
       calcPhaseCorrectionHandler(newValue, e.name);
+      updateInputRangeInitialValue(newValue);
       valueRef.current = newValue;
       setValue(valueRef.current);
     },
-    [calcPhaseCorrectionHandler],
+    [calcPhaseCorrectionHandler, updateInputRangeInitialValue],
   );
 
   const handleCancelFilter = useCallback(() => {

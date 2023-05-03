@@ -217,16 +217,6 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
-  const title: string = useMemo(() => {
-    return [
-      ...new Set(
-        commonLinks.link.map((link) => {
-          return link.experimentType.toUpperCase();
-        }),
-      ),
-    ].join('/');
-  }, [commonLinks]);
-
   const isInViewRow = useInView({ correlation: rowCorrelation });
   const isInViewColumn = useInView({ correlation: columnCorrelation });
 
@@ -244,7 +234,7 @@ function AdditionalColumnField({
           ? '#f5f5dc'
           : 'inherit',
       }}
-      title={title}
+      title={getTitle(commonLinks)}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
     >
@@ -252,6 +242,20 @@ function AdditionalColumnField({
       <ContextMenu ref={contextRef} context={contextMenu} />
     </td>
   );
+}
+
+function getTitle(commonLinks) {
+  if (commonLinks?.length === 0) {
+    return '';
+  }
+
+  return [
+    ...new Set(
+      commonLinks?.link.map((link) => {
+        return link.experimentType.toUpperCase();
+      }),
+    ),
+  ].join('/');
 }
 
 export default AdditionalColumnField;

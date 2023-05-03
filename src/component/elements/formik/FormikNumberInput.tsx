@@ -5,13 +5,18 @@ import { useCallback } from 'react';
 import NumberInput, { NumberInputProps } from '../NumberInput';
 
 interface FormikNumberInputProps extends NumberInputProps {
-  label?: string;
   name: string;
+  checkErrorAfterInputTouched?: boolean;
 }
 
 function FormikNumberInput(props: FormikNumberInputProps) {
-  const { label, name, ...resProps } = props;
-  const { values, handleChange } = useFormikContext();
+  const {
+    name,
+    checkErrorAfterInputTouched = false,
+    style = {},
+    ...resProps
+  } = props;
+  const { values, errors, touched, handleChange } = useFormikContext();
 
   const changeHandler = useCallback(
     (e) => {
@@ -20,12 +25,24 @@ function FormikNumberInput(props: FormikNumberInputProps) {
     [handleChange],
   );
 
+  let isInvalid = lodashGet(errors, name);
+
+  if (checkErrorAfterInputTouched) {
+    isInvalid = lodashGet(errors, name) && lodashGet(touched, name);
+  }
+
   return (
     <NumberInput
-      label={label}
       name={name}
-      defaultValue={lodashGet(values, name)}
+      value={lodashGet(values, name)}
       onChange={changeHandler}
+      style={{
+        ...style,
+        ...(isInvalid && {
+          border: '1px solid red',
+          outline: 'none',
+        }),
+      }}
       {...resProps}
     />
   );

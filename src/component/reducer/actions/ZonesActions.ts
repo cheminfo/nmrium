@@ -27,7 +27,7 @@ import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
 
 function changeZonesFactorHandler(draft: Draft<State>, action) {
-  draft.toolOptions.data.zonesNoiseFactor = action.payload;
+  draft.toolOptions.data.zonesNoiseFactor = action.payload.thresholdFactor;
 }
 
 function add2dZoneHandler(draft: Draft<State>, action) {
@@ -49,15 +49,18 @@ function add2dZoneHandler(draft: Draft<State>, action) {
     handleOnChangeZonesData(draft);
   }
 }
-function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
+function handleAutoZonesDetection(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-
+    const { thresholdFactor } = action.payload;
     const [fromX, toX] = draft.xDomain;
     const [fromY, toY] = draft.yDomain;
-    detectionOptions.selectedZone = { fromX, toX, fromY, toY };
+    const detectionOptions = {
+      selectedZone: { fromX, toX, fromY, toY },
+      thresholdFactor,
+    };
     const datum = draft.data[index] as Spectrum2D;
     const zones = detectZones(original(datum), detectionOptions);
     datum.zones.values = datum.zones.values.concat(zones);

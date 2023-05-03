@@ -31,7 +31,7 @@ import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
 import { LogsHistory } from './LogsHistory';
-import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
+import PhaseCorrectionPanel from './PhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
@@ -109,7 +109,7 @@ function HeaderInner(props: HeaderInnerProps) {
       case options.zeroFilling.id:
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
-        return <ManualPhaseCorrectionPanel />;
+        return <PhaseCorrectionPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;
       case options.rangePicking.id:

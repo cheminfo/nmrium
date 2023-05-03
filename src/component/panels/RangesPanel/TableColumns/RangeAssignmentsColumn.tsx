@@ -1,24 +1,42 @@
-import { CSSProperties, useMemo, useCallback, memo } from 'react';
-import { FaMinusCircle } from 'react-icons/fa';
+/** @jsxImportSource @emotion/react */
+
+import { CSSProperties, memo } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
 import { HighlightEventSource } from '../../../highlight';
-import { RangeColumnProps } from '../RangesTableRow';
+import { AssignmentColumnCssStyle, RangeColumnProps } from '../RangesTableRow';
 
-const spanStyle: CSSProperties = {
-  color: 'red',
-  fontWeight: 'bold',
+import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
+
+const columnStyle: CSSProperties = {
+  padding: 0,
+  textAlign: 'center',
+  verticalAlign: 'middle',
 };
 
-interface RangAssignmentColumnProps extends Omit<RangeColumnProps, 'format'> {
+function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
+  if (flag) {
+    return {
+      color: 'red',
+      fontWeight: 'bold',
+    };
+  } else if (isCompletelyAssigned) {
+    return { color: 'green', fontWeight: 'bold' };
+  } else {
+    return { color: 'black', fontWeight: 'normal' };
+  }
+}
+interface RemoveAssignmentsButtonProps {
+  onUnlink?: (element: any, b: boolean) => void;
+}
+interface RangAssignmentColumnProps
+  extends Omit<RangeColumnProps, 'format'>,
+    RemoveAssignmentsButtonProps {
   assignment: AssignmentsData;
   highlight: {
     isActive: boolean;
   };
-  onUnlinkVisibilityChange?: (element: any) => void;
-  unlinkVisibility: boolean;
   onLink?: (a: any, b: any) => void;
-  onUnlink?: (element: any, b: boolean) => void;
   highlightData: any;
 }
 
@@ -26,8 +44,6 @@ function RangeAssignmentsColumn({
   row,
   assignment,
   highlight,
-  onUnlinkVisibilityChange,
-  unlinkVisibility,
   onLink,
   onUnlink,
   rowSpanTags,
@@ -36,80 +52,39 @@ function RangeAssignmentsColumn({
 }: RangAssignmentColumnProps) {
   const diaIDs = row.diaIDs || [];
 
-  const visibilityChangeHandler = useCallback(
-    (flag) => {
-      onUnlinkVisibilityChange?.(flag);
-    },
-    [onUnlinkVisibilityChange],
-  );
+  const flag =
+    assignment.isActive ||
+    assignment.isOver ||
+    (highlight.isActive &&
+      highlightData.highlight.sourceData?.type !== HighlightEventSource.SIGNAL);
 
-  const spanCss: CSSProperties = useMemo(() => {
-    const flag =
-      assignment.isActive ||
-      assignment.isOver ||
-      (highlight.isActive &&
-        highlightData.highlight.sourceData?.type !==
-          HighlightEventSource.SIGNAL);
-    return flag
-      ? {
-          color: 'red',
-          fontWeight: 'bold',
-        }
-      : { color: 'black', fontWeight: 'normal' };
-  }, [
-    assignment.isActive,
-    assignment.isOver,
-    highlight.isActive,
-    highlightData.highlight.sourceData?.type,
-  ]);
+  const isCompletelyAssigned = Math.round(row.integration) === row?.nbAtoms;
+
+  let totalNumberOfAtoms = row?.nbAtoms || 0;
+  for (const signal of row?.signals || []) {
+    totalNumberOfAtoms += signal?.nbAtoms || 0;
+  }
 
   return (
     <td
       {...rowSpanTags}
-      style={{ padding: '0', ...rowSpanTags.style }}
+      style={{
+        ...columnStyle,
+        ...rowSpanTags.style,
+      }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
+      css={!assignment.isActive && AssignmentColumnCssStyle}
     >
-      {row.nbAtoms !== undefined && row.nbAtoms > 0 ? (
-        row.diaIDs && row.diaIDs.length > 0 ? (
-          <div
-            onMouseEnter={() => visibilityChangeHandler(true)}
-            onMouseLeave={() => visibilityChangeHandler(false)}
-          >
-            {row.nbAtoms} {' ( '}
-            <span style={spanCss}>{diaIDs.length}</span>
-            {' ) '}
-            <sup>
-              <button
-                type="button"
-                style={{
-                  visibility: unlinkVisibility ? 'visible' : 'hidden',
-                  padding: 0,
-                  margin: 0,
-                }}
-                onClick={(e) => onUnlink?.(e, true)}
-              >
-                <FaMinusCircle color="red" />
-              </button>
-            </sup>
-          </div>
-        ) : assignment.isActive ? (
-          <div>
-            {`${row.nbAtoms} (`}
-            <span style={spanStyle}>0</span>
-            {')'}
-          </div>
-        ) : (
-          row.nbAtoms
-        )
-      ) : assignment.isActive ? (
-        <div>
-          {'0 ('}
-          <span style={spanStyle}>0</span>
-          {')'}
-        </div>
-      ) : (
-        ''
+      {(totalNumberOfAtoms > 0 || assignment.isActive) && (
+        <>
+          {totalNumberOfAtoms} {' ( '}
+          <span style={getStyle(flag, isCompletelyAssigned)}>
+            {diaIDs?.length || 0}
+          </span>
+          {' ) '}
+          <RemoveAssignmentsButton onClick={(e) => onUnlink?.(e, true)} />
+        </>
       )}
     </td>
   );

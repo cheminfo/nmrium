@@ -103,7 +103,7 @@ interface ButtonStyle {
   backgroundColor: BaseColor;
   borderRadius?: CSSProperties['borderRadius'];
   fill?: Fill;
-  style?: CSSObject;
+  style?: CSSObject | CSSProperties;
   wrapperStyle?: CSSProperties;
 }
 
@@ -278,7 +278,7 @@ function Button(props: ButtonProps) {
             fill,
             borderRadius,
           }),
-          style,
+          style as CSSObject,
         ]}
         {...restProps}
       >

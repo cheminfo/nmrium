@@ -60,7 +60,7 @@ interface SpectraTableProps extends OnChangeVisibilityEvent {
   nucleus: string;
 }
 
-const options: DropdownMenuProps<string>['options'] = [
+const options: DropdownMenuProps<string, any>['options'] = [
   {
     label: 'Recolor based on distinct value',
     type: 'option',
@@ -74,7 +74,7 @@ enum SpectraContextMenuOptionsKeys {
   ExportAsJcamp = 'ExportAsJcamp',
 }
 
-const SpectraContextMenuOptions: DropdownMenuProps<any>['options'] = [
+const Spectra2DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {
     label: 'Copy to Clipboard',
     type: 'option',
@@ -87,6 +87,16 @@ const SpectraContextMenuOptions: DropdownMenuProps<any>['options'] = [
     icon: <FaRegTrashAlt />,
     data: { id: SpectraContextMenuOptionsKeys.Delete },
   },
+  {
+    label: 'Export as jcamp',
+    type: 'option',
+    icon: <FaFileExport />,
+    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
+  },
+];
+
+const Spectra1DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+  ...Spectra2DContextMenuOptions,
   {
     label: 'Export as jcamp',
     type: 'option',
@@ -298,7 +308,11 @@ export function SpectraTable(props: SpectraTableProps) {
       onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
       enableVirtualScroll
       approxItemHeight={26}
-      contextMenu={SpectraContextMenuOptions}
+      contextMenu={
+        data.info && data.info.dimension === 1
+          ? Spectra1DContextMenuOptions
+          : Spectra2DContextMenuOptions
+      }
       onContextMenuSelect={selectContextMenuHandler}
       onSortEnd={handleSortEnd}
       style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}

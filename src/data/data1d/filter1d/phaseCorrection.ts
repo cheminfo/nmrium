@@ -78,7 +78,7 @@ function phaseCorrection(spectrum, { ph0, ph1 }) {
   ph1 *= Math.PI / 180;
   spectrum.data = {
     ...spectrum.data,
-    ...reimPhaseCorrection(spectrum.data, ph0, ph1),
+    ...reimPhaseCorrection(spectrum.data, ph0, ph1, { reverse: true }),
   };
 }
 
@@ -87,6 +87,7 @@ interface AutoPhaseCorrectionOptions {
   maxDistanceToJoin?: number;
   magnitudeMode?: boolean;
   factorNoise?: number;
+  reverse?: boolean;
 }
 
 function autoPhaseCorrection(
@@ -98,6 +99,7 @@ function autoPhaseCorrection(
     maxDistanceToJoin = 128,
     magnitudeMode = true,
     factorNoise = 5,
+    reverse = true,
   } = options;
 
   return reimAutoPhaseCorrection(spectrum.data as any, {
@@ -105,5 +107,6 @@ function autoPhaseCorrection(
     maxDistanceToJoin,
     magnitudeMode,
     factorNoise,
+    reverse,
   });
 }
