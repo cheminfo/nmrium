@@ -74,7 +74,7 @@ enum SpectraContextMenuOptionsKeys {
   ExportAsJcamp = 'ExportAsJcamp',
 }
 
-const Spectra2DContextMenuOptions: DropdownMenuProps<any>['options'] = [
+const Spectra2DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {
     label: 'Copy to Clipboard',
     type: 'option',
@@ -89,7 +89,7 @@ const Spectra2DContextMenuOptions: DropdownMenuProps<any>['options'] = [
   },
 ];
 
-const Spectra1DContextMenuOptions: DropdownMenuProps<any>['options'] = [
+const Spectra1DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   ...Spectra2DContextMenuOptions,
   {
     label: 'Export as jcamp',
