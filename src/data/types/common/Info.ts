@@ -7,4 +7,5 @@ export interface Info {
   experiment?: any;
   solvent?: string;
   name: string;
+  title: string;
 }

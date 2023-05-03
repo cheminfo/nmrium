@@ -1,7 +1,7 @@
 import lodashGet from 'lodash/get';
 import { Spectrum } from 'nmr-load-save';
-import { useMemo, CSSProperties, useCallback } from 'react';
-import { FaCopy, FaRegTrashAlt } from 'react-icons/fa';
+import { useMemo, CSSProperties, useCallback, useState } from 'react';
+import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
@@ -9,6 +9,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   DELETE_SPECTRA,
@@ -70,9 +71,10 @@ const options: DropdownMenuProps<string, any>['options'] = [
 enum SpectraContextMenuOptionsKeys {
   CopyToClipboard = 'CopyToClipboard',
   Delete = 'Delete',
+  ExportAsJcamp = 'ExportAsJcamp',
 }
 
-const SpectraContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+const Spectra2DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {
     label: 'Copy to Clipboard',
     type: 'option',
@@ -84,6 +86,22 @@ const SpectraContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
     type: 'option',
     icon: <FaRegTrashAlt />,
     data: { id: SpectraContextMenuOptionsKeys.Delete },
+  },
+  {
+    label: 'Export as jcamp',
+    type: 'option',
+    icon: <FaFileExport />,
+    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
+  },
+];
+
+const Spectra1DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+  ...Spectra2DContextMenuOptions,
+  {
+    label: 'Export as jcamp',
+    type: 'option',
+    icon: <FaFileExport />,
+    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
   },
 ];
 
@@ -100,6 +118,7 @@ export function SpectraTable(props: SpectraTableProps) {
   const dispatch = useDispatch();
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
   const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
+  const [exportedSpectrum, setExportedSpectrum] = useState<Spectrum | null>();
 
   const COLUMNS: Record<
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -200,12 +219,17 @@ export function SpectraTable(props: SpectraTableProps) {
           }, 0);
           break;
         }
+        case SpectraContextMenuOptionsKeys.ExportAsJcamp: {
+          setExportedSpectrum(spectrum);
+          break;
+        }
 
         default: {
           break;
         }
       }
     },
+
     [alert, dispatch],
   );
 
@@ -266,19 +290,33 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   return (
-    <ReactTable
-      rowStyle={handleRowStyle}
-      activeRow={handleActiveRow}
-      data={data}
-      columns={tableColumns}
-      onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
-      enableVirtualScroll
-      approxItemHeight={26}
-      contextMenu={SpectraContextMenuOptions}
-      onContextMenuSelect={selectContextMenuHandler}
-      onSortEnd={handleSortEnd}
-      style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
-    />
+    <>
+      <ReactTable
+        rowStyle={handleRowStyle}
+        activeRow={handleActiveRow}
+        data={data}
+        columns={tableColumns}
+        onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
+        enableVirtualScroll
+        approxItemHeight={26}
+        contextMenu={
+          data.info && data.info.dimension === 1
+            ? Spectra1DContextMenuOptions
+            : Spectra2DContextMenuOptions
+        }
+        onContextMenuSelect={selectContextMenuHandler}
+        onSortEnd={handleSortEnd}
+        style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
+      />
+      {exportedSpectrum && (
+        <ExportAsJcampModal
+          spectrum={exportedSpectrum}
+          closeDialog={() => {
+            setExportedSpectrum(null);
+          }}
+        />
+      )}
+    </>
   );
 }
 
