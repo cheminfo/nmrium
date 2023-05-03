@@ -16,7 +16,7 @@ const styles: Record<'container' | 'text', CSSProperties> = {
     padding: '1.2em 2em',
     backgroundColor: '#f7f7f7',
     borderRadius: '2em',
-    color: '#666666',
+    color: '#2d2d2d',
     fontWeight: 'bold',
   },
 };
