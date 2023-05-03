@@ -34,6 +34,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   RESURRECTING_SPECTRUM_FROM_JCAMP,
   RESURRECTING_SPECTRUM_FROM_RANGES,
@@ -43,6 +44,7 @@ import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
 import nucleusToString from '../../utility/nucleusToString';
 import { Database } from '../../workspaces/Workspace';
+import { PanelNoData } from '../PanelNoData';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -479,6 +481,7 @@ export default function PeaksPanel() {
       spectra: { activeTab },
     },
     toolOptions: { selectedTool },
+    displayerMode,
   } = useChartData();
   const { current } = usePreferences();
   const { data, defaultDatabase } = current.databases;
@@ -486,7 +489,14 @@ export default function PeaksPanel() {
     data.filter((datum) => datum.enabled),
   ) as (Database | LocalDatabase)[];
 
-  if (!activeTab) return <div />;
+  if (!activeTab || displayerMode !== DISPLAYER_MODE.DM_1D) {
+    return (
+      <PanelNoData>
+        Databases are only available when 1D experimental spectrum is displayed.
+        It will automatically select the corresponding nucleus
+      </PanelNoData>
+    );
+  }
   return (
     <MemoizedDatabasePanel
       nucleus={activeTab}
