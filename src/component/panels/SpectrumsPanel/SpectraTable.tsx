@@ -1,15 +1,15 @@
 import lodashGet from 'lodash/get';
 import { Spectrum } from 'nmr-load-save';
-import { useMemo, CSSProperties, useCallback } from 'react';
+import { useMemo, CSSProperties, useCallback, useRef } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
+import { DropdownMenu, DropdownMenuProps, useOnOff } from 'react-science/ui';
 
-import { exportAsJcamp } from '../../../data/SpectraManager';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   DELETE_SPECTRA,
@@ -118,6 +118,12 @@ export function SpectraTable(props: SpectraTableProps) {
   const dispatch = useDispatch();
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
   const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
+  const [
+    isExportAsJcamDialogOpen,
+    openExportAsJcampDialog,
+    closeExportAsJcampDialog,
+  ] = useOnOff(false);
+  const currentExportSpectrum = useRef<Spectrum | null>();
 
   const COLUMNS: Record<
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -219,18 +225,8 @@ export function SpectraTable(props: SpectraTableProps) {
           break;
         }
         case SpectraContextMenuOptionsKeys.ExportAsJcamp: {
-          void (async () => {
-            const hideLoading = await alert.showLoading(
-              'export as JCAMP in progress',
-            );
-            try {
-              exportAsJcamp(spectrum);
-            } catch (error: any) {
-              alert.error(error.message);
-            } finally {
-              hideLoading();
-            }
-          })();
+          currentExportSpectrum.current = spectrum;
+          openExportAsJcampDialog();
           break;
         }
 
@@ -240,7 +236,7 @@ export function SpectraTable(props: SpectraTableProps) {
       }
     },
 
-    [alert, dispatch],
+    [alert, dispatch, openExportAsJcampDialog],
   );
 
   function handleActiveRow(row) {
@@ -265,9 +261,9 @@ export function SpectraTable(props: SpectraTableProps) {
           style:
             name === 'name' && visibleColumns.length > 3
               ? {
-                  ...COLUMNS[name].style,
-                  width: '50%',
-                }
+                ...COLUMNS[name].style,
+                width: '50%',
+              }
               : COLUMNS[name].style,
         });
       } else {
@@ -300,23 +296,35 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   return (
-    <ReactTable
-      rowStyle={handleRowStyle}
-      activeRow={handleActiveRow}
-      data={data}
-      columns={tableColumns}
-      onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
-      enableVirtualScroll
-      approxItemHeight={26}
-      contextMenu={
-        data.info && data.info.dimension === 1
-          ? Spectra1DContextMenuOptions
-          : Spectra2DContextMenuOptions
-      }
-      onContextMenuSelect={selectContextMenuHandler}
-      onSortEnd={handleSortEnd}
-      style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
-    />
+    <>
+      <ReactTable
+        rowStyle={handleRowStyle}
+        activeRow={handleActiveRow}
+        data={data}
+        columns={tableColumns}
+        onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
+        enableVirtualScroll
+        approxItemHeight={26}
+        contextMenu={
+          data.info && data.info.dimension === 1
+            ? Spectra1DContextMenuOptions
+            : Spectra2DContextMenuOptions
+        }
+        onContextMenuSelect={selectContextMenuHandler}
+        onSortEnd={handleSortEnd}
+        style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
+      />
+      {currentExportSpectrum.current && (
+        <ExportAsJcampModal
+          spectrum={currentExportSpectrum.current}
+          isOpenDialog={isExportAsJcamDialogOpen}
+          closeDialog={() => {
+            currentExportSpectrum.current = null;
+            closeExportAsJcampDialog();
+          }}
+        />
+      )}
+    </>
   );
 }
 
