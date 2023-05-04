@@ -1,3 +1,4 @@
+import { readFromWebSource } from 'nmr-load-save';
 import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
@@ -5,21 +6,12 @@ import NMRium, { NMRiumWorkspace } from '../../component/NMRium';
 import { CustomWorkspaces } from '../../component/workspaces/Workspace';
 import { PageConfig } from '../layouts/Main';
 
-export async function loadData(file) {
-  const response = await fetch(file);
-  checkStatus(response);
-  const data = await response.json();
-  return data;
+async function loadFromURL(url: string) {
+  const { pathname: relativePath, origin: baseURL } = new URL(url);
+  return readFromWebSource({ entries: [{ relativePath, baseURL }] });
 }
 
-function checkStatus(response) {
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-  }
-  return response;
-}
-
-interface ViewProps {
+interface WebSourceViewProps {
   file: string;
   title?: string;
   baseURL: string;
@@ -28,7 +20,7 @@ interface ViewProps {
   pageConfig: PageConfig;
 }
 
-export default function View(props: ViewProps) {
+export default function WebSourceView(props: WebSourceViewProps) {
   const [data, setData] = useState();
 
   const {
@@ -44,14 +36,9 @@ export default function View(props: ViewProps) {
   const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {
-    if (file) {
-      void loadData(file).then((d) => {
-        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
-        setData(_d);
-      });
-    } else {
-      setData(undefined);
-    }
+    void loadFromURL(file).then((d) => {
+      setData(d as any);
+    });
   }, [baseURL, file, props]);
 
   const changeHandler = useCallback((logData) => {
