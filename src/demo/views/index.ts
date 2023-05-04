@@ -11,4 +11,5 @@ export const possibleViews = {
   Prediction: memo(lazy(() => import('./Prediction'))),
   CustomWorkspace: memo(lazy(() => import('./CustomWorkspace'))),
   SnapshotView: memo(lazy(() => import('./SnapshotView'))),
+  WebSourceView: memo(lazy(() => import('./WebSourceView'))),
 };
