@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-load-save';
 
+import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
   useAssignment,
@@ -109,6 +110,8 @@ function Range({
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
+  const isAssigned = isRangeAssigned(range);
+
   return (
     <g
       data-test-id="range"
@@ -130,6 +133,15 @@ function Range({
           const width = x2 - x1;
           return (
             <g>
+              {isAssigned && !isHighlighted && !isActive && (
+                <rect
+                  width={width}
+                  height="10px"
+                  fill="#ffd700"
+                  opacity="0.35"
+                  data-no-export="true"
+                />
+              )}
               <rect
                 width={width}
                 height="100%"
