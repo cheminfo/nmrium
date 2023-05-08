@@ -3,6 +3,7 @@ import {
   reimFFT,
   reimPhaseCorrection,
   xMean,
+  xMultiply,
 } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Data1D } from 'nmr-load-save/lib/types/Data1D';
@@ -48,7 +49,16 @@ export function apply(spectrum: Spectrum1D) {
   }
 
   const { data, info } = spectrum;
-  Object.assign(data, reimFFT(data as DataReIm, { applyZeroShift: true }));
+  Object.assign(
+    data,
+    reimFFT(
+      {
+        re: data.re,
+        im: info.reverse ? xMultiply(data.im, -1) : data.im,
+      },
+      { applyZeroShift: true },
+    ),
+  );
 
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = info;
@@ -60,12 +70,7 @@ export function apply(spectrum: Spectrum1D) {
   }
 
   data.x = generateXAxis(spectrum);
-  if (info?.reverse?.[0]) {
-    data.re.reverse();
-    data.im.reverse();
-  }
 
-  // Object.assign(datum1D.data, data);
   spectrum.info = { ...info, isFid: false, isFt: true };
 }
 
