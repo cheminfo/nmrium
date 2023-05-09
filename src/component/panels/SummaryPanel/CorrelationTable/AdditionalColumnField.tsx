@@ -251,7 +251,7 @@ function getTitle(commonLinks) {
 
   return [
     ...new Set(
-      commonLinks?.link.map((link) => {
+      commonLinks?.link?.map((link) => {
         return link.experimentType.toUpperCase();
       }),
     ),
