@@ -155,8 +155,13 @@ export default function MultipletAnalysisModal({
       try {
         const result = analyseMultiplet(analysesProps, {
           frequency: info.originFrequency,
+          minimalResolution: 0.3,
+          maxTestedJ: 17,
           takeBestPartMultiplet: true,
-          symmetrizeEachStep: true,
+          correctVerticalOffset: true,
+          symmetrizeEachStep: false,
+          decreasingJvalues: true,
+          makeShortCutForSpeed: true,
           debug: true,
         });
         setCalcFinished(true);
