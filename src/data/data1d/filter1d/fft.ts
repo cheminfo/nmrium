@@ -37,7 +37,7 @@ export function apply(spectrum: Spectrum1D) {
   );
 
   const {
-    meta: { AQ_mod: aqMod },
+    info: { aqMod },
   } = spectrum;
 
   if (aqMod === 1) {
