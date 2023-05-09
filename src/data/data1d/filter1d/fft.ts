@@ -37,6 +37,7 @@ export function apply(spectrum: Spectrum1D) {
   );
 
   const {
+    //@ts-expect-error aqMod will be added in Info1D in the next version of nmr-load-save
     info: { aqMod },
   } = spectrum;
 
