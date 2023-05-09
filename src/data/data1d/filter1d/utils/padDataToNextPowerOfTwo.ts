@@ -13,8 +13,8 @@ export function padDataToNextPowerOfTwo(
 
   const pointsToShift = getPointsToShift(spectrum);
 
-  newRE.set(re.slice(0, length - pointsToShift));
-  newIM.set(im.slice(0, length - pointsToShift));
+  newRE.set(re.slice(0, size - pointsToShift));
+  newIM.set(im.slice(0, size - pointsToShift));
 
   if (pointsToShift > 0 && digitalFilterApplied) {
     newRE.set(re.slice(re.length - pointsToShift), size - pointsToShift);
