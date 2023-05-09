@@ -3,7 +3,6 @@ import {
   reimFFT,
   reimPhaseCorrection,
   xMean,
-  xMultiply,
 } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Data1D } from 'nmr-load-save/lib/types/Data1D';
@@ -37,7 +36,6 @@ export function apply(spectrum: Spectrum1D) {
   );
 
   const {
-    //@ts-expect-error aqMod will be added in Info1D in the next version of nmr-load-save
     info: { aqMod },
   } = spectrum;
 
@@ -55,7 +53,7 @@ export function apply(spectrum: Spectrum1D) {
     reimFFT(
       {
         re: data.re,
-        im: info.reverse ? xMultiply(data.im, -1) : data.im,
+        im: data.im,
       },
       { applyZeroShift: true },
     ),
