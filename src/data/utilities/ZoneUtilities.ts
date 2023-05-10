@@ -96,17 +96,17 @@ export function unlinkInAssignmentData(
 
   if (axis) {
     assignmentData.dispatch({
-      type: 'REMOVE_ALL',
-      payload: { id: ids, axis },
+      type: 'REMOVE',
+      payload: { ids, axis },
     });
   } else {
     assignmentData.dispatch({
-      type: 'REMOVE_ALL',
-      payload: { id: ids, axis: 'x' },
+      type: 'REMOVE',
+      payload: { ids, axis: 'x' },
     });
     assignmentData.dispatch({
-      type: 'REMOVE_ALL',
-      payload: { id: ids, axis: 'y' },
+      type: 'REMOVE',
+      payload: { ids, axis: 'y' },
     });
   }
 }

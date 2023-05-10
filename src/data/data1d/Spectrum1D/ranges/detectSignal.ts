@@ -1,6 +1,6 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import { xyAutoPeaksPicking } from 'nmr-processing';
+import { signalJoinCouplings, xyAutoPeaksPicking } from 'nmr-processing';
 
 export const MAX_LENGTH = 2048;
 
@@ -24,39 +24,70 @@ export default function detectSignal(
     !checkMaxLength ||
     (checkMaxLength && toIndex - fromIndex <= MAX_LENGTH)
   ) {
-    const data = {
+    const dataRoi = {
       x: x.slice(fromIndex, toIndex),
       y: re.slice(fromIndex, toIndex),
     };
 
-    const result = analyseMultiplet(data, {
+    const result = analyseMultiplet(dataRoi, {
       frequency,
+      minimalResolution: 0.3,
+      maxTestedJ: 17,
+      checkSymmetryFirst: true,
       takeBestPartMultiplet: true,
-      symmetrizeEachStep: true,
+      correctVerticalOffset: true,
+      symmetrizeEachStep: false,
+      decreasingJvalues: true,
+      makeShortCutForSpeed: true,
     });
 
     if (result && result.chemShift === undefined) return;
 
-    const signal = {
-      multiplicity: result.js.map((j) => j.multiplicity).join(''),
+    const { delta, js } = joinCouplings(result);
+
+    let cs = 0;
+    let area = 0;
+    for (let i = 0; i < dataRoi.x.length; i++) {
+      cs += dataRoi.x[i] * dataRoi.y[i];
+      area += dataRoi.y[i];
+    }
+    cs /= area;
+
+    const peakList =
+      js.length === 0 ? xyAutoPeaksPicking(dataRoi, { frequency }) : [];
+
+    return {
+      multiplicity:
+        js.length > 0
+          ? js.map((j) => j.multiplicity).join('')
+          : Math.abs(cs - delta) / cs < 1e-3
+          ? peakList.length === 1
+            ? 's'
+            : 'm'
+          : 'm',
       kind: 'signal',
-      delta: result.chemShift,
-      js: result.js,
+      delta: cs,
+      js,
       diaIDs: [],
     };
-
-    if (result.js.length === 0) {
-      const { x: xData } = data;
-      const { chemShift: delta } = result;
-      const peakList = xyAutoPeaksPicking(data, { frequency });
-      const deltaX = xData[0] - xData[1];
-      const peaks = peakList.filter(
-        (peak) => peak.x < delta - deltaX && peak.x > delta + deltaX,
-      );
-      if (peaks.length === 1) signal.multiplicity = 's';
-    }
-    return signal;
   } else {
     throw new Error(`length of signal should not exceed ${MAX_LENGTH} points`);
   }
+}
+
+function joinCouplings(result: any) {
+  const { chemShift: delta, js } = result;
+  return {
+    delta,
+    js:
+      js.length > 1
+        ? signalJoinCouplings(
+            {
+              delta,
+              js,
+            },
+            { tolerance: 0.6, ignoreDiaIDs: true },
+          ).js
+        : js,
+  };
 }

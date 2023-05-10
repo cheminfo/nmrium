@@ -218,4 +218,11 @@ function replaceFilter(datum, filterID, value) {
   };
 }
 
-export { applyFilter, reapplyFilters, enableFilter, addFilter, deleteFilter };
+export {
+  applyFilter,
+  reapplyFilters,
+  enableFilter,
+  addFilter,
+  deleteFilter,
+  lookupForFilter,
+};

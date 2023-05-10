@@ -36,7 +36,7 @@ export function apply(spectrum: Spectrum1D) {
   );
 
   const {
-    meta: { AQ_mod: aqMod },
+    info: { aqMod },
   } = spectrum;
 
   if (aqMod === 1) {
@@ -48,7 +48,16 @@ export function apply(spectrum: Spectrum1D) {
   }
 
   const { data, info } = spectrum;
-  Object.assign(data, reimFFT(data as DataReIm, { applyZeroShift: true }));
+  Object.assign(
+    data,
+    reimFFT(
+      {
+        re: data.re,
+        im: data.im,
+      },
+      { applyZeroShift: true },
+    ),
+  );
 
   if (digitalFilterApplied) {
     let { digitalFilter = 0 } = info;
@@ -60,12 +69,7 @@ export function apply(spectrum: Spectrum1D) {
   }
 
   data.x = generateXAxis(spectrum);
-  if (info?.reverse?.[0]) {
-    data.re.reverse();
-    data.im.reverse();
-  }
 
-  // Object.assign(datum1D.data, data);
   spectrum.info = { ...info, isFid: false, isFt: true };
 }
 

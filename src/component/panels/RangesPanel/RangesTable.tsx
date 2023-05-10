@@ -102,10 +102,12 @@ function RangesTable({
           {preferences.absolute.show && <th>Absolute</th>}
           <th>Mult.</th>
           {preferences.coupling.show && <th>J (Hz)</th>}
-          <th>
+          <th title="Assign multiplets">
             <FaLink style={{ fontSize: 10, margin: 'auto' }} />
           </th>
-          <th style={{ minWidth: '50px' }}>Σ</th>
+          <th title="Assign ranges" style={{ minWidth: '50px' }}>
+            Σ
+          </th>
           {preferences.showKind && <th>Kind</th>}
           <th>{''}</th>
         </tr>
