@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.35.0](https://github.com/cheminfo/nmrium/compare/v0.34.0...v0.35.0) (2023-05-04)
+
+
+### Features
+
+* add popup title over assign ranges and signals column ([#2332](https://github.com/cheminfo/nmrium/issues/2332)) ([f0cdd50](https://github.com/cheminfo/nmrium/commit/f0cdd501932147bb68c55ac02e15b864e05972ed)), closes [#2312](https://github.com/cheminfo/nmrium/issues/2312)
+* export as JCAMP-DX ([#2283](https://github.com/cheminfo/nmrium/issues/2283)) ([7a5f520](https://github.com/cheminfo/nmrium/commit/7a5f520b8e760519b24229000b0a72087dec702c))
+* improve assignments ([#2288](https://github.com/cheminfo/nmrium/issues/2288)) ([d861d18](https://github.com/cheminfo/nmrium/commit/d861d1844f055fb7f1180cbf35330e94f427cb29))
+* match phase correction to topspin ([#2305](https://github.com/cheminfo/nmrium/issues/2305)) ([e13047d](https://github.com/cheminfo/nmrium/commit/e13047d21533b43bc670fe1b984172dd303dd86b))
+* save database product as .nmrium file ([#2273](https://github.com/cheminfo/nmrium/issues/2273)) ([1b103e1](https://github.com/cheminfo/nmrium/commit/1b103e1dee0acbe0eb8bb4c393ac7985d79086b0))
+* show a message when the database panel is not available ([#2334](https://github.com/cheminfo/nmrium/issues/2334)) ([d7a555f](https://github.com/cheminfo/nmrium/commit/d7a555f7b7b02383bd3ae845ece817b45ae5c68c))
+
+
+### Bug Fixes
+
+* actionType should not be empty ([#2319](https://github.com/cheminfo/nmrium/issues/2319)) ([26c573a](https://github.com/cheminfo/nmrium/commit/26c573ac0bea1c2491fa70255407bbee45ddd51f)), closes [#2318](https://github.com/cheminfo/nmrium/issues/2318)
+* assignments  ([#2322](https://github.com/cheminfo/nmrium/issues/2322)) ([8a11cda](https://github.com/cheminfo/nmrium/commit/8a11cda333dbb1ad5048dc2fc742596a38132672))
+* crash with full cytisine and assignment summary ([#2331](https://github.com/cheminfo/nmrium/issues/2331)) ([c1f29de](https://github.com/cheminfo/nmrium/commit/c1f29de38ceb85bb963dd490316285d8eec18417))
+* do not add empty string for name in migration ([#2316](https://github.com/cheminfo/nmrium/issues/2316)) ([e33bcab](https://github.com/cheminfo/nmrium/commit/e33bcab88f9a1fefb3d5c8a42a94caf74a564db1))
+* erase setting completely when the settings version changed ([#2323](https://github.com/cheminfo/nmrium/issues/2323)) ([5c1af96](https://github.com/cheminfo/nmrium/commit/5c1af96ac58800f470f64c7b477e4e69fc062601))
+* onChange callback debounce ([#2296](https://github.com/cheminfo/nmrium/issues/2296)) ([ec822d8](https://github.com/cheminfo/nmrium/commit/ec822d8c7ed5e0ac95f4a5b2d3f1335584679dfc))
+* peak, ranges, and zones picking options input refresh ([#2317](https://github.com/cheminfo/nmrium/issues/2317)) ([6a6ef64](https://github.com/cheminfo/nmrium/commit/6a6ef6448de41c554b8b4ac13ca7bbb202aff302))
+* ph0 value starts from zero ([#2315](https://github.com/cheminfo/nmrium/issues/2315)) ([5d08c1a](https://github.com/cheminfo/nmrium/commit/5d08c1a50ae99e93e79cf23be4ca2e08f6d0e450)), closes [#2314](https://github.com/cheminfo/nmrium/issues/2314)
+* react-table layout ([#2293](https://github.com/cheminfo/nmrium/issues/2293)) ([d40f76b](https://github.com/cheminfo/nmrium/commit/d40f76baefe4771b0538de1148448e904c2ae1e8))
+* spectra intensity change after step out horizontally ([#2281](https://github.com/cheminfo/nmrium/issues/2281)) ([b1aa905](https://github.com/cheminfo/nmrium/commit/b1aa90596561183d90597fd0025e4663d66d3b7f))
+* structures labels uniqueness ([#2333](https://github.com/cheminfo/nmrium/issues/2333)) ([3c7126d](https://github.com/cheminfo/nmrium/commit/3c7126de05ff45ab51da489b1f98b839ea12a527)), closes [#2303](https://github.com/cheminfo/nmrium/issues/2303)
+
 ## [0.34.0](https://github.com/cheminfo/nmrium/compare/v0.33.0...v0.34.0) (2023-03-24)
 
 

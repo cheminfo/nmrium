@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-load-save';
 
+import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
   useAssignment,
@@ -18,7 +19,7 @@ import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
 
-import { LinkButton } from './LinkButton';
+import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 
 const style = css`
   .target {
@@ -86,7 +87,7 @@ function Range({
     highlightRange.hide();
   }
 
-  function unAssignHandler(signalIndex: number) {
+  function unAssignHandler(signalIndex = -1) {
     dispatch({
       type: UNLINK_RANGE,
       payload: {
@@ -98,19 +99,18 @@ function Range({
   }
   function assignHandler() {
     if (!isBlockedByEditing) {
-      if (!diaIDs) {
-        assignmentRange.setActive('x');
-      } else {
-        unAssignHandler(-1);
-      }
+      assignmentRange.setActive('x');
     }
   }
+
   const from = scaleX()(range.from);
   const to = scaleX()(range.to);
 
   const isNotSignal = !checkRangeKind(range);
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
+
+  const isAssigned = isRangeAssigned(range);
 
   return (
     <g
@@ -133,6 +133,15 @@ function Range({
           const width = x2 - x1;
           return (
             <g>
+              {isAssigned && !isHighlighted && !isActive && (
+                <rect
+                  width={width}
+                  height="10px"
+                  fill="#ffd700"
+                  opacity="0.35"
+                  data-no-export="true"
+                />
+              )}
               <rect
                 width={width}
                 height="100%"
@@ -154,10 +163,11 @@ function Range({
       {showMultiplicityTrees && (
         <MultiplicityTree range={range} onUnlink={unAssignHandler} />
       )}
-      <LinkButton
+      <AssignmentActionsButtons
         isActive={!!(assignmentRange.isActive || diaIDs)}
         x={from - 16}
-        onClick={() => assignHandler()}
+        onAssign={assignHandler}
+        onUnAssign={() => unAssignHandler()}
       />
     </g>
   );
