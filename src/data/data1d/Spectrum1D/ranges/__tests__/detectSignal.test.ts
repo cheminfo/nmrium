@@ -1,7 +1,7 @@
+import { rangesToXY } from 'nmr-processing';
 import { describe, it, expect } from 'vitest';
 
 import detectSignal from '../detectSignal';
-import { rangesToXY } from 'nmr-processing';
 
 describe('lineBroadening', () => {
   it('simple x, re, im to 1 Hz exp.', () => {
