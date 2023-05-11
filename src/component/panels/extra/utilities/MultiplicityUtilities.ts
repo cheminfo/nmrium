@@ -1,3 +1,5 @@
+import { splitPatterns } from 'nmr-processing';
+
 import { Multiplets } from '../../../../data/constants/Multiplets';
 
 function getMultiplicityNumber(string) {
@@ -33,9 +35,9 @@ function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
 
   return (
     isBroad ||
-    multiplicity
-      .split('')
-      .every((_multiplet) => checkMultiplet(_multiplet, rejected))
+    splitPatterns(multiplicity).every((_multiplet) =>
+      checkMultiplet(_multiplet, rejected),
+    )
   );
 }
 
