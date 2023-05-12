@@ -39,7 +39,6 @@ function add2dZoneHandler(draft: Draft<State>, action) {
     const datum = draft.data[index] as Spectrum2D;
 
     const zones = detectZonesManual(original(datum), {
-      manualSelection: true,
       selectedZone: drawnZone,
       thresholdFactor: draft.toolOptions.data.zonesNoiseFactor,
       convolutionByFFT: false,
