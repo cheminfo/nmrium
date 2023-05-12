@@ -1,7 +1,7 @@
+import { signalsToFID } from 'nmr-processing';
 import { describe, it, expect } from 'vitest';
 
 import { apply } from '../fft';
-import { signalsToFID } from 'nmr-processing';
 
 describe('lineBroadening', () => {
   it('simple x, re, im to 1 Hz exp.', () => {

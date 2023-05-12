@@ -9,6 +9,7 @@ export interface DetectionZonesOptions {
     toY: number;
   };
   thresholdFactor: number;
+  tolerances?: number[];
   convolutionByFFT?: boolean;
   enhanceSymmetry?: boolean;
 }
@@ -29,19 +30,25 @@ export function getDetectionZones(
   options: DetectionZonesOptions,
 ) {
   let dataMatrix = {};
-  if (options.selectedZone) {
+  const { selectedZone } = options;
+  if (selectedZone) {
     options.enhanceSymmetry = false;
-    dataMatrix = getSubMatrix(spectrum, options.selectedZone);
+    dataMatrix = getSubMatrix(spectrum, selectedZone);
   } else {
     dataMatrix = spectrum.data;
   }
-  return autoZonesDetection(dataMatrix, { ...options, info: spectrum.info });
+
+  return autoZonesDetection(dataMatrix, {
+    ...options,
+    info: spectrum.info,
+  });
 }
 
 function autoZonesDetection(data, options) {
   const {
-    thresholdFactor,
     clean,
+    tolerances,
+    thresholdFactor,
     maxPercentCutOff,
     convolutionByFFT,
     info: { nucleus: nuclei, originFrequency },
@@ -51,6 +58,7 @@ function autoZonesDetection(data, options) {
 
   let zones = xyzAutoZonesPicking(data, {
     nuclei,
+    tolerances,
     observedFrequencies: originFrequency,
     thresholdFactor,
     realTopDetection: true,
