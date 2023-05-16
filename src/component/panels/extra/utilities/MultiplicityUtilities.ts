@@ -1,50 +1,8 @@
-import { splitPatterns } from 'nmr-processing';
-
-import { Multiplets } from '../../../../data/constants/Multiplets';
+import { translateMultiplet, findMultiplet, checkMultiplicity } from 'nmr-processing';
 
 function getMultiplicityNumber(string) {
-  const multiplet = Multiplets.find(
-    (_multiplet) => string === _multiplet.label || string === _multiplet.value,
-  );
-
+  const multiplet = findMultiplet(string);
   return multiplet ? multiplet.multiplicity : null;
-}
-
-function checkMultiplet(multiplet, rejected: Array<any> = []) {
-  // options to determine whether a massive (m), for example, should be considered as rejected multiplet
-  if (multiplet === undefined || multiplet.length === 0) {
-    return false;
-  }
-  const _multiplet = Multiplets.find(
-    (m) => m.value === multiplet || m.label === multiplet,
-  );
-  return (
-    _multiplet &&
-    !rejected.includes(_multiplet.value) &&
-    !rejected.includes(_multiplet.label)
-  );
-}
-
-function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
-  // options to determine whether a massive (m), for example, should be considered as rejected multiplicity
-  if (multiplicity === undefined || multiplicity.length === 0) {
-    return false;
-  }
-
-  const isBroad = multiplicity.match(/(?<broad>br s)/);
-
-  return (
-    isBroad ||
-    splitPatterns(multiplicity).every((_multiplet) =>
-      checkMultiplet(_multiplet, rejected),
-    )
-  );
-}
-
-function translateMultiplet(multiplet) {
-  return multiplet.length === 1
-    ? Multiplets.find((_multiplet) => _multiplet.value === multiplet)?.label
-    : Multiplets.find((_multiplet) => _multiplet.label === multiplet)?.value;
 }
 
 function hasCouplingConstant(multiplet) {
@@ -76,10 +34,7 @@ function getPascal(n, spin) {
 }
 
 export {
-  checkMultiplet,
-  checkMultiplicity,
   getMultiplicityNumber,
   getPascal,
   hasCouplingConstant,
-  translateMultiplet,
 };

@@ -11,8 +11,8 @@ import FormikInput from '../../../../elements/formik/FormikInput';
 import FormikSelect from '../../../../elements/formik/FormikSelect';
 import {
   hasCouplingConstant,
-  translateMultiplet,
 } from '../../../../panels/extra/utilities/MultiplicityUtilities';
+import { translateMultiplet } from 'nmr-processing';
 
 const CouplingsTableStyle = css`
   border-spacing: 0;
@@ -56,6 +56,7 @@ function CouplingsTable({
 
   const multiplicityChangeHandler = useCallback(
     (value, name) => {
+      console.log('hasCoulping',value);
       if (!hasCouplingConstant(value)) {
         setFieldValue(name, '');
       }

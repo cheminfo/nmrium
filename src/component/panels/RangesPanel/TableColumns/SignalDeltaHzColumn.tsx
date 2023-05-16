@@ -1,8 +1,8 @@
 import { Info1D } from 'nmr-load-save';
 
 import { formatNumber } from '../../../utility/formatNumber';
-import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 import { RangeColumnProps } from '../RangesTableRow';
+import { checkMultiplicity } from 'nmr-processing';
 
 interface SignalDeltaHzColumnProps extends RangeColumnProps {
   info: Info1D;

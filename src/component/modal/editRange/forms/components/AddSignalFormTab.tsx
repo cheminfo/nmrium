@@ -7,9 +7,9 @@ import * as Yup from 'yup';
 
 import Button from '../../../../elements/Button';
 import FormikInput from '../../../../elements/formik/FormikInput';
-import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../../../utility/formatNumber';
 import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
+import { translateMultiplet } from 'nmr-processing';
 
 const styles = {
   container: css`

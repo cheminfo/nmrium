@@ -13,7 +13,6 @@ import { HighlightEventSource, useHighlight } from '../../highlight';
 import useSpectrum from '../../hooks/useSpectrum';
 import {
   hasCouplingConstant,
-  checkMultiplicity,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
 
@@ -21,6 +20,7 @@ import LevelNode from './LevelNode';
 import StringNode from './StringNode';
 import TreeNodes from './TreeNodes';
 import createTreeNodes from './buildTreeNode';
+import { checkMultiplicity } from 'nmr-processing';
 
 const styles = {
   cursor: 'default',
