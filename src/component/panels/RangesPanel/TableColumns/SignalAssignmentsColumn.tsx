@@ -4,13 +4,13 @@ import lodashGet from 'lodash/get';
 import { CSSProperties, memo, MouseEvent } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import { RemoveAssignmentsButton } from '../../../elements/RemoveAssignmentsButton';
 import {
   OnHoverEvent,
   BaseRangeColumnProps,
   AssignmentColumnCssStyle,
 } from '../RangesTableRow';
 
-import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
 
 interface SignalAssignmentsColumnProps
   extends Omit<BaseRangeColumnProps, 'format'>,

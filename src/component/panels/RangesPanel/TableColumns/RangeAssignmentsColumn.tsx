@@ -3,10 +3,10 @@
 import { CSSProperties, memo } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
+import { RemoveAssignmentsButton } from '../../../elements/RemoveAssignmentsButton';
 import { HighlightEventSource } from '../../../highlight';
 import { AssignmentColumnCssStyle, RangeColumnProps } from '../RangesTableRow';
 
-import { RemoveAssignmentsButton } from './RemoveAssignmentsButton';
 
 const columnStyle: CSSProperties = {
   padding: 0,
