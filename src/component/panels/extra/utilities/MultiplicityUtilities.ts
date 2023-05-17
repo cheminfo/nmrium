@@ -1,4 +1,8 @@
-import { translateMultiplet, findMultiplet, checkMultiplicity } from 'nmr-processing';
+import {
+  translateMultiplet,
+  findMultiplet,
+  checkMultiplicity,
+} from 'nmr-processing';
 
 function getMultiplicityNumber(string) {
   const multiplet = findMultiplet(string);
@@ -33,8 +37,4 @@ function getPascal(n, spin) {
   return previousLine;
 }
 
-export {
-  getMultiplicityNumber,
-  getPascal,
-  hasCouplingConstant,
-};
+export { getMultiplicityNumber, getPascal, hasCouplingConstant };

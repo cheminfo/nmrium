@@ -1,4 +1,5 @@
 import { checkMultiplicity } from 'nmr-processing';
+
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_RANGE_SIGNAL_VALUE } from '../../../reducer/types/Types';

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik, useFormikContext } from 'formik';
+import { translateMultiplet } from 'nmr-processing';
 import { forwardRef, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
@@ -9,7 +10,6 @@ import Button from '../../../../elements/Button';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { formatNumber } from '../../../../utility/formatNumber';
 import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
-import { translateMultiplet } from 'nmr-processing';
 
 const styles = {
   container: css`

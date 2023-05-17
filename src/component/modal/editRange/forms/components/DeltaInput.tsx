@@ -1,7 +1,7 @@
+import { translateMultiplet } from 'nmr-processing';
 import { CSSProperties } from 'react';
 
 import FormikInput from '../../../../elements/formik/FormikInput';
-import { translateMultiplet } from 'nmr-processing';
 
 const style: Record<'input', CSSProperties> = {
   input: {

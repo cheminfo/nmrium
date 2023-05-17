@@ -18,7 +18,7 @@ const FormikSelect = function FormikSelect(
     style,
     ...resProps
   } = props;
-  
+
   const { values, errors, touched, setFieldValue } = useFormikContext();
   const changeHandler = useCallback(
     (value) => {
@@ -27,7 +27,6 @@ const FormikSelect = function FormikSelect(
     },
     [name, onChange, setFieldValue],
   );
-  console.log('names', name, value,values)
   useEffect(() => {
     if (value) {
       setFieldValue(name, value);

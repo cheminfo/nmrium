@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { Formik } from 'formik';
 import { Spectrum1D, Range } from 'nmr-load-save';
+import { splitPatterns, translateMultiplet } from 'nmr-processing';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -14,15 +15,12 @@ import SaveButton from '../../elements/SaveButton';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import {
-  hasCouplingConstant,
-} from '../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { UPDATE_RANGE } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
 import editRangeFormValidation from './forms/validation/EditRangeValidation';
-import { splitPatterns, translateMultiplet } from 'nmr-processing';
 
 const styles = css`
   width: 600px;
@@ -148,7 +146,6 @@ function EditRangeModal({
             multiplicity,
             coupling: '',
           };
-          console.log('mul', multiplicity, hasCouplingConstant(multiplicity),signal?.js)
           if (hasCouplingConstant(multiplicity) && signal?.js) {
             js = { ...signal.js[counterJ] } as Coupling;
             js.coupling = Number(
@@ -160,7 +157,6 @@ function EditRangeModal({
           couplings.push(js);
         }
       }
-      console.log('coulpings', couplings);
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
