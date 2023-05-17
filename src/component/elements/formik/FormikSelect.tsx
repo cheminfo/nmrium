@@ -27,7 +27,6 @@ const FormikSelect = function FormikSelect(
     },
     [name, onChange, setFieldValue],
   );
-
   useEffect(() => {
     if (value) {
       setFieldValue(name, value);

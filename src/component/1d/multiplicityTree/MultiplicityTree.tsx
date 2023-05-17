@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Spectrum1D, Range } from 'nmr-load-save';
+import { checkMultiplicity } from 'nmr-processing';
 import { CSSProperties, useMemo } from 'react';
 
 import {
@@ -11,10 +12,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import useSpectrum from '../../hooks/useSpectrum';
-import {
-  hasCouplingConstant,
-  checkMultiplicity,
-} from '../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
 
 import LevelNode from './LevelNode';

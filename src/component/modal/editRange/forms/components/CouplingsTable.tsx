@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
+import { translateMultiplet } from 'nmr-processing';
 import { memo, useCallback } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
@@ -9,10 +10,7 @@ import { Multiplets } from '../../../../../data/constants/Multiplets';
 import Button from '../../../../elements/Button';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import FormikSelect from '../../../../elements/formik/FormikSelect';
-import {
-  hasCouplingConstant,
-  translateMultiplet,
-} from '../../../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 
 const CouplingsTableStyle = css`
   border-spacing: 0;
