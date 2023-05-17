@@ -4,13 +4,11 @@ import lodashGet from 'lodash/get';
 import { CSSProperties, memo, MouseEvent } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
-import { RemoveAssignmentsButton } from '../../../elements/RemoveAssignmentsButton';
 import {
-  OnHoverEvent,
-  BaseRangeColumnProps,
-  AssignmentColumnCssStyle,
-} from '../RangesTableRow';
-
+  RemoveAssignmentsButton,
+  removeAssignmentCssStyle,
+} from '../../../elements/RemoveAssignmentsButton';
+import { OnHoverEvent, BaseRangeColumnProps } from '../RangesTableRow';
 
 interface SignalAssignmentsColumnProps
   extends Omit<BaseRangeColumnProps, 'format'>,
@@ -50,7 +48,7 @@ function SignalAssignmentsColumn({
       {...onHover}
       onClick={assignHandler}
       style={{ padding: '0', ...tdCss }}
-      css={!assignment.isActive && AssignmentColumnCssStyle}
+      css={!assignment.isActive && removeAssignmentCssStyle}
     >
       {(diaIDs?.length > 0 || assignment.isActive) && (
         <>

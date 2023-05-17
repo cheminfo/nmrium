@@ -3,10 +3,12 @@
 import { CSSProperties, memo } from 'react';
 
 import { AssignmentsData } from '../../../assignment/AssignmentsContext';
-import { RemoveAssignmentsButton } from '../../../elements/RemoveAssignmentsButton';
+import {
+  RemoveAssignmentsButton,
+  removeAssignmentCssStyle,
+} from '../../../elements/RemoveAssignmentsButton';
 import { HighlightEventSource } from '../../../highlight';
-import { AssignmentColumnCssStyle, RangeColumnProps } from '../RangesTableRow';
-
+import { RangeColumnProps } from '../RangesTableRow';
 
 const columnStyle: CSSProperties = {
   padding: 0,
@@ -74,7 +76,7 @@ function RangeAssignmentsColumn({
       }}
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
-      css={!assignment.isActive && AssignmentColumnCssStyle}
+      css={!assignment.isActive && removeAssignmentCssStyle}
     >
       {(totalNumberOfAtoms > 0 || assignment.isActive) && (
         <>
