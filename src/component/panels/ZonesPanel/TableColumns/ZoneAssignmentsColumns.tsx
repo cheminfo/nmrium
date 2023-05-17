@@ -12,10 +12,6 @@ interface ZoneAssignmentsColumnsProps {
   onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
   onUnlink: (event: any, flag: boolean, axis: Axis) => void;
   rowSpanTags: any;
-  showUnlinkButtonZoneX: boolean;
-  showUnlinkButtonZoneY: boolean;
-  setShowUnlinkButtonZoneX: (element: boolean) => void;
-  setShowUnlinkButtonZoneY: (element: boolean) => void;
   assignmentZone: AssignmentsData;
   highlightZoneX: {
     isActive: any;
@@ -30,10 +26,6 @@ function ZoneAssignmentsColumns({
   assignmentZone,
   onHoverZoneX,
   onHoverZoneY,
-  showUnlinkButtonZoneX,
-  showUnlinkButtonZoneY,
-  setShowUnlinkButtonZoneX,
-  setShowUnlinkButtonZoneY,
   rowSpanTags,
   onClick,
   onUnlink,
@@ -50,8 +42,6 @@ function ZoneAssignmentsColumns({
         onClick={onClick}
         onUnlink={onUnlink}
         axis={'x'}
-        showUnlinkButton={showUnlinkButtonZoneX}
-        setShowUnlinkButton={setShowUnlinkButtonZoneX}
         rowSpanTags={rowSpanTags}
       />
       <ZoneAssignmentColumn
@@ -62,8 +52,6 @@ function ZoneAssignmentsColumns({
         onClick={onClick}
         onUnlink={onUnlink}
         axis={'y'}
-        showUnlinkButton={showUnlinkButtonZoneY}
-        setShowUnlinkButton={setShowUnlinkButtonZoneY}
         rowSpanTags={rowSpanTags}
       />
     </Fragment>

@@ -1,3 +1,4 @@
+import { Zone } from 'nmr-load-save';
 import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
@@ -28,8 +29,7 @@ const selectBoxStyle: CSSProperties = {
   height: '20px',
 };
 
-export interface RowDataProps {
-  id: number;
+export interface RowDataProps extends Zone {
   tableMetaInfo: {
     id: number;
     signalIndex: number;
@@ -38,14 +38,6 @@ export interface RowDataProps {
       kind: any;
     };
     experiment: string;
-  };
-  x: {
-    from: number;
-    to: number;
-  };
-  y: {
-    from: number;
-    to: number;
   };
 }
 

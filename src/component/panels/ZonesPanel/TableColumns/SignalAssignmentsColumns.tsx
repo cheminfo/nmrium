@@ -9,10 +9,6 @@ interface SignalAssignmentsColumnsProps {
   rowData: RowDataProps;
   onHoverSignalX: any;
   onHoverSignalY: any;
-  showUnlinkButtonSignalX: boolean;
-  showUnlinkButtonSignalY: boolean;
-  setShowUnlinkButtonSignalX: (element: boolean) => void;
-  setShowUnlinkButtonSignalY: (element: boolean) => void;
   onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
   onUnlink: (event: any, flag: boolean, axis: Axis) => void;
   highlightSignalX: {
@@ -29,10 +25,6 @@ function SignalAssignmentsColumns({
   assignmentSignal,
   onHoverSignalX,
   onHoverSignalY,
-  showUnlinkButtonSignalX,
-  showUnlinkButtonSignalY,
-  setShowUnlinkButtonSignalX,
-  setShowUnlinkButtonSignalY,
   onClick,
   onUnlink,
   highlightSignalX,
@@ -48,8 +40,6 @@ function SignalAssignmentsColumns({
         onClick={onClick}
         onUnlink={onUnlink}
         axis="x"
-        showUnlinkButton={showUnlinkButtonSignalX}
-        setShowUnlinkButton={setShowUnlinkButtonSignalX}
       />
       <SignalAssignmentsColumn
         rowData={rowData}
@@ -59,8 +49,6 @@ function SignalAssignmentsColumns({
         onClick={onClick}
         onUnlink={onUnlink}
         axis="y"
-        showUnlinkButton={showUnlinkButtonSignalY}
-        setShowUnlinkButton={setShowUnlinkButtonSignalY}
       />
     </Fragment>
   );

@@ -66,7 +66,6 @@ export function unlink(
       delete zone.signals[signalIndex][axis].diaIDs;
       delete zone.signals[signalIndex][axis].nbAtoms;
     }
-    setNbAtoms(zone, axis);
   } else if (axis !== undefined) {
     resetDiaIDs(zone, axis);
     setNbAtoms(zone, axis);
