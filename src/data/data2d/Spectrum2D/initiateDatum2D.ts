@@ -10,10 +10,9 @@ import { initiateZones } from './zones/initiateZones';
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
 export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
-  const datum: any = {};
+  const datum: any = { ...spectrum };
 
   datum.id = spectrum.id || v4();
-  datum.selector = spectrum?.selector || {};
 
   datum.display = {
     isPositiveVisible: true,
