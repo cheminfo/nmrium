@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.36.0](https://github.com/cheminfo/nmrium/compare/v0.35.0...v0.36.0) (2023-05-18)
+
+
+### Features
+
+* display assigned indicator on the top of ranges ([#2341](https://github.com/cheminfo/nmrium/issues/2341)) ([eefcaa4](https://github.com/cheminfo/nmrium/commit/eefcaa4546a07b8e63c38ef0d9872fd25beea398)), closes [#2338](https://github.com/cheminfo/nmrium/issues/2338)
+* manual zone selection create only one zone/signal ([#2354](https://github.com/cheminfo/nmrium/issues/2354)) ([d6e6232](https://github.com/cheminfo/nmrium/commit/d6e6232768511b9ac264f3728f3df5ee7869028e))
+
+
+### Bug Fixes
+
+* check symmetry first for manual range picking ([#2339](https://github.com/cheminfo/nmrium/issues/2339)) ([0886f50](https://github.com/cheminfo/nmrium/commit/0886f504497a118ae7f1d1ce899122a50a861a7d))
+* manage correctly 19F n 31P jeol data ([#2355](https://github.com/cheminfo/nmrium/issues/2355)) ([e01ffdf](https://github.com/cheminfo/nmrium/commit/e01ffdf896439c2aa9a85573528ddc0b51c73be9))
+* normalize nucleus for jeol n varian ([#2356](https://github.com/cheminfo/nmrium/issues/2356)) ([a4acc6b](https://github.com/cheminfo/nmrium/commit/a4acc6b60608f2ffde3a50635c8ccb7b4ed69ef4))
+* reverse varian data to avoid inverted spectrum ([#2347](https://github.com/cheminfo/nmrium/issues/2347)) ([34c41b5](https://github.com/cheminfo/nmrium/commit/34c41b5f1d566b6659e9155befe8cd4071b81505))
+* spectrum object should include the sourceSelector ([#2360](https://github.com/cheminfo/nmrium/issues/2360)) ([8d9161b](https://github.com/cheminfo/nmrium/commit/8d9161b7cb7713d6880c31fc8bdc73ef8724b679))
+* use a central source of possible patterns for multiplicities ([#2352](https://github.com/cheminfo/nmrium/issues/2352)) ([fa4dc72](https://github.com/cheminfo/nmrium/commit/fa4dc72d725b9de76a040aca67426034e71e81e6))
+
 ## [0.35.0](https://github.com/cheminfo/nmrium/compare/v0.34.0...v0.35.0) (2023-05-04)
 
 
