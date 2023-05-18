@@ -22,7 +22,7 @@ export function initiateDatum1D(
 ): Spectrum1D {
   const { usedColors = {}, filters = [] } = options;
 
-  const spectrumObj: Partial<Spectrum1D> = {};
+  const spectrumObj: Partial<Spectrum1D> = { ...spectrum };
   spectrumObj.id = spectrum.id || v4();
 
   spectrumObj.display = {
