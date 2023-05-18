@@ -7,12 +7,10 @@ export const exercise: InnerWorkspace = {
     general: {
       hideGeneralSettings: true,
     },
-
     panels: {
       spectraPanel: { display: true, open: true },
       integralsPanel: { display: true },
     },
-
     toolBarButtons: {
       zoom: true,
       zoomOut: true,
@@ -26,5 +24,12 @@ export const exercise: InnerWorkspace = {
       spectraCenterAlignments: true,
       spectraStackAlignments: true,
     },
+  },
+  general: {
+    dimmedSpectraOpacity: 0.1,
+    verticalSplitterPosition: '440px',
+    verticalSplitterCloseThreshold: 600,
+    spectraRendering: 'auto',
+    loggingLevel: 'info',
   },
 };
