@@ -162,7 +162,7 @@ function drawContours(
   spectrum: Spectrum2D,
   negative = false,
   quadrant = 'rr',
-): { contours: any; timeout: boolean } {
+) {
   const zoom = level / 2 + 1;
   const {
     positive: { numberOfLayers: numberOfPositiveLayer },
@@ -190,13 +190,12 @@ interface ContoursCalcOptions {
   data: Data2DFt['rr'];
 }
 
-function getContours(zoomLevel, options: ContoursCalcOptions) {
+function getContours(zoomLevel: number, options: ContoursCalcOptions) {
   const { negative = false, timeout = 2000, nbLevels, data } = options;
 
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
 
   const ys = getRange(data.minY, data.maxY, data.z.length);
-  // @ts-expect-error refactor Conrect class to accept Float32Array Array instead of an array of number
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
 
   const sanResult = calculateSanPlot('2D', data);
@@ -211,7 +210,7 @@ function getContours(zoomLevel, options: ContoursCalcOptions) {
   }
 
   return conrec.drawContour({
-    contourDrawer: 'basic', // shape or basic
+    contourDrawer: 'basic',
     levels: _range,
     timeout,
   });
