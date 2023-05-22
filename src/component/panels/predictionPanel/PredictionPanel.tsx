@@ -53,7 +53,12 @@ export default function PredictionPane() {
   return (
     <MoleculePanel
       onMoleculeChange={changeHandler}
-      actionsOptions={{ hidePredict: true, hideDelete: true, hideExport: true }}
+      actionsOptions={{
+        hidePredict: true,
+        hideDelete: true,
+        hideExport: true,
+        showAboutPredict: true,
+      }}
       emptyTextStyle={{
         padding: '0.25rem 0.5rem',
         borderRadius: '0.2rem',

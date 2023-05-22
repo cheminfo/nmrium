@@ -27,6 +27,7 @@ import MenuButton from '../../elements/MenuButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { positions, useModal } from '../../elements/popup/Modal';
+import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
 import {
   ADD_MOLECULE,
@@ -44,7 +45,7 @@ const toolbarStyle = css`
   display: flex;
   flex-direction: row;
   border-bottom: 0.55px solid rgb(240 240 240);
-  padding: 0 5px;
+  padding: 2px 5px;
 
   button svg {
     fill: #4e4e4e;
@@ -103,6 +104,7 @@ export interface MoleculeHeaderActionsOptions {
   hideExport?: boolean;
   hideDelete?: boolean;
   hidePredict?: boolean;
+  showAboutPredict?: boolean;
 }
 interface MoleculePanelHeaderProps {
   currentIndex: number;
@@ -232,6 +234,7 @@ export default function MoleculePanelHeader({
 
   return (
     <div css={toolbarStyle}>
+      {actionsOptions?.showAboutPredict && <AboutPredictionModal />}
       {!actionsOptions.hideExport && (
         <MenuButton
           component={<FaFileExport />}
