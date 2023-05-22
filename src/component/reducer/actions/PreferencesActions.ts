@@ -33,12 +33,26 @@ function changeSpectrumVerticalAlignment(
         const isFid =
           dataPerNucleus[0]?.info.isFid &&
           !dataPerNucleus.some((d) => !d.info.isFid);
+
         if (isFid) {
           draft.view.verticalAlign[nucleus] = 'center';
-        } else if (dataPerNucleus.length > 1) {
-          draft.view.verticalAlign[nucleus] = 'stack';
         } else {
-          draft.view.verticalAlign[nucleus] = 'bottom';
+          let hasMoreThanOnFt = false;
+          let count = 1;
+          for (const spectrum of dataPerNucleus) {
+            if (count > 1) {
+              hasMoreThanOnFt = true;
+              break;
+            }
+            if (spectrum.info.isFt) {
+              count++;
+            }
+          }
+          if (hasMoreThanOnFt) {
+            draft.view.verticalAlign[nucleus] = 'stack';
+          } else {
+            draft.view.verticalAlign[nucleus] = 'bottom';
+          }
         }
       } else {
         draft.view.verticalAlign[nucleus] = verticalAlign;
