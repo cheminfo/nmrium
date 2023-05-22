@@ -547,6 +547,10 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
             (datum) => datum.id === FTSpectrums[0].id,
           );
           tabActiveSpectrum[tabKey] = [{ id: FTSpectrums[0].id, index }];
+        } else if (tabSpectraLength - FTSpectrums > 0) {
+          const id = tabSpectra[0].id;
+          const index = draft.data.findIndex((datum) => datum.id === id);
+          tabActiveSpectrum[tabKey] = [{ id, index }];
         } else {
           tabActiveSpectrum[tabKey] = null;
         }

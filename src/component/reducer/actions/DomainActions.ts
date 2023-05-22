@@ -40,8 +40,7 @@ function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
       data = data.filter((datum) => datum.info.isFid === isFid);
     }
   } else {
-    const allFid = data.every((datum) => datum.info.isFid);
-    data = data.filter((datum) => allFid || !datum.info.isFid);
+    data = data.filter((datum) => !datum.info.isFid);
   }
 
   return data as Array<Spectrum1D>;
