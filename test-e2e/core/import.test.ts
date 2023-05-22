@@ -80,9 +80,6 @@ test('should load .nmrium data from version 3', async ({ page }) => {
 
   // If the file was loaded successfully, there should be a 13C tab.
   await expect(nmrium.page.locator('_react=Tab[tabid = "1H"]')).toBeVisible();
-  await nmrium.page
-    .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=1')
-    .click();
 
   await test.step('check Peaks', async () => {
     await nmrium.clickPanel('Peaks');

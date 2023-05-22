@@ -81,6 +81,9 @@ function setData(
     onLoadProcessing?: OnLoadProcessing;
     parseMetaFileResult: ParseResult<any> | null;
   },
+  options: {
+    autoOnLoadProcessing?: boolean;
+  } = {},
 ) {
   const {
     data,
@@ -93,6 +96,7 @@ function setData(
     multipleAnalysis: {},
   };
 
+  const { autoOnLoadProcessing = true } = options;
   const {
     source,
     spectra = [],
@@ -122,7 +126,10 @@ function setData(
     MoleculeManager.fromJSON(molecules, draft.molecules),
   );
   draft.data = draft.data.concat(
-    initSpectra(spectra, { usedColors, onLoadProcessing }),
+    initSpectra(spectra, {
+      usedColors,
+      onLoadProcessing: autoOnLoadProcessing ? onLoadProcessing : {},
+    }),
   );
   setCorrelation(draft, correlations);
 
@@ -173,11 +180,20 @@ function setPreferences(draft: Draft<State>, data) {
   }
 }
 
-function initData(draft: Draft<State>, action, forceInitialize = false) {
+function initData(
+  draft: Draft<State>,
+  action,
+  options: {
+    forceInitialize?: boolean;
+    autoOnLoadProcessing?: boolean;
+  } = {},
+) {
+  const { forceInitialize = false, autoOnLoadProcessing = true } = options;
+
   const { data, view } = action.payload;
   if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
-    setData(state, action.payload);
+    setData(state, action.payload, { autoOnLoadProcessing });
     setActiveTab(state, { tab: data?.view?.activeTab || '' });
     state.width = draft.width;
     state.height = draft.height;
@@ -196,7 +212,10 @@ function initData(draft: Draft<State>, action, forceInitialize = false) {
 }
 
 function initiate(draft: Draft<State>, action) {
-  return initData(draft, action, true);
+  return initData(draft, action, {
+    forceInitialize: true,
+    autoOnLoadProcessing: false,
+  });
 }
 
 function loadDropFiles(draft: Draft<State>, action) {
@@ -209,7 +228,7 @@ function loadDropFiles(draft: Draft<State>, action) {
   } = payload;
 
   if (containsNmrium) {
-    return initData(draft, action);
+    return initData(draft, action, { autoOnLoadProcessing: false });
   } else {
     setData(draft, payload);
     setActiveTab(draft);
