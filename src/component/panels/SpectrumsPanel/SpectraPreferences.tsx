@@ -52,7 +52,7 @@ function SpectraPreferences(props, ref: any) {
 
   const handleAdd = useCallback((nucleus, index) => {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
-    let columns = data.nuclei[nucleus].columns;
+    let columns = data.nuclei[nucleus]?.columns || [];
 
     columns = [
       ...columns.slice(0, index),
@@ -78,7 +78,7 @@ function SpectraPreferences(props, ref: any) {
 
   const handleDelete = useCallback((nucleus, index) => {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
-    const columns = data.nuclei[nucleus].columns.filter(
+    const columns = data.nuclei[nucleus]?.columns.filter(
       (_, columnIndex) => columnIndex !== index,
     );
     formRef.current.setValues({

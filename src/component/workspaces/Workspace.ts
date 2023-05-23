@@ -166,7 +166,7 @@ export interface PanelsPreferences {
 }
 
 export interface Formatting {
-  nuclei: Record<string, NucleusFormat>;
+  nuclei?: Record<string, NucleusFormat>;
   panels: Partial<PanelsPreferences>;
 }
 
@@ -212,7 +212,7 @@ export interface DisplayPreferences {
 export interface WorkspacePreferences {
   display?: DisplayPreferences;
   general?: GeneralPreferences;
-  formatting?: Partial<Formatting>;
+  formatting?: Formatting;
   databases?: Databases;
   nmrLoaders?: LoadersPreferences;
   infoBlock?: InfoBlock;
