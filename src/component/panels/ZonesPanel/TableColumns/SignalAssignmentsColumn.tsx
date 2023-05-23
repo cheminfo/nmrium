@@ -33,7 +33,7 @@ function SignalAssignmentsColumn({
 }: SignalAssignmentsColumnProps) {
   const diaIDs = rowData?.tableMetaInfo?.signal?.[axis]?.diaIDs || [];
   const isAssignmentActive =
-    assignment.isActive && assignment.activated?.[axis] === axis;
+    assignment.isActive && assignment.activated?.axis === axis;
 
   const tdCss: CSSProperties =
     assignment.isActive || highlight.isActive

@@ -48,7 +48,7 @@ function ZoneAssignmentColumn({
 }: ZoneAssignmentColumnProps) {
   const diaIDs = rowData?.[axis].diaIDs || []; // diaIds at the level of zone
   const isAssignmentActive =
-    assignment.isActive && assignment.activated?.[axis] === axis;
+    assignment.isActive && assignment.activated?.axis === axis;
   const flag =
     isAssignmentActive ||
     (assignment.isOver && assignment.highlighted?.axis === axis) ||
