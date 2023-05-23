@@ -1,26 +1,25 @@
-import lodashGet from 'lodash/get';
-import { FaMinusCircle } from 'react-icons/fa';
+/** @jsxImportSource @emotion/react */
+
+import { CSSProperties } from 'react';
 
 import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
+import {
+  RemoveAssignmentsButton,
+  removeAssignmentCssStyle,
+} from '../../../elements/RemoveAssignmentsButton';
 
 import { RowDataProps } from './ActionsColumn';
 
 export interface SignalAssignmentsColumnProps {
   rowData: RowDataProps;
   assignment: AssignmentsData;
-  // assignment: {
-  //   isActive: any;
-  //   activeAxis: any;
-  // };
   highlight: {
     isActive: any;
   };
   onHover: () => void;
   onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;
   onUnlink: (event: any, flag: boolean, axis: Axis) => void;
-  showUnlinkButton: boolean;
   axis: Axis;
-  setShowUnlinkButton: (element: boolean) => void;
 }
 
 function SignalAssignmentsColumn({
@@ -31,48 +30,31 @@ function SignalAssignmentsColumn({
   onClick,
   onUnlink,
   axis,
-  showUnlinkButton,
-  setShowUnlinkButton,
 }: SignalAssignmentsColumnProps) {
+  const diaIDs = rowData?.tableMetaInfo?.signal?.[axis]?.diaIDs || [];
+  const isAssignmentActive =
+    assignment.isActive && assignment.activated?.axis === axis;
+
+  const tdCss: CSSProperties =
+    assignment.isActive || highlight.isActive
+      ? {
+          color: 'red',
+          fontWeight: 'bold',
+        }
+      : {};
+
   return (
     <td
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
-      style={
-        highlight.isActive ||
-        (assignment.isActive && assignment.activated?.axis === axis)
-          ? {
-              color: 'red',
-              fontWeight: 'bold',
-            }
-          : undefined
-      }
+      style={{ padding: '0', ...tdCss }}
+      css={!isAssignmentActive && removeAssignmentCssStyle}
     >
-      {lodashGet(rowData, `tableMetaInfo.signal.${axis}.diaIDs`, []).length >
-      0 ? (
-        <div
-          onMouseEnter={() => setShowUnlinkButton(true)}
-          onMouseLeave={() => setShowUnlinkButton(false)}
-        >
-          {rowData.tableMetaInfo.signal[axis].diaIDs.length}{' '}
-          <sup>
-            <button
-              type="button"
-              style={{
-                visibility: showUnlinkButton ? 'visible' : 'hidden',
-                padding: 0,
-                margin: 0,
-              }}
-              onClick={(e) => onUnlink(e, false, axis)}
-            >
-              <FaMinusCircle color="red" />
-            </button>
-          </sup>
-        </div>
-      ) : assignment.isActive && assignment.activated?.axis === axis ? (
-        '0'
-      ) : (
-        ''
+      {(diaIDs?.length > 0 || isAssignmentActive) && (
+        <>
+          <span>{diaIDs?.length || 0}</span>
+          <RemoveAssignmentsButton onClick={(e) => onUnlink(e, false, axis)} />
+        </>
       )}
     </td>
   );

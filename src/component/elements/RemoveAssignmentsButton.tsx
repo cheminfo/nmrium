@@ -1,4 +1,18 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { FaMinusCircle } from 'react-icons/fa';
+
+export const removeAssignmentCssStyle = css`
+  .remove-assignment {
+    visibility: hidden;
+  }
+
+  &:hover {
+    .remove-assignment {
+      visibility: visible;
+    }
+  }
+`;
 
 export function RemoveAssignmentsButton({ onClick }) {
   return (

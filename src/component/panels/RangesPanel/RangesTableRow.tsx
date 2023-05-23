@@ -38,18 +38,6 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-export const AssignmentColumnCssStyle = css`
-  .remove-assignment {
-    visibility: hidden;
-  }
-
-  &:hover {
-    .remove-assignment {
-      visibility: visible;
-    }
-  }
-`;
-
 interface RangesTableRowProps extends ContextMenuProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
