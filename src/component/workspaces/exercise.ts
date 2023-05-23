@@ -6,6 +6,7 @@ export const exercise: InnerWorkspace = {
   display: {
     general: {
       hideGeneralSettings: true,
+      hideLogs: true,
     },
     panels: {
       spectraPanel: { display: true, open: true },
