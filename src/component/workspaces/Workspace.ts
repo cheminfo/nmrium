@@ -39,6 +39,7 @@ interface IntegralsNucleusPreferences {
   relative: ColumnPreferences;
   color: string;
   strokeWidth: number;
+  showKind: boolean;
 }
 
 interface ZonesNucleusPreferences {
@@ -50,7 +51,7 @@ interface ZonesGeneralPanelPreferences {
 }
 
 interface NucleusPreferences<T> {
-  nuclei: Record<string, T>;
+  nuclei: Partial<Record<Nucleus, T>>;
 }
 
 interface BasicColumnPreferences {
@@ -211,7 +212,7 @@ export interface DisplayPreferences {
 export interface WorkspacePreferences {
   display?: DisplayPreferences;
   general?: GeneralPreferences;
-  formatting?: Formatting;
+  formatting?: Partial<Formatting>;
   databases?: Databases;
   nmrLoaders?: LoadersPreferences;
   infoBlock?: InfoBlock;

@@ -33,4 +33,26 @@ export const exercise: InnerWorkspace = {
     spectraRendering: 'auto',
     loggingLevel: 'info',
   },
+  formatting: {
+    panels: {
+      integrals: {
+        nuclei: {
+          '1H': {
+            relative: { show: true, format: '0.00' },
+            absolute: { show: false, format: '0.00' },
+            color: 'black',
+            strokeWidth: 1,
+            showKind: false,
+          },
+          '13C': {
+            relative: { show: true, format: '0.00' },
+            absolute: { show: false, format: '0.00' },
+            color: 'black',
+            strokeWidth: 1,
+            showKind: false,
+          },
+        },
+      },
+    },
+  },
 };

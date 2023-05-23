@@ -35,6 +35,12 @@ const formatFields: NucleusPreferenceField[] = [
     checkControllerName: 'relative.show',
     formatControllerName: 'relative.format',
   },
+  {
+    id: 3,
+    label: 'Kind :',
+    checkControllerName: 'showKind',
+    hideFormatField: true,
+  },
 ];
 
 function IntegralsPreferences(props, ref) {
