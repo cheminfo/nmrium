@@ -63,6 +63,7 @@ const getIntegralDefaultValues = (
     relative: { show: true, format: '0.00' },
     color: '#000000',
     strokeWidth: 1,
+    showKind: true,
   };
   return getPreferences(preferences, nucleus);
 };

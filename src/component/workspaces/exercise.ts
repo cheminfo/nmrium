@@ -6,6 +6,7 @@ export const exercise: InnerWorkspace = {
   display: {
     general: {
       hideGeneralSettings: true,
+      hideLogs: true,
     },
     panels: {
       spectraPanel: { display: true, open: true },
@@ -31,5 +32,28 @@ export const exercise: InnerWorkspace = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+  },
+  formatting: {
+    nuclei: {},
+    panels: {
+      integrals: {
+        nuclei: {
+          '1H': {
+            relative: { show: true, format: '0.00' },
+            absolute: { show: false, format: '0.00' },
+            color: 'black',
+            strokeWidth: 1,
+            showKind: false,
+          },
+          '13C': {
+            relative: { show: true, format: '0.00' },
+            absolute: { show: false, format: '0.00' },
+            color: 'black',
+            strokeWidth: 1,
+            showKind: false,
+          },
+        },
+      },
+    },
   },
 };

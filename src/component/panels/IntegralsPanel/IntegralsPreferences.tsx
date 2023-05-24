@@ -1,6 +1,5 @@
 import { Formik } from 'formik';
 import {
-  useEffect,
   useCallback,
   useImperativeHandle,
   useRef,
@@ -35,6 +34,12 @@ const formatFields: NucleusPreferenceField[] = [
     checkControllerName: 'relative.show',
     formatControllerName: 'relative.format',
   },
+  {
+    id: 3,
+    label: 'Kind :',
+    checkControllerName: 'showKind',
+    hideFormatField: true,
+  },
 ];
 
 function IntegralsPreferences(props, ref) {
@@ -44,10 +49,6 @@ function IntegralsPreferences(props, ref) {
   const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
 
   const formRef = useRef<any>();
-
-  useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -67,7 +68,11 @@ function IntegralsPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+      <Formik
+        initialValues={preferencesByNuclei}
+        onSubmit={saveHandler}
+        innerRef={formRef}
+      >
         <>
           {nuclei?.map((n) => (
             <NucleusPreferences

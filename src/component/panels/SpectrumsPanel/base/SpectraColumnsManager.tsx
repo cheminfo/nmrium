@@ -126,7 +126,7 @@ export function SpectraColumnsManager({
 
   return (
     <ReactTable
-      data={nucleiPreferences.nuclei[nucleus].columns}
+      data={nucleiPreferences.nuclei[nucleus]?.columns || []}
       columns={COLUMNS}
     />
   );
