@@ -1,6 +1,5 @@
 import { Formik } from 'formik';
 import {
-  useEffect,
   useCallback,
   useImperativeHandle,
   useRef,
@@ -51,10 +50,6 @@ function IntegralsPreferences(props, ref) {
 
   const formRef = useRef<any>();
 
-  useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
-
   const saveHandler = useCallback(
     (values) => {
       preferences.dispatch({
@@ -73,7 +68,11 @@ function IntegralsPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+      <Formik
+        initialValues={preferencesByNuclei}
+        onSubmit={saveHandler}
+        innerRef={formRef}
+      >
         <>
           {nuclei?.map((n) => (
             <NucleusPreferences
