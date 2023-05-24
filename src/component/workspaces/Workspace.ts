@@ -166,7 +166,7 @@ export interface PanelsPreferences {
 }
 
 export interface Formatting {
-  nuclei?: Record<string, NucleusFormat>;
+  nuclei: Record<string, NucleusFormat>;
   panels: Partial<PanelsPreferences>;
 }
 

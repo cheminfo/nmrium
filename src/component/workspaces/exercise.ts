@@ -34,6 +34,7 @@ export const exercise: InnerWorkspace = {
     loggingLevel: 'info',
   },
   formatting: {
+    nuclei: {},
     panels: {
       integrals: {
         nuclei: {
