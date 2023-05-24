@@ -17,8 +17,8 @@ import {
   ForwardedRef,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { RootLayout } from 'react-science/ui';
-import { useToggle, useFullscreen } from 'react-use';
+import { RootLayout, useOnOff } from 'react-science/ui';
+import { useFullscreen } from 'react-use';
 
 import { toJSON } from '../data/SpectraManager';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
@@ -184,7 +184,7 @@ function InnerNMRium({
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const [show, toggle] = useToggle(false);
+  const [show, , setOff, toggle] = useOnOff(false);
 
   const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
@@ -192,9 +192,7 @@ function InnerNMRium({
   }, [onChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
-    onClose: () => {
-      toggle(false);
-    },
+    onClose: setOff,
   });
 
   const [state, dispatch] = useReducer(
