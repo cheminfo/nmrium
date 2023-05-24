@@ -3,17 +3,75 @@ import { css } from '@emotion/react';
 export const ModalStyles = css`
   overflow: auto;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  user-select: none;
+
+  button:focus {
+    outline: none;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+
+  span,
+  li {
+    user-select: text;
+  }
+
+  span.title {
+    font-weight: bold;
+    color: #ea580c;
+  }
+
+  span.content {
+    color: #2b143e;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  img {
+    width: 100px;
+  }
+
+  a {
+    color: #969696;
+  }
+
+  a:hover,
+  a:focus {
+    color: #00bcd4;
+  }
+
+  .separator {
+    border-bottom: 1px solid gray;
+    width: 15px;
+    height: 1px;
+    margin: 10px 0;
+  }
 
   .header {
-    text-align: center;
-    padding: 10px 0 10px 0px;
-    margin: 0px;
-    color: #005d9e;
-    place-items: normal;
-    text-transform: none;
-    background-color: #fcfcfc;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .header-title {
+      color: #464646;
+      font-size: 15px;
+      user-select: none;
+    }
   }
 
   .tab-content {

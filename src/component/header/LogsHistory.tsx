@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { LogEntry } from 'fifo-logger';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -9,6 +10,7 @@ import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
 import { ColumnWrapper } from '../elements/ColumnWrapper';
 import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
+import { ModalStyles } from '../modal/ModalStyle';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
   hour: 'numeric',
@@ -151,6 +153,7 @@ export function LogsHistory() {
       </Button.BarButton>
 
       <Modal
+        maxWidth={1000}
         hasCloseButton
         isOpen={isOpenDialog}
         onRequestClose={() => {
@@ -158,25 +161,31 @@ export function LogsHistory() {
           closeDialog();
         }}
       >
-        <Modal.Header>Logs History </Modal.Header>
-        <Modal.Body>
-          <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
-            <ReactTable
-              columns={COLUMNS}
-              data={sortedLogs}
-              emptyDataRowText="No Logs"
-              rowStyle={handleRowStyle}
-            />
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button.Danger onClick={() => logger.clear()} fill="outline">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <FaRegTrashAlt />
-              <span style={{ paddingLeft: '5px' }}>Clear Logs</span>
+        <div css={ModalStyles}>
+          <Modal.Header>
+            <div className="header">
+              <span>Logs History</span>
             </div>
-          </Button.Danger>
-        </Modal.Footer>
+          </Modal.Header>
+          <Modal.Body>
+            <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
+              <ReactTable
+                columns={COLUMNS}
+                data={sortedLogs}
+                emptyDataRowText="No Logs"
+                rowStyle={handleRowStyle}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Danger onClick={() => logger.clear()} fill="outline">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <FaRegTrashAlt />
+                <span style={{ paddingLeft: '5px' }}>Clear Logs</span>
+              </div>
+            </Button.Danger>
+          </Modal.Footer>
+        </div>
       </Modal>
     </>
   );
