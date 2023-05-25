@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-processing';
 
 import { updateRelatives } from '../integrals/updateRelatives';
 
