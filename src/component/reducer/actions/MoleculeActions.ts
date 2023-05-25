@@ -104,10 +104,14 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
 function initMoleculeViewProperties(id: string, draft: Draft<State>) {
   // check if the molecule is exists in the view object otherwise add it with the default value
   if (!draft.view.molecules[id]) {
+    const position = getFloatingMoleculeInitialPosition(id, draft);
     draft.view.molecules[id] = {
       floating: {
         visible: false,
-        bounding: DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
+        bounding: {
+          ...DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT,
+          ...position,
+        },
       },
       showAtomNumber: false,
     };
@@ -116,6 +120,31 @@ function initMoleculeViewProperties(id: string, draft: Draft<State>) {
 
 function getMoleculeViewObject(id: string, draft: Draft<State>) {
   return draft.view.molecules[id] || null;
+}
+
+function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
+  const {
+    view: { molecules },
+    width,
+    height,
+  } = draft;
+  const { width: baseWidth, height: baseHeight } =
+    DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT;
+
+  const columns = Math.floor(width / baseWidth);
+  const rows = Math.floor(height / baseHeight);
+  const moleculeKeys = Object.keys(molecules);
+
+  let index = 0;
+
+  if (!molecules[id]) {
+    index = moleculeKeys.length - 1;
+  } else {
+    index = moleculeKeys.indexOf(id);
+  }
+  const x = ((index + 1) % columns) * (width / columns);
+  const y = Math.floor(moleculeKeys.length / columns) * (height / rows);
+  return { x, y };
 }
 
 function floatMoleculeOverSpectrum(draft: Draft<State>, action) {
