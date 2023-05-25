@@ -4,19 +4,26 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
+import { Nucleus } from '../../../data/types/common/Nucleus';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
-import { LAYOUT } from '../../2d/utilities/DimensionLayout';
+import { LAYOUT, Layout } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
-import { options as Tools } from '../../toolbar/ToolTypes';
+import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { rangeStateInit, State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
-import { setZoom, wheelZoom, ZOOM_TYPES } from '../helper/Zoom1DManager';
+import {
+  setZoom,
+  wheelZoom,
+  ZOOM_TYPES,
+  ZoomType,
+} from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getVerticalAlign } from '../helper/getVerticalAlign';
+import { ActionType } from '../types/Types';
 
 import {
   setDomain,
@@ -31,9 +38,16 @@ import {
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
+interface BrushBoundary {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  trackID?: Layout;
+}
 interface ResetToolOptions {
   resetToDefaultTool?: boolean;
-  defaultToolId?: string;
+  defaultToolId?: Tool;
   resetSpectrum?: boolean;
   resetFiltersOptionPanel?: boolean;
 }
@@ -44,11 +58,71 @@ interface SetActiveTabOptions {
   domainOptions?: SetDomainOptions;
 }
 
+type ResetSelectedToolAction = ActionType<'RESET_SELECTED_TOOL'>;
+type SetSelectedToolAction = ActionType<
+  'SET_SELECTED_TOOL',
+  { selectedTool: Tool }
+>;
+type SetSpectrumsVerticalAlignAction =
+  ActionType<'SET_SPECTRUMS_VERTICAL_ALIGN'>;
+type ChangeSpectrumDisplayModeAction =
+  ActionType<'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE'>;
+type AddBaseLineZoneAction = ActionType<
+  'ADD_BASE_LINE_ZONE',
+  { from: number; to: number }
+>;
+type DeleteBaseLineZoneAction = ActionType<
+  'DELETE_BASE_LINE_ZONE',
+  { id: string }
+>;
+type ToggleRealImaginaryVisibilityAction =
+  ActionType<'TOGGLE_REAL_IMAGINARY_VISIBILITY'>;
+
+type BrushEndAction = ActionType<'BRUSH_END', BrushBoundary>;
+type SetVerticalIndicatorXPositionAction = ActionType<
+  'SET_VERTICAL_INDICATOR_X_POSITION',
+  { position: number }
+>;
+
+type ZoomAction = ActionType<
+  'SET_ZOOM',
+  { event: any; trackID?: Layout; selectedTool?: Tool }
+>;
+
+type ZoomOutAction = ActionType<
+  'FULL_ZOOM_OUT',
+  { zoomType?: ZoomType; trackID?: Layout }
+>;
+type SetActiveTabAction = ActionType<'SET_ACTIVE_TAB', { tab?: Nucleus }>;
+type LevelChangeAction = ActionType<
+  'SET_2D_LEVEL',
+  { deltaY: number; shiftKey: boolean }
+>;
+type SetSpectraSameTopAction = ActionType<'SET_SPECTRA_SAME_TOP'>;
+type ResetSpectraScaleAction = ActionType<'RESET_SPECTRA_SCALE'>;
+
+export type ToolsActions =
+  | ResetSelectedToolAction
+  | SetSelectedToolAction
+  | SetSpectrumsVerticalAlignAction
+  | ChangeSpectrumDisplayModeAction
+  | AddBaseLineZoneAction
+  | DeleteBaseLineZoneAction
+  | ToggleRealImaginaryVisibilityAction
+  | BrushEndAction
+  | SetVerticalIndicatorXPositionAction
+  | ZoomAction
+  | ZoomOutAction
+  | SetActiveTabAction
+  | LevelChangeAction
+  | SetSpectraSameTopAction
+  | ResetSpectraScaleAction;
+
 function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
   const {
     resetToDefaultTool = true,
     resetFiltersOptionPanel = true,
-    defaultToolId = Tools.zoom.id,
+    defaultToolId = 'zoom',
     resetSpectrum = false,
   } = options;
   // reset temp range
@@ -126,7 +200,7 @@ function activateTool(draft, options: ActivateToolOptions) {
   }
 }
 
-function setSelectedTool(draft: Draft<State>, action) {
+function setSelectedTool(draft: Draft<State>, action: SetSelectedToolAction) {
   const { selectedTool } = action.payload;
   activateTool(draft, { toolId: selectedTool });
 }
@@ -157,7 +231,10 @@ function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   changeSpectrumVerticalAlignment(draft, { verticalAlign });
 }
 
-function handleAddBaseLineZone(draft: Draft<State>, action) {
+function handleAddBaseLineZone(
+  draft: Draft<State>,
+  action: AddBaseLineZoneAction,
+) {
   const scaleX = getXScale(draft);
   const { from, to } = action.payload;
   let start = scaleX.invert(from);
@@ -180,7 +257,10 @@ function handleAddBaseLineZone(draft: Draft<State>, action) {
   calculateBaseLineCorrection(draft);
 }
 
-function handleDeleteBaseLineZone(draft: Draft<State>, action) {
+function handleDeleteBaseLineZone(
+  draft: Draft<State>,
+  action: DeleteBaseLineZoneAction,
+) {
   const { id } = action.payload;
   const state = original(draft) as State;
   draft.toolOptions.data.baselineCorrection.zones =
@@ -203,7 +283,7 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
   }
 }
 
-function handleBrushEnd(draft: Draft<State>, action) {
+function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
 
   const {
@@ -246,14 +326,14 @@ function handleBrushEnd(draft: Draft<State>, action) {
   );
   if (displayerMode === DISPLAYER_MODE.DM_2D) {
     switch (trackID) {
-      case LAYOUT.CENTER_2D:
+      case 'CENTER_2D':
         draft.xDomain = domainX;
         draft.yDomain = domainY;
         break;
-      case LAYOUT.TOP_1D:
+      case 'TOP_1D':
         draft.xDomain = domainX;
         break;
-      case LAYOUT.LEFT_1D:
+      case 'LEFT_1D':
         draft.yDomain = domainY;
         break;
       default:
@@ -269,7 +349,10 @@ function handleBrushEnd(draft: Draft<State>, action) {
     }
   }
 }
-function setVerticalIndicatorXPosition(draft: Draft<State>, action) {
+function setVerticalIndicatorXPosition(
+  draft: Draft<State>,
+  action: SetVerticalIndicatorXPositionAction,
+) {
   const { position } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
@@ -281,8 +364,8 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, action) {
   }
 }
 
-function handleZoom(draft: Draft<State>, action) {
-  const { event, trackID, selectedTool } = action;
+function handleZoom(draft: Draft<State>, action: ZoomAction) {
+  const { event, trackID, selectedTool } = action.payload;
   const {
     view: { ranges: rangeState },
     displayerMode,
@@ -333,9 +416,9 @@ function handleZoom(draft: Draft<State>, action) {
   }
 }
 
-function zoomOut(draft: Draft<State>, action) {
+function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
   if (draft?.data.length > 0) {
-    const { zoomType, trackID } = action.payload;
+    const { zoomType, trackID } = action?.payload || {};
     const { xDomain, yDomain } = draft.originDomain;
     const zoomHistory = zoomHistoryManager(
       draft.zoom.history,
@@ -371,7 +454,7 @@ function zoomOut(draft: Draft<State>, action) {
     } else {
       const { xDomain, yDomain, yDomains } = draft.originDomain;
 
-      if ([LAYOUT.TOP_1D, LAYOUT.LEFT_1D, LAYOUT.CENTER_2D].includes(trackID)) {
+      if (trackID) {
         const zoomValue = zoomHistory.pop();
         draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
         draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
@@ -534,14 +617,14 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   setMode(draft);
 }
 
-function handelSetActiveTab(draft: Draft<State>, action) {
+function handelSetActiveTab(draft: Draft<State>, action: SetActiveTabAction) {
   const { tab } = action.payload;
   if (tab) {
     setActiveTab(draft, { tab });
   }
 }
 
-function levelChangeHandler(draft: Draft<State>, action) {
+function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
   const { deltaY, shiftKey } = action.payload;
   const {
     data,

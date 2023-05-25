@@ -15,7 +15,6 @@ import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   APPLY_AUTO_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-  RESET_SELECTED_TOOL,
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
@@ -176,7 +175,7 @@ export default function PhaseCorrectionPanel() {
 
   const handleCancelFilter = useCallback(() => {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   }, [dispatch]);
 

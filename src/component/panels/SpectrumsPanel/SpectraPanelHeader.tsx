@@ -22,8 +22,6 @@ import {
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
   RECOLOR_SPECTRA_COLOR,
-  RESET_SPECTRA_SCALE,
-  SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -115,11 +113,11 @@ function SpectraPanelHeaderInner({
   }
 
   function setSameTopHandler() {
-    dispatch({ type: SET_SPECTRA_SAME_TOP });
+    dispatch({ type: 'SET_SPECTRA_SAME_TOP' });
   }
 
   function resetScaleHandler() {
-    dispatch({ type: RESET_SPECTRA_SCALE });
+    dispatch({ type: 'RESET_SPECTRA_SCALE' });
   }
 
   function recolorSpectraHandler() {

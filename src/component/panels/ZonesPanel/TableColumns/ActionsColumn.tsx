@@ -16,11 +16,9 @@ import {
   CHANGE_ZONE_SIGNAL_KIND,
   DELETE_2D_ZONE,
   SAVE_EDITED_ZONE,
-  SET_SELECTED_TOOL,
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
-import { options } from '../../../toolbar/ToolTypes';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -111,8 +109,8 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
 
   const openEditZoneHandler = useCallback(() => {
     dispatch({
-      type: SET_SELECTED_TOOL,
-      payload: { selectedTool: options.editRange.id },
+      type: 'SET_SELECTED_TOOL',
+      payload: { selectedTool: 'editRange' },
     });
     modal.show(
       <EditZoneModal

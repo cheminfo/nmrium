@@ -495,7 +495,7 @@ function rollbackSpectrumByFilter(
         triggerSource === 'Apply'
       ) {
         draft.toolOptions.selectedOptionPanel = null;
-        draft.toolOptions.selectedTool = Tools.zoom.id;
+        draft.toolOptions.selectedTool = 'zoom';
       }
     } else {
       //if the filter is not exists, create a clone of the current data
@@ -511,7 +511,7 @@ function rollbackSpectrumByFilter(
       } = getInitialState();
       draft.toolOptions.data = data;
       draft.toolOptions.selectedOptionPanel = null;
-      draft.toolOptions.selectedTool = Tools.zoom.id;
+      draft.toolOptions.selectedTool = 'zoom';
       currentIsFid = datum.info.isFid;
     }
   }

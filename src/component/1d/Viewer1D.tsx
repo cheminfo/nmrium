@@ -28,12 +28,7 @@ import scaleReducer, {
 import {
   ADD_INTEGRAL,
   ADD_PEAKS,
-  ADD_BASE_LINE_ZONE,
-  BRUSH_END,
-  FULL_ZOOM_OUT,
-  SET_ZOOM,
   ADD_PEAK,
-  SET_VERTICAL_INDICATOR_X_POSITION,
   ADD_RANGE,
   ADD_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
@@ -151,9 +146,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           case options.integral.id:
             dispatch({
               type: ADD_INTEGRAL,
-              payload: {
-                ...brushData,
-              },
+              payload: brushData,
             });
             break;
           case options.rangePicking.id: {
@@ -173,9 +166,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             if (toIndex - fromIndex <= MAX_LENGTH) {
               dispatch({
                 type: ADD_RANGE,
-                payload: {
-                  ...brushData,
-                },
+                payload: brushData,
               });
             } else {
               alert.error(
@@ -204,15 +195,13 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           case options.peakPicking.id:
             dispatch({
               type: ADD_PEAKS,
-              payload: {
-                ...brushData,
-              },
+              payload: brushData,
             });
             break;
 
           case options.baselineCorrection.id:
             dispatch({
-              type: ADD_BASE_LINE_ZONE,
+              type: 'ADD_BASE_LINE_ZONE',
               payload: {
                 from: brushData.startX,
                 to: brushData.endX,
@@ -251,7 +240,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           default:
             if (selectedTool != null) {
-              dispatch({ type: BRUSH_END, payload: { ...brushData } });
+              dispatch({ type: 'BRUSH_END', payload: brushData });
             }
             break;
         }
@@ -274,14 +263,14 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const handelOnDoubleClick = useCallback(() => {
     dispatch({
-      type: FULL_ZOOM_OUT,
+      type: 'FULL_ZOOM_OUT',
       payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL },
     });
   }, [dispatch]);
 
   const handleZoom = useCallback(
     (event) => {
-      dispatch({ type: SET_ZOOM, payload: { event, selectedTool } });
+      dispatch({ type: 'SET_ZOOM', payload: { event, selectedTool } });
     },
     [dispatch, selectedTool],
   );
@@ -316,7 +305,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           case options.phaseCorrection.id:
             dispatch({
-              type: SET_VERTICAL_INDICATOR_X_POSITION,
+              type: 'SET_VERTICAL_INDICATOR_X_POSITION',
               payload: {
                 position: position.x,
               },

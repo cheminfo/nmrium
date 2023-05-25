@@ -8,14 +8,7 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
-import {
-  BRUSH_END,
-  FULL_ZOOM_OUT,
-  SET_DIMENSIONS,
-  SET_2D_LEVEL,
-  SET_ZOOM,
-  ADD_2D_ZONE,
-} from '../reducer/types/Types';
+import { SET_DIMENSIONS, ADD_2D_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import { assert } from '../utility/assert';
 
@@ -73,7 +66,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
         } else if (brushData.shiftKey) {
           switch (selectedTool) {
             case options.zonePicking.id:
-              dispatch({ type: ADD_2D_ZONE, ...brushData });
+              dispatch({ type: ADD_2D_ZONE, payload: brushData });
               break;
             default:
               break;
@@ -83,9 +76,11 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
             default:
               if (selectedTool != null) {
                 return dispatch({
-                  type: BRUSH_END,
-                  ...brushData,
-                  trackID: getLayoutID(DIMENSION, brushData),
+                  type: 'BRUSH_END',
+                  payload: {
+                    ...brushData,
+                    trackID: getLayoutID(DIMENSION, brushData),
+                  },
                 });
               }
           }
@@ -100,7 +95,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       const { x: startX, y: startY } = e;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
       if (trackID) {
-        dispatch({ type: FULL_ZOOM_OUT, payload: { trackID } });
+        dispatch({ type: 'FULL_ZOOM_OUT', payload: { trackID } });
       }
     },
     [DIMENSION, dispatch],
@@ -112,9 +107,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
     if (trackID) {
       if (trackID === 'CENTER_2D') {
-        dispatch({ type: SET_2D_LEVEL, payload: { ...event } });
+        dispatch({ type: 'SET_2D_LEVEL', payload: event });
       } else {
-        dispatch({ type: SET_ZOOM, payload: { event, trackID } });
+        dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
       }
     }
   };

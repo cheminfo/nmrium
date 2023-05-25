@@ -14,7 +14,6 @@ import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
 import {
-  RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
   CALCULATE_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
@@ -102,7 +101,7 @@ function BaseLineCorrectionInnerPanel(
 
   const handleCancelFilter = () => {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   };
 

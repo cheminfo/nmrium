@@ -122,7 +122,7 @@ function handleAutoPeakPicking(draft: Draft<State>, action) {
     action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
-    draft.toolOptions.selectedTool = options.zoom.id;
+    draft.toolOptions.selectedTool = 'zoom';
     draft.toolOptions.selectedOptionPanel = null;
     const { index } = activeSpectrum;
     const datum = draft.data[index] as Spectrum1D;

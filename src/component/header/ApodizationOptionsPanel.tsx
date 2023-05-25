@@ -15,7 +15,6 @@ import { useFilter } from '../hooks/useFilter';
 import {
   APPLY_APODIZATION_FILTER,
   CALCULATE_APODIZATION_FILTER,
-  RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
@@ -66,7 +65,7 @@ function ApodizationOptionsInnerPanel(
 
   function handleCancelFilter() {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   }
 

@@ -15,7 +15,7 @@ import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
-import { options } from '../toolbar/ToolTypes';
+import { Tool } from '../toolbar/ToolTypes';
 
 import * as AssignmentsActions from './actions/AssignmentsActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
@@ -209,7 +209,7 @@ export const getInitialState = (): State => ({
   },
   overDisplayer: false,
   toolOptions: {
-    selectedTool: options.zoom.id,
+    selectedTool: 'zoom',
     selectedOptionPanel: null,
     data: {
       baselineCorrection: {
@@ -382,7 +382,7 @@ export interface State {
      * The current selected tool
      * @default `options.zoom.id`
      */
-    selectedTool: string;
+    selectedTool: Tool;
     /**
      * The current active options panel
      * Part of tools has an options panel for more control over the tool, once the user select the tool then the options panel will be shown in the header

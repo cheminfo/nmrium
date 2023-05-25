@@ -1,6 +1,13 @@
 import { createContext, useContext } from 'react';
 
-type Dispatch = (action: { type: string; payload?: any }) => void;
+import { ToolsActions } from '../reducer/actions/ToolsActions';
+
+export type Action =
+  | ToolsActions
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | { type: string & {}; payload?: Object };
+
+type Dispatch = (action: Action) => void;
 
 export const dispatchContext = createContext<Dispatch>(() => null);
 

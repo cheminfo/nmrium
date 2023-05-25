@@ -9,10 +9,8 @@ import {
   CHANGE_RANGE_SIGNAL_KIND,
   DELETE_RANGE,
   SAVE_EDITED_RANGE,
-  SET_SELECTED_TOOL,
   SET_X_DOMAIN,
 } from '../../../reducer/types/Types';
-import { options } from '../../../toolbar/ToolTypes';
 
 import { RangeData } from './useMapRanges';
 
@@ -98,8 +96,8 @@ export default function useEditRangeModal(range?: RangeData) {
   const editRange = useCallback(
     (isManual = false) => {
       dispatch({
-        type: SET_SELECTED_TOOL,
-        payload: { selectedTool: options.editRange.id },
+        type: 'SET_SELECTED_TOOL',
+        payload: { selectedTool: 'editRange' },
       });
 
       modal.show(
