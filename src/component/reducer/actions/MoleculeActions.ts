@@ -7,7 +7,7 @@ import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { generateColor } from '../../../data/utilities/generateColor';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
-import { DISPLAYER_MODE } from '../core/Constants';
+import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 
 import { handleUnlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
@@ -125,12 +125,14 @@ function getMoleculeViewObject(id: string, draft: Draft<State>) {
 function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   const {
     view: { molecules },
-    width,
-    height,
+    width: displayerWidth,
+    height: displayerHeight,
   } = draft;
+  const { top, left } = MARGIN['2D'];
   const { width: baseWidth, height: baseHeight } =
     DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT;
-
+  const width = displayerWidth - left;
+  const height = displayerHeight - top;
   const columns = Math.floor(width / baseWidth);
   const rows = Math.floor(height / baseHeight);
   const moleculeKeys = Object.keys(molecules);
@@ -142,8 +144,8 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   } else {
     index = moleculeKeys.indexOf(id);
   }
-  const x = ((index + 1) % columns) * (width / columns);
-  const y = Math.floor(moleculeKeys.length / columns) * (height / rows);
+  const x = ((index + 1) % columns) * (width / columns) + left;
+  const y = Math.floor(moleculeKeys.length / columns) * (height / rows) + top;
   return { x, y };
 }
 
