@@ -69,7 +69,7 @@ function Range({
   function handleOnStopResizing(position) {
     dispatch({
       type: RESIZE_RANGE,
-      data: {
+      payload: {
         ...range,
         from: scaleX().invert(position.x2),
         to: scaleX().invert(position.x1),

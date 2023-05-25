@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react';
 
-export const dispatchContext = createContext<any>({});
+type Dispatch = (action: { type: string; payload?: any }) => void;
+
+export const dispatchContext = createContext<Dispatch>(() => null);
 
 export const DispatchProvider = dispatchContext.Provider;
 
-export function useDispatch() {
+export function useDispatch(): Dispatch {
   return useContext(dispatchContext);
 }

@@ -5,12 +5,15 @@ import { State } from '../Reducer';
 
 import { getActiveSpectrum } from './getActiveSpectrum';
 
-export const ZoomType = {
+export const ZOOM_TYPES = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL',
   STEP_HORIZONTAL: 'STEP_HORIZONTAL',
   FULL: 'FULL',
-};
+} as const;
+
+export type ZoomType = keyof typeof ZOOM_TYPES;
+
 interface ZoomOptions {
   factor?: number;
   invert?: boolean;

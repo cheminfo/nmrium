@@ -134,7 +134,7 @@ function BasicToolBarInner({
 
   const startLoadingHandler = useCallback(() => {
     modal.close();
-    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatch({ type: SET_LOADING_FLAG, payload: { isLoading: true } });
   }, [dispatch, modal]);
 
   const importJCAMPFile = useCallback(() => {

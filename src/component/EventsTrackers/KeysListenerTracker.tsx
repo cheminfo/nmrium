@@ -69,7 +69,9 @@ function KeysListenerTracker() {
         case HighlightEventSource.INTEGRAL: {
           dispatch({
             type: DELETE_INTEGRAL,
-            integralID: id,
+            payload: {
+              integralID: id,
+            },
           });
           // remove keys from the highlighted list after delete
           remove();
@@ -79,7 +81,9 @@ function KeysListenerTracker() {
         case HighlightEventSource.PEAK: {
           dispatch({
             type: DELETE_PEAK_NOTATION,
-            data: { id },
+            payload: {
+              id,
+            },
           });
           // remove keys from the highlighted list after delete
           remove();
@@ -217,19 +221,25 @@ function KeysListenerTracker() {
         if (e.shiftKey) {
           dispatch({
             type: SET_KEY_PREFERENCES,
-            keyCode: num,
+            payload: {
+              keyCode: num,
+            },
           });
           alert.show(`Configuration Reset, press '${num}' again to reload it.`);
         } else if (!checkModifierKeyActivated(e)) {
           if (keysPreferences?.[num]) {
             dispatch({
               type: APPLY_KEY_PREFERENCES,
-              keyCode: num,
+              payload: {
+                keyCode: num,
+              },
             });
           } else {
             dispatch({
               type: SET_KEY_PREFERENCES,
-              keyCode: num,
+              payload: {
+                keyCode: num,
+              },
             });
             alert.show(
               `Configuration saved, press '${num}' again to reload it.`,

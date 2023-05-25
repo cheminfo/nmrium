@@ -108,12 +108,12 @@ function DropZone(props) {
       logger.error(error);
       reportError(error);
     } finally {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+      dispatch({ type: SET_LOADING_FLAG, payload: { isLoading: false } });
     }
   }
 
   function onDrop(droppedFiles) {
-    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatch({ type: SET_LOADING_FLAG, payload: { isLoading: true } });
     void loadFilesHandler(droppedFiles);
   }
 

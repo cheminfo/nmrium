@@ -24,9 +24,9 @@ import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { activateTool, resetSelectedTool } from './ToolsActions';
 
-function shiftSpectrumAlongXAxis(draft: Draft<State>, shift) {
+function shiftSpectrumAlongXAxis(draft: Draft<State>, action) {
   //apply filter into the spectrum
-
+  const { shift } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const activeFilterIndex = getActiveFilterIndex(draft);
@@ -168,11 +168,11 @@ function applyFFTFilter(draft: Draft<State>) {
     }
   }
 }
-function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
+function applyManualPhaseCorrectionFilter(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    const { ph0, ph1 } = filterOptions;
+    const { ph0, ph1 } = action.payload;
     draft.data = draft.tempData;
     const activeFilterIndex = getActiveFilterIndex(draft);
 
@@ -257,6 +257,7 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 }
 
 function calculateBaseLineCorrection(draft: Draft<State>, action?) {
+  const baseLineOptions = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
@@ -267,7 +268,7 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
     // save the baseline options temporary
     draft.toolOptions.data.baselineCorrection = {
       ...draft.toolOptions.data.baselineCorrection,
-      ...(action?.options ? { options: action.options } : {}),
+      ...(baseLineOptions ? { options: baseLineOptions } : {}),
     };
 
     const { zones, options } = draft.toolOptions.data.baselineCorrection;
@@ -285,7 +286,7 @@ function calculateBaseLineCorrection(draft: Draft<State>, action?) {
     }
   }
 }
-function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
+function calculateManualPhaseCorrection(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
@@ -295,7 +296,7 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
       info,
     } = draft.tempData[index] as Spectrum1D;
 
-    const { ph0, ph1 } = filterOptions;
+    const { ph0, ph1 } = action.payload;
     let _data = { data: { x, re, im }, info };
     phaseCorrection(_data as Spectrum1D, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
@@ -306,7 +307,8 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   }
 }
 
-function enableFilter(draft: Draft<State>, filterID, checked) {
+function enableFilter(draft: Draft<State>, action) {
+  const { id: filterID, checked } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum) {
@@ -372,7 +374,7 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { zones } = draft.toolOptions.data.baselineCorrection;
-    const { livePreview, ...options } = action.options;
+    const { livePreview, ...options } = action.payload;
     const activeFilterIndex = getActiveFilterIndex(draft);
     FiltersManager.applyFilter(
       draft.data[activeSpectrum.index],

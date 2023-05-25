@@ -39,7 +39,9 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
       const params = row.original;
       dispatch({
         type: DELETE_INTEGRAL,
-        integralID: params.id,
+        payload: {
+          integralID: params.id,
+        },
       });
     },
     [dispatch],

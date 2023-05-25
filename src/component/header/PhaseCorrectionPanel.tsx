@@ -108,7 +108,7 @@ export default function PhaseCorrectionPanel() {
       case phaseCorrectionTypes.manual: {
         dispatch({
           type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-          value,
+          payload: value,
         });
         break;
       }
@@ -134,7 +134,7 @@ export default function PhaseCorrectionPanel() {
 
       dispatch({
         type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: newValues,
+        payload: newValues,
       });
     },
     [data.re, dispatch, pivot?.index],

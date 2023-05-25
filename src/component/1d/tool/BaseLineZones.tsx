@@ -35,7 +35,7 @@ function BaseLineZones() {
   const dispatch = useDispatch();
 
   const deleteRangeHandler = (id) => {
-    dispatch({ type: DELETE_BASE_LINE_ZONE, id });
+    dispatch({ type: DELETE_BASE_LINE_ZONE, payload: { id } });
   };
 
   const baseLineZones = toolOptions.data.baselineCorrection.zones;

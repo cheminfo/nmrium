@@ -25,8 +25,8 @@ import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { importSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
 
-function setIsLoading(draft: Draft<State>, isLoading: boolean) {
-  draft.isLoading = isLoading;
+function setIsLoading(draft: Draft<State>, action) {
+  draft.isLoading = action.payload.isLoading;
 }
 
 function setColors(draft: Draft<State>, colors: UsedColors) {

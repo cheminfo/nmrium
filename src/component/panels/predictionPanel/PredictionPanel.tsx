@@ -29,7 +29,7 @@ export default function PredictionPane() {
       if (molecule) {
         dispatch({
           type: SET_LOADING_FLAG,
-          isLoading: true,
+          payload: { isLoading: true },
         });
 
         const hideLoading = await alert.showLoading(

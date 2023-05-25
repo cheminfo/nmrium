@@ -96,7 +96,7 @@ function BaseLineCorrectionInnerPanel(
         triggerSource === 'onChange'
           ? CALCULATE_BASE_LINE_CORRECTION_FILTER
           : APPLY_BASE_LINE_CORRECTION_FILTER,
-      options: values,
+      payload: values,
     });
   };
 

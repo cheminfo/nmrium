@@ -42,7 +42,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
       const params = row.original;
       dispatch({
         type: DELETE_PEAK_NOTATION,
-        data: { id: params.id, xIndex: params.xIndex },
+        payload: { id: params.id, xIndex: params.xIndex },
       });
     },
     [dispatch],
@@ -69,9 +69,9 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
-      const shiftValue =
+      const shift =
         Number.parseFloat(event.target.value) - Number.parseFloat(row.x);
-      dispatch({ type: SHIFT_SPECTRUM, shiftValue });
+      dispatch({ type: SHIFT_SPECTRUM, payload: { shift } });
     },
     [dispatch],
   );

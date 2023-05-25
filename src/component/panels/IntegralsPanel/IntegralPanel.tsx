@@ -62,7 +62,7 @@ function IntegralPanelInner({
   const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_INTEGRAL, integralID: null });
+    dispatch({ type: DELETE_INTEGRAL, payload: { integralID: null } });
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
@@ -73,8 +73,8 @@ function IntegralPanelInner({
   }, [modal, yesHandler]);
 
   const changeIntegralSumHandler = useCallback(
-    (value) => {
-      dispatch({ type: CHANGE_INTEGRAL_SUM, value });
+    (options) => {
+      dispatch({ type: CHANGE_INTEGRAL_SUM, payload: { options } });
       modal.close();
     },
     [dispatch, modal],

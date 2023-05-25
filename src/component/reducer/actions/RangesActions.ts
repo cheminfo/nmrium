@@ -310,11 +310,13 @@ function handleResizeRange(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    changeRange(draft.data[index] as Spectrum1D, action.data);
+    const data = action.payload;
+    changeRange(draft.data[index] as Spectrum1D, data);
   }
 }
 
-function handleChangeRangeSum(draft: Draft<State>, options) {
+function handleChangeRangeSum(draft: Draft<State>, action) {
+  const { options } = action.payload;
   const {
     data,
     view: {

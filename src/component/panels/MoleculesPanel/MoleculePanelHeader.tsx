@@ -188,7 +188,7 @@ export default function MoleculePanelHeader({
 
   const handlePaste = useCallback(() => {
     void navigator.clipboard.readText().then((molfile) => {
-      dispatch({ type: ADD_MOLECULE, molfile });
+      dispatch({ type: ADD_MOLECULE, payload: { molfile } });
     });
   }, [dispatch]);
 

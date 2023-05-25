@@ -100,7 +100,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       const { x: startX, y: startY } = e;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
       if (trackID) {
-        dispatch({ type: FULL_ZOOM_OUT, trackID });
+        dispatch({ type: FULL_ZOOM_OUT, payload: { trackID } });
       }
     },
     [DIMENSION, dispatch],
@@ -112,9 +112,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
     if (trackID) {
       if (trackID === 'CENTER_2D') {
-        dispatch({ type: SET_2D_LEVEL, ...event });
+        dispatch({ type: SET_2D_LEVEL, payload: { ...event } });
       } else {
-        dispatch({ type: SET_ZOOM, event, trackID });
+        dispatch({ type: SET_ZOOM, payload: { event, trackID } });
       }
     }
   };
@@ -207,7 +207,7 @@ export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
   const { width, height, children } = props;
 
   useEffect(() => {
-    dispatch({ type: SET_DIMENSIONS, width, height });
+    dispatch({ type: SET_DIMENSIONS, payload: { width, height } });
   }, [width, height, dispatch]);
 
   return children;

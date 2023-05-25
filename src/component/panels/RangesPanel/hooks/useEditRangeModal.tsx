@@ -29,7 +29,9 @@ export default function useEditRangeModal(range?: RangeData) {
         const margin = Math.abs(from - to);
         dispatch({
           type: SET_X_DOMAIN,
-          xDomain: [from - margin, to + margin],
+          payload: {
+            xDomain: [from - margin, to + margin],
+          },
         });
       }
     },

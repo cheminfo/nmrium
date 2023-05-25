@@ -105,7 +105,10 @@ function SpectraPanelHeaderInner({
   function addMissingProjectionHandler() {
     const missingNucleus = getMissingProjection(data, activeTab);
     if (missingNucleus.length > 0) {
-      dispatch({ type: ADD_MISSING_PROJECTION, nucleus: missingNucleus });
+      dispatch({
+        type: ADD_MISSING_PROJECTION,
+        payload: { nucleus: missingNucleus },
+      });
     } else {
       alert.error('Nothing to calculate');
     }

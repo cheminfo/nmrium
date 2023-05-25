@@ -234,15 +234,13 @@ function setIntegralsYDomain(
   }
 }
 
-function setOriginalDomain(draft: Draft<State>, originDomain) {
-  draft.originDomain = originDomain;
-}
-
-function setXDomain(draft: Draft<State>, xDomain) {
+function setXDomain(draft: Draft<State>, action) {
+  const xDomain = action.payload.xDomain;
   draft.xDomain = xDomain;
 }
 
-function setYDomain(draft: Draft<State>, yDomain) {
+function setYDomain(draft: Draft<State>, action) {
+  const yDomain = action.payload.yDomain;
   draft.yDomain = yDomain;
 }
 
@@ -265,7 +263,6 @@ function setMode(draft: Draft<State>) {
 
 export {
   getDomain,
-  setOriginalDomain,
   setXDomain,
   setYDomain,
   handelResetDomain,

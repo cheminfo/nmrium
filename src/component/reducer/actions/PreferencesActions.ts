@@ -61,7 +61,8 @@ function changeSpectrumVerticalAlignment(
   }
 }
 
-function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
+function setKeyPreferencesHandler(draft: Draft<State>, action) {
+  const { keyCode } = action.payload;
   const {
     data,
 
@@ -113,7 +114,8 @@ function setSpectraDisplayPreferences(draft: Draft<State>, preferences) {
   }
 }
 
-function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
+function applyKeyPreferencesHandler(draft: Draft<State>, action) {
+  const { keyCode } = action.payload;
   const preferences = draft.keysPreferences[keyCode];
   if (preferences) {
     setSpectraDisplayPreferences(draft, preferences);

@@ -492,13 +492,13 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.LOAD_DROP_FILES:
       return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
-      return LoadActions.setIsLoading(draft, action.isLoading);
+      return LoadActions.setIsLoading(draft, action);
     case types.ADD_PEAK:
-      return PeaksActions.addPeak(draft, action.mouseCoordinates);
+      return PeaksActions.addPeak(draft, action);
     case types.ADD_PEAKS:
       return PeaksActions.addPeaks(draft, action);
     case types.DELETE_PEAK_NOTATION:
-      return PeaksActions.deletePeak(draft, action.data);
+      return PeaksActions.deletePeak(draft, action);
     case types.AUTO_PEAK_PICKING:
       return PeaksActions.handleAutoPeakPicking(draft, action);
     case types.OPTIMIZE_PEAKS:
@@ -516,26 +516,23 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.RESIZE_INTEGRAL:
       return IntegralsActions.changeIntegral(draft, action);
     case types.CHANGE_INTEGRAL_SUM:
-      return IntegralsActions.handleChangeIntegralSum(draft, action.value);
+      return IntegralsActions.handleChangeIntegralSum(draft, action);
     case types.CHANGE_INTEGRALS_SUM_FLAG:
       return IntegralsActions.handleChangeIntegralsSumFlag(draft, action);
     case types.CHANGE_INTEGRAL_RELATIVE:
       return IntegralsActions.handleChangeIntegralsRelativeValue(draft, action);
 
-    case types.SET_ORIGINAL_DOMAIN:
-      return DomainActions.setOriginalDomain(draft, action.domain);
-
     case types.SET_X_DOMAIN:
-      return DomainActions.setXDomain(draft, action.xDomain);
+      return DomainActions.setXDomain(draft, action);
 
     case types.SET_Y_DOMAIN:
-      return DomainActions.setYDomain(draft, action.yDomain);
+      return DomainActions.setYDomain(draft, action);
 
     case types.SET_WIDTH:
       return setWidth(draft, action.width);
 
     case types.SET_DIMENSIONS:
-      return handleSetDimensions(draft, action.width, action.height);
+      return handleSetDimensions(draft, action);
 
     case types.SET_SELECTED_TOOL:
       return ToolsActions.setSelectedTool(draft, action);
@@ -544,7 +541,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.FULL_ZOOM_OUT:
       return ToolsActions.zoomOut(draft, action);
     case types.SHIFT_SPECTRUM:
-      return FiltersActions.shiftSpectrumAlongXAxis(draft, action.shiftValue);
+      return FiltersActions.shiftSpectrumAlongXAxis(draft, action);
     case types.APPLY_APODIZATION_FILTER:
       return FiltersActions.applyApodizationFilter(draft, action);
     case types.CALCULATE_APODIZATION_FILTER:
@@ -556,18 +553,15 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.APPLY_FFT_FILTER:
       return FiltersActions.applyFFTFilter(draft);
     case types.APPLY_MANUAL_PHASE_CORRECTION_FILTER:
-      return FiltersActions.applyManualPhaseCorrectionFilter(
-        draft,
-        action.value,
-      );
+      return FiltersActions.applyManualPhaseCorrectionFilter(draft, action);
     case types.APPLY_AUTO_PHASE_CORRECTION_FILTER:
       return FiltersActions.applyAutoPhaseCorrectionFilter(draft);
     case types.APPLY_ABSOLUTE_FILTER:
       return FiltersActions.applyAbsoluteFilter(draft);
     case types.CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
-      return FiltersActions.calculateManualPhaseCorrection(draft, action.value);
+      return FiltersActions.calculateManualPhaseCorrection(draft, action);
     case types.ENABLE_FILTER:
-      return FiltersActions.enableFilter(draft, action.id, action.checked);
+      return FiltersActions.enableFilter(draft, action);
     case types.DELETE_FILTER:
       return FiltersActions.deleteFilter(draft, action);
     case types.DELETE_SPECTRA_FILTER:
@@ -631,7 +625,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.handleChangeSpectrumDisplayMode(draft);
 
     case types.ADD_MOLECULE:
-      return MoleculeActions.addMoleculeHandler(draft, action.molfile);
+      return MoleculeActions.addMoleculeHandler(draft, action);
 
     case types.SET_MOLECULE:
       return MoleculeActions.setMoleculeHandler(draft, action);
@@ -657,22 +651,22 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return CorrelationsActions.handleSetMF(draft, action.payload);
 
     case types.SET_CORRELATIONS_TOLERANCE:
-      return CorrelationsActions.handleSetTolerance(draft, action.payload);
+      return CorrelationsActions.handleSetTolerance(draft, action);
 
     case types.SET_CORRELATION:
-      return CorrelationsActions.handleSetCorrelation(draft, action.payload);
+      return CorrelationsActions.handleSetCorrelation(draft, action);
 
     case types.SET_CORRELATIONS:
-      return CorrelationsActions.handleSetCorrelations(draft, action.payload);
+      return CorrelationsActions.handleSetCorrelations(draft, action);
 
     case types.DELETE_CORRELATION:
-      return CorrelationsActions.handleDeleteCorrelation(draft, action.payload);
+      return CorrelationsActions.handleDeleteCorrelation(draft, action);
 
     case types.BRUSH_END:
       return ToolsActions.handleBrushEnd(draft, action);
 
     case types.SET_VERTICAL_INDICATOR_X_POSITION:
-      return ToolsActions.setVerticalIndicatorXPosition(draft, action.position);
+      return ToolsActions.setVerticalIndicatorXPosition(draft, action);
     case types.SET_SPECTRUMS_VERTICAL_ALIGN:
       return ToolsActions.setSpectrumsVerticalAlign(draft);
 
@@ -691,7 +685,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.RESIZE_RANGE:
       return RangesActions.handleResizeRange(draft, action);
     case types.CHANGE_RANGE_SUM:
-      return RangesActions.handleChangeRangeSum(draft, action.value);
+      return RangesActions.handleChangeRangeSum(draft, action);
     case types.CHANGE_RANGES_SUM_FLAG:
       return RangesActions.handleChangeRangesSumFlag(draft, action);
     case types.CHANGE_RANGE_RELATIVE:
@@ -718,16 +712,16 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleShowJGraph(draft, action);
 
     case types.SET_ACTIVE_TAB:
-      return ToolsActions.handelSetActiveTab(draft, action.tab);
+      return ToolsActions.handelSetActiveTab(draft, action);
     case types.ADD_BASE_LINE_ZONE:
-      return ToolsActions.handleAddBaseLineZone(draft, action.zone);
+      return ToolsActions.handleAddBaseLineZone(draft, action);
     case types.DELETE_BASE_LINE_ZONE:
-      return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
+      return ToolsActions.handleDeleteBaseLineZone(draft, action);
 
     case types.SET_KEY_PREFERENCES:
-      return setKeyPreferencesHandler(draft, action.keyCode);
+      return setKeyPreferencesHandler(draft, action);
     case types.APPLY_KEY_PREFERENCES:
-      return applyKeyPreferencesHandler(draft, action.keyCode);
+      return applyKeyPreferencesHandler(draft, action);
     case types.SET_2D_LEVEL:
       return ToolsActions.levelChangeHandler(draft, action);
     case types.ADD_2D_ZONE:

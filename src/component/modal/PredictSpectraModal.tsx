@@ -166,7 +166,9 @@ function PredictSpectraModal({
         setPredictionPreferences({ ...values, isApproved });
         dispatch({
           type: SET_LOADING_FLAG,
-          isLoading: true,
+          payload: {
+            isLoading: true,
+          },
         });
 
         const predictedSpectra = Object.entries(values.spectra)

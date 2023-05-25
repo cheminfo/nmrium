@@ -2,7 +2,9 @@ const LAYOUT = {
   TOP_1D: 'TOP_1D',
   LEFT_1D: 'LEFT_1D',
   CENTER_2D: 'CENTER_2D',
-};
+} as const;
+
+type Layout = keyof typeof LAYOUT;
 
 interface MarginProps {
   top: number;
@@ -85,3 +87,4 @@ function getLayoutID(dimension: DimensionType, brushData: StartEndProps) {
 }
 
 export { LAYOUT, get2DDimensionLayout, getLayoutID };
+export type { Layout };

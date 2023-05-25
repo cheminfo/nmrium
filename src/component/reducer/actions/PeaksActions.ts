@@ -15,7 +15,8 @@ import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 
-function addPeak(draft: Draft<State>, mouseCoordinates) {
+function addPeak(draft: Draft<State>, action) {
+  const { x: mouseXPosition } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
   const state = original(draft) as State;
@@ -23,8 +24,8 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
   if (activeSpectrum?.id && state) {
     const { index } = activeSpectrum;
     const xShift = 10;
-    const startX = mouseCoordinates.x - xShift;
-    const endX = mouseCoordinates.x + xShift;
+    const startX = mouseXPosition - xShift;
+    const endX = mouseXPosition + xShift;
     const [from, to] = getRange(draft, { startX, endX });
     const candidatePeak = lookupPeak(state.data[index].data as Data1D, {
       from,
@@ -55,7 +56,7 @@ function addPeaks(draft: Draft<State>, action) {
     const { index } = activeSpectrum;
     const datumOriginal = state.data[index] as Spectrum1D;
 
-    const { startX, endX } = action;
+    const { startX, endX } = action.payload;
     const [from, to] = getRange(draft, { startX, endX });
 
     if (from !== to) {
@@ -77,8 +78,9 @@ function addPeaks(draft: Draft<State>, action) {
   }
 }
 
-function deletePeak(draft: Draft<State>, peakData) {
+function deletePeak(draft: Draft<State>, action) {
   const activeSpectrum = getActiveSpectrum(draft);
+  const peakData = action.payload;
 
   if (activeSpectrum) {
     const { index } = activeSpectrum;

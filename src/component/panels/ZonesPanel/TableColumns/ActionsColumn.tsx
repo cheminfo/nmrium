@@ -78,18 +78,22 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
     const xMargin = Math.abs(rowData.x.from - rowData.x.to) * 10;
     dispatch({
       type: SET_X_DOMAIN,
-      xDomain:
-        rowData.x.from <= rowData.x.to
-          ? [rowData.x.from - xMargin, rowData.x.to + xMargin]
-          : [rowData.x.to - xMargin, rowData.x.from + xMargin],
+      payload: {
+        xDomain:
+          rowData.x.from <= rowData.x.to
+            ? [rowData.x.from - xMargin, rowData.x.to + xMargin]
+            : [rowData.x.to - xMargin, rowData.x.from + xMargin],
+      },
     });
     const yMargin = Math.abs(rowData.y.from - rowData.y.to) * 10;
     dispatch({
       type: SET_Y_DOMAIN,
-      yDomain:
-        rowData.y.from <= rowData.y.to
-          ? [rowData.y.from - yMargin, rowData.y.to + yMargin]
-          : [rowData.y.to - yMargin, rowData.y.from + yMargin],
+      payload: {
+        yDomain:
+          rowData.y.from <= rowData.y.to
+            ? [rowData.y.from - yMargin, rowData.y.to + yMargin]
+            : [rowData.y.to - yMargin, rowData.y.from + yMargin],
+      },
     });
   }, [dispatch, rowData.x.from, rowData.x.to, rowData.y.from, rowData.y.to]);
 

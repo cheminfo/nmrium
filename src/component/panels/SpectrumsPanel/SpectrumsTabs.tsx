@@ -45,7 +45,7 @@ function SpectrumsTabsInner({
   }, [data]);
 
   function onTabChangeHandler(tab) {
-    dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
+    dispatch({ type: SET_ACTIVE_TAB, payload: { tab: tab.tabid } });
   }
 
   const openSettingHandler = useCallback((event, selectedSpectrum) => {

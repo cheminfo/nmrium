@@ -6,7 +6,7 @@ import { useToggleAccordion } from 'react-science/ui';
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
-import { ZoomType } from '../reducer/helper/Zoom1DManager';
+import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   FULL_ZOOM_OUT,
@@ -54,7 +54,7 @@ export default function useToolsFunctions() {
     if (debounceClickEventsRef.current.clicks.length === 0) {
       dispatch({
         type: FULL_ZOOM_OUT,
-        zoomType: ZoomType.HORIZONTAL,
+        payload: { zoomType: ZOOM_TYPES.HORIZONTAL },
       });
     }
     const callback = lodashDebounce(() => {
@@ -84,7 +84,6 @@ export default function useToolsFunctions() {
   const changeSpectrumViewHandler = useCallback(() => {
     dispatch({
       type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
-      isRealSpectrumVisible: !isRealSpectrumShown,
     });
     setIsRealSpectrumShown(!isRealSpectrumShown);
   }, [dispatch, isRealSpectrumShown]);

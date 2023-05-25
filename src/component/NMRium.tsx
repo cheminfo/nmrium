@@ -285,14 +285,17 @@ function InnerNMRium({
   );
 
   useEffect(() => {
-    dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatchMiddleWare({
+      type: SET_LOADING_FLAG,
+      payload: { isLoading: true },
+    });
     if (dataProp) {
       void readNMRiumObject(dataProp)
         .then((nmriumObject) => {
           dispatchMiddleWare({ type: INITIATE, payload: nmriumObject });
         })
         .catch((error) => {
-          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          dispatch({ type: SET_LOADING_FLAG, payload: { isLoading: false } });
           // eslint-disable-next-line no-alert
           alert(error.message);
           reportError(error);

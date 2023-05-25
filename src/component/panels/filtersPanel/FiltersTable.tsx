@@ -64,7 +64,7 @@ function FiltersTableInner({
           `${checked ? 'Enable' : 'Disable'} filter in progress`,
         );
         setTimeout(() => {
-          dispatch({ type: ENABLE_FILTER, id, checked });
+          dispatch({ type: ENABLE_FILTER, payload: { id, checked } });
           hideLoading();
         }, 0);
       })();

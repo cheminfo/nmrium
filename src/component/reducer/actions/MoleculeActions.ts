@@ -13,7 +13,8 @@ import { handleUnlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { handleUnlinkZone } from './ZonesActions';
 
-function addMoleculeHandler(draft: Draft<State>, molfile) {
+function addMoleculeHandler(draft: Draft<State>, action) {
+  const { molfile } = action.payload;
   const isEmpty = draft.molecules.length === 0;
   MoleculeManager.addMolfile(draft.molecules, molfile);
 

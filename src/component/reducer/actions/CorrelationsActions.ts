@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { original, Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import {
@@ -44,32 +45,28 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
     });
   }
 }
-
-function handleSetTolerance(
-  draft: Draft<State>,
-  payload: { tolerance: Tolerance },
-) {
+// Todo define interface
+// { tolerance: Tolerance }
+function handleSetTolerance(draft: Draft<State>, action) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
-  const { tolerance } = payload;
+  const { tolerance } = action.payload;
   draft.correlations = buildCorrelationData(spectra, {
     ...correlations.options,
     tolerance,
     values: lodashCloneDeep(correlations.values),
   });
 }
-
-function handleSetCorrelation(
-  draft: Draft<State>,
-  payload: {
-    id: string;
-    correlation: Correlation;
-    options: CorrelationOptions;
-  },
-) {
+// Todo define interface
+// {
+//   id: string;
+//   correlation: Correlation;
+//   options: CorrelationOptions;
+// }
+function handleSetCorrelation(draft: Draft<State>, action) {
   const state = original(draft) as State;
   const { correlations } = state;
-  const { id, correlation, options } = payload;
+  const { id, correlation, options } = action.payload;
   draft.correlations = setCorrelation(correlations, id, correlation);
   if (options) {
     draft.correlations = {
@@ -80,14 +77,14 @@ function handleSetCorrelation(
   handleUpdateCorrelations(draft);
 }
 
-function handleSetCorrelations(
-  draft: Draft<State>,
-  payload: {
-    correlations: CorrelationValues;
-    options: CorrelationOptions;
-  },
-) {
-  const { correlations, options } = payload;
+// Todo define interface
+// {
+//   correlations: CorrelationValues;
+//   options: CorrelationOptions;
+// }
+
+function handleSetCorrelations(draft: Draft<State>, action) {
+  const { correlations, options } = action.payload;
   const state = original(draft) as State;
   let correlationsData = lodashCloneDeep(state.correlations);
   for (const correlation of correlations) {
@@ -107,11 +104,10 @@ function handleSetCorrelations(
   handleUpdateCorrelations(draft);
 }
 
-function handleDeleteCorrelation(
-  draft: Draft<State>,
-  payload: { correlation: Correlation; assignmentData },
-) {
-  const { correlation, assignmentData } = payload;
+// Todo define interface
+// { correlation: Correlation; assignmentData }
+function handleDeleteCorrelation(draft: Draft<State>, action) {
+  const { correlation, assignmentData } = action.payload;
   // delete all signals linked to the correlation
   for (const link of correlation.links) {
     const spectrum = findSpectrum(draft.data, link.experimentID, false);

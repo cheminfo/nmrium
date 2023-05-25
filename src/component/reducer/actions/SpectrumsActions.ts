@@ -258,7 +258,8 @@ function handleChangeActiveSpectrum(
   }
 }
 
-function changeSpectrumSetting(draft: Draft<State>, { id, display }) {
+function changeSpectrumSetting(draft: Draft<State>, action) {
+  const { id, display } = action.payload;
   const index = draft.data.findIndex((d) => d.id === id);
   if (index !== -1) {
     const spectrum = draft.data[index];
@@ -311,12 +312,13 @@ function removeActiveSpectra(
 
 function handleDeleteSpectra(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  if (action.id) {
-    const index = state.data.findIndex((d) => d.id === action.id);
+  const { id: spectraId } = action?.payload || {};
+  if (spectraId) {
+    const index = state.data.findIndex((d) => d.id === spectraId);
     draft.data.splice(index, 1);
     // remove peaks State
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete draft.view.peaks[action.id];
+    delete draft.view.peaks[spectraId];
   } else {
     // remove spectra and it related data in the view object
     removeActiveSpectra(draft, [
@@ -333,7 +335,7 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
 }
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
-  const { nucleus } = action;
+  const { nucleus } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
 

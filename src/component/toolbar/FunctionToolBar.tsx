@@ -55,9 +55,8 @@ function FunctionToolBarInner({
   const handleOnFFTFilter = useCallback(() => {
     dispatch({
       type: APPLY_FFT_FILTER,
-      value: '',
     });
-    dispatch({ type: SET_SELECTED_FILTER, selectedFilter: null });
+    dispatch({ type: SET_SELECTED_FILTER, payload: { selectedFilter: null } });
   }, [dispatch]);
 
   return (

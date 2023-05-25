@@ -79,7 +79,10 @@ function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
 
   const submitHandler = useCallback(
     (values) => {
-      dispatch({ type: CHANGE_SPECTRUM_SETTING, id, display: values });
+      dispatch({
+        type: CHANGE_SPECTRUM_SETTING,
+        payload: { id, display: values },
+      });
     },
     [dispatch, id],
   );

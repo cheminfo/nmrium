@@ -82,7 +82,7 @@ function PeakAnnotation({
   const dispatch = useDispatch();
 
   const handleOnPeakChange = useCallback(
-    (e) => dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue }),
+    (e) => dispatch({ type: SHIFT_SPECTRUM, payload: { shift: e.shiftValue } }),
     [dispatch],
   );
 

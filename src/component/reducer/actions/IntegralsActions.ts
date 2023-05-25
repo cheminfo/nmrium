@@ -18,7 +18,8 @@ import getRange from '../helper/getRange';
 
 import { setIntegralsYDomain } from './DomainActions';
 
-function handleChangeIntegralSum(draft: Draft<State>, options) {
+function handleChangeIntegralSum(draft: Draft<State>, action) {
+  const { options } = action.payload;
   const {
     data,
     view: {
@@ -37,7 +38,7 @@ function handleChangeIntegralSum(draft: Draft<State>, options) {
 }
 
 function addIntegral(draft: Draft<State>, action) {
-  const { startX, endX } = action;
+  const { startX, endX } = action.payload;
   const {
     data,
     molecules,
@@ -81,7 +82,7 @@ function deleteIntegral(draft: Draft<State>, action) {
   if (activeSpectrum) {
     const state = original(draft) as State;
     const { index } = activeSpectrum;
-    const { integralID } = action;
+    const { integralID } = action.payload;
 
     const datum = draft.data[index] as Spectrum1D;
 

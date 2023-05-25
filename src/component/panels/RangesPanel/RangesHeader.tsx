@@ -80,8 +80,8 @@ function RangesHeader({
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const changeRangesSumHandler = useCallback(
-    (value) => {
-      dispatch({ type: CHANGE_RANGE_SUM, value });
+    (options) => {
+      dispatch({ type: CHANGE_RANGE_SUM, payload: { options } });
       modal.close();
     },
     [dispatch, modal],

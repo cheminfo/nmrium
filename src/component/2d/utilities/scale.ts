@@ -1,6 +1,6 @@
 import { scaleLinear } from 'd3';
 
-import { LAYOUT } from './DimensionLayout';
+import { LAYOUT, Layout } from './DimensionLayout';
 
 function get2DXScale(
   props: {
@@ -46,8 +46,8 @@ interface LeftLayout {
   yDomain: Array<number>;
 }
 
-function get1DXScale(props: TopLayout | LeftLayout, layout: string) {
-  if (![LAYOUT.TOP_1D, LAYOUT.LEFT_1D].includes(layout)) {
+function get1DXScale(props: TopLayout | LeftLayout, layout: Layout) {
+  if (!['TOP_1D', 'LEFT_1D'].includes(layout)) {
     throw new Error(
       `layout is required and must be ${LAYOUT.TOP_1D} or ${LAYOUT.LEFT_1D}  `,
     );

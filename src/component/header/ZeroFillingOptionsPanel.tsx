@@ -13,9 +13,7 @@ import useSpectrum from '../hooks/useSpectrum';
 import {
   APPLY_ZERO_FILLING_FILTER,
   CALCULATE_ZERO_FILLING_FILTER,
-  RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
-import { options } from '../toolbar/ToolTypes';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -49,7 +47,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   function handleCancelFilter() {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   }
 
@@ -77,12 +75,6 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
   function checkChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     const checked = event.target.checked;
     setLivePreview(checked);
-    if (!checked) {
-      //disable filter Live preview
-      dispatch({
-        payload: { selectedTool: options.zeroFilling.id },
-      });
-    }
   }
 
   return (

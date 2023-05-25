@@ -56,7 +56,7 @@ function MoleculeStructureEditorModal(
       });
       onClose('replace');
     } else {
-      dispatch({ type: ADD_MOLECULE, molfile });
+      dispatch({ type: ADD_MOLECULE, payload: { molfile } });
       onClose('new');
     }
   }, [dispatch, selectedMolecule, molfile, onClose]);
