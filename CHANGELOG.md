@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.37.0](https://github.com/cheminfo/nmrium/compare/v0.36.0...v0.37.0) (2023-05-26)
+
+
+### Features
+
+* add onError callback to support errors caught by the boundary ([32eea35](https://github.com/cheminfo/nmrium/commit/32eea353b6422a1085ee91425c6fec770f48de54))
+* improve 2d assignments ([#2357](https://github.com/cheminfo/nmrium/issues/2357)) ([ff99d1e](https://github.com/cheminfo/nmrium/commit/ff99d1e0f9bc897991c09aa29f459720863c115c))
+* improve floating structure initial position ([#2378](https://github.com/cheminfo/nmrium/issues/2378)) ([6312cf9](https://github.com/cheminfo/nmrium/commit/6312cf9eb68fd808d21bba2df70c47f8bdb8f3a7))
+* show information about the Spectra prediction ([#2372](https://github.com/cheminfo/nmrium/issues/2372)) ([6ecd8ab](https://github.com/cheminfo/nmrium/commit/6ecd8ab0108e3f807e9fb4f0007de9e6113dc016)), closes [#2367](https://github.com/cheminfo/nmrium/issues/2367)
+
+
+### Bug Fixes
+
+* processing spectra on load ([#2365](https://github.com/cheminfo/nmrium/issues/2365)) ([15c22b7](https://github.com/cheminfo/nmrium/commit/15c22b739a80bf574a9f0427022e102345c1667b))
+
 ## [0.36.0](https://github.com/cheminfo/nmrium/compare/v0.35.0...v0.36.0) (2023-05-18)
 
 
