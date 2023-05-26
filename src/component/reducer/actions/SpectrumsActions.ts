@@ -399,7 +399,7 @@ function importSpectraMetaInfo(draft: Draft<State>, action) {
   const metaSpectra = action.payload.spectraMeta;
   for (const spectrum of data) {
     if (metaSpectra[spectrum.id]) {
-      spectrum.metaInfo = metaSpectra[spectrum.id];
+      spectrum.customInfo = metaSpectra[spectrum.id];
     }
   }
 }
