@@ -16,7 +16,10 @@ import {
   useImperativeHandle,
   ForwardedRef,
 } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import {
+  ErrorBoundary,
+  ErrorBoundaryPropsWithComponent,
+} from 'react-error-boundary';
 import { RootLayout, useOnOff } from 'react-science/ui';
 import { useFullscreen } from 'react-use';
 
@@ -130,6 +133,7 @@ export type OnNMRiumChange = (
 export interface NMRiumProps {
   data?: NMRiumData;
   onChange?: OnNMRiumChange;
+  onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
@@ -161,15 +165,23 @@ export interface NMRiumRef {
   getSpectraViewerAsBlob: () => BlobObject | null;
 }
 
-const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
+const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
+  props: NMRiumProps,
+  ref,
+) {
+  const { onError, ...otherProps } = props;
   return (
     <RootLayout style={{ width: '100%' }}>
-      <ErrorBoundary FallbackComponent={ErrorOverlay}>
-        <InnerNMRium {...props} innerRef={ref} />
+      <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
+        <InnerNMRium {...otherProps} innerRef={ref} />
       </ErrorBoundary>
     </RootLayout>
   );
 });
+
+type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
+  innerRef: ForwardedRef<NMRiumRef>;
+};
 
 function InnerNMRium({
   data: dataProp = defaultData,
@@ -180,7 +192,7 @@ function InnerNMRium({
   onChange,
   emptyText,
   innerRef,
-}: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
+}: InnerNMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
