@@ -21,7 +21,8 @@
           "color": "#C10020"
         },
         "customInfo": {
-          "values": [{"key": "solvent", "value": "DMSO-d6"}, {"key": "temperature", "value": "298.15 K"}]
+          "solvent": "DMSO-d6",
+          "temperature": "298.15 K"
         },
         "peaks": {
           "values": [],
@@ -46,8 +47,7 @@
           "files": [
             "data/cytisine/1H_Cytisin_600MHz-R+I.dx"
           ]
-        },
-        "customInfo": {}
+        }
       }
     ],
     "molecules": [
