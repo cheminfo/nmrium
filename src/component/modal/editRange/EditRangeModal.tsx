@@ -146,14 +146,14 @@ function EditRangeModal({
             multiplicity,
             coupling: '',
           };
-          if (hasCouplingConstant(multiplicity) && signal?.js) {
+          if (hasCouplingConstant(multiplicity) && signal?.js.length > 0) {
             js = { ...signal.js[counterJ] } as Coupling;
             js.coupling = Number(
               formatNumber(js.coupling, rangesPreferences.coupling.format),
             );
             counterJ++;
           }
-          js.multiplicity = translateMultiplet(js.multiplicity || '');
+          js.multiplicity = translateMultiplet(js.multiplicity || multiplicity);
           couplings.push(js);
         }
       }
