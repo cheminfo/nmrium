@@ -6,7 +6,7 @@ import * as Filters from './Filters';
 import { cloneDatum1D } from './data1d/Spectrum1D/cloneDatum1D';
 import { updateIntegrals } from './data1d/Spectrum1D/integrals/updateIntegrals';
 import { updatePeaks } from './data1d/Spectrum1D/peaks/updatePeaks';
-import { updateRanges } from './data1d/Spectrum1D/ranges/updateRanges';
+import { updateRanges } from 'nmr-processing';
 import { cloneDatum2D } from './data2d/Spectrum2D/cloneDatum2D';
 import { updateZones } from './data2d/Spectrum2D/zones/updateZones';
 

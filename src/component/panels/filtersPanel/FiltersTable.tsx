@@ -2,7 +2,7 @@ import { useMemo, useCallback, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
-import { Filter } from '../../../data/FiltersManager';
+import type { Filter } from 'nmr-processing';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';

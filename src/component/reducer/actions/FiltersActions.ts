@@ -2,8 +2,8 @@ import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
 import { Spectrum, Spectrum1D } from 'nmr-load-save';
 
-import * as Filters from '../../../data/Filters';
-import * as FiltersManager from '../../../data/FiltersManager';
+import { Filters, FiltersManager } from 'nmr-processing';
+
 import {
   apply as apodization,
   defaultApodizationOptions,

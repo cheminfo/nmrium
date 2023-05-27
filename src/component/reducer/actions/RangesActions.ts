@@ -4,8 +4,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 
-import * as Filters from '../../../data/Filters';
-import * as FiltersManager from '../../../data/FiltersManager';
+import { FiltersManager, Filters } from 'nmr-processing';
 import {
   DatumKind,
   SignalKindsToInclude,

@@ -1,9 +1,9 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Integral, Spectrum1D } from 'nmr-load-save';
+import type { Integral, Spectrum1D } from 'nmr-processing';
 
 import { ShiftTarget } from '../../../types/common/MapOptions';
-import { getShiftX } from '../getShiftX';
+import { getShiftX } from 'nmr-processing';
 
 function getRange(integral: Integral, shiftTarget: ShiftTarget, shift: number) {
   const { originFrom, originTo, from, to } = integral;

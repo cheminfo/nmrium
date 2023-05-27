@@ -1,9 +1,8 @@
 import { v4 } from '@lukeed/uuid';
-import { Peak1D, Spectrum1D } from 'nmr-load-save';
+import type { Peak1D, Spectrum1D } from 'nmr-processing';
 
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';
-import { getShiftX } from '../getShiftX';
-import { getSpectrumErrorValue } from '../getSpectrumErrorValue';
+import { getSpectrumErrorValue, getShiftX } from 'nmr-processing';
 
 function isExists(peak: Peak1D, spectrum: Spectrum1D, error) {
   // check if the Peak is already exists
