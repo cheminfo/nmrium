@@ -1,5 +1,5 @@
 import equallySpaced from 'ml-array-xy-equally-spaced';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 export const id = 'equallySpaced';
 export const name = 'Equally spaced';

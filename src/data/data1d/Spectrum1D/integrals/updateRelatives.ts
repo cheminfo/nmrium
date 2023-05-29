@@ -1,4 +1,4 @@
-import { Integral, Range, Integrals, Ranges } from 'nmr-load-save';
+import type { Integral, Range, Integrals, Ranges } from 'nmr-processing';
 
 import { getSum } from '../../../utilities/getSum';
 

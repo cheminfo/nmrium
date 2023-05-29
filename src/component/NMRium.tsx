@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
+import { WebSource as Source } from 'filelist-utils';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, Source, NmriumState, Spectrum } from 'nmr-load-save';
+import { readNMRiumObject, NmriumState } from 'nmr-load-save';
+import { Spectrum } from 'nmr-processing';
 import {
   useEffect,
   useCallback,

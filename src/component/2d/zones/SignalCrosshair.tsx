@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Signal2D } from 'nmr-load-save';
+import type { Signal2D } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';

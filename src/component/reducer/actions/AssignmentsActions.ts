@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { Range, Spectrum1D, Spectrum2D, Zone } from 'nmr-load-save';
+import type { Range, Spectrum1D, Spectrum2D, Zone } from 'nmr-processing';
 import { SpectraData1D, SpectraData2D } from 'nmr-processing';
 
 import { State } from '../Reducer';

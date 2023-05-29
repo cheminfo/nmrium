@@ -1,5 +1,5 @@
 import { xySetYValue, zonesNormalize } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 

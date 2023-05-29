@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-processing';
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
@@ -32,7 +32,7 @@ import { SpectrumName } from './base/SpectrumName';
 
 function formatValueAsHTML(value) {
   if (value) {
-    value = value.replace(/(?<value>\d+)/g, '<sub>$<value></sub>');
+    value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
   }
   return value;
 }

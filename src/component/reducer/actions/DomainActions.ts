@@ -1,6 +1,7 @@
+import type { Data2DFt, Data2DFid } from 'cheminfo-types';
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D, Data2DFt, Data2DFid } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmr-processing';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
@@ -47,7 +48,7 @@ function getDomain(draft: Draft<State>) {
       const { y } = get1DDataXY(d);
 
       const _extent = extent(y) as Array<number>;
-      const domain = [data.x[0], data.x[data.x.length - 1]];
+      const domain = [data.x[0], data.x.at(-1)];
 
       yDomains[id] = _extent;
       xDomains[id] = domain;
@@ -139,7 +140,7 @@ function get2DDomain(state: State) {
   try {
     for (const d of filteredData) {
       const { x, re } = d.data;
-      const domain = [x[0], x[x.length - 1]];
+      const domain = [x[0], x.at(-1)];
       xDomains[d.id] = domain;
       const _extent = extent(re);
       yDomains[d.id] = _extent;

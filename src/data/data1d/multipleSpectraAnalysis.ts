@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import type { Spectrum, Spectrum1D } from 'nmr-processing';
 
 import {
   JpathTableColumn,

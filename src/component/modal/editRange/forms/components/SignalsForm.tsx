@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import { Range } from 'nmr-load-save';
+import { Range } from 'nmr-processing';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 

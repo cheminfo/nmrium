@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 import {
   updateIntegralsRelativeValues,

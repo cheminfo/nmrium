@@ -1,5 +1,6 @@
+import { Data2DFid, Data2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
-import { Spectrum2D, Data2DFid, Data2DFt } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-processing';
 
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
 

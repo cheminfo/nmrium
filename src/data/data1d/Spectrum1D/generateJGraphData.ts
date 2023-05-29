@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { Range, Signal1D } from 'nmr-load-save';
+import type { Range, Signal1D } from 'nmr-processing';
 import { Jcoupling } from 'nmr-processing';
 
 /**

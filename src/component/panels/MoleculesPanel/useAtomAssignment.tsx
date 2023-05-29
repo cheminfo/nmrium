@@ -1,4 +1,4 @@
-import { Range, Zone } from 'nmr-load-save';
+import { Range, Zone } from 'nmr-processing';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation';

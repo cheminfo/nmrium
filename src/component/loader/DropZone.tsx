@@ -80,7 +80,7 @@ function DropZone(props) {
           fileCollection,
           {
             sourceSelector,
-            logger: logger.child({ context: 'nmr-load-save' }),
+            logger: logger.child({ context: 'nmr-processing' }),
           },
         );
 

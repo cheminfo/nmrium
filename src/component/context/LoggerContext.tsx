@@ -56,7 +56,7 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
 
   const markAsRead = useCallback(() => {
     if (logsHistory.length > 0) {
-      const id = logsHistory[logsHistory.length - 1].id;
+      const id = logsHistory.at(-1).id;
       setLastLogId(id);
     }
   }, [logsHistory]);

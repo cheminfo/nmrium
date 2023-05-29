@@ -1,5 +1,5 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 import { useCallback, useEffect, useReducer, ReactNode } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 

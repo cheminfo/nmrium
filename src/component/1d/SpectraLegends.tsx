@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import type { Spectrum, Spectrum1D } from 'nmr-processing';
 import { CSSProperties, useContext } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';

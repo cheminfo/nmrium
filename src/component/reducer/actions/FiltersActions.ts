@@ -1,7 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
-
+import type { Spectrum, Spectrum1D } from 'nmr-processing';
 import { Filters, FiltersManager } from 'nmr-processing';
 
 import {
@@ -142,7 +141,7 @@ function calculateZeroFillingFilter(draft: Draft<State>, action) {
     datum.data.x = newX;
     datum.data.im = newIm;
     datum.data.re = newRe;
-    draft.xDomain = [newX[0], newX[newX.length - 1]];
+    draft.xDomain = [newX[0], newX.at(-1)];
   }
 }
 function applyFFTFilter(draft: Draft<State>) {
@@ -413,7 +412,6 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
 
 function getFilterUpdateDomainRules(filterName: string) {
   return (
-    // eslint-disable-next-line import/namespace
     Filters[filterName]?.DOMAIN_UPDATE_RULES || {
       updateXDomain: false,
       updateYDomain: false,

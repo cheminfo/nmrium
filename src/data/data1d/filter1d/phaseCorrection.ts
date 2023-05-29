@@ -4,7 +4,7 @@ import {
   reimAutoPhaseCorrection,
   DataReIm,
 } from 'ml-spectra-processing';
-import { Data1D, Spectrum1D } from 'nmr-load-save';
+import type { Data1D, Spectrum1D } from 'nmr-processing';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 

@@ -1,16 +1,10 @@
+import { Data2DFid, Data2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
 import lodashSet from 'lodash/set';
-import {
-  Spectrum1D,
-  Spectrum2D,
-  Data2DFid,
-  Data2DFt,
-  Spectrum,
-} from 'nmr-load-save';
+import { Filters, Spectrum, Spectrum1D, Spectrum2D } from 'nmr-processing';
 
-import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
 import {
   generateSpectrumFromPublicationString,

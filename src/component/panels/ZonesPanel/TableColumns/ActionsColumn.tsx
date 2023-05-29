@@ -1,4 +1,4 @@
-import { Zone } from 'nmr-load-save';
+import type { Zone } from 'nmr-processing';
 import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 

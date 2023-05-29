@@ -1,4 +1,4 @@
-import { Range, Zone } from 'nmr-load-save';
+import { Range, Zone } from 'nmr-processing';
 
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 
@@ -16,7 +16,7 @@ export interface AtomData {
 
 function getElements(activeTab: string) {
   const nuclei = activeTab.split(',');
-  return nuclei.map((nucleus) => nucleus.replace(/\d/g, ''));
+  return nuclei.map((nucleus) => nucleus.replaceAll(/\d/g, ''));
 }
 
 /**

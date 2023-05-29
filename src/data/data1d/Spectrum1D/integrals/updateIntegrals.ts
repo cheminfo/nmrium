@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 import { mapIntegrals } from './mapIntegrals';
 import { updateIntegralsRelativeValues } from './updateIntegralsRelativeValues';

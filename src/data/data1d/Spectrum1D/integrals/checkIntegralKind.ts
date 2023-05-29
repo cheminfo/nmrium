@@ -1,4 +1,4 @@
-import { Integral } from 'nmr-load-save';
+import type { Integral } from 'nmr-processing';
 
 import { SignalKindsToInclude } from '../../../constants/SignalsKinds';
 

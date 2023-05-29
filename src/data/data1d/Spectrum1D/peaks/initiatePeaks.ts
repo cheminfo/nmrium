@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Spectrum1D, Peaks } from 'nmr-load-save';
+import type { Spectrum1D, Peaks } from 'nmr-processing';
 
 import { mapPeaks } from './mapPeaks';
 

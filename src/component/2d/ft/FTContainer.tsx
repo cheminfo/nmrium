@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 import useSpectrum from '../../hooks/useSpectrum';
 import Left1DChart from '../1d-tracer/Left1DChart';

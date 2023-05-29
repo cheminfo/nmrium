@@ -1,4 +1,4 @@
-import { Data1D, Data2D } from 'nmr-load-save';
+import { Data1D, Data2D } from 'nmr-processing';
 
 import { ActionType } from '../reducer/types/Types';
 

@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
-import { Spectrum1D, Info1D, Integrals } from 'nmr-load-save';
+import { Spectrum1D, Info1D, Integrals } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
 

@@ -89,10 +89,10 @@ function getKey(filePath = '') {
     const parentPath = match[1].split('/');
     parentFolderName =
       parentPath.length > 2
-        ? parentPath[parentPath.length - 2] + parentPath[parentPath.length - 1]
-        : parentPath[parentPath.length - 1];
+        ? parentPath.at(-2) + parentPath.at(-1)
+        : parentPath.at(-1);
   }
-  return parentFolderName + filePath.replace(/[\s./]/g, '');
+  return parentFolderName + filePath.replaceAll(/[\s./]/g, '');
 }
 
 export { buildMenu, getKey, mapTreeToFlatArray };

@@ -1,9 +1,12 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum1D } from 'nmr-load-save';
+import {
+  BaseFilter,
+  Filters,
+  FiltersManager,
+  Spectrum1D,
+} from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
-import * as Filters from '../../Filters';
-import * as FiltersManager from '../../FiltersManager';
 
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
 import { get1DColor } from './get1DColor';
@@ -70,7 +73,7 @@ export function initiateDatum1D(
   return spectrumObj as Spectrum1D;
 }
 
-function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
+function preprocessing(datum, onLoadFilters: BaseFilter[] = []) {
   if (datum.info.isFid) {
     if (onLoadFilters?.length === 0) {
       FiltersManager.applyFilter(datum, [
@@ -81,7 +84,7 @@ function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
         },
       ]);
     } else {
-      const filters: FiltersManager.BaseFilter[] = [];
+      const filters: BaseFilter[] = [];
 
       for (let filter of onLoadFilters) {
         if (

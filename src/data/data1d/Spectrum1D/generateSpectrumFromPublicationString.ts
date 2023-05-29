@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 import { resurrect } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';

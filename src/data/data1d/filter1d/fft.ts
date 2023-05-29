@@ -4,8 +4,7 @@ import {
   reimPhaseCorrection,
   xMean,
 } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { Data1D } from 'nmr-load-save/lib/types/Data1D';
+import type { Spectrum1D, Data1D } from 'nmr-processing';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 

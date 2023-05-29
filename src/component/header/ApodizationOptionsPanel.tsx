@@ -1,8 +1,8 @@
 import { Formik, FormikProps } from 'formik';
+import { Filters } from 'nmr-processing';
 import { useRef, memo } from 'react';
 import * as Yup from 'yup';
 
-import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
 import { defaultApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { useDispatch } from '../context/DispatchContext';

@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 import { State } from '../Reducer';
 

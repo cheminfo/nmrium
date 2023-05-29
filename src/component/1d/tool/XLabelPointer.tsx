@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 import { useContext, useCallback, useMemo, CSSProperties } from 'react';
 
 import { BrushContext } from '../../EventsTrackers/BrushTracker';

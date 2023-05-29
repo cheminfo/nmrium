@@ -1,5 +1,6 @@
+import { Data2DFt } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
-import { Data1D, Data2DFt } from 'nmr-load-save';
+import { Data1D } from 'nmr-processing';
 
 import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot';
 
@@ -27,7 +28,7 @@ function getLine(value, data, options) {
   const { log10, abs } = Math;
   const { yLogBase } = options;
   const first = data.length > 0 ? data[0].x : 0;
-  const last = data.length > 0 ? data[data.length - 1].x : 0;
+  const last = data.length > 0 ? data.at(-1).x : 0;
   const inLogScale = log10(abs(value)) / log10(yLogBase);
   return [
     { x: first, y: inLogScale },

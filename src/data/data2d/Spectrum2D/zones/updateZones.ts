@@ -1,4 +1,4 @@
-import { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-processing';
 
 import { mapZones } from './mapZones';
 

@@ -1,4 +1,4 @@
-import { Display1D, Display2D } from 'nmr-load-save';
+import { Display1D, Display2D } from 'nmr-processing';
 import { CSSProperties, memo } from 'react';
 
 const buttonStyle: CSSProperties = {

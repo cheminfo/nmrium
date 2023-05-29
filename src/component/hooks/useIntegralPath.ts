@@ -1,6 +1,6 @@
 import { ScaleLinear } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
-import { Data1D } from 'nmr-load-save';
+import { Data1D } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { getIntegralYScale } from '../1d/utilities/scale';

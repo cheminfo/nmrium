@@ -1,5 +1,5 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
-import { Spectrum, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum, Spectrum2D } from 'nmr-processing';
 import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,

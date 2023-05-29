@@ -1,4 +1,4 @@
-import { Integral, Spectrum1D } from 'nmr-load-save';
+import type { Integral, Spectrum1D } from 'nmr-processing';
 
 import { checkIntegralKind } from './checkIntegralKind';
 import { updateRelatives } from './updateRelatives';

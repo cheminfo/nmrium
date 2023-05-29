@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Signal1D } from 'nmr-load-save';
+import { Signal1D } from 'nmr-processing';
 
 import {
   getMultiplicityNumber,

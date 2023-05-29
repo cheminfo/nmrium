@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Info1D } from 'nmr-load-save';
+import { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
 import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';

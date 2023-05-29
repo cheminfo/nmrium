@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum2D, Zone, Signal2D } from 'nmr-load-save';
+import type { Spectrum2D, Zone, Signal2D } from 'nmr-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';

@@ -9,7 +9,7 @@ import {
   Spectrum,
   Values as CorrelationValues,
 } from 'nmr-correlation';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmr-processing';
 
 import {
   findRange,

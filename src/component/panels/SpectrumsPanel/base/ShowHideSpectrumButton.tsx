@@ -1,4 +1,4 @@
-import { Display1D, Display2D, Spectrum } from 'nmr-load-save';
+import { Display1D, Display2D, Spectrum } from 'nmr-processing';
 import { CSSProperties } from 'react';
 import { FaEye } from 'react-icons/fa';
 

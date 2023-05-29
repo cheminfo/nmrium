@@ -1,4 +1,4 @@
-import { Info1D, Info2D, Data1D, Data2D } from 'nmr-load-save';
+import { Info1D, Info2D, Data1D, Data2D } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';

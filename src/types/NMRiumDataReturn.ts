@@ -1,5 +1,5 @@
 import { CorrelationData } from 'nmr-correlation';
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-processing';
 
 import { ViewState } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';

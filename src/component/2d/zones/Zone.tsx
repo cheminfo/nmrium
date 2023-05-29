@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Zone as ZoneType } from 'nmr-load-save';
+import { Zone as ZoneType } from 'nmr-processing';
 import { useState, useEffect } from 'react';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';

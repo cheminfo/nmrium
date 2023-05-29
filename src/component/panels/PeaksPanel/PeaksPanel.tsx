@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { SvgNmrFt, SvgNmrPeaks } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
-import { Spectrum1D, Info1D, Peak1D, Peaks } from 'nmr-load-save';
+import { Spectrum1D, Info1D, Peak1D, Peaks } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
 

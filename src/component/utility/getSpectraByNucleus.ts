@@ -1,4 +1,4 @@
-import { Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-processing';
 
 import nucleusToString from './nucleusToString';
 

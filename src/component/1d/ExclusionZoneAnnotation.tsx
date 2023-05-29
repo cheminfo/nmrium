@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
-import * as Filters from '../../data/Filters';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useScaleChecked } from '../context/ScaleContext';
 import { HighlightEventSource, useHighlight } from '../highlight';

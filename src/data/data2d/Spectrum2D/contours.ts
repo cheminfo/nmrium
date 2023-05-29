@@ -1,5 +1,6 @@
+import { Data2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { Data2DFt, Spectrum2D } from 'nmr-load-save';
+import type { Spectrum2D } from 'nmr-processing';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 

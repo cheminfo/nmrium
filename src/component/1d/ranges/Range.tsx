@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Range as RangeType } from 'nmr-load-save';
+import { Range as RangeType } from 'nmr-processing';
 
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';

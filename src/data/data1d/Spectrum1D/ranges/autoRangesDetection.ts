@@ -1,4 +1,4 @@
-import { Range, Spectrum1D } from 'nmr-load-save';
+import type { Range, Spectrum1D } from 'nmr-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
 const defaultPeakPickingOptions = {

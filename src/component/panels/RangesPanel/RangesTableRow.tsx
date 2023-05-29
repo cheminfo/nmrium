@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import { Info1D } from 'nmr-load-save';
+import { Info1D } from 'nmr-processing';
 import { useMemo, useCallback, MouseEvent, CSSProperties } from 'react';
 import { DropdownMenu } from 'react-science/ui';
 

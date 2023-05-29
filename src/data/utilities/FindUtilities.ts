@@ -1,4 +1,4 @@
-import {
+import type {
   Range,
   Signal1D,
   Signal2D,
@@ -6,7 +6,7 @@ import {
   Spectrum1D,
   Spectrum2D,
   Zone,
-} from 'nmr-load-save';
+} from 'nmr-processing';
 
 function findSpectrum(
   spectraData: Spectrum[],

@@ -111,7 +111,7 @@ export default function Test(props) {
   useEffect(() => {
     if (file) {
       void loadData(file).then((d) => {
-        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
+        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });
     } else {

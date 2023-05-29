@@ -1,4 +1,4 @@
-import { Data1D } from 'nmr-load-save';
+import { Data1D } from 'nmr-processing';
 
 function convert(value: Float64Array | number[] = []): Float64Array {
   return !ArrayBuffer.isView(value) && value ? Float64Array.from(value) : value;

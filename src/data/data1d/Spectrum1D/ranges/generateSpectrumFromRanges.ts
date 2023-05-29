@@ -1,4 +1,4 @@
-import { Range, Spectrum1D } from 'nmr-load-save';
+import type { Range, Spectrum1D } from 'nmr-processing';
 import { rangesToXY } from 'nmr-processing';
 
 import { UsedColors } from '../../../../types/UsedColors';

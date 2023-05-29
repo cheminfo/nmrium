@@ -2,9 +2,9 @@ import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-
+import type { Spectrum1D } from 'nmr-processing';
 import { FiltersManager, Filters } from 'nmr-processing';
+
 import {
   DatumKind,
   SignalKindsToInclude,

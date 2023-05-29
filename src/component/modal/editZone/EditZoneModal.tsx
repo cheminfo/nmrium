@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { FromTo } from 'cheminfo-types';
 import { Formik } from 'formik';
-import { Signal2D } from 'nmr-load-save';
+import type { Signal2D } from 'nmr-processing';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 

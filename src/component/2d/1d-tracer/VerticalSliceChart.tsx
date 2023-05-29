@@ -45,7 +45,7 @@ function VerticalSliceChart({
       const pathBuilder = new PathBuilder();
 
       pathBuilder.moveTo(
-        scaleY(pathPoints.y[pathPoints.y.length - 1]),
+        scaleY(pathPoints.y.at(-1)),
         scaleX(pathPoints.x.length - 1),
       );
 

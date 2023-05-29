@@ -1,6 +1,6 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 
-import * as Filters from '../../data/Filters';
 import {
   apodizationFilter,
   defaultApodizationOptions,

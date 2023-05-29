@@ -1,7 +1,7 @@
 import airPLS from 'ml-airpls';
 import equallySpaced from 'ml-array-xy-equally-spaced';
 import baselineRegression from 'ml-baseline-correction-regression';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 
 import { FilterDomainUpdateRules } from '../../FiltersManager';
 

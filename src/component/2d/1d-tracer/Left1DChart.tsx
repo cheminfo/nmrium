@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
@@ -41,7 +41,7 @@ function Left1DChart({
       const pathBuilder = new PathBuilder();
 
       pathBuilder.moveTo(
-        scaleY(pathPoints.y[pathPoints.y.length - 1]),
+        scaleY(pathPoints.y.at(-1)),
         scaleX(pathPoints.x.length - 1),
       );
 

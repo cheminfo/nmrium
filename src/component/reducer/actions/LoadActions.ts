@@ -1,8 +1,9 @@
+import { WebSource as Source } from 'filelist-utils';
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Source, Spectrum } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-processing';
 import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';

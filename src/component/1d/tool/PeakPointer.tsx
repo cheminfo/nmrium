@@ -1,5 +1,5 @@
 import max from 'ml-array-max';
-import { Spectrum1D } from 'nmr-load-save';
+import type { Spectrum1D } from 'nmr-processing';
 import { useContext, useEffect, useState } from 'react';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';

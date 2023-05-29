@@ -11,7 +11,7 @@ import {
   Correlation,
   Link,
 } from 'nmr-correlation';
-import { Spectrum2D, Spectrum } from 'nmr-load-save';
+import type { Spectrum2D, Spectrum } from 'nmr-processing';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
 import {
@@ -441,7 +441,7 @@ function convertValuesString(
 ): number[] {
   valuesString = valuesString
     .toLowerCase()
-    .replace(/\s+/g, '')
+    .replaceAll(/\s+/g, '')
     .split(',')
     .map((token) => (token === 'sp' ? 'sp1' : token))
     .join(',');
