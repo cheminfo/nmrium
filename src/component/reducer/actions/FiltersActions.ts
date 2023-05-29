@@ -1,20 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import { Spectrum, Spectrum1D, Filters, FiltersManager, BaselineCorrectionOptions, ApodizationOptions } from 'nmr-processing';
 
-import * as Filters from '../../../data/Filters';
-import * as FiltersManager from '../../../data/FiltersManager';
-import {
-  apply as apodization,
-  ApodizationOptions,
-  defaultApodizationOptions,
-} from '../../../data/data1d/filter1d/apodization';
-import {
-  apply as baselineCorrection,
-  BaselineCorrectionOptions,
-} from '../../../data/data1d/filter1d/baselineCorrection';
-import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
-import { apply as zeroFilling } from '../../../data/data1d/filter1d/zeroFilling';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import { options as Tools } from '../../toolbar/ToolTypes';
@@ -30,6 +17,12 @@ import { ActionType } from '../types/ActionType';
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { activateTool, resetSelectedTool } from './ToolsActions';
+import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
+
+const { apply: apodization } = Filters.apodization;
+const { apply: baselineCorrection } = Filters.baselineCorrection;
+const { apply: phaseCorrection } = Filters.phaseCorrection;
+const { apply: zeroFilling } = Filters.zeroFilling;
 
 type ShiftSpectrumAlongXAxisAction = ActionType<
   'SHIFT_SPECTRUM',

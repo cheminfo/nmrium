@@ -3,17 +3,11 @@ import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
 import lodashSet from 'lodash/set';
 import {
-  Spectrum1D,
-  Spectrum2D,
-  Data2DFid,
-  Data2DFt,
-  Spectrum,
   Display1D,
   Display2D,
 } from 'nmr-load-save';
+import { Filters, Spectrum, Spectrum1D, Spectrum2D, FiltersManager } from 'nmr-processing';
 
-import * as Filters from '../../../data/Filters';
-import { applyFilter } from '../../../data/FiltersManager';
 import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
@@ -48,6 +42,7 @@ import {
   setMargin,
   resetSelectedTool,
 } from './ToolsActions';
+import { Data2DFid, Data2DFt } from 'cheminfo-types';
 
 type ChangeSpectrumVisibilityByIdAction = ActionType<
   'CHANGE_SPECTRUM_VISIBILITY',
@@ -143,6 +138,7 @@ export type SpectrumActions =
   | RecolorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction;
 
+const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;

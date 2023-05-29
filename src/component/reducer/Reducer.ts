@@ -1,11 +1,10 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Source, Spectrum } from 'nmr-load-save';
+import { WebSource as Source } from 'filelist-utils';
+import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
 import { Reducer } from 'react';
 
-import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { BaselineCorrectionZone } from '../../data/data1d/filter1d/baselineCorrection';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   MoleculesView,
@@ -37,6 +36,7 @@ import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
+import { Spectrum } from 'nmr-load-save';
 
 export interface ActiveSpectrum {
   id: string;

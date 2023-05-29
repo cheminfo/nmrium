@@ -1,10 +1,5 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Filters, Spectrum1D } from 'nmr-processing';
 
-import * as Filters from '../../data/Filters';
-import {
-  apodizationFilter,
-  defaultApodizationOptions,
-} from '../../data/data1d/filter1d/apodization';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
@@ -14,8 +9,10 @@ import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
 
 import { getYScale } from './utilities/scale';
+import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 
 const emptyData = { data: {}, info: {} };
+const { apply: apodizationFilter } = Filters.apodization;
 
 function useWindowYScale() {
   const { height, margin } = useChartData();
