@@ -54,11 +54,7 @@ import preferencesReducer, {
   preferencesInitialState,
   initPreferencesState,
 } from './reducer/preferences/preferencesReducer';
-import {
-  INITIATE,
-  SET_LOADING_FLAG,
-  SET_MOUSE_OVER_DISPLAYER,
-} from './reducer/types/Types';
+import { INITIATE, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
 import {
@@ -316,10 +312,16 @@ function InnerNMRium({
       return;
     }
     function mouseEnterHandler() {
-      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
+      dispatchMiddleWare({
+        type: 'SET_MOUSE_OVER_DISPLAYER',
+        payload: { isMouseOverDisplayer: true },
+      });
     }
     function mouseLeaveHandler() {
-      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+      dispatchMiddleWare({
+        type: 'SET_MOUSE_OVER_DISPLAYER',
+        payload: { isMouseOverDisplayer: false },
+      });
     }
     div.addEventListener('mouseenter', mouseEnterHandler);
     div.addEventListener('mouseleave', mouseLeaveHandler);

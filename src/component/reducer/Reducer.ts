@@ -776,8 +776,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case RESET:
       return handleHistoryReset(draft, action);
 
-    case types.SET_MOUSE_OVER_DISPLAYER:
-      return GlobalActions.setIsOverDisplayer(draft, action);
+    case 'SET_MOUSE_OVER_DISPLAYER':
+      return GlobalActions.handleSetIsOverDisplayer(draft, action);
 
     default:
   }
