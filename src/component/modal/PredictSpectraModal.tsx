@@ -21,7 +21,7 @@ import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
-import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
+import { PREDICT_SPECTRA } from '../reducer/types/Types';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
@@ -165,7 +165,7 @@ function PredictSpectraModal({
       void (async () => {
         setPredictionPreferences({ ...values, isApproved });
         dispatch({
-          type: SET_LOADING_FLAG,
+          type: 'SET_LOADING_FLAG',
           payload: {
             isLoading: true,
           },

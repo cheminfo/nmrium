@@ -1,10 +1,10 @@
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { initMolecule, StateMoleculeExtended } from './Molecule';
+import { initMolecule, StateMolecule, StateMoleculeExtended } from './Molecule';
 
 export function fromJSON(
-  mols: StateMoleculeExtended[],
-  reservedMolecules: StateMoleculeExtended[] = [],
+  mols: StateMolecule[],
+  reservedMolecules: StateMolecule[] = [],
 ) {
   const reservedNumbers = extractLabelsNumbers(reservedMolecules.concat(mols));
 
@@ -85,10 +85,12 @@ export function extractNumber(value: string) {
   return /(?<number>\d+)/.exec(value)?.groups?.number || null;
 }
 
-export function extractLabelsNumbers(molecules: StateMoleculeExtended[]) {
+export function extractLabelsNumbers(
+  molecules: Pick<StateMoleculeExtended, 'label'>[],
+) {
   const values: number[] = [];
   for (const molecule of molecules) {
-    const value = extractNumber(molecule.label);
+    const value = extractNumber(molecule?.label || '');
     if (value) {
       values.push(Number(value));
     }

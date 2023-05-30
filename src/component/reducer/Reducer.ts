@@ -487,12 +487,12 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
   }
 
   switch (action.type) {
-    case types.INITIATE:
-      return LoadActions.initiate(draft, action);
-    case types.LOAD_DROP_FILES:
-      return LoadActions.loadDropFiles(draft, action);
-    case types.SET_LOADING_FLAG:
-      return LoadActions.setIsLoading(draft, action);
+    case 'INITIATE':
+      return LoadActions.handleInitiate(draft, action);
+    case 'LOAD_DROP_FILES':
+      return LoadActions.handleLoadDropFiles(draft, action);
+    case 'SET_LOADING_FLAG':
+      return LoadActions.handleSetIsLoading(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action);
     case types.ADD_PEAKS:
