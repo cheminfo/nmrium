@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-processing';
 
 export function getSpectrumErrorValue(spectrum: Spectrum1D) {
   const { x } = spectrum.data;

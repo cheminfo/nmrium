@@ -1,4 +1,4 @@
-import { Range, Zone } from 'nmr-load-save';
+import { Range, Zone } from 'nmr-processing';
 
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 

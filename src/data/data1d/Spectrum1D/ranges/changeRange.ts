@@ -1,9 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Range, Spectrum1D } from 'nmr-load-save';
+import { Range, Spectrum1D , updateRangesRelativeValues } from 'nmr-processing';
 
 import detectSignal from './detectSignal';
-import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 
 export function changeRange(spectrum: Spectrum1D, range: Range) {
   const { from, to, id } = range;

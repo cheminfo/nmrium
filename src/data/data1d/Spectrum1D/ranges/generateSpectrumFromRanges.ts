@@ -1,5 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { NMRRange, rangesToXY } from 'nmr-processing';
+import { NMRRange, Spectrum1D , rangesToXY } from 'nmr-processing';
 
 import { UsedColors } from '../../../../types/UsedColors';
 import { initiateDatum1D } from '../initiateDatum1D';

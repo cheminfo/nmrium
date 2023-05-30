@@ -1,5 +1,6 @@
+import { Data2DFt } from 'cheminfo-types';
 import { xNoiseSanPlot } from 'ml-spectra-processing';
-import { Data1D, Data2DFt } from 'nmr-load-save';
+import { Data1D } from 'nmr-processing';
 
 export function calculateSanPlot<T extends '1D' | '2D'>(
   dimension: T,

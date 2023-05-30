@@ -4,6 +4,7 @@ import { Spectrum, Spectrum1D, Filters, FiltersManager, BaselineCorrectionOption
 
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
+import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
 import { options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
@@ -17,7 +18,6 @@ import { ActionType } from '../types/ActionType';
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { activateTool, resetSelectedTool } from './ToolsActions';
-import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
 
 const { apply: apodization } = Filters.apodization;
 const { apply: baselineCorrection } = Filters.baselineCorrection;
@@ -98,7 +98,7 @@ export type FiltersActions =
 
 function getFilterUpdateDomainRules(filterName: string) {
   return (
-    // eslint-disable-next-line import/namespace
+
     Filters[filterName]?.DOMAIN_UPDATE_RULES || {
       updateXDomain: false,
       updateYDomain: false,

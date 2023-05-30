@@ -1,4 +1,4 @@
-import { Signal1D } from 'nmr-load-save';
+import { Signal1D } from 'nmr-processing';
 
 import { useScaleChecked } from '../../context/ScaleContext';
 

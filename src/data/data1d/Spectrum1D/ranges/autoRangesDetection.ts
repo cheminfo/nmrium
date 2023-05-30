@@ -1,5 +1,4 @@
-import { Range, Spectrum1D } from 'nmr-load-save';
-import { xyAutoRangesPicking } from 'nmr-processing';
+import { Range, Spectrum1D , xyAutoRangesPicking } from 'nmr-processing';
 
 const defaultPeakPickingOptions = {
   minMaxRatio: 1,

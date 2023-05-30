@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-processing';
 
 export interface ChangeRangeRelativeValueProps {
   id: string; // id of the selected range

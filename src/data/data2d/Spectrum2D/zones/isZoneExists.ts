@@ -1,4 +1,4 @@
-import { Spectrum2D, Zone } from 'nmr-load-save';
+import { Spectrum2D, Zone } from 'nmr-processing';
 
 import { Zone2DError } from '../get2DSpectrumErrorValue';
 

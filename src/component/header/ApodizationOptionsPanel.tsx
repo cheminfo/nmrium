@@ -3,6 +3,7 @@ import { Filters, Filter, ApodizationOptions } from 'nmr-processing';
 import { useRef, memo } from 'react';
 import * as Yup from 'yup';
 
+import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
@@ -13,7 +14,6 @@ import { useFilter } from '../hooks/useFilter';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 
 const inputStyle = {
   input: { height: '100%', width: '60px' },

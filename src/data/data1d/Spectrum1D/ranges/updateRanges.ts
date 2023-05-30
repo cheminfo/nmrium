@@ -1,7 +1,6 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D , updateRangesRelativeValues } from 'nmr-processing';
 
 import { mapRanges } from './mapRanges';
-import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 
 export function updateRanges(spectrum: Spectrum1D) {
   spectrum.ranges.values = mapRanges(spectrum.ranges.values, spectrum, {

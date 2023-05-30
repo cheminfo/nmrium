@@ -1,9 +1,7 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum1D } from 'nmr-load-save';
+import { BaseFilter, Spectrum1D ,FiltersManager, Filters} from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
-import * as Filters from '../../Filters';
-import * as FiltersManager from '../../FiltersManager';
 
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
 import { get1DColor } from './get1DColor';
@@ -22,7 +20,7 @@ export function initiateDatum1D(
 ): Spectrum1D {
   const { usedColors = {}, filters = [] } = options;
 
-  const spectrumObj: Partial<Spectrum1D> = { ...spectrum };
+  const spectrumObj: Spectrum1D = { ...spectrum };
   spectrumObj.id = spectrum.id || v4();
 
   spectrumObj.display = {
@@ -52,27 +50,28 @@ export function initiateDatum1D(
 
   spectrumObj.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
-  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj as Spectrum1D);
+  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj );
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
   spectrumObj.integrals = initiateIntegrals(
     spectrum,
-    spectrumObj as Spectrum1D,
+    spectrumObj ,
   ); // array of object (from: xIndex, to: xIndex)
-  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj as Spectrum1D);
+  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj );
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(spectrumObj);
 
   preprocessing(spectrumObj, filters);
-  return spectrumObj as Spectrum1D;
+  return spectrumObj ;
 }
 
-function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
+function preprocessing(datum, onLoadFilters: BaseFilter[] = []) {
   if (datum.info.isFid) {
     if (onLoadFilters?.length === 0) {
+      console.log('nod deveria')
       FiltersManager.applyFilter(datum, [
         {
           name: Filters.digitalFilter.id,
@@ -81,9 +80,11 @@ function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
         },
       ]);
     } else {
-      const filters: FiltersManager.BaseFilter[] = [];
+      console.log('entra')
+      const filters: BaseFilter[] = [];
 
       for (let filter of onLoadFilters) {
+        console.log(filter.name, Filters.digitalFilter.id)
         if (
           (!datum.info?.digitalFilter &&
             filter.name === Filters.digitalFilter.id) ||
@@ -91,7 +92,7 @@ function preprocessing(datum, onLoadFilters: FiltersManager.BaseFilter[] = []) {
         ) {
           continue;
         }
-
+        console.log(filter.name, Filters.digitalFilter.id)
         if (filter.name === Filters.digitalFilter.id) {
           filter = { ...filter, isDeleteAllow: false };
         }

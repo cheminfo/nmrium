@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
+import { WebSource } from 'filelist-utils';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, Source, NmriumState, Spectrum } from 'nmr-load-save';
+import { readNMRiumObject, NmriumState } from 'nmr-load-save';
+import { Spectrum } from 'nmr-processing';
 import {
   useEffect,
   useCallback,
@@ -140,7 +142,7 @@ type DeepPartial<T> = {
 };
 
 export interface NMRiumData {
-  source?: Source;
+  source?: WebSource;
   molecules?: Molecules;
   spectra: DeepPartial<Spectrum>[];
   correlations?: CorrelationData;

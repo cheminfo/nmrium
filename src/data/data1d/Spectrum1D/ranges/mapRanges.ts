@@ -1,7 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Range, Signal1D, Spectrum1D } from 'nmr-load-save';
-import { NMRRange } from 'nmr-processing';
+import { Range, NMRRange, Signal1D, Spectrum1D } from 'nmr-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';

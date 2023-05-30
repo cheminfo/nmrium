@@ -1,4 +1,4 @@
-import { Zone } from 'nmr-load-save';
+import { Zone } from 'nmr-processing';
 
 import { DatumKind } from '../constants/SignalsKinds';
 

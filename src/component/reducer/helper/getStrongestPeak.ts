@@ -1,6 +1,6 @@
 import { max } from 'd3';
 import { Draft } from 'immer';
-import { Data1D } from 'nmr-load-save';
+import { Data1D } from 'nmr-processing';
 
 import { State } from '../Reducer';
 

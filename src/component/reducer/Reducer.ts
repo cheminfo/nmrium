@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
+import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { WebSource as Source } from 'filelist-utils';
 import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
 import { Reducer } from 'react';
 

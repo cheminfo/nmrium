@@ -1,4 +1,4 @@
-import { Color2D } from 'nmr-load-save';
+import { Color2D } from 'nmr-processing';
 
 import { generate2DColor } from '../../utilities/generateColor';
 

@@ -1,4 +1,4 @@
-import { Display2D, Spectrum2D, Zones as ZonesType } from 'nmr-load-save';
+import { Display2D, Spectrum2D, Zones as ZonesType } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';

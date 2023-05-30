@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik } from 'formik';
-import { Peak1D } from 'nmr-load-save';
+import { Peak1D } from 'nmr-processing';
 import { useCallback, useRef, useState } from 'react';
 import * as Yup from 'yup';
 

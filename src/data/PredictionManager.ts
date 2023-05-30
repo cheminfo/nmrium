@@ -1,6 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { Signal2D, Spectrum, Zone } from 'nmr-load-save';
-import {
+import { Signal2D, Spectrum, Zone ,
   predictAll,
   signalsToXY,
   signals2DToZ,

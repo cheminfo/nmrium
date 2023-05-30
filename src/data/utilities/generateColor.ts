@@ -1,4 +1,4 @@
-import { Color2D } from 'nmr-load-save';
+import { Color2D } from 'nmr-processing';
 
 export const COLORS: string[] = [
   '#C10020',

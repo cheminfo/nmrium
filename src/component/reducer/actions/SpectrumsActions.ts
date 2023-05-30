@@ -1,3 +1,4 @@
+import { Data2DFid, Data2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
@@ -42,7 +43,6 @@ import {
   setMargin,
   resetSelectedTool,
 } from './ToolsActions';
-import { Data2DFid, Data2DFt } from 'cheminfo-types';
 
 type ChangeSpectrumVisibilityByIdAction = ActionType<
   'CHANGE_SPECTRUM_VISIBILITY',

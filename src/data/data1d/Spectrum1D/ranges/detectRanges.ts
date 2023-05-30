@@ -1,10 +1,9 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D , updateRangesRelativeValues } from 'nmr-processing';
 
 import { initSumOptions, SumParams } from '../SumManager';
 
 import autoRangesDetection from './autoRangesDetection';
 import { mapRanges } from './mapRanges';
-import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 
 interface DetectRangesOptions {
   windowFromIndex?: number;

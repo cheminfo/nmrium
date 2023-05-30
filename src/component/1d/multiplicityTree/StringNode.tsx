@@ -2,7 +2,7 @@
 import { CSSProperties } from 'react';
 
 import { useScaleChecked } from '../../context/ScaleContext';
-import { Signal1D } from 'nmr-load-save';
+import { Signal1D } from 'nmr-processing';
 
 interface StringNodeProps {
   signal: Signal1D;

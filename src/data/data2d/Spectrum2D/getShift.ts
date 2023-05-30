@@ -1,6 +1,5 @@
-import { Spectrum2D } from 'nmr-load-save';
+import { Spectrum2D ,Filters} from 'nmr-processing';
 
-import * as Filters from '../../Filters';
 
 export interface Shift2D {
   x: number;

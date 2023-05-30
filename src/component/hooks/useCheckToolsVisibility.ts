@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Info1D, Info2D } from 'nmr-load-save';
+import { Info1D, Info2D } from 'nmr-processing';
 import { useCallback } from 'react';
 
 import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';

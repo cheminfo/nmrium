@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Spectrum2D, Zones } from 'nmr-load-save';
+import { Spectrum2D, Zones } from 'nmr-processing';
 
 import { mapZones } from './mapZones';
 

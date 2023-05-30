@@ -1,4 +1,4 @@
-import * as Filters from '../../data/Filters';
+import { Filters } from 'nmr-processing';
 
 import { WorkspacePreferences } from './Workspace';
 

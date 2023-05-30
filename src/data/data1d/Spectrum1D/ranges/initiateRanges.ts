@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Ranges, Spectrum1D } from 'nmr-load-save';
+import { Ranges, Spectrum1D } from 'nmr-processing';
 
 import { mapRanges } from './mapRanges';
 

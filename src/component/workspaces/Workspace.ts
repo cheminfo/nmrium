@@ -1,8 +1,8 @@
 import { FifoLoggerOptions } from 'fifo-logger';
 import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
+import { BaseFilter } from 'nmr-processing';
 import { SplitPaneSize } from 'react-science/ui';
 
-import { BaseFilter } from 'nmr-processing';
 import { PredictionOptions } from '../../data/PredictionManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
 import { Nuclei, Nucleus } from '../../data/types/common/Nucleus';

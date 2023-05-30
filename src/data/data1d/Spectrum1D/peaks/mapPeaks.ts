@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { Peak1D, Spectrum1D } from 'nmr-load-save';
+import { Peak1D, Spectrum1D } from 'nmr-processing';
 
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';
 import { getShiftX } from '../getShiftX';

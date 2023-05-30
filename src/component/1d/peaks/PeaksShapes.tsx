@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';

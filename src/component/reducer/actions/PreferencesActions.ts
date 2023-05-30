@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-processing';
 
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';

@@ -3,9 +3,9 @@ import {
   processJcamp,
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
-  Spectrum,
   spectrum1DToJcamp,
 } from 'nmr-load-save';
+import type { Spectrum } from 'nmr-processing';
 
 import { State } from '../component/reducer/Reducer';
 import { Workspace } from '../component/workspaces/Workspace';

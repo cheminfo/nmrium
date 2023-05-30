@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { Spectrum1D, Integrals, Ranges, SumOptions } from 'nmr-load-save';
+import { Spectrum1D, Integrals, Ranges, SumOptions } from 'nmr-processing';
 
 import { State } from '../../../component/reducer/Reducer';
 import { StateMoleculeExtended } from '../../molecules/Molecule';

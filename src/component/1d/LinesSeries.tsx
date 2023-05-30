@@ -1,4 +1,4 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-processing';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D/isSpectrum1D';

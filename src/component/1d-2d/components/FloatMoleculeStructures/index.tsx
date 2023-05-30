@@ -1,4 +1,4 @@
-import { Spectrum1D, Spectrum2D, Zones, Ranges } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D, Zones, Ranges } from 'nmr-processing';
 import { memo } from 'react';
 
 import {

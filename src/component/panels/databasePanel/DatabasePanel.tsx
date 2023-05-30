@@ -4,9 +4,8 @@ import {
   NmriumState,
   readFromWebSource,
   serializeNmriumState,
-  Spectrum1D,
 } from 'nmr-load-save';
-import { DatabaseNMREntry } from 'nmr-processing';
+import { DatabaseNMREntry, Spectrum1D } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';

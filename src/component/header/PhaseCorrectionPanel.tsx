@@ -1,7 +1,6 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Filters, Spectrum1D } from 'nmr-processing';
 import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 
-import * as Filters from '../../data/Filters';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';

@@ -11,7 +11,7 @@ import {
   Correlation,
   Link,
 } from 'nmr-correlation';
-import { Spectrum2D, Spectrum } from 'nmr-load-save';
+import { Spectrum2D, Spectrum } from 'nmr-processing';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
 import {
