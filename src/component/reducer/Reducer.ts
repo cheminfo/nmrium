@@ -756,7 +756,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SAVE_EDITED_ZONE:
       return ZonesActions.handleSaveEditedZone(draft, action);
 
-    case types.ORDER_MULTIPLE_SPECTRA_ANALYSIS:
+    case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':
       return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 
     case types.RESURRECTING_SPECTRUM_FROM_RANGES:
