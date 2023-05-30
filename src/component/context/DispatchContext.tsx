@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react';
 
+import { SpectrumActions } from '../reducer/actions/SpectrumsActions';
 import { ToolsActions } from '../reducer/actions/ToolsActions';
 
 export type Action =
   | ToolsActions
+  | SpectrumActions
   // eslint-disable-next-line @typescript-eslint/ban-types
   | { type: string & {}; payload?: Object };
 

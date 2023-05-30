@@ -24,7 +24,6 @@ const ignoreActions = new Set([
   types.SET_ACTIVE_TAB,
   types.CHANGE_VISIBILITY,
   types.CHANGE_ACTIVE_SPECTRUM,
-  types.CHANGE_SPECTRUM_COLOR,
   types.SET_MOUSE_OVER_DISPLAYER,
   types.SHOW_J_GRAPH,
   types.SHOW_MULTIPLICITY_TREES,

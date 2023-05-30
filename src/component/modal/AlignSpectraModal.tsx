@@ -9,7 +9,6 @@ import CloseButton from '../elements/CloseButton';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikInput from '../elements/formik/FormikInput';
-import { ALIGN_SPECTRA } from '../reducer/types/Types';
 import Events from '../utility/Events';
 
 import { ModalStyles } from './ModalStyle';
@@ -43,7 +42,7 @@ function AlignSpectraModal({
 
   const submitHandler = useCallback(
     (values) => {
-      dispatch({ type: ALIGN_SPECTRA, payload: values });
+      dispatch({ type: 'ALIGN_SPECTRA', payload: values });
       onClose();
     },
     [dispatch, onClose],

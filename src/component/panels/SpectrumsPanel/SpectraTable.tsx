@@ -11,11 +11,6 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 import { ActiveSpectrum } from '../../reducer/Reducer';
-import {
-  DELETE_SPECTRA,
-  ORDER_SPECTRA,
-  RECOLOR_SPECTRA_COLOR,
-} from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import {
   JpathTableColumn,
@@ -215,7 +210,7 @@ export function SpectraTable(props: SpectraTableProps) {
         }
         case SpectraContextMenuOptionsKeys.Delete: {
           setTimeout(() => {
-            dispatch({ type: DELETE_SPECTRA, payload: { id: spectrum.id } });
+            dispatch({ type: 'DELETE_SPECTRA', payload: { id: spectrum.id } });
           }, 0);
           break;
         }
@@ -275,7 +270,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
   function handleSortEnd(data) {
     dispatch({
-      type: ORDER_SPECTRA,
+      type: 'ORDER_SPECTRA',
       payload: {
         data,
       },
@@ -331,7 +326,10 @@ const ColumnHeader = ({
 
   function selectHandler() {
     if (col?.jpath) {
-      dispatch({ type: RECOLOR_SPECTRA_COLOR, payload: { jpath: col?.jpath } });
+      dispatch({
+        type: 'RECOLOR_SPECTRA_COLOR',
+        payload: { jpath: col?.jpath },
+      });
     }
   }
 

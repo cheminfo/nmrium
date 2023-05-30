@@ -10,7 +10,6 @@ import {
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
-import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';

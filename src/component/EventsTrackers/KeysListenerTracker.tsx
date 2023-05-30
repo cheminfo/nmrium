@@ -21,7 +21,6 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
-  CHANGE_ACTIVE_SPECTRUM,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -345,7 +344,7 @@ function KeysListenerTracker() {
               break;
             case 'a': {
               dispatch({
-                type: CHANGE_ACTIVE_SPECTRUM,
+                type: 'CHANGE_ACTIVE_SPECTRUM',
                 payload: {},
               });
               e.preventDefault();

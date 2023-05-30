@@ -17,12 +17,6 @@ import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import {
-  ADD_MISSING_PROJECTION,
-  CHANGE_VISIBILITY,
-  DELETE_SPECTRA,
-  RECOLOR_SPECTRA_COLOR,
-} from '../../reducer/types/Types';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
@@ -78,7 +72,7 @@ function SpectraPanelHeaderInner({
         {
           text: 'Yes',
           handler: () => {
-            dispatch({ type: DELETE_SPECTRA });
+            dispatch({ type: 'DELETE_SPECTRA' });
           },
         },
         { text: 'No' },
@@ -88,14 +82,14 @@ function SpectraPanelHeaderInner({
 
   function showAllSpectrumsHandler() {
     dispatch({
-      type: CHANGE_VISIBILITY,
+      type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: true },
     });
   }
 
   function hideAllSpectrumsHandler() {
     dispatch({
-      type: CHANGE_VISIBILITY,
+      type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: false },
     });
   }
@@ -104,7 +98,7 @@ function SpectraPanelHeaderInner({
     const missingNucleus = getMissingProjection(data, activeTab);
     if (missingNucleus.length > 0) {
       dispatch({
-        type: ADD_MISSING_PROJECTION,
+        type: 'ADD_MISSING_PROJECTION',
         payload: { nucleus: missingNucleus },
       });
     } else {
@@ -122,7 +116,7 @@ function SpectraPanelHeaderInner({
 
   function recolorSpectraHandler() {
     dispatch({
-      type: RECOLOR_SPECTRA_COLOR,
+      type: 'RECOLOR_SPECTRA_COLOR',
       payload: {},
     });
   }

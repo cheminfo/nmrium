@@ -581,35 +581,38 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.CALCULATE_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.calculateBaseLineCorrection(draft, action);
 
-    case types.CHANGE_VISIBILITY:
-      return SpectrumsActions.handleSpectrumVisibility(draft, action);
-    case types.CHANGE_ACTIVE_SPECTRUM:
-      return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
-    case types.CHANGE_SPECTRUM_COLOR:
-      return SpectrumsActions.handleChangeSpectrumColor(draft, action.data);
-    case types.CHANGE_SPECTRUM_SETTING:
-      return SpectrumsActions.changeSpectrumSetting(draft, action);
-    case types.ALIGN_SPECTRA:
-      return SpectrumsActions.alignSpectraHandler(draft, action);
-    case types.DELETE_SPECTRA:
-      return SpectrumsActions.handleDeleteSpectra(draft, action);
-    case types.ADD_MISSING_PROJECTION:
-      return SpectrumsActions.addMissingProjectionHandler(draft, action);
-    case types.GENERATE_SPECTRUM_FROM_PUBLICATION_STRING:
-      return SpectrumsActions.generateSpectrumFromPublicationStringHandler(
+    case 'CHANGE_SPECTRUM_VISIBILITY':
+      return SpectrumsActions.handleChangeSpectrumVisibilityById(draft, action);
+    case 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS':
+      return SpectrumsActions.handleChangeSpectraVisibilityByNucleus(
         draft,
         action,
       );
-    case types.IMPORT_SPECTRA_META_INFO:
-      return SpectrumsActions.importSpectraMetaInfo(draft, action);
-    case types.TOGGLE_SPECTRA_LEGEND:
+    case 'CHANGE_ACTIVE_SPECTRUM':
+      return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
+    case 'CHANGE_SPECTRUM_SETTING':
+      return SpectrumsActions.handleChangeSpectrumSetting(draft, action);
+    case 'ALIGN_SPECTRA':
+      return SpectrumsActions.handleAlignSpectraHandler(draft, action);
+    case 'DELETE_SPECTRA':
+      return SpectrumsActions.handleDeleteSpectra(draft, action);
+    case 'ADD_MISSING_PROJECTION':
+      return SpectrumsActions.handleAddMissingProjectionHandler(draft, action);
+    case 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING':
+      return SpectrumsActions.handleGenerateSpectrumFromPublicationStringHandler(
+        draft,
+        action,
+      );
+    case 'IMPORT_SPECTRA_META_INFO':
+      return SpectrumsActions.handleImportSpectraMetaInfo(draft, action);
+    case 'TOGGLE_SPECTRA_LEGEND':
       return SpectrumsActions.handleToggleSpectraLegend(draft);
-    case types.RECOLOR_SPECTRA_COLOR:
+    case 'RECOLOR_SPECTRA_COLOR':
       return SpectrumsActions.handleRecolorSpectraBasedOnDistinctValue(
         draft,
         action,
       );
-    case types.ORDER_SPECTRA:
+    case 'ORDER_SPECTRA':
       return SpectrumsActions.handleOrderSpectra(draft, action);
 
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:

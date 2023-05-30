@@ -22,7 +22,7 @@ import {
 } from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { importSpectraMetaInfo } from './SpectrumsActions';
+import { setSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
 
 function setIsLoading(draft: Draft<State>, action) {
@@ -139,7 +139,7 @@ function setData(
       spectra: draft.data,
       parseMetaFileResult,
     });
-    importSpectraMetaInfo(draft, { payload: { spectraMeta: matches } });
+    setSpectraMetaInfo(draft, matches);
   }
 }
 
