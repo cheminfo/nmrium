@@ -482,7 +482,7 @@ export function dispatchMiddleware(dispatch) {
 }
 
 function innerSpectrumReducer(draft: Draft<State>, action) {
-  if (![types.LOAD_DROP_FILES, types.INITIATE].includes(action.type)) {
+  if (!['LOAD_DROP_FILES', 'INITIATE'].includes(action.type)) {
     draft.actionType = action.type;
   }
 
@@ -534,12 +534,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SET_DIMENSIONS:
       return handleSetDimensions(draft, action);
 
-    case types.SET_SELECTED_TOOL:
-      return ToolsActions.setSelectedTool(draft, action);
-    case types.RESET_SELECTED_TOOL:
-      return ToolsActions.resetSelectedTool(draft);
-    case types.FULL_ZOOM_OUT:
-      return ToolsActions.zoomOut(draft, action);
     case types.SHIFT_SPECTRUM:
       return FiltersActions.shiftSpectrumAlongXAxis(draft, action);
     case types.APPLY_APODIZATION_FILTER:
@@ -615,17 +609,38 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'ORDER_SPECTRA':
       return SpectrumsActions.handleOrderSpectra(draft, action);
 
-    case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
+    case 'SET_SELECTED_TOOL':
+      return ToolsActions.setSelectedTool(draft, action);
+    case 'RESET_SELECTED_TOOL':
+      return ToolsActions.handleResetSelectedTool(draft);
+    case 'FULL_ZOOM_OUT':
+      return ToolsActions.zoomOut(draft, action);
+    case 'TOGGLE_REAL_IMAGINARY_VISIBILITY':
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
-    case types.SET_ZOOM:
+    case 'SET_ZOOM':
       return ToolsActions.handleZoom(draft, action);
-    case types.SET_SPECTRA_SAME_TOP:
+    case 'SET_SPECTRA_SAME_TOP':
       return ToolsActions.setSpectraSameTopHandler(draft);
-    case types.RESET_SPECTRA_SCALE:
+    case 'RESET_SPECTRA_SCALE':
       return ToolsActions.resetSpectraScale(draft);
 
-    case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
+    case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
       return ToolsActions.handleChangeSpectrumDisplayMode(draft);
+    case 'BRUSH_END':
+      return ToolsActions.handleBrushEnd(draft, action);
+
+    case 'SET_VERTICAL_INDICATOR_X_POSITION':
+      return ToolsActions.setVerticalIndicatorXPosition(draft, action);
+    case 'SET_SPECTRUMS_VERTICAL_ALIGN':
+      return ToolsActions.setSpectrumsVerticalAlign(draft);
+    case 'SET_ACTIVE_TAB':
+      return ToolsActions.handelSetActiveTab(draft, action);
+    case 'ADD_BASE_LINE_ZONE':
+      return ToolsActions.handleAddBaseLineZone(draft, action);
+    case 'DELETE_BASE_LINE_ZONE':
+      return ToolsActions.handleDeleteBaseLineZone(draft, action);
+    case 'SET_2D_LEVEL':
+      return ToolsActions.levelChangeHandler(draft, action);
 
     case types.ADD_MOLECULE:
       return MoleculeActions.addMoleculeHandler(draft, action);
@@ -664,14 +679,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.DELETE_CORRELATION:
       return CorrelationsActions.handleDeleteCorrelation(draft, action);
-
-    case types.BRUSH_END:
-      return ToolsActions.handleBrushEnd(draft, action);
-
-    case types.SET_VERTICAL_INDICATOR_X_POSITION:
-      return ToolsActions.setVerticalIndicatorXPosition(draft, action);
-    case types.SET_SPECTRUMS_VERTICAL_ALIGN:
-      return ToolsActions.setSpectrumsVerticalAlign(draft);
 
     case types.AUTO_ZONES_DETECTION:
       return ZonesActions.handleAutoZonesDetection(draft, action);
@@ -714,19 +721,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SHOW_J_GRAPH:
       return RangesActions.handleShowJGraph(draft, action);
 
-    case types.SET_ACTIVE_TAB:
-      return ToolsActions.handelSetActiveTab(draft, action);
-    case types.ADD_BASE_LINE_ZONE:
-      return ToolsActions.handleAddBaseLineZone(draft, action);
-    case types.DELETE_BASE_LINE_ZONE:
-      return ToolsActions.handleDeleteBaseLineZone(draft, action);
-
     case types.SET_KEY_PREFERENCES:
       return setKeyPreferencesHandler(draft, action);
     case types.APPLY_KEY_PREFERENCES:
       return applyKeyPreferencesHandler(draft, action);
-    case types.SET_2D_LEVEL:
-      return ToolsActions.levelChangeHandler(draft, action);
     case types.ADD_2D_ZONE:
       return ZonesActions.add2dZoneHandler(draft, action);
     case types.DELETE_2D_ZONE:

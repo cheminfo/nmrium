@@ -18,10 +18,7 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import {
-  RESET_SELECTED_TOOL,
-  TOGGLE_SPECTRA_LEGEND,
-} from '../../reducer/types/Types';
+import { TOGGLE_SPECTRA_LEGEND } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -73,7 +70,7 @@ function MultipleSpectraAnalysisPanelInner({
     dispatch({ type: TOGGLE_SPECTRA_LEGEND });
   }, [dispatch]);
   const openAlignSpectra = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
+    dispatch({ type: 'RESET_SELECTED_TOOL' });
     modal.show(<AlignSpectraModal nucleus={activeTab} />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,

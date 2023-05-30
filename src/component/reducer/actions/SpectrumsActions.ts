@@ -114,7 +114,6 @@ type ImportSpectraMetaInfoAction = ActionType<
     spectraMeta: Record<string, Record<string, any>>;
   }
 >;
-type ToggleSpectraLegendAction = ActionType<'TOGGLE_SPECTRA_LEGEND'>;
 type RecolorSpectraBasedOnDistinctValueAction = ActionType<
   'RECOLOR_SPECTRA_COLOR',
   {
@@ -129,6 +128,7 @@ type OrderSpectraAction = ActionType<
 >;
 
 export type SpectrumActions =
+  | ActionType<'TOGGLE_SPECTRA_LEGEND'>
   | ChangeSpectrumVisibilityByIdAction
   | ChangeSpectraVisibilityByNucleusAction
   | ChangeActiveSpectrumAction
@@ -138,7 +138,6 @@ export type SpectrumActions =
   | AlignSpectraAction
   | GenerateSpectrumFromPublicationStringAction
   | ImportSpectraMetaInfoAction
-  | ToggleSpectraLegendAction
   | RecolorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction;
 

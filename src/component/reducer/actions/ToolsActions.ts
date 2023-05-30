@@ -58,15 +58,11 @@ interface SetActiveTabOptions {
   domainOptions?: SetDomainOptions;
 }
 
-type ResetSelectedToolAction = ActionType<'RESET_SELECTED_TOOL'>;
 type SetSelectedToolAction = ActionType<
   'SET_SELECTED_TOOL',
   { selectedTool: Tool }
 >;
-type SetSpectrumsVerticalAlignAction =
-  ActionType<'SET_SPECTRUMS_VERTICAL_ALIGN'>;
-type ChangeSpectrumDisplayModeAction =
-  ActionType<'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE'>;
+
 type AddBaseLineZoneAction = ActionType<
   'ADD_BASE_LINE_ZONE',
   { from: number; to: number }
@@ -75,8 +71,6 @@ type DeleteBaseLineZoneAction = ActionType<
   'DELETE_BASE_LINE_ZONE',
   { id: string }
 >;
-type ToggleRealImaginaryVisibilityAction =
-  ActionType<'TOGGLE_REAL_IMAGINARY_VISIBILITY'>;
 
 type BrushEndAction = ActionType<'BRUSH_END', BrushBoundary>;
 type SetVerticalIndicatorXPositionAction = ActionType<
@@ -98,25 +92,25 @@ type LevelChangeAction = ActionType<
   'SET_2D_LEVEL',
   { deltaY: number; shiftKey: boolean }
 >;
-type SetSpectraSameTopAction = ActionType<'SET_SPECTRA_SAME_TOP'>;
-type ResetSpectraScaleAction = ActionType<'RESET_SPECTRA_SCALE'>;
 
 export type ToolsActions =
-  | ResetSelectedToolAction
+  | ActionType<
+      | 'TOGGLE_REAL_IMAGINARY_VISIBILITY'
+      | 'RESET_SELECTED_TOOL'
+      | 'SET_SPECTRUMS_VERTICAL_ALIGN'
+      | 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE'
+      | 'SET_SPECTRA_SAME_TOP'
+      | 'RESET_SPECTRA_SCALE'
+    >
   | SetSelectedToolAction
-  | SetSpectrumsVerticalAlignAction
-  | ChangeSpectrumDisplayModeAction
   | AddBaseLineZoneAction
   | DeleteBaseLineZoneAction
-  | ToggleRealImaginaryVisibilityAction
   | BrushEndAction
   | SetVerticalIndicatorXPositionAction
   | ZoomAction
   | ZoomOutAction
   | SetActiveTabAction
-  | LevelChangeAction
-  | SetSpectraSameTopAction
-  | ResetSpectraScaleAction;
+  | LevelChangeAction;
 
 function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
   const {
@@ -141,6 +135,9 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
   }
 }
 
+function handleResetSelectedTool(draft: Draft<State>) {
+  resetSelectedTool(draft);
+}
 function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
   if (
     (draft.toolOptions.selectedTool &&
@@ -672,6 +669,7 @@ function resetSpectraScale(draft: Draft<State>) {
 }
 
 export {
+  handleResetSelectedTool,
   resetSelectedTool,
   setSelectedTool,
   activateTool,
