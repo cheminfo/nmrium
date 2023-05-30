@@ -1,5 +1,6 @@
-import { Filters, Spectrum1D } from 'nmr-processing';
+import { Filters, Spectrum1D, apodization } from 'nmr-processing';
 
+import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
@@ -9,10 +10,8 @@ import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 import { PathBuilder } from '../utility/PathBuilder';
 
 import { getYScale } from './utilities/scale';
-import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 
 const emptyData = { data: {}, info: {} };
-const { apply: apodizationFilter } = Filters.apodization;
 
 function useWindowYScale() {
   const { height, margin } = useChartData();
@@ -44,11 +43,35 @@ function ApodizationLine() {
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
-    const { windowData: y } = apodizationFilter(
-      spectrum,
-      apodizationOptions || defaultApodizationOptions,
-    );
-    const x = spectrum.data?.x;
+    const { re, im = [], x } = spectrum.data;
+
+    const { lineBroadening, gaussBroadening, lineBroadeningCenter } =
+      apodizationOptions || defaultApodizationOptions;
+
+    const length = re.length;
+    const dw = (x[length - 1] - x[0]) / (length - 1);
+    const { windowData: y } = apodization({ re, im }, {
+      apply: false,
+      compose: {
+        length,
+        shapes: [
+          {
+            start: 0,
+            shape: {
+              kind: 'lorentzToGauss',
+              options: {
+                length,
+                dw,
+                exponentialHz:
+                  gaussBroadening > 0 ? lineBroadening : -lineBroadening,
+                gaussianHz: gaussBroadening,
+                center: lineBroadeningCenter,
+              },
+            },
+          },
+        ],
+      },
+    });
 
     if (x && y) {
       const pathPoints = xyReduce({ x, y });
