@@ -98,7 +98,6 @@ export type FiltersActions =
 
 function getFilterUpdateDomainRules(filterName: string) {
   return (
-
     Filters[filterName]?.DOMAIN_UPDATE_RULES || {
       updateXDomain: false,
       updateYDomain: false,

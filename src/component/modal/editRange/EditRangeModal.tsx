@@ -2,7 +2,12 @@
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { Formik } from 'formik';
-import { Spectrum1D, Range , splitPatterns, translateMultiplet } from 'nmr-processing';
+import {
+  Spectrum1D,
+  Range,
+  splitPatterns,
+  translateMultiplet,
+} from 'nmr-processing';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 

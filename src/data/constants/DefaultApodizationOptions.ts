@@ -1,4 +1,4 @@
-import { ApodizationOptions } from "nmr-processing";
+import { ApodizationOptions } from 'nmr-processing';
 
 export const defaultApodizationOptions: ApodizationOptions = {
   lineBroadening: 1,

@@ -50,28 +50,31 @@ function ApodizationLine() {
 
     const length = re.length;
     const dw = (x[length - 1] - x[0]) / (length - 1);
-    const { windowData: y } = apodization({ re, im }, {
-      apply: false,
-      compose: {
-        length,
-        shapes: [
-          {
-            start: 0,
-            shape: {
-              kind: 'lorentzToGauss',
-              options: {
-                length,
-                dw,
-                exponentialHz:
-                  gaussBroadening > 0 ? lineBroadening : -lineBroadening,
-                gaussianHz: gaussBroadening,
-                center: lineBroadeningCenter,
+    const { windowData: y } = apodization(
+      { re, im },
+      {
+        apply: false,
+        compose: {
+          length,
+          shapes: [
+            {
+              start: 0,
+              shape: {
+                kind: 'lorentzToGauss',
+                options: {
+                  length,
+                  dw,
+                  exponentialHz:
+                    gaussBroadening > 0 ? lineBroadening : -lineBroadening,
+                  gaussianHz: gaussBroadening,
+                  center: lineBroadeningCenter,
+                },
               },
             },
-          },
-        ],
+          ],
+        },
       },
-    });
+    );
 
     if (x && y) {
       const pathPoints = xyReduce({ x, y });

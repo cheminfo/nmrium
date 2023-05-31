@@ -1,5 +1,4 @@
-import { Spectrum1D , Filters as FiltersTypes } from 'nmr-processing';
-
+import { Spectrum1D, Filters as FiltersTypes } from 'nmr-processing';
 
 export function getShiftX(spectrum: Spectrum1D): number {
   const filter =

@@ -1,5 +1,10 @@
 import { v4 } from '@lukeed/uuid';
-import { BaseFilter, Spectrum1D ,FiltersManager, Filters} from 'nmr-processing';
+import {
+  BaseFilter,
+  Spectrum1D,
+  FiltersManager,
+  Filters,
+} from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
 
@@ -50,28 +55,24 @@ export function initiateDatum1D(
 
   spectrumObj.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
-  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj );
+  spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj);
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  spectrumObj.integrals = initiateIntegrals(
-    spectrum,
-    spectrumObj ,
-  ); // array of object (from: xIndex, to: xIndex)
-  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj );
+  spectrumObj.integrals = initiateIntegrals(spectrum, spectrumObj); // array of object (from: xIndex, to: xIndex)
+  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj);
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(spectrumObj);
 
   preprocessing(spectrumObj, filters);
-  return spectrumObj ;
+  return spectrumObj;
 }
 
 function preprocessing(datum, onLoadFilters: BaseFilter[] = []) {
   if (datum.info.isFid) {
     if (onLoadFilters?.length === 0) {
-      console.log('nod deveria')
       FiltersManager.applyFilter(datum, [
         {
           name: Filters.digitalFilter.id,
@@ -80,11 +81,9 @@ function preprocessing(datum, onLoadFilters: BaseFilter[] = []) {
         },
       ]);
     } else {
-      console.log('entra')
       const filters: BaseFilter[] = [];
 
       for (let filter of onLoadFilters) {
-        console.log(filter.name, Filters.digitalFilter.id)
         if (
           (!datum.info?.digitalFilter &&
             filter.name === Filters.digitalFilter.id) ||
@@ -92,7 +91,6 @@ function preprocessing(datum, onLoadFilters: BaseFilter[] = []) {
         ) {
           continue;
         }
-        console.log(filter.name, Filters.digitalFilter.id)
         if (filter.name === Filters.digitalFilter.id) {
           filter = { ...filter, isDeleteAllow: false };
         }

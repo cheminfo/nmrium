@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Range, Spectrum1D , updateRangesRelativeValues } from 'nmr-processing';
+import { Range, Spectrum1D, updateRangesRelativeValues } from 'nmr-processing';
 
 import detectSignal from './detectSignal';
 

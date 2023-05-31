@@ -1,4 +1,4 @@
-import { Spectrum1D , updateRangesRelativeValues } from 'nmr-processing';
+import { Spectrum1D, updateRangesRelativeValues } from 'nmr-processing';
 
 import { initSumOptions, SumParams } from '../SumManager';
 

@@ -4,10 +4,12 @@ import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
 import lodashSet from 'lodash/set';
 import {
-  Display1D,
-  Display2D,
-} from 'nmr-load-save';
-import { Filters, Spectrum, Spectrum1D, Spectrum2D, FiltersManager } from 'nmr-processing';
+  Filters,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+  FiltersManager,
+} from 'nmr-processing';
 
 import {
   generateSpectrumFromPublicationString,
@@ -43,6 +45,7 @@ import {
   setMargin,
   resetSelectedTool,
 } from './ToolsActions';
+import { Display1D, Display2D } from 'nmr-load-save';
 
 type ChangeSpectrumVisibilityByIdAction = ActionType<
   'CHANGE_SPECTRUM_VISIBILITY',

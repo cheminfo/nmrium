@@ -1,5 +1,9 @@
-import { Integral, Spectrum1D , checkIntegralKind, updateRelatives } from 'nmr-processing';
-
+import {
+  Integral,
+  Spectrum1D,
+  checkIntegralKind,
+  updateRelatives,
+} from 'nmr-processing';
 
 export function updateIntegralsRelativeValues(
   spectrum: Spectrum1D,
