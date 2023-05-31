@@ -1,8 +1,8 @@
 root: true
 extends:
-  - zakodium/ts
-  - zakodium/react
-  - zakodium/unicorn
+  - cheminfo-react/base
+  - cheminfo-typescript/base
+  - cheminfo-typescript/unicorn
 rules:
   'import/default': off
   'import/no-unresolved': off
