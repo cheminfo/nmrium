@@ -28,7 +28,6 @@ import scaleReducer, {
 import {
   ADD_PEAKS,
   ADD_PEAK,
-  ADD_RANGE,
   ADD_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
@@ -164,7 +163,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
             if (toIndex - fromIndex <= MAX_LENGTH) {
               dispatch({
-                type: ADD_RANGE,
+                type: 'ADD_RANGE',
                 payload: brushData,
               });
             } else {

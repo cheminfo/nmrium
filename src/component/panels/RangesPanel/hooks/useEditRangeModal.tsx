@@ -5,12 +5,7 @@ import { useDispatch } from '../../../context/DispatchContext';
 import { useModal } from '../../../elements/popup/Modal';
 import { positions, transitions } from '../../../elements/popup/options';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
-import {
-  CHANGE_RANGE_SIGNAL_KIND,
-  DELETE_RANGE,
-  SAVE_EDITED_RANGE,
-  SET_X_DOMAIN,
-} from '../../../reducer/types/Types';
+import { SET_X_DOMAIN } from '../../../reducer/types/Types';
 
 import { RangeData } from './useMapRanges';
 
@@ -40,9 +35,10 @@ export default function useEditRangeModal(range?: RangeData) {
     (id?: string, resetSelectTool = false) => {
       if (range || id) {
         dispatch({
-          type: DELETE_RANGE,
+          type: 'DELETE_RANGE',
           payload: {
-            data: { id: id || range?.id, assignmentData },
+            id: id || range?.id,
+            assignmentData,
             resetSelectTool,
           },
         });
@@ -52,12 +48,13 @@ export default function useEditRangeModal(range?: RangeData) {
   );
 
   const changeRangeSignalKind = useCallback(
-    (value) => {
+    (kind) => {
       if (range) {
         dispatch({
-          type: CHANGE_RANGE_SIGNAL_KIND,
+          type: 'CHANGE_RANGE_SIGNAL_KIND',
           payload: {
-            data: { rowData: range, value },
+            range,
+            kind,
           },
         });
       }
@@ -66,11 +63,11 @@ export default function useEditRangeModal(range?: RangeData) {
   );
 
   const saveEditRangeHandler = useCallback(
-    (editedRowData, automaticCloseModal = true) => {
+    (editedRange, automaticCloseModal = true) => {
       dispatch({
-        type: SAVE_EDITED_RANGE,
+        type: 'SAVE_EDITED_RANGE',
         payload: {
-          editedRowData,
+          range: editedRange,
           assignmentData,
         },
       });

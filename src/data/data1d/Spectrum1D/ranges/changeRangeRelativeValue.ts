@@ -1,6 +1,6 @@
 import { Spectrum1D } from 'nmr-load-save';
 
-interface RangeProps {
+export interface ChangeRangeRelativeValueProps {
   id: string; // id of the selected range
   value: number; // New relative value
 }
@@ -12,15 +12,14 @@ interface RangeProps {
  */
 export function changeRangeRelativeValue(
   spectrum: Spectrum1D,
-  newRange: RangeProps,
+  data: ChangeRangeRelativeValueProps,
 ) {
-  const index = spectrum.ranges.values.findIndex(
-    (range) => range.id === newRange.id,
-  );
+  const { id, value } = data;
+  const index = spectrum.ranges.values.findIndex((range) => range.id === id);
   if (index !== -1 && spectrum.ranges.options.sum) {
     const { absolute, integration } = spectrum.ranges.values[index];
-    const ratio = absolute / newRange.value;
-    const sum = (newRange.value / integration) * spectrum.ranges.options.sum;
+    const ratio = absolute / value;
+    const sum = (value / integration) * spectrum.ranges.options.sum;
     spectrum.ranges.options = {
       ...spectrum.ranges.options,
       mf: undefined,

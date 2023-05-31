@@ -16,7 +16,6 @@ import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
-import { UPDATE_RANGE } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
@@ -175,7 +174,7 @@ function EditRangeModal({
         })
       ) {
         dispatch({
-          type: UPDATE_RANGE,
+          type: 'UPDATE_RANGE',
           payload: { range: { ...range, signals } },
         });
       }

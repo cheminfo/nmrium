@@ -9,7 +9,7 @@ import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
-import { handleUnlinkRange } from './RangesActions';
+import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { handleUnlinkZone } from './ZonesActions';
 
@@ -51,7 +51,7 @@ function setMoleculeHandler(draft: Draft<State>, action) {
 
 function removeAssignments(draft: Draft<State>, assignmentData: any) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-    handleUnlinkRange(draft, { payload: { assignmentData, rangeData: null } });
+    unlinkRange(draft, { assignmentData });
   }
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     handleUnlinkZone(draft, { payload: { assignmentData, zoneData: null } });

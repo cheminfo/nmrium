@@ -27,7 +27,6 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
-  DELETE_1D_SIGNAL,
   DELETE_2D_SIGNAL,
   DELETE_CORRELATION,
   SET_2D_SIGNAL_PATH_LENGTH,
@@ -402,15 +401,17 @@ function SummaryPanel() {
         const range = findRange(spectrum, link.signal.id);
         const signal = findSignal1D(spectrum, link.signal.id);
 
-        dispatch({
-          type: DELETE_1D_SIGNAL,
-          payload: {
-            spectrum,
-            range,
-            signal,
-            assignmentData,
-          },
-        });
+        if (spectrum && range && signal) {
+          dispatch({
+            type: 'DELETE_1D_SIGNAL',
+            payload: {
+              spectrum,
+              range,
+              signal,
+              assignmentData,
+            },
+          });
+        }
       } else if (linkDim === 2) {
         const spectrum = findSpectrum(
           spectraData,

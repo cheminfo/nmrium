@@ -81,8 +81,8 @@ function IntegralPanelInner({
         header={
           currentSum
             ? `Set new integrals Sum (Current: ${Number(currentSum).toFixed(
-              2,
-            )})`
+                2,
+              )})`
             : 'Set new integrals Sum'
         }
         sumOptions={integrals?.options}
@@ -120,8 +120,8 @@ function IntegralPanelInner({
     if (info.dimension === 1 && integrals?.values) {
       const _integrals = filterIsActive
         ? integrals.values.filter((integral) =>
-          isInRange(integral.from, integral.to),
-        )
+            isInRange(integral.from, integral.to),
+          )
         : integrals.values;
 
       return _integrals.map((integral) => {
@@ -140,7 +140,7 @@ function IntegralPanelInner({
         tablePanelStyle,
         style,
         isFlipped &&
-        css`
+          css`
             th {
               position: relative;
             }

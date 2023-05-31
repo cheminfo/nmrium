@@ -683,41 +683,41 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleAutoZonesDetection(draft, action);
     case types.CHANGE_ZONES_NOISE_FACTOR:
       return ZonesActions.changeZonesFactorHandler(draft, action);
-    case types.AUTO_RANGES_DETECTION:
+    case 'AUTO_RANGES_DETECTION':
       return RangesActions.handleAutoRangesDetection(draft, action);
-    case types.ADD_RANGE:
+    case 'ADD_RANGE':
       return RangesActions.handleAddRange(draft, action);
-    case types.DELETE_RANGE:
+    case 'DELETE_RANGE':
       return RangesActions.handleDeleteRange(draft, action);
-    case types.DELETE_1D_SIGNAL:
+    case 'DELETE_1D_SIGNAL':
       return RangesActions.handleDeleteSignal(draft, action);
-    case types.RESIZE_RANGE:
+    case 'RESIZE_RANGE':
       return RangesActions.handleResizeRange(draft, action);
-    case types.CHANGE_RANGE_SUM:
+    case 'CHANGE_RANGE_SUM':
       return RangesActions.handleChangeRangeSum(draft, action);
-    case types.CHANGE_RANGES_SUM_FLAG:
-      return RangesActions.handleChangeRangesSumFlag(draft, action);
-    case types.CHANGE_RANGE_RELATIVE:
+    case 'CHANGE_RANGES_SUM_FLAG':
+      return RangesActions.handleChangeRangesSumFlag(draft);
+    case 'CHANGE_RANGE_RELATIVE':
       return RangesActions.handleChangeRangeRelativeValue(draft, action);
-    case types.CHANGE_RANGE_SIGNAL_VALUE:
+    case 'CHANGE_RANGE_SIGNAL_VALUE':
       return RangesActions.handleChangeRangeSignalValue(draft, action);
-    case types.CHANGE_RANGE_SIGNAL_KIND:
+    case 'CHANGE_RANGE_SIGNAL_KIND':
       return RangesActions.handleChangeRangeSignalKind(draft, action);
-    case types.SAVE_EDITED_RANGE:
+    case 'SAVE_EDITED_RANGE':
       return RangesActions.handleSaveEditedRange(draft, action);
-    case types.UNLINK_RANGE:
+    case 'UNLINK_RANGE':
       return RangesActions.handleUnlinkRange(draft, action);
-    case types.SET_DIAID_RANGE:
+    case 'SET_DIAID_RANGE':
       return RangesActions.handleSetDiaIDRange(draft, action);
-    case types.UPDATE_RANGE:
+    case 'UPDATE_RANGE':
       return RangesActions.handleUpdateRange(draft, action);
-    case types.SHOW_MULTIPLICITY_TREES:
+    case 'SHOW_MULTIPLICITY_TREES':
       return RangesActions.handleShowMultiplicityTrees(draft, action);
-    case types.SHOW_RANGES_INTEGRALS:
+    case 'SHOW_RANGES_INTEGRALS':
       return RangesActions.handleShowRangesIntegrals(draft, action);
-    case types.AUTO_RANGES_SPECTRA_PICKING:
+    case 'AUTO_RANGES_SPECTRA_PICKING':
       return RangesActions.handleAutoSpectraRangesDetection(draft);
-    case types.SHOW_J_GRAPH:
+    case 'SHOW_J_GRAPH':
       return RangesActions.handleShowJGraph(draft, action);
 
     case types.SET_KEY_PREFERENCES:

@@ -17,7 +17,6 @@ import {
   SET_KEY_PREFERENCES,
   APPLY_KEY_PREFERENCES,
   DELETE_PEAK_NOTATION,
-  DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
@@ -90,12 +89,10 @@ function KeysListenerTracker() {
         }
         case HighlightEventSource.RANGE: {
           dispatch({
-            type: DELETE_RANGE,
+            type: 'DELETE_RANGE',
             payload: {
-              data: {
-                id,
-                assignmentData,
-              },
+              id,
+              assignmentData,
             },
           });
           // remove keys from the highlighted list after delete

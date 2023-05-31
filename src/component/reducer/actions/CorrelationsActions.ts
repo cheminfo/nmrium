@@ -21,7 +21,7 @@ import {
 } from '../../../data/utilities/FindUtilities';
 import { State } from '../Reducer';
 
-import { handleDeleteSignal as handleDeleteSignal1D } from './RangesActions';
+import { deleteSignal1D } from './RangesActions';
 import { handleDeleteSignal as handleDeleteSignal2D } from './ZonesActions';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
@@ -115,14 +115,14 @@ function handleDeleteCorrelation(draft: Draft<State>, action) {
       if (spectrum.info.dimension === 1) {
         const range = findRange(spectrum as Spectrum1D, link.signal.id);
         const signal = findSignal1D(spectrum as Spectrum1D, link.signal.id);
-        handleDeleteSignal1D(draft, {
-          payload: {
+        if (range && signal) {
+          deleteSignal1D(draft, {
             spectrum,
             range,
             signal,
             assignmentData,
-          },
-        });
+          });
+        }
       } else if (spectrum.info.dimension === 2) {
         const zone = findZone(spectrum as Spectrum2D, link.signal.id);
         const signal = findSignal2D(spectrum as Spectrum2D, link.signal.id);

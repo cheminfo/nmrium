@@ -7,7 +7,6 @@ import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikNumberInput from '../elements/formik/FormikNumberInput';
-import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -27,7 +26,7 @@ function RangesPickingOptionPanel() {
   const handleRangesPicking = useCallback(
     (values) => {
       dispatch({
-        type: AUTO_RANGES_DETECTION,
+        type: 'AUTO_RANGES_DETECTION',
         payload: values,
       });
     },

@@ -17,21 +17,11 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
-import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import {
-  ADD_RANGE,
-  CHANGE_RANGES_SUM_FLAG,
-  CHANGE_RANGE_SUM,
-  DELETE_RANGE,
-  SHOW_J_GRAPH,
-  SHOW_MULTIPLICITY_TREES,
-  SHOW_RANGES_INTEGRALS,
-} from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/export';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -81,7 +71,7 @@ function RangesHeader({
 
   const changeRangesSumHandler = useCallback(
     (options) => {
-      dispatch({ type: CHANGE_RANGE_SUM, payload: { options } });
+      dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
       modal.close();
     },
     [dispatch, modal],
@@ -121,8 +111,8 @@ function RangesHeader({
           text: 'Yes',
           handler: () => {
             dispatch({
-              type: DELETE_RANGE,
-              payload: { data: { assignmentData } },
+              type: 'DELETE_RANGE',
+              payload: { assignmentData },
             });
           },
         },
@@ -132,15 +122,15 @@ function RangesHeader({
   }, [assignmentData, dispatch, modal]);
 
   const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({ type: SHOW_MULTIPLICITY_TREES, payload: { id } });
+    dispatch({ type: 'SHOW_MULTIPLICITY_TREES', payload: { id } });
   }, [dispatch, id]);
 
   const handleShowIntegrals = useCallback(() => {
-    dispatch({ type: SHOW_RANGES_INTEGRALS, payload: { id } });
+    dispatch({ type: 'SHOW_RANGES_INTEGRALS', payload: { id } });
   }, [dispatch, id]);
 
   const handleShowJGraph = useCallback(() => {
-    dispatch({ type: SHOW_J_GRAPH, payload: { id } });
+    dispatch({ type: 'SHOW_J_GRAPH', payload: { id } });
   }, [dispatch, id]);
 
   const saveToClipboardHandler = useCallback(
@@ -188,20 +178,15 @@ function RangesHeader({
     saveToClipboardHandler,
   ]);
 
-  const changeSumConstantFlagHandler = useCallback(
-    (flag) => {
-      dispatch({
-        type: CHANGE_RANGES_SUM_FLAG,
-        payload: flag,
-      });
-    },
-    [dispatch],
-  );
+  const changeSumConstantFlagHandler = useCallback(() => {
+    dispatch({
+      type: 'CHANGE_RANGES_SUM_FLAG',
+    });
+  }, [dispatch]);
   const { editRange } = useEditRangeModal();
   const addRangeHandler = useCallback(() => {
     dispatch({
-      type: ADD_RANGE,
-      payload: { id: 'new' },
+      type: 'ADD_RANGE',
     });
 
     editRange(true);
@@ -285,14 +270,15 @@ function RangesHeader({
           />
         </ActiveButton>
 
-        <ToggleButton
+        <ActiveButton
           className="icon"
           popupTitle="Fix integral values"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
+          value={ranges?.options?.isSumConstant}
         >
           <ImLink />
-        </ToggleButton>
+        </ActiveButton>
         <Button
           popupTitle="Add range"
           popupPlacement="right"
