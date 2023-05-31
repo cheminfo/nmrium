@@ -26,7 +26,10 @@ export function fromJSON(
   return molecules;
 }
 
-export function addMolfile(molecules, molfile) {
+export function addMolfile(
+  molecules: StateMoleculeExtended[],
+  molfile: string,
+) {
   const reservedNumbers = extractLabelsNumbers(molecules);
 
   // try to parse molfile
@@ -45,8 +48,8 @@ export function addMolfile(molecules, molfile) {
 }
 
 export function setMolfile(
-  molecules,
-  currentMolecule: Pick<StateMoleculeExtended, 'id' | 'molfile' | 'label'>,
+  molecules: StateMoleculeExtended[],
+  currentMolecule: StateMolecule,
 ) {
   const { molfile, id, label } = currentMolecule;
   const reservedNumbers = extractLabelsNumbers(molecules);
@@ -86,7 +89,7 @@ export function extractNumber(value: string) {
 }
 
 export function extractLabelsNumbers(
-  molecules: Pick<StateMoleculeExtended, 'label'>[],
+  molecules: Pick<StateMolecule, 'label'>[],
 ) {
   const values: number[] = [];
   for (const molecule of molecules) {

@@ -8,7 +8,7 @@ export interface StateMolecule {
   molfile: string;
   label?: string;
 }
-export interface StateMoleculeExtended extends StateMolecule {
+export interface StateMoleculeExtended extends Required<StateMolecule> {
   mf: string;
   em: number;
   mw: number;
