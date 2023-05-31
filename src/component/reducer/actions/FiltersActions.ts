@@ -19,10 +19,19 @@ import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { activateTool, resetSelectedTool } from './ToolsActions';
 
-const { apply: apodization } = Filters.apodization;
-const { apply: baselineCorrection } = Filters.baselineCorrection;
-const { apply: phaseCorrection } = Filters.phaseCorrection;
-const { apply: zeroFilling } = Filters.zeroFilling;
+const {
+  fft,
+  apodization,
+  baselineCorrection,
+  phaseCorrection,
+  zeroFilling,
+  shiftX,
+  shift2DX,
+  shift2DY,
+  exclusionZones,
+  equallySpaced,
+  signalProcessing,
+} = Filters;
 
 type ShiftSpectrumAlongXAxisAction = ActionType<
   'SHIFT_SPECTRUM',
@@ -221,12 +230,12 @@ function rollbackSpectrum(
   //return back the spectra data to point of time before applying a specific filter
 
   const applyFilter = [
-    Filters.phaseCorrection.id,
-    Filters.fft.id,
-    Filters.shiftX.id,
-    Filters.shift2DX.id,
-    Filters.shift2DY.id,
-    Filters.signalProcessing.id,
+    phaseCorrection.id,
+    fft.id,
+    shiftX.id,
+    shift2DX.id,
+    shift2DY.id,
+    signalProcessing.id,
   ].includes(filterKey);
 
   rollbackSpectrumByFilter(draft, {
@@ -245,7 +254,7 @@ function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   switch (filterKey) {
-    case Filters.phaseCorrection.id: {
+    case phaseCorrection.id: {
       // look for the strongest peak to set it as a pivot
       const { xValue, index } = getStrongestPeak(draft) || {
         xValue: 0,
@@ -256,7 +265,7 @@ function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
 
       break;
     }
-    case Filters.baselineCorrection.id: {
+    case baselineCorrection.id: {
       if (activeSpectrum) {
         const baselineCorrectionFilter: any = current(draft).data[
           activeSpectrum.index
@@ -271,7 +280,7 @@ function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
       }
       break;
     }
-    case Filters.apodization.id: {
+    case apodization.id: {
       draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
       break;
     }
