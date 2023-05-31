@@ -1,4 +1,4 @@
-import { readFromWebSource } from 'nmr-processing';
+import { readFromWebSource } from 'nmr-load-save';
 import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
