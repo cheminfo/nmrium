@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
 import { GlobalActions } from '../reducer/actions/GlobalActions';
+import { IntegralsActions } from '../reducer/actions/IntegralsActions';
 import { LoadActions } from '../reducer/actions/LoadActions';
 import { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction';
 import { SpectrumActions } from '../reducer/actions/SpectrumsActions';
@@ -12,6 +13,7 @@ export type Action =
   | SpectraAnalysisActions
   | GlobalActions
   | LoadActions
+  | IntegralsActions
   // eslint-disable-next-line @typescript-eslint/ban-types
   | { type: string & {}; payload?: Object };
 

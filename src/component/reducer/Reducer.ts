@@ -507,19 +507,18 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PeaksActions.changePeakShapeHandler(draft, action);
     case types.TOGGLE_PEAKS_VIEW_PROPERTY:
       return PeaksActions.handleTogglePeaksViewProperty(draft, action);
-    case types.ADD_INTEGRAL:
-      return IntegralsActions.addIntegral(draft, action);
-    case types.DELETE_INTEGRAL:
-      return IntegralsActions.deleteIntegral(draft, action);
-    case types.CHANGE_INTEGRAL_DATA:
-      return IntegralsActions.changeIntegral(draft, action);
-    case types.RESIZE_INTEGRAL:
-      return IntegralsActions.changeIntegral(draft, action);
-    case types.CHANGE_INTEGRAL_SUM:
+    case 'ADD_INTEGRAL':
+      return IntegralsActions.handleAddIntegral(draft, action);
+    case 'DELETE_INTEGRAL':
+      return IntegralsActions.handleDeleteIntegral(draft, action);
+    case 'RESIZE_INTEGRAL':
+    case 'CHANGE_INTEGRAL':
+      return IntegralsActions.handleChangeIntegral(draft, action);
+    case 'CHANGE_INTEGRAL_SUM':
       return IntegralsActions.handleChangeIntegralSum(draft, action);
-    case types.CHANGE_INTEGRALS_SUM_FLAG:
-      return IntegralsActions.handleChangeIntegralsSumFlag(draft, action);
-    case types.CHANGE_INTEGRAL_RELATIVE:
+    case 'CHANGE_INTEGRALS_SUM_FLAG':
+      return IntegralsActions.handleChangeIntegralsSumFlag(draft);
+    case 'CHANGE_INTEGRAL_RELATIVE':
       return IntegralsActions.handleChangeIntegralsRelativeValue(draft, action);
 
     case types.SET_X_DOMAIN:

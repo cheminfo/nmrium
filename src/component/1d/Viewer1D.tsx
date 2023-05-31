@@ -26,7 +26,6 @@ import scaleReducer, {
   SET_SCALE,
 } from '../reducer/scaleReducer';
 import {
-  ADD_INTEGRAL,
   ADD_PEAKS,
   ADD_PEAK,
   ADD_RANGE,
@@ -145,7 +144,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           case options.integral.id:
             dispatch({
-              type: ADD_INTEGRAL,
+              type: 'ADD_INTEGRAL',
               payload: brushData,
             });
             break;

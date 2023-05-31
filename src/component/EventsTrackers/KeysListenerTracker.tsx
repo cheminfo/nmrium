@@ -16,7 +16,6 @@ import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   SET_KEY_PREFERENCES,
   APPLY_KEY_PREFERENCES,
-  DELETE_INTEGRAL,
   DELETE_PEAK_NOTATION,
   DELETE_RANGE,
   DELETE_2D_ZONE,
@@ -67,9 +66,9 @@ function KeysListenerTracker() {
       switch (type) {
         case HighlightEventSource.INTEGRAL: {
           dispatch({
-            type: DELETE_INTEGRAL,
+            type: 'DELETE_INTEGRAL',
             payload: {
-              integralID: id,
+              id,
             },
           });
           // remove keys from the highlighted list after delete
