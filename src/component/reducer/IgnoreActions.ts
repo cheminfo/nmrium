@@ -11,7 +11,6 @@ const ignoreActions = new Set([
   types.SET_SELECTED_TOOL,
   types.SET_SPECTRUMS_VERTICAL_ALIGN,
   types.SET_VERTICAL_INDICATOR_X_POSITION,
-  types.SET_WIDTH,
   types.SET_DIMENSIONS,
   types.SET_X_DOMAIN,
   types.SET_Y_DOMAIN,

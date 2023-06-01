@@ -20,7 +20,7 @@ import { Tool } from '../toolbar/ToolTypes';
 import * as AssignmentsActions from './actions/AssignmentsActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import * as DatabaseActions from './actions/DatabaseActions';
-import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
+import * as DimensionsActions from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import * as FiltersActions from './actions/FiltersActions';
 import * as GlobalActions from './actions/GlobalActions';
@@ -527,11 +527,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SET_Y_DOMAIN:
       return DomainActions.setYDomain(draft, action);
 
-    case types.SET_WIDTH:
-      return setWidth(draft, action.width);
-
-    case types.SET_DIMENSIONS:
-      return handleSetDimensions(draft, action);
+    case 'SET_DIMENSIONS':
+      return DimensionsActions.handleSetDimensions(draft, action);
 
     case types.SHIFT_SPECTRUM:
       return FiltersActions.shiftSpectrumAlongXAxis(draft, action);

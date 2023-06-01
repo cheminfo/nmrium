@@ -8,7 +8,7 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
-import { SET_DIMENSIONS, ADD_2D_ZONE } from '../reducer/types/Types';
+import { ADD_2D_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import { assert } from '../utility/assert';
 
@@ -202,7 +202,7 @@ export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
   const { width, height, children } = props;
 
   useEffect(() => {
-    dispatch({ type: SET_DIMENSIONS, payload: { width, height } });
+    dispatch({ type: 'SET_DIMENSIONS', payload: { width, height } });
   }, [width, height, dispatch]);
 
   return children;

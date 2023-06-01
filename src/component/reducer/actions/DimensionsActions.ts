@@ -1,15 +1,19 @@
 import { Draft } from 'immer';
 
 import { State } from '../Reducer';
+import { ActionType } from '../types/Types';
 
-function setWidth(draft: Draft<State>, width) {
-  draft.width = width;
-}
+type SetDimensionsAction = ActionType<
+  'SET_DIMENSIONS',
+  { width: number; height: number }
+>;
 
-function handleSetDimensions(draft: Draft<State>, action) {
+export type DimensionsActions = SetDimensionsAction;
+
+function handleSetDimensions(draft: Draft<State>, action: SetDimensionsAction) {
   const { width, height } = action.payload;
   draft.width = width;
   draft.height = height;
 }
 
-export { setWidth, handleSetDimensions };
+export { handleSetDimensions };
