@@ -4,15 +4,17 @@ import { rangesToXY } from 'nmr-processing';
 import { UsedColors } from '../../../../types/UsedColors';
 import { initiateDatum1D } from '../initiateDatum1D';
 
+export interface ResurrectSpectrumInfo {
+  nucleus: string;
+  solvent: string;
+  name?: string;
+  frequency?: number;
+  color?: string;
+}
+
 export function generateSpectrumFromRanges(
   ranges: Range[],
-  info: {
-    nucleus: string;
-    solvent: string;
-    name?: string;
-    frequency?: number;
-    color?: string;
-  },
+  info: ResurrectSpectrumInfo,
   usedColors: UsedColors,
 ): Spectrum1D {
   const { nucleus, solvent, name = null, frequency = 400 } = info;

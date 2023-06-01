@@ -1,13 +1,34 @@
 import { Draft } from 'immer';
+import { Range, Spectrum1D } from 'nmr-load-save';
 
 import { get1DColor, mapRanges } from '../../../data/data1d/Spectrum1D';
-import { generateSpectrumFromRanges } from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
+import {
+  ResurrectSpectrumInfo,
+  generateSpectrumFromRanges,
+} from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
+import { ActionType } from '../types/Types';
 
 import { setDomain, setIntegralsYDomain } from './DomainActions';
 
-function handleResurrectSpectrumFromJcamp(draft: Draft<State>, action) {
+type ResurrectSpectrumFromJcampAction = ActionType<
+  'RESURRECTING_SPECTRUM_FROM_JCAMP',
+  { ranges: Range[]; spectrum: Spectrum1D }
+>;
+type ResurrectSpectrumFromRangesAction = ActionType<
+  'RESURRECTING_SPECTRUM_FROM_RANGES',
+  { ranges: Range[]; info: ResurrectSpectrumInfo }
+>;
+
+export type DatabaseActions =
+  | ResurrectSpectrumFromJcampAction
+  | ResurrectSpectrumFromRangesAction;
+
+function handleResurrectSpectrumFromJcamp(
+  draft: Draft<State>,
+  action: ResurrectSpectrumFromJcampAction,
+) {
   let { ranges, spectrum } = action.payload;
   spectrum = {
     ...spectrum,
@@ -24,7 +45,10 @@ function handleResurrectSpectrumFromJcamp(draft: Draft<State>, action) {
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
 
-function handleResurrectSpectrumFromRanges(draft: Draft<State>, action) {
+function handleResurrectSpectrumFromRanges(
+  draft: Draft<State>,
+  action: ResurrectSpectrumFromRangesAction,
+) {
   const { ranges, info } = action.payload;
 
   const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
