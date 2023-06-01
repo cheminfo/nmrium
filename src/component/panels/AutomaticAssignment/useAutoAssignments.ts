@@ -9,7 +9,6 @@ import { useRef, useState } from 'react';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
 import { assert } from '../../utility/assert';
 
 export interface AutoAssignmentsData {
@@ -41,7 +40,7 @@ export function useAutoAssignments() {
 
   function restAssignments() {
     dispatch({
-      type: SET_AUTOMATIC_ASSIGNMENTS,
+      type: 'SET_AUTOMATIC_ASSIGNMENTS',
       payload: { assignments: originData.current },
     });
   }
@@ -66,7 +65,7 @@ export function useAutoAssignments() {
 
       if (result[0]?.assignment) {
         dispatch({
-          type: SET_AUTOMATIC_ASSIGNMENTS,
+          type: 'SET_AUTOMATIC_ASSIGNMENTS',
           payload: { assignments: result[0].assignment },
         });
       } else {

@@ -758,8 +758,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
       return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
 
-    case types.SET_AUTOMATIC_ASSIGNMENTS:
-      return AssignmentsActions.setAutomaticAssignmentsHandler(draft, action);
+    case 'SET_AUTOMATIC_ASSIGNMENTS':
+      return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
 
     case UNDO:
       return handleHistoryUndo(draft);

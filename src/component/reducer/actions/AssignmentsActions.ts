@@ -3,8 +3,16 @@ import { Range, Spectrum1D, Spectrum2D, Zone } from 'nmr-load-save';
 import { SpectraData1D, SpectraData2D } from 'nmr-processing';
 
 import { State } from '../Reducer';
+import { ActionType } from '../types/Types';
 
-function setAutomaticAssignmentsHandler(
+type SetAutomaticAssignmentsAction = ActionType<
+  'SET_AUTOMATIC_ASSIGNMENTS',
+  { assignments: (SpectraData1D | SpectraData2D)[] }
+>;
+
+export type AssignmentsActions = SetAutomaticAssignmentsAction;
+
+function handleSetAutomaticAssignments(
   draft: Draft<State>,
   action: { payload: { assignments: (SpectraData1D | SpectraData2D)[] } },
 ) {
@@ -27,4 +35,4 @@ function setAutomaticAssignmentsHandler(
   }
 }
 
-export { setAutomaticAssignmentsHandler };
+export { handleSetAutomaticAssignments };
