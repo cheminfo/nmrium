@@ -43,6 +43,7 @@ export default function useExport() {
             const fileName = state.data[0]?.info?.name;
             const exportedData = toJSON(state, preferencesState, {
               exportTarget: 'nmrium',
+              view: true,
             });
             await exportAsJSON(
               exportedData,
