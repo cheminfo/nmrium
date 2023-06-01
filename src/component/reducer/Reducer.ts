@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
+import { PeaksViewState } from 'nmr-load-save';
 import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
 import { Reducer } from 'react';
 
@@ -11,7 +12,6 @@ import {
   StateMoleculeExtended,
 } from '../../data/molecules/Molecule';
 import { Nuclei } from '../../data/types/common/Nucleus';
-import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
 import { Action } from '../context/DispatchContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
