@@ -3,7 +3,6 @@ import * as types from './types/Types';
 const ignoreActions = new Set([
   types.APPLY_KEY_PREFERENCES,
   types.BRUSH_END,
-  types.RESET_DOMAIN,
   types.RESET_SELECTED_TOOL,
   types.SET_KEY_PREFERENCES,
   types.SET_LOADING_FLAG,

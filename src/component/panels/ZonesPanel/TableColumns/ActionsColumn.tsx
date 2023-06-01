@@ -16,8 +16,6 @@ import {
   CHANGE_ZONE_SIGNAL_KIND,
   DELETE_2D_ZONE,
   SAVE_EDITED_ZONE,
-  SET_X_DOMAIN,
-  SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
 
 const selectBoxStyle: CSSProperties = {
@@ -75,7 +73,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const zoomZoneHandler = useCallback(() => {
     const xMargin = Math.abs(rowData.x.from - rowData.x.to) * 10;
     dispatch({
-      type: SET_X_DOMAIN,
+      type: 'SET_X_DOMAIN',
       payload: {
         xDomain:
           rowData.x.from <= rowData.x.to
@@ -85,7 +83,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
     });
     const yMargin = Math.abs(rowData.y.from - rowData.y.to) * 10;
     dispatch({
-      type: SET_Y_DOMAIN,
+      type: 'SET_Y_DOMAIN',
       payload: {
         yDomain:
           rowData.y.from <= rowData.y.to

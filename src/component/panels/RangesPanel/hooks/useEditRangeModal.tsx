@@ -5,7 +5,6 @@ import { useDispatch } from '../../../context/DispatchContext';
 import { useModal } from '../../../elements/popup/Modal';
 import { positions, transitions } from '../../../elements/popup/options';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
-import { SET_X_DOMAIN } from '../../../reducer/types/Types';
 
 import { RangeData } from './useMapRanges';
 
@@ -21,7 +20,7 @@ export default function useEditRangeModal(range?: RangeData) {
         const { from, to } = _range;
         const margin = Math.abs(from - to);
         dispatch({
-          type: SET_X_DOMAIN,
+          type: 'SET_X_DOMAIN',
           payload: {
             xDomain: [from - margin, to + margin],
           },

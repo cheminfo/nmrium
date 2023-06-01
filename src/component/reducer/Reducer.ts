@@ -521,11 +521,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'CHANGE_INTEGRAL_RELATIVE':
       return IntegralsActions.handleChangeIntegralsRelativeValue(draft, action);
 
-    case types.SET_X_DOMAIN:
-      return DomainActions.setXDomain(draft, action);
-
-    case types.SET_Y_DOMAIN:
-      return DomainActions.setYDomain(draft, action);
+    case 'SET_X_DOMAIN':
+      return DomainActions.handleSetXDomain(draft, action);
+    case 'SET_Y_DOMAIN':
+      return DomainActions.handleSetYDomain(draft, action);
 
     case 'SET_DIMENSIONS':
       return DimensionsActions.handleSetDimensions(draft, action);
@@ -729,8 +728,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleDeleteSignal(draft, action);
     case types.SET_2D_SIGNAL_PATH_LENGTH:
       return ZonesActions.handleSetSignalPathLength(draft, action);
-    case types.RESET_DOMAIN:
-      return DomainActions.handelResetDomain(draft);
     case types.CHANGE_ZONE_SIGNAL_VALUE:
       return ZonesActions.changeZoneSignalDelta(draft, action);
     case types.CHANGE_ZONE_SIGNAL_KIND:
