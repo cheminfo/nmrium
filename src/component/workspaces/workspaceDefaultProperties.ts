@@ -1,6 +1,5 @@
+import { WorkspacePreferences } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
-
-import { WorkspacePreferences } from './Workspace';
 
 export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   display: {

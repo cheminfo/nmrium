@@ -1,6 +1,6 @@
 import lodashMerge from 'lodash/merge';
+import { WorkSpaceSource } from 'nmr-load-save';
 
-import { WorkSpaceSource } from '../../../workspaces/Workspace';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
 
 export function initWorkspace(

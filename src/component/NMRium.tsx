@@ -3,7 +3,12 @@
 import { css } from '@emotion/react';
 import { WebSource } from 'filelist-utils';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, NmriumState } from 'nmr-load-save';
+import {
+  readNMRiumObject,
+  NmriumState,
+  CustomWorkspaces,
+  WorkspacePreferences as NMRiumPreferences,
+} from 'nmr-load-save';
 import { Spectrum } from 'nmr-processing';
 import {
   useEffect,
@@ -55,10 +60,6 @@ import preferencesReducer, {
 } from './reducer/preferences/preferencesReducer';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import {
-  CustomWorkspaces,
-  WorkspacePreferences as NMRiumPreferences,
-} from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -103,8 +104,10 @@ const containerStyles = css`
   }
 `;
 export { serializeNmriumState } from 'nmr-load-save';
-export type { NmriumState } from 'nmr-load-save';
-export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
+export type {
+  NmriumState,
+  WorkspacePreferences as NMRiumPreferences,
+} from 'nmr-load-save';
 
 export type NMRiumWorkspace =
   | 'exercise'

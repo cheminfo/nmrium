@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
+import { Workspace } from 'nmr-load-save';
 
-import { Workspace } from '../../../workspaces/Workspace';
 import { PreferencesState } from '../preferencesReducer';
 
 export function getActiveWorkspace(draft: Draft<PreferencesState>) {

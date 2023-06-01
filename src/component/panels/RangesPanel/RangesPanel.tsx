@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xGetFromToIndex } from 'ml-spectra-processing';
+import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Spectrum1D, Data1D, Info1D, Ranges } from 'nmr-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
@@ -15,7 +16,6 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { rangeStateInit } from '../../reducer/Reducer';
 import { copyTextToClipboard } from '../../utility/export';
-import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';

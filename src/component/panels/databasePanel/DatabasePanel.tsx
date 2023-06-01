@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
+  Database,
   NmriumState,
   readFromWebSource,
   serializeNmriumState,
@@ -38,7 +39,6 @@ import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
 import nucleusToString from '../../utility/nucleusToString';
-import { Database } from '../../workspaces/Workspace';
 import { PanelNoData } from '../PanelNoData';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';

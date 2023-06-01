@@ -1,4 +1,9 @@
 import { Draft, produce } from 'immer';
+import {
+  MultipleSpectraAnalysisPreferences,
+  Workspace,
+  WorkSpaceSource,
+} from 'nmr-load-save';
 import { Reducer } from 'react';
 import { SplitPaneSize } from 'react-science/ui';
 
@@ -10,12 +15,7 @@ import {
   storeData,
 } from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
-import {
-  MultipleSpectraAnalysisPreferences,
-  Workspace,
-  WorkSpaceSource,
-} from '../../workspaces/Workspace';
-import { ActionType } from '../types/ActionType';
+import { ActionType } from '../types/Types';
 
 import { addWorkspace } from './actions/addWorkspace';
 import {

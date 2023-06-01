@@ -1,4 +1,5 @@
 import { Formik } from 'formik';
+import { PanelsPreferences } from 'nmr-load-save';
 import {
   useImperativeHandle,
   useRef,
@@ -14,7 +15,6 @@ import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
-import { PanelsPreferences } from '../../workspaces/Workspace';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 

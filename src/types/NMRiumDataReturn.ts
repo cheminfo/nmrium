@@ -1,8 +1,8 @@
 import { CorrelationData } from 'nmr-correlation';
+import { Workspace } from 'nmr-load-save';
 import { Spectrum } from 'nmr-processing';
 
 import { ViewState } from '../component/reducer/Reducer';
-import { Workspace } from '../component/workspaces/Workspace';
 import { StateMolecule } from '../data/molecules/Molecule';
 
 export interface NMRiumDataReturn {

@@ -1,4 +1,10 @@
 import has from 'lodash/has';
+import {
+  MultipleSpectraAnalysisPreferences,
+  PanelsPreferences,
+  Workspace,
+  WorkSpacePanelPreferences,
+} from 'nmr-load-save';
 import { useMemo } from 'react';
 
 import { defaultPredictionOptions } from '../../data/PredictionManager';
@@ -14,12 +20,6 @@ import {
   getSpectraDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
-import {
-  MultipleSpectraAnalysisPreferences,
-  PanelsPreferences,
-  Workspace,
-  WorkSpacePanelPreferences,
-} from '../workspaces/Workspace';
 
 const basePath = 'formatting.panels';
 

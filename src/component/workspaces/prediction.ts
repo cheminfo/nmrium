@@ -1,4 +1,4 @@
-import { InnerWorkspace } from './Workspace';
+import { InnerWorkspace } from 'nmr-load-save';
 
 export const prediction: InnerWorkspace = {
   version: 1,

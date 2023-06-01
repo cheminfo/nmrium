@@ -1,6 +1,6 @@
 import lodashMerge from 'lodash/merge';
+import { Workspace, WorkSpaceSource } from 'nmr-load-save';
 
-import { Workspace, WorkSpaceSource } from '../../../workspaces/Workspace';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
 
 interface MapWorkspacesOptions {

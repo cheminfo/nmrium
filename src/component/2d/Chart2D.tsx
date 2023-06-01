@@ -1,3 +1,4 @@
+import { spectraRendering } from 'nmr-load-save';
 import { Spectrum1D } from 'nmr-processing';
 import { memo } from 'react';
 
@@ -5,7 +6,6 @@ import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { Margin } from '../reducer/Reducer';
-import { spectraRendering } from '../workspaces/Workspace';
 
 import XAxis from './XAxis';
 import YAxis from './YAxis';

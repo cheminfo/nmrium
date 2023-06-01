@@ -1,4 +1,5 @@
 import { Formik } from 'formik';
+import { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from 'nmr-load-save';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import * as Yup from 'yup';
 
@@ -11,7 +12,6 @@ import { GroupPane } from '../../../elements/GroupPane';
 import Label from '../../../elements/Label';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
-import { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from '../../../workspaces/Workspace';
 import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer';
 
 import { AnalysisTablePreferences } from './AnalysisTablePreferences';

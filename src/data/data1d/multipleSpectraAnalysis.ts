@@ -1,6 +1,4 @@
 import lodashGet from 'lodash/get';
-import { Spectrum, Spectrum1D } from 'nmr-processing';
-
 import {
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
@@ -8,7 +6,9 @@ import {
   PredefinedSpectraColumn,
   PredefinedTableColumn,
   WorkSpacePanelPreferences,
-} from '../../component/workspaces/Workspace';
+} from 'nmr-load-save';
+import { Spectrum, Spectrum1D } from 'nmr-processing';
+
 import { RangeDetectionResult } from '../types/data1d/index';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject';
 import generateChar from '../utilities/generateChar';
