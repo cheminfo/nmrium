@@ -6,8 +6,16 @@ import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { ActionType } from '../types/Types';
 
 import { setDomain } from './DomainActions';
+
+type KeyPreferencesAction = ActionType<
+  'SET_KEY_PREFERENCES | APPLY_KEY_PREFERENCES',
+  { keyCode: string }
+>;
+
+export type PreferencesActions = KeyPreferencesAction;
 
 interface AlignmentOptions {
   verticalAlign?: VerticalAlignment | 'auto-check';
@@ -61,7 +69,10 @@ function changeSpectrumVerticalAlignment(
   }
 }
 
-function setKeyPreferencesHandler(draft: Draft<State>, action) {
+function handleSetKeyPreferences(
+  draft: Draft<State>,
+  action: KeyPreferencesAction,
+) {
   const { keyCode } = action.payload;
   const {
     data,
@@ -114,7 +125,10 @@ function setSpectraDisplayPreferences(draft: Draft<State>, preferences) {
   }
 }
 
-function applyKeyPreferencesHandler(draft: Draft<State>, action) {
+function handleApplyKeyPreferences(
+  draft: Draft<State>,
+  action: KeyPreferencesAction,
+) {
   const { keyCode } = action.payload;
   const preferences = draft.keysPreferences[keyCode];
   if (preferences) {
@@ -140,6 +154,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, action) {
 
 export {
   changeSpectrumVerticalAlignment,
-  setKeyPreferencesHandler,
-  applyKeyPreferencesHandler,
+  handleSetKeyPreferences,
+  handleApplyKeyPreferences,
 };

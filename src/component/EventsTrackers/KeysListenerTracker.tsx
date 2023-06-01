@@ -14,8 +14,6 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
-  SET_KEY_PREFERENCES,
-  APPLY_KEY_PREFERENCES,
   DELETE_PEAK_NOTATION,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
@@ -215,7 +213,7 @@ function KeysListenerTracker() {
       if (data && data.length > 0 && num >= 1 && num <= 9) {
         if (e.shiftKey) {
           dispatch({
-            type: SET_KEY_PREFERENCES,
+            type: 'SET_KEY_PREFERENCES',
             payload: {
               keyCode: num,
             },
@@ -224,14 +222,14 @@ function KeysListenerTracker() {
         } else if (!checkModifierKeyActivated(e)) {
           if (keysPreferences?.[num]) {
             dispatch({
-              type: APPLY_KEY_PREFERENCES,
+              type: 'APPLY_KEY_PREFERENCES',
               payload: {
                 keyCode: num,
               },
             });
           } else {
             dispatch({
-              type: SET_KEY_PREFERENCES,
+              type: 'SET_KEY_PREFERENCES',
               payload: {
                 keyCode: num,
               },

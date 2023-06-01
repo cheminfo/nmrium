@@ -33,10 +33,7 @@ import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
 import * as MoleculeActions from './actions/MoleculeActions';
 import * as PeaksActions from './actions/PeaksActions';
-import {
-  setKeyPreferencesHandler,
-  applyKeyPreferencesHandler,
-} from './actions/PreferencesActions';
+import * as PreferencesActions from './actions/PreferencesActions';
 import * as RangesActions from './actions/RangesActions';
 import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
@@ -716,10 +713,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'SHOW_J_GRAPH':
       return RangesActions.handleShowJGraph(draft, action);
 
-    case types.SET_KEY_PREFERENCES:
-      return setKeyPreferencesHandler(draft, action);
-    case types.APPLY_KEY_PREFERENCES:
-      return applyKeyPreferencesHandler(draft, action);
+    case 'SET_KEY_PREFERENCES':
+      return PreferencesActions.handleSetKeyPreferences(draft, action);
+    case 'APPLY_KEY_PREFERENCES':
+      return PreferencesActions.handleApplyKeyPreferences(draft, action);
     case types.ADD_2D_ZONE:
       return ZonesActions.add2dZoneHandler(draft, action);
     case types.DELETE_2D_ZONE:
