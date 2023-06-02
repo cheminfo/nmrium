@@ -23,7 +23,6 @@ import NextPrev from '../../elements/NextPrev';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import { SET_MOLECULE } from '../../reducer/types/Types';
 
 import MoleculeHeader from './MoleculeHeader';
 import MoleculePanelHeader, {
@@ -117,7 +116,7 @@ function MoleculePanelInner({
     (molecule, molfile) => {
       const { id, label } = molecule;
       dispatch({
-        type: SET_MOLECULE,
+        type: 'SET_MOLECULE',
         payload: { molfile, id, label },
       });
     },

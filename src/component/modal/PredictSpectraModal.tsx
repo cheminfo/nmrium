@@ -21,7 +21,6 @@ import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
-import { PREDICT_SPECTRA } from '../reducer/types/Types';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
@@ -185,7 +184,7 @@ function PredictSpectraModal({
         );
 
         dispatch({
-          type: PREDICT_SPECTRA,
+          type: 'PREDICT_SPECTRA',
           payload: { mol: molfile, options: values },
         });
 

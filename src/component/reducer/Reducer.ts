@@ -457,8 +457,8 @@ export function dispatchMiddleware(dispatch) {
           options,
         } = action.payload;
         void predictSpectra(molfile).then(
-          (data) => {
-            action.payload = { data, options };
+          (predictedSpectra) => {
+            action.payload = { predictedSpectra, options };
             dispatch(action);
           },
           () => {
@@ -634,28 +634,22 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'SET_2D_LEVEL':
       return ToolsActions.levelChangeHandler(draft, action);
 
-    case types.ADD_MOLECULE:
-      return MoleculeActions.addMoleculeHandler(draft, action);
-
-    case types.SET_MOLECULE:
-      return MoleculeActions.setMoleculeHandler(draft, action);
-    case types.CHANGE_MOLECULE_LABEL:
-      return MoleculeActions.changeMoleculeLabel(draft, action);
-
-    case types.DELETE_MOLECULE:
-      return MoleculeActions.deleteMoleculeHandler(draft, action);
-
-    case types.PREDICT_SPECTRA:
-      return MoleculeActions.predictSpectraFromMoleculeHandler(draft, action);
-
-    case types.FLOAT_MOLECULE_OVER_SPECTRUM:
-      return MoleculeActions.floatMoleculeOverSpectrum(draft, action);
-
-    case types.TOGGLE_MOLECULE_ATOM_NUMBER:
-      return MoleculeActions.toggleMoleculeAtomsNumbers(draft, action);
-
-    case types.CHANGE_FLOAT_MOLECULE_POSITION:
-      return MoleculeActions.changeFloatMoleculePosition(draft, action);
+    case 'ADD_MOLECULE':
+      return MoleculeActions.handleAddMolecule(draft, action);
+    case 'SET_MOLECULE':
+      return MoleculeActions.handleSetMolecule(draft, action);
+    case 'CHANGE_MOLECULE_LABEL':
+      return MoleculeActions.handleChangeMoleculeLabel(draft, action);
+    case 'DELETE_MOLECULE':
+      return MoleculeActions.handleDeleteMolecule(draft, action);
+    case 'PREDICT_SPECTRA':
+      return MoleculeActions.handlePredictSpectraFromMolecule(draft, action);
+    case 'FLOAT_MOLECULE_OVER_SPECTRUM':
+      return MoleculeActions.handleFloatMoleculeOverSpectrum(draft, action);
+    case 'TOGGLE_MOLECULE_ATOM_NUMBER':
+      return MoleculeActions.handleToggleMoleculeAtomsNumbers(draft, action);
+    case 'CHANGE_FLOAT_MOLECULE_POSITION':
+      return MoleculeActions.handleChangeFloatMoleculePosition(draft, action);
 
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);

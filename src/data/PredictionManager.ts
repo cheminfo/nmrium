@@ -17,6 +17,10 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
 
+export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
+export type SpectraPredictionOptions = Record<Experiment, boolean>;
+export type PredictedSpectraResult = Partial<Record<Experiment, Spectrum>>;
+
 export interface PredictionOptions {
   name: string;
   frequency: number;
@@ -29,13 +33,7 @@ export interface PredictionOptions {
   '2d': {
     nbPoints: { x: number; y: number };
   };
-  spectra: {
-    proton: boolean;
-    carbon: boolean;
-    cosy: boolean;
-    hsqc: boolean;
-    hmbc: boolean;
-  };
+  spectra: SpectraPredictionOptions;
 }
 
 export const defaultPredictionOptions: PredictionOptions = {
@@ -87,14 +85,14 @@ export async function predictSpectra(molfile: string): Promise<any> {
 }
 
 export function generateSpectra(
-  data: Record<string, any>,
+  predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
   color: string,
 ): Spectrum[] {
   const spectra: Spectrum[] = [];
-  for (const experiment in data) {
+  for (const experiment in predictedSpectra) {
     if (inputOptions.spectra[experiment]) {
-      const spectrum = data[experiment];
+      const spectrum = predictedSpectra[experiment];
       switch (experiment) {
         case 'proton':
         case 'carbon': {
