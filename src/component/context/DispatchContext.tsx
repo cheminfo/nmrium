@@ -7,6 +7,7 @@ import { DomainActions } from '../reducer/actions/DomainActions';
 import { GlobalActions } from '../reducer/actions/GlobalActions';
 import { IntegralsActions } from '../reducer/actions/IntegralsActions';
 import { LoadActions } from '../reducer/actions/LoadActions';
+import { PeaksActions } from '../reducer/actions/PeaksActions';
 import { PreferencesActions } from '../reducer/actions/PreferencesActions';
 import { RangesActions } from '../reducer/actions/RangesActions';
 import { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction';
@@ -26,6 +27,7 @@ export type Action =
   | AssignmentsActions
   | DomainActions
   | PreferencesActions
+  | PeaksActions
   // eslint-disable-next-line @typescript-eslint/ban-types
   | { type: string & {}; payload?: Object };
 

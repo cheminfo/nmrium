@@ -7,7 +7,6 @@ import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikSelect from '../elements/formik/FormikSelect';
-import { AUTO_PEAK_PICKING } from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -50,7 +49,7 @@ function AutoPeakPickingOptionPanel() {
   const handlePeakPicking = useCallback(
     (values) => {
       dispatch({
-        type: AUTO_PEAK_PICKING,
+        type: 'AUTO_PEAK_PICKING',
         payload: values,
       });
     },

@@ -12,10 +12,7 @@ import { useModal } from '../../elements/popup/Modal';
 import { positions, transitions } from '../../elements/popup/options';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import EditPeakShapeModal from '../../modal/EditPeakShapeModal';
-import {
-  DELETE_PEAK_NOTATION,
-  SHIFT_SPECTRUM,
-} from '../../reducer/types/Types';
+import { SHIFT_SPECTRUM } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -41,8 +38,8 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
       e.stopPropagation();
       const params = row.original;
       dispatch({
-        type: DELETE_PEAK_NOTATION,
-        payload: { id: params.id, xIndex: params.xIndex },
+        type: 'DELETE_PEAK',
+        payload: { id: params.id },
       });
     },
     [dispatch],

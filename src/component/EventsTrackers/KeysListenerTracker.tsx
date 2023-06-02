@@ -13,11 +13,7 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
-import {
-  DELETE_PEAK_NOTATION,
-  DELETE_2D_ZONE,
-  DELETE_EXCLUSION_ZONE,
-} from '../reducer/types/Types';
+import { DELETE_2D_ZONE, DELETE_EXCLUSION_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
@@ -75,7 +71,7 @@ function KeysListenerTracker() {
         }
         case HighlightEventSource.PEAK: {
           dispatch({
-            type: DELETE_PEAK_NOTATION,
+            type: 'DELETE_PEAK',
             payload: {
               id,
             },

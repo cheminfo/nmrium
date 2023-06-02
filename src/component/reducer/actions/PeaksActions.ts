@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Data1D, Peak1D, Spectrum1D } from 'nmr-load-save';
+import { OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
   getShiftX,
@@ -13,8 +14,45 @@ import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewSta
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { ActionType } from '../types/Types';
 
-function addPeak(draft: Draft<State>, action) {
+type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
+type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
+type DeletePeakAction = ActionType<'DELETE_PEAK', { id: string }>;
+type OptimizePeaksAction = ActionType<'OPTIMIZE_PEAKS', { peaks: Peak1D[] }>;
+type AutoPeaksPickingAction = ActionType<
+  'AUTO_PEAK_PICKING',
+  {
+    maxNumberOfPeaks: number;
+    minMaxRatio: number;
+    noiseFactor: number;
+    direction: OptionsXYAutoPeaksPicking['direction'];
+  }
+>;
+type ChangePeaksShapeAction = ActionType<
+  'CHANGE_PEAK_SHAPE',
+  {
+    id: string;
+    shape: Peak1D['shape'];
+  }
+>;
+type TogglePeaksViewAction = ActionType<
+  'TOGGLE_PEAKS_VIEW_PROPERTY',
+  {
+    key: keyof typeof defaultPeaksViewState;
+  }
+>;
+
+export type PeaksActions =
+  | AddPeakAction
+  | AddPeaksAction
+  | DeletePeakAction
+  | OptimizePeaksAction
+  | AutoPeaksPickingAction
+  | ChangePeaksShapeAction;
+
+//action
+function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
   const { x: mouseXPosition } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -46,7 +84,8 @@ function addPeak(draft: Draft<State>, action) {
   }
 }
 
-function addPeaks(draft: Draft<State>, action) {
+//action
+function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -77,15 +116,16 @@ function addPeaks(draft: Draft<State>, action) {
   }
 }
 
-function deletePeak(draft: Draft<State>, action) {
+//action
+function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
   const activeSpectrum = getActiveSpectrum(draft);
-  const peakData = action.payload;
+  const peakData = action?.payload || {};
 
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const state = original(draft) as State;
 
-    if (peakData == null) {
+    if (!peakData) {
       (draft.data[index] as Spectrum1D).peaks.values = [];
     } else {
       const peakIndex = (
@@ -96,7 +136,8 @@ function deletePeak(draft: Draft<State>, action) {
   }
 }
 
-function handleOptimizePeaks(draft: Draft<State>, action) {
+//action
+function handleOptimizePeaks(draft: Draft<State>, action: OptimizePeaksAction) {
   const { peaks } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -116,7 +157,12 @@ function handleOptimizePeaks(draft: Draft<State>, action) {
     datum.peaks.values = newPeaks;
   }
 }
-function handleAutoPeakPicking(draft: Draft<State>, action) {
+
+//action
+function handleAutoPeakPicking(
+  draft: Draft<State>,
+  action: AutoPeaksPickingAction,
+) {
   const { maxNumberOfPeaks, minMaxRatio, noiseFactor, direction } =
     action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
@@ -143,7 +189,11 @@ function handleAutoPeakPicking(draft: Draft<State>, action) {
   }
 }
 
-function changePeakShapeHandler(draft: Draft<State>, action) {
+//action
+function handleChangePeakShape(
+  draft: Draft<State>,
+  action: ChangePeaksShapeAction,
+) {
   const { shape, id } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -159,7 +209,11 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
   }
 }
 
-function handleTogglePeaksViewProperty(draft: Draft<State>, action) {
+//action
+function handleTogglePeaksViewProperty(
+  draft: Draft<State>,
+  action: TogglePeaksViewAction,
+) {
   const { key } = action.payload;
   togglePeaksViewProperty(draft, key);
 }
@@ -183,11 +237,11 @@ function togglePeaksViewProperty(
 }
 
 export {
-  addPeak,
-  addPeaks,
-  deletePeak,
+  handleAddPeak,
+  handleAddPeaks,
+  handleDeletePeak,
   handleAutoPeakPicking,
   handleOptimizePeaks,
-  changePeakShapeHandler,
+  handleChangePeakShape,
   handleTogglePeaksViewProperty,
 };

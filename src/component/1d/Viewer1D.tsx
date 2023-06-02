@@ -25,11 +25,7 @@ import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
 } from '../reducer/scaleReducer';
-import {
-  ADD_PEAKS,
-  ADD_PEAK,
-  ADD_EXCLUSION_ZONE,
-} from '../reducer/types/Types';
+import { ADD_EXCLUSION_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 
@@ -192,7 +188,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
           case options.peakPicking.id:
             dispatch({
-              type: ADD_PEAKS,
+              type: 'ADD_PEAKS',
               payload: brushData,
             });
             break;
@@ -289,7 +285,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           case options.peakPicking.id:
             dispatch({
-              type: ADD_PEAK,
+              type: 'ADD_PEAK',
               payload: position,
             });
             break;

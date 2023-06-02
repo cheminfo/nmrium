@@ -490,19 +490,19 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return LoadActions.handleLoadDropFiles(draft, action);
     case 'SET_LOADING_FLAG':
       return LoadActions.handleSetIsLoading(draft, action);
-    case types.ADD_PEAK:
-      return PeaksActions.addPeak(draft, action);
-    case types.ADD_PEAKS:
-      return PeaksActions.addPeaks(draft, action);
-    case types.DELETE_PEAK_NOTATION:
-      return PeaksActions.deletePeak(draft, action);
-    case types.AUTO_PEAK_PICKING:
+    case 'ADD_PEAK':
+      return PeaksActions.handleAddPeak(draft, action);
+    case 'ADD_PEAKS':
+      return PeaksActions.handleAddPeaks(draft, action);
+    case 'DELETE_PEAK':
+      return PeaksActions.handleDeletePeak(draft, action);
+    case 'AUTO_PEAK_PICKING':
       return PeaksActions.handleAutoPeakPicking(draft, action);
-    case types.OPTIMIZE_PEAKS:
+    case 'OPTIMIZE_PEAKS':
       return PeaksActions.handleOptimizePeaks(draft, action);
-    case types.CHANGE_PEAK_SHAPE:
-      return PeaksActions.changePeakShapeHandler(draft, action);
-    case types.TOGGLE_PEAKS_VIEW_PROPERTY:
+    case 'CHANGE_PEAK_SHAPE':
+      return PeaksActions.handleChangePeakShape(draft, action);
+    case 'TOGGLE_PEAKS_VIEW_PROPERTY':
       return PeaksActions.handleTogglePeaksViewProperty(draft, action);
     case 'ADD_INTEGRAL':
       return IntegralsActions.handleAddIntegral(draft, action);
