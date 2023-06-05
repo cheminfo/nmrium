@@ -30,7 +30,7 @@ const styles: Record<
 interface InformationPanelInnerProps {
   info: any;
   meta: any;
-  metaInfo: any;
+  customInfo: any;
 }
 
 function Arrow(props: { isOpen?: boolean }) {
@@ -132,18 +132,18 @@ const columns = [
   },
 ];
 
-type DataSetKey = 'info' | 'meta' | 'metaInfo';
+type DataSetKey = 'info' | 'meta' | 'customInfo';
 
 function InformationPanelInner({
   info,
   meta,
-  metaInfo,
+  customInfo,
 }: InformationPanelInnerProps) {
   const [searchKey, setSearchKey] = useState();
   const [panelsStatus, openPanel] = useState<Record<DataSetKey, boolean>>({
     info: true,
     meta: true,
-    metaInfo: true,
+    customInfo: true,
   });
 
   function handleSearch(e) {
@@ -153,7 +153,7 @@ function InformationPanelInner({
 
   const matchesInfo = filter(searchKey, info);
   const matchesMeta = filter(searchKey, meta);
-  const matchesMetaInfo = filter(searchKey, metaInfo);
+  const matchesMetaInfo = filter(searchKey, customInfo);
 
   function handleOpen(key: DataSetKey) {
     openPanel((prevPanelsStatus) => ({
@@ -177,6 +177,13 @@ function InformationPanelInner({
       </div>
       <div style={styles.tableContainer}>
         <InformationTable
+          data={matchesMetaInfo}
+          columns={columns}
+          title="Custom information"
+          onClick={() => handleOpen('customInfo')}
+          isOpen={panelsStatus.customInfo}
+        />
+        <InformationTable
           data={matchesInfo}
           columns={columns}
           title="Spectrum information"
@@ -186,16 +193,9 @@ function InformationPanelInner({
         <InformationTable
           data={matchesMeta}
           columns={columns}
-          title="Other parameters"
+          title="Other spectrum parameters"
           onClick={() => handleOpen('meta')}
           isOpen={panelsStatus.meta}
-        />
-        <InformationTable
-          data={matchesMetaInfo}
-          columns={columns}
-          title="Meta Info parameters"
-          onClick={() => handleOpen('metaInfo')}
-          isOpen={panelsStatus.metaInfo}
         />
       </div>
     </div>
@@ -207,7 +207,7 @@ const MemoizedInformationPanel = memo(InformationPanelInner);
 const emptyData = { info: {}, meta: {} };
 
 export default function InformationPanel() {
-  const { info, meta, metaInfo } = useSpectrum(emptyData);
+  const { info, meta, customInfo } = useSpectrum(emptyData);
 
-  return <MemoizedInformationPanel {...{ info, meta, metaInfo }} />;
+  return <MemoizedInformationPanel {...{ info, meta, customInfo }} />;
 }
