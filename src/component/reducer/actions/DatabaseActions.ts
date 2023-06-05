@@ -1,5 +1,6 @@
 import { Draft } from 'immer';
-import { Range, Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-load-save';
+import { NMRRange } from 'nmr-processing';
 
 import { get1DColor, mapRanges } from '../../../data/data1d/Spectrum1D';
 import {
@@ -14,11 +15,11 @@ import { setDomain, setIntegralsYDomain } from './DomainActions';
 
 type ResurrectSpectrumFromJcampAction = ActionType<
   'RESURRECTING_SPECTRUM_FROM_JCAMP',
-  { ranges: Range[]; spectrum: Spectrum1D }
+  { ranges: NMRRange[]; spectrum: Spectrum1D }
 >;
 type ResurrectSpectrumFromRangesAction = ActionType<
   'RESURRECTING_SPECTRUM_FROM_RANGES',
-  { ranges: Range[]; info: ResurrectSpectrumInfo }
+  { ranges: NMRRange[]; info: ResurrectSpectrumInfo }
 >;
 
 export type DatabaseActions =
@@ -32,7 +33,10 @@ function handleResurrectSpectrumFromJcamp(
   let { ranges, spectrum } = action.payload;
   spectrum = {
     ...spectrum,
-    ranges: { ...spectrum.ranges, values: mapRanges(ranges, spectrum) },
+    ranges: {
+      ...spectrum.ranges,
+      values: mapRanges(ranges, spectrum),
+    },
     display: {
       ...spectrum.display,
       ...get1DColor(spectrum.display, draft.usedColors),

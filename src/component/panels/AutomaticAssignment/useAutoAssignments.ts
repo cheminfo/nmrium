@@ -39,10 +39,12 @@ export function useAutoAssignments() {
   const [assignments, setAssignments] = useState<AutoAssignmentsData[]>([]);
 
   function restAssignments() {
-    dispatch({
-      type: 'SET_AUTOMATIC_ASSIGNMENTS',
-      payload: { assignments: originData.current },
-    });
+    if (originData.current) {
+      dispatch({
+        type: 'SET_AUTOMATIC_ASSIGNMENTS',
+        payload: { assignments: originData.current },
+      });
+    }
   }
 
   function getAssignments() {

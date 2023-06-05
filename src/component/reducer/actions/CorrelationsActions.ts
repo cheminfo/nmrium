@@ -18,7 +18,7 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities';
-import { AssignmentsData } from '../../assignment/AssignmentsContext';
+import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import { State } from '../Reducer';
 import { ActionType } from '../types/Types';
 
@@ -35,7 +35,7 @@ type SetCorrelationAction = ActionType<
   {
     id: string;
     correlation: Correlation;
-    options: CorrelationOptions;
+    options?: CorrelationOptions;
   }
 >;
 type SetCorrelationsAction = ActionType<
@@ -47,7 +47,7 @@ type SetCorrelationsAction = ActionType<
 >;
 type DeleteCorrelationAction = ActionType<
   'DELETE_CORRELATION',
-  { correlation: Correlation; assignmentData: AssignmentsData }
+  { correlation: Correlation; assignmentData: AssignmentContext }
 >;
 
 export type CorrelationsActions =
@@ -55,8 +55,7 @@ export type CorrelationsActions =
   | SetToleranceAction
   | SetCorrelationAction
   | SetCorrelationsAction
-  | DeleteCorrelationAction
-  | ActionType<'SET_AUTOMATIC_ASSIGNMENTS'>;
+  | DeleteCorrelationAction;
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;

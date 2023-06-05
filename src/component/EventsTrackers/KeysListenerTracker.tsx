@@ -133,7 +133,7 @@ function KeysListenerTracker() {
                   type: 'DELETE_EXCLUSION_ZONE',
                   payload: {
                     zone,
-                    spectrumID,
+                    spectrumId: spectrumID,
                   },
                 });
                 hideLoading();

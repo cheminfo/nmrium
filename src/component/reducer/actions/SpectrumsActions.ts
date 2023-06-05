@@ -69,7 +69,9 @@ type ChangeActiveSpectrumAction = ActionType<
     modifier?:
       | 'shift[false]_ctrl[true]'
       | 'shift[true]_ctrl[false]'
-      | 'shift[true]_ctrl[true]';
+      | 'shift[true]_ctrl[true]'
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      | (string & {});
 
     id?: string; // spectrum id
   }
@@ -117,7 +119,7 @@ type ImportSpectraMetaInfoAction = ActionType<
 type RecolorSpectraBasedOnDistinctValueAction = ActionType<
   'RECOLOR_SPECTRA_COLOR',
   {
-    jpath?: string;
+    jpath?: string[];
   }
 >;
 type OrderSpectraAction = ActionType<

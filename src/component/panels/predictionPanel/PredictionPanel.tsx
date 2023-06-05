@@ -37,7 +37,7 @@ export default function PredictionPane() {
 
         dispatch({
           type: 'PREDICT_SPECTRA',
-          payload: { mol: molecule, options: values },
+          payload: { molfile: molecule.molfile, options: values },
         });
         if (!spectraPanelState?.isOpen) {
           openSpectraPanel();

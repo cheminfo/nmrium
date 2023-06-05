@@ -31,7 +31,7 @@ function SignalDeltaColumn({
       dispatch({
         type: 'CHANGE_ZONE_SIGNAL_VALUE',
         payload: {
-          zoneID: rowData.id,
+          zoneId: rowData.id,
           signal: { id, deltaX: value },
         },
       });

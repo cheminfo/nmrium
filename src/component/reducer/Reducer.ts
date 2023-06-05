@@ -15,6 +15,7 @@ import {
 import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
+import { Action } from '../context/DispatchContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { Tool } from '../toolbar/ToolTypes';
 
@@ -447,13 +448,10 @@ export function dispatchMiddleware(dispatch) {
       }
 
       case types.PREDICT_SPECTRA: {
-        const {
-          mol: { molfile },
-          options,
-        } = action.payload;
+        const { molfile, options } = action.payload;
         void predictSpectra(molfile).then(
           (predictedSpectra) => {
-            action.payload = { predictedSpectra, options };
+            action.payload = { predictedSpectra, options, molfile };
             dispatch(action);
           },
           () => {
@@ -473,7 +471,7 @@ export function dispatchMiddleware(dispatch) {
   };
 }
 
-function innerSpectrumReducer(draft: Draft<State>, action) {
+function innerSpectrumReducer(draft: Draft<State>, action: Action) {
   if (!['LOAD_DROP_FILES', 'INITIATE'].includes(action.type)) {
     draft.actionType = action.type;
   }
@@ -749,5 +747,5 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
   }
 }
 
-export const spectrumReducer: Reducer<State, any> =
+export const spectrumReducer: Reducer<State, Action> =
   produce(innerSpectrumReducer);

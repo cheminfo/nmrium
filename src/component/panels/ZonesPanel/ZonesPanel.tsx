@@ -110,7 +110,7 @@ function ZonesPanelInner({
 
   const unlinkZoneHandler = useCallback(
     (
-      zoneData = null,
+      zoneData?,
       isOnZoneLevel = undefined,
       signalIndex = -1,
       axis = undefined,

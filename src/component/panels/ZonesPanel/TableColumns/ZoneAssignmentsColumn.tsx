@@ -6,8 +6,7 @@ import {
   RemoveAssignmentsButton,
   removeAssignmentCssStyle,
 } from '../../../elements/RemoveAssignmentsButton';
-
-import { RowDataProps } from './ActionsColumn';
+import { ZoneData } from '../hooks/useMapZones';
 
 function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
   if (flag) {
@@ -23,7 +22,7 @@ function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
 }
 
 export interface ZoneAssignmentColumnProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   axis: any;
   onHover: () => void;
   onClick: (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => void;

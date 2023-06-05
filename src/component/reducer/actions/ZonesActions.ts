@@ -28,7 +28,7 @@ import {
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
 import { isNumber } from '../../../data/utilities/isNumber';
-import { AssignmentsData, Axis } from '../../assignment/AssignmentsContext';
+import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
 import { State, zoneStateInit } from '../Reducer';
 import get2DRange, { ZoneBoundary } from '../helper/get2DRange';
@@ -42,7 +42,7 @@ interface DeleteSignal2DProps {
   spectrum: Spectrum;
   zone: Zone;
   signal: Signal2D;
-  assignmentData: AssignmentsData;
+  assignmentData: AssignmentContext;
 }
 
 type ChangeZonesFactorAction = ActionType<
@@ -57,7 +57,7 @@ type AutoZonesDetectionAction = ActionType<
 >;
 type ChangeZoneSignalDeltaAction = ActionType<
   'CHANGE_ZONE_SIGNAL_VALUE',
-  { zoneId: string; signal: { id: string; deltaX?: number; deltaY?: number } }
+  { zoneId: string; signal: { id?: string; deltaX?: number; deltaY?: number } }
 >;
 type ChangeZoneSignalKindAction = ActionType<
   'CHANGE_ZONE_SIGNAL_KIND',
@@ -65,7 +65,7 @@ type ChangeZoneSignalKindAction = ActionType<
 >;
 type DeleteZoneAction = ActionType<
   'DELETE_2D_ZONE',
-  { id?: string; assignmentData: AssignmentsData }
+  { id?: string; assignmentData: AssignmentContext }
 >;
 type DeleteSignal2DAction = ActionType<'DELETE_2D_SIGNAL', DeleteSignal2DProps>;
 type SetSignalPathLengthAction = ActionType<
@@ -99,16 +99,16 @@ type SaveEditedZoneAction = ActionType<
     zone: ZoneData;
   }
 >;
-type UnlinkZoneAction = ActionType<
-  'UNLINK_ZONE',
-  {
-    zone: ZoneData;
-    assignmentData: AssignmentsData;
-    isOnZoneLevel?: boolean;
-    signalIndex: number;
-    axis?: Axis;
-  }
->;
+
+interface UnlinkZoneProps {
+  zone?: ZoneData;
+  assignmentData: AssignmentContext;
+  isOnZoneLevel?: boolean;
+  signalIndex?: number;
+  axis?: Axis;
+}
+
+type UnlinkZoneAction = ActionType<'UNLINK_ZONE', UnlinkZoneProps>;
 
 export type ZonesActions =
   | AutoZonesDetectionAction
@@ -349,7 +349,7 @@ function handleSetSignalPathLength(
 }
 
 //action
-function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
+function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
@@ -357,12 +357,12 @@ function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const {
-      zone: zoneData = null,
+      zone: zoneData,
       assignmentData,
-      isOnZoneLevel = undefined,
+      isOnZoneLevel,
       signalIndex = -1,
-      axis = undefined,
-    } = action.payload;
+      axis,
+    } = props;
 
     if (zoneData) {
       // remove assignments in global state
@@ -391,6 +391,10 @@ function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
       unlinkInAssignmentData(assignmentData, zones);
     }
   }
+}
+//action
+function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
+  unlinkZone(draft, action.payload);
 }
 
 //action
@@ -511,6 +515,7 @@ export {
   handleChangeZoneSignalDelta,
   handleChangeZoneSignalKind,
   handleUnlinkZone,
+  unlinkZone,
   handleSaveEditedZone,
   handleSetDiaIDZone,
   handleSetSignalPathLength,

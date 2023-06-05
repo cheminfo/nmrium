@@ -10,6 +10,7 @@ import { HighlightEventSource, useHighlight } from '../../highlight/index';
 import { options } from '../../toolbar/ToolTypes';
 
 import { IntegralIndicator } from './IntegralIndicator';
+import { Integral } from 'nmr-load-save';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -42,12 +43,7 @@ const stylesHighlighted = css`
 `;
 
 interface IntegralResizableProps {
-  integralData: {
-    id: string;
-    from: number;
-    to: number;
-    integral?: number;
-  };
+  integralData: Integral;
   integralFormat: string;
 }
 

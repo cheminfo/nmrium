@@ -18,7 +18,7 @@ import { ActionType } from '../types/Types';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
-type DeletePeakAction = ActionType<'DELETE_PEAK', { id: string }>;
+type DeletePeakAction = ActionType<'DELETE_PEAK', { id?: string }>;
 type OptimizePeaksAction = ActionType<'OPTIMIZE_PEAKS', { peaks: Peak1D[] }>;
 type AutoPeaksPickingAction = ActionType<
   'AUTO_PEAK_PICKING',
@@ -49,7 +49,8 @@ export type PeaksActions =
   | DeletePeakAction
   | OptimizePeaksAction
   | AutoPeaksPickingAction
-  | ChangePeaksShapeAction;
+  | ChangePeaksShapeAction
+  | TogglePeaksViewAction;
 
 //action
 function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {

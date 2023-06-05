@@ -23,7 +23,7 @@ export default function FiltersPanel() {
           const hideLoading = await alert.showLoading(
             'Delete filters process in progress',
           );
-          dispatch({ type: 'DELETE_FILTER' });
+          dispatch({ type: 'DELETE_FILTER', payload: {} });
           hideLoading();
         },
       },

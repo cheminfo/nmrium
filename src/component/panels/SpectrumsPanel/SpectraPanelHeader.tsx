@@ -72,7 +72,7 @@ function SpectraPanelHeaderInner({
         {
           text: 'Yes',
           handler: () => {
-            dispatch({ type: 'DELETE_SPECTRA' });
+            dispatch({ type: 'DELETE_SPECTRA', payload: {} });
           },
         },
         { text: 'No' },

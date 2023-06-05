@@ -86,12 +86,17 @@ type ApplySignalProcessingAction = ActionType<
 
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
+  | ApodizationFilterAction
   | ZeroFillingFilterAction
   | ManualPhaseCorrectionFilterAction
   | BaselineCorrectionFilterAction
   | EnableFilterAction
   | DeleteFilterAction
   | DeleteSpectraFilterAction
+  | SetFilterSnapshotAction
+  | AddExclusionZoneAction
+  | DeleteExclusionZoneAction
+  | ApplySignalProcessingAction
   | ActionType<
       | 'APPLY_FFT_FILTER'
       | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
@@ -703,7 +708,7 @@ function handleEnableFilter(draft: Draft<State>, action: EnableFilterAction) {
 
 //action
 function handleDeleteFilter(draft: Draft<State>, action: DeleteFilterAction) {
-  const filterID = action.payload?.id;
+  const filterID = action?.payload?.id;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     //apply filter into the spectrum

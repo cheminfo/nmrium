@@ -14,7 +14,7 @@ export type AssignmentsActions = SetAutomaticAssignmentsAction;
 
 function handleSetAutomaticAssignments(
   draft: Draft<State>,
-  action: { payload: { assignments: (SpectraData1D | SpectraData2D)[] } },
+  action: SetAutomaticAssignmentsAction,
 ) {
   const assignments = action.payload.assignments;
 

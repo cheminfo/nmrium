@@ -412,15 +412,17 @@ function SummaryPanel() {
         const zone = findZone(spectrum, link.signal.id);
         const signal = findSignal2D(spectrum, link.signal.id);
 
-        dispatch({
-          type: 'DELETE_2D_SIGNAL',
-          payload: {
-            spectrum,
-            zone,
-            signal,
-            assignmentData,
-          },
-        });
+        if (zone && signal) {
+          dispatch({
+            type: 'DELETE_2D_SIGNAL',
+            payload: {
+              spectrum,
+              zone,
+              signal,
+              assignmentData,
+            },
+          });
+        }
       }
     },
     [assignmentData, dispatch, spectraData],
@@ -437,16 +439,17 @@ function SummaryPanel() {
         ) as Spectrum2D;
         const zone = findZone(spectrum, link.signal.id);
         const signal = findSignal2D(spectrum, link.signal.id);
-
-        dispatch({
-          type: 'SET_2D_SIGNAL_PATH_LENGTH',
-          payload: {
-            spectrum,
-            zone,
-            signal,
-            pathLength: link.signal.j?.pathLength,
-          },
-        });
+        if (zone && signal) {
+          dispatch({
+            type: 'SET_2D_SIGNAL_PATH_LENGTH',
+            payload: {
+              spectrum,
+              zone,
+              signal,
+              pathLength: link.signal.j?.pathLength,
+            },
+          });
+        }
       }
     },
     [dispatch, spectraData],

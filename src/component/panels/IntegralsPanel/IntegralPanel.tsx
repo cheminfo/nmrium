@@ -51,7 +51,7 @@ function IntegralPanelInner({
   const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
-    dispatch({ type: 'DELETE_INTEGRAL' });
+    dispatch({ type: 'DELETE_INTEGRAL', payload: {} });
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {

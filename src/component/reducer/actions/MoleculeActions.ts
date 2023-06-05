@@ -13,7 +13,7 @@ import {
 } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { generateColor } from '../../../data/utilities/generateColor';
-import { AssignmentsData } from '../../assignment/AssignmentsContext';
+import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
@@ -21,17 +21,21 @@ import { ActionType } from '../types/Types';
 
 import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
-import { handleUnlinkZone } from './ZonesActions';
+import { unlinkZone } from './ZonesActions';
 
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', { molfile: string }>;
 type SetMoleculeAction = ActionType<'SET_MOLECULE', Required<StateMolecule>>;
 type DeleteMoleculeAction = ActionType<
   'DELETE_MOLECULE',
-  { id: string; assignmentData: AssignmentsData }
+  { id: string; assignmentData: AssignmentContext }
 >;
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
-  { predictedSpectra?: PredictedSpectraResult; options: PredictionOptions }
+  {
+    molfile: string;
+    options: PredictionOptions;
+    predictedSpectra?: PredictedSpectraResult;
+  }
 >;
 type ToggleMoleculeViewObjectAction = ActionType<
   'FLOAT_MOLECULE_OVER_SPECTRUM' | 'TOGGLE_MOLECULE_ATOM_NUMBER',
@@ -95,13 +99,13 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
 
 function removeAssignments(
   draft: Draft<State>,
-  assignmentData: AssignmentsData,
+  assignmentData: AssignmentContext,
 ) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     unlinkRange(draft, { assignmentData });
   }
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-    handleUnlinkZone(draft, { payload: { assignmentData, zoneData: null } });
+    unlinkZone(draft, { assignmentData });
   }
 }
 

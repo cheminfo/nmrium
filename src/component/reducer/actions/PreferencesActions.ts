@@ -11,7 +11,7 @@ import { ActionType } from '../types/Types';
 import { setDomain } from './DomainActions';
 
 type KeyPreferencesAction = ActionType<
-  'SET_KEY_PREFERENCES | APPLY_KEY_PREFERENCES',
+  'SET_KEY_PREFERENCES' | 'APPLY_KEY_PREFERENCES',
   { keyCode: string }
 >;
 

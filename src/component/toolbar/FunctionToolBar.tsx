@@ -20,7 +20,7 @@ import ToggleButtonGroup from '../elements/toggle/ToggleButtonGroup';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useToolsFunctions from '../hooks/useToolsFunctions';
-import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
+import { APPLY_FFT_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
 
@@ -56,7 +56,6 @@ function FunctionToolBarInner({
     dispatch({
       type: APPLY_FFT_FILTER,
     });
-    dispatch({ type: SET_SELECTED_FILTER, payload: { selectedFilter: null } });
   }, [dispatch]);
 
   return (

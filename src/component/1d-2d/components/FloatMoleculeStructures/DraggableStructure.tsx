@@ -89,7 +89,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
     }
     dispatch({
       type: 'CHANGE_FLOAT_MOLECULE_POSITION',
-      payload: { id: molecule.id, bounding },
+      payload: { id: molecule.id, bounding: bounding as MoleculeBoundingRect },
     });
   }
 

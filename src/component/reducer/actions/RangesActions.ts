@@ -27,7 +27,7 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
-import { AssignmentsData } from '../../assignment/AssignmentsContext';
+import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
 import { rangeStateInit, State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -47,7 +47,7 @@ type DeleteRangeAction = ActionType<
   {
     resetSelectTool?: boolean;
     id?: string;
-    assignmentData: AssignmentsData;
+    assignmentData: AssignmentContext;
   }
 >;
 
@@ -63,7 +63,7 @@ type SaveEditedRangeAction = ActionType<
   'SAVE_EDITED_RANGE',
   {
     range: RangeData;
-    assignmentData: AssignmentsData;
+    assignmentData: AssignmentContext;
   }
 >;
 
@@ -71,14 +71,14 @@ interface DeleteSignalProps {
   spectrum: Spectrum;
   range: Range;
   signal: Signal1D;
-  assignmentData: AssignmentsData;
+  assignmentData: AssignmentContext;
 }
 type DeleteSignalAction = ActionType<'DELETE_1D_SIGNAL', DeleteSignalProps>;
 
 interface UnlinkRangeProps {
   range?: Range;
   signalIndex?: number;
-  assignmentData: AssignmentsData;
+  assignmentData: AssignmentContext;
 }
 type UnlinkRangeAction = ActionType<'UNLINK_RANGE', UnlinkRangeProps>;
 type SetDiaIDRangeAction = ActionType<
@@ -137,6 +137,7 @@ export type RangesActions =
   | UnlinkRangeAction
   | SetDiaIDRangeAction
   | ResizeRangeAction
+  | ChangeRangeSumAction
   | AddRangeAction
   | ChangeRangeRelativeValueAction
   | ChangeRangeSignalValueAction

@@ -61,7 +61,7 @@ function PeaksPanelInner({
   const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
-    dispatch({ type: 'DELETE_PEAK' });
+    dispatch({ type: 'DELETE_PEAK', payload: {} });
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {

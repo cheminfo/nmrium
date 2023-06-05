@@ -35,9 +35,9 @@ export type Action =
   | MoleculeActions
   | ZonesActions
   | FiltersActions
-  | CorrelationsActions
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | { type: string & {}; payload?: Object };
+  | CorrelationsActions;
+// // eslint-disable-next-line @typescript-eslint/ban-types
+// | { type: string & {}; payload?: Object };
 
 type Dispatch = (action: Action) => void;
 

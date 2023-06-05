@@ -13,7 +13,7 @@ import { isNumber } from '../../../utilities/isNumber';
 export function changeZoneSignal(
   spectrum: Spectrum2D,
   zoneID: string,
-  signal: { id: string; deltaX?: number; deltaY?: number },
+  signal: { id?: string; deltaX?: number; deltaY?: number },
 ): { xShift: number; yShift: number } {
   const zoneIndex = spectrum.zones.values.findIndex(
     (zone) => zone.id === zoneID,

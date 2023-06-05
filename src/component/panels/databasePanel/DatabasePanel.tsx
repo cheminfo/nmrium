@@ -14,7 +14,7 @@ import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
-import { mapRanges } from '../../../data/data1d/Spectrum1D';
+import { isSpectrum1D, mapRanges } from '../../../data/data1d/Spectrum1D';
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import {
   initiateDatabase,
@@ -273,7 +273,7 @@ function DatabasePanelInner({
             });
 
             const spectrum = data?.spectra?.[0] || null;
-            if (spectrum) {
+            if (spectrum && isSpectrum1D(spectrum)) {
               dispatch({
                 type: 'RESURRECTING_SPECTRUM_FROM_JCAMP',
                 payload: { ranges, spectrum },

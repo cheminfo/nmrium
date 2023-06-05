@@ -187,6 +187,7 @@ function RangesHeader({
   const addRangeHandler = useCallback(() => {
     dispatch({
       type: 'ADD_RANGE',
+      payload: {},
     });
 
     editRange(true);

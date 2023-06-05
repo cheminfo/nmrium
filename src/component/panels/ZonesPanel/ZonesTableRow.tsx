@@ -13,19 +13,20 @@ import {
 import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import { useHighlight } from '../../highlight';
 
-import ActionsColumn, { RowDataProps } from './TableColumns/ActionsColumn';
+import ActionsColumn from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
+import { ZoneData } from './hooks/useMapZones';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
 interface ZonesTableRowProps extends ContextMenuProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   onUnlink: (
-    rowData: RowDataProps,
+    rowData: ZoneData,
     isOnZoneLevel: boolean,
     signalIndex: any,
     axis: Axis,

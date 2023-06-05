@@ -1,5 +1,5 @@
-import { Range, Spectrum1D } from 'nmr-load-save';
-import { rangesToXY } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { NMRRange, rangesToXY } from 'nmr-processing';
 
 import { UsedColors } from '../../../../types/UsedColors';
 import { initiateDatum1D } from '../initiateDatum1D';
@@ -13,7 +13,7 @@ export interface ResurrectSpectrumInfo {
 }
 
 export function generateSpectrumFromRanges(
-  ranges: Range[],
+  ranges: NMRRange[],
   info: ResurrectSpectrumInfo,
   usedColors: UsedColors,
 ): Spectrum1D {

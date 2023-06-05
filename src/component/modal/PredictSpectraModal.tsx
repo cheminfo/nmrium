@@ -162,34 +162,36 @@ function PredictSpectraModal({
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
-        setPredictionPreferences({ ...values, isApproved });
-        dispatch({
-          type: 'SET_LOADING_FLAG',
-          payload: {
-            isLoading: true,
-          },
-        });
+        if (molfile) {
+          setPredictionPreferences({ ...values, isApproved });
+          dispatch({
+            type: 'SET_LOADING_FLAG',
+            payload: {
+              isLoading: true,
+            },
+          });
 
-        const predictedSpectra = Object.entries(values.spectra)
-          .map(([key, value]) => {
-            if (value) {
-              return key;
-            }
-            return undefined;
-          })
-          .join(',');
+          const predictedSpectra = Object.entries(values.spectra)
+            .map(([key, value]) => {
+              if (value) {
+                return key;
+              }
+              return undefined;
+            })
+            .join(',');
 
-        const hideLoading = await alert.showLoading(
-          `Predict ${predictedSpectra} in progress`,
-        );
+          const hideLoading = await alert.showLoading(
+            `Predict ${predictedSpectra} in progress`,
+          );
 
-        dispatch({
-          type: 'PREDICT_SPECTRA',
-          payload: { mol: molfile, options: values },
-        });
+          dispatch({
+            type: 'PREDICT_SPECTRA',
+            payload: { molfile, options: values },
+          });
 
-        hideLoading();
-        onClose();
+          hideLoading();
+          onClose();
+        }
       })();
     },
     [alert, dispatch, isApproved, molfile, onClose, setPredictionPreferences],
