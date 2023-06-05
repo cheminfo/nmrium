@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
 import { AssignmentsActions } from '../reducer/actions/AssignmentsActions';
+import { CorrelationsActions } from '../reducer/actions/CorrelationsActions';
 import { DatabaseActions } from '../reducer/actions/DatabaseActions';
 import { DimensionsActions } from '../reducer/actions/DimensionsActions';
 import { DomainActions } from '../reducer/actions/DomainActions';
@@ -34,6 +35,7 @@ export type Action =
   | MoleculeActions
   | ZonesActions
   | FiltersActions
+  | CorrelationsActions
   // eslint-disable-next-line @typescript-eslint/ban-types
   | { type: string & {}; payload?: Object };
 

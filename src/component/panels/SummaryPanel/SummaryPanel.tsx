@@ -26,13 +26,6 @@ import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import {
-  DELETE_CORRELATION,
-  SET_CORRELATION,
-  SET_CORRELATIONS,
-  SET_CORRELATIONS_MF,
-  SET_CORRELATIONS_TOLERANCE,
-} from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
@@ -237,7 +230,7 @@ function SummaryPanel() {
   const handleOnSetMolecularFormula = useCallback(
     (mf) => {
       dispatch({
-        type: SET_CORRELATIONS_MF,
+        type: 'SET_CORRELATIONS_MF',
         payload: {
           mf,
         },
@@ -249,7 +242,7 @@ function SummaryPanel() {
   const handleOnSetShiftTolerance = useCallback(
     (tolerance) => {
       dispatch({
-        type: SET_CORRELATIONS_TOLERANCE,
+        type: 'SET_CORRELATIONS_TOLERANCE',
         payload: {
           tolerance,
         },
@@ -318,7 +311,7 @@ function SummaryPanel() {
   const editEquivalencesSaveHandler = useCallback(
     (correlation: Correlation, value: number) => {
       dispatch({
-        type: SET_CORRELATION,
+        type: 'SET_CORRELATION',
         payload: {
           id: correlation.id,
           correlation: {
@@ -343,7 +336,7 @@ function SummaryPanel() {
       key: 'hybridization' | 'protonsCount';
     }) => {
       dispatch({
-        type: SET_CORRELATION,
+        type: 'SET_CORRELATION',
         payload: {
           id: correlation.id,
           correlation: {
@@ -363,7 +356,7 @@ function SummaryPanel() {
   const setCorrelationsHandler = useCallback(
     (correlations: CorrelationValues, options?: CorrelationOptions) => {
       dispatch({
-        type: SET_CORRELATIONS,
+        type: 'SET_CORRELATIONS',
         payload: {
           correlations,
           options,
@@ -376,7 +369,7 @@ function SummaryPanel() {
   const deleteCorrelationHandler = useCallback(
     (correlation: Correlation) => {
       dispatch({
-        type: DELETE_CORRELATION,
+        type: 'DELETE_CORRELATION',
         payload: {
           correlation,
           assignmentData,

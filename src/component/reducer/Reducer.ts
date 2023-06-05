@@ -653,19 +653,15 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'CHANGE_FLOAT_MOLECULE_POSITION':
       return MoleculeActions.handleChangeFloatMoleculePosition(draft, action);
 
-    case types.SET_CORRELATIONS_MF:
-      return CorrelationsActions.handleSetMF(draft, action.payload);
-
-    case types.SET_CORRELATIONS_TOLERANCE:
+    case 'SET_CORRELATIONS_MF':
+      return CorrelationsActions.handleSetMF(draft, action);
+    case 'SET_CORRELATIONS_TOLERANCE':
       return CorrelationsActions.handleSetTolerance(draft, action);
-
-    case types.SET_CORRELATION:
+    case 'SET_CORRELATION':
       return CorrelationsActions.handleSetCorrelation(draft, action);
-
-    case types.SET_CORRELATIONS:
+    case 'SET_CORRELATIONS':
       return CorrelationsActions.handleSetCorrelations(draft, action);
-
-    case types.DELETE_CORRELATION:
+    case 'DELETE_CORRELATION':
       return CorrelationsActions.handleDeleteCorrelation(draft, action);
 
     case 'AUTO_RANGES_DETECTION':

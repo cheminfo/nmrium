@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { original, Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import {
@@ -19,10 +18,45 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities';
+import { AssignmentsData } from '../../assignment/AssignmentsContext';
 import { State } from '../Reducer';
+import { ActionType } from '../types/Types';
 
 import { deleteSignal1D } from './RangesActions';
 import { deleteSignal2D } from './ZonesActions';
+
+type SetMFAction = ActionType<'SET_CORRELATIONS_MF', { mf: string }>;
+type SetToleranceAction = ActionType<
+  'SET_CORRELATIONS_TOLERANCE',
+  { tolerance: Tolerance }
+>;
+type SetCorrelationAction = ActionType<
+  'SET_CORRELATION',
+  {
+    id: string;
+    correlation: Correlation;
+    options: CorrelationOptions;
+  }
+>;
+type SetCorrelationsAction = ActionType<
+  'SET_CORRELATIONS',
+  {
+    correlations: CorrelationValues;
+    options: CorrelationOptions;
+  }
+>;
+type DeleteCorrelationAction = ActionType<
+  'DELETE_CORRELATION',
+  { correlation: Correlation; assignmentData: AssignmentsData }
+>;
+
+export type CorrelationsActions =
+  | SetMFAction
+  | SetToleranceAction
+  | SetCorrelationAction
+  | SetCorrelationsAction
+  | DeleteCorrelationAction
+  | ActionType<'SET_AUTOMATIC_ASSIGNMENTS'>;
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
@@ -32,10 +66,11 @@ function handleUpdateCorrelations(draft: Draft<State>) {
   });
 }
 
-function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
+//action
+function handleSetMF(draft: Draft<State>, action: SetMFAction) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
-  const { mf } = payload;
+  const { mf } = action.payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
     draft.correlations = buildCorrelationData(spectra, {
@@ -45,9 +80,9 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
     });
   }
 }
-// Todo define interface
-// { tolerance: Tolerance }
-function handleSetTolerance(draft: Draft<State>, action) {
+
+//action
+function handleSetTolerance(draft: Draft<State>, action: SetToleranceAction) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = action.payload;
@@ -57,13 +92,12 @@ function handleSetTolerance(draft: Draft<State>, action) {
     values: lodashCloneDeep(correlations.values),
   });
 }
-// Todo define interface
-// {
-//   id: string;
-//   correlation: Correlation;
-//   options: CorrelationOptions;
-// }
-function handleSetCorrelation(draft: Draft<State>, action) {
+
+//action
+function handleSetCorrelation(
+  draft: Draft<State>,
+  action: SetCorrelationAction,
+) {
   const state = original(draft) as State;
   const { correlations } = state;
   const { id, correlation, options } = action.payload;
@@ -77,13 +111,11 @@ function handleSetCorrelation(draft: Draft<State>, action) {
   handleUpdateCorrelations(draft);
 }
 
-// Todo define interface
-// {
-//   correlations: CorrelationValues;
-//   options: CorrelationOptions;
-// }
-
-function handleSetCorrelations(draft: Draft<State>, action) {
+//action
+function handleSetCorrelations(
+  draft: Draft<State>,
+  action: SetCorrelationsAction,
+) {
   const { correlations, options } = action.payload;
   const state = original(draft) as State;
   let correlationsData = lodashCloneDeep(state.correlations);
@@ -104,9 +136,11 @@ function handleSetCorrelations(draft: Draft<State>, action) {
   handleUpdateCorrelations(draft);
 }
 
-// Todo define interface
-// { correlation: Correlation; assignmentData }
-function handleDeleteCorrelation(draft: Draft<State>, action) {
+//action
+function handleDeleteCorrelation(
+  draft: Draft<State>,
+  action: DeleteCorrelationAction,
+) {
   const { correlation, assignmentData } = action.payload;
   // delete all signals linked to the correlation
   for (const link of correlation.links) {
