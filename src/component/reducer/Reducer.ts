@@ -666,10 +666,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.DELETE_CORRELATION:
       return CorrelationsActions.handleDeleteCorrelation(draft, action);
 
-    case types.AUTO_ZONES_DETECTION:
-      return ZonesActions.handleAutoZonesDetection(draft, action);
-    case types.CHANGE_ZONES_NOISE_FACTOR:
-      return ZonesActions.changeZonesFactorHandler(draft, action);
     case 'AUTO_RANGES_DETECTION':
       return RangesActions.handleAutoRangesDetection(draft, action);
     case 'ADD_RANGE':
@@ -711,31 +707,36 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return PreferencesActions.handleSetKeyPreferences(draft, action);
     case 'APPLY_KEY_PREFERENCES':
       return PreferencesActions.handleApplyKeyPreferences(draft, action);
-    case types.ADD_2D_ZONE:
-      return ZonesActions.add2dZoneHandler(draft, action);
-    case types.DELETE_2D_ZONE:
+
+    case 'AUTO_ZONES_DETECTION':
+      return ZonesActions.handleAutoZonesDetection(draft, action);
+    case 'CHANGE_ZONES_NOISE_FACTOR':
+      return ZonesActions.handleChangeZonesFactor(draft, action);
+    case 'ADD_2D_ZONE':
+      return ZonesActions.handleAdd2dZone(draft, action);
+    case 'DELETE_2D_ZONE':
       return ZonesActions.handleDeleteZone(draft, action);
-    case types.DELETE_2D_SIGNAL:
+    case 'DELETE_2D_SIGNAL':
       return ZonesActions.handleDeleteSignal(draft, action);
-    case types.SET_2D_SIGNAL_PATH_LENGTH:
+    case 'SET_2D_SIGNAL_PATH_LENGTH':
       return ZonesActions.handleSetSignalPathLength(draft, action);
-    case types.CHANGE_ZONE_SIGNAL_VALUE:
-      return ZonesActions.changeZoneSignalDelta(draft, action);
-    case types.CHANGE_ZONE_SIGNAL_KIND:
+    case 'CHANGE_ZONE_SIGNAL_VALUE':
+      return ZonesActions.handleChangeZoneSignalDelta(draft, action);
+    case 'CHANGE_ZONE_SIGNAL_KIND':
       return ZonesActions.handleChangeZoneSignalKind(draft, action);
-    case types.UNLINK_ZONE:
+    case 'UNLINK_ZONE':
       return ZonesActions.handleUnlinkZone(draft, action);
-    case types.SET_DIAID_ZONE:
+    case 'SET_ZONE_DIAID':
       return ZonesActions.handleSetDiaIDZone(draft, action);
-    case types.AUTO_ZONES_SPECTRA_PICKING:
+    case 'AUTO_ZONES_SPECTRA_PICKING':
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
-    case types.SHOW_ZONES:
+    case 'SHOW_ZONES':
       return ZonesActions.handleShowZones(draft, action);
-    case types.SHOW_ZONES_SIGNALS:
+    case 'SHOW_ZONES_SIGNALS':
       return ZonesActions.handleShowSignals(draft, action);
-    case types.SHOW_ZONES_PEAKS:
+    case 'SHOW_ZONES_PEAKS':
       return ZonesActions.handleShowPeaks(draft, action);
-    case types.SAVE_EDITED_ZONE:
+    case 'SAVE_EDITED_ZONE':
       return ZonesActions.handleSaveEditedZone(draft, action);
 
     case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':

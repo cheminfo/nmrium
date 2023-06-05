@@ -1,4 +1,3 @@
-import { Zone } from 'nmr-load-save';
 import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
@@ -12,11 +11,7 @@ import {
   transitions,
 } from '../../../elements/popup/Modal';
 import EditZoneModal from '../../../modal/editZone/EditZoneModal';
-import {
-  CHANGE_ZONE_SIGNAL_KIND,
-  DELETE_2D_ZONE,
-  SAVE_EDITED_ZONE,
-} from '../../../reducer/types/Types';
+import { ZoneData } from '../hooks/useMapZones';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -25,20 +20,8 @@ const selectBoxStyle: CSSProperties = {
   height: '20px',
 };
 
-export interface RowDataProps extends Zone {
-  tableMetaInfo: {
-    id: number;
-    signalIndex: number;
-    rowSpan: any;
-    signal: {
-      kind: any;
-    };
-    experiment: string;
-  };
-}
-
 interface ActionsColumnProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   rowSpanTags: any;
 }
 
@@ -48,12 +31,12 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const modal = useModal();
 
   const changeSignalKindHandler = useCallback(
-    (value) => {
+    (kind) => {
       dispatch({
-        type: CHANGE_ZONE_SIGNAL_KIND,
+        type: 'CHANGE_ZONE_SIGNAL_KIND',
         payload: {
-          rowData,
-          value,
+          zoneData: rowData,
+          kind,
         },
       });
     },
@@ -62,7 +45,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
 
   const deleteZoneHandler = useCallback(() => {
     dispatch({
-      type: DELETE_2D_ZONE,
+      type: 'DELETE_2D_ZONE',
       payload: {
         id: rowData.id,
         assignmentData,
@@ -94,11 +77,11 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   }, [dispatch, rowData.x.from, rowData.x.to, rowData.y.from, rowData.y.to]);
 
   const saveEditZoneHandler = useCallback(
-    (editedRowData) => {
+    (zone) => {
       dispatch({
-        type: SAVE_EDITED_ZONE,
+        type: 'SAVE_EDITED_ZONE',
         payload: {
-          editedRowData,
+          zone,
         },
       });
     },

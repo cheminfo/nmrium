@@ -27,9 +27,7 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
-  DELETE_2D_SIGNAL,
   DELETE_CORRELATION,
-  SET_2D_SIGNAL_PATH_LENGTH,
   SET_CORRELATION,
   SET_CORRELATIONS,
   SET_CORRELATIONS_MF,
@@ -422,7 +420,7 @@ function SummaryPanel() {
         const signal = findSignal2D(spectrum, link.signal.id);
 
         dispatch({
-          type: DELETE_2D_SIGNAL,
+          type: 'DELETE_2D_SIGNAL',
           payload: {
             spectrum,
             zone,
@@ -448,7 +446,7 @@ function SummaryPanel() {
         const signal = findSignal2D(spectrum, link.signal.id);
 
         dispatch({
-          type: SET_2D_SIGNAL_PATH_LENGTH,
+          type: 'SET_2D_SIGNAL_PATH_LENGTH',
           payload: {
             spectrum,
             zone,

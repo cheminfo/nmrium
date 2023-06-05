@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useMemo, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useTableSortBy from '../../hooks/useTableSortBy';
 
 import ZonesTableRow from './ZonesTableRow';
+import { useMapZones } from './hooks/useMapZones';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -85,55 +86,7 @@ function ZonesTable({
   nuclei,
   experiment,
 }: ZonesTableProps) {
-  const data = useMemo(() => {
-    const data: Array<any> = [];
-    for (const [i, zone] of tableData.entries()) {
-      if (zone.signals.length === 1) {
-        data.push({
-          ...zone,
-          tableMetaInfo: {
-            ...zone.tableMetaInfo,
-            signal: zone.signals[0],
-            rowIndex: i,
-            signalIndex: 0,
-            id: zone.signals[0].id,
-            experiment,
-            nuclei,
-          },
-        });
-      } else if (zone.signals.length > 1) {
-        for (const [j, signal] of zone.signals.entries()) {
-          let hide = false;
-          let rowSpan: number | null = null;
-          if (j < zone.signals.length - 1) {
-            if (j === 0) {
-              rowSpan = zone.signals.length;
-            } else {
-              hide = true;
-            }
-          } else {
-            hide = true;
-          }
-          data.push({
-            ...zone,
-            tableMetaInfo: {
-              ...zone.tableMetaInfo,
-              signal,
-              rowSpan,
-              hide,
-              rowIndex: i,
-              signalIndex: j,
-              id: signal.id,
-              experiment,
-            },
-          });
-        }
-      }
-    }
-
-    return data;
-  }, [experiment, nuclei, tableData]);
-
+  const data = useMapZones(tableData, { nuclei, experiment });
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
   const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
   const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);

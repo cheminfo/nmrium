@@ -8,7 +8,6 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
-import { ADD_2D_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import { assert } from '../utility/assert';
 
@@ -66,7 +65,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
         } else if (brushData.shiftKey) {
           switch (selectedTool) {
             case options.zonePicking.id:
-              dispatch({ type: ADD_2D_ZONE, payload: brushData });
+              dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
               break;
             default:
               break;

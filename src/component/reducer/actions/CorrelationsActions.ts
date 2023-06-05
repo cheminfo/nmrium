@@ -22,7 +22,7 @@ import {
 import { State } from '../Reducer';
 
 import { deleteSignal1D } from './RangesActions';
-import { handleDeleteSignal as handleDeleteSignal2D } from './ZonesActions';
+import { deleteSignal2D } from './ZonesActions';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
@@ -126,14 +126,14 @@ function handleDeleteCorrelation(draft: Draft<State>, action) {
       } else if (spectrum.info.dimension === 2) {
         const zone = findZone(spectrum as Spectrum2D, link.signal.id);
         const signal = findSignal2D(spectrum as Spectrum2D, link.signal.id);
-        handleDeleteSignal2D(draft, {
-          payload: {
+        if (zone && signal) {
+          deleteSignal2D(draft, {
             spectrum,
             zone,
             signal,
             assignmentData,
-          },
-        });
+          });
+        }
       }
     }
   }

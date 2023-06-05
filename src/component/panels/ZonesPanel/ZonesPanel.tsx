@@ -12,13 +12,6 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { zoneStateInit } from '../../reducer/Reducer';
-import {
-  DELETE_2D_ZONE,
-  SHOW_ZONES,
-  SHOW_ZONES_PEAKS,
-  SHOW_ZONES_SIGNALS,
-  UNLINK_ZONE,
-} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -123,9 +116,9 @@ function ZonesPanelInner({
       axis = undefined,
     ) => {
       dispatch({
-        type: UNLINK_ZONE,
+        type: 'UNLINK_ZONE',
         payload: {
-          zoneData,
+          zone: zoneData,
           assignmentData,
           isOnZoneLevel,
           signalIndex,
@@ -154,7 +147,7 @@ function ZonesPanelInner({
         {
           text: 'Yes',
           handler: () => {
-            dispatch({ type: DELETE_2D_ZONE, payload: { assignmentData } });
+            dispatch({ type: 'DELETE_2D_ZONE', payload: { assignmentData } });
           },
         },
         { text: 'No' },
@@ -172,13 +165,13 @@ function ZonesPanelInner({
   }, []);
 
   const handleSetShowZones = () => {
-    dispatch({ type: SHOW_ZONES, payload: { id } });
+    dispatch({ type: 'SHOW_ZONES', payload: { id } });
   };
   const handleSetShowSignals = () => {
-    dispatch({ type: SHOW_ZONES_SIGNALS, payload: { id } });
+    dispatch({ type: 'SHOW_ZONES_SIGNALS', payload: { id } });
   };
   const handleSetShowPeaks = () => {
-    dispatch({ type: SHOW_ZONES_PEAKS, payload: { id } });
+    dispatch({ type: 'SHOW_ZONES_PEAKS', payload: { id } });
   };
 
   return (

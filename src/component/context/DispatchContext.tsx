@@ -14,6 +14,7 @@ import { RangesActions } from '../reducer/actions/RangesActions';
 import { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction';
 import { SpectrumActions } from '../reducer/actions/SpectrumsActions';
 import { ToolsActions } from '../reducer/actions/ToolsActions';
+import { ZonesActions } from '../reducer/actions/ZonesActions';
 
 export type Action =
   | ToolsActions
@@ -30,6 +31,7 @@ export type Action =
   | PreferencesActions
   | PeaksActions
   | MoleculeActions
+  | ZonesActions
   // eslint-disable-next-line @typescript-eslint/ban-types
   | { type: string & {}; payload?: Object };
 

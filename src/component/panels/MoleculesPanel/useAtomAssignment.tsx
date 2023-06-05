@@ -12,7 +12,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import { SET_DIAID_ZONE } from '../../reducer/types/Types';
 
 import {
   Atom,
@@ -199,10 +198,10 @@ export default function useAtomAssignment({
                   atomInformation,
                 );
                 dispatch({
-                  type: SET_DIAID_ZONE,
+                  type: 'SET_ZONE_DIAID',
                   payload: {
                     nbAtoms,
-                    zoneData: datum,
+                    zone: datum,
                     diaIDs: _diaID,
                     axis,
                     signalIndex,

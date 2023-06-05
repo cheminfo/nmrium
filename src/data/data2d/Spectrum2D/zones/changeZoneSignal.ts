@@ -1,5 +1,7 @@
 import { Spectrum2D } from 'nmr-load-save';
 
+import { isNumber } from '../../../utilities/isNumber';
+
 /**
  *
  * @param {number} zoneID
@@ -10,28 +12,25 @@ import { Spectrum2D } from 'nmr-load-save';
  */
 export function changeZoneSignal(
   spectrum: Spectrum2D,
-  zoneID,
-  newSignal,
+  zoneID: string,
+  signal: { id: string; deltaX?: number; deltaY?: number },
 ): { xShift: number; yShift: number } {
   const zoneIndex = spectrum.zones.values.findIndex(
     (zone) => zone.id === zoneID,
   );
+
+  const { id, deltaX, deltaY } = signal;
+
   if (zoneIndex !== -1) {
     const signalIndex = spectrum.zones.values[zoneIndex].signals.findIndex(
-      (s) => s.id === newSignal.id,
+      (s) => s.id === id,
     );
 
     const zone = spectrum.zones.values[zoneIndex];
     if (signalIndex !== -1) {
       const originalSignal: any = zone.signals[signalIndex];
-      const xShift =
-        newSignal?.x || newSignal?.x === 0
-          ? newSignal.x - originalSignal.x.delta
-          : 0;
-      const yShift =
-        newSignal?.y || newSignal?.y === 0
-          ? newSignal.y - originalSignal.y?.delta
-          : 0;
+      const xShift = isNumber(deltaX) ? deltaX - originalSignal.x.delta : 0;
+      const yShift = isNumber(deltaY) ? deltaY - originalSignal.y?.delta : 0;
 
       return { xShift, yShift };
     }
