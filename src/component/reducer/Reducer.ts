@@ -25,11 +25,6 @@ import * as DimensionsActions from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import * as FiltersActions from './actions/FiltersActions';
 import * as GlobalActions from './actions/GlobalActions';
-import {
-  handleHistoryUndo,
-  handleHistoryRedo,
-  handleHistoryReset,
-} from './actions/HistoryActions';
 import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
 import * as MoleculeActions from './actions/MoleculeActions';
@@ -42,7 +37,6 @@ import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
-import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
 
 export interface ActiveSpectrum {
@@ -747,15 +741,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case 'SET_AUTOMATIC_ASSIGNMENTS':
       return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
-
-    case UNDO:
-      return handleHistoryUndo(draft);
-
-    case REDO:
-      return handleHistoryRedo(draft);
-
-    case RESET:
-      return handleHistoryReset(draft, action);
 
     case 'SET_MOUSE_OVER_DISPLAYER':
       return GlobalActions.handleSetIsOverDisplayer(draft, action);
