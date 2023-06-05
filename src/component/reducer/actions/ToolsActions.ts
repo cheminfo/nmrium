@@ -65,7 +65,7 @@ type SetSelectedToolAction = ActionType<
 
 type AddBaseLineZoneAction = ActionType<
   'ADD_BASE_LINE_ZONE',
-  { from: number; to: number }
+  { startX: number; endX: number }
 >;
 type DeleteBaseLineZoneAction = ActionType<
   'DELETE_BASE_LINE_ZONE',
@@ -233,9 +233,9 @@ function handleAddBaseLineZone(
   action: AddBaseLineZoneAction,
 ) {
   const scaleX = getXScale(draft);
-  const { from, to } = action.payload;
-  let start = scaleX.invert(from);
-  const end = scaleX.invert(to);
+  const { startX, endX } = action.payload;
+  const start = scaleX.invert(startX);
+  const end = scaleX.invert(endX);
 
   let zone: any = [];
   if (start > end) {

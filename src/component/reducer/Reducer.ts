@@ -6,6 +6,7 @@ import { Reducer } from 'react';
 
 import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
+import { BaselineCorrectionZone } from '../../data/data1d/filter1d/baselineCorrection';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
 import {
   MoleculesView,
@@ -395,7 +396,7 @@ export interface State {
        * list of zones for Baseline correction filter
        */
       baselineCorrection: {
-        zones: any[];
+        zones: BaselineCorrectionZone[];
         options: any;
       };
       apodizationOptions: ApodizationOptions;
@@ -526,46 +527,47 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case 'SET_DIMENSIONS':
       return DimensionsActions.handleSetDimensions(draft, action);
 
-    case types.SHIFT_SPECTRUM:
-      return FiltersActions.shiftSpectrumAlongXAxis(draft, action);
-    case types.APPLY_APODIZATION_FILTER:
-      return FiltersActions.applyApodizationFilter(draft, action);
-    case types.CALCULATE_APODIZATION_FILTER:
-      return FiltersActions.calculateApodizationFilter(draft, action);
-    case types.APPLY_ZERO_FILLING_FILTER:
-      return FiltersActions.applyZeroFillingFilter(draft, action);
-    case types.CALCULATE_ZERO_FILLING_FILTER:
-      return FiltersActions.calculateZeroFillingFilter(draft, action);
-    case types.APPLY_FFT_FILTER:
-      return FiltersActions.applyFFTFilter(draft);
-    case types.APPLY_MANUAL_PHASE_CORRECTION_FILTER:
-      return FiltersActions.applyManualPhaseCorrectionFilter(draft, action);
-    case types.APPLY_AUTO_PHASE_CORRECTION_FILTER:
-      return FiltersActions.applyAutoPhaseCorrectionFilter(draft);
-    case types.APPLY_ABSOLUTE_FILTER:
-      return FiltersActions.applyAbsoluteFilter(draft);
-    case types.CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
-      return FiltersActions.calculateManualPhaseCorrection(draft, action);
-    case types.ENABLE_FILTER:
-      return FiltersActions.enableFilter(draft, action);
-    case types.DELETE_FILTER:
-      return FiltersActions.deleteFilter(draft, action);
-    case types.DELETE_SPECTRA_FILTER:
-      return FiltersActions.deleteSpectraFilter(draft, action);
-    case types.SET_FILTER_SNAPSHOT:
-      return FiltersActions.filterSnapshotHandler(draft, action);
-    case types.APPLY_MULTIPLE_SPECTRA_FILTER:
-      return FiltersActions.handleMultipleSpectraFilter(draft, action);
-    case types.APPLY_SIGNAL_PROCESSING_FILTER:
-      return FiltersActions.handleSignalProcessingFilter(draft, action);
-    case types.ADD_EXCLUSION_ZONE:
-      return FiltersActions.handleAddExclusionZone(draft, action);
-    case types.DELETE_EXCLUSION_ZONE:
-      return FiltersActions.handleDeleteExclusionZone(draft, action);
-    case types.APPLY_BASE_LINE_CORRECTION_FILTER:
+    case 'SHIFT_SPECTRUM':
+      return FiltersActions.handleShiftSpectrumAlongXAxis(draft, action);
+    case 'APPLY_APODIZATION_FILTER':
+      return FiltersActions.handleApplyApodizationFilter(draft, action);
+    case 'CALCULATE_APODIZATION_FILTER':
+      return FiltersActions.handleCalculateApodizationFilter(draft, action);
+    case 'APPLY_ZERO_FILLING_FILTER':
+      return FiltersActions.handleApplyZeroFillingFilter(draft, action);
+    case 'CALCULATE_ZERO_FILLING_FILTER':
+      return FiltersActions.handleCalculateZeroFillingFilter(draft, action);
+    case 'APPLY_FFT_FILTER':
+      return FiltersActions.handleApplyFFTFilter(draft);
+    case 'APPLY_MANUAL_PHASE_CORRECTION_FILTER':
+      return FiltersActions.handleApplyManualPhaseCorrectionFilter(
+        draft,
+        action,
+      );
+    case 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER':
+      return FiltersActions.handleCalculateManualPhaseCorrection(draft, action);
+    case 'APPLY_AUTO_PHASE_CORRECTION_FILTER':
+      return FiltersActions.handleApplyAutoPhaseCorrectionFilter(draft);
+    case 'APPLY_ABSOLUTE_FILTER':
+      return FiltersActions.handleApplyAbsoluteFilter(draft);
+    case 'APPLY_BASE_LINE_CORRECTION_FILTER':
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
-    case types.CALCULATE_BASE_LINE_CORRECTION_FILTER:
-      return FiltersActions.calculateBaseLineCorrection(draft, action);
+    case 'CALCULATE_BASE_LINE_CORRECTION_FILTER':
+      return FiltersActions.handleCalculateBaseLineCorrection(draft, action);
+    case 'ENABLE_FILTER':
+      return FiltersActions.handleEnableFilter(draft, action);
+    case 'DELETE_FILTER':
+      return FiltersActions.handleDeleteFilter(draft, action);
+    case 'DELETE_SPECTRA_FILTER':
+      return FiltersActions.handleDeleteSpectraFilter(draft, action);
+    case 'SET_FILTER_SNAPSHOT':
+      return FiltersActions.handleSetFilterSnapshotHandler(draft, action);
+    case 'APPLY_SIGNAL_PROCESSING_FILTER':
+      return FiltersActions.handleSignalProcessingFilter(draft, action);
+    case 'ADD_EXCLUSION_ZONE':
+      return FiltersActions.handleAddExclusionZone(draft, action);
+    case 'DELETE_EXCLUSION_ZONE':
+      return FiltersActions.handleDeleteExclusionZone(draft, action);
 
     case 'CHANGE_SPECTRUM_VISIBILITY':
       return SpectrumsActions.handleChangeSpectrumVisibilityById(draft, action);

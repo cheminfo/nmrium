@@ -13,10 +13,6 @@ import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
-import {
-  APPLY_BASE_LINE_CORRECTION_FILTER,
-  CALCULATE_BASE_LINE_CORRECTION_FILTER,
-} from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -93,8 +89,8 @@ function BaseLineCorrectionInnerPanel(
     dispatch({
       type:
         triggerSource === 'onChange'
-          ? CALCULATE_BASE_LINE_CORRECTION_FILTER
-          : APPLY_BASE_LINE_CORRECTION_FILTER,
+          ? 'CALCULATE_BASE_LINE_CORRECTION_FILTER'
+          : 'APPLY_BASE_LINE_CORRECTION_FILTER',
       payload: values,
     });
   };

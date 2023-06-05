@@ -4,6 +4,7 @@ import { AssignmentsActions } from '../reducer/actions/AssignmentsActions';
 import { DatabaseActions } from '../reducer/actions/DatabaseActions';
 import { DimensionsActions } from '../reducer/actions/DimensionsActions';
 import { DomainActions } from '../reducer/actions/DomainActions';
+import { FiltersActions } from '../reducer/actions/FiltersActions';
 import { GlobalActions } from '../reducer/actions/GlobalActions';
 import { IntegralsActions } from '../reducer/actions/IntegralsActions';
 import { LoadActions } from '../reducer/actions/LoadActions';
@@ -32,6 +33,7 @@ export type Action =
   | PeaksActions
   | MoleculeActions
   | ZonesActions
+  | FiltersActions
   // eslint-disable-next-line @typescript-eslint/ban-types
   | { type: string & {}; payload?: Object };
 

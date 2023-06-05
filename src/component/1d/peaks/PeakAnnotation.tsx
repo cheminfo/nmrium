@@ -12,7 +12,6 @@ import {
 import { useDispatch } from '../../context/DispatchContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { SHIFT_SPECTRUM } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 
 const styles = css`
@@ -82,7 +81,8 @@ function PeakAnnotation({
   const dispatch = useDispatch();
 
   const handleOnPeakChange = useCallback(
-    (e) => dispatch({ type: SHIFT_SPECTRUM, payload: { shift: e.shiftValue } }),
+    (e) =>
+      dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift: e.shiftValue } }),
     [dispatch],
   );
 

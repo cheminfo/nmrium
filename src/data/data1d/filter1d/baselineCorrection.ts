@@ -20,14 +20,19 @@ export const DOMAIN_UPDATE_RULES: Readonly<FilterDomainUpdateRules> = {
 
 export type BaselineAlgorithms = 'airpls' | 'polynomial';
 
+export interface BaselineCorrectionZone {
+  from: number;
+  to: number;
+  id: string;
+}
 export interface PolynomialOptions {
-  zones: Array<{ from: number; to: number; id: string }>;
+  zones: BaselineCorrectionZone[];
   algorithm: 'polynomial';
   degree: number;
 }
 
 export interface AirplsOptions {
-  zones: Array<{ from: number; to: number; id: string }>;
+  zones: BaselineCorrectionZone[];
   algorithm: 'airpls';
   maxIterations: number;
   tolerance: number;

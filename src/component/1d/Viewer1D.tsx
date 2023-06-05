@@ -25,7 +25,6 @@ import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
 } from '../reducer/scaleReducer';
-import { ADD_EXCLUSION_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 
@@ -197,16 +196,16 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             dispatch({
               type: 'ADD_BASE_LINE_ZONE',
               payload: {
-                from: brushData.startX,
-                to: brushData.endX,
+                startX: brushData.startX,
+                endX: brushData.endX,
               },
             });
             break;
 
           case options.exclusionZones.id:
             dispatch({
-              type: ADD_EXCLUSION_ZONE,
-              payload: { from: brushData.startX, to: brushData.endX },
+              type: 'ADD_EXCLUSION_ZONE',
+              payload: { startX: brushData.startX, endX: brushData.endX },
             });
             break;
           case options.matrixGenerationExclusionZones.id: {

@@ -13,7 +13,6 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
-import { DELETE_EXCLUSION_ZONE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
@@ -116,7 +115,7 @@ function KeysListenerTracker() {
                   'Delete all spectra exclusion zones in progress',
                 );
                 dispatch({
-                  type: DELETE_EXCLUSION_ZONE,
+                  type: 'DELETE_EXCLUSION_ZONE',
                   payload: {
                     zone,
                   },
@@ -131,7 +130,7 @@ function KeysListenerTracker() {
                   'Delete exclusion zones in progress',
                 );
                 dispatch({
-                  type: DELETE_EXCLUSION_ZONE,
+                  type: 'DELETE_EXCLUSION_ZONE',
                   payload: {
                     zone,
                     spectrumID,

@@ -5,7 +5,6 @@ import { css } from '@emotion/react';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert/Context';
 import { useModal } from '../../elements/popup/Modal/Context';
-import { DELETE_FILTER } from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -24,7 +23,7 @@ export default function FiltersPanel() {
           const hideLoading = await alert.showLoading(
             'Delete filters process in progress',
           );
-          dispatch({ type: DELETE_FILTER, payload: {} });
+          dispatch({ type: 'DELETE_FILTER' });
           hideLoading();
         },
       },

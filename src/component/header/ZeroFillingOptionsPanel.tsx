@@ -10,10 +10,6 @@ import Label from '../elements/Label';
 import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
-import {
-  APPLY_ZERO_FILLING_FILTER,
-  CALCULATE_ZERO_FILLING_FILTER,
-} from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -38,7 +34,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   function handleApplyFilter() {
     dispatch({
-      type: APPLY_ZERO_FILLING_FILTER,
+      type: 'APPLY_ZERO_FILLING_FILTER',
       payload: {
         nbPoints: size,
       },
@@ -53,7 +49,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   function dispatchLiveChanges(nbPoints) {
     dispatch({
-      type: CALCULATE_ZERO_FILLING_FILTER,
+      type: 'CALCULATE_ZERO_FILLING_FILTER',
       payload: {
         nbPoints,
       },

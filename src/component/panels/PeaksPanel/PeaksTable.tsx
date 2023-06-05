@@ -12,7 +12,6 @@ import { useModal } from '../../elements/popup/Modal';
 import { positions, transitions } from '../../elements/popup/options';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import EditPeakShapeModal from '../../modal/EditPeakShapeModal';
-import { SHIFT_SPECTRUM } from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -68,7 +67,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
     (event, row) => {
       const shift =
         Number.parseFloat(event.target.value) - Number.parseFloat(row.x);
-      dispatch({ type: SHIFT_SPECTRUM, payload: { shift } });
+      dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
     },
     [dispatch],
   );
