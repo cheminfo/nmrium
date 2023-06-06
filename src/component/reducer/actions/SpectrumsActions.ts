@@ -224,7 +224,7 @@ function setSpectraMetaInfo(
   const { data } = draft;
   for (const spectrum of data) {
     if (spectraMetaInfo[spectrum.id]) {
-      spectrum.metaInfo = spectraMetaInfo[spectrum.id];
+      spectrum.customInfo = spectraMetaInfo[spectrum.id];
     }
   }
 }

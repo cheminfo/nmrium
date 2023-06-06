@@ -37,7 +37,7 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
 
   datum.meta = { ...spectrum.meta };
 
-  datum.metaInfo = { ...spectrum.metaInfo };
+  datum.customInfo = { ...spectrum.customInfo };
 
   datum.data = getData(datum, spectrum);
   datum.originalData = datum.data;

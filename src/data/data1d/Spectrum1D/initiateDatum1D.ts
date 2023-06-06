@@ -44,7 +44,7 @@ export function initiateDatum1D(
 
   spectrumObj.meta = { ...spectrum.meta };
 
-  spectrumObj.metaInfo = { ...spectrum.metaInfo };
+  spectrumObj.customInfo = { ...spectrum.customInfo };
 
   spectrumObj.data = convertDataToFloat64Array(spectrum.data);
 
