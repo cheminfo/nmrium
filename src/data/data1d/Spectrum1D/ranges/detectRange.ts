@@ -3,7 +3,7 @@ import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 
 import { RangeDetectionResult } from '../../../types/data1d';
-import { getShiftX } from '../getShiftX';
+import { getShiftX } from 'nmr-processing';
 
 interface DetectRangeOptions {
   from: number;
