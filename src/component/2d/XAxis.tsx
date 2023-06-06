@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import { Spectrum2D } from 'nmr-processing';
+import { Spectrum2D } from 'nmr-load-save';
 import { useEffect, useRef, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';

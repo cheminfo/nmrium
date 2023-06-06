@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Integral, Spectrum1D } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Integral } from 'nmr-processing';
 
 import { ShiftTarget } from '../../../types/common/MapOptions';
 import { getShiftX } from '../getShiftX';

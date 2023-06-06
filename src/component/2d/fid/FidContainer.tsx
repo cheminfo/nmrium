@@ -1,4 +1,4 @@
-import { Spectrum2D } from 'nmr-processing';
+import { Spectrum2D } from 'nmr-load-save';
 
 import { getSlice } from '../../../data/data2d/Spectrum2D';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker';

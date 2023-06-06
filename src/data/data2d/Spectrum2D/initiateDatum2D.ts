@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum2D, FiltersManager } from 'nmr-processing';
+import { Spectrum2D } from 'nmr-load-save';
+import { FiltersManager } from 'nmr-processing';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 import { get2DColor } from './get2DColor';

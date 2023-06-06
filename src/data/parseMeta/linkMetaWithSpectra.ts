@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Spectrum } from 'nmr-processing';
+import { Spectrum } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { prepareKey } from './prepareKey';

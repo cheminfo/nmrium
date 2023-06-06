@@ -1,11 +1,12 @@
 import lodashGet from 'lodash/get';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import {
+  Spectrum,
+  Spectrum1D,
   JpathLegendField,
-  legendField,
+  LegendField,
   PredefinedLegendField,
 } from 'nmr-load-save';
-import { Spectrum, Spectrum1D } from 'nmr-processing';
 import { CSSProperties, useContext } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
@@ -53,7 +54,7 @@ function YTracker({ datum }: YTrackerProps) {
 
 interface InnerSpectraLegendsProps {
   spectra: Spectrum[];
-  legendsFields: legendField[];
+  legendsFields: LegendField[];
 }
 
 function InnerSpectraLegends({

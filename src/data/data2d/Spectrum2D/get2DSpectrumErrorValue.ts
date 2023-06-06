@@ -1,5 +1,5 @@
 import { Data2DFt, Data2DFid } from 'cheminfo-types';
-import { Spectrum2D } from 'nmr-processing';
+import { Spectrum2D } from 'nmr-load-save';
 
 export interface Zone2DError {
   x: number;

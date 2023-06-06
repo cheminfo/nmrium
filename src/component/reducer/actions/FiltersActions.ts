@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
-import { Spectrum, Spectrum1D, Filters, FiltersManager, BaselineCorrectionOptions, ApodizationOptions } from 'nmr-processing';
+import { Filters, FiltersManager, BaselineCorrectionOptions, ApodizationOptions } from 'nmr-processing';
+import { Spectrum, Spectrum1D } from 'nmr-load-save';
 
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';

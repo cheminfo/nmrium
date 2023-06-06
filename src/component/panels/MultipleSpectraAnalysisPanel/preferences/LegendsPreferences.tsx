@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import { legendField, PredefinedLegendField } from 'nmr-load-save';
+import { LegendField, PredefinedLegendField } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -60,7 +60,7 @@ function LegendsPreferences() {
     [setFieldValue],
   );
 
-  const COLUMNS: Column<legendField>[] = useMemo(
+  const COLUMNS: Column<LegendField>[] = useMemo(
     () => [
       {
         Header: '#',

@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import { WorkSpacePanelPreferences } from 'nmr-load-save';
-import { Spectrum1D, Data1D, Info1D, Ranges } from 'nmr-processing';
+import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
+import { Data1D, Info1D, Ranges } from 'nmr-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
 import { DropdownMenuProps } from 'react-science/ui';

@@ -1,4 +1,5 @@
-import { Spectrum, Ranges, Zones } from 'nmr-processing';
+import { Spectrum } from 'nmr-load-save';
+import { Ranges, Zones } from 'nmr-processing';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { assignmentState, AssignmentState, Axis } from '../AssignmentsContext';

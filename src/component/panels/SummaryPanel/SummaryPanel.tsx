@@ -8,7 +8,7 @@ import {
   Options as CorrelationOptions,
   Link,
 } from 'nmr-correlation';
-import { Spectrum1D, Spectrum2D } from 'nmr-processing';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 

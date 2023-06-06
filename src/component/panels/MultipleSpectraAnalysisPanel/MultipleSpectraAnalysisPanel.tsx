@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
-import { Spectrum1D } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';

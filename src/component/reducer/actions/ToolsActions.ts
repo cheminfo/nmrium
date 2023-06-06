@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-processing';
+import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Nucleus } from '../../../data/types/common/Nucleus';

@@ -1,4 +1,5 @@
-import { Filters, Spectrum1D, apodization } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Filters, apodization } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useChartData } from '../context/ChartContext';

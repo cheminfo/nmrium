@@ -1,4 +1,4 @@
-import { Spectrum2D } from 'nmr-processing';
+import { Spectrum2D } from 'nmr-load-save';
 
 import { isNumber } from '../../../utilities/isNumber';
 

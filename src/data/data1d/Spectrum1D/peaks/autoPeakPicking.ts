@@ -1,7 +1,6 @@
 import median from 'ml-array-median';
-import { Spectrum1D, Peak1D, xyAutoPeaksPicking } from 'nmr-processing';
-
-import { mapPeaks } from './mapPeaks';
+import { Spectrum1D } from 'nmr-load-save';
+import { Peak1D, xyAutoPeaksPicking, mapPeaks } from 'nmr-processing';
 
 export function autoPeakPicking(spectrum: Spectrum1D, options) {
   const {

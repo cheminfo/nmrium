@@ -1,7 +1,5 @@
+import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import {
-  Spectrum,
-  Spectrum1D,
-  Spectrum2D,
   getAssignments as getAssignmentsData,
   SpectraData,
 } from 'nmr-processing';

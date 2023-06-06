@@ -1,7 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Data1D, Peak1D, Spectrum1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Data1D, Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
   getShiftX,

@@ -1,5 +1,6 @@
 import merge from 'lodash/merge';
-import { Spectrum1D, Integrals } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Integrals } from 'nmr-processing';
 
 import { mapIntegrals } from './mapIntegrals';
 

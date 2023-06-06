@@ -4,8 +4,8 @@ import {
   PredefinedSpectraColumn,
   PredefinedTableColumn,
   SpectraTableColumn,
+  Spectrum,
 } from 'nmr-load-save';
-import { Spectrum } from 'nmr-processing';
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';

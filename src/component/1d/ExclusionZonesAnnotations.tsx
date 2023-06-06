@@ -1,4 +1,5 @@
-import { Spectrum1D, Filters } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';

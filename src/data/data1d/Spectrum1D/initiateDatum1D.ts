@@ -1,10 +1,6 @@
 import { v4 } from '@lukeed/uuid';
-import {
-  BaseFilter,
-  Spectrum1D,
-  FiltersManager,
-  Filters,
-} from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { BaseFilter, FiltersManager, Filters } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
 

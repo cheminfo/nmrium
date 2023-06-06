@@ -1,5 +1,6 @@
 import { extent } from 'd3';
-import { Spectrum1D, rangesToXY } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { rangesToXY } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';

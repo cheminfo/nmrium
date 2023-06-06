@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import { Spectrum } from 'nmr-processing';
+import { Spectrum } from 'nmr-load-save';
 import { useState, useEffect } from 'react';
 import { Plot, LineSeries, Axis } from 'react-plot';
 

@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration, xyMaxYPoint, xyMinYPoint } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { RangeDetectionResult } from '../../../types/data1d';
 import { getShiftX } from '../getShiftX';

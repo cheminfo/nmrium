@@ -1,4 +1,4 @@
-import { Spectrum } from 'nmr-processing';
+import { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';

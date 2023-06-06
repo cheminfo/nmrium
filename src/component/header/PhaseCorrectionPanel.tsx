@@ -1,4 +1,5 @@
-import { Filters, Spectrum1D } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Filters } from 'nmr-processing';
 import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useChartData } from '../context/ChartContext';

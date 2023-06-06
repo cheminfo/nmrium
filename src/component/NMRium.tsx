@@ -8,8 +8,8 @@ import {
   NmriumState,
   CustomWorkspaces,
   WorkspacePreferences as NMRiumPreferences,
+  Spectrum,
 } from 'nmr-load-save';
-import { Spectrum } from 'nmr-processing';
 import {
   useEffect,
   useCallback,

@@ -1,12 +1,12 @@
 import { saveAs } from 'file-saver';
 import {
+  Spectrum,
   Workspace,
   processJcamp,
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
   spectrum1DToJcamp,
 } from 'nmr-load-save';
-import type { Spectrum } from 'nmr-processing';
 
 import { State } from '../component/reducer/Reducer';
 

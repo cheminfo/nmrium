@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Spectrum2D } from 'nmr-processing';
+import { Spectrum2D } from 'nmr-load-save';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 

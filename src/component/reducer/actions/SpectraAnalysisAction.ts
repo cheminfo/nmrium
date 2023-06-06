@@ -1,5 +1,5 @@
 import { Draft } from 'immer';
-import { Spectrum1D } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { AnalysisRow } from '../../../data/data1d/multipleSpectraAnalysis';
 import { State } from '../Reducer';

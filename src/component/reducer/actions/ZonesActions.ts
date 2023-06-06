@@ -2,7 +2,8 @@ import { FromTo, Data2DFid, Data2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { setPathLength } from 'nmr-correlation';
-import type { Signal2D, Spectrum2D, Zone } from 'nmr-processing';
+import type { Signal2D, Zone } from 'nmr-processing';
+import type { Spectrum2D } from 'nmr-load-save';
 import { Filters, FiltersManager } from 'nmr-processing';
 
 import {

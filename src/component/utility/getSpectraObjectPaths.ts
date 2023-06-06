@@ -1,4 +1,4 @@
-import { Spectrum } from 'nmr-processing';
+import { Spectrum } from 'nmr-load-save';
 
 export function getSpectraObjectPaths(spectra: Spectrum[]) {
   const keys = ['display', 'meta', 'info', 'customInfo'];

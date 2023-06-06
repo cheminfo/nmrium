@@ -1,4 +1,4 @@
-import { Spectrum1D, Spectrum2D } from 'nmr-processing';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 export function convertSpectraArrayToObject<T extends Spectrum1D | Spectrum2D>(
   spectra: T[],

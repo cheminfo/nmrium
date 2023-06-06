@@ -1,5 +1,5 @@
 import { Formik, FormikProps } from 'formik';
-import { Spectrum } from 'nmr-processing';
+import { Spectrum } from 'nmr-load-save';
 import { useRef, CSSProperties } from 'react';
 import { Modal } from 'react-science/ui';
 

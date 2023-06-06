@@ -1,7 +1,7 @@
 import type { Data2DFt, Data2DFid } from 'cheminfo-types';
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import type { Spectrum1D, Spectrum2D } from 'nmr-processing';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
