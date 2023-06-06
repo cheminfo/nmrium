@@ -172,7 +172,7 @@ export default function useAtomAssignment({
                 } else {
                   _diaIDs = range?.signals[signalIndex]?.diaIDs || [];
                 }
-                const [_diaID, nbAtoms] = toggleAssignment(
+                const { diaIDs, nbAtoms } = toggleAssignment(
                   _diaIDs,
                   atomInformation,
                 );
@@ -180,8 +180,8 @@ export default function useAtomAssignment({
                   type: 'SET_DIAID_RANGE',
                   payload: {
                     nbAtoms,
-                    rangeData: datum,
-                    diaIDs: _diaID,
+                    range,
+                    diaIDs,
                     signalIndex,
                   },
                 });
@@ -193,7 +193,7 @@ export default function useAtomAssignment({
                 } else {
                   _diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
                 }
-                const [_diaID, nbAtoms] = toggleAssignment(
+                const { diaIDs, nbAtoms } = toggleAssignment(
                   _diaIDs,
                   atomInformation,
                 );
@@ -201,8 +201,8 @@ export default function useAtomAssignment({
                   type: 'SET_ZONE_DIAID',
                   payload: {
                     nbAtoms,
-                    zone: datum,
-                    diaIDs: _diaID,
+                    zone,
+                    diaIDs,
                     axis,
                     signalIndex,
                   },

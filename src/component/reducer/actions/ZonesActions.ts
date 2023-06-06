@@ -86,12 +86,10 @@ type ToggleZoneViewPropertyAction = ActionType<
 type SetZoneDiaIDAction = ActionType<
   'SET_ZONE_DIAID',
   {
-    nbAtoms: number;
-    zone: ZoneData;
-    diaIDs: string[];
+    zone: Zone;
     axis?: Axis;
     signalIndex?: number;
-  }
+  } & Pick<Zone['x'], 'diaIDs' | 'nbAtoms'>
 >;
 type SaveEditedZoneAction = ActionType<
   'SAVE_EDITED_ZONE',

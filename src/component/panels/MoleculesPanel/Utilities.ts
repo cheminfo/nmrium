@@ -123,9 +123,9 @@ export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
 }
 
 export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
-  let _diaIDs = diaIDs ? diaIDs.slice() : [];
+  let _diaIDs: string[] = diaIDs ? diaIDs.slice() : [];
   const { nbAtoms, oclIDs } = atomInformation;
-  let tempNbAtoms = nbAtoms;
+  let tempNbAtoms: number = nbAtoms;
   for (const oclID of oclIDs) {
     if (_diaIDs.includes(oclID)) {
       tempNbAtoms *= -1;
@@ -134,5 +134,5 @@ export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
       _diaIDs.push(oclID);
     }
   }
-  return [_diaIDs, tempNbAtoms];
+  return { diaIDs: _diaIDs, nbAtoms: tempNbAtoms };
 }

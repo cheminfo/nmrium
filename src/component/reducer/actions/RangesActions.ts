@@ -85,10 +85,8 @@ type SetDiaIDRangeAction = ActionType<
   'SET_DIAID_RANGE',
   {
     range: Range;
-    diaIDs: string[];
     signalIndex: number;
-    nbAtoms: number;
-  }
+  } & Pick<Range, 'diaIDs' | 'nbAtoms'>
 >;
 type ResizeRangeAction = ActionType<
   'RESIZE_RANGE',
