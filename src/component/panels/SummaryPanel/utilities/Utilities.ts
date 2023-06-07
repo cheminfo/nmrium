@@ -441,7 +441,7 @@ function convertValuesString(
 ): number[] {
   valuesString = valuesString
     .toLowerCase()
-    .replace(/\s+/g, '')
+    .replaceAll(/\s+/g, '')
     .split(',')
     .map((token) => (token === 'sp' ? 'sp1' : token))
     .join(',');

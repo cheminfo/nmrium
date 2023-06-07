@@ -19,7 +19,7 @@ export function AnalysisTablePreferences() {
 
   const addNewColumn = useCallback(
     (index, columns) => {
-      setFieldValue('analysisOptions.columns', [
+      void setFieldValue('analysisOptions.columns', [
         ...columns,
         {
           tempKey: '',
@@ -35,7 +35,7 @@ export function AnalysisTablePreferences() {
 
   const handleDelete = useCallback(
     (index, columns) => {
-      setFieldValue(
+      void setFieldValue(
         'analysisOptions.columns',
         columns.filter((_, colIndex) => colIndex !== index),
       );

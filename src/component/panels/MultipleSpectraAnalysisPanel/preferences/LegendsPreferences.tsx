@@ -50,7 +50,7 @@ function LegendsPreferences() {
       } else {
         columns.push(emptyField);
       }
-      setFieldValue('legendsFields', columns);
+      void setFieldValue('legendsFields', columns);
     },
     [setFieldValue],
   );
@@ -58,7 +58,7 @@ function LegendsPreferences() {
   const deleteHandler = useCallback(
     (data, index: number) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      setFieldValue('legendsFields', _fields);
+      void setFieldValue('legendsFields', _fields);
     },
     [setFieldValue],
   );

@@ -59,7 +59,7 @@ function getDomain(draft: Draft<State>) {
       const { y } = get1DDataXY(d);
 
       const _extent = extent(y) as Array<number>;
-      const domain = [data.x[0], data.x[data.x.length - 1]];
+      const domain = [data.x[0], data.x.at(-1) as number];
 
       yDomains[id] = _extent;
       xDomains[id] = domain;
@@ -151,7 +151,7 @@ function get2DDomain(state: State) {
   try {
     for (const d of filteredData) {
       const { x, re } = d.data;
-      const domain = [x[0], x[x.length - 1]];
+      const domain = [x[0], x.at(-1) as number];
       xDomains[d.id] = domain;
       const _extent = extent(re);
       yDomains[d.id] = _extent;

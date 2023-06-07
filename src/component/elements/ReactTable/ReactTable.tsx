@@ -232,9 +232,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
     ? rows.slice(virtualBoundary.rows.start, end)
     : rows;
 
-  const index =
-    rowsData[rowsData.length - 1]?.original[indexKey] ||
-    rowsData[rowsData.length - 1]?.index;
+  const index = rowsData.at(-1)?.original[indexKey] || rowsData.at(-1)?.index;
   const total = totalCount ? totalCount : data.length;
 
   const startColumn = columns[virtualBoundary.columns.start].Header;

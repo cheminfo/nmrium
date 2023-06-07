@@ -54,7 +54,7 @@ function DatabasesTabContent({
   function deleteHandler(index: number) {
     const _database = databases.data.slice();
     _database.splice(index, 1);
-    setFieldValue('databases.data', _database);
+    void setFieldValue('databases.data', _database);
   }
 
   function addHandler() {
@@ -64,7 +64,7 @@ function DatabasesTabContent({
       url: '',
       enabled: true,
     };
-    setFieldValue('databases.data', [...databases.data, newDatabase]);
+    void setFieldValue('databases.data', [...databases.data, newDatabase]);
   }
 
   function resetHandler() {
@@ -74,7 +74,7 @@ function DatabasesTabContent({
     );
     const database = workSpaceDisplayPreferences.databases.data;
 
-    setFieldValue('databases.data', database);
+    void setFieldValue('databases.data', database);
   }
 
   return (
@@ -82,7 +82,7 @@ function DatabasesTabContent({
       onClick={(e: any) => {
         if (e.target.checked) {
           e.target.checked = false;
-          setFieldValue('databases.defaultDatabase', '');
+          void setFieldValue('databases.defaultDatabase', '');
         }
       }}
     >

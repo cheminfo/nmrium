@@ -3,7 +3,7 @@ function getNucleusSum(input: string) {
   let output = 0;
   for (const i of nucleus) {
     const additions = nucleus.length === 2 ? 100 : 0;
-    output += Number(i.replace(/\D/g, '')) + additions;
+    output += Number(i.replaceAll(/\D/g, '')) + additions;
   }
   return output;
 }

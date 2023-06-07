@@ -55,7 +55,7 @@ function CouplingsTable({
   const multiplicityChangeHandler = useCallback(
     (value, name) => {
       if (!hasCouplingConstant(value)) {
-        setFieldValue(name, '');
+        void setFieldValue(name, '');
       }
     },
     [setFieldValue],

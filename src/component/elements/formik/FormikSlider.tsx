@@ -16,7 +16,7 @@ function FormikSlider(props: FormikSliderProps) {
 
   const debounceOnChange = useRef(
     debounce((value) => {
-      setFieldValue(name, value);
+      void setFieldValue(name, value);
     }, debounceTime),
   ).current;
 

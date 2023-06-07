@@ -23,13 +23,13 @@ const FormikSelect = function FormikSelect(
   const changeHandler = useCallback(
     (value) => {
       onChange(value);
-      setFieldValue(name, value);
+      void setFieldValue(name, value);
     },
     [name, onChange, setFieldValue],
   );
   useEffect(() => {
     if (value) {
-      setFieldValue(name, value);
+      void setFieldValue(name, value);
     }
   }, [name, setFieldValue, value]);
 

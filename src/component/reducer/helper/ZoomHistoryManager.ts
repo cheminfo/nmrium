@@ -44,13 +44,13 @@ function preparePop(historyStack, baseZoom?: HistoryItem) {
       return baseZoom || null;
     }
 
-    return val ? historyStack[historyStack.length - 1] : null;
+    return val ? historyStack.at(-1) : null;
   };
 }
 
 function prepareGetLast(historyStack) {
   return () => {
     if (historyStack.length === 0) return null;
-    return historyStack[historyStack.length - 1];
+    return historyStack.at(-1);
   };
 }

@@ -38,7 +38,7 @@ function FormikInput(props: FormikInputProps) {
   function changeHandler(e) {
     onChange(e);
     if (mapOnChangeValue) {
-      setFieldValue(name, mapOnChangeValue(e.target.value));
+      void setFieldValue(name, mapOnChangeValue(e.target.value));
     } else {
       handleChange(e);
     }

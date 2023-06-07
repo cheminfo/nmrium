@@ -52,7 +52,7 @@ function FormikColumnFormatField(props: ColumnFormatField) {
 
   const checkChangeHandler = useCallback(
     (e) => {
-      setFieldValue(e.target.name, e.target.checked);
+      void setFieldValue(e.target.name, e.target.checked);
     },
     [setFieldValue],
   );

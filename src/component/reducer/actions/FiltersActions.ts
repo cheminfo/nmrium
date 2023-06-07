@@ -394,7 +394,7 @@ function handleCalculateZeroFillingFilter(
     datum.data.x = newX;
     datum.data.im = newIm;
     datum.data.re = newRe;
-    draft.xDomain = [newX[0], newX[newX.length - 1]];
+    draft.xDomain = [newX[0], newX.at(-1) as number];
   }
 }
 

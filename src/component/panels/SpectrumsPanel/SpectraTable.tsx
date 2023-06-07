@@ -27,7 +27,7 @@ import { SpectrumName } from './base/SpectrumName';
 
 function formatValueAsHTML(value) {
   if (value) {
-    value = value.replace(/(?<value>\d+)/g, '<sub>$<value></sub>');
+    value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
   }
   return value;
 }

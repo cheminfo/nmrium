@@ -170,7 +170,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
         }
       } catch (error: any) {
         if (error instanceof TargetPathError) {
-          formRef.current?.setFieldValue('target', null);
+          void formRef.current?.setFieldValue('target', null);
           formRef.current?.setFieldError('target', '');
         }
         alert.error(error.message);

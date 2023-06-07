@@ -16,7 +16,7 @@ function FormikColorPicker(props: FormikColorPickerProps) {
   const colorChangeHandler = useCallback(
     (color) => {
       onColorChange(color);
-      setFieldValue(name, color.hex);
+      void setFieldValue(name, color.hex);
     },
     [name, onColorChange, setFieldValue],
   );
