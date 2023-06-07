@@ -70,7 +70,7 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
   const setValue = useCallback(
     (index: number) => {
       setCurrentIndex(index);
-      setFieldValue(props.name, molecules[index]);
+      void setFieldValue(props.name, molecules[index]);
     },
     [molecules, props.name, setFieldValue],
   );

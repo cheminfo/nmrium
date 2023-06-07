@@ -38,7 +38,7 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       e.persist();
       onChange(e);
-      setFieldValue(name, reverse ? value : !value);
+      void setFieldValue(name, reverse ? value : !value);
     },
     [name, onChange, reverse, setFieldValue, value],
   );

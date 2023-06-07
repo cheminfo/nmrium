@@ -16,7 +16,7 @@ function FormikColorPicker(props: FormikColorPickerProps) {
   const { values, setFieldValue } = useFormikContext();
 
   function colorChangeHandler(color) {
-    setFieldValue(
+    void setFieldValue(
       name,
       `${color.hex}${Math.round(color.rgb.a * 255).toString(16)}`,
       false,

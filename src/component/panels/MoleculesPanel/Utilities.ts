@@ -16,7 +16,7 @@ export interface AtomData {
 
 function getElements(activeTab: string) {
   const nuclei = activeTab.split(',');
-  return nuclei.map((nucleus) => nucleus.replace(/\d/g, ''));
+  return nuclei.map((nucleus) => nucleus.replaceAll(/\d/g, ''));
 }
 
 /**

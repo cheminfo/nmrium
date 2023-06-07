@@ -1,6 +1,6 @@
-import EventEmitter from 'eventemitter3';
+import EE from 'eventemitter3';
 
-const eventEmitter = new EventEmitter();
+const eventEmitter = new EE();
 
 const Emitter = {
   on: (event, fn) => eventEmitter.on(event, fn),

@@ -63,7 +63,7 @@ function FormattingTabContent() {
         _nuclei[nucleus] = nuclei[nucleus];
       }
     }
-    setFieldValue('formatting.nuclei', _nuclei);
+    void setFieldValue('formatting.nuclei', _nuclei);
   }
 
   function addHandler() {
@@ -74,7 +74,7 @@ function FormattingTabContent() {
     };
     const key = v4();
     const newNuclei = { ...nuclei, [key]: newFormat };
-    setFieldValue('formatting.nuclei', newNuclei);
+    void setFieldValue('formatting.nuclei', newNuclei);
   }
 
   const nucleiList = Object.keys(nuclei);

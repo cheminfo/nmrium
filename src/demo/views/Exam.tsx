@@ -182,7 +182,7 @@ export default function Exam(props) {
   useEffect(() => {
     if (file) {
       void loadData(file).then((d) => {
-        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
+        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
 
         if (_d?.molecules?.[0]?.molfile) {
           const molecule = Molecule.fromMolfile(_d.molecules[0].molfile);
