@@ -9,7 +9,7 @@ import {
 } from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { setDomain, setIntegralsYDomain } from './DomainActions';
 

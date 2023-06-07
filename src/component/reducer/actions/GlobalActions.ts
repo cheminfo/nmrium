@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
 import { State } from '../Reducer';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 type SetIsOverDisplayerAction = ActionType<
   'SET_MOUSE_OVER_DISPLAYER',

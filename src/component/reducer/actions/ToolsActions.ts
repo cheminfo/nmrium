@@ -23,7 +23,7 @@ import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getVerticalAlign } from '../helper/getVerticalAlign';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import {
   setDomain,

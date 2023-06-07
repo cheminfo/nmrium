@@ -20,7 +20,7 @@ import {
 } from '../../../data/utilities/FindUtilities';
 import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import { State } from '../Reducer';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { deleteSignal1D } from './RangesActions';
 import { deleteSignal2D } from './ZonesActions';

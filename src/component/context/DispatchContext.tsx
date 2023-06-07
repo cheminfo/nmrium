@@ -17,6 +17,7 @@ import { SpectraAnalysisActions } from '../reducer/actions/SpectraAnalysisAction
 import { SpectrumActions } from '../reducer/actions/SpectrumsActions';
 import { ToolsActions } from '../reducer/actions/ToolsActions';
 import { ZonesActions } from '../reducer/actions/ZonesActions';
+import { ActionType } from '../reducer/types/ActionType';
 
 export type Action =
   | ToolsActions
@@ -35,11 +36,12 @@ export type Action =
   | MoleculeActions
   | ZonesActions
   | FiltersActions
-  | CorrelationsActions;
+  | CorrelationsActions
+  | ActionType<'INITIALIZE_NMRIUM'>;
 // // eslint-disable-next-line @typescript-eslint/ban-types
 // | { type: string & {}; payload?: Object };
 
-type Dispatch = (action: Action) => void;
+export type Dispatch = (action: Action) => void;
 
 export const dispatchContext = createContext<Dispatch>(() => null);
 

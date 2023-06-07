@@ -38,7 +38,7 @@ import {
   isActiveSpectrum,
 } from '../helper/getActiveSpectraAsObject';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { setDomain, setMode } from './DomainActions';
 import { rollbackSpectrumByFilter } from './FiltersActions';

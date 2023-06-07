@@ -15,7 +15,7 @@ import {
 import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
-import { Action } from '../context/DispatchContext';
+import { Action, Dispatch } from '../context/DispatchContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { Tool } from '../toolbar/ToolTypes';
 
@@ -38,7 +38,6 @@ import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
-import * as types from './types/Types';
 
 export interface ActiveSpectrum {
   id: string;
@@ -159,7 +158,7 @@ export function getDefaultViewState(): ViewState {
   };
 }
 export const getInitialState = (): State => ({
-  actionType: '',
+  actionType: 'INITIALIZE_NMRIUM',
   data: [],
   tempData: null,
   xDomain: [],
@@ -228,7 +227,7 @@ export interface State {
    * Last action type
    *  base on the action type we can decide to trigger or not the callback function (onDataChange)
    */
-  actionType: string;
+  actionType: Action['type'];
   /**
    * web source of data
    */
@@ -436,18 +435,16 @@ export function initState(state: State): State {
     history: {},
   };
 }
-export function dispatchMiddleware(dispatch) {
-  let usedColors: UsedColors = { '1d': [], '2d': [] };
-  return (action) => {
+export function dispatchMiddleware(dispatch: Dispatch) {
+  return (action: Action) => {
     switch (action.type) {
-      case types.INITIATE:
-      case types.LOAD_DROP_FILES: {
-        action.payload.usedColors = usedColors;
+      case 'INITIATE':
+      case 'LOAD_DROP_FILES': {
         dispatch(action);
         break;
       }
 
-      case types.PREDICT_SPECTRA: {
+      case 'PREDICT_SPECTRA': {
         const { molfile, options } = action.payload;
         void predictSpectra(molfile).then(
           (predictedSpectra) => {
@@ -463,7 +460,6 @@ export function dispatchMiddleware(dispatch) {
       }
 
       default:
-        action.usedColors = usedColors;
         dispatch(action);
 
         break;

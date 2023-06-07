@@ -15,7 +15,7 @@ import {
   Workspace,
   WorkSpaceSource,
 } from '../../workspaces/Workspace';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { addWorkspace } from './actions/addWorkspace';
 import {

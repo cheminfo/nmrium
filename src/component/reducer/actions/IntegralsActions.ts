@@ -16,7 +16,7 @@ import {
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { setIntegralsYDomain } from './DomainActions';
 

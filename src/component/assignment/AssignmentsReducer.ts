@@ -1,6 +1,6 @@
 import { Data1D, Data2D } from 'nmr-load-save';
 
-import { ActionType } from '../reducer/types/Types';
+import { ActionType } from '../reducer/types/ActionType';
 
 import {
   AssignmentDimension,

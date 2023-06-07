@@ -17,7 +17,7 @@ import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';

@@ -3,7 +3,7 @@ import { Spectrum1D } from 'nmr-load-save';
 
 import { AnalysisRow } from '../../../data/data1d/multipleSpectraAnalysis';
 import { State } from '../Reducer';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 type OrderSpectraAction = ActionType<
   'ORDER_MULTIPLE_SPECTRA_ANALYSIS',

@@ -6,7 +6,6 @@ import { useToggleAccordion } from 'react-science/ui';
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
-import { TOGGLE_REAL_IMAGINARY_VISIBILITY } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 export default function useToolsFunctions() {
@@ -77,7 +76,7 @@ export default function useToolsFunctions() {
 
   const changeSpectrumViewHandler = useCallback(() => {
     dispatch({
-      type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
+      type: 'TOGGLE_REAL_IMAGINARY_VISIBILITY',
     });
     setIsRealSpectrumShown(!isRealSpectrumShown);
   }, [dispatch, isRealSpectrumShown]);

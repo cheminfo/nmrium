@@ -32,7 +32,7 @@ import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
 import { rangeStateInit, State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain, setIntegralsYDomain } from './DomainActions';

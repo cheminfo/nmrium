@@ -6,7 +6,7 @@ import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { setDomain } from './DomainActions';
 

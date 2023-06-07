@@ -14,7 +14,7 @@ import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewSta
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;

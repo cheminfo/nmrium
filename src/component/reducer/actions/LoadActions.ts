@@ -19,7 +19,7 @@ import {
   State,
   ViewState,
 } from '../Reducer';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setSpectraMetaInfo } from './SpectrumsActions';
@@ -50,11 +50,6 @@ export type LoadActions =
   | SetIsLoadingAction
   | LoadDropFilesAction
   | InitiateAction;
-
-function setColors(draft: Draft<State>, colors: UsedColors) {
-  draft.usedColors['1d'] = draft.usedColors['1d'].concat(colors['1d']);
-  draft.usedColors['2d'] = draft.usedColors['2d'].concat(colors['2d']);
-}
 
 function convertHybridizationStringValuesInCorrelations(
   correlations: CorrelationData,
@@ -101,7 +96,6 @@ function setData(
 ) {
   const {
     nmriumState: { data, view },
-    usedColors = { '1d': [], '2d': [] },
     onLoadProcessing = {},
     parseMetaFileResult = null,
   } = input || {
@@ -122,8 +116,6 @@ function setData(
     draft.view = lodashMerge(defaultViewState, view);
   }
 
-  setColors(draft, usedColors);
-
   if (source) {
     draft.source = lodashMergeWith(
       draft.source,
@@ -140,7 +132,7 @@ function setData(
   );
   draft.data = draft.data.concat(
     initSpectra(spectra, {
-      usedColors,
+      usedColors: draft.usedColors,
       onLoadProcessing: autoOnLoadProcessing ? onLoadProcessing : {},
     }),
   );

@@ -3,7 +3,7 @@ import { Range, Spectrum1D, Spectrum2D, Zone } from 'nmr-load-save';
 import { SpectraData1D, SpectraData2D } from 'nmr-processing';
 
 import { State } from '../Reducer';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 type SetAutomaticAssignmentsAction = ActionType<
   'SET_AUTOMATIC_ASSIGNMENTS',

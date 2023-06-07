@@ -1,35 +1,36 @@
-import * as types from './types/Types';
+import { Action } from '../context/DispatchContext';
 
-const ignoreActions = new Set([
-  types.APPLY_KEY_PREFERENCES,
-  types.BRUSH_END,
-  types.RESET_SELECTED_TOOL,
-  types.SET_KEY_PREFERENCES,
-  types.SET_LOADING_FLAG,
-  types.SET_SELECTED_TOOL,
-  types.SET_SPECTRUMS_VERTICAL_ALIGN,
-  types.SET_VERTICAL_INDICATOR_X_POSITION,
-  types.SET_DIMENSIONS,
-  types.SET_X_DOMAIN,
-  types.SET_Y_DOMAIN,
-  types.SET_ZOOM,
-  types.TOGGLE_REAL_IMAGINARY_VISIBILITY,
-  types.CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-  types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-  types.FULL_ZOOM_OUT,
-  types.SAVE_AS_SVG,
-  types.SET_ACTIVE_TAB,
-  types.CHANGE_VISIBILITY,
-  types.CHANGE_ACTIVE_SPECTRUM,
-  types.SET_MOUSE_OVER_DISPLAYER,
-  types.SHOW_J_GRAPH,
-  types.SHOW_MULTIPLICITY_TREES,
-  types.SHOW_RANGES_INTEGRALS,
-  types.CHANGE_FLOAT_MOLECULE_POSITION,
+const ignoreActions = new Set<Partial<Action['type']>>([
+  'INITIALIZE_NMRIUM',
+  'APPLY_KEY_PREFERENCES',
+  'BRUSH_END',
+  'RESET_SELECTED_TOOL',
+  'SET_KEY_PREFERENCES',
+  'SET_LOADING_FLAG',
+  'SET_SELECTED_TOOL',
+  'SET_SPECTRUMS_VERTICAL_ALIGN',
+  'SET_VERTICAL_INDICATOR_X_POSITION',
+  'SET_DIMENSIONS',
+  'SET_X_DOMAIN',
+  'SET_Y_DOMAIN',
+  'SET_ZOOM',
+  'TOGGLE_REAL_IMAGINARY_VISIBILITY',
+  'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
+  'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE',
+  'FULL_ZOOM_OUT',
+  'SET_ACTIVE_TAB',
+  'CHANGE_SPECTRUM_VISIBILITY',
+  'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
+  'CHANGE_ACTIVE_SPECTRUM',
+  'SET_MOUSE_OVER_DISPLAYER',
+  'SHOW_J_GRAPH',
+  'SHOW_MULTIPLICITY_TREES',
+  'SHOW_RANGES_INTEGRALS',
+  'CHANGE_FLOAT_MOLECULE_POSITION',
 ]);
 
-function checkActionType(type: string): boolean {
-  if (!ignoreActions.has(type)) return true;
+function checkActionType(type: Action['type']): boolean {
+  if (!ignoreActions?.has(type)) return true;
   return false;
 }
 

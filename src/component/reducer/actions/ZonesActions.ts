@@ -33,7 +33,7 @@ import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
 import { State, zoneStateInit } from '../Reducer';
 import get2DRange, { ZoneBoundary } from '../helper/get2DRange';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
