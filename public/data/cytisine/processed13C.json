@@ -193,8 +193,8 @@
                     "name": "phaseCorrection",
                     "label": "phase correction",
                     "value": {
-                        "ph0": 265.17737032165155,
-                        "ph1": -135.11316951211302
+                        "ph0": 158,
+                        "ph1": 88
                     },
                     "id": "kq0V3lTQ",
                     "flag": true,
