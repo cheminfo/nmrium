@@ -1,4 +1,4 @@
-import { Data2DFt } from 'cheminfo-types';
+import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { Spectrum2D } from 'nmr-load-save';
 
@@ -188,7 +188,7 @@ interface ContoursCalcOptions {
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
-  data: Data2DFt['rr'];
+  data: NmrData2DFt['rr'];
 }
 
 function getContours(zoomLevel: number, options: ContoursCalcOptions) {

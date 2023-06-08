@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Data2DFid, Data2DFt } from 'cheminfo-types';
+import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
@@ -237,8 +237,8 @@ function FooterBanner({ layout, data1D }) {
     if (trackID === LAYOUT.CENTER_2D) {
       const { info, data: spectraData } = data[activeSpectrum.index];
       const { maxX, maxY, minX, minY, z } = info.isFid
-        ? (spectraData as Data2DFid).re
-        : ((spectraData as Data2DFt).rr as any);
+        ? (spectraData as NmrData2DFid).re
+        : ((spectraData as NmrData2DFt).rr as any);
 
       const xStep = (maxX - minX) / (z[0].length - 1);
       const yStep = (maxY - minY) / (z.length - 1);

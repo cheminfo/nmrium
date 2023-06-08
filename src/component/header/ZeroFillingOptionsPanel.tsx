@@ -1,4 +1,4 @@
-import { Data1D, Filters } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 import { useEffect, useState, memo } from 'react';
 
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
@@ -21,7 +21,7 @@ function useInitZeroFillingSize() {
   if (filter) {
     return filter.value.nbPoints;
   } else if (data) {
-    return 2 ** Math.round(Math.log2((data as Data1D).x.length * 2));
+    return 2 ** Math.round(Math.log2((data as NmrData1D).x.length * 2));
   }
   return 0;
 }

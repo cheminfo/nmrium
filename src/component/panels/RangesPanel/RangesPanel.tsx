@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
-import { Data1D, Info1D, Ranges } from 'nmr-processing';
+import { Info1D, Ranges } from 'nmr-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
 import { DropdownMenuProps } from 'react-science/ui';
@@ -23,6 +23,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
+import { NmrData1D } from 'cheminfo-types';
 
 const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {
@@ -35,7 +36,7 @@ const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
 interface RangesTablePanelInnerProps {
   id: string;
   ranges: Ranges;
-  data: Data1D;
+  data: NmrData1D;
   info: Info1D;
   xDomain: Array<number>;
   activeTab: string;

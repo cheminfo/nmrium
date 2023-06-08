@@ -1,4 +1,4 @@
-import type { Data2DFid, Data2DFt } from 'cheminfo-types';
+import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
 import type { Spectrum2D } from 'nmr-load-save';
 
@@ -17,8 +17,8 @@ interface SlicePosition {
 export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
   const { data: spectraData, info } = spectrum;
   const data = info.isFid
-    ? (spectraData as Data2DFid).re
-    : (spectraData as Data2DFt).rr;
+    ? (spectraData as NmrData2DFid).re
+    : (spectraData as NmrData2DFt).rr;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   const xIndex = Math.floor((position.x - data.minX) / xStep);

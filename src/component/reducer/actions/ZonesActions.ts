@@ -1,4 +1,4 @@
-import { FromTo, Data2DFid, Data2DFt } from 'cheminfo-types';
+import { FromTo, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { setPathLength } from 'nmr-correlation';
@@ -174,9 +174,9 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
     const { info, data } = datum;
     if (info.dimension === 2) {
       const { minX, maxX, minY, maxY } = info.isFid
-        ? (data as Data2DFid).re
-        : (data as Data2DFt).rr;
-      const detectionOptions: DetectionZonesOptions = {
+        ? (data as NmrData2DFid).re
+        : (data as NmrData2DFt).rr;
+      const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
       };

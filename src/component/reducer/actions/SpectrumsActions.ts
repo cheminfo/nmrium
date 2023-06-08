@@ -1,4 +1,4 @@
-import { Data2DFid, Data2DFt } from 'cheminfo-types';
+import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
@@ -461,7 +461,7 @@ function handleAddMissingProjectionHandler(
     const { info, data } = Spectrum2D;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
-        info.isFid ? (data as Data2DFid).re : (data as Data2DFt).rr,
+        info.isFid ? (data as NmrData2DFid).re : (data as NmrData2DFt).rr,
         n,
         info,
         draft.usedColors,
