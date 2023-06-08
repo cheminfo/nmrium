@@ -285,6 +285,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={addRangeHandler}
           className="btn icon"
+          disabled={!ranges?.values}
         >
           <FaPlus />
         </Button>
