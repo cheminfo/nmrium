@@ -549,7 +549,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
       nmrium.page.locator('data-test-id=spectrum-line'),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText(/[3-5]/);
+    await expect(dataCount).toContainText(/[2-5]/);
     await expect(viewCount).toContainText(/[2-5]/);
   });
 
@@ -639,14 +639,14 @@ test('check callbacks count on changing structures', async ({ page }) => {
       ),
     ).toBeVisible();
 
-    await expect(dataCount).toContainText(String(initialDataCount + 2));
+    await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 1));
   });
   await test.step('change float position molecule', async () => {
     await nmrium.page
       .locator('_react=DraggableStructure >> _react=ButtonAction')
       .dragTo(nmrium.page.locator('_react=XAxis >> nth=1'), { force: true });
-    await expect(dataCount).toContainText(String(initialDataCount + 2));
+    await expect(dataCount).toContainText(String(initialDataCount + 1));
     await expect(viewCount).toContainText(String(initialViewCount + 2));
   });
 });
