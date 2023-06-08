@@ -118,7 +118,7 @@ function EditPeakShapeModal({
         <Formik
           enableReinitialize
           innerRef={refForm}
-          initialValues={values as any}
+          initialValues={values}
           validationSchema={validation(kind)}
           onSubmit={changePeakShapeHandler}
         >

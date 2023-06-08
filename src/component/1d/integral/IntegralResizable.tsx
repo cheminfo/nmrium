@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Integral } from 'nmr-load-save';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -10,7 +11,6 @@ import { HighlightEventSource, useHighlight } from '../../highlight/index';
 import { options } from '../../toolbar/ToolTypes';
 
 import { IntegralIndicator } from './IntegralIndicator';
-import { Integral } from 'nmr-load-save';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
