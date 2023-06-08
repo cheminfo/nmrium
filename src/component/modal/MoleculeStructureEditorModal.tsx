@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, useCallback } from 'react';
-import { StructureEditor } from 'react-ocl/full';
+import { StructureEditor, IStructureEditorProps } from 'react-ocl/full';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
-import { isMolFileEmpty } from '../../data/utilities/isMolFileEmpty';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import { useModal } from '../elements/popup/Modal';
@@ -31,9 +30,13 @@ function MoleculeStructureEditorModal(
     }
   }, [selectedMolecule]);
 
-  const cb = useCallback(
-    (newMolfile) => {
-      setMolfile(isMolFileEmpty(newMolfile) ? null : newMolfile);
+  const cb = useCallback<Exclude<IStructureEditorProps['onChange'], undefined>>(
+    (newMolfile, molecule) => {
+      if (molecule.getAllAtoms() === 0) {
+        setMolfile(null);
+      } else {
+        setMolfile(newMolfile);
+      }
     },
     [setMolfile],
   );
