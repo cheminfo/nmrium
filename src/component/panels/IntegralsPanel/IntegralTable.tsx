@@ -13,11 +13,6 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import Select from '../../elements/Select';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import {
-  DELETE_INTEGRAL,
-  CHANGE_INTEGRAL_DATA,
-  CHANGE_INTEGRAL_RELATIVE,
-} from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -36,20 +31,22 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     (e, row) => {
       e.preventDefault();
       e.stopPropagation();
-      const params = row.original;
+      const { id } = row.original;
       dispatch({
-        type: DELETE_INTEGRAL,
-        integralID: params.id,
+        type: 'DELETE_INTEGRAL',
+        payload: {
+          id,
+        },
       });
     },
     [dispatch],
   );
   const changeIntegralDataHandler = useCallback(
     (value, row) => {
-      const data = { ...row.original, kind: value };
+      const integral = { ...row.original, kind: value };
       dispatch({
-        type: CHANGE_INTEGRAL_DATA,
-        payload: { data },
+        type: 'CHANGE_INTEGRAL',
+        payload: { integral },
       });
     },
     [dispatch],
@@ -95,10 +92,9 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
 
   const saveRelativeHandler = useCallback(
     (event, row) => {
-      const data = { value: event.target.value, id: row.id };
       dispatch({
-        type: CHANGE_INTEGRAL_RELATIVE,
-        payload: { data },
+        type: 'CHANGE_INTEGRAL_RELATIVE',
+        payload: { value: event.target.value, id: row.id },
       });
     },
     [dispatch],

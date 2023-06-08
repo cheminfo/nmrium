@@ -30,12 +30,6 @@ import { positions, useModal } from '../../elements/popup/Modal';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
 import {
-  ADD_MOLECULE,
-  DELETE_MOLECULE,
-  FLOAT_MOLECULE_OVER_SPECTRUM,
-  TOGGLE_MOLECULE_ATOM_NUMBER,
-} from '../../reducer/types/Types';
-import {
   copyPNGToClipboard,
   copyTextToClipboard,
   exportAsSVG,
@@ -188,7 +182,7 @@ export default function MoleculePanelHeader({
 
   const handlePaste = useCallback(() => {
     void navigator.clipboard.readText().then((molfile) => {
-      dispatch({ type: ADD_MOLECULE, molfile });
+      dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
     });
   }, [dispatch]);
 
@@ -196,7 +190,7 @@ export default function MoleculePanelHeader({
     if (molecules[currentIndex]?.id) {
       onMoleculeIndexChange(0);
       dispatch({
-        type: DELETE_MOLECULE,
+        type: 'DELETE_MOLECULE',
         payload: { id: molecules[currentIndex].id, assignmentData },
       });
     }
@@ -218,14 +212,14 @@ export default function MoleculePanelHeader({
 
   function floatMoleculeHandler() {
     dispatch({
-      type: FLOAT_MOLECULE_OVER_SPECTRUM,
+      type: 'FLOAT_MOLECULE_OVER_SPECTRUM',
       payload: { id: moleculeKey },
     });
   }
 
   function showAtomNumbersHandler() {
     dispatch({
-      type: TOGGLE_MOLECULE_ATOM_NUMBER,
+      type: 'TOGGLE_MOLECULE_ATOM_NUMBER',
       payload: { id: moleculeKey },
     });
   }

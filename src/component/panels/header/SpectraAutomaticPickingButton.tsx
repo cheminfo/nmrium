@@ -6,10 +6,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility';
-import {
-  AUTO_RANGES_SPECTRA_PICKING,
-  AUTO_ZONES_SPECTRA_PICKING,
-} from '../../reducer/types/Types';
 
 export function SpectraAutomaticPickingButton() {
   const dispatch = useDispatch();
@@ -23,8 +19,8 @@ export function SpectraAutomaticPickingButton() {
         'Automatic Ranges/Zones detection for all spectra in progress',
       );
       setTimeout(() => {
-        dispatch({ type: AUTO_RANGES_SPECTRA_PICKING });
-        dispatch({ type: AUTO_ZONES_SPECTRA_PICKING });
+        dispatch({ type: 'AUTO_RANGES_SPECTRA_PICKING' });
+        dispatch({ type: 'AUTO_ZONES_SPECTRA_PICKING' });
         hideLoading();
       }, 0);
     })();

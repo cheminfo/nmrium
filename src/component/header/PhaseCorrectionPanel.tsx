@@ -11,13 +11,6 @@ import Label from '../elements/Label';
 import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
-import {
-  APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-  APPLY_AUTO_PHASE_CORRECTION_FILTER,
-  CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-  RESET_SELECTED_TOOL,
-  APPLY_ABSOLUTE_FILTER,
-} from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -100,21 +93,21 @@ export default function PhaseCorrectionPanel() {
     switch (phaseCorrectionType) {
       case phaseCorrectionTypes.automatic: {
         dispatch({
-          type: APPLY_AUTO_PHASE_CORRECTION_FILTER,
+          type: 'APPLY_AUTO_PHASE_CORRECTION_FILTER',
         });
         break;
       }
 
       case phaseCorrectionTypes.manual: {
         dispatch({
-          type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-          value,
+          type: 'APPLY_MANUAL_PHASE_CORRECTION_FILTER',
+          payload: value,
         });
         break;
       }
       case phaseCorrectionTypes.absolute: {
         dispatch({
-          type: APPLY_ABSOLUTE_FILTER,
+          type: 'APPLY_ABSOLUTE_FILTER',
         });
         break;
       }
@@ -133,8 +126,8 @@ export default function PhaseCorrectionPanel() {
       }
 
       dispatch({
-        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: newValues,
+        type: 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
+        payload: newValues,
       });
     },
     [data.re, dispatch, pivot?.index],
@@ -176,7 +169,7 @@ export default function PhaseCorrectionPanel() {
 
   const handleCancelFilter = useCallback(() => {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   }, [dispatch]);
 

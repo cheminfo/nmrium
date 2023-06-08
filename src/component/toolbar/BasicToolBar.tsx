@@ -32,7 +32,6 @@ import ImportPublicationStringModal from '../modal/ImportPublicationStringModal'
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
-import { SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const IMPORT_MENU = [
   {
@@ -134,7 +133,7 @@ function BasicToolBarInner({
 
   const startLoadingHandler = useCallback(() => {
     modal.close();
-    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: true } });
   }, [dispatch, modal]);
 
   const importJCAMPFile = useCallback(() => {

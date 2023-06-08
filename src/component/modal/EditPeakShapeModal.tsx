@@ -12,7 +12,6 @@ import { InputStyle } from '../elements/Input';
 import Label, { LabelStyle } from '../elements/Label';
 import Select from '../elements/Select';
 import FormikInput from '../elements/formik/FormikInput';
-import { CHANGE_PEAK_SHAPE } from '../reducer/types/Types';
 import { formatNumber } from '../utility/formatNumber';
 import { PeaksNucleusPreferences } from '../workspaces/Workspace';
 
@@ -93,7 +92,7 @@ function EditPeakShapeModal({
   const changePeakShapeHandler = useCallback(
     (values) => {
       dispatch({
-        type: CHANGE_PEAK_SHAPE,
+        type: 'CHANGE_PEAK_SHAPE',
         payload: {
           id: peak.id,
           shape: {

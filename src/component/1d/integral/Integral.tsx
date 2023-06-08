@@ -1,10 +1,12 @@
+import { Integral as IntegralType } from 'nmr-load-save';
+
 import useIntegralPath from '../../hooks/useIntegralPath';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import IntegralResizable from './IntegralResizable';
 
 interface IntegralProps {
-  integral: { id: string; from: number; to: number; integral?: number };
+  integral: IntegralType;
   isActive: boolean;
   nucleus: string;
 }

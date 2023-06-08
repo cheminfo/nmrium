@@ -9,7 +9,6 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { ORDER_MULTIPLE_SPECTRA_ANALYSIS } from '../../reducer/types/Types';
 import evaluate from '../../utility/Evaluate';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -123,7 +122,7 @@ function MultipleSpectraAnalysisTable({
   function handleSortEnd(data) {
     if (resortSpectra) {
       dispatch({
-        type: ORDER_MULTIPLE_SPECTRA_ANALYSIS,
+        type: 'ORDER_MULTIPLE_SPECTRA_ANALYSIS',
         payload: {
           data,
         },

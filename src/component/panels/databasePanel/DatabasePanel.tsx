@@ -14,7 +14,7 @@ import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
-import { mapRanges } from '../../../data/data1d/Spectrum1D';
+import { isSpectrum1D, mapRanges } from '../../../data/data1d/Spectrum1D';
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import {
   initiateDatabase,
@@ -35,10 +35,6 @@ import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import {
-  RESURRECTING_SPECTRUM_FROM_JCAMP,
-  RESURRECTING_SPECTRUM_FROM_RANGES,
-} from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
@@ -275,10 +271,14 @@ function DatabasePanelInner({
             const { data } = await readFromWebSource({
               entries: [{ baseURL, relativePath: jcampRelativeURL }],
             });
-            dispatch({
-              type: RESURRECTING_SPECTRUM_FROM_JCAMP,
-              payload: { ranges, spectrum: data?.spectra?.[0] || null },
-            });
+
+            const spectrum = data?.spectra?.[0] || null;
+            if (spectrum && isSpectrum1D(spectrum)) {
+              dispatch({
+                type: 'RESURRECTING_SPECTRUM_FROM_JCAMP',
+                payload: { ranges, spectrum },
+              });
+            }
           } catch {
             alert.error(`Failed to load Jcamp`);
           } finally {
@@ -287,7 +287,7 @@ function DatabasePanelInner({
         }, 0);
       } else {
         dispatch({
-          type: RESURRECTING_SPECTRUM_FROM_RANGES,
+          type: 'RESURRECTING_SPECTRUM_FROM_RANGES',
           payload: { ranges, info: { solvent, nucleus, name: names[0] } },
         });
       }

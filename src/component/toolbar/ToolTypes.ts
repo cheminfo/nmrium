@@ -22,20 +22,16 @@ export interface ToolOptionItem {
   isFilter: boolean;
 }
 
-type Tools = keyof NMRiumToolBarPreferences;
+export type Tool =
+  | keyof NMRiumToolBarPreferences
+  | 'HMove'
+  | 'equalizer'
+  | 'generalSelector'
+  | 'editRange'
+  | 'databaseRangesSelection'
+  | 'matrixGenerationExclusionZones';
 
-type RecordOptions = Record<
-  | Tools
-  | (
-      | 'HMove'
-      | 'equalizer'
-      | 'generalSelector'
-      | 'editRange'
-      | 'databaseRangesSelection'
-      | 'matrixGenerationExclusionZones'
-    ),
-  ToolOptionItem
->;
+type RecordOptions = Record<Tool, ToolOptionItem>;
 
 export const options: RecordOptions = {
   zoom: {

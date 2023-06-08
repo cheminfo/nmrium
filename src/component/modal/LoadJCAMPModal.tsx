@@ -7,7 +7,6 @@ import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import { useAlert } from '../elements/popup/Alert/Context';
-import { LOAD_DROP_FILES } from '../reducer/types/Types';
 import { extractFileMetaFromPath } from '../utility/FileUtility';
 
 const styles = css`
@@ -86,8 +85,8 @@ export default function LoadJCAMPModal({
         entries: [{ relativePath: pathname, baseURL: origin }],
       }).then((nmriumState) => {
         dispatch({
-          type: LOAD_DROP_FILES,
-          payload: { ...nmriumState, resetSourceObject: false },
+          type: 'LOAD_DROP_FILES',
+          payload: { nmriumState, resetSourceObject: false },
         });
         onClose?.();
       });

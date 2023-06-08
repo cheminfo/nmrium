@@ -16,11 +16,6 @@ import { useGlobal } from '../../../context/GlobalContext';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment';
 import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
-import {
-  CHANGE_FLOAT_MOLECULE_POSITION,
-  FLOAT_MOLECULE_OVER_SPECTRUM,
-  SET_MOLECULE,
-} from '../../../reducer/types/Types';
 
 import ActionsButton from './ActionsButton';
 
@@ -78,7 +73,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
 
   function floatMoleculeHandler() {
     dispatch({
-      type: FLOAT_MOLECULE_OVER_SPECTRUM,
+      type: 'FLOAT_MOLECULE_OVER_SPECTRUM',
       payload: { id: molecule.id },
     });
   }
@@ -93,8 +88,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
       bounding.height += height;
     }
     dispatch({
-      type: CHANGE_FLOAT_MOLECULE_POSITION,
-      payload: { id: molecule.id, bounding },
+      type: 'CHANGE_FLOAT_MOLECULE_POSITION',
+      payload: { id: molecule.id, bounding: bounding as MoleculeBoundingRect },
     });
   }
 
@@ -147,7 +142,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 setHoverAtom={handleOnAtomHover}
                 setMolfile={(molfile) => {
                   dispatch({
-                    type: SET_MOLECULE,
+                    type: 'SET_MOLECULE',
                     payload: {
                       molfile,
                       id: molecule.id,

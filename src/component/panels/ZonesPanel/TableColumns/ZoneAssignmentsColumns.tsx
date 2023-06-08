@@ -1,12 +1,12 @@
 import { Fragment } from 'react';
 
 import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
+import { ZoneData } from '../hooks/useMapZones';
 
-import { RowDataProps } from './ActionsColumn';
 import ZoneAssignmentColumn from './ZoneAssignmentsColumn';
 
 interface ZoneAssignmentsColumnsProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   onHoverZoneX: any;
   onHoverZoneY: any;
   onClick: (event: any, assignment: AssignmentsData, axis: Axis) => void;

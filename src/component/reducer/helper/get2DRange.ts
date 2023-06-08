@@ -1,6 +1,13 @@
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 
-export default function get2DRange(draft, options) {
+export interface ZoneBoundary {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
+
+export default function get2DRange(draft, options: ZoneBoundary) {
   const { startX, startY, endX, endY } = options;
   const scaleX = get2DXScale(draft);
   const scaleY = get2DYScale(draft);

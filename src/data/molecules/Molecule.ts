@@ -4,11 +4,11 @@ import { Molecule as OCLMolecule } from 'openchemlib/full';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 export interface StateMolecule {
-  id: string;
+  id?: string;
   molfile: string;
-  label: string;
+  label?: string;
 }
-export interface StateMoleculeExtended extends StateMolecule {
+export interface StateMoleculeExtended extends Required<StateMolecule> {
   mf: string;
   em: number;
   mw: number;

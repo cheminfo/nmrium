@@ -2,7 +2,6 @@ import { checkMultiplicity } from 'nmr-processing';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
-import { CHANGE_RANGE_SIGNAL_VALUE } from '../../../reducer/types/Types';
 import { formatNumber } from '../../../utility/formatNumber';
 import { RangeColumnProps } from '../RangesTableRow';
 
@@ -17,7 +16,7 @@ function SignalDeltaColumn({
 
   function saveHandler(event) {
     dispatch({
-      type: CHANGE_RANGE_SIGNAL_VALUE,
+      type: 'CHANGE_RANGE_SIGNAL_VALUE',
       payload: {
         value: event.target.value,
         rangeID: row.id,

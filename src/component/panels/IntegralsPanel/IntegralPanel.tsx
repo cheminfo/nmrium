@@ -8,16 +8,11 @@ import { ImLink } from 'react-icons/im';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ToggleButton from '../../elements/ToggleButton';
+import ActiveButton from '../../elements/ActiveButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import {
-  DELETE_INTEGRAL,
-  CHANGE_INTEGRAL_SUM,
-  CHANGE_INTEGRALS_SUM_FLAG,
-} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -32,12 +27,6 @@ const style = css`
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .fix-integral-toggle-btn {
-    svg {
-      font-size: 12px !important;
-    }
   }
 `;
 
@@ -62,7 +51,7 @@ function IntegralPanelInner({
   const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_INTEGRAL, integralID: null });
+    dispatch({ type: 'DELETE_INTEGRAL', payload: {} });
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
@@ -73,8 +62,8 @@ function IntegralPanelInner({
   }, [modal, yesHandler]);
 
   const changeIntegralSumHandler = useCallback(
-    (value) => {
-      dispatch({ type: CHANGE_INTEGRAL_SUM, value });
+    (options) => {
+      dispatch({ type: 'CHANGE_INTEGRAL_SUM', payload: { options } });
       modal.close();
     },
     [dispatch, modal],
@@ -114,12 +103,9 @@ function IntegralPanelInner({
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const toggleConstantSumHandler = useCallback(
-    (flag) => {
-      dispatch({ type: CHANGE_INTEGRALS_SUM_FLAG, payload: flag });
-    },
-    [dispatch],
-  );
+  const toggleConstantSumHandler = useCallback(() => {
+    dispatch({ type: 'CHANGE_INTEGRALS_SUM_FLAG' });
+  }, [dispatch]);
 
   const filteredData = useMemo(() => {
     function isInRange(from, to) {
@@ -191,14 +177,16 @@ function IntegralPanelInner({
               <SvgNmrSum />
             </button>
           </ToolTip>
-          <ToggleButton
-            className="fix-integral-toggle-btn"
+
+          <ActiveButton
+            className="icon"
             popupTitle="Fix integral values"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
+            value={integrals?.options?.isSumConstant || false}
           >
             <ImLink />
-          </ToggleButton>
+          </ActiveButton>
         </DefaultPanelHeader>
       )}
       {isFlipped && (

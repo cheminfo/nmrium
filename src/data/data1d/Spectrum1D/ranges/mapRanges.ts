@@ -1,13 +1,14 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
 import { Range, Signal1D, Spectrum1D } from 'nmr-load-save';
+import { NMRRange } from 'nmr-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { MapOptions, ShiftTarget } from '../../../types/common/MapOptions';
 import { getShiftX } from '../getShiftX';
 import { getSpectrumErrorValue } from '../getSpectrumErrorValue';
 
-function checkRange(range: Range, spectrum: Spectrum1D, error) {
+function checkRange(range: Range | NMRRange, spectrum: Spectrum1D, error) {
   // check if the range is already exists
   for (const { from, to } of spectrum.ranges?.values || []) {
     if (
@@ -61,7 +62,7 @@ function getSignalDelta(
 }
 
 export function mapRanges(
-  ranges: Range[],
+  ranges: Range[] | NMRRange[],
   spectrum: Spectrum1D,
   options: MapOptions = {},
 ) {

@@ -5,7 +5,6 @@ import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../../reducer/types/Types';
 import MoleculePanel from '../MoleculesPanel/MoleculePanel';
 
 import PredictionPreferences from './PredictionOptions';
@@ -28,8 +27,8 @@ export default function PredictionPane() {
     void (async () => {
       if (molecule) {
         dispatch({
-          type: SET_LOADING_FLAG,
-          isLoading: true,
+          type: 'SET_LOADING_FLAG',
+          payload: { isLoading: true },
         });
 
         const hideLoading = await alert.showLoading(
@@ -37,8 +36,8 @@ export default function PredictionPane() {
         );
 
         dispatch({
-          type: PREDICT_SPECTRA,
-          payload: { mol: molecule, options: values },
+          type: 'PREDICT_SPECTRA',
+          payload: { molfile: molecule.molfile, options: values },
         });
         if (!spectraPanelState?.isOpen) {
           openSpectraPanel();

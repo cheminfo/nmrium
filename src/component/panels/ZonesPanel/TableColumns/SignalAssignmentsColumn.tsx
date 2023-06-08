@@ -7,11 +7,10 @@ import {
   RemoveAssignmentsButton,
   removeAssignmentCssStyle,
 } from '../../../elements/RemoveAssignmentsButton';
-
-import { RowDataProps } from './ActionsColumn';
+import { ZoneData } from '../hooks/useMapZones';
 
 export interface SignalAssignmentsColumnProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   assignment: AssignmentsData;
   highlight: {
     isActive: any;

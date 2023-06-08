@@ -14,7 +14,6 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { rangeStateInit } from '../../reducer/Reducer';
-import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -103,9 +102,9 @@ function RangesTablePanelInner({
   const unlinkRangeHandler = useCallback(
     (rangeData, signalIndex = -1) => {
       dispatch({
-        type: UNLINK_RANGE,
+        type: 'UNLINK_RANGE',
         payload: {
-          rangeData,
+          range: rangeData,
           assignmentData,
           signalIndex,
         },

@@ -18,10 +18,44 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities';
+import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import { State } from '../Reducer';
+import { ActionType } from '../types/ActionType';
 
-import { handleDeleteSignal as handleDeleteSignal1D } from './RangesActions';
-import { handleDeleteSignal as handleDeleteSignal2D } from './ZonesActions';
+import { deleteSignal1D } from './RangesActions';
+import { deleteSignal2D } from './ZonesActions';
+
+type SetMFAction = ActionType<'SET_CORRELATIONS_MF', { mf: string }>;
+type SetToleranceAction = ActionType<
+  'SET_CORRELATIONS_TOLERANCE',
+  { tolerance: Tolerance }
+>;
+type SetCorrelationAction = ActionType<
+  'SET_CORRELATION',
+  {
+    id: string;
+    correlation: Correlation;
+    options?: CorrelationOptions;
+  }
+>;
+type SetCorrelationsAction = ActionType<
+  'SET_CORRELATIONS',
+  {
+    correlations: CorrelationValues;
+    options: CorrelationOptions;
+  }
+>;
+type DeleteCorrelationAction = ActionType<
+  'DELETE_CORRELATION',
+  { correlation: Correlation; assignmentData: AssignmentContext }
+>;
+
+export type CorrelationsActions =
+  | SetMFAction
+  | SetToleranceAction
+  | SetCorrelationAction
+  | SetCorrelationsAction
+  | DeleteCorrelationAction;
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
@@ -31,10 +65,11 @@ function handleUpdateCorrelations(draft: Draft<State>) {
   });
 }
 
-function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
+//action
+function handleSetMF(draft: Draft<State>, action: SetMFAction) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
-  const { mf } = payload;
+  const { mf } = action.payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
     draft.correlations = buildCorrelationData(spectra, {
@@ -45,13 +80,11 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
   }
 }
 
-function handleSetTolerance(
-  draft: Draft<State>,
-  payload: { tolerance: Tolerance },
-) {
+//action
+function handleSetTolerance(draft: Draft<State>, action: SetToleranceAction) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
-  const { tolerance } = payload;
+  const { tolerance } = action.payload;
   draft.correlations = buildCorrelationData(spectra, {
     ...correlations.options,
     tolerance,
@@ -59,17 +92,14 @@ function handleSetTolerance(
   });
 }
 
+//action
 function handleSetCorrelation(
   draft: Draft<State>,
-  payload: {
-    id: string;
-    correlation: Correlation;
-    options: CorrelationOptions;
-  },
+  action: SetCorrelationAction,
 ) {
   const state = original(draft) as State;
   const { correlations } = state;
-  const { id, correlation, options } = payload;
+  const { id, correlation, options } = action.payload;
   draft.correlations = setCorrelation(correlations, id, correlation);
   if (options) {
     draft.correlations = {
@@ -80,14 +110,12 @@ function handleSetCorrelation(
   handleUpdateCorrelations(draft);
 }
 
+//action
 function handleSetCorrelations(
   draft: Draft<State>,
-  payload: {
-    correlations: CorrelationValues;
-    options: CorrelationOptions;
-  },
+  action: SetCorrelationsAction,
 ) {
-  const { correlations, options } = payload;
+  const { correlations, options } = action.payload;
   const state = original(draft) as State;
   let correlationsData = lodashCloneDeep(state.correlations);
   for (const correlation of correlations) {
@@ -107,11 +135,12 @@ function handleSetCorrelations(
   handleUpdateCorrelations(draft);
 }
 
+//action
 function handleDeleteCorrelation(
   draft: Draft<State>,
-  payload: { correlation: Correlation; assignmentData },
+  action: DeleteCorrelationAction,
 ) {
-  const { correlation, assignmentData } = payload;
+  const { correlation, assignmentData } = action.payload;
   // delete all signals linked to the correlation
   for (const link of correlation.links) {
     const spectrum = findSpectrum(draft.data, link.experimentID, false);
@@ -119,25 +148,25 @@ function handleDeleteCorrelation(
       if (spectrum.info.dimension === 1) {
         const range = findRange(spectrum as Spectrum1D, link.signal.id);
         const signal = findSignal1D(spectrum as Spectrum1D, link.signal.id);
-        handleDeleteSignal1D(draft, {
-          payload: {
+        if (range && signal) {
+          deleteSignal1D(draft, {
             spectrum,
             range,
             signal,
             assignmentData,
-          },
-        });
+          });
+        }
       } else if (spectrum.info.dimension === 2) {
         const zone = findZone(spectrum as Spectrum2D, link.signal.id);
         const signal = findSignal2D(spectrum as Spectrum2D, link.signal.id);
-        handleDeleteSignal2D(draft, {
-          payload: {
+        if (zone && signal) {
+          deleteSignal2D(draft, {
             spectrum,
             zone,
             signal,
             assignmentData,
-          },
-        });
+          });
+        }
       }
     }
   }

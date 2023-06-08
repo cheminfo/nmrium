@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { memo, useCallback } from 'react';
 
 import { useDispatch } from '../../../../context/DispatchContext';
-import { CHANGE_SPECTRUM_SETTING } from '../../../../reducer/types/Types';
 
 import Spectrum1DSetting from './Spectrum1DSetting';
 import Spectrum2DSetting from './Spectrum2DSetting';
@@ -79,7 +78,10 @@ function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
 
   const submitHandler = useCallback(
     (values) => {
-      dispatch({ type: CHANGE_SPECTRUM_SETTING, id, display: values });
+      dispatch({
+        type: 'CHANGE_SPECTRUM_SETTING',
+        payload: { id, display: values },
+      });
     },
     [dispatch, id],
   );

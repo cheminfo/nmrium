@@ -8,6 +8,18 @@ import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { ActionType } from '../types/ActionType';
+
+type SetXDomainAction = ActionType<
+  'SET_X_DOMAIN',
+  { xDomain: [number, number] }
+>;
+type SetYDomainAction = ActionType<
+  'SET_Y_DOMAIN',
+  { yDomain: [number, number] }
+>;
+
+export type DomainActions = SetXDomainAction | SetYDomainAction;
 
 function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
   let data = draft.data.filter(
@@ -234,26 +246,6 @@ function setIntegralsYDomain(
   }
 }
 
-function setOriginalDomain(draft: Draft<State>, originDomain) {
-  draft.originDomain = originDomain;
-}
-
-function setXDomain(draft: Draft<State>, xDomain) {
-  draft.xDomain = xDomain;
-}
-
-function setYDomain(draft: Draft<State>, yDomain) {
-  draft.yDomain = yDomain;
-}
-
-function handelResetDomain(draft: Draft<State>) {
-  const { xDomain, yDomain, xDomains, yDomains } = draft.originDomain;
-  draft.xDomain = xDomain;
-  draft.yDomain = yDomain;
-  draft.xDomains = xDomains;
-  draft.yDomains = yDomains;
-}
-
 function setMode(draft: Draft<State>) {
   const datum_ = draft.data.find(
     (datum) =>
@@ -263,13 +255,23 @@ function setMode(draft: Draft<State>) {
   draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
+//action
+function handleSetXDomain(draft: Draft<State>, action: SetXDomainAction) {
+  const xDomain = action.payload.xDomain;
+  draft.xDomain = xDomain;
+}
+
+//action
+function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
+  const yDomain = action.payload.yDomain;
+  draft.yDomain = yDomain;
+}
+
 export {
   getDomain,
-  setOriginalDomain,
-  setXDomain,
-  setYDomain,
-  handelResetDomain,
   setDomain,
   setMode,
   setIntegralsYDomain,
+  handleSetXDomain,
+  handleSetYDomain,
 };

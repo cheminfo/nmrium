@@ -12,7 +12,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import { SET_DIAID_RANGE, SET_DIAID_ZONE } from '../../reducer/types/Types';
 
 import {
   Atom,
@@ -173,16 +172,16 @@ export default function useAtomAssignment({
                 } else {
                   _diaIDs = range?.signals[signalIndex]?.diaIDs || [];
                 }
-                const [_diaID, nbAtoms] = toggleAssignment(
+                const { diaIDs, nbAtoms } = toggleAssignment(
                   _diaIDs,
                   atomInformation,
                 );
                 dispatch({
-                  type: SET_DIAID_RANGE,
+                  type: 'SET_DIAID_RANGE',
                   payload: {
                     nbAtoms,
-                    rangeData: datum,
-                    diaIDs: _diaID,
+                    range,
+                    diaIDs,
                     signalIndex,
                   },
                 });
@@ -194,16 +193,16 @@ export default function useAtomAssignment({
                 } else {
                   _diaIDs = zone?.signals[signalIndex][axis]?.diaIDs || [];
                 }
-                const [_diaID, nbAtoms] = toggleAssignment(
+                const { diaIDs, nbAtoms } = toggleAssignment(
                   _diaIDs,
                   atomInformation,
                 );
                 dispatch({
-                  type: SET_DIAID_ZONE,
+                  type: 'SET_ZONE_DIAID',
                   payload: {
                     nbAtoms,
-                    zoneData: datum,
-                    diaIDs: _diaID,
+                    zone,
+                    diaIDs,
                     axis,
                     signalIndex,
                   },

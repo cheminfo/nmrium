@@ -19,24 +19,12 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { ZoomType } from '../reducer/helper/Zoom1DManager';
+import { ZOOM_TYPES } from '../reducer/helper/Zoom1DManager';
 import getRange from '../reducer/helper/getRange';
 import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
 } from '../reducer/scaleReducer';
-import {
-  ADD_INTEGRAL,
-  ADD_PEAKS,
-  ADD_BASE_LINE_ZONE,
-  BRUSH_END,
-  FULL_ZOOM_OUT,
-  SET_ZOOM,
-  ADD_PEAK,
-  SET_VERTICAL_INDICATOR_X_POSITION,
-  ADD_RANGE,
-  ADD_EXCLUSION_ZONE,
-} from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 
@@ -150,8 +138,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           case options.integral.id:
             dispatch({
-              type: ADD_INTEGRAL,
-              ...brushData,
+              type: 'ADD_INTEGRAL',
+              payload: brushData,
             });
             break;
           case options.rangePicking.id: {
@@ -170,10 +158,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
             if (toIndex - fromIndex <= MAX_LENGTH) {
               dispatch({
-                type: ADD_RANGE,
-                payload: {
-                  ...brushData,
-                },
+                type: 'ADD_RANGE',
+                payload: brushData,
               });
             } else {
               alert.error(
@@ -201,22 +187,25 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
           case options.peakPicking.id:
             dispatch({
-              type: ADD_PEAKS,
-              ...brushData,
+              type: 'ADD_PEAKS',
+              payload: brushData,
             });
             break;
 
           case options.baselineCorrection.id:
             dispatch({
-              type: ADD_BASE_LINE_ZONE,
-              zone: { from: brushData.startX, to: brushData.endX },
+              type: 'ADD_BASE_LINE_ZONE',
+              payload: {
+                startX: brushData.startX,
+                endX: brushData.endX,
+              },
             });
             break;
 
           case options.exclusionZones.id:
             dispatch({
-              type: ADD_EXCLUSION_ZONE,
-              payload: { from: brushData.startX, to: brushData.endX },
+              type: 'ADD_EXCLUSION_ZONE',
+              payload: { startX: brushData.startX, endX: brushData.endX },
             });
             break;
           case options.matrixGenerationExclusionZones.id: {
@@ -244,7 +233,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           default:
             if (selectedTool != null) {
-              dispatch({ type: BRUSH_END, ...brushData });
+              dispatch({ type: 'BRUSH_END', payload: brushData });
             }
             break;
         }
@@ -266,12 +255,15 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   );
 
   const handelOnDoubleClick = useCallback(() => {
-    dispatch({ type: FULL_ZOOM_OUT, zoomType: ZoomType.STEP_HORIZONTAL });
+    dispatch({
+      type: 'FULL_ZOOM_OUT',
+      payload: { zoomType: ZOOM_TYPES.STEP_HORIZONTAL },
+    });
   }, [dispatch]);
 
   const handleZoom = useCallback(
     (event) => {
-      dispatch({ type: SET_ZOOM, event, selectedTool });
+      dispatch({ type: 'SET_ZOOM', payload: { event, selectedTool } });
     },
     [dispatch, selectedTool],
   );
@@ -292,8 +284,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           case options.peakPicking.id:
             dispatch({
-              type: ADD_PEAK,
-              mouseCoordinates: position,
+              type: 'ADD_PEAK',
+              payload: position,
             });
             break;
           case options.editRange.id:
@@ -306,8 +298,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         switch (selectedTool) {
           case options.phaseCorrection.id:
             dispatch({
-              type: SET_VERTICAL_INDICATOR_X_POSITION,
-              position: position.x,
+              type: 'SET_VERTICAL_INDICATOR_X_POSITION',
+              payload: {
+                position: position.x,
+              },
             });
             break;
 

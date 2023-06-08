@@ -22,11 +22,6 @@ import {
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
-import {
-  DELETE_PEAK_NOTATION,
-  OPTIMIZE_PEAKS,
-  TOGGLE_PEAKS_VIEW_PROPERTY,
-} from '../../reducer/types/Types';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -66,7 +61,7 @@ function PeaksPanelInner({
   const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_PEAK_NOTATION, data: null });
+    dispatch({ type: 'DELETE_PEAK', payload: {} });
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
@@ -121,14 +116,14 @@ function PeaksPanelInner({
       isInRange(peak.x, { from, to }),
     );
     if (filterPeaks.length <= 4) {
-      dispatch({ type: OPTIMIZE_PEAKS, payload: { peaks: filterPeaks } });
+      dispatch({ type: 'OPTIMIZE_PEAKS', payload: { peaks: filterPeaks } });
     } else {
       alert.error('optimization can be done on no more than 4 peaks');
     }
   };
 
   function toggleViewProperty(key: keyof typeof defaultPeaksViewState) {
-    dispatch({ type: TOGGLE_PEAKS_VIEW_PROPERTY, payload: { key } });
+    dispatch({ type: 'TOGGLE_PEAKS_VIEW_PROPERTY', payload: { key } });
   }
 
   return (

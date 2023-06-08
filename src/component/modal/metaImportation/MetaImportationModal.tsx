@@ -24,7 +24,6 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
-import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { ModalStyles } from '../ModalStyle';
@@ -206,7 +205,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
 
   function handleImport() {
     dispatch({
-      type: IMPORT_SPECTRA_META_INFO,
+      type: 'IMPORT_SPECTRA_META_INFO',
       payload: { spectraMeta: matches },
     });
     onClose?.();

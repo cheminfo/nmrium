@@ -26,16 +26,6 @@ import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import {
-  DELETE_1D_SIGNAL,
-  DELETE_2D_SIGNAL,
-  DELETE_CORRELATION,
-  SET_2D_SIGNAL_PATH_LENGTH,
-  SET_CORRELATION,
-  SET_CORRELATIONS,
-  SET_CORRELATIONS_MF,
-  SET_CORRELATIONS_TOLERANCE,
-} from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
@@ -240,7 +230,7 @@ function SummaryPanel() {
   const handleOnSetMolecularFormula = useCallback(
     (mf) => {
       dispatch({
-        type: SET_CORRELATIONS_MF,
+        type: 'SET_CORRELATIONS_MF',
         payload: {
           mf,
         },
@@ -252,7 +242,7 @@ function SummaryPanel() {
   const handleOnSetShiftTolerance = useCallback(
     (tolerance) => {
       dispatch({
-        type: SET_CORRELATIONS_TOLERANCE,
+        type: 'SET_CORRELATIONS_TOLERANCE',
         payload: {
           tolerance,
         },
@@ -321,7 +311,7 @@ function SummaryPanel() {
   const editEquivalencesSaveHandler = useCallback(
     (correlation: Correlation, value: number) => {
       dispatch({
-        type: SET_CORRELATION,
+        type: 'SET_CORRELATION',
         payload: {
           id: correlation.id,
           correlation: {
@@ -346,7 +336,7 @@ function SummaryPanel() {
       key: 'hybridization' | 'protonsCount';
     }) => {
       dispatch({
-        type: SET_CORRELATION,
+        type: 'SET_CORRELATION',
         payload: {
           id: correlation.id,
           correlation: {
@@ -366,7 +356,7 @@ function SummaryPanel() {
   const setCorrelationsHandler = useCallback(
     (correlations: CorrelationValues, options?: CorrelationOptions) => {
       dispatch({
-        type: SET_CORRELATIONS,
+        type: 'SET_CORRELATIONS',
         payload: {
           correlations,
           options,
@@ -379,7 +369,7 @@ function SummaryPanel() {
   const deleteCorrelationHandler = useCallback(
     (correlation: Correlation) => {
       dispatch({
-        type: DELETE_CORRELATION,
+        type: 'DELETE_CORRELATION',
         payload: {
           correlation,
           assignmentData,
@@ -402,15 +392,17 @@ function SummaryPanel() {
         const range = findRange(spectrum, link.signal.id);
         const signal = findSignal1D(spectrum, link.signal.id);
 
-        dispatch({
-          type: DELETE_1D_SIGNAL,
-          payload: {
-            spectrum,
-            range,
-            signal,
-            assignmentData,
-          },
-        });
+        if (spectrum && range && signal) {
+          dispatch({
+            type: 'DELETE_1D_SIGNAL',
+            payload: {
+              spectrum,
+              range,
+              signal,
+              assignmentData,
+            },
+          });
+        }
       } else if (linkDim === 2) {
         const spectrum = findSpectrum(
           spectraData,
@@ -420,15 +412,17 @@ function SummaryPanel() {
         const zone = findZone(spectrum, link.signal.id);
         const signal = findSignal2D(spectrum, link.signal.id);
 
-        dispatch({
-          type: DELETE_2D_SIGNAL,
-          payload: {
-            spectrum,
-            zone,
-            signal,
-            assignmentData,
-          },
-        });
+        if (zone && signal) {
+          dispatch({
+            type: 'DELETE_2D_SIGNAL',
+            payload: {
+              spectrum,
+              zone,
+              signal,
+              assignmentData,
+            },
+          });
+        }
       }
     },
     [assignmentData, dispatch, spectraData],
@@ -445,16 +439,17 @@ function SummaryPanel() {
         ) as Spectrum2D;
         const zone = findZone(spectrum, link.signal.id);
         const signal = findSignal2D(spectrum, link.signal.id);
-
-        dispatch({
-          type: SET_2D_SIGNAL_PATH_LENGTH,
-          payload: {
-            spectrum,
-            zone,
-            signal,
-            pathLength: link.signal.j?.pathLength,
-          },
-        });
+        if (zone && signal) {
+          dispatch({
+            type: 'SET_2D_SIGNAL_PATH_LENGTH',
+            payload: {
+              spectrum,
+              zone,
+              signal,
+              pathLength: link.signal.j?.pathLength,
+            },
+          });
+        }
       }
     },
     [dispatch, spectraData],

@@ -7,20 +7,16 @@ import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
-import {
-  AUTO_ZONES_DETECTION,
-  CHANGE_ZONES_NOISE_FACTOR,
-} from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const validationSchema = Yup.object().shape({
-  thresholdFactor: Yup.number().min(0).required(),
+  zonesNoiseFactor: Yup.number().min(0).required(),
 });
 
 const initialValues = {
-  thresholdFactor: 1,
+  zonesNoiseFactor: 1,
 };
 
 function Zones2DOptionPanel() {
@@ -29,7 +25,7 @@ function Zones2DOptionPanel() {
   const handleZonesPicking = useCallback(
     (values) => {
       dispatch({
-        type: AUTO_ZONES_DETECTION,
+        type: 'AUTO_ZONES_DETECTION',
         payload: values,
       });
     },
@@ -38,7 +34,7 @@ function Zones2DOptionPanel() {
 
   const handleChangeNoiseFactory = useCallback(
     (values) => {
-      dispatch({ type: CHANGE_ZONES_NOISE_FACTOR, payload: values });
+      dispatch({ type: 'CHANGE_ZONES_NOISE_FACTOR', payload: values });
     },
     [dispatch],
   );
@@ -58,7 +54,7 @@ function Zones2DOptionPanel() {
               style={headerLabelStyle}
             >
               <FormikNumberInput
-                name="thresholdFactor"
+                name="zonesNoiseFactor"
                 style={{ width: '50px' }}
                 min={0}
               />

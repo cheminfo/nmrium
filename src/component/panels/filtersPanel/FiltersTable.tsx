@@ -13,12 +13,6 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
-import {
-  ENABLE_FILTER,
-  DELETE_FILTER,
-  SET_FILTER_SNAPSHOT,
-  DELETE_SPECTRA_FILTER,
-} from '../../reducer/types/Types';
 
 interface FiltersProps extends Filter {
   error?: any;
@@ -58,13 +52,13 @@ function FiltersTableInner({
   const selectedFilterIndex = useRef<number>();
 
   const handelFilterCheck = useCallback(
-    (id, checked) => {
+    (id, enabled) => {
       void (async () => {
         const hideLoading = await alert.showLoading(
-          `${checked ? 'Enable' : 'Disable'} filter in progress`,
+          `${enabled ? 'Enable' : 'Disable'} filter in progress`,
         );
         setTimeout(() => {
-          dispatch({ type: ENABLE_FILTER, id, checked });
+          dispatch({ type: 'ENABLE_FILTER', payload: { id, enabled } });
           hideLoading();
         }, 0);
       })();
@@ -80,7 +74,7 @@ function FiltersTableInner({
             const hideLoading = await alert.showLoading(
               'Delete filter process in progress',
             );
-            dispatch({ type: DELETE_FILTER, payload: { id } });
+            dispatch({ type: 'DELETE_FILTER', payload: { id } });
             hideLoading();
           },
         },
@@ -95,8 +89,8 @@ function FiltersTableInner({
               'Delete all spectra filter process in progress',
             );
             dispatch({
-              type: DELETE_SPECTRA_FILTER,
-              payload: { filterType: name },
+              type: 'DELETE_SPECTRA_FILTER',
+              payload: { filterName: name },
             });
             hideLoading();
           },
@@ -126,7 +120,7 @@ function FiltersTableInner({
           'Filter snapshot process in progress',
         );
         setTimeout(() => {
-          dispatch({ type: SET_FILTER_SNAPSHOT, payload: filter });
+          dispatch({ type: 'SET_FILTER_SNAPSHOT', payload: filter });
           hideLoading();
         }, 0);
       })();

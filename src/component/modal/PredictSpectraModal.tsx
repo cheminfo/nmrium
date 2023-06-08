@@ -21,7 +21,6 @@ import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
-import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
@@ -163,32 +162,36 @@ function PredictSpectraModal({
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
-        setPredictionPreferences({ ...values, isApproved });
-        dispatch({
-          type: SET_LOADING_FLAG,
-          isLoading: true,
-        });
+        if (molfile) {
+          setPredictionPreferences({ ...values, isApproved });
+          dispatch({
+            type: 'SET_LOADING_FLAG',
+            payload: {
+              isLoading: true,
+            },
+          });
 
-        const predictedSpectra = Object.entries(values.spectra)
-          .map(([key, value]) => {
-            if (value) {
-              return key;
-            }
-            return undefined;
-          })
-          .join(',');
+          const predictedSpectra = Object.entries(values.spectra)
+            .map(([key, value]) => {
+              if (value) {
+                return key;
+              }
+              return undefined;
+            })
+            .join(',');
 
-        const hideLoading = await alert.showLoading(
-          `Predict ${predictedSpectra} in progress`,
-        );
+          const hideLoading = await alert.showLoading(
+            `Predict ${predictedSpectra} in progress`,
+          );
 
-        dispatch({
-          type: PREDICT_SPECTRA,
-          payload: { mol: molfile, options: values },
-        });
+          dispatch({
+            type: 'PREDICT_SPECTRA',
+            payload: { molfile, options: values },
+          });
 
-        hideLoading();
-        onClose();
+          hideLoading();
+          onClose();
+        }
       })();
     },
     [alert, dispatch, isApproved, molfile, onClose, setPredictionPreferences],

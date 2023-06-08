@@ -16,7 +16,6 @@ import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
-import { SET_LOADING_FLAG, LOAD_DROP_FILES } from '../reducer/types/Types';
 
 const style = css`
   height: 100%;
@@ -94,9 +93,9 @@ function DropZone(props) {
           });
         }
         dispatch({
-          type: LOAD_DROP_FILES,
+          type: 'LOAD_DROP_FILES',
           payload: {
-            ...nmriumState,
+            nmriumState,
             containsNmrium,
             onLoadProcessing: current.onLoadProcessing,
             parseMetaFileResult,
@@ -108,12 +107,12 @@ function DropZone(props) {
       logger.error(error);
       reportError(error);
     } finally {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+      dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
     }
   }
 
   function onDrop(droppedFiles) {
-    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: true } });
     void loadFilesHandler(droppedFiles);
   }
 

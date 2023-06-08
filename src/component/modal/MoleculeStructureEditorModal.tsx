@@ -8,7 +8,6 @@ import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import { useModal } from '../elements/popup/Modal';
 import { positions } from '../elements/popup/options';
-import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
 
@@ -44,20 +43,22 @@ function MoleculeStructureEditorModal(
   }, [onClose]);
 
   const handleSave = useCallback(() => {
-    if (selectedMolecule) {
-      const { id, label } = selectedMolecule;
-      dispatch({
-        type: SET_MOLECULE,
-        payload: {
-          molfile,
-          id,
-          label,
-        },
-      });
-      onClose('replace');
-    } else {
-      dispatch({ type: ADD_MOLECULE, molfile });
-      onClose('new');
+    if (molfile) {
+      if (selectedMolecule) {
+        const { id, label } = selectedMolecule;
+        dispatch({
+          type: 'SET_MOLECULE',
+          payload: {
+            molfile,
+            id,
+            label,
+          },
+        });
+        onClose('replace');
+      } else {
+        dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
+        onClose('new');
+      }
     }
   }, [dispatch, selectedMolecule, molfile, onClose]);
 

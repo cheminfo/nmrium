@@ -57,11 +57,6 @@ import preferencesReducer, {
   preferencesInitialState,
   initPreferencesState,
 } from './reducer/preferences/preferencesReducer';
-import {
-  INITIATE,
-  SET_LOADING_FLAG,
-  SET_MOUSE_OVER_DISPLAYER,
-} from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
 import {
@@ -297,14 +292,17 @@ function InnerNMRium({
   );
 
   useEffect(() => {
-    dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatchMiddleWare({
+      type: 'SET_LOADING_FLAG',
+      payload: { isLoading: true },
+    });
     if (dataProp) {
       void readNMRiumObject(dataProp)
-        .then((nmriumObject) => {
-          dispatchMiddleWare({ type: INITIATE, payload: nmriumObject });
+        .then((nmriumState) => {
+          dispatchMiddleWare({ type: 'INITIATE', payload: { nmriumState } });
         })
         .catch((error) => {
-          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
           // eslint-disable-next-line no-alert
           alert(error.message);
           reportError(error);
@@ -325,10 +323,16 @@ function InnerNMRium({
       return;
     }
     function mouseEnterHandler() {
-      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
+      dispatchMiddleWare({
+        type: 'SET_MOUSE_OVER_DISPLAYER',
+        payload: { isMouseOverDisplayer: true },
+      });
     }
     function mouseLeaveHandler() {
-      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+      dispatchMiddleWare({
+        type: 'SET_MOUSE_OVER_DISPLAYER',
+        payload: { isMouseOverDisplayer: false },
+      });
     }
     div.addEventListener('mouseenter', mouseEnterHandler);
     div.addEventListener('mouseleave', mouseLeaveHandler);

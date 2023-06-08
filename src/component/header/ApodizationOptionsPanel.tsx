@@ -4,7 +4,10 @@ import * as Yup from 'yup';
 
 import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
-import { defaultApodizationOptions } from '../../data/data1d/filter1d/apodization';
+import {
+  ApodizationOptions,
+  defaultApodizationOptions,
+} from '../../data/data1d/filter1d/apodization';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
@@ -12,11 +15,6 @@ import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
-import {
-  APPLY_APODIZATION_FILTER,
-  CALCULATE_APODIZATION_FILTER,
-  RESET_SELECTED_TOOL,
-} from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -31,7 +29,7 @@ const validationSchema = Yup.object().shape({
   lineBroadeningCenter: Yup.number().required().min(0).max(1),
 });
 
-const initialValues = {
+const initialValues: ApodizationOptions & { livePreview: boolean } = {
   ...defaultApodizationOptions,
   livePreview: true,
 };
@@ -53,12 +51,12 @@ function ApodizationOptionsInnerPanel(
     const { livePreview, ...filterOptions } = values;
     if (livePreview && triggerSource === 'onChange') {
       dispatch({
-        type: CALCULATE_APODIZATION_FILTER,
+        type: 'CALCULATE_APODIZATION_FILTER',
         payload: filterOptions,
       });
     } else if (triggerSource === 'apply') {
       dispatch({
-        type: APPLY_APODIZATION_FILTER,
+        type: 'APPLY_APODIZATION_FILTER',
         payload: filterOptions,
       });
     }
@@ -66,7 +64,7 @@ function ApodizationOptionsInnerPanel(
 
   function handleCancelFilter() {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   }
 

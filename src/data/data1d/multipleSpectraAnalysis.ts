@@ -46,7 +46,7 @@ export interface AnalysisOptions {
   columnIndex: number;
 }
 
-interface AnalysisRow extends RangeDetectionResult {
+export interface AnalysisRow extends RangeDetectionResult {
   SID: string;
   colKey?: string;
   value?: number;

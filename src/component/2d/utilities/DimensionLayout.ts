@@ -2,7 +2,9 @@ const LAYOUT = {
   TOP_1D: 'TOP_1D',
   LEFT_1D: 'LEFT_1D',
   CENTER_2D: 'CENTER_2D',
-};
+} as const;
+
+type Layout = keyof typeof LAYOUT;
 
 interface MarginProps {
   top: number;
@@ -49,28 +51,14 @@ interface StartEndProps {
   endY?: number;
 }
 
-interface DimensionType {
-  CENTER_2D: {
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-  };
-  TOP_1D: {
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-  };
-  LEFT_1D: {
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-  };
-}
+type DimensionType = {
+  [key in Layout]: Required<StartEndProps>;
+};
 
-function getLayoutID(dimension: DimensionType, brushData: StartEndProps) {
+function getLayoutID(
+  dimension: DimensionType,
+  brushData: StartEndProps,
+): Layout | null {
   for (const key of Object.keys(dimension)) {
     if (
       brushData.startX >= dimension[key].startX &&
@@ -78,10 +66,11 @@ function getLayoutID(dimension: DimensionType, brushData: StartEndProps) {
       brushData.startY >= dimension[key].startY &&
       brushData.startY <= dimension[key].endY
     ) {
-      return key;
+      return key as Layout;
     }
   }
   return null;
 }
 
 export { LAYOUT, get2DDimensionLayout, getLayoutID };
+export type { Layout };
