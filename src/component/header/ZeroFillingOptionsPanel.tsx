@@ -1,3 +1,4 @@
+import { NmrData1D } from 'cheminfo-types';
 import { Filters } from 'nmr-processing';
 import { useEffect, useState, memo } from 'react';
 

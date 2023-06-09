@@ -1,4 +1,4 @@
-import { Integral as IntegralType } from 'nmr-load-save';
+import { Integral as IntegralType } from 'nmr-processing';
 
 import useIntegralPath from '../../hooks/useIntegralPath';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';

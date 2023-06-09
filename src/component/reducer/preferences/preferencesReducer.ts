@@ -15,7 +15,7 @@ import {
   storeData,
 } from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { addWorkspace } from './actions/addWorkspace';
 import {

@@ -2,8 +2,12 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { OnLoadProcessing, ViewState, NmriumState } from 'nmr-load-save';
-import { Spectrum } from 'nmr-processing';
+import {
+  Spectrum,
+  OnLoadProcessing,
+  ViewState,
+  NmriumState,
+} from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
