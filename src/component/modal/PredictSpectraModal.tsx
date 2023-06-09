@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import {
   defaultPredictionOptions,
   FREQUENCIES,
+  predictSpectra,
 } from '../../data/PredictionManager';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
@@ -184,13 +185,18 @@ function PredictSpectraModal({
             `Predict ${predictedSpectra} in progress`,
           );
 
-          dispatch({
-            type: 'PREDICT_SPECTRA',
-            payload: { molfile, options: values },
-          });
-
-          hideLoading();
-          onClose();
+          try {
+            const data = await predictSpectra(molfile);
+            dispatch({
+              type: 'PREDICT_SPECTRA',
+              payload: { predictedSpectra: data.spectra, options: values },
+            });
+          } catch (error: any) {
+            alert.error(error?.message);
+          } finally {
+            hideLoading();
+            onClose();
+          }
         }
       })();
     },
