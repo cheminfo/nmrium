@@ -1,5 +1,5 @@
-import max from 'ml-array-max';
 import { NmrData1D } from 'cheminfo-types';
+import max from 'ml-array-max';
 
 // Lookup for apeak while the mouse move
 /**

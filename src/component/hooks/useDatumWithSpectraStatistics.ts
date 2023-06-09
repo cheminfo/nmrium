@@ -1,5 +1,5 @@
-import { Info1D, Info2D } from 'nmr-processing';
 import { NmrData1D, NmrData2D } from 'cheminfo-types'
+import { Info1D, Info2D } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';

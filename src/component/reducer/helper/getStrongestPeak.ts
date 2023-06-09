@@ -1,6 +1,6 @@
+import { NmrData1D } from 'cheminfo-types';
 import { max } from 'd3';
 import { Draft } from 'immer';
-import { NmrData1D } from 'cheminfo-types';
 
 import { State } from '../Reducer';
 

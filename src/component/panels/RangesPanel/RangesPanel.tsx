@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D, Ranges } from 'nmr-processing';
@@ -23,7 +24,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
-import { NmrData1D } from 'cheminfo-types';
 
 const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
   {

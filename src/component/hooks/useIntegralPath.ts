@@ -1,6 +1,6 @@
+import { NmrData1D } from 'cheminfo-types';
 import { ScaleLinear } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
-import { NmrData1D } from 'cheminfo-types';
 import { useMemo } from 'react';
 
 import { getIntegralYScale } from '../1d/utilities/scale';

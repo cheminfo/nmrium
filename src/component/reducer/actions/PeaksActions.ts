@@ -1,9 +1,9 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData1D } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
-import { NmrData1D } from 'cheminfo-types';
 
 import {
   getShiftX,
