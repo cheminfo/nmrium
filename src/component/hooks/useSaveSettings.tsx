@@ -64,7 +64,7 @@ export function useSaveSettings() {
   }
 
   return {
-    saveSettings: (values?: Partial<Workspace>) => {
+    saveSettings: (values: Partial<Workspace> = {}) => {
       setValues(values);
 
       if (current.source !== 'user') {
