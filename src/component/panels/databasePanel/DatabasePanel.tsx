@@ -258,18 +258,18 @@ function DatabasePanelInner({
 
   const resurrectHandler = useCallback(
     (rowData) => {
-      const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
+      let { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
       const { ranges, solvent, names = [] } = result.data[index];
 
       if (jcampRelativeURL) {
+        const url = new URL(jcampRelativeURL, baseURL);
         setTimeout(async () => {
           const hideLoading = await alert.showLoading(
             `load jcamp in progress...`,
           );
-
           try {
             const { data } = await readFromWebSource({
-              entries: [{ baseURL, relativePath: jcampRelativeURL }],
+              entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
 
             const spectrum = data?.spectra?.[0] || null;
@@ -519,19 +519,12 @@ function mapSolventsToSelect(solvents: string[]) {
 }
 
 async function saveJcampAsJson(rowData, filteredData) {
-  const {
-    index,
-    baseURL,
-    jcampURL: jcampRelativeURL,
-    names,
-    ocl = {},
-    smiles,
-  } = rowData;
+  const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
-
+  const url = new URL(jcampURL, baseURL);
   const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
     await readFromWebSource({
-      entries: [{ baseURL, relativePath: jcampRelativeURL }],
+      entries: [{ baseURL: url.origin, relativePath: url.pathname }],
     });
 
   let molfile = '';
