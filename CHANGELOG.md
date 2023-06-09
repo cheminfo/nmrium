@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.38.0](https://github.com/cheminfo/nmrium/compare/v0.37.0...v0.38.0) (2023-06-08)
+
+
+### Features
+
+* include 'view' object with the normal save ([#2388](https://github.com/cheminfo/nmrium/issues/2388)) ([f69d213](https://github.com/cheminfo/nmrium/commit/f69d2137597be577c4f5a57e356f82e93149d914))
+* rename metaInfo to customInfo and reorder information panel ([#2380](https://github.com/cheminfo/nmrium/issues/2380)) ([1731ce4](https://github.com/cheminfo/nmrium/commit/1731ce493da010495ee03adfce1e2f077dd2eed9))
+
+
+### Bug Fixes
+
+* correctly determine if a molecule is empty ([#2403](https://github.com/cheminfo/nmrium/issues/2403)) ([72e6979](https://github.com/cheminfo/nmrium/commit/72e69792bb97820cddb28d7b7e712c19ba114d4e)), closes [#2400](https://github.com/cheminfo/nmrium/issues/2400)
+* do not use p element in NoData component ([#2401](https://github.com/cheminfo/nmrium/issues/2401)) ([f86d42c](https://github.com/cheminfo/nmrium/commit/f86d42cda9502eb2e1b7a0da8137ad80ac69b2af))
+* manual 'add range' crash when no spectrum is selected ([#2399](https://github.com/cheminfo/nmrium/issues/2399)) ([3ab5514](https://github.com/cheminfo/nmrium/commit/3ab5514f7563b78fe4c467aa686f322e385a4c95)), closes [#2390](https://github.com/cheminfo/nmrium/issues/2390)
+* manual coupling edition ([#2384](https://github.com/cheminfo/nmrium/issues/2384)) ([fb8b576](https://github.com/cheminfo/nmrium/commit/fb8b576aac7abecbf2cd4a0cfce788645857321f)), closes [#2353](https://github.com/cheminfo/nmrium/issues/2353)
+* show time domain spectrum if none of the selected spectrum is FT ([#2370](https://github.com/cheminfo/nmrium/issues/2370)) ([480d9de](https://github.com/cheminfo/nmrium/commit/480d9dea4afbc83e0aeb79bc2888f6910252278b))
+
 ## [0.37.0](https://github.com/cheminfo/nmrium/compare/v0.36.0...v0.37.0) (2023-05-26)
 
 
