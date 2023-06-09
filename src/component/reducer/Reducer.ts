@@ -447,8 +447,12 @@ export function dispatchMiddleware(dispatch: Dispatch) {
       case 'PREDICT_SPECTRA': {
         const { molfile, options } = action.payload;
         void predictSpectra(molfile).then(
-          (predictedSpectra) => {
-            action.payload = { predictedSpectra, options, molfile };
+          (data) => {
+            action.payload = {
+              predictedSpectra: data.spectra,
+              options,
+              molfile,
+            };
             dispatch(action);
           },
           () => {
