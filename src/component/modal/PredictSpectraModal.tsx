@@ -127,7 +127,7 @@ const predictionFormValidation = Yup.object().shape({
 
 interface PredictSpectraModalProps {
   onClose?: (element?: string) => void;
-  molfile: any;
+  molfile: string;
 }
 
 function PredictSpectraModal({
