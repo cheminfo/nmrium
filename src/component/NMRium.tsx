@@ -7,7 +7,6 @@ import {
   useEffect,
   useCallback,
   useReducer,
-  useMemo,
   useRef,
   memo,
   ReactElement,
@@ -46,12 +45,7 @@ import DropZone from './loader/DropZone';
 import { defaultGetSpinner, SpinnerProvider } from './loader/SpinnerContext';
 import Panels from './panels/Panels';
 import checkActionType from './reducer/IgnoreActions';
-import {
-  spectrumReducer,
-  initialState,
-  dispatchMiddleware,
-  initState,
-} from './reducer/Reducer';
+import { spectrumReducer, initialState, initState } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
@@ -192,6 +186,7 @@ function InnerNMRium({
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const [show, , setOff, toggle] = useOnOff(false);
+  const mainDivRef = useRef<HTMLDivElement>(null);
 
   const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
@@ -207,7 +202,6 @@ function InnerNMRium({
     initialState,
     initState,
   );
-
   const [preferencesState, dispatchPreferences] = useReducer(
     preferencesReducer,
     preferencesInitialState,
@@ -261,10 +255,6 @@ function InnerNMRium({
     handleChange.current?.(stateRef.current as NmriumState, 'settings');
   }, [preferencesState]);
 
-  const dispatchMiddleWare = useMemo(() => {
-    return dispatchMiddleware(dispatch);
-  }, []);
-
   useEffect(() => {
     rootRef.current?.focus();
   }, [isFullscreen]);
@@ -292,14 +282,14 @@ function InnerNMRium({
   );
 
   useEffect(() => {
-    dispatchMiddleWare({
+    dispatch({
       type: 'SET_LOADING_FLAG',
       payload: { isLoading: true },
     });
     if (dataProp) {
       void readNMRiumObject(dataProp)
         .then((nmriumState) => {
-          dispatchMiddleWare({ type: 'INITIATE', payload: { nmriumState } });
+          dispatch({ type: 'INITIATE', payload: { nmriumState } });
         })
         .catch((error) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
@@ -308,7 +298,7 @@ function InnerNMRium({
           reportError(error);
         });
     }
-  }, [dataProp, dispatchMiddleWare]);
+  }, [dataProp]);
 
   const preventContextMenuHandler = useCallback((e) => {
     if (!checkModifierKeyActivated(e)) {
@@ -316,20 +306,19 @@ function InnerNMRium({
     }
   }, []);
 
-  const mainDivRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const div = mainDivRef.current;
     if (!div) {
       return;
     }
     function mouseEnterHandler() {
-      dispatchMiddleWare({
+      dispatch({
         type: 'SET_MOUSE_OVER_DISPLAYER',
         payload: { isMouseOverDisplayer: true },
       });
     }
     function mouseLeaveHandler() {
-      dispatchMiddleWare({
+      dispatch({
         type: 'SET_MOUSE_OVER_DISPLAYER',
         payload: { isMouseOverDisplayer: false },
       });
@@ -340,7 +329,7 @@ function InnerNMRium({
       div.removeEventListener('mouseenter', mouseEnterHandler);
       div.removeEventListener('mouseleave', mouseLeaveHandler);
     };
-  }, [dispatchMiddleWare]);
+  }, []);
 
   return (
     <GlobalProvider
@@ -354,7 +343,7 @@ function InnerNMRium({
         <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
           <LoggerProvider>
             <AlertProvider wrapperRef={elementsWrapperRef.current}>
-              <DispatchProvider value={dispatchMiddleWare}>
+              <DispatchProvider value={dispatch}>
                 <ChartDataProvider value={state}>
                   <ModalProvider wrapperRef={elementsWrapperRef.current}>
                     <HighlightProvider>

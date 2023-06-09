@@ -4,7 +4,6 @@ import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Source, Spectrum } from 'nmr-load-save';
 import { Reducer } from 'react';
 
-import { predictSpectra } from '../../data/PredictionManager';
 import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
 import { BaselineCorrectionZone } from '../../data/data1d/filter1d/baselineCorrection';
 import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
@@ -15,7 +14,7 @@ import {
 import { Nuclei } from '../../data/types/common/Nucleus';
 import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
 import { UsedColors } from '../../types/UsedColors';
-import { Action, Dispatch } from '../context/DispatchContext';
+import { Action } from '../context/DispatchContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { Tool } from '../toolbar/ToolTypes';
 
@@ -433,41 +432,6 @@ export function initState(state: State): State {
     correlations,
     displayerKey,
     history: {},
-  };
-}
-export function dispatchMiddleware(dispatch: Dispatch) {
-  return (action: Action) => {
-    switch (action.type) {
-      case 'INITIATE':
-      case 'LOAD_DROP_FILES': {
-        dispatch(action);
-        break;
-      }
-
-      case 'PREDICT_SPECTRA': {
-        const { molfile, options } = action.payload;
-        void predictSpectra(molfile).then(
-          (data) => {
-            action.payload = {
-              predictedSpectra: data.spectra,
-              options,
-              molfile,
-            };
-            dispatch(action);
-          },
-          () => {
-            dispatch(action);
-          },
-        );
-
-        break;
-      }
-
-      default:
-        dispatch(action);
-
-        break;
-    }
   };
 }
 

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAccordionContext } from 'react-science/ui';
 
+import { predictSpectra } from '../../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -34,15 +35,20 @@ export default function PredictionPane() {
         const hideLoading = await alert.showLoading(
           `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
         );
-
-        dispatch({
-          type: 'PREDICT_SPECTRA',
-          payload: { molfile: molecule.molfile, options: values },
-        });
-        if (!spectraPanelState?.isOpen) {
-          openSpectraPanel();
+        try {
+          const data = await predictSpectra(molecule.molfile);
+          dispatch({
+            type: 'PREDICT_SPECTRA',
+            payload: { predictedSpectra: data.spectra, options: values },
+          });
+          if (!spectraPanelState?.isOpen) {
+            openSpectraPanel();
+          }
+        } catch (error: any) {
+          alert.error(error.message);
+        } finally {
+          hideLoading();
         }
-        hideLoading();
       } else {
         alert.error('No Molecule selected');
       }

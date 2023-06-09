@@ -32,9 +32,8 @@ type DeleteMoleculeAction = ActionType<
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
-    molfile: string;
     options: PredictionOptions;
-    predictedSpectra?: PredictedSpectraResult;
+    predictedSpectra: PredictedSpectraResult;
   }
 >;
 type ToggleMoleculeViewObjectAction = ActionType<
