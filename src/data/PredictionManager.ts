@@ -5,6 +5,7 @@ import {
   signalsToXY,
   signals2DToZ,
   getFrequency,
+  PredictedAll,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -72,7 +73,7 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(molfile: string): Promise<any> {
+export async function predictSpectra(molfile: string): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
 
   return predictAll(molecule, {
