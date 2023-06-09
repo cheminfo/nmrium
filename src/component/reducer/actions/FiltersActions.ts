@@ -1,7 +1,12 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
 import { Spectrum, Spectrum1D } from 'nmr-load-save';
-import { Filters, FiltersManager, BaselineCorrectionOptions, ApodizationOptions } from 'nmr-processing';
+import {
+  Filters,
+  FiltersManager,
+  BaselineCorrectionOptions,
+  ApodizationOptions,
+} from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
@@ -29,6 +34,7 @@ const {
   shiftX,
   shift2DX,
   shift2DY,
+  exclusionZones,
   signalProcessing,
 } = Filters;
 
@@ -104,7 +110,7 @@ export type FiltersActions =
       | 'APPLY_ABSOLUTE_FILTER'
     >;
 
-function getFilterUpdateDomainRules(filterName: string) { 
+function getFilterUpdateDomainRules(filterName: string) {
   return (
     Filters[filterName]?.DOMAIN_UPDATE_RULES || {
       updateXDomain: false,
@@ -326,17 +332,17 @@ function handleShiftSpectrumAlongXAxis(
     const index = activeSpectrum?.index;
 
     FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.shiftX.id, value: { shift } },
+      { name: shiftX.id, value: { shift } },
     ]);
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.shiftX.id,
+        key: shiftX.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.shiftX.DOMAIN_UPDATE_RULES);
+      updateView(draft, shiftX.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -353,7 +359,7 @@ function handleApplyZeroFillingFilter(
     const index = activeSpectrum.index;
     const filters = [
       {
-        name: Filters.zeroFilling.id,
+        name: zeroFilling.id,
         value: action.payload,
       },
     ];
@@ -364,11 +370,11 @@ function handleApplyZeroFillingFilter(
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.zeroFilling.id,
+        key: zeroFilling.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.zeroFilling.DOMAIN_UPDATE_RULES);
+      updateView(draft, zeroFilling.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -436,7 +442,7 @@ function handleApplyApodizationFilter(
       draft.data[index],
       [
         {
-          name: Filters.apodization.id,
+          name: apodization.id,
           value: action.payload,
         },
       ],
@@ -446,11 +452,11 @@ function handleApplyApodizationFilter(
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.apodization.id,
+        key: apodization.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.apodization.DOMAIN_UPDATE_RULES);
+      updateView(draft, apodization.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -465,17 +471,17 @@ function handleApplyFFTFilter(draft: Draft<State>) {
     //apply filter into the spectrum
     FiltersManager.applyFilter(
       draft.data[index],
-      [{ name: Filters.fft.id, value: {} }],
+      [{ name: fft.id, value: {} }],
       { filterIndex: activeFilterIndex },
     );
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.fft.id,
+        key: fft.id,
       });
     } else {
-      updateView(draft, Filters.fft.DOMAIN_UPDATE_RULES);
+      updateView(draft, fft.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -496,7 +502,7 @@ function handleApplyManualPhaseCorrectionFilter(
       draft.data[index],
       [
         {
-          name: Filters.phaseCorrection.id,
+          name: phaseCorrection.id,
           value: { ph0, ph1 },
         },
       ],
@@ -506,11 +512,11 @@ function handleApplyManualPhaseCorrectionFilter(
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.phaseCorrection.id,
+        key: phaseCorrection.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.phaseCorrection.DOMAIN_UPDATE_RULES);
+      updateView(draft, phaseCorrection.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -551,7 +557,7 @@ function handleApplyAbsoluteFilter(draft: Draft<State>) {
       draft.data[index],
       [
         {
-          name: Filters.phaseCorrection.id,
+          name: phaseCorrection.id,
           value: { absolute: true },
         },
       ],
@@ -561,11 +567,11 @@ function handleApplyAbsoluteFilter(draft: Draft<State>) {
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.phaseCorrection.id,
+        key: phaseCorrection.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.phaseCorrection.DOMAIN_UPDATE_RULES);
+      updateView(draft, phaseCorrection.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -581,7 +587,7 @@ function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
       draft.data[index],
       [
         {
-          name: Filters.phaseCorrection.id,
+          name: phaseCorrection.id,
           value: {},
         },
       ],
@@ -591,11 +597,11 @@ function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.phaseCorrection.id,
+        key: phaseCorrection.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.phaseCorrection.DOMAIN_UPDATE_RULES);
+      updateView(draft, phaseCorrection.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -614,7 +620,7 @@ function handleBaseLineCorrectionFilter(
       draft.data[activeSpectrum.index],
       [
         {
-          name: Filters.baselineCorrection.id,
+          name: baselineCorrection.id,
           value: {
             ...options,
             zones,
@@ -628,11 +634,11 @@ function handleBaseLineCorrectionFilter(
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.baselineCorrection.id,
+        key: baselineCorrection.id,
         triggerSource: 'Apply',
       });
     } else {
-      updateView(draft, Filters.baselineCorrection.DOMAIN_UPDATE_RULES);
+      updateView(draft, baselineCorrection.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -779,15 +785,14 @@ function handleSignalProcessingFilter(
       spectrum,
       [
         {
-          name: Filters.signalProcessing.id,
+          name: signalProcessing.id,
           value,
         },
       ],
       { filterIndex: activeFilterIndex },
     );
   }
-  const { updateXDomain, updateYDomain } =
-    Filters.signalProcessing.DOMAIN_UPDATE_RULES;
+  const { updateXDomain, updateYDomain } = signalProcessing.DOMAIN_UPDATE_RULES;
 
   setDomain(draft, { updateXDomain, updateYDomain });
 }
@@ -816,7 +821,7 @@ function handleAddExclusionZone(
   for (const spectrum of spectra) {
     FiltersManager.applyFilter(spectrum, [
       {
-        name: Filters.exclusionZones.id,
+        name: exclusionZones.id,
         value: [
           {
             id: v4(),
@@ -828,8 +833,7 @@ function handleAddExclusionZone(
     ]);
   }
 
-  const { updateXDomain, updateYDomain } =
-    Filters.exclusionZones.DOMAIN_UPDATE_RULES;
+  const { updateXDomain, updateYDomain } = exclusionZones.DOMAIN_UPDATE_RULES;
 
   setDomain(draft, { updateXDomain, updateYDomain });
 }
@@ -847,7 +851,7 @@ function handleDeleteExclusionZone(
       (spectrum) => spectrum.id === spectrumId,
     );
     const filter = draft.data[spectrumIndex].filters.find(
-      (_filter) => _filter.name === Filters.exclusionZones.id,
+      (_filter) => _filter.name === exclusionZones.id,
     );
     if (filter) {
       if (filter.value.length === 1) {
@@ -862,7 +866,7 @@ function handleDeleteExclusionZone(
     const data = getSpectraByNucleus(draft.view.spectra.activeTab, draft.data);
     for (const datum of data) {
       for (const filter of datum.filters) {
-        if (filter.name === Filters.exclusionZones.id) {
+        if (filter.name === exclusionZones.id) {
           filter.value = filter.value.filter(
             (_zone) => zone.from !== _zone.from && zone.to !== _zone.to,
           );

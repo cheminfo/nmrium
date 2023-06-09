@@ -3,7 +3,13 @@ import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
 import lodashSet from 'lodash/set';
-import { Spectrum, Spectrum1D, Spectrum2D , Display1D, Display2D } from 'nmr-load-save';
+import {
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+  Display1D,
+  Display2D,
+} from 'nmr-load-save';
 import { Filters, FiltersManager } from 'nmr-processing';
 
 import {

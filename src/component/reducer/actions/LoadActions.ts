@@ -1,4 +1,3 @@
-import { WebSource } from 'filelist-utils';
 import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';

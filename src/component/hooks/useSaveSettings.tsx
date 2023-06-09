@@ -72,7 +72,7 @@ export function useSaveSettings() {
       } else {
         dispatch({
           type: 'SET_PREFERENCES',
-          payload: values as any,
+          payload: values,
         });
         closeDialog();
       }
