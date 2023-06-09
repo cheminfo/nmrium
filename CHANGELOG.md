@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.38.1](https://github.com/cheminfo/nmrium/compare/v0.38.0...v0.38.1) (2023-06-09)
+
+
+### Bug Fixes
+
+* parse jcamp URL correctly ([#2407](https://github.com/cheminfo/nmrium/issues/2407)) ([714f1a6](https://github.com/cheminfo/nmrium/commit/714f1a66145879793f16313ab6ac606440c4fd4a))
+* spectra prediction ([#2408](https://github.com/cheminfo/nmrium/issues/2408)) ([45c52ba](https://github.com/cheminfo/nmrium/commit/45c52bab522b0ed8941c325510b4281885d10862))
+
 ## [0.38.0](https://github.com/cheminfo/nmrium/compare/v0.37.0...v0.38.0) (2023-06-08)
 
 
