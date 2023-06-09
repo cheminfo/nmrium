@@ -21,7 +21,8 @@ export function initiateDatum1D(
 ): Spectrum1D {
   const { usedColors = {}, filters = [] } = options;
 
-  const spectrumObj: Spectrum1D = { ...spectrum };
+  const { ranges, ...restSpectrum } = spectrum;
+  const spectrumObj: Spectrum1D = { ...restSpectrum };
   spectrumObj.id = spectrum.id || v4();
 
   spectrumObj.display = {

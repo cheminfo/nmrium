@@ -2,8 +2,8 @@ import { v4 } from '@lukeed/uuid';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
 import { Spectrum, ViewState } from 'nmr-load-save';
+import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
 import { Reducer } from 'react';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
