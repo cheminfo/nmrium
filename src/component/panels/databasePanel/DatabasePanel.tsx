@@ -205,8 +205,7 @@ function DatabasePanelInner({
                   baseURL: url,
                 })),
               );
-          } catch (error) {
-            reportError(error);
+          } catch {
             alert.error(`Failed to load ${url}`);
           } finally {
             hideLoading();
