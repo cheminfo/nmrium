@@ -105,7 +105,6 @@ function DropZone(props) {
     } catch (error: any) {
       alert.error(error.message);
       logger.error(error);
-      reportError(error);
     } finally {
       dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
     }
