@@ -139,22 +139,19 @@ function handlePredictSpectraFromMolecule(
   action: PredictSpectraFromMoleculeAction,
 ) {
   const { predictedSpectra, options } = action.payload;
-  if (!predictedSpectra) {
-    draft.isLoading = false;
-  } else {
-    const color = generateColor(false, draft.usedColors['1d']);
-    for (const spectrum of generateSpectra(predictedSpectra, options, color)) {
-      draft.data.push(spectrum);
-      draft.view.spectra.activeSpectra[nucleusToString(spectrum.info.nucleus)] =
-        [
-          {
-            id: spectrum.id,
-            index: draft.data.length - 1,
-          },
-        ];
-    }
-    draft.usedColors['1d'].push(color);
+
+  const color = generateColor(false, draft.usedColors['1d']);
+  for (const spectrum of generateSpectra(predictedSpectra, options, color)) {
+    draft.data.push(spectrum);
+    draft.view.spectra.activeSpectra[nucleusToString(spectrum.info.nucleus)] = [
+      {
+        id: spectrum.id,
+        index: draft.data.length - 1,
+      },
+    ];
   }
+  draft.usedColors['1d'].push(color);
+
   draft.toolOptions.data.predictionIndex++;
   setActiveTab(draft);
   draft.isLoading = false;
