@@ -85,6 +85,17 @@ export async function predictSpectra(molfile: string): Promise<PredictedAll> {
   });
 }
 
+function generateName(
+  name: string,
+  options: { frequency: number | number[]; experiment: string },
+) {
+  const { frequency, experiment } = options;
+  const freq = Array.isArray(frequency)
+    ? frequency.map((f) => `${f}MHz`).join('_')
+    : `${frequency}MHz`;
+  return name || `${experiment.toUpperCase()}_${freq}_${v4()}`;
+}
+
 export function generateSpectra(
   predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
@@ -143,6 +154,7 @@ function generated1DSpectrum(params: {
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
+  const SpectrumName = generateName(name, { frequency: freq, experiment });
   const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
@@ -153,7 +165,6 @@ function generated1DSpectrum(params: {
     {
       data: { x, im: null, re: y },
       display: {
-        name,
         color,
       },
       info: {
@@ -164,6 +175,8 @@ function generated1DSpectrum(params: {
         solvent: '',
         experiment,
         isFt: true,
+        name: SpectrumName,
+        title: SpectrumName,
       },
     },
     {},
@@ -220,7 +233,10 @@ function generated2DSpectrum(params: {
     width,
     factor: 3,
   });
-
+  const SpectrumName = generateName(inputOptions.name, {
+    frequency,
+    experiment,
+  });
   const datum = initiateDatum2D(
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },
@@ -229,7 +245,8 @@ function generated2DSpectrum(params: {
         negativeColor: adjustAlpha(color, 40),
       },
       info: {
-        name: inputOptions.name,
+        name: SpectrumName,
+        title: SpectrumName,
         nucleus: nuclei,
         originFrequency: frequency,
         baseFrequency: frequency,
