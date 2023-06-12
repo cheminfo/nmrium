@@ -99,6 +99,7 @@ export interface MoleculeHeaderActionsOptions {
   hideDelete?: boolean;
   hidePredict?: boolean;
   showAboutPredict?: boolean;
+  renderAs?: 'OCLnmr' | 'StructureEditor';
 }
 interface MoleculePanelHeaderProps {
   currentIndex: number;
@@ -203,14 +204,11 @@ export default function MoleculePanelHeader({
   ]);
 
   const openPredictSpectraModal = useCallback(() => {
-    modal.show(
-      <PredictSpectraModal molfile={molecules[currentIndex].molfile} />,
-      {
-        position: positions.TOP_CENTER,
-        enableResizing: true,
-        width: 600,
-      },
-    );
+    modal.show(<PredictSpectraModal molecule={molecules[currentIndex]} />, {
+      position: positions.TOP_CENTER,
+      enableResizing: true,
+      width: 600,
+    });
   }, [modal, molecules, currentIndex]);
 
   function floatMoleculeHandler() {
