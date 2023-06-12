@@ -13,12 +13,17 @@ import { ModalStyles } from './ModalStyle';
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
   selectedMolecule?: StateMoleculeExtended;
+  floatMoleculeOnSave?: boolean;
 }
 
 function MoleculeStructureEditorModal(
   props: MoleculeStructureEditorModalProps,
 ) {
-  const { onClose = () => null, selectedMolecule } = props;
+  const {
+    onClose = () => null,
+    selectedMolecule,
+    floatMoleculeOnSave = false,
+  } = props;
 
   const [molfile, setMolfile] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -59,11 +64,17 @@ function MoleculeStructureEditorModal(
         });
         onClose('replace');
       } else {
-        dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
+        dispatch({
+          type: 'ADD_MOLECULE',
+          payload: {
+            molfile,
+            floatMoleculeOnSave,
+          },
+        });
         onClose('new');
       }
     }
-  }, [dispatch, selectedMolecule, molfile, onClose]);
+  }, [molfile, selectedMolecule, dispatch, floatMoleculeOnSave, onClose]);
 
   return (
     <div css={ModalStyles}>
@@ -85,19 +96,25 @@ function MoleculeStructureEditorModal(
   );
 }
 
-export function useMoleculeEditor(): (
-  molecule?: StateMoleculeExtended,
-) => void {
+export function useMoleculeEditor(
+  floatMoleculeOnSave = false,
+): (molecule?: StateMoleculeExtended) => void {
   const modal = useModal();
   return useCallback(
     (molecule?: StateMoleculeExtended) => {
-      modal.show(<MoleculeStructureEditorModal selectedMolecule={molecule} />, {
-        position: positions.TOP_CENTER,
-        width: 700,
-        height: 500,
-      });
+      modal.show(
+        <MoleculeStructureEditorModal
+          selectedMolecule={molecule}
+          floatMoleculeOnSave={floatMoleculeOnSave}
+        />,
+        {
+          position: positions.TOP_CENTER,
+          width: 700,
+          height: 500,
+        },
+      );
     },
-    [modal],
+    [floatMoleculeOnSave, modal],
   );
 }
 

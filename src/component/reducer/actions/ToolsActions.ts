@@ -53,7 +53,7 @@ interface ResetToolOptions {
 }
 
 interface SetActiveTabOptions {
-  tab?: string | null;
+  tab?: Nucleus | null;
   refreshActiveTab?: boolean;
   domainOptions?: SetDomainOptions;
 }

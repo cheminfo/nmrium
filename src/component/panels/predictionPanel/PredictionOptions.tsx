@@ -24,6 +24,7 @@ const styles = css`
     flex: row;
     display: flex;
     padding-bottom: 10px;
+    align-items: center;
   }
 
   .inner-content {
@@ -31,7 +32,7 @@ const styles = css`
   }
 
   .custom-label {
-    width: 160px;
+    width: 80px;
   }
 
   .footer-container {
@@ -45,9 +46,16 @@ const styles = css`
     border-radius: 5px;
     border: 1px solid #ccc;
     padding: 5px;
-    width: 100px;
     margin-right: 10px;
     height: initial !important;
+  }
+
+  .input:has(input:not([name='1d.lineWidth'])) {
+    width: 100px !important;
+  }
+
+  .input:has(input[name='1d.lineWidth']) {
+    width: 60px !important;
   }
 `;
 
@@ -66,25 +74,36 @@ const predictionFormValidation = Yup.object().shape({
   }),
 });
 
+type PredictionAction = 'save' | 'add';
+
+export type OnPredict = (
+  options: PredictionOptionsInterface,
+  action: PredictionAction,
+) => void;
+
 interface PredictionOptionsProps {
-  onPredict?: (options?: PredictionOptionsInterface) => void;
-  disabled: boolean;
+  onPredict: OnPredict;
+  disabled?: boolean;
+  isPredictedBefore: boolean;
 }
 
 function PredictionOptions({
-  onPredict = () => null,
+  onPredict,
   disabled = false,
+  isPredictedBefore = false,
 }: PredictionOptionsProps) {
   const refForm = useRef<any>();
+  const actionRef = useRef<'save' | 'add'>('save');
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback((action: 'save' | 'add') => {
+    actionRef.current = action;
     refForm.current.submitForm();
   }, []);
 
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
-        onPredict(values);
+        onPredict(values, actionRef.current);
       })();
     },
     [onPredict],
@@ -102,12 +121,26 @@ function PredictionOptions({
           <>
             <FormikErrorsSummary />
             <div className="row margin-10">
-              <span className="custom-label">Frequency : </span>
-              <FormikSelect
-                items={FREQUENCIES}
-                style={{ width: 290, height: 30, margin: 0 }}
-                name="frequency"
-              />
+              <div className="row  padding-h-10">
+                <span className="custom-label">Frequency : </span>
+                <FormikSelect
+                  items={FREQUENCIES}
+                  style={{ width: 120, height: 30, margin: 0 }}
+                  name="frequency"
+                />
+              </div>
+              <div
+                className="row  padding-h-10"
+                style={{ paddingLeft: '10px' }}
+              >
+                <span className="custom-label">Line Width : </span>
+                <FormikInput
+                  name="1d.lineWidth"
+                  type="number"
+                  style={{ input: { margin: 0 } }}
+                />
+                <span>Hz</span>
+              </div>
             </div>
 
             <div className="row">
@@ -128,22 +161,21 @@ function PredictionOptions({
                 <FormikInput name="1d.13C.to" type="number" />
               </Label>
             </div>
-            <div className="row margin-10 padding-h-10">
-              <span className="custom-label">Line Width : </span>
-              <FormikInput
-                name="1d.lineWidth"
-                type="number"
-                style={{ input: { margin: 0 } }}
-              />
-              <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-            </div>
           </>
         </Formik>
       </div>
-      <div>
-        <Button.Done onClick={handleSave} disabled={disabled}>
-          Predict spectra
+      <div style={{ display: 'flex' }}>
+        <Button.Done onClick={() => handleSave('save')} disabled={disabled}>
+          {isPredictedBefore ? 'Replace prediction' : 'Predict spectra'}
         </Button.Done>
+        {isPredictedBefore && (
+          <Button.Action
+            style={{ marginLeft: '5px' }}
+            onClick={() => handleSave('add')}
+          >
+            Add prediction
+          </Button.Action>
+        )}
       </div>
     </div>
   );

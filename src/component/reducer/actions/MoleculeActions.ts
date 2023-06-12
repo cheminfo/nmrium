@@ -14,7 +14,6 @@ import {
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { generateColor } from '../../../data/utilities/generateColor';
 import { AssignmentContext } from '../../assignment/AssignmentsContext';
-import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import { ActionType } from '../types/ActionType';
@@ -23,7 +22,11 @@ import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { unlinkZone } from './ZonesActions';
 
-type AddMoleculeAction = ActionType<'ADD_MOLECULE', { molfile: string }>;
+interface AddMoleculeProps {
+  molfile: string;
+  floatMoleculeOnSave?: boolean;
+}
+type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
 type SetMoleculeAction = ActionType<'SET_MOLECULE', Required<StateMolecule>>;
 type DeleteMoleculeAction = ActionType<
   'DELETE_MOLECULE',
@@ -34,6 +37,8 @@ type PredictSpectraFromMoleculeAction = ActionType<
   {
     options: PredictionOptions;
     predictedSpectra: PredictedSpectraResult;
+    molecule: StateMolecule;
+    action?: 'save' | 'add';
   }
 >;
 type ToggleMoleculeViewObjectAction = ActionType<
@@ -58,9 +63,8 @@ export type MoleculeActions =
   | ChangeFloatMoleculePositionAction
   | ChangeMoleculeLabelAction;
 
-//action
-function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
-  const { molfile } = action.payload;
+function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
+  const { molfile, floatMoleculeOnSave } = props;
   const isEmpty = draft.molecules.length === 0;
   MoleculeManager.addMolfile(draft.molecules, molfile);
 
@@ -73,11 +77,22 @@ function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
   if (isEmpty && molecule) {
     changeSpectraRelativeSum(draft, molecule.id, molecule);
   }
+
+  const lastAddedMolecule = draft.molecules.at(-1);
+  if (floatMoleculeOnSave && lastAddedMolecule) {
+    floatMoleculeOverSpectrum(draft, lastAddedMolecule.id, true);
+  }
+
+  return lastAddedMolecule;
 }
 
 //action
-function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
-  const { id, label, molfile } = action.payload;
+function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
+  addMolecule(draft, action.payload);
+}
+
+function setMolecule(draft: Draft<State>, props: Required<StateMolecule>) {
+  const { id, label, molfile } = props;
   MoleculeManager.setMolfile(draft.molecules, {
     id,
     label,
@@ -94,6 +109,10 @@ function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
     id,
     index !== -1 ? draft.molecules[index] : draft.molecules[0] || null,
   );
+}
+//action
+function handleSetMolecule(draft: Draft<State>, action: SetMoleculeAction) {
+  setMolecule(draft, action.payload);
 }
 
 function removeAssignments(
@@ -138,23 +157,59 @@ function handlePredictSpectraFromMolecule(
   draft: Draft<State>,
   action: PredictSpectraFromMoleculeAction,
 ) {
-  const { predictedSpectra, options } = action.payload;
+  const {
+    predictedSpectra,
+    options,
+    molecule,
+    action: predictionAction = 'save',
+  } = action.payload;
 
   const color = generateColor(false, draft.usedColors['1d']);
+  const spectraIds: string[] = [];
   for (const spectrum of generateSpectra(predictedSpectra, options, color)) {
     draft.data.push(spectrum);
-    draft.view.spectra.activeSpectra[nucleusToString(spectrum.info.nucleus)] = [
-      {
-        id: spectrum.id,
-        index: draft.data.length - 1,
-      },
-    ];
+    spectraIds.push(spectrum.id);
   }
+  let id = molecule?.id;
+  //if the id object is not exits add a new molecule
+  if (!id || predictionAction === 'add') {
+    const moleculeObj = addMolecule(draft, {
+      molfile: molecule.molfile,
+      floatMoleculeOnSave: true,
+    });
+    id = moleculeObj?.id;
+  } else {
+    setMolecule(draft, molecule as Required<StateMolecule>);
+  }
+
+  if (id) {
+    //save a set of the predicted spectra Ids by molecule ID in the view object in case we predict the spectra again we remove the old ones
+    setPredictedSpectraReference(draft, id, spectraIds);
+  }
+  draft.usedColors['1d'] = draft.usedColors['1d'].filter(
+    (previousColor) => previousColor !== color,
+  );
   draft.usedColors['1d'].push(color);
 
   draft.toolOptions.data.predictionIndex++;
-  setActiveTab(draft);
-  draft.isLoading = false;
+  setActiveTab(draft, { refreshActiveTab: true, tab: '1H' });
+}
+
+function setPredictedSpectraReference(
+  draft: Draft<State>,
+  moleculeId: string,
+  spectraIds: string[],
+) {
+  const predictedSpectraIds = draft.view.predictions?.[moleculeId];
+  // check if the molecule predicted and return and the spectra Ids
+  if (predictedSpectraIds) {
+    //remove the old predicted spectra for the current molecule
+    draft.data = draft.data.filter(
+      (spectrum) => !predictedSpectraIds.includes(spectrum.id),
+    );
+  }
+  // set the predicted spectra ids
+  draft.view.predictions[moleculeId] = spectraIds;
 }
 
 function initMoleculeViewProperties(id: string, draft: Draft<State>) {
@@ -205,6 +260,18 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   return { x, y };
 }
 
+function floatMoleculeOverSpectrum(
+  draft: Draft<State>,
+  moleculeId: string,
+  value?: boolean,
+) {
+  initMoleculeViewProperties(moleculeId, draft);
+  const molecule = getMoleculeViewObject(moleculeId, draft);
+  if (molecule) {
+    molecule.floating.visible = value ?? !molecule.floating.visible;
+  }
+}
+
 //action
 function handleFloatMoleculeOverSpectrum(
   draft: Draft<State>,
@@ -212,11 +279,7 @@ function handleFloatMoleculeOverSpectrum(
 ) {
   const { id } = action.payload;
 
-  initMoleculeViewProperties(id, draft);
-  const molecule = getMoleculeViewObject(id, draft);
-  if (molecule) {
-    molecule.floating.visible = !molecule.floating.visible;
-  }
+  floatMoleculeOverSpectrum(draft, id);
 }
 
 //action

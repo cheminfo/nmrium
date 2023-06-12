@@ -120,6 +120,10 @@ export interface ViewState {
    * @default  'bottom'
    */
   verticalAlign: Partial<Record<Nuclei, VerticalAlignment>>;
+  /**
+   * where the key is the molecule id and the value is an array of spectra Ids
+   */
+  predictions: Record<string, string[]>;
 }
 export const rangeStateInit = {
   showMultiplicityTrees: false,
@@ -154,6 +158,7 @@ export function getDefaultViewState(): ViewState {
       levels: {},
     },
     verticalAlign: {},
+    predictions: {},
   };
 }
 export const getInitialState = (): State => ({

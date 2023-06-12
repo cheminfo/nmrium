@@ -9,6 +9,7 @@ import {
   FREQUENCIES,
   predictSpectra,
 } from '../../data/PredictionManager';
+import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -128,12 +129,12 @@ const predictionFormValidation = Yup.object().shape({
 
 interface PredictSpectraModalProps {
   onClose?: (element?: string) => void;
-  molfile: string;
+  molecule: StateMoleculeExtended;
 }
 
 function PredictSpectraModal({
   onClose = () => null,
-  molfile,
+  molecule,
 }: PredictSpectraModalProps) {
   const refForm = useRef<any>();
   const dispatch = useDispatch();
@@ -163,7 +164,8 @@ function PredictSpectraModal({
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
-        if (molfile) {
+        if (molecule) {
+          const { molfile } = molecule;
           setPredictionPreferences({ ...values, isApproved });
           dispatch({
             type: 'SET_LOADING_FLAG',
@@ -189,7 +191,11 @@ function PredictSpectraModal({
             const data = await predictSpectra(molfile);
             dispatch({
               type: 'PREDICT_SPECTRA',
-              payload: { predictedSpectra: data.spectra, options: values },
+              payload: {
+                predictedSpectra: data.spectra,
+                options: values,
+                molecule,
+              },
             });
           } catch (error: any) {
             alert.error(error?.message);
@@ -200,7 +206,7 @@ function PredictSpectraModal({
         }
       })();
     },
-    [alert, dispatch, isApproved, molfile, onClose, setPredictionPreferences],
+    [alert, dispatch, isApproved, molecule, onClose, setPredictionPreferences],
   );
 
   const approveCheckHandler = useCallback((e) => {
