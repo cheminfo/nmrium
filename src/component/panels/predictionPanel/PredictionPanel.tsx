@@ -27,11 +27,6 @@ export default function PredictionPane() {
   const predictHandler = (values) => {
     void (async () => {
       if (molecule) {
-        dispatch({
-          type: 'SET_LOADING_FLAG',
-          payload: { isLoading: true },
-        });
-
         const hideLoading = await alert.showLoading(
           `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
         );
