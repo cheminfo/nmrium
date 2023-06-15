@@ -2,8 +2,9 @@
 import { css } from '@emotion/react';
 import { SvgNmrFt } from 'cheminfo-font';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
-import { CSSProperties, useCallback } from 'react';
+import { CSSProperties, ReactNode, useCallback } from 'react';
 import {
+  FaCog,
   FaCopy,
   FaDownload,
   FaFileExport,
@@ -22,13 +23,13 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import ActiveButton from '../../elements/ActiveButton';
+import Button from '../../elements/Button';
 import ButtonToolTip from '../../elements/ButtonToolTip';
 import MenuButton from '../../elements/MenuButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
-import { positions, useModal } from '../../elements/popup/Modal';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
-import PredictSpectraModal from '../../modal/PredictSpectraModal';
+import { usePredictSpectraModal } from '../../modal/PredictSpectraModal';
 import {
   copyPNGToClipboard,
   copyTextToClipboard,
@@ -54,9 +55,9 @@ const toolbarStyle = css`
   p {
     margin: 0;
     text-align: right;
-    width: 100%;
     line-height: 22px;
     padding: 0 10px;
+    white-space: nowrap;
   }
 `;
 
@@ -108,6 +109,8 @@ interface MoleculePanelHeaderProps {
   onMoleculeIndexChange: (index: number) => void;
   onOpenMoleculeEditor: () => void;
   actionsOptions?: MoleculeHeaderActionsOptions;
+  onClickPreferences?: () => void;
+  children?: ReactNode;
 }
 
 export default function MoleculePanelHeader({
@@ -117,14 +120,15 @@ export default function MoleculePanelHeader({
   onMoleculeIndexChange = () => null,
   onOpenMoleculeEditor = () => null,
   actionsOptions = {},
+  onClickPreferences,
+  children,
 }: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
   const alert = useAlert();
   const dispatch = useDispatch();
-  const modal = useModal();
   const assignmentData = useAssignmentData();
   const moleculeKey = molecules?.[currentIndex]?.id;
-
+  const openPredictSpectraModal = usePredictSpectraModal();
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(rootRef, `molSVG${currentIndex}`, 'molFile');
@@ -203,14 +207,6 @@ export default function MoleculePanelHeader({
     assignmentData,
   ]);
 
-  const openPredictSpectraModal = useCallback(() => {
-    modal.show(<PredictSpectraModal molecule={molecules[currentIndex]} />, {
-      position: positions.TOP_CENTER,
-      enableResizing: true,
-      width: 600,
-    });
-  }, [modal, molecules, currentIndex]);
-
   function floatMoleculeHandler() {
     dispatch({
       type: 'FLOAT_MOLECULE_OVER_SPECTRUM',
@@ -268,7 +264,7 @@ export default function MoleculePanelHeader({
         <ButtonToolTip
           popupTitle="Predict spectra"
           popupPlacement="left"
-          onClick={openPredictSpectraModal}
+          onClick={() => openPredictSpectraModal(molecules[currentIndex])}
         >
           <SvgNmrFt />
         </ButtonToolTip>
@@ -294,11 +290,23 @@ export default function MoleculePanelHeader({
         <p style={atomLabelStyle}>#</p>
       </ActiveButton>
 
+      {children}
+
       <p>
         {molecules &&
           molecules.length > 0 &&
           `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
       </p>
+      {onClickPreferences && (
+        <Button.BarButton
+          color={{ base: 'black', hover: 'black' }}
+          onClick={onClickPreferences}
+          toolTip="Preferences"
+          tooltipOrientation="vertical"
+        >
+          <FaCog />
+        </Button.BarButton>
+      )}
     </div>
   );
 }

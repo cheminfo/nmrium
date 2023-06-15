@@ -3,6 +3,7 @@ import { BrukerLoaderSelector, GeneralLoadersSelector } from 'nmr-load-save';
 import { SplitPaneSize } from 'react-science/ui';
 
 import { BaseFilter } from '../../data/FiltersManager';
+import { PredictionOptions } from '../../data/PredictionManager';
 import { AnalysisOptions } from '../../data/data1d/multipleSpectraAnalysis';
 import { Nuclei, Nucleus } from '../../data/types/common/Nucleus';
 import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
@@ -151,6 +152,7 @@ export interface WorkSpacePanelPreferences {
   database: DatabasePanelPreferences;
   multipleSpectraAnalysis: MultipleSpectraAnalysis;
   matrixGeneration: MatrixGeneration;
+  prediction: PredictionOptions;
 }
 
 export interface PanelsPreferences {
@@ -163,6 +165,7 @@ export interface PanelsPreferences {
   database: DatabasePanelPreferences;
   multipleSpectraAnalysis: MultipleSpectraAnalysis;
   matrixGeneration: MatrixGeneration;
+  prediction: PredictionOptions;
 }
 
 export interface Formatting {

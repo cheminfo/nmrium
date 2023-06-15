@@ -9,6 +9,7 @@ import {
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
 import { InputKeyboardEvent } from '../../elements/Input';
+import Label from '../../elements/Label';
 
 interface MoleculeHeaderProps {
   currentMolecule: StateMoleculeExtended;
@@ -55,8 +56,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
 
   return (
     <div style={styles.toolbar}>
-      <div style={{ display: 'flex' }}>
-        <span>Label</span>
+      <Label title="Label">
         <EditableColumn
           value={currentMolecule.label}
           style={styles.labelInput}
@@ -64,8 +64,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
           onSave={(event) => saveLabelHandler(currentMolecule.id, event)}
           textOverFlowEllipses
         />
-      </div>
-
+      </Label>
       <span>
         <MF mf={currentMolecule.mf} /> - {currentMolecule.mw?.toFixed(2)}
       </span>
