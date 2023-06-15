@@ -38,10 +38,10 @@ const FormikSelect = function FormikSelect(
   if (checkErrorAfterInputTouched) {
     isInvalid = lodashGet(errors, name) && lodashGet(touched, name);
   }
-
   return (
     <Select
       name={name}
+      key={String(value || lodashGet(values, name))}
       defaultValue={value || lodashGet(values, name)}
       onChange={changeHandler}
       style={{ ...style, ...(isInvalid && { border: '1px solid red' }) }}
