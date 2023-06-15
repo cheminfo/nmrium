@@ -189,13 +189,20 @@ function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
             />
           </Label>
         </GroupPane>
-        <Label title="Spectra" style={labelStyle}>
-          <IsotopesOption title="1H" name="spectra.proton" />
-          <IsotopesOption title="13C" name="spectra.carbon" />
-          <IsotopesOption title="COSY" name="spectra.cosy" />
-          <IsotopesOption title="HSQC" name="spectra.hsqc" />
-          <IsotopesOption title="HMBC" name="spectra.hmbc" />
-        </Label>
+        <GroupPane
+          text="Spectra"
+          style={{
+            header: styles.groupHeader,
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <IsotopesOption title="1H" name="spectra.proton" />
+            <IsotopesOption title="13C" name="spectra.carbon" />
+            <IsotopesOption title="COSY" name="spectra.cosy" />
+            <IsotopesOption title="HSQC" name="spectra.hsqc" />
+            <IsotopesOption title="HMBC" name="spectra.hmbc" />
+          </div>
+        </GroupPane>
       </>
     </Formik>
   );
