@@ -5,13 +5,16 @@ import {
   useImperativeHandle,
   useRef,
   memo,
-  CSSProperties,
   forwardRef,
   useMemo,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
+import {
+  formatFieldInputStyle,
+  formatFieldLabelStyle,
+} from '../../elements/formik/FormikColumnFormatField';
 import FormikInput from '../../elements/formik/FormikInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
@@ -21,17 +24,6 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-
-const styles: Record<'inputLabel' | 'inputWrapper', CSSProperties> = {
-  inputLabel: {
-    flex: 2,
-  },
-  inputWrapper: {
-    width: '100px',
-    flex: '4',
-    borderRadius: '5px',
-  },
-};
 
 const formatFields: NucleusPreferenceField[] = [
   {
@@ -127,15 +119,16 @@ function RangesPreferences(props, ref) {
               renderBottom={() => (
                 <Label
                   title="J Graph tolerance (Hz) :"
-                  style={{
-                    label: styles.inputLabel,
-                    wrapper: styles.inputWrapper,
-                  }}
+                  style={formatFieldLabelStyle}
                 >
-                  <FormikInput
-                    name={`nuclei.${n}.jGraphTolerance`}
-                    type="number"
-                  />
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ width: '23px' }} />
+                    <FormikInput
+                      name={`nuclei.${n}.jGraphTolerance`}
+                      type="number"
+                      style={formatFieldInputStyle}
+                    />
+                  </div>
                 </Label>
               )}
             />

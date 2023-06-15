@@ -19,7 +19,7 @@ function identity<T = unknown>(value: T): T {
 function FormikInput(props: FormikInputProps) {
   const {
     name,
-    style = { label: {}, input: {} },
+    style = { label: {}, input: {}, inputWrapper: {} },
     onChange = () => null,
     checkValue = () => true,
     type = 'text',
@@ -61,6 +61,7 @@ function FormikInput(props: FormikInputProps) {
       style={{
         ...style,
         inputWrapper: {
+          ...style.inputWrapper,
           ...(isInvalid && {
             border: '1px solid red',
             outline: 'none',
