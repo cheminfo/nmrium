@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -7,6 +7,11 @@ import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikSelect from '../elements/formik/FormikSelect';
+import { useAlert } from '../elements/popup/Alert';
+import {
+  MIN_AREA_POINTS,
+  useCheckPointsNumberInWindowArea,
+} from '../hooks/useCheckPointsNumberInWindowArea';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -45,16 +50,20 @@ const INIT_VALUES = {
 
 function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
-
-  const handlePeakPicking = useCallback(
-    (values) => {
+  const pointsNumber = useCheckPointsNumberInWindowArea();
+  const alert = useAlert();
+  function handlePeakPicking(values) {
+    if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
         type: 'AUTO_PEAK_PICKING',
         payload: values,
       });
-    },
-    [dispatch],
-  );
+    } else {
+      alert.error(
+        `Auto peak picking only available for area more than ${MIN_AREA_POINTS} points`,
+      );
+    }
+  }
 
   return (
     <HeaderContainer>
