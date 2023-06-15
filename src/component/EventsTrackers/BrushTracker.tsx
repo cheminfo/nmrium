@@ -9,9 +9,23 @@ import {
   useReducer,
   useRef,
   useState,
+  useContext,
 } from 'react';
 
-const initialState = {
+type Step = 'initial' | 'start' | 'end' | 'brushing';
+interface BrushTrackerData {
+  step: Step;
+  brush: {
+    start: null | number;
+    end: null | number;
+  };
+  startX: number;
+  endX: number;
+  startY: number;
+  endY: number;
+}
+
+const initialState: BrushTrackerData = {
   step: 'initial',
   brush: {
     start: null,
@@ -27,7 +41,15 @@ function stopPageScrolling(event) {
   event.preventDefault();
 }
 
-export const BrushContext = createContext(initialState);
+export const BrushContext = createContext<BrushTrackerData>(initialState);
+
+export function useBrushTracker() {
+  if (!BrushContext) {
+    throw new Error('Brush context was not found');
+  }
+  return useContext(BrushContext);
+}
+
 interface BrushTrackerProps {
   children: ReactNode;
   className?: string;

@@ -1,7 +1,7 @@
-import { useContext, useMemo, CSSProperties } from 'react';
+import { useMemo, CSSProperties } from 'react';
 
-import { BrushContext } from '../../EventsTrackers/BrushTracker';
-import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
@@ -24,8 +24,8 @@ const style: CSSProperties = {
 };
 
 function XYLabelPointer({ layout, data1D }) {
-  const position = useContext(MouseContext);
-  const { step } = useContext(BrushContext);
+  const position = useMouseTracker();
+  const { step } = useBrushTracker();
   const {
     margin,
     width,
