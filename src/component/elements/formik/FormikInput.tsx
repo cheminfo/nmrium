@@ -62,10 +62,14 @@ function FormikInput(props: FormikInputProps) {
         ...style,
         inputWrapper: {
           ...style.inputWrapper,
-          ...(isInvalid && {
-            border: '1px solid red',
-            outline: 'none',
-          }),
+          ...(isInvalid
+            ? {
+                borderColor: 'red',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                outline: 'none',
+              }
+            : {}),
         },
       }}
       checkValue={checkValue}
