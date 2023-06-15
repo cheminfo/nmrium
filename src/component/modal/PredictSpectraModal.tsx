@@ -1,57 +1,29 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Formik } from 'formik';
 import { useCallback, useRef, useState, useMemo } from 'react';
-import * as Yup from 'yup';
 
 import {
   defaultPredictionOptions,
-  FREQUENCIES,
   predictSpectra,
 } from '../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
-import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
-import IsotopesViewer from '../elements/IsotopesViewer';
-import Label from '../elements/Label';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
-import FormikInput from '../elements/formik/FormikInput';
-import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
+import { useModal } from '../elements/popup/Modal';
+import { positions } from '../elements/popup/options';
+import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
 
 const styles = css`
-  .row {
-    align-items: center;
-  }
-
   .inner-content {
     flex: 1;
   }
-
-  .custom-label {
-    width: 160px;
-    font-weight: 500;
-  }
-
-  .nucleus-label {
-    padding: 0 10px;
-    color: black;
-    font-weight: 700;
-
-    &.disabled {
-      opacity: 0.5;
-      color: black;
-    }
-  }
-
   .warning {
     color: #c40000;
     font-weight: bold;
@@ -68,64 +40,7 @@ const styles = css`
       margin: 5px 5px 5px 0;
     }
   }
-
-  .middle-x {
-    padding: 0 10px;
-  }
-
-  .group-label {
-    width: 100%;
-    display: block;
-    border-bottom: 1px solid #efefef;
-    padding-bottom: 5px;
-    font-weight: 600;
-    color: #005d9e;
-  }
 `;
-
-const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
-const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
-  format: (value) => value,
-});
-
-const predictionFormValidation = Yup.object().shape({
-  name: Yup.string().required().label('Name'),
-  frequency: Yup.number().integer().required().label('Frequency'),
-  '1d': Yup.object({
-    '1H': Yup.object({
-      from: Yup.number().required().label("1H ' From ' "),
-      to: Yup.number().required().label("1H ' To ' "),
-    }),
-    '13C': Yup.object().shape({
-      from: Yup.number().required().label("13C ' From ' "),
-      to: Yup.number().required().label("13C ' To ' "),
-    }),
-    lineWidth: Yup.number().integer().min(1).required().label('Line Width'),
-    nbPoints: Yup.number().integer().required().label('1D Number Of Points'),
-  }),
-  '2d': Yup.object({
-    nbPoints: Yup.object({
-      x: Yup.number().integer().required().label('2D Number Of Points'),
-      y: Yup.number().integer().required().label('2D Number Of Points'),
-    }),
-  }),
-  spectra: Yup.object({
-    proton: Yup.boolean(),
-    carbon: Yup.boolean(),
-    cosy: Yup.boolean(),
-    hsqc: Yup.boolean(),
-    hmbc: Yup.boolean(),
-  }).test(
-    'check-options',
-    'You must check one of the options to start prediction',
-    (obj) => {
-      if (Object.values(obj).includes(true)) {
-        return true;
-      }
-      return false;
-    },
-  ),
-});
 
 interface PredictSpectraModalProps {
   onClose?: (element?: string) => void;
@@ -167,24 +82,16 @@ function PredictSpectraModal({
         if (molecule) {
           const { molfile } = molecule;
           setPredictionPreferences({ ...values, isApproved });
-          dispatch({
-            type: 'SET_LOADING_FLAG',
-            payload: {
-              isLoading: true,
-            },
-          });
 
-          const predictedSpectra = Object.entries(values.spectra)
-            .map(([key, value]) => {
-              if (value) {
-                return key;
-              }
-              return undefined;
-            })
-            .join(',');
+          const predictedSpectra: string[] = [];
+          for (const [key, value] of Object.entries(values.spectra)) {
+            if (value) {
+              predictedSpectra.push(key);
+            }
+          }
 
           const hideLoading = await alert.showLoading(
-            `Predict ${predictedSpectra} in progress`,
+            `Predict ${predictedSpectra.join(',')} in progress`,
           );
 
           try {
@@ -220,114 +127,11 @@ function PredictSpectraModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <Formik
-          innerRef={refForm}
-          initialValues={initValues}
-          validationSchema={predictionFormValidation}
+        <PredictionPreferences
           onSubmit={submitHandler}
-        >
-          <>
-            <FormikErrorsSummary />
-            <div className="row margin-10">
-              <span className="custom-label">Name :</span>
-              <FormikInput
-                name="name"
-                style={{ input: { width: '200px', textAlign: 'left' } }}
-              />
-            </div>
-            <div className="row margin-10">
-              <span className="custom-label">Spectrometer Frequency :</span>
-
-              <FormikSelect
-                items={FREQUENCIES}
-                style={{ width: 290, height: 30, margin: 0 }}
-                name="frequency"
-              />
-            </div>
-
-            <span className="group-label">1D Options </span>
-
-            <div className="row margin-10 padding-h-10">
-              <IsotopesViewer value="1H" className="custom-label" />
-              <Label title="From">
-                <FormikInput name="1d.1H.from" type="number" />
-              </Label>
-              <Label title="To" style={{ label: { padding: '0 10px' } }}>
-                <FormikInput name="1d.1H.to" type="number" />
-              </Label>
-            </div>
-            <div className="row margin-10 padding-h-10">
-              <IsotopesViewer value="13C" className="custom-label" />
-              <Label title="From">
-                <FormikInput name="1d.13C.from" type="number" />
-              </Label>
-              <Label title="To" style={{ label: { padding: '0 10px' } }}>
-                <FormikInput name="1d.13C.to" type="number" />
-              </Label>
-            </div>
-            <div className="row margin-10 padding-h-10">
-              <span className="custom-label">Line Width : </span>
-              <FormikInput
-                name="1d.lineWidth"
-                type="number"
-                style={{ input: { margin: 0 } }}
-              />
-              <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-            </div>
-            <div className="row margin-10 padding-h-10">
-              <span className="custom-label">Number of Points : </span>
-              <FormikSelect
-                items={NUMBER_OF_POINTS_1D}
-                name="1d.nbPoints"
-                style={{ width: 290, height: 30, margin: 0 }}
-              />
-            </div>
-            <span className="group-label">2D Options </span>
-
-            <div className="row margin-10 padding-h-10">
-              <span className="custom-label">Number of Points : </span>
-              <FormikSelect
-                items={NUMBER_OF_POINTS_2D}
-                name="2d.nbPoints.x"
-                style={{ margin: 0, height: 30 }}
-              />
-              <span className="middle-x"> X </span>
-              <FormikSelect
-                items={NUMBER_OF_POINTS_2D}
-                name="2d.nbPoints.y"
-                style={{ margin: 0, height: 30 }}
-              />
-            </div>
-            <div className="row margin-10">
-              <span className="group-label">Spectra </span>
-            </div>
-            <div
-              className="row margin-10 padding-h-10"
-              style={{ justifyContent: 'space-between' }}
-            >
-              <div className="row">
-                <FormikCheckBox name="spectra.proton" />
-                <IsotopesViewer value="1H" className="nucleus-label" />
-              </div>
-              <div className="row">
-                <FormikCheckBox name="spectra.carbon" />
-                <IsotopesViewer value="13C" className="nucleus-label" />
-              </div>
-              <div className="row">
-                <FormikCheckBox name="spectra.cosy" />
-                <IsotopesViewer value="COSY" className="nucleus-label" />
-              </div>
-              <div className="row">
-                <FormikCheckBox name="spectra.hsqc" />
-                <IsotopesViewer value="HSQC" className="nucleus-label" />
-              </div>
-              <div className="row">
-                <FormikCheckBox name="spectra.hmbc" />
-                <IsotopesViewer value="HMBC" className="nucleus-label" />
-              </div>
-            </div>
-          </>
-        </Formik>
+          options={initValues}
+          ref={refForm}
+        />
         <p className="warning">
           In order to predict spectra we are calling an external service and the
           chemical structure will leave your browser! You should never predict
@@ -349,6 +153,17 @@ function PredictSpectraModal({
       </div>
     </div>
   );
+}
+
+export function usePredictSpectraModal() {
+  const modal = useModal();
+  return (molecule: StateMoleculeExtended) => {
+    modal.show(<PredictSpectraModal molecule={molecule} />, {
+      position: positions.TOP_CENTER,
+      enableResizing: true,
+      width: 600,
+    });
+  };
 }
 
 export default PredictSpectraModal;
