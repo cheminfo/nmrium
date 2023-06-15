@@ -12,6 +12,7 @@ export interface LabelStyle {
 interface LabelProps
   extends Omit<React.LabelHTMLAttributes<HTMLLabelElement>, 'style'> {
   title: string;
+  renderTitle?: (title: string) => ReactNode;
   shortTitle?: string;
   children: ReactNode;
   className?: string;
@@ -27,6 +28,7 @@ export default function Label(props: LabelProps) {
     children,
     style,
     description,
+    renderTitle,
     ...otherProps
   } = props;
   return (
@@ -42,7 +44,11 @@ export default function Label(props: LabelProps) {
         }}
         {...otherProps}
       >
-        <span className={shortTitle ? 'large-label' : ''}>{title}</span>
+        {renderTitle ? (
+          renderTitle(title)
+        ) : (
+          <span className={shortTitle ? 'large-label' : ''}>{title}</span>
+        )}
         {shortTitle && (
           <span className="small-label" css={css({ display: 'none' })}>
             {shortTitle}
