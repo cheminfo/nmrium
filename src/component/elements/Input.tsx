@@ -23,7 +23,6 @@ const styles: Record<
 
   inputWrapper: {
     height: '100%',
-    width: '100px',
     borderRadius: '5px',
     borderWidth: '0.55px',
     borderColor: '#c7c7c7',
