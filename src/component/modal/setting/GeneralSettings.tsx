@@ -65,12 +65,7 @@ const styles = css`
 
   .input {
     font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    padding: 5px;
-    width: 100px;
-    margin-right: 10px;
-    height: initial !important;
+    padding: 3px;
   }
 
   .close-bt {

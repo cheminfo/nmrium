@@ -55,7 +55,10 @@ export function SpectraColumnsManager({
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.label`}
-              style={{ input: { ...style, ...inputStyle } }}
+              style={{
+                input: { ...style, ...inputStyle },
+                inputWrapper: { border: 'none' },
+              }}
             />
           );
         },
@@ -76,7 +79,10 @@ export function SpectraColumnsManager({
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.jpath`}
-              style={{ input: { ...style, ...inputStyle } }}
+              style={{
+                input: { ...style, ...inputStyle },
+                inputWrapper: { border: 'none' },
+              }}
               datalist={datalist}
               mapOnChangeValue={mapOnChangeValue}
               mapValue={mapValue}
@@ -96,12 +102,12 @@ export function SpectraColumnsManager({
       },
       {
         Header: '',
-        style: { width: '30px' },
+        style: { width: '80px' },
         id: 'add-button',
         Cell: ({ row }) => {
           const record: any = row.original;
           return (
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button.Done
                 fill="outline"
                 onClick={() => onAdd(nucleus, row.index + 1)}
