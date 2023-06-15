@@ -136,10 +136,10 @@ function AdditionalColumnField({
     // allow the edition of correlations
     const commonLinksMenu = commonLinks.flatMap((commonLink) => {
       const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
-        commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
-      }, ${commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'})${
-        commonLink.edited?.moved === true ? '[MOVED]' : ''
-      }`;
+        commonLink.signal.x?.delta ? commonLink.signal.x.delta.toFixed(2) : '?'
+      }, ${
+        commonLink.signal.y?.delta ? commonLink.signal.y.delta.toFixed(2) : '?'
+      })${commonLink.edited?.moved === true ? '[MOVED]' : ''}`;
 
       return commonLink.pseudo === false
         ? [

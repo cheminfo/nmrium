@@ -290,7 +290,7 @@ function CorrelationTableRow({
             onSave={onSaveEquivalencesHandler}
           />
         ) : (
-          <text style={equivalenceCellStyle}>{correlation.equivalence}</text>
+          <span style={equivalenceCellStyle}>{correlation.equivalence}</span>
         )}
       </td>
       <td title={t} {...otherTableDataProps}>
