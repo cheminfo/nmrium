@@ -104,7 +104,7 @@ const EditableColumn = forwardRef(function EditableColumn(
           style={{
             display: 'table-cell',
             verticalAlign: 'middle',
-            width: 'inherit',
+            width: '100%',
             ...(textOverFlowEllipses
               ? { textOverflow: 'ellipsis', overflow: 'hidden' }
               : {}),
@@ -118,8 +118,11 @@ const EditableColumn = forwardRef(function EditableColumn(
           <Input
             style={{
               inputWrapper: {
-                width: '100%',
                 ...(!isValid && { borderColor: 'red' }),
+                width: '100%',
+              },
+              input: {
+                width: '100%',
               },
             }}
             enableAutoSelect
