@@ -1,7 +1,7 @@
-import { CSSProperties, useContext } from 'react';
+import { CSSProperties } from 'react';
 
-import { BrushContext } from '../../EventsTrackers/BrushTracker';
-import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { options } from '../../toolbar/ToolTypes';
 
@@ -38,8 +38,8 @@ function CrossLinePointer() {
     margin,
     toolOptions: { selectedTool },
   } = useChartData();
-  let position = useContext(MouseContext);
-  const brushState = useContext(BrushContext);
+  let position = useMouseTracker();
+  const brushState = useBrushTracker();
 
   if (
     !allowTools.has(selectedTool) ||

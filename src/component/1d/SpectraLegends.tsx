@@ -1,10 +1,10 @@
 import lodashGet from 'lodash/get';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum, Spectrum1D } from 'nmr-load-save';
-import { CSSProperties, useContext } from 'react';
+import { CSSProperties } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { SVGGroup } from '../elements/SVGGroup';
@@ -36,7 +36,7 @@ interface YTrackerProps {
 
 function YTracker({ datum }: YTrackerProps) {
   const { scaleX } = useScale();
-  const position = useContext(MouseContext);
+  const position = useMouseTracker();
 
   if (!scaleX || !position) {
     return null;
