@@ -2,7 +2,14 @@
 import { css, SerializedStyles } from '@emotion/react';
 import { Spectrum1D, Ranges, Spectrum2D, Zones } from 'nmr-load-save';
 import OCL from 'openchemlib/full';
-import { useState, useEffect, memo, ReactElement, CSSProperties } from 'react';
+import {
+  useState,
+  useEffect,
+  memo,
+  ReactElement,
+  CSSProperties,
+  ReactNode,
+} from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { StructureEditor } from 'react-ocl/full';
 import OCLnmr from 'react-ocl-nmr';
@@ -79,6 +86,8 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     children,
     emptyTextStyle,
     floatMoleculeOnSave = false,
+    onClickPreferences,
+    renderHeaderOptions,
   } = props;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<Array<StateMoleculeExtended>>([]);
@@ -134,7 +143,10 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
         onOpenMoleculeEditor={() => openMoleculeEditor()}
         onMoleculeIndexChange={moleculeIndexHandler}
         actionsOptions={actionsOptions}
-      />
+        onClickPreferences={onClickPreferences}
+      >
+        {renderHeaderOptions?.()}
+      </MoleculePanelHeader>
       <div css={styles.innerPanel}>
         <div css={styles.molecule}>
           <ResponsiveChart>
@@ -251,6 +263,8 @@ interface MoleculePanelProps {
   actionsOptions?: MoleculeHeaderActionsOptions;
   emptyTextStyle?: CSSProperties;
   floatMoleculeOnSave?: boolean;
+  onClickPreferences?: () => void;
+  renderHeaderOptions?: () => ReactNode;
 }
 
 export default function MoleculePanel({
@@ -259,6 +273,8 @@ export default function MoleculePanel({
   actionsOptions,
   emptyTextStyle,
   floatMoleculeOnSave = false,
+  onClickPreferences,
+  renderHeaderOptions,
 }: MoleculePanelProps) {
   const {
     molecules,
@@ -286,6 +302,8 @@ export default function MoleculePanel({
         onMoleculeChange,
         actionsOptions,
         emptyTextStyle,
+        onClickPreferences,
+        renderHeaderOptions,
       }}
     >
       {children}

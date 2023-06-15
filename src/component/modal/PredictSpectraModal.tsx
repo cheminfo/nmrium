@@ -24,6 +24,7 @@ const styles = css`
   .inner-content {
     flex: 1;
   }
+
   .warning {
     color: #c40000;
     font-weight: bold;

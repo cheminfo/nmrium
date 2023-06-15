@@ -1,6 +1,7 @@
 import has from 'lodash/has';
 import { useMemo } from 'react';
 
+import { defaultPredictionOptions } from '../../data/PredictionManager';
 import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { usePreferences } from '../context/PreferencesContext';
 import {
@@ -30,7 +31,8 @@ type Panel =
   | 'ranges'
   | 'database'
   | 'multipleSpectraAnalysis'
-  | 'matrixGeneration';
+  | 'matrixGeneration'
+  | 'prediction';
 
 function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
   switch (panelKey) {
@@ -48,6 +50,8 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
       return databaseDefaultValues;
     case 'multipleSpectraAnalysis':
       return getMultipleSpectraAnalysisDefaultValues(nucleus);
+    case 'prediction':
+      return defaultPredictionOptions;
 
     default:
       return {};
@@ -57,7 +61,7 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
 function joinWithNucleusPreferences<
   T extends Exclude<
     Panel,
-    'database' | 'matrixGeneration' | 'multipleSpectraAnalysis'
+    'database' | 'matrixGeneration' | 'multipleSpectraAnalysis' | 'prediction'
   >,
 >(
   data: PanelsPreferences[T],
@@ -105,6 +109,7 @@ function getPanelPreferences(
     case 'matrixGeneration':
       return nucleus ? panelPreferences[nucleus] : {};
     case 'database':
+    case 'prediction':
       return panelPreferences;
     default:
       return nucleus
@@ -125,9 +130,9 @@ export function usePanelPreferences<T extends Panel>(
   : T extends 'multipleSpectraAnalysis'
   ? MultipleSpectraAnalysisPreferences
   : WorkSpacePanelPreferences[T];
-export function usePanelPreferences<T extends 'database'>(
+export function usePanelPreferences<T extends 'database' | 'prediction'>(
   panelKey: T,
-): WorkSpacePanelPreferences['database'];
+): WorkSpacePanelPreferences[T];
 
 export function usePanelPreferences<T extends Panel>(
   panelKey: T,
