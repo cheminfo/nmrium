@@ -61,7 +61,6 @@ function FormikInput(props: FormikInputProps) {
       style={{
         ...style,
         inputWrapper: {
-          ...style.input,
           ...(isInvalid && {
             border: '1px solid red',
             outline: 'none',
