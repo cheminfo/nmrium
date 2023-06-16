@@ -3,7 +3,13 @@ import { ResponsiveChart } from 'react-d3-utils';
 
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
-import { BrushTracker } from '../EventsTrackers/BrushTracker';
+import {
+  BrushTracker,
+  OnBrush,
+  OnClick,
+  OnDoubleClick,
+  OnZoom,
+} from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -53,7 +59,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const DIMENSION = get2DDimensionLayout(state);
 
-  const handelBrushEnd = useCallback(
+  const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       const trackID = getLayoutID(DIMENSION, brushData);
       if (trackID) {
@@ -89,7 +95,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [selectedTool, dispatch, DIMENSION],
   );
 
-  const handelOnDoubleClick = useCallback(
+  const handelOnDoubleClick: OnDoubleClick = useCallback(
     (e) => {
       const { x: startX, y: startY } = e;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
@@ -100,7 +106,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [DIMENSION, dispatch],
   );
 
-  const handleZoom = (event) => {
+  const handleZoom: OnZoom = (event) => {
     const { x: startX, y: startY } = event;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
@@ -113,7 +119,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     }
   };
 
-  const mouseClick = useCallback(
+  const mouseClick: OnClick = useCallback(
     (position) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { x, y } = position;
