@@ -7,7 +7,12 @@ import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
-import { BrushTracker } from '../EventsTrackers/BrushTracker';
+import {
+  BrushTracker,
+  OnBrush,
+  OnClick,
+  OnZoom,
+} from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -99,7 +104,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     yDomains,
   ]);
 
-  const handelBrushEnd = useCallback(
+  const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       const propagateEvent = () => {
         if (!scaleState.scaleX || !scaleState.scaleY) return;
@@ -261,14 +266,14 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     });
   }, [dispatch]);
 
-  const handleZoom = useCallback(
+  const handleZoom = useCallback<OnZoom>(
     (event) => {
       dispatch({ type: 'SET_ZOOM', payload: { event, selectedTool } });
     },
     [dispatch, selectedTool],
   );
 
-  const mouseClick = useCallback(
+  const mouseClick = useCallback<OnClick>(
     (position) => {
       const propagateEvent = () => {
         if (!scaleState.scaleX) return;
