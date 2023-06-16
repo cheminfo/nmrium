@@ -43,7 +43,7 @@ interface BrushBoundary {
   startY: number;
   endX: number;
   endY: number;
-  trackID?: Layout;
+  trackID?: Layout | null;
 }
 interface ResetToolOptions {
   resetToDefaultTool?: boolean;
