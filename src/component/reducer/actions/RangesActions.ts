@@ -101,16 +101,12 @@ type ChangeRangeSumAction = ActionType<
   }
 >;
 
-interface AddRangeProps {
-  startX: number;
-  endX: number;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  id?: (string & {}) | 'new';
-}
-
 type AddRangeAction = ActionType<
   'ADD_RANGE',
-  Partial<Omit<AddRangeProps, 'id'>>
+  {
+    startX: number;
+    endX: number;
+  }
 >;
 type ChangeRangeRelativeValueAction = ActionType<
   'CHANGE_RANGE_RELATIVE',
@@ -462,14 +458,14 @@ function handleChangeRangeSum(
   }
 }
 
-function addNewRange(draft: Draft<State>, props: AddRangeProps) {
-  const { startX, endX, id } = props;
+//action
+function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
+  const { startX, endX } = action.payload;
   const range = getRange(draft, { startX, endX });
   const {
     data,
     view: {
       spectra: { activeTab: nucleus },
-      ranges,
     },
     molecules,
   } = draft;
@@ -477,36 +473,14 @@ function addNewRange(draft: Draft<State>, props: AddRangeProps) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    // add range intial state
-    const rangeState = ranges.find((r) => r.spectrumID === activeSpectrum.id);
-    if (!rangeState) {
-      ranges.push({
-        spectrumID: activeSpectrum.id,
-        ...rangeStateInit,
-      });
-    }
     addRange(data[index] as Spectrum1D, {
       from,
       to,
-      id,
       nucleus,
       molecules,
     });
     handleUpdateCorrelations(draft);
     setIntegralsYDomain(draft, data[index] as Spectrum1D);
-  }
-}
-
-//action
-function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
-  let { startX, endX } = action?.payload || {};
-  if (startX && endX) {
-    addNewRange(draft, { startX, endX });
-  } else {
-    const { width } = draft;
-    startX = width / 3;
-    endX = startX + 10;
-    addNewRange(draft, { startX, endX, id: 'new' });
   }
 }
 
