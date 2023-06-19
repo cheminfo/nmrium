@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { CSSProperties, memo, ReactNode } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
@@ -7,26 +5,22 @@ import Button from '../../elements/Button';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
-const styles = css`
-  display: flex;
-  flex-direction: row;
-  border-bottom: 0.55px solid rgb(240 240 240);
-  padding: 2px 5px;
+import PanelHeader from './PanelHeader';
 
-  .left-container {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-  }
-
-  .counter-label {
-    margin: 0;
-    text-align: right;
-    line-height: 22px;
-    padding: 0 10px;
-    white-space: nowrap;
-  }
-`;
+const styles: Record<'leftContainer' | 'counterLabel', CSSProperties> = {
+  leftContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  counterLabel: {
+    margin: 0,
+    textAlign: 'right',
+    lineHeight: '22px',
+    padding: '0 10px',
+    whiteSpace: 'nowrap',
+  },
+};
 
 interface DefaultPanelHeaderProps {
   counter?: number;
@@ -65,8 +59,8 @@ function DefaultPanelHeader({
   renderRightButtons,
 }: DefaultPanelHeaderProps) {
   return (
-    <div css={styles} {...{ style, className }}>
-      <div className="left-container">
+    <PanelHeader {...{ style, className }}>
+      <div style={styles.leftContainer}>
         {canDelete && (
           <Button.BarButton
             color={{ base: 'black', hover: 'red' }}
@@ -95,7 +89,7 @@ function DefaultPanelHeader({
       </div>
       {renderRightButtons?.()}
       {counter !== undefined && (
-        <p className="counter-label">
+        <p style={styles.counterLabel}>
           [{' '}
           {filterIsActive && counterFiltered !== undefined
             ? `${counterFiltered}/${counter}`
@@ -110,7 +104,7 @@ function DefaultPanelHeader({
           </button>
         </ToolTip>
       )}
-    </div>
+    </PanelHeader>
   );
 }
 
