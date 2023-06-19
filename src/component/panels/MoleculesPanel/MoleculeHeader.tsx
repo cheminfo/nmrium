@@ -22,7 +22,6 @@ const styles: Record<'toolbar' | 'labelInput', CSSProperties> = {
     borderBottom: '0.55px solid rgb(240, 240, 240)',
     padding: '5px 10px',
     justifyContent: 'space-between',
-    height: '35px',
   },
   labelInput: {
     width: '150px',

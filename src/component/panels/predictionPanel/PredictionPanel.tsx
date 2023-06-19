@@ -1,54 +1,94 @@
 /** @jsxImportSource @emotion/react */
 import OCL from 'openchemlib/full';
-import { useCallback, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { ResponsiveChart } from 'react-d3-utils';
+import { StructureEditor } from 'react-ocl/full';
 import { useAccordionContext } from 'react-science/ui';
 
 import { predictSpectra } from '../../../data/PredictionManager';
-import { StateMolecule } from '../../../data/molecules/Molecule';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
+import NextPrev from '../../elements/NextPrev';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import MoleculePanel from '../MoleculesPanel/MoleculePanel';
+import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
+import MoleculeHeader from '../MoleculesPanel/MoleculeHeader';
+import MoleculePanelHeader from '../MoleculesPanel/MoleculePanelHeader';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import PredictionPreferences from './PredictionPreferences';
 import PredictionSimpleOptions from './PredictionSimpleOptions';
 
-export default function PredictionPane() {
+const styles: Record<'flexColumnContainer' | 'slider', CSSProperties> = {
+  flexColumnContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+  },
+  slider: {
+    overflow: 'hidden auto',
+  },
+};
+
+export default function PredictionPanel() {
+  const {
+    molecules: moleculesProp,
+    view: { molecules: moleculesView, predictions },
+  } = useChartData();
+  const dispatch = useDispatch();
+  const alert = useAlert();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [molecules, setMolecules] = useState<Array<StateMoleculeExtended>>([]);
+  const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
-  const [molecule, setMolecule] = useState<Required<StateMolecule> | null>();
-  const {
-    view: { predictions },
-  } = useChartData();
+
   const {
     item: spectraPanelState,
     utils: { toggle: openSpectraPanel },
   } = useAccordionContext('Spectra');
   const predictionPreferences = usePanelPreferences('prediction');
+  const openMoleculeEditor = useMoleculeEditor(true);
 
-  const changeHandler = useCallback((molecule) => {
-    const atoms = OCL.Molecule.fromMolfile(molecule?.molfile).getAllAtoms();
-    if (atoms === 0) {
-      setMolecule(null);
-    } else {
-      setMolecule(molecule);
+  useEffect(() => {
+    if (moleculesProp) {
+      setMolecules((prevMolecules) => {
+        if (moleculesProp.length > prevMolecules.length) {
+          setCurrentIndex(molecules.length);
+        }
+        return moleculesProp;
+      });
     }
-  }, []);
-  const dispatch = useDispatch();
-  const alert = useAlert();
+  }, [molecules.length, moleculesProp]);
+
+  function changeHandler(molfile, molecule: OCL.Molecule) {
+    const atoms = molecule.getAllAtoms();
+    if (atoms === 0) {
+      setMolfile(null);
+    } else {
+      setMolfile(molfile);
+    }
+  }
 
   function predictHandler(action) {
     void (async () => {
-      if (molecule) {
+      if (molfile) {
+        const predictedSpectra: string[] = [];
+        for (const [key, value] of Object.entries(
+          predictionPreferences.spectra,
+        )) {
+          if (value) {
+            predictedSpectra.push(key);
+          }
+        }
+
         const hideLoading = await alert.showLoading(
-          `Predict 1H, 13C, COSY, HSQC, and HMBC in progress`,
+          `Predict ${predictedSpectra.join(',')} in progress`,
         );
 
-        const { molfile } = molecule;
         try {
           const data = await predictSpectra(molfile);
           dispatch({
@@ -56,7 +96,7 @@ export default function PredictionPane() {
             payload: {
               predictedSpectra: data.spectra,
               options: predictionPreferences,
-              molecule,
+              molecule: { ...molecules[currentIndex], molfile },
               action,
             },
           });
@@ -74,15 +114,19 @@ export default function PredictionPane() {
     })();
   }
 
-  const settingsPanelHandler = useCallback(() => {
+  function settingsPanelHandler() {
     setFlipStatus(!isFlipped);
-  }, [isFlipped]);
+  }
 
-  const saveSettingHandler = useCallback(() => {
+  function saveSettingHandler() {
     settingRef.current.saveSetting();
     setFlipStatus(false);
-  }, []);
-  const isPredictedBefore = !!(molecule?.id && predictions[molecule.id]);
+  }
+
+  const isPredictedBefore = !!(
+    molecules[currentIndex]?.id && predictions[molecules[currentIndex].id]
+  );
+
   return (
     <div css={tablePanelStyle}>
       {isFlipped && (
@@ -97,36 +141,85 @@ export default function PredictionPane() {
         </>
       )}
       {!isFlipped && (
-        <MoleculePanel
-          onMoleculeChange={changeHandler}
-          actionsOptions={{
-            hidePredict: true,
-            hideDelete: true,
-            hideExport: true,
-            showAboutPredict: true,
-            renderAs: 'StructureEditor',
-          }}
-          floatMoleculeOnSave
-          onClickPreferences={settingsPanelHandler}
-          renderHeaderOptions={() => <PredictionSimpleOptions />}
-        >
-          <div style={{ display: 'flex', padding: '5px' }}>
-            <Button.Done
-              onClick={() => predictHandler('save')}
-              disabled={!molecule}
-            >
-              {isPredictedBefore ? 'Replace prediction' : 'Predict spectra'}
-            </Button.Done>
-            {isPredictedBefore && (
-              <Button.Action
-                style={{ marginLeft: '5px' }}
-                onClick={() => predictHandler('add')}
+        <>
+          <MoleculePanelHeader
+            currentIndex={currentIndex}
+            moleculesView={moleculesView}
+            molecules={molecules}
+            renderSource="predictionPanel"
+            onClickPreferences={settingsPanelHandler}
+            onOpenMoleculeEditor={() => openMoleculeEditor()}
+          >
+            <PredictionSimpleOptions />
+          </MoleculePanelHeader>
+
+          <div style={styles.flexColumnContainer}>
+            <div style={{ flex: 1 }}>
+              <ResponsiveChart>
+                {({ height, width }) => {
+                  return (
+                    <NextPrev
+                      onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+                      defaultIndex={currentIndex}
+                      style={{
+                        arrowContainer: {
+                          top: '40px',
+                          padding: '0 10px 0 55px',
+                        },
+                      }}
+                    >
+                      {molecules && molecules.length > 0 ? (
+                        molecules.map((mol: StateMoleculeExtended) => (
+                          <div key={mol.id} style={styles.flexColumnContainer}>
+                            <MoleculeHeader
+                              currentMolecule={mol}
+                              molecules={molecules}
+                            />
+                            <div
+                              style={{ ...styles.slider, height: height - 31 }}
+                            >
+                              <StructureEditor
+                                width={width}
+                                initialMolfile={mol.molfile}
+                                svgMenu
+                                fragment={false}
+                                onChange={changeHandler}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <StructureEditor
+                          width={width}
+                          height={height}
+                          svgMenu
+                          fragment={false}
+                          onChange={changeHandler}
+                        />
+                      )}
+                    </NextPrev>
+                  );
+                }}
+              </ResponsiveChart>
+            </div>
+            <div style={{ display: 'flex', padding: '5px' }}>
+              <Button.Done
+                onClick={() => predictHandler('save')}
+                disabled={!molfile}
               >
-                Add prediction
-              </Button.Action>
-            )}
+                {isPredictedBefore ? 'Replace prediction' : 'Predict spectra'}
+              </Button.Done>
+              {isPredictedBefore && (
+                <Button.Action
+                  style={{ marginLeft: '5px' }}
+                  onClick={() => predictHandler('add')}
+                >
+                  Add prediction
+                </Button.Action>
+              )}
+            </div>
           </div>
-        </MoleculePanel>
+        </>
       )}
     </div>
   );
