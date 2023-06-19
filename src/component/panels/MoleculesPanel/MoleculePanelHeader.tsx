@@ -92,23 +92,13 @@ const MOL_EXPORT_MENU = [
     label: 'Export as SVG',
   },
 ];
-
-export interface MoleculeHeaderActionsOptions {
-  hidePast?: boolean;
-  hideAdd?: boolean;
-  hideExport?: boolean;
-  hideDelete?: boolean;
-  hidePredict?: boolean;
-  showAboutPredict?: boolean;
-  renderAs?: 'OCLnmr' | 'StructureEditor';
-}
 interface MoleculePanelHeaderProps {
   currentIndex: number;
   molecules: Array<StateMoleculeExtended>;
   moleculesView: MoleculesView;
-  onMoleculeIndexChange: (index: number) => void;
+  onMoleculeIndexChange?: (index: number) => void;
   onOpenMoleculeEditor: () => void;
-  actionsOptions?: MoleculeHeaderActionsOptions;
+  renderSource?: 'moleculePanel' | 'predictionPanel';
   onClickPreferences?: () => void;
   children?: ReactNode;
 }
@@ -117,9 +107,9 @@ export default function MoleculePanelHeader({
   currentIndex,
   molecules,
   moleculesView,
-  onMoleculeIndexChange = () => null,
-  onOpenMoleculeEditor = () => null,
-  actionsOptions = {},
+  onMoleculeIndexChange,
+  onOpenMoleculeEditor,
+  renderSource = 'moleculePanel',
   onClickPreferences,
   children,
 }: MoleculePanelHeaderProps) {
@@ -193,7 +183,7 @@ export default function MoleculePanelHeader({
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex]?.id) {
-      onMoleculeIndexChange(0);
+      onMoleculeIndexChange?.(0);
       dispatch({
         type: 'DELETE_MOLECULE',
         payload: { id: molecules[currentIndex].id, assignmentData },
@@ -225,8 +215,8 @@ export default function MoleculePanelHeader({
 
   return (
     <div css={toolbarStyle}>
-      {actionsOptions?.showAboutPredict && <AboutPredictionModal />}
-      {!actionsOptions.hideExport && (
+      {renderSource === 'predictionPanel' && <AboutPredictionModal />}
+      {renderSource === 'moleculePanel' && (
         <MenuButton
           component={<FaFileExport />}
           toolTip="Export As"
@@ -234,42 +224,38 @@ export default function MoleculePanelHeader({
           onClick={exportHandler}
         />
       )}
-
-      {!actionsOptions.hidePast && (
-        <ToolTip title="Paste molfile" popupPlacement="left">
-          <button className="bar-button" type="button" onClick={handlePaste}>
-            <FaPaste />
-          </button>
-        </ToolTip>
-      )}
-      {!actionsOptions.hideAdd && (
-        <ToolTip title="Add molecule" popupPlacement="left">
-          <button
-            className="bar-button"
-            type="button"
-            onClick={onOpenMoleculeEditor}
-          >
-            <FaPlus />
-          </button>
-        </ToolTip>
-      )}
-      {!actionsOptions.hideDelete && (
-        <ToolTip title="Delete molecule" popupPlacement="left">
-          <button className="bar-button" type="button" onClick={handleDelete}>
-            <FaRegTrashAlt />
-          </button>
-        </ToolTip>
-      )}
-      {!actionsOptions.hidePredict && hasMolecules && (
-        <ButtonToolTip
-          popupTitle="Predict spectra"
-          popupPlacement="left"
-          onClick={() => openPredictSpectraModal(molecules[currentIndex])}
+      <ToolTip title="Paste molfile" popupPlacement="left">
+        <button className="bar-button" type="button" onClick={handlePaste}>
+          <FaPaste />
+        </button>
+      </ToolTip>
+      <ToolTip title="Add molecule" popupPlacement="left">
+        <button
+          className="bar-button"
+          type="button"
+          onClick={onOpenMoleculeEditor}
         >
-          <SvgNmrFt />
-        </ButtonToolTip>
+          <FaPlus />
+        </button>
+      </ToolTip>
+      {renderSource === 'moleculePanel' && (
+        <>
+          <ToolTip title="Delete molecule" popupPlacement="left">
+            <button className="bar-button" type="button" onClick={handleDelete}>
+              <FaRegTrashAlt />
+            </button>
+          </ToolTip>
+          {hasMolecules && (
+            <ButtonToolTip
+              popupTitle="Predict spectra"
+              popupPlacement="left"
+              onClick={() => openPredictSpectraModal(molecules[currentIndex])}
+            >
+              <SvgNmrFt />
+            </ButtonToolTip>
+          )}
+        </>
       )}
-
       <ActiveButton
         value={moleculesView?.[moleculeKey]?.floating.visible || false}
         popupTitle="Float molecule"
@@ -289,9 +275,7 @@ export default function MoleculePanelHeader({
       >
         <p style={atomLabelStyle}>#</p>
       </ActiveButton>
-
-      {children}
-
+      <div style={{ flex: 1 }}>{children}</div>
       <p>
         {molecules &&
           molecules.length > 0 &&
