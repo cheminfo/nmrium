@@ -1,4 +1,4 @@
-import { CSSProperties, memo, ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
@@ -108,4 +108,4 @@ function DefaultPanelHeader({
   );
 }
 
-export default memo(DefaultPanelHeader);
+export default DefaultPanelHeader;
