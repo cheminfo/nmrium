@@ -50,25 +50,6 @@ import DatabasePreferences from './DatabasePreferences';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
 
-const style = css`
-  .header {
-    height: 30px;
-    padding: 2px 0 2px 5px;
-  }
-
-  .input-container {
-    width: 100%;
-  }
-
-  .search-input {
-    width: 100% !important;
-    border-radius: 5px;
-    border: 0.55px solid gray;
-    padding: 0 5px;
-    outline: none;
-  }
-`;
-
 export interface DatabaseInnerProps {
   nucleus: string;
   selectedTool: string;
@@ -357,7 +338,6 @@ function DatabasePanelInner({
     <div
       css={[
         tablePanelStyle,
-        style,
         isFlipped &&
           css`
             .table-container {
@@ -374,7 +354,6 @@ function DatabasePanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
           canDelete={false}
-          className="header"
         >
           <ToggleButton
             key={`${selectedTool}`}
@@ -392,7 +371,7 @@ function DatabasePanelInner({
             />
           </ToggleButton>
           <Select
-            style={{ flex: 2 }}
+            style={{ flex: 2, marginLeft: '5px' }}
             items={databases}
             itemTextField="label"
             itemValueField="key"
@@ -401,7 +380,7 @@ function DatabasePanelInner({
             defaultValue={defaultDatabase}
           />
           <Select
-            style={{ flex: 1 }}
+            style={{ flex: 1, margin: '0px 5px' }}
             items={result.solvents}
             placeholder="Solvent"
             onChange={handleSearch}
