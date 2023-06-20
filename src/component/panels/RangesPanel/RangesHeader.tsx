@@ -140,27 +140,29 @@ function RangesHeader({
   );
 
   const saveAsHTMLHandler = useCallback(() => {
-    const { originFrequency: observedFrequency, nucleus } = info;
+    if (Array.isArray(ranges?.values) && ranges.values.length > 0) {
+      const { originFrequency: observedFrequency, nucleus } = info;
 
-    const nbDecimalDelta = getNumberOfDecimals(
-      rangesPreferences.deltaPPM.format,
-    );
-    const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
+      const nbDecimalDelta = getNumberOfDecimals(
+        rangesPreferences.deltaPPM.format,
+      );
+      const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
 
-    const result = rangesToACS(ranges.values, {
-      nucleus, // '19f'
-      nbDecimalDelta, // 2
-      nbDecimalJ, // 1
-      observedFrequency, //400
-    });
-    modal.show(
-      <CopyClipboardModal
-        text={result}
-        onCopyClick={saveToClipboardHandler}
-        onClose={() => modal.close()}
-      />,
-      {},
-    );
+      const result = rangesToACS(ranges.values, {
+        nucleus, // '19f'
+        nbDecimalDelta, // 2
+        nbDecimalJ, // 1
+        observedFrequency, //400
+      });
+      modal.show(
+        <CopyClipboardModal
+          text={result}
+          onCopyClick={saveToClipboardHandler}
+          onClose={() => modal.close()}
+        />,
+        {},
+      );
+    }
   }, [
     info,
     modal,
@@ -176,10 +178,12 @@ function RangesHeader({
     });
   }, [dispatch]);
 
+  const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
+
   return (
     <div css={style}>
       <DefaultPanelHeader
-        counter={ranges?.values?.length}
+        counter={ranges?.values?.length || 0}
         onDelete={handleDeleteAll}
         deleteToolTip="Delete All Ranges"
         onFilter={onFilterActivated}
@@ -196,6 +200,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={saveAsHTMLHandler}
           className="btn preview-publication-icon"
+          disabled={!hasRanges}
         >
           <FaFileExport />
         </Button>
@@ -215,7 +220,7 @@ function RangesHeader({
           popupTitle="Remove all assignments"
           popupPlacement="right"
           onClick={handleOnRemoveAssignments}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
           className="btn icon"
         >
           <FaUnlink />
@@ -229,7 +234,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
           value={showMultiplicityTrees}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
         >
           <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
@@ -238,7 +243,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowJGraph}
           value={showJGraph}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
         >
           <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
@@ -247,7 +252,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowIntegrals}
           value={showRangesIntegrals}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
         >
           <SvgNmrIntegrate
             style={{ pointerEvents: 'none', fontSize: '12px' }}
