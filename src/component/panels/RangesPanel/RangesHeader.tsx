@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
-import { useCallback } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
@@ -61,15 +60,12 @@ function RangesHeader({
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
-  const changeRangesSumHandler = useCallback(
-    (options) => {
-      dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
-      modal.close();
-    },
-    [dispatch, modal],
-  );
+  function changeRangesSumHandler(options) {
+    dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
+    modal.close();
+  }
 
-  const showChangeRangesSumModal = useCallback(() => {
+  function showChangeRangesSumModal() {
     modal.show(
       <ChangeSumModal
         onClose={() => modal.close()}
@@ -82,20 +78,20 @@ function RangesHeader({
         sumOptions={ranges?.options}
       />,
     );
-  }, [changeRangesSumHandler, currentSum, modal, ranges?.options]);
+  }
 
-  const removeAssignments = useCallback(() => {
+  function removeAssignments() {
     onUnlink();
-  }, [onUnlink]);
+  }
 
-  const handleOnRemoveAssignments = useCallback(() => {
+  function handleOnRemoveAssignments() {
     modal.showConfirmDialog({
       message: 'All assignments will be removed. Are you sure?',
       buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
     });
-  }, [removeAssignments, modal]);
+  }
 
-  const handleDeleteAll = useCallback(() => {
+  function handleDeleteAll() {
     modal.showConfirmDialog({
       message: 'All ranges will be deleted. Are You sure?',
       buttons: [
@@ -111,35 +107,31 @@ function RangesHeader({
         { text: 'No' },
       ],
     });
-  }, [assignmentData, dispatch, modal]);
+  }
 
-  const handleSetShowMultiplicityTrees = useCallback(() => {
+  function handleSetShowMultiplicityTrees() {
     dispatch({ type: 'SHOW_MULTIPLICITY_TREES', payload: { id } });
-  }, [dispatch, id]);
+  }
 
-  const handleShowIntegrals = useCallback(() => {
+  function handleShowIntegrals() {
     dispatch({ type: 'SHOW_RANGES_INTEGRALS', payload: { id } });
-  }, [dispatch, id]);
+  }
 
-  const handleShowJGraph = useCallback(() => {
+  function handleShowJGraph() {
     dispatch({ type: 'SHOW_J_GRAPH', payload: { id } });
-  }, [dispatch, id]);
+  }
+  function saveToClipboardHandler(value) {
+    void (async () => {
+      const success = await copyHTMLToClipboard(value);
+      if (success) {
+        alert.success('Data copied to clipboard');
+      } else {
+        alert.error('copy to clipboard failed');
+      }
+    })();
+  }
 
-  const saveToClipboardHandler = useCallback(
-    (value) => {
-      void (async () => {
-        const success = await copyHTMLToClipboard(value);
-        if (success) {
-          alert.success('Data copied to clipboard');
-        } else {
-          alert.error('copy to clipboard failed');
-        }
-      })();
-    },
-    [alert],
-  );
-
-  const saveAsHTMLHandler = useCallback(() => {
+  function saveAsHTMLHandler() {
     if (Array.isArray(ranges?.values) && ranges.values.length > 0) {
       const { originFrequency: observedFrequency, nucleus } = info;
 
@@ -163,20 +155,13 @@ function RangesHeader({
         {},
       );
     }
-  }, [
-    info,
-    modal,
-    ranges.values,
-    rangesPreferences?.deltaHz?.format,
-    rangesPreferences?.deltaPPM?.format,
-    saveToClipboardHandler,
-  ]);
+  }
 
-  const changeSumConstantFlagHandler = useCallback(() => {
+  function changeSumConstantFlagHandler() {
     dispatch({
       type: 'CHANGE_RANGES_SUM_FLAG',
     });
-  }, [dispatch]);
+  }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
 

@@ -1,13 +1,5 @@
 import { Formik } from 'formik';
-import {
-  useEffect,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  memo,
-  forwardRef,
-  useMemo,
-} from 'react';
+import { useImperativeHandle, useRef, forwardRef, useMemo } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
@@ -83,19 +75,12 @@ function RangesPreferences(props, ref) {
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
 
-  useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
-
-  const saveHandler = useCallback(
-    (values) => {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: { key: 'ranges', value: values },
-      });
-    },
-    [preferences],
-  );
+  function saveHandler(values) {
+    preferences.dispatch({
+      type: 'SET_PANELS_PREFERENCES',
+      payload: { key: 'ranges', value: values },
+    });
+  }
 
   useImperativeHandle(
     ref,
@@ -109,7 +94,12 @@ function RangesPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+      <Formik
+        initialValues={preferencesByNuclei}
+        enableReinitialize
+        onSubmit={saveHandler}
+        innerRef={formRef}
+      >
         <>
           {nuclei?.map((n) => (
             <NucleusPreferences
@@ -139,4 +129,4 @@ function RangesPreferences(props, ref) {
   );
 }
 
-export default memo(forwardRef(RangesPreferences));
+export default forwardRef(RangesPreferences);
