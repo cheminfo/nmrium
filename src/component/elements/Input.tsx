@@ -22,7 +22,6 @@ const styles: Record<
   },
 
   inputWrapper: {
-    height: '100%',
     borderRadius: '5px',
     borderWidth: '0.55px',
     borderColor: '#c7c7c7',
