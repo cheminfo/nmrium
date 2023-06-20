@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { ParseResult } from 'papaparse';
 import { CSSProperties, useState, useMemo, useRef, useEffect } from 'react';
 import type { FileWithPath } from 'react-dropzone';
 import { DropZone } from 'react-science/ui';
+import { FileError } from 'react-dropzone';
+
 import * as Yup from 'yup';
 
 import {
@@ -87,7 +87,7 @@ interface MetaImportationModalProps {
 
 const validationSchema = Yup.object({
   source: Yup.string().required(),
-  target: Yup.array(Yup.string()).min(1),
+  target: Yup.array(Yup.string()).min(1).required(),
 });
 
 function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
@@ -119,7 +119,9 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   }, [file]);
 
   function handleDrop(files: FileWithPath[]) {
-    handleParseFile(files[0]);
+    if (files[0]) {
+      handleParseFile(files[0]);
+    }
   }
 
   const errors = mapErrors(parseResult?.errors || []);
@@ -234,7 +236,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                   innerRef={formRef}
                   initialValues={{
                     source: null,
-                    target: null,
+                    target: '',
                   }}
                   onSubmit={handleLinkSpectra}
                   validationSchema={validationSchema}
@@ -251,7 +253,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                         )}
                         style={{
                           width: '300px',
-                          padding: '3px',
+                          padding: '5px',
                           margin: 0,
                         }}
                       />
@@ -264,9 +266,17 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                     >
                       <FormikInput
                         name="target"
-                        style={{ input: { width: '300px', textAlign: 'left' } }}
+                        style={{
+                          input: {
+                            width: '300px',
+                            textAlign: 'left',
+                            padding: '5px',
+                            fontSize: '14px',
+                          },
+                        }}
                         placeholder="Example: info.plus"
                         datalist={datalist}
+                        nullable
                         mapOnChangeValue={(key) => paths?.[key] || null}
                         mapValue={(paths) => convertPathArrayToString(paths)}
                       />
@@ -305,7 +315,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   );
 }
 
-function fileValidator(file: File) {
+function fileValidator(file: File): FileError | null {
   if (!isMetaFile(file)) {
     return {
       message: 'import a CSV or tab-delimited file',
