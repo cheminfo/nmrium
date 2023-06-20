@@ -123,7 +123,7 @@ const Input = forwardRef(
       datalist = [],
       ...otherProps
     } = props;
-    const [val, setVal] = useState(value);
+    const [val, setVal] = useState(value ?? '');
     const valueRef = useRef(value);
     const localRef = useRef<any>();
     const combinedRef = useCombinedRefs([ref, localRef]);
@@ -137,7 +137,7 @@ const Input = forwardRef(
     );
 
     useEffect(() => {
-      setVal(value);
+      setVal((prevVal) => (prevVal !== value ? value ?? '' : prevVal));
     }, [value]);
 
     useEffect(() => {
