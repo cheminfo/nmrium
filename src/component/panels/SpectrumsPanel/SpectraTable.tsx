@@ -171,10 +171,18 @@ export function SpectraTable(props: SpectraTableProps) {
           maxWidth: '30px',
         },
         Cell: ({ row }) => {
+          const {
+            display,
+            info: { dimension, isFid },
+          } = row.original;
+          if (dimension === 2 && isFid) {
+            return <div />;
+          }
+
           return (
             <ColorIndicator
-              display={row.original.display}
-              dimension={row.original.info.dimension}
+              display={display}
+              dimension={dimension}
               onClick={(event) => onOpenSettingModal(event, row.original)}
             />
           );
