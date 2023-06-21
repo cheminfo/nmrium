@@ -7,7 +7,7 @@ import {
   LegendField,
   PredefinedLegendField,
 } from 'nmr-load-save';
-import { CSSProperties, useContext } from 'react';
+import { CSSProperties } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker';

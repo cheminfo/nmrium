@@ -15,10 +15,13 @@ export function useCheckPointsNumberInWindowArea() {
   } = state;
 
   if (spectrum) {
-    const { fromIndex, toIndex } = xGetFromToIndex((spectrum as Spectrum1D).data.x, {
-      from,
-      to,
-    });
+    const { fromIndex, toIndex } = xGetFromToIndex(
+      (spectrum as Spectrum1D).data.x,
+      {
+        from,
+        to,
+      },
+    );
     return toIndex - fromIndex;
   }
 
