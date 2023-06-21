@@ -11,7 +11,7 @@ import {
   AnalysisOptions,
   AnalysisColumnsTypes,
   SpectraAnalysisColumns,
-  SpectraAnalysisColumn,
+  Column,
   AnalisisColumnsValuesKeys,
 } from 'nmr-load-save';
 
@@ -46,7 +46,7 @@ export type SpectraAnalysis = Record<
 function addColumnKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
-  columnProps: SpectraAnalysisColumn,
+  columnProps: Column,
   columnKey: string,
 ) {
   const spectraAnalysisOptions = spectraAnalysis[nucleus].analysisOptions;
