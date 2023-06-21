@@ -272,8 +272,8 @@ const ReactTableInner = forwardRef(function ReactTableInner(
             onClick={headerClickHandler}
           />
           <tbody {...getTableBodyProps()}>
-            {!rowsData ||
-              (rowsData?.length === 0 && (
+            {!data ||
+              (data?.length === 0 && (
                 <EmptyDataRow columns={columns} text={emptyDataRowText} />
               ))}
             {rowsData.map((row, index) => {
@@ -332,7 +332,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
           {enableColumnsVirtualScroll && typeof startColumn === 'string' && (
             <span style={{ left: 0 }}>{`Column ${startColumn}`} </span>
           )}
-          {index + 1} / {total}
+          {typeof index === 'number' ? index + 1 : total} / {total}
         </p>
       )}
     </>
@@ -400,7 +400,7 @@ function ReactTable(props: ReactTableProps) {
 
   function lookForGroupIndex(currentIndex: number, side: 1 | -1) {
     const currentItem = data[currentIndex];
-    if (currentItem.index && groupKey) {
+    if (currentItem?.index && groupKey) {
       switch (side) {
         case -1: {
           let index = currentIndex - 1;
