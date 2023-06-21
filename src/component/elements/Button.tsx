@@ -1,11 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject, SerializedStyles } from '@emotion/react';
-import {
-  ReactNode,
-  ButtonHTMLAttributes,
-  CSSProperties,
-  MouseEvent,
-} from 'react';
+import { CSSProperties, ComponentPropsWithoutRef, ElementType } from 'react';
 import { FaInfoCircle } from 'react-icons/fa';
 
 type Size = 'xSmall' | 'small' | 'medium' | 'large';
@@ -108,7 +103,7 @@ interface ButtonStyle {
 }
 
 interface Style {
-  button: (props: ButtonStyle) => SerializedStyles;
+  button: (props: ButtonStyle & { element: ElementType }) => SerializedStyles;
 }
 
 function getFillStyle(props: ButtonStyle) {
@@ -154,6 +149,7 @@ const styles: Style = {
       backgroundColor: { hover, active },
       color,
       borderRadius,
+      element,
     } = props;
 
     const basic = css`
@@ -168,18 +164,18 @@ const styles: Style = {
     `;
 
     const fillStyle = getFillStyle(props);
-
-    const colorStyle = css`
-      &:disabled {
+    const basicDisabledStyle = css`
+      &:disabled,
+      &.disabled {
         opacity: 0.25;
       }
-
-      &:not([disabled]):hover {
+    `;
+    const colorStyle = css`
+      &:not(${element === 'button' ? '[disabled]' : '.disabled'}):hover {
         background-color: ${hover};
         color: ${color.hover};
       }
-
-      &:not([disabled]):active {
+      &:not(${element === 'button' ? '[disabled]' : '.disabled'}):active {
         background-color: ${active || hover};
         color: ${color?.active || color.hover};
       }
@@ -189,6 +185,7 @@ const styles: Style = {
       basic,
       sizeConfig[size],
       fillStyle,
+      basicDisabledStyle,
       colorStyle,
       { borderRadius },
     ]);
@@ -226,18 +223,25 @@ const toolTipStyle = (orientation: TooltipOrientation) => {
   ]);
 };
 
-export interface ButtonProps
-  extends Partial<ButtonStyle>,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'style'> {
-  onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
-  children: ReactNode;
+type ElementProps<E = unknown> = E extends ElementType
+  ? ComponentPropsWithoutRef<E>
+  : never;
+
+export interface InnerButtonProps<E extends ElementType = 'button'>
+  extends Partial<ButtonStyle> {
   toolTip?: string;
   tooltipOrientation?: TooltipOrientation;
   wrapperClassName?: string;
   theme?: ColorTheme;
+  as?: E;
+  disabled?: boolean;
 }
 
-function Button(props: ButtonProps) {
+export type ButtonProps<E extends ElementType = 'button'> =
+  InnerButtonProps<E> &
+    Omit<ElementProps<E>, 'color' | 'style' | 'disabled' | 'fill'>;
+
+function Button<E extends ElementType = 'button'>(props: ButtonProps<E>) {
   const { theme = 'light', ...buttonProps } = props;
   const { base, shade, tint } = colorPalettes[theme];
 
@@ -257,18 +261,26 @@ function Button(props: ButtonProps) {
     wrapperStyle = {},
     toolTip,
     tooltipOrientation = 'vertical',
-    wrapperClassName,
+    wrapperClassName = '',
+    as: Wrapper = 'button',
+    disabled = false,
+    className = '',
     ...restProps
   } = buttonProps;
 
+  const isDivDisabled = Wrapper === 'div' && disabled;
   return (
     <div
       style={{ position: 'relative', ...wrapperStyle }}
-      {...(wrapperClassName && { className: wrapperClassName })}
+      className={wrapperClassName}
     >
-      <button
-        type="button"
-        onClick={onClick}
+      <Wrapper
+        {...(Wrapper === 'button' && { type: 'button', disabled })}
+        onClick={
+          Wrapper === 'button' || (Wrapper === 'div' && !disabled)
+            ? onClick
+            : (e) => e.stopPropagation()
+        }
         css={[
           styles.button({
             size,
@@ -277,13 +289,15 @@ function Button(props: ButtonProps) {
             borderColor,
             fill,
             borderRadius,
+            element: Wrapper,
           }),
           style as CSSObject,
         ]}
+        className={`${className} ${isDivDisabled ? 'disabled' : ''}`}
         {...restProps}
       >
         <span style={{ flex: 1, pointerEvents: 'none' }}>{props.children}</span>
-      </button>
+      </Wrapper>
       {toolTip && (
         <div className="content" css={toolTipStyle(tooltipOrientation)}>
           <span
@@ -301,36 +315,29 @@ function Button(props: ButtonProps) {
   );
 }
 
-// function ThemeButton(props: { colorTheme: ColorTheme } & ButtonProps) {
-//   const { colorTheme, ...buttonProps } = props;
-//   const { base, shade, tint } = colorPalettes[colorTheme];
-
-//   const {
-//     color = { base: shade, hover: 'white' },
-//     backgroundColor = {
-//       base,
-//       hover: shade,
-//       active: tint,
-//     },
-//     fill = 'solid',
-//     ...restProps
-//   } = buttonProps;
-//   return <Button {...{ fill, ...restProps, backgroundColor, color }} />;
-// }
-
-Button.Done = function ButtonDone(props: ButtonProps) {
+Button.Done = function ButtonDone<E extends ElementType = 'button'>(
+  props: ButtonProps<E>,
+) {
   return <Button {...props} theme="success" />;
 };
-Button.Danger = function ButtonDanger(props: ButtonProps) {
+Button.Danger = function ButtonDanger<E extends ElementType = 'button'>(
+  props: ButtonProps<E>,
+) {
   return <Button {...props} theme="danger" />;
 };
-Button.Action = function ButtonAction(props: ButtonProps) {
+Button.Action = function ButtonAction<E extends ElementType = 'button'>(
+  props: ButtonProps<E>,
+) {
   return <Button {...props} theme="medium" />;
 };
-Button.Secondary = function ButtonAction(props: ButtonProps) {
+Button.Secondary = function ButtonAction<E extends ElementType = 'button'>(
+  props: ButtonProps<E>,
+) {
   return <Button {...props} theme="secondary" />;
 };
-Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
+Button.Info = function ButtonInfo<E extends ElementType = 'button'>(
+  props: Omit<ButtonProps<E>, 'children'>,
+) {
   return (
     <Button {...props}>
       <FaInfoCircle />
@@ -338,7 +345,9 @@ Button.Info = function ButtonInfo(props: Omit<ButtonProps, 'children'>) {
   );
 };
 
-Button.BarButton = function BarButton(props: ButtonProps) {
+Button.BarButton = function BarButton<E extends ElementType = 'button'>(
+  props: ButtonProps<E>,
+) {
   const { ...otherProps } = props;
   return (
     <Button

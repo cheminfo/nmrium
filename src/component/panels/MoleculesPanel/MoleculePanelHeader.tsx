@@ -223,6 +223,7 @@ export default function MoleculePanelHeader({
           onSelect={exportHandler}
         >
           <Button.BarButton
+            as="div"
             disabled={!hasMolecules}
             color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
             toolTip="Export As"
