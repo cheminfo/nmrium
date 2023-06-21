@@ -16,6 +16,7 @@ import { useFilter } from '../hooks/useFilter';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import { InputStyle } from '../elements/Input';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;
@@ -28,7 +29,10 @@ const getAlgorithmsList = () => {
   }));
 };
 
-const inputStyle = { input: { width: '50px' } };
+const inputStyle: InputStyle = {
+  input: { width: '50px' },
+  inputWrapper: { height: '100%' },
+};
 
 const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
   switch (algorithm) {
