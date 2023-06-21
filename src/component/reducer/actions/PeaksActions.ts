@@ -120,18 +120,18 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
 //action
 function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
   const activeSpectrum = getActiveSpectrum(draft);
-  const peakData = action?.payload || {};
+  const peakId = action?.payload?.id;
 
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const state = original(draft) as State;
 
-    if (!peakData) {
+    if (!peakId) {
       (draft.data[index] as Spectrum1D).peaks.values = [];
     } else {
       const peakIndex = (
         state.data[index] as Spectrum1D
-      ).peaks.values.findIndex((p) => p.id === peakData.id);
+      ).peaks.values.findIndex((p) => p.id === peakId);
       (draft.data[index] as Spectrum1D).peaks.values.splice(peakIndex, 1);
     }
   }
