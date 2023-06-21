@@ -1,13 +1,10 @@
 import { memo } from 'react';
 
-import {
-  COLUMNS_TYPES,
-  SpectraAnalysisColumns,
-} from '../../../data/data1d/multipleSpectraAnalysis';
 import { useChartData } from '../../context/ChartContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import AnalysisRange from './AnalysisRange';
+import { AnalysisColumnsTypes, SpectraAnalysisColumns } from 'nmr-load-save';
 
 interface MultiAnalysisRangesInnerProps {
   displayerKey: string;
@@ -21,7 +18,7 @@ function MultiAnalysisRangesInner({
   activeTab,
 }: MultiAnalysisRangesInnerProps) {
   const ranges = Object.keys(columns).filter(
-    (key) => columns[key].type !== COLUMNS_TYPES.FORMULA,
+    (key) => columns[key].type !== AnalysisColumnsTypes.FORMULA,
   );
 
   if (!ranges || ranges.length === 0) {
