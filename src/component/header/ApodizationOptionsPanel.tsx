@@ -10,6 +10,7 @@ import {
 } from '../../data/data1d/filter1d/apodization';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
+import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
@@ -19,8 +20,9 @@ import { useFilter } from '../hooks/useFilter';
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const inputStyle = {
-  input: { height: '100%', width: '60px' },
+const inputStyle: InputStyle = {
+  input: { width: '60px' },
+  inputWrapper: { height: '100%' },
 };
 
 const validationSchema = Yup.object().shape({

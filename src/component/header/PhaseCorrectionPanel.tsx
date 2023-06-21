@@ -5,7 +5,7 @@ import * as Filters from '../../data/Filters';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
-import Input from '../elements/Input';
+import Input, { InputStyle } from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
@@ -22,9 +22,12 @@ const selectStyle: CSSProperties = {
   height: '20px',
 };
 
-const inputStyle = {
-  inputWrapper: {
+const inputStyle: InputStyle = {
+  input: {
     width: '70px',
+  },
+  inputWrapper: {
+    height: '100%',
   },
 };
 
