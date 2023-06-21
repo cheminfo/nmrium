@@ -3,9 +3,8 @@ import { Formik, FormikProps } from 'formik';
 import { ParseResult } from 'papaparse';
 import { CSSProperties, useState, useMemo, useRef, useEffect } from 'react';
 import type { FileWithPath } from 'react-dropzone';
-import { DropZone } from 'react-science/ui';
 import { FileError } from 'react-dropzone';
-
+import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import {

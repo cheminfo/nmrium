@@ -48,7 +48,7 @@ function PredictionSimpleOptions() {
       initialValues={predictionPreferences}
       validationSchema={predictionFormValidation}
       enableReinitialize
-      // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/empty-brace-spaces
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSubmit={() => {}}
     >
       <div
