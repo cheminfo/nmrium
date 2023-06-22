@@ -1,4 +1,4 @@
-import { Zone } from 'nmr-load-save';
+import { Zone } from 'nmr-processing';
 
 import { DetectionZonesOptions, getDetectionZones } from './getDetectionZones';
 import { mapZones } from './mapZones';

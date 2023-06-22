@@ -1,4 +1,4 @@
-import { Formatting } from '../../../workspaces/Workspace';
+import { Formatting } from 'nmr-load-save';
 
 export function mapNucleiFormatting(formatting: Formatting): Formatting {
   const { nuclei, ...res } = formatting;

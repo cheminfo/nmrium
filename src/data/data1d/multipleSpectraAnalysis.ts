@@ -1,50 +1,27 @@
 import lodashGet from 'lodash/get';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
-
 import {
+  Spectrum,
+  Spectrum1D,
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   PredefinedSpectraColumn,
   PredefinedTableColumn,
   WorkSpacePanelPreferences,
-} from '../../component/workspaces/Workspace';
+  AnalysisOptions,
+  AnalysisColumnsTypes,
+  SpectraAnalysisColumns,
+  SpectraAnalysisColumn,
+  AnalisisColumnsValuesKeys,
+} from 'nmr-load-save';
+
 import { RangeDetectionResult } from '../types/data1d/index';
 import { convertSpectraArrayToObject } from '../utilities/convertSpectraListToObject';
 import generateChar from '../utilities/generateChar';
 
 import { detectRange, isSpectrum1D } from './Spectrum1D/index';
 
-export enum COLUMNS_TYPES {
-  NORMAL = 'NORMAL',
-  FORMULA = 'FORMULA',
-}
-export enum COLUMNS_VALUES_KEYS {
-  RELATIVE = 'relative',
-  ABSOLUTE = 'absolute',
-  MIN = 'min',
-  MAX = 'max',
-}
-
-export type ColumnType = keyof typeof COLUMNS_TYPES;
-
-interface Column {
-  type: ColumnType;
-  valueKey: COLUMNS_VALUES_KEYS;
-  from: number;
-  to: number;
-  formula?: string;
-  index: number;
-}
-
-export type SpectraAnalysisColumns = Record<string, Column>;
-
-export interface AnalysisOptions {
-  sum: number;
-  code: string | null;
-  columns: SpectraAnalysisColumns;
-  columnIndex: number;
-}
+export type ColumnType = keyof typeof AnalysisColumnsTypes;
 
 export interface AnalysisRow extends RangeDetectionResult {
   SID: string;
@@ -69,7 +46,7 @@ export type SpectraAnalysis = Record<
 function addColumnKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
-  columnProps: Column,
+  columnProps: SpectraAnalysisColumn,
   columnKey: string,
 ) {
   const spectraAnalysisOptions = spectraAnalysis[nucleus].analysisOptions;
@@ -158,7 +135,7 @@ export function changeColumnValueKey(
   spectraAnalysis: PanelsPreferences['multipleSpectraAnalysis'],
   nucleus: string,
   columnKey: string,
-  newKey: COLUMNS_VALUES_KEYS,
+  newKey: AnalisisColumnsValuesKeys,
 ) {
   spectraAnalysis[nucleus].analysisOptions.columns[columnKey].valueKey = newKey;
 }
@@ -173,8 +150,8 @@ export function analyzeSpectra(
     spectraAnalysis,
     nucleus,
     {
-      type: COLUMNS_TYPES.NORMAL,
-      valueKey: COLUMNS_VALUES_KEYS.ABSOLUTE,
+      type: AnalysisColumnsTypes.NORMAL,
+      valueKey: AnalisisColumnsValuesKeys.ABSOLUTE,
       from,
       to,
       index: 1,
@@ -218,7 +195,7 @@ export function generateAnalyzeSpectra(
     Object.entries(data).map((spectra: any) => {
       const result = Object.fromEntries(
         Object.keys(columns).map((key) => {
-          const isFormula = columns[key].type === COLUMNS_TYPES.FORMULA;
+          const isFormula = columns[key].type === AnalysisColumnsTypes.FORMULA;
           return [
             key,
             isFormula

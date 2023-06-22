@@ -1,5 +1,6 @@
+import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { Data2DFt, Spectrum2D } from 'nmr-load-save';
+import { Spectrum2D } from 'nmr-load-save';
 
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
@@ -187,7 +188,7 @@ interface ContoursCalcOptions {
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
-  data: Data2DFt['rr'];
+  data: NmrData2DFt['rr'];
 }
 
 function getContours(zoomLevel: number, options: ContoursCalcOptions) {

@@ -1,13 +1,9 @@
 import { Formik, FormikProps } from 'formik';
+import { Filters, Filter, ApodizationOptions } from 'nmr-processing';
 import { useRef, memo } from 'react';
 import * as Yup from 'yup';
 
-import * as Filters from '../../data/Filters';
-import { Filter } from '../../data/FiltersManager';
-import {
-  ApodizationOptions,
-  defaultApodizationOptions,
-} from '../../data/data1d/filter1d/apodization';
+import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import { InputStyle } from '../elements/Input';

@@ -1,19 +1,17 @@
+import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
 import lodashSet from 'lodash/set';
 import {
+  Spectrum,
   Spectrum1D,
   Spectrum2D,
-  Data2DFid,
-  Data2DFt,
-  Spectrum,
   Display1D,
   Display2D,
 } from 'nmr-load-save';
+import { Filters, FiltersManager } from 'nmr-processing';
 
-import * as Filters from '../../../data/Filters';
-import { applyFilter } from '../../../data/FiltersManager';
 import {
   generateSpectrumFromPublicationString,
   getReferenceShift,
@@ -143,6 +141,7 @@ export type SpectrumActions =
   | RecolorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction;
 
+const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (!datum.display.isPositiveVisible && !datum.display.isNegativeVisible) {
     return false;
@@ -467,7 +466,7 @@ function handleAddMissingProjectionHandler(
     const { info, data } = Spectrum2D;
     for (let n of nucleus) {
       const datum1D = getMissingProjection(
-        info.isFid ? (data as Data2DFid).re : (data as Data2DFt).rr,
+        info.isFid ? (data as NmrData2DFid).re : (data as NmrData2DFt).rr,
         n,
         info,
         draft.usedColors,

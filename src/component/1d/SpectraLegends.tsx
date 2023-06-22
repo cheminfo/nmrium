@@ -1,6 +1,12 @@
 import lodashGet from 'lodash/get';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import {
+  Spectrum,
+  Spectrum1D,
+  JpathLegendField,
+  LegendField,
+  PredefinedLegendField,
+} from 'nmr-load-save';
 import { CSSProperties } from 'react';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
@@ -10,11 +16,6 @@ import { useScale } from '../context/ScaleContext';
 import { SVGGroup } from '../elements/SVGGroup';
 import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../utility/convertPathArrayToString';
-import {
-  JpathLegendField,
-  legendField,
-  PredefinedLegendField,
-} from '../workspaces/Workspace';
 
 const styles: Record<'text' | 'colorIndicator', CSSProperties> = {
   text: {
@@ -53,7 +54,7 @@ function YTracker({ datum }: YTrackerProps) {
 
 interface InnerSpectraLegendsProps {
   spectra: Spectrum[];
-  legendsFields: legendField[];
+  legendsFields: LegendField[];
 }
 
 function InnerSpectraLegends({

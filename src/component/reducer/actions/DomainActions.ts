@@ -1,6 +1,7 @@
+import type { NmrData2DFt, NmrData2DFid } from 'cheminfo-types';
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D, Data2DFt, Data2DFid } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
@@ -99,7 +100,7 @@ function get2DDomain(state: State) {
   const spectrum =
     data.find((datum) => datum.id === activeSpectrum?.id) || null;
   if (spectrum?.info.isFid) {
-    const { minX, maxX, minY, maxY } = (spectrum.data as Data2DFid).re;
+    const { minX, maxX, minY, maxY } = (spectrum.data as NmrData2DFid).re;
     xArray = [minX, maxX];
     yArray = [minY, maxY];
   } else {
@@ -112,7 +113,7 @@ function get2DDomain(state: State) {
             datum.info.isFt,
         ) as Array<Spectrum2D>
       ).flatMap((datum: Spectrum2D) => {
-        const { minX, maxX } = (datum.data as Data2DFt).rr;
+        const { minX, maxX } = (datum.data as NmrData2DFt).rr;
         return [minX, maxX];
       });
 
@@ -124,7 +125,7 @@ function get2DDomain(state: State) {
             d.info.isFt,
         ) as Array<Spectrum2D>
       ).flatMap((datum: Spectrum2D) => {
-        const { minY, maxY } = (datum.data as Data2DFt).rr;
+        const { minY, maxY } = (datum.data as NmrData2DFt).rr;
         return [minY, maxY];
       });
     } catch (error) {

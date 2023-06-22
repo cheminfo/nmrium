@@ -1,6 +1,6 @@
+import { NmrData1D } from 'cheminfo-types';
 import { ScaleLinear } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
-import { Data1D } from 'nmr-load-save';
 import { useMemo } from 'react';
 
 import { getIntegralYScale } from '../1d/utilities/scale';
@@ -39,7 +39,7 @@ export default function useIntegralPath(integralOptions: {
   const scaleY = useIntegralYDomain();
   const integral = useMemo(() => {
     if (activeSpectrum) {
-      const { x, re } = data[activeSpectrum?.index].data as Data1D;
+      const { x, re } = data[activeSpectrum?.index].data as NmrData1D;
       const { from, to } = integralOptions;
       return xyIntegral(
         { x, y: re },

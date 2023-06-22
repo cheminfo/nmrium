@@ -1,10 +1,8 @@
 import { Formik, FormikProps } from 'formik';
+import { Filter, Filters, BaselineCorrectionOptions } from 'nmr-processing';
 import { useRef, useState, memo } from 'react';
 import * as Yup from 'yup';
 
-import * as Filters from '../../data/Filters';
-import { Filter } from '../../data/FiltersManager';
-import { BaselineCorrectionOptions } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';

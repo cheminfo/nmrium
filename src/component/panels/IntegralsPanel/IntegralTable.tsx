@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Integral } from 'nmr-load-save';
+import { Integral } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 

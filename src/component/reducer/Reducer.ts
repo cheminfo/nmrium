@@ -1,18 +1,12 @@
 import { v4 } from '@lukeed/uuid';
+import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Source, Spectrum } from 'nmr-load-save';
+import { Spectrum, ViewState } from 'nmr-load-save';
+import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
 import { Reducer } from 'react';
 
-import { ApodizationOptions } from '../../data/data1d/filter1d/apodization';
-import { BaselineCorrectionZone } from '../../data/data1d/filter1d/baselineCorrection';
-import { ContoursLevels } from '../../data/data2d/Spectrum2D/contours';
-import {
-  MoleculesView,
-  StateMoleculeExtended,
-} from '../../data/molecules/Molecule';
-import { Nuclei } from '../../data/types/common/Nucleus';
-import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
+import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { UsedColors } from '../../types/UsedColors';
 import { Action } from '../context/DispatchContext';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
@@ -42,89 +36,7 @@ export interface ActiveSpectrum {
   id: string;
   index: number;
 }
-interface ToolStateBase {
-  spectrumID: string;
-}
-interface RangeToolState extends ToolStateBase {
-  /**
-   * boolean indicator to hide/show multiplicity tree
-   * @default false
-   */
-  showMultiplicityTrees: boolean;
-  /**
-   * boolean indicator to hide/show J graph for spectrum signals
-   * @default false
-   */
-  showJGraph: boolean;
-  /**
-   * boolean indicator to hide/show integrals for the spectrum ranges
-   * @default true
-   */
-  showRangesIntegrals: boolean;
-}
-interface ZoneToolState extends ToolStateBase {
-  /**
-   * boolean indicator to hide/show zones
-   * @default false
-   */
-  showZones: boolean;
-  /**
-   * boolean indicator to hide/show signals for spectrum zones
-   * @default false
-   */
-  showSignals: boolean;
-  /**
-   * boolean indicator to hide/show peaks for spectrum zones
-   * @default true
-   */
-  showPeaks: boolean;
-}
 
-export interface ViewState {
-  /**
-   *  Molecules view properties
-   * @default []
-   */
-  molecules: MoleculesView;
-  ranges: Array<RangeToolState>;
-  zones: Array<ZoneToolState>;
-  /**
-   * peaks view property
-   * where the key is the id of the spectrum
-   */
-  peaks: Record<string, PeaksViewState>;
-  spectra: {
-    /**
-     * active spectrum id per nucleus
-     * @default {}
-     */
-    activeSpectra: Record<string, ActiveSpectrum[] | null>;
-    selectReferences: Record<string, string>;
-    /**
-     * current select tab (nucleus)
-     * @default null
-     */
-    activeTab: string;
-
-    /**
-     * show the spectra legend and the intensity
-     * @default false
-     */
-    showLegend: boolean;
-  };
-  zoom: {
-    levels: ContoursLevels;
-  };
-  /**
-   * options to control spectra vertical alignment
-   * @default  'bottom'
-   */
-  verticalAlign: Partial<Record<Nuclei, VerticalAlignment>>;
-  /**
-   * where the key is the molecule id and the value is an array of spectra Ids
-   */
-  predictions: Record<string, string[]>;
-}
 export const rangeStateInit = {
   showMultiplicityTrees: false,
   showRangesIntegrals: true,

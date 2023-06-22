@@ -1,7 +1,7 @@
-import { Data1D } from 'nmr-load-save';
+import { NmrData1D } from 'cheminfo-types';
+import { Filters } from 'nmr-processing';
 import { useEffect, useState, memo } from 'react';
 
-import * as Filters from '../../data/Filters';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
@@ -22,7 +22,7 @@ function useInitZeroFillingSize() {
   if (filter) {
     return filter.value.nbPoints;
   } else if (data) {
-    return 2 ** Math.round(Math.log2((data as Data1D).x.length * 2));
+    return 2 ** Math.round(Math.log2((data as NmrData1D).x.length * 2));
   }
   return 0;
 }

@@ -1,4 +1,5 @@
 import { Formik, FormikProps } from 'formik';
+import { Workspace } from 'nmr-load-save';
 import { useRef, forwardRef, useState } from 'react';
 import { Modal, useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
@@ -7,7 +8,6 @@ import { usePreferences } from '../context/PreferencesContext';
 import FormikInput from '../elements/formik/FormikInput';
 import { useAlert } from '../elements/popup/Alert/Context';
 import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
-import { Workspace } from '../workspaces/Workspace';
 
 const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
@@ -64,7 +64,7 @@ export function useSaveSettings() {
   }
 
   return {
-    saveSettings: (values?: Partial<Workspace>) => {
+    saveSettings: (values: Partial<Workspace> = {}) => {
       setValues(values);
 
       if (current.source !== 'user') {
@@ -72,7 +72,7 @@ export function useSaveSettings() {
       } else {
         dispatch({
           type: 'SET_PREFERENCES',
-          payload: values as any,
+          payload: values,
         });
         closeDialog();
       }

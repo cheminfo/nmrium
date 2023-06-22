@@ -1,4 +1,4 @@
-import { InnerWorkspace } from './Workspace';
+import { InnerWorkspace } from 'nmr-load-save';
 
 export const exercise: InnerWorkspace = {
   version: 2,

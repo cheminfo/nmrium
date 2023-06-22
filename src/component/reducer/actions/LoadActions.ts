@@ -2,7 +2,12 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { NmriumState, Spectrum } from 'nmr-load-save';
+import {
+  Spectrum,
+  OnLoadProcessing,
+  ViewState,
+  NmriumState,
+} from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
@@ -12,13 +17,7 @@ import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra
 import { UsedColors } from '../../../types/UsedColors';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import nucleusToString from '../../utility/nucleusToString';
-import { OnLoadProcessing } from '../../workspaces/Workspace';
-import {
-  getDefaultViewState,
-  getInitialState,
-  State,
-  ViewState,
-} from '../Reducer';
+import { getDefaultViewState, getInitialState, State } from '../Reducer';
 import { ActionType } from '../types/ActionType';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';

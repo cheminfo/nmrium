@@ -1,4 +1,4 @@
-import { Range } from 'nmr-load-save';
+import { Range } from 'nmr-processing';
 import {
   createContext,
   useReducer,

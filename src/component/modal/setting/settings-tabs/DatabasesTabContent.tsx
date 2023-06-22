@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { Field, useFormikContext } from 'formik';
+import { CustomWorkspaces } from 'nmr-load-save';
 import { CSSProperties } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -10,7 +11,6 @@ import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import FormikInput from '../../../elements/formik/FormikInput';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument';
-import { CustomWorkspaces } from '../../../workspaces/Workspace';
 
 const style: Record<
   'table' | 'th' | 'input' | 'labelCol' | 'serialCol' | 'checkbox',

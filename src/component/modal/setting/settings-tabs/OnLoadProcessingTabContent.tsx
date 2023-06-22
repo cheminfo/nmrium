@@ -1,4 +1,5 @@
 import { useFormikContext } from 'formik';
+import { OnLoadProcessing, WorkspacePreferences } from 'nmr-load-save';
 import { useState } from 'react';
 import { TabItem, Tabs } from 'react-science/ui';
 
@@ -7,10 +8,6 @@ import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import IsotopesViewer from '../../../elements/IsotopesViewer';
 import ReactTable from '../../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
-import {
-  OnLoadProcessing,
-  WorkspacePreferences,
-} from '../../../workspaces/Workspace';
 
 function OnLoadProcessingTabContent() {
   const { values } = useFormikContext<WorkspacePreferences>();

@@ -1,5 +1,11 @@
 import lodashGet from 'lodash/get';
-import { Spectrum } from 'nmr-load-save';
+import {
+  JpathTableColumn,
+  PredefinedSpectraColumn,
+  PredefinedTableColumn,
+  SpectraTableColumn,
+  Spectrum,
+} from 'nmr-load-save';
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
@@ -12,12 +18,6 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import { copyTextToClipboard } from '../../utility/export';
-import {
-  JpathTableColumn,
-  PredefinedSpectraColumn,
-  PredefinedTableColumn,
-  SpectraTableColumn,
-} from '../../workspaces/Workspace';
 
 import ColorIndicator from './base/ColorIndicator';
 import ShowHideSpectrumButton, {

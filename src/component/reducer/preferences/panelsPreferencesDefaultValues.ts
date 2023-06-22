@@ -2,7 +2,7 @@ import {
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   SpectraNucleusPreferences,
-} from '../../workspaces/Workspace';
+} from 'nmr-load-save';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };

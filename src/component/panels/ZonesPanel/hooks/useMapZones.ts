@@ -1,4 +1,4 @@
-import { Zone } from 'nmr-load-save';
+import { Zone } from 'nmr-processing';
 import { useMemo } from 'react';
 
 export interface ZoneData extends Zone {

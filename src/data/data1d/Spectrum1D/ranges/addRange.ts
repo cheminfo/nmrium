@@ -1,13 +1,16 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Signal1D, Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-load-save';
+import {
+  Signal1D,
+  updateRangesRelativeValues,
+  mapRanges,
+} from 'nmr-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { initSumOptions, SumParams } from '../SumManager';
 
 import detectSignal from './detectSignal';
-import { mapRanges } from './mapRanges';
-import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 
 interface RangeOptions {
   from: number;

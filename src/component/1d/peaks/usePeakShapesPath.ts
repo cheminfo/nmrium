@@ -1,6 +1,6 @@
 import { DataXY, DoubleArray } from 'cheminfo-types';
-import { Spectrum1D, Peak1D } from 'nmr-load-save';
-import { peakToXY, peaksToXY } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Peak1D, peakToXY, peaksToXY } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';

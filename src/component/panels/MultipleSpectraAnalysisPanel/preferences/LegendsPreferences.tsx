@@ -1,4 +1,5 @@
 import { useFormikContext } from 'formik';
+import { LegendField, PredefinedLegendField } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -9,10 +10,6 @@ import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../elements/formik/FormikInput';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
-import {
-  legendField,
-  PredefinedLegendField,
-} from '../../../workspaces/Workspace';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -63,7 +60,7 @@ function LegendsPreferences() {
     [setFieldValue],
   );
 
-  const COLUMNS: Column<legendField>[] = useMemo(
+  const COLUMNS: Column<LegendField>[] = useMemo(
     () => [
       {
         Header: '#',

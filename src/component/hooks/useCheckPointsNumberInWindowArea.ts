@@ -1,4 +1,5 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
+import { Spectrum1D } from 'nmr-load-save';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -14,10 +15,13 @@ export function useCheckPointsNumberInWindowArea() {
   } = state;
 
   if (spectrum) {
-    const { fromIndex, toIndex } = xGetFromToIndex(spectrum.data.x, {
-      from,
-      to,
-    });
+    const { fromIndex, toIndex } = xGetFromToIndex(
+      (spectrum as Spectrum1D).data.x,
+      {
+        from,
+        to,
+      },
+    );
     return toIndex - fromIndex;
   }
 

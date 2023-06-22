@@ -1,8 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
+import { WebSource } from 'filelist-utils';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, Source, NmriumState, Spectrum } from 'nmr-load-save';
+import {
+  readNMRiumObject,
+  NmriumState,
+  CustomWorkspaces,
+  WorkspacePreferences as NMRiumPreferences,
+  Spectrum,
+} from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
@@ -53,10 +60,6 @@ import preferencesReducer, {
 } from './reducer/preferences/preferencesReducer';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import {
-  CustomWorkspaces,
-  WorkspacePreferences as NMRiumPreferences,
-} from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -101,8 +104,10 @@ const containerStyles = css`
   }
 `;
 export { serializeNmriumState } from 'nmr-load-save';
-export type { NmriumState } from 'nmr-load-save';
-export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
+export type {
+  NmriumState,
+  WorkspacePreferences as NMRiumPreferences,
+} from 'nmr-load-save';
 
 export type NMRiumWorkspace =
   | 'exercise'
@@ -140,7 +145,7 @@ type DeepPartial<T> = {
 };
 
 export interface NMRiumData {
-  source?: Source;
+  source?: WebSource;
   molecules?: Molecules;
   spectra: DeepPartial<Spectrum>[];
   correlations?: CorrelationData;

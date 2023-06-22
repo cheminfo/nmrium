@@ -1,7 +1,7 @@
 import { Spectrum1D } from 'nmr-load-save';
+import { Filters } from 'nmr-processing';
 import { memo } from 'react';
 
-import * as Filters from '../../data/Filters';
 import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';

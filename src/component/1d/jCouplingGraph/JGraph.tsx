@@ -1,5 +1,6 @@
 import { scaleLinear } from 'd3';
-import { Signal1D, Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-load-save';
+import { Signal1D } from 'nmr-processing';
 import { memo, useMemo } from 'react';
 
 import generateJGraphData, {

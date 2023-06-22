@@ -1,4 +1,5 @@
 import { useFormikContext } from 'formik';
+import { PanelsPreferences, SpectraTableColumn } from 'nmr-load-save';
 import { useMemo, CSSProperties } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -8,10 +9,6 @@ import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput, {
   InputMapValueFunctions,
 } from '../../../elements/formik/FormikInput';
-import {
-  PanelsPreferences,
-  SpectraTableColumn,
-} from '../../../workspaces/Workspace';
 
 const style: CSSProperties = {
   width: '100%',

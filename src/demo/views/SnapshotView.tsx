@@ -1,4 +1,4 @@
-import { CustomWorkspaces } from '../../component/workspaces/Workspace';
+import { CustomWorkspaces } from 'nmr-load-save';
 
 import View from './View';
 

@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
+  Database,
   NmriumState,
+  Spectrum1D,
   readFromWebSource,
   serializeNmriumState,
-  Spectrum1D,
 } from 'nmr-load-save';
-import { DatabaseNMREntry } from 'nmr-processing';
+import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
@@ -14,7 +15,7 @@ import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
-import { isSpectrum1D, mapRanges } from '../../../data/data1d/Spectrum1D';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import {
   initiateDatabase,
@@ -39,7 +40,6 @@ import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
 import nucleusToString from '../../utility/nucleusToString';
-import { Database } from '../../workspaces/Workspace';
 import { PanelNoData } from '../PanelNoData';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';

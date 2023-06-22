@@ -1,19 +1,19 @@
+import { NmrData2DFt, NmrData1D } from 'cheminfo-types';
 import { xNoiseSanPlot } from 'ml-spectra-processing';
-import { Data1D, Data2DFt } from 'nmr-load-save';
 
 export function calculateSanPlot<T extends '1D' | '2D'>(
   dimension: T,
-  data: T extends '1D' ? Data1D : Data2DFt['rr'],
+  data: T extends '1D' ? NmrData1D : NmrData2DFt['rr'],
 ) {
   const input =
     dimension === '1D'
-      ? prepare1DData(data as Data1D)
-      : prepare2DData(data as Data2DFt['rr']);
+      ? prepare1DData(data as NmrData1D)
+      : prepare2DData(data as NmrData2DFt['rr']);
 
   return xNoiseSanPlot(input);
 }
 
-function prepare1DData(data: Data1D) {
+function prepare1DData(data: NmrData1D) {
   const length = data.re.length;
   const jump = Math.floor(length / 307200) || 1;
   const array = new Float64Array((length / jump) >> 0);
@@ -24,7 +24,7 @@ function prepare1DData(data: Data1D) {
   return array;
 }
 
-function prepare2DData(data: Data2DFt['rr']) {
+function prepare2DData(data: NmrData2DFt['rr']) {
   let cols = data.z[0].length;
   let rows = data.z.length;
   let jump = Math.floor((cols * rows) / 204800) || 1;

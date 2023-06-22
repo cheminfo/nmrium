@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { Range } from 'nmr-load-save';
+import { Range } from 'nmr-processing';
 import { useMemo } from 'react';
 
 export interface RangeData extends Range {

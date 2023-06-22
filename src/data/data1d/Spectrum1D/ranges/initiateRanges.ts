@@ -1,7 +1,6 @@
 import merge from 'lodash/merge';
-import { Ranges, Spectrum1D } from 'nmr-load-save';
-
-import { mapRanges } from './mapRanges';
+import { Spectrum1D } from 'nmr-load-save';
+import { Ranges, mapRanges } from 'nmr-processing';
 
 export function initiateRanges(
   options: Partial<{ ranges: Ranges }>,

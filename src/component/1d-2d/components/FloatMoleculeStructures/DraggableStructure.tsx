@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Ranges, Zones } from 'nmr-load-save';
+import { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';

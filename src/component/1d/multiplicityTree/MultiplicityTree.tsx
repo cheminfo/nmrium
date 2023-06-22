@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Spectrum1D, Range } from 'nmr-load-save';
-import { checkMultiplicity } from 'nmr-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Range, checkMultiplicity } from 'nmr-processing';
 import { CSSProperties, useMemo } from 'react';
 
 import {
