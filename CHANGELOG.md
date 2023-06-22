@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.38.2](https://github.com/cheminfo/nmrium/compare/v0.38.1...v0.38.2) (2023-06-22)
+
+
+### Bug Fixes
+
+* auto (peaks and ranges) picking  window size ([2b6a045](https://github.com/cheminfo/nmrium/commit/2b6a0454e01e532344c4e3da35705a700d194f39))
+* check 'delta' is exists before call the toFixed function ([#2437](https://github.com/cheminfo/nmrium/issues/2437)) ([b46f6ec](https://github.com/cheminfo/nmrium/commit/b46f6eceab35ad2adaf66e5f422256ede2b62a85))
+* check for the nucleus before extracting info from the atom ([fecc3f8](https://github.com/cheminfo/nmrium/commit/fecc3f8e96e354c73b4b3d02aa58e178f9e9f65d))
+* check the meta file has an accepted mimeType ([#2445](https://github.com/cheminfo/nmrium/issues/2445)) ([2974e54](https://github.com/cheminfo/nmrium/commit/2974e54ddfa3c9b68e637e99a1f61c4cb2e23152)), closes [#2418](https://github.com/cheminfo/nmrium/issues/2418)
+* disable the 'preview publication string' button when no ranges ([0d5b6b7](https://github.com/cheminfo/nmrium/commit/0d5b6b7ff09c6a373a1400821098d41528dcc110))
+* display react-table empty row correctly ([443f62e](https://github.com/cheminfo/nmrium/commit/443f62edfb8dfc6d8270ec31838de15ce9b292bf))
+* do not prevent triggering onChange when props are changed ([37dadf8](https://github.com/cheminfo/nmrium/commit/37dadf8addff251795dd93c2c181528a0cf3f888))
+* hide spectrum settings dialog if it's 2d Fid ([5a780f6](https://github.com/cheminfo/nmrium/commit/5a780f691ea524d431b1c4e89a4d43224d6f9d6b)), closes [#2424](https://github.com/cheminfo/nmrium/issues/2424)
+* jcamp-dx generation n move filters to nmr-processing ([#2386](https://github.com/cheminfo/nmrium/issues/2386)) ([470abab](https://github.com/cheminfo/nmrium/commit/470abab98a53a6ddee6bc93818b0cff90a41bdfb))
+
 ## [0.38.1](https://github.com/cheminfo/nmrium/compare/v0.38.0...v0.38.1) (2023-06-09)
 
 
