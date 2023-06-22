@@ -15,6 +15,8 @@ export interface AtomData {
 }
 
 function getElements(activeTab: string) {
+  if (!activeTab) return;
+
   const nuclei = activeTab.split(',');
   return nuclei.map((nucleus) => nucleus.replaceAll(/\d/g, ''));
 }
@@ -37,7 +39,7 @@ export function extractFromAtom(
 ): AtomData {
   const elements = getElements(activeTab);
 
-  if (elements.length > 0 && Object.keys(atom).length > 0) {
+  if (elements && elements.length > 0 && Object.keys(atom).length > 0) {
     const dim = axis === 'x' ? 0 : axis === 'y' ? 1 : null;
     switch (dim !== null && elements[dim]) {
       case atom.atomLabel: {
