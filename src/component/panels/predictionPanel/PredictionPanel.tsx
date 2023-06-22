@@ -35,13 +35,12 @@ const styles: Record<'flexColumnContainer' | 'slider', CSSProperties> = {
 
 export default function PredictionPanel() {
   const {
-    molecules: moleculesProp,
+    molecules,
     view: { molecules: moleculesView, predictions },
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [molecules, setMolecules] = useState<Array<StateMoleculeExtended>>([]);
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
@@ -52,17 +51,20 @@ export default function PredictionPanel() {
   } = useAccordionContext('Spectra');
   const predictionPreferences = usePanelPreferences('prediction');
   const openMoleculeEditor = useMoleculeEditor(true);
+  const refreshSlider = useRef<boolean>(false);
 
   useEffect(() => {
-    if (moleculesProp) {
-      setMolecules((prevMolecules) => {
-        if (moleculesProp.length > prevMolecules.length) {
-          setCurrentIndex(molecules.length);
-        }
-        return moleculesProp;
-      });
+    if (
+      Array.isArray(molecules) &&
+      molecules.length > 0 &&
+      refreshSlider.current
+    ) {
+      const newIndex = molecules.length - 1;
+      setCurrentIndex(newIndex);
+      setMolfile(molecules[newIndex].molfile);
+      refreshSlider.current = false;
     }
-  }, [molecules.length, moleculesProp]);
+  }, [molecules]);
 
   function changeHandler(molfile, molecule: OCL.Molecule) {
     const atoms = molecule.getAllAtoms();
@@ -73,7 +75,8 @@ export default function PredictionPanel() {
     }
   }
 
-  function predictHandler(action) {
+  function predictHandler(action: 'add' | 'save') {
+    refreshSlider.current = action === 'add';
     void (async () => {
       if (molfile) {
         const predictedSpectra: string[] = [];
@@ -159,7 +162,10 @@ export default function PredictionPanel() {
                 {({ height, width }) => {
                   return (
                     <NextPrev
-                      onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+                      onChange={(slideIndex) => {
+                        setCurrentIndex(slideIndex);
+                        setMolfile(molecules[slideIndex].molfile);
+                      }}
                       defaultIndex={currentIndex}
                       style={{
                         arrowContainer: {
@@ -169,25 +175,35 @@ export default function PredictionPanel() {
                       }}
                     >
                       {molecules && molecules.length > 0 ? (
-                        molecules.map((mol: StateMoleculeExtended) => (
-                          <div key={mol.id} style={styles.flexColumnContainer}>
-                            <MoleculeHeader
-                              currentMolecule={mol}
-                              molecules={molecules}
-                            />
+                        molecules.map(
+                          (mol: StateMoleculeExtended, molIndex) => (
                             <div
-                              style={{ ...styles.slider, height: height - 31 }}
+                              key={mol.id}
+                              style={styles.flexColumnContainer}
                             >
-                              <StructureEditor
-                                width={width}
-                                initialMolfile={mol.molfile}
-                                svgMenu
-                                fragment={false}
-                                onChange={changeHandler}
+                              <MoleculeHeader
+                                currentMolecule={mol}
+                                molecules={molecules}
                               />
+                              <div
+                                style={{
+                                  ...styles.slider,
+                                  height: height - 31,
+                                }}
+                              >
+                                {molIndex === currentIndex && (
+                                  <StructureEditor
+                                    width={width}
+                                    initialMolfile={mol.molfile}
+                                    svgMenu
+                                    fragment={false}
+                                    onChange={changeHandler}
+                                  />
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          ),
+                        )
                       ) : (
                         <StructureEditor
                           width={width}
