@@ -8,6 +8,7 @@ import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
+import { addToBrushHistory } from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
 
@@ -260,12 +261,14 @@ function setMode(draft: Draft<State>) {
 function handleSetXDomain(draft: Draft<State>, action: SetXDomainAction) {
   const xDomain = action.payload.xDomain;
   draft.xDomain = xDomain;
+  addToBrushHistory(draft, { xDomain, yDomain: draft.yDomain });
 }
 
 //action
 function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
   const yDomain = action.payload.yDomain;
   draft.yDomain = yDomain;
+  addToBrushHistory(draft, { xDomain: draft.xDomain, yDomain });
 }
 
 export {
