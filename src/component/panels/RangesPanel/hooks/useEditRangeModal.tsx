@@ -77,51 +77,45 @@ export default function useEditRangeModal(range?: RangeData) {
     [assignmentData, dispatch, modal],
   );
 
-  const closeEditRangeHandler = useCallback(
-    (range: Partial<{ id: string }>, originalRange) => {
-      if (range.id === 'new') {
-        deleteRange(range.id, true);
-      } else {
-        saveEditRangeHandler(originalRange, false);
-      }
+  const resetHandler = useCallback(
+    (originalRange) => {
+      saveEditRangeHandler(originalRange, false);
       modal.close();
     },
-    [deleteRange, modal, saveEditRangeHandler],
+    [modal, saveEditRangeHandler],
   );
 
-  const editRange = useCallback(
-    (isManual = false) => {
-      dispatch({
-        type: 'SET_SELECTED_TOOL',
-        payload: { selectedTool: 'editRange' },
-      });
+  const editRange = useCallback(() => {
+    if (!range?.id) return;
 
-      modal.show(
-        <EditRangeModal
-          onCloseEditRangeModal={closeEditRangeHandler}
-          onSaveEditRangeModal={saveEditRangeHandler}
-          onZoomEditRangeModal={zoomRange}
-          range={isManual ? {} : range}
-          manualRange={isManual}
-        />,
-        {
-          position: positions.MIDDLE_RIGHT,
-          transition: transitions.SCALE,
-          isBackgroundBlur: false,
-        },
-      );
+    dispatch({
+      type: 'SET_SELECTED_TOOL',
+      payload: { selectedTool: 'editRange' },
+    });
 
-      zoomRange();
-    },
-    [
-      closeEditRangeHandler,
-      dispatch,
-      modal,
-      range,
-      saveEditRangeHandler,
-      zoomRange,
-    ],
-  );
+    modal.show(
+      <EditRangeModal
+        onRest={resetHandler}
+        onSave={saveEditRangeHandler}
+        onZoom={zoomRange}
+        rangeId={range?.id}
+      />,
+      {
+        position: positions.MIDDLE_RIGHT,
+        transition: transitions.SCALE,
+        isBackgroundBlur: false,
+      },
+    );
+
+    zoomRange();
+  }, [
+    dispatch,
+    modal,
+    range?.id,
+    resetHandler,
+    saveEditRangeHandler,
+    zoomRange,
+  ]);
 
   return useMemo(
     () => ({
