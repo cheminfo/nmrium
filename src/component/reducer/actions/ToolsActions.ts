@@ -19,7 +19,9 @@ import {
   ZOOM_TYPES,
   ZoomType,
 } from '../helper/Zoom1DManager';
-import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import zoomHistoryManager, {
+  addToBrushHistory,
+} from '../helper/ZoomHistoryManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getVerticalAlign } from '../helper/getVerticalAlign';
@@ -283,17 +285,8 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
 
-  const {
-    height,
-    margin,
-    yDomain,
-    yDomains,
-    width,
-    xDomains,
-    xDomain,
-    mode,
-    displayerMode,
-  } = draft;
+  const { height, margin, yDomain, yDomains, width, xDomains, xDomain, mode } =
+    draft;
 
   const xScale = getXScale({ width, xDomains, xDomain, mode, margin });
   const verticalAlign = getVerticalAlign(draft);
@@ -315,37 +308,9 @@ function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const endY = yScale.invert(_endY);
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
-  const brushHistory = zoomHistoryManager(
-    // eslint-disable-next-line unicorn/consistent-destructuring
-    draft.zoom.history,
-    // eslint-disable-next-line unicorn/consistent-destructuring
-    draft.view.spectra.activeTab,
-  );
-  if (displayerMode === DISPLAYER_MODE.DM_2D) {
-    switch (trackID) {
-      case 'CENTER_2D':
-        draft.xDomain = domainX;
-        draft.yDomain = domainY;
-        break;
-      case 'TOP_1D':
-        draft.xDomain = domainX;
-        break;
-      case 'LEFT_1D':
-        draft.yDomain = domainY;
-        break;
-      default:
-        break;
-    }
-    if (brushHistory) {
-      brushHistory.push({ xDomain, yDomain });
-    }
-  } else {
-    draft.xDomain = domainX;
-    if (brushHistory) {
-      brushHistory.push({ xDomain: domainX, yDomain: domainY });
-    }
-  }
+  addToBrushHistory(draft, { trackID, xDomain: domainX, yDomain: domainY });
 }
+
 function setVerticalIndicatorXPosition(
   draft: Draft<State>,
   action: SetVerticalIndicatorXPositionAction,
