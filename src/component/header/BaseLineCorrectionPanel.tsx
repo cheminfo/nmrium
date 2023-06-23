@@ -1,10 +1,8 @@
 import { Formik, FormikProps } from 'formik';
+import { Filter, Filters, BaselineCorrectionOptions } from 'nmr-processing';
 import { useRef, useState, memo } from 'react';
 import * as Yup from 'yup';
 
-import * as Filters from '../../data/Filters';
-import { Filter } from '../../data/FiltersManager';
-import { BaselineCorrectionOptions } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
@@ -13,14 +11,10 @@ import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 import { useFilter } from '../hooks/useFilter';
-import {
-  RESET_SELECTED_TOOL,
-  APPLY_BASE_LINE_CORRECTION_FILTER,
-  CALCULATE_BASE_LINE_CORRECTION_FILTER,
-} from '../reducer/types/Types';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import { InputStyle } from '../elements/Input';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;
@@ -33,7 +27,10 @@ const getAlgorithmsList = () => {
   }));
 };
 
-const inputStyle = { input: { width: '50px' } };
+const inputStyle: InputStyle = {
+  input: { width: '50px' },
+  inputWrapper: { height: '100%' },
+};
 
 const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
   switch (algorithm) {
@@ -94,15 +91,15 @@ function BaseLineCorrectionInnerPanel(
     dispatch({
       type:
         triggerSource === 'onChange'
-          ? CALCULATE_BASE_LINE_CORRECTION_FILTER
-          : APPLY_BASE_LINE_CORRECTION_FILTER,
-      options: values,
+          ? 'CALCULATE_BASE_LINE_CORRECTION_FILTER'
+          : 'APPLY_BASE_LINE_CORRECTION_FILTER',
+      payload: values,
     });
   };
 
   const handleCancelFilter = () => {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   };
 

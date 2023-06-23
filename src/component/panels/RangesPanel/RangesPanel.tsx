@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { NmrData1D } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import { Spectrum1D, Data1D, Info1D, Ranges } from 'nmr-load-save';
+import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
+import { Info1D, Ranges } from 'nmr-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
 import { DropdownMenuProps } from 'react-science/ui';
@@ -14,9 +16,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { rangeStateInit } from '../../reducer/Reducer';
-import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
-import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -36,7 +36,7 @@ const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
 interface RangesTablePanelInnerProps {
   id: string;
   ranges: Ranges;
-  data: Data1D;
+  data: NmrData1D;
   info: Info1D;
   xDomain: Array<number>;
   activeTab: string;
@@ -103,9 +103,9 @@ function RangesTablePanelInner({
   const unlinkRangeHandler = useCallback(
     (rangeData, signalIndex = -1) => {
       dispatch({
-        type: UNLINK_RANGE,
+        type: 'UNLINK_RANGE',
         payload: {
-          rangeData,
+          range: rangeData,
           assignmentData,
           signalIndex,
         },

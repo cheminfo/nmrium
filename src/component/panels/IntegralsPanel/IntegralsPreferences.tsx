@@ -1,6 +1,5 @@
 import { Formik } from 'formik';
 import {
-  useEffect,
   useCallback,
   useImperativeHandle,
   useRef,
@@ -12,6 +11,7 @@ import {
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
+import { formatFieldLabelStyle } from '../../elements/formik/FormikColumnFormatField';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
@@ -35,6 +35,12 @@ const formatFields: NucleusPreferenceField[] = [
     checkControllerName: 'relative.show',
     formatControllerName: 'relative.format',
   },
+  {
+    id: 3,
+    label: 'Kind :',
+    checkControllerName: 'showKind',
+    hideFormatField: true,
+  },
 ];
 
 function IntegralsPreferences(props, ref) {
@@ -44,10 +50,6 @@ function IntegralsPreferences(props, ref) {
   const preferencesByNuclei = usePanelPreferencesByNuclei('integrals', nuclei);
 
   const formRef = useRef<any>();
-
-  useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
 
   const saveHandler = useCallback(
     (values) => {
@@ -67,7 +69,11 @@ function IntegralsPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+      <Formik
+        initialValues={preferencesByNuclei}
+        onSubmit={saveHandler}
+        innerRef={formRef}
+      >
         <>
           {nuclei?.map((n) => (
             <NucleusPreferences
@@ -76,31 +82,27 @@ function IntegralsPreferences(props, ref) {
               fields={formatFields}
               renderTop={() => (
                 <>
-                  <FormikColorInput name={`nuclei.${n}.color`} />
-                  <Label
-                    title="stroke width :"
-                    style={{
-                      label: {
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        color: '#232323',
-                        flex: 2,
-                      },
-                      wrapper: {
-                        flex: 4,
-                      },
-                    }}
-                  >
-                    <FormikNumberInput
-                      name={`nuclei.${n}.strokeWidth`}
-                      style={{
-                        width: '60%',
-                        textAlign: 'center',
-                      }}
-                      min={1}
-                      max={9}
-                      pattern="[1-9]+"
-                    />
+                  <Label title="Color" style={formatFieldLabelStyle}>
+                    <div style={{ display: 'flex', padding: '2px 0' }}>
+                      <div style={{ width: '23px' }} />
+                      <FormikColorInput name={`nuclei.${n}.color`} />
+                    </div>
+                  </Label>
+                  <Label title="stroke width :" style={formatFieldLabelStyle}>
+                    <div style={{ display: 'flex', padding: '2px 0' }}>
+                      <div style={{ width: '23px' }} />
+                      <FormikNumberInput
+                        name={`nuclei.${n}.strokeWidth`}
+                        style={{
+                          width: '60%',
+                          textAlign: 'center',
+                          padding: '2px',
+                        }}
+                        min={1}
+                        max={9}
+                        pattern="[1-9]+"
+                      />
+                    </div>
                   </Label>
                 </>
               )}

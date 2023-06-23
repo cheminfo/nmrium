@@ -45,7 +45,7 @@ function InfoBlockTabContent() {
       } else {
         columns.push(emptyField);
       }
-      setFieldValue('infoBlock.fields', columns);
+      void setFieldValue('infoBlock.fields', columns);
     },
     [setFieldValue],
   );
@@ -53,7 +53,7 @@ function InfoBlockTabContent() {
   const deleteHandler = useCallback(
     (data, index: number) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      setFieldValue('infoBlock.fields', _fields);
+      void setFieldValue('infoBlock.fields', _fields);
     },
     [setFieldValue],
   );

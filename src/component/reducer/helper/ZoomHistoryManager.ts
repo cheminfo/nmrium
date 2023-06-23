@@ -1,3 +1,9 @@
+import { Draft } from 'immer';
+
+import { Layout } from '../../2d/utilities/DimensionLayout';
+import { State } from '../Reducer';
+import { DISPLAYER_MODE } from '../core/Constants';
+
 interface HistoryItem {
   xDomain: Array<number>;
   yDomain: Array<number>;
@@ -44,13 +50,51 @@ function preparePop(historyStack, baseZoom?: HistoryItem) {
       return baseZoom || null;
     }
 
-    return val ? historyStack[historyStack.length - 1] : null;
+    return val ? historyStack.at(-1) : null;
   };
 }
 
 function prepareGetLast(historyStack) {
   return () => {
     if (historyStack.length === 0) return null;
-    return historyStack[historyStack.length - 1];
+    return historyStack.at(-1);
   };
+}
+
+export function addToBrushHistory(
+  draft: Draft<State>,
+  options: { trackID?: Layout | null; xDomain: number[]; yDomain: number[] },
+) {
+  const { displayerMode } = draft;
+  const { trackID, xDomain, yDomain } = options;
+  const brushHistory = zoomHistoryManager(
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    draft.zoom.history,
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    draft.view.spectra.activeTab,
+  );
+  if (displayerMode === DISPLAYER_MODE.DM_2D) {
+    switch (trackID) {
+      case 'CENTER_2D':
+        draft.xDomain = xDomain;
+        draft.yDomain = yDomain;
+        break;
+      case 'TOP_1D':
+        draft.xDomain = xDomain;
+        break;
+      case 'LEFT_1D':
+        draft.yDomain = yDomain;
+        break;
+      default:
+        break;
+    }
+    if (brushHistory) {
+      brushHistory.push({ xDomain, yDomain });
+    }
+  } else {
+    draft.xDomain = xDomain;
+    if (brushHistory) {
+      brushHistory.push({ xDomain, yDomain });
+    }
+  }
 }

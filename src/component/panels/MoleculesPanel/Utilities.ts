@@ -1,4 +1,4 @@
-import { Range, Zone } from 'nmr-load-save';
+import { Range, Zone } from 'nmr-processing';
 
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 
@@ -15,8 +15,10 @@ export interface AtomData {
 }
 
 function getElements(activeTab: string) {
+  if (!activeTab) return;
+
   const nuclei = activeTab.split(',');
-  return nuclei.map((nucleus) => nucleus.replace(/\d/g, ''));
+  return nuclei.map((nucleus) => nucleus.replaceAll(/\d/g, ''));
 }
 
 /**
@@ -37,7 +39,7 @@ export function extractFromAtom(
 ): AtomData {
   const elements = getElements(activeTab);
 
-  if (elements.length > 0 && Object.keys(atom).length > 0) {
+  if (elements && elements.length > 0 && Object.keys(atom).length > 0) {
     const dim = axis === 'x' ? 0 : axis === 'y' ? 1 : null;
     switch (dim !== null && elements[dim]) {
       case atom.atomLabel: {
@@ -123,9 +125,9 @@ export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
 }
 
 export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
-  let _diaIDs = diaIDs ? diaIDs.slice() : [];
+  let _diaIDs: string[] = diaIDs ? diaIDs.slice() : [];
   const { nbAtoms, oclIDs } = atomInformation;
-  let tempNbAtoms = nbAtoms;
+  let tempNbAtoms: number = nbAtoms;
   for (const oclID of oclIDs) {
     if (_diaIDs.includes(oclID)) {
       tempNbAtoms *= -1;
@@ -134,5 +136,5 @@ export function toggleDiaIDs(diaIDs: string[], atomInformation: AtomData) {
       _diaIDs.push(oclID);
     }
   }
-  return [_diaIDs, tempNbAtoms];
+  return { diaIDs: _diaIDs, nbAtoms: tempNbAtoms };
 }

@@ -1,5 +1,6 @@
+import { NmrData2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
-import { Data2DFt, Info2D } from 'nmr-load-save';
+import { Info2D } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
@@ -9,7 +10,7 @@ import { initiateDatum1D } from '../../data1d/Spectrum1D';
  */
 
 export function getMissingProjection(
-  datum: Data2DFt['rr'],
+  datum: NmrData2DFt['rr'],
   nucleus: string,
   datumInfo: Info2D,
   usedColors: UsedColors,

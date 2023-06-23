@@ -162,15 +162,17 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           {!hideGeneralSettings && (
-            <DropDownButton
-              data={workspacesList}
-              selectedKey={workspace.current}
-              onSelect={changeWorkspaceHandler}
-              renderItem={renderItem}
-            />
+            <>
+              <DropDownButton
+                data={workspacesList}
+                selectedKey={workspace.current}
+                onSelect={changeWorkspaceHandler}
+                renderItem={renderItem}
+              />
+              <SaveButton />
+            </>
           )}
-          <SaveButton />
-          <LogsHistory />
+          {!general?.hideLogs && <LogsHistory />}
 
           <div>
             <Toolbar orientation="horizontal">

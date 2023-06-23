@@ -9,7 +9,7 @@ import {
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
 import { InputKeyboardEvent } from '../../elements/Input';
-import { CHANGE_MOLECULE_LABEL } from '../../reducer/types/Types';
+import Label from '../../elements/Label';
 
 interface MoleculeHeaderProps {
   currentMolecule: StateMoleculeExtended;
@@ -22,7 +22,6 @@ const styles: Record<'toolbar' | 'labelInput', CSSProperties> = {
     borderBottom: '0.55px solid rgb(240, 240, 240)',
     padding: '5px 10px',
     justifyContent: 'space-between',
-    height: '35px',
   },
   labelInput: {
     width: '150px',
@@ -48,16 +47,15 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
   );
   const saveLabelHandler = useCallback(
     (id: string, event: InputKeyboardEvent) => {
-      const label = event.target.value;
-      dispatch({ type: CHANGE_MOLECULE_LABEL, payload: { label, id } });
+      const label = event.target.value as string;
+      dispatch({ type: 'CHANGE_MOLECULE_LABEL', payload: { label, id } });
     },
     [dispatch],
   );
 
   return (
     <div style={styles.toolbar}>
-      <div style={{ display: 'flex' }}>
-        <span>Label</span>
+      <Label title="Label">
         <EditableColumn
           value={currentMolecule.label}
           style={styles.labelInput}
@@ -65,8 +63,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
           onSave={(event) => saveLabelHandler(currentMolecule.id, event)}
           textOverFlowEllipses
         />
-      </div>
-
+      </Label>
       <span>
         <MF mf={currentMolecule.mf} /> - {currentMolecule.mw?.toFixed(2)}
       </span>

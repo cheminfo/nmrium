@@ -30,7 +30,10 @@ interface ContoursInnerProps {
   displayerKey: string;
 }
 
-function usePath(spectrum: Spectrum2D, contours) {
+function usePath(
+  spectrum: Spectrum2D,
+  contours: ReturnType<typeof drawContours>['contours'],
+) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const shift = getShift(spectrum);
 
@@ -51,18 +54,6 @@ function usePath(spectrum: Spectrum2D, contours) {
             _scaleY(lines[i + 3] + shift.y),
           );
         }
-      }
-    } else {
-      pathBuilder.moveTo(
-        _scaleX(element[0].x + shift.x),
-        _scaleY(element[0].y + shift.y),
-      );
-
-      for (let j = 1; j < element.length; j++) {
-        pathBuilder.lineTo(
-          _scaleX(element[j].x + shift.x),
-          _scaleY(element[j].y + shift.y),
-        );
       }
     }
   }

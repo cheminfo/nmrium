@@ -2,10 +2,11 @@
 import { css } from '@emotion/react';
 import { Formik } from 'formik';
 import { SumOptions } from 'nmr-load-save';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../../context/PreferencesContext';
+import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
@@ -46,20 +47,6 @@ const styles = css`
       text-align: center;
     }
   }
-
-  .footer-container {
-    button {
-      width: 20%;
-      color: white;
-      background-color: gray !important;
-    }
-
-    button:hover {
-      border: 1px solid gray;
-      color: gray;
-      background-color: white !important;
-    }
-  }
 `;
 
 enum SumSetOptions {
@@ -85,6 +72,23 @@ interface ChangeSumModalProps {
   sumOptions: SumOptions;
 }
 
+function getValidationSchema(option) {
+  switch (option) {
+    case SumSetOptions.Auto: {
+      return Yup.object({
+        molecule: Yup.object().required(),
+      });
+    }
+    case SumSetOptions.Manual: {
+      return Yup.object({
+        sum: Yup.number().required(),
+      });
+    }
+    default:
+      return null;
+  }
+}
+
 export default function ChangeSumModal({
   onSave,
   onClose,
@@ -100,15 +104,15 @@ export default function ChangeSumModal({
   const [setOption, setActiveOption] = useState(SumSetOptions.Auto);
   const formRef = useRef<any>(null);
 
-  const handleKeyDown = useCallback((event) => {
+  function handleKeyDown(event) {
     if (event.key === 'Enter') {
       formRef.current.submitForm();
     }
-  }, []);
+  }
 
-  const onTabChangeHandler = useCallback((tab) => {
+  function onTabChangeHandler(tab) {
     setActiveOption(tab.tabid);
-  }, []);
+  }
 
   useEffect(() => {
     if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
@@ -124,46 +128,26 @@ export default function ChangeSumModal({
     }
   }, [panels?.structuresPanel, sumOptions]);
 
-  const saveHandler = useCallback(
-    (values) => {
-      switch (setOption) {
-        case SumSetOptions.Auto: {
-          const {
-            molecule: { mf, id: moleculeId },
-          } = values;
-
-          onSave({ sumAuto: true, mf, moleculeId });
-          break;
-        }
-        case SumSetOptions.Manual: {
-          const { sum } = values;
-          onSave({ sum, sumAuto: false });
-          break;
-        }
-        default:
-          return;
-      }
-      onClose();
-    },
-    [onClose, onSave, setOption],
-  );
-
-  const validationSchema = useMemo(() => {
+  function saveHandler(values) {
     switch (setOption) {
       case SumSetOptions.Auto: {
-        return Yup.object({
-          molecule: Yup.object().required(),
-        });
+        const {
+          molecule: { mf, id: moleculeId },
+        } = values;
+
+        onSave({ sumAuto: true, mf, moleculeId });
+        break;
       }
       case SumSetOptions.Manual: {
-        return Yup.object({
-          sum: Yup.number().required(),
-        });
+        const { sum } = values;
+        onSave({ sum, sumAuto: false });
+        break;
       }
       default:
-        return null;
+        return;
     }
-  }, [setOption]);
+    onClose();
+  }
 
   const isStructurePanelVisible = panels?.structuresPanel?.display || false;
 
@@ -179,8 +163,8 @@ export default function ChangeSumModal({
         <Formik
           innerRef={formRef}
           onSubmit={saveHandler}
-          initialValues={{ sum: null, molecule: null }}
-          validationSchema={validationSchema}
+          initialValues={{ sum: '', molecule: null }}
+          validationSchema={getValidationSchema(setOption)}
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
             {isStructurePanelVisible && (
@@ -194,6 +178,7 @@ export default function ChangeSumModal({
                 <FormikInput
                   name="sum"
                   type="number"
+                  nullable
                   placeholder="Enter the new value"
                   onKeyDown={handleKeyDown}
                 />
@@ -203,13 +188,12 @@ export default function ChangeSumModal({
         </Formik>
       </div>
       <div className="footer-container">
-        <button
-          type="button"
+        <Button.Done
           onClick={() => formRef.current.submitForm()}
-          className="btn"
+          style={{ width: '80px' }}
         >
           Set
-        </button>
+        </Button.Done>
       </div>
     </div>
   );

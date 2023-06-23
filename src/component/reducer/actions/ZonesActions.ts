@@ -1,11 +1,11 @@
-import { FromTo } from 'cheminfo-types';
+import { FromTo, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { setPathLength } from 'nmr-correlation';
-import { Spectrum2D, Data2DFid, Data2DFt } from 'nmr-load-save';
+import type { Spectrum, Spectrum2D } from 'nmr-load-save';
+import type { Signal2D, Zone } from 'nmr-processing';
+import { Filters, FiltersManager } from 'nmr-processing';
 
-import * as Filters from '../../../data/Filters';
-import * as FiltersManager from '../../../data/FiltersManager';
 import {
   DatumKind,
   SignalKindsToInclude,
@@ -15,27 +15,122 @@ import {
   detectZones,
   detectZonesManual,
 } from '../../../data/data2d/Spectrum2D';
+import { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones';
 import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
+import { isNumber } from '../../../data/utilities/isNumber';
+import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
+import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
 import { State, zoneStateInit } from '../Reducer';
-import get2DRange from '../helper/get2DRange';
+import get2DRange, { ZoneBoundary } from '../helper/get2DRange';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
 
-function changeZonesFactorHandler(draft: Draft<State>, action) {
-  draft.toolOptions.data.zonesNoiseFactor = action.payload.thresholdFactor;
+interface DeleteSignal2DProps {
+  spectrum: Spectrum;
+  zone: Zone;
+  signal: Signal2D;
+  assignmentData: AssignmentContext;
 }
 
-function add2dZoneHandler(draft: Draft<State>, action) {
+type ChangeZonesFactorAction = ActionType<
+  'CHANGE_ZONES_NOISE_FACTOR',
+  { zonesNoiseFactor: number }
+>;
+type Add2dZoneAction = ActionType<'ADD_2D_ZONE', ZoneBoundary>;
+
+type AutoZonesDetectionAction = ActionType<
+  'AUTO_ZONES_DETECTION',
+  { zonesNoiseFactor: number }
+>;
+type ChangeZoneSignalDeltaAction = ActionType<
+  'CHANGE_ZONE_SIGNAL_VALUE',
+  { zoneId: string; signal: { id?: string; deltaX?: number; deltaY?: number } }
+>;
+type ChangeZoneSignalKindAction = ActionType<
+  'CHANGE_ZONE_SIGNAL_KIND',
+  { zoneData: ZoneData; kind: string }
+>;
+type DeleteZoneAction = ActionType<
+  'DELETE_2D_ZONE',
+  { id?: string; assignmentData: AssignmentContext }
+>;
+type DeleteSignal2DAction = ActionType<'DELETE_2D_SIGNAL', DeleteSignal2DProps>;
+type SetSignalPathLengthAction = ActionType<
+  'SET_2D_SIGNAL_PATH_LENGTH',
+  {
+    spectrum: Spectrum2D;
+    zone: Zone;
+    signal: Signal2D;
+    pathLength: number | FromTo | undefined;
+  }
+>;
+type ToggleZoneViewPropertyAction = ActionType<
+  'SHOW_ZONES' | 'SHOW_ZONES_SIGNALS' | 'SHOW_ZONES_PEAKS',
+  {
+    id: string;
+  }
+>;
+type SetZoneDiaIDAction = ActionType<
+  'SET_ZONE_DIAID',
+  {
+    zone: Zone;
+    axis?: Axis;
+    signalIndex?: number;
+  } & Pick<Zone['x'], 'diaIDs' | 'nbAtoms'>
+>;
+type SaveEditedZoneAction = ActionType<
+  'SAVE_EDITED_ZONE',
+  {
+    zone: ZoneData;
+  }
+>;
+
+interface UnlinkZoneProps {
+  zone?: ZoneData;
+  assignmentData: AssignmentContext;
+  isOnZoneLevel?: boolean;
+  signalIndex?: number;
+  axis?: Axis;
+}
+
+type UnlinkZoneAction = ActionType<'UNLINK_ZONE', UnlinkZoneProps>;
+
+export type ZonesActions =
+  | AutoZonesDetectionAction
+  | ChangeZonesFactorAction
+  | Add2dZoneAction
+  | ChangeZoneSignalDeltaAction
+  | ChangeZoneSignalKindAction
+  | DeleteZoneAction
+  | DeleteSignal2DAction
+  | SetSignalPathLengthAction
+  | ToggleZoneViewPropertyAction
+  | SetZoneDiaIDAction
+  | SaveEditedZoneAction
+  | UnlinkZoneAction
+  | ActionType<'AUTO_ZONES_SPECTRA_PICKING'>;
+
+//action
+function handleChangeZonesFactor(
+  draft: Draft<State>,
+  action: ChangeZonesFactorAction,
+) {
+  draft.toolOptions.data.zonesNoiseFactor = action.payload.zonesNoiseFactor;
+}
+
+//action
+function handleAdd2dZone(draft: Draft<State>, action: Add2dZoneAction) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const drawnZone = get2DRange(draft, action);
+    const drawnZone = get2DRange(draft, action.payload);
     const datum = draft.data[index] as Spectrum2D;
 
     const zones = detectZonesManual(original(datum), {
@@ -46,34 +141,41 @@ function add2dZoneHandler(draft: Draft<State>, action) {
 
     datum.zones.values = datum.zones.values.concat(zones);
 
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
-function handleAutoZonesDetection(draft: Draft<State>, action) {
+
+//action
+function handleAutoZonesDetection(
+  draft: Draft<State>,
+  action: AutoZonesDetectionAction,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const { thresholdFactor } = action.payload;
+    const { zonesNoiseFactor: thresholdFactor } = action.payload;
     const [fromX, toX] = draft.xDomain;
     const [fromY, toY] = draft.yDomain;
-    const detectionOptions = {
+    const detectionOptions: DetectionZonesOptions = {
       selectedZone: { fromX, toX, fromY, toY },
       thresholdFactor,
     };
     const datum = draft.data[index] as Spectrum2D;
     const zones = detectZones(original(datum), detectionOptions);
     datum.zones.values = datum.zones.values.concat(zones);
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
+
+//action
 function handleAutoSpectraZonesDetection(draft: Draft<State>) {
   for (const datum of draft.data) {
     const { info, data } = datum;
     if (info.dimension === 2) {
       const { minX, maxX, minY, maxY } = info.isFid
-        ? (data as Data2DFid).re
-        : (data as Data2DFt).rr;
+        ? (data as NmrData2DFid).re
+        : (data as NmrData2DFt).rr;
       const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
@@ -84,13 +186,17 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
         datum as Spectrum2D
       ).zones.values.concat(zones);
 
-      handleOnChangeZonesData(draft);
+      handleUpdateCorrelations(draft);
     }
   }
 }
 
-function changeZoneSignalDelta(draft: Draft<State>, action) {
-  const { zoneID, signal } = action.payload;
+//action
+function handleChangeZoneSignalDelta(
+  draft: Draft<State>,
+  action: ChangeZoneSignalDeltaAction,
+) {
+  const { zoneId, signal } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -98,7 +204,7 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
     const { index } = activeSpectrum;
     const { xShift, yShift } = changeZoneSignal(
       draft.data[index] as Spectrum2D,
-      zoneID,
+      zoneId,
       signal,
     );
     let filters: any = [];
@@ -112,35 +218,40 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
     FiltersManager.applyFilter(draft.data[index], filters);
 
     setDomain(draft);
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
 
-function getZoneIndex(state, spectrumIndex, zoneID) {
-  return state.data[spectrumIndex].zones.values.findIndex(
-    (zone) => zone.id === zoneID,
+function getZoneIndex(state: State, spectrumIndex: number, zoneId: string) {
+  return (state.data[spectrumIndex] as Spectrum2D).zones.values.findIndex(
+    (zone) => zone.id === zoneId,
   );
 }
 
-function handleChangeZoneSignalKind(draft: Draft<State>, action) {
+//action
+function handleChangeZoneSignalKind(
+  draft: Draft<State>,
+  action: ChangeZoneSignalKindAction,
+) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const { rowData, value } = action.payload;
-    const zoneIndex = getZoneIndex(state, index, rowData.id);
+    const { zoneData, kind } = action.payload;
+    const zoneIndex = getZoneIndex(state, index, zoneData.id);
     const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
-    _zone.signals[rowData.tableMetaInfo.signalIndex].kind = value;
-    _zone.kind = SignalKindsToInclude.includes(value)
+    _zone.signals[zoneData.tableMetaInfo.signalIndex].kind = kind;
+    _zone.kind = SignalKindsToInclude.includes(kind)
       ? DatumKind.signal
       : DatumKind.mixed;
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
 
-function handleDeleteZone(draft: Draft<State>, action) {
+//action
+function handleDeleteZone(draft: Draft<State>, action: DeleteZoneAction) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
@@ -162,18 +273,12 @@ function handleDeleteZone(draft: Draft<State>, action) {
       );
       (draft.data[index] as Spectrum2D).zones.values = [];
     }
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
 
-function handleDeleteSignal(draft: Draft<State>, action) {
-  const {
-    spectrum,
-    zone,
-    signal,
-    assignmentData,
-    unlinkSignalInAssignmentData = true,
-  } = action.payload;
+function deleteSignal2D(draft: Draft<State>, options: DeleteSignal2DProps) {
+  const { spectrum, zone, signal, assignmentData } = options;
 
   if (spectrum && zone) {
     const datum2D = draft.data.find(
@@ -186,14 +291,10 @@ function handleDeleteSignal(draft: Draft<State>, action) {
       (_signal) => _signal.id === signal.id,
     );
     // remove assignments for the signal in zone object and global state
+
     const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
-    if (unlinkSignalInAssignmentData === true) {
-      unlinkInAssignmentData(
-        assignmentData,
-        [{ signals: [signal] }],
-        undefined,
-      );
-    }
+    unlinkInAssignmentData(assignmentData, [{ signals: [signal] }], undefined);
+
     _zone.signals.splice(signalIndex, 1);
     datum2D.zones.values[zoneIndex] = _zone;
     // if no signals are existing in a zone anymore then delete this zone
@@ -202,13 +303,22 @@ function handleDeleteSignal(draft: Draft<State>, action) {
       datum2D.zones.values.splice(zoneIndex, 1);
     }
 
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
 
-function handleSetSignalPathLength(draft: Draft<State>, action) {
+//action
+function handleDeleteSignal(draft: Draft<State>, action: DeleteSignal2DAction) {
+  deleteSignal2D(draft, action.payload);
+}
+
+//action
+function handleSetSignalPathLength(
+  draft: Draft<State>,
+  action: SetSignalPathLengthAction,
+) {
   const { spectrum, zone, signal, pathLength } = action.payload;
-  if (spectrum && zone) {
+  if (spectrum && zone && signal) {
     const datum2D = draft.data.find(
       (datum) => datum.id === spectrum.id,
     ) as Spectrum2D;
@@ -225,11 +335,12 @@ function handleSetSignalPathLength(draft: Draft<State>, action) {
     };
     datum2D.zones.values[zoneIndex] = _zone;
 
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
 
-function handleUnlinkZone(draft: Draft<State>, action) {
+//action
+function unlinkZone(draft: Draft<State>, props: UnlinkZoneProps) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
@@ -237,12 +348,12 @@ function handleUnlinkZone(draft: Draft<State>, action) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const {
-      zoneData = null,
+      zone: zoneData,
       assignmentData,
-      isOnZoneLevel = undefined,
+      isOnZoneLevel,
       signalIndex = -1,
-      axis = undefined,
-    } = action.payload;
+      axis,
+    } = props;
 
     if (zoneData) {
       // remove assignments in global state
@@ -272,47 +383,55 @@ function handleUnlinkZone(draft: Draft<State>, action) {
     }
   }
 }
+//action
+function handleUnlinkZone(draft: Draft<State>, action: UnlinkZoneAction) {
+  unlinkZone(draft, action.payload);
+}
 
-function handleSetDiaIDZone(draft: Draft<State>, action) {
+//action
+function handleSetDiaIDZone(draft: Draft<State>, action: SetZoneDiaIDAction) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
+  const { zone: zoneData, diaIDs, axis, signalIndex, nbAtoms } = action.payload;
 
-  if (activeSpectrum?.id) {
+  if (activeSpectrum?.id && axis) {
     const { index } = activeSpectrum;
-    const { zoneData, diaIDs, axis, signalIndex, nbAtoms } = action.payload;
     const getNbAtoms = (input, current = 0) => input + current;
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
-    const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
-    if (signalIndex === undefined) {
-      _zone[axis].diaIDs = diaIDs;
-      _zone[axis].nbAtoms = getNbAtoms(nbAtoms, _zone[axis].nbAtoms);
+    const zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
+    if (!isNumber(signalIndex)) {
+      const zoneByAxis = zone[axis];
+      zoneByAxis.diaIDs = diaIDs;
+      zoneByAxis.nbAtoms = getNbAtoms(nbAtoms, zoneByAxis.nbAtoms);
     } else {
-      _zone.signals[signalIndex][axis].diaIDs = diaIDs;
-      _zone.signals[signalIndex][axis].nbAtoms = getNbAtoms(
-        nbAtoms,
-        _zone.signals[signalIndex][axis].nbAtoms,
-      );
+      const signalByAxis = zone.signals[signalIndex][axis];
+      signalByAxis.diaIDs = diaIDs;
+      signalByAxis.nbAtoms = getNbAtoms(nbAtoms, signalByAxis.nbAtoms);
     }
   }
 }
 
-function handleSaveEditedZone(draft: Draft<State>, action) {
+//action
+function handleSaveEditedZone(
+  draft: Draft<State>,
+  action: SaveEditedZoneAction,
+) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(state);
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const { editedRowData } = action.payload;
+    const {
+      zone: { tableMetaInfo, ...editedZone },
+    } = action.payload;
 
-    delete editedRowData.tableMetaInfo;
+    const zoneIndex = getZoneIndex(state, index, editedZone.id);
+    (draft.data[index] as Spectrum2D).zones.values[zoneIndex] = editedZone;
 
-    const zoneIndex = getZoneIndex(state, index, editedRowData.id);
-    (draft.data[index] as Spectrum2D).zones.values[zoneIndex] = editedRowData;
-
-    if (editedRowData.signals) {
-      for (const signal of editedRowData.signals) {
+    if (editedZone.signals) {
+      for (const signal of editedZone.signals) {
         setPathLength(
           draft.correlations.values,
           signal.id,
@@ -321,10 +440,14 @@ function handleSaveEditedZone(draft: Draft<State>, action) {
       }
     }
 
-    handleOnChangeZonesData(draft);
+    handleUpdateCorrelations(draft);
   }
 }
-function handleShowZones(draft: Draft<State>, action) {
+//action
+function handleShowZones(
+  draft: Draft<State>,
+  action: ToggleZoneViewPropertyAction,
+) {
   const { id } = action.payload;
   const zone = draft.view.zones.find((r) => r.spectrumID === id);
   if (zone) {
@@ -337,7 +460,12 @@ function handleShowZones(draft: Draft<State>, action) {
     });
   }
 }
-function handleShowSignals(draft: Draft<State>, action) {
+
+//action
+function handleShowSignals(
+  draft: Draft<State>,
+  action: ToggleZoneViewPropertyAction,
+) {
   const { id } = action.payload;
   const zone = draft.view.zones.find((r) => r.spectrumID === id);
   if (zone) {
@@ -350,7 +478,12 @@ function handleShowSignals(draft: Draft<State>, action) {
     });
   }
 }
-function handleShowPeaks(draft: Draft<State>, action) {
+
+//action
+function handleShowPeaks(
+  draft: Draft<State>,
+  action: ToggleZoneViewPropertyAction,
+) {
   const { id } = action.payload;
   const zone = draft.view.zones.find((r) => r.spectrumID === id);
   if (zone) {
@@ -363,22 +496,21 @@ function handleShowPeaks(draft: Draft<State>, action) {
     });
   }
 }
-function handleOnChangeZonesData(draft) {
-  handleUpdateCorrelations(draft);
-}
 
 export {
-  add2dZoneHandler,
+  handleAdd2dZone,
   handleAutoZonesDetection,
   handleDeleteSignal,
+  deleteSignal2D,
   handleDeleteZone,
-  changeZoneSignalDelta,
+  handleChangeZoneSignalDelta,
   handleChangeZoneSignalKind,
   handleUnlinkZone,
+  unlinkZone,
   handleSaveEditedZone,
   handleSetDiaIDZone,
   handleSetSignalPathLength,
-  changeZonesFactorHandler,
+  handleChangeZonesFactor,
   handleAutoSpectraZonesDetection,
   handleShowZones,
   handleShowSignals,

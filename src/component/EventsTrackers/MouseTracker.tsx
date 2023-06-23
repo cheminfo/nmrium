@@ -7,10 +7,18 @@ import {
   ReactNode,
 } from 'react';
 
-export const MouseContext = createContext<any>({});
+interface MouseTrackerData {
+  x: number;
+  y: number;
+}
+
+export const MouseContext = createContext<MouseTrackerData | null>(null);
 const MouseProvider = MouseContext.Provider;
 
 export function useMouseTracker() {
+  if (!MouseContext) {
+    throw new Error('Mouse context was not found');
+  }
   return useContext(MouseContext);
 }
 
@@ -27,10 +35,8 @@ export function MouseTracker({
   style,
   noPropagation,
 }: MouseTrackerProps) {
-  const [mouseTrackerState, setMouseTrackerState] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
+  const [mouseTrackerState, setMouseTrackerState] =
+    useState<MouseTrackerData | null>(null);
   const mouseMoveHandler = useCallback(
     (e) => {
       const boundingRect = e.currentTarget.getBoundingClientRect();

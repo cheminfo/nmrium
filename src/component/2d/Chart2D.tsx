@@ -1,11 +1,10 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D, SpectraRendering } from 'nmr-load-save';
 import { memo } from 'react';
 
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { Margin } from '../reducer/Reducer';
-import { spectraRendering } from '../workspaces/Workspace';
 
 import XAxis from './XAxis';
 import YAxis from './YAxis';
@@ -23,7 +22,7 @@ interface Chart2DInnerProps extends Chart2DProps {
   height: number;
   margin: Margin;
   displayerKey: string;
-  spectraRendering: spectraRendering;
+  SpectraRendering: SpectraRendering;
 }
 
 function chart2DInner({
@@ -32,7 +31,7 @@ function chart2DInner({
   height,
   margin,
   displayerKey,
-  spectraRendering,
+  SpectraRendering,
 }: Chart2DInnerProps) {
   return (
     <svg
@@ -40,7 +39,7 @@ function chart2DInner({
       width={width}
       height={height}
       id="nmrSVG"
-      shapeRendering={spectraRendering}
+      shapeRendering={SpectraRendering}
     >
       <defs>
         <clipPath id={`${displayerKey}clip-chart-2d`}>
@@ -81,13 +80,13 @@ export default function Chart2D({ spectra }: Chart2DProps) {
   const { width, height, margin, displayerKey } = useChartData();
   const {
     current: {
-      general: { spectraRendering },
+      general: { SpectraRendering },
     },
   } = usePreferences();
 
   return (
     <MemoizedChart2D
-      {...{ spectra, width, height, margin, displayerKey, spectraRendering }}
+      {...{ spectra, width, height, margin, displayerKey, SpectraRendering }}
     />
   );
 }

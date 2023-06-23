@@ -6,8 +6,16 @@ import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { ActionType } from '../types/ActionType';
 
 import { setDomain } from './DomainActions';
+
+type KeyPreferencesAction = ActionType<
+  'SET_KEY_PREFERENCES' | 'APPLY_KEY_PREFERENCES',
+  { keyCode: string }
+>;
+
+export type PreferencesActions = KeyPreferencesAction;
 
 interface AlignmentOptions {
   verticalAlign?: VerticalAlignment | 'auto-check';
@@ -33,12 +41,26 @@ function changeSpectrumVerticalAlignment(
         const isFid =
           dataPerNucleus[0]?.info.isFid &&
           !dataPerNucleus.some((d) => !d.info.isFid);
+
         if (isFid) {
           draft.view.verticalAlign[nucleus] = 'center';
-        } else if (dataPerNucleus.length > 1) {
-          draft.view.verticalAlign[nucleus] = 'stack';
         } else {
-          draft.view.verticalAlign[nucleus] = 'bottom';
+          let hasMoreThanOnFt = false;
+          let count = 1;
+          for (const spectrum of dataPerNucleus) {
+            if (count > 1) {
+              hasMoreThanOnFt = true;
+              break;
+            }
+            if (spectrum.info.isFt) {
+              count++;
+            }
+          }
+          if (hasMoreThanOnFt) {
+            draft.view.verticalAlign[nucleus] = 'stack';
+          } else {
+            draft.view.verticalAlign[nucleus] = 'bottom';
+          }
         }
       } else {
         draft.view.verticalAlign[nucleus] = verticalAlign;
@@ -47,7 +69,11 @@ function changeSpectrumVerticalAlignment(
   }
 }
 
-function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
+function handleSetKeyPreferences(
+  draft: Draft<State>,
+  action: KeyPreferencesAction,
+) {
+  const { keyCode } = action.payload;
   const {
     data,
 
@@ -99,7 +125,11 @@ function setSpectraDisplayPreferences(draft: Draft<State>, preferences) {
   }
 }
 
-function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
+function handleApplyKeyPreferences(
+  draft: Draft<State>,
+  action: KeyPreferencesAction,
+) {
+  const { keyCode } = action.payload;
   const preferences = draft.keysPreferences[keyCode];
   if (preferences) {
     setSpectraDisplayPreferences(draft, preferences);
@@ -124,6 +154,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
 
 export {
   changeSpectrumVerticalAlignment,
-  setKeyPreferencesHandler,
-  applyKeyPreferencesHandler,
+  handleSetKeyPreferences,
+  handleApplyKeyPreferences,
 };

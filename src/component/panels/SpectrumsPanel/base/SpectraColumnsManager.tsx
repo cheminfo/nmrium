@@ -1,4 +1,5 @@
 import { useFormikContext } from 'formik';
+import { PanelsPreferences, SpectraTableColumn } from 'nmr-load-save';
 import { useMemo, CSSProperties } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -8,10 +9,6 @@ import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput, {
   InputMapValueFunctions,
 } from '../../../elements/formik/FormikInput';
-import {
-  PanelsPreferences,
-  SpectraTableColumn,
-} from '../../../workspaces/Workspace';
 
 const style: CSSProperties = {
   width: '100%',
@@ -55,7 +52,10 @@ export function SpectraColumnsManager({
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.label`}
-              style={{ input: { ...style, ...inputStyle } }}
+              style={{
+                input: { ...style, ...inputStyle },
+                inputWrapper: { border: 'none' },
+              }}
             />
           );
         },
@@ -76,7 +76,10 @@ export function SpectraColumnsManager({
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.jpath`}
-              style={{ input: { ...style, ...inputStyle } }}
+              style={{
+                input: { ...style, ...inputStyle },
+                inputWrapper: { border: 'none' },
+              }}
               datalist={datalist}
               mapOnChangeValue={mapOnChangeValue}
               mapValue={mapValue}
@@ -96,12 +99,12 @@ export function SpectraColumnsManager({
       },
       {
         Header: '',
-        style: { width: '30px' },
+        style: { width: '80px' },
         id: 'add-button',
         Cell: ({ row }) => {
           const record: any = row.original;
           return (
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button.Done
                 fill="outline"
                 onClick={() => onAdd(nucleus, row.index + 1)}
@@ -126,7 +129,7 @@ export function SpectraColumnsManager({
 
   return (
     <ReactTable
-      data={nucleiPreferences.nuclei[nucleus].columns}
+      data={nucleiPreferences.nuclei[nucleus]?.columns || []}
       columns={COLUMNS}
     />
   );

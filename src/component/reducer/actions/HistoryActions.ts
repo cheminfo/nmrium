@@ -2,7 +2,7 @@ import { setDomain, getDomain } from './DomainActions';
 
 function handleHistoryUndo(draft) {
   const { past, present, future } = draft.history;
-  const previous = past[past.length - 1];
+  const previous = past.at(-1);
   const newPast = past.slice(0, -1);
   const newfuture = [present, ...future];
 

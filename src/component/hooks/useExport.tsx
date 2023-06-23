@@ -43,6 +43,7 @@ export default function useExport() {
             const fileName = state.data[0]?.info?.name;
             const exportedData = toJSON(state, preferencesState, {
               exportTarget: 'nmrium',
+              view: true,
             });
             await exportAsJSON(
               exportedData,
@@ -122,7 +123,7 @@ export default function useExport() {
     modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
-      width: 450,
+      width: 500,
     });
   }, [modal, saveHandler, state.data]);
 

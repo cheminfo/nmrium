@@ -5,7 +5,6 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import DeleteButton from '../../elements/DeleteButton';
-import { DELETE_BASE_LINE_ZONE } from '../../reducer/types/Types';
 
 const styles = css`
   pointer-events: bounding-box;
@@ -35,7 +34,7 @@ function BaseLineZones() {
   const dispatch = useDispatch();
 
   const deleteRangeHandler = (id) => {
-    dispatch({ type: DELETE_BASE_LINE_ZONE, id });
+    dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
   };
 
   const baseLineZones = toolOptions.data.baselineCorrection.zones;

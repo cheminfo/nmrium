@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import { Info1D } from 'nmr-load-save';
+import { WorkSpacePanelPreferences } from 'nmr-load-save';
+import { Info1D } from 'nmr-processing';
 import { useMemo, useCallback, MouseEvent, CSSProperties } from 'react';
 import { DropdownMenu } from 'react-science/ui';
 
@@ -17,7 +18,6 @@ import {
   useHighlight,
   useHighlightData,
 } from '../../highlight';
-import { WorkSpacePanelPreferences } from '../../workspaces/Workspace';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
 import ActionsColumn from './TableColumns/ActionsColumn';
@@ -36,18 +36,6 @@ const HighlightedRowStyle = css`
 
 const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
-`;
-
-export const AssignmentColumnCssStyle = css`
-  .remove-assignment {
-    visibility: hidden;
-  }
-
-  &:hover {
-    .remove-assignment {
-      visibility: visible;
-    }
-  }
 `;
 
 interface RangesTableRowProps extends ContextMenuProps {

@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { ParseResult } from 'papaparse';
 import { CSSProperties, useState, useMemo, useRef, useEffect } from 'react';
 import type { FileWithPath } from 'react-dropzone';
+import { FileError } from 'react-dropzone';
 import { DropZone } from 'react-science/ui';
 import * as Yup from 'yup';
 
@@ -24,7 +23,6 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
-import { IMPORT_SPECTRA_META_INFO } from '../../reducer/types/Types';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { ModalStyles } from '../ModalStyle';
@@ -88,7 +86,7 @@ interface MetaImportationModalProps {
 
 const validationSchema = Yup.object({
   source: Yup.string().required(),
-  target: Yup.array(Yup.string()).min(1),
+  target: Yup.array(Yup.string()).min(1).required(),
 });
 
 function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
@@ -120,7 +118,9 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   }, [file]);
 
   function handleDrop(files: FileWithPath[]) {
-    handleParseFile(files[0]);
+    if (files[0]) {
+      handleParseFile(files[0]);
+    }
   }
 
   const errors = mapErrors(parseResult?.errors || []);
@@ -171,7 +171,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
         }
       } catch (error: any) {
         if (error instanceof TargetPathError) {
-          formRef.current?.setFieldValue('target', null);
+          void formRef.current?.setFieldValue('target', null);
           formRef.current?.setFieldError('target', '');
         }
         alert.error(error.message);
@@ -206,7 +206,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
 
   function handleImport() {
     dispatch({
-      type: IMPORT_SPECTRA_META_INFO,
+      type: 'IMPORT_SPECTRA_META_INFO',
       payload: { spectraMeta: matches },
     });
     onClose?.();
@@ -235,7 +235,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                   innerRef={formRef}
                   initialValues={{
                     source: null,
-                    target: null,
+                    target: '',
                   }}
                   onSubmit={handleLinkSpectra}
                   validationSchema={validationSchema}
@@ -252,7 +252,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                         )}
                         style={{
                           width: '300px',
-                          padding: '3px',
+                          padding: '5px',
                           margin: 0,
                         }}
                       />
@@ -265,9 +265,17 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                     >
                       <FormikInput
                         name="target"
-                        style={{ input: { width: '300px', textAlign: 'left' } }}
+                        style={{
+                          input: {
+                            width: '300px',
+                            textAlign: 'left',
+                            padding: '5px',
+                            fontSize: '14px',
+                          },
+                        }}
                         placeholder="Example: info.plus"
                         datalist={datalist}
+                        nullable
                         mapOnChangeValue={(key) => paths?.[key] || null}
                         mapValue={(paths) => convertPathArrayToString(paths)}
                       />
@@ -306,7 +314,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   );
 }
 
-function fileValidator(file: File) {
+function fileValidator(file: File): FileError | null {
   if (!isMetaFile(file)) {
     return {
       message: 'import a CSV or tab-delimited file',

@@ -1,11 +1,11 @@
+import { NmrData2DFt, NmrData1D } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
-import { Data1D, Data2DFt } from 'nmr-load-save';
 
 import { calculateSanPlot } from '../../../../../data/utilities/calculateSanPlot';
 
 export function processSnapPlot<T extends '1D' | '2D'>(
   dimension: T,
-  data: T extends '1D' ? Data1D : Data2DFt['rr'],
+  data: T extends '1D' ? NmrData1D : NmrData2DFt['rr'],
   yLogBase: number,
 ) {
   const sanResult = calculateSanPlot(dimension, data);
@@ -26,8 +26,8 @@ export function processSnapPlot<T extends '1D' | '2D'>(
 function getLine(value, data, options) {
   const { log10, abs } = Math;
   const { yLogBase } = options;
-  const first = data.length > 0 ? data[0].x : 0;
-  const last = data.length > 0 ? data[data.length - 1].x : 0;
+  const first = data.at(0)?.x ?? 0;
+  const last = data.at(-1)?.x ?? 0;
   const inLogScale = log10(abs(value)) / log10(yLogBase);
   return [
     { x: first, y: inLogScale },

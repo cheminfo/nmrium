@@ -14,7 +14,6 @@ function ToolBarInner({ selectedTool }: ToolBarInnerProps) {
   return (
     <Toolbar orientation="vertical">
       <FunctionToolBar defaultValue={selectedTool} />
-      {/* <HistoryToolBar /> */}
       <BasicToolBar />
     </Toolbar>
   );

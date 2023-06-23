@@ -125,16 +125,6 @@ export const ModalStyles = css`
     margin: 10px;
   }
 
-  .input {
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #cccccc;
-    padding: 5px;
-    width: 100px;
-    margin-right: 10px;
-    height: initial !important;
-  }
-
   .close-bt {
     border: none;
     color: red;

@@ -1,4 +1,5 @@
 import { useFormikContext } from 'formik';
+import { LegendField, PredefinedLegendField } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
@@ -9,10 +10,6 @@ import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../elements/formik/FormikInput';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
-import {
-  legendField,
-  PredefinedLegendField,
-} from '../../../workspaces/Workspace';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -50,7 +47,7 @@ function LegendsPreferences() {
       } else {
         columns.push(emptyField);
       }
-      setFieldValue('legendsFields', columns);
+      void setFieldValue('legendsFields', columns);
     },
     [setFieldValue],
   );
@@ -58,12 +55,12 @@ function LegendsPreferences() {
   const deleteHandler = useCallback(
     (data, index: number) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      setFieldValue('legendsFields', _fields);
+      void setFieldValue('legendsFields', _fields);
     },
     [setFieldValue],
   );
 
-  const COLUMNS: Column<legendField>[] = useMemo(
+  const COLUMNS: Column<LegendField>[] = useMemo(
     () => [
       {
         Header: '#',

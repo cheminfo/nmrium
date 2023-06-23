@@ -15,10 +15,9 @@ import {
   FaFile,
   FaFileImport,
 } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
+import { Toolbar, useOnOff } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import ToolbarMenu from '../elements/ToolbarMenu';
 import { useModal } from '../elements/popup/Modal';
@@ -29,10 +28,9 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
-import LoadJCAMPModal from '../modal/LoadJCAMPModal';
+import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
-import { SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const IMPORT_MENU = [
   {
@@ -101,13 +99,13 @@ function BasicToolBarInner({
   ftCounter,
   fidCounter,
 }: BasicToolBarInnerProps) {
-  const dispatch = useDispatch();
   const modal = useModal();
   const openLoader = useLoader();
   const openMetaInformationModal = useMetaInformationImportationModal();
 
   const isExperimentalFeature = useCheckExperimentalFeature();
   const isButtonVisible = useCheckToolsVisibility();
+  const [isLoadModalOpened, openLoadModal, closeLoadModal] = useOnOff(false);
 
   const importMenu = isExperimentalFeature
     ? IMPORT_MENU
@@ -132,20 +130,9 @@ function BasicToolBarInner({
     saveAsHandler,
   } = useExport();
 
-  const startLoadingHandler = useCallback(() => {
-    modal.close();
-    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-  }, [dispatch, modal]);
-
   const importJCAMPFile = useCallback(() => {
-    modal.show(
-      <LoadJCAMPModal
-        onClose={() => modal.close()}
-        startLoading={startLoadingHandler}
-      />,
-      {},
-    );
-  }, [modal, startLoadingHandler]);
+    openLoadModal();
+  }, [openLoadModal]);
 
   const openImportPublicationStringModal = useCallback(() => {
     modal.show(
@@ -214,6 +201,11 @@ function BasicToolBarInner({
 
   return (
     <Fragment>
+      <LoadJCAMPModal
+        isOpen={isLoadModalOpened}
+        onCloseDialog={closeLoadModal}
+      />
+
       {isButtonVisible('import') && (
         <ToolbarMenu
           component={<FaFileImport />}

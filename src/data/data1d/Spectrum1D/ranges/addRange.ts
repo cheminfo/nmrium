@@ -1,29 +1,30 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Signal1D, Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-load-save';
+import {
+  Signal1D,
+  updateRangesRelativeValues,
+  mapRanges,
+} from 'nmr-processing';
 
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { initSumOptions, SumParams } from '../SumManager';
 
 import detectSignal from './detectSignal';
-import { mapRanges } from './mapRanges';
-import { updateRangesRelativeValues } from './updateRangesRelativeValues';
 
 interface RangeOptions {
   from: number;
   to: number;
-  id?: string;
 }
 
 export function createRangeObj({
   from,
   to,
   absolute,
-  id,
   signal,
 }: RangeOptions & { signal: Omit<Signal1D, 'id'>; absolute: number }) {
   return {
-    id: id || v4(),
+    id: v4(),
     from,
     to,
     absolute, // the real value,
@@ -37,7 +38,7 @@ export function addRange(
   spectrum: Spectrum1D,
   options: RangeOptions & SumParams,
 ) {
-  const { from, to, id, molecules, nucleus } = options;
+  const { from, to, molecules, nucleus } = options;
   const { x, re } = spectrum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
@@ -53,27 +54,10 @@ export function addRange(
 
   let range;
 
-  if (!signal) {
-    if (id === 'new') {
-      range = createRangeObj({
-        from,
-        to,
-        id,
-        absolute,
-        signal: {
-          multiplicity: '',
-          kind: 'signal',
-          delta: 0,
-          js: [],
-          diaIDs: [],
-        },
-      });
-    }
-  } else {
+  if (signal) {
     range = createRangeObj({
       from,
       to,
-      id,
       absolute,
       signal,
     });

@@ -1,13 +1,28 @@
-import lodashGet from 'lodash/get';
+/** @jsxImportSource @emotion/react */
 import { MouseEvent } from 'react';
-import { FaMinusCircle } from 'react-icons/fa';
 
 import { AssignmentsData, Axis } from '../../../assignment/AssignmentsContext';
+import {
+  RemoveAssignmentsButton,
+  removeAssignmentCssStyle,
+} from '../../../elements/RemoveAssignmentsButton';
+import { ZoneData } from '../hooks/useMapZones';
 
-import { RowDataProps } from './ActionsColumn';
+function getStyle(flag: boolean, isCompletelyAssigned: boolean) {
+  if (flag) {
+    return {
+      color: 'red',
+      fontWeight: 'bold',
+    };
+  } else if (isCompletelyAssigned) {
+    return { color: 'green', fontWeight: 'bold' };
+  } else {
+    return { color: 'black', fontWeight: 'normal' };
+  }
+}
 
 export interface ZoneAssignmentColumnProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   axis: any;
   onHover: () => void;
   onClick: (event: MouseEvent, assignment: AssignmentsData, axis: Axis) => void;
@@ -17,8 +32,6 @@ export interface ZoneAssignmentColumnProps {
   };
 
   assignment: AssignmentsData;
-  showUnlinkButton: boolean;
-  setShowUnlinkButton: (element: boolean) => void;
   rowSpanTags: any;
 }
 
@@ -30,76 +43,35 @@ function ZoneAssignmentColumn({
   onClick,
   onUnlink,
   axis,
-  showUnlinkButton,
-  setShowUnlinkButton,
   rowSpanTags,
 }: ZoneAssignmentColumnProps) {
+  const diaIDs = rowData?.[axis].diaIDs || []; // diaIds at the level of zone
+  const isAssignmentActive =
+    assignment.isActive && assignment.activated?.axis === axis;
+  const flag =
+    isAssignmentActive ||
+    (assignment.isOver && assignment.highlighted?.axis === axis) ||
+    highlight.isActive;
+
+  let totalNumberOfAtoms = rowData?.[axis]?.nbAtoms || 0;
+  for (const signal of rowData?.signals || []) {
+    totalNumberOfAtoms += signal?.[axis]?.nbAtoms || 0;
+  }
+
   return (
     <td
       {...rowSpanTags}
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
+      css={!isAssignmentActive && removeAssignmentCssStyle}
     >
-      {lodashGet(rowData, `${axis}.nbAtoms`, 0) > 0 ? (
-        lodashGet(rowData, `${axis}.diaIDs`, []).length > 0 ? (
-          <div
-            onMouseEnter={() => setShowUnlinkButton(true)}
-            onMouseLeave={() => setShowUnlinkButton(false)}
-          >
-            {rowData[axis].nbAtoms} {`(`}
-            <span
-              style={
-                (assignment.isActive && assignment.activated?.axis === axis) ||
-                (assignment.isOver && assignment.highlighted?.axis === axis) ||
-                highlight.isActive
-                  ? {
-                      color: 'red',
-                      fontWeight: 'bold',
-                    }
-                  : { color: 'black', fontWeight: 'normal' }
-              }
-            >
-              {lodashGet(rowData, `${axis}.diaIDs`, []).length}
-            </span>
-            {`)`}{' '}
-            <sup>
-              <button
-                type="button"
-                style={{
-                  visibility: showUnlinkButton ? 'visible' : 'hidden',
-                  padding: 0,
-                  margin: 0,
-                }}
-                onClick={(e) => onUnlink(e, true, axis)}
-              >
-                <FaMinusCircle color="red" />
-              </button>
-            </sup>
-          </div>
-        ) : assignment.isActive && assignment.activated?.axis === axis ? (
-          <div>
-            {`${lodashGet(rowData, `${axis}.nbAtoms`, '')} (`}
-            <span
-              style={{
-                color: 'red',
-                fontWeight: 'bold',
-              }}
-            >
-              0
-            </span>
-            {')'}
-          </div>
-        ) : (
-          rowData[axis].nbAtoms
-        )
-      ) : assignment.isActive && assignment.activated?.axis === axis ? (
-        <div>
-          {'0 ('}
-          <span style={{ color: 'red', fontWeight: 'bold' }}>0</span>
-          {')'}
-        </div>
-      ) : (
-        ''
+      {(totalNumberOfAtoms > 0 || isAssignmentActive) && (
+        <>
+          {totalNumberOfAtoms} {' ( '}
+          <span style={getStyle(flag, false)}>{diaIDs?.length || 0}</span>
+          {' ) '}
+          <RemoveAssignmentsButton onClick={(e) => onUnlink(e, true, axis)} />
+        </>
       )}
     </td>
   );

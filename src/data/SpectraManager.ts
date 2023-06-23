@@ -1,14 +1,14 @@
 import { saveAs } from 'file-saver';
 import {
+  Spectrum,
+  Workspace,
   processJcamp,
   serializeNmriumState,
   CURRENT_EXPORT_VERSION,
-  Spectrum,
   spectrum1DToJcamp,
 } from 'nmr-load-save';
 
 import { State } from '../component/reducer/Reducer';
-import { Workspace } from '../component/workspaces/Workspace';
 
 import { isSpectrum1D, initiateDatum1D } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';

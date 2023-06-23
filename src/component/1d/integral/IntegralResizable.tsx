@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Integral } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -7,7 +8,6 @@ import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight/index';
-import { RESIZE_INTEGRAL } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 
 import { IntegralIndicator } from './IntegralIndicator';
@@ -43,12 +43,7 @@ const stylesHighlighted = css`
 `;
 
 interface IntegralResizableProps {
-  integralData: {
-    id: string;
-    from: number;
-    to: number;
-    integral?: number;
-  };
+  integralData: Integral;
   integralFormat: string;
 }
 
@@ -72,9 +67,9 @@ function IntegralResizable({
 
   function handleOnStopResizing(position) {
     dispatch({
-      type: RESIZE_INTEGRAL,
+      type: 'RESIZE_INTEGRAL',
       payload: {
-        data: {
+        integral: {
           ...integralData,
           from: scaleX().invert(position.x2),
           to: scaleX().invert(position.x1),

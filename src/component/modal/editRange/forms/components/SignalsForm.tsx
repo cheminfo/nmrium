@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import { Range } from 'nmr-load-save';
+import { WorkSpacePanelPreferences } from 'nmr-load-save';
+import { Range } from 'nmr-processing';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
@@ -10,7 +11,6 @@ import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
 import { formatNumber } from '../../../../utility/formatNumber';
-import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';

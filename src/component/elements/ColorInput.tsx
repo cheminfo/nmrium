@@ -66,18 +66,12 @@ const style = css`
 
 export interface ColorInputProps {
   value?: string;
-  label?: string;
   name: string;
   onColorChange?: (element: any) => void;
 }
 
 function ColorInput(props: ColorInputProps) {
-  const {
-    label = 'Color: ',
-    onColorChange = () => null,
-    name,
-    value = '#000000',
-  } = props;
+  const { onColorChange = () => null, name, value = '#000000' } = props;
 
   const [displayColorPicker, showColorPicker] = useState(false);
   const [selectedColor, setColor] = useState(value);
@@ -106,22 +100,19 @@ function ColorInput(props: ColorInputProps) {
   );
   return (
     <div css={style}>
-      <span className="input-label">{label}</span>
-      <div style={{ flex: 4 }}>
-        <div className="swatch" onClick={handleClick}>
-          <div className="color" style={{ backgroundColor: selectedColor }} />
-          <input type="hidden" value={selectedColor} name={name} />
-        </div>
-        {displayColorPicker ? (
-          <div className="color-popover">
-            <div className="cover" onClick={handleClose} />
-            <ColorPicker
-              color={{ hex: selectedColor }}
-              onChangeComplete={handleOnColorChanged}
-            />
-          </div>
-        ) : null}
+      <div className="swatch" onClick={handleClick}>
+        <div className="color" style={{ backgroundColor: selectedColor }} />
+        <input type="hidden" value={selectedColor} name={name} />
       </div>
+      {displayColorPicker ? (
+        <div className="color-popover">
+          <div className="cover" onClick={handleClose} />
+          <ColorPicker
+            color={{ hex: selectedColor }}
+            onChangeComplete={handleOnColorChanged}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

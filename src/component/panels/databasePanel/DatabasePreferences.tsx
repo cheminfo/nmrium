@@ -10,7 +10,10 @@ import {
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
-import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
+import FormikColumnFormatField, {
+  formatFieldInputStyle,
+  formatFieldLabelStyle,
+} from '../../elements/formik/FormikColumnFormatField';
 import FormikInput from '../../elements/formik/FormikInput';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
@@ -52,12 +55,15 @@ function DatabasePreferences(props, ref) {
               checkControllerName="previewJcamp"
               hideFormatField
             />
-            <FormikColorInput name="color" />
-            <Label
-              title="Margin bottom (px) :"
-              style={{ label: { padding: 0, flex: 4 }, wrapper: { flex: 8 } }}
-            >
-              <FormikInput name="marginBottom" type="number" />
+            <Label title="Color" style={formatFieldLabelStyle}>
+              <FormikColorInput name="color" />
+            </Label>
+            <Label title="Margin bottom (px) :" style={formatFieldLabelStyle}>
+              <FormikInput
+                name="marginBottom"
+                type="number"
+                style={formatFieldInputStyle}
+              />
             </Label>
           </PreferencesGroup>
           <PreferencesGroup header="Table Preferences">

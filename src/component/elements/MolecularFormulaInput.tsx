@@ -36,7 +36,19 @@ interface MolecularFormulaInputProps {
   previousMF: string;
 }
 
-function MolecularFormulaInput({
+function isValidMf(mf: string) {
+  if (mf.trim().length === 0) {
+    return false;
+  }
+  try {
+    getAtomsFromMF(mf);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export default function MolecularFormulaInput({
   onSave = () => null,
   previousMF,
 }: MolecularFormulaInputProps) {
@@ -44,33 +56,16 @@ function MolecularFormulaInput({
   const [isValidMF, setIsValidMF] = useState(true);
   const [hasChanged, setHasChanged] = useState(false);
 
-  const checkMF = useCallback((mf: string) => {
-    if (mf.trim().length === 0) {
-      return false;
-    }
-    try {
-      getAtomsFromMF(mf);
-      return true;
-    } catch (error) {
-      // TODO: handle error.
-      reportError(error);
-      return false;
+  const onChangeHandler = useCallback((e) => {
+    setHasChanged(true);
+    if (isValidMf(e.target.value)) {
+      setIsValidMF(true);
+      setMF(e.target.value);
+    } else {
+      setIsValidMF(false);
+      setMF('');
     }
   }, []);
-
-  const onChangeHandler = useCallback(
-    (e) => {
-      setHasChanged(true);
-      if (checkMF(e.target.value)) {
-        setIsValidMF(true);
-        setMF(e.target.value);
-      } else {
-        setIsValidMF(false);
-        setMF('');
-      }
-    },
-    [checkMF],
-  );
 
   const onSaveHandler = useCallback(() => {
     onSave(hasChanged ? mf.trim() : previousMF);
@@ -85,5 +80,3 @@ function MolecularFormulaInput({
     </div>
   );
 }
-
-export default MolecularFormulaInput;

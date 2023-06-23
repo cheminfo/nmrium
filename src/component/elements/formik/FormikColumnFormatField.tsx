@@ -1,24 +1,30 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { CSSProperties, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
-import Input from '../Input';
+import Input, { InputStyle } from '../Input';
+import Label, { LabelStyle } from '../Label';
 
-const styles: Record<'row' | 'inputLabel' | 'input', CSSProperties> = {
-  row: {
-    display: 'flex',
-    margin: '5px 0px',
-    alignItems: 'center',
+export const formatFieldInputStyle: InputStyle = {
+  inputWrapper: {
+    width: '60%',
+    margin: '2px 0',
   },
-  inputLabel: {
-    flex: 2,
+  input: {
+    padding: '2px',
+    textAlign: 'center',
+  },
+};
+
+export const formatFieldLabelStyle: LabelStyle = {
+  label: {
+    flex: 4,
     fontSize: '11px',
     fontWeight: 'bold',
     color: '#232323',
   },
-  input: {
-    width: '60%',
-    textAlign: 'center',
+  wrapper: {
+    flex: 8,
   },
 };
 
@@ -52,23 +58,20 @@ function FormikColumnFormatField(props: ColumnFormatField) {
 
   const checkChangeHandler = useCallback(
     (e) => {
-      setFieldValue(e.target.name, e.target.checked);
+      void setFieldValue(e.target.name, e.target.checked);
     },
     [setFieldValue],
   );
 
   return (
-    <div style={styles.row}>
-      <span style={styles.inputLabel}>{label}</span>
+    <Label title={label} style={formatFieldLabelStyle}>
       <div
         style={{
-          flex: 4,
           display: 'flex',
-          flexDirection: 'row',
           alignItems: 'center',
         }}
       >
-        {!hideCheckField && checkControllerName && (
+        {!hideCheckField && checkControllerName ? (
           <input
             type="checkbox"
             style={{ margin: '0px 5px' }}
@@ -76,10 +79,12 @@ function FormikColumnFormatField(props: ColumnFormatField) {
             onChange={checkChangeHandler}
             checked={lodashGet(values, checkControllerName, false)}
           />
+        ) : (
+          <div style={{ width: '23px' }} />
         )}
         {!hideFormatField && formatControllerName && (
           <Input
-            style={{ inputWrapper: styles.input }}
+            style={formatFieldInputStyle}
             name={formatControllerName}
             value={lodashGet(values, formatControllerName, '')}
             onChange={changeHandler}
@@ -88,7 +93,7 @@ function FormikColumnFormatField(props: ColumnFormatField) {
           />
         )}
       </div>
-    </div>
+    </Label>
   );
 }
 

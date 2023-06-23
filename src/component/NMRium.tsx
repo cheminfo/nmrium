@@ -1,13 +1,19 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
+import { WebSource } from 'filelist-utils';
 import { CorrelationData } from 'nmr-correlation';
-import { readNMRiumObject, Source, NmriumState, Spectrum } from 'nmr-load-save';
+import {
+  readNMRiumObject,
+  NmriumState,
+  CustomWorkspaces,
+  WorkspacePreferences as NMRiumPreferences,
+  Spectrum,
+} from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
   useReducer,
-  useMemo,
   useRef,
   memo,
   ReactElement,
@@ -16,9 +22,12 @@ import {
   useImperativeHandle,
   ForwardedRef,
 } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { RootLayout } from 'react-science/ui';
-import { useToggle, useFullscreen } from 'react-use';
+import {
+  ErrorBoundary,
+  ErrorBoundaryPropsWithComponent,
+} from 'react-error-boundary';
+import { RootLayout, useOnOff } from 'react-science/ui';
+import { useFullscreen } from 'react-use';
 
 import { toJSON } from '../data/SpectraManager';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
@@ -43,28 +52,14 @@ import DropZone from './loader/DropZone';
 import { defaultGetSpinner, SpinnerProvider } from './loader/SpinnerContext';
 import Panels from './panels/Panels';
 import checkActionType from './reducer/IgnoreActions';
-import {
-  spectrumReducer,
-  initialState,
-  dispatchMiddleware,
-  initState,
-} from './reducer/Reducer';
+import { spectrumReducer, initialState, initState } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
   initPreferencesState,
 } from './reducer/preferences/preferencesReducer';
-import {
-  INITIATE,
-  SET_LOADING_FLAG,
-  SET_MOUSE_OVER_DISPLAYER,
-} from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 import { BlobObject, getBlob } from './utility/export';
-import {
-  CustomWorkspaces,
-  WorkspacePreferences as NMRiumPreferences,
-} from './workspaces/Workspace';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -109,8 +104,10 @@ const containerStyles = css`
   }
 `;
 export { serializeNmriumState } from 'nmr-load-save';
-export type { NmriumState } from 'nmr-load-save';
-export type { WorkspacePreferences as NMRiumPreferences } from './workspaces/Workspace';
+export type {
+  NmriumState,
+  WorkspacePreferences as NMRiumPreferences,
+} from 'nmr-load-save';
 
 export type NMRiumWorkspace =
   | 'exercise'
@@ -130,6 +127,7 @@ export type OnNMRiumChange = (
 export interface NMRiumProps {
   data?: NMRiumData;
   onChange?: OnNMRiumChange;
+  onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
   preferences?: NMRiumPreferences;
@@ -147,7 +145,7 @@ type DeepPartial<T> = {
 };
 
 export interface NMRiumData {
-  source?: Source;
+  source?: WebSource;
   molecules?: Molecules;
   spectra: DeepPartial<Spectrum>[];
   correlations?: CorrelationData;
@@ -161,15 +159,23 @@ export interface NMRiumRef {
   getSpectraViewerAsBlob: () => BlobObject | null;
 }
 
-const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(props, ref) {
+const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
+  props: NMRiumProps,
+  ref,
+) {
+  const { onError, ...otherProps } = props;
   return (
     <RootLayout style={{ width: '100%' }}>
-      <ErrorBoundary FallbackComponent={ErrorOverlay}>
-        <InnerNMRium {...props} innerRef={ref} />
+      <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
+        <InnerNMRium {...otherProps} innerRef={ref} />
       </ErrorBoundary>
     </RootLayout>
   );
 });
+
+type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
+  innerRef: ForwardedRef<NMRiumRef>;
+};
 
 function InnerNMRium({
   data: dataProp = defaultData,
@@ -180,11 +186,12 @@ function InnerNMRium({
   onChange,
   emptyText,
   innerRef,
-}: NMRiumProps & { innerRef: ForwardedRef<NMRiumRef> }) {
+}: InnerNMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const [show, toggle] = useToggle(false);
+  const [show, , setOff, toggle] = useOnOff(false);
+  const mainDivRef = useRef<HTMLDivElement>(null);
 
   const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
   useEffect(() => {
@@ -192,9 +199,7 @@ function InnerNMRium({
   }, [onChange]);
 
   const isFullscreen = useFullscreen(rootRef, show, {
-    onClose: () => {
-      toggle(false);
-    },
+    onClose: setOff,
   });
 
   const [state, dispatch] = useReducer(
@@ -202,7 +207,6 @@ function InnerNMRium({
     initialState,
     initState,
   );
-
   const [preferencesState, dispatchPreferences] = useReducer(
     preferencesReducer,
     preferencesInitialState,
@@ -256,10 +260,6 @@ function InnerNMRium({
     handleChange.current?.(stateRef.current as NmriumState, 'settings');
   }, [preferencesState]);
 
-  const dispatchMiddleWare = useMemo(() => {
-    return dispatchMiddleware(dispatch);
-  }, []);
-
   useEffect(() => {
     rootRef.current?.focus();
   }, [isFullscreen]);
@@ -287,20 +287,23 @@ function InnerNMRium({
   );
 
   useEffect(() => {
-    dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatch({
+      type: 'SET_LOADING_FLAG',
+      payload: { isLoading: true },
+    });
     if (dataProp) {
       void readNMRiumObject(dataProp)
-        .then((nmriumObject) => {
-          dispatchMiddleWare({ type: INITIATE, payload: nmriumObject });
+        .then((nmriumState) => {
+          dispatch({ type: 'INITIATE', payload: { nmriumState } });
         })
         .catch((error) => {
-          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
           // eslint-disable-next-line no-alert
           alert(error.message);
           reportError(error);
         });
     }
-  }, [dataProp, dispatchMiddleWare]);
+  }, [dataProp]);
 
   const preventContextMenuHandler = useCallback((e) => {
     if (!checkModifierKeyActivated(e)) {
@@ -308,17 +311,22 @@ function InnerNMRium({
     }
   }, []);
 
-  const mainDivRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const div = mainDivRef.current;
     if (!div) {
       return;
     }
     function mouseEnterHandler() {
-      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
+      dispatch({
+        type: 'SET_MOUSE_OVER_DISPLAYER',
+        payload: { isMouseOverDisplayer: true },
+      });
     }
     function mouseLeaveHandler() {
-      dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+      dispatch({
+        type: 'SET_MOUSE_OVER_DISPLAYER',
+        payload: { isMouseOverDisplayer: false },
+      });
     }
     div.addEventListener('mouseenter', mouseEnterHandler);
     div.addEventListener('mouseleave', mouseLeaveHandler);
@@ -326,7 +334,7 @@ function InnerNMRium({
       div.removeEventListener('mouseenter', mouseEnterHandler);
       div.removeEventListener('mouseleave', mouseLeaveHandler);
     };
-  }, [dispatchMiddleWare]);
+  }, []);
 
   return (
     <GlobalProvider
@@ -340,7 +348,7 @@ function InnerNMRium({
         <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
           <LoggerProvider>
             <AlertProvider wrapperRef={elementsWrapperRef.current}>
-              <DispatchProvider value={dispatchMiddleWare}>
+              <DispatchProvider value={dispatch}>
                 <ChartDataProvider value={state}>
                   <ModalProvider wrapperRef={elementsWrapperRef.current}>
                     <HighlightProvider>

@@ -240,11 +240,7 @@ test('Exclusion zones', async ({ page }) => {
     ).toBeVisible();
   });
 
-  // open filters panel
-  await nmrium.clickPanel('Processings');
-  const filters = nmrium.page.locator('_react=FilterTable');
-
-  await test.step('add exclusision zones', async () => {
+  await test.step('add exclusion zones', async () => {
     //select exclusion zones tool
     await nmrium.clickTool('exclusionZones');
     //add exclusion zones
@@ -255,18 +251,16 @@ test('Exclusion zones', async ({ page }) => {
     ).toHaveCount(13);
   });
 
-  await test.step('Check Exclusion Zones filter for the last spectrum', async () => {
-    //select spectrum the last spectrum to be sure that the filter applied to all spectra
-    await nmrium.clickPanel('Spectra', { clickCount: 2 });
+  await test.step('Check Exclusion Zones filter for the third spectrum', async () => {
+    // Select the third spectrum to be sure that the filter is not only applied to the first spectrum.
+    const spectraTable = nmrium.page.locator('_react=SpectraTable');
+    await spectraTable.locator(`_react=[role="row"]`).nth(2).click();
 
-    await nmrium.page
-      .locator('_react=SpectraTable >> _react=ReactTableRow >> nth=12')
-      .click();
-    //Open filters panel
-
+    // Open processings panel
     await nmrium.clickPanel('Processings');
+    const filters = nmrium.page.locator('_react=FilterTable');
 
-    await expect(filters.locator('text=Exclusion Zones')).toBeVisible();
+    await expect(filters.locator('text=Exclusion zones')).toBeVisible();
   });
 
   await test.step('add exclusion zones to the active spectrum', async () => {

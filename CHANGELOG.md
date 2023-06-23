@@ -1,5 +1,78 @@
 # Changelog
 
+## [0.38.2](https://github.com/cheminfo/nmrium/compare/v0.38.1...v0.38.2) (2023-06-22)
+
+
+### Bug Fixes
+
+* auto (peaks and ranges) picking  window size ([2b6a045](https://github.com/cheminfo/nmrium/commit/2b6a0454e01e532344c4e3da35705a700d194f39))
+* check 'delta' is exists before call the toFixed function ([#2437](https://github.com/cheminfo/nmrium/issues/2437)) ([b46f6ec](https://github.com/cheminfo/nmrium/commit/b46f6eceab35ad2adaf66e5f422256ede2b62a85))
+* check for the nucleus before extracting info from the atom ([fecc3f8](https://github.com/cheminfo/nmrium/commit/fecc3f8e96e354c73b4b3d02aa58e178f9e9f65d))
+* check the meta file has an accepted mimeType ([#2445](https://github.com/cheminfo/nmrium/issues/2445)) ([2974e54](https://github.com/cheminfo/nmrium/commit/2974e54ddfa3c9b68e637e99a1f61c4cb2e23152)), closes [#2418](https://github.com/cheminfo/nmrium/issues/2418)
+* disable the 'preview publication string' button when no ranges ([0d5b6b7](https://github.com/cheminfo/nmrium/commit/0d5b6b7ff09c6a373a1400821098d41528dcc110))
+* display react-table empty row correctly ([443f62e](https://github.com/cheminfo/nmrium/commit/443f62edfb8dfc6d8270ec31838de15ce9b292bf))
+* do not prevent triggering onChange when props are changed ([37dadf8](https://github.com/cheminfo/nmrium/commit/37dadf8addff251795dd93c2c181528a0cf3f888))
+* hide spectrum settings dialog if it's 2d Fid ([5a780f6](https://github.com/cheminfo/nmrium/commit/5a780f691ea524d431b1c4e89a4d43224d6f9d6b)), closes [#2424](https://github.com/cheminfo/nmrium/issues/2424)
+* jcamp-dx generation n move filters to nmr-processing ([#2386](https://github.com/cheminfo/nmrium/issues/2386)) ([470abab](https://github.com/cheminfo/nmrium/commit/470abab98a53a6ddee6bc93818b0cff90a41bdfb))
+
+## [0.38.1](https://github.com/cheminfo/nmrium/compare/v0.38.0...v0.38.1) (2023-06-09)
+
+
+### Bug Fixes
+
+* parse jcamp URL correctly ([#2407](https://github.com/cheminfo/nmrium/issues/2407)) ([714f1a6](https://github.com/cheminfo/nmrium/commit/714f1a66145879793f16313ab6ac606440c4fd4a))
+* spectra prediction ([#2408](https://github.com/cheminfo/nmrium/issues/2408)) ([45c52ba](https://github.com/cheminfo/nmrium/commit/45c52bab522b0ed8941c325510b4281885d10862))
+
+## [0.38.0](https://github.com/cheminfo/nmrium/compare/v0.37.0...v0.38.0) (2023-06-08)
+
+
+### Features
+
+* include 'view' object with the normal save ([#2388](https://github.com/cheminfo/nmrium/issues/2388)) ([f69d213](https://github.com/cheminfo/nmrium/commit/f69d2137597be577c4f5a57e356f82e93149d914))
+* rename metaInfo to customInfo and reorder information panel ([#2380](https://github.com/cheminfo/nmrium/issues/2380)) ([1731ce4](https://github.com/cheminfo/nmrium/commit/1731ce493da010495ee03adfce1e2f077dd2eed9))
+
+
+### Bug Fixes
+
+* correctly determine if a molecule is empty ([#2403](https://github.com/cheminfo/nmrium/issues/2403)) ([72e6979](https://github.com/cheminfo/nmrium/commit/72e69792bb97820cddb28d7b7e712c19ba114d4e)), closes [#2400](https://github.com/cheminfo/nmrium/issues/2400)
+* do not use p element in NoData component ([#2401](https://github.com/cheminfo/nmrium/issues/2401)) ([f86d42c](https://github.com/cheminfo/nmrium/commit/f86d42cda9502eb2e1b7a0da8137ad80ac69b2af))
+* manual 'add range' crash when no spectrum is selected ([#2399](https://github.com/cheminfo/nmrium/issues/2399)) ([3ab5514](https://github.com/cheminfo/nmrium/commit/3ab5514f7563b78fe4c467aa686f322e385a4c95)), closes [#2390](https://github.com/cheminfo/nmrium/issues/2390)
+* manual coupling edition ([#2384](https://github.com/cheminfo/nmrium/issues/2384)) ([fb8b576](https://github.com/cheminfo/nmrium/commit/fb8b576aac7abecbf2cd4a0cfce788645857321f)), closes [#2353](https://github.com/cheminfo/nmrium/issues/2353)
+* show time domain spectrum if none of the selected spectrum is FT ([#2370](https://github.com/cheminfo/nmrium/issues/2370)) ([480d9de](https://github.com/cheminfo/nmrium/commit/480d9dea4afbc83e0aeb79bc2888f6910252278b))
+
+## [0.37.0](https://github.com/cheminfo/nmrium/compare/v0.36.0...v0.37.0) (2023-05-26)
+
+
+### Features
+
+* add onError callback to support errors caught by the boundary ([32eea35](https://github.com/cheminfo/nmrium/commit/32eea353b6422a1085ee91425c6fec770f48de54))
+* improve 2d assignments ([#2357](https://github.com/cheminfo/nmrium/issues/2357)) ([ff99d1e](https://github.com/cheminfo/nmrium/commit/ff99d1e0f9bc897991c09aa29f459720863c115c))
+* improve floating structure initial position ([#2378](https://github.com/cheminfo/nmrium/issues/2378)) ([6312cf9](https://github.com/cheminfo/nmrium/commit/6312cf9eb68fd808d21bba2df70c47f8bdb8f3a7))
+* show information about the Spectra prediction ([#2372](https://github.com/cheminfo/nmrium/issues/2372)) ([6ecd8ab](https://github.com/cheminfo/nmrium/commit/6ecd8ab0108e3f807e9fb4f0007de9e6113dc016)), closes [#2367](https://github.com/cheminfo/nmrium/issues/2367)
+
+
+### Bug Fixes
+
+* processing spectra on load ([#2365](https://github.com/cheminfo/nmrium/issues/2365)) ([15c22b7](https://github.com/cheminfo/nmrium/commit/15c22b739a80bf574a9f0427022e102345c1667b))
+
+## [0.36.0](https://github.com/cheminfo/nmrium/compare/v0.35.0...v0.36.0) (2023-05-18)
+
+
+### Features
+
+* display assigned indicator on the top of ranges ([#2341](https://github.com/cheminfo/nmrium/issues/2341)) ([eefcaa4](https://github.com/cheminfo/nmrium/commit/eefcaa4546a07b8e63c38ef0d9872fd25beea398)), closes [#2338](https://github.com/cheminfo/nmrium/issues/2338)
+* manual zone selection create only one zone/signal ([#2354](https://github.com/cheminfo/nmrium/issues/2354)) ([d6e6232](https://github.com/cheminfo/nmrium/commit/d6e6232768511b9ac264f3728f3df5ee7869028e))
+
+
+### Bug Fixes
+
+* check symmetry first for manual range picking ([#2339](https://github.com/cheminfo/nmrium/issues/2339)) ([0886f50](https://github.com/cheminfo/nmrium/commit/0886f504497a118ae7f1d1ce899122a50a861a7d))
+* manage correctly 19F n 31P jeol data ([#2355](https://github.com/cheminfo/nmrium/issues/2355)) ([e01ffdf](https://github.com/cheminfo/nmrium/commit/e01ffdf896439c2aa9a85573528ddc0b51c73be9))
+* normalize nucleus for jeol n varian ([#2356](https://github.com/cheminfo/nmrium/issues/2356)) ([a4acc6b](https://github.com/cheminfo/nmrium/commit/a4acc6b60608f2ffde3a50635c8ccb7b4ed69ef4))
+* reverse varian data to avoid inverted spectrum ([#2347](https://github.com/cheminfo/nmrium/issues/2347)) ([34c41b5](https://github.com/cheminfo/nmrium/commit/34c41b5f1d566b6659e9155befe8cd4071b81505))
+* spectrum object should include the sourceSelector ([#2360](https://github.com/cheminfo/nmrium/issues/2360)) ([8d9161b](https://github.com/cheminfo/nmrium/commit/8d9161b7cb7713d6880c31fc8bdc73ef8724b679))
+* use a central source of possible patterns for multiplicities ([#2352](https://github.com/cheminfo/nmrium/issues/2352)) ([fa4dc72](https://github.com/cheminfo/nmrium/commit/fa4dc72d725b9de76a040aca67426034e71e81e6))
+
 ## [0.35.0](https://github.com/cheminfo/nmrium/compare/v0.34.0...v0.35.0) (2023-05-04)
 
 

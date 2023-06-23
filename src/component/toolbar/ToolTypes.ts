@@ -1,7 +1,7 @@
-import { Info1D, Info2D } from 'nmr-load-save';
+import { NMRiumToolBarPreferences } from 'nmr-load-save';
+import type { Info1D, Info2D } from 'nmr-processing';
+import { Filters } from 'nmr-processing';
 
-import * as Filters from '../../data/Filters';
-import { NMRiumToolBarPreferences } from '../../types/NMRiumToolBarPreferences';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 type InfoKey = keyof Info1D | keyof Info2D;
@@ -22,20 +22,16 @@ export interface ToolOptionItem {
   isFilter: boolean;
 }
 
-type Tools = keyof NMRiumToolBarPreferences;
+export type Tool =
+  | keyof NMRiumToolBarPreferences
+  | 'HMove'
+  | 'equalizer'
+  | 'generalSelector'
+  | 'editRange'
+  | 'databaseRangesSelection'
+  | 'matrixGenerationExclusionZones';
 
-type RecordOptions = Record<
-  | Tools
-  | (
-      | 'HMove'
-      | 'equalizer'
-      | 'generalSelector'
-      | 'editRange'
-      | 'databaseRangesSelection'
-      | 'matrixGenerationExclusionZones'
-    ),
-  ToolOptionItem
->;
+type RecordOptions = Record<Tool, ToolOptionItem>;
 
 export const options: RecordOptions = {
   zoom: {

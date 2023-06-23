@@ -3,13 +3,11 @@ import { Fragment, useCallback } from 'react';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
-import { CHANGE_ZONE_SIGNAL_VALUE } from '../../../reducer/types/Types';
 import { formatNumber } from '../../../utility/formatNumber';
-
-import { RowDataProps } from './ActionsColumn';
+import { ZoneData } from '../hooks/useMapZones';
 
 interface SignalDeltaColumnProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   onHoverSignalX: any;
   onHoverSignalY: any;
   format: { x: string; y: string };
@@ -31,10 +29,10 @@ function SignalDeltaColumn({
     (event) => {
       const value = event.target.value;
       dispatch({
-        type: CHANGE_ZONE_SIGNAL_VALUE,
+        type: 'CHANGE_ZONE_SIGNAL_VALUE',
         payload: {
-          zoneID: rowData.id,
-          signal: { id, x: value },
+          zoneId: rowData.id,
+          signal: { id, deltaX: value },
         },
       });
     },
@@ -44,10 +42,10 @@ function SignalDeltaColumn({
     (event) => {
       const value = event.target.value;
       dispatch({
-        type: CHANGE_ZONE_SIGNAL_VALUE,
+        type: 'CHANGE_ZONE_SIGNAL_VALUE',
         payload: {
-          zoneID: rowData.id,
-          signal: { id, y: value },
+          zoneId: rowData.id,
+          signal: { id, deltaY: value },
         },
       });
     },

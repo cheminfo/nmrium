@@ -1,5 +1,6 @@
+import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { matrixZPivotRescale } from 'ml-spectra-processing';
-import { Data2DFid, Data2DFt, Spectrum2D } from 'nmr-load-save';
+import { Spectrum2D } from 'nmr-load-save';
 import { useEffect, useRef, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
@@ -105,8 +106,8 @@ function getImageData(spectrum: Spectrum2D) {
   const { isFid } = spectrum.info;
   const matrix = matrixZPivotRescale(
     isFid
-      ? (spectrum.data as Data2DFid).re.z
-      : (spectrum.data as Data2DFt).rr.z,
+      ? (spectrum.data as NmrData2DFid).re.z
+      : (spectrum.data as NmrData2DFt).rr.z,
     {
       max: 255,
       ArrayConstructor: Int16Array,

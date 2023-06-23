@@ -64,7 +64,7 @@ export function generateColor(
     const lum = -0.25;
     let hex = String(
       `#${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
-    ).replace(/[^\da-f]/gi, '');
+    ).replaceAll(/[^\da-f]/gi, '');
     if (hex.length < 6) {
       hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
     }

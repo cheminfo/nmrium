@@ -2,13 +2,13 @@
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { useContext, memo } from 'react';
+import { memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
 import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
-import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
+import { useBrushTracker } from '../EventsTrackers/BrushTracker';
+import { useMouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
@@ -101,8 +101,8 @@ function FooterBannerInner({
   spectrum,
   activeTab,
 }: FooterBannerInnerProps) {
-  let position = useContext(MouseContext);
-  const { startX, endX, step } = useContext(BrushContext);
+  let position = useMouseTracker();
+  const { startX, endX, step } = useBrushTracker();
   const { scaleX } = useScaleChecked();
 
   const format = useFormatNumberByNucleus(activeTab);

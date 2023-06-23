@@ -4,7 +4,6 @@ import { useCallback, useMemo, memo } from 'react';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../elements/ReactTable/utility/addCustomColumn';
-import { SET_AUTOMATIC_ASSIGNMENTS } from '../../reducer/types/Types';
 
 import { AutoAssignmentsData } from './useAutoAssignments';
 
@@ -21,7 +20,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
       e.stopPropagation();
 
       dispatch({
-        type: SET_AUTOMATIC_ASSIGNMENTS,
+        type: 'SET_AUTOMATIC_ASSIGNMENTS',
         payload: { assignments: row.original.assignment },
       });
     },

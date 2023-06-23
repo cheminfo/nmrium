@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
+  Database,
   NmriumState,
+  Spectrum1D,
   readFromWebSource,
   serializeNmriumState,
-  Spectrum1D,
 } from 'nmr-load-save';
-import { DatabaseNMREntry } from 'nmr-processing';
+import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
@@ -14,7 +15,7 @@ import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
-import { mapRanges } from '../../../data/data1d/Spectrum1D';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
 import {
   initiateDatabase,
@@ -35,15 +36,10 @@ import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import {
-  RESURRECTING_SPECTRUM_FROM_JCAMP,
-  RESURRECTING_SPECTRUM_FROM_RANGES,
-} from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
 import nucleusToString from '../../utility/nucleusToString';
-import { Database } from '../../workspaces/Workspace';
 import { PanelNoData } from '../PanelNoData';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -53,25 +49,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import DatabasePreferences from './DatabasePreferences';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
-
-const style = css`
-  .header {
-    height: 30px;
-    padding: 2px 0 2px 5px;
-  }
-
-  .input-container {
-    width: 100%;
-  }
-
-  .search-input {
-    width: 100% !important;
-    border-radius: 5px;
-    border: 0.55px solid gray;
-    padding: 0 5px;
-    outline: none;
-  }
-`;
 
 export interface DatabaseInnerProps {
   nucleus: string;
@@ -209,8 +186,7 @@ function DatabasePanelInner({
                   baseURL: url,
                 })),
               );
-          } catch (error) {
-            reportError(error);
+          } catch {
             alert.error(`Failed to load ${url}`);
           } finally {
             hideLoading();
@@ -262,23 +238,27 @@ function DatabasePanelInner({
 
   const resurrectHandler = useCallback(
     (rowData) => {
-      const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
+      let { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
       const { ranges, solvent, names = [] } = result.data[index];
 
       if (jcampRelativeURL) {
+        const url = new URL(jcampRelativeURL, baseURL);
         setTimeout(async () => {
           const hideLoading = await alert.showLoading(
             `load jcamp in progress...`,
           );
-
           try {
             const { data } = await readFromWebSource({
-              entries: [{ baseURL, relativePath: jcampRelativeURL }],
+              entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
-            dispatch({
-              type: RESURRECTING_SPECTRUM_FROM_JCAMP,
-              payload: { ranges, spectrum: data?.spectra?.[0] || null },
-            });
+
+            const spectrum = data?.spectra?.[0] || null;
+            if (spectrum && isSpectrum1D(spectrum)) {
+              dispatch({
+                type: 'RESURRECTING_SPECTRUM_FROM_JCAMP',
+                payload: { ranges, spectrum },
+              });
+            }
           } catch {
             alert.error(`Failed to load Jcamp`);
           } finally {
@@ -287,7 +267,7 @@ function DatabasePanelInner({
         }, 0);
       } else {
         dispatch({
-          type: RESURRECTING_SPECTRUM_FROM_RANGES,
+          type: 'RESURRECTING_SPECTRUM_FROM_RANGES',
           payload: { ranges, info: { solvent, nucleus, name: names[0] } },
         });
       }
@@ -358,7 +338,6 @@ function DatabasePanelInner({
     <div
       css={[
         tablePanelStyle,
-        style,
         isFlipped &&
           css`
             .table-container {
@@ -375,7 +354,6 @@ function DatabasePanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
           canDelete={false}
-          className="header"
         >
           <ToggleButton
             key={`${selectedTool}`}
@@ -393,7 +371,7 @@ function DatabasePanelInner({
             />
           </ToggleButton>
           <Select
-            style={{ flex: 2 }}
+            style={{ flex: 2, marginLeft: '5px' }}
             items={databases}
             itemTextField="label"
             itemValueField="key"
@@ -402,7 +380,7 @@ function DatabasePanelInner({
             defaultValue={defaultDatabase}
           />
           <Select
-            style={{ flex: 1 }}
+            style={{ flex: 1, margin: '0px 5px' }}
             items={result.solvents}
             placeholder="Solvent"
             onChange={handleSearch}
@@ -519,19 +497,12 @@ function mapSolventsToSelect(solvents: string[]) {
 }
 
 async function saveJcampAsJson(rowData, filteredData) {
-  const {
-    index,
-    baseURL,
-    jcampURL: jcampRelativeURL,
-    names,
-    ocl = {},
-    smiles,
-  } = rowData;
+  const { index, baseURL, jcampURL, names, ocl = {}, smiles } = rowData;
   const { ranges } = filteredData.data[index];
-
+  const url = new URL(jcampURL, baseURL);
   const { data: { spectra, source } = { source: {}, spectra: [] }, version } =
     await readFromWebSource({
-      entries: [{ baseURL, relativePath: jcampRelativeURL }],
+      entries: [{ baseURL: url.origin, relativePath: url.pathname }],
     });
 
   let molfile = '';

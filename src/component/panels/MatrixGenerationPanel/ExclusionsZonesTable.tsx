@@ -23,7 +23,7 @@ export function ExclusionsZonesTable() {
   }
 
   function handleDelete(index) {
-    setFieldValue(
+    void setFieldValue(
       'exclusionsZones',
       values.exclusionsZones.filter((_, i) => i !== index),
     );

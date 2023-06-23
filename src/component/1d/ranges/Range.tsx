@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Range as RangeType } from 'nmr-load-save';
+import { Range as RangeType } from 'nmr-processing';
 
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
@@ -14,7 +14,6 @@ import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight';
-import { RESIZE_RANGE, UNLINK_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
@@ -68,11 +67,13 @@ function Range({
 
   function handleOnStopResizing(position) {
     dispatch({
-      type: RESIZE_RANGE,
-      data: {
-        ...range,
-        from: scaleX().invert(position.x2),
-        to: scaleX().invert(position.x1),
+      type: 'RESIZE_RANGE',
+      payload: {
+        range: {
+          ...range,
+          from: scaleX().invert(position.x2),
+          to: scaleX().invert(position.x1),
+        },
       },
     });
   }
@@ -89,9 +90,9 @@ function Range({
 
   function unAssignHandler(signalIndex = -1) {
     dispatch({
-      type: UNLINK_RANGE,
+      type: 'UNLINK_RANGE',
       payload: {
-        rangeData: range,
+        range,
         assignmentData,
         signalIndex,
       },

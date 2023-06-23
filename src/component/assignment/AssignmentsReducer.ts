@@ -1,6 +1,6 @@
-import { Data1D, Data2D } from 'nmr-load-save';
+import { NmrData1D, NmrData2D } from 'cheminfo-types';
 
-import { ActionType } from '../reducer/types/Types';
+import { ActionType } from '../reducer/types/ActionType';
 
 import {
   AssignmentDimension,
@@ -14,7 +14,7 @@ import toggleAssignment from './actions/toggleAssignment';
 
 export type InitiateAction = ActionType<
   'INITIATE_ASSIGNMENTS',
-  { spectra: (Data1D | Data2D)[] }
+  { spectra: (NmrData1D | NmrData2D)[] }
 >;
 export type ToggleAction = ActionType<
   'TOGGLE',

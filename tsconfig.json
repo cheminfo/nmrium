@@ -16,8 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "jsx": "react-jsx"
   },
   "include": ["src", "test-e2e", "playwright.config.ts", "vite.config.ts"],
   "exclude": ["node_modules"]

@@ -41,8 +41,8 @@ function Left1DChart({
       const pathBuilder = new PathBuilder();
 
       pathBuilder.moveTo(
-        scaleY(pathPoints.y[pathPoints.y.length - 1]),
-        scaleX(pathPoints.x.length - 1),
+        scaleY(pathPoints.y.at(-1) as number),
+        scaleX(pathPoints.x.at(-1) as number),
       );
 
       for (let i = pathPoints.x.length - 2; i >= 0; i--) {

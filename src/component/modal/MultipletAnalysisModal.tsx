@@ -104,11 +104,11 @@ const loaderStyles = css`
 
 interface MultipletAnalysisModalProps {
   data: Spectrum[];
-  activeSpectrum: ActiveSpectrum;
+  activeSpectrum: ActiveSpectrum | null;
   scaleX: any;
   startX: any;
   endX: any;
-  onClose: (element?: string) => void;
+  onClose?: (element?: string) => void;
 }
 
 export default function MultipletAnalysisModal({

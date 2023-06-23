@@ -11,15 +11,7 @@ import {
   transitions,
 } from '../../../elements/popup/Modal';
 import EditZoneModal from '../../../modal/editZone/EditZoneModal';
-import {
-  CHANGE_ZONE_SIGNAL_KIND,
-  DELETE_2D_ZONE,
-  SAVE_EDITED_ZONE,
-  SET_SELECTED_TOOL,
-  SET_X_DOMAIN,
-  SET_Y_DOMAIN,
-} from '../../../reducer/types/Types';
-import { options } from '../../../toolbar/ToolTypes';
+import { ZoneData } from '../hooks/useMapZones';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -28,29 +20,8 @@ const selectBoxStyle: CSSProperties = {
   height: '20px',
 };
 
-export interface RowDataProps {
-  id: number;
-  tableMetaInfo: {
-    id: number;
-    signalIndex: number;
-    rowSpan: any;
-    signal: {
-      kind: any;
-    };
-    experiment: string;
-  };
-  x: {
-    from: number;
-    to: number;
-  };
-  y: {
-    from: number;
-    to: number;
-  };
-}
-
 interface ActionsColumnProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   rowSpanTags: any;
 }
 
@@ -60,12 +31,12 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const modal = useModal();
 
   const changeSignalKindHandler = useCallback(
-    (value) => {
+    (kind) => {
       dispatch({
-        type: CHANGE_ZONE_SIGNAL_KIND,
+        type: 'CHANGE_ZONE_SIGNAL_KIND',
         payload: {
-          rowData,
-          value,
+          zoneData: rowData,
+          kind,
         },
       });
     },
@@ -74,7 +45,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
 
   const deleteZoneHandler = useCallback(() => {
     dispatch({
-      type: DELETE_2D_ZONE,
+      type: 'DELETE_2D_ZONE',
       payload: {
         id: rowData.id,
         assignmentData,
@@ -85,28 +56,32 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const zoomZoneHandler = useCallback(() => {
     const xMargin = Math.abs(rowData.x.from - rowData.x.to) * 10;
     dispatch({
-      type: SET_X_DOMAIN,
-      xDomain:
-        rowData.x.from <= rowData.x.to
-          ? [rowData.x.from - xMargin, rowData.x.to + xMargin]
-          : [rowData.x.to - xMargin, rowData.x.from + xMargin],
+      type: 'SET_X_DOMAIN',
+      payload: {
+        xDomain:
+          rowData.x.from <= rowData.x.to
+            ? [rowData.x.from - xMargin, rowData.x.to + xMargin]
+            : [rowData.x.to - xMargin, rowData.x.from + xMargin],
+      },
     });
     const yMargin = Math.abs(rowData.y.from - rowData.y.to) * 10;
     dispatch({
-      type: SET_Y_DOMAIN,
-      yDomain:
-        rowData.y.from <= rowData.y.to
-          ? [rowData.y.from - yMargin, rowData.y.to + yMargin]
-          : [rowData.y.to - yMargin, rowData.y.from + yMargin],
+      type: 'SET_Y_DOMAIN',
+      payload: {
+        yDomain:
+          rowData.y.from <= rowData.y.to
+            ? [rowData.y.from - yMargin, rowData.y.to + yMargin]
+            : [rowData.y.to - yMargin, rowData.y.from + yMargin],
+      },
     });
   }, [dispatch, rowData.x.from, rowData.x.to, rowData.y.from, rowData.y.to]);
 
   const saveEditZoneHandler = useCallback(
-    (editedRowData) => {
+    (zone) => {
       dispatch({
-        type: SAVE_EDITED_ZONE,
+        type: 'SAVE_EDITED_ZONE',
         payload: {
-          editedRowData,
+          zone,
         },
       });
     },
@@ -115,8 +90,8 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
 
   const openEditZoneHandler = useCallback(() => {
     dispatch({
-      type: SET_SELECTED_TOOL,
-      payload: { selectedTool: options.editRange.id },
+      type: 'SET_SELECTED_TOOL',
+      payload: { selectedTool: 'editRange' },
     });
     modal.show(
       <EditZoneModal

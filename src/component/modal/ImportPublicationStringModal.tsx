@@ -9,7 +9,6 @@ import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import FormikTextarea from '../elements/formik/FormikTextarea';
 import { useAlert } from '../elements/popup/Alert';
-import { GENERATE_SPECTRUM_FROM_PUBLICATION_STRING } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
 
@@ -55,7 +54,7 @@ function ImportPublicationStringModal({
         );
         setTimeout(() => {
           dispatch({
-            type: GENERATE_SPECTRUM_FROM_PUBLICATION_STRING,
+            type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
             payload: values,
           });
           hideLoading();

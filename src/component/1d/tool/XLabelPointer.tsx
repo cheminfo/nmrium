@@ -1,8 +1,8 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { useContext, useCallback, useMemo, CSSProperties } from 'react';
+import { useCallback, useMemo, CSSProperties } from 'react';
 
-import { BrushContext } from '../../EventsTrackers/BrushTracker';
-import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
@@ -24,8 +24,8 @@ function XLabelPointer() {
   const activeSpectrum = useActiveSpectrum();
   const { scaleX } = useScaleChecked();
 
-  const position = useContext(MouseContext);
-  const brushState = useContext(BrushContext);
+  const position = useMouseTracker();
+  const brushState = useBrushTracker();
   const activeSpectrumData = useMemo(() => {
     const spectrumData = activeSpectrum
       ? data.find((d) => d.id === activeSpectrum.id)

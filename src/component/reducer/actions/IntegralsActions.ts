@@ -2,6 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
+import { Integral } from 'nmr-processing';
 
 import {
   updateIntegralsRelativeValues,
@@ -9,16 +10,48 @@ import {
   getShiftX,
 } from '../../../data/data1d/Spectrum1D';
 import {
+  SetSumOptions,
   initSumOptions,
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { ActionType } from '../types/ActionType';
 
 import { setIntegralsYDomain } from './DomainActions';
 
-function handleChangeIntegralSum(draft: Draft<State>, options) {
+type ChangeIntegralSumAction = ActionType<
+  'CHANGE_INTEGRAL_SUM',
+  { options: SetSumOptions }
+>;
+type AddIntegralAction = ActionType<
+  'ADD_INTEGRAL',
+  { startX: number; endX: number }
+>;
+type DeleteIntegralAction = ActionType<'DELETE_INTEGRAL', { id?: string }>;
+type ChangeIntegralAction = ActionType<
+  'CHANGE_INTEGRAL' | 'RESIZE_INTEGRAL',
+  { integral: Integral }
+>;
+type ChangeIntegralRelativeValueAction = ActionType<
+  'CHANGE_INTEGRAL_RELATIVE',
+  { id: string; value: number }
+>;
+
+export type IntegralsActions =
+  | ChangeIntegralSumAction
+  | AddIntegralAction
+  | DeleteIntegralAction
+  | ChangeIntegralAction
+  | ChangeIntegralRelativeValueAction
+  | ActionType<'CHANGE_INTEGRALS_SUM_FLAG'>;
+
+function handleChangeIntegralSum(
+  draft: Draft<State>,
+  action: ChangeIntegralSumAction,
+) {
+  const { options } = action.payload;
   const {
     data,
     view: {
@@ -36,8 +69,8 @@ function handleChangeIntegralSum(draft: Draft<State>, options) {
   }
 }
 
-function addIntegral(draft: Draft<State>, action) {
-  const { startX, endX } = action;
+function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
+  const { startX, endX } = action.payload;
   const {
     data,
     molecules,
@@ -76,16 +109,19 @@ function addIntegral(draft: Draft<State>, action) {
   }
 }
 
-function deleteIntegral(draft: Draft<State>, action) {
+function handleDeleteIntegral(
+  draft: Draft<State>,
+  action: DeleteIntegralAction,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const state = original(draft) as State;
     const { index } = activeSpectrum;
-    const { integralID } = action;
+    const { id: integralID } = action?.payload || {};
 
     const datum = draft.data[index] as Spectrum1D;
 
-    if (integralID == null) {
+    if (!integralID) {
       datum.integrals.values = [];
     } else {
       const peakIndex = (
@@ -97,10 +133,13 @@ function deleteIntegral(draft: Draft<State>, action) {
   }
 }
 
-function changeIntegral(draft: Draft<State>, action) {
+function handleChangeIntegral(
+  draft: Draft<State>,
+  action: ChangeIntegralAction,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
   const state = original(draft) as State;
-  const integral = action.payload.data;
+  const { integral } = action.payload;
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
@@ -115,9 +154,9 @@ function changeIntegral(draft: Draft<State>, action) {
 
     if (integralIndex !== -1) {
       datum.integrals.values[integralIndex] = {
+        ...integral,
         originFrom: integral.from,
         originTo: integral.to,
-        ...integral,
         absolute: xyIntegration(
           { x, y: re },
           { from: integral.from, to: integral.to, reverse: true },
@@ -128,29 +167,32 @@ function changeIntegral(draft: Draft<State>, action) {
   }
 }
 
-function handleChangeIntegralsRelativeValue(draft: Draft<State>, action) {
+function handleChangeIntegralsRelativeValue(
+  draft: Draft<State>,
+  action: ChangeIntegralRelativeValueAction,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
-  const data = action.payload.data;
+  const { id, value } = action.payload;
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    changeIntegralsRelative(draft.data[index] as Spectrum1D, data);
+    changeIntegralsRelative(draft.data[index] as Spectrum1D, { id, value });
   }
 }
 
-function handleChangeIntegralsSumFlag(draft, action) {
-  const flag = action.payload;
+function handleChangeIntegralsSumFlag(draft) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    draft.data[index].integrals.options.isSumConstant = !flag;
+    const integralOptions = draft.data[index].integrals.options;
+    integralOptions.isSumConstant = !integralOptions.isSumConstant;
   }
 }
 
 export {
   handleChangeIntegralSum,
-  addIntegral,
-  deleteIntegral,
-  changeIntegral,
+  handleAddIntegral,
+  handleDeleteIntegral,
+  handleChangeIntegral,
   handleChangeIntegralsRelativeValue,
   handleChangeIntegralsSumFlag,
 };

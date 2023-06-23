@@ -1,6 +1,6 @@
-import { CSSProperties, useContext } from 'react';
+import { CSSProperties } from 'react';
 
-import { BrushContext } from '../../EventsTrackers/BrushTracker';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
 import { useChartData } from '../../context/ChartContext';
 import { options } from '../../toolbar/ToolTypes';
 
@@ -30,7 +30,7 @@ export default function BrushX() {
     height,
     toolOptions: { selectedTool },
   } = useChartData();
-  const { startX, endX, step } = useContext(BrushContext);
+  const { startX, endX, step } = useBrushTracker();
 
   if (!allowTools.has(selectedTool) || step !== 'brushing') return null;
 

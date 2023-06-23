@@ -13,16 +13,6 @@ import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
-import {
-  SET_KEY_PREFERENCES,
-  APPLY_KEY_PREFERENCES,
-  DELETE_INTEGRAL,
-  DELETE_PEAK_NOTATION,
-  DELETE_RANGE,
-  DELETE_2D_ZONE,
-  DELETE_EXCLUSION_ZONE,
-  CHANGE_ACTIVE_SPECTRUM,
-} from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
@@ -68,8 +58,10 @@ function KeysListenerTracker() {
       switch (type) {
         case HighlightEventSource.INTEGRAL: {
           dispatch({
-            type: DELETE_INTEGRAL,
-            integralID: id,
+            type: 'DELETE_INTEGRAL',
+            payload: {
+              id,
+            },
           });
           // remove keys from the highlighted list after delete
           remove();
@@ -78,8 +70,10 @@ function KeysListenerTracker() {
         }
         case HighlightEventSource.PEAK: {
           dispatch({
-            type: DELETE_PEAK_NOTATION,
-            data: { id },
+            type: 'DELETE_PEAK',
+            payload: {
+              id,
+            },
           });
           // remove keys from the highlighted list after delete
           remove();
@@ -88,12 +82,10 @@ function KeysListenerTracker() {
         }
         case HighlightEventSource.RANGE: {
           dispatch({
-            type: DELETE_RANGE,
+            type: 'DELETE_RANGE',
             payload: {
-              data: {
-                id,
-                assignmentData,
-              },
+              id,
+              assignmentData,
             },
           });
           // remove keys from the highlighted list after delete
@@ -103,7 +95,7 @@ function KeysListenerTracker() {
         }
         case HighlightEventSource.ZONE: {
           dispatch({
-            type: DELETE_2D_ZONE,
+            type: 'DELETE_2D_ZONE',
             payload: {
               id,
               assignmentData,
@@ -123,7 +115,7 @@ function KeysListenerTracker() {
                   'Delete all spectra exclusion zones in progress',
                 );
                 dispatch({
-                  type: DELETE_EXCLUSION_ZONE,
+                  type: 'DELETE_EXCLUSION_ZONE',
                   payload: {
                     zone,
                   },
@@ -138,10 +130,10 @@ function KeysListenerTracker() {
                   'Delete exclusion zones in progress',
                 );
                 dispatch({
-                  type: DELETE_EXCLUSION_ZONE,
+                  type: 'DELETE_EXCLUSION_ZONE',
                   payload: {
                     zone,
-                    spectrumID,
+                    spectrumId: spectrumID,
                   },
                 });
                 hideLoading();
@@ -216,20 +208,26 @@ function KeysListenerTracker() {
       if (data && data.length > 0 && num >= 1 && num <= 9) {
         if (e.shiftKey) {
           dispatch({
-            type: SET_KEY_PREFERENCES,
-            keyCode: num,
+            type: 'SET_KEY_PREFERENCES',
+            payload: {
+              keyCode: num,
+            },
           });
           alert.show(`Configuration Reset, press '${num}' again to reload it.`);
         } else if (!checkModifierKeyActivated(e)) {
           if (keysPreferences?.[num]) {
             dispatch({
-              type: APPLY_KEY_PREFERENCES,
-              keyCode: num,
+              type: 'APPLY_KEY_PREFERENCES',
+              payload: {
+                keyCode: num,
+              },
             });
           } else {
             dispatch({
-              type: SET_KEY_PREFERENCES,
-              keyCode: num,
+              type: 'SET_KEY_PREFERENCES',
+              payload: {
+                keyCode: num,
+              },
             });
             alert.show(
               `Configuration saved, press '${num}' again to reload it.`,
@@ -335,7 +333,7 @@ function KeysListenerTracker() {
               break;
             case 'a': {
               dispatch({
-                type: CHANGE_ACTIVE_SPECTRUM,
+                type: 'CHANGE_ACTIVE_SPECTRUM',
                 payload: {},
               });
               e.preventDefault();

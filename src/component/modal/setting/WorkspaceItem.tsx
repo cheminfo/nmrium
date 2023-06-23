@@ -1,8 +1,8 @@
+import { WorkSpaceSource } from 'nmr-load-save';
 import { CSSProperties, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
-import { WorkSpaceSource } from '../../workspaces/Workspace';
 
 const styles: Record<
   | 'container'

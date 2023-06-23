@@ -33,7 +33,7 @@ function FormikTextarea(props: FormikTextareaProps) {
 
   useEffect(() => {
     if (value) {
-      setFieldValue(name, value);
+      void setFieldValue(name, value);
     }
   }, [name, setFieldValue, value]);
 

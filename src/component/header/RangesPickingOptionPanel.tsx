@@ -1,5 +1,4 @@
 import { Formik } from 'formik';
-import { useCallback } from 'react';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -7,7 +6,11 @@ import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikNumberInput from '../elements/formik/FormikNumberInput';
-import { AUTO_RANGES_DETECTION } from '../reducer/types/Types';
+import { useAlert } from '../elements/popup/Alert';
+import {
+  MIN_AREA_POINTS,
+  useCheckPointsNumberInWindowArea,
+} from '../hooks/useCheckPointsNumberInWindowArea';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -23,16 +26,22 @@ const initialValues = {
 
 function RangesPickingOptionPanel() {
   const dispatch = useDispatch();
+  const pointsNumber = useCheckPointsNumberInWindowArea();
+  const alert = useAlert();
 
-  const handleRangesPicking = useCallback(
-    (values) => {
+  function handleRangesPicking(values) {
+    if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
-        type: AUTO_RANGES_DETECTION,
+        type: 'AUTO_RANGES_DETECTION',
         payload: values,
       });
-    },
-    [dispatch],
-  );
+    } else {
+      alert.error(
+        `Auto range picking only available for area more than ${MIN_AREA_POINTS} points`,
+      );
+    }
+  }
+
   return (
     <HeaderContainer>
       <Formik

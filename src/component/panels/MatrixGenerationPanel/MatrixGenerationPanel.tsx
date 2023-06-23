@@ -20,7 +20,6 @@ import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
-import { APPLY_SIGNAL_PROCESSING_FILTER } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import { exportAsMatrix } from '../../utility/export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -93,7 +92,7 @@ function MatrixGenerationPanel() {
   }
 
   function handleSave(options) {
-    dispatch({ type: APPLY_SIGNAL_PROCESSING_FILTER, payload: { options } });
+    dispatch({ type: 'APPLY_SIGNAL_PROCESSING_FILTER', payload: { options } });
   }
 
   function handleOnChange(options) {

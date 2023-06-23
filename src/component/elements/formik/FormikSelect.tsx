@@ -23,14 +23,13 @@ const FormikSelect = function FormikSelect(
   const changeHandler = useCallback(
     (value) => {
       onChange(value);
-      setFieldValue(name, value);
+      void setFieldValue(name, value);
     },
     [name, onChange, setFieldValue],
   );
-
   useEffect(() => {
     if (value) {
-      setFieldValue(name, value);
+      void setFieldValue(name, value);
     }
   }, [name, setFieldValue, value]);
 
@@ -39,10 +38,10 @@ const FormikSelect = function FormikSelect(
   if (checkErrorAfterInputTouched) {
     isInvalid = lodashGet(errors, name) && lodashGet(touched, name);
   }
-
   return (
     <Select
       name={name}
+      key={String(value || lodashGet(values, name))}
       defaultValue={value || lodashGet(values, name)}
       onChange={changeHandler}
       style={{ ...style, ...(isInvalid && { border: '1px solid red' }) }}

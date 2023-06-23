@@ -1,5 +1,11 @@
 import lodashGet from 'lodash/get';
-import { Spectrum } from 'nmr-load-save';
+import {
+  JpathTableColumn,
+  PredefinedSpectraColumn,
+  PredefinedTableColumn,
+  SpectraTableColumn,
+  Spectrum,
+} from 'nmr-load-save';
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
@@ -11,18 +17,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 import { ActiveSpectrum } from '../../reducer/Reducer';
-import {
-  DELETE_SPECTRA,
-  ORDER_SPECTRA,
-  RECOLOR_SPECTRA_COLOR,
-} from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
-import {
-  JpathTableColumn,
-  PredefinedSpectraColumn,
-  PredefinedTableColumn,
-  SpectraTableColumn,
-} from '../../workspaces/Workspace';
 
 import ColorIndicator from './base/ColorIndicator';
 import ShowHideSpectrumButton, {
@@ -32,7 +27,7 @@ import { SpectrumName } from './base/SpectrumName';
 
 function formatValueAsHTML(value) {
   if (value) {
-    value = value.replace(/(?<value>\d+)/g, '<sub>$<value></sub>');
+    value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
   }
   return value;
 }
@@ -176,10 +171,18 @@ export function SpectraTable(props: SpectraTableProps) {
           maxWidth: '30px',
         },
         Cell: ({ row }) => {
+          const {
+            display,
+            info: { dimension, isFid },
+          } = row.original;
+          if (dimension === 2 && isFid) {
+            return <div />;
+          }
+
           return (
             <ColorIndicator
-              display={row.original.display}
-              dimension={row.original.info.dimension}
+              display={display}
+              dimension={dimension}
               onClick={(event) => onOpenSettingModal(event, row.original)}
             />
           );
@@ -215,7 +218,7 @@ export function SpectraTable(props: SpectraTableProps) {
         }
         case SpectraContextMenuOptionsKeys.Delete: {
           setTimeout(() => {
-            dispatch({ type: DELETE_SPECTRA, id: spectrum.id });
+            dispatch({ type: 'DELETE_SPECTRA', payload: { id: spectrum.id } });
           }, 0);
           break;
         }
@@ -275,7 +278,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
   function handleSortEnd(data) {
     dispatch({
-      type: ORDER_SPECTRA,
+      type: 'ORDER_SPECTRA',
       payload: {
         data,
       },
@@ -331,7 +334,10 @@ const ColumnHeader = ({
 
   function selectHandler() {
     if (col?.jpath) {
-      dispatch({ type: RECOLOR_SPECTRA_COLOR, payload: { jpath: col?.jpath } });
+      dispatch({
+        type: 'RECOLOR_SPECTRA_COLOR',
+        payload: { jpath: col?.jpath },
+      });
     }
   }
 

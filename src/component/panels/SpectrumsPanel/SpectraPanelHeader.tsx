@@ -17,14 +17,6 @@ import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { ActiveSpectrum } from '../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import {
-  ADD_MISSING_PROJECTION,
-  CHANGE_VISIBILITY,
-  DELETE_SPECTRA,
-  RECOLOR_SPECTRA_COLOR,
-  RESET_SPECTRA_SCALE,
-  SET_SPECTRA_SAME_TOP,
-} from '../../reducer/types/Types';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
@@ -80,7 +72,7 @@ function SpectraPanelHeaderInner({
         {
           text: 'Yes',
           handler: () => {
-            dispatch({ type: DELETE_SPECTRA });
+            dispatch({ type: 'DELETE_SPECTRA', payload: {} });
           },
         },
         { text: 'No' },
@@ -90,14 +82,14 @@ function SpectraPanelHeaderInner({
 
   function showAllSpectrumsHandler() {
     dispatch({
-      type: CHANGE_VISIBILITY,
+      type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: true },
     });
   }
 
   function hideAllSpectrumsHandler() {
     dispatch({
-      type: CHANGE_VISIBILITY,
+      type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: false },
     });
   }
@@ -105,23 +97,26 @@ function SpectraPanelHeaderInner({
   function addMissingProjectionHandler() {
     const missingNucleus = getMissingProjection(data, activeTab);
     if (missingNucleus.length > 0) {
-      dispatch({ type: ADD_MISSING_PROJECTION, nucleus: missingNucleus });
+      dispatch({
+        type: 'ADD_MISSING_PROJECTION',
+        payload: { nucleus: missingNucleus },
+      });
     } else {
       alert.error('Nothing to calculate');
     }
   }
 
   function setSameTopHandler() {
-    dispatch({ type: SET_SPECTRA_SAME_TOP });
+    dispatch({ type: 'SET_SPECTRA_SAME_TOP' });
   }
 
   function resetScaleHandler() {
-    dispatch({ type: RESET_SPECTRA_SCALE });
+    dispatch({ type: 'RESET_SPECTRA_SCALE' });
   }
 
   function recolorSpectraHandler() {
     dispatch({
-      type: RECOLOR_SPECTRA_COLOR,
+      type: 'RECOLOR_SPECTRA_COLOR',
       payload: {},
     });
   }

@@ -1,10 +1,10 @@
 import max from 'ml-array-max';
 import { Spectrum1D } from 'nmr-load-save';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
-import { BrushContext } from '../../EventsTrackers/BrushTracker';
-import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
+import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
@@ -36,8 +36,8 @@ function PeakPointer() {
   const { scaleX, scaleY, shiftY } = useScaleChecked();
 
   const activeSpectrum = useActiveSpectrum();
-  let position = useContext(MouseContext);
-  const brushState = useContext(BrushContext);
+  let position = useMouseTracker();
+  const brushState = useBrushTracker();
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 
   useEffect(() => {
@@ -101,7 +101,7 @@ function PeakPointer() {
     brushState.step === 'brushing' ||
     !position ||
     position.y < margin.top ||
-    position.left < margin.left ||
+    position.x < margin.left ||
     position.x > width - margin.right ||
     position.y > height - margin.bottom
   ) {

@@ -40,8 +40,9 @@ function DatabaseSpectrum() {
     throttle(async (baseURL: string | undefined, jcampRelativeURL: string) => {
       try {
         setLoading(true);
+        const url = new URL(jcampRelativeURL, baseURL);
         const { data } = await readFromWebSource({
-          entries: [{ relativePath: jcampRelativeURL, baseURL }],
+          entries: [{ relativePath: url.pathname, baseURL: url.origin }],
         });
         setLoading(false);
         const spectrum = data?.spectra?.[0] || null;

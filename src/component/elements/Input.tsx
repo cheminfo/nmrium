@@ -22,8 +22,6 @@ const styles: Record<
   },
 
   inputWrapper: {
-    height: '100%',
-    width: '100px',
     borderRadius: '5px',
     borderWidth: '0.55px',
     borderColor: '#c7c7c7',
@@ -124,7 +122,7 @@ const Input = forwardRef(
       datalist = [],
       ...otherProps
     } = props;
-    const [val, setVal] = useState(value);
+    const [val, setVal] = useState(value ?? '');
     const valueRef = useRef(value);
     const localRef = useRef<any>();
     const combinedRef = useCombinedRefs([ref, localRef]);
@@ -138,7 +136,7 @@ const Input = forwardRef(
     );
 
     useEffect(() => {
-      setVal(value);
+      setVal((prevVal) => (prevVal !== value ? value ?? '' : prevVal));
     }, [value]);
 
     useEffect(() => {

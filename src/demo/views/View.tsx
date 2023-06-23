@@ -1,8 +1,8 @@
+import { CustomWorkspaces } from 'nmr-load-save';
 import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import NMRium, { NMRiumWorkspace } from '../../component/NMRium';
-import { CustomWorkspaces } from '../../component/workspaces/Workspace';
 import { PageConfig } from '../layouts/Main';
 
 export async function loadData(file) {
@@ -46,7 +46,7 @@ export default function View(props: ViewProps) {
   useEffect(() => {
     if (file) {
       void loadData(file).then((d) => {
-        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
+        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });
     } else {
