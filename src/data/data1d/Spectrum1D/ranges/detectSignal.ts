@@ -86,7 +86,7 @@ function joinCouplings(result: any) {
           js,
         },
         { tolerance: 0.6, ignoreDiaIDs: true },
-      ).js
+      ).js;
     } catch (error) {
       reportError(error);
     }

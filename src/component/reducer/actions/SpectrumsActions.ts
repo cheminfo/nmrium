@@ -515,9 +515,11 @@ function handleGenerateSpectrumFromPublicationStringHandler(
     publicationString,
     draft.usedColors,
   );
-  draft.data.push(spectrum);
-  setActiveTab(draft);
-  setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
+  if (spectrum) {
+    draft.data.push(spectrum);
+    setActiveTab(draft);
+    setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
+  }
 }
 
 //action
