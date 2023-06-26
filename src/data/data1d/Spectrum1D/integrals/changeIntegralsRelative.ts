@@ -1,29 +1,19 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { Integral } from 'nmr-processing';
 
 export function changeIntegralsRelative(
   spectrum: Spectrum1D,
-  newIntegral: { id: string; value: number },
+  data: { id: string; value: number },
 ) {
+  const { id, value } = data;
+
   const index = spectrum.integrals.values.findIndex(
-    (integral) => integral.id === newIntegral.id,
+    (integral) => integral.id === id,
   );
-  if (index !== -1) {
-    const ratio = spectrum.integrals.values[index].absolute / newIntegral.value;
-    const result: {
-      sum: number;
-      values: Integral[];
-    } = { values: [], sum: 0 };
-    for (const [index, integral] of spectrum.integrals.values.entries()) {
-      const newIntegralValue = integral.absolute / ratio;
-      result.sum += newIntegralValue;
-      result.values[index] = {
-        ...integral,
-        integral: newIntegralValue,
-      };
-    }
-    const { values, sum } = result;
-    spectrum.integrals.values = values;
+  const { sum: baseSum } = spectrum.integrals.options;
+  if (index !== -1 && typeof baseSum === 'number') {
+    const { absolute, integral = 0 } = spectrum.integrals.values[index];
+    const ratio = absolute / value;
+    const sum = (value / integral) * baseSum;
     spectrum.integrals.options = {
       ...spectrum.integrals.options,
       mf: undefined,
@@ -31,5 +21,12 @@ export function changeIntegralsRelative(
       sumAuto: false,
       sum,
     };
+
+    spectrum.integrals.values = spectrum.integrals.values.map((integral) => {
+      return {
+        ...integral,
+        integral: integral.absolute / ratio,
+      };
+    });
   }
 }
