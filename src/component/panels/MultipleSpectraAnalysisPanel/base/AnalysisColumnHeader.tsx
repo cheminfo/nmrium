@@ -1,9 +1,6 @@
+import { AnalysisColumnsTypes, AnalisisColumnsValuesKeys } from 'nmr-load-save';
 import { CSSProperties, MouseEvent } from 'react';
 
-import {
-  COLUMNS_TYPES,
-  COLUMNS_VALUES_KEYS,
-} from '../../../../data/data1d/multipleSpectraAnalysis';
 import DeleteButton from '../../../elements/Tab/DeleteButton';
 import DropDownButton from '../../../elements/dropDownButton/DropDownButton';
 import { useHighlight } from '../../../highlight/index';
@@ -51,10 +48,10 @@ const styles: Record<
 };
 
 const columnsFilters: Array<{ key: string; label: string }> = [
-  { key: COLUMNS_VALUES_KEYS.RELATIVE, label: 'Relative' },
-  { key: COLUMNS_VALUES_KEYS.ABSOLUTE, label: 'Absolute' },
-  { key: COLUMNS_VALUES_KEYS.MIN, label: 'Min Intensity' },
-  { key: COLUMNS_VALUES_KEYS.MAX, label: 'Max Intensity' },
+  { key: AnalisisColumnsValuesKeys.RELATIVE, label: 'Relative' },
+  { key: AnalisisColumnsValuesKeys.ABSOLUTE, label: 'Absolute' },
+  { key: AnalisisColumnsValuesKeys.MIN, label: 'Min Intensity' },
+  { key: AnalisisColumnsValuesKeys.MAX, label: 'Max Intensity' },
 ];
 
 interface AnalysisColumnHeaderProps {
@@ -87,7 +84,7 @@ function AnalysisColumnHeader({
       {...highlight.onHover}
     >
       <div style={styles.innerContainer}>
-        {data.type === COLUMNS_TYPES.NORMAL && (
+        {data.type === AnalysisColumnsTypes.NORMAL && (
           <div style={styles.dropdownContainer}>
             <DropDownButton
               data={columnsFilters}

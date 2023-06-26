@@ -1,5 +1,6 @@
 import { Formik, FormikProps } from 'formik';
-import { useRef, forwardRef, useState } from 'react';
+import { Workspace } from 'nmr-load-save';
+import { useRef, forwardRef } from 'react';
 import { Modal, useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
@@ -7,7 +8,6 @@ import { usePreferences } from '../context/PreferencesContext';
 import FormikInput from '../elements/formik/FormikInput';
 import { useAlert } from '../elements/popup/Alert/Context';
 import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
-import { Workspace } from '../workspaces/Workspace';
 
 const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
@@ -46,33 +46,33 @@ const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
 export function useSaveSettings() {
   const alert = useAlert();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const [values, setValues] = useState<Partial<Workspace> | undefined>(
-    undefined,
-  );
+  const settingsRef = useRef<Workspace>();
   const { dispatch, current } = usePreferences();
   const formRef = useRef<FormikProps<any>>(null);
-  function addNewWorkspace(workspaceName, values) {
-    dispatch({
-      type: 'ADD_WORKSPACE',
-      payload: {
-        workspace: workspaceName,
-        data: values,
-      },
-    });
-    closeDialog();
-    alert.success('Preferences saved successfully');
+  function addNewWorkspace({ workspaceName }) {
+    if (settingsRef.current) {
+      dispatch({
+        type: 'ADD_WORKSPACE',
+        payload: {
+          workspaceKey: workspaceName,
+          data: settingsRef.current,
+        },
+      });
+      closeDialog();
+      alert.success('Preferences saved successfully');
+    }
   }
 
   return {
     saveSettings: (values?: Partial<Workspace>) => {
-      setValues(values);
+      settingsRef.current = values as Workspace;
 
       if (current.source !== 'user') {
         openDialog();
       } else {
         dispatch({
           type: 'SET_PREFERENCES',
-          payload: values as any,
+          ...(values && { payload: values }),
         });
         closeDialog();
       }
@@ -82,13 +82,7 @@ export function useSaveSettings() {
         message:
           'Please enter a new user workspace name in order to save your changes locally',
         render: (props) => (
-          <WorkspaceAddForm
-            {...props}
-            onSave={({ workspaceName }) =>
-              addNewWorkspace(workspaceName, values)
-            }
-            ref={formRef}
-          />
+          <WorkspaceAddForm {...props} onSave={addNewWorkspace} ref={formRef} />
         ),
         buttons: [
           {

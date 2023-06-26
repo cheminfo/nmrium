@@ -1,7 +1,6 @@
 import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
-import { CHANGE_RANGE_RELATIVE } from '../../../reducer/types/Types';
 import { formatNumber } from '../../../utility/formatNumber';
 import { RangeColumnProps } from '../RangesTableRow';
 
@@ -19,9 +18,10 @@ function RelativeColumn({
 
   function saveHandler(event) {
     dispatch({
-      type: CHANGE_RANGE_RELATIVE,
+      type: 'CHANGE_RANGE_RELATIVE',
       payload: {
-        data: { value: event.target.value, id: row.id },
+        value: event.target.value,
+        id: row.id,
       },
     });
   }

@@ -1,13 +1,27 @@
+import type { NmrData2DFt, NmrData2DFid } from 'cheminfo-types';
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D, Data2DFt, Data2DFid } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
+import { addToBrushHistory } from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { ActionType } from '../types/ActionType';
+
+type SetXDomainAction = ActionType<
+  'SET_X_DOMAIN',
+  { xDomain: [number, number] }
+>;
+type SetYDomainAction = ActionType<
+  'SET_Y_DOMAIN',
+  { yDomain: [number, number] }
+>;
+
+export type DomainActions = SetXDomainAction | SetYDomainAction;
 
 function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
   let data = draft.data.filter(
@@ -47,7 +61,7 @@ function getDomain(draft: Draft<State>) {
       const { y } = get1DDataXY(d);
 
       const _extent = extent(y) as Array<number>;
-      const domain = [data.x[0], data.x[data.x.length - 1]];
+      const domain = [data.x[0], data.x.at(-1) as number];
 
       yDomains[id] = _extent;
       xDomains[id] = domain;
@@ -87,7 +101,7 @@ function get2DDomain(state: State) {
   const spectrum =
     data.find((datum) => datum.id === activeSpectrum?.id) || null;
   if (spectrum?.info.isFid) {
-    const { minX, maxX, minY, maxY } = (spectrum.data as Data2DFid).re;
+    const { minX, maxX, minY, maxY } = (spectrum.data as NmrData2DFid).re;
     xArray = [minX, maxX];
     yArray = [minY, maxY];
   } else {
@@ -100,7 +114,7 @@ function get2DDomain(state: State) {
             datum.info.isFt,
         ) as Array<Spectrum2D>
       ).flatMap((datum: Spectrum2D) => {
-        const { minX, maxX } = (datum.data as Data2DFt).rr;
+        const { minX, maxX } = (datum.data as NmrData2DFt).rr;
         return [minX, maxX];
       });
 
@@ -112,7 +126,7 @@ function get2DDomain(state: State) {
             d.info.isFt,
         ) as Array<Spectrum2D>
       ).flatMap((datum: Spectrum2D) => {
-        const { minY, maxY } = (datum.data as Data2DFt).rr;
+        const { minY, maxY } = (datum.data as NmrData2DFt).rr;
         return [minY, maxY];
       });
     } catch (error) {
@@ -139,7 +153,7 @@ function get2DDomain(state: State) {
   try {
     for (const d of filteredData) {
       const { x, re } = d.data;
-      const domain = [x[0], x[x.length - 1]];
+      const domain = [x[0], x.at(-1) as number];
       xDomains[d.id] = domain;
       const _extent = extent(re);
       yDomains[d.id] = _extent;
@@ -234,26 +248,6 @@ function setIntegralsYDomain(
   }
 }
 
-function setOriginalDomain(draft: Draft<State>, originDomain) {
-  draft.originDomain = originDomain;
-}
-
-function setXDomain(draft: Draft<State>, xDomain) {
-  draft.xDomain = xDomain;
-}
-
-function setYDomain(draft: Draft<State>, yDomain) {
-  draft.yDomain = yDomain;
-}
-
-function handelResetDomain(draft: Draft<State>) {
-  const { xDomain, yDomain, xDomains, yDomains } = draft.originDomain;
-  draft.xDomain = xDomain;
-  draft.yDomain = yDomain;
-  draft.xDomains = xDomains;
-  draft.yDomains = yDomains;
-}
-
 function setMode(draft: Draft<State>) {
   const datum_ = draft.data.find(
     (datum) =>
@@ -263,13 +257,25 @@ function setMode(draft: Draft<State>) {
   draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
+//action
+function handleSetXDomain(draft: Draft<State>, action: SetXDomainAction) {
+  const xDomain = action.payload.xDomain;
+  draft.xDomain = xDomain;
+  addToBrushHistory(draft, { xDomain, yDomain: draft.yDomain });
+}
+
+//action
+function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
+  const yDomain = action.payload.yDomain;
+  draft.yDomain = yDomain;
+  addToBrushHistory(draft, { xDomain: draft.xDomain, yDomain });
+}
+
 export {
   getDomain,
-  setOriginalDomain,
-  setXDomain,
-  setYDomain,
-  handelResetDomain,
   setDomain,
   setMode,
   setIntegralsYDomain,
+  handleSetXDomain,
+  handleSetYDomain,
 };

@@ -6,14 +6,6 @@ import { useToggleAccordion } from 'react-science/ui';
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
-import { ZoomType } from '../reducer/helper/Zoom1DManager';
-import {
-  CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-  FULL_ZOOM_OUT,
-  SET_SELECTED_TOOL,
-  SET_SPECTRUMS_VERTICAL_ALIGN,
-  TOGGLE_REAL_IMAGINARY_VISIBILITY,
-} from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 export default function useToolsFunctions() {
@@ -43,7 +35,7 @@ export default function useToolsFunctions() {
       }
 
       dispatch({
-        type: SET_SELECTED_TOOL,
+        type: 'SET_SELECTED_TOOL',
         payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
@@ -53,8 +45,8 @@ export default function useToolsFunctions() {
   const handleFullZoomOut = useCallback(() => {
     if (debounceClickEventsRef.current.clicks.length === 0) {
       dispatch({
-        type: FULL_ZOOM_OUT,
-        zoomType: ZoomType.HORIZONTAL,
+        type: 'FULL_ZOOM_OUT',
+        payload: { zoomType: 'HORIZONTAL' },
       });
     }
     const callback = lodashDebounce(() => {
@@ -70,28 +62,28 @@ export default function useToolsFunctions() {
       );
       debounceClickEventsRef.current.clicks = [];
       dispatch({
-        type: FULL_ZOOM_OUT,
+        type: 'FULL_ZOOM_OUT',
+        payload: {},
       });
     }
   }, [dispatch, debounceClickEventsRef]);
 
   const changeDisplayViewModeHandler = useCallback(() => {
     dispatch({
-      type: CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
+      type: 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE',
     });
   }, [dispatch]);
 
   const changeSpectrumViewHandler = useCallback(() => {
     dispatch({
-      type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
-      isRealSpectrumVisible: !isRealSpectrumShown,
+      type: 'TOGGLE_REAL_IMAGINARY_VISIBILITY',
     });
     setIsRealSpectrumShown(!isRealSpectrumShown);
   }, [dispatch, isRealSpectrumShown]);
 
   const alignSpectrumsVerticallyHandler = useCallback(() => {
     dispatch({
-      type: SET_SPECTRUMS_VERTICAL_ALIGN,
+      type: 'SET_SPECTRUMS_VERTICAL_ALIGN',
     });
   }, [dispatch]);
 

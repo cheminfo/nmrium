@@ -1,4 +1,5 @@
-import { Info1D, Info2D, Data1D, Data2D } from 'nmr-load-save';
+import { NmrData1D, NmrData2D } from 'cheminfo-types';
+import { Info1D, Info2D } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
@@ -8,7 +9,7 @@ import { useActiveSpectrum } from './useActiveSpectrum';
 
 interface SpectrumWithStatisticsProps {
   info: Info1D | Info2D;
-  datum: Data1D | Data2D;
+  datum: NmrData1D | NmrData2D;
   ftCounter: number;
   fidCounter: number;
 }

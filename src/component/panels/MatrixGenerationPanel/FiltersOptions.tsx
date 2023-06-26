@@ -152,12 +152,12 @@ function FiltersPanelGroupHeader({ index, name }) {
   function handelSelectFilter(value, index) {
     const filters = values.filters.slice(0);
     filters.splice(index, 1, value);
-    setFieldValue('filters', filters);
+    void setFieldValue('filters', filters);
   }
 
   function handleAdd(index) {
     if (values.filters) {
-      setFieldValue('filters', [
+      void setFieldValue('filters', [
         ...values.filters.slice(0, index),
         DEFAULT_MATRIX_FILTERS[0],
         ...values.filters.slice(index),
@@ -165,7 +165,7 @@ function FiltersPanelGroupHeader({ index, name }) {
     }
   }
   function handleDelete(index) {
-    setFieldValue(
+    void setFieldValue(
       'filters',
       values.filters.filter((_, i) => i !== index),
     );

@@ -1,4 +1,4 @@
-import { InnerWorkspace } from './Workspace';
+import { InnerWorkspace } from 'nmr-load-save';
 
 export const process1D: InnerWorkspace = {
   version: 2,

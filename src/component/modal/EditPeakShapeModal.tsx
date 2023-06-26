@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik } from 'formik';
-import { Peak1D } from 'nmr-load-save';
+import { PeaksNucleusPreferences } from 'nmr-load-save';
+import { Peak1D } from 'nmr-processing';
 import { useCallback, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
@@ -12,9 +13,7 @@ import { InputStyle } from '../elements/Input';
 import Label, { LabelStyle } from '../elements/Label';
 import Select from '../elements/Select';
 import FormikInput from '../elements/formik/FormikInput';
-import { CHANGE_PEAK_SHAPE } from '../reducer/types/Types';
 import { formatNumber } from '../utility/formatNumber';
-import { PeaksNucleusPreferences } from '../workspaces/Workspace';
 
 import { ModalStyles } from './ModalStyle';
 
@@ -93,7 +92,7 @@ function EditPeakShapeModal({
   const changePeakShapeHandler = useCallback(
     (values) => {
       dispatch({
-        type: CHANGE_PEAK_SHAPE,
+        type: 'CHANGE_PEAK_SHAPE',
         payload: {
           id: peak.id,
           shape: {
@@ -119,7 +118,7 @@ function EditPeakShapeModal({
         <Formik
           enableReinitialize
           innerRef={refForm}
-          initialValues={values as any}
+          initialValues={values}
           validationSchema={validation(kind)}
           onSubmit={changePeakShapeHandler}
         >

@@ -1,17 +1,12 @@
 import { Formik } from 'formik';
-import {
-  useEffect,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  memo,
-  CSSProperties,
-  forwardRef,
-  useMemo,
-} from 'react';
+import { useImperativeHandle, useRef, forwardRef, useMemo } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
+import {
+  formatFieldInputStyle,
+  formatFieldLabelStyle,
+} from '../../elements/formik/FormikColumnFormatField';
 import FormikInput from '../../elements/formik/FormikInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
@@ -21,17 +16,6 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-
-const styles: Record<'inputLabel' | 'inputWrapper', CSSProperties> = {
-  inputLabel: {
-    flex: 2,
-  },
-  inputWrapper: {
-    width: '100px',
-    flex: '4',
-    borderRadius: '5px',
-  },
-};
 
 const formatFields: NucleusPreferenceField[] = [
   {
@@ -91,19 +75,12 @@ function RangesPreferences(props, ref) {
   const nuclei = useMemo(() => getUniqueNuclei(nucleus), [nucleus]);
   const preferencesByNuclei = usePanelPreferencesByNuclei('ranges', nuclei);
 
-  useEffect(() => {
-    formRef.current.setValues(preferencesByNuclei);
-  }, [preferencesByNuclei]);
-
-  const saveHandler = useCallback(
-    (values) => {
-      preferences.dispatch({
-        type: 'SET_PANELS_PREFERENCES',
-        payload: { key: 'ranges', value: values },
-      });
-    },
-    [preferences],
-  );
+  function saveHandler(values) {
+    preferences.dispatch({
+      type: 'SET_PANELS_PREFERENCES',
+      payload: { key: 'ranges', value: values },
+    });
+  }
 
   useImperativeHandle(
     ref,
@@ -117,7 +94,12 @@ function RangesPreferences(props, ref) {
 
   return (
     <PreferencesContainer>
-      <Formik initialValues={{}} onSubmit={saveHandler} innerRef={formRef}>
+      <Formik
+        initialValues={preferencesByNuclei}
+        enableReinitialize
+        onSubmit={saveHandler}
+        innerRef={formRef}
+      >
         <>
           {nuclei?.map((n) => (
             <NucleusPreferences
@@ -127,15 +109,16 @@ function RangesPreferences(props, ref) {
               renderBottom={() => (
                 <Label
                   title="J Graph tolerance (Hz) :"
-                  style={{
-                    label: styles.inputLabel,
-                    wrapper: styles.inputWrapper,
-                  }}
+                  style={formatFieldLabelStyle}
                 >
-                  <FormikInput
-                    name={`nuclei.${n}.jGraphTolerance`}
-                    type="number"
-                  />
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ width: '23px' }} />
+                    <FormikInput
+                      name={`nuclei.${n}.jGraphTolerance`}
+                      type="number"
+                      style={formatFieldInputStyle}
+                    />
+                  </div>
                 </Label>
               )}
             />
@@ -146,4 +129,4 @@ function RangesPreferences(props, ref) {
   );
 }
 
-export default memo(forwardRef(RangesPreferences));
+export default forwardRef(RangesPreferences);

@@ -29,6 +29,7 @@ const NumberInput = forwardRef(
       step = 'any',
       min = 'any',
       max = 'any',
+      ...otherProps
     }: NumberInputProps,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
@@ -44,6 +45,7 @@ const NumberInput = forwardRef(
         onChange={onChange}
         min={min}
         max={max}
+        {...otherProps}
       />
     );
   },

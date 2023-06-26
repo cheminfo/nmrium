@@ -16,7 +16,6 @@ import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import { TOGGLE_SPECTRA_LEGEND } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/export';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -64,7 +63,7 @@ function MultipleSpectraAnalysisPanelInner({
   }, []);
 
   const showTrackerHandler = useCallback(() => {
-    dispatch({ type: TOGGLE_SPECTRA_LEGEND });
+    dispatch({ type: 'TOGGLE_SPECTRA_LEGEND' });
   }, [dispatch]);
 
   const copyToClipboardHandler = useCallback(() => {

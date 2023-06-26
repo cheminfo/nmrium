@@ -3,40 +3,21 @@ import { css } from '@emotion/react';
 import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
-import { useCallback } from 'react';
-import {
-  FaFileExport,
-  FaUnlink,
-  FaSitemap,
-  FaChartBar,
-  FaPlus,
-} from 'react-icons/fa';
+import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
-import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import {
-  ADD_RANGE,
-  CHANGE_RANGES_SUM_FLAG,
-  CHANGE_RANGE_SUM,
-  DELETE_RANGE,
-  SHOW_J_GRAPH,
-  SHOW_MULTIPLICITY_TREES,
-  SHOW_RANGES_INTEGRALS,
-} from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/export';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
-
-import useEditRangeModal from './hooks/useEditRangeModal';
 
 const style = css`
   .btn {
@@ -79,15 +60,12 @@ function RangesHeader({
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
-  const changeRangesSumHandler = useCallback(
-    (value) => {
-      dispatch({ type: CHANGE_RANGE_SUM, value });
-      modal.close();
-    },
-    [dispatch, modal],
-  );
+  function changeRangesSumHandler(options) {
+    dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
+    modal.close();
+  }
 
-  const showChangeRangesSumModal = useCallback(() => {
+  function showChangeRangesSumModal() {
     modal.show(
       <ChangeSumModal
         onClose={() => modal.close()}
@@ -100,20 +78,20 @@ function RangesHeader({
         sumOptions={ranges?.options}
       />,
     );
-  }, [changeRangesSumHandler, currentSum, modal, ranges?.options]);
+  }
 
-  const removeAssignments = useCallback(() => {
+  function removeAssignments() {
     onUnlink();
-  }, [onUnlink]);
+  }
 
-  const handleOnRemoveAssignments = useCallback(() => {
+  function handleOnRemoveAssignments() {
     modal.showConfirmDialog({
       message: 'All assignments will be removed. Are you sure?',
       buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
     });
-  }, [removeAssignments, modal]);
+  }
 
-  const handleDeleteAll = useCallback(() => {
+  function handleDeleteAll() {
     modal.showConfirmDialog({
       message: 'All ranges will be deleted. Are You sure?',
       buttons: [
@@ -121,96 +99,76 @@ function RangesHeader({
           text: 'Yes',
           handler: () => {
             dispatch({
-              type: DELETE_RANGE,
-              payload: { data: { assignmentData } },
+              type: 'DELETE_RANGE',
+              payload: { assignmentData },
             });
           },
         },
         { text: 'No' },
       ],
     });
-  }, [assignmentData, dispatch, modal]);
+  }
 
-  const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({ type: SHOW_MULTIPLICITY_TREES, payload: { id } });
-  }, [dispatch, id]);
+  function handleSetShowMultiplicityTrees() {
+    dispatch({ type: 'SHOW_MULTIPLICITY_TREES', payload: { id } });
+  }
 
-  const handleShowIntegrals = useCallback(() => {
-    dispatch({ type: SHOW_RANGES_INTEGRALS, payload: { id } });
-  }, [dispatch, id]);
+  function handleShowIntegrals() {
+    dispatch({ type: 'SHOW_RANGES_INTEGRALS', payload: { id } });
+  }
 
-  const handleShowJGraph = useCallback(() => {
-    dispatch({ type: SHOW_J_GRAPH, payload: { id } });
-  }, [dispatch, id]);
+  function handleShowJGraph() {
+    dispatch({ type: 'SHOW_J_GRAPH', payload: { id } });
+  }
+  function saveToClipboardHandler(value) {
+    void (async () => {
+      const success = await copyHTMLToClipboard(value);
+      if (success) {
+        alert.success('Data copied to clipboard');
+      } else {
+        alert.error('copy to clipboard failed');
+      }
+    })();
+  }
 
-  const saveToClipboardHandler = useCallback(
-    (value) => {
-      void (async () => {
-        const success = await copyHTMLToClipboard(value);
-        if (success) {
-          alert.success('Data copied to clipboard');
-        } else {
-          alert.error('copy to clipboard failed');
-        }
-      })();
-    },
-    [alert],
-  );
+  function saveAsHTMLHandler() {
+    if (Array.isArray(ranges?.values) && ranges.values.length > 0) {
+      const { originFrequency: observedFrequency, nucleus } = info;
 
-  const saveAsHTMLHandler = useCallback(() => {
-    const { originFrequency: observedFrequency, nucleus } = info;
+      const nbDecimalDelta = getNumberOfDecimals(
+        rangesPreferences.deltaPPM.format,
+      );
+      const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
 
-    const nbDecimalDelta = getNumberOfDecimals(
-      rangesPreferences.deltaPPM.format,
-    );
-    const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
-
-    const result = rangesToACS(ranges.values, {
-      nucleus, // '19f'
-      nbDecimalDelta, // 2
-      nbDecimalJ, // 1
-      observedFrequency, //400
-    });
-    modal.show(
-      <CopyClipboardModal
-        text={result}
-        onCopyClick={saveToClipboardHandler}
-        onClose={() => modal.close()}
-      />,
-      {},
-    );
-  }, [
-    info,
-    modal,
-    ranges.values,
-    rangesPreferences?.deltaHz?.format,
-    rangesPreferences?.deltaPPM?.format,
-    saveToClipboardHandler,
-  ]);
-
-  const changeSumConstantFlagHandler = useCallback(
-    (flag) => {
-      dispatch({
-        type: CHANGE_RANGES_SUM_FLAG,
-        payload: flag,
+      const result = rangesToACS(ranges.values, {
+        nucleus, // '19f'
+        nbDecimalDelta, // 2
+        nbDecimalJ, // 1
+        observedFrequency, //400
       });
-    },
-    [dispatch],
-  );
-  const { editRange } = useEditRangeModal();
-  const addRangeHandler = useCallback(() => {
-    dispatch({
-      type: ADD_RANGE,
-      payload: { id: 'new' },
-    });
+      modal.show(
+        <CopyClipboardModal
+          text={result}
+          onCopyClick={saveToClipboardHandler}
+          onClose={() => modal.close()}
+        />,
+        {},
+      );
+    }
+  }
 
-    editRange(true);
-  }, [dispatch, editRange]);
+  function changeSumConstantFlagHandler() {
+    dispatch({
+      type: 'CHANGE_RANGES_SUM_FLAG',
+    });
+  }
+
+  const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
 
   return (
     <div css={style}>
       <DefaultPanelHeader
-        counter={ranges?.values?.length}
+        counter={ranges?.values?.length || 0}
         onDelete={handleDeleteAll}
         deleteToolTip="Delete All Ranges"
         onFilter={onFilterActivated}
@@ -227,6 +185,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={saveAsHTMLHandler}
           className="btn preview-publication-icon"
+          disabled={!hasRanges}
         >
           <FaFileExport />
         </Button>
@@ -246,7 +205,7 @@ function RangesHeader({
           popupTitle="Remove all assignments"
           popupPlacement="right"
           onClick={handleOnRemoveAssignments}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
           className="btn icon"
         >
           <FaUnlink />
@@ -260,7 +219,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleSetShowMultiplicityTrees}
           value={showMultiplicityTrees}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
         >
           <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
@@ -269,7 +228,7 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowJGraph}
           value={showJGraph}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
         >
           <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
@@ -278,29 +237,22 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowIntegrals}
           value={showRangesIntegrals}
-          disabled={!ranges?.values || ranges.values.length === 0}
+          disabled={!hasRanges}
         >
           <SvgNmrIntegrate
             style={{ pointerEvents: 'none', fontSize: '12px' }}
           />
         </ActiveButton>
 
-        <ToggleButton
+        <ActiveButton
           className="icon"
           popupTitle="Fix integral values"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
+          value={ranges?.options?.isSumConstant}
         >
           <ImLink />
-        </ToggleButton>
-        <Button
-          popupTitle="Add range"
-          popupPlacement="right"
-          onClick={addRangeHandler}
-          className="btn icon"
-        >
-          <FaPlus />
-        </Button>
+        </ActiveButton>
       </DefaultPanelHeader>
     </div>
   );

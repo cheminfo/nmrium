@@ -1,12 +1,14 @@
-import { CSSProperties } from 'react';
+import { translateMultiplet } from 'nmr-processing';
 
+import { InputStyle } from '../../../../elements/Input';
 import FormikInput from '../../../../elements/formik/FormikInput';
-import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 
-const style: Record<'input', CSSProperties> = {
+const style: InputStyle = {
   input: {
     width: '50px',
     height: '26px',
+  },
+  inputWrapper: {
     borderWidth: 0,
     margin: '0 5px',
   },

@@ -1,4 +1,5 @@
-import { PeaksViewState } from '../../data/types/view-state/PeaksViewState';
+import { PeaksViewState } from 'nmr-load-save';
+
 import { useChartData } from '../context/ChartContext';
 
 import { useActiveSpectrum } from './useActiveSpectrum';

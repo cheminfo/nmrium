@@ -7,6 +7,7 @@ import { DataExportOptions } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import ActionButtons from '../elements/ActionButtons';
 import CloseButton from '../elements/CloseButton';
+import Label, { LabelStyle } from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 
@@ -15,15 +16,6 @@ import { ModalStyles } from './ModalStyle';
 const styles = css`
   .inner-content {
     flex: 1;
-  }
-
-  .custom-label {
-    width: 100px;
-  }
-
-  .name {
-    width: 100% !important;
-    text-align: left !important;
   }
 
   .data-export-group {
@@ -47,6 +39,21 @@ const INITIAL_VALUE = {
     view: false,
     settings: false,
   },
+};
+
+export const labelStyle: LabelStyle = {
+  label: {
+    flex: 4,
+    fontSize: '12px',
+    fontWeight: 'bold',
+    color: '#232323',
+  },
+  wrapper: {
+    flex: 8,
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  container: { padding: '5px 0' },
 };
 
 interface SaveAsModalProps {
@@ -84,35 +91,29 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
           onSubmit={submitHandler}
         >
           <>
-            <div className="row margin-10">
-              <span className="custom-label">Name</span>
+            <Label style={labelStyle} title="Name">
               <FormikInput
                 name="name"
                 className="name"
                 style={{
                   inputWrapper: { width: '100%' },
+                  input: { padding: '5px', textAlign: 'left' },
                 }}
               />
-            </div>
-            <div className="row margin-10">
-              <span className="custom-label">Compressed</span>
+            </Label>
+            <Label style={labelStyle} title="Compressed">
               <FormikCheckBox name="compressed" />
-            </div>
-            <div className="row margin-10">
-              <span className="custom-label">Pretty Format</span>
+            </Label>
+            <Label style={labelStyle} title="Pretty Format">
               <FormikCheckBox name="pretty" />
-            </div>
-            <div className="row margin-10">
-              <span className="custom-label"> Include view </span>
+            </Label>
+            <Label style={labelStyle} title="Include view">
               <FormikCheckBox name="include.view" />
-            </div>
-            <div className="row margin-10">
-              <span className="custom-label"> Include settings </span>
+            </Label>
+            <Label style={labelStyle} title="Include settings">
               <FormikCheckBox name="include.settings" />
-            </div>
-
-            <div className="row margin-10">
-              <span className="custom-label"> Include Data </span>
+            </Label>
+            <Label style={labelStyle} title="Include Data">
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className="data-export-group">
                   <label>
@@ -146,7 +147,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                   </label>
                 </div>
               </div>
-            </div>
+            </Label>
           </>
         </Formik>
       </div>

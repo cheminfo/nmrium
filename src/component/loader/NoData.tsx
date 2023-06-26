@@ -53,11 +53,11 @@ function NoData({
       style={{ ...styles.container, ...style }}
       {...(canOpenLoader && { onClick: openLoader })}
     >
-      <p style={styles.text}>
+      <div style={styles.text}>
         {isToolEnabled('import')
           ? emptyText
           : 'Importation feature has been disabled'}
-      </p>
+      </div>
     </div>
   );
 }

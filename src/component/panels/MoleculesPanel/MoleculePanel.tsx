@@ -1,15 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { Spectrum1D, Ranges, Spectrum2D, Zones } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { Ranges, Zones } from 'nmr-processing';
 import OCL from 'openchemlib/full';
-import {
-  useState,
-  useCallback,
-  useEffect,
-  memo,
-  ReactElement,
-  CSSProperties,
-} from 'react';
+import { useState, useEffect, memo } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import OCLnmr from 'react-ocl-nmr';
 
@@ -23,12 +17,9 @@ import NextPrev from '../../elements/NextPrev';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import { SET_MOLECULE } from '../../reducer/types/Types';
 
 import MoleculeHeader from './MoleculeHeader';
-import MoleculePanelHeader, {
-  MoleculeHeaderActionsOptions,
-} from './MoleculePanelHeader';
+import MoleculePanelHeader from './MoleculePanelHeader';
 import useAtomAssignment from './useAtomAssignment';
 
 const styles: Record<
@@ -64,7 +55,7 @@ const styles: Record<
   }),
 };
 
-interface MoleculePanelInnerProps extends MoleculePanelProps {
+interface MoleculePanelInnerProps {
   zones: Zones;
   ranges: Ranges;
   molecules: Array<StateMoleculeExtended>;
@@ -73,18 +64,15 @@ interface MoleculePanelInnerProps extends MoleculePanelProps {
   displayerMode: DISPLAYER_MODE;
 }
 
-function MoleculePanelInner({
-  zones,
-  ranges,
-  molecules: moleculesProp,
-  moleculesView,
-  activeTab,
-  displayerMode,
-  onMoleculeChange,
-  actionsOptions,
-  children,
-  emptyTextStyle,
-}: MoleculePanelInnerProps) {
+function MoleculePanelInner(props: MoleculePanelInnerProps) {
+  const {
+    zones,
+    ranges,
+    molecules: moleculesProp,
+    moleculesView,
+    activeTab,
+    displayerMode,
+  } = props;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<Array<StateMoleculeExtended>>([]);
 
@@ -109,24 +97,17 @@ function MoleculePanelInner({
     }
   }, [molecules.length, moleculesProp]);
 
-  useEffect(() => {
-    onMoleculeChange?.(molecules[currentIndex] || null);
-  }, [currentIndex, molecules, onMoleculeChange]);
+  function handleReplaceMolecule(molecule, molfile) {
+    const { id, label } = molecule;
+    dispatch({
+      type: 'SET_MOLECULE',
+      payload: { molfile, id, label },
+    });
+  }
 
-  const handleReplaceMolecule = useCallback(
-    (molecule, molfile) => {
-      const { id, label } = molecule;
-      dispatch({
-        type: SET_MOLECULE,
-        payload: { molfile, id, label },
-      });
-    },
-    [dispatch],
-  );
-
-  const moleculeIndexHandler = useCallback((index) => {
+  function moleculeIndexHandler(index) {
     setCurrentIndex(index);
-  }, []);
+  }
 
   return (
     <div css={styles.panel}>
@@ -136,8 +117,8 @@ function MoleculePanelInner({
         molecules={molecules}
         onOpenMoleculeEditor={() => openMoleculeEditor()}
         onMoleculeIndexChange={moleculeIndexHandler}
-        actionsOptions={actionsOptions}
       />
+
       <div css={styles.innerPanel}>
         <div css={styles.molecule}>
           <ResponsiveChart>
@@ -154,6 +135,7 @@ function MoleculePanelInner({
                           currentMolecule={mol}
                           molecules={molecules}
                         />
+
                         <div
                           css={styles.slider}
                           className="mol-svg-container"
@@ -200,7 +182,7 @@ function MoleculePanelInner({
                       style={{ height: '100%' }}
                       onClick={() => openMoleculeEditor()}
                     >
-                      <span style={emptyTextStyle}>Click to draw molecule</span>
+                      <span>Click to draw molecule</span>
                     </div>
                   )}
                 </NextPrev>
@@ -208,7 +190,6 @@ function MoleculePanelInner({
             }}
           </ResponsiveChart>
         </div>
-        {children}
       </div>
     </div>
   );
@@ -217,19 +198,7 @@ function MoleculePanelInner({
 const MemoizedMoleculePanel = memo(MoleculePanelInner);
 const emptyData = { ranges: {}, zones: {} };
 
-interface MoleculePanelProps {
-  onMoleculeChange?: (molecule: StateMoleculeExtended) => void;
-  children?: ReactElement;
-  actionsOptions?: MoleculeHeaderActionsOptions;
-  emptyTextStyle?: CSSProperties;
-}
-
-export default function MoleculePanel({
-  onMoleculeChange,
-  children,
-  actionsOptions,
-  emptyTextStyle,
-}: MoleculePanelProps) {
+export default function MoleculePanel() {
   const {
     molecules,
     view: {
@@ -252,12 +221,7 @@ export default function MoleculePanel({
         activeTab,
         ranges,
         zones,
-        onMoleculeChange,
-        actionsOptions,
-        emptyTextStyle,
       }}
-    >
-      {children}
-    </MemoizedMoleculePanel>
+    />
   );
 }

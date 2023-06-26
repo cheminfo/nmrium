@@ -1,7 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { Spectrum2D } from 'nmr-load-save';
-
-import * as FiltersManager from '../../FiltersManager';
+import { FiltersManager } from 'nmr-processing';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 import { get2DColor } from './get2DColor';
@@ -10,10 +9,9 @@ import { initiateZones } from './zones/initiateZones';
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
 export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
-  const datum: any = {};
+  const datum: any = { ...spectrum };
 
   datum.id = spectrum.id || v4();
-  datum.selector = spectrum?.selector || {};
 
   datum.display = {
     isPositiveVisible: true,
@@ -38,7 +36,7 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
 
   datum.meta = { ...spectrum.meta };
 
-  datum.metaInfo = { ...spectrum.metaInfo };
+  datum.customInfo = { ...spectrum.customInfo };
 
   datum.data = getData(datum, spectrum);
   datum.originalData = datum.data;

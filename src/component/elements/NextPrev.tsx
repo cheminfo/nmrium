@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
 import { css } from '@emotion/react';
 import {
   ReactNode,
@@ -9,6 +8,7 @@ import {
   useEffect,
   useCallback,
   memo,
+  CSSProperties,
 } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
@@ -16,17 +16,15 @@ import { useMeasure } from 'react-use';
 interface ArrowProps {
   direction: 'right' | 'left';
   onClick: () => void;
+  style?: CSSProperties;
 }
 
-function Arrow({ direction, onClick }: ArrowProps) {
+function Arrow({ direction, onClick, style = {} }: ArrowProps) {
   return (
     <div
       onClick={onClick}
       css={css`
-        display: flex;
-        position: absolute;
-        top: 50%;
-        ${direction === 'right' ? `right: 25px` : `left: 25px`};
+        display: inline-flex;
         height: 40px;
         width: 40px;
         justify-content: center;
@@ -37,6 +35,7 @@ function Arrow({ direction, onClick }: ArrowProps) {
         border: none;
         transition: transform ease-in 0.1s;
         background-color: #f7f7f7;
+        pointer-events: auto;
 
         &:hover {
           transform: scale(1.1);
@@ -52,6 +51,7 @@ function Arrow({ direction, onClick }: ArrowProps) {
           }
         }
       `}
+      style={style}
     >
       <FaAngleLeft
         style={{ transform: `scaleX(${direction === 'right' ? '-1' : '1'})` }}
@@ -67,14 +67,17 @@ interface NextPrevProps {
   loop?: boolean;
   defaultIndex?: number;
   onChange?: (element: number) => void;
+  style?: { arrowContainer?: CSSProperties };
 }
 
-function NextPrev({
-  children,
-  loop = false,
-  defaultIndex = 0,
-  onChange = () => null,
-}: NextPrevProps) {
+function NextPrev(props: NextPrevProps) {
+  const {
+    children,
+    loop = false,
+    defaultIndex = 0,
+    onChange = () => null,
+    style = {},
+  } = props;
   const [ref, { width }] = useMeasure<HTMLDivElement>();
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
@@ -165,10 +168,39 @@ function NextPrev({
         {Sliders}
       </div>
 
-      {activeIndex !== 0 && <Arrow direction="left" onClick={prevHandler} />}
-      {Sliders && activeIndex !== Sliders.length - 1 && (
-        <Arrow direction="right" onClick={nextHandler} />
-      )}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          padding: '0 10px',
+          justifyContent: 'space-between',
+          width: '100%',
+          display: 'flex',
+          pointerEvents: 'none',
+          ...style?.arrowContainer,
+        }}
+      >
+        <Arrow
+          direction="left"
+          onClick={prevHandler}
+          style={{
+            ...(activeIndex === 0 && {
+              visibility: 'hidden',
+              pointerEvents: 'none',
+            }),
+          }}
+        />
+        <Arrow
+          direction="right"
+          onClick={nextHandler}
+          style={{
+            ...((!Sliders || activeIndex === Sliders.length - 1) && {
+              visibility: 'hidden',
+              pointerEvents: 'none',
+            }),
+          }}
+        />
+      </div>
     </div>
   );
 }

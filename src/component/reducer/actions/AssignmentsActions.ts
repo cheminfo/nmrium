@@ -1,12 +1,20 @@
 import { Draft } from 'immer';
-import { Range, Spectrum1D, Spectrum2D, Zone } from 'nmr-load-save';
-import { SpectraData1D, SpectraData2D } from 'nmr-processing';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { Range, Zone, SpectraData1D, SpectraData2D } from 'nmr-processing';
 
 import { State } from '../Reducer';
+import { ActionType } from '../types/ActionType';
 
-function setAutomaticAssignmentsHandler(
+type SetAutomaticAssignmentsAction = ActionType<
+  'SET_AUTOMATIC_ASSIGNMENTS',
+  { assignments: (SpectraData1D | SpectraData2D)[] }
+>;
+
+export type AssignmentsActions = SetAutomaticAssignmentsAction;
+
+function handleSetAutomaticAssignments(
   draft: Draft<State>,
-  action: { payload: { assignments: (SpectraData1D | SpectraData2D)[] } },
+  action: SetAutomaticAssignmentsAction,
 ) {
   const assignments = action.payload.assignments;
 
@@ -27,4 +35,4 @@ function setAutomaticAssignmentsHandler(
   }
 }
 
-export { setAutomaticAssignmentsHandler };
+export { handleSetAutomaticAssignments };

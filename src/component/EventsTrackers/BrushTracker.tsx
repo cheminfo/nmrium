@@ -9,33 +9,82 @@ import {
   useReducer,
   useRef,
   useState,
+  useContext,
+  Reducer,
 } from 'react';
 
-const initialState = {
+import { ActionType } from '../reducer/types/ActionType';
+
+type Step = 'initial' | 'start' | 'end' | 'brushing';
+interface BrushTrackerContext {
+  step: Step;
+  startX: number;
+  endX: number;
+  startY: number;
+  endY: number;
+  shiftKey: boolean;
+  altKey: boolean;
+}
+interface BrushTrackerState extends BrushTrackerContext {
+  step: Step;
+  startX: number;
+  endX: number;
+  startY: number;
+  endY: number;
+  startScreenX: number;
+  startScreenY: number;
+  startClientX: number;
+  startClientY: number;
+  boundingRect: DOMRect | null;
+}
+
+const initialState: BrushTrackerState = {
   step: 'initial',
-  brush: {
-    start: null,
-    end: null,
-  },
+  shiftKey: false,
+  altKey: false,
   startX: 0,
   endX: 0,
   startY: 0,
   endY: 0,
+  startScreenX: 0,
+  startScreenY: 0,
+  startClientX: 0,
+  startClientY: 0,
+  boundingRect: null,
 };
 
 function stopPageScrolling(event) {
   event.preventDefault();
 }
 
-export const BrushContext = createContext(initialState);
+export const BrushContext = createContext<BrushTrackerContext>(initialState);
+
+export function useBrushTracker() {
+  if (!BrushContext) {
+    throw new Error('Brush context was not found');
+  }
+  return useContext(BrushContext);
+}
+
+interface Position {
+  x: number;
+  y: number;
+}
+export type OnClick = (element: React.MouseEvent & Position) => void;
+export type { OnClick as OnDoubleClick };
+export type OnZoom = (
+  event: Pick<React.WheelEvent, 'deltaY' | 'shiftKey' | 'deltaMode'> & Position,
+) => void;
+export type OnBrush = (state: BrushTrackerContext) => void;
+
 interface BrushTrackerProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
-  onBrush?: (element: any) => void;
-  onZoom?: (element: any) => void;
-  onDoubleClick?: (element: any) => void;
-  onClick?: (element: any) => void;
+  onBrush?: OnBrush;
+  onZoom?: OnZoom;
+  onDoubleClick?: OnClick;
+  onClick?: OnClick;
   noPropagation?: boolean;
 }
 
@@ -49,37 +98,43 @@ export function BrushTracker({
   onClick = () => null,
   noPropagation,
 }: BrushTrackerProps) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer<
+    Reducer<BrushTrackerState, BrushTrackerAction>
+  >(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState<number>(0);
   const debounceClickEventsRef = useRef<Array<any>>([]);
 
   const mouseDownHandler = useCallback(
-    (event) => {
+    (event: React.MouseEvent) => {
       if (event.button === 0) {
         if (noPropagation) {
           event.stopPropagation();
         }
         dispatch({
           type: 'DOWN',
-          shiftKey: event.shiftKey,
-          altKey: event.altKey,
-          screenX: event.screenX,
-          screenY: event.screenY,
-          clientX: event.clientX,
-          clientY: event.clientY,
-          boundingRect: event.currentTarget.getBoundingClientRect(),
+          payload: {
+            shiftKey: event.shiftKey,
+            altKey: event.altKey,
+            screenX: event.screenX,
+            screenY: event.screenY,
+            clientX: event.clientX,
+            clientY: event.clientY,
+            boundingRect: event.currentTarget.getBoundingClientRect(),
+          },
         });
 
         setMouseDownTime(event.timeStamp);
       }
 
-      function moveCallback(event) {
+      function moveCallback(event: MouseEvent) {
         dispatch({
           type: 'MOVE',
-          screenX: event.screenX,
-          screenY: event.screenY,
-          clientX: event.clientX,
-          clientY: event.clientY,
+          payload: {
+            screenX: event.screenX,
+            screenY: event.screenY,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          },
         });
       }
 
@@ -100,8 +155,7 @@ export function BrushTracker({
   );
 
   const clickHandler = useCallback(
-    (e) => {
-      e.persist();
+    (e: React.MouseEvent) => {
       const timeStamp = e.timeStamp;
       const boundingRect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - boundingRect.x;
@@ -133,7 +187,7 @@ export function BrushTracker({
   );
 
   const handleMouseWheel = useCallback(
-    (event) => {
+    (event: React.WheelEvent) => {
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;
@@ -180,7 +234,32 @@ export function BrushTracker({
   );
 }
 
-function reducer(state, action) {
+interface MouseCoordinates {
+  screenX: number;
+  screenY: number;
+  clientX: number;
+  clientY: number;
+}
+
+type DownAction = ActionType<
+  'DOWN',
+  MouseCoordinates & {
+    shiftKey: boolean;
+    altKey: boolean;
+    boundingRect: DOMRect;
+  }
+>;
+type MoveAction = ActionType<'MOVE', MouseCoordinates>;
+
+type BrushTrackerAction =
+  | ActionType<'UP' | 'DONE', void>
+  | DownAction
+  | MoveAction;
+
+function reducer(
+  state: BrushTrackerState,
+  action: BrushTrackerAction,
+): BrushTrackerState {
   switch (action.type) {
     case 'UP':
       if (state.step === 'brushing' || state.step === 'start') {
@@ -193,14 +272,14 @@ function reducer(state, action) {
     case 'DOWN':
       if (state.step === 'initial' || state.step === 'end') {
         const {
+          shiftKey,
+          altKey,
           screenX,
           screenY,
           clientX,
           clientY,
           boundingRect,
-          shiftKey,
-          altKey,
-        } = action;
+        } = action.payload;
         const x = clientX - boundingRect.x;
         const y = clientY - boundingRect.y;
         return {
@@ -220,13 +299,14 @@ function reducer(state, action) {
       return state;
     case 'MOVE':
       if (state.step === 'start' || state.step === 'brushing') {
-        const { clientX, clientY } = action;
+        const { clientX, clientY } = action.payload;
 
+        const { x = 0, y = 0 } = state.boundingRect || {};
         return {
           ...state,
           step: 'brushing',
-          endX: clientX - state.boundingRect.x,
-          endY: clientY - state.boundingRect.y,
+          endX: clientX - x,
+          endY: clientY - y,
         };
       }
       return state;
@@ -237,7 +317,7 @@ function reducer(state, action) {
           step: 'initial',
         };
       }
-      break;
+      return state;
     default:
       return state;
   }

@@ -1,10 +1,7 @@
 import { Spectrum1D } from 'nmr-load-save';
+import { Filters, apodization } from 'nmr-processing';
 
-import * as Filters from '../../data/Filters';
-import {
-  apodizationFilter,
-  defaultApodizationOptions,
-} from '../../data/data1d/filter1d/apodization';
+import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
@@ -47,11 +44,38 @@ function ApodizationLine() {
 
   const paths = () => {
     const pathBuilder = new PathBuilder();
-    const { windowData: y } = apodizationFilter(
-      spectrum,
-      apodizationOptions || defaultApodizationOptions,
+    const { re, im = [], x } = spectrum.data;
+
+    const { lineBroadening, gaussBroadening, lineBroadeningCenter } =
+      apodizationOptions || defaultApodizationOptions;
+
+    const length = re.length;
+    const dw = (x[length - 1] - x[0]) / (length - 1);
+    const { windowData: y } = apodization(
+      { re, im },
+      {
+        apply: false,
+        compose: {
+          length,
+          shapes: [
+            {
+              start: 0,
+              shape: {
+                kind: 'lorentzToGauss',
+                options: {
+                  length,
+                  dw,
+                  exponentialHz:
+                    gaussBroadening > 0 ? lineBroadening : -lineBroadening,
+                  gaussianHz: gaussBroadening,
+                  center: lineBroadeningCenter,
+                },
+              },
+            },
+          ],
+        },
+      },
     );
-    const x = spectrum.data?.x;
 
     if (x && y) {
       const pathPoints = xyReduce({ x, y });

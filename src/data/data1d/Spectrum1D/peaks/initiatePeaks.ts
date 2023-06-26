@@ -1,7 +1,6 @@
 import merge from 'lodash/merge';
-import { Spectrum1D, Peaks } from 'nmr-load-save';
-
-import { mapPeaks } from './mapPeaks';
+import { Spectrum1D } from 'nmr-load-save';
+import { Peaks, mapPeaks } from 'nmr-processing';
 
 export function initiatePeaks(
   options: Partial<{ peaks: Peaks }>,

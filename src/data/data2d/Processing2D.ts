@@ -1,4 +1,4 @@
-import { Data2DFt } from 'cheminfo-types';
+import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 
 import { calculateSanPlot } from '../utilities/calculateSanPlot';
@@ -40,7 +40,7 @@ export default class Processing2D {
 
     this.conrec = new Conrec(minMax.z, { xs, ys, swapAxes: false });
 
-    const sanResult = calculateSanPlot('2D', minMax as Data2DFt['rr']);
+    const sanResult = calculateSanPlot('2D', minMax as NmrData2DFt['rr']);
     this.median = sanResult.positive;
 
     this.minMax = minMax;

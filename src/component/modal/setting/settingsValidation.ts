@@ -1,3 +1,4 @@
+import { Workspace } from 'nmr-load-save';
 import {
   array,
   lazy,
@@ -6,8 +7,6 @@ import {
   ValidationError,
   type ObjectShape,
 } from 'yup';
-
-import { Workspace } from '../../workspaces/Workspace';
 
 const formattingElementValidation = (obj: Workspace): ObjectShape => {
   return Object.fromEntries(

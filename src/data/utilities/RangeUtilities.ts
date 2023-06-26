@@ -1,5 +1,5 @@
 import omit from 'lodash/omit';
-import { Range, Signal1D } from 'nmr-load-save';
+import { Range, Signal1D } from 'nmr-processing';
 
 import { DatumKind } from '../constants/SignalsKinds';
 

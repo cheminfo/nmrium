@@ -52,7 +52,7 @@ type Properties =
   | LabelField;
 
 export function normalCase(str: string) {
-  const result = str.replace(/(?<upper>[A-Z])/g, ' $<upper>').trim();
+  const result = str.replaceAll(/(?<upper>[A-Z])/g, ' $<upper>').trim();
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
@@ -199,7 +199,9 @@ function generateFilterOptions(properties: MatrixProperties) {
         lodashSet(
           options,
           key,
-          field.default ? field.default.replace(/'|"/g, '') : field.choices[0],
+          field.default
+            ? field.default.replaceAll(/'|"/g, '')
+            : field.choices[0],
         );
         break;
       case 'string':

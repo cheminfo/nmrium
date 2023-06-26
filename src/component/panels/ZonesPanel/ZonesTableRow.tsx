@@ -1,13 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import lodashGet from 'lodash/get';
-import {
-  CSSProperties,
-  useMemo,
-  useCallback,
-  useState,
-  MouseEvent,
-} from 'react';
+import { CSSProperties, useMemo, useCallback, MouseEvent } from 'react';
 import { DropdownMenu } from 'react-science/ui';
 
 import { buildID } from '../../../data/utilities/Concatenation';
@@ -19,19 +13,20 @@ import {
 import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import { useHighlight } from '../../highlight';
 
-import ActionsColumn, { RowDataProps } from './TableColumns/ActionsColumn';
+import ActionsColumn from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
+import { ZoneData } from './hooks/useMapZones';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
 interface ZonesTableRowProps extends ContextMenuProps {
-  rowData: RowDataProps;
+  rowData: ZoneData;
   onUnlink: (
-    rowData: RowDataProps,
+    rowData: ZoneData,
     isOnZoneLevel: boolean,
     signalIndex: any,
     axis: Axis,
@@ -72,11 +67,6 @@ function ZonesTableRow({
     ),
   );
 
-  const [showUnlinkButtonZoneX, setShowUnlinkButtonZoneX] = useState(false);
-  const [showUnlinkButtonZoneY, setShowUnlinkButtonZoneY] = useState(false);
-  const [showUnlinkButtonSignalX, setShowUnlinkButtonSignalX] = useState(false);
-  const [showUnlinkButtonSignalY, setShowUnlinkButtonSignalY] = useState(false);
-
   const rowSpanTags = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
@@ -96,37 +86,23 @@ function ZonesTableRow({
       if (axis === 'x') {
         if (isOnZoneLevel !== undefined) {
           if (isOnZoneLevel) {
-            setShowUnlinkButtonZoneX(false);
             assignmentZone.removeAll('x');
           } else {
-            setShowUnlinkButtonSignalX(false);
             assignmentSignal.removeAll('x');
           }
-        } else {
-          setShowUnlinkButtonZoneX(false);
-          setShowUnlinkButtonSignalX(false);
         }
       } else if (axis === 'y') {
         if (isOnZoneLevel !== undefined) {
           if (isOnZoneLevel) {
-            setShowUnlinkButtonZoneY(false);
             assignmentZone.removeAll('y');
           } else {
-            setShowUnlinkButtonSignalY(false);
             assignmentSignal.removeAll('y');
           }
-        } else {
-          setShowUnlinkButtonZoneY(false);
-          setShowUnlinkButtonSignalY(false);
         }
       } else {
-        setShowUnlinkButtonZoneX(false);
         assignmentZone.removeAll('x');
-        setShowUnlinkButtonSignalX(false);
         assignmentSignal.removeAll('x');
-        setShowUnlinkButtonZoneY(false);
         assignmentZone.removeAll('y');
-        setShowUnlinkButtonSignalY(false);
         assignmentSignal.removeAll('y');
       }
     },
@@ -220,10 +196,6 @@ function ZonesTableRow({
         assignmentSignal={assignmentSignal}
         onHoverSignalX={onHoverSignalX}
         onHoverSignalY={onHoverSignalY}
-        showUnlinkButtonSignalX={showUnlinkButtonSignalX}
-        showUnlinkButtonSignalY={showUnlinkButtonSignalY}
-        setShowUnlinkButtonSignalX={(show) => setShowUnlinkButtonSignalX(show)}
-        setShowUnlinkButtonSignalY={(show) => setShowUnlinkButtonSignalY(show)}
         onClick={clickHandler}
         onUnlink={unlinkHandler}
         highlightSignalX={highlightSignalX}
@@ -234,10 +206,6 @@ function ZonesTableRow({
         assignmentZone={assignmentZone}
         onHoverZoneX={onHoverZoneX}
         onHoverZoneY={onHoverZoneY}
-        showUnlinkButtonZoneX={showUnlinkButtonZoneX}
-        showUnlinkButtonZoneY={showUnlinkButtonZoneY}
-        setShowUnlinkButtonZoneX={(show) => setShowUnlinkButtonZoneX(show)}
-        setShowUnlinkButtonZoneY={(show) => setShowUnlinkButtonZoneY(show)}
         rowSpanTags={rowSpanTags}
         onClick={clickHandler}
         onUnlink={unlinkHandler}

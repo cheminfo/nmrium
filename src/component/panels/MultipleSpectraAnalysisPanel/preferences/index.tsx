@@ -1,17 +1,17 @@
 import { Formik } from 'formik';
+import {
+  AnalysisColumnsTypes,
+  MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface,
+} from 'nmr-load-save';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import * as Yup from 'yup';
 
-import {
-  COLUMNS_TYPES,
-  SpectraAnalysisData,
-} from '../../../../data/data1d/multipleSpectraAnalysis';
+import { SpectraAnalysisData } from '../../../../data/data1d/multipleSpectraAnalysis';
 import { usePreferences } from '../../../context/PreferencesContext';
 import { GroupPane } from '../../../elements/GroupPane';
 import Label from '../../../elements/Label';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
-import { MultipleSpectraAnalysisPreferences as MultipleSpectraAnalysisPreferencesInterface } from '../../../workspaces/Workspace';
 import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer';
 
 import { AnalysisTablePreferences } from './AnalysisTablePreferences';
@@ -171,7 +171,7 @@ function columnSchema(columns) {
         const errors: Yup.ValidationError[] = [];
         for (const column of columns) {
           if (
-            column?.type === COLUMNS_TYPES.FORMULA &&
+            column?.type === AnalysisColumnsTypes.FORMULA &&
             (!column.formula || column.formula === '')
           ) {
             errors.push(

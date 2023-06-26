@@ -2,7 +2,7 @@ import {
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   SpectraNucleusPreferences,
-} from '../../workspaces/Workspace';
+} from 'nmr-load-save';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
@@ -63,6 +63,7 @@ const getIntegralDefaultValues = (
     relative: { show: true, format: '0.00' },
     color: '#000000',
     strokeWidth: 1,
+    showKind: true,
   };
   return getPreferences(preferences, nucleus);
 };

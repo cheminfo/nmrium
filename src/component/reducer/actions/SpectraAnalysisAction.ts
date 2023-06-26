@@ -1,9 +1,20 @@
 import { Draft } from 'immer';
 import { Spectrum1D } from 'nmr-load-save';
 
+import { AnalysisRow } from '../../../data/data1d/multipleSpectraAnalysis';
 import { State } from '../Reducer';
+import { ActionType } from '../types/ActionType';
 
-function handleOrderSpectra(draft: Draft<State>, action) {
+type OrderSpectraAction = ActionType<
+  'ORDER_MULTIPLE_SPECTRA_ANALYSIS',
+  {
+    data: AnalysisRow[];
+  }
+>;
+
+export type SpectraAnalysisActions = OrderSpectraAction;
+
+function handleOrderSpectra(draft: Draft<State>, action: OrderSpectraAction) {
   const { data } = action.payload;
   const spectraIndexes = {};
   let index = 0;

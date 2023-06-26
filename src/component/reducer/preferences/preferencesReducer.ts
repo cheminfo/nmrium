@@ -1,4 +1,9 @@
 import { Draft, produce } from 'immer';
+import {
+  MultipleSpectraAnalysisPreferences,
+  Workspace,
+  WorkSpaceSource,
+} from 'nmr-load-save';
 import { Reducer } from 'react';
 import { SplitPaneSize } from 'react-science/ui';
 
@@ -10,12 +15,7 @@ import {
   storeData,
 } from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
-import {
-  MultipleSpectraAnalysisPreferences,
-  Workspace,
-  WorkSpaceSource,
-} from '../../workspaces/Workspace';
-import { ActionType } from '../types/Types';
+import { ActionType } from '../types/ActionType';
 
 import { addWorkspace } from './actions/addWorkspace';
 import {
@@ -55,7 +55,9 @@ type InitPreferencesAction = ActionType<
     dispatch: any;
   }
 >;
-type SetPreferencesAction = ActionType<'SET_PREFERENCES', Partial<Workspace>>;
+type SetPreferencesAction =
+  | ActionType<'SET_PREFERENCES', Partial<Workspace>>
+  | ActionType<'SET_PREFERENCES', void>;
 type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
   { key: string; value: string }
@@ -72,7 +74,7 @@ export type WorkspaceAction = ActionType<
 >;
 export type AddWorkspaceAction = ActionType<
   'ADD_WORKSPACE',
-  { workspace: string; data?: Omit<Workspace, 'version' | 'label'> }
+  { workspaceKey: string; data?: Omit<Workspace, 'version' | 'label'> }
 >;
 export type ApplyGeneralPreferences = ActionType<
   'APPLY_General_PREFERENCES',

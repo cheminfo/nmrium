@@ -3,19 +3,17 @@ import { ResponsiveChart } from 'react-d3-utils';
 
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
-import { BrushTracker } from '../EventsTrackers/BrushTracker';
+import {
+  BrushTracker,
+  OnBrush,
+  OnClick,
+  OnDoubleClick,
+  OnZoom,
+} from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
-import {
-  BRUSH_END,
-  FULL_ZOOM_OUT,
-  SET_DIMENSIONS,
-  SET_2D_LEVEL,
-  SET_ZOOM,
-  ADD_2D_ZONE,
-} from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 import { assert } from '../utility/assert';
 
@@ -61,7 +59,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const DIMENSION = get2DDimensionLayout(state);
 
-  const handelBrushEnd = useCallback(
+  const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       const trackID = getLayoutID(DIMENSION, brushData);
       if (trackID) {
@@ -73,7 +71,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
         } else if (brushData.shiftKey) {
           switch (selectedTool) {
             case options.zonePicking.id:
-              dispatch({ type: ADD_2D_ZONE, ...brushData });
+              dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
               break;
             default:
               break;
@@ -83,9 +81,11 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
             default:
               if (selectedTool != null) {
                 return dispatch({
-                  type: BRUSH_END,
-                  ...brushData,
-                  trackID: getLayoutID(DIMENSION, brushData),
+                  type: 'BRUSH_END',
+                  payload: {
+                    ...brushData,
+                    trackID: getLayoutID(DIMENSION, brushData),
+                  },
                 });
               }
           }
@@ -95,31 +95,31 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [selectedTool, dispatch, DIMENSION],
   );
 
-  const handelOnDoubleClick = useCallback(
+  const handelOnDoubleClick: OnDoubleClick = useCallback(
     (e) => {
       const { x: startX, y: startY } = e;
       const trackID = getLayoutID(DIMENSION, { startX, startY });
       if (trackID) {
-        dispatch({ type: FULL_ZOOM_OUT, trackID });
+        dispatch({ type: 'FULL_ZOOM_OUT', payload: { trackID } });
       }
     },
     [DIMENSION, dispatch],
   );
 
-  const handleZoom = (event) => {
+  const handleZoom: OnZoom = (event) => {
     const { x: startX, y: startY } = event;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
       if (trackID === 'CENTER_2D') {
-        dispatch({ type: SET_2D_LEVEL, ...event });
+        dispatch({ type: 'SET_2D_LEVEL', payload: event });
       } else {
-        dispatch({ type: SET_ZOOM, event, trackID });
+        dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
       }
     }
   };
 
-  const mouseClick = useCallback(
+  const mouseClick: OnClick = useCallback(
     (position) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { x, y } = position;
@@ -207,7 +207,7 @@ export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
   const { width, height, children } = props;
 
   useEffect(() => {
-    dispatch({ type: SET_DIMENSIONS, width, height });
+    dispatch({ type: 'SET_DIMENSIONS', payload: { width, height } });
   }, [width, height, dispatch]);
 
   return children;

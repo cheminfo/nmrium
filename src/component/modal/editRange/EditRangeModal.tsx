@@ -2,8 +2,9 @@
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
 import { Formik } from 'formik';
-import { Spectrum1D, Range } from 'nmr-load-save';
-import { useMemo, useCallback, useRef } from 'react';
+import { Spectrum1D } from 'nmr-load-save';
+import { Range, splitPatterns, translateMultiplet } from 'nmr-processing';
+import { useMemo, useCallback, useRef, useEffect } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
@@ -14,11 +15,7 @@ import SaveButton from '../../elements/SaveButton';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import {
-  hasCouplingConstant,
-  translateMultiplet,
-} from '../../panels/extra/utilities/MultiplicityUtilities';
-import { UPDATE_RANGE } from '../../reducer/types/Types';
+import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../utility/formatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
@@ -60,11 +57,11 @@ const styles = css`
 `;
 
 interface EditRangeModalProps {
-  onSaveEditRangeModal: (value: any) => Promise<void> | null | void;
-  onCloseEditRangeModal: (range: any, originalRange: any) => void;
-  onZoomEditRangeModal: (value: any) => void;
-  range: any;
-  manualRange?: boolean;
+  onSave: (value: any) => Promise<void> | null | void;
+  onClose?: () => void;
+  onRest: (originalRange: Range) => void;
+  onZoom: (value: any) => void;
+  rangeId: string;
 }
 
 interface Coupling {
@@ -73,11 +70,11 @@ interface Coupling {
 }
 
 function EditRangeModal({
-  onSaveEditRangeModal = () => null,
-  onCloseEditRangeModal = () => null,
-  onZoomEditRangeModal = () => null,
-  manualRange = false,
-  range: originRange,
+  onSave,
+  onClose,
+  onZoom,
+  onRest,
+  rangeId,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
   const {
@@ -86,15 +83,35 @@ function EditRangeModal({
     },
   } = useChartData();
   const dispatch = useDispatch();
+  const range = useRange(rangeId);
+  const originalRangeRef = useRef(range);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
-  const range = useRange(originRange, manualRange);
+
   const handleOnZoom = useCallback(() => {
-    onZoomEditRangeModal(range);
-  }, [onZoomEditRangeModal, range]);
+    onZoom(range);
+  }, [onZoom, range]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_SELECTED_TOOL',
+      payload: {
+        selectedTool: 'zoom',
+      },
+    });
+    if (!range) {
+      onClose?.();
+    }
+  }, [activeTab, dispatch, onClose, range]);
 
   const handleOnClose = useCallback(() => {
-    onCloseEditRangeModal(range, originRange);
-  }, [onCloseEditRangeModal, originRange, range]);
+    dispatch({
+      type: 'SET_SELECTED_TOOL',
+      payload: {
+        selectedTool: 'zoom',
+      },
+    });
+    onRest(originalRangeRef.current);
+  }, [dispatch, onRest]);
 
   const getCouplings = useCallback(
     (couplings) =>
@@ -130,10 +147,10 @@ function EditRangeModal({
       void (async () => {
         const _range = { ...range };
         _range.signals = getSignals(formValues.signals);
-        await onSaveEditRangeModal(_range);
+        await onSave(_range);
       })();
     },
-    [getSignals, onSaveEditRangeModal, range],
+    [getSignals, onSave, range],
   );
 
   const data = useMemo(() => {
@@ -143,27 +160,26 @@ function EditRangeModal({
       let counterJ = 0;
       const couplings: Array<Coupling> = [];
       if (signal.multiplicity) {
-        for (const multiplicity of signal.multiplicity.split('')) {
+        for (const multiplicity of splitPatterns(signal.multiplicity)) {
           let js: Coupling = {
             multiplicity,
             coupling: '',
           };
-
-          if (hasCouplingConstant(multiplicity) && signal?.js) {
+          if (hasCouplingConstant(multiplicity) && signal?.js.length > 0) {
             js = { ...signal.js[counterJ] } as Coupling;
             js.coupling = Number(
               formatNumber(js.coupling, rangesPreferences.coupling.format),
             );
             counterJ++;
           }
-          js.multiplicity = translateMultiplet(js.multiplicity || '');
+          js.multiplicity = translateMultiplet(js.multiplicity || multiplicity);
           couplings.push(js);
         }
       }
       return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
-  }, [range?.signals, rangesPreferences.coupling.format]);
+  }, [range?.signals, rangesPreferences]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -178,13 +194,17 @@ function EditRangeModal({
         })
       ) {
         dispatch({
-          type: UPDATE_RANGE,
+          type: 'UPDATE_RANGE',
           payload: { range: { ...range, signals } },
         });
       }
     },
     [dispatch, getSignals, range],
   );
+
+  if (!rangesPreferences || !range) {
+    return;
+  }
 
   return (
     <div css={styles}>
@@ -228,13 +248,14 @@ function EditRangeModal({
   );
 }
 
-function useRange(range: Range, isNew: boolean) {
+function useRange(rangeId: string) {
   const { ranges } = useSpectrum({
     ranges: { values: [] },
   }) as Spectrum1D;
 
-  const id = isNew ? 'new' : range.id;
-  const index = ranges.values.findIndex((rangeRecord) => rangeRecord.id === id);
+  const index = ranges.values.findIndex(
+    (rangeRecord) => rangeRecord.id === rangeId,
+  );
   return ranges.values[index];
 }
 

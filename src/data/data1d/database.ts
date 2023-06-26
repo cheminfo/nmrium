@@ -121,8 +121,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
           idCode: entry.ocl.idCode,
           index: entry.ocl.index,
         });
-      } catch (error) {
-        reportError(error);
+      } catch {
         // eslint-disable-next-line no-console
         console.error(`Could not parse idCode: ${JSON.stringify(entry.ocl)}`);
       }
@@ -130,8 +129,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
       try {
         const molecule = OCL.Molecule.fromSmiles(entry.smiles);
         moleculesDB.pushEntry(molecule, entry);
-      } catch (error) {
-        reportError(error);
+      } catch {
         // eslint-disable-next-line no-console
         console.error(`Could not parse smiles: ${entry.smiles}`);
       }

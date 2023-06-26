@@ -1,7 +1,7 @@
-import { Data1D } from 'nmr-load-save';
+import { NmrData1D } from 'cheminfo-types';
+import { Filters } from 'nmr-processing';
 import { useEffect, useState, memo } from 'react';
 
-import * as Filters from '../../data/Filters';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
@@ -10,12 +10,6 @@ import Label from '../elements/Label';
 import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
-import {
-  APPLY_ZERO_FILLING_FILTER,
-  CALCULATE_ZERO_FILLING_FILTER,
-  RESET_SELECTED_TOOL,
-} from '../reducer/types/Types';
-import { options } from '../toolbar/ToolTypes';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -28,7 +22,7 @@ function useInitZeroFillingSize() {
   if (filter) {
     return filter.value.nbPoints;
   } else if (data) {
-    return 2 ** Math.round(Math.log2((data as Data1D).x.length * 2));
+    return 2 ** Math.round(Math.log2((data as NmrData1D).x.length * 2));
   }
   return 0;
 }
@@ -40,7 +34,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   function handleApplyFilter() {
     dispatch({
-      type: APPLY_ZERO_FILLING_FILTER,
+      type: 'APPLY_ZERO_FILLING_FILTER',
       payload: {
         nbPoints: size,
       },
@@ -49,13 +43,13 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   function handleCancelFilter() {
     dispatch({
-      type: RESET_SELECTED_TOOL,
+      type: 'RESET_SELECTED_TOOL',
     });
   }
 
   function dispatchLiveChanges(nbPoints) {
     dispatch({
-      type: CALCULATE_ZERO_FILLING_FILTER,
+      type: 'CALCULATE_ZERO_FILLING_FILTER',
       payload: {
         nbPoints,
       },
@@ -77,12 +71,6 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
   function checkChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
     const checked = event.target.checked;
     setLivePreview(checked);
-    if (!checked) {
-      //disable filter Live preview
-      dispatch({
-        payload: { selectedTool: options.zeroFilling.id },
-      });
-    }
   }
 
   return (

@@ -9,11 +9,6 @@ import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import { ActiveSpectrum } from '../../reducer/Reducer';
-import {
-  SET_ACTIVE_TAB,
-  CHANGE_VISIBILITY,
-  CHANGE_ACTIVE_SPECTRUM,
-} from '../../reducer/types/Types';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { SpectraTable } from './SpectraTable';
@@ -45,7 +40,7 @@ function SpectrumsTabsInner({
   }, [data]);
 
   function onTabChangeHandler(tab) {
-    dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
+    dispatch({ type: 'SET_ACTIVE_TAB', payload: { tab: tab.tabid } });
   }
 
   const openSettingHandler = useCallback((event, selectedSpectrum) => {
@@ -61,7 +56,7 @@ function SpectrumsTabsInner({
   const handleChangeVisibility = useCallback(
     (d, key) => {
       dispatch({
-        type: CHANGE_VISIBILITY,
+        type: 'CHANGE_SPECTRUM_VISIBILITY',
         payload: {
           id: d.id,
           key,
@@ -77,7 +72,7 @@ function SpectrumsTabsInner({
         e.ctrlKey ? 'true' : 'false'
       }]`;
       dispatch({
-        type: CHANGE_ACTIVE_SPECTRUM,
+        type: 'CHANGE_ACTIVE_SPECTRUM',
         payload: { modifier, id: spectrum.id },
       });
     }, 0);

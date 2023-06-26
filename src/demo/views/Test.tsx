@@ -7,49 +7,6 @@ import NMRium from '../../component/NMRium';
 
 import { loadData } from './View';
 
-/**
- *
- * @param {Array<File>} acceptedFiles
- * @param {object} options
- * @param {boolean} options.asBuffer
- * @returns
- */
-function loadFiles<T = unknown>(
-  acceptedFiles,
-  options: { asBuffer?: boolean } = {},
-) {
-  return Promise.all(
-    ([] as Array<T>).map.call(acceptedFiles, (file: any) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.addEventListener('abort', (e) => reject(e));
-        reader.addEventListener('error', (e) => reject(e));
-        reader.addEventListener('load', () => {
-          if (reader.result) {
-            const binary = reader.result;
-            const name = getFileName(file.name);
-            const extension = getFileExtension(file.name);
-            resolve({ binary, name, extension });
-          }
-        });
-        if (options.asBuffer) {
-          reader.readAsArrayBuffer(file);
-        } else {
-          reader.readAsBinaryString(file);
-        }
-      });
-    }),
-  ) as Promise<Array<T>>;
-}
-
-function getFileExtension(name) {
-  return name.replace(/^.*\./, '').toLowerCase();
-}
-
-function getFileName(name) {
-  return name.slice(0, Math.max(0, name.lastIndexOf('.')));
-}
-
 function searchDeep(obj, searchKey) {
   let result: any = [];
   function objectHelper(obj) {
@@ -111,7 +68,7 @@ export default function Test(props) {
   useEffect(() => {
     if (file) {
       void loadData(file).then((d) => {
-        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
+        const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
         setData(_d);
       });
     } else {
@@ -121,15 +78,12 @@ export default function Test(props) {
   const [viewCallBack, setViewCallBack] = useState<any>({});
   const [dataCallBack, setDataCallBack] = useState<any>({});
   const [settingsCallBack, setSettingsCallBack] = useState<any>({});
-  const dropFileHandler = useCallback((dropFiles) => {
+  const dropFileHandler = useCallback((dropFiles: File[]) => {
     void (async () => {
       try {
-        const files = await loadFiles<{ binary: any }>(dropFiles, {
-          asBuffer: true,
-        });
-
+        const arrayBuffer = await dropFiles[0].arrayBuffer();
         const decoder = new TextDecoder('utf8');
-        const data = JSON.parse(decoder.decode(files[0].binary));
+        const data = JSON.parse(decoder.decode(arrayBuffer));
         setData(data);
       } catch (error) {
         reportError(error);

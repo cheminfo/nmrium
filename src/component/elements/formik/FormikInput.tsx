@@ -19,7 +19,7 @@ function identity<T = unknown>(value: T): T {
 function FormikInput(props: FormikInputProps) {
   const {
     name,
-    style = { label: {}, input: {} },
+    style = { label: {}, input: {}, inputWrapper: {} },
     onChange = () => null,
     checkValue = () => true,
     type = 'text',
@@ -38,7 +38,7 @@ function FormikInput(props: FormikInputProps) {
   function changeHandler(e) {
     onChange(e);
     if (mapOnChangeValue) {
-      setFieldValue(name, mapOnChangeValue(e.target.value));
+      void setFieldValue(name, mapOnChangeValue(e.target.value));
     } else {
       handleChange(e);
     }
@@ -61,11 +61,15 @@ function FormikInput(props: FormikInputProps) {
       style={{
         ...style,
         inputWrapper: {
-          ...style.input,
-          ...(isInvalid && {
-            border: '1px solid red',
-            outline: 'none',
-          }),
+          ...style.inputWrapper,
+          ...(isInvalid
+            ? {
+                borderColor: 'red',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                outline: 'none',
+              }
+            : {}),
         },
       }}
       checkValue={checkValue}

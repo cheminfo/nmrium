@@ -114,13 +114,13 @@ const Main = () => {
           setDashBoardType('multi');
           void loadData(sampleURL).then((remoteRoutes) => {
             if (remoteRoutes) {
-              const baseURL = sampleURL.replace(
+              const baseURL = sampleURL.replaceAll(
                 /^(?<url>.*[/\\])?(?<filename>.*?\.[^.]*?|)$/g,
                 '$1',
               );
 
               const _remoteRoutes = JSON.parse(
-                JSON.stringify(remoteRoutes).replace(/\.\/+?/g, baseURL),
+                JSON.stringify(remoteRoutes).replaceAll(/\.\/+?/g, baseURL),
               );
               setRoutes({
                 isLoaded: true,

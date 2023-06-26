@@ -1,8 +1,8 @@
 import lodashGet from 'lodash/get';
+import { PanelPreferencesType } from 'nmr-load-save';
 import { useCallback, memo, ReactElement, CSSProperties } from 'react';
 import { Accordion } from 'react-science/ui';
 
-import { PanelPreferencesType } from '../../types/PanelPreferencesType';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
@@ -50,7 +50,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Peaks',
     component: <PeaksPanel />,
     hidePreferenceKey: 'peaksPanel',
-    mode: null,
+    mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Processings',
@@ -62,7 +62,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Integrals',
     component: <IntegralPanel />,
     hidePreferenceKey: 'integralsPanel',
-    mode: null,
+    mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Ranges',

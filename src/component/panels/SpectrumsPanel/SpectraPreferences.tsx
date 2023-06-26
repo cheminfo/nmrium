@@ -1,4 +1,5 @@
 import { Formik } from 'formik';
+import { PanelsPreferences } from 'nmr-load-save';
 import {
   useImperativeHandle,
   useRef,
@@ -14,7 +15,6 @@ import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
-import { PanelsPreferences } from '../../workspaces/Workspace';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
@@ -52,7 +52,7 @@ function SpectraPreferences(props, ref: any) {
 
   const handleAdd = useCallback((nucleus, index) => {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
-    let columns = data.nuclei[nucleus].columns;
+    let columns = data.nuclei[nucleus]?.columns || [];
 
     columns = [
       ...columns.slice(0, index),
@@ -78,7 +78,7 @@ function SpectraPreferences(props, ref: any) {
 
   const handleDelete = useCallback((nucleus, index) => {
     const data: PanelsPreferences['spectra'] = formRef.current.values;
-    const columns = data.nuclei[nucleus].columns.filter(
+    const columns = data.nuclei[nucleus]?.columns.filter(
       (_, columnIndex) => columnIndex !== index,
     );
     formRef.current.setValues({

@@ -2,10 +2,10 @@ import { useFormikContext } from 'formik';
 import { useMemo, useCallback } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
-import { COLUMNS_TYPES } from '../../../../data/data1d/multipleSpectraAnalysis';
 import Button from '../../../elements/Button';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../elements/formik/FormikInput';
+import { AnalysisColumnsTypes } from 'nmr-load-save';
 
 const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
@@ -19,7 +19,7 @@ export function AnalysisTablePreferences() {
 
   const addNewColumn = useCallback(
     (index, columns) => {
-      setFieldValue('analysisOptions.columns', [
+      void setFieldValue('analysisOptions.columns', [
         ...columns,
         {
           tempKey: '',
@@ -35,7 +35,7 @@ export function AnalysisTablePreferences() {
 
   const handleDelete = useCallback(
     (index, columns) => {
-      setFieldValue(
+      void setFieldValue(
         'analysisOptions.columns',
         columns.filter((_, colIndex) => colIndex !== index),
       );
@@ -61,7 +61,8 @@ export function AnalysisTablePreferences() {
       {
         Header: 'Value',
         Cell: ({ row }) => {
-          const isFormulaColumn = row.original.type === COLUMNS_TYPES.FORMULA;
+          const isFormulaColumn =
+            row.original.type === AnalysisColumnsTypes.FORMULA;
           return (
             <FormikInput
               disabled={!isFormulaColumn}

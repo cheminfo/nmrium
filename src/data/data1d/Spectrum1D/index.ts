@@ -3,8 +3,6 @@ export { get1DDataXY } from './get1DDataXY';
 export { getReferenceShift } from './getReferenceShift';
 export { initiateDatum1D } from './initiateDatum1D';
 export { changeIntegralsRelative } from './integrals/changeIntegralsRelative';
-export { checkIntegralKind } from './integrals/checkIntegralKind';
-export { updateIntegralsRelativeValues } from './integrals/updateIntegralsRelativeValues';
 export { isSpectrum1D } from './isSpectrum1D';
 export { autoPeakPicking } from './peaks/autoPeakPicking';
 export { lookupPeak } from './peaks/lookupPeak';
@@ -17,7 +15,11 @@ export { checkRangeKind } from './ranges/checkRangeKind';
 export { detectRange } from './ranges/detectRange';
 export { detectRanges } from './ranges/detectRanges';
 export { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
-export { mapRanges } from './ranges/mapRanges';
-export { updateRangesRelativeValues } from './ranges/updateRangesRelativeValues';
-export { getShiftX } from './getShiftX';
+export {
+  mapRanges,
+  getShiftX,
+  checkIntegralKind,
+  updateRangesRelativeValues,
+  updateIntegralsRelativeValues,
+} from 'nmr-processing';
 export { get1DColor } from './get1DColor';

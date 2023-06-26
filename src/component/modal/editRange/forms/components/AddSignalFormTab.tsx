@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik, useFormikContext } from 'formik';
+import { WorkSpacePanelPreferences } from 'nmr-load-save';
+import { translateMultiplet } from 'nmr-processing';
 import { forwardRef, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import Button from '../../../../elements/Button';
 import FormikInput from '../../../../elements/formik/FormikInput';
-import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../../../utility/formatNumber';
-import { WorkSpacePanelPreferences } from '../../../../workspaces/Workspace';
 
 const styles = {
   container: css`
@@ -61,8 +61,8 @@ function AddSignalFormTab(
       };
       const _signals = values.signals.slice().concat(newSignal);
 
-      setFieldValue('signals', _signals);
-      setFieldValue('activeTab', String(_signals.length - 1));
+      void setFieldValue('signals', _signals);
+      void setFieldValue('activeTab', String(_signals.length - 1));
     },
     [setFieldValue, values.signals],
   );

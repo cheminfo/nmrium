@@ -1,5 +1,5 @@
+import { NmrData1D } from 'cheminfo-types';
 import max from 'ml-array-max';
-import { Data1D } from 'nmr-load-save';
 
 // Lookup for apeak while the mouse move
 /**
@@ -19,7 +19,7 @@ interface LookupPeakResult {
 }
 
 export function lookupPeak(
-  data: Data1D,
+  data: NmrData1D,
   options: LookupPeakOptions,
 ): LookupPeakResult | null {
   const { from, to } = options;

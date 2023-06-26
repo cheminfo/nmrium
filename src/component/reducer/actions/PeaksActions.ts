@@ -1,7 +1,9 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData1D } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Data1D, Peak1D, Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D } from 'nmr-load-save';
+import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
   getShiftX,
@@ -10,12 +12,50 @@ import {
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
-import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { ActionType } from '../types/ActionType';
 
-function addPeak(draft: Draft<State>, mouseCoordinates) {
+type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
+type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
+type DeletePeakAction = ActionType<'DELETE_PEAK', { id?: string }>;
+type OptimizePeaksAction = ActionType<'OPTIMIZE_PEAKS', { peaks: Peak1D[] }>;
+type AutoPeaksPickingAction = ActionType<
+  'AUTO_PEAK_PICKING',
+  {
+    maxNumberOfPeaks: number;
+    minMaxRatio: number;
+    noiseFactor: number;
+    direction: OptionsXYAutoPeaksPicking['direction'];
+  }
+>;
+type ChangePeaksShapeAction = ActionType<
+  'CHANGE_PEAK_SHAPE',
+  {
+    id: string;
+    shape: Peak1D['shape'];
+  }
+>;
+type TogglePeaksViewAction = ActionType<
+  'TOGGLE_PEAKS_VIEW_PROPERTY',
+  {
+    key: keyof typeof defaultPeaksViewState;
+  }
+>;
+
+export type PeaksActions =
+  | AddPeakAction
+  | AddPeaksAction
+  | DeletePeakAction
+  | OptimizePeaksAction
+  | AutoPeaksPickingAction
+  | ChangePeaksShapeAction
+  | TogglePeaksViewAction;
+
+//action
+function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
+  const { x: mouseXPosition } = action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
 
   const state = original(draft) as State;
@@ -23,10 +63,10 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
   if (activeSpectrum?.id && state) {
     const { index } = activeSpectrum;
     const xShift = 10;
-    const startX = mouseCoordinates.x - xShift;
-    const endX = mouseCoordinates.x + xShift;
+    const startX = mouseXPosition - xShift;
+    const endX = mouseXPosition + xShift;
     const [from, to] = getRange(draft, { startX, endX });
-    const candidatePeak = lookupPeak(state.data[index].data as Data1D, {
+    const candidatePeak = lookupPeak(state.data[index].data as NmrData1D, {
       from,
       to,
     });
@@ -46,7 +86,8 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
   }
 }
 
-function addPeaks(draft: Draft<State>, action) {
+//action
+function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
   const state = original(draft) as State;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -55,7 +96,7 @@ function addPeaks(draft: Draft<State>, action) {
     const { index } = activeSpectrum;
     const datumOriginal = state.data[index] as Spectrum1D;
 
-    const { startX, endX } = action;
+    const { startX, endX } = action.payload;
     const [from, to] = getRange(draft, { startX, endX });
 
     if (from !== to) {
@@ -77,25 +118,28 @@ function addPeaks(draft: Draft<State>, action) {
   }
 }
 
-function deletePeak(draft: Draft<State>, peakData) {
+//action
+function handleDeletePeak(draft: Draft<State>, action: DeletePeakAction) {
   const activeSpectrum = getActiveSpectrum(draft);
+  const peakId = action?.payload?.id;
 
   if (activeSpectrum) {
     const { index } = activeSpectrum;
     const state = original(draft) as State;
 
-    if (peakData == null) {
+    if (!peakId) {
       (draft.data[index] as Spectrum1D).peaks.values = [];
     } else {
       const peakIndex = (
         state.data[index] as Spectrum1D
-      ).peaks.values.findIndex((p) => p.id === peakData.id);
+      ).peaks.values.findIndex((p) => p.id === peakId);
       (draft.data[index] as Spectrum1D).peaks.values.splice(peakIndex, 1);
     }
   }
 }
 
-function handleOptimizePeaks(draft: Draft<State>, action) {
+//action
+function handleOptimizePeaks(draft: Draft<State>, action: OptimizePeaksAction) {
   const { peaks } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -115,12 +159,17 @@ function handleOptimizePeaks(draft: Draft<State>, action) {
     datum.peaks.values = newPeaks;
   }
 }
-function handleAutoPeakPicking(draft: Draft<State>, action) {
+
+//action
+function handleAutoPeakPicking(
+  draft: Draft<State>,
+  action: AutoPeaksPickingAction,
+) {
   const { maxNumberOfPeaks, minMaxRatio, noiseFactor, direction } =
     action.payload;
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
-    draft.toolOptions.selectedTool = options.zoom.id;
+    draft.toolOptions.selectedTool = 'zoom';
     draft.toolOptions.selectedOptionPanel = null;
     const { index } = activeSpectrum;
     const datum = draft.data[index] as Spectrum1D;
@@ -142,7 +191,11 @@ function handleAutoPeakPicking(draft: Draft<State>, action) {
   }
 }
 
-function changePeakShapeHandler(draft: Draft<State>, action) {
+//action
+function handleChangePeakShape(
+  draft: Draft<State>,
+  action: ChangePeaksShapeAction,
+) {
   const { shape, id } = action.payload;
 
   const activeSpectrum = getActiveSpectrum(draft);
@@ -158,7 +211,11 @@ function changePeakShapeHandler(draft: Draft<State>, action) {
   }
 }
 
-function handleTogglePeaksViewProperty(draft: Draft<State>, action) {
+//action
+function handleTogglePeaksViewProperty(
+  draft: Draft<State>,
+  action: TogglePeaksViewAction,
+) {
   const { key } = action.payload;
   togglePeaksViewProperty(draft, key);
 }
@@ -182,11 +239,11 @@ function togglePeaksViewProperty(
 }
 
 export {
-  addPeak,
-  addPeaks,
-  deletePeak,
+  handleAddPeak,
+  handleAddPeaks,
+  handleDeletePeak,
   handleAutoPeakPicking,
   handleOptimizePeaks,
-  changePeakShapeHandler,
+  handleChangePeakShape,
   handleTogglePeaksViewProperty,
 };

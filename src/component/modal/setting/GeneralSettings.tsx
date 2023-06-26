@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
+import { Workspace } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Modal, Toolbar, useOnOff } from 'react-science/ui';
@@ -22,7 +23,6 @@ import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
-import { Workspace } from '../../workspaces/Workspace';
 
 import WorkspaceItem from './WorkspaceItem';
 import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
@@ -65,12 +65,7 @@ const styles = css`
 
   .input {
     font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    padding: 5px;
-    width: 100px;
-    margin-right: 10px;
-    height: initial !important;
+    padding: 3px;
   }
 
   .close-bt {
@@ -173,7 +168,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     dispatch({
       type: 'ADD_WORKSPACE',
       payload: {
-        workspace: name,
+        workspaceKey: name,
         data: refForm.current?.values,
       },
     });

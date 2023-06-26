@@ -1,10 +1,13 @@
 import { v4 } from '@lukeed/uuid';
-import { Signal2D, Spectrum, Zone } from 'nmr-load-save';
+import { Spectrum } from 'nmr-load-save';
 import {
+  Signal2D,
+  Zone,
   predictAll,
   signalsToXY,
   signals2DToZ,
   getFrequency,
+  PredictedAll,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -16,6 +19,10 @@ import {
 } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
+
+export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
+export type SpectraPredictionOptions = Record<Experiment, boolean>;
+export type PredictedSpectraResult = Partial<Record<Experiment, Spectrum>>;
 
 export interface PredictionOptions {
   name: string;
@@ -29,13 +36,7 @@ export interface PredictionOptions {
   '2d': {
     nbPoints: { x: number; y: number };
   };
-  spectra: {
-    proton: boolean;
-    carbon: boolean;
-    cosy: boolean;
-    hsqc: boolean;
-    hmbc: boolean;
-  };
+  spectra: SpectraPredictionOptions;
 }
 
 export const defaultPredictionOptions: PredictionOptions = {
@@ -74,7 +75,7 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(molfile: string): Promise<any> {
+export async function predictSpectra(molfile: string): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
 
   return predictAll(molecule, {
@@ -86,15 +87,26 @@ export async function predictSpectra(molfile: string): Promise<any> {
   });
 }
 
+function generateName(
+  name: string,
+  options: { frequency: number | number[]; experiment: string },
+) {
+  const { frequency, experiment } = options;
+  const freq = Array.isArray(frequency)
+    ? frequency.map((f) => `${f}MHz`).join('_')
+    : `${frequency}MHz`;
+  return name || `${experiment.toUpperCase()}_${freq}_${v4()}`;
+}
+
 export function generateSpectra(
-  data: Record<string, any>,
+  predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
   color: string,
 ): Spectrum[] {
   const spectra: Spectrum[] = [];
-  for (const experiment in data) {
+  for (const experiment in predictedSpectra) {
     if (inputOptions.spectra[experiment]) {
-      const spectrum = data[experiment];
+      const spectrum = predictedSpectra[experiment];
       switch (experiment) {
         case 'proton':
         case 'carbon': {
@@ -144,6 +156,7 @@ function generated1DSpectrum(params: {
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
+  const SpectrumName = generateName(name, { frequency: freq, experiment });
   const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
@@ -154,7 +167,6 @@ function generated1DSpectrum(params: {
     {
       data: { x, im: null, re: y },
       display: {
-        name,
         color,
       },
       info: {
@@ -165,6 +177,8 @@ function generated1DSpectrum(params: {
         solvent: '',
         experiment,
         isFt: true,
+        name: SpectrumName,
+        title: SpectrumName,
       },
     },
     {},
@@ -221,7 +235,10 @@ function generated2DSpectrum(params: {
     width,
     factor: 3,
   });
-
+  const SpectrumName = generateName(inputOptions.name, {
+    frequency,
+    experiment,
+  });
   const datum = initiateDatum2D(
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },
@@ -230,7 +247,8 @@ function generated2DSpectrum(params: {
         negativeColor: adjustAlpha(color, 40),
       },
       info: {
-        name: inputOptions.name,
+        name: SpectrumName,
+        title: SpectrumName,
         nucleus: nuclei,
         originFrequency: frequency,
         baseFrequency: frequency,

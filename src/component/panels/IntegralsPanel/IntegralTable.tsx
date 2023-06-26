@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Integral } from 'nmr-load-save';
+import { Integral } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -13,11 +13,6 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import Select from '../../elements/Select';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import {
-  DELETE_INTEGRAL,
-  CHANGE_INTEGRAL_DATA,
-  CHANGE_INTEGRAL_RELATIVE,
-} from '../../reducer/types/Types';
 import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -36,20 +31,22 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     (e, row) => {
       e.preventDefault();
       e.stopPropagation();
-      const params = row.original;
+      const { id } = row.original;
       dispatch({
-        type: DELETE_INTEGRAL,
-        integralID: params.id,
+        type: 'DELETE_INTEGRAL',
+        payload: {
+          id,
+        },
       });
     },
     [dispatch],
   );
   const changeIntegralDataHandler = useCallback(
     (value, row) => {
-      const data = { ...row.original, kind: value };
+      const integral = { ...row.original, kind: value };
       dispatch({
-        type: CHANGE_INTEGRAL_DATA,
-        payload: { data },
+        type: 'CHANGE_INTEGRAL',
+        payload: { integral },
       });
     },
     [dispatch],
@@ -60,37 +57,20 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         index: 1,
         Header: '#',
         accessor: (_, index) => index + 1,
-        width: 10,
+        style: { width: '30px', maxWidth: '30px' },
       },
 
       {
         index: 2,
         Header: 'From',
         sortType: 'basic',
-        resizable: true,
         accessor: (row) => row.from.toFixed(2),
       },
       {
         index: 3,
         Header: 'To',
         sortType: 'basic',
-        resizable: true,
         accessor: (row) => row.to.toFixed(2),
-      },
-      {
-        index: 6,
-        Header: 'Kind',
-        sortType: 'basic',
-        resizable: true,
-        accessor: 'kind',
-        Cell: ({ row }) => (
-          <Select
-            onChange={(value) => changeIntegralDataHandler(value, row)}
-            items={SignalKinds}
-            style={selectStyle}
-            defaultValue={row.original.kind}
-          />
-        ),
       },
       {
         index: 7,
@@ -107,15 +87,14 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         ),
       },
     ],
-    [changeIntegralDataHandler, deleteIntegralHandler],
+    [deleteIntegralHandler],
   );
 
   const saveRelativeHandler = useCallback(
     (event, row) => {
-      const data = { value: event.target.value, id: row.id };
       dispatch({
-        type: CHANGE_INTEGRAL_RELATIVE,
-        payload: { data },
+        type: 'CHANGE_INTEGRAL_RELATIVE',
+        payload: { value: event.target.value, id: row.id },
       });
     },
     [dispatch],
@@ -167,8 +146,29 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
           );
         },
       },
+      {
+        index: 6,
+        Header: 'Kind',
+        sortType: 'basic',
+        resizable: true,
+        accessor: 'kind',
+        showWhen: 'showKind',
+        Cell: ({ row }) => (
+          <Select
+            onChange={(value) => changeIntegralDataHandler(value, row)}
+            items={SignalKinds}
+            style={selectStyle}
+            defaultValue={row.original.kind}
+          />
+        ),
+      },
     ],
-    [activeTab, integralsPreferences, saveRelativeHandler],
+    [
+      activeTab,
+      changeIntegralDataHandler,
+      integralsPreferences,
+      saveRelativeHandler,
+    ],
   );
 
   const tableColumns = useMemo(() => {
