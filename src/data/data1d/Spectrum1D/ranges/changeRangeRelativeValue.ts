@@ -16,10 +16,12 @@ export function changeRangeRelativeValue(
 ) {
   const { id, value } = data;
   const index = spectrum.ranges.values.findIndex((range) => range.id === id);
-  if (index !== -1 && spectrum.ranges.options.sum) {
+  const { sum: baseSum } = spectrum.ranges.options;
+
+  if (index !== -1 && typeof baseSum === 'number') {
     const { absolute, integration } = spectrum.ranges.values[index];
     const ratio = absolute / value;
-    const sum = (value / integration) * spectrum.ranges.options.sum;
+    const sum = (value / integration) * baseSum;
     spectrum.ranges.options = {
       ...spectrum.ranges.options,
       mf: undefined,
