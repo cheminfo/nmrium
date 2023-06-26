@@ -51,92 +51,104 @@ function KeysListenerTracker() {
 
   const deleteHandler = useCallback(
     async (sourceData) => {
-      const {
-        type,
-        extra: { id, zone, spectrumID, colKey },
-      } = sourceData;
+      const { type, extra } = sourceData;
       switch (type) {
         case HighlightEventSource.INTEGRAL: {
-          dispatch({
-            type: 'DELETE_INTEGRAL',
-            payload: {
-              id,
-            },
-          });
-          // remove keys from the highlighted list after delete
-          remove();
-
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_INTEGRAL',
+              payload: {
+                id,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
           break;
         }
         case HighlightEventSource.PEAK: {
-          dispatch({
-            type: 'DELETE_PEAK',
-            payload: {
-              id,
-            },
-          });
-          // remove keys from the highlighted list after delete
-          remove();
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_PEAK',
+              payload: {
+                id,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
 
           break;
         }
         case HighlightEventSource.RANGE: {
-          dispatch({
-            type: 'DELETE_RANGE',
-            payload: {
-              id,
-              assignmentData,
-            },
-          });
-          // remove keys from the highlighted list after delete
-          remove();
-
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_RANGE',
+              payload: {
+                id,
+                assignmentData,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
           break;
         }
         case HighlightEventSource.ZONE: {
-          dispatch({
-            type: 'DELETE_2D_ZONE',
-            payload: {
-              id,
-              assignmentData,
-            },
-          });
-          // remove keys from the highlighted list after delete
-          remove();
-
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_2D_ZONE',
+              payload: {
+                id,
+                assignmentData,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
           break;
         }
         case HighlightEventSource.EXCLUSION_ZONE: {
+          const { zone, spectrumID } = extra || {};
+
           const buttons = [
             {
               text: 'Yes, for all spectra',
               handler: async () => {
-                const hideLoading = await alert.showLoading(
-                  'Delete all spectra exclusion zones in progress',
-                );
-                dispatch({
-                  type: 'DELETE_EXCLUSION_ZONE',
-                  payload: {
-                    zone,
-                  },
-                });
-                hideLoading();
+                if (zone) {
+                  const hideLoading = await alert.showLoading(
+                    'Delete all spectra exclusion zones in progress',
+                  );
+                  dispatch({
+                    type: 'DELETE_EXCLUSION_ZONE',
+                    payload: {
+                      zone,
+                    },
+                  });
+                  hideLoading();
+                }
               },
             },
             {
               text: 'Yes',
               handler: async () => {
-                const hideLoading = await alert.showLoading(
-                  'Delete exclusion zones in progress',
-                );
-                dispatch({
-                  type: 'DELETE_EXCLUSION_ZONE',
-                  payload: {
-                    zone,
-                    spectrumId: spectrumID,
-                  },
-                });
-                hideLoading();
+                if (spectrumID) {
+                  const hideLoading = await alert.showLoading(
+                    'Delete exclusion zones in progress',
+                  );
+                  dispatch({
+                    type: 'DELETE_EXCLUSION_ZONE',
+                    payload: {
+                      zone,
+                      spectrumId: spectrumID,
+                    },
+                  });
+                  hideLoading();
+                }
               },
             },
             { text: 'No' },
@@ -149,21 +161,25 @@ function KeysListenerTracker() {
           break;
         }
         case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
+          const { zone } = extra || {};
+
           const buttons = [
             {
               text: 'Yes',
               handler: async () => {
-                const hideLoading = await alert.showLoading(
-                  'Delete all spectra exclusion zones in progress',
-                );
-                dispatchPreferences({
-                  type: 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
-                  payload: {
-                    zone,
-                    nucleus: activeTab,
-                  },
-                });
-                hideLoading();
+                if (zone) {
+                  const hideLoading = await alert.showLoading(
+                    'Delete all spectra exclusion zones in progress',
+                  );
+                  dispatchPreferences({
+                    type: 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
+                    payload: {
+                      zone,
+                      nucleus: activeTab,
+                    },
+                  });
+                  hideLoading();
+                }
               },
             },
             { text: 'No' },
@@ -178,13 +194,15 @@ function KeysListenerTracker() {
           break;
         }
         case HighlightEventSource.MULTIPLE_ANALYSIS_ZONE: {
-          dispatchPreferences({
-            type: 'DELETE_ANALYSIS_COLUMN',
-            payload: { columnKey: colKey, nucleus: activeTab },
-          });
-          // remove keys from the highlighted list after delete
-          remove();
-
+          const { colKey } = extra || {};
+          if (colKey) {
+            dispatchPreferences({
+              type: 'DELETE_ANALYSIS_COLUMN',
+              payload: { columnKey: colKey, nucleus: activeTab },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
           break;
         }
 
