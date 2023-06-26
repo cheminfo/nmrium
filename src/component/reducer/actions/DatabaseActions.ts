@@ -53,13 +53,16 @@ function handleResurrectSpectrumFromRanges(
   draft: Draft<State>,
   action: ResurrectSpectrumFromRangesAction,
 ) {
-  const { ranges, info } = action.payload;
-
-  const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
-  draft.data.push(datum);
-  setDomain(draft, { isYDomainShared: false });
-  setIntegralsYDomain(draft, [datum]);
-  setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+  try {
+    const { ranges, info } = action.payload;
+    const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
+    draft.data.push(datum);
+    setDomain(draft, { isYDomainShared: false });
+    setIntegralsYDomain(draft, [datum]);
+    setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+  } catch (error) {
+    reportError(error)
+  }
 }
 
 export { handleResurrectSpectrumFromRanges, handleResurrectSpectrumFromJcamp };
