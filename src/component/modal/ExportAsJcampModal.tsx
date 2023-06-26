@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Formik, FormikProps } from 'formik';
 import { Spectrum } from 'nmr-load-save';
 import { useRef, CSSProperties } from 'react';
@@ -13,8 +12,6 @@ import ActionButtons from '../elements/ActionButtons';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
-
-import { ModalStyles } from './ModalStyle';
 
 const initValues: ExportAsJcampOptions = {
   onlyReal: true,
@@ -79,53 +76,49 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
 
   return (
     <Modal maxWidth={1000} hasCloseButton isOpen onRequestClose={closeDialog}>
-      <div css={ModalStyles}>
-        <Modal.Header>
-          <div className="header">
-            <span>Export as JCAMP</span>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <Formik
-              innerRef={refForm}
-              initialValues={initValues}
-              onSubmit={submitHandler}
-            >
-              <div style={styles.container}>
-                <div style={styles.row}>
-                  <span style={styles.label}> Data </span>
-                  <div style={styles.innerContainer}>
-                    <FormikSelect
-                      name="dataExportStage"
-                      items={DATA_STAGES}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
-                <div style={styles.row}>
-                  <span style={styles.label}> Only real </span>
-                  <div style={styles.innerContainer}>
-                    <FormikCheckBox name="onlyReal" />
-                  </div>
+      <Modal.Header>
+        <span>Export as JCAMP</span>
+      </Modal.Header>
+      <Modal.Body>
+        <div>
+          <Formik
+            innerRef={refForm}
+            initialValues={initValues}
+            onSubmit={submitHandler}
+          >
+            <div style={styles.container}>
+              <div style={styles.row}>
+                <span style={styles.label}> Data </span>
+                <div style={styles.innerContainer}>
+                  <FormikSelect
+                    name="dataExportStage"
+                    items={DATA_STAGES}
+                    style={{ width: '100%' }}
+                  />
                 </div>
               </div>
-            </Formik>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ActionButtons
-              style={{ flexDirection: 'row-reverse', margin: 0 }}
-              onDone={() => refForm.current?.submitForm()}
-              doneLabel="export"
-              onCancel={() => {
-                closeDialog?.();
-              }}
-            />
-          </div>
-        </Modal.Footer>
-      </div>
+              <div style={styles.row}>
+                <span style={styles.label}> Only real </span>
+                <div style={styles.innerContainer}>
+                  <FormikCheckBox name="onlyReal" />
+                </div>
+              </div>
+            </div>
+          </Formik>
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <ActionButtons
+            style={{ flexDirection: 'row-reverse', margin: 0 }}
+            onDone={() => refForm.current?.submitForm()}
+            doneLabel="export"
+            onCancel={() => {
+              closeDialog?.();
+            }}
+          />
+        </div>
+      </Modal.Footer>
     </Modal>
   );
 }

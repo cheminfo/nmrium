@@ -10,7 +10,6 @@ import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
 import { ColumnWrapper } from '../elements/ColumnWrapper';
 import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
-import { ModalStyles } from '../modal/ModalStyle';
 
 const logsDataFormat = new Intl.DateTimeFormat('default', {
   hour: 'numeric',
@@ -161,31 +160,29 @@ export function LogsHistory() {
           closeDialog();
         }}
       >
-        <div css={ModalStyles}>
-          <Modal.Header>
-            <div className="header">
-              <span>Logs History</span>
+        <Modal.Header>
+          <div className="header">
+            <span>Logs History</span>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
+            <ReactTable
+              columns={COLUMNS}
+              data={sortedLogs}
+              emptyDataRowText="No Logs"
+              rowStyle={handleRowStyle}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button.Danger onClick={() => logger.clear()} fill="outline">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FaRegTrashAlt />
+              <span style={{ paddingLeft: '5px' }}>Clear Logs</span>
             </div>
-          </Modal.Header>
-          <Modal.Body>
-            <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
-              <ReactTable
-                columns={COLUMNS}
-                data={sortedLogs}
-                emptyDataRowText="No Logs"
-                rowStyle={handleRowStyle}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Danger onClick={() => logger.clear()} fill="outline">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <FaRegTrashAlt />
-                <span style={{ paddingLeft: '5px' }}>Clear Logs</span>
-              </div>
-            </Button.Danger>
-          </Modal.Footer>
-        </div>
+          </Button.Danger>
+        </Modal.Footer>
       </Modal>
     </>
   );

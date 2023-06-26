@@ -23,7 +23,6 @@ import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
-import { ModalStyles } from '../ModalStyle';
 
 import WorkspaceItem from './WorkspaceItem';
 import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
@@ -286,152 +285,154 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         onRequestClose={closeDialog}
         maxWidth={1000}
       >
-        <div css={ModalStyles}>
-          <Modal.Header>
-            <div style={{ width: '100%' }}>
-              <div className="header">
-                <span className="header-title">General Settings</span>
-              </div>
-              <div
+        <Modal.Header>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <span>General Settings</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'default',
+                paddingTop: '10px',
+              }}
+            >
+              <Label title="Workspace">
+                <DropDownButton
+                  data={workspacesList}
+                  renderItem={renderItem}
+                  selectedKey={preferences?.workspace.current}
+                  onSelect={ChangeWorkspaceHandler}
+                />
+              </Label>
+              <Button.Action
+                size="xSmall"
+                onClick={handleReset}
+                toolTip="Reset workspace preferences"
+                tooltipOrientation="horizontal"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'default',
-                  paddingTop: '10px',
+                  marginLeft: '10px',
+                }}
+                disabled={isRestDisabled}
+              >
+                <FaBolt />
+              </Button.Action>
+              <Button.Done
+                size="xSmall"
+                fill="outline"
+                onClick={handleCopyWorkspace}
+                toolTip="Copy workspace preferences"
+                tooltipOrientation="horizontal"
+                style={{
+                  marginLeft: '10px',
                 }}
               >
-                <Label title="Workspace">
-                  <DropDownButton
-                    data={workspacesList}
-                    renderItem={renderItem}
-                    selectedKey={preferences?.workspace.current}
-                    onSelect={ChangeWorkspaceHandler}
-                  />
-                </Label>
-                <Button.Action
-                  size="xSmall"
-                  onClick={handleReset}
-                  toolTip="Reset workspace preferences"
-                  tooltipOrientation="horizontal"
-                  style={{
-                    marginLeft: '10px',
-                  }}
-                  disabled={isRestDisabled}
-                >
-                  <FaBolt />
-                </Button.Action>
-                <Button.Done
-                  size="xSmall"
-                  fill="outline"
-                  onClick={handleCopyWorkspace}
-                  toolTip="Copy workspace preferences"
-                  tooltipOrientation="horizontal"
-                  style={{
-                    marginLeft: '10px',
-                  }}
-                >
-                  <FaRegCopy />
-                </Button.Done>
-                <Button.Action
-                  size="xSmall"
-                  fill="outline"
-                  onClick={handlePastWorkspace}
-                  toolTip="Past workspace preferences"
-                  tooltipOrientation="horizontal"
-                  style={{
-                    marginLeft: '10px',
-                  }}
-                >
-                  <FaPaste />
-                </Button.Action>
-              </div>
-            </div>
-          </Modal.Header>
-          <Modal.Body>
-            <div css={styles} style={{ height }}>
-              <Formik
-                enableReinitialize
-                innerRef={refForm}
-                initialValues={currentWorkspace}
-                validationSchema={validation}
-                onSubmit={submitHandler}
-                validate={handleDisabledRestButton}
-              >
-                <Tabs
-                  position={PositionsEnum.LEFT}
-                  activeTab={activeTab}
-                  onClick={tabChangeHandler}
-                >
-                  <Tab title="General" tabid="general">
-                    <div className="inner-content">
-                      <GeneralTabContent />
-                    </div>
-                  </Tab>
-
-                  <Tab title="Formatting" tabid="formatting">
-                    <div className="inner-content">
-                      <FormattingTabContent />
-                    </div>
-                  </Tab>
-
-                  <Tab title="Panels" tabid="display">
-                    <div className="inner-content">
-                      <DisplayTabContent />
-                    </div>
-                  </Tab>
-
-                  <Tab title="Tools" tabid="tools">
-                    <div className="inner-content">
-                      <ToolsTabContent />
-                    </div>
-                  </Tab>
-
-                  <Tab title="Databases" tabid="databases">
-                    <div className="inner-content">
-                      <DatabasesTabContent
-                        currentWorkspace={workspaceName}
-                        originalWorkspaces={originalWorkspaces}
-                      />
-                    </div>
-                  </Tab>
-                  <Tab title="Import filters" tabid="importation-filters">
-                    <div className="inner-content">
-                      <ImportationFiltersTabContent />
-                    </div>
-                  </Tab>
-                  <Tab title="Title Block" tabid="title-block">
-                    <div className="inner-content">
-                      <InfoBlockTabContent />
-                    </div>
-                  </Tab>
-                  <Tab title="On Load Processing" tabid="on-load-processing">
-                    <div className="inner-content">
-                      <OnLoadProcessingTabContent />
-                    </div>
-                  </Tab>
-                </Tabs>
-              </Formik>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <ActionButtons
-                style={{ flexDirection: 'row-reverse', margin: 0 }}
-                onDone={() => refForm.current?.submitForm()}
-                doneLabel="Apply and Save"
-                onCancel={() => {
-                  closeDialog?.();
+                <FaRegCopy />
+              </Button.Done>
+              <Button.Action
+                size="xSmall"
+                fill="outline"
+                onClick={handlePastWorkspace}
+                toolTip="Past workspace preferences"
+                tooltipOrientation="horizontal"
+                style={{
+                  marginLeft: '10px',
                 }}
-              />
-              <Button.Secondary
-                style={{ margin: '0 10px' }}
-                onClick={applyPreferencesHandler}
               >
-                Apply
-              </Button.Secondary>
+                <FaPaste />
+              </Button.Action>
             </div>
-          </Modal.Footer>
-        </div>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div css={styles} style={{ height }}>
+            <Formik
+              enableReinitialize
+              innerRef={refForm}
+              initialValues={currentWorkspace}
+              validationSchema={validation}
+              onSubmit={submitHandler}
+              validate={handleDisabledRestButton}
+            >
+              <Tabs
+                position={PositionsEnum.LEFT}
+                activeTab={activeTab}
+                onClick={tabChangeHandler}
+              >
+                <Tab title="General" tabid="general">
+                  <div className="inner-content">
+                    <GeneralTabContent />
+                  </div>
+                </Tab>
+
+                <Tab title="Formatting" tabid="formatting">
+                  <div className="inner-content">
+                    <FormattingTabContent />
+                  </div>
+                </Tab>
+
+                <Tab title="Panels" tabid="display">
+                  <div className="inner-content">
+                    <DisplayTabContent />
+                  </div>
+                </Tab>
+
+                <Tab title="Tools" tabid="tools">
+                  <div className="inner-content">
+                    <ToolsTabContent />
+                  </div>
+                </Tab>
+
+                <Tab title="Databases" tabid="databases">
+                  <div className="inner-content">
+                    <DatabasesTabContent
+                      currentWorkspace={workspaceName}
+                      originalWorkspaces={originalWorkspaces}
+                    />
+                  </div>
+                </Tab>
+                <Tab title="Import filters" tabid="importation-filters">
+                  <div className="inner-content">
+                    <ImportationFiltersTabContent />
+                  </div>
+                </Tab>
+                <Tab title="Title Block" tabid="title-block">
+                  <div className="inner-content">
+                    <InfoBlockTabContent />
+                  </div>
+                </Tab>
+                <Tab title="On Load Processing" tabid="on-load-processing">
+                  <div className="inner-content">
+                    <OnLoadProcessingTabContent />
+                  </div>
+                </Tab>
+              </Tabs>
+            </Formik>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <ActionButtons
+              style={{ flexDirection: 'row-reverse', margin: 0 }}
+              onDone={() => refForm.current?.submitForm()}
+              doneLabel="Apply and Save"
+              onCancel={() => {
+                closeDialog?.();
+              }}
+            />
+            <Button.Secondary
+              style={{ margin: '0 10px' }}
+              onClick={applyPreferencesHandler}
+            >
+              Apply
+            </Button.Secondary>
+          </div>
+        </Modal.Footer>
       </Modal>
       <SaveSettingsModal />
     </>
