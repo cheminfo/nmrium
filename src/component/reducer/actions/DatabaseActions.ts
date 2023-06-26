@@ -53,15 +53,13 @@ function handleResurrectSpectrumFromRanges(
   draft: Draft<State>,
   action: ResurrectSpectrumFromRangesAction,
 ) {
-  try {
-    const { ranges, info } = action.payload;
-    const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
+  const { ranges, info } = action.payload;
+  const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
+  if (datum) {
     draft.data.push(datum);
     setDomain(draft, { isYDomainShared: false });
     setIntegralsYDomain(draft, [datum]);
     setZoom(draft, { scale: 0.8, spectrumID: datum.id });
-  } catch (error) {
-    reportError(error)
   }
 }
 
