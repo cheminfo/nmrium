@@ -5,6 +5,7 @@ export const ModalStyles = css`
   height: 100%;
   display: flex;
   flex-direction: column;
+
   .header {
     text-align: center;
     padding: 10px 0 10px 0px;
@@ -14,6 +15,7 @@ export const ModalStyles = css`
     text-transform: none;
     background-color: #fcfcfc;
   }
+
   .tab-content {
     width: 100%;
   }

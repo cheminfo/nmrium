@@ -10,47 +10,58 @@ const styles = css`
   button:focus {
     outline: none;
   }
+
   .container {
     padding: 20px;
   }
+
   .center-container {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
   ul {
     list-style-type: disc;
     margin-left: 20px;
   }
+
   span,
   li {
     user-select: text;
   }
+
   span.title {
     font-weight: bold;
     color: #ea580c;
   }
+
   span.content {
     color: #2b143e;
     font-size: 14px;
     text-align: left;
   }
+
   img {
     width: 100px;
   }
+
   a {
     color: #969696;
   }
+
   a:hover,
   a:focus {
     color: #00bcd4;
   }
+
   .separator {
     border-bottom: 1px solid gray;
     width: 15px;
     height: 1px;
     margin: 10px 0;
   }
+
   .header {
     span {
       color: #464646;
@@ -58,14 +69,17 @@ const styles = css`
       flex: 1;
       user-select: none;
     }
+
     button {
       background-color: transparent;
       border: none;
+
       svg {
         height: 16px;
       }
     }
   }
+
   display: flex;
   flex-direction: column;
   user-select: none;

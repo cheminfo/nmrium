@@ -160,11 +160,7 @@ export function LogsHistory() {
           closeDialog();
         }}
       >
-        <Modal.Header>
-          <div className="header">
-            <span>Logs History</span>
-          </div>
-        </Modal.Header>
+        <Modal.Header>Logs History </Modal.Header>
         <Modal.Body>
           <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
             <ReactTable
