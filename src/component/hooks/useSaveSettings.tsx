@@ -1,6 +1,6 @@
 import { Formik, FormikProps } from 'formik';
 import { Workspace } from 'nmr-load-save';
-import { useRef, forwardRef, useState } from 'react';
+import { useRef, forwardRef } from 'react';
 import { Modal, useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
@@ -46,33 +46,33 @@ const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
 export function useSaveSettings() {
   const alert = useAlert();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const [values, setValues] = useState<Partial<Workspace> | undefined>(
-    undefined,
-  );
+  const settingsRef = useRef<Workspace>();
   const { dispatch, current } = usePreferences();
   const formRef = useRef<FormikProps<any>>(null);
-  function addNewWorkspace(workspaceName, values) {
-    dispatch({
-      type: 'ADD_WORKSPACE',
-      payload: {
-        workspace: workspaceName,
-        data: values,
-      },
-    });
-    closeDialog();
-    alert.success('Preferences saved successfully');
+  function addNewWorkspace({ workspaceName }) {
+    if (settingsRef.current) {
+      dispatch({
+        type: 'ADD_WORKSPACE',
+        payload: {
+          workspaceKey: workspaceName,
+          data: settingsRef.current,
+        },
+      });
+      closeDialog();
+      alert.success('Preferences saved successfully');
+    }
   }
 
   return {
-    saveSettings: (values: Partial<Workspace> = {}) => {
-      setValues(values);
+    saveSettings: (values?: Partial<Workspace>) => {
+      settingsRef.current = values as Workspace;
 
       if (current.source !== 'user') {
         openDialog();
       } else {
         dispatch({
           type: 'SET_PREFERENCES',
-          payload: values,
+          ...(values && { payload: values }),
         });
         closeDialog();
       }
@@ -82,13 +82,7 @@ export function useSaveSettings() {
         message:
           'Please enter a new user workspace name in order to save your changes locally',
         render: (props) => (
-          <WorkspaceAddForm
-            {...props}
-            onSave={({ workspaceName }) =>
-              addNewWorkspace(workspaceName, values)
-            }
-            ref={formRef}
-          />
+          <WorkspaceAddForm {...props} onSave={addNewWorkspace} ref={formRef} />
         ),
         buttons: [
           {

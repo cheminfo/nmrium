@@ -55,7 +55,9 @@ type InitPreferencesAction = ActionType<
     dispatch: any;
   }
 >;
-type SetPreferencesAction = ActionType<'SET_PREFERENCES', Partial<Workspace>>;
+type SetPreferencesAction =
+  | ActionType<'SET_PREFERENCES', Partial<Workspace>>
+  | ActionType<'SET_PREFERENCES', void>;
 type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
   { key: string; value: string }
@@ -72,7 +74,7 @@ export type WorkspaceAction = ActionType<
 >;
 export type AddWorkspaceAction = ActionType<
   'ADD_WORKSPACE',
-  { workspace: string; data?: Omit<Workspace, 'version' | 'label'> }
+  { workspaceKey: string; data?: Omit<Workspace, 'version' | 'label'> }
 >;
 export type ApplyGeneralPreferences = ActionType<
   'APPLY_General_PREFERENCES',
