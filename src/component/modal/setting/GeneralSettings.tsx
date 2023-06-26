@@ -168,7 +168,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     dispatch({
       type: 'ADD_WORKSPACE',
       payload: {
-        workspace: name,
+        workspaceKey: name,
         data: refForm.current?.values,
       },
     });
