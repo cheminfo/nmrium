@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { FifoLogger } from 'fifo-logger';
 import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
@@ -37,6 +38,7 @@ export interface PredictionOptions {
     nbPoints: { x: number; y: number };
   };
   spectra: SpectraPredictionOptions;
+  logger?: FifoLogger;
 }
 
 export const defaultPredictionOptions: PredictionOptions = {
@@ -78,10 +80,14 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(molfile: string): Promise<PredictedAll> {
+export async function predictSpectra(
+  molfile: string,
+  logger: FifoLogger,
+): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
 
   return predictAll(molecule, {
+    logger,
     predictOptions: {
       C: {
         webserviceURL: `${baseURL}/v1/predict/carbon`,

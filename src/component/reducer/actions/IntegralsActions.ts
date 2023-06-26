@@ -89,14 +89,18 @@ function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
     const { x, re } = datum.data;
 
     const shiftX = getShiftX(datum);
-
+    const integration = xyIntegration(
+      { x, y: re },
+      { from, to, reverse: true },
+    );
     const integral = {
       id: v4(),
       originFrom: from - shiftX,
       originTo: to - shiftX,
       from,
       to,
-      absolute: xyIntegration({ x, y: re }, { from, to, reverse: true }), // the real value
+      integral: integration,
+      absolute: integration,
       kind: 'signal',
     };
     datum.integrals.values.push(integral);
