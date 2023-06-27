@@ -61,7 +61,10 @@ export const defaultPredictionOptions: PredictionOptions = {
 };
 
 export const FREQUENCIES: Array<{ value: number; label: string }> = [
+  { value: 40, label: '40 MHz' },
   { value: 60, label: '60 MHz' },
+  { value: 80, label: '80 MHz' },
+  { value: 90, label: '90 MHz' },
   { value: 100, label: '100 MHz' },
   { value: 200, label: '200 MHz' },
   { value: 300, label: '300 MHz' },
