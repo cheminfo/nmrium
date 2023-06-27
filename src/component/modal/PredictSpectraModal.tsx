@@ -19,6 +19,7 @@ import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPa
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
+import { useLogger } from '../context/LoggerContext';
 
 const styles = css`
   .inner-content {
@@ -77,6 +78,7 @@ function PredictSpectraModal({
     });
   }, [predictionPreferences, predictionIndex]);
 
+  const { logger } = useLogger();
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
@@ -102,6 +104,7 @@ function PredictSpectraModal({
               payload: {
                 predictedSpectra: data.spectra,
                 options: values,
+                logger: logger.child({ context: 'nmr-processing' }),
                 molecule,
               },
             });

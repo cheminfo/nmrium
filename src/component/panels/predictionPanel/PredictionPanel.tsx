@@ -21,6 +21,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import PredictionPreferences from './PredictionPreferences';
 import PredictionSimpleOptions from './PredictionSimpleOptions';
+import { useLogger } from '../../context/LoggerContext';
 
 const styles: Record<'flexColumnContainer' | 'slider', CSSProperties> = {
   flexColumnContainer: {
@@ -40,6 +41,7 @@ export default function PredictionPanel() {
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const { logger } = useLogger();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -99,6 +101,7 @@ export default function PredictionPanel() {
             payload: {
               predictedSpectra: data.spectra,
               options: predictionPreferences,
+              logger: logger.child({ context: 'nmr-processing' }),
               molecule: { ...molecules[currentIndex], molfile },
               action,
             },
