@@ -11,7 +11,6 @@ import {
   MoleculeBoundingRect,
   StateMolecule,
 } from '../../../data/molecules/Molecule';
-import { FifoLogger } from 'fifo-logger';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { generateColor } from '../../../data/utilities/generateColor';
 import { AssignmentContext } from '../../assignment/AssignmentsContext';
@@ -39,7 +38,6 @@ type PredictSpectraFromMoleculeAction = ActionType<
     options: PredictionOptions;
     predictedSpectra: PredictedSpectraResult;
     molecule: StateMolecule;
-    logger: FifoLogger;
     action?: 'save' | 'add';
   }
 >;
@@ -64,8 +62,6 @@ export type MoleculeActions =
   | ToggleMoleculeViewObjectAction
   | ChangeFloatMoleculePositionAction
   | ChangeMoleculeLabelAction;
-
-
 
 function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
   const { molfile, floatMoleculeOnSave } = props;

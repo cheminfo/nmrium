@@ -9,6 +9,7 @@ import { predictSpectra } from '../../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useLogger } from '../../context/LoggerContext';
 import Button from '../../elements/Button';
 import NextPrev from '../../elements/NextPrev';
 import { useAlert } from '../../elements/popup/Alert';
@@ -21,7 +22,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import PredictionPreferences from './PredictionPreferences';
 import PredictionSimpleOptions from './PredictionSimpleOptions';
-import { useLogger } from '../../context/LoggerContext';
 
 const styles: Record<'flexColumnContainer' | 'slider', CSSProperties> = {
   flexColumnContainer: {
@@ -95,13 +95,12 @@ export default function PredictionPanel() {
         );
 
         try {
-          const data = await predictSpectra(molfile);
+          const data = await predictSpectra(molfile, logger);
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {
               predictedSpectra: data.spectra,
               options: predictionPreferences,
-              logger: logger.child({ context: 'nmr-processing' }),
               molecule: { ...molecules[currentIndex], molfile },
               action,
             },

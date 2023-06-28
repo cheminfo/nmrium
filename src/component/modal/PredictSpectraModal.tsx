@@ -9,6 +9,7 @@ import {
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
@@ -19,7 +20,6 @@ import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPa
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
 import { ModalStyles } from './ModalStyle';
-import { useLogger } from '../context/LoggerContext';
 
 const styles = css`
   .inner-content {
@@ -98,13 +98,12 @@ function PredictSpectraModal({
           );
 
           try {
-            const data = await predictSpectra(molfile);
+            const data = await predictSpectra(molfile, logger);
             dispatch({
               type: 'PREDICT_SPECTRA',
               payload: {
                 predictedSpectra: data.spectra,
                 options: values,
-                logger: logger.child({ context: 'nmr-processing' }),
                 molecule,
               },
             });
@@ -117,7 +116,15 @@ function PredictSpectraModal({
         }
       })();
     },
-    [alert, dispatch, isApproved, molecule, onClose, setPredictionPreferences],
+    [
+      alert,
+      dispatch,
+      isApproved,
+      molecule,
+      onClose,
+      logger,
+      setPredictionPreferences,
+    ],
   );
 
   const approveCheckHandler = useCallback((e) => {
