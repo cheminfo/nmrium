@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
+import { useClipboardRead } from '../../../utils/clipboard';
 import {
   usePreferences,
   useWorkspacesList,
@@ -236,7 +237,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
   const setWorkspaceSetting = useCallback(
     (inputWorkspace) => {
       const parseWorkspaceName = Object.keys(inputWorkspace)[0];
-      if (preferences?.workspace.current === parseWorkspaceName) {
+      if (preferences.workspace.current === parseWorkspaceName) {
         refForm.current?.setValues(inputWorkspace[parseWorkspaceName]);
       } else if (preferences.workspaces[parseWorkspaceName]) {
         pastRef.current = inputWorkspace;
@@ -249,19 +250,8 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         });
       }
     },
-    [dispatch, preferences?.workspace, preferences.workspaces],
+    [dispatch, preferences.workspace, preferences.workspaces],
   );
-
-  function handlePastWorkspace() {
-    void navigator.clipboard.readText().then((text) => {
-      try {
-        const parseWorkspaces = JSON.parse(text);
-        setWorkspaceSetting(parseWorkspaces);
-      } catch {
-        alert.error('object parse error');
-      }
-    });
-  }
 
   useEffect(() => {
     if (pastRef.current) {
@@ -269,6 +259,32 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       pastRef.current = null;
     }
   }, [setWorkspaceSetting]);
+
+  const [
+    shouldClipboardReadPastWorkspace,
+    handlePastWorkspace,
+    clipboardPastWorkspaceClose,
+  ] = useOnOff();
+
+  const handlePastWorkspaceClipboardRead = useCallback(
+    (text: string) => {
+      try {
+        const parseWorkspaces = JSON.parse(text);
+        setWorkspaceSetting(parseWorkspaces);
+      } catch {
+        alert.error('object parse error');
+      } finally {
+        clipboardPastWorkspaceClose();
+      }
+    },
+    [setWorkspaceSetting, alert, clipboardPastWorkspaceClose],
+  );
+
+  useClipboardRead(
+    shouldClipboardReadPastWorkspace,
+    'readText',
+    handlePastWorkspaceClipboardRead,
+  );
 
   return (
     <>
@@ -301,7 +317,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
                 <DropDownButton
                   data={workspacesList}
                   renderItem={renderItem}
-                  selectedKey={preferences?.workspace.current}
+                  selectedKey={preferences.workspace.current}
                   onSelect={ChangeWorkspaceHandler}
                 />
               </Label>
