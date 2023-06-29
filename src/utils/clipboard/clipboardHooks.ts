@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+
+import { ClipboardMode } from './types';
 
 type PN = PermissionName | 'clipboard-read' | 'clipboard-write';
 
@@ -38,7 +40,7 @@ function supportClipboardWrite() {
   }
 }
 
-interface UsePermissionReturn {
+export interface UsePermissionReturn {
   state: PermissionState | undefined;
   isGranted: boolean;
 }
@@ -89,11 +91,7 @@ export function useNavigatorPermission(
     };
   }, [now, permissionName, onGranted, onError]);
 
-  if (state === 'granted') {
-    return { state, isGranted: true };
-  }
-
-  return { state, isGranted: false };
+  return { state, isGranted: state === 'granted' };
 }
 
 async function readText() {
@@ -110,24 +108,6 @@ async function read() {
   return navigator.clipboard.read();
 }
 
-export function useClipboardRead<Mode extends 'read' | 'readText' = 'readText'>(
-  now: boolean,
-  mode: Mode,
-  onRead: Mode extends 'read'
-    ? (data: ClipboardItems) => void
-    : (data: string) => void,
-  onReadError: (error) => void = reportError,
-): UsePermissionReturn {
-  const proxyCallback = useCallback(() => {
-    const promise = mode === 'read' ? read() : readText();
-
-    // @ts-expect-error cannot find proper way to express callback typing compatible with promise
-    promise.then(onRead).catch(onReadError);
-  }, [mode, onRead, onReadError]);
-
-  return useNavigatorPermission(now, 'clipboard-read', proxyCallback);
-}
-
 async function writeText(data: string) {
   if (!supportClipboardWriteText()) {
     throw new Error('navigator.clipboard.writeText() is not supported');
@@ -142,22 +122,89 @@ async function write(data: ClipboardItems) {
   return navigator.clipboard.write(data);
 }
 
-export function useClipboardWrite<
-  Mode extends 'write' | 'writeText' = 'writeText',
->(
-  now: boolean,
-  mode: Mode,
-  data: Mode extends 'write' ? ClipboardItems : string,
-  onWriteError: (error) => void = reportError,
-): UsePermissionReturn {
-  const proxyCallback = useCallback(() => {
-    const promise =
-      mode === 'write'
-        ? write(data as ClipboardItems)
-        : writeText(data as string);
+export interface UseClipboardReturn {
+  read: () => Promise<ClipboardItems | undefined>;
+  readText: () => Promise<string | undefined>;
+  write: (data: ClipboardItems) => void;
+  writeText: (data: string) => void;
+  shouldFallback: ClipboardMode | null;
+  setShouldFallback: Dispatch<SetStateAction<ClipboardMode | null>>;
+}
 
-    promise.catch(onWriteError);
-  }, [mode, data, onWriteError]);
+/**
+ * Give you a wrapped clipboard api and a shouldFallback state.
+ * ignore if read and readText return promise filled with undefined, and rely on shouldFallback to display an alternative interaction.
+ * You should use ClipboardFallback component
+ *
+ * @example
+ * ```tsx
+ *   const { readText, shouldFallback, setShouldFallback } = useClipboard();
+ *
+ *   function handlePasteAction() {
+ *     void readText().then(handlePaste);
+ *   }
+ *
+ *   function handlePaste(text: string | undefined) {
+ *     if (!text) return;
+ *
+ *     setState(text);
+ *     setShouldFallback(null);
+ *   }
+ *
+ *   return (
+ *     <>
+ *       <button onClick={handlePasteAction}>Paste</button>
+ *       <dialog open={shouldFallback}>
+ *         <h2>Clipboard fallback</h2>
+ *
+ *         <ClipboardFallback
+ *           mode={shouldFallback}
+ *           onDismiss={() => setShouldFallback(null)}
+ *           onReadText={handlePaste}
+ *         />
+ *       </dialog>
+ *     </>
+ *   )
+ * ```
+ */
+export function useClipboard(): UseClipboardReturn {
+  const [shouldFallback, setShouldFallback] = useState<ClipboardMode | null>(
+    null,
+  );
 
-  return useNavigatorPermission(now, 'clipboard-write', proxyCallback);
+  const clipboardAPI = useMemo(
+    () => ({
+      async read() {
+        try {
+          return await read();
+        } catch {
+          setShouldFallback('read');
+        }
+      },
+      async readText() {
+        try {
+          return await readText();
+        } catch {
+          setShouldFallback('readText');
+        }
+      },
+      async write(data: ClipboardItems) {
+        try {
+          return await write(data);
+        } catch {
+          setShouldFallback('write');
+        }
+      },
+      async writeText(data: string) {
+        try {
+          return await writeText(data);
+        } catch {
+          setShouldFallback('writeText');
+        }
+      },
+    }),
+    [],
+  );
+
+  return { ...clipboardAPI, shouldFallback, setShouldFallback };
 }

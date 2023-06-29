@@ -6,7 +6,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
-import { useClipboardRead } from '../../../utils/clipboard';
+import { ClipboardFallback } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import {
   usePreferences,
   useWorkspacesList,
@@ -260,31 +261,24 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     }
   }, [setWorkspaceSetting]);
 
-  const [
-    shouldClipboardReadPastWorkspace,
-    handlePastWorkspace,
-    clipboardPastWorkspaceClose,
-  ] = useOnOff();
+  const { readText, shouldFallback, setShouldFallback } = useClipboard();
 
-  const handlePastWorkspaceClipboardRead = useCallback(
-    (text: string) => {
-      try {
-        const parseWorkspaces = JSON.parse(text);
-        setWorkspaceSetting(parseWorkspaces);
-      } catch {
-        alert.error('object parse error');
-      } finally {
-        clipboardPastWorkspaceClose();
-      }
-    },
-    [setWorkspaceSetting, alert, clipboardPastWorkspaceClose],
-  );
+  function handlePastWorkspace(text: string | undefined) {
+    if (!text) return;
 
-  useClipboardRead(
-    shouldClipboardReadPastWorkspace,
-    'readText',
-    handlePastWorkspaceClipboardRead,
-  );
+    try {
+      const parseWorkspaces = JSON.parse(text);
+      setWorkspaceSetting(parseWorkspaces);
+    } catch {
+      alert.error('object parse error');
+    }
+
+    setShouldFallback(null);
+  }
+
+  function handlePastWorkspaceAction() {
+    void readText().then(handlePastWorkspace);
+  }
 
   return (
     <>
@@ -348,7 +342,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               <Button.Action
                 size="xSmall"
                 fill="outline"
-                onClick={handlePastWorkspace}
+                onClick={handlePastWorkspaceAction}
                 toolTip="Past workspace preferences"
                 tooltipOrientation="horizontal"
                 style={{
@@ -446,6 +440,26 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         </Modal.Footer>
       </Modal>
       <SaveSettingsModal />
+
+      {shouldFallback !== null && (
+        <Modal
+          hasCloseButton
+          isOpen
+          onRequestClose={() => setShouldFallback(null)}
+        >
+          <Modal.Header>
+            <h2>Clipboard fallback</h2>
+          </Modal.Header>
+
+          <Modal.Body>
+            <ClipboardFallback
+              mode={shouldFallback}
+              onDismiss={() => setShouldFallback(null)}
+              onReadText={handlePastWorkspace}
+            />
+          </Modal.Body>
+        </Modal>
+      )}
     </>
   );
 }
