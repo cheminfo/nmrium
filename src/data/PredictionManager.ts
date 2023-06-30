@@ -242,6 +242,7 @@ function generated2DSpectrum(params: {
     frequency,
     experiment,
   });
+  const spectralWidth = getSpectralWidth(experiment, inputOptions);
   const datum = initiateDatum2D(
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },
@@ -256,6 +257,7 @@ function generated2DSpectrum(params: {
         originFrequency: frequency,
         baseFrequency: frequency,
         pulseSequence: 'prediction',
+        spectralWidth,
         experiment,
       },
     },
@@ -267,6 +269,29 @@ function generated2DSpectrum(params: {
 
 function get2DWidth(nucleus: string[]) {
   return nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.2133 };
+}
+
+function getSpectralWidth(experiment: string, options: PredictionOptions) {
+  const formTo = options['1d'];
+
+  switch (experiment) {
+    case 'cosy': {
+      const { from, to } = formTo['1H'];
+      const diff = to - from;
+      return [diff, diff];
+    }
+    case 'hsqc':
+    case 'hmbc': {
+      const proton = formTo['1H'];
+      const carbon = formTo['13C'];
+      const protonDiff = proton.to - proton.from;
+      const carbonDiff = carbon.to - carbon.from;
+
+      return [protonDiff, carbonDiff];
+    }
+    default:
+      return [];
+  }
 }
 
 function calculateFrequency(
