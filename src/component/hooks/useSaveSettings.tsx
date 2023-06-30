@@ -99,7 +99,6 @@ export function useSaveSettings() {
       };
       return (
         <Modal
-          maxWidth={1000}
           hasCloseButton
           isOpen={isOpenDialog}
           onRequestClose={closeDialog}

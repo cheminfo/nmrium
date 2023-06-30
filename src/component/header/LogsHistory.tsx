@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LogEntry } from 'fifo-logger';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -152,7 +151,6 @@ export function LogsHistory() {
       </Button.BarButton>
 
       <Modal
-        maxWidth={1000}
         hasCloseButton
         isOpen={isOpenDialog}
         onRequestClose={() => {

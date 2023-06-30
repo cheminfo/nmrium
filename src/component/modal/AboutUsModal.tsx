@@ -7,6 +7,9 @@ import versionInfo from '../../versionInfo';
 import Logo from '../elements/Logo';
 
 const styles = css`
+  width: 40vw;
+  min-width: 500px;
+
   button:focus {
     outline: none;
   }
@@ -83,7 +86,6 @@ const styles = css`
   display: flex;
   flex-direction: column;
   user-select: none;
-  width: 500px;
 `;
 
 function AboutUsModal() {

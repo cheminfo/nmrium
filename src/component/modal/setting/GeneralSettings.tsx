@@ -36,7 +36,8 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
-  width: 800px;
+  width: 50vw;
+  min-width: 800px;
 
   .main-content {
     width: 100%;
@@ -290,7 +291,6 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              width: '100%',
             }}
           >
             <span>General Settings</span>

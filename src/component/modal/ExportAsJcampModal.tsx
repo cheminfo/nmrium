@@ -75,7 +75,7 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
   }
 
   return (
-    <Modal maxWidth={1000} hasCloseButton isOpen onRequestClose={closeDialog}>
+    <Modal hasCloseButton isOpen onRequestClose={closeDialog}>
       <Modal.Header>
         <span>Export as JCAMP</span>
       </Modal.Header>
