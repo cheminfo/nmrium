@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.39.0](https://github.com/cheminfo/nmrium/compare/v0.38.2...v0.39.0) (2023-06-30)
+
+
+### Features
+
+* add low res prediction ([#2478](https://github.com/cheminfo/nmrium/issues/2478)) ([44ff57e](https://github.com/cheminfo/nmrium/commit/44ff57e89f4e746ed8950c3acb269b8e5f3c50e5))
+* allow to render NMRium without error boundary ([#2489](https://github.com/cheminfo/nmrium/issues/2489)) ([8bde9b9](https://github.com/cheminfo/nmrium/commit/8bde9b9a31f6d730fe8502a3371f6088f3b82285))
+
+
+### Bug Fixes
+
+* close the 'range editing' model of the range or spectra deleted ([0bc6183](https://github.com/cheminfo/nmrium/commit/0bc61839c1b177676a66ef397e28b1684f214ccb))
+* extract and check id object correctly ([56ec65a](https://github.com/cheminfo/nmrium/commit/56ec65a5ed3a4e10026eadacdce970ebd88c5d03))
+* log errors to the console to help debugging ([#2486](https://github.com/cheminfo/nmrium/issues/2486)) ([89cccd1](https://github.com/cheminfo/nmrium/commit/89cccd1c1be7e17cc51e5b28ca8325a16da6cd91))
+* manual zones detection for predicted 2D spectra ([#2487](https://github.com/cheminfo/nmrium/issues/2487)) ([8da944b](https://github.com/cheminfo/nmrium/commit/8da944b790a29ac8c5a3ed9c34342e36b8b36e25))
+* peaks and integrals panels should be visible only in 1D mode ([dded4f4](https://github.com/cheminfo/nmrium/commit/dded4f40484d4b8d03b6c7f84c8832fd56af8798))
+* reset the selected tool to zoom when switching between spectra or nuclei ([eee03ca](https://github.com/cheminfo/nmrium/commit/eee03cafe40ab4bdffb26a3a4ddcd2a6848b3c1e))
+* set preferences ([24d7613](https://github.com/cheminfo/nmrium/commit/24d7613927b6beb2dc20a68e8da0eba17c740188))
+* simulate spectra with negative chemical shift and catch some errors ([#2488](https://github.com/cheminfo/nmrium/issues/2488)) ([e677e06](https://github.com/cheminfo/nmrium/commit/e677e0622368b7fec5aa9832042ce90b38acb37c))
+* spectra zones detection should be only on FT 2D spectra ([293d2fb](https://github.com/cheminfo/nmrium/commit/293d2fb8678eb31b004f1b6bb63bee0bce4bde45))
+* validate JCAMP file URL correctly ([82b4c42](https://github.com/cheminfo/nmrium/commit/82b4c427591ade7ea4fdbb8bb441ab6778a8c599))
+
 ## [0.38.2](https://github.com/cheminfo/nmrium/compare/v0.38.1...v0.38.2) (2023-06-22)
 
 
