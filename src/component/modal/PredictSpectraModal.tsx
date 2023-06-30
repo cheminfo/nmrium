@@ -9,6 +9,7 @@ import {
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
@@ -77,6 +78,7 @@ function PredictSpectraModal({
     });
   }, [predictionPreferences, predictionIndex]);
 
+  const { logger } = useLogger();
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
@@ -96,7 +98,7 @@ function PredictSpectraModal({
           );
 
           try {
-            const data = await predictSpectra(molfile);
+            const data = await predictSpectra(molfile, logger);
             dispatch({
               type: 'PREDICT_SPECTRA',
               payload: {
@@ -114,7 +116,15 @@ function PredictSpectraModal({
         }
       })();
     },
-    [alert, dispatch, isApproved, molecule, onClose, setPredictionPreferences],
+    [
+      alert,
+      dispatch,
+      isApproved,
+      molecule,
+      onClose,
+      logger,
+      setPredictionPreferences,
+    ],
   );
 
   const approveCheckHandler = useCallback((e) => {

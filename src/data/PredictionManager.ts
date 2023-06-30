@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { FifoLogger } from 'fifo-logger';
 import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
@@ -37,6 +38,7 @@ export interface PredictionOptions {
     nbPoints: { x: number; y: number };
   };
   spectra: SpectraPredictionOptions;
+  logger?: FifoLogger;
 }
 
 export const defaultPredictionOptions: PredictionOptions = {
@@ -61,7 +63,10 @@ export const defaultPredictionOptions: PredictionOptions = {
 };
 
 export const FREQUENCIES: Array<{ value: number; label: string }> = [
+  { value: 40, label: '40 MHz' },
   { value: 60, label: '60 MHz' },
+  { value: 80, label: '80 MHz' },
+  { value: 90, label: '90 MHz' },
   { value: 100, label: '100 MHz' },
   { value: 200, label: '200 MHz' },
   { value: 300, label: '300 MHz' },
@@ -75,10 +80,14 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(molfile: string): Promise<PredictedAll> {
+export async function predictSpectra(
+  molfile: string,
+  logger: FifoLogger,
+): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
 
   return predictAll(molecule, {
+    logger,
     predictOptions: {
       C: {
         webserviceURL: `${baseURL}/v1/predict/carbon`,
@@ -239,6 +248,7 @@ function generated2DSpectrum(params: {
     frequency,
     experiment,
   });
+  const spectralWidth = getSpectralWidth(experiment, inputOptions);
   const datum = initiateDatum2D(
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },
@@ -253,6 +263,7 @@ function generated2DSpectrum(params: {
         originFrequency: frequency,
         baseFrequency: frequency,
         pulseSequence: 'prediction',
+        spectralWidth,
         experiment,
       },
     },
@@ -264,6 +275,29 @@ function generated2DSpectrum(params: {
 
 function get2DWidth(nucleus: string[]) {
   return nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.2133 };
+}
+
+function getSpectralWidth(experiment: string, options: PredictionOptions) {
+  const formTo = options['1d'];
+
+  switch (experiment) {
+    case 'cosy': {
+      const { from, to } = formTo['1H'];
+      const diff = to - from;
+      return [diff, diff];
+    }
+    case 'hsqc':
+    case 'hmbc': {
+      const proton = formTo['1H'];
+      const carbon = formTo['13C'];
+      const protonDiff = proton.to - proton.from;
+      const carbonDiff = carbon.to - carbon.from;
+
+      return [protonDiff, carbonDiff];
+    }
+    default:
+      return [];
+  }
 }
 
 function calculateFrequency(

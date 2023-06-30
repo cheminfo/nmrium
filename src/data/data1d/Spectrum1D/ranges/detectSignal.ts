@@ -77,17 +77,22 @@ export default function detectSignal(
 
 function joinCouplings(result: any) {
   const { chemShift: delta, js } = result;
+  let jCouplings = js;
+  if (js.length > 1) {
+    try {
+      jCouplings = signalJoinCouplings(
+        {
+          delta,
+          js,
+        },
+        { tolerance: 0.6, ignoreDiaIDs: true },
+      ).js;
+    } catch (error) {
+      reportError(error);
+    }
+  }
   return {
     delta,
-    js:
-      js.length > 1
-        ? signalJoinCouplings(
-            {
-              delta,
-              js,
-            },
-            { tolerance: 0.6, ignoreDiaIDs: true },
-          ).js
-        : js,
+    js: jCouplings,
   };
 }

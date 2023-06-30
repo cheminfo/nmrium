@@ -127,6 +127,7 @@ export type OnNMRiumChange = (
 export interface NMRiumProps {
   data?: NMRiumData;
   onChange?: OnNMRiumChange;
+  noErrorBoundary?: boolean;
   onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
@@ -163,14 +164,19 @@ const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
   props: NMRiumProps,
   ref,
 ) {
-  const { onError, ...otherProps } = props;
-  return (
-    <RootLayout style={{ width: '100%' }}>
-      <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
-        <InnerNMRium {...otherProps} innerRef={ref} />
-      </ErrorBoundary>
-    </RootLayout>
+  const { noErrorBoundary = false, onError, ...otherProps } = props;
+
+  const innerNmrium = <InnerNMRium {...otherProps} innerRef={ref} />;
+
+  const children = noErrorBoundary ? (
+    innerNmrium
+  ) : (
+    <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
+      {innerNmrium}
+    </ErrorBoundary>
   );
+
+  return <RootLayout style={{ width: '100%' }}>{children}</RootLayout>;
 });
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
