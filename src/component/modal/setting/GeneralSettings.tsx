@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
-import { ClipboardFallback } from '../../../utils/clipboard/clipboardComponents';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import {
   usePreferences,
@@ -261,7 +261,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     }
   }, [setWorkspaceSetting]);
 
-  const { readText, shouldFallback, setShouldFallback } = useClipboard();
+  const { readText, shouldFallback, cleanShouldFallback } = useClipboard();
 
   function handlePastWorkspace(text: string | undefined) {
     if (!text) return;
@@ -273,7 +273,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       alert.error('object parse error');
     }
 
-    setShouldFallback(null);
+    cleanShouldFallback();
   }
 
   function handlePastWorkspaceAction() {
@@ -441,25 +441,11 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       </Modal>
       <SaveSettingsModal />
 
-      {shouldFallback !== null && (
-        <Modal
-          hasCloseButton
-          isOpen
-          onRequestClose={() => setShouldFallback(null)}
-        >
-          <Modal.Header>
-            <h2>Clipboard fallback</h2>
-          </Modal.Header>
-
-          <Modal.Body>
-            <ClipboardFallback
-              mode={shouldFallback}
-              onDismiss={() => setShouldFallback(null)}
-              onReadText={handlePastWorkspace}
-            />
-          </Modal.Body>
-        </Modal>
-      )}
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        onReadText={handlePastWorkspace}
+      />
     </>
   );
 }

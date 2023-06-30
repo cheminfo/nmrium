@@ -18,6 +18,8 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
@@ -175,11 +177,15 @@ export default function MoleculePanelHeader({
     ],
   );
 
-  const handlePaste = useCallback(() => {
-    void navigator.clipboard.readText().then((molfile) => {
-      dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
-    });
-  }, [dispatch]);
+  const { readText, shouldFallback, cleanShouldFallback } = useClipboard();
+  function handlePasteMolfileAction() {
+    void readText().then(handlePasteMolfile);
+  }
+  function handlePasteMolfile(molfile: string | undefined) {
+    if (!molfile) return;
+    dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
+    cleanShouldFallback();
+  }
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex]?.id) {
@@ -234,7 +240,7 @@ export default function MoleculePanelHeader({
         </DropdownMenu>
       )}
       <Button.BarButton
-        onClick={handlePaste}
+        onClick={handlePasteMolfileAction}
         color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
         toolTip="Paste molfile"
         tooltipOrientation="horizontal"
@@ -307,6 +313,12 @@ export default function MoleculePanelHeader({
           <FaCog />
         </Button.BarButton>
       )}
+
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        onReadText={handlePasteMolfile}
+      />
     </PanelHeader>
   );
 }

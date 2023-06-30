@@ -1,44 +1,15 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import {
+  newClipboardItem,
+  read,
+  readText,
+  write,
+  writeText,
+} from './clipboard';
 import { ClipboardMode } from './types';
 
 type PN = PermissionName | 'clipboard-read' | 'clipboard-write';
-
-function supportClipboardReadText(): boolean {
-  try {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    return Boolean(navigator?.clipboard?.readText);
-  } catch {
-    return false;
-  }
-}
-
-function supportClipboardRead() {
-  try {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    return Boolean(navigator?.clipboard?.read);
-  } catch {
-    return false;
-  }
-}
-
-function supportClipboardWriteText(): boolean {
-  try {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    return Boolean(navigator?.clipboard?.writeText);
-  } catch {
-    return false;
-  }
-}
-
-function supportClipboardWrite() {
-  try {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    return Boolean(navigator?.clipboard?.write);
-  } catch {
-    return false;
-  }
-}
 
 export interface UsePermissionReturn {
   state: PermissionState | undefined;
@@ -94,41 +65,59 @@ export function useNavigatorPermission(
   return { state, isGranted: state === 'granted' };
 }
 
-async function readText() {
-  if (!supportClipboardReadText()) {
-    throw new Error('navigator.clipboard.readText() is not supported');
-  }
-  return navigator.clipboard.readText();
-}
-
-async function read() {
-  if (!supportClipboardRead()) {
-    throw new Error('navigator.clipboard.read() is not supported');
-  }
-  return navigator.clipboard.read();
-}
-
-async function writeText(data: string) {
-  if (!supportClipboardWriteText()) {
-    throw new Error('navigator.clipboard.writeText() is not supported');
-  }
-  return navigator.clipboard.writeText(data);
-}
-
-async function write(data: ClipboardItems) {
-  if (!supportClipboardWrite()) {
-    throw new Error('navigator.clipboard.write() is not supported');
-  }
-  return navigator.clipboard.write(data);
-}
-
 export interface UseClipboardReturn {
+  /**
+   * polyfill native api (stable)
+   */
+  /**
+   * Fallback on 'read' mode
+   */
   read: () => Promise<ClipboardItems | undefined>;
+  /**
+   * Fallback on 'readText' mode
+   */
   readText: () => Promise<string | undefined>;
-  write: (data: ClipboardItems) => void;
-  writeText: (data: string) => void;
-  shouldFallback: ClipboardMode | null;
-  setShouldFallback: Dispatch<SetStateAction<ClipboardMode | null>>;
+  /**
+   * Fallback on 'write' mode with blobs (get blob for each first type for each item) state
+   */
+  write: (data: ClipboardItems) => Promise<void>;
+  /**
+   * Fallback on 'writeText' mode with text state
+   */
+  writeText: (data: string) => Promise<void>;
+
+  /**
+   * custom helper (stable)
+   */
+  /**
+   * use write but no need do to manually ClipboardItems transform
+   * Fallback on 'writeText' mode with text state
+   * @param data
+   * @param type a mime type default to 'text/html'
+   */
+  rawWriteWithType: (data: string, type?: string) => Promise<void>;
+
+  /**
+   * state for alternative
+   */
+  /**
+   * state to know if you need to display an alternative interface
+   */
+  shouldFallback: ClipboardMode | undefined;
+  /**
+   * state for 'writeText' / 'rawWriteWithType' mode fallback
+   */
+  text: string | undefined;
+  /**
+   * state for 'write' mode fallback
+   */
+  blobs: Blob[] | undefined;
+
+  /**
+   * method to clean up state for alternative interface (set shouldFallback to undefined, text to undefined and blobs to undefined)
+   * stable
+   */
+  cleanShouldFallback: () => void;
 }
 
 /**
@@ -141,6 +130,8 @@ export interface UseClipboardReturn {
  *   const { readText, shouldFallback, setShouldFallback } = useClipboard();
  *
  *   function handlePasteAction() {
+ *     // yes you can safely ignore error here,
+ *     // readText() will never throw, error is caught and set shouldFallback to corresponding mode
  *     void readText().then(handlePaste);
  *   }
  *
@@ -154,23 +145,26 @@ export interface UseClipboardReturn {
  *   return (
  *     <>
  *       <button onClick={handlePasteAction}>Paste</button>
- *       <dialog open={shouldFallback}>
- *         <h2>Clipboard fallback</h2>
- *
- *         <ClipboardFallback
- *           mode={shouldFallback}
- *           onDismiss={() => setShouldFallback(null)}
- *           onReadText={handlePaste}
- *         />
- *       </dialog>
+ *       <ClipboardFallbackModal
+ *         mode={shouldFallback}
+ *         onDismiss={() => setShouldFallback(null)}
+ *         onReadText={handlePaste}
+ *       />
  *     </>
  *   )
  * ```
  */
 export function useClipboard(): UseClipboardReturn {
-  const [shouldFallback, setShouldFallback] = useState<ClipboardMode | null>(
-    null,
-  );
+  const [shouldFallback, setShouldFallback] = useState<
+    ClipboardMode | undefined
+  >();
+  const [text, setText] = useState<string | undefined>();
+  const [blobs, setBlobs] = useState<Blob[] | undefined>();
+  const cleanShouldFallback = useCallback(() => {
+    setShouldFallback(undefined);
+    setText(undefined);
+    setBlobs(undefined);
+  }, []);
 
   const clipboardAPI = useMemo(
     () => ({
@@ -192,13 +186,31 @@ export function useClipboard(): UseClipboardReturn {
         try {
           return await write(data);
         } catch {
+          const blobs = await Promise.all(
+            data.map((ci) => ci.getType(ci.types[0])),
+          );
+          setBlobs(blobs);
           setShouldFallback('write');
+        }
+      },
+      async rawWriteWithType(data: string, type = 'text/html') {
+        try {
+          const item = await newClipboardItem({
+            [type]: new Promise((resolve) => {
+              resolve(new Blob([data], { type }));
+            }),
+          });
+          return await write([item]);
+        } catch {
+          setText(data);
+          setShouldFallback('writeText');
         }
       },
       async writeText(data: string) {
         try {
           return await writeText(data);
         } catch {
+          setText(data);
           setShouldFallback('writeText');
         }
       },
@@ -206,5 +218,11 @@ export function useClipboard(): UseClipboardReturn {
     [],
   );
 
-  return { ...clipboardAPI, shouldFallback, setShouldFallback };
+  return {
+    ...clipboardAPI,
+    shouldFallback,
+    text,
+    blobs,
+    cleanShouldFallback,
+  };
 }

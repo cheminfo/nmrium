@@ -1,6 +1,8 @@
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
+import { newClipboardItem, write } from '../../utils/clipboard/clipboard';
+
 async function copyHTMLToClipboard(data) {
   return copyToClipboard(data, 'text/html');
 }
@@ -10,23 +12,12 @@ async function copyTextToClipboard(data) {
 
 async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
   try {
-    if (typeof ClipboardItem !== 'undefined') {
-      void navigator.clipboard.write([
-        new ClipboardItem({
-          [type]: new Promise((resolve) => {
-            resolve(new Blob([data], { type }));
-          }),
-        }),
-      ]);
-    } else {
-      const clipboard = await import('clipboard-polyfill');
-      //TODO when Firefox team implement ClipboardItem this code should be removed
-      // this library is used mainly to solve the problem of copy HTML to a clipboard in Firefox but we use it for both HTML and plain text
-      const item = new clipboard.ClipboardItem({
-        [type]: new Blob([data], { type }),
-      });
-      await clipboard.write([item]);
-    }
+    const item = await newClipboardItem({
+      [type]: new Promise((resolve) => {
+        resolve(new Blob([data], { type }));
+      }),
+    });
+    await write([item]);
 
     return true;
   } catch {
@@ -35,7 +26,10 @@ async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
 }
 /**
  * export the experiments result in JSON format
- * @param {*} data
+ * @param data
+ * @param fileName
+ * @param spaceIndent
+ * @param isCompressed
  */
 async function exportAsJSON(
   data,
@@ -168,22 +162,27 @@ function copyDataURLClipboardFireFox(image) {
   img.remove();
 }
 
-function copyBlobToClipboard(canvas) {
+function copyBlobToClipboard(canvas: HTMLCanvasElement) {
   canvas.toBlob((b) => {
-    const clip = new ClipboardItem({
-      [b.type]: b,
-    });
+    if (!b) return;
 
-    navigator.clipboard.write([clip]).then(
-      () => {
+    (async () => {
+      const clip = await newClipboardItem({
+        [b.type]: b,
+      });
+
+      await write([clip]);
+    })()
+      .catch(() => {
+        const png = canvas.toDataURL('image/png', 1);
+        copyDataURLClipboardFireFox(png);
+        URL.revokeObjectURL(png);
+      })
+      .then(() => {
         // eslint-disable-next-line no-console
         console.log('experiment copied.');
-      },
-      (error) => {
-        // TODO: handle error;
-        reportError(error);
-      },
-    );
+      })
+      .catch(reportError);
   });
 }
 
@@ -202,18 +201,9 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
 
     let img = new Image();
     const url = URL.createObjectURL(blob);
-    img.addEventListener('load', async () => {
+    img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
-      const png = canvas.toDataURL('image/png', 1);
-
-      // @ts-expect-error write exists in some browsers
-      if (navigator.clipboard.write) {
-        copyBlobToClipboard(canvas);
-      } else {
-        copyDataURLClipboardFireFox(png);
-      }
-
-      URL.revokeObjectURL(png);
+      copyBlobToClipboard(canvas);
     });
     img.src = url;
   } catch (error) {

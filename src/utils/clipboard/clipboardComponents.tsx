@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { FormEvent, useCallback, useEffect, useMemo, useRef } from 'react';
+import { Modal } from 'react-science/ui';
 
 import Button from '../../component/elements/Button';
 
@@ -22,7 +23,7 @@ const Actions = styled.div`
 `;
 
 export interface CFBP {
-  mode: ClipboardMode;
+  mode: ClipboardMode | undefined;
 
   onDismiss: () => void; // it's used; I don't know why it's not detected
 }
@@ -35,7 +36,7 @@ export interface ClipboardFallbackProps
     Partial<Omit<ClipboardFallbackWriteTextProps, 'mode' | 'onDismiss'>> {}
 
 function throwError(props: ClipboardFallbackProps, prop: string) {
-  throw new Error(`props.${prop} is mandatory with ${props.mode} mode`);
+  throw new Error(`props.${prop} is mandatory with ${String(props.mode)} mode`);
 }
 
 function assertReadProps(
@@ -64,6 +65,18 @@ function assertWriteTextProps(
   if (typeof props.onDismiss !== 'function') throwError(props, 'onDismiss');
 }
 
+/**
+ * switch between ClipboardFallback variant over mode props
+ * mode === read => ClipboardFallbackReadProps
+ * mode === readText => ClipboardFallbackReadTextProps
+ * mode === write => ClipboardFallbackWriteProps
+ * mode === writeText => ClipboardFallbackWriteTextProps
+ *
+ * implement what you need in function what part of the clipboard api from useClipboard you use
+ * props will be checked at runtime
+ *
+ * @param props
+ */
 export function ClipboardFallback(props: ClipboardFallbackProps) {
   switch (props.mode) {
     case 'read':
@@ -82,6 +95,28 @@ export function ClipboardFallback(props: ClipboardFallbackProps) {
     default:
       return null;
   }
+}
+
+/**
+ * return null if !props.mode
+ *
+ * @param props
+ * @see ClipboardFallback
+ */
+export function ClipboardFallbackModal(props: ClipboardFallbackProps) {
+  if (!props.mode) return null;
+
+  return (
+    <Modal hasCloseButton isOpen onRequestClose={props.onDismiss}>
+      <Modal.Header>
+        <h2>Clipboard fallback {props.mode}</h2>
+      </Modal.Header>
+
+      <Modal.Body>
+        <ClipboardFallback {...props} />
+      </Modal.Body>
+    </Modal>
+  );
 }
 
 interface ClipboardFallbackReadProps extends CFBP {
@@ -215,7 +250,7 @@ function ClipboardFallbackWriteText(props: ClipboardFallbackWriteTextProps) {
 
   return (
     <ClipboardForm onSubmit={onSubmit}>
-      <textarea name="text" cols={30} rows={10}>
+      <textarea name="text" cols={30} rows={10} ref={(node) => node?.select()}>
         {props.text}
       </textarea>
       <span>
