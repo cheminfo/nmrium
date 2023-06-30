@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
+import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
@@ -14,7 +15,6 @@ import { useFilter } from '../hooks/useFilter';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import { InputStyle } from '../elements/Input';
 
 interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;

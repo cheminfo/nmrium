@@ -16,31 +16,34 @@ export function generateSpectrumFromRanges(
   ranges: NMRRange[],
   info: ResurrectSpectrumInfo,
   usedColors: UsedColors,
-): Spectrum1D {
+): Spectrum1D | undefined {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
 
-  const { x, y } = rangesToXY(ranges, {
-    nucleus,
-    frequency,
-    nbPoints: 2 ** 17,
-  });
-
-  const datum = initiateDatum1D(
-    {
-      data: { x, im: null, re: y },
-      info: {
-        nucleus,
-        originFrequency: frequency,
-        baseFrequency: frequency,
-        pulseSequence: '',
-        solvent,
-        isFt: true,
-        name,
+  try {
+    const { x, y } = rangesToXY(ranges, {
+      nucleus,
+      frequency,
+      nbPoints: 2 ** 17,
+    });
+    const datum = initiateDatum1D(
+      {
+        data: { x, im: null, re: y },
+        info: {
+          nucleus,
+          originFrequency: frequency,
+          baseFrequency: frequency,
+          pulseSequence: '',
+          solvent,
+          isFt: true,
+          name,
+        },
+        ranges: { values: ranges, options: { sum: 100 } },
       },
-      ranges: { values: ranges, options: { sum: 100 } },
-    },
-    { usedColors },
-  );
+      { usedColors },
+    );
 
-  return datum;
+    return datum;
+  } catch (error) {
+    reportError(error);
+  }
 }
