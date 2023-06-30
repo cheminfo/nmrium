@@ -25,7 +25,6 @@ import {
 } from '../../../data/data2d/Spectrum2D';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Nuclei, Nucleus } from '../../../data/types/common/Nucleus';
-import { options } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
@@ -396,10 +395,7 @@ function handleChangeActiveSpectrum(
     setMode(draft);
   }
 
-  if (
-    options[toolOptions.selectedTool].isFilter &&
-    !toolOptions.data.activeFilterID
-  ) {
+  if (!toolOptions.data.activeFilterID) {
     resetSelectedTool(draft);
   }
 }

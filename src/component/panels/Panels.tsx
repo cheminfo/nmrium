@@ -50,7 +50,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Peaks',
     component: <PeaksPanel />,
     hidePreferenceKey: 'peaksPanel',
-    mode: null,
+    mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Processings',
@@ -62,7 +62,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Integrals',
     component: <IntegralPanel />,
     hidePreferenceKey: 'integralsPanel',
-    mode: null,
+    mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Ranges',

@@ -264,6 +264,9 @@ test('Exclusion zones', async ({ page }) => {
   });
 
   await test.step('add exclusion zones to the active spectrum', async () => {
+    //select exclusion zones tool
+    await nmrium.clickTool('exclusionZones');
+
     //add exclusion zones to the last spectrum which is active from the previous step
     await selectRange(nmrium, { axis: 'X', startX: 200, endX: 220 });
 

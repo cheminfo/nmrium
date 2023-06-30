@@ -14,7 +14,7 @@ export function addWorkspace(
   draft: Draft<PreferencesState>,
   action: AddWorkspaceAction,
 ) {
-  const { workspace: workspaceName, data } = action.payload;
+  const { workspaceKey, data } = action.payload;
 
   const newWorkSpace = lodashMerge(
     {},
@@ -23,7 +23,7 @@ export function addWorkspace(
     data ? data : draft.workspaces[draft.workspace.current],
     {
       version: 1,
-      label: workspaceName,
+      label: workspaceKey,
       source: 'user',
     },
   );
