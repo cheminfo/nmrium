@@ -274,7 +274,7 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
   });
 });
-test.only('Auto peak picking on all spectra', async ({ page }) => {
+test('Auto peak picking on all spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
     await nmrium.page.click('li >> text=Cytisine');
