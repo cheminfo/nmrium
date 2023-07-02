@@ -616,7 +616,7 @@ test('Multiple spectra analysis', async ({ page }) => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
 });
-test.only('Load JResolv', async ({ page }) => {
+test('Load JResolv', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.page.click('li >> text=Cytisine');
   await nmrium.page.click('li >> text=jResolv cytisine');
