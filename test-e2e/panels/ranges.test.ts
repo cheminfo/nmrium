@@ -274,3 +274,71 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
   });
 });
+test.only('Auto peak picking on all spectra', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=Full cytisine');
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+  });
+
+  await test.step('Check spectrum tabs', async () => {
+    const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
+    await expect(Tabs).toHaveCount(4);
+    await expect(Tabs.nth(0)).toHaveText('1H');
+    await expect(Tabs.nth(1)).toHaveText('13C');
+    await expect(Tabs.nth(2)).toHaveText('1H,1H');
+    await expect(Tabs.nth(3)).toHaveText('1H,13C');
+  });
+
+  await test.step('Apply automatic picking', async () => {
+    // Click on the automatic ranges button.
+    await nmrium.page.click(
+      '_react=SpectrumListPanel >> _react=SpectraAutomaticPickingButton',
+    );
+  });
+
+  await test.step("Check 1H spectrum's ranges", async () => {
+    // switch to 1H tab.
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+    //open ranges panel
+    await nmrium.clickPanel('Ranges');
+    await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(16);
+    await expect(
+      nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
+    ).toContainText('[ 16 ]');
+  });
+
+  await test.step("Check 13C spectrum's ranges", async () => {
+    // switch to 13C tab.
+    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="13C"]');
+    await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(15);
+    await expect(
+      nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
+    ).toContainText('[ 15 ]');
+  });
+
+  await test.step("Check 1H,1H spectrum's ranges", async () => {
+    // switch to 1H,1H tab.
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
+    );
+    //open zones panel
+    await nmrium.clickPanel('Zones');
+    await expect(nmrium.page.locator('.zone')).toHaveCount(41);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 41 ]');
+  });
+
+  await test.step("Check 1H,13C spectrum's ranges", async () => {
+    // switch to 1H,13C tab.
+    await nmrium.page.click(
+      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,13C"]',
+    );
+    await expect(nmrium.page.locator('.zone')).toHaveCount(15);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 15 ]');
+  });
+});
