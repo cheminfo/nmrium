@@ -340,5 +340,13 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
+
+    await nmrium.page.click(
+      '_react=SpectrumListPanel >> _react=ReactTableRow[key="row_1"]',
+    );
+    await expect(nmrium.page.locator('.zone')).toHaveCount(44);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 44 ]');
   });
 });
