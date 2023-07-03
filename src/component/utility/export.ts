@@ -3,27 +3,6 @@ import JSZip from 'jszip';
 
 import { newClipboardItem, write } from '../../utils/clipboard/clipboard';
 
-async function copyHTMLToClipboard(data) {
-  return copyToClipboard(data, 'text/html');
-}
-async function copyTextToClipboard(data) {
-  return copyToClipboard(data, 'text/plain');
-}
-
-async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
-  try {
-    const item = await newClipboardItem({
-      [type]: new Promise((resolve) => {
-        resolve(new Blob([data], { type }));
-      }),
-    });
-    await write([item]);
-
-    return true;
-  } catch {
-    return false;
-  }
-}
 /**
  * export the experiments result in JSON format
  * @param data
@@ -295,8 +274,6 @@ export {
   exportAsNMRE,
   exportAsPng,
   copyPNGToClipboard,
-  copyTextToClipboard,
-  copyHTMLToClipboard,
   exportAsMol,
   exportAsMatrix,
   getBlob,

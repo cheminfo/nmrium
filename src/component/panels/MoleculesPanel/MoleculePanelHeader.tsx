@@ -28,11 +28,7 @@ import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import { usePredictSpectraModal } from '../../modal/PredictSpectraModal';
-import {
-  copyPNGToClipboard,
-  copyTextToClipboard,
-  exportAsSVG,
-} from '../../utility/export';
+import { copyPNGToClipboard, exportAsSVG } from '../../utility/export';
 import PanelHeader from '../header/PanelHeader';
 
 const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
@@ -129,17 +125,21 @@ export default function MoleculePanelHeader({
     alert.success('MOL copied as PNG to clipboard');
   }, [rootRef, alert, currentIndex]);
 
+  const {
+    rawWriteWithType,
+    readText,
+    shouldFallback,
+    cleanShouldFallback,
+    text,
+  } = useClipboard();
+
   const saveAsMolHandler = useCallback(
     (molfile) => {
-      void copyTextToClipboard(molfile).then((flag) => {
-        if (flag) {
-          alert.success('MOLFile copied to clipboard');
-        } else {
-          alert.error('copied not completed');
-        }
+      void rawWriteWithType(molfile).then(() => {
+        alert.success('MOLFile copied to clipboard');
       });
     },
-    [alert],
+    [alert, rawWriteWithType],
   );
 
   const exportHandler = useCallback(
@@ -177,7 +177,6 @@ export default function MoleculePanelHeader({
     ],
   );
 
-  const { readText, shouldFallback, cleanShouldFallback } = useClipboard();
   function handlePasteMolfileAction() {
     void readText().then(handlePasteMolfile);
   }
@@ -318,6 +317,7 @@ export default function MoleculePanelHeader({
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         onReadText={handlePasteMolfile}
+        text={text}
       />
     </PanelHeader>
   );

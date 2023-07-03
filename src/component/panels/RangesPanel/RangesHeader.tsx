@@ -126,7 +126,7 @@ function RangesHeader({
     useClipboard();
 
   function saveToClipboardHandler(value: string) {
-    void rawWriteWithType(value).then(() =>
+    void rawWriteWithType(value, 'text/html').then(() =>
       alert.success('Data copied to clipboard'),
     );
   }

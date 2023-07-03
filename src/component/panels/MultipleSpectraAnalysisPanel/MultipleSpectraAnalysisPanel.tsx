@@ -10,6 +10,8 @@ import {
   getDataAsString,
   generateAnalyzeSpectra,
 } from '../../../data/data1d/multipleSpectraAnalysis';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
@@ -18,7 +20,6 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import { copyTextToClipboard } from '../../utility/export';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -77,21 +78,17 @@ function MultipleSpectraAnalysisPanelInner({
     });
   }, [activeTab, modal, dispatch]);
 
+  const { rawWriteWithType, cleanShouldFallback, shouldFallback, text } =
+    useClipboard();
+
   const copyToClipboardHandler = useCallback(() => {
-    void (async () => {
-      const data = getDataAsString(
-        spectraAnalysis,
-        spectra,
-        spectraPreferences,
-      );
-      const success = await copyTextToClipboard(data);
-      if (success) {
-        alert.success('Data copied to clipboard');
-      } else {
-        alert.error('copy to clipboard failed');
-      }
-    })();
-  }, [alert, spectra, spectraAnalysis, spectraPreferences]);
+    const data = getDataAsString(spectraAnalysis, spectra, spectraPreferences);
+    if (!data) return;
+
+    void rawWriteWithType(data).then(() =>
+      alert.success('Data copied to clipboard'),
+    );
+  }, [alert, rawWriteWithType, spectra, spectraAnalysis, spectraPreferences]);
 
   return (
     <div
@@ -155,6 +152,11 @@ function MultipleSpectraAnalysisPanelInner({
           />
         )}
       </div>
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+      />
     </div>
   );
 }

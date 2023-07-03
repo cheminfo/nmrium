@@ -7,7 +7,8 @@ import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
 import NMRium from '../../component/NMRium';
-import { copyTextToClipboard } from '../../component/utility/export';
+import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../utils/clipboard/clipboardHooks';
 
 let answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
 
@@ -141,21 +142,37 @@ const styles = css`
 
 const CopyButton = ({ result }) => {
   const [isCopied, setCopyFlag] = useState(false);
+  const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
+    useClipboard();
 
   const saveToClipboardHandler = useCallback(() => {
     void (async () => {
-      const success = await copyTextToClipboard(result);
-      setCopyFlag(success);
-      setTimeout(() => {
-        setCopyFlag(false);
-      }, 1000);
+      await rawWriteWithType(result);
+      setCopyFlag(true);
     })();
-  }, [result]);
+  }, [rawWriteWithType, result]);
+
+  useEffect(() => {
+    if (isCopied) return;
+
+    let timeoutId = setTimeout(() => {
+      setCopyFlag(false);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [isCopied]);
 
   return (
-    <button type="button" css={copyButton} onClick={saveToClipboardHandler}>
-      {isCopied ? <FaCheck /> : <FaRegCopy />}
-    </button>
+    <>
+      <button type="button" css={copyButton} onClick={saveToClipboardHandler}>
+        {isCopied ? <FaCheck /> : <FaRegCopy />}
+      </button>
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+      />
+    </>
   );
 };
 

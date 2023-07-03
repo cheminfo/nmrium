@@ -93,9 +93,12 @@ export interface UseClipboardReturn {
    * use write but no need do to manually ClipboardItems transform
    * Fallback on 'writeText' mode with text state
    * @param data
-   * @param type a mime type default to 'text/html'
+   * @param type a mime type default to 'text/plain'
    */
-  rawWriteWithType: (data: string, type?: string) => Promise<void>;
+  rawWriteWithType: (
+    data: string,
+    type?: 'text/html' | 'text/plain' | string,
+  ) => Promise<void>;
 
   /**
    * state for alternative
@@ -193,7 +196,7 @@ export function useClipboard(): UseClipboardReturn {
           setShouldFallback('write');
         }
       },
-      async rawWriteWithType(data: string, type = 'text/html') {
+      async rawWriteWithType(data: string, type = 'text/plain') {
         try {
           const item = await newClipboardItem({
             [type]: new Promise((resolve) => {

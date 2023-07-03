@@ -23,7 +23,6 @@ import DropDownButton, {
 import { useAlert } from '../../elements/popup/Alert';
 import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
-import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
 
 import WorkspaceItem from './WorkspaceItem';
@@ -224,14 +223,18 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     );
   }
 
+  const {
+    readText,
+    rawWriteWithType,
+    shouldFallback,
+    cleanShouldFallback,
+    text,
+  } = useClipboard();
+
   function handleCopyWorkspace() {
     const data = { [workspaceName]: refForm.current?.values };
-    void copyTextToClipboard(JSON.stringify(data)).then((flag) => {
-      if (flag) {
-        alert.success('Workspace copied to clipboard');
-      } else {
-        alert.error('copied not completed');
-      }
+    void rawWriteWithType(JSON.stringify(data)).then(() => {
+      alert.success('Workspace copied to clipboard');
     });
   }
 
@@ -260,8 +263,6 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       pastRef.current = null;
     }
   }, [setWorkspaceSetting]);
-
-  const { readText, shouldFallback, cleanShouldFallback } = useClipboard();
 
   function handlePastWorkspace(text: string | undefined) {
     if (!text) return;
@@ -445,6 +446,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         onReadText={handlePastWorkspace}
+        text={text}
       />
     </>
   );
