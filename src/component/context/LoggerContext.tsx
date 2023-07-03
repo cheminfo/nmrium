@@ -43,6 +43,13 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
       onChange: (log, logs) => {
+        if (
+          log?.error &&
+          (log?.levelLabel === 'error' || log?.levelLabel === 'fatal')
+        ) {
+          // eslint-disable-next-line no-console
+          console.error(log.error);
+        }
         setLogsHistory(logs.slice());
       },
     }),

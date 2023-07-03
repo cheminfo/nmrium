@@ -9,6 +9,7 @@ import { predictSpectra } from '../../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useLogger } from '../../context/LoggerContext';
 import Button from '../../elements/Button';
 import NextPrev from '../../elements/NextPrev';
 import { useAlert } from '../../elements/popup/Alert';
@@ -40,6 +41,7 @@ export default function PredictionPanel() {
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const { logger } = useLogger();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
@@ -93,7 +95,7 @@ export default function PredictionPanel() {
         );
 
         try {
-          const data = await predictSpectra(molfile);
+          const data = await predictSpectra(molfile, logger);
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {
