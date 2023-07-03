@@ -259,6 +259,7 @@ function RangesHeader({
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         text={text}
+        label="Preview publication string"
       />
     </div>
   );

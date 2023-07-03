@@ -223,6 +223,7 @@ function RangesTablePanelInner({
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         text={text}
+        label="Range"
       />
     </div>
   );

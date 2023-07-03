@@ -447,6 +447,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         onDismiss={cleanShouldFallback}
         onReadText={handlePastWorkspace}
         text={text}
+        label="Workspace"
       />
     </>
   );

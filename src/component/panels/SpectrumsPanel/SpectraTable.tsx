@@ -322,6 +322,7 @@ export function SpectraTable(props: SpectraTableProps) {
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         text={text}
+        label="Spectra"
       />
     </>
   );

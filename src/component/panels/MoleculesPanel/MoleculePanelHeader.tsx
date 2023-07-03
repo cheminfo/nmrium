@@ -318,6 +318,7 @@ export default function MoleculePanelHeader({
         onDismiss={cleanShouldFallback}
         onReadText={handlePasteMolfile}
         text={text}
+        label="Molfile"
       />
     </PanelHeader>
   );

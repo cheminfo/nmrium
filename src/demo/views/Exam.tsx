@@ -171,6 +171,7 @@ const CopyButton = ({ result }) => {
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         text={text}
+        label="SMILES"
       />
     </>
   );

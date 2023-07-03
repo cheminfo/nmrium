@@ -27,17 +27,26 @@ const Actions = styled.div`
 `;
 
 export interface CFBP {
+  // it's used; I don't know why it's not detected
+  // eslint-disable-next-line react/no-unused-prop-types
   mode: ClipboardMode | undefined;
+  // it's used; I don't know why it's not detected
+  // eslint-disable-next-line react/no-unused-prop-types
+  label?: string;
 
-  onDismiss: () => void; // it's used; I don't know why it's not detected
+  onDismiss: () => void;
 }
 
 export interface ClipboardFallbackProps
   extends CFBP,
-    Partial<Omit<ClipboardFallbackReadProps, 'mode' | 'onDismiss'>>,
-    Partial<Omit<ClipboardFallbackReadTextProps, 'mode' | 'onDismiss'>>,
-    Partial<Omit<ClipboardFallbackWriteProps, 'mode' | 'onDismiss'>>,
-    Partial<Omit<ClipboardFallbackWriteTextProps, 'mode' | 'onDismiss'>> {}
+    Partial<Omit<ClipboardFallbackReadProps, 'mode' | 'label' | 'onDismiss'>>,
+    Partial<
+      Omit<ClipboardFallbackReadTextProps, 'mode' | 'label' | 'onDismiss'>
+    >,
+    Partial<Omit<ClipboardFallbackWriteProps, 'mode' | 'label' | 'onDismiss'>>,
+    Partial<
+      Omit<ClipboardFallbackWriteTextProps, 'mode' | 'label' | 'onDismiss'>
+    > {}
 
 function throwError(props: ClipboardFallbackProps, prop: string) {
   throw new Error(`props.${prop} is mandatory with ${String(props.mode)} mode`);
@@ -110,10 +119,17 @@ export function ClipboardFallback(props: ClipboardFallbackProps) {
 export function ClipboardFallbackModal(props: ClipboardFallbackProps) {
   if (!props.mode) return null;
 
+  const titles: Record<ClipboardMode, string> = {
+    read: `Import data from file`,
+    readText: `Paste text from clipboard`,
+    write: `Export data to file`,
+    writeText: `Copy text from text area`,
+  };
+
   return (
     <Modal hasCloseButton isOpen onRequestClose={props.onDismiss}>
       <Modal.Header>
-        <h2>Clipboard fallback {props.mode}</h2>
+        <h2>{titles[props.mode]}</h2>
       </Modal.Header>
 
       <Modal.Body>
@@ -144,13 +160,13 @@ function ClipboardFallbackRead(props: ClipboardFallbackReadProps) {
   return (
     <ClipboardForm onSubmit={onSubmit}>
       <label>
-        <span>File</span>
+        <span>{props.label ?? 'File'}</span>
         <input name="file" type="file" />
-        <span>
-          clipboard {props.mode} is not supported, please provide your data in a
-          file
-        </span>
       </label>
+      <p>
+        We were not able to read from your clipboard. Please input your data in
+        the file field
+      </p>
 
       <Actions>
         <Button.Done type="submit">Submit</Button.Done>
@@ -183,13 +199,13 @@ function ClipboardFallbackReadText(props: ClipboardFallbackReadTextProps) {
   return (
     <ClipboardForm onSubmit={onSubmit}>
       <label>
-        <span>Text</span>
+        <span>{props.label ?? 'Text'}</span>
         <textarea name="text" cols={50} rows={10} />
-        <span>
-          clipboard {props.mode} is not supported, please provide your data in
-          textarea
-        </span>
       </label>
+      <p>
+        We were not able to read text from your clipboard. Please paste your
+        data in the text area.
+      </p>
 
       <Actions>
         <Button.Done type="submit">Submit</Button.Done>
@@ -227,8 +243,8 @@ function ClipboardFallbackWrite(props: ClipboardFallbackWriteProps) {
   return (
     <ClipboardForm onSubmit={onSubmit}>
       <a href={downloadLink} download={props.file.name}>
-        clipboard {props.mode} is not supported, please download your data with
-        this link
+        We were not able to write data to your clipboard. Please download your
+        data with this link.
       </a>
 
       <Actions>
@@ -254,13 +270,14 @@ function ClipboardFallbackWriteText(props: ClipboardFallbackWriteTextProps) {
 
   return (
     <ClipboardForm onSubmit={onSubmit}>
+      <span>{props.label ?? 'Text'}</span>
       <textarea name="text" cols={30} rows={10} ref={(node) => node?.select()}>
         {props.text}
       </textarea>
-      <span>
-        clipboard {props.mode} is not supported, please get your data in
-        textarea
-      </span>
+      <p>
+        We were not able to write text to your clipboard. Please copy your data
+        in the text area.
+      </p>
 
       <Actions>
         <Button.Secondary type="submit">Dismiss</Button.Secondary>

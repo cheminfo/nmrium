@@ -156,6 +156,7 @@ function MultipleSpectraAnalysisPanelInner({
         mode={shouldFallback}
         onDismiss={cleanShouldFallback}
         text={text}
+        label="Spectra Analysis"
       />
     </div>
   );
