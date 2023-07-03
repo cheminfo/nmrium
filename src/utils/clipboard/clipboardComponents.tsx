@@ -14,6 +14,10 @@ const ClipboardForm = styled.form`
     flex-direction: column;
     gap: 0.5rem;
   }
+
+  textarea {
+    padding: 0.5rem;
+  }
 `;
 
 const Actions = styled.div`
