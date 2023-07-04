@@ -58,7 +58,6 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
 
   function handleChangeSizeHandler(value) {
     setSize(value);
-    dispatchLiveChanges(value);
   }
 
   useEffect(() => {
@@ -66,7 +65,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
       dispatchLiveChanges(size);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [size, livePreview]);
 
   return (
     <HeaderContainer>
