@@ -1,11 +1,11 @@
 import { NmrData1D } from 'cheminfo-types';
 import { Filters } from 'nmr-processing';
 import { useEffect, useState, memo } from 'react';
+import { Checkbox, CheckedState, Field } from 'react-science/ui';
 
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
-import CheckBox from '../elements/CheckBox';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
@@ -29,7 +29,7 @@ function useInitZeroFillingSize() {
 
 function ZeroFillingOptionsInnerPanel(props: { size: number }) {
   const dispatch = useDispatch();
-  const [livePreview, setLivePreview] = useState<boolean>(true);
+  const [livePreview, setLivePreview] = useState<CheckedState>(true);
   const [size, setSize] = useState<number>(props.size);
 
   function handleApplyFilter() {
@@ -68,11 +68,6 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function checkChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    const checked = event.target.checked;
-    setLivePreview(checked);
-  }
-
   return (
     <HeaderContainer>
       <Label title="Size:  " style={headerLabelStyle}>
@@ -83,17 +78,9 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
           onChange={handleChangeSizeHandler}
         />
       </Label>
-      <Label
-        title="Live preview "
-        htmlFor="livePreview"
-        style={headerLabelStyle}
-      >
-        <CheckBox
-          name="livePreview"
-          defaultChecked
-          onChange={checkChangeHandler}
-        />
-      </Label>
+      <Field label="Live preview" name="livePreview">
+        <Checkbox checked={livePreview} onChange={setLivePreview} />
+      </Field>
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </HeaderContainer>
   );
