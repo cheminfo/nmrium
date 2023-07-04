@@ -36,7 +36,8 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
-  width: 800px;
+  width: 50vw;
+  min-width: 800px;
 
   .main-content {
     width: 100%;
@@ -279,13 +280,17 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       >
         <FaWrench />
       </Toolbar.Item>
-      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
+      <Modal
+        hasCloseButton
+        isOpen={isOpenDialog}
+        onRequestClose={closeDialog}
+        maxWidth={1000}
+      >
         <Modal.Header>
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              width: '100%',
             }}
           >
             <span>General Settings</span>
