@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import NMRium from '../../component/NMRium';
+import NMRium, { NMRiumData } from '../../component/NMRium';
 
 let answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 
@@ -103,34 +103,42 @@ const styles = css`
   margin-left: 30px;
 `;
 
+export interface ExerciceData extends NMRiumData {
+  answer: {
+    idCode: string;
+    currentAnswer: string;
+    mf: string;
+  };
+}
+
 export default function Exercise(props) {
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<ExerciceData | undefined>();
   const [resultFlag, setResultFlag] = useState<boolean | null>(null);
   const [answerAreaVisible, showAnswerArea] = useState(false);
   const { file, title, baseURL } = props;
 
   const checkAnswer = useCallback(
     (response) => {
-      if (data.answer) {
-        const MolResponse = Molecule.fromMolfile(response);
-        const idCodeResponse = MolResponse.getIDCode();
-        answers[data.answer.idCode] = idCodeResponse;
-        localStorage.setItem('nmrium-exercises', JSON.stringify(answers));
-        if (data.answer.idCode === idCodeResponse) {
-          // correct answer
-          setResultFlag(true);
-        } else {
-          setResultFlag(false);
-          // wrong answer
-        }
-      }
+      if (!data?.answer) return;
+
+      const MolResponse = Molecule.fromMolfile(response);
+      const idCodeResponse = MolResponse.getIDCode();
+      answers[data.answer.idCode] = idCodeResponse;
+
+      localStorage.setItem('nmrium-exercises', JSON.stringify(answers));
+      setResultFlag(data.answer.idCode === idCodeResponse);
     },
     [data],
   );
 
   useEffect(() => {
-    if (file) {
-      void loadData(file).then((d) => {
+    if (!file) return;
+
+    let canceled = false;
+    loadData(file)
+      .then((d) => {
+        if (canceled) return;
+
         const _d = JSON.parse(JSON.stringify(d).replaceAll(/\.\/+?/g, baseURL));
 
         if (_d?.molecules?.[0]?.molfile) {
@@ -148,10 +156,12 @@ export default function Exercise(props) {
           };
           setData(_d);
         }
-      });
-    } else {
-      setData({});
-    }
+      })
+      .catch(reportError);
+
+    return () => {
+      canceled = true;
+    };
   }, [baseURL, file, props]);
 
   const showAnswerAreaHander = useCallback(() => {
@@ -197,10 +207,12 @@ export default function Exercise(props) {
           </div>
           <div css={bottomRightContainer}>
             <div css={mfCss}>
-              <MF
-                style={{ color: 'navy', fontSize: 30 }}
-                mf={data?.answer?.mf}
-              />
+              {data?.answer?.mf && (
+                <MF
+                  style={{ color: 'navy', fontSize: 30 }}
+                  mf={data.answer.mf}
+                />
+              )}
             </div>
             <div css={resultContainer}>
               <div

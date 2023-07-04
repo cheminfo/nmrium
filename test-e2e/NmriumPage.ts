@@ -86,6 +86,7 @@ export default class NmriumPage {
     if (mode === 'manual') {
       await this.page.fill('input[name="ph1"]', '-100');
       await this.page.fill('input[name="ph0"]', '-104');
+      await this.page.locator('input[name="ph0"]').blur();
     }
     if (mode === 'automatic') {
       const select = this.page.locator('select');
