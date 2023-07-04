@@ -18,6 +18,8 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
@@ -26,11 +28,7 @@ import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import { usePredictSpectraModal } from '../../modal/PredictSpectraModal';
-import {
-  copyPNGToClipboard,
-  copyTextToClipboard,
-  exportAsSVG,
-} from '../../utility/export';
+import { copyPNGToClipboard, exportAsSVG } from '../../utility/export';
 import PanelHeader from '../header/PanelHeader';
 
 const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
@@ -127,17 +125,21 @@ export default function MoleculePanelHeader({
     alert.success('MOL copied as PNG to clipboard');
   }, [rootRef, alert, currentIndex]);
 
+  const {
+    rawWriteWithType,
+    readText,
+    shouldFallback,
+    cleanShouldFallback,
+    text,
+  } = useClipboard();
+
   const saveAsMolHandler = useCallback(
     (molfile) => {
-      void copyTextToClipboard(molfile).then((flag) => {
-        if (flag) {
-          alert.success('MOLFile copied to clipboard');
-        } else {
-          alert.error('copied not completed');
-        }
+      void rawWriteWithType(molfile).then(() => {
+        alert.success('MOLFile copied to clipboard');
       });
     },
-    [alert],
+    [alert, rawWriteWithType],
   );
 
   const exportHandler = useCallback(
@@ -175,11 +177,14 @@ export default function MoleculePanelHeader({
     ],
   );
 
-  const handlePaste = useCallback(() => {
-    void navigator.clipboard.readText().then((molfile) => {
-      dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
-    });
-  }, [dispatch]);
+  function handlePasteMolfileAction() {
+    void readText().then(handlePasteMolfile);
+  }
+  function handlePasteMolfile(molfile: string | undefined) {
+    if (!molfile) return;
+    dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
+    cleanShouldFallback();
+  }
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex]?.id) {
@@ -234,7 +239,7 @@ export default function MoleculePanelHeader({
         </DropdownMenu>
       )}
       <Button.BarButton
-        onClick={handlePaste}
+        onClick={handlePasteMolfileAction}
         color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
         toolTip="Paste molfile"
         tooltipOrientation="horizontal"
@@ -307,6 +312,14 @@ export default function MoleculePanelHeader({
           <FaCog />
         </Button.BarButton>
       )}
+
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        onReadText={handlePasteMolfile}
+        text={text}
+        label="Molfile"
+      />
     </PanelHeader>
   );
 }

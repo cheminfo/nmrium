@@ -45,7 +45,8 @@ test('automatic assignment panel', async ({ page }) => {
     const progressLocator = nmrium.page.locator('text=Auto Assignments');
     await expect(progressLocator).toBeVisible();
 
-    await expect(progressLocator).toBeHidden();
+    // 10-seconds default can be short for CI runner
+    await expect(progressLocator).toBeHidden({ timeout: 20 * 1000 });
 
     await expect(
       nmrium.page.locator('_react=AutomaticAssignmentTable >> text=0.75'),

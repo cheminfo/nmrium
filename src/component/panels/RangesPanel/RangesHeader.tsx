@@ -6,6 +6,8 @@ import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
@@ -15,7 +17,6 @@ import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { copyHTMLToClipboard } from '../../utility/export';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -120,15 +121,14 @@ function RangesHeader({
   function handleShowJGraph() {
     dispatch({ type: 'SHOW_J_GRAPH', payload: { id } });
   }
-  function saveToClipboardHandler(value) {
-    void (async () => {
-      const success = await copyHTMLToClipboard(value);
-      if (success) {
-        alert.success('Data copied to clipboard');
-      } else {
-        alert.error('copy to clipboard failed');
-      }
-    })();
+
+  const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
+    useClipboard();
+
+  function saveToClipboardHandler(value: string) {
+    void rawWriteWithType(value, 'text/html').then(() =>
+      alert.success('Data copied to clipboard'),
+    );
   }
 
   function saveAsHTMLHandler() {
@@ -254,6 +254,13 @@ function RangesHeader({
           <ImLink />
         </ActiveButton>
       </DefaultPanelHeader>
+
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+        label="Preview publication string"
+      />
     </div>
   );
 }
