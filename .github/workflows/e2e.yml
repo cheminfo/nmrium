@@ -31,11 +31,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: test-results-${{ matrix.project }}
-          path: test-results
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: playwright-report-${{ matrix.project }}
-          path: playwright-report
+          name: playwright-${{ matrix.project }}
+          path: |
+            test-results
+            playwright-report
