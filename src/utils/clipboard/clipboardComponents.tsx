@@ -27,11 +27,7 @@ const Actions = styled.div`
 `;
 
 export interface CFBP {
-  // it's used; I don't know why it's not detected
-  // eslint-disable-next-line react/no-unused-prop-types
   mode: ClipboardMode | undefined;
-  // it's used; I don't know why it's not detected
-  // eslint-disable-next-line react/no-unused-prop-types
   label?: string;
 
   onDismiss: () => void;
@@ -157,6 +153,8 @@ function ClipboardFallbackRead(props: ClipboardFallbackReadProps) {
     onFileRef.current(file);
   }, []);
 
+  if (props.mode !== 'read') return null;
+
   return (
     <ClipboardForm onSubmit={onSubmit}>
       <label>
@@ -195,6 +193,8 @@ function ClipboardFallbackReadText(props: ClipboardFallbackReadTextProps) {
 
     onTextRef.current(text);
   }, []);
+
+  if (props.mode !== 'readText') return null;
 
   return (
     <ClipboardForm onSubmit={onSubmit}>
@@ -240,8 +240,11 @@ function ClipboardFallbackWrite(props: ClipboardFallbackWriteProps) {
     return () => URL.revokeObjectURL(downloadLink);
   }, [downloadLink]);
 
+  if (props.mode !== 'write') return null;
+
   return (
     <ClipboardForm onSubmit={onSubmit}>
+      <p>{props.label ?? 'Download'}</p>
       <a href={downloadLink} download={props.file.name}>
         We were not able to write data to your clipboard. Please download your
         data with this link.
@@ -267,6 +270,8 @@ function ClipboardFallbackWriteText(props: ClipboardFallbackWriteTextProps) {
 
     onDismissRef.current();
   }, []);
+
+  if (props.mode !== 'writeText') return null;
 
   return (
     <ClipboardForm onSubmit={onSubmit}>
