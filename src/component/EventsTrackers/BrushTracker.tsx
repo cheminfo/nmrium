@@ -81,6 +81,7 @@ interface BrushTrackerProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
+  onBrushEnd?: OnBrush;
   onBrush?: OnBrush;
   onZoom?: OnZoom;
   onDoubleClick?: OnClick;
@@ -92,7 +93,8 @@ export function BrushTracker({
   children,
   className,
   style,
-  onBrush = () => null,
+  onBrushEnd,
+  onBrush,
   onZoom = () => null,
   onDoubleClick = () => null,
   onClick = () => null,
@@ -103,6 +105,7 @@ export function BrushTracker({
   >(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState<number>(0);
   const debounceClickEventsRef = useRef<Array<any>>([]);
+  const lastPointRef = useRef<number>(0);
 
   const mouseDownHandler = useCallback(
     (event: React.MouseEvent) => {
@@ -200,14 +203,22 @@ export function BrushTracker({
 
   useEffect(() => {
     const { step, startX, endX, startY, endY } = state;
+    const point = Math.hypot(endX - startX, endY - startY);
+    if (
+      (step === 'end' || step === 'brushing') &&
+      lastPointRef.current !== point
+    ) {
+      onBrush?.(state);
+      lastPointRef.current = point;
+    }
 
-    if (step === 'end' && Math.hypot(endX - startX, endY - startY) > 5) {
-      onBrush(state);
+    if (step === 'end' && point > 5) {
+      onBrushEnd?.(state);
       dispatch({
         type: 'DONE',
       });
     }
-  }, [onBrush, state]);
+  }, [onBrush, onBrushEnd, state]);
 
   return (
     <BrushContext.Provider value={state}>

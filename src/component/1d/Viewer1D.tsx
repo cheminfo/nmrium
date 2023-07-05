@@ -104,6 +104,13 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     yDomains,
   ]);
 
+  function handelBrush(brushData) {
+    if (brushData.altKey) {
+      const { startX, endX } = brushData;
+      dispatch({ type: 'MOVE_X_AXIS', payload: { startX, endX } });
+    }
+  }
+
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       const propagateEvent = () => {
@@ -330,7 +337,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 data &&
                 data.length > 0 && (
                   <BrushTracker
-                    onBrush={handelBrushEnd}
+                    onBrush={handelBrush}
+                    onBrushEnd={handelBrushEnd}
                     onDoubleClick={handelOnDoubleClick}
                     onClick={mouseClick}
                     onZoom={handleZoom}

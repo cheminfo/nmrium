@@ -5,6 +5,7 @@ import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
+import { getXScale } from '../../1d/utilities/scale';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -20,8 +21,15 @@ type SetYDomainAction = ActionType<
   'SET_Y_DOMAIN',
   { yDomain: [number, number] }
 >;
+type MoveXAxisAction = ActionType<
+  'MOVE_X_AXIS',
+  { startX: number; endX: number }
+>;
 
-export type DomainActions = SetXDomainAction | SetYDomainAction;
+export type DomainActions =
+  | SetXDomainAction
+  | SetYDomainAction
+  | MoveXAxisAction;
 
 function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
   let data = draft.data.filter(
@@ -270,6 +278,27 @@ function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
   draft.yDomain = yDomain;
   addToBrushHistory(draft, { xDomain: draft.xDomain, yDomain });
 }
+function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
+  const { startX, endX } = action.payload;
+  const scaleX = getXScale(draft);
+  const startPPM = scaleX.invert(startX);
+  const endPPM = scaleX.invert(endX);
+  const diffPPM = endPPM - startPPM;
+  const [x1, x2] = draft.xDomain;
+  const [x1Origin, x2Origin] = draft.originDomain.xDomain;
+  let x1Domain = x1 - diffPPM;
+  let x2Domain = x2 - diffPPM;
+
+  if (x1Domain < x1Origin) {
+    x1Domain = x1Origin;
+    x2Domain = x2;
+  }
+  if (x2Domain > x2Origin) {
+    x2Domain = x2Origin;
+    x1Domain = x1;
+  }
+  draft.xDomain = [x1Domain, x2Domain];
+}
 
 export {
   getDomain,
@@ -278,4 +307,5 @@ export {
   setIntegralsYDomain,
   handleSetXDomain,
   handleSetYDomain,
+  handleMoveOverXAxis,
 };

@@ -138,7 +138,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
           <Spinner isLoading={isLoading} emptyText={emptyText} />
           {data && data.length > 0 && (
             <BrushTracker
-              onBrush={handelBrushEnd}
+              onBrushEnd={handelBrushEnd}
               onDoubleClick={handelOnDoubleClick}
               onClick={mouseClick}
               onZoom={handleZoom}
