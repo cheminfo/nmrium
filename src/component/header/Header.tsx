@@ -22,6 +22,7 @@ import DropDownButton, {
 } from '../elements/dropDownButton/DropDownButton';
 import { useSaveSettings } from '../hooks/useSaveSettings';
 import AboutUsModal from '../modal/AboutUsModal';
+import { LogsHistoryModal } from '../modal/LogsHistoryModal';
 import GeneralSettingsModal from '../modal/setting/GeneralSettings';
 import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
@@ -30,7 +31,6 @@ import ApodizationOptionsPanel from './ApodizationOptionsPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
-import { LogsHistory } from './LogsHistory';
 import PhaseCorrectionPanel from './PhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
@@ -172,7 +172,7 @@ function HeaderInner(props: HeaderInnerProps) {
               <SaveButton />
             </>
           )}
-          {!general?.hideLogs && <LogsHistory />}
+          {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
             <Toolbar orientation="horizontal">

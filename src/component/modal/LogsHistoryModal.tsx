@@ -57,12 +57,12 @@ function getMaxLevelLogs(logs: LogEntry[], lastReadLogId: number) {
   return { backgroundColor, count: logsCounts[maxLevel] };
 }
 
-interface LogsHistoryProps {
+interface LogsHistoryModalProps {
   autoOpen?: boolean;
   onClose?: () => void;
 }
 
-export function LogsHistory(props: LogsHistoryProps) {
+export function LogsHistoryModal(props: LogsHistoryModalProps) {
   const { autoOpen = false, onClose } = props;
   const { logsHistory, logger, markAsRead, lastReadLogId } = useLogger();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(autoOpen);
