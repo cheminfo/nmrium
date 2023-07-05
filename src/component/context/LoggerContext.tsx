@@ -10,7 +10,7 @@ import {
   useEffect,
 } from 'react';
 
-import { LogsHistory } from '../header/LogsHistory';
+import { LogsHistoryModal } from '../modal/LogsHistoryModal';
 
 import { usePreferences } from './PreferencesContext';
 
@@ -86,7 +86,7 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   return (
     <LoggerContext.Provider value={loggerState}>
       {isLogHistoryOpened && (
-        <LogsHistory autoOpen onClose={() => openLogHistory(false)} />
+        <LogsHistoryModal autoOpen onClose={() => openLogHistory(false)} />
       )}
       {children}
     </LoggerContext.Provider>
