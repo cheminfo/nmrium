@@ -3,4 +3,5 @@ coverage
 src/demo/preflight.css
 lib
 node_modules
+playwright-report
 test-results
