@@ -223,21 +223,7 @@ test('Exclusion zones', async ({ page }) => {
       .locator('td:has-text("Exclusion zones")  + td input')
       .click();
 
-    // save setting changes
-    await nmrium.page.click('button >> text=Apply and Save');
-
-    // enter a name for the workspace
-    await nmrium.page.locator('input[name="workspaceName"]').fill('test');
-
-    // save the user workspace
-    await nmrium.page.click(
-      'data-test-id=save-workspace-dialog >> button >> text=Save',
-    );
-
-    //check if the exclusion zones tool exists in the main toolbar
-    await expect(
-      nmrium.page.locator(`_react=ToolbarItem[id="exclusionZones"]`),
-    ).toBeVisible();
+    await nmrium.saveWorkspaceModal('test');
   });
 
   await test.step('add exclusion zones', async () => {
