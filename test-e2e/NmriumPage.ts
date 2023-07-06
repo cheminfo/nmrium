@@ -143,4 +143,24 @@ export default class NmriumPage {
       dataTransfer,
     });
   }
+
+  async saveWorkspaceModal(name: string) {
+    // Save changes.
+    await this.page.click('_react=Modal >> text=Apply and Save');
+
+    // Enter a name for the workspace.
+    await this.page.locator('input[name="workspaceName"]').fill(name);
+
+    // Save the user workspace.
+    await this.page.click(
+      'data-test-id=save-workspace-dialog >> button >> text=Save',
+    );
+
+    await this.dismissAlert('Preferences saved');
+  }
+
+  async dismissAlert(text: string) {
+    const alert = this.page.locator('_react=AlertBlock', { hasText: text });
+    await alert.locator('button').click();
+  }
 }

@@ -11,15 +11,14 @@ import {
   ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { FaTimes } from 'react-icons/fa';
 import { TransitionGroup } from 'react-transition-group';
 
 import Transition from '../Transition';
 import Wrapper from '../Wrapper';
 import { positions, transitions, types } from '../options';
 
+import AlertBlock from './AlertBlock';
 import { AlertProvider } from './Context';
-import ProgressIndicator from './ProgressIndicator';
 
 interface ProviderProps {
   children: ReactNode;
@@ -219,38 +218,11 @@ function Provider({
                   {alertsByPosition[position]
                     ? alertsByPosition[position].map((alert) => (
                         <Transition type={transition} key={alert.id}>
-                          <div
-                            style={{
-                              margin: offset,
-                              padding: '25px',
-                              borderRadius: '10px',
-                              pointerEvents: 'all',
-                              backgroundColor: alert.options.backgroundColor,
-                              color: alert.options.color,
-                              minHeight: '60px',
-                              position: 'relative',
-                            }}
-                            key={alert.id}
-                          >
-                            <button
-                              style={{
-                                position: 'absolute',
-                                right: '5px',
-                                top: '5px',
-                                border: 'none',
-                                backgroundColor: 'transparent',
-                                color: 'white',
-                              }}
-                              type="button"
-                              onClick={() => closeHandler(alert)}
-                            >
-                              <FaTimes />
-                            </button>
-
-                            <span>{alert.message}</span>
-                            {alert.options.type ===
-                              types.PROGRESS_INDICATOR && <ProgressIndicator />}
-                          </div>
+                          <AlertBlock
+                            offset={offset}
+                            alert={alert}
+                            onClose={() => closeHandler(alert)}
+                          />
                         </Transition>
                       ))
                     : null}

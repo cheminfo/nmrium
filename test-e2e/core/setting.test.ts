@@ -26,18 +26,9 @@ test('should Change the visibility of the panels', async ({ page }) => {
       .locator('td:has-text("Databases panel")  + td input')
       .click();
 
-    // save changes
-    await nmrium.page.click('Button >> text=Apply and Save');
+    await nmrium.saveWorkspaceModal('test');
 
-    // enter a name for the workspace
-    await nmrium.page.locator('input[name="workspaceName"]').fill('test');
-
-    // save the user workspace
-    await nmrium.page.click(
-      'data-test-id=save-workspace-dialog >> button >> text=Save',
-    );
-
-    //check if the database panel is visible after saving the changes in the general setting
+    // Check that the database panel is visible after saving the changes in the general setting.
     await expect(databaseLocator).toBeVisible();
   });
 
