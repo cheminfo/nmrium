@@ -3,27 +3,26 @@ import { Integral } from 'nmr-processing';
 
 export function changeIntegralsRelative(
   spectrum: Spectrum1D,
-  newIntegral: { id: string; value: number },
+  data: { id: string; value: number },
 ) {
+  const { id, value } = data;
+
   const index = spectrum.integrals.values.findIndex(
-    (integral) => integral.id === newIntegral.id,
+    (integral) => integral.id === id,
   );
+
   if (index !== -1) {
-    const ratio = spectrum.integrals.values[index].absolute / newIntegral.value;
-    const result: {
-      sum: number;
-      values: Integral[];
-    } = { values: [], sum: 0 };
-    for (const [index, integral] of spectrum.integrals.values.entries()) {
-      const newIntegralValue = integral.absolute / ratio;
-      result.sum += newIntegralValue;
-      result.values[index] = {
-        ...integral,
-        integral: newIntegralValue,
-      };
+    const { absolute } = spectrum.integrals.values[index];
+    const ratio = absolute / value;
+
+    let sum = 0;
+    const integrals: Integral[] = [];
+    for (const integralRecord of spectrum.integrals.values) {
+      const integral = integralRecord.absolute / ratio;
+      sum += integral;
+      integrals.push({ ...integralRecord, integral });
     }
-    const { values, sum } = result;
-    spectrum.integrals.values = values;
+    spectrum.integrals.values = integrals;
     spectrum.integrals.options = {
       ...spectrum.integrals.options,
       mf: undefined,

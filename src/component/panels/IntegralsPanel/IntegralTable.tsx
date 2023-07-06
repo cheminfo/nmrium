@@ -126,16 +126,12 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         },
         accessor: 'integral',
         Cell: ({ row }) => {
-          let integral: string | number = '';
-
-          if (row.original?.integral) {
-            const value = formatNumber(
-              row.original.integral,
-              integralsPreferences.relative.format,
-            );
-            const flag = checkIntegralKind(row.original);
-            integral = flag ? value : `[ ${value} ]`;
-          }
+          const value = formatNumber(
+            row.original.integral || 0,
+            integralsPreferences.relative.format,
+          );
+          const flag = checkIntegralKind(row.original);
+          const integral = flag ? value : `[ ${value} ]`;
 
           return (
             <EditableColumn

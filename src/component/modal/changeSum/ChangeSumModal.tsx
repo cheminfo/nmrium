@@ -124,7 +124,7 @@ export default function ChangeSumModal({
       });
     } else {
       setActiveOption(SumSetOptions.Manual);
-      formRef.current.setValues({ sum: sumOptions?.sum || '', molecule: null });
+      formRef.current.setValues({ sum: sumOptions?.sum ?? '', molecule: null });
     }
   }, [panels?.structuresPanel, sumOptions]);
 
