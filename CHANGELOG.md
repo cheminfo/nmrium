@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.1](https://github.com/cheminfo/nmrium/compare/v0.40.0...v0.40.1) (2023-07-06)
+
+
+### Bug Fixes
+
+* **release:** trigger new release ([#2501](https://github.com/cheminfo/nmrium/issues/2501)) ([5ba9c07](https://github.com/cheminfo/nmrium/commit/5ba9c07262557754d29b36704f94d355236eeb75))
+
 ## [0.40.0](https://github.com/cheminfo/nmrium/compare/v0.39.0...v0.40.0) (2023-07-06)
 
 
