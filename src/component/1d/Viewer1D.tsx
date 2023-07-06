@@ -1,6 +1,6 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, useEffect, useReducer, ReactNode } from 'react';
+import { useCallback, useEffect, useReducer, ReactNode, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
 import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
@@ -38,6 +38,7 @@ import FooterBanner from './FooterBanner';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
+import { getXScale } from './utilities/scale';
 
 interface Viewer1DProps {
   emptyText?: ReactNode;
@@ -63,6 +64,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       spectra: { activeTab },
     },
   } = state;
+  const brushStartRef = useRef<number | null>(null);
   const verticalAlign = useVerticalAlign();
   const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
@@ -105,14 +107,24 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   ]);
 
   function handelBrush(brushData) {
-    if (brushData.altKey) {
-      const { startX, endX } = brushData;
-      dispatch({ type: 'MOVE_X_AXIS', payload: { startX, endX } });
+    const { startX: startXInPixel, endX: endXInPixel, altKey } = brushData;
+
+    if (altKey) {
+      const scaleX = getXScale(state);
+      if (!brushStartRef.current) {
+        brushStartRef.current = scaleX.invert(startXInPixel);
+      }
+      const shiftX = scaleX.invert(endXInPixel) - brushStartRef.current;
+
+      dispatch({ type: 'MOVE_X_AXIS', payload: { shiftX } });
     }
   }
 
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
+      //reset the brush start
+      brushStartRef.current = null;
+
       const propagateEvent = () => {
         if (!scaleState.scaleX || !scaleState.scaleY) return;
 
