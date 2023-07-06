@@ -1,7 +1,7 @@
 import { NmrData1D } from 'cheminfo-types';
 import { Filters } from 'nmr-processing';
 import { useEffect, useState, memo } from 'react';
-import { Checkbox, CheckedState, Field } from 'react-science/ui';
+import { Checkbox, CheckedState } from 'react-science/ui';
 
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
@@ -77,9 +77,11 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
           onChange={handleChangeSizeHandler}
         />
       </Label>
-      <Field label="Live preview" name="livePreview">
-        <Checkbox checked={livePreview} onChange={setLivePreview} />
-      </Field>
+      <Checkbox
+        label="Live preview"
+        checked={livePreview}
+        onChange={setLivePreview}
+      />
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </HeaderContainer>
   );

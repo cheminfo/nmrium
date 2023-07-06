@@ -56,10 +56,11 @@ function PredictSpectraModal({
   const refForm = useRef<any>();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [isApproved, setApproved] = useState<CheckedState>(false);
   const [predictionPreferences, setPredictionPreferences] =
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
+  const { isApproved: isAgree = false, ...options } = predictionPreferences;
+  const [isApproved, setApproved] = useState<CheckedState>(isAgree);
   const {
     toolOptions: {
       data: { predictionIndex },
@@ -71,12 +72,10 @@ function PredictSpectraModal({
   }, []);
 
   const initValues = useMemo(() => {
-    const { isApproved: isAgree, ...options } = predictionPreferences;
-    setApproved(isAgree || false);
     return Object.assign(defaultPredictionOptions, options, {
       name: `Prediction ${predictionIndex + 1}`,
     });
-  }, [predictionPreferences, predictionIndex]);
+  }, [options, predictionIndex]);
 
   const { logger } = useLogger();
   const submitHandler = useCallback(
@@ -149,8 +148,8 @@ function PredictSpectraModal({
             onChange={setApproved}
             checked={isApproved}
             key={String(isApproved)}
+            label="I confirm that the chemical structure is not confidential."
           />
-          <p>I confirm that the chemical structure is not confidential.</p>
         </div>
       </div>
       <div className="footer-container">
