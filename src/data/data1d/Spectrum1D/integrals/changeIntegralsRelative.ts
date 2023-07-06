@@ -1,4 +1,5 @@
 import { Spectrum1D } from 'nmr-load-save';
+import { Integral } from 'nmr-processing';
 
 export function changeIntegralsRelative(
   spectrum: Spectrum1D,
@@ -9,11 +10,19 @@ export function changeIntegralsRelative(
   const index = spectrum.integrals.values.findIndex(
     (integral) => integral.id === id,
   );
-  const { sum: baseSum } = spectrum.integrals.options;
-  if (index !== -1 && typeof baseSum === 'number') {
-    const { absolute, integral = 0 } = spectrum.integrals.values[index];
+
+  if (index !== -1) {
+    const { absolute } = spectrum.integrals.values[index];
     const ratio = absolute / value;
-    const sum = (value / integral) * baseSum;
+
+    let sum = 0;
+    const integrals: Integral[] = [];
+    for (const integralRecord of spectrum.integrals.values) {
+      const integral = integralRecord.absolute / ratio;
+      sum += integral;
+      integrals.push({ ...integralRecord, integral });
+    }
+    spectrum.integrals.values = integrals;
     spectrum.integrals.options = {
       ...spectrum.integrals.options,
       mf: undefined,
@@ -21,12 +30,5 @@ export function changeIntegralsRelative(
       sumAuto: false,
       sum,
     };
-
-    spectrum.integrals.values = spectrum.integrals.values.map((integral) => {
-      return {
-        ...integral,
-        integral: integral.absolute / ratio,
-      };
-    });
   }
 }
