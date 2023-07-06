@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.40.0](https://github.com/cheminfo/nmrium/compare/v0.39.0...v0.40.0) (2023-07-06)
+
+
+### Features
+
+* open logger dialog automatically ([b80a2d1](https://github.com/cheminfo/nmrium/commit/b80a2d1c88969632ef00c83d0b88924488156d4f)), closes [#2485](https://github.com/cheminfo/nmrium/issues/2485)
+
+
+### Bug Fixes
+
+* some modal sizes ([#2377](https://github.com/cheminfo/nmrium/issues/2377)) ([7d114d9](https://github.com/cheminfo/nmrium/commit/7d114d9aede5e7acadaeee64eeb768519df116e5))
+* unhandled error when clipboard read permissions are not granted ([#2492](https://github.com/cheminfo/nmrium/issues/2492)) ([41b4cd8](https://github.com/cheminfo/nmrium/commit/41b4cd885839be9ee251af4c45bb9d8177226521))
+
 ## [0.39.0](https://github.com/cheminfo/nmrium/compare/v0.38.2...v0.39.0) (2023-06-30)
 
 
