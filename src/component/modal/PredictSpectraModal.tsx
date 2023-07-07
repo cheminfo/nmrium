@@ -40,6 +40,7 @@ const styles = css`
       margin: 5px 5px 5px 0;
     }
   }
+
   .header {
     padding: 0;
     margin: 0 30%;
