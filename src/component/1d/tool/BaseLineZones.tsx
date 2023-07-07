@@ -28,7 +28,12 @@ const styles = css`
 `;
 
 function BaseLineZones() {
-  const { toolOptions } = useChartData();
+  const {
+    toolOptions: {
+      selectedTool,
+      data: { baselineCorrection },
+    },
+  } = useChartData();
 
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
@@ -36,34 +41,33 @@ function BaseLineZones() {
   const deleteRangeHandler = (id) => {
     dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
   };
+  const baseLineZones = baselineCorrection.zones;
 
-  const baseLineZones = toolOptions.data.baselineCorrection.zones;
+  if (selectedTool !== 'baselineCorrection' || baseLineZones.length === 0) {
+    return null;
+  }
 
   return (
-    <>
-      {baseLineZones.length > 0 && (
-        <g>
-          {baseLineZones.map((zone) => (
-            <g
-              key={zone.id}
-              transform={`translate(${scaleX()(zone.to)},0)`}
-              css={styles}
-            >
-              <DeleteButton
-                x={-20}
-                y={10}
-                onDelete={() => deleteRangeHandler(zone.id)}
-              />
-              <rect
-                x="0"
-                width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
-                className="zone-area"
-              />
-            </g>
-          ))}
+    <g>
+      {baselineCorrection.zones.map((zone) => (
+        <g
+          key={zone.id}
+          transform={`translate(${scaleX()(zone.to)},0)`}
+          css={styles}
+        >
+          <DeleteButton
+            x={-20}
+            y={10}
+            onDelete={() => deleteRangeHandler(zone.id)}
+          />
+          <rect
+            x="0"
+            width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
+            className="zone-area"
+          />
         </g>
-      )}
-    </>
+      ))}
+    </g>
   );
 }
 
