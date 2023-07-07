@@ -1,4 +1,3 @@
-import { SvgNmrFt } from 'cheminfo-font';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 import { CSSProperties, ReactNode, useCallback } from 'react';
 import {
@@ -27,7 +26,7 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
-import { usePredictSpectraModal } from '../../modal/PredictSpectraModal';
+import PredictSpectraModal from '../../modal/PredictSpectraModal';
 import { copyPNGToClipboard, exportAsSVG } from '../../utility/export';
 import PanelHeader from '../header/PanelHeader';
 
@@ -113,7 +112,6 @@ export default function MoleculePanelHeader({
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
   const moleculeKey = molecules?.[currentIndex]?.id;
-  const openPredictSpectraModal = usePredictSpectraModal();
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(rootRef, `molSVG${currentIndex} `, 'molFile');
@@ -266,14 +264,7 @@ export default function MoleculePanelHeader({
             <FaRegTrashAlt />
           </Button.BarButton>
           {hasMolecules && (
-            <Button.BarButton
-              color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-              onClick={() => openPredictSpectraModal(molecules[currentIndex])}
-              toolTip="Predict spectra"
-              tooltipOrientation="horizontal"
-            >
-              <SvgNmrFt />
-            </Button.BarButton>
+            <PredictSpectraModal molecule={molecules[currentIndex]} />
           )}
         </>
       )}
