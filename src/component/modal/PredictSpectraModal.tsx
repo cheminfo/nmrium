@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useRef, useState, useMemo } from 'react';
+import { Checkbox, CheckedState } from 'react-science/ui';
 
 import {
   defaultPredictionOptions,
@@ -11,7 +12,6 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
-import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
@@ -56,10 +56,11 @@ function PredictSpectraModal({
   const refForm = useRef<any>();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [isApproved, setApproved] = useState(false);
   const [predictionPreferences, setPredictionPreferences] =
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
+  const { isApproved: isAgree = false, ...options } = predictionPreferences;
+  const [isApproved, setApproved] = useState<CheckedState>(isAgree);
   const {
     toolOptions: {
       data: { predictionIndex },
@@ -71,12 +72,10 @@ function PredictSpectraModal({
   }, []);
 
   const initValues = useMemo(() => {
-    const { isApproved: isAgree, ...options } = predictionPreferences;
-    setApproved(isAgree);
     return Object.assign(defaultPredictionOptions, options, {
       name: `Prediction ${predictionIndex + 1}`,
     });
-  }, [predictionPreferences, predictionIndex]);
+  }, [options, predictionIndex]);
 
   const { logger } = useLogger();
   const submitHandler = useCallback(
@@ -127,10 +126,6 @@ function PredictSpectraModal({
     ],
   );
 
-  const approveCheckHandler = useCallback((e) => {
-    setApproved(e.target.checked);
-  }, []);
-
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
@@ -149,12 +144,12 @@ function PredictSpectraModal({
           spectra for confidential molecules.
         </p>
         <div className="warning-container">
-          <CheckBox
-            onChange={approveCheckHandler}
+          <Checkbox
+            onChange={setApproved}
             checked={isApproved}
             key={String(isApproved)}
+            label="I confirm that the chemical structure is not confidential."
           />
-          <p>I confirm that the chemical structure is not confidential.</p>
         </div>
       </div>
       <div className="footer-container">
