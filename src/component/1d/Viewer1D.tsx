@@ -116,7 +116,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       }
       const shiftX = scaleX.invert(endXInPixel) - brushStartRef.current;
 
-      dispatch({ type: 'MOVE_X_AXIS', payload: { shiftX } });
+      dispatch({ type: 'MOVE', payload: { shiftX, shiftY: 0 } });
     }
   }
 
