@@ -116,6 +116,7 @@ export function PredictSpectraModal({
           } finally {
             hideLoading();
             onClose();
+            closeDialog();
           }
         }
       })();
@@ -128,6 +129,7 @@ export function PredictSpectraModal({
       onClose,
       logger,
       setPredictionPreferences,
+      closeDialog,
     ],
   );
 
@@ -144,7 +146,10 @@ export function PredictSpectraModal({
       <Modal
         hasCloseButton
         isOpen={isOpenDialog}
-        onRequestClose={closeDialog}
+        onRequestClose={() => {
+          onClose();
+          closeDialog();
+        }}
         width={600}
         maxWidth={1000}
       >
