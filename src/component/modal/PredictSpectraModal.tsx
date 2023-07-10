@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { SvgNmrFt } from 'cheminfo-font';
-import { useCallback, useRef, useState, useMemo } from 'react';
-import { Checkbox, CheckedState, Modal, useOnOff } from 'react-science/ui';
+import { css } from "@emotion/react";
+import { SvgNmrFt } from "cheminfo-font";
+import { useCallback, useRef, useState, useMemo } from "react";
+import { Checkbox, CheckedState, Modal, useOnOff } from "react-science/ui";
 
 import {
   defaultPredictionOptions,
   predictSpectra,
-} from '../../data/PredictionManager';
-import { StateMoleculeExtended } from '../../data/molecules/Molecule';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useLogger } from '../context/LoggerContext';
-import Button from '../elements/Button';
-import { useAlert } from '../elements/popup/Alert';
-import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel';
-import { useStateWithLocalStorage } from '../utility/LocalStorage';
+} from "../../data/PredictionManager";
+import { StateMoleculeExtended } from "../../data/molecules/Molecule";
+import { useChartData } from "../context/ChartContext";
+import { useDispatch } from "../context/DispatchContext";
+import { useLogger } from "../context/LoggerContext";
+import Button from "../elements/Button";
+import { useAlert } from "../elements/popup/Alert";
+import PredictionPreferences from "../panels/predictionPanel/PredictionOptionsPanel";
+import { useStateWithLocalStorage } from "../utility/LocalStorage";
 
-import { ModalStyles } from './ModalStyle';
+import { ModalStyles } from "./ModalStyle";
 
 const styles = css`
   .inner-content {
@@ -62,7 +62,7 @@ export function PredictSpectraModal({
   const dispatch = useDispatch();
   const alert = useAlert();
   const [predictionPreferences, setPredictionPreferences] =
-    useStateWithLocalStorage('nmrium-prediction-preferences');
+    useStateWithLocalStorage("nmrium-prediction-preferences");
 
   const { isApproved: isAgree = false, ...options } = predictionPreferences;
   const [isApproved, setApproved] = useState<CheckedState>(isAgree);
@@ -97,14 +97,17 @@ export function PredictSpectraModal({
             }
           }
 
+          onClose();
+          closeDialog();
+
           const hideLoading = await alert.showLoading(
-            `Predict ${predictedSpectra.join(',')} in progress`,
+            `Predict ${predictedSpectra.join(",")} in progress`
           );
 
           try {
             const data = await predictSpectra(molfile, logger);
             dispatch({
-              type: 'PREDICT_SPECTRA',
+              type: "PREDICT_SPECTRA",
               payload: {
                 predictedSpectra: data.spectra,
                 options: values,
@@ -115,8 +118,6 @@ export function PredictSpectraModal({
             alert.error(error?.message);
           } finally {
             hideLoading();
-            onClose();
-            closeDialog();
           }
         }
       })();
@@ -130,13 +131,13 @@ export function PredictSpectraModal({
       logger,
       setPredictionPreferences,
       closeDialog,
-    ],
+    ]
   );
 
   return (
     <>
       <Button.BarButton
-        color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
+        color={{ base: "#4e4e4e", hover: "#4e4e4e" }}
         onClick={openDialog}
         toolTip="Predict spectra"
         tooltipOrientation="horizontal"
