@@ -98,6 +98,7 @@ export default function PredictionPanel() {
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {
+              logger,
               predictedSpectra: data.spectra,
               options: predictionPreferences,
               molecule: { ...molecules[currentIndex], molfile },

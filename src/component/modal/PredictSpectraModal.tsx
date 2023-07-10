@@ -109,6 +109,7 @@ export function PredictSpectraModal({
             dispatch({
               type: 'PREDICT_SPECTRA',
               payload: {
+                logger,
                 predictedSpectra: data.spectra,
                 options: values,
                 molecule,

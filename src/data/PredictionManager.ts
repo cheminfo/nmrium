@@ -111,7 +111,9 @@ export function generateSpectra(
   predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
   color: string,
+  logger?: FifoLogger,
 ): Spectrum[] {
+  checkFromTo(predictedSpectra, inputOptions, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
     if (inputOptions.spectra[experiment]) {
@@ -148,6 +150,51 @@ export function generateSpectra(
     }
   }
   return spectra;
+}
+
+function checkFromTo(
+  predictedSpectra: PredictedSpectraResult,
+  inputOptions: PredictionOptions,
+  logger?: FifoLogger,
+) {
+  for (const experiment in predictedSpectra) {
+    if (inputOptions.spectra[experiment]) {
+      if (!['carbon', 'proton'].includes(experiment)) continue;
+      const spectrum = predictedSpectra[experiment];
+      const { signals, nucleus } = spectrum;
+      const { from, to } = inputOptions['1d'][nucleus];
+      const deltas = signals.filter((s) => {
+        return s.delta >= from && s.delta <= to;
+      });
+      if (deltas.length === 0) {
+        switch (experiment) {
+          case 'proton':
+            if (logger) {
+              logger.warn(
+                `There is not proton signals into the from-to range, so proton, cosy, hsqc and hmdb could not be simulated`,
+              );
+            }
+            delete predictedSpectra.proton;
+            delete predictedSpectra.cosy;
+            delete predictedSpectra.hsqc;
+            delete predictedSpectra.hmbc;
+            break;
+          case 'carbon':
+            if (logger) {
+              logger.warn(
+                'There is not carbon signals into the from-to range, so carbon, hsqc and hmdb could not be simulated',
+              );
+            }
+            delete predictedSpectra.carbon;
+            delete predictedSpectra.hsqc;
+            delete predictedSpectra.hmbc;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
 }
 
 function generated1DSpectrum(params: {

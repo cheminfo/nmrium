@@ -1,3 +1,4 @@
+import { FifoLogger } from 'fifo-logger';
 import { Draft } from 'immer';
 
 import {
@@ -35,6 +36,7 @@ type DeleteMoleculeAction = ActionType<
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
+    logger?: FifoLogger;
     options: PredictionOptions;
     predictedSpectra: PredictedSpectraResult;
     molecule: StateMolecule;
@@ -158,6 +160,7 @@ function handlePredictSpectraFromMolecule(
   action: PredictSpectraFromMoleculeAction,
 ) {
   const {
+    logger,
     predictedSpectra,
     options,
     molecule,
@@ -165,7 +168,12 @@ function handlePredictSpectraFromMolecule(
   } = action.payload;
   const color = generateColor(false, draft.usedColors['1d']);
   const spectraIds: string[] = [];
-  for (const spectrum of generateSpectra(predictedSpectra, options, color)) {
+  for (const spectrum of generateSpectra(
+    predictedSpectra,
+    options,
+    color,
+    logger,
+  )) {
     draft.data.push(spectrum);
     spectraIds.push(spectrum.id);
   }
