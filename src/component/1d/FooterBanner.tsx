@@ -102,7 +102,7 @@ function FooterBannerInner({
   activeTab,
 }: FooterBannerInnerProps) {
   let position = useMouseTracker();
-  const { startX, endX, step, altKey } = useBrushTracker();
+  const { startX, endX, step, ctrlKey } = useBrushTracker();
   const { scaleX } = useScaleChecked();
 
   const format = useFormatNumberByNucleus(activeTab);
@@ -134,7 +134,7 @@ function FooterBannerInner({
     return 1;
   }
 
-  const isBrushing = step === 'brushing' && !altKey;
+  const isBrushing = step === 'brushing' && !ctrlKey;
 
   return (
     <div css={styles}>

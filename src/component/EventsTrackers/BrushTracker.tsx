@@ -24,6 +24,7 @@ interface BrushTrackerContext {
   endY: number;
   shiftKey: boolean;
   altKey: boolean;
+  ctrlKey: boolean;
 }
 interface BrushTrackerState extends BrushTrackerContext {
   step: Step;
@@ -42,6 +43,7 @@ const initialState: BrushTrackerState = {
   step: 'initial',
   shiftKey: false,
   altKey: false,
+  ctrlKey: false,
   startX: 0,
   endX: 0,
   startY: 0,
@@ -118,6 +120,7 @@ export function BrushTracker({
           payload: {
             shiftKey: event.shiftKey,
             altKey: event.altKey,
+            ctrlKey: event.ctrlKey,
             screenX: event.screenX,
             screenY: event.screenY,
             clientX: event.clientX,
@@ -257,6 +260,7 @@ type DownAction = ActionType<
   MouseCoordinates & {
     shiftKey: boolean;
     altKey: boolean;
+    ctrlKey: boolean;
     boundingRect: DOMRect;
   }
 >;
@@ -285,6 +289,7 @@ function reducer(
         const {
           shiftKey,
           altKey,
+          ctrlKey,
           screenX,
           screenY,
           clientX,
@@ -297,6 +302,7 @@ function reducer(
           ...state,
           shiftKey,
           altKey,
+          ctrlKey,
           startX: x,
           startY: y,
           startScreenX: screenX,

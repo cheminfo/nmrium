@@ -67,10 +67,10 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       endX: endXInPixel,
       startY: startYInPixel,
       endY: endYInPixel,
-      altKey,
+      ctrlKey,
     } = brushData;
 
-    if (altKey) {
+    if (ctrlKey) {
       const scaleX = get2DXScale(state);
       const scaleY = get2DYScale(state);
       if (!brushStartRef.current) {
@@ -109,7 +109,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
         } else {
           switch (selectedTool) {
             default:
-              if (selectedTool != null) {
+              if (selectedTool != null && !brushData.ctrlKey) {
                 return dispatch({
                   type: 'BRUSH_END',
                   payload: {

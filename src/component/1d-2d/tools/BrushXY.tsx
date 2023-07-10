@@ -71,9 +71,9 @@ export default function BrushXY({
     height,
     toolOptions: { selectedTool },
   } = useChartData();
-  let { startX, endX, startY, endY, step, altKey } = useBrushTracker();
+  let { startX, endX, startY, endY, step, ctrlKey } = useBrushTracker();
   if (
-    altKey ||
+    ctrlKey ||
     !allowTools.has(selectedTool) ||
     step !== 'brushing' ||
     !dimensionBorder ||

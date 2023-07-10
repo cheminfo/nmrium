@@ -107,9 +107,9 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   ]);
 
   function handelBrush(brushData) {
-    const { startX: startXInPixel, endX: endXInPixel, altKey } = brushData;
+    const { startX: startXInPixel, endX: endXInPixel, ctrlKey } = brushData;
 
-    if (altKey) {
+    if (ctrlKey) {
       const scaleX = getXScale(state);
       if (!brushStartRef.current) {
         brushStartRef.current = scaleX.invert(startXInPixel);
@@ -256,7 +256,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       } else {
         switch (selectedTool) {
           default:
-            if (selectedTool != null) {
+            if (selectedTool != null && !brushData.ctrlKey) {
               dispatch({ type: 'BRUSH_END', payload: brushData });
             }
             break;
