@@ -9,6 +9,7 @@ import {
   signals2DToZ,
   getFrequency,
   PredictedAll,
+  signalsToRanges,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -205,7 +206,7 @@ function generated1DSpectrum(params: {
 }) {
   const { spectrum, inputOptions, experiment, color } = params;
 
-  const { signals, ranges, nucleus } = spectrum;
+  const { signals, joinedSignals, nucleus } = spectrum;
 
   const {
     name,
@@ -239,7 +240,10 @@ function generated1DSpectrum(params: {
     },
     {},
   );
-  datum.ranges.values = mapRanges(ranges, datum);
+  datum.ranges.values = mapRanges(
+    signalsToRanges(joinedSignals, { frequency: frequency as number }),
+    datum,
+  );
   updateIntegralsRelativeValues(datum);
   return datum;
 }
