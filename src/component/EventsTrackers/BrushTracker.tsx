@@ -24,7 +24,15 @@ interface BrushTrackerContext {
   endY: number;
   shiftKey: boolean;
   altKey: boolean;
+  mouseButton: MouseButton;
 }
+
+type MouseButton = 'main' | 'secondary' | 'unknown';
+
+const MouseButtons: Record<number, MouseButton> = {
+  0: 'main',
+  2: 'secondary',
+} as const;
 interface BrushTrackerState extends BrushTrackerContext {
   step: Step;
   startX: number;
@@ -40,6 +48,7 @@ interface BrushTrackerState extends BrushTrackerContext {
 
 const initialState: BrushTrackerState = {
   step: 'initial',
+  mouseButton: 'unknown',
   shiftKey: false,
   altKey: false,
   startX: 0,
@@ -81,6 +90,7 @@ interface BrushTrackerProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
+  onBrushEnd?: OnBrush;
   onBrush?: OnBrush;
   onZoom?: OnZoom;
   onDoubleClick?: OnClick;
@@ -92,7 +102,8 @@ export function BrushTracker({
   children,
   className,
   style,
-  onBrush = () => null,
+  onBrushEnd,
+  onBrush,
   onZoom = () => null,
   onDoubleClick = () => null,
   onClick = () => null,
@@ -103,16 +114,19 @@ export function BrushTracker({
   >(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState<number>(0);
   const debounceClickEventsRef = useRef<Array<any>>([]);
+  const lastPointRef = useRef<number>(0);
 
   const mouseDownHandler = useCallback(
     (event: React.MouseEvent) => {
-      if (event.button === 0) {
+      //check that the right or left mouse button pressed
+      if ([0, 2].includes(event.button)) {
         if (noPropagation) {
           event.stopPropagation();
         }
         dispatch({
           type: 'DOWN',
           payload: {
+            mouseButton: MouseButtons[event.button],
             shiftKey: event.shiftKey,
             altKey: event.altKey,
             screenX: event.screenX,
@@ -200,14 +214,22 @@ export function BrushTracker({
 
   useEffect(() => {
     const { step, startX, endX, startY, endY } = state;
+    const point = Math.hypot(endX - startX, endY - startY);
+    if (
+      (step === 'end' || step === 'brushing') &&
+      lastPointRef.current !== point
+    ) {
+      onBrush?.(state);
+      lastPointRef.current = point;
+    }
 
-    if (step === 'end' && Math.hypot(endX - startX, endY - startY) > 5) {
-      onBrush(state);
+    if (step === 'end' && point > 5) {
+      onBrushEnd?.(state);
       dispatch({
         type: 'DONE',
       });
     }
-  }, [onBrush, state]);
+  }, [onBrush, onBrushEnd, state]);
 
   return (
     <BrushContext.Provider value={state}>
@@ -246,6 +268,7 @@ type DownAction = ActionType<
   MouseCoordinates & {
     shiftKey: boolean;
     altKey: boolean;
+    mouseButton: MouseButton;
     boundingRect: DOMRect;
   }
 >;
@@ -274,6 +297,7 @@ function reducer(
         const {
           shiftKey,
           altKey,
+          mouseButton,
           screenX,
           screenY,
           clientX,
@@ -286,6 +310,7 @@ function reducer(
           ...state,
           shiftKey,
           altKey,
+          mouseButton,
           startX: x,
           startY: y,
           startScreenX: screenX,

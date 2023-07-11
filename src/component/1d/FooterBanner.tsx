@@ -102,7 +102,7 @@ function FooterBannerInner({
   activeTab,
 }: FooterBannerInnerProps) {
   let position = useMouseTracker();
-  const { startX, endX, step } = useBrushTracker();
+  const { startX, endX, step, mouseButton } = useBrushTracker();
   const { scaleX } = useScaleChecked();
 
   const format = useFormatNumberByNucleus(activeTab);
@@ -134,6 +134,8 @@ function FooterBannerInner({
     return 1;
   }
 
+  const isBrushing = step === 'brushing' && mouseButton === 'main';
+
   return (
     <div css={styles}>
       <BsCursor />
@@ -161,7 +163,7 @@ function FooterBannerInner({
         )}
       </div>
 
-      {step === 'brushing' && (
+      {isBrushing && (
         <div className="flex-row small-width-none">
           <span className="label"> Δppm: </span>
           <span className="value">
@@ -172,7 +174,7 @@ function FooterBannerInner({
 
       {activeSpectrum && (
         <div className=" flex-row small-width-none">
-          {spectrum?.info?.originFrequency && step === 'brushing' && (
+          {spectrum?.info?.originFrequency && isBrushing && (
             <div>
               <span className="label"> ΔHz: </span>
               <span className="value">
@@ -183,7 +185,7 @@ function FooterBannerInner({
               </span>
             </div>
           )}
-          {step === 'brushing' && (
+          {isBrushing && (
             <div>
               <span className="label"> ratio :</span>
               <span className="value">

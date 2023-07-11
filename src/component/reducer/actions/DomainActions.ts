@@ -20,8 +20,12 @@ type SetYDomainAction = ActionType<
   'SET_Y_DOMAIN',
   { yDomain: [number, number] }
 >;
+type MoveXAxisAction = ActionType<'MOVE', { shiftX: number; shiftY: number }>;
 
-export type DomainActions = SetXDomainAction | SetYDomainAction;
+export type DomainActions =
+  | SetXDomainAction
+  | SetYDomainAction
+  | MoveXAxisAction;
 
 function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
   let data = draft.data.filter(
@@ -271,6 +275,38 @@ function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
   addToBrushHistory(draft, { xDomain: draft.xDomain, yDomain });
 }
 
+function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
+  const { shiftX, shiftY } = action.payload;
+  const [x1, x2] = draft.xDomain;
+  const [y1, y2] = draft.yDomain;
+  const [x1Origin, x2Origin] = draft.originDomain.xDomain;
+  const [y1Origin, y2Origin] = draft.originDomain.yDomain;
+  let x1Domain = x1 - shiftX;
+  let x2Domain = x2 - shiftX;
+  let y1Domain = y1 - shiftY;
+  let y2Domain = y2 - shiftY;
+
+  if (x1Domain < x1Origin) {
+    x1Domain = x1Origin;
+    x2Domain = x2;
+  }
+  if (x2Domain > x2Origin) {
+    x2Domain = x2Origin;
+    x1Domain = x1;
+  }
+  if (y1Domain < y1Origin) {
+    y1Domain = y1Origin;
+    y2Domain = y2;
+  }
+  if (y2Domain > y2Origin) {
+    y2Domain = y2Origin;
+    y1Domain = y1;
+  }
+
+  draft.xDomain = [x1Domain, x2Domain];
+  draft.yDomain = [y1Domain, y2Domain];
+}
+
 export {
   getDomain,
   setDomain,
@@ -278,4 +314,5 @@ export {
   setIntegralsYDomain,
   handleSetXDomain,
   handleSetYDomain,
+  handleMoveOverXAxis,
 };
