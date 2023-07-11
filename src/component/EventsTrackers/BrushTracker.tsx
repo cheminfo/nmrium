@@ -24,8 +24,15 @@ interface BrushTrackerContext {
   endY: number;
   shiftKey: boolean;
   altKey: boolean;
-  ctrlKey: boolean;
+  mouseButton: MouseButton;
 }
+
+type MouseButton = 'main' | 'secondary' | 'unknown';
+
+const MouseButtons: Record<number, MouseButton> = {
+  0: 'main',
+  2: 'secondary',
+} as const;
 interface BrushTrackerState extends BrushTrackerContext {
   step: Step;
   startX: number;
@@ -41,9 +48,9 @@ interface BrushTrackerState extends BrushTrackerContext {
 
 const initialState: BrushTrackerState = {
   step: 'initial',
+  mouseButton: 'unknown',
   shiftKey: false,
   altKey: false,
-  ctrlKey: false,
   startX: 0,
   endX: 0,
   startY: 0,
@@ -111,16 +118,17 @@ export function BrushTracker({
 
   const mouseDownHandler = useCallback(
     (event: React.MouseEvent) => {
-      if (event.button === 0) {
+      //check that the right or left mouse button pressed
+      if ([0, 2].includes(event.button)) {
         if (noPropagation) {
           event.stopPropagation();
         }
         dispatch({
           type: 'DOWN',
           payload: {
+            mouseButton: MouseButtons[event.button],
             shiftKey: event.shiftKey,
             altKey: event.altKey,
-            ctrlKey: event.ctrlKey,
             screenX: event.screenX,
             screenY: event.screenY,
             clientX: event.clientX,
@@ -260,7 +268,7 @@ type DownAction = ActionType<
   MouseCoordinates & {
     shiftKey: boolean;
     altKey: boolean;
-    ctrlKey: boolean;
+    mouseButton: MouseButton;
     boundingRect: DOMRect;
   }
 >;
@@ -289,7 +297,7 @@ function reducer(
         const {
           shiftKey,
           altKey,
-          ctrlKey,
+          mouseButton,
           screenX,
           screenY,
           clientX,
@@ -302,7 +310,7 @@ function reducer(
           ...state,
           shiftKey,
           altKey,
-          ctrlKey,
+          mouseButton,
           startX: x,
           startY: y,
           startScreenX: screenX,

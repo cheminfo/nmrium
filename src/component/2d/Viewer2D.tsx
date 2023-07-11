@@ -67,10 +67,10 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       endX: endXInPixel,
       startY: startYInPixel,
       endY: endYInPixel,
-      ctrlKey,
+      mouseButton,
     } = brushData;
 
-    if (ctrlKey) {
+    if (mouseButton === 'secondary') {
       const scaleX = get2DXScale(state);
       const scaleY = get2DYScale(state);
       if (!brushStartRef.current) {
@@ -91,33 +91,35 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       //reset the brush start
       brushStartRef.current = null;
 
-      const trackID = getLayoutID(DIMENSION, brushData);
-      if (trackID) {
-        if (brushData.altKey) {
-          switch (selectedTool) {
-            default:
-              break;
-          }
-        } else if (brushData.shiftKey) {
-          switch (selectedTool) {
-            case options.zonePicking.id:
-              dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
-              break;
-            default:
-              break;
-          }
-        } else {
-          switch (selectedTool) {
-            default:
-              if (selectedTool != null && !brushData.ctrlKey) {
-                return dispatch({
-                  type: 'BRUSH_END',
-                  payload: {
-                    ...brushData,
-                    trackID: getLayoutID(DIMENSION, brushData),
-                  },
-                });
-              }
+      if (brushData.mouseButton === 'main') {
+        const trackID = getLayoutID(DIMENSION, brushData);
+        if (trackID) {
+          if (brushData.altKey) {
+            switch (selectedTool) {
+              default:
+                break;
+            }
+          } else if (brushData.shiftKey) {
+            switch (selectedTool) {
+              case options.zonePicking.id:
+                dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
+                break;
+              default:
+                break;
+            }
+          } else {
+            switch (selectedTool) {
+              default:
+                if (selectedTool != null) {
+                  return dispatch({
+                    type: 'BRUSH_END',
+                    payload: {
+                      ...brushData,
+                      trackID: getLayoutID(DIMENSION, brushData),
+                    },
+                  });
+                }
+            }
           }
         }
       }

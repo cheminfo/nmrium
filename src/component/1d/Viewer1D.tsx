@@ -107,9 +107,9 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   ]);
 
   function handelBrush(brushData) {
-    const { startX: startXInPixel, endX: endXInPixel, ctrlKey } = brushData;
+    const { startX: startXInPixel, endX: endXInPixel, mouseButton } = brushData;
 
-    if (ctrlKey) {
+    if (mouseButton === 'secondary') {
       const scaleX = getXScale(state);
       if (!brushStartRef.current) {
         brushStartRef.current = scaleX.invert(startXInPixel);
@@ -125,141 +125,143 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       //reset the brush start
       brushStartRef.current = null;
 
-      const propagateEvent = () => {
-        if (!scaleState.scaleX || !scaleState.scaleY) return;
+      if (brushData.mouseButton === 'main') {
+        const propagateEvent = () => {
+          if (!scaleState.scaleX || !scaleState.scaleY) return;
 
-        const { startX, endX } = brushData;
-        const startXPPM = scaleState.scaleX().invert(startX);
-        const endXPPM = scaleState.scaleX().invert(endX);
-        Events.emit('brushEnd', {
-          ...brushData,
-          range: [startXPPM, endXPPM].sort((a, b) => a - b),
-        });
-      };
+          const { startX, endX } = brushData;
+          const startXPPM = scaleState.scaleX().invert(startX);
+          const endXPPM = scaleState.scaleX().invert(endX);
+          Events.emit('brushEnd', {
+            ...brushData,
+            range: [startXPPM, endXPPM].sort((a, b) => a - b),
+          });
+        };
 
-      if (brushData.altKey) {
-        switch (selectedTool) {
-          case options.rangePicking.id: {
-            modal.show(
-              <MultipletAnalysisModal
-                data={data}
-                activeSpectrum={activeSpectrum}
-                scaleX={scaleState.scaleX}
-                {...brushData}
-              />,
-              {
-                onClose: () => {
-                  modal.close();
+        if (brushData.altKey) {
+          switch (selectedTool) {
+            case options.rangePicking.id: {
+              modal.show(
+                <MultipletAnalysisModal
+                  data={data}
+                  activeSpectrum={activeSpectrum}
+                  scaleX={scaleState.scaleX}
+                  {...brushData}
+                />,
+                {
+                  onClose: () => {
+                    modal.close();
+                  },
                 },
-              },
-            );
-            break;
+              );
+              break;
+            }
+            default:
+              break;
           }
-          default:
-            break;
-        }
-      } else if (brushData.shiftKey) {
-        switch (selectedTool) {
-          case options.integral.id:
-            dispatch({
-              type: 'ADD_INTEGRAL',
-              payload: brushData,
-            });
-            break;
-          case options.rangePicking.id: {
-            const [from, to] = getRange(state, {
-              startX: brushData.startX,
-              endX: brushData.endX,
-            });
-
-            if (!activeSpectrum) break;
-
-            const {
-              data: { x },
-            } = data[activeSpectrum.index] as Spectrum1D;
-
-            const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
-
-            if (toIndex - fromIndex <= MAX_LENGTH) {
+        } else if (brushData.shiftKey) {
+          switch (selectedTool) {
+            case options.integral.id:
               dispatch({
-                type: 'ADD_RANGE',
+                type: 'ADD_INTEGRAL',
                 payload: brushData,
               });
-            } else {
-              alert.error(
-                `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
-              );
-            }
-
-            break;
-          }
-          case options.multipleSpectraAnalysis.id:
-            if (scaleState.scaleX) {
-              const { startX, endX } = brushData;
-              const start = scaleState.scaleX().invert(startX);
-              const end = scaleState.scaleX().invert(endX);
-              dispatchPreferences({
-                type: 'ANALYZE_SPECTRA',
-                payload: {
-                  start,
-                  end,
-                  nucleus: activeTab,
-                },
-              });
-            }
-            break;
-
-          case options.peakPicking.id:
-            dispatch({
-              type: 'ADD_PEAKS',
-              payload: brushData,
-            });
-            break;
-
-          case options.baselineCorrection.id:
-            dispatch({
-              type: 'ADD_BASE_LINE_ZONE',
-              payload: {
+              break;
+            case options.rangePicking.id: {
+              const [from, to] = getRange(state, {
                 startX: brushData.startX,
                 endX: brushData.endX,
-              },
-            });
-            break;
+              });
 
-          case options.exclusionZones.id:
-            dispatch({
-              type: 'ADD_EXCLUSION_ZONE',
-              payload: { startX: brushData.startX, endX: brushData.endX },
-            });
-            break;
-          case options.matrixGenerationExclusionZones.id: {
-            const [from, to] = getRange(state, {
-              startX: brushData.startX,
-              endX: brushData.endX,
-            });
-            dispatchPreferences({
-              type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
-              payload: {
-                zone: { from, to },
-                nucleus: activeTab,
-                range: { from: xDomain[0], to: xDomain[1] },
-              },
-            });
+              if (!activeSpectrum) break;
 
-            break;
-          }
+              const {
+                data: { x },
+              } = data[activeSpectrum.index] as Spectrum1D;
 
-          default:
-            propagateEvent();
-            break;
-        }
-      } else {
-        switch (selectedTool) {
-          default:
-            if (selectedTool != null && !brushData.ctrlKey) {
-              dispatch({ type: 'BRUSH_END', payload: brushData });
+              const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
+
+              if (toIndex - fromIndex <= MAX_LENGTH) {
+                dispatch({
+                  type: 'ADD_RANGE',
+                  payload: brushData,
+                });
+              } else {
+                alert.error(
+                  `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
+                );
+              }
+
+              break;
             }
-            break;
+            case options.multipleSpectraAnalysis.id:
+              if (scaleState.scaleX) {
+                const { startX, endX } = brushData;
+                const start = scaleState.scaleX().invert(startX);
+                const end = scaleState.scaleX().invert(endX);
+                dispatchPreferences({
+                  type: 'ANALYZE_SPECTRA',
+                  payload: {
+                    start,
+                    end,
+                    nucleus: activeTab,
+                  },
+                });
+              }
+              break;
+
+            case options.peakPicking.id:
+              dispatch({
+                type: 'ADD_PEAKS',
+                payload: brushData,
+              });
+              break;
+
+            case options.baselineCorrection.id:
+              dispatch({
+                type: 'ADD_BASE_LINE_ZONE',
+                payload: {
+                  startX: brushData.startX,
+                  endX: brushData.endX,
+                },
+              });
+              break;
+
+            case options.exclusionZones.id:
+              dispatch({
+                type: 'ADD_EXCLUSION_ZONE',
+                payload: { startX: brushData.startX, endX: brushData.endX },
+              });
+              break;
+            case options.matrixGenerationExclusionZones.id: {
+              const [from, to] = getRange(state, {
+                startX: brushData.startX,
+                endX: brushData.endX,
+              });
+              dispatchPreferences({
+                type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+                payload: {
+                  zone: { from, to },
+                  nucleus: activeTab,
+                  range: { from: xDomain[0], to: xDomain[1] },
+                },
+              });
+
+              break;
+            }
+
+            default:
+              propagateEvent();
+              break;
+          }
+        } else {
+          switch (selectedTool) {
+            default:
+              if (selectedTool != null) {
+                dispatch({ type: 'BRUSH_END', payload: brushData });
+              }
+              break;
+          }
         }
       }
     },

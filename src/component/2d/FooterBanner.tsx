@@ -60,7 +60,7 @@ const styles = css`
 
 function FooterBanner({ layout, data1D }) {
   const position = useMouseTracker();
-  const { startX, endX, startY, endY, step, ctrlKey } = useBrushTracker();
+  const { startX, endX, startY, endY, step, mouseButton } = useBrushTracker();
   const {
     margin,
     width,
@@ -253,7 +253,7 @@ function FooterBanner({ layout, data1D }) {
     return 0;
   };
 
-  const isBrushing = step === 'brushing' && !ctrlKey;
+  const isBrushing = step === 'brushing' && mouseButton === 'main';
 
   return (
     <div css={styles}>
