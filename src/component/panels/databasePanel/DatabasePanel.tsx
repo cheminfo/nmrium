@@ -10,7 +10,6 @@ import {
 import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
-import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
@@ -27,12 +26,10 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import Button from '../../elements/Button';
 import Input from '../../elements/Input';
 import Select from '../../elements/Select';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
-import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
@@ -84,7 +81,6 @@ function DatabasePanelInner({
 }: DatabaseInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const modal = useModal();
   const { item } = useAccordionContext('Databases');
 
   const { handleChangeOption } = useToolsFunctions();
@@ -329,19 +325,6 @@ function DatabasePanelInner({
   const searchByStructureHandler = (idCodeValue: string) => {
     setIdCode(idCodeValue);
   };
-  const openSearchByStructure = () => {
-    modal.show(
-      <DatabaseStructureSearchModal
-        onChange={searchByStructureHandler}
-        idCode={idCode}
-      />,
-      {
-        position: positions.MIDDLE,
-        transition: transitions.SCALE,
-        isBackgroundBlur: false,
-      },
-    );
-  };
 
   return (
     <div
@@ -407,25 +390,10 @@ function DatabasePanelInner({
             onClear={clearHandler}
             canClear
           />
-          <Button.Done
-            fill="clear"
-            onClick={openSearchByStructure}
-            style={{ marginLeft: '5px' }}
-          >
-            {!idCode ? (
-              <BsHexagon
-                style={{
-                  fontSize: '14px',
-                }}
-              />
-            ) : (
-              <BsHexagonFill
-                style={{
-                  fontSize: '14px',
-                }}
-              />
-            )}
-          </Button.Done>
+          <DatabaseStructureSearchModal
+            onChange={searchByStructureHandler}
+            idCode={idCode}
+          />
         </DefaultPanelHeader>
       )}
       {isFlipped && (
