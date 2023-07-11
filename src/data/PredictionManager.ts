@@ -10,6 +10,8 @@ import {
   getFrequency,
   PredictedAll,
   signalsToRanges,
+  Prediction,
+  Prediction1D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -22,11 +24,10 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
 import { xMinMaxValues } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
-export type PredictedSpectraResult = Partial<Record<Experiment, Spectrum>>;
+export type PredictedSpectraResult = Partial<Record<Experiment, Prediction>>;
 
 export interface PredictionOptions {
   name: string;
@@ -166,7 +167,7 @@ function checkFromTo(
   for (const experiment in predictedSpectra) {
     if (spectra[experiment]) {
       if (!['carbon', 'proton'].includes(experiment)) continue;
-      const spectrum = predictedSpectra[experiment];
+      const spectrum = predictedSpectra[experiment] as Prediction1D;
       const { signals, nucleus } = spectrum;
       const { from, to } = inputOptions['1d'][nucleus];
       const deltas = signals.filter((s) => {
@@ -194,7 +195,7 @@ function checkFromTo(
   }
 }
 
-function getNewFromTo(spectrum: Spectrum1D, from: number, to: number) {
+function getNewFromTo(spectrum: Prediction1D, from: number, to: number) {
   const { signals, nucleus } = spectrum;
   const { min, max } = xMinMaxValues(signals.map((s) => s.delta));
   const spread = nucleus === '1H' ? 0.2 : 2;
