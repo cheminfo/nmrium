@@ -21,6 +21,8 @@ import {
 } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
+import { xMinMaxValues } from 'ml-spectra-processing';
+import { Spectrum1D } from 'nmr-load-save';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
@@ -38,6 +40,7 @@ export interface PredictionOptions {
   '2d': {
     nbPoints: { x: number; y: number };
   };
+  autoExtendRange: boolean;
   spectra: SpectraPredictionOptions;
   logger?: Logger;
 }
@@ -61,6 +64,7 @@ export const getDefaultPredictionOptions = (): PredictionOptions => ({
     hsqc: true,
     hmbc: true,
   },
+  autoExtendRange: true,
 });
 
 export const FREQUENCIES: Array<{ value: number; label: string }> = [
@@ -158,8 +162,9 @@ function checkFromTo(
   inputOptions: PredictionOptions,
   logger: FifoLogger,
 ) {
+  const { autoExtendRange, spectra } = inputOptions;
   for (const experiment in predictedSpectra) {
-    if (inputOptions.spectra[experiment]) {
+    if (spectra[experiment]) {
       if (!['carbon', 'proton'].includes(experiment)) continue;
       const spectrum = predictedSpectra[experiment];
       const { signals, nucleus } = spectrum;
@@ -168,14 +173,34 @@ function checkFromTo(
         return s.delta >= from && s.delta <= to;
       });
       if (signals.length !== deltas.length) {
-        logger.warn(
-          deltas.length === 0
-            ? `There is not ${experiment} signals into the from-to range.`
-            : `There is ${experiment} signals out of the from-to range.`,
-        );
+        if (autoExtendRange) {
+          const fromTo = getNewFromTo(spectrum, from, to);
+          inputOptions['1d'][nucleus] = {
+            ...inputOptions['1d'][nucleus],
+            ...fromTo,
+          };
+          logger.warn(
+            `There are ${experiment} signals out of the range, it was extended to ${fromTo.from}-${fromTo.to}.`,
+          );
+        } else {
+          logger.warn(
+            deltas.length === 0
+              ? `There is not ${experiment} signals into the range.`
+              : `There are ${experiment} signals out of the range.`,
+          );
+        }
       }
     }
   }
+}
+
+function getNewFromTo(spectrum: Spectrum1D, from: number, to: number) {
+  const { signals, nucleus } = spectrum;
+  const { min, max } = xMinMaxValues(signals.map((s) => s.delta));
+  const spread = nucleus === '1H' ? 0.2 : 2;
+  if (from > min) from = min - spread;
+  if (to < max) to = max + spread;
+  return { from, to };
 }
 
 function generated1DSpectrum(params: {
@@ -258,7 +283,7 @@ function generated2DSpectrum(params: {
 }) {
   const { spectrum, inputOptions, experiment, color } = params;
   const { signals, zones, nuclei } = spectrum;
-
+  console.log(inputOptions);
   const xOption = inputOptions['1d'][nuclei[0]];
   const yOption = inputOptions['1d'][nuclei[1]];
 
