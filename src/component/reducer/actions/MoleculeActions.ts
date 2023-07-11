@@ -36,7 +36,7 @@ type DeleteMoleculeAction = ActionType<
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
-    logger?: FifoLogger;
+    logger: FifoLogger;
     options: PredictionOptions;
     predictedSpectra: PredictedSpectraResult;
     molecule: StateMolecule;
