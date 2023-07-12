@@ -123,7 +123,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Spectrum Simulation',
     component: <SpectrumSimulation />,
     isExperimental: true,
-    hidePreferenceKey: "",
+    hidePreferenceKey: '',
     mode: DISPLAYER_MODE.DM_1D,
   },
 ];
@@ -151,7 +151,7 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
         return {
           display: true,
           open: false,
-        }
+        };
       }
 
       return lodashGet(
