@@ -117,10 +117,11 @@ export function generateSpectra(
   color: string,
   logger: Logger,
 ): Spectrum[] {
+  checkPredictions(predictedSpectra, inputOptions, logger);
   checkFromTo(predictedSpectra, inputOptions, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
-    if (inputOptions.spectra[experiment] && predictedSpectra[experiment]) {
+    if (inputOptions.spectra[experiment]) {
       const spectrum = predictedSpectra[experiment];
       switch (experiment) {
         case 'proton':
@@ -152,6 +153,51 @@ export function generateSpectra(
     }
   }
   return spectra;
+}
+
+function checkPredictions(
+  predictedSpectra: PredictedSpectraResult,
+  inputOptions: PredictionOptions,
+  logger: Logger,
+) {
+  const { spectra } = inputOptions;
+  const missing2DPrediction: string[] = [];
+  for (const [experiment, required] of Object.entries(spectra)) {
+    if (!required) continue;
+    switch (experiment) {
+      case 'proton':
+      case 'carbon': {
+        if (!predictedSpectra[experiment]) {
+          logger.warn(`${experiment} was not predicted`);
+        }
+        break;
+      }
+      case 'cosy':
+        if (!predictedSpectra[experiment]) {
+          logger.warn(
+            !predictedSpectra.proton
+              ? `Proton prediction is missing, so COSY experiment can not be simulated`
+              : `There was a error in ${experiment.toUpperCase()} prediction`,
+          );
+        }
+        break;
+      case 'hsqc':
+      case 'hmbc':
+        missing2DPrediction.push(experiment);
+        break;
+      default:
+        break;
+    }
+  }
+  if (missing2DPrediction.length > 0) {
+    logger.warn(
+      `Carbon or proton prediction are missing, so ${
+        missing2DPrediction.length > 1
+          ? missing2DPrediction.join(' and ')
+          : missing2DPrediction[0]
+      } can not be simulated`,
+    );
+  }
 }
 
 function checkFromTo(
