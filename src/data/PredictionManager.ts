@@ -160,6 +160,10 @@ function checkFromTo(
   logger: Logger,
 ) {
   const { autoExtendRange, spectra } = inputOptions;
+  const originalFromTo = {
+    '1H': { ...inputOptions['1d']['1H'] },
+    '13C': { ...inputOptions['1d']['13C'] },
+  };
   for (const experiment in predictedSpectra) {
     if (!spectra[experiment]) continue;
     if (['carbon', 'proton'].includes(experiment)) {
@@ -172,7 +176,6 @@ function checkFromTo(
         to,
         nucleus,
         autoExtendRange,
-        logger,
       });
       inputOptions['1d'][nucleus].to = fromTo.to;
       inputOptions['1d'][nucleus].from = fromTo.from;
@@ -180,8 +183,20 @@ function checkFromTo(
       checkTwoDSpectrum(
         predictedSpectra[experiment] as Prediction2D,
         inputOptions,
-        logger,
       );
+    }
+  }
+  for (const nucleus of ['1H', '13C']) {
+    const { from, to } = inputOptions['1d'][nucleus];
+    const { from: oFrom, to: oTo } = originalFromTo[nucleus];
+    if (oFrom > from || oTo < to) {
+      if (autoExtendRange) {
+        logger.warn(
+          `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
+        );
+      } else {
+        logger.warn(`There are ${nucleus} signals out of the range.`);
+      }
     }
   }
 }
@@ -189,7 +204,6 @@ function checkFromTo(
 function checkTwoDSpectrum(
   spectrum: Prediction2D,
   inputOptions: PredictionOptions,
-  logger: Logger,
 ) {
   const { signals, nuclei } = spectrum;
 
@@ -205,7 +219,6 @@ function checkTwoDSpectrum(
       to,
       nucleus,
       autoExtendRange,
-      logger,
     });
     inputOptions['1d'][nucleus].from = fromTo.from;
     inputOptions['1d'][nucleus].to = fromTo.to;
@@ -217,26 +230,14 @@ function getNewFromTo(params: {
   from: number;
   to: number;
   nucleus: string;
-  logger: Logger;
   autoExtendRange: boolean;
 }) {
-  let { deltas, nucleus, from, to, autoExtendRange, logger } = params;
+  let { deltas, nucleus, from, to, autoExtendRange } = params;
   const { min, max } = xMinMaxValues(deltas);
-  if (from > min || to < max) {
-    if (autoExtendRange) {
-      const spread = nucleus === '1H' ? 0.2 : 2;
-      if (from > min) from = min - spread;
-      if (to < max) to = max + spread;
-      logger.warn(
-        `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
-      );
-    } else {
-      logger.warn(
-        deltas.length === 0
-          ? `There is not ${nucleus} signals into the range.`
-          : `There are ${nucleus} signals out of the range.`,
-      );
-    }
+  if (autoExtendRange && (from > min || to < max)) {
+    const spread = nucleus === '1H' ? 0.2 : 2;
+    if (from > min) from = min - spread;
+    if (to < max) to = max + spread;
   }
   return { from, to };
 }
