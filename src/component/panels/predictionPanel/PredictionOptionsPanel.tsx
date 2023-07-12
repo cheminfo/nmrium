@@ -15,7 +15,6 @@ import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikErrorsSummary from '../../elements/formik/FormikErrorsSummary';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
-import CheckBox from '../../elements/CheckBox';
 
 const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
 const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
@@ -25,6 +24,7 @@ const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
 const predictionFormValidation = Yup.object().shape({
   name: Yup.string().label('Name'),
   frequency: Yup.number().integer().required().label('Frequency'),
+  autoExtendRange: Yup.boolean(),
   '1d': Yup.object({
     '1H': Yup.object({
       from: Yup.number().required().label("1H ' From ' "),
@@ -34,7 +34,6 @@ const predictionFormValidation = Yup.object().shape({
       from: Yup.number().required().label("13C ' From ' "),
       to: Yup.number().required().label("13C ' To ' "),
     }),
-    autoExtendRange: Yup.boolean(),
     lineWidth: Yup.number().integer().min(1).required().label('Line Width'),
     nbPoints: Yup.number().integer().required().label('1D Number Of Points'),
   }),
@@ -128,8 +127,7 @@ function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
           }}
         >
           <Label title="Auto extend range" style={labelStyle}>
-            <CheckBox
-            name="autoExtendRange" type="boolean" />
+            <FormikCheckBox name="autoExtendRange" />
           </Label>
           <Label
             title="1H"
