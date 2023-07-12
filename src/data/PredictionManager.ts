@@ -207,16 +207,24 @@ function checkFromTo(
   inputOptions: PredictionOptions,
   logger: Logger,
 ) {
+  const setFromTo = (inputOptions, nucleus, fromTo) => {
+    inputOptions['1d'][nucleus].to = fromTo.to;
+    inputOptions['1d'][nucleus].from = fromTo.from;
+    if (fromTo.signalsOutOfRange) {
+      signalsOutOfRange[nucleus] = true;
+    }
+  };
+
   const { autoExtendRange, spectra } = inputOptions;
   let signalsOutOfRange: Record<string, boolean> = {};
+
   for (const experiment in predictedSpectra) {
     if (!spectra[experiment]) continue;
+    if (predictedSpectra[experiment].signals.length === 0) continue;
+
     if (['carbon', 'proton'].includes(experiment)) {
       const spectrum = predictedSpectra[experiment] as Prediction1D;
       const { signals, nucleus } = spectrum;
-
-      if (signals.length === 0) continue;
-
       const { from, to } = inputOptions['1d'][nucleus];
       const fromTo = getNewFromTo({
         deltas: signals.map((s) => s.delta),
@@ -225,13 +233,9 @@ function checkFromTo(
         nucleus,
         autoExtendRange,
       });
-      inputOptions['1d'][nucleus].to = fromTo.to;
-      inputOptions['1d'][nucleus].from = fromTo.from;
+      setFromTo(inputOptions, nucleus, fromTo);
     } else {
       const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
-
-      if (signals.length === 0) continue;
-
       for (const nucleus of nuclei) {
         const axis = nucleus === '1H' ? 'x' : 'y';
         const { from, to } = inputOptions['1d'][nucleus];
@@ -242,11 +246,7 @@ function checkFromTo(
           nucleus,
           autoExtendRange,
         });
-        inputOptions['1d'][nucleus].from = fromTo.from;
-        inputOptions['1d'][nucleus].to = fromTo.to;
-        if (fromTo.signalsOutOfRange) {
-          signalsOutOfRange[nucleus] = true;
-        }
+        setFromTo(inputOptions, nucleus, fromTo);
       }
     }
   }
