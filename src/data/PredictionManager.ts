@@ -117,18 +117,19 @@ export function generateSpectra(
   color: string,
   logger: Logger,
 ): Spectrum[] {
-  checkPredictions(predictedSpectra, inputOptions, logger);
-  checkFromTo(predictedSpectra, inputOptions, logger);
+  const options: PredictionOptions = JSON.parse(JSON.stringify(inputOptions));
+  checkPredictions(predictedSpectra, options, logger);
+  checkFromTo(predictedSpectra, options, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
-    if (inputOptions.spectra[experiment]) {
+    if (options.spectra[experiment]) {
       const spectrum = predictedSpectra[experiment];
       switch (experiment) {
         case 'proton':
         case 'carbon': {
           const datum = generated1DSpectrum({
             spectrum,
-            inputOptions,
+            options,
             experiment,
             color,
           });
@@ -140,7 +141,7 @@ export function generateSpectra(
         case 'hmbc': {
           const datum = generated2DSpectrum({
             spectrum,
-            inputOptions,
+            options,
             experiment,
             color,
           });
@@ -253,11 +254,13 @@ function checkFromTo(
   for (const nucleus of ['1H', '13C']) {
     if (signalsOutOfRange[nucleus]) {
       const { from, to } = inputOptions['1d'][nucleus];
-      logger.warn(
-        autoExtendRange
-          ? `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`
-          : `There are ${nucleus} signals out of the range.`,
-      );
+      if (autoExtendRange) {
+        logger.info(
+          `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
+        );
+      } else {
+        logger.warn(`There are ${nucleus} signals out of the range.`);
+      }
     }
   }
 }
@@ -281,12 +284,12 @@ function getNewFromTo(params: {
 }
 
 function generated1DSpectrum(params: {
-  inputOptions: PredictionOptions;
+  options: PredictionOptions;
   spectrum: any;
   experiment: string;
   color: string;
 }) {
-  const { spectrum, inputOptions, experiment, color } = params;
+  const { spectrum, options, experiment, color } = params;
 
   const { signals, joinedSignals, nucleus } = spectrum;
 
@@ -294,11 +297,11 @@ function generated1DSpectrum(params: {
     name,
     '1d': { nbPoints },
     frequency: freq,
-  } = inputOptions;
+  } = options;
   const SpectrumName = generateName(name, { frequency: freq, experiment });
   const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
-    ...inputOptions['1d'][nucleus],
+    ...options['1d'][nucleus],
     frequency,
     nbPoints,
   });
@@ -353,34 +356,34 @@ function mapZones(zones: Array<Partial<Zone>>) {
 }
 
 function generated2DSpectrum(params: {
-  inputOptions: PredictionOptions;
+  options: PredictionOptions;
   spectrum: any;
   experiment: string;
   color: string;
 }) {
-  const { spectrum, inputOptions, experiment, color } = params;
+  const { spectrum, options, experiment, color } = params;
   const { signals, zones, nuclei } = spectrum;
-  const xOption = inputOptions['1d'][nuclei[0]];
-  const yOption = inputOptions['1d'][nuclei[1]];
+  const xOption = options['1d'][nuclei[0]];
+  const yOption = options['1d'][nuclei[1]];
 
   const width = get2DWidth(nuclei);
-  const frequency = calculateFrequency(nuclei, inputOptions.frequency);
+  const frequency = calculateFrequency(nuclei, options.frequency);
 
   const minMaxContent = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
     to: { x: xOption.to, y: yOption.to },
     nbPoints: {
-      x: inputOptions['2d'].nbPoints.x,
-      y: inputOptions['2d'].nbPoints.y,
+      x: options['2d'].nbPoints.x,
+      y: options['2d'].nbPoints.y,
     },
     width,
     factor: 3,
   });
-  const SpectrumName = generateName(inputOptions.name, {
+  const SpectrumName = generateName(options.name, {
     frequency,
     experiment,
   });
-  const spectralWidth = getSpectralWidth(experiment, inputOptions);
+  const spectralWidth = getSpectralWidth(experiment, options);
   const datum = initiateDatum2D(
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },
