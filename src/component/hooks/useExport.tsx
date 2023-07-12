@@ -56,7 +56,8 @@ export default function useExport() {
           setTimeout(() => {
             void handle();
           }, 0);
-        });
+        })
+        .catch(reportError);
     },
     [alert, preferencesState, state],
   );

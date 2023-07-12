@@ -39,12 +39,12 @@ import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
 import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { AssignmentProvider } from './assignment';
-import { ChartDataProvider } from './context/ChartContext';
+import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
 import { LoggerProvider } from './context/LoggerContext';
 import { PreferencesProvider } from './context/PreferencesContext';
-import { AlertProvider } from './elements/popup/Alert';
+import { AlertProvider, useAlert } from './elements/popup/Alert';
 import { ModalProvider } from './elements/popup/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
@@ -65,7 +65,7 @@ const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
   display: flex;
   flex: 1;
-  flex-direction: 'column';
+  flex-direction: column;
   height: 100%;
   margin-left: -1px;
 `;
@@ -304,6 +304,7 @@ function InnerNMRium({
         })
         .catch((error) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
+
           // eslint-disable-next-line no-alert
           alert(error.message);
           reportError(error);
@@ -360,6 +361,7 @@ function InnerNMRium({
                     <HighlightProvider>
                       <AssignmentProvider spectraData={spectraData}>
                         <SpinnerProvider value={getSpinner}>
+                          <StateError />
                           <div
                             className="nmrium-container"
                             ref={rootRef}
@@ -446,3 +448,19 @@ function InnerNMRium({
   );
 }
 export default memo(NMRium);
+
+/**
+ * Alert user in UI when state have errorAction (error from reducer)
+ */
+function StateError() {
+  const { errorAction } = useChartData();
+  const { error: alertError } = useAlert();
+
+  useEffect(() => {
+    if (!errorAction) return;
+
+    alertError(errorAction?.message ?? String(errorAction));
+  }, [errorAction, alertError]);
+
+  return null;
+}
