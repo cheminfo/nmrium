@@ -15,18 +15,25 @@ import { TransitionGroup } from 'react-transition-group';
 
 import Transition from '../Transition';
 import Wrapper from '../Wrapper';
-import { positions, transitions, types } from '../options';
+import {
+  Position,
+  positions,
+  transitions,
+  Type,
+  types,
+  Transition as TransitionOption,
+} from '../options';
 
 import AlertBlock from './AlertBlock';
-import { AlertProvider } from './Context';
+import { Alert, AlertOption, AlertProvider } from './Context';
 
 interface ProviderProps {
   children: ReactNode;
   offset?: string;
-  position?: any;
+  position?: Position;
   timeout?: number;
-  type?: any;
-  transition?: any;
+  type?: Type;
+  transition?: TransitionOption;
   containerStyle?: CSSProperties;
   wrapperRef?: any;
   context?: {
@@ -45,9 +52,9 @@ function Provider({
   transition = transitions.FADE,
   ...props
 }: ProviderProps) {
-  const root = useRef<any>(null);
-  const timersId = useRef<any>([]);
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const root = useRef<HTMLDivElement | null>(null);
+  const timersId = useRef<number[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -81,7 +88,7 @@ function Provider({
   }, []);
 
   const show = useCallback(
-    (message = '', options: any = {}) => {
+    (message = '', options: AlertOption = {}) => {
       const id = Math.random().toString(36).slice(2, 9);
 
       const alertOptions = {
@@ -93,16 +100,15 @@ function Provider({
         ...options,
       };
 
-      const alert: any = {
+      const alert: Alert = {
         id,
         message,
         options: alertOptions,
+        close: () => remove(alert),
       };
 
-      alert.close = () => remove(alert);
-
       if (alert.options.timeout) {
-        const timerId = setTimeout(() => {
+        const timerId = window.setTimeout(() => {
           remove(alert);
 
           timersId.current.splice(timersId.current.indexOf(timerId), 1);
@@ -120,7 +126,7 @@ function Provider({
   );
 
   const success = useCallback(
-    (message = '', options: any = {}) => {
+    (message = '', options: AlertOption = {}) => {
       options.type = types.SUCCESS;
       options = { backgroundColor: '#28ba62', color: 'white', ...options };
 
@@ -130,7 +136,7 @@ function Provider({
   );
 
   const error = useCallback(
-    (message = '', options: any = {}) => {
+    (message = '', options: AlertOption = {}) => {
       const alertOptions = {
         type: types.ERROR,
         backgroundColor: '#cf3c4f',
@@ -144,7 +150,7 @@ function Provider({
   );
 
   const info = useCallback(
-    (message = '', options: any = {}) => {
+    (message = '', options: AlertOption = {}) => {
       const alertOptions = {
         type: types.INFO,
         backgroundColor: '#28ba62',
@@ -156,7 +162,7 @@ function Provider({
   );
 
   const showLoading = useCallback(
-    (message = 'Process in progress', options: any = {}) => {
+    (message = 'Process in progress', options: AlertOption = {}) => {
       const alertOptions = {
         type: types.PROGRESS_INDICATOR,
         backgroundColor: '#232323',
@@ -164,7 +170,7 @@ function Provider({
         ...options,
       };
 
-      return new Promise((resolve) => {
+      return new Promise<() => void>((resolve) => {
         const alert = show(message, alertOptions);
         setTimeout(() => {
           resolve(() => remove(alert));

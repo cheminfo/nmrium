@@ -336,6 +336,8 @@ export interface State {
   };
 
   usedColors: UsedColors;
+
+  errorAction?: any; // should be an Error
 }
 
 export function initState(state: State): State {
@@ -357,276 +359,294 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
     draft.actionType = action.type;
   }
 
-  switch (action.type) {
-    case 'INITIATE':
-      return LoadActions.handleInitiate(draft, action);
-    case 'LOAD_DROP_FILES':
-      return LoadActions.handleLoadDropFiles(draft, action);
-    case 'SET_LOADING_FLAG':
-      return LoadActions.handleSetIsLoading(draft, action);
-    case 'ADD_PEAK':
-      return PeaksActions.handleAddPeak(draft, action);
-    case 'ADD_PEAKS':
-      return PeaksActions.handleAddPeaks(draft, action);
-    case 'DELETE_PEAK':
-      return PeaksActions.handleDeletePeak(draft, action);
-    case 'AUTO_PEAK_PICKING':
-      return PeaksActions.handleAutoPeakPicking(draft, action);
-    case 'OPTIMIZE_PEAKS':
-      return PeaksActions.handleOptimizePeaks(draft, action);
-    case 'CHANGE_PEAK_SHAPE':
-      return PeaksActions.handleChangePeakShape(draft, action);
-    case 'TOGGLE_PEAKS_VIEW_PROPERTY':
-      return PeaksActions.handleTogglePeaksViewProperty(draft, action);
-    case 'ADD_INTEGRAL':
-      return IntegralsActions.handleAddIntegral(draft, action);
-    case 'DELETE_INTEGRAL':
-      return IntegralsActions.handleDeleteIntegral(draft, action);
-    case 'RESIZE_INTEGRAL':
-    case 'CHANGE_INTEGRAL':
-      return IntegralsActions.handleChangeIntegral(draft, action);
-    case 'CHANGE_INTEGRAL_SUM':
-      return IntegralsActions.handleChangeIntegralSum(draft, action);
-    case 'CHANGE_INTEGRALS_SUM_FLAG':
-      return IntegralsActions.handleChangeIntegralsSumFlag(draft);
-    case 'CHANGE_INTEGRAL_RELATIVE':
-      return IntegralsActions.handleChangeIntegralsRelativeValue(draft, action);
+  try {
+    switch (action.type) {
+      case 'INITIATE':
+        return LoadActions.handleInitiate(draft, action);
+      case 'LOAD_DROP_FILES':
+        return LoadActions.handleLoadDropFiles(draft, action);
+      case 'SET_LOADING_FLAG':
+        return LoadActions.handleSetIsLoading(draft, action);
+      case 'ADD_PEAK':
+        return PeaksActions.handleAddPeak(draft, action);
+      case 'ADD_PEAKS':
+        return PeaksActions.handleAddPeaks(draft, action);
+      case 'DELETE_PEAK':
+        return PeaksActions.handleDeletePeak(draft, action);
+      case 'AUTO_PEAK_PICKING':
+        return PeaksActions.handleAutoPeakPicking(draft, action);
+      case 'OPTIMIZE_PEAKS':
+        return PeaksActions.handleOptimizePeaks(draft, action);
+      case 'CHANGE_PEAK_SHAPE':
+        return PeaksActions.handleChangePeakShape(draft, action);
+      case 'TOGGLE_PEAKS_VIEW_PROPERTY':
+        return PeaksActions.handleTogglePeaksViewProperty(draft, action);
+      case 'ADD_INTEGRAL':
+        return IntegralsActions.handleAddIntegral(draft, action);
+      case 'DELETE_INTEGRAL':
+        return IntegralsActions.handleDeleteIntegral(draft, action);
+      case 'RESIZE_INTEGRAL':
+      case 'CHANGE_INTEGRAL':
+        return IntegralsActions.handleChangeIntegral(draft, action);
+      case 'CHANGE_INTEGRAL_SUM':
+        return IntegralsActions.handleChangeIntegralSum(draft, action);
+      case 'CHANGE_INTEGRALS_SUM_FLAG':
+        return IntegralsActions.handleChangeIntegralsSumFlag(draft);
+      case 'CHANGE_INTEGRAL_RELATIVE':
+        return IntegralsActions.handleChangeIntegralsRelativeValue(
+          draft,
+          action,
+        );
 
-    case 'SET_X_DOMAIN':
-      return DomainActions.handleSetXDomain(draft, action);
-    case 'SET_Y_DOMAIN':
-      return DomainActions.handleSetYDomain(draft, action);
-    case 'MOVE':
-      return DomainActions.handleMoveOverXAxis(draft, action);
+      case 'SET_X_DOMAIN':
+        return DomainActions.handleSetXDomain(draft, action);
+      case 'SET_Y_DOMAIN':
+        return DomainActions.handleSetYDomain(draft, action);
+      case 'MOVE':
+        return DomainActions.handleMoveOverXAxis(draft, action);
 
-    case 'SET_DIMENSIONS':
-      return DimensionsActions.handleSetDimensions(draft, action);
+      case 'SET_DIMENSIONS':
+        return DimensionsActions.handleSetDimensions(draft, action);
 
-    case 'SHIFT_SPECTRUM':
-      return FiltersActions.handleShiftSpectrumAlongXAxis(draft, action);
-    case 'APPLY_APODIZATION_FILTER':
-      return FiltersActions.handleApplyApodizationFilter(draft, action);
-    case 'CALCULATE_APODIZATION_FILTER':
-      return FiltersActions.handleCalculateApodizationFilter(draft, action);
-    case 'APPLY_ZERO_FILLING_FILTER':
-      return FiltersActions.handleApplyZeroFillingFilter(draft, action);
-    case 'CALCULATE_ZERO_FILLING_FILTER':
-      return FiltersActions.handleCalculateZeroFillingFilter(draft, action);
-    case 'APPLY_FFT_FILTER':
-      return FiltersActions.handleApplyFFTFilter(draft);
-    case 'APPLY_MANUAL_PHASE_CORRECTION_FILTER':
-      return FiltersActions.handleApplyManualPhaseCorrectionFilter(
-        draft,
-        action,
-      );
-    case 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER':
-      return FiltersActions.handleCalculateManualPhaseCorrection(draft, action);
-    case 'APPLY_AUTO_PHASE_CORRECTION_FILTER':
-      return FiltersActions.handleApplyAutoPhaseCorrectionFilter(draft);
-    case 'APPLY_ABSOLUTE_FILTER':
-      return FiltersActions.handleApplyAbsoluteFilter(draft);
-    case 'APPLY_BASE_LINE_CORRECTION_FILTER':
-      return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
-    case 'CALCULATE_BASE_LINE_CORRECTION_FILTER':
-      return FiltersActions.handleCalculateBaseLineCorrection(draft, action);
-    case 'ENABLE_FILTER':
-      return FiltersActions.handleEnableFilter(draft, action);
-    case 'DELETE_FILTER':
-      return FiltersActions.handleDeleteFilter(draft, action);
-    case 'DELETE_SPECTRA_FILTER':
-      return FiltersActions.handleDeleteSpectraFilter(draft, action);
-    case 'SET_FILTER_SNAPSHOT':
-      return FiltersActions.handleSetFilterSnapshotHandler(draft, action);
-    case 'APPLY_SIGNAL_PROCESSING_FILTER':
-      return FiltersActions.handleSignalProcessingFilter(draft, action);
-    case 'ADD_EXCLUSION_ZONE':
-      return FiltersActions.handleAddExclusionZone(draft, action);
-    case 'DELETE_EXCLUSION_ZONE':
-      return FiltersActions.handleDeleteExclusionZone(draft, action);
+      case 'SHIFT_SPECTRUM':
+        return FiltersActions.handleShiftSpectrumAlongXAxis(draft, action);
+      case 'APPLY_APODIZATION_FILTER':
+        return FiltersActions.handleApplyApodizationFilter(draft, action);
+      case 'CALCULATE_APODIZATION_FILTER':
+        return FiltersActions.handleCalculateApodizationFilter(draft, action);
+      case 'APPLY_ZERO_FILLING_FILTER':
+        return FiltersActions.handleApplyZeroFillingFilter(draft, action);
+      case 'CALCULATE_ZERO_FILLING_FILTER':
+        return FiltersActions.handleCalculateZeroFillingFilter(draft, action);
+      case 'APPLY_FFT_FILTER':
+        return FiltersActions.handleApplyFFTFilter(draft);
+      case 'APPLY_MANUAL_PHASE_CORRECTION_FILTER':
+        return FiltersActions.handleApplyManualPhaseCorrectionFilter(
+          draft,
+          action,
+        );
+      case 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER':
+        return FiltersActions.handleCalculateManualPhaseCorrection(
+          draft,
+          action,
+        );
+      case 'APPLY_AUTO_PHASE_CORRECTION_FILTER':
+        return FiltersActions.handleApplyAutoPhaseCorrectionFilter(draft);
+      case 'APPLY_ABSOLUTE_FILTER':
+        return FiltersActions.handleApplyAbsoluteFilter(draft);
+      case 'APPLY_BASE_LINE_CORRECTION_FILTER':
+        return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
+      case 'CALCULATE_BASE_LINE_CORRECTION_FILTER':
+        return FiltersActions.handleCalculateBaseLineCorrection(draft, action);
+      case 'ENABLE_FILTER':
+        return FiltersActions.handleEnableFilter(draft, action);
+      case 'DELETE_FILTER':
+        return FiltersActions.handleDeleteFilter(draft, action);
+      case 'DELETE_SPECTRA_FILTER':
+        return FiltersActions.handleDeleteSpectraFilter(draft, action);
+      case 'SET_FILTER_SNAPSHOT':
+        return FiltersActions.handleSetFilterSnapshotHandler(draft, action);
+      case 'APPLY_SIGNAL_PROCESSING_FILTER':
+        return FiltersActions.handleSignalProcessingFilter(draft, action);
+      case 'ADD_EXCLUSION_ZONE':
+        return FiltersActions.handleAddExclusionZone(draft, action);
+      case 'DELETE_EXCLUSION_ZONE':
+        return FiltersActions.handleDeleteExclusionZone(draft, action);
 
-    case 'CHANGE_SPECTRUM_VISIBILITY':
-      return SpectrumsActions.handleChangeSpectrumVisibilityById(draft, action);
-    case 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS':
-      return SpectrumsActions.handleChangeSpectraVisibilityByNucleus(
-        draft,
-        action,
-      );
-    case 'CHANGE_ACTIVE_SPECTRUM':
-      return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
-    case 'CHANGE_SPECTRUM_SETTING':
-      return SpectrumsActions.handleChangeSpectrumSetting(draft, action);
-    case 'ALIGN_SPECTRA':
-      return SpectrumsActions.handleAlignSpectraHandler(draft, action);
-    case 'DELETE_SPECTRA':
-      return SpectrumsActions.handleDeleteSpectra(draft, action);
-    case 'ADD_MISSING_PROJECTION':
-      return SpectrumsActions.handleAddMissingProjectionHandler(draft, action);
-    case 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING':
-      return SpectrumsActions.handleGenerateSpectrumFromPublicationStringHandler(
-        draft,
-        action,
-      );
-    case 'IMPORT_SPECTRA_META_INFO':
-      return SpectrumsActions.handleImportSpectraMetaInfo(draft, action);
-    case 'TOGGLE_SPECTRA_LEGEND':
-      return SpectrumsActions.handleToggleSpectraLegend(draft);
-    case 'RECOLOR_SPECTRA_COLOR':
-      return SpectrumsActions.handleRecolorSpectraBasedOnDistinctValue(
-        draft,
-        action,
-      );
-    case 'ORDER_SPECTRA':
-      return SpectrumsActions.handleOrderSpectra(draft, action);
+      case 'CHANGE_SPECTRUM_VISIBILITY':
+        return SpectrumsActions.handleChangeSpectrumVisibilityById(
+          draft,
+          action,
+        );
+      case 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS':
+        return SpectrumsActions.handleChangeSpectraVisibilityByNucleus(
+          draft,
+          action,
+        );
+      case 'CHANGE_ACTIVE_SPECTRUM':
+        return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
+      case 'CHANGE_SPECTRUM_SETTING':
+        return SpectrumsActions.handleChangeSpectrumSetting(draft, action);
+      case 'ALIGN_SPECTRA':
+        return SpectrumsActions.handleAlignSpectraHandler(draft, action);
+      case 'DELETE_SPECTRA':
+        return SpectrumsActions.handleDeleteSpectra(draft, action);
+      case 'ADD_MISSING_PROJECTION':
+        return SpectrumsActions.handleAddMissingProjectionHandler(
+          draft,
+          action,
+        );
+      case 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING':
+        return SpectrumsActions.handleGenerateSpectrumFromPublicationStringHandler(
+          draft,
+          action,
+        );
+      case 'IMPORT_SPECTRA_META_INFO':
+        return SpectrumsActions.handleImportSpectraMetaInfo(draft, action);
+      case 'TOGGLE_SPECTRA_LEGEND':
+        return SpectrumsActions.handleToggleSpectraLegend(draft);
+      case 'RECOLOR_SPECTRA_COLOR':
+        return SpectrumsActions.handleRecolorSpectraBasedOnDistinctValue(
+          draft,
+          action,
+        );
+      case 'ORDER_SPECTRA':
+        return SpectrumsActions.handleOrderSpectra(draft, action);
 
-    case 'SET_SELECTED_TOOL':
-      return ToolsActions.setSelectedTool(draft, action);
-    case 'RESET_SELECTED_TOOL':
-      return ToolsActions.handleResetSelectedTool(draft);
-    case 'FULL_ZOOM_OUT':
-      return ToolsActions.zoomOut(draft, action);
-    case 'TOGGLE_REAL_IMAGINARY_VISIBILITY':
-      return ToolsActions.handleToggleRealImaginaryVisibility(draft);
-    case 'SET_ZOOM':
-      return ToolsActions.handleZoom(draft, action);
-    case 'SET_SPECTRA_SAME_TOP':
-      return ToolsActions.setSpectraSameTopHandler(draft);
-    case 'RESET_SPECTRA_SCALE':
-      return ToolsActions.resetSpectraScale(draft);
+      case 'SET_SELECTED_TOOL':
+        return ToolsActions.setSelectedTool(draft, action);
+      case 'RESET_SELECTED_TOOL':
+        return ToolsActions.handleResetSelectedTool(draft);
+      case 'FULL_ZOOM_OUT':
+        return ToolsActions.zoomOut(draft, action);
+      case 'TOGGLE_REAL_IMAGINARY_VISIBILITY':
+        return ToolsActions.handleToggleRealImaginaryVisibility(draft);
+      case 'SET_ZOOM':
+        return ToolsActions.handleZoom(draft, action);
+      case 'SET_SPECTRA_SAME_TOP':
+        return ToolsActions.setSpectraSameTopHandler(draft);
+      case 'RESET_SPECTRA_SCALE':
+        return ToolsActions.resetSpectraScale(draft);
 
-    case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
-      return ToolsActions.handleChangeSpectrumDisplayMode(draft);
-    case 'BRUSH_END':
-      return ToolsActions.handleBrushEnd(draft, action);
+      case 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE':
+        return ToolsActions.handleChangeSpectrumDisplayMode(draft);
+      case 'BRUSH_END':
+        return ToolsActions.handleBrushEnd(draft, action);
 
-    case 'SET_VERTICAL_INDICATOR_X_POSITION':
-      return ToolsActions.setVerticalIndicatorXPosition(draft, action);
-    case 'SET_SPECTRUMS_VERTICAL_ALIGN':
-      return ToolsActions.setSpectrumsVerticalAlign(draft);
-    case 'SET_ACTIVE_TAB':
-      return ToolsActions.handelSetActiveTab(draft, action);
-    case 'ADD_BASE_LINE_ZONE':
-      return ToolsActions.handleAddBaseLineZone(draft, action);
-    case 'DELETE_BASE_LINE_ZONE':
-      return ToolsActions.handleDeleteBaseLineZone(draft, action);
-    case 'SET_2D_LEVEL':
-      return ToolsActions.levelChangeHandler(draft, action);
+      case 'SET_VERTICAL_INDICATOR_X_POSITION':
+        return ToolsActions.setVerticalIndicatorXPosition(draft, action);
+      case 'SET_SPECTRUMS_VERTICAL_ALIGN':
+        return ToolsActions.setSpectrumsVerticalAlign(draft);
+      case 'SET_ACTIVE_TAB':
+        return ToolsActions.handelSetActiveTab(draft, action);
+      case 'ADD_BASE_LINE_ZONE':
+        return ToolsActions.handleAddBaseLineZone(draft, action);
+      case 'DELETE_BASE_LINE_ZONE':
+        return ToolsActions.handleDeleteBaseLineZone(draft, action);
+      case 'SET_2D_LEVEL':
+        return ToolsActions.levelChangeHandler(draft, action);
 
-    case 'ADD_MOLECULE':
-      return MoleculeActions.handleAddMolecule(draft, action);
-    case 'SET_MOLECULE':
-      return MoleculeActions.handleSetMolecule(draft, action);
-    case 'CHANGE_MOLECULE_LABEL':
-      return MoleculeActions.handleChangeMoleculeLabel(draft, action);
-    case 'DELETE_MOLECULE':
-      return MoleculeActions.handleDeleteMolecule(draft, action);
-    case 'PREDICT_SPECTRA':
-      return MoleculeActions.handlePredictSpectraFromMolecule(draft, action);
-    case 'FLOAT_MOLECULE_OVER_SPECTRUM':
-      return MoleculeActions.handleFloatMoleculeOverSpectrum(draft, action);
-    case 'TOGGLE_MOLECULE_ATOM_NUMBER':
-      return MoleculeActions.handleToggleMoleculeAtomsNumbers(draft, action);
-    case 'CHANGE_FLOAT_MOLECULE_POSITION':
-      return MoleculeActions.handleChangeFloatMoleculePosition(draft, action);
+      case 'ADD_MOLECULE':
+        return MoleculeActions.handleAddMolecule(draft, action);
+      case 'SET_MOLECULE':
+        return MoleculeActions.handleSetMolecule(draft, action);
+      case 'CHANGE_MOLECULE_LABEL':
+        return MoleculeActions.handleChangeMoleculeLabel(draft, action);
+      case 'DELETE_MOLECULE':
+        return MoleculeActions.handleDeleteMolecule(draft, action);
+      case 'PREDICT_SPECTRA':
+        return MoleculeActions.handlePredictSpectraFromMolecule(draft, action);
+      case 'FLOAT_MOLECULE_OVER_SPECTRUM':
+        return MoleculeActions.handleFloatMoleculeOverSpectrum(draft, action);
+      case 'TOGGLE_MOLECULE_ATOM_NUMBER':
+        return MoleculeActions.handleToggleMoleculeAtomsNumbers(draft, action);
+      case 'CHANGE_FLOAT_MOLECULE_POSITION':
+        return MoleculeActions.handleChangeFloatMoleculePosition(draft, action);
 
-    case 'SET_CORRELATIONS_MF':
-      return CorrelationsActions.handleSetMF(draft, action);
-    case 'SET_CORRELATIONS_TOLERANCE':
-      return CorrelationsActions.handleSetTolerance(draft, action);
-    case 'SET_CORRELATION':
-      return CorrelationsActions.handleSetCorrelation(draft, action);
-    case 'SET_CORRELATIONS':
-      return CorrelationsActions.handleSetCorrelations(draft, action);
-    case 'DELETE_CORRELATION':
-      return CorrelationsActions.handleDeleteCorrelation(draft, action);
+      case 'SET_CORRELATIONS_MF':
+        return CorrelationsActions.handleSetMF(draft, action);
+      case 'SET_CORRELATIONS_TOLERANCE':
+        return CorrelationsActions.handleSetTolerance(draft, action);
+      case 'SET_CORRELATION':
+        return CorrelationsActions.handleSetCorrelation(draft, action);
+      case 'SET_CORRELATIONS':
+        return CorrelationsActions.handleSetCorrelations(draft, action);
+      case 'DELETE_CORRELATION':
+        return CorrelationsActions.handleDeleteCorrelation(draft, action);
 
-    case 'AUTO_RANGES_DETECTION':
-      return RangesActions.handleAutoRangesDetection(draft, action);
-    case 'ADD_RANGE':
-      return RangesActions.handleAddRange(draft, action);
-    case 'DELETE_RANGE':
-      return RangesActions.handleDeleteRange(draft, action);
-    case 'DELETE_1D_SIGNAL':
-      return RangesActions.handleDeleteSignal(draft, action);
-    case 'RESIZE_RANGE':
-      return RangesActions.handleResizeRange(draft, action);
-    case 'CHANGE_RANGE_SUM':
-      return RangesActions.handleChangeRangeSum(draft, action);
-    case 'CHANGE_RANGES_SUM_FLAG':
-      return RangesActions.handleChangeRangesSumFlag(draft);
-    case 'CHANGE_RANGE_RELATIVE':
-      return RangesActions.handleChangeRangeRelativeValue(draft, action);
-    case 'CHANGE_RANGE_SIGNAL_VALUE':
-      return RangesActions.handleChangeRangeSignalValue(draft, action);
-    case 'CHANGE_RANGE_SIGNAL_KIND':
-      return RangesActions.handleChangeRangeSignalKind(draft, action);
-    case 'SAVE_EDITED_RANGE':
-      return RangesActions.handleSaveEditedRange(draft, action);
-    case 'UNLINK_RANGE':
-      return RangesActions.handleUnlinkRange(draft, action);
-    case 'SET_DIAID_RANGE':
-      return RangesActions.handleSetDiaIDRange(draft, action);
-    case 'UPDATE_RANGE':
-      return RangesActions.handleUpdateRange(draft, action);
-    case 'SHOW_MULTIPLICITY_TREES':
-      return RangesActions.handleShowMultiplicityTrees(draft, action);
-    case 'SHOW_RANGES_INTEGRALS':
-      return RangesActions.handleShowRangesIntegrals(draft, action);
-    case 'AUTO_RANGES_SPECTRA_PICKING':
-      return RangesActions.handleAutoSpectraRangesDetection(draft);
-    case 'SHOW_J_GRAPH':
-      return RangesActions.handleShowJGraph(draft, action);
+      case 'AUTO_RANGES_DETECTION':
+        return RangesActions.handleAutoRangesDetection(draft, action);
+      case 'ADD_RANGE':
+        return RangesActions.handleAddRange(draft, action);
+      case 'DELETE_RANGE':
+        return RangesActions.handleDeleteRange(draft, action);
+      case 'DELETE_1D_SIGNAL':
+        return RangesActions.handleDeleteSignal(draft, action);
+      case 'RESIZE_RANGE':
+        return RangesActions.handleResizeRange(draft, action);
+      case 'CHANGE_RANGE_SUM':
+        return RangesActions.handleChangeRangeSum(draft, action);
+      case 'CHANGE_RANGES_SUM_FLAG':
+        return RangesActions.handleChangeRangesSumFlag(draft);
+      case 'CHANGE_RANGE_RELATIVE':
+        return RangesActions.handleChangeRangeRelativeValue(draft, action);
+      case 'CHANGE_RANGE_SIGNAL_VALUE':
+        return RangesActions.handleChangeRangeSignalValue(draft, action);
+      case 'CHANGE_RANGE_SIGNAL_KIND':
+        return RangesActions.handleChangeRangeSignalKind(draft, action);
+      case 'SAVE_EDITED_RANGE':
+        return RangesActions.handleSaveEditedRange(draft, action);
+      case 'UNLINK_RANGE':
+        return RangesActions.handleUnlinkRange(draft, action);
+      case 'SET_DIAID_RANGE':
+        return RangesActions.handleSetDiaIDRange(draft, action);
+      case 'UPDATE_RANGE':
+        return RangesActions.handleUpdateRange(draft, action);
+      case 'SHOW_MULTIPLICITY_TREES':
+        return RangesActions.handleShowMultiplicityTrees(draft, action);
+      case 'SHOW_RANGES_INTEGRALS':
+        return RangesActions.handleShowRangesIntegrals(draft, action);
+      case 'AUTO_RANGES_SPECTRA_PICKING':
+        return RangesActions.handleAutoSpectraRangesDetection(draft);
+      case 'SHOW_J_GRAPH':
+        return RangesActions.handleShowJGraph(draft, action);
 
-    case 'SET_KEY_PREFERENCES':
-      return PreferencesActions.handleSetKeyPreferences(draft, action);
-    case 'APPLY_KEY_PREFERENCES':
-      return PreferencesActions.handleApplyKeyPreferences(draft, action);
+      case 'SET_KEY_PREFERENCES':
+        return PreferencesActions.handleSetKeyPreferences(draft, action);
+      case 'APPLY_KEY_PREFERENCES':
+        return PreferencesActions.handleApplyKeyPreferences(draft, action);
 
-    case 'AUTO_ZONES_DETECTION':
-      return ZonesActions.handleAutoZonesDetection(draft, action);
-    case 'CHANGE_ZONES_NOISE_FACTOR':
-      return ZonesActions.handleChangeZonesFactor(draft, action);
-    case 'ADD_2D_ZONE':
-      return ZonesActions.handleAdd2dZone(draft, action);
-    case 'DELETE_2D_ZONE':
-      return ZonesActions.handleDeleteZone(draft, action);
-    case 'DELETE_2D_SIGNAL':
-      return ZonesActions.handleDeleteSignal(draft, action);
-    case 'SET_2D_SIGNAL_PATH_LENGTH':
-      return ZonesActions.handleSetSignalPathLength(draft, action);
-    case 'CHANGE_ZONE_SIGNAL_VALUE':
-      return ZonesActions.handleChangeZoneSignalDelta(draft, action);
-    case 'CHANGE_ZONE_SIGNAL_KIND':
-      return ZonesActions.handleChangeZoneSignalKind(draft, action);
-    case 'UNLINK_ZONE':
-      return ZonesActions.handleUnlinkZone(draft, action);
-    case 'SET_ZONE_DIAID':
-      return ZonesActions.handleSetDiaIDZone(draft, action);
-    case 'AUTO_ZONES_SPECTRA_PICKING':
-      return ZonesActions.handleAutoSpectraZonesDetection(draft);
-    case 'SHOW_ZONES':
-      return ZonesActions.handleShowZones(draft, action);
-    case 'SHOW_ZONES_SIGNALS':
-      return ZonesActions.handleShowSignals(draft, action);
-    case 'SHOW_ZONES_PEAKS':
-      return ZonesActions.handleShowPeaks(draft, action);
-    case 'SAVE_EDITED_ZONE':
-      return ZonesActions.handleSaveEditedZone(draft, action);
+      case 'AUTO_ZONES_DETECTION':
+        return ZonesActions.handleAutoZonesDetection(draft, action);
+      case 'CHANGE_ZONES_NOISE_FACTOR':
+        return ZonesActions.handleChangeZonesFactor(draft, action);
+      case 'ADD_2D_ZONE':
+        return ZonesActions.handleAdd2dZone(draft, action);
+      case 'DELETE_2D_ZONE':
+        return ZonesActions.handleDeleteZone(draft, action);
+      case 'DELETE_2D_SIGNAL':
+        return ZonesActions.handleDeleteSignal(draft, action);
+      case 'SET_2D_SIGNAL_PATH_LENGTH':
+        return ZonesActions.handleSetSignalPathLength(draft, action);
+      case 'CHANGE_ZONE_SIGNAL_VALUE':
+        return ZonesActions.handleChangeZoneSignalDelta(draft, action);
+      case 'CHANGE_ZONE_SIGNAL_KIND':
+        return ZonesActions.handleChangeZoneSignalKind(draft, action);
+      case 'UNLINK_ZONE':
+        return ZonesActions.handleUnlinkZone(draft, action);
+      case 'SET_ZONE_DIAID':
+        return ZonesActions.handleSetDiaIDZone(draft, action);
+      case 'AUTO_ZONES_SPECTRA_PICKING':
+        return ZonesActions.handleAutoSpectraZonesDetection(draft);
+      case 'SHOW_ZONES':
+        return ZonesActions.handleShowZones(draft, action);
+      case 'SHOW_ZONES_SIGNALS':
+        return ZonesActions.handleShowSignals(draft, action);
+      case 'SHOW_ZONES_PEAKS':
+        return ZonesActions.handleShowPeaks(draft, action);
+      case 'SAVE_EDITED_ZONE':
+        return ZonesActions.handleSaveEditedZone(draft, action);
 
-    case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':
-      return SpectraAnalysisActions.handleOrderSpectra(draft, action);
+      case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':
+        return SpectraAnalysisActions.handleOrderSpectra(draft, action);
 
-    case 'RESURRECTING_SPECTRUM_FROM_RANGES':
-      return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);
-    case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
-      return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
+      case 'RESURRECTING_SPECTRUM_FROM_RANGES':
+        return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);
+      case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
+        return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
 
-    case 'SET_AUTOMATIC_ASSIGNMENTS':
-      return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
+      case 'SET_AUTOMATIC_ASSIGNMENTS':
+        return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
 
-    case 'SET_MOUSE_OVER_DISPLAYER':
-      return GlobalActions.handleSetIsOverDisplayer(draft, action);
+      case 'SET_MOUSE_OVER_DISPLAYER':
+        return GlobalActions.handleSetIsOverDisplayer(draft, action);
 
-    default:
+      default:
+    }
+  } catch (error: any) {
+    draft.errorAction = error;
+    error.data = { action };
+    reportError(error);
   }
 }
 
