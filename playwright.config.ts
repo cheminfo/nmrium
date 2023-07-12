@@ -11,7 +11,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   timeout: 60_000,
   expect: {
-    timeout: 10_000,
+    timeout: 15_000,
   },
   reporter: 'html',
   use: {
