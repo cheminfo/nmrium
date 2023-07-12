@@ -183,7 +183,9 @@ function checkPredictions(
         break;
       case 'hsqc':
       case 'hmbc':
-        missing2DPrediction.push(experiment);
+        if (!predictedSpectra[experiment]) {
+          missing2DPrediction.push(experiment);
+        }
         break;
       default:
         break;
@@ -206,15 +208,15 @@ function checkFromTo(
   logger: Logger,
 ) {
   const { autoExtendRange, spectra } = inputOptions;
-  const originalFromTo = {
-    '1H': { ...inputOptions['1d']['1H'] },
-    '13C': { ...inputOptions['1d']['13C'] },
-  };
+  let signalsOutOfRange: Record<string, boolean> = {};
   for (const experiment in predictedSpectra) {
     if (!spectra[experiment]) continue;
     if (['carbon', 'proton'].includes(experiment)) {
       const spectrum = predictedSpectra[experiment] as Prediction1D;
       const { signals, nucleus } = spectrum;
+
+      if (signals.length === 0) continue;
+
       const { from, to } = inputOptions['1d'][nucleus];
       const fromTo = getNewFromTo({
         deltas: signals.map((s) => s.delta),
@@ -226,48 +228,37 @@ function checkFromTo(
       inputOptions['1d'][nucleus].to = fromTo.to;
       inputOptions['1d'][nucleus].from = fromTo.from;
     } else {
-      checkTwoDSpectrum(
-        predictedSpectra[experiment] as Prediction2D,
-        inputOptions,
-      );
-    }
-  }
-  for (const nucleus of ['1H', '13C']) {
-    const { from, to } = inputOptions['1d'][nucleus];
-    const { from: oFrom, to: oTo } = originalFromTo[nucleus];
-    if (oFrom > from || oTo < to) {
-      if (autoExtendRange) {
-        logger.warn(
-          `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
-        );
-      } else {
-        logger.warn(`There are ${nucleus} signals out of the range.`);
+      const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
+
+      if (signals.length === 0) continue;
+
+      for (const nucleus of nuclei) {
+        const axis = nucleus === '1H' ? 'x' : 'y';
+        const { from, to } = inputOptions['1d'][nucleus];
+        const fromTo = getNewFromTo({
+          deltas: signals.map((s) => s[axis].delta),
+          from,
+          to,
+          nucleus,
+          autoExtendRange,
+        });
+        inputOptions['1d'][nucleus].from = fromTo.from;
+        inputOptions['1d'][nucleus].to = fromTo.to;
+        if (fromTo.signalsOutOfRange) {
+          signalsOutOfRange[nucleus] = true;
+        }
       }
     }
   }
-}
-
-function checkTwoDSpectrum(
-  spectrum: Prediction2D,
-  inputOptions: PredictionOptions,
-) {
-  const { signals, nuclei } = spectrum;
-
-  if (signals.length === 0) return;
-  const { autoExtendRange } = inputOptions;
-
-  for (const nucleus of nuclei) {
-    const axis = nucleus === '1H' ? 'x' : 'y';
-    const { from, to } = inputOptions['1d'][nucleus];
-    const fromTo = getNewFromTo({
-      deltas: signals.map((s) => s[axis].delta),
-      from,
-      to,
-      nucleus,
-      autoExtendRange,
-    });
-    inputOptions['1d'][nucleus].from = fromTo.from;
-    inputOptions['1d'][nucleus].to = fromTo.to;
+  for (const nucleus of ['1H', '13C']) {
+    if (signalsOutOfRange[nucleus]) {
+      const { from, to } = inputOptions['1d'][nucleus];
+      logger.warn(
+        autoExtendRange
+          ? `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`
+          : `There are ${nucleus} signals out of the range.`,
+      );
+    }
   }
 }
 
@@ -280,12 +271,13 @@ function getNewFromTo(params: {
 }) {
   let { deltas, nucleus, from, to, autoExtendRange } = params;
   const { min, max } = xMinMaxValues(deltas);
-  if (autoExtendRange && (from > min || to < max)) {
+  const signalsOutOfRange = from > min || to < max;
+  if (autoExtendRange && signalsOutOfRange) {
     const spread = nucleus === '1H' ? 0.2 : 2;
     if (from > min) from = min - spread;
     if (to < max) to = max + spread;
   }
-  return { from, to };
+  return { from, to, signalsOutOfRange };
 }
 
 function generated1DSpectrum(params: {
