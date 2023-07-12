@@ -105,7 +105,7 @@ export function PredictSpectraModal({
           );
 
           try {
-            const data = await predictSpectra(molfile, logger);
+            const data = await predictSpectra(molfile);
             dispatch({
               type: 'PREDICT_SPECTRA',
               payload: {

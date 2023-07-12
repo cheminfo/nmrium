@@ -211,9 +211,9 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
 
   if (_range.every((r) => r === 0)) {
     return {
-      contours: _range.map((r) => ({ zValue: r, lines: []})),
+      contours: _range.map((r) => ({ zValue: r, lines: [] })),
       timeout: false,
-    }
+    };
   }
 
   return conrec.drawContour({

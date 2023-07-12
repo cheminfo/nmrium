@@ -1,5 +1,4 @@
 import { v4 } from '@lukeed/uuid';
-import { Logger } from 'cheminfo-types';
 import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
@@ -10,8 +9,8 @@ import {
   getFrequency,
   PredictedAll,
   signalsToRanges,
-  Prediction,
   Prediction1D,
+  Prediction2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -24,10 +23,13 @@ import {
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
 import { xMinMaxValues } from 'ml-spectra-processing';
+import { Logger } from 'cheminfo-types';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
-export type PredictedSpectraResult = Partial<Record<Experiment, Prediction>>;
+export type PredictedSpectraResult = Partial<
+  Record<Experiment, Prediction1D | Prediction2D>
+>;
 
 export interface PredictionOptions {
   name: string;
@@ -86,14 +88,10 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(
-  molfile: string,
-  logger: Logger,
-): Promise<PredictedAll> {
+export async function predictSpectra(molfile: string): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
 
   return predictAll(molecule, {
-    logger,
     predictOptions: {
       C: {
         webserviceURL: `${baseURL}/v1/predict/carbon`,
@@ -117,12 +115,12 @@ export function generateSpectra(
   predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
   color: string,
-  logger: FifoLogger,
+  logger: Logger,
 ): Spectrum[] {
   checkFromTo(predictedSpectra, inputOptions, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
-    if (inputOptions.spectra[experiment]) {
+    if (inputOptions.spectra[experiment] && predictedSpectra[experiment]) {
       const spectrum = predictedSpectra[experiment];
       switch (experiment) {
         case 'proton':
@@ -134,7 +132,6 @@ export function generateSpectra(
             color,
           });
           spectra.push(datum);
-
           break;
         }
         case 'cosy':
@@ -147,7 +144,6 @@ export function generateSpectra(
             color,
           });
           spectra.push(datum);
-
           break;
         }
         default:
@@ -161,46 +157,87 @@ export function generateSpectra(
 function checkFromTo(
   predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
-  logger: FifoLogger,
+  logger: Logger,
 ) {
   const { autoExtendRange, spectra } = inputOptions;
   for (const experiment in predictedSpectra) {
-    if (spectra[experiment]) {
-      if (!['carbon', 'proton'].includes(experiment)) continue;
+    if (!spectra[experiment]) continue;
+    if (['carbon', 'proton'].includes(experiment)) {
       const spectrum = predictedSpectra[experiment] as Prediction1D;
       const { signals, nucleus } = spectrum;
       const { from, to } = inputOptions['1d'][nucleus];
-      const deltas = signals.filter((s) => {
-        return s.delta >= from && s.delta <= to;
+      const fromTo = getNewFromTo({
+        deltas: signals.map((s) => s.delta),
+        from,
+        to,
+        nucleus,
+        autoExtendRange,
+        logger,
       });
-      if (signals.length !== deltas.length) {
-        if (autoExtendRange) {
-          const fromTo = getNewFromTo(spectrum, from, to);
-          inputOptions['1d'][nucleus] = {
-            ...inputOptions['1d'][nucleus],
-            ...fromTo,
-          };
-          logger.warn(
-            `There are ${experiment} signals out of the range, it was extended to ${fromTo.from}-${fromTo.to}.`,
-          );
-        } else {
-          logger.warn(
-            deltas.length === 0
-              ? `There is not ${experiment} signals into the range.`
-              : `There are ${experiment} signals out of the range.`,
-          );
-        }
-      }
+      inputOptions['1d'][nucleus].to = fromTo.to;
+      inputOptions['1d'][nucleus].from = fromTo.from;
+    } else {
+      checkTwoDSpectrum(
+        predictedSpectra[experiment] as Prediction2D,
+        inputOptions,
+        logger,
+      );
     }
   }
 }
 
-function getNewFromTo(spectrum: Prediction1D, from: number, to: number) {
-  const { signals, nucleus } = spectrum;
-  const { min, max } = xMinMaxValues(signals.map((s) => s.delta));
-  const spread = nucleus === '1H' ? 0.2 : 2;
-  if (from > min) from = min - spread;
-  if (to < max) to = max + spread;
+function checkTwoDSpectrum(
+  spectrum: Prediction2D,
+  inputOptions: PredictionOptions,
+  logger: Logger,
+) {
+  const { signals, nuclei } = spectrum;
+
+  if (signals.length === 0) return;
+  const { autoExtendRange } = inputOptions;
+
+  for (const nucleus of nuclei) {
+    const axis = nucleus === '1H' ? 'x' : 'y';
+    const { from, to } = inputOptions['1d'][nucleus];
+    const fromTo = getNewFromTo({
+      deltas: signals.map((s) => s[axis].delta),
+      from,
+      to,
+      nucleus,
+      autoExtendRange,
+      logger,
+    });
+    inputOptions['1d'][nucleus].from = fromTo.from;
+    inputOptions['1d'][nucleus].to = fromTo.to;
+  }
+}
+
+function getNewFromTo(params: {
+  deltas: number[];
+  from: number;
+  to: number;
+  nucleus: string;
+  logger: Logger;
+  autoExtendRange: boolean;
+}) {
+  let { deltas, nucleus, from, to, autoExtendRange, logger } = params;
+  const { min, max } = xMinMaxValues(deltas);
+  if (from > min || to < max) {
+    if (autoExtendRange) {
+      const spread = nucleus === '1H' ? 0.2 : 2;
+      if (from > min) from = min - spread;
+      if (to < max) to = max + spread;
+      logger.warn(
+        `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
+      );
+    } else {
+      logger.warn(
+        deltas.length === 0
+          ? `There is not ${nucleus} signals into the range.`
+          : `There are ${nucleus} signals out of the range.`,
+      );
+    }
+  }
   return { from, to };
 }
 
@@ -284,7 +321,6 @@ function generated2DSpectrum(params: {
 }) {
   const { spectrum, inputOptions, experiment, color } = params;
   const { signals, zones, nuclei } = spectrum;
-  console.log(inputOptions);
   const xOption = inputOptions['1d'][nuclei[0]];
   const yOption = inputOptions['1d'][nuclei[1]];
 
