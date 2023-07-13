@@ -90,7 +90,6 @@ const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
 export async function predictSpectra(molfile: string): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
-
   return predictAll(molecule, {
     predictOptions: {
       C: {
@@ -118,7 +117,7 @@ export function generateSpectra(
   logger: Logger,
 ): Spectrum[] {
   const options: PredictionOptions = JSON.parse(JSON.stringify(inputOptions));
-  checkPredictions(predictedSpectra, options, logger);
+
   checkFromTo(predictedSpectra, options, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
@@ -154,53 +153,6 @@ export function generateSpectra(
     }
   }
   return spectra;
-}
-
-function checkPredictions(
-  predictedSpectra: PredictedSpectraResult,
-  inputOptions: PredictionOptions,
-  logger: Logger,
-) {
-  const { spectra } = inputOptions;
-  const missing2DPrediction: string[] = [];
-  for (const [experiment, required] of Object.entries(spectra)) {
-    if (!required) continue;
-    switch (experiment) {
-      case 'proton':
-      case 'carbon': {
-        if (!predictedSpectra[experiment]) {
-          logger.warn(`${experiment} was not predicted`);
-        }
-        break;
-      }
-      case 'cosy':
-        if (!predictedSpectra[experiment]) {
-          logger.warn(
-            !predictedSpectra.proton
-              ? `Proton prediction is missing, so COSY experiment can not be simulated`
-              : `There was a error in ${experiment.toUpperCase()} prediction`,
-          );
-        }
-        break;
-      case 'hsqc':
-      case 'hmbc':
-        if (!predictedSpectra[experiment]) {
-          missing2DPrediction.push(experiment);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-  if (missing2DPrediction.length > 0) {
-    logger.warn(
-      `Carbon or proton prediction are missing, so ${
-        missing2DPrediction.length > 1
-          ? missing2DPrediction.join(' and ')
-          : missing2DPrediction[0]
-      } can not be simulated`,
-    );
-  }
 }
 
 function checkFromTo(
