@@ -1,8 +1,25 @@
-import { useMemo } from 'react';
+import { useFormikContext } from 'formik';
+import { CSSProperties, useMemo } from 'react';
 
-import Input from '../../elements/Input';
+import { InputStyle } from '../../elements/Input';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import addCustomColumn from '../../elements/ReactTable/utility/addCustomColumn';
+import FormikInput from '../../elements/formik/FormikInput';
+
+const cellStyle: CSSProperties = {
+  padding: '1px',
+  border: 'none',
+  borderWidth: 0,
+};
+
+const inputStyle: InputStyle = {
+  input: {
+    padding: '5px',
+  },
+  inputWrapper: {
+    borderRadius: 0,
+  },
+};
 
 interface SpinSystemTableProps {
   spinSystem: string;
@@ -10,6 +27,9 @@ interface SpinSystemTableProps {
 
 export function SpinSystemTable(props: SpinSystemTableProps) {
   let { spinSystem } = props;
+  const {
+    values: { data },
+  } = useFormikContext<any>();
 
   const tableColumns = useMemo(() => {
     let columns: Column<(number | null)[]>[] = [
@@ -20,7 +40,15 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
       },
       {
         Header: 'Delta',
-        Cell: ({ row }) => <Input value={row.original[0] || 0} />,
+        style: cellStyle,
+        Cell: ({ row }) => (
+          <FormikInput
+            name={`data.${row.index}.0`}
+            style={inputStyle}
+            value={row.original[0] || 0}
+            type="number"
+          />
+        ),
       },
     ];
     let i = 0;
@@ -30,11 +58,17 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
       addCustomColumn(columns, {
         id: label,
         index: i,
-        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        style: cellStyle,
         Cell: function cellRender({ row }) {
           const val = row.original?.[columnIndex] ?? null;
           if (val !== null) {
-            return <Input value={row.original[i + 1]} />;
+            return (
+              <FormikInput
+                name={`data.${row.index}.${columnIndex}`}
+                style={inputStyle}
+                type="number"
+              />
+            );
           }
           return <div />;
         },
@@ -49,29 +83,9 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
     return columns;
   }, [spinSystem]);
 
-  const tableData = useMemo(() => {
-    const rows: (number | null)[][] = [];
-    const spinLength = spinSystem.length;
-
-    for (let i = 1; i <= spinLength; i++) {
-      const columns: (number | null)[] = [];
-      for (let j = 0; j < spinLength; j++) {
-        if (j < i && i !== 1) {
-          columns.push(0);
-        } else {
-          columns.push(null);
-        }
-      }
-
-      columns[0] = i;
-      rows.push(columns);
-    }
-    return rows;
-  }, [spinSystem]);
-
   if (!spinSystem) {
     return null;
   }
 
-  return <ReactTable columns={tableColumns} data={tableData} />;
+  return <ReactTable columns={tableColumns} data={data} />;
 }
