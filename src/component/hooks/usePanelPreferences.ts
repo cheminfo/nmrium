@@ -7,7 +7,7 @@ import {
 } from 'nmr-load-save';
 import { useMemo } from 'react';
 
-import { defaultPredictionOptions } from '../../data/PredictionManager';
+import { getDefaultPredictionOptions } from '../../data/PredictionManager';
 import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { usePreferences } from '../context/PreferencesContext';
 import {
@@ -51,7 +51,7 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
     case 'multipleSpectraAnalysis':
       return getMultipleSpectraAnalysisDefaultValues(nucleus);
     case 'prediction':
-      return defaultPredictionOptions;
+      return getDefaultPredictionOptions();
 
     default:
       return {};
