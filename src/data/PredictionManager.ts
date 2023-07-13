@@ -41,7 +41,7 @@ export interface PredictionOptions {
   logger?: FifoLogger;
 }
 
-export const defaultPredictionOptions: PredictionOptions = {
+export const getDefaultPredictionOptions = (): PredictionOptions => ({
   name: '',
   frequency: 400,
   '1d': {
@@ -60,7 +60,7 @@ export const defaultPredictionOptions: PredictionOptions = {
     hsqc: true,
     hmbc: true,
   },
-};
+});
 
 export const FREQUENCIES: Array<{ value: number; label: string }> = [
   { value: 40, label: '40 MHz' },

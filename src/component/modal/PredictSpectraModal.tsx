@@ -5,7 +5,7 @@ import { useCallback, useRef, useState, useMemo } from 'react';
 import { Checkbox, CheckedState, Modal, useOnOff } from 'react-science/ui';
 
 import {
-  defaultPredictionOptions,
+  getDefaultPredictionOptions,
   predictSpectra,
 } from '../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
@@ -77,7 +77,7 @@ export function PredictSpectraModal({
   }, []);
 
   const initValues = useMemo(() => {
-    return Object.assign(defaultPredictionOptions, options, {
+    return Object.assign(getDefaultPredictionOptions(), options, {
       name: `Prediction ${predictionIndex + 1}`,
     });
   }, [options, predictionIndex]);
