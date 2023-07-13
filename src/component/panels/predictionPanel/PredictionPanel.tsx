@@ -46,7 +46,6 @@ export default function PredictionPanel() {
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
-
   const {
     item: spectraPanelState,
     utils: { toggle: openSpectraPanel },
@@ -208,6 +207,7 @@ export default function PredictionPanel() {
                         )
                       ) : (
                         <StructureEditor
+                          initialMolfile={molfile || ''}
                           width={width}
                           height={height}
                           svgMenu
