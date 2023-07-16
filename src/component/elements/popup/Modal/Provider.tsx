@@ -164,7 +164,9 @@ function Provider({
     .rnd-container {
       box-sizing: initial;
       background-color: #fff;
-      box-shadow: 0 0 0 0, 0 8px 16px rgb(0 0 0 / 30%);
+      box-shadow:
+        0 0 0 0,
+        0 8px 16px rgb(0 0 0 / 30%);
       border-radius: 5px;
     }
   `;
