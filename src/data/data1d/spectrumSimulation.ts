@@ -65,9 +65,10 @@ export function simulateSpectrum(
   for (let i = 0; i < spinsData.length; i++) {
     for (let j = 1; j < chemicalShiftsLength; j++) {
       const couplingVal = spinsData[i][j];
+      const jIndex = j - 1;
       if (couplingVal !== null) {
-        couplingConstants.set(i, j, couplingVal);
-        couplingConstants.set(j, i, couplingVal);
+        couplingConstants.set(i, jIndex, couplingVal);
+        couplingConstants.set(jIndex, i, couplingVal);
       }
     }
   }
