@@ -20,8 +20,10 @@ const selectStyles = { width: '100%', minWidth: '75px', fontSize: '10px' };
 
 export default function SpectrumSimulationSimpleOptions({
   onSpinSystemChange,
+  spinSystem,
 }: {
   onSpinSystemChange: (value: string) => void;
+  spinSystem: string;
 }) {
   return (
     <div
@@ -37,18 +39,19 @@ export default function SpectrumSimulationSimpleOptions({
           items={SPIN_SYSTEMS}
           style={selectStyles}
           onChange={onSpinSystemChange}
+          value={spinSystem}
         />
       </Label>
       <Label title="Frequency" style={labelStyle}>
         <FormikSelect
           items={FREQUENCIES}
           style={selectStyles}
-          name="frequency"
+          name="options.frequency"
         />
       </Label>
       <Label title="Line Width" style={labelStyle}>
         <FormikNumberInput
-          name="lineWidth"
+          name="options.lineWidth"
           type="number"
           style={{ margin: 0, width: '40px' }}
         />

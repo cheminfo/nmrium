@@ -34,28 +34,32 @@ export default function SpectrumSimulationPreferences() {
         <FormikSelect
           items={FREQUENCIES}
           style={selectStyles}
-          name="frequency"
+          name="options.frequency"
         />
       </Label>
       <Label title="Number of Points" style={labelStyle}>
         <FormikSelect
           items={SIMULATION_NUMBER_OF_POINTS}
-          name="nbPoints"
+          name="options.nbPoints"
           style={selectStyles}
         />
       </Label>
 
       <Label title="Range" style={labelStyle}>
         <Label title="From">
-          <FormikInput name="from" type="number" style={inputStyle} />
+          <FormikInput name="options.from" type="number" style={inputStyle} />
         </Label>
         <Label title="To" style={{ label: { padding: '0 10px' } }}>
-          <FormikInput name="to" type="number" style={inputStyle} />
+          <FormikInput name="options.to" type="number" style={inputStyle} />
         </Label>
       </Label>
 
       <Label title="Line Width" style={labelStyle}>
-        <FormikInput name="lineWidth" type="number" style={inputStyle} />
+        <FormikInput
+          name="options.lineWidth"
+          type="number"
+          style={inputStyle}
+        />
         <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
       </Label>
     </PreferencesContainer>

@@ -4,10 +4,9 @@ import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { useCallback, useState, useRef, useMemo } from 'react';
 
-import {
-  defaultSimulationOptions,
-  mapSpinSystem,
-} from '../../../data/data1d/spectrumSimulation';
+import { defaultSimulationOptions } from '../../../data/data1d/spectrumSimulation';
+import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import AboutSpectrumSimulationModal from '../../modal/AboutSpectrumSimulationModal';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -19,21 +18,24 @@ import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions';
 import { SpinSystemTable } from './SpinSystemTable';
 
 export default function SpectrumSimulation() {
+  const dispatch = useDispatch();
   const [isFlipped, setFlipStatus] = useState(false);
   const [spinSystem, setSpinSystem] = useState('AB');
+  const spinSystemRef = useRef('AB');
 
-  const optionsFormRef = useRef<FormikProps<any>>(null);
+  const formRef = useRef<FormikProps<any>>(null);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
-    void optionsFormRef.current?.submitForm();
+    void formRef.current?.submitForm();
     setFlipStatus(false);
   }, []);
 
   function spinSystemChangeHandler(system) {
+    spinSystemRef.current = system;
     setSpinSystem(system);
   }
 
@@ -57,13 +59,21 @@ export default function SpectrumSimulation() {
     return rows;
   }, [spinSystem]);
 
-  console.log(isFlipped);
-
-  function simulateHandler(values, source: 'onChange' | 'submit' = 'submit') {
-    console.log(source, spinSystem, isFlipped);
+  function simulateHandler(
+    values,
+    options: { source?: 'onChange' | 'submit'; keepSpectrum?: boolean } = {},
+  ) {
+    const { source = 'submit', keepSpectrum = false } = options;
     if ((source === 'onChange' && !isFlipped) || source === 'submit') {
-      console.log(mapSpinSystem(spinSystem, values.data));
+      dispatch({
+        type: 'SIMULATE_SPECTRUM',
+        payload: { ...values, spinSystem: spinSystemRef.current, keepSpectrum },
+      });
     }
+  }
+
+  function addSpectrumHandler() {
+    simulateHandler(formRef.current?.values, { keepSpectrum: true });
   }
 
   return (
@@ -71,7 +81,7 @@ export default function SpectrumSimulation() {
       initialValues={{ ...defaultSimulationOptions, data }}
       enableReinitialize
       onSubmit={(values) => simulateHandler(values)}
-      innerRef={optionsFormRef}
+      innerRef={formRef}
     >
       <>
         <div
@@ -97,6 +107,7 @@ export default function SpectrumSimulation() {
               <AboutSpectrumSimulationModal />
               <SpectrumSimulationSimpleOptions
                 onSpinSystemChange={spinSystemChangeHandler}
+                spinSystem={spinSystem}
               />
             </DefaultPanelHeader>
           )}
@@ -118,6 +129,11 @@ export default function SpectrumSimulation() {
                 }}
               >
                 <SpinSystemTable spinSystem={spinSystem} />
+                <div style={{ padding: '5px' }}>
+                  <Button.Done onClick={addSpectrumHandler}>
+                    Add Spectrum
+                  </Button.Done>
+                </div>
               </div>
             ) : (
               <SpectrumSimulationPreferences />
@@ -126,7 +142,7 @@ export default function SpectrumSimulation() {
         </div>
         <FormikOnChange
           key={Boolean(isFlipped).toString()}
-          onChange={(values) => simulateHandler(values, 'onChange')}
+          onChange={(values) => simulateHandler(values, { source: 'onChange' })}
         />
       </>
     </Formik>

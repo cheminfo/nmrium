@@ -1,21 +1,28 @@
+import { Matrix } from 'ml-matrix';
+import { simulate1D } from 'nmr-processing';
+
 export type SpinSystemData = (number | null)[][];
 
-export interface SimulationOptions {
+export interface SpectrumSimulationOptions {
   data: SpinSystemData;
-  frequency: number;
-  from: number;
-  to: number;
-  nbPoints: number;
-  lineWidth: number;
+  options: {
+    frequency: number;
+    from: number;
+    to: number;
+    nbPoints: number;
+    lineWidth: number;
+  };
 }
 
-export const defaultSimulationOptions: SimulationOptions = {
+export const defaultSimulationOptions: SpectrumSimulationOptions = {
   data: [],
-  frequency: 400,
-  from: -1,
-  to: 12,
-  nbPoints: 2 ** 17,
-  lineWidth: 1,
+  options: {
+    frequency: 1200,
+    from: -1,
+    to: 12,
+    nbPoints: 2 ** 19,
+    lineWidth: 1,
+  },
 };
 
 export function getSpinSystems() {
@@ -28,13 +35,15 @@ export function getSpinSystems() {
   return spinSystem;
 }
 
-export function mapSpinSystem(
+export function simulateSpectrum(
   spinSystem: string,
-  spinsData: (number | null)[][],
+  options: SpectrumSimulationOptions,
 ) {
   const spinsLength = spinSystem.length;
   const chemicalShifts: number[] = new Array(spinsLength);
   const multiplicity: number[] = new Array(spinsLength);
+
+  const { data: spinsData, options: simulateOptions } = options;
 
   for (let i = 0; i < spinsLength; i++) {
     chemicalShifts[i] = spinsData[i][0] as number;
@@ -43,11 +52,13 @@ export function mapSpinSystem(
 
   const chemicalShiftsLength = chemicalShifts.length;
 
-  const coupling = new Array(chemicalShiftsLength);
-  for (let i = 0; i < chemicalShiftsLength; i++) {
-    coupling[i] = new Array(chemicalShiftsLength);
-    for (let j = 0; j < chemicalShiftsLength; j++) {
-      coupling[i][j] = 0;
+  const couplingConstants = new Matrix(
+    chemicalShiftsLength,
+    chemicalShiftsLength,
+  );
+  for (let i = 0; i < couplingConstants.rows; i++) {
+    for (let j = 0; j < couplingConstants.columns; j++) {
+      couplingConstants.set(i, j, 0);
     }
   }
 
@@ -55,10 +66,18 @@ export function mapSpinSystem(
     for (let j = 1; j < chemicalShiftsLength; j++) {
       const couplingVal = spinsData[i][j];
       if (couplingVal !== null) {
-        coupling[i][j] = couplingVal;
-        coupling[j][i] = couplingVal;
+        couplingConstants.set(i, j, couplingVal);
+        couplingConstants.set(j, i, couplingVal);
       }
     }
   }
-  return { chemicalShifts, coupling, multiplicity };
+
+  return simulate1D(
+    {
+      chemicalShifts,
+      couplingConstants,
+      levels: multiplicity,
+    },
+    simulateOptions,
+  );
 }
