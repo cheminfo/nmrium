@@ -1,3 +1,4 @@
+import { FifoLogger } from 'fifo-logger';
 import { Draft } from 'immer';
 
 import {
@@ -21,6 +22,10 @@ import { ActionType } from '../types/ActionType';
 import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { unlinkZone } from './ZonesActions';
+import { Logger } from 'cheminfo-types';
+
+import OCL from 'openchemlib/full';
+import { nbLabileH, getAtoms } from 'openchemlib-utils';
 
 interface AddMoleculeProps {
   molfile: string;
@@ -35,6 +40,7 @@ type DeleteMoleculeAction = ActionType<
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
+    logger: FifoLogger;
     options: PredictionOptions;
     predictedSpectra: PredictedSpectraResult;
     molecule: StateMolecule;
@@ -158,14 +164,21 @@ function handlePredictSpectraFromMolecule(
   action: PredictSpectraFromMoleculeAction,
 ) {
   const {
+    logger,
     predictedSpectra,
     options,
     molecule,
     action: predictionAction = 'save',
   } = action.payload;
+  checkPredictions(predictedSpectra, options, molecule.molfile, logger);
   const color = generateColor(false, draft.usedColors['1d']);
   const spectraIds: string[] = [];
-  for (const spectrum of generateSpectra(predictedSpectra, options, color)) {
+  for (const spectrum of generateSpectra(
+    predictedSpectra,
+    options,
+    color,
+    logger,
+  )) {
     draft.data.push(spectrum);
     spectraIds.push(spectrum.id);
   }
@@ -192,6 +205,63 @@ function handlePredictSpectraFromMolecule(
 
   draft.toolOptions.data.predictionIndex++;
   setActiveTab(draft, { refreshActiveTab: true, tab: '1H' });
+}
+
+function checkPredictions(
+  predictedSpectra: PredictedSpectraResult,
+  inputOptions: PredictionOptions,
+  molfile: string,
+  logger: Logger,
+) {
+  const { spectra } = inputOptions;
+  const missing2DPrediction: string[] = [];
+  const molecule = OCL.Molecule.fromMolfile(molfile);
+  molecule.addImplicitHydrogens();
+  const { atoms } = getAtoms(molecule);
+  for (const [experiment, required] of Object.entries(spectra)) {
+    if (!required || predictedSpectra[experiment]) continue;
+    let message = '';
+    switch (experiment) {
+      case 'proton': {
+        message =
+          atoms.H - nbLabileH(molecule) === 0
+            ? 'No non-labile hydrogen found in the molecule, the proton spectrum could not be predicted'
+            : `Proton was not predicted`;
+        break;
+      }
+      case 'carbon': {
+        message = `${experiment} was not predicted. ${
+          !('C' in atoms) ? 'No carbons found in the molecule' : ''
+        }`;
+        break;
+      }
+      case 'cosy':
+        message = !predictedSpectra.proton
+          ? `Proton prediction is missing, so COSY experiment can not be simulated`
+          : `There was a error in ${experiment.toUpperCase()} prediction`;
+        break;
+      case 'hsqc':
+      case 'hmbc':
+        if (!predictedSpectra[experiment]) {
+          missing2DPrediction.push(experiment);
+        }
+        break;
+      default:
+        break;
+    }
+    if (message.length > 0) {
+      logger.warn(message);
+    }
+  }
+  if (missing2DPrediction.length > 0) {
+    logger.warn(
+      `Carbon or proton prediction are missing, so ${
+        missing2DPrediction.length > 1
+          ? missing2DPrediction.join(' and ')
+          : missing2DPrediction[0]
+      } can not be simulated`,
+    );
+  }
 }
 
 function setPredictedSpectraReference(

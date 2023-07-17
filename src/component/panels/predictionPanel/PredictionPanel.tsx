@@ -94,10 +94,11 @@ export default function PredictionPanel() {
         );
 
         try {
-          const data = await predictSpectra(molfile, logger);
+          const data = await predictSpectra(molfile);
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {
+              logger,
               predictedSpectra: data.spectra,
               options: predictionPreferences,
               molecule: { ...molecules[currentIndex], molfile },

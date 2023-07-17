@@ -1,5 +1,4 @@
 import { v4 } from '@lukeed/uuid';
-import { Logger } from 'cheminfo-types';
 import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
@@ -9,6 +8,9 @@ import {
   signals2DToZ,
   getFrequency,
   PredictedAll,
+  signalsToRanges,
+  Prediction1D,
+  Prediction2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -20,10 +22,14 @@ import {
 } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
+import { xMinMaxValues } from 'ml-spectra-processing';
+import { Logger } from 'cheminfo-types';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
-export type PredictedSpectraResult = Partial<Record<Experiment, Spectrum>>;
+export type PredictedSpectraResult = Partial<
+  Record<Experiment, Prediction1D | Prediction2D>
+>;
 
 export interface PredictionOptions {
   name: string;
@@ -37,6 +43,7 @@ export interface PredictionOptions {
   '2d': {
     nbPoints: { x: number; y: number };
   };
+  autoExtendRange: boolean;
   spectra: SpectraPredictionOptions;
   logger?: Logger;
 }
@@ -60,6 +67,7 @@ export const getDefaultPredictionOptions = (): PredictionOptions => ({
     hsqc: true,
     hmbc: true,
   },
+  autoExtendRange: true,
 });
 
 export const FREQUENCIES: Array<{ value: number; label: string }> = [
@@ -80,14 +88,9 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(
-  molfile: string,
-  logger: Logger,
-): Promise<PredictedAll> {
+export async function predictSpectra(molfile: string): Promise<PredictedAll> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
-
   return predictAll(molecule, {
-    logger,
     predictOptions: {
       C: {
         webserviceURL: `${baseURL}/v1/predict/carbon`,
@@ -111,22 +114,25 @@ export function generateSpectra(
   predictedSpectra: PredictedSpectraResult,
   inputOptions: PredictionOptions,
   color: string,
+  logger: Logger,
 ): Spectrum[] {
+  const options: PredictionOptions = JSON.parse(JSON.stringify(inputOptions));
+
+  checkFromTo(predictedSpectra, options, logger);
   const spectra: Spectrum[] = [];
   for (const experiment in predictedSpectra) {
-    if (inputOptions.spectra[experiment]) {
+    if (options.spectra[experiment]) {
       const spectrum = predictedSpectra[experiment];
       switch (experiment) {
         case 'proton':
         case 'carbon': {
           const datum = generated1DSpectrum({
             spectrum,
-            inputOptions,
+            options,
             experiment,
             color,
           });
           spectra.push(datum);
-
           break;
         }
         case 'cosy':
@@ -134,12 +140,11 @@ export function generateSpectra(
         case 'hmbc': {
           const datum = generated2DSpectrum({
             spectrum,
-            inputOptions,
+            options,
             experiment,
             color,
           });
           spectra.push(datum);
-
           break;
         }
         default:
@@ -150,25 +155,105 @@ export function generateSpectra(
   return spectra;
 }
 
+function checkFromTo(
+  predictedSpectra: PredictedSpectraResult,
+  inputOptions: PredictionOptions,
+  logger: Logger,
+) {
+  const setFromTo = (inputOptions, nucleus, fromTo) => {
+    inputOptions['1d'][nucleus].to = fromTo.to;
+    inputOptions['1d'][nucleus].from = fromTo.from;
+    if (fromTo.signalsOutOfRange) {
+      signalsOutOfRange[nucleus] = true;
+    }
+  };
+
+  const { autoExtendRange, spectra } = inputOptions;
+  let signalsOutOfRange: Record<string, boolean> = {};
+
+  for (const experiment in predictedSpectra) {
+    if (!spectra[experiment]) continue;
+    if (predictedSpectra[experiment].signals.length === 0) continue;
+
+    if (['carbon', 'proton'].includes(experiment)) {
+      const spectrum = predictedSpectra[experiment] as Prediction1D;
+      const { signals, nucleus } = spectrum;
+      const { from, to } = inputOptions['1d'][nucleus];
+      const fromTo = getNewFromTo({
+        deltas: signals.map((s) => s.delta),
+        from,
+        to,
+        nucleus,
+        autoExtendRange,
+      });
+      setFromTo(inputOptions, nucleus, fromTo);
+    } else {
+      const { signals, nuclei } = predictedSpectra[experiment] as Prediction2D;
+      for (const nucleus of nuclei) {
+        const axis = nucleus === '1H' ? 'x' : 'y';
+        const { from, to } = inputOptions['1d'][nucleus];
+        const fromTo = getNewFromTo({
+          deltas: signals.map((s) => s[axis].delta),
+          from,
+          to,
+          nucleus,
+          autoExtendRange,
+        });
+        setFromTo(inputOptions, nucleus, fromTo);
+      }
+    }
+  }
+  for (const nucleus of ['1H', '13C']) {
+    if (signalsOutOfRange[nucleus]) {
+      const { from, to } = inputOptions['1d'][nucleus];
+      if (autoExtendRange) {
+        logger.info(
+          `There are ${nucleus} signals out of the range, it was extended to ${from}-${to}.`,
+        );
+      } else {
+        logger.warn(`There are ${nucleus} signals out of the range.`);
+      }
+    }
+  }
+}
+
+function getNewFromTo(params: {
+  deltas: number[];
+  from: number;
+  to: number;
+  nucleus: string;
+  autoExtendRange: boolean;
+}) {
+  let { deltas, nucleus, from, to, autoExtendRange } = params;
+  const { min, max } = xMinMaxValues(deltas);
+  const signalsOutOfRange = from > min || to < max;
+  if (autoExtendRange && signalsOutOfRange) {
+    const spread = nucleus === '1H' ? 0.2 : 2;
+    if (from > min) from = min - spread;
+    if (to < max) to = max + spread;
+  }
+  return { from, to, signalsOutOfRange };
+}
+
 function generated1DSpectrum(params: {
-  inputOptions: PredictionOptions;
+  options: PredictionOptions;
   spectrum: any;
   experiment: string;
   color: string;
 }) {
-  const { spectrum, inputOptions, experiment, color } = params;
+  const { spectrum, options, experiment, color } = params;
 
-  const { signals, ranges, nucleus } = spectrum;
+  const { signals, joinedSignals, nucleus } = spectrum;
 
   const {
     name,
     '1d': { nbPoints },
     frequency: freq,
-  } = inputOptions;
+  } = options;
   const SpectrumName = generateName(name, { frequency: freq, experiment });
   const frequency = calculateFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
-    ...inputOptions['1d'][nucleus],
+    ...options['1d'][nucleus],
     frequency,
     nbPoints,
   });
@@ -192,7 +277,10 @@ function generated1DSpectrum(params: {
     },
     {},
   );
-  datum.ranges.values = mapRanges(ranges, datum);
+  datum.ranges.values = mapRanges(
+    signalsToRanges(joinedSignals, { frequency: frequency as number }),
+    datum,
+  );
   updateIntegralsRelativeValues(datum);
   return datum;
 }
@@ -220,35 +308,34 @@ function mapZones(zones: Array<Partial<Zone>>) {
 }
 
 function generated2DSpectrum(params: {
-  inputOptions: PredictionOptions;
+  options: PredictionOptions;
   spectrum: any;
   experiment: string;
   color: string;
 }) {
-  const { spectrum, inputOptions, experiment, color } = params;
+  const { spectrum, options, experiment, color } = params;
   const { signals, zones, nuclei } = spectrum;
-
-  const xOption = inputOptions['1d'][nuclei[0]];
-  const yOption = inputOptions['1d'][nuclei[1]];
+  const xOption = options['1d'][nuclei[0]];
+  const yOption = options['1d'][nuclei[1]];
 
   const width = get2DWidth(nuclei);
-  const frequency = calculateFrequency(nuclei, inputOptions.frequency);
+  const frequency = calculateFrequency(nuclei, options.frequency);
 
   const minMaxContent = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
     to: { x: xOption.to, y: yOption.to },
     nbPoints: {
-      x: inputOptions['2d'].nbPoints.x,
-      y: inputOptions['2d'].nbPoints.y,
+      x: options['2d'].nbPoints.x,
+      y: options['2d'].nbPoints.y,
     },
     width,
     factor: 3,
   });
-  const SpectrumName = generateName(inputOptions.name, {
+  const SpectrumName = generateName(options.name, {
     frequency,
     experiment,
   });
-  const spectralWidth = getSpectralWidth(experiment, inputOptions);
+  const spectralWidth = getSpectralWidth(experiment, options);
   const datum = initiateDatum2D(
     {
       data: { rr: { ...minMaxContent, noise: 0.01 } },

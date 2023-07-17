@@ -198,7 +198,6 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
 
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
-
   const sanResult = calculateSanPlot('2D', data);
   const median = sanResult.positive;
 
@@ -208,6 +207,13 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
 
   if (negative) {
     _range = _range.map((value) => -value);
+  }
+
+  if (_range.every((r) => r === 0)) {
+    return {
+      contours: _range.map((r) => ({ zValue: r, lines: [] })),
+      timeout: false,
+    };
   }
 
   return conrec.drawContour({
