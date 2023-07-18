@@ -1,10 +1,12 @@
-/* eslint-disable no-console */
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { useCallback, useState, useRef, useMemo } from 'react';
 
-import { defaultSimulationOptions } from '../../../data/data1d/spectrumSimulation';
+import {
+  SpectrumSimulationOptions,
+  defaultSimulationOptions,
+} from '../../../data/data1d/spectrumSimulation';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
@@ -13,7 +15,9 @@ import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
-import SpectrumSimulationPreferences from './SpectrumSimulationPreferences';
+import SpectrumSimulationPreferences, {
+  SpectrumSimulationPreferencesRefProps,
+} from './SpectrumSimulationPreferences';
 import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions';
 import { SpinSystemTable } from './SpinSystemTable';
 
@@ -23,14 +27,15 @@ export default function SpectrumSimulation() {
   const [spinSystem, setSpinSystem] = useState('AB');
   const spinSystemRef = useRef('AB');
 
-  const formRef = useRef<FormikProps<any>>(null);
+  const formRef = useRef<FormikProps<SpectrumSimulationOptions>>(null);
+  const settingRef = useRef<SpectrumSimulationPreferencesRefProps>(null);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
-    void formRef.current?.submitForm();
+    settingRef.current?.saveSetting();
     setFlipStatus(false);
   }, []);
 
@@ -60,91 +65,103 @@ export default function SpectrumSimulation() {
   }, [spinSystem]);
 
   function simulateHandler(
-    values,
-    options: { source?: 'onChange' | 'submit'; keepSpectrum?: boolean } = {},
+    values: SpectrumSimulationOptions,
+    keepSpectrum = false,
   ) {
-    const { source = 'submit', keepSpectrum = false } = options;
-    if ((source === 'onChange' && !isFlipped) || source === 'submit') {
-      dispatch({
-        type: 'SIMULATE_SPECTRUM',
-        payload: { ...values, spinSystem: spinSystemRef.current, keepSpectrum },
-      });
-    }
+    dispatch({
+      type: 'SIMULATE_SPECTRUM',
+      payload: { ...values, spinSystem: spinSystemRef.current, keepSpectrum },
+    });
   }
 
   function addSpectrumHandler() {
-    simulateHandler(formRef.current?.values, { keepSpectrum: true });
+    const values = formRef.current?.values;
+    if (values) {
+      simulateHandler(values, true);
+    }
+  }
+
+  function saveSettingsHandler(values) {
+    simulateHandler(values);
+    formRef.current?.setValues(values);
   }
 
   return (
     <Formik
       initialValues={{ ...defaultSimulationOptions, data }}
       enableReinitialize
-      onSubmit={(values) => simulateHandler(values)}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/empty-brace-spaces
+      onSubmit={() => {}}
       innerRef={formRef}
     >
-      <>
-        <div
-          css={[
-            tablePanelStyle,
-            isFlipped &&
-              css`
-                .table-container {
-                  table,
-                  th {
-                    position: relative !important;
+      {({ values }) => (
+        <>
+          <div
+            css={[
+              tablePanelStyle,
+              isFlipped &&
+                css`
+                  .table-container {
+                    table,
+                    th {
+                      position: relative !important;
+                    }
                   }
-                }
-              `,
-          ]}
-        >
-          {!isFlipped && (
-            <DefaultPanelHeader
-              showSettingButton
-              onSettingClick={settingsPanelHandler}
-              canDelete={false}
-            >
-              <AboutSpectrumSimulationModal />
-              <SpectrumSimulationSimpleOptions
-                onSpinSystemChange={spinSystemChangeHandler}
-                spinSystem={spinSystem}
-              />
-            </DefaultPanelHeader>
-          )}
-          {isFlipped && (
-            <PreferencesHeader
-              onSave={saveSettingHandler}
-              onClose={settingsPanelHandler}
-            />
-          )}
-
-          <div className="inner-container">
-            {!isFlipped ? (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                  overflow: 'auto',
-                }}
+                `,
+            ]}
+          >
+            {!isFlipped && (
+              <DefaultPanelHeader
+                showSettingButton
+                onSettingClick={settingsPanelHandler}
+                canDelete={false}
               >
-                <SpinSystemTable spinSystem={spinSystem} />
-                <div style={{ padding: '5px' }}>
-                  <Button.Done onClick={addSpectrumHandler}>
-                    Add Spectrum
-                  </Button.Done>
-                </div>
-              </div>
-            ) : (
-              <SpectrumSimulationPreferences />
+                <AboutSpectrumSimulationModal />
+                <SpectrumSimulationSimpleOptions
+                  onSpinSystemChange={spinSystemChangeHandler}
+                  spinSystem={spinSystem}
+                />
+              </DefaultPanelHeader>
             )}
+            {isFlipped && (
+              <PreferencesHeader
+                onSave={saveSettingHandler}
+                onClose={settingsPanelHandler}
+              />
+            )}
+
+            <div className="inner-container">
+              {!isFlipped ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    overflow: 'auto',
+                  }}
+                >
+                  <SpinSystemTable spinSystem={spinSystem} />
+                  <div style={{ padding: '5px' }}>
+                    <Button.Done onClick={addSpectrumHandler}>
+                      Add Spectrum
+                    </Button.Done>
+                  </div>
+                </div>
+              ) : (
+                <SpectrumSimulationPreferences
+                  ref={settingRef}
+                  options={values}
+                  onSave={saveSettingsHandler}
+                />
+              )}
+            </div>
           </div>
-        </div>
-        <FormikOnChange
-          key={Boolean(isFlipped).toString()}
-          onChange={(values) => simulateHandler(values, { source: 'onChange' })}
-        />
-      </>
+          <FormikOnChange
+            key={Boolean(isFlipped).toString()}
+            onChange={(values) => simulateHandler(values)}
+          />
+        </>
+      )}
     </Formik>
   );
 }

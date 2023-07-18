@@ -1,4 +1,8 @@
+import { Formik, FormikProps } from 'formik';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
+
 import { FREQUENCIES } from '../../../data/PredictionManager';
+import { SpectrumSimulationOptions } from '../../../data/data1d/spectrumSimulation';
 import generateNumbersPowerOfX from '../../../data/utilities/generateNumbersPowerOfX';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
@@ -27,41 +31,74 @@ const inputStyle: InputStyle = {
     padding: '5px',
   },
 };
-export default function SpectrumSimulationPreferences() {
+
+export interface SpectrumSimulationPreferencesRefProps {
+  saveSetting: () => void;
+}
+interface SpectrumSimulationPreferencesProps {
+  options: SpectrumSimulationOptions;
+  onSave: (options: SpectrumSimulationOptions) => void;
+}
+function SpectrumSimulationPreferences(
+  { options, onSave }: SpectrumSimulationPreferencesProps,
+  ref,
+) {
+  const formRef = useRef<FormikProps<any>>(null);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      saveSetting: () => {
+        void formRef.current?.submitForm();
+      },
+    }),
+    [],
+  );
+
   return (
     <PreferencesContainer style={{ backgroundColor: 'white' }}>
-      <Label title="Frequency" style={labelStyle}>
-        <FormikSelect
-          items={FREQUENCIES}
-          style={selectStyles}
-          name="options.frequency"
-        />
-      </Label>
-      <Label title="Number of Points" style={labelStyle}>
-        <FormikSelect
-          items={SIMULATION_NUMBER_OF_POINTS}
-          name="options.nbPoints"
-          style={selectStyles}
-        />
-      </Label>
+      <Formik initialValues={options} onSubmit={onSave} innerRef={formRef}>
+        <>
+          <Label title="Frequency" style={labelStyle}>
+            <FormikSelect
+              items={FREQUENCIES}
+              style={selectStyles}
+              name="options.frequency"
+            />
+          </Label>
+          <Label title="Number of Points" style={labelStyle}>
+            <FormikSelect
+              items={SIMULATION_NUMBER_OF_POINTS}
+              name="options.nbPoints"
+              style={selectStyles}
+            />
+          </Label>
 
-      <Label title="Range" style={labelStyle}>
-        <Label title="From">
-          <FormikInput name="options.from" type="number" style={inputStyle} />
-        </Label>
-        <Label title="To" style={{ label: { padding: '0 10px' } }}>
-          <FormikInput name="options.to" type="number" style={inputStyle} />
-        </Label>
-      </Label>
+          <Label title="Range" style={labelStyle}>
+            <Label title="From">
+              <FormikInput
+                name="options.from"
+                type="number"
+                style={inputStyle}
+              />
+            </Label>
+            <Label title="To" style={{ label: { padding: '0 10px' } }}>
+              <FormikInput name="options.to" type="number" style={inputStyle} />
+            </Label>
+          </Label>
 
-      <Label title="Line Width" style={labelStyle}>
-        <FormikInput
-          name="options.lineWidth"
-          type="number"
-          style={inputStyle}
-        />
-        <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
-      </Label>
+          <Label title="Line Width" style={labelStyle}>
+            <FormikInput
+              name="options.lineWidth"
+              type="number"
+              style={inputStyle}
+            />
+            <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
+          </Label>
+        </>
+      </Formik>
     </PreferencesContainer>
   );
 }
+
+export default forwardRef(SpectrumSimulationPreferences);
