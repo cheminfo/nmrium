@@ -1,4 +1,3 @@
-import { Matrix } from 'ml-matrix';
 import { simulate1D } from 'nmr-processing';
 
 export type SpinSystemData = (number | null)[][];
@@ -17,10 +16,10 @@ export interface SpectrumSimulationOptions {
 export const defaultSimulationOptions: SpectrumSimulationOptions = {
   data: [],
   options: {
-    frequency: 1200,
+    frequency: 200,
     from: -1,
     to: 12,
-    nbPoints: 2 ** 19,
+    nbPoints: 2 ** 16,
     lineWidth: 1,
   },
 };
@@ -52,13 +51,11 @@ export function simulateSpectrum(
 
   const chemicalShiftsLength = chemicalShifts.length;
 
-  const couplingConstants = new Matrix(
-    chemicalShiftsLength,
-    chemicalShiftsLength,
-  );
-  for (let i = 0; i < couplingConstants.rows; i++) {
-    for (let j = 0; j < couplingConstants.columns; j++) {
-      couplingConstants.set(i, j, 0);
+  const couplingConstants = new Array<Array<number>>(chemicalShiftsLength);
+  for (let i = 0; i < chemicalShiftsLength; i++) {
+    couplingConstants[i] = new Array<number>(chemicalShiftsLength);
+    for (let j = 0; j < chemicalShiftsLength; j++) {
+      couplingConstants[i][j] = 0;
     }
   }
 
@@ -67,8 +64,8 @@ export function simulateSpectrum(
       const couplingVal = spinsData[i][j];
       const jIndex = j - 1;
       if (couplingVal !== null) {
-        couplingConstants.set(i, jIndex, couplingVal);
-        couplingConstants.set(jIndex, i, couplingVal);
+        couplingConstants[i][jIndex] = couplingVal;
+        couplingConstants[jIndex][i] = couplingVal;
       }
     }
   }
