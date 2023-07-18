@@ -654,7 +654,9 @@ function handleSimulateSpectrum(
 
   if (spectrumIndex !== -1) {
     (draft.data[spectrumIndex] as Spectrum1D).data = { x, re: y };
-    setDomain(draft, { updateYDomain: false });
+    const [x1, x2] = draft.originDomain.xDomain;
+    const isInXDomain = options.to - options.from <= x2 - x1;
+    setDomain(draft, { updateYDomain: false, updateXDomain: !isInXDomain });
   } else {
     const spectrum = initiateDatum1D(
       {
