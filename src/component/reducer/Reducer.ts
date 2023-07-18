@@ -71,6 +71,7 @@ export function getDefaultViewState(): ViewState {
     },
     verticalAlign: {},
     predictions: {},
+    currentSimulatedSpectrumKey: null,
   };
 }
 export const getInitialState = (): State => ({
@@ -492,6 +493,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         );
       case 'ORDER_SPECTRA':
         return SpectrumsActions.handleOrderSpectra(draft, action);
+      case 'SIMULATE_SPECTRUM':
+        return SpectrumsActions.handleSimulateSpectrum(draft, action);
 
       case 'SET_SELECTED_TOOL':
         return ToolsActions.setSelectedTool(draft, action);
