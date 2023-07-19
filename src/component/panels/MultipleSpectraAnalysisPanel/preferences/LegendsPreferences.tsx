@@ -60,7 +60,7 @@ function LegendsPreferences() {
     [setFieldValue],
   );
 
-  const COLUMNS: Column<LegendField>[] = useMemo(
+  const COLUMNS: Array<Column<LegendField>> = useMemo(
     () => [
       {
         Header: '#',

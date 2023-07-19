@@ -8,7 +8,7 @@ export default function useNucleus() {
       spectra: { activeSpectra },
     },
   } = useChartData();
-  return useMemo<Array<string>>(() => {
+  return useMemo<string[]>(() => {
     if (activeSpectra && Object.keys(activeSpectra).length > 0) {
       return Object.keys(activeSpectra);
     }

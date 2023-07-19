@@ -89,7 +89,7 @@ const Main = () => {
   const [data, setRoutes] = useState<{
     isLoaded: boolean;
     status: number;
-    routes?: Array<any>;
+    routes?: any[];
     baseURL?: string;
     path?: string;
   }>({

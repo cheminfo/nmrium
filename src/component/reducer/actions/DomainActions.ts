@@ -27,7 +27,7 @@ export type DomainActions =
   | SetYDomainAction
   | MoveXAxisAction;
 
-function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
+function getActiveData(draft: Draft<State>): Spectrum1D[] {
   let data = draft.data.filter(
     (datum) =>
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
@@ -49,12 +49,12 @@ function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
     data = data.filter((datum) => !datum.info.isFid);
   }
 
-  return data as Array<Spectrum1D>;
+  return data as Spectrum1D[];
 }
 
 function getDomain(draft: Draft<State>) {
-  let xArray: Array<number> = [];
-  let yArray: Array<number> = [];
+  let xArray: number[] = [];
+  let yArray: number[] = [];
   const yDomains: Record<string, number[]> = {};
   const xDomains: Record<string, number[]> = {};
 
@@ -64,7 +64,7 @@ function getDomain(draft: Draft<State>) {
       const { display, data, id } = d;
       const { y } = get1DDataXY(d);
 
-      const _extent = extent(y) as Array<number>;
+      const _extent = extent(y) as number[];
       const domain = [data.x[0], data.x.at(-1) as number];
 
       yDomains[id] = _extent;
@@ -87,8 +87,8 @@ function getDomain(draft: Draft<State>) {
   };
 }
 function get2DDomain(state: State) {
-  let xArray: Array<number> = [];
-  let yArray: Array<number> = [];
+  let xArray: number[] = [];
+  let yArray: number[] = [];
   const yDomains: Record<string, [number, number] | [undefined, undefined]> =
     {};
   const xDomains: Record<string, number[]> = {};
@@ -116,7 +116,7 @@ function get2DDomain(state: State) {
             isSpectrum2D(datum) &&
             datum.info.nucleus?.join(',') === activeTab &&
             datum.info.isFt,
-        ) as Array<Spectrum2D>
+        ) as Spectrum2D[]
       ).flatMap((datum: Spectrum2D) => {
         const { minX, maxX } = (datum.data as NmrData2DFt).rr;
         return [minX, maxX];
@@ -128,7 +128,7 @@ function get2DDomain(state: State) {
             isSpectrum2D(d) &&
             d.info.nucleus?.join(',') === activeTab &&
             d.info.isFt,
-        ) as Array<Spectrum2D>
+        ) as Spectrum2D[]
       ).flatMap((datum: Spectrum2D) => {
         const { minY, maxY } = (datum.data as NmrData2DFt).rr;
         return [minY, maxY];

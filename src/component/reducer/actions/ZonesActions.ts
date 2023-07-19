@@ -205,7 +205,7 @@ function handleChangeZoneSignalDelta(
       zoneId,
       signal,
     );
-    let filters: any = [];
+    const filters: any = [];
     if (xShift !== 0) {
       filters.push({ name: Filters.shift2DX.id, value: { shift: xShift } });
     }

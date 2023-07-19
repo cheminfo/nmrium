@@ -5,7 +5,7 @@ export default function setActiveAssignment(
   state: AssignmentState,
   action: SetActiveAction,
 ) {
-  let { id, axis } = action.payload;
+  const { id, axis } = action.payload;
   const isActive = state.activated?.id === id;
 
   return {

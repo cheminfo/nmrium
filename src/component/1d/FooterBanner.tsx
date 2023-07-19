@@ -101,7 +101,7 @@ function FooterBannerInner({
   spectrum,
   activeTab,
 }: FooterBannerInnerProps) {
-  let position = useMouseTracker();
+  const position = useMouseTracker();
   const { startX, endX, step, mouseButton } = useBrushTracker();
   const { scaleX } = useScaleChecked();
 

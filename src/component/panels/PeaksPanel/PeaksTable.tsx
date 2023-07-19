@@ -71,96 +71,97 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
     },
     [dispatch],
   );
-  const COLUMNS: (CustomColumn<PeakRecord> & { showWhen: string })[] = useMemo(
-    () => [
-      {
-        showWhen: 'peakNumber.show',
-        index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
-      },
-      {
-        showWhen: 'deltaPPM.show',
-        index: 3,
-        Header: 'δ (ppm)',
-        accessor: 'x',
-        Cell: ({ row }) => (
-          <EditableColumn
-            value={formatNumber(
-              row.original.x,
-              peaksPreferences.deltaPPM.format,
-            )}
-            onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
-            type="number"
-          />
-        ),
-      },
-      {
-        showWhen: 'deltaHz.show',
-        index: 4,
-        Header: 'δ (Hz)',
-        accessor: 'xHz',
-        Cell: ({ row }) =>
-          formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
-      },
-      {
-        showWhen: 'intensity.show',
-        index: 5,
-        Header: 'Intensity',
-        style: { maxWidth: '80px' },
-        accessor: 'y',
-        Cell: ({ row }) =>
-          formatNumber(row.original.y, peaksPreferences.intensity.format),
-      },
-      {
-        showWhen: 'peakWidth.show',
-        index: 6,
-        Header: 'Width (Hz)',
-        accessor: 'width',
-        Cell: ({ row }) =>
-          formatNumber(row.original.width, peaksPreferences.peakWidth.format),
-      },
-      {
-        showWhen: 'showKind',
-        index: 7,
-        Header: 'Kind',
-        accessor: (row) => row.shape?.kind || '',
-      },
-      {
-        showWhen: 'fwhm.show',
-        index: 8,
-        Header: 'fwhm',
-        accessor: (row) => row?.shape?.fwhm || '',
-        Cell: ({ row }) => {
-          const fwhm = row.original?.shape?.fwhm;
-          if (fwhm) {
-            return formatNumber(fwhm, peaksPreferences.fwhm.format);
-          }
-          return '';
+  const COLUMNS: Array<CustomColumn<PeakRecord> & { showWhen: string }> =
+    useMemo(
+      () => [
+        {
+          showWhen: 'peakNumber.show',
+          index: 1,
+          Header: '#',
+          accessor: (_, index) => index + 1,
+          style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
         },
-      },
-      {
-        showWhen: 'mu.show',
-        index: 9,
-        Header: 'mu',
-        accessor: (row) =>
-          (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
-        Cell: ({ row }) => {
-          const mu =
-            row.original?.shape?.kind === 'pseudoVoigt' &&
-            row.original?.shape?.mu;
-          if (mu) {
-            return formatNumber(mu, peaksPreferences.mu.format);
-          }
-          return '';
+        {
+          showWhen: 'deltaPPM.show',
+          index: 3,
+          Header: 'δ (ppm)',
+          accessor: 'x',
+          Cell: ({ row }) => (
+            <EditableColumn
+              value={formatNumber(
+                row.original.x,
+                peaksPreferences.deltaPPM.format,
+              )}
+              onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
+              type="number"
+            />
+          ),
         },
-      },
-    ],
-    [peaksPreferences, saveDeltaPPMRefsHandler],
-  );
+        {
+          showWhen: 'deltaHz.show',
+          index: 4,
+          Header: 'δ (Hz)',
+          accessor: 'xHz',
+          Cell: ({ row }) =>
+            formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
+        },
+        {
+          showWhen: 'intensity.show',
+          index: 5,
+          Header: 'Intensity',
+          style: { maxWidth: '80px' },
+          accessor: 'y',
+          Cell: ({ row }) =>
+            formatNumber(row.original.y, peaksPreferences.intensity.format),
+        },
+        {
+          showWhen: 'peakWidth.show',
+          index: 6,
+          Header: 'Width (Hz)',
+          accessor: 'width',
+          Cell: ({ row }) =>
+            formatNumber(row.original.width, peaksPreferences.peakWidth.format),
+        },
+        {
+          showWhen: 'showKind',
+          index: 7,
+          Header: 'Kind',
+          accessor: (row) => row.shape?.kind || '',
+        },
+        {
+          showWhen: 'fwhm.show',
+          index: 8,
+          Header: 'fwhm',
+          accessor: (row) => row?.shape?.fwhm || '',
+          Cell: ({ row }) => {
+            const fwhm = row.original?.shape?.fwhm;
+            if (fwhm) {
+              return formatNumber(fwhm, peaksPreferences.fwhm.format);
+            }
+            return '';
+          },
+        },
+        {
+          showWhen: 'mu.show',
+          index: 9,
+          Header: 'mu',
+          accessor: (row) =>
+            (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
+          Cell: ({ row }) => {
+            const mu =
+              row.original?.shape?.kind === 'pseudoVoigt' &&
+              row.original?.shape?.mu;
+            if (mu) {
+              return formatNumber(mu, peaksPreferences.mu.format);
+            }
+            return '';
+          },
+        },
+      ],
+      [peaksPreferences, saveDeltaPPMRefsHandler],
+    );
 
-  const initialColumns: CustomColumn<any>[] = useMemo(
+  const initialColumns: Array<CustomColumn<any>> = useMemo(
     () => [
       {
         index: 20,
@@ -195,7 +196,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
   );
 
   const tableColumns = useMemo(() => {
-    let columns = [...initialColumns];
+    const columns = [...initialColumns];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
       if (lodashGet(peaksPreferences, showWhen)) {

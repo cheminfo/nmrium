@@ -27,15 +27,15 @@ export interface DataBaseBasic {
 export interface DataBaseRange {
   from: number;
   to: number;
-  signals: Array<DataBaseSignal>;
+  signals: DataBaseSignal[];
 }
 
-export type LocalDatabase = {
+export interface LocalDatabase {
   key: string;
   label: string;
   url?: string;
-  value?: Array<DatabaseNMREntry>;
-};
+  value?: DatabaseNMREntry[];
+}
 
 export const DATA_BASES: LocalDatabase[] = [
   {
@@ -108,9 +108,9 @@ function prepareGetSolvents(data) {
 //   });
 // }
 
-function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
-  let moleculesDB = new MoleculesDB(OCL);
-  for (let entry of array) {
+function prepareMoleculesDB(array: DatabaseNMREntry[]) {
+  const moleculesDB = new MoleculesDB(OCL);
+  for (const entry of array) {
     if (entry.ocl) {
       try {
         const molecule = OCL.Molecule.fromIDCode(
@@ -138,7 +138,7 @@ function prepareMoleculesDB(array: Array<DatabaseNMREntry>) {
   return moleculesDB;
 }
 
-function prepareDataBase(array: Array<DatabaseNMREntry>) {
+function prepareDataBase(array: DatabaseNMREntry[]) {
   return array.map((item) => {
     item.ranges = item.ranges.map((range) => ({
       id: v4(),
@@ -148,13 +148,11 @@ function prepareDataBase(array: Array<DatabaseNMREntry>) {
   });
 }
 
-export function prepareData(
-  data: Array<DatabaseNMREntry>,
-): PrepareDataResult[] {
+export function prepareData(data: DatabaseNMREntry[]): PrepareDataResult[] {
   const result: PrepareDataResult[] = [];
   let index = 0;
   for (const item of data) {
-    let ids: string[] = [];
+    const ids: string[] = [];
     const { ranges, ...restItemKeys } = item;
     if (!ranges) {
       ids.push(v4());
@@ -192,7 +190,7 @@ export function prepareData(
 
 function mapJs(js: Jcoupling[]) {
   if (js && js.length > 0) {
-    const result: { coupling: Array<number>; multiplicity: string } = {
+    const result: { coupling: number[]; multiplicity: string } = {
       coupling: [],
       multiplicity: '',
     };

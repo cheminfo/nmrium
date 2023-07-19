@@ -43,7 +43,7 @@ function SignalsForm() {
 
   const tabContainsErrors = useCallback(
     (i) => {
-      return !!(errors?.signals && errors?.signals[i]);
+      return !!errors?.signals?.[i];
     },
     [errors],
   );

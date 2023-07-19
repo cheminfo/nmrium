@@ -31,7 +31,7 @@ const overFlowStyle: CSSProperties = {
 
 const databaseTableColumns = (
   databasePreferences,
-): (CustomColumn<PrepareDataResult> & { showWhen: string })[] => [
+): Array<CustomColumn<PrepareDataResult> & { showWhen: string }> => [
   {
     showWhen: 'showNames',
     index: 1,
@@ -211,7 +211,7 @@ function DatabaseTable({
   );
 
   const tableColumns = useMemo(() => {
-    let columns = [...initialColumns];
+    const columns = [...initialColumns];
     for (const col of databaseTableColumns(databasePreferences)) {
       const { showWhen, ...colParams } = col;
       if (lodashGet(databasePreferences, showWhen, false)) {

@@ -88,7 +88,7 @@ const MOL_EXPORT_MENU: DropdownMenuProps<{ id: string }, void>['options'] = [
 ];
 interface MoleculePanelHeaderProps {
   currentIndex: number;
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
   onMoleculeIndexChange?: (index: number) => void;
   onOpenMoleculeEditor: () => void;

@@ -75,9 +75,9 @@ export function getValue(
 export function getSpectraAnalysis(
   spectra: Spectrum[],
   options,
-): { values: Array<AnalysisRow>; sum: number } {
+): { values: AnalysisRow[]; sum: number } {
   const { from, to, nucleus } = options;
-  const result: { values: Array<AnalysisRow>; sum: number } = {
+  const result: { values: AnalysisRow[]; sum: number } = {
     values: [],
     sum: 0,
   };
@@ -165,7 +165,7 @@ export function generateAnalyzeSpectra(
   spectra: Spectrum1D[],
   nucleus: string,
 ) {
-  let data: any = {};
+  const data: any = {};
   const { sum, columns, code } = multipleSpectraAnalysis.analysisOptions;
 
   for (const columnKey in columns) {

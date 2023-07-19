@@ -10,7 +10,7 @@ import NMRium from '../../component/NMRium';
 import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../utils/clipboard/clipboardHooks';
 
-let answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
+const answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
 
 async function loadData(file) {
   const response = await fetch(file);
@@ -155,7 +155,7 @@ const CopyButton = ({ result }) => {
   useEffect(() => {
     if (isCopied) return;
 
-    let timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setCopyFlag(false);
     }, 1000);
 

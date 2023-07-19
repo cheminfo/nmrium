@@ -4,7 +4,7 @@ export default function generateNumbersPowerOfX(
   options?: { power?: number; format?: (input: number) => string | number },
 ) {
   const { power = 2, format = formatNumber } = options || {};
-  let values: Array<{ label: string | number; value: number }> = [];
+  const values: Array<{ label: string | number; value: number }> = [];
   for (let i = start; i <= end; i++) {
     const result = power ** i;
     values.push({

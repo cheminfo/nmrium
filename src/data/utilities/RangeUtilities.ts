@@ -99,7 +99,7 @@ export function checkSignalKinds(range, kinds) {
 
 export function unlinkInAssignmentData(
   assignmentData,
-  ranges: Partial<Range>[],
+  ranges: Array<Partial<Range>>,
 ) {
   const ids = ranges.flatMap((range) => {
     if (range.id) {

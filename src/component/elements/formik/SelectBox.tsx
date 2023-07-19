@@ -4,7 +4,7 @@ import { Field, useField } from 'formik';
 import ErrorMessage, { ErrorMessageProps } from './ErrorMessage';
 
 interface SelectBoxProps extends ErrorMessageProps {
-  values: Array<any>;
+  values: any[];
 }
 
 function SelectBox({ values, ...props }: SelectBoxProps) {

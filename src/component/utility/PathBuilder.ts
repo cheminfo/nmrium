@@ -1,5 +1,5 @@
 export class PathBuilder {
-  private array: Array<string> = [];
+  private array: string[] = [];
 
   public moveTo(x: number, y: number) {
     this.array.push(`M ${x} ${y}`);

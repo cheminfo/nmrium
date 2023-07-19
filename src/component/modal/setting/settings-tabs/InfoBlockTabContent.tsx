@@ -58,7 +58,7 @@ function InfoBlockTabContent() {
     [setFieldValue],
   );
 
-  const COLUMNS: Column<any>[] = useMemo(
+  const COLUMNS: Array<Column<any>> = useMemo(
     () => [
       {
         Header: '#',

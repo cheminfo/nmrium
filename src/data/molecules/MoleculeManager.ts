@@ -12,7 +12,7 @@ export function fromJSON(
   for (const mol of mols) {
     const molecule = OCLMolecule.fromMolfile(mol.molfile);
     const fragments = molecule.getFragments();
-    for (let fragment of fragments) {
+    for (const fragment of fragments) {
       molecules.push(
         initMolecule({
           molfile: fragment.toMolfileV3(),
@@ -35,8 +35,8 @@ export function addMolfile(
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
   const molecule = OCLMolecule.fromMolfile(molfile);
-  let fragments = molecule.getFragments();
-  for (let fragment of fragments) {
+  const fragments = molecule.getFragments();
+  for (const fragment of fragments) {
     molecules.push(
       initMolecule({
         molfile: fragment.toMolfileV3(),
@@ -56,13 +56,13 @@ export function setMolfile(
 
   // try to parse molfile
   // this will throw if the molecule can not be parsed !
-  let molecule = OCLMolecule.fromMolfile(molfile);
-  let fragments = molecule.getFragments();
+  const molecule = OCLMolecule.fromMolfile(molfile);
+  const fragments = molecule.getFragments();
 
   if (fragments.length > 1) {
     molecules = molecules.filter((m) => m.id !== id);
 
-    for (let fragment of fragments) {
+    for (const fragment of fragments) {
       molecules.push(
         initMolecule({
           molfile: fragment.toMolfileV3(),
@@ -77,7 +77,7 @@ export function setMolfile(
       id,
       label,
     });
-    let molIndex = molecules.findIndex((m) => m.id === id);
+    const molIndex = molecules.findIndex((m) => m.id === id);
     molecules.splice(molIndex, 1, _mol);
   }
 
@@ -89,7 +89,7 @@ export function extractNumber(value: string) {
 }
 
 export function extractLabelsNumbers(
-  molecules: Pick<StateMolecule, 'label'>[],
+  molecules: Array<Pick<StateMolecule, 'label'>>,
 ) {
   const values: number[] = [];
   for (const molecule of molecules) {

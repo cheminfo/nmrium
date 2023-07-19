@@ -99,7 +99,7 @@ interface MenuButtonProps {
   component: any;
   toolTip: string;
   className?: string;
-  items: Array<any>;
+  items: any[];
   onClick: (element: any) => void;
 }
 

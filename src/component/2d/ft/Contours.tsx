@@ -26,7 +26,7 @@ interface ContoursPathsProps {
 }
 
 interface ContoursInnerProps {
-  spectra: Array<Spectrum2D>;
+  spectra: Spectrum2D[];
   displayerKey: string;
 }
 
@@ -171,10 +171,10 @@ export default function Contours() {
       spectra: { activeTab },
     },
   } = useChartData();
-  const spectra2d = useMemo<Array<Spectrum2D>>(() => {
+  const spectra2d = useMemo<Spectrum2D[]>(() => {
     return getSpectraByNucleus(activeTab, spectra).filter(
       (datum) => datum.info.isFt,
-    ) as Array<Spectrum2D>;
+    ) as Spectrum2D[];
   }, [activeTab, spectra]);
 
   return <MemoizedContours {...{ spectra: spectra2d, displayerKey }} />;

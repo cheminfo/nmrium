@@ -56,7 +56,7 @@ function autoZonesDetection(data, options) {
 
   const { enhanceSymmetry = nuclei[0] === nuclei[1] } = options;
 
-  let zones = xyzAutoZonesPicking(data, {
+  const zones = xyzAutoZonesPicking(data, {
     nuclei,
     tolerances,
     observedFrequencies: originFrequency,
@@ -90,7 +90,7 @@ function getSubMatrix(datum, selectedZone) {
   if (xIndexFrom > xIndexTo) [xIndexFrom, xIndexTo] = [xIndexTo, xIndexFrom];
   if (yIndexFrom > yIndexTo) [yIndexFrom, yIndexTo] = [yIndexTo, yIndexFrom];
 
-  let dataMatrix: any = {
+  const dataMatrix: any = {
     z: [],
     maxX: data.minX + xIndexTo * xStep,
     minX: data.minX + xIndexFrom * xStep,
@@ -100,15 +100,15 @@ function getSubMatrix(datum, selectedZone) {
   let maxZ = Number.MIN_SAFE_INTEGER;
   let minZ = Number.MAX_SAFE_INTEGER;
 
-  let nbXPoints = xIndexTo - xIndexFrom + 1;
+  const nbXPoints = xIndexTo - xIndexFrom + 1;
 
   for (let j = yIndexFrom; j < yIndexTo; j++) {
-    let row = new Float32Array(nbXPoints);
+    const row = new Float32Array(nbXPoints);
     let xIndex = xIndexFrom;
     for (let i = 0; i < nbXPoints; i++) {
       row[i] = data.z[j][xIndex++];
     }
-    for (let rowValue of row) {
+    for (const rowValue of row) {
       if (maxZ < rowValue) maxZ = rowValue;
       if (minZ > rowValue) minZ = rowValue;
     }

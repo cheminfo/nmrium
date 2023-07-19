@@ -22,15 +22,15 @@ const styles: Record<'container', CSSProperties> = {
 };
 
 interface AccordionProps {
-  children: Array<ReactNode>;
+  children: ReactNode[];
   defaultOpenIndex: number | null;
 }
 
 function Accordion({ children, defaultOpenIndex = 0 }: AccordionProps) {
-  const [elements, setElements] = useState<Array<any>>([]);
+  const [elements, setElements] = useState<any[]>([]);
 
   const refContainer = useRef<HTMLDivElement>(null);
-  const forcedOpenedElementsRef = useRef<Array<any>>([]);
+  const forcedOpenedElementsRef = useRef<any[]>([]);
   const alwaysOpenIndexRef = useRef<any>();
 
   const handleOpen = useCallback(

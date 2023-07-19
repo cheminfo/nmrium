@@ -39,7 +39,7 @@ export function SpectraColumnsManager({
   const { values: nucleiPreferences } =
     useFormikContext<PanelsPreferences['spectra']>();
 
-  const COLUMNS: Column<SpectraTableColumn>[] = useMemo(
+  const COLUMNS: Array<Column<SpectraTableColumn>> = useMemo(
     () => [
       {
         Header: '#',

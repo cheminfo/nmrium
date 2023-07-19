@@ -23,9 +23,7 @@ interface WheelOptions {
   currentLevel: Level;
 }
 
-interface ContoursLevels {
-  [key: string]: Level;
-}
+type ContoursLevels = Record<string, Level>;
 const DEFAULT_CONTOURS_OPTIONS = {
   positive: {
     contourLevels: [0, 21],
@@ -77,7 +75,7 @@ function contoursManager(
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
-  let { shiftKey, currentLevel, contourOptions } = options;
+  const { shiftKey, currentLevel, contourOptions } = options;
   const sign = Math.sign(value);
   const positiveBoundary = contourOptions.positive.contourLevels;
   const negativeBoundary = contourOptions.negative.contourLevels;

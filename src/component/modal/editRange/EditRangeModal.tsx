@@ -158,7 +158,7 @@ function EditRangeModal({
       // counter within j array to access to right j values
 
       let counterJ = 0;
-      const couplings: Array<Coupling> = [];
+      const couplings: Coupling[] = [];
       if (signal.multiplicity) {
         for (const multiplicity of splitPatterns(signal.multiplicity)) {
           let js: Coupling = {

@@ -9,10 +9,10 @@ interface FilterOptionsInfo {
 
 type FiltersObjectRecord = Record<string, FilterOptionsInfo>;
 
-export type MatrixFilters = {
+export type MatrixFilters = Array<{
   name: FilterXYType['name'];
   options: FiltersObjectRecord;
-}[];
+}>;
 
 export function getDefaultMatrixFilters() {
   // get filters information & default options values

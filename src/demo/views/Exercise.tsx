@@ -7,7 +7,7 @@ import { StructureEditor } from 'react-ocl/full';
 
 import NMRium, { NMRiumData } from '../../component/NMRium';
 
-let answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
+const answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 
 async function loadData(file) {
   const response = await fetch(file);

@@ -66,12 +66,14 @@ export default function BrushXY({
   width: widthProps,
   height: heightProps,
 }: BrushXYProps) {
-  let {
+  const {
     width,
     height,
     toolOptions: { selectedTool },
   } = useChartData();
-  let { startX, endX, startY, endY, step, mouseButton } = useBrushTracker();
+  const brushTracker = useBrushTracker();
+  const { step, mouseButton } = brushTracker;
+  let { startX, endX, startY, endY } = brushTracker;
   if (
     !allowTools.has(selectedTool) ||
     step !== 'brushing' ||
@@ -91,9 +93,8 @@ export default function BrushXY({
     return null;
   }
 
-  width = widthProps || width;
-
-  height = heightProps || height;
+  const finalWidth = widthProps || width;
+  const finalHeight = heightProps || height;
 
   endX =
     dimensionBorder.endX && endX > dimensionBorder.endX
@@ -110,14 +111,14 @@ export default function BrushXY({
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY
-      ? (endX - startX) / width
+      ? (endX - startX) / finalWidth
       : 1;
   startX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY ? startX : 0;
 
   const scaleY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY
-      ? (endY - startY) / height
+      ? (endY - startY) / finalHeight
       : 1;
   startY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY ? startY : 0;
@@ -129,12 +130,12 @@ export default function BrushXY({
         willChange: 'transform',
       }}
     >
-      <svg width={width} height={height}>
+      <svg width={finalWidth} height={finalHeight}>
         <rect
           x="0"
           y="0"
-          width={width}
-          height={height}
+          width={finalWidth}
+          height={finalHeight}
           fill="gray"
           opacity="0.2"
         />

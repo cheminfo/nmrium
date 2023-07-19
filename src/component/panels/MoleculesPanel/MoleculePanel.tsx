@@ -58,7 +58,7 @@ const styles: Record<
 interface MoleculePanelInnerProps {
   zones: Zones;
   ranges: Ranges;
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;
@@ -74,7 +74,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     displayerMode,
   } = props;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [molecules, setMolecules] = useState<Array<StateMoleculeExtended>>([]);
+  const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
 
   const dispatch = useDispatch();
   const openMoleculeEditor = useMoleculeEditor();

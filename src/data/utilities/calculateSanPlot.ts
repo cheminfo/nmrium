@@ -25,9 +25,9 @@ function prepare1DData(data: NmrData1D) {
 }
 
 function prepare2DData(data: NmrData2DFt['rr']) {
-  let cols = data.z[0].length;
-  let rows = data.z.length;
-  let jump = Math.floor((cols * rows) / 204800) || 1;
+  const cols = data.z[0].length;
+  const rows = data.z.length;
+  const jump = Math.floor((cols * rows) / 204800) || 1;
   const array = new Float64Array(((cols * rows) / jump) >> 0);
   let index = 0;
   for (let r = 0; r < rows; r += 1) {

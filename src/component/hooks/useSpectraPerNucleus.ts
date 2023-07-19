@@ -12,7 +12,7 @@ export default function useSpectraByActiveNucleus() {
     },
   } = useChartData();
 
-  return useMemo<Array<Spectrum>>(() => {
+  return useMemo<Spectrum[]>(() => {
     if (data) {
       return (
         data.filter(

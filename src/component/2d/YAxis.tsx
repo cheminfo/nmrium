@@ -50,7 +50,7 @@ function YAxis(props: YAxisProps) {
   useEffect(() => {
     if (!show || !yDomain) return;
 
-    let scaleY = get2DYScale(
+    const scaleY = get2DYScale(
       { height, yDomain, margin },
       !!spectrum?.info?.isFid,
     );

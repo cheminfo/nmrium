@@ -1,17 +1,11 @@
-import {
-  useCallback,
-  useState,
-  useEffect,
-  ReactElement,
-  JSXElementConstructor,
-} from 'react';
+import { useCallback, useState, useEffect, ReactElement } from 'react';
 import { Toolbar } from 'react-science/ui';
 
 interface ToggleButtonProps {
   isActive?: boolean;
   value?: any;
   onChange?: (value: any) => null;
-  children: ReactElement<any, string | JSXElementConstructor<any>>;
+  children: ReactElement;
   isVisible?: boolean;
 }
 

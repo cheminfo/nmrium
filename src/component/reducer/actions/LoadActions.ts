@@ -57,7 +57,7 @@ function convertHybridizationStringValuesInCorrelations(
     ...correlations,
     values: correlations.values.map((correlation) => {
       if (typeof correlation.hybridization === 'string') {
-        let values: number[] = [];
+        const values: number[] = [];
         if (correlation.hybridization.length > 0) {
           const hybridizationString: string =
             correlation.hybridization.replaceAll('SP', '');

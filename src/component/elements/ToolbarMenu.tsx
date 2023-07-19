@@ -123,7 +123,7 @@ function MenuList({ items, boxBounding, onClick }: MenuListProps) {
 interface MenuButtonProps {
   component: any;
   toolTip: string;
-  items: Array<any>;
+  items: any[];
   onClick: (element: any) => void;
 }
 

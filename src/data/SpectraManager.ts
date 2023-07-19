@@ -54,7 +54,7 @@ export function addJcamp(output, jcamp, options, usedColors) {
   if (spectraIn.length === 0) return;
 
   const spectra: Spectrum[] = [];
-  for (let spectrum of spectraIn) {
+  for (const spectrum of spectraIn) {
     const data = getData(spectrum, usedColors);
     if (!data) continue;
     spectra.push(data);

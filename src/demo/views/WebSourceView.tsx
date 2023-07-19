@@ -31,7 +31,7 @@ export default function WebSourceView(props: WebSourceViewProps) {
     pageConfig: { width, height },
   } = props;
 
-  const [callbackData, setCallbackData] = useState<Array<any>>([]);
+  const [callbackData, setCallbackData] = useState<any[]>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {

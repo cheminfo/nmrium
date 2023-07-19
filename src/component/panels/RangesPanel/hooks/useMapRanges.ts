@@ -9,7 +9,7 @@ export interface RangeData extends Range {
 
 function useMapRanges(data) {
   return useMemo(() => {
-    const rangesData: Array<RangeData> = [];
+    const rangesData: RangeData[] = [];
     for (const [i, range] of data.entries()) {
       if (range.signals.length === 1) {
         rangesData.push({

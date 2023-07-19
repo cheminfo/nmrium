@@ -66,7 +66,7 @@ const moleculeContainerStyle = css`
 `;
 
 interface MoleculeSelectionProps {
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   onChange: (element: number) => void;
   index?: number;
 }

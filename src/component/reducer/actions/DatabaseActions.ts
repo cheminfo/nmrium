@@ -30,7 +30,8 @@ function handleResurrectSpectrumFromJcamp(
   draft: Draft<State>,
   action: ResurrectSpectrumFromJcampAction,
 ) {
-  let { ranges, spectrum } = action.payload;
+  const { ranges } = action.payload;
+  let { spectrum } = action.payload;
   spectrum = {
     ...spectrum,
     ranges: {

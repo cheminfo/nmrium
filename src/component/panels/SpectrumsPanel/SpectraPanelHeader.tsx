@@ -24,7 +24,7 @@ import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPicking
 function getMissingProjection(SpectrumsData, activeTab) {
   let nucleus = activeTab.split(',');
   nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
-  const missingNucleus: Array<string> = [];
+  const missingNucleus: string[] = [];
   for (const n of nucleus) {
     const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
     if (!hasSpectrums) {
@@ -42,7 +42,7 @@ interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   activeTab: string;
   activeSpectrum: Spectrum2D | null;
   activeSpectra: ActiveSpectrum[] | null;
-  displayerMode: string;
+  displayerMode: DISPLAYER_MODE;
 }
 
 function SpectraPanelHeaderInner({

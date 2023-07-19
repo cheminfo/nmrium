@@ -1,4 +1,4 @@
-export const SignalKinds: { label: string; value: string }[] = [
+export const SignalKinds: Array<{ label: string; value: string }> = [
   {
     label: 'Signal',
     value: 'signal',

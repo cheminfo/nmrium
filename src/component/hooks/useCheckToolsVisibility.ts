@@ -33,7 +33,7 @@ export function useCheckToolsVisibility(): (
         extraInfoCheckParameters,
       } = checkOptions;
 
-      let flag = lodashGet(
+      const flag = lodashGet(
         preferences.current,
         `display.toolBarButtons.${toolKey}`,
         false,
@@ -75,7 +75,7 @@ function checkSpectrum(
 
     if (option.active) {
       if (spectrum) {
-        for (let { key, value } of option.info || []) {
+        for (const { key, value } of option.info || []) {
           if (spectrum.info[key] !== value) {
             innerConditionFlag = false;
           }

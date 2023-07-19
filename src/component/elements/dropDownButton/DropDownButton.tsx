@@ -38,7 +38,7 @@ export interface ItemProps {
 }
 
 export interface DropDownListProps<T> {
-  data: Array<T>;
+  data: T[];
   renderItem?: ((item: DropDownListItem) => ReactNode) | null;
 }
 

@@ -31,7 +31,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
     yDomain,
     displayerMode,
   } = useChartData();
-  const [deltas1D, setDeltas1D] = useState<Array<number>>([]);
+  const [deltas1D, setDeltas1D] = useState<number[]>([]);
 
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });

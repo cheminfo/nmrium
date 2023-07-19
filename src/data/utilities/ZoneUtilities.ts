@@ -80,7 +80,7 @@ export function unlink(
 
 export function unlinkInAssignmentData(
   assignmentData,
-  zones: Partial<Zone>[],
+  zones: Array<Partial<Zone>>,
   axis?: string,
 ): void {
   const ids = zones.flatMap((zone) => {

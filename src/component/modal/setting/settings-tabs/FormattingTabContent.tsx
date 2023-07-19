@@ -57,7 +57,7 @@ function FormattingTabContent() {
   const nuclei = lodashGet(values, 'formatting.nuclei', {});
 
   function deleteHandler(key: string) {
-    let _nuclei = {};
+    const _nuclei = {};
     for (const nucleus in nuclei) {
       if (nucleus !== key) {
         _nuclei[nucleus] = nuclei[nucleus];

@@ -14,7 +14,7 @@ export interface ClipboardItemInterface {
   readonly presentationStyle?: PresentationStyle;
   readonly lastModified?: number;
   readonly delayed?: boolean;
-  readonly types: ReadonlyArray<string>;
+  readonly types: readonly string[];
   getType(type: string): Promise<Blob>;
 }
 export function write(data: ClipboardItemInterface[]): Promise<void> {
