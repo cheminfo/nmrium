@@ -29,9 +29,9 @@ export default function generateJGraphData(
 ): GenerateJGraphDataResult | null {
   if (!ranges && !Array.isArray(ranges)) return null;
 
-  let signals: Signal1D[] = [];
+  const signals: Signal1D[] = [];
   let jCouplingMax = 0;
-  let links: CouplingLink[] = createLinks(ranges, jGraphTolerance);
+  const links: CouplingLink[] = createLinks(ranges, jGraphTolerance);
   for (const range of ranges) {
     for (const signal of range.signals) {
       const { id: signalId, ...restSignal } = signal;
@@ -57,7 +57,7 @@ function getJsCouplingMax(js: Jcoupling[]): number {
 
 function getCouplings(ranges: Range[]): Coupling[] {
   const couplings: Coupling[] = [];
-  for (let range of ranges) {
+  for (const range of ranges) {
     for (const { delta, js } of range.signals) {
       for (const { coupling } of js || []) {
         couplings.push({ coupling, delta });

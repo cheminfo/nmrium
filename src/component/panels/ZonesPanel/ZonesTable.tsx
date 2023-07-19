@@ -64,7 +64,7 @@ const tableStyle = css`
 
 interface ZonesTableProps {
   tableData: Array<{
-    signals: Array<any>;
+    signals: any[];
     tableMetaInfo: any;
     rowIndex: number;
     signalIndex: number;

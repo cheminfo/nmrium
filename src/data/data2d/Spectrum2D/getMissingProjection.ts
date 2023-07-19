@@ -19,17 +19,17 @@ export function getMissingProjection(
   // temporary because nucleus was undefined;
   if (index === -1) index = 0;
 
-  let info = {
+  const info = {
     nucleus: datumInfo.nucleus[index], // 1H, 13C, 19F, ...
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
   };
 
-  let from = index === 0 ? datum.minX : datum.minY;
-  let to = index === 0 ? datum.maxX : datum.maxY;
-  let nbPoints = index === 0 ? datum.z[0].length : datum.z.length;
-  let projection = new Float64Array(nbPoints);
+  const from = index === 0 ? datum.minX : datum.minY;
+  const to = index === 0 ? datum.maxX : datum.maxY;
+  const nbPoints = index === 0 ? datum.z[0].length : datum.z.length;
+  const projection = new Float64Array(nbPoints);
   if (index === 1) {
     for (let i = 0; i < datum.z.length; i++) {
       for (let j = 0; j < datum.z[0].length; j++) {
@@ -44,7 +44,7 @@ export function getMissingProjection(
     }
   }
 
-  let data = {
+  const data = {
     x: zoneToX({ from, to }, nbPoints),
     re: projection,
   };

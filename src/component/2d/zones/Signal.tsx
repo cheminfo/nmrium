@@ -79,8 +79,7 @@ function Signal({ signal, isVisible }: SignalProps) {
       )}
       <g className="zone-signal-peak" style={{ pointerEvents: 'none' }}>
         {isVisible.peaks &&
-          signal?.peaks &&
-          signal.peaks.map((peak, i) => (
+          signal?.peaks?.map((peak, i) => (
             <circle
               key={`${signal.id + i}`}
               cx={scaleX(peak.x)}

@@ -99,21 +99,21 @@ function exportAsPng(
 ) {
   const { blob, width, height } = getBlob(rootRef, elementID);
   try {
-    let canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    let context = canvas.getContext('2d');
+    const context = canvas.getContext('2d');
 
     if (context) {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    let img = new Image();
-    let url = URL.createObjectURL(blob);
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
     img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
-      let png = canvas.toDataURL('image/png', 1);
+      const png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
     });
@@ -168,17 +168,17 @@ function copyBlobToClipboard(canvas: HTMLCanvasElement) {
 function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
   const { blob, width, height } = getBlob(rootRef, elementID);
   try {
-    let canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    let context = canvas.getContext('2d');
+    const context = canvas.getContext('2d');
 
     if (context) {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    let img = new Image();
+    const img = new Image();
     const url = URL.createObjectURL(blob);
     img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
@@ -204,7 +204,7 @@ export interface BlobObject {
 }
 
 function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
-  let _svg: any = (rootRef.getRootNode() as Document)
+  const _svg: any = (rootRef.getRootNode() as Document)
     .querySelector(`#${elementID}`)
     ?.cloneNode(true);
 

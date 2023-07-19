@@ -1,6 +1,6 @@
 import { simulate1D } from 'nmr-processing';
 
-export type SpinSystemData = (number | null)[][];
+export type SpinSystemData = Array<Array<number | null>>;
 
 export interface SpectrumSimulationOptions {
   data: SpinSystemData;
@@ -51,7 +51,7 @@ export function simulateSpectrum(
 
   const chemicalShiftsLength = chemicalShifts.length;
 
-  const couplingConstants = new Array<Array<number>>(chemicalShiftsLength);
+  const couplingConstants = new Array<number[]>(chemicalShiftsLength);
   for (let i = 0; i < chemicalShiftsLength; i++) {
     couplingConstants[i] = new Array<number>(chemicalShiftsLength);
     for (let j = 0; j < chemicalShiftsLength; j++) {

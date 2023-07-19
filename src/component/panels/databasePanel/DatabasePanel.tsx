@@ -53,14 +53,14 @@ import DatabaseTable from './DatabaseTable';
 export interface DatabaseInnerProps {
   nucleus: string;
   selectedTool: string;
-  databases: (LocalDatabase | Database)[];
+  databases: Array<LocalDatabase | Database>;
   defaultDatabase: string;
 }
 
 interface ResultEntry {
   data: DatabaseNMREntry[];
-  databases: { key: string; value: string }[];
-  solvents: { label: string; value: string }[];
+  databases: Array<{ key: string; value: string }>;
+  solvents: Array<{ label: string; value: string }>;
 }
 
 const emptyKeywords = {
@@ -238,7 +238,7 @@ function DatabasePanelInner({
 
   const resurrectHandler = useCallback(
     (rowData) => {
-      let { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
+      const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
       const { ranges, solvent, names = [] } = result.data[index];
 
       if (jcampRelativeURL) {
@@ -465,7 +465,7 @@ export default function PeaksPanel() {
   const { data, defaultDatabase } = current.databases;
   const databases = DATA_BASES.concat(
     data.filter((datum) => datum.enabled),
-  ) as (Database | LocalDatabase)[];
+  ) as Array<Database | LocalDatabase>;
 
   if (!activeTab || displayerMode !== DISPLAYER_MODE.DM_1D) {
     return (

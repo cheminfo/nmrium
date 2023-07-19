@@ -94,7 +94,7 @@ export function changeSpectraRelativeSum(
   molId: string,
   molecule: StateMoleculeExtended,
 ) {
-  const keys: (keyof Spectrum1D)[] = ['ranges', 'integrals'];
+  const keys: Array<keyof Spectrum1D> = ['ranges', 'integrals'];
 
   for (const spectrum of draft.data) {
     if (isSpectrum1D(spectrum)) {

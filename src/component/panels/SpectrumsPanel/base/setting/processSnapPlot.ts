@@ -11,9 +11,9 @@ export function processSnapPlot<T extends '1D' | '2D'>(
   const sanResult = calculateSanPlot(dimension, data);
   const sanPlot: any = {};
   const lines: any = {};
-  for (let plotKey in sanResult.sanplot) {
+  for (const plotKey in sanResult.sanplot) {
     const { x, y } = xyReduce(sanResult.sanplot[plotKey]);
-    let result = new Array(x.length);
+    const result = new Array(x.length);
     for (let i = 0; i < x.length; i++) {
       result[i] = { x: x[i], y: y[i] };
     }

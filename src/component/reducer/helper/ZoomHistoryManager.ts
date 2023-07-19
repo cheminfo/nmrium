@@ -5,15 +5,13 @@ import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
 interface HistoryItem {
-  xDomain: Array<number>;
-  yDomain: Array<number>;
+  xDomain: number[];
+  yDomain: number[];
 }
 
-export interface ZoomHistory {
-  [key: string]: Array<HistoryItem>;
-}
+export type ZoomHistory = Record<string, HistoryItem[]>;
 interface ZoomHistoryManager {
-  historyStack: Array<HistoryItem>;
+  historyStack: HistoryItem[];
   push: (value: HistoryItem) => void;
   pop: () => HistoryItem;
   getLast: () => HistoryItem;

@@ -45,7 +45,7 @@ function XAxis(props: XAxisProps) {
   useEffect(() => {
     if (!show) return;
 
-    let scaleX = get2DXScale({
+    const scaleX = get2DXScale({
       width,
       margin,
       xDomain,

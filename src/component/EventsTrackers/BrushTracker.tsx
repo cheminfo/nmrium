@@ -113,7 +113,7 @@ export function BrushTracker({
     Reducer<BrushTrackerState, BrushTrackerAction>
   >(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState<number>(0);
-  const debounceClickEventsRef = useRef<Array<any>>([]);
+  const debounceClickEventsRef = useRef<any[]>([]);
   const lastPointRef = useRef<number>(0);
 
   const mouseDownHandler = useCallback(
@@ -274,10 +274,7 @@ type DownAction = ActionType<
 >;
 type MoveAction = ActionType<'MOVE', MouseCoordinates>;
 
-type BrushTrackerAction =
-  | ActionType<'UP' | 'DONE', void>
-  | DownAction
-  | MoveAction;
+type BrushTrackerAction = ActionType<'UP' | 'DONE'> | DownAction | MoveAction;
 
 function reducer(
   state: BrushTrackerState,

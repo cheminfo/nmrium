@@ -39,9 +39,9 @@ interface RangesTablePanelInnerProps {
   ranges: Ranges;
   data: NmrData1D;
   info: Info1D;
-  xDomain: Array<number>;
+  xDomain: number[];
   activeTab: string;
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   showMultiplicityTrees: boolean;
   showJGraph: boolean;
   showRangesIntegrals: boolean;

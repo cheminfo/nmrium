@@ -8,7 +8,7 @@ import NMRium from '../../component/NMRium';
 import { loadData } from './View';
 
 function searchDeep(obj, searchKey) {
-  let result: any = [];
+  const result: any = [];
   function objectHelper(obj) {
     for (const key in obj) {
       if (searchKey === key) {

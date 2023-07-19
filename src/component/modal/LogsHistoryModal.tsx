@@ -72,7 +72,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
     lastReadLogId,
   );
 
-  const COLUMNS: Column<LogEntry>[] = useMemo(
+  const COLUMNS: Array<Column<LogEntry>> = useMemo(
     () => [
       {
         Header: '#',

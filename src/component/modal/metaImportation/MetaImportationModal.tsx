@@ -129,7 +129,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
 
   const columns = useMemo(() => {
     const fields = parseResult?.meta.fields || [];
-    const columns: Column<any>[] = [
+    const columns: Array<Column<any>> = [
       { Header: '#', accessor: (_, index) => index + 1 },
     ];
 
@@ -152,7 +152,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
   }, [parseResult?.meta.fields]);
 
   function handleLinkSpectra(fields) {
-    let { source, target } = fields;
+    const { source, target } = fields;
     if (data && parseResult) {
       try {
         const { compareResult, matches } = linkMetaWithSpectra({

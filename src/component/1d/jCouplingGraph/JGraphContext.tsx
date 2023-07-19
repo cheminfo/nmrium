@@ -2,7 +2,7 @@ import { ScaleLinear } from 'd3';
 import { useContext, createContext } from 'react';
 
 interface JGraphState {
-  scaleY: ScaleLinear<number, number, never> | null;
+  scaleY: ScaleLinear<number, number> | null;
   height: number;
   maxValue: number;
 }

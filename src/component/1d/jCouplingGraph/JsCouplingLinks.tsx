@@ -18,7 +18,7 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
       if (!scaleY) return '';
 
       const { from, to, couplings } = link;
-      let paths: string[] = [];
+      const paths: string[] = [];
       for (const coupling of couplings) {
         paths.push(
           `M${scaleX()(from)},${scaleY(coupling.coupling)} L${scaleX()(

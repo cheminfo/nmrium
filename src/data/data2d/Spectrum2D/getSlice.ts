@@ -27,14 +27,14 @@ export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
   if (xIndex < 0 || xIndex >= data.z[0].length) return;
   if (yIndex < 0 || yIndex >= data.z.length) return;
 
-  let infoX = {
+  const infoX = {
     nucleus: info.nucleus[0], // 1H, 13C, 19F, ...
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
   };
 
-  let dataX = {
+  const dataX = {
     x: zoneToX({ from: data.minX, to: data.maxX }, data.z[0].length),
     re: new Float64Array(data.z[0].length),
   };
@@ -43,14 +43,14 @@ export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
     dataX.re[i] += data.z[yIndex][i];
   }
 
-  let infoY = {
+  const infoY = {
     nucleus: info.nucleus[1], // 1H, 13C, 19F, ...
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
   };
 
-  let dataY = {
+  const dataY = {
     x: zoneToX({ from: data.minY, to: data.maxY }, data.z.length),
     re: new Float64Array(data.z.length),
   };

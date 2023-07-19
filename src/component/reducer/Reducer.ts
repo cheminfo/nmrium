@@ -163,35 +163,35 @@ export interface State {
    * value change when zooming in/out
    * @default []
    */
-  xDomain: Array<number>;
+  xDomain: number[];
   /**
    * Y axis domain
    * value change when vertical scale change for all spectra
    * @default []
    */
-  yDomain: Array<number>;
+  yDomain: number[];
 
   /**
    * Y axis domain per spectrum
    * value change when vertical scale change for the selected spectrum
    * @default {}
    */
-  yDomains: Record<string, Array<number>>;
+  yDomains: Record<string, number[]>;
   /**
    * X axis domain per spectrum
    * value change when zooming in/out for the selected spectrum
    * @default {}
    */
-  xDomains: Record<string, Array<number>>;
+  xDomains: Record<string, number[]>;
   /**
    * Domain for X and Y axis once it calculated and it change in one case  when we load new spectra
    * @default {}
    */
   originDomain: {
-    xDomain: Array<number>;
-    yDomain: Array<number>;
-    xDomains: Record<string, Array<number>>;
-    yDomains: Record<string, Array<number>>;
+    xDomain: number[];
+    yDomain: number[];
+    xDomains: Record<string, number[]>;
+    yDomains: Record<string, number[]>;
     shareYDomain: boolean;
   };
   /**
@@ -199,7 +199,7 @@ export interface State {
    * value change when vertical scale change for the integrals
    * @default {}
    */
-  integralsYDomains: Record<string, Array<number>>;
+  integralsYDomains: Record<string, number[]>;
 
   /**
    * plot chart area width
@@ -225,7 +225,7 @@ export interface State {
    * molecules
    * @default []
    */
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   /**
    * View related information
    * @default { floatingMolecules: [], ranges: [], zones: [] };
@@ -235,9 +235,9 @@ export interface State {
    * @todo for undo /redo features
    */
   history: Partial<{
-    past: Array<any>;
+    past: any[];
     present: any;
-    future: Array<any>;
+    future: any[];
     hasUndo: boolean;
     hasRedo: boolean;
   }>;

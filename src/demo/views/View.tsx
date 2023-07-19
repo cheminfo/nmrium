@@ -40,7 +40,7 @@ export default function View(props: ViewProps) {
     pageConfig: { width, height },
   } = props;
 
-  const [callbackData, setCallbackData] = useState<Array<any>>([]);
+  const [callbackData, setCallbackData] = useState<any[]>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {

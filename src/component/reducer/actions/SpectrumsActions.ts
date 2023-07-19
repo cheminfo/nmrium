@@ -204,7 +204,7 @@ function multipleSelect(
 
 function removeActiveSpectra(
   draft: Draft<State>,
-  relatedTargets: ({ jpath: string; key: string } | { jpath: string })[],
+  relatedTargets: Array<{ jpath: string; key: string } | { jpath: string }>,
 ) {
   const activeSpectra = getActiveSpectraAsObject(draft);
 
@@ -473,7 +473,7 @@ function handleAddMissingProjectionHandler(
     const { index } = activeSpectrum;
     const Spectrum2D = state.data[index];
     const { info, data } = Spectrum2D;
-    for (let n of nucleus) {
+    for (const n of nucleus) {
       const datum1D = getMissingProjection(
         info.isFid ? (data as NmrData2DFid).re : (data as NmrData2DFt).rr,
         n,
@@ -496,7 +496,7 @@ function handleAlignSpectraHandler(
   action: AlignSpectraAction,
 ) {
   if (draft.data && draft.data.length > 0) {
-    for (let datum of draft.data) {
+    for (const datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
         datum.info.nucleus === draft.view.spectra.activeTab &&

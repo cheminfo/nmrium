@@ -17,9 +17,10 @@ import { getRange } from '../../constants/References';
  * @param {string} [options.reference]
  */
 export function getReferenceShift(datum1D, options) {
-  let { from, to, nbPeaks, targetX, reference } = options;
+  const { reference } = options;
+  let { from, to, nbPeaks, targetX } = options;
   if (reference) {
-    let data = getRange({ reference, nucleus: datum1D.nucleus });
+    const data = getRange({ reference, nucleus: datum1D.nucleus });
     from = data.from;
     to = data.to;
     nbPeaks = data.nbPeaks;
@@ -61,7 +62,7 @@ function xyCalibrate(
       },
     },
   } = options;
-  let { from, to } = range;
+  const { from, to } = range;
   if (from === undefined || to === undefined) return 0;
 
   const fromIndex = xFindClosestIndex(data.x, from);
@@ -71,7 +72,7 @@ function xyCalibrate(
     y: data.y.slice(fromIndex, toIndex) as number[],
   };
 
-  let peaks = gsd(sliceddata, gsdOptions)
+  const peaks = gsd(sliceddata, gsdOptions)
     .sort((a, b) => b.y - a.y)
     .slice(0, nbPeaks);
 

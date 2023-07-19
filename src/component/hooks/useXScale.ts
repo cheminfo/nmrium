@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { getXScale } from '../1d/utilities/scale';
 import { useChartData } from '../context/ChartContext';
 
-export function useXScale(): ScaleLinear<any, any, never> {
+export function useXScale(): ScaleLinear<any, any> {
   const { width, margin, xDomains, xDomain, mode } = useChartData();
 
   return useMemo(

@@ -1,5 +1,8 @@
+import { Logger } from 'cheminfo-types';
 import { FifoLogger } from 'fifo-logger';
 import { Draft } from 'immer';
+import OCL from 'openchemlib/full';
+import { nbLabileH, getAtoms } from 'openchemlib-utils';
 
 import {
   PredictedSpectraResult,
@@ -22,10 +25,6 @@ import { ActionType } from '../types/ActionType';
 import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { unlinkZone } from './ZonesActions';
-import { Logger } from 'cheminfo-types';
-
-import OCL from 'openchemlib/full';
-import { nbLabileH, getAtoms } from 'openchemlib-utils';
 
 interface AddMoleculeProps {
   molfile: string;

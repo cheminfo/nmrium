@@ -27,7 +27,7 @@ function AutomaticAssignmentTable({ data }: AutomaticAssignmentTableProps) {
     [dispatch],
   );
 
-  const COLUMNS: CustomColumn<AutoAssignmentsData>[] = useMemo(
+  const COLUMNS: Array<CustomColumn<AutoAssignmentsData>> = useMemo(
     () => [
       {
         index: 1,

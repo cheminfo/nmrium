@@ -24,7 +24,7 @@ function lookForObjectsPaths(
     output[key] = path;
     path = [];
   } else {
-    for (let key in obj) {
+    for (const key in obj) {
       lookForObjectsPaths(obj[key], [...path.slice(), key], output);
     }
   }

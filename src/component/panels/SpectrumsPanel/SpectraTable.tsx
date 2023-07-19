@@ -240,7 +240,7 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   const tableColumns = useMemo(() => {
-    let columns: Column<Spectrum>[] = [];
+    const columns: Array<Column<Spectrum>> = [];
     let index = 0;
     const visibleColumns = spectraPreferences.columns.filter(
       (col) => col.visible,

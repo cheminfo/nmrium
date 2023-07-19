@@ -29,9 +29,7 @@ function getIntegralYScale(state) {
     state;
   const _height = verticalAlign === 'center' ? height / 2 : height;
   return scaleLinear(
-    activeSpectrum?.id &&
-      integralsYDomains &&
-      integralsYDomains[activeSpectrum?.id]
+    activeSpectrum?.id && integralsYDomains?.[activeSpectrum?.id]
       ? integralsYDomains[activeSpectrum?.id]
       : [0, 0],
     [_height * 0.3, margin.top + _height * 0.1],

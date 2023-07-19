@@ -45,11 +45,11 @@ export default function SpectrumSimulation() {
   }
 
   const data = useMemo(() => {
-    const rows: (number | null)[][] = [];
+    const rows: Array<Array<number | null>> = [];
     const spinLength = spinSystem.length;
 
     for (let i = 1; i <= spinLength; i++) {
-      const columns: (number | null)[] = [];
+      const columns: Array<number | null> = [];
       for (let j = 0; j < spinLength; j++) {
         if (j < i && i !== 1) {
           columns.push(0);
@@ -90,7 +90,7 @@ export default function SpectrumSimulation() {
     <Formik
       initialValues={{ ...defaultSimulationOptions, data }}
       enableReinitialize
-      // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/empty-brace-spaces
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSubmit={() => {}}
       innerRef={formRef}
     >

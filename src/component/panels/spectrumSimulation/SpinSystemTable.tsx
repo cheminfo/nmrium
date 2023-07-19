@@ -26,13 +26,13 @@ interface SpinSystemTableProps {
 }
 
 export function SpinSystemTable(props: SpinSystemTableProps) {
-  let { spinSystem } = props;
+  const { spinSystem } = props;
   const {
     values: { data },
   } = useFormikContext<any>();
 
   const tableColumns = useMemo(() => {
-    let columns: Column<(number | null)[]>[] = [
+    const columns: Array<Column<Array<number | null>>> = [
       {
         id: 'rowLabel',
         Header: '',

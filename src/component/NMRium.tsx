@@ -148,7 +148,7 @@ type DeepPartial<T> = {
 export interface NMRiumData {
   source?: WebSource;
   molecules?: Molecules;
-  spectra: DeepPartial<Spectrum>[];
+  spectra: Array<DeepPartial<Spectrum>>;
   correlations?: CorrelationData;
 }
 

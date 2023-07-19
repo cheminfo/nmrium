@@ -1,8 +1,8 @@
 import { SubMenu, MenuItem } from 'rc-menu';
 import { createElement, cloneElement } from 'react';
 
-function buildMenu(array: Array<any> = []) {
-  let menu: Array<any> = [];
+function buildMenu(array: any[] = []) {
+  const menu: any[] = [];
   for (const item of array) {
     if (item.children && Array.isArray(item.children)) {
       menu.push(getMenu(item.groupName, [item], []));
@@ -20,14 +20,9 @@ function buildMenu(array: Array<any> = []) {
   return menu;
 }
 
-function getMenu(
-  key,
-  array: Array<any> = [],
-  nodes: Array<any> = [],
-  parentIndex = 0,
-) {
-  let _nodes = nodes;
-  let children: Array<any> = [];
+function getMenu(key, array: any[] = [], nodes: any[] = [], parentIndex = 0) {
+  const _nodes = nodes;
+  const children: any[] = [];
 
   if (parentIndex !== -1 && _nodes[parentIndex]) {
     _nodes[parentIndex] = cloneElement(_nodes[parentIndex], {}, children);
@@ -57,8 +52,8 @@ function getMenu(
   return _nodes;
 }
 
-function mapTreeToFlatArray(array: Array<any> = []) {
-  let routes: Array<any> = [];
+function mapTreeToFlatArray(array: any[] = []) {
+  let routes: any[] = [];
   for (const item of array) {
     if (item.children && Array.isArray(item.children)) {
       routes = routes.concat(getFlatArray([item], []));
@@ -69,8 +64,8 @@ function mapTreeToFlatArray(array: Array<any> = []) {
   return routes;
 }
 
-function getFlatArray(inputArray: Array<any> = [], children: Array<any> = []) {
-  let _children = children;
+function getFlatArray(inputArray: any[] = [], children: any[] = []) {
+  const _children = children;
 
   for (const item of inputArray) {
     if (item.children && Array.isArray(item.children)) {

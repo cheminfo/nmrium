@@ -15,7 +15,7 @@ export default function useToolsFunctions() {
   const { open: openPanel } = useToggleAccordion();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
 
-  const debounceClickEventsRef = useRef<{ clicks: Array<any> }>({ clicks: [] });
+  const debounceClickEventsRef = useRef<{ clicks: any[] }>({ clicks: [] });
   const handleChangeOption = useCallback(
     (selectedTool) => {
       if (

@@ -10,13 +10,13 @@ export interface ToolOptionItem {
   id: string;
   label: string;
   mode?: DISPLAYER_MODE;
-  spectraOptions?: (
+  spectraOptions?: Array<
     | {
-        info?: { key: InfoKey; value: any }[]; // check if the active spectrum has these info
+        info?: Array<{ key: InfoKey; value: any }>; // check if the active spectrum has these info
         active: true;
       }
     | { active: false }
-  )[];
+  >;
   isToggle: boolean;
   hasOptionPanel: boolean;
   isFilter: boolean;

@@ -35,7 +35,7 @@ function getLabelColor(correlationData, correlation) {
   );
 
   if (error) {
-    for (let { key, color } of ErrorColors) {
+    for (const { key, color } of ErrorColors) {
       if (
         key !== 'incomplete' && // do not consider this for a single atom type
         (key === 'notAttached' || key === 'ambiguousAttachment') &&
@@ -475,7 +475,7 @@ function isInView(
   activeSpectrum: ActiveSpectrum | null,
   xDomain: number[],
   yDomain: number[],
-  displayerMode: string,
+  displayerMode: DISPLAYER_MODE,
   correlation: Correlation,
 ): boolean {
   if (correlation.pseudo === true) {

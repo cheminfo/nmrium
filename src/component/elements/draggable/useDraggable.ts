@@ -12,9 +12,7 @@ interface UseDraggable {
   dragHandleClassName?: string;
 }
 export interface Draggable {
-  onMouseDown: (
-    event: React.MouseEvent<HTMLDivElement | SVGElement, MouseEvent>,
-  ) => void;
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement | SVGElement>) => void;
   position: { value: Position; action: Action };
   isActive: boolean;
 }
@@ -38,7 +36,7 @@ export default function useDraggable(props: UseDraggable): Draggable {
   );
 
   const onMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLDivElement | SVGElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLDivElement | SVGElement>) => {
       e.stopPropagation();
       isActive.current = true;
       const eventTarget = e.currentTarget as HTMLElement;

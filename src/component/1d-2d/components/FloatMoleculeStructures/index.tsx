@@ -17,7 +17,7 @@ import { DraggableStructure } from './DraggableStructure';
 interface FloatMoleculeStructuresProps {
   zones: Zones;
   ranges: Ranges;
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
   activeTab: string;
   displayerMode: DISPLAYER_MODE;

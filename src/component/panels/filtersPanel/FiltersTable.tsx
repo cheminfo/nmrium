@@ -36,7 +36,7 @@ const rowColors = {
 };
 
 interface FiltersTableInnerProps {
-  filters: Array<FiltersProps>;
+  filters: FiltersProps[];
   spectraCounter: number;
   activeFilterID: string | null;
 }
@@ -128,7 +128,7 @@ function FiltersTableInner({
     [alert, dispatch],
   );
 
-  const COLUMNS: Column<any>[] = useMemo(
+  const COLUMNS: Array<Column<any>> = useMemo(
     () => [
       {
         Header: '#',

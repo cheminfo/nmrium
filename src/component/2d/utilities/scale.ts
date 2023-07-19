@@ -6,7 +6,7 @@ function get2DXScale(
   props: {
     width: number;
     margin: { right: number; left: number };
-    xDomain: Array<number>;
+    xDomain: number[];
   },
   reverse = false,
 ) {
@@ -21,7 +21,7 @@ function get2DYScale(
   props: {
     height: number;
     margin: { bottom: number; top: number };
-    yDomain: Array<number>;
+    yDomain: number[];
   },
   reverse = false,
 ) {
@@ -37,13 +37,13 @@ function get2DYScale(
 interface TopLayout {
   width: number;
   margin: { right: number; left: number };
-  xDomain: Array<number>;
+  xDomain: number[];
 }
 
 interface LeftLayout {
   height: number;
   margin: { bottom: number; top: number };
-  yDomain: Array<number>;
+  yDomain: number[];
 }
 
 function get1DXScale(props: TopLayout | LeftLayout, layout: Layout) {
@@ -67,7 +67,7 @@ function get1DXScale(props: TopLayout | LeftLayout, layout: Layout) {
   }
 }
 
-function get1DYScale(yDomain: Array<number>, height: number, margin = 10) {
+function get1DYScale(yDomain: number[], height: number, margin = 10) {
   return scaleLinear(yDomain, [height - margin, margin]);
 }
 

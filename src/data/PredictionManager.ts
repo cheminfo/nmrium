@@ -1,4 +1,6 @@
 import { v4 } from '@lukeed/uuid';
+import { Logger } from 'cheminfo-types';
+import { xMinMaxValues } from 'ml-spectra-processing';
 import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
@@ -22,8 +24,6 @@ import {
 } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { adjustAlpha } from './utilities/generateColor';
-import { xMinMaxValues } from 'ml-spectra-processing';
-import { Logger } from 'cheminfo-types';
 
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
@@ -169,7 +169,7 @@ function checkFromTo(
   };
 
   const { autoExtendRange, spectra } = inputOptions;
-  let signalsOutOfRange: Record<string, boolean> = {};
+  const signalsOutOfRange: Record<string, boolean> = {};
 
   for (const experiment in predictedSpectra) {
     if (!spectra[experiment]) continue;
@@ -224,7 +224,8 @@ function getNewFromTo(params: {
   nucleus: string;
   autoExtendRange: boolean;
 }) {
-  let { deltas, nucleus, from, to, autoExtendRange } = params;
+  const { deltas, nucleus, autoExtendRange } = params;
+  let { from, to } = params;
   const { min, max } = xMinMaxValues(deltas);
   const signalsOutOfRange = from > min || to < max;
   if (autoExtendRange && signalsOutOfRange) {

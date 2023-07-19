@@ -64,7 +64,7 @@ export function extractFromAtom(
   return { oclIDs: [], nbAtoms: 0 };
 }
 
-export function findDatumAndSignalIndex(data: (Range | Zone)[], id: string) {
+export function findDatumAndSignalIndex(data: Array<Range | Zone>, id: string) {
   // if datum could be found then the id is on range/zone level
   let datum = data.find((_datum) => _datum.id === id);
   let signalIndex;

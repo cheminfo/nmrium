@@ -45,7 +45,7 @@ import useRowSpan, {
 interface ExtraColumn<T extends object> {
   enableRowSpan?: boolean;
   style?: CSSProperties;
-  Cell?: (cell: CellProps<T, any>) => JSX.Element | string;
+  Cell?: (cell: CellProps<T>) => JSX.Element | string;
 }
 
 export type Column<T extends object> = ReactColumn<T> &

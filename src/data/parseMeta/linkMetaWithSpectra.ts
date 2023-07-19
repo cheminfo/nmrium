@@ -18,13 +18,8 @@ function linkMetaWithSpectra(options: {
   parseMetaFileResult: ParseResult<any>;
   spectra: Spectrum[];
 }) {
-  let {
-    source,
-    target,
-    autolink = false,
-    parseMetaFileResult,
-    spectra,
-  } = options;
+  const { autolink = false, parseMetaFileResult, spectra } = options;
+  let { source, target } = options;
   const targetValues: Record<string, string[]> = {};
 
   const {

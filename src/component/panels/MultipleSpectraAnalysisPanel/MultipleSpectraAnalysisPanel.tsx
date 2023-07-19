@@ -123,7 +123,6 @@ function MultipleSpectraAnalysisPanelInner({
             popupPlacement="right"
             onClick={showTrackerHandler}
             defaultValue={showLegend}
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             key={`${showLegend}`}
           >
             <IoPulseOutline />

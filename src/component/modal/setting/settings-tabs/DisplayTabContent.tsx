@@ -66,7 +66,7 @@ const LIST: ListItem[] = [
   },
 ];
 
-const COLUMNS: CustomColumn<ListItem>[] = [
+const COLUMNS: Array<CustomColumn<ListItem>> = [
   {
     index: 1,
     Header: '#',
