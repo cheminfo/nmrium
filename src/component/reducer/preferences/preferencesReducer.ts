@@ -165,6 +165,10 @@ export const WORKSPACES: Array<{
     key: 'embedded',
     label: Workspaces.embedded.label,
   },
+  {
+    key: 'simulation',
+    label: Workspaces.simulation.label,
+  },
 ];
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };

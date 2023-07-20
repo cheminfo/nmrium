@@ -116,6 +116,7 @@ export type NMRiumWorkspace =
   | 'prediction'
   | 'embedded'
   | 'assignment'
+  | 'simulation'
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
