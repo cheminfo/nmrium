@@ -651,7 +651,7 @@ function handleSimulateSpectrum(
       (s) => s.id === draft.view.currentSimulatedSpectrumKey,
     );
   }
-  console.log(simulateSpectrumOptions)
+
   if (spectrumIndex !== -1) {
     (draft.data[spectrumIndex] as Spectrum1D).data = { x, re: y };
     const [x1, x2] = draft.originDomain.xDomain;
