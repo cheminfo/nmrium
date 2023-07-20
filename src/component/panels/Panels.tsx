@@ -122,8 +122,7 @@ const accordionItems: AccordionItem[] = [
   {
     title: 'Spectrum Simulation',
     component: <SpectrumSimulation />,
-    isExperimental: true,
-    hidePreferenceKey: '',
+    hidePreferenceKey: 'simulationPanel',
     mode: DISPLAYER_MODE.DM_1D,
   },
 ];
