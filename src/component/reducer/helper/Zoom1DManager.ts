@@ -14,6 +14,10 @@ export const ZOOM_TYPES = {
 
 export type ZoomType = keyof typeof ZOOM_TYPES;
 
+function toFixed(value: number) {
+  return Number(value.toFixed(7));
+}
+
 interface ZoomOptions {
   factor?: number;
   invert?: boolean;
@@ -31,7 +35,7 @@ function wheelZoom(
 
   const [min, max] = domain;
 
-  return [min * ratio, max * ratio];
+  return [toFixed(min * ratio), toFixed(max * ratio)];
 }
 
 function setZoom(
