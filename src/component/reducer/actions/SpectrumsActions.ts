@@ -658,10 +658,11 @@ function handleSimulateSpectrum(
     const isInXDomain = options.to - options.from <= x2 - x1;
     setDomain(draft, { updateYDomain: false, updateXDomain: !isInXDomain });
   } else {
+    const { frequency } = options;
     const spectrum = initiateDatum1D(
       {
         data: { x, re: y },
-        info: { isFt: true },
+        info: { isFt: true, originFrequency: frequency, nucleus: '1H' },
       },
       { usedColors: draft.usedColors },
     );
