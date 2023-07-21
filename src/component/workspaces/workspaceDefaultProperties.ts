@@ -24,6 +24,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       peaksPanel: { display: false, open: false },
       predictionPanel: { display: false, open: false },
       summaryPanel: { display: false, open: false },
+      simulationPanel: { display: false, open: false },
     },
     toolBarButtons: {
       baselineCorrection: false,

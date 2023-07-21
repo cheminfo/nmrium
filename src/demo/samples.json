@@ -236,6 +236,10 @@
         "view": "Prediction"
       },
       {
+        "title": "Simulation",
+        "view": "Simulation"
+      },
+      {
         "title": "Metabo workspace",
         "view": "CustomWorkspace"
       },

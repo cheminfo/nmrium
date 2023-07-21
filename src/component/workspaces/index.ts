@@ -4,6 +4,7 @@ import { embedded } from './embedded';
 import { exercise } from './exercise';
 import { prediction } from './prediction';
 import { process1D } from './process1D';
+import { simulation } from './simulation';
 
 export default {
   exercise,
@@ -12,4 +13,5 @@ export default {
   prediction,
   assignment,
   embedded,
+  simulation,
 };
