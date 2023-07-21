@@ -3,6 +3,13 @@ import { InnerWorkspace } from 'nmr-load-save';
 export const simulation: InnerWorkspace = {
   version: 1,
   label: 'Simulation',
+  general: {
+    dimmedSpectraOpacity: 0.5,
+    verticalSplitterPosition: '440px',
+    verticalSplitterCloseThreshold: 600,
+    spectraRendering: 'auto',
+    loggingLevel: 'info',
+  },
   display: {
     panels: {
       spectraPanel: { display: true },
