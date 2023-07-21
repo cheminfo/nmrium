@@ -658,14 +658,20 @@ function handleSimulateSpectrum(
     const isInXDomain = options.to - options.from <= x2 - x1;
     setDomain(draft, { updateYDomain: false, updateXDomain: !isInXDomain });
   } else {
+    const { frequency } = options;
     const spectrum = initiateDatum1D(
       {
         data: { x, re: y },
-        info: { isFt: true },
+        info: {
+          isFt: true,
+          originFrequency: frequency,
+          baseFrequency: frequency,
+          nucleus: '1H',
+          name: spinSystem,
+        },
       },
       { usedColors: draft.usedColors },
     );
-    spectrum.info.name = spectrum.id;
     draft.data.push(spectrum);
     draft.view.currentSimulatedSpectrumKey = spectrum.id;
     setActiveTab(draft);
