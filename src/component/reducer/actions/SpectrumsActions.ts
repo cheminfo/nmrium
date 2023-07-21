@@ -662,11 +662,16 @@ function handleSimulateSpectrum(
     const spectrum = initiateDatum1D(
       {
         data: { x, re: y },
-        info: { isFt: true, originFrequency: frequency, nucleus: '1H' },
+        info: {
+          isFt: true,
+          originFrequency: frequency,
+          baseFrequency: frequency,
+          nucleus: '1H',
+          name: spinSystem,
+        },
       },
       { usedColors: draft.usedColors },
     );
-    spectrum.info.name = spinSystem;
     draft.data.push(spectrum);
     draft.view.currentSimulatedSpectrumKey = spectrum.id;
     setActiveTab(draft);
