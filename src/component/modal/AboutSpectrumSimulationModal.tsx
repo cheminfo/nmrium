@@ -67,16 +67,17 @@ function AboutSpectrumSimulationModal() {
               <p>If you are using our tools please cite us:</p>
               <ul>
                 <li>
-                  Fast and Accurate Algorithm for the Simulation of NMR spectra
-                  of Large Spin Systems. Andrés M. Castillo, Luc Patiny and
-                  Julien Wist Journal of Magnetic Resonance 2011.
+                  Andrés M. Castillo, Luc Patiny and Julien Wist{' '}
                   <a
                     href="http://dx.doi.org/10.1016/j.jmr.2010.12.008"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    10.1016/j.jmr.2010.12.008
-                  </a>
+                    Fast and Accurate Algorithm for the Simulation of NMR
+                    spectra of Large Spin Systems
+                  </a>{' '}
+                  <i>Journal of Magnetic Resonance</i> <b>2011</b>, 209(2),
+                  123-130.
                 </li>
               </ul>
             </div>
