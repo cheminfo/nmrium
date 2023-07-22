@@ -67,7 +67,7 @@ function AboutPredictionModal() {
               <p>If you are using our tools please cite us:</p>
               <ul>
                 <li>
-                  Banfi, D.; Patiny, L.{' '}
+                  Damiano Banfi and Luc Patiny{' '}
                   <a
                     href="http://dx.doi.org/10.2533/chimia.2008.280"
                     target="_blank"
@@ -76,10 +76,10 @@ function AboutPredictionModal() {
                     www.nmrdb.org: Resurrecting and processing NMR spectra
                     on-line
                   </a>{' '}
-                  Chimia, 2008, 62(4), 280-281.
+                  <i>Chimia</i>, <b>2008</b>, 62(4), 280-281.
                 </li>
                 <li>
-                  Andrés M. Castillo, Luc Patiny and Julien Wist.{' '}
+                  Andrés M. Castillo, Luc Patiny and Julien Wist{' '}
                   <a
                     href="http://dx.doi.org/10.1016/j.jmr.2010.12.008"
                     target="_blank"
@@ -87,55 +87,58 @@ function AboutPredictionModal() {
                   >
                     Fast and Accurate Algorithm for the Simulation of NMR
                     spectra of Large Spin Systems
-                  </a>
-                  . Journal of Magnetic Resonance 2011.
+                  </a>{' '}
+                  <i>Journal of Magnetic Resonance</i> <b>2011</b>, 209(2),
+                  123-130.
                 </li>
               </ul>
               <p>
-                1H NMR prediction was possible thanks to the tool of the
-                FCT-Universidade NOVA de Lisboa developed by Yuri Binev and Joao
-                Aires-de-Sousa:
+                <sup>1</sup>H NMR prediction is possible thanks to the tool of
+                the FCT-Universidade NOVA de Lisboa developed by Yuri Binev and
+                Joao Aires-de-Sousa:
               </p>
               <ul>
                 <li>
-                  Y. Binev, M.M. Marques, J. Aires-de-Sousa,{' '}
+                  Yuri Binev, Maria M. B. Marques and João Aires-de-Sousa{' '}
                   <a
                     href="http://dx.doi.org/10.1021/ci700172n"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Prediction of 1H NMR coupling constants with associative
-                    neural networks trained for chemical shifts
+                    Prediction of <sup>1</sup>H NMR coupling constants with
+                    associative neural networks trained for chemical shifts
                   </a>{' '}
-                  J. Chem. Inf. Model. 2007, 47/(6), 2089-2097.
+                  <i>J. Chem. Inf. Model.</i> <b>2007</b>, 47(6), 2089-2097.
                 </li>
                 <li>
-                  Aires-de-Sousa, M. Hemmer, J. Gasteiger,{' '}
+                  João Aires-de-Sousa, Markus C. Hemmer and Johann Gasteiger{' '}
                   <a
                     href="http://dx.doi.org/10.1021/ac010737m"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    “ Prediction of 1H NMR Chemical Shifts Using Neural
-                    Networks”
+                    Prediction of <sup>1</sup>H NMR Chemical Shifts Using Neural
+                    Networks
                   </a>
-                  , Analytical Chemistry, 2002, 74(1), 80-90.
+                  , <i>Analytical Chemistry</i>, <b>2002</b>, 74(1), 80-90.
                 </li>
               </ul>
-              <p>13 NMR prediction was possible thanks to NMRshiftDB:</p>
+              <p>
+                <sup>13</sup>C NMR prediction was possible thanks to NMRshiftDB:
+              </p>
               <ul>
                 <li>
-                  Steinbeck, Christoph, Stefan Krause, and Stefan Kuhn.{' '}
+                  Steinbeck, Christoph, Stefan Krause, and Stefan Kuhn{' '}
                   <a
                     href="http://dx.doi.org/10.1021/ci0341363"
                     target="_blank"
                     rel="noreferrer"
                   >
                     NMRShiftDB Constructing a Free Chemical Information System
-                    with Open-Source Components.
+                    with Open-Source Components
                   </a>{' '}
-                  Journal of chemical information and computer sciences, 2003,
-                  43(6): 1733-1739.
+                  <i>Journal of chemical information and computer sciences</i>,{' '}
+                  <b>2003</b>, 43(6): 1733-1739.
                 </li>
               </ul>
             </div>
