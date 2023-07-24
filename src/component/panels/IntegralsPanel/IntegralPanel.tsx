@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
@@ -65,31 +64,13 @@ function IntegralPanelInner({
   const changeIntegralSumHandler = useCallback(
     (options) => {
       dispatch({ type: 'CHANGE_INTEGRAL_SUM', payload: { options } });
-      modal.close();
     },
-    [dispatch, modal],
+    [dispatch],
   );
 
   const currentSum = useMemo(() => {
     return lodashGet(integrals, 'options.sum', null);
   }, [integrals]);
-
-  const showChangeIntegralSumModal = useCallback(() => {
-    modal.show(
-      <ChangeSumModal
-        onClose={() => modal.close()}
-        onSave={changeIntegralSumHandler}
-        header={
-          currentSum
-            ? `Set new integrals Sum (Current: ${Number(currentSum).toFixed(
-                2,
-              )})`
-            : 'Set new integrals Sum'
-        }
-        sumOptions={integrals?.options}
-      />,
-    );
-  }, [changeIntegralSumHandler, currentSum, integrals?.options, modal]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -170,13 +151,18 @@ function IntegralPanelInner({
             }
             popupPlacement="right"
           >
-            <button
-              className="sum-button"
-              type="button"
-              onClick={showChangeIntegralSumModal}
-            >
-              <SvgNmrSum />
-            </button>
+            <ChangeSumModal
+              onClose={() => modal.close()}
+              onSave={changeIntegralSumHandler}
+              header={
+                currentSum
+                  ? `Set new integrals Sum (Current: ${Number(
+                      currentSum,
+                    ).toFixed(2)})`
+                  : 'Set new integrals Sum'
+              }
+              sumOptions={integrals?.options}
+            />
           </ToolTip>
 
           <ActiveButton
