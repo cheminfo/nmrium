@@ -44,7 +44,7 @@ import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
 import { LoggerProvider, useLogger } from './context/LoggerContext';
 import { PreferencesProvider } from './context/PreferencesContext';
-import { AlertProvider, useAlert } from './elements/popup/Alert';
+import { AlertProvider } from './elements/popup/Alert';
 import { ModalProvider } from './elements/popup/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
@@ -454,15 +454,13 @@ export default memo(NMRium);
  */
 function StateError() {
   const { errorAction } = useChartData();
-  const { error: alertError } = useAlert();
   const { logger } = useLogger();
 
   useEffect(() => {
     if (!errorAction) return;
 
-    alertError(errorAction?.message ?? String(errorAction));
     logger.error(errorAction);
-  }, [errorAction, alertError, logger]);
+  }, [errorAction, logger]);
 
   return null;
 }
