@@ -14,20 +14,39 @@ export const ZOOM_TYPES = {
 
 export type ZoomType = keyof typeof ZOOM_TYPES;
 
-function toFixed(value: number) {
-  return Number(value.toFixed(7));
+function toFixed(
+  value: number,
+  options: { limitFactor?: number; domainLimit: number[] },
+) {
+  const {
+    limitFactor = 0.0001,
+    domainLimit: [y0, yn],
+  } = options;
+  const minYN = yn * limitFactor;
+  const minY0 = y0 * limitFactor;
+
+  const sign = Math.sign(value);
+
+  if (sign === 1 && value < minYN) return minYN;
+  if (sign === -1 && value < minY0) return minY0;
+  return value;
 }
 
 interface ZoomOptions {
   factor?: number;
   invert?: boolean;
+  domainLimit?: number[];
 }
 function wheelZoom(
   event: WheelEvent,
   domain: number[],
   zoomOptions: ZoomOptions = {},
 ): number[] {
-  const { factor = 1, invert = false } = zoomOptions;
+  const {
+    factor = 1,
+    invert = false,
+    domainLimit = [Number.MIN_VALUE, Number.MAX_VALUE],
+  } = zoomOptions;
   const deltaY =
     Math.abs(event.deltaY) < 100 ? event.deltaY * 100 : event.deltaY;
   const delta = deltaY * (invert ? -0.001 : 0.001) * factor;
@@ -35,7 +54,10 @@ function wheelZoom(
 
   const [min, max] = domain;
 
-  return [toFixed(min * ratio), toFixed(max * ratio)];
+  const minY = toFixed(min * ratio, { domainLimit });
+  const maxY = toFixed(max * ratio, { domainLimit });
+
+  return [minY, maxY];
 }
 
 function setZoom(

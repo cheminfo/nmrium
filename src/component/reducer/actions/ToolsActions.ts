@@ -332,6 +332,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     view: { ranges: rangeState },
     displayerMode,
     yDomains,
+    yDomain,
     integralsYDomains,
   } = draft;
 
@@ -344,7 +345,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       const id = getSpectrumID(draft, index);
       if (id) {
         const domain = yDomains[id];
-        yDomains[id] = wheelZoom(event, domain);
+        yDomains[id] = wheelZoom(event, domain, {
+          domainLimit: yDomain,
+        });
       }
     }
   } else if (activeSpectra && activeSpectra?.length > 0) {
@@ -357,7 +360,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
           rangeStateInit;
         const domain = integralsYDomains?.[activeSpectrum?.id];
         if (showRangesIntegrals && domain) {
-          integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+          integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain, {
+            domainLimit: yDomain,
+          });
         }
       }
     } else {
@@ -365,7 +370,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
       for (const activeSpectrum of activeSpectra) {
         const domain = yDomains?.[activeSpectrum?.id];
         if (domain) {
-          yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+          yDomains[activeSpectrum?.id] = wheelZoom(event, domain, {
+            domainLimit: yDomain,
+          });
         }
       }
     }
@@ -373,7 +380,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     // rescale the spectra
     for (const key of Object.keys(yDomains)) {
       const domain = yDomains[key];
-      yDomains[key] = wheelZoom(event, domain);
+      yDomains[key] = wheelZoom(event, domain, {
+        domainLimit: yDomain,
+      });
     }
   }
 }
