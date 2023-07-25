@@ -531,6 +531,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 
       case 'ADD_MOLECULE':
         return MoleculeActions.handleAddMolecule(draft, action);
+      case 'ADD_MOLECULES':
+        return MoleculeActions.handleAddMolecules(draft, action);
       case 'SET_MOLECULE':
         return MoleculeActions.handleSetMolecule(draft, action);
       case 'CHANGE_MOLECULE_LABEL':

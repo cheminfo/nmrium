@@ -31,6 +31,10 @@ interface AddMoleculeProps {
   floatMoleculeOnSave?: boolean;
 }
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
+type AddMoleculesAction = ActionType<
+  'ADD_MOLECULES',
+  { molecules: StateMolecule[] }
+>;
 type SetMoleculeAction = ActionType<'SET_MOLECULE', Required<StateMolecule>>;
 type DeleteMoleculeAction = ActionType<
   'DELETE_MOLECULE',
@@ -61,6 +65,7 @@ type ChangeMoleculeLabelAction = ActionType<
 
 export type MoleculeActions =
   | AddMoleculeAction
+  | AddMoleculesAction
   | SetMoleculeAction
   | DeleteMoleculeAction
   | PredictSpectraFromMoleculeAction
@@ -94,6 +99,13 @@ function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
 //action
 function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
   addMolecule(draft, action.payload);
+}
+function handleAddMolecules(draft: Draft<State>, action: AddMoleculesAction) {
+  const molecules = action.payload.molecules;
+
+  for (const { molfile } of molecules) {
+    addMolecule(draft, { molfile });
+  }
 }
 
 function setMolecule(draft: Draft<State>, props: Required<StateMolecule>) {
@@ -392,6 +404,7 @@ function handleChangeMoleculeLabel(
 
 export {
   handleAddMolecule,
+  handleAddMolecules,
   handleSetMolecule,
   handleDeleteMolecule,
   handlePredictSpectraFromMolecule,
