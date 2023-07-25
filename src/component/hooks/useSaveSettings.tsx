@@ -49,24 +49,22 @@ export function useSaveSettings() {
   const settingsRef = useRef<Workspace>();
   const { dispatch, current } = usePreferences();
   const formRef = useRef<FormikProps<any>>(null);
+
   function addNewWorkspace({ workspaceName }) {
-    if (settingsRef.current) {
-      dispatch({
-        type: 'ADD_WORKSPACE',
-        payload: {
-          workspaceKey: workspaceName,
-          data: settingsRef.current,
-        },
-      });
-      closeDialog();
-      alert.success('Preferences saved successfully');
-    }
+    dispatch({
+      type: 'ADD_WORKSPACE',
+      payload: {
+        workspaceKey: workspaceName,
+        data: settingsRef.current,
+      },
+    });
+    closeDialog();
+    alert.success('Preferences saved successfully');
   }
 
   return {
     saveSettings: (values?: Partial<Workspace>) => {
       settingsRef.current = values as Workspace;
-
       if (current.source !== 'user') {
         openDialog();
       } else {
