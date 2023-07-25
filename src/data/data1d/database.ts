@@ -57,8 +57,10 @@ export type PrepareDataResult = Partial<
 export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
-  search: (keywords?: string | string[]) => DatabaseNMREntry[];
-  searchByStructure: (idCode: string) => DatabaseNMREntry[];
+  search: (options: {
+    keywords?: string | string[];
+    idCode?: string;
+  }) => DatabaseNMREntry[];
 }
 
 export function initiateDatabase(
@@ -69,12 +71,27 @@ export function initiateDatabase(
   const moleculesDB = prepareMoleculesDB(data);
 
   const getSolvents = () => prepareGetSolvents(data);
-  const search = (keywords: string | string[] = []) =>
-    filter(data, { keywords });
-  const searchByStructure = (idCode: string) =>
-    processSearchByStructure(moleculesDB, idCode);
+  const search: InitiateDatabaseResult['search'] = ({
+    idCode = '',
+    keywords = '',
+  }) => prepareSearch({ idCode, keywords, data, moleculesDB });
 
-  return { searchByStructure, data, getSolvents, search };
+  return { data, getSolvents, search };
+}
+
+function prepareSearch(options: {
+  data: DatabaseNMREntry[];
+  keywords: string | string[];
+  moleculesDB: MoleculesDB;
+  idCode?: string;
+}) {
+  const { data, keywords = [], moleculesDB, idCode } = options;
+  let searchData = data;
+  if (idCode) {
+    searchData = processSearchByStructure(moleculesDB, idCode);
+  }
+
+  return filter(searchData, { keywords });
 }
 
 function processSearchByStructure(
