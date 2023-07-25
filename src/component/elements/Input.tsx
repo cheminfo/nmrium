@@ -210,6 +210,7 @@ const Input = forwardRef(
     return (
       <div
         style={{
+          ...(renderIcon || (canClear && { padding: '0 5px' })),
           ...styles.inputWrapper,
           ...style?.inputWrapper,
         }}
