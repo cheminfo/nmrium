@@ -17,6 +17,7 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
+import { getMolecules } from '../../../data/molecules/MoleculeManager';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
@@ -178,9 +179,10 @@ export default function MoleculePanelHeader({
   function handlePasteMolfileAction() {
     void readText().then(handlePasteMolfile);
   }
-  function handlePasteMolfile(molfile: string | undefined) {
+  async function handlePasteMolfile(molfile: string | undefined) {
     if (!molfile) return;
-    dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
+    const molecules = await getMolecules(molfile);
+    dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
     cleanShouldFallback();
   }
 
