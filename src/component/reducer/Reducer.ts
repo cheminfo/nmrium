@@ -422,9 +422,9 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
       case 'APPLY_FFT_FILTER':
         return FiltersActions.handleApplyFFTFilter(draft);
       case 'APPLY_FFT_DIMENSION_1_FILTER':
-        return FiltersActions.applyFFtDimension1Filter(draft);
+        return FiltersActions.handleApplyFFtDimension1Filter(draft);
       case 'APPLY_FFT_DIMENSION_2_FILTER':
-        return FiltersActions.applyFFtDimension2Filter(draft);
+        return FiltersActions.handleApplyFFtDimension2Filter(draft);
       case 'APPLY_MANUAL_PHASE_CORRECTION_FILTER':
         return FiltersActions.handleApplyManualPhaseCorrectionFilter(
           draft,

@@ -242,7 +242,7 @@ function FunctionToolBarInner({
         >
           <SvgNmrFourierTransform />
         </Toolbar.Item>
-      )}
+        )}
     </>
   );
 }
