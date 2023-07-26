@@ -391,7 +391,7 @@ const customWorkspaces: CustomWorkspaces = {
       fields: [
         {
           label: 'name',
-          jpath: ['display', 'name'],
+          jpath: ['info', 'name'],
           visible: true,
           format: '',
         },

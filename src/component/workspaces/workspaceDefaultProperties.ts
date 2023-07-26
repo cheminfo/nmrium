@@ -93,7 +93,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   infoBlock: {
     visible: false,
     fields: [
-      { label: 'name', jpath: ['display', 'name'], visible: true, format: '' },
+      { label: 'name', jpath: ['info', 'name'], visible: true, format: '' },
       {
         label: 'Number Of Scan',
         jpath: ['info', 'numberOfScans'],
