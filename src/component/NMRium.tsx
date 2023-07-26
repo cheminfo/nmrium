@@ -42,9 +42,9 @@ import { AssignmentProvider } from './assignment';
 import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
-import { LoggerProvider } from './context/LoggerContext';
+import { LoggerProvider, useLogger } from './context/LoggerContext';
 import { PreferencesProvider } from './context/PreferencesContext';
-import { AlertProvider, useAlert } from './elements/popup/Alert';
+import { AlertProvider } from './elements/popup/Alert';
 import { ModalProvider } from './elements/popup/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
@@ -455,13 +455,13 @@ export default memo(NMRium);
  */
 function StateError() {
   const { errorAction } = useChartData();
-  const { error: alertError } = useAlert();
+  const { logger } = useLogger();
 
   useEffect(() => {
     if (!errorAction) return;
 
-    alertError(errorAction?.message ?? String(errorAction));
-  }, [errorAction, alertError]);
+    logger.error(errorAction);
+  }, [errorAction, logger]);
 
   return null;
 }
