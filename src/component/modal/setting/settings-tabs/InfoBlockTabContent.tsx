@@ -93,6 +93,18 @@ function InfoBlockTabContent() {
         },
       },
       {
+        Header: 'Format',
+        style: { padding: 0, ...styles.column },
+        Cell: ({ row }) => {
+          return (
+            <FormikInput
+              name={`infoBlock.fields.${row.index}.format`}
+              style={{ input: styles.input }}
+            />
+          );
+        },
+      },
+      {
         Header: 'Visible',
         style: { width: '30px', ...styles.column },
         Cell: ({ row }) => (
