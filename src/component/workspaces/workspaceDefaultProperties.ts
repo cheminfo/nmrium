@@ -100,17 +100,18 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
         visible: true,
         format: '0',
       },
-      {
-        label: 'Acquisition Time',
-        jpath: ['info', 'acquisitionTime'],
-        visible: true,
-        format: '00.00',
-      },
+
       {
         label: 'Pulse Sequence',
         jpath: ['info', 'pulseSequence'],
         visible: true,
         format: '',
+      },
+      {
+        label: 'Frequency',
+        jpath: ['info', 'originFrequency'],
+        visible: true,
+        format: '0',
       },
     ],
   },
