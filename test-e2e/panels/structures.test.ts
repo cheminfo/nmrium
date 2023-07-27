@@ -281,87 +281,59 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
-    await nmrium.page.click(
-      '_react=ToolTip[title="Change integrals sum" i] >> button',
-    );
+    await nmrium.page.click('_react=IntegralPanel >> .sum-button');
+    await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> #molSVG0'),
+      nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> text=C11H14N2O - 190.25'),
+      nmrium.page.locator('_react=Modal >> text=New sum for H will be 14!'),
+    ).toBeVisible();
+    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
+    await expect(nmrium.page.locator('_react=Modal >> #molSVG1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=Modal >> text=C6H6 - 78.11'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> text=New sum for H will be 14!'),
+      nmrium.page.locator('_react=Modal >> text=New sum for H will be 6!'),
     ).toBeVisible();
-    await nmrium.page.click(
-      '_react=Draggable >> _react=Arrow[direction="right"]',
-    );
+    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
+    await expect(nmrium.page.locator('_react=Modal >> #molSVG2')).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> #molSVG1'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Draggable >> text=C6H6 - 78.11'),
+      nmrium.page.locator('_react=Modal >> text=C6H12 - 84.16'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> text=New sum for H will be 6!'),
+      nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
     ).toBeVisible();
-    await nmrium.page.click(
-      '_react=Draggable >> _react=Arrow[direction="right"]',
-    );
-    await expect(
-      nmrium.page.locator('_react=Draggable >> #molSVG2'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Draggable >> text=C6H12 - 84.16'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Draggable >> text=New sum for H will be 12!'),
-    ).toBeVisible();
-    await nmrium.page.click(
-      '_react=Draggable >> _react=ToolTip[title="Close" i] >> button',
-    );
+    await nmrium.page.click('_react=Modal >> _react=ModalCloseButton');
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
-    await nmrium.page.click(
-      '_react=ToolTip[title="Change Ranges Sum" i] >> button',
-    );
+    await nmrium.page.click('_react=RangesTablePanel >> .sum-button');
+    await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> #molSVG0'),
+      nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> text=C11H14N2O - 190.25'),
+      nmrium.page.locator('_react=Modal >> text=New sum for H will be 14!'),
+    ).toBeVisible();
+    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
+    await expect(nmrium.page.locator('_react=Modal >> #molSVG1')).toBeVisible();
+    await expect(
+      nmrium.page.locator('_react=Modal >> text=C6H6 - 78.11'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> text=New sum for H will be 14!'),
+      nmrium.page.locator('_react=Modal >> text=New sum for H will be 6!'),
     ).toBeVisible();
-    await nmrium.page.click(
-      '_react=Draggable >> _react=Arrow[direction="right"]',
-    );
+    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
+    await expect(nmrium.page.locator('_react=Modal >> #molSVG2')).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> #molSVG1'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Draggable >> text=C6H6 - 78.11'),
+      nmrium.page.locator('_react=Modal >> text=C6H12 - 84.16'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Draggable >> text=New sum for H will be 6!'),
+      nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
     ).toBeVisible();
-    await nmrium.page.click(
-      '_react=Draggable >> _react=Arrow[direction="right"]',
-    );
-    await expect(
-      nmrium.page.locator('_react=Draggable >> #molSVG2'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Draggable >> text=C6H12 - 84.16'),
-    ).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Draggable >> text=New sum for H will be 12!'),
-    ).toBeVisible();
-    await nmrium.page.click(
-      '_react=Draggable >> _react=ToolTip[title="Close" i] >> button',
-    );
+    await nmrium.page.click('_react=Modal >> _react=ModalCloseButton');
   });
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
