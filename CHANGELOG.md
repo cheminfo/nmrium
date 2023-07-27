@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.42.0](https://github.com/cheminfo/nmrium/compare/v0.41.0...v0.42.0) (2023-07-27)
+
+
+### Features
+
+* create Scroller component ([128662e](https://github.com/cheminfo/nmrium/commit/128662e3630fc2b24aae02d1fe8fb01b55a1166f))
+* format the number fields in the info block ([#2546](https://github.com/cheminfo/nmrium/issues/2546)) ([0e81e02](https://github.com/cheminfo/nmrium/commit/0e81e0237308acaca6b2f305d2ad67792668e14c))
+* paste / import a list of structures ([#2544](https://github.com/cheminfo/nmrium/issues/2544)) ([f092df6](https://github.com/cheminfo/nmrium/commit/f092df68d42a6793f0fd1312dbce1d828420841b)), closes [#2382](https://github.com/cheminfo/nmrium/issues/2382)
+* scroll to the active nucleus spectra preferences ([d71db46](https://github.com/cheminfo/nmrium/commit/d71db4609cf8dcc7a30dc0ac3846f19f8fc6fd72)), closes [#2547](https://github.com/cheminfo/nmrium/issues/2547)
+
+
+### Bug Fixes
+
+* clamp SVG paths to avoid rendering issues ([#2551](https://github.com/cheminfo/nmrium/issues/2551)) ([b8fe1a4](https://github.com/cheminfo/nmrium/commit/b8fe1a42d7e0df9050a6d932def0fb1a89422b91))
+* save new workspace ([#2541](https://github.com/cheminfo/nmrium/issues/2541)) ([93cabc8](https://github.com/cheminfo/nmrium/commit/93cabc86a3bff97dbbc75f0b8262b456b363054c))
+* search should be by ideCode beside the other criteria ([0e18164](https://github.com/cheminfo/nmrium/commit/0e18164cd388a3ffd484fb228e6ddc7c20f8903c))
+* use spectralWidth as an option to spectralWidthClipped jeol ([#2553](https://github.com/cheminfo/nmrium/issues/2553)) ([95de3b0](https://github.com/cheminfo/nmrium/commit/95de3b09be824c8c844a19715e424073da265d14))
+
 ## [0.41.0](https://github.com/cheminfo/nmrium/compare/v0.40.1...v0.41.0) (2023-07-22)
 
 
