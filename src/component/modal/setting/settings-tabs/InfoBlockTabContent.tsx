@@ -116,12 +116,12 @@ function InfoBlockTabContent() {
       },
       {
         Header: '',
-        style: { width: '30px', ...styles.column },
+        style: { width: '70px', ...styles.column },
         id: 'add-button',
         Cell: ({ data, row }) => {
           const record: any = row.original;
           return (
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Button.Done
                 fill="outline"
                 onClick={() => addHandler(data, row.index + 1)}
