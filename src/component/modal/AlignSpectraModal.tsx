@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
 import { Formik } from 'formik';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -51,6 +52,7 @@ function AlignSpectraModal({
 
     return baseList.concat(list as any);
   }, [nucleus]);
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
@@ -59,8 +61,9 @@ function AlignSpectraModal({
     (values) => {
       dispatch({ type: 'ALIGN_SPECTRA', payload: values });
       onClose();
+      closeDialog();
     },
-    [dispatch, onClose],
+    [closeDialog, dispatch, onClose],
   );
 
   useEffect(() => {
@@ -89,15 +92,30 @@ function AlignSpectraModal({
     [nucleus],
   );
 
-  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+  const styles = css`
+    .header {
+      display: flex;
+      justify-content: center;
+      padding: 0;
+    }
+  `;
+
   return (
     <>
       <ButtonToolTip popupTitle="Spectra calibration" onClick={openDialog}>
         <SvgNmrOverlay style={{ fontSize: '18px' }} />
       </ButtonToolTip>
 
-      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
-        <div css={ModalStyles}>
+      <Modal
+        hasCloseButton
+        isOpen={isOpenDialog}
+        onRequestClose={() => {
+          onClose();
+          closeDialog();
+        }}
+        maxWidth={1000}
+      >
+        <div css={[ModalStyles, styles]}>
           <Modal.Header>
             <div className="header handle">
               <span>Spectra calibration</span>
