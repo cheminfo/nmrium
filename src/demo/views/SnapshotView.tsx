@@ -389,25 +389,25 @@ const customWorkspaces: CustomWorkspaces = {
     infoBlock: {
       visible: false,
       fields: [
-        {
-          label: 'name',
-          jpath: ['display', 'name'],
-          visible: true,
-        },
+        { label: 'name', jpath: ['info', 'name'], visible: true, format: '' },
         {
           label: 'Number Of Scan',
           jpath: ['info', 'numberOfScans'],
           visible: true,
+          format: '0',
         },
-        {
-          label: 'Acquisition Time',
-          jpath: ['info', 'acquisitionTime'],
-          visible: true,
-        },
+
         {
           label: 'Pulse Sequence',
           jpath: ['info', 'pulseSequence'],
           visible: true,
+          format: '',
+        },
+        {
+          label: 'Frequency',
+          jpath: ['info', 'originFrequency'],
+          visible: true,
+          format: '0',
         },
       ],
     },
