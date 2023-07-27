@@ -64,9 +64,13 @@ const LIST: ListItem[] = [
     label: 'Matrix generation Panel',
     name: 'panels.matrixGenerationPanel',
   },
+  {
+    label: 'Simulation panel',
+    name: 'panels.simulationPanel',
+  },
 ];
 
-const COLUMNS: CustomColumn<ListItem>[] = [
+const COLUMNS: Array<CustomColumn<ListItem>> = [
   {
     index: 1,
     Header: '#',

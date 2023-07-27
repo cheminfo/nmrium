@@ -83,7 +83,7 @@ export default function SetShiftToleranceModal({
   previousTolerance,
 }: SetShiftToleranceModalProps) {
   const [tolerance, setTolerance] = useState<any>();
-  const [isValid, setIsValid] = useState<{ [atomType: string]: boolean }>({});
+  const [isValid, setIsValid] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (previousTolerance) {

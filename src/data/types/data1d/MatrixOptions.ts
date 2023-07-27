@@ -8,7 +8,7 @@ export interface MatrixOptions {
    * @default []
    *
    */
-  filters: (MatrixFilter & { options: object })[];
+  filters: Array<MatrixFilter & { options: object }>;
   /**
    * Exclusion zones
    * @default []

@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import * as Yup from 'yup';
 
 import {
-  defaultPredictionOptions,
+  getDefaultPredictionOptions,
   FREQUENCIES,
 } from '../../../data/PredictionManager';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -34,7 +34,7 @@ function PredictionSimpleOptions() {
 
   const optionsChangeHandler = useCallback(
     (values) => {
-      const value = lodashMerge({}, defaultPredictionOptions, values);
+      const value = lodashMerge({}, getDefaultPredictionOptions(), values);
       dispatch({
         type: 'SET_PANELS_PREFERENCES',
         payload: { key: 'prediction', value },

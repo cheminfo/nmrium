@@ -3,7 +3,7 @@ import { extent, scaleLinear } from 'd3';
 function getTopXScale(
   width: number,
   margin: { right: number; left: number },
-  x: Array<number>,
+  x: number[],
 ) {
   const xDomain = extent<number>(x);
   const scaleX = scaleLinear(extent(x) as number[], [
@@ -20,7 +20,7 @@ function getTopXScale(
 function getLeftXScale(
   width: number,
   margin: { bottom: number; top: number },
-  x: Array<number>,
+  x: number[],
 ) {
   const xDomain = extent(x);
 

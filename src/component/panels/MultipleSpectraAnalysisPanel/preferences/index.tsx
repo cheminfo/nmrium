@@ -136,7 +136,7 @@ function columnSchema(columns) {
     tempKey: Yup.string()
       .required()
       .test('unique', 'must be unique column name', function check(columnName) {
-        const colsFrequency: Record<string, Array<number>> = {};
+        const colsFrequency: Record<string, number[]> = {};
         let index = 0;
         for (const column of columns) {
           if (column.tempKey === columnName) {

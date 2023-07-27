@@ -14,7 +14,7 @@ import toggleAssignment from './actions/toggleAssignment';
 
 export type InitiateAction = ActionType<
   'INITIATE_ASSIGNMENTS',
-  { spectra: (NmrData1D | NmrData2D)[] }
+  { spectra: Array<NmrData1D | NmrData2D> }
 >;
 export type ToggleAction = ActionType<
   'TOGGLE',

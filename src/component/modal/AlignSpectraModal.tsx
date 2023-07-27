@@ -8,12 +8,25 @@ import { REFERENCES } from '../../data/constants/References';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import ButtonToolTip from '../elements/ButtonToolTip';
-import Label from '../elements/Label';
+import { InputStyle } from '../elements/Input';
+import Label, { LabelStyle } from '../elements/Label';
 import Select from '../elements/Select';
 import FormikInput from '../elements/formik/FormikInput';
 import Events from '../utility/Events';
 
 import { ModalStyles } from './ModalStyle';
+
+const labelStyle: LabelStyle = {
+  label: { flex: 4, fontWeight: '500' },
+  wrapper: { flex: 8, display: 'flex', alignItems: 'center' },
+  container: { padding: '5px 0' },
+};
+
+const inputStyle: InputStyle = {
+  input: {
+    padding: '5px',
+  },
+};
 
 const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
@@ -86,8 +99,11 @@ function AlignSpectraModal({
       <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
         <div css={ModalStyles}>
           <Modal.Header>
-            <span className="header">Spectra calibration</span>
+            <div className="header handle">
+              <span>Spectra calibration</span>
+            </div>
           </Modal.Header>
+
           <div className="inner-content" style={{ flex: 1 }}>
             <Formik
               innerRef={refForm}
@@ -95,34 +111,37 @@ function AlignSpectraModal({
               onSubmit={submitHandler}
             >
               <>
-                <div className="row margin-10">
-                  <span className="custom-label">Options :</span>
-
+                <Label title="Options" style={labelStyle}>
                   <Select
                     items={List}
-                    style={{ width: 270, height: 30, marginBottom: '20px' }}
+                    style={{ width: '100%', height: 30 }}
                     onChange={optionChangeHandler}
                   />
-                </div>
-                <div className="row margin-10">
-                  <span className="custom-label">Range :</span>
-                  <Label title="From : ">
-                    <FormikInput name="from" type="number" />
+                </Label>
+
+                <Label title="Range" style={labelStyle}>
+                  <Label title="From">
+                    <FormikInput name="from" type="number" style={inputStyle} />
                   </Label>
-                  <Label title="To : ">
-                    <FormikInput name="to" type="number" />
+                  <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                    <FormikInput name="to" type="number" style={inputStyle} />
                   </Label>
-                </div>
-                <div className=" margin-10">
-                  <Label className="custom-label" title="Number of Peaks : ">
-                    <FormikInput name="nbPeaks" type="number" />
-                  </Label>
-                </div>
-                <div className=" margin-10">
-                  <Label className="custom-label" title="Target PPM :">
-                    <FormikInput name="targetX" type="number" />
-                  </Label>
-                </div>
+                </Label>
+
+                <Label title="Number of Peaks" style={labelStyle}>
+                  <FormikInput
+                    name="nbPeaks"
+                    type="number"
+                    style={inputStyle}
+                  />
+                </Label>
+                <Label title="Target PPM" style={labelStyle}>
+                  <FormikInput
+                    name="targetX"
+                    type="number"
+                    style={inputStyle}
+                  />
+                </Label>
               </>
             </Formik>
           </div>

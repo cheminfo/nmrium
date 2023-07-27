@@ -22,7 +22,7 @@ const selectStyle = { width: '100%', border: 'none' };
 
 interface IntegralTableProps
   extends Pick<IntegralPanelInnerProps, 'activeTab'> {
-  data: Array<Integral>;
+  data: Integral[];
 }
 
 function IntegralTable({ activeTab, data }: IntegralTableProps) {
@@ -51,7 +51,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     },
     [dispatch],
   );
-  const initialColumns: CustomColumn<Integral>[] = useMemo(
+  const initialColumns: Array<CustomColumn<Integral>> = useMemo(
     () => [
       {
         index: 1,
@@ -101,9 +101,11 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
   );
   const integralsPreferences = usePanelPreferences('integrals', activeTab);
 
-  const COLUMNS: (CustomColumn<Integral> & {
-    showWhen: string;
-  })[] = useMemo(
+  const COLUMNS: Array<
+    CustomColumn<Integral> & {
+      showWhen: string;
+    }
+  > = useMemo(
     () => [
       {
         showWhen: 'absolute.show',
@@ -126,16 +128,12 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         },
         accessor: 'integral',
         Cell: ({ row }) => {
-          let integral: string | number = '';
-
-          if (row.original?.integral) {
-            const value = formatNumber(
-              row.original.integral,
-              integralsPreferences.relative.format,
-            );
-            const flag = checkIntegralKind(row.original);
-            integral = flag ? value : `[ ${value} ]`;
-          }
+          const value = formatNumber(
+            row.original.integral || 0,
+            integralsPreferences.relative.format,
+          );
+          const flag = checkIntegralKind(row.original);
+          const integral = flag ? value : `[ ${value} ]`;
 
           return (
             <EditableColumn
@@ -172,7 +170,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
   );
 
   const tableColumns = useMemo(() => {
-    let columns = [...initialColumns];
+    const columns = [...initialColumns];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
       if (lodashGet(integralsPreferences, showWhen)) {

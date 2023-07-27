@@ -16,7 +16,7 @@ interface TreeNodesProps {
   startY: number;
   signalID: string;
   levelHeight: number;
-  nodesData: Array<NodeData>;
+  nodesData: NodeData[];
   labelOptions: {
     distance: number;
     fontSize: CSSProperties['fontSize'];

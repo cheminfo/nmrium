@@ -36,7 +36,7 @@ function PeakPointer() {
   const { scaleX, scaleY, shiftY } = useScaleChecked();
 
   const activeSpectrum = useActiveSpectrum();
-  let position = useMouseTracker();
+  const position = useMouseTracker();
   const brushState = useBrushTracker();
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 

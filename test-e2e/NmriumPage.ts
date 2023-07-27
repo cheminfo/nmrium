@@ -86,6 +86,7 @@ export default class NmriumPage {
     if (mode === 'manual') {
       await this.page.fill('input[name="ph1"]', '-100');
       await this.page.fill('input[name="ph0"]', '-104');
+      await this.page.locator('input[name="ph0"]').blur();
     }
     if (mode === 'automatic') {
       const select = this.page.locator('select');
@@ -141,5 +142,25 @@ export default class NmriumPage {
     await this.page.dispatchEvent('_react=DropZone', 'drop', {
       dataTransfer,
     });
+  }
+
+  async saveWorkspaceModal(name: string) {
+    // Save changes.
+    await this.page.click('_react=Modal >> text=Apply and Save');
+
+    // Enter a name for the workspace.
+    await this.page.locator('input[name="workspaceName"]').fill(name);
+
+    // Save the user workspace.
+    await this.page.click(
+      'data-test-id=save-workspace-dialog >> button >> text=Save',
+    );
+
+    await this.dismissAlert('Preferences saved');
+  }
+
+  async dismissAlert(text: string) {
+    const alert = this.page.locator('_react=AlertBlock', { hasText: text });
+    await alert.locator('button').click();
   }
 }

@@ -6,7 +6,8 @@ const styles = css`
   display: block;
   border-radius: 5px;
   overflow: hidden;
-  width: 350px;
+  width: 30vw;
+  min-width: 350px;
   border-top: 10px solid #ed0000;
 
   .message {
@@ -61,7 +62,7 @@ interface AlertButtonOptions {
 }
 interface ConfirmationDialogProps {
   style?: CSSProperties;
-  buttons: Array<AlertButtonOptions>;
+  buttons: AlertButtonOptions[];
   onClose: () => void;
   message: ReactNode;
   render?: (data: { message: ReactNode; className: string }) => ReactNode;

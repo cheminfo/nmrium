@@ -3,7 +3,7 @@ import { useEffect, ReactFragment } from 'react';
 import useDraggable, { Position } from './useDraggable';
 
 type ChildType =
-  | Array<React.ReactElement>
+  | React.ReactElement[]
   | React.ReactElement
   | ReactFragment
   | boolean

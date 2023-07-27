@@ -1,41 +1,14 @@
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-async function copyHTMLToClipboard(data) {
-  return copyToClipboard(data, 'text/html');
-}
-async function copyTextToClipboard(data) {
-  return copyToClipboard(data, 'text/plain');
-}
+import { newClipboardItem, write } from '../../utils/clipboard/clipboard';
 
-async function copyToClipboard(data, type: 'text/html' | 'text/plain') {
-  try {
-    if (typeof ClipboardItem !== 'undefined') {
-      void navigator.clipboard.write([
-        new ClipboardItem({
-          [type]: new Promise((resolve) => {
-            resolve(new Blob([data], { type }));
-          }),
-        }),
-      ]);
-    } else {
-      const clipboard = await import('clipboard-polyfill');
-      //TODO when Firefox team implement ClipboardItem this code should be removed
-      // this library is used mainly to solve the problem of copy HTML to a clipboard in Firefox but we use it for both HTML and plain text
-      const item = new clipboard.ClipboardItem({
-        [type]: new Blob([data], { type }),
-      });
-      await clipboard.write([item]);
-    }
-
-    return true;
-  } catch {
-    return false;
-  }
-}
 /**
  * export the experiments result in JSON format
- * @param {*} data
+ * @param data
+ * @param fileName
+ * @param spaceIndent
+ * @param isCompressed
  */
 async function exportAsJSON(
   data,
@@ -126,21 +99,21 @@ function exportAsPng(
 ) {
   const { blob, width, height } = getBlob(rootRef, elementID);
   try {
-    let canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    let context = canvas.getContext('2d');
+    const context = canvas.getContext('2d');
 
     if (context) {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    let img = new Image();
-    let url = URL.createObjectURL(blob);
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
     img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
-      let png = canvas.toDataURL('image/png', 1);
+      const png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
     });
@@ -168,52 +141,48 @@ function copyDataURLClipboardFireFox(image) {
   img.remove();
 }
 
-function copyBlobToClipboard(canvas) {
+function copyBlobToClipboard(canvas: HTMLCanvasElement) {
   canvas.toBlob((b) => {
-    const clip = new ClipboardItem({
-      [b.type]: b,
-    });
+    if (!b) return;
 
-    navigator.clipboard.write([clip]).then(
-      () => {
+    (async () => {
+      const clip = await newClipboardItem({
+        [b.type]: b,
+      });
+
+      await write([clip]);
+    })()
+      .catch(() => {
+        const png = canvas.toDataURL('image/png', 1);
+        copyDataURLClipboardFireFox(png);
+        URL.revokeObjectURL(png);
+      })
+      .then(() => {
         // eslint-disable-next-line no-console
         console.log('experiment copied.');
-      },
-      (error) => {
-        // TODO: handle error;
-        reportError(error);
-      },
-    );
+      })
+      .catch(reportError);
   });
 }
 
 function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
   const { blob, width, height } = getBlob(rootRef, elementID);
   try {
-    let canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    let context = canvas.getContext('2d');
+    const context = canvas.getContext('2d');
 
     if (context) {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    let img = new Image();
+    const img = new Image();
     const url = URL.createObjectURL(blob);
-    img.addEventListener('load', async () => {
+    img.addEventListener('load', () => {
       context?.drawImage(img, 0, 0);
-      const png = canvas.toDataURL('image/png', 1);
-
-      // @ts-expect-error write exists in some browsers
-      if (navigator.clipboard.write) {
-        copyBlobToClipboard(canvas);
-      } else {
-        copyDataURLClipboardFireFox(png);
-      }
-
-      URL.revokeObjectURL(png);
+      copyBlobToClipboard(canvas);
     });
     img.src = url;
   } catch (error) {
@@ -235,7 +204,7 @@ export interface BlobObject {
 }
 
 function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
-  let _svg: any = (rootRef.getRootNode() as Document)
+  const _svg: any = (rootRef.getRootNode() as Document)
     .querySelector(`#${elementID}`)
     ?.cloneNode(true);
 
@@ -305,8 +274,6 @@ export {
   exportAsNMRE,
   exportAsPng,
   copyPNGToClipboard,
-  copyTextToClipboard,
-  copyHTMLToClipboard,
   exportAsMol,
   exportAsMatrix,
   getBlob,

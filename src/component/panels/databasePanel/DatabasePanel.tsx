@@ -53,20 +53,28 @@ import DatabaseTable from './DatabaseTable';
 export interface DatabaseInnerProps {
   nucleus: string;
   selectedTool: string;
-  databases: (LocalDatabase | Database)[];
+  databases: Array<LocalDatabase | Database>;
   defaultDatabase: string;
 }
 
 interface ResultEntry {
   data: DatabaseNMREntry[];
-  databases: { key: string; value: string }[];
-  solvents: { label: string; value: string }[];
+  databases: Array<{ key: string; value: string }>;
+  solvents: Array<{ label: string; value: string }>;
 }
 
 const emptyKeywords = {
   solvent: '-1',
   searchKeywords: '',
 };
+
+function mapKeywordsToArray(searchKeywords: string, solvent: string) {
+  const values = searchKeywords ? searchKeywords.split(' ') : [];
+  if (solvent !== '-1') {
+    values.unshift(`solvent:${solvent}`);
+  }
+  return values;
+}
 
 function DatabasePanelInner({
   nucleus,
@@ -117,31 +125,39 @@ function DatabasePanelInner({
     }
   }, []);
 
+  const search = useCallback(
+    (solvents?: any[]) => {
+      const { solvent, searchKeywords } = keywords;
+      if (databaseInstance.current) {
+        const keywords = mapKeywordsToArray(searchKeywords, solvent);
+        const data = databaseInstance.current.search({ keywords, idCode });
+        setResult((prevResult) => ({
+          ...prevResult,
+          data,
+          ...(solvents && { solvents }),
+        }));
+      }
+    },
+    [idCode, keywords],
+  );
+
   useEffect(() => {
     const { solvent, searchKeywords } = keywords;
     setTimeout(async () => {
       if (databaseInstance.current) {
         const hideLoading = await alert.showLoading(`Preparing of the Result`);
         if (solvent === '-1' && !searchKeywords) {
-          const data = databaseInstance.current.data;
           const solvents = mapSolventsToSelect(
             databaseInstance.current.getSolvents(),
           );
-
-          setResult((prevResult) => ({ ...prevResult, data, solvents }));
+          search(solvents);
         } else {
-          const values = searchKeywords.split(' ');
-          if (solvent !== '-1') {
-            values.unshift(`solvent:${solvent}`);
-          }
-
-          const data = databaseInstance.current.search(values.join(' '));
-          setResult((prevResult) => ({ ...prevResult, data }));
+          search();
         }
         hideLoading();
       }
     }, 0);
-  }, [alert, keywords]);
+  }, [alert, idCode, keywords, search]);
 
   useEffect(() => {
     function handle(event) {
@@ -166,6 +182,21 @@ function DatabasePanelInner({
       Events.off('brushEnd', handle);
     };
   }, [format, selectedTool]);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      if (databaseInstance.current) {
+        const hideLoading = await alert.showLoading(`Loading the database`);
+
+        databaseInstance.current = initiateDatabase(
+          databaseDataRef.current,
+          nucleus,
+        );
+        hideLoading();
+        setKeywords({ ...emptyKeywords });
+      }
+    }, 0);
+  }, [alert, nucleus]);
 
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
@@ -212,21 +243,6 @@ function DatabasePanelInner({
   );
 
   useEffect(() => {
-    setTimeout(async () => {
-      if (databaseInstance.current) {
-        const hideLoading = await alert.showLoading(`Loading the database`);
-
-        databaseInstance.current = initiateDatabase(
-          databaseDataRef.current,
-          nucleus,
-        );
-        hideLoading();
-        setKeywords({ ...emptyKeywords });
-      }
-    }, 0);
-  }, [alert, nucleus]);
-
-  useEffect(() => {
     if (item?.isOpen && defaultDatabase && !databaseInstance.current) {
       handleChangeDatabase(defaultDatabase);
     }
@@ -238,7 +254,7 @@ function DatabasePanelInner({
 
   const resurrectHandler = useCallback(
     (rowData) => {
-      let { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
+      const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
       const { ranges, solvent, names = [] } = result.data[index];
 
       if (jcampRelativeURL) {
@@ -311,14 +327,7 @@ function DatabasePanelInner({
   );
 
   const searchByStructureHandler = (idCodeValue: string) => {
-    setTimeout(async () => {
-      const hideLoading = await alert.showLoading(`Searching in progress...`);
-      const data =
-        databaseInstance.current?.searchByStructure(idCodeValue) || [];
-      setResult((prevResult) => ({ ...prevResult, data }));
-      setIdCode(idCodeValue);
-      hideLoading();
-    }, 0);
+    setIdCode(idCodeValue);
   };
   const openSearchByStructure = () => {
     modal.show(
@@ -465,7 +474,7 @@ export default function PeaksPanel() {
   const { data, defaultDatabase } = current.databases;
   const databases = DATA_BASES.concat(
     data.filter((datum) => datum.enabled),
-  ) as (Database | LocalDatabase)[];
+  ) as Array<Database | LocalDatabase>;
 
   if (!activeTab || displayerMode !== DISPLAYER_MODE.DM_1D) {
     return (

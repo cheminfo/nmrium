@@ -9,6 +9,8 @@ import { FaCopy } from 'react-icons/fa';
 import { DropdownMenuProps } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -16,7 +18,6 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { rangeStateInit } from '../../reducer/Reducer';
-import { copyTextToClipboard } from '../../utility/export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -38,9 +39,9 @@ interface RangesTablePanelInnerProps {
   ranges: Ranges;
   data: NmrData1D;
   info: Info1D;
-  xDomain: Array<number>;
+  xDomain: number[];
   activeTab: string;
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   showMultiplicityTrees: boolean;
   showJGraph: boolean;
   showRangesIntegrals: boolean;
@@ -114,6 +115,9 @@ function RangesTablePanelInner({
     [assignmentData, dispatch],
   );
 
+  const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
+    useClipboard();
+
   const saveJSONToClipboardHandler = useCallback(
     async (value) => {
       if (data.x && data.re) {
@@ -130,18 +134,11 @@ function RangesTablePanelInner({
           ...value,
         };
 
-        const success = await copyTextToClipboard(
-          JSON.stringify(dataToClipboard, undefined, 2),
-        );
-
-        if (success) {
-          alert.show('Data copied to clipboard');
-        } else {
-          alert.error('copy to clipboard failed');
-        }
+        await rawWriteWithType(JSON.stringify(dataToClipboard, undefined, 2));
+        alert.show('Data copied to clipboard');
       }
     },
-    [data, alert],
+    [data, rawWriteWithType, alert],
   );
 
   const contextMenuSelectHandler = useCallback(
@@ -222,6 +219,12 @@ function RangesTablePanelInner({
           <RangesPreferences ref={settingRef} />
         )}
       </div>
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+        label="Range"
+      />
     </div>
   );
 }

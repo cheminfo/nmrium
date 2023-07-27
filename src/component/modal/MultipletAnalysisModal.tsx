@@ -225,9 +225,10 @@ export default function MultipletAnalysisModal({
               <div className="multiplicity">
                 <p>
                   {analysisData.js[index]
-                    ? `${
-                        analysisData.js[index]?.multiplicity
-                      }: ${analysisData.js[index]?.coupling.toFixed(3)} Hz`
+                    ? `${analysisData.js[index]
+                        ?.multiplicity}: ${analysisData.js[
+                        index
+                      ]?.coupling.toFixed(3)} Hz`
                     : ''}
                 </p>
               </div>

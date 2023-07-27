@@ -64,7 +64,7 @@ function InputRange(props: InputRangeProps, ref: any) {
   const mouseDownCallback = useCallback(
     (event) => {
       function mouseMoveCallback(event) {
-        let diff = event.clientX - previousPosition.current;
+        const diff = event.clientX - previousPosition.current;
         previousPosition.current = event.clientX;
         if (event.buttons === 1) {
           const step = diff / (event.shiftKey ? 10 : 1);

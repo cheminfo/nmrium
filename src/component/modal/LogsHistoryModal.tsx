@@ -57,16 +57,22 @@ function getMaxLevelLogs(logs: LogEntry[], lastReadLogId: number) {
   return { backgroundColor, count: logsCounts[maxLevel] };
 }
 
-export function LogsHistory() {
+interface LogsHistoryModalProps {
+  autoOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function LogsHistoryModal(props: LogsHistoryModalProps) {
+  const { autoOpen = false, onClose } = props;
   const { logsHistory, logger, markAsRead, lastReadLogId } = useLogger();
-  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(autoOpen);
 
   const { count, backgroundColor } = getMaxLevelLogs(
     logsHistory,
     lastReadLogId,
   );
 
-  const COLUMNS: Column<LogEntry>[] = useMemo(
+  const COLUMNS: Array<Column<LogEntry>> = useMemo(
     () => [
       {
         Header: '#',
@@ -121,34 +127,35 @@ export function LogsHistory() {
   );
 
   const sortedLogs = logsHistory.slice().sort((a, b) => b.time - a.time);
-
   return (
     <>
-      <Button.BarButton
-        onClick={() => {
-          openDialog();
-        }}
-      >
-        <div style={{ position: 'relative' }}>
-          <IoBugOutline fontSize="1.4em" />
-          {count && (
-            <span
-              style={{
-                position: 'absolute',
-                top: '-0.4em',
-                left: '-0.4em',
-                backgroundColor,
-                borderRadius: '50%',
-                minWidth: '14px',
-                fontSize: '0.75em',
-                color: 'white',
-              }}
-            >
-              {count}
-            </span>
-          )}
-        </div>
-      </Button.BarButton>
+      {!autoOpen && (
+        <Button.BarButton
+          onClick={() => {
+            openDialog();
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            <IoBugOutline fontSize="1.4em" />
+            {count && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '-0.4em',
+                  left: '-0.4em',
+                  backgroundColor,
+                  borderRadius: '50%',
+                  minWidth: '14px',
+                  fontSize: '0.75em',
+                  color: 'white',
+                }}
+              >
+                {count}
+              </span>
+            )}
+          </div>
+        </Button.BarButton>
+      )}
 
       <Modal
         hasCloseButton
@@ -156,6 +163,7 @@ export function LogsHistory() {
         onRequestClose={() => {
           markAsRead();
           closeDialog();
+          onClose?.();
         }}
       >
         <Modal.Header>Logs History </Modal.Header>

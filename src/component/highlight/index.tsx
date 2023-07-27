@@ -179,7 +179,7 @@ export function useHighlightData() {
  * @param {SourceData = null} sourceData
  */
 export function useHighlight(
-  highlights: (string | number)[],
+  highlights: Array<string | number>,
   sourceData: SourceData | null = null,
 ) {
   if (!Array.isArray(highlights)) {
@@ -188,7 +188,7 @@ export function useHighlight(
   const { dispatch, highlight } = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
-    const newHighlights: Array<any> = [];
+    const newHighlights: any[] = [];
     for (const highlight of highlights) {
       if (typeof highlight !== 'string' && typeof highlight !== 'number') {
         throw new Error(`highlight key must be a string or number`);

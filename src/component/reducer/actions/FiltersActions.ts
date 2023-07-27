@@ -393,7 +393,7 @@ function handleCalculateZeroFillingFilter(
       info,
     } = draft.tempData[index] as Spectrum1D;
 
-    let _data = { data: { x, re, im }, filters, info };
+    const _data = { data: { x, re, im }, filters, info };
     zeroFilling.apply(_data as Spectrum1D, action.payload);
     const { im: newIm, re: newRe, x: newX } = _data.data;
     const datum = draft.data[index] as Spectrum1D;
@@ -418,7 +418,7 @@ function handleCalculateApodizationFilter(
       info,
     } = draft.tempData[index] as Spectrum1D;
 
-    let _data = { data: { x, re, im }, info };
+    const _data = { data: { x, re, im }, info };
     draft.toolOptions.data.apodizationOptions = options;
     apodization.apply(_data as Spectrum1D, options);
     const { im: newIm, re: newRe } = _data.data;
@@ -536,7 +536,7 @@ function handleCalculateManualPhaseCorrection(
     } = draft.tempData[index] as Spectrum1D;
 
     const { ph0, ph1 } = action.payload;
-    let _data = { data: { x, re, im }, info };
+    const _data = { data: { x, re, im }, info };
     phaseCorrection.apply(_data as Spectrum1D, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
     const datum = draft.data[index] as Spectrum1D;
@@ -663,7 +663,7 @@ function calculateBaseLineCorrection(
     const { zones, options } = draft.toolOptions.data.baselineCorrection;
     const { livePreview, ...filterOptions } = options;
     if (livePreview) {
-      let _data = { data: { x, re, im }, info };
+      const _data = { data: { x, re, im }, info };
       baselineCorrection.apply(_data as Spectrum1D, {
         zones,
         ...filterOptions,

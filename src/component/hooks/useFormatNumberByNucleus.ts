@@ -11,11 +11,9 @@ export type ReturnFunction = (
   suffix?: string,
 ) => string;
 
-export function useFormatNumberByNucleus(
-  nucleus?: Array<string>,
-): Array<ReturnFunction>;
+export function useFormatNumberByNucleus(nucleus?: string[]): ReturnFunction[];
 export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
-export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
+export function useFormatNumberByNucleus(nucleus?: string | string[]) {
   const preferences = usePreferences();
   const nucleusByKey = lodashGet(preferences.current, `formatting.nuclei`, {
     ppm: '0.0',

@@ -66,7 +66,7 @@ const BRUKER_LIST: ListItem[] = [
     fieldType: 'checkbox',
   },
 ];
-const COLUMNS: Column<ListItem>[] = [
+const COLUMNS: Array<Column<ListItem>> = [
   {
     Header: '#',
     style: { width: '10px' },

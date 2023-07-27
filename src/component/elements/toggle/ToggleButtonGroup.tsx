@@ -24,7 +24,7 @@ export default function ToggleButtonGroup({
   const [toggleButtons, setToggleButtons] = useState<any>([]);
   const handleOnChange = useCallback(
     (val) => {
-      const _toggles: Array<any> = [...toggleButtons];
+      const _toggles: any[] = [...toggleButtons];
       const toggles = _toggles.map((toggle) => {
         return {
           value: toggle.value,

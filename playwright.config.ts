@@ -1,22 +1,22 @@
-import { PlaywrightTestConfig, devices, ViewportSize } from '@playwright/test';
+import { devices, ViewportSize, defineConfig } from '@playwright/test';
 
 const viewportOverride: ViewportSize = {
   width: 1600,
   height: 900,
 };
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   testDir: 'test-e2e',
   retries: 1,
   forbidOnly: !!process.env.CI,
   timeout: 60_000,
   expect: {
-    timeout: 10_000,
+    timeout: 15_000,
   },
+  reporter: 'html',
   use: {
     headless: true,
     ignoreHTTPSErrors: true,
-    // video: 'on-first-retry',
     launchOptions: {
       // slowMo: 250,
     },
@@ -56,6 +56,4 @@ const config: PlaywrightTestConfig = {
       },
     },
   ],
-};
-
-export default config;
+});

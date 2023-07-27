@@ -60,7 +60,7 @@ function MultipleSpectraAnalysisTable({
       });
     }
 
-    const columns: CustomColumn<any>[] = [
+    const columns: Array<CustomColumn<any>> = [
       {
         Header: '#',
         index: 0,

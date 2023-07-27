@@ -1,5 +1,69 @@
 # Changelog
 
+## [0.41.0](https://github.com/cheminfo/nmrium/compare/v0.40.1...v0.41.0) (2023-07-22)
+
+
+### Features
+
+* 1D pan horizontally and 2D pan vertically and horizontally ([#2498](https://github.com/cheminfo/nmrium/issues/2498)) ([594e791](https://github.com/cheminfo/nmrium/commit/594e79193b5d32064e40ab2aabdcd9f08a911c02))
+* 1d spectrum simulation ([#2513](https://github.com/cheminfo/nmrium/issues/2513)) ([caf4cbd](https://github.com/cheminfo/nmrium/commit/caf4cbd31bbd146447c755a4242cb759b6f6617a))
+* add the "frequency" and spin system as "name" to the simulated spectrum info  ([#2530](https://github.com/cheminfo/nmrium/issues/2530)) ([21b1e1b](https://github.com/cheminfo/nmrium/commit/21b1e1b47d370a6aec6d615b0e22873d2b9b3c56))
+* create a workspace for simulation  ([#2532](https://github.com/cheminfo/nmrium/issues/2532)) ([1ca5910](https://github.com/cheminfo/nmrium/commit/1ca59100ab8358810ee3baf823dd56825e3e7182)), closes [#2527](https://github.com/cheminfo/nmrium/issues/2527)
+
+
+### Bug Fixes
+
+* autoExtendRange option and logs for simulation with signals are out of range. ([#2507](https://github.com/cheminfo/nmrium/issues/2507)) ([31c3844](https://github.com/cheminfo/nmrium/commit/31c3844cdeacdc3ce34458386a41a388686ab891))
+* baseline correction zones visibility ([0f27e2f](https://github.com/cheminfo/nmrium/commit/0f27e2f45efdb928e0fddf7a7fed810709a981aa)), closes [#2348](https://github.com/cheminfo/nmrium/issues/2348)
+* integral value editing if the sum 0 ([#2464](https://github.com/cheminfo/nmrium/issues/2464)) ([e6d6e0a](https://github.com/cheminfo/nmrium/commit/e6d6e0a31c1fe674e95fc05f54c56f5b00ae24e9))
+* manual range multiplicity ([#2535](https://github.com/cheminfo/nmrium/issues/2535)) ([9aa7cd2](https://github.com/cheminfo/nmrium/commit/9aa7cd2a9f1c4121176f22c073d72e85b7d039e2))
+* preferFt bruker data filtering was not working for 2D ([#2538](https://github.com/cheminfo/nmrium/issues/2538)) ([3663544](https://github.com/cheminfo/nmrium/commit/36635440383cffe07ea9f3a8ef61ad1c221496ce))
+* prevent clearing the molecule from the structure editor after changing the settings ([8cb98a3](https://github.com/cheminfo/nmrium/commit/8cb98a3630c9722d8138bd7d3922c079650810c7)), closes [#2512](https://github.com/cheminfo/nmrium/issues/2512)
+* unexpected errors in reducer crashing the app ([dbd2b8c](https://github.com/cheminfo/nmrium/commit/dbd2b8c8570955d8623c30a52e0d70e28f5875f2))
+* update frequency for the simulated spectrum ([#2534](https://github.com/cheminfo/nmrium/issues/2534)) ([23958a0](https://github.com/cheminfo/nmrium/commit/23958a08c84c1982c6750733cf499c0e6d53dbad)), closes [#2533](https://github.com/cheminfo/nmrium/issues/2533)
+
+## [0.40.1](https://github.com/cheminfo/nmrium/compare/v0.40.0...v0.40.1) (2023-07-06)
+
+
+### Bug Fixes
+
+* **release:** trigger new release ([#2501](https://github.com/cheminfo/nmrium/issues/2501)) ([5ba9c07](https://github.com/cheminfo/nmrium/commit/5ba9c07262557754d29b36704f94d355236eeb75))
+
+## [0.40.0](https://github.com/cheminfo/nmrium/compare/v0.39.0...v0.40.0) (2023-07-06)
+
+
+### Features
+
+* open logger dialog automatically ([b80a2d1](https://github.com/cheminfo/nmrium/commit/b80a2d1c88969632ef00c83d0b88924488156d4f)), closes [#2485](https://github.com/cheminfo/nmrium/issues/2485)
+
+
+### Bug Fixes
+
+* some modal sizes ([#2377](https://github.com/cheminfo/nmrium/issues/2377)) ([7d114d9](https://github.com/cheminfo/nmrium/commit/7d114d9aede5e7acadaeee64eeb768519df116e5))
+* unhandled error when clipboard read permissions are not granted ([#2492](https://github.com/cheminfo/nmrium/issues/2492)) ([41b4cd8](https://github.com/cheminfo/nmrium/commit/41b4cd885839be9ee251af4c45bb9d8177226521))
+
+## [0.39.0](https://github.com/cheminfo/nmrium/compare/v0.38.2...v0.39.0) (2023-06-30)
+
+
+### Features
+
+* add low res prediction ([#2478](https://github.com/cheminfo/nmrium/issues/2478)) ([44ff57e](https://github.com/cheminfo/nmrium/commit/44ff57e89f4e746ed8950c3acb269b8e5f3c50e5))
+* allow to render NMRium without error boundary ([#2489](https://github.com/cheminfo/nmrium/issues/2489)) ([8bde9b9](https://github.com/cheminfo/nmrium/commit/8bde9b9a31f6d730fe8502a3371f6088f3b82285))
+
+
+### Bug Fixes
+
+* close the 'range editing' model of the range or spectra deleted ([0bc6183](https://github.com/cheminfo/nmrium/commit/0bc61839c1b177676a66ef397e28b1684f214ccb))
+* extract and check id object correctly ([56ec65a](https://github.com/cheminfo/nmrium/commit/56ec65a5ed3a4e10026eadacdce970ebd88c5d03))
+* log errors to the console to help debugging ([#2486](https://github.com/cheminfo/nmrium/issues/2486)) ([89cccd1](https://github.com/cheminfo/nmrium/commit/89cccd1c1be7e17cc51e5b28ca8325a16da6cd91))
+* manual zones detection for predicted 2D spectra ([#2487](https://github.com/cheminfo/nmrium/issues/2487)) ([8da944b](https://github.com/cheminfo/nmrium/commit/8da944b790a29ac8c5a3ed9c34342e36b8b36e25))
+* peaks and integrals panels should be visible only in 1D mode ([dded4f4](https://github.com/cheminfo/nmrium/commit/dded4f40484d4b8d03b6c7f84c8832fd56af8798))
+* reset the selected tool to zoom when switching between spectra or nuclei ([eee03ca](https://github.com/cheminfo/nmrium/commit/eee03cafe40ab4bdffb26a3a4ddcd2a6848b3c1e))
+* set preferences ([24d7613](https://github.com/cheminfo/nmrium/commit/24d7613927b6beb2dc20a68e8da0eba17c740188))
+* simulate spectra with negative chemical shift and catch some errors ([#2488](https://github.com/cheminfo/nmrium/issues/2488)) ([e677e06](https://github.com/cheminfo/nmrium/commit/e677e0622368b7fec5aa9832042ce90b38acb37c))
+* spectra zones detection should be only on FT 2D spectra ([293d2fb](https://github.com/cheminfo/nmrium/commit/293d2fb8678eb31b004f1b6bb63bee0bce4bde45))
+* validate JCAMP file URL correctly ([82b4c42](https://github.com/cheminfo/nmrium/commit/82b4c427591ade7ea4fdbb8bb441ab6778a8c599))
+
 ## [0.38.2](https://github.com/cheminfo/nmrium/compare/v0.38.1...v0.38.2) (2023-06-22)
 
 

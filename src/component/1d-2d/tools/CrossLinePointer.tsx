@@ -38,7 +38,7 @@ function CrossLinePointer() {
     margin,
     toolOptions: { selectedTool },
   } = useChartData();
-  let position = useMouseTracker();
+  const position = useMouseTracker();
   const brushState = useBrushTracker();
 
   if (

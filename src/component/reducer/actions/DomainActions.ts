@@ -20,10 +20,14 @@ type SetYDomainAction = ActionType<
   'SET_Y_DOMAIN',
   { yDomain: [number, number] }
 >;
+type MoveXAxisAction = ActionType<'MOVE', { shiftX: number; shiftY: number }>;
 
-export type DomainActions = SetXDomainAction | SetYDomainAction;
+export type DomainActions =
+  | SetXDomainAction
+  | SetYDomainAction
+  | MoveXAxisAction;
 
-function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
+function getActiveData(draft: Draft<State>): Spectrum1D[] {
   let data = draft.data.filter(
     (datum) =>
       nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab &&
@@ -45,12 +49,12 @@ function getActiveData(draft: Draft<State>): Array<Spectrum1D> {
     data = data.filter((datum) => !datum.info.isFid);
   }
 
-  return data as Array<Spectrum1D>;
+  return data as Spectrum1D[];
 }
 
 function getDomain(draft: Draft<State>) {
-  let xArray: Array<number> = [];
-  let yArray: Array<number> = [];
+  let xArray: number[] = [];
+  let yArray: number[] = [];
   const yDomains: Record<string, number[]> = {};
   const xDomains: Record<string, number[]> = {};
 
@@ -60,7 +64,7 @@ function getDomain(draft: Draft<State>) {
       const { display, data, id } = d;
       const { y } = get1DDataXY(d);
 
-      const _extent = extent(y) as Array<number>;
+      const _extent = extent(y) as number[];
       const domain = [data.x[0], data.x.at(-1) as number];
 
       yDomains[id] = _extent;
@@ -83,8 +87,8 @@ function getDomain(draft: Draft<State>) {
   };
 }
 function get2DDomain(state: State) {
-  let xArray: Array<number> = [];
-  let yArray: Array<number> = [];
+  let xArray: number[] = [];
+  let yArray: number[] = [];
   const yDomains: Record<string, [number, number] | [undefined, undefined]> =
     {};
   const xDomains: Record<string, number[]> = {};
@@ -112,7 +116,7 @@ function get2DDomain(state: State) {
             isSpectrum2D(datum) &&
             datum.info.nucleus?.join(',') === activeTab &&
             datum.info.isFt,
-        ) as Array<Spectrum2D>
+        ) as Spectrum2D[]
       ).flatMap((datum: Spectrum2D) => {
         const { minX, maxX } = (datum.data as NmrData2DFt).rr;
         return [minX, maxX];
@@ -124,7 +128,7 @@ function get2DDomain(state: State) {
             isSpectrum2D(d) &&
             d.info.nucleus?.join(',') === activeTab &&
             d.info.isFt,
-        ) as Array<Spectrum2D>
+        ) as Spectrum2D[]
       ).flatMap((datum: Spectrum2D) => {
         const { minY, maxY } = (datum.data as NmrData2DFt).rr;
         return [minY, maxY];
@@ -271,6 +275,38 @@ function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
   addToBrushHistory(draft, { xDomain: draft.xDomain, yDomain });
 }
 
+function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
+  const { shiftX, shiftY } = action.payload;
+  const [x1, x2] = draft.xDomain;
+  const [y1, y2] = draft.yDomain;
+  const [x1Origin, x2Origin] = draft.originDomain.xDomain;
+  const [y1Origin, y2Origin] = draft.originDomain.yDomain;
+  let x1Domain = x1 - shiftX;
+  let x2Domain = x2 - shiftX;
+  let y1Domain = y1 - shiftY;
+  let y2Domain = y2 - shiftY;
+
+  if (x1Domain < x1Origin) {
+    x1Domain = x1Origin;
+    x2Domain = x2;
+  }
+  if (x2Domain > x2Origin) {
+    x2Domain = x2Origin;
+    x1Domain = x1;
+  }
+  if (y1Domain < y1Origin) {
+    y1Domain = y1Origin;
+    y2Domain = y2;
+  }
+  if (y2Domain > y2Origin) {
+    y2Domain = y2Origin;
+    y1Domain = y1;
+  }
+
+  draft.xDomain = [x1Domain, x2Domain];
+  draft.yDomain = [y1Domain, y2Domain];
+}
+
 export {
   getDomain,
   setDomain,
@@ -278,4 +314,5 @@ export {
   setIntegralsYDomain,
   handleSetXDomain,
   handleSetYDomain,
+  handleMoveOverXAxis,
 };

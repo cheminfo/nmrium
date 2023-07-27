@@ -19,13 +19,13 @@ function hasCouplingConstant(multiplet) {
 
 function getPascal(n, spin) {
   if (n === undefined || n === 0 || spin === undefined) return [1];
-  let mult = 2 * spin + 1;
-  let previousLine: Array<any> = [];
+  const mult = 2 * spin + 1;
+  let previousLine: any[] = [];
   for (let j = 0; j < mult - 1; j++) previousLine.push(1);
   // complete with "1 1" or "1 1 1" for spin 1/2 and 1 respectively
   for (let i = 0; i < n - 1; i++) {
     // copy the line
-    let _line = previousLine.slice();
+    const _line = previousLine.slice();
     for (let j = 1; j < mult; j++) {
       for (let k = 0; k < previousLine.length - 1; k++) {
         _line[k + j] += previousLine[k];

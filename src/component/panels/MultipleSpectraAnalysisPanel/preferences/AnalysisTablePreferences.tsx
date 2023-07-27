@@ -1,11 +1,11 @@
 import { useFormikContext } from 'formik';
+import { AnalysisColumnsTypes } from 'nmr-load-save';
 import { useMemo, useCallback } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import Button from '../../../elements/Button';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../elements/formik/FormikInput';
-import { AnalysisColumnsTypes } from 'nmr-load-save';
 
 const inputStyle = { input: { width: '100%', fontSize: '1.15em' } };
 
@@ -43,7 +43,7 @@ export function AnalysisTablePreferences() {
     [setFieldValue],
   );
 
-  const COLUMNS: Column<any>[] = useMemo(() => {
+  const COLUMNS: Array<Column<any>> = useMemo(() => {
     return [
       {
         Header: '#',

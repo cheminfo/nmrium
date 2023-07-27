@@ -57,7 +57,7 @@ type InitPreferencesAction = ActionType<
 >;
 type SetPreferencesAction =
   | ActionType<'SET_PREFERENCES', Partial<Workspace>>
-  | ActionType<'SET_PREFERENCES', void>;
+  | ActionType<'SET_PREFERENCES'>;
 type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
   { key: string; value: string }
@@ -165,6 +165,10 @@ export const WORKSPACES: Array<{
     key: 'embedded',
     label: Workspaces.embedded.label,
   },
+  {
+    key: 'simulation',
+    label: Workspaces.simulation.label,
+  },
 ];
 
 export type WorkspaceWithSource = Workspace & { source: WorkSpaceSource };
@@ -202,7 +206,7 @@ export function initPreferencesState(
     false,
   );
 
-  let localData = getLocalStorage('nmr-general-settings');
+  const localData = getLocalStorage('nmr-general-settings');
 
   // remove old nmr-local-storage-version key
   if (nmrLocalStorageVersion && localData?.version) {

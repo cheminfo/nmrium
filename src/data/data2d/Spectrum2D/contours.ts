@@ -23,9 +23,7 @@ interface WheelOptions {
   currentLevel: Level;
 }
 
-interface ContoursLevels {
-  [key: string]: Level;
-}
+type ContoursLevels = Record<string, Level>;
 const DEFAULT_CONTOURS_OPTIONS = {
   positive: {
     contourLevels: [0, 21],
@@ -77,7 +75,7 @@ function contoursManager(
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
-  let { shiftKey, currentLevel, contourOptions } = options;
+  const { shiftKey, currentLevel, contourOptions } = options;
   const sign = Math.sign(value);
   const positiveBoundary = contourOptions.positive.contourLevels;
   const negativeBoundary = contourOptions.negative.contourLevels;
@@ -198,7 +196,6 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
 
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
-
   const sanResult = calculateSanPlot('2D', data);
   const median = sanResult.positive;
 
@@ -208,6 +205,13 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
 
   if (negative) {
     _range = _range.map((value) => -value);
+  }
+
+  if (_range.every((r) => r === 0)) {
+    return {
+      contours: _range.map((r) => ({ zValue: r, lines: [] })),
+      timeout: false,
+    };
   }
 
   return conrec.drawContour({

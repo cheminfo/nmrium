@@ -1,5 +1,5 @@
 export function jpathToArray(jpath: string, separator = '.') {
-  let keys: string[] = [];
+  const keys: string[] = [];
   let key = '';
   let findSeparator = false;
   const length = jpath.length;

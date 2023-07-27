@@ -22,6 +22,7 @@ import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
+import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation';
 
 interface AccordionItem {
   title: string;
@@ -118,6 +119,12 @@ const accordionItems: AccordionItem[] = [
     hidePreferenceKey: 'predictionPanel',
     mode: null,
   },
+  {
+    title: 'Spectrum Simulation',
+    component: <SpectrumSimulation />,
+    hidePreferenceKey: 'simulationPanel',
+    mode: DISPLAYER_MODE.DM_1D,
+  },
 ];
 
 export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
@@ -138,6 +145,13 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
         display: false,
         open: false,
       };
+
+      if (item?.isExperimental && !item.hidePreferenceKey) {
+        return {
+          display: true,
+          open: false,
+        };
+      }
 
       return lodashGet(
         preferences.current,

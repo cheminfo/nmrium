@@ -3,4 +3,5 @@ coverage
 lib
 lib-cjs
 node_modules
+playwright-report
 public

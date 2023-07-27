@@ -9,7 +9,7 @@ export function setActiveWorkspace(
 ) {
   if (action.payload) {
     const { workspace } = action.payload;
-    let localData = getLocalStorage('nmr-general-settings');
+    const localData = getLocalStorage('nmr-general-settings');
     draft.workspace.current = workspace;
     localData.currentWorkspace = workspace;
     storeData('nmr-general-settings', JSON.stringify(localData));

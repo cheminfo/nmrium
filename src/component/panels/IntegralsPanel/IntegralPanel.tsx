@@ -35,7 +35,7 @@ export interface IntegralPanelInnerProps {
   integrals: Integrals;
   info: Info1D;
   activeTab: string;
-  xDomain: Array<number>;
+  xDomain: number[];
 }
 
 function IntegralPanelInner({

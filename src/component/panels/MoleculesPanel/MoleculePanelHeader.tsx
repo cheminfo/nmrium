@@ -1,4 +1,3 @@
-import { SvgNmrFt } from 'cheminfo-font';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 import { CSSProperties, ReactNode, useCallback } from 'react';
 import {
@@ -18,6 +17,9 @@ import {
   MoleculesView,
   StateMoleculeExtended,
 } from '../../../data/molecules/Molecule';
+import { getMolecules } from '../../../data/molecules/MoleculeManager';
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
@@ -25,12 +27,8 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
-import { usePredictSpectraModal } from '../../modal/PredictSpectraModal';
-import {
-  copyPNGToClipboard,
-  copyTextToClipboard,
-  exportAsSVG,
-} from '../../utility/export';
+import PredictSpectraModal from '../../modal/PredictSpectraModal';
+import { copyPNGToClipboard, exportAsSVG } from '../../utility/export';
 import PanelHeader from '../header/PanelHeader';
 
 const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
@@ -91,7 +89,7 @@ const MOL_EXPORT_MENU: DropdownMenuProps<{ id: string }, void>['options'] = [
 ];
 interface MoleculePanelHeaderProps {
   currentIndex: number;
-  molecules: Array<StateMoleculeExtended>;
+  molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
   onMoleculeIndexChange?: (index: number) => void;
   onOpenMoleculeEditor: () => void;
@@ -115,7 +113,6 @@ export default function MoleculePanelHeader({
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
   const moleculeKey = molecules?.[currentIndex]?.id;
-  const openPredictSpectraModal = usePredictSpectraModal();
   const saveAsSVGHandler = useCallback(() => {
     if (!rootRef) return;
     exportAsSVG(rootRef, `molSVG${currentIndex} `, 'molFile');
@@ -127,17 +124,21 @@ export default function MoleculePanelHeader({
     alert.success('MOL copied as PNG to clipboard');
   }, [rootRef, alert, currentIndex]);
 
+  const {
+    rawWriteWithType,
+    readText,
+    shouldFallback,
+    cleanShouldFallback,
+    text,
+  } = useClipboard();
+
   const saveAsMolHandler = useCallback(
     (molfile) => {
-      void copyTextToClipboard(molfile).then((flag) => {
-        if (flag) {
-          alert.success('MOLFile copied to clipboard');
-        } else {
-          alert.error('copied not completed');
-        }
+      void rawWriteWithType(molfile).then(() => {
+        alert.success('MOLFile copied to clipboard');
       });
     },
-    [alert],
+    [alert, rawWriteWithType],
   );
 
   const exportHandler = useCallback(
@@ -175,11 +176,15 @@ export default function MoleculePanelHeader({
     ],
   );
 
-  const handlePaste = useCallback(() => {
-    void navigator.clipboard.readText().then((molfile) => {
-      dispatch({ type: 'ADD_MOLECULE', payload: { molfile } });
-    });
-  }, [dispatch]);
+  function handlePasteMolfileAction() {
+    void readText().then(handlePasteMolfile);
+  }
+  async function handlePasteMolfile(molfile: string | undefined) {
+    if (!molfile) return;
+    const molecules = await getMolecules(molfile);
+    dispatch({ type: 'ADD_MOLECULES', payload: { molecules } });
+    cleanShouldFallback();
+  }
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex]?.id) {
@@ -234,7 +239,7 @@ export default function MoleculePanelHeader({
         </DropdownMenu>
       )}
       <Button.BarButton
-        onClick={handlePaste}
+        onClick={handlePasteMolfileAction}
         color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
         toolTip="Paste molfile"
         tooltipOrientation="horizontal"
@@ -261,14 +266,7 @@ export default function MoleculePanelHeader({
             <FaRegTrashAlt />
           </Button.BarButton>
           {hasMolecules && (
-            <Button.BarButton
-              color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-              onClick={() => openPredictSpectraModal(molecules[currentIndex])}
-              toolTip="Predict spectra"
-              tooltipOrientation="horizontal"
-            >
-              <SvgNmrFt />
-            </Button.BarButton>
+            <PredictSpectraModal molecule={molecules[currentIndex]} />
           )}
         </>
       )}
@@ -307,6 +305,14 @@ export default function MoleculePanelHeader({
           <FaCog />
         </Button.BarButton>
       )}
+
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        onReadText={handlePasteMolfile}
+        text={text}
+        label="Molfile"
+      />
     </PanelHeader>
   );
 }

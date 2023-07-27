@@ -11,13 +11,14 @@ import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 import { ActiveSpectrum } from '../../reducer/Reducer';
-import { copyTextToClipboard } from '../../utility/export';
 
 import ColorIndicator from './base/ColorIndicator';
 import ShowHideSpectrumButton, {
@@ -192,6 +193,9 @@ export function SpectraTable(props: SpectraTableProps) {
     [onChangeVisibility, onOpenSettingModal],
   );
 
+  const { rawWriteWithType, cleanShouldFallback, shouldFallback, text } =
+    useClipboard();
+
   const selectContextMenuHandler = useCallback(
     (option, spectrum) => {
       const { id } = option.data;
@@ -199,7 +203,7 @@ export function SpectraTable(props: SpectraTableProps) {
         case SpectraContextMenuOptionsKeys.CopyToClipboard: {
           void (async () => {
             const { data, info } = spectrum;
-            const success = await copyTextToClipboard(
+            await rawWriteWithType(
               JSON.stringify(
                 { data, info },
                 (_, value) =>
@@ -207,12 +211,7 @@ export function SpectraTable(props: SpectraTableProps) {
                 2,
               ),
             );
-
-            if (success) {
-              alert.success('Data copied to clipboard');
-            } else {
-              alert.error('Copy to clipboard failed');
-            }
+            alert.success('Data copied to clipboard');
           })();
           break;
         }
@@ -233,7 +232,7 @@ export function SpectraTable(props: SpectraTableProps) {
       }
     },
 
-    [alert, dispatch],
+    [alert, dispatch, rawWriteWithType],
   );
 
   function handleActiveRow(row) {
@@ -241,7 +240,7 @@ export function SpectraTable(props: SpectraTableProps) {
   }
 
   const tableColumns = useMemo(() => {
-    let columns: Column<Spectrum>[] = [];
+    const columns: Array<Column<Spectrum>> = [];
     let index = 0;
     const visibleColumns = spectraPreferences.columns.filter(
       (col) => col.visible,
@@ -319,6 +318,12 @@ export function SpectraTable(props: SpectraTableProps) {
           }}
         />
       )}
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        text={text}
+        label="Spectra"
+      />
     </>
   );
 }

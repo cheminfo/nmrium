@@ -1,4 +1,4 @@
-import { DataXY, DoubleArray } from 'cheminfo-types';
+import { DataXY } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
 import { useCallback } from 'react';
 
@@ -13,7 +13,7 @@ type XYReducerDomainAxisType = keyof typeof XYReducerDomainAxis;
 
 export default function useXYReduce(
   domainAxis: XYReducerDomainAxisType,
-): (data: { x: Float64Array; y: Float64Array }) => DataXY<DoubleArray> {
+): (data: { x: Float64Array; y: Float64Array }) => DataXY {
   const { width, xDomain, yDomain } = useChartData();
 
   return useCallback(

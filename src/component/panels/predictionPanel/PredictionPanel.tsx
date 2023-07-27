@@ -9,6 +9,7 @@ import { predictSpectra } from '../../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useLogger } from '../../context/LoggerContext';
 import Button from '../../elements/Button';
 import NextPrev from '../../elements/NextPrev';
 import { useAlert } from '../../elements/popup/Alert';
@@ -40,11 +41,11 @@ export default function PredictionPanel() {
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const { logger } = useLogger();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molfile, setMolfile] = useState<string | null>(null);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
-
   const {
     item: spectraPanelState,
     utils: { toggle: openSpectraPanel },
@@ -97,6 +98,7 @@ export default function PredictionPanel() {
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {
+              logger,
               predictedSpectra: data.spectra,
               options: predictionPreferences,
               molecule: { ...molecules[currentIndex], molfile },
@@ -206,6 +208,7 @@ export default function PredictionPanel() {
                         )
                       ) : (
                         <StructureEditor
+                          initialMolfile={molfile || ''}
                           width={width}
                           height={height}
                           svgMenu

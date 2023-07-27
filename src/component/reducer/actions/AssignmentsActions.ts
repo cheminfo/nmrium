@@ -7,7 +7,7 @@ import { ActionType } from '../types/ActionType';
 
 type SetAutomaticAssignmentsAction = ActionType<
   'SET_AUTOMATIC_ASSIGNMENTS',
-  { assignments: (SpectraData1D | SpectraData2D)[] }
+  { assignments: Array<SpectraData1D | SpectraData2D> }
 >;
 
 export type AssignmentsActions = SetAutomaticAssignmentsAction;
@@ -18,7 +18,7 @@ function handleSetAutomaticAssignments(
 ) {
   const assignments = action.payload.assignments;
 
-  for (let datum of assignments) {
+  for (const datum of assignments) {
     const index = draft.data.findIndex((spectrum) => spectrum.id === datum.id);
     if (index !== -1) {
       const dimension = draft.data[index].info.dimension;

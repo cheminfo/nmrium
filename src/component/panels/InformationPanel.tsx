@@ -52,13 +52,13 @@ function Arrow(props: { isOpen?: boolean }) {
   );
 }
 
-type InformationData = { key: string; value: string }[];
+type InformationData = Array<{ key: string; value: string }>;
 
 interface InformationTableProps {
   data: InformationData;
   columns: any;
   title: string;
-  onClick: (e: React.MouseEvent<Element, MouseEvent>) => void;
+  onClick: (e: React.MouseEvent) => void;
   isOpen: boolean;
 }
 

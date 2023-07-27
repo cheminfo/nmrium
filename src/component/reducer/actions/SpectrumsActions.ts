@@ -1,4 +1,4 @@
-import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import { DataXY, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
@@ -17,7 +17,12 @@ import {
   getReferenceShift,
   isSpectrum1D,
   get1DColor,
+  initiateDatum1D,
 } from '../../../data/data1d/Spectrum1D';
+import {
+  SpectrumSimulationOptions,
+  simulateSpectrum,
+} from '../../../data/data1d/spectrumSimulation';
 import {
   getMissingProjection,
   isSpectrum2D,
@@ -125,6 +130,13 @@ type OrderSpectraAction = ActionType<
     data: Spectrum[];
   }
 >;
+type SimulateSpectrumAction = ActionType<
+  'SIMULATE_SPECTRUM',
+  {
+    keepSpectrum?: boolean;
+    spinSystem: string;
+  } & SpectrumSimulationOptions
+>;
 
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
@@ -138,7 +150,8 @@ export type SpectrumActions =
   | GenerateSpectrumFromPublicationStringAction
   | ImportSpectraMetaInfoAction
   | RecolorSpectraBasedOnDistinctValueAction
-  | OrderSpectraAction;
+  | OrderSpectraAction
+  | SimulateSpectrumAction;
 
 const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
@@ -191,7 +204,7 @@ function multipleSelect(
 
 function removeActiveSpectra(
   draft: Draft<State>,
-  relatedTargets: ({ jpath: string; key: string } | { jpath: string })[],
+  relatedTargets: Array<{ jpath: string; key: string } | { jpath: string }>,
 ) {
   const activeSpectra = getActiveSpectraAsObject(draft);
 
@@ -460,7 +473,7 @@ function handleAddMissingProjectionHandler(
     const { index } = activeSpectrum;
     const Spectrum2D = state.data[index];
     const { info, data } = Spectrum2D;
-    for (let n of nucleus) {
+    for (const n of nucleus) {
       const datum1D = getMissingProjection(
         info.isFid ? (data as NmrData2DFid).re : (data as NmrData2DFt).rr,
         n,
@@ -483,7 +496,7 @@ function handleAlignSpectraHandler(
   action: AlignSpectraAction,
 ) {
   if (draft.data && draft.data.length > 0) {
-    for (let datum of draft.data) {
+    for (const datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
         datum.info.nucleus === draft.view.spectra.activeTab &&
@@ -515,9 +528,11 @@ function handleGenerateSpectrumFromPublicationStringHandler(
     publicationString,
     draft.usedColors,
   );
-  draft.data.push(spectrum);
-  setActiveTab(draft);
-  setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
+  if (spectrum) {
+    draft.data.push(spectrum);
+    setActiveTab(draft);
+    setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
+  }
 }
 
 //action
@@ -617,6 +632,58 @@ function handleOrderSpectra(draft: Draft<State>, action: OrderSpectraAction) {
     .concat(sortedSpectra);
 }
 
+function handleSimulateSpectrum(
+  draft: Draft<State>,
+  simulateSpectrumOptions: SimulateSpectrumAction,
+) {
+  const {
+    payload: { spinSystem, data, options, keepSpectrum = false },
+  } = simulateSpectrumOptions;
+
+  const { x, y } = simulateSpectrum(spinSystem, {
+    data,
+    options,
+  }) as DataXY<Float64Array>;
+
+  let spectrumIndex = -1;
+  if (!keepSpectrum && draft.view.currentSimulatedSpectrumKey) {
+    spectrumIndex = draft.data.findIndex(
+      (s) => s.id === draft.view.currentSimulatedSpectrumKey,
+    );
+  }
+  const { frequency, to, from } = options;
+
+  const info = {
+    originFrequency: frequency,
+    baseFrequency: frequency,
+    name: spinSystem,
+  };
+
+  if (spectrumIndex !== -1) {
+    const spectrum = draft.data[spectrumIndex] as Spectrum1D;
+    spectrum.data = { x, re: y };
+    spectrum.info = { ...spectrum.info, ...info };
+    const [x1, x2] = draft.originDomain.xDomain;
+    const isInXDomain = to - from <= x2 - x1;
+    setDomain(draft, { updateYDomain: false, updateXDomain: !isInXDomain });
+  } else {
+    const spectrum = initiateDatum1D(
+      {
+        data: { x, re: y },
+        info: {
+          isFt: true,
+          nucleus: '1H',
+          ...info,
+        },
+      },
+      { usedColors: draft.usedColors },
+    );
+    draft.data.push(spectrum);
+    draft.view.currentSimulatedSpectrumKey = spectrum.id;
+    setActiveTab(draft);
+  }
+}
+
 export {
   handleChangeSpectrumVisibilityById,
   handleChangeSpectraVisibilityByNucleus,
@@ -630,5 +697,6 @@ export {
   handleToggleSpectraLegend,
   handleRecolorSpectraBasedOnDistinctValue,
   handleOrderSpectra,
+  handleSimulateSpectrum,
   setSpectraMetaInfo,
 };

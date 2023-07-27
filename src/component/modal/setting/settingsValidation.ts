@@ -29,7 +29,7 @@ const formattingValidation = (obj: Workspace) =>
         'Unique',
         'Nuclei need te be unique',
         function check(nuclei: Record<string, any>) {
-          let nucleusFrequencies: Record<
+          const nucleusFrequencies: Record<
             string,
             { value: number; fields: string[] }
           > = {};
@@ -49,7 +49,7 @@ const formattingValidation = (obj: Workspace) =>
           for (const key in nucleusFrequencies) {
             const { value, fields } = nucleusFrequencies[key];
             if (value > 1) {
-              for (let field of fields) {
+              for (const field of fields) {
                 errors.push(
                   new ValidationError(
                     `${key} nucleus must te be unique`,

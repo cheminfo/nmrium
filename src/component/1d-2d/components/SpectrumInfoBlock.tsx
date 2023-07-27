@@ -5,6 +5,7 @@ import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { SVGGroup } from '../../elements/SVGGroup';
 import useSpectrum from '../../hooks/useSpectrum';
+import { formatNumber } from '../../utility/formatNumber';
 
 const styles: Record<'value' | 'label' | 'colorIndicator', CSSProperties> = {
   label: {
@@ -52,7 +53,9 @@ function SpectrumInfoBlock() {
                 {field.label} :
               </text>
               <text alignmentBaseline="middle" style={styles.value}>
-                {value}
+                {field?.format && typeof value === 'number'
+                  ? formatNumber(value, field.format)
+                  : value}
               </text>
             </SVGGroup>
           );

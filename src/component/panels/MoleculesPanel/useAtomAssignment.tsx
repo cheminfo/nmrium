@@ -39,9 +39,9 @@ export default function useAtomAssignment({
       ? assignments.data.activated.id
       : ConcatenationString, // dummy value
   );
-  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<
-    Array<string>
-  >([]);
+  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<string[]>(
+    [],
+  );
   const [onAtomHoverAction, setOnAtomHoverAction] = useState<
     'show' | 'hide' | null
   >(null);
@@ -69,13 +69,9 @@ export default function useAtomAssignment({
 
   const data = useMemo(() => {
     if (zones || ranges) {
-      if (displayerMode === DISPLAYER_MODE.DM_1D && ranges && ranges.values) {
+      if (displayerMode === DISPLAYER_MODE.DM_1D && ranges?.values) {
         return ranges.values;
-      } else if (
-        displayerMode === DISPLAYER_MODE.DM_2D &&
-        zones &&
-        zones.values
-      ) {
+      } else if (displayerMode === DISPLAYER_MODE.DM_2D && zones?.values) {
         return zones.values;
       }
     }
@@ -83,12 +79,12 @@ export default function useAtomAssignment({
   }, [displayerMode, ranges, zones]);
 
   const assignedDiaIDs = useMemo(() => {
-    const assignedDiaID: { x: Array<string>; y: Array<string> } = {
+    const assignedDiaID: { x: string[]; y: string[] } = {
       x: [],
       y: [],
     };
     const assignment = assignments.data.assignments;
-    for (let id in assignment) {
+    for (const id in assignment) {
       if (assignment[id].x) {
         assignedDiaID.x.push(...assignment[id].x);
       }

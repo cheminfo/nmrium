@@ -60,7 +60,7 @@ const styles = css`
 
 function FooterBanner({ layout, data1D }) {
   const position = useMouseTracker();
-  const { startX, endX, startY, endY, step } = useBrushTracker();
+  const { startX, endX, startY, endY, step, mouseButton } = useBrushTracker();
   const {
     margin,
     width,
@@ -253,6 +253,8 @@ function FooterBanner({ layout, data1D }) {
     return 0;
   };
 
+  const isBrushing = step === 'brushing' && mouseButton === 'main';
+
   return (
     <div css={styles}>
       <div>
@@ -270,14 +272,14 @@ function FooterBanner({ layout, data1D }) {
         <span className="label">Intensity :</span>
         <span className="value">{getZValue()}</span>
       </div>
-      {step === 'brushing' && (
+      {isBrushing && (
         <div className="small-width-none">
           <span className="label"> Δppm :</span>
           <span className="value">{getDeltaX()}</span>
         </div>
       )}
 
-      {step === 'brushing' && (
+      {isBrushing && (
         <div className="small-width-none">
           <span className="label"> ratio :</span>
           <span className="value">{getRation()}%</span>

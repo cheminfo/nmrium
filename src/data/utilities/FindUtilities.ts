@@ -18,7 +18,7 @@ function findSignal1D(
   spectrum: Spectrum1D,
   signalID: string,
 ): Signal1D | undefined {
-  for (let range of spectrum.ranges.values) {
+  for (const range of spectrum.ranges.values) {
     const signalIndex = range.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
@@ -32,7 +32,7 @@ function findSignal2D(
   spectrum: Spectrum2D,
   signalID: string,
 ): Signal2D | undefined {
-  for (let zone of spectrum.zones.values) {
+  for (const zone of spectrum.zones.values) {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
@@ -43,7 +43,7 @@ function findSignal2D(
 }
 
 function findRange(spectrum: Spectrum1D, signalID: string): Range | undefined {
-  for (let range of spectrum.ranges.values) {
+  for (const range of spectrum.ranges.values) {
     const signalIndex = range.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );
@@ -54,7 +54,7 @@ function findRange(spectrum: Spectrum1D, signalID: string): Range | undefined {
 }
 
 function findZone(spectrum: Spectrum2D, signalID: string): Zone | undefined {
-  for (let zone of spectrum.zones.values) {
+  for (const zone of spectrum.zones.values) {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === signalID,
     );

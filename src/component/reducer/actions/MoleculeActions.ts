@@ -1,4 +1,8 @@
+import { Logger } from 'cheminfo-types';
+import { FifoLogger } from 'fifo-logger';
 import { Draft } from 'immer';
+import OCL from 'openchemlib/full';
+import { nbLabileH, getAtoms } from 'openchemlib-utils';
 
 import {
   PredictedSpectraResult,
@@ -27,6 +31,10 @@ interface AddMoleculeProps {
   floatMoleculeOnSave?: boolean;
 }
 type AddMoleculeAction = ActionType<'ADD_MOLECULE', AddMoleculeProps>;
+type AddMoleculesAction = ActionType<
+  'ADD_MOLECULES',
+  { molecules: StateMolecule[] }
+>;
 type SetMoleculeAction = ActionType<'SET_MOLECULE', Required<StateMolecule>>;
 type DeleteMoleculeAction = ActionType<
   'DELETE_MOLECULE',
@@ -35,6 +43,7 @@ type DeleteMoleculeAction = ActionType<
 type PredictSpectraFromMoleculeAction = ActionType<
   'PREDICT_SPECTRA',
   {
+    logger: FifoLogger;
     options: PredictionOptions;
     predictedSpectra: PredictedSpectraResult;
     molecule: StateMolecule;
@@ -56,6 +65,7 @@ type ChangeMoleculeLabelAction = ActionType<
 
 export type MoleculeActions =
   | AddMoleculeAction
+  | AddMoleculesAction
   | SetMoleculeAction
   | DeleteMoleculeAction
   | PredictSpectraFromMoleculeAction
@@ -89,6 +99,13 @@ function addMolecule(draft: Draft<State>, props: AddMoleculeProps) {
 //action
 function handleAddMolecule(draft: Draft<State>, action: AddMoleculeAction) {
   addMolecule(draft, action.payload);
+}
+function handleAddMolecules(draft: Draft<State>, action: AddMoleculesAction) {
+  const molecules = action.payload.molecules;
+
+  for (const { molfile } of molecules) {
+    addMolecule(draft, { molfile });
+  }
 }
 
 function setMolecule(draft: Draft<State>, props: Required<StateMolecule>) {
@@ -158,15 +175,21 @@ function handlePredictSpectraFromMolecule(
   action: PredictSpectraFromMoleculeAction,
 ) {
   const {
+    logger,
     predictedSpectra,
     options,
     molecule,
     action: predictionAction = 'save',
   } = action.payload;
-
+  checkPredictions(predictedSpectra, options, molecule.molfile, logger);
   const color = generateColor(false, draft.usedColors['1d']);
   const spectraIds: string[] = [];
-  for (const spectrum of generateSpectra(predictedSpectra, options, color)) {
+  for (const spectrum of generateSpectra(
+    predictedSpectra,
+    options,
+    color,
+    logger,
+  )) {
     draft.data.push(spectrum);
     spectraIds.push(spectrum.id);
   }
@@ -193,6 +216,63 @@ function handlePredictSpectraFromMolecule(
 
   draft.toolOptions.data.predictionIndex++;
   setActiveTab(draft, { refreshActiveTab: true, tab: '1H' });
+}
+
+function checkPredictions(
+  predictedSpectra: PredictedSpectraResult,
+  inputOptions: PredictionOptions,
+  molfile: string,
+  logger: Logger,
+) {
+  const { spectra } = inputOptions;
+  const missing2DPrediction: string[] = [];
+  const molecule = OCL.Molecule.fromMolfile(molfile);
+  molecule.addImplicitHydrogens();
+  const { atoms } = getAtoms(molecule);
+  for (const [experiment, required] of Object.entries(spectra)) {
+    if (!required || predictedSpectra[experiment]) continue;
+    let message = '';
+    switch (experiment) {
+      case 'proton': {
+        message =
+          atoms.H - nbLabileH(molecule) === 0
+            ? 'No non-labile hydrogen found in the molecule, the proton spectrum could not be predicted'
+            : `Proton was not predicted`;
+        break;
+      }
+      case 'carbon': {
+        message = `${experiment} was not predicted. ${
+          !('C' in atoms) ? 'No carbons found in the molecule' : ''
+        }`;
+        break;
+      }
+      case 'cosy':
+        message = !predictedSpectra.proton
+          ? `Proton prediction is missing, so COSY experiment can not be simulated`
+          : `There was a error in ${experiment.toUpperCase()} prediction`;
+        break;
+      case 'hsqc':
+      case 'hmbc':
+        if (!predictedSpectra[experiment]) {
+          missing2DPrediction.push(experiment);
+        }
+        break;
+      default:
+        break;
+    }
+    if (message.length > 0) {
+      logger.warn(message);
+    }
+  }
+  if (missing2DPrediction.length > 0) {
+    logger.warn(
+      `Carbon or proton prediction are missing, so ${
+        missing2DPrediction.length > 1
+          ? missing2DPrediction.join(' and ')
+          : missing2DPrediction[0]
+      } can not be simulated`,
+    );
+  }
 }
 
 function setPredictedSpectraReference(
@@ -324,6 +404,7 @@ function handleChangeMoleculeLabel(
 
 export {
   handleAddMolecule,
+  handleAddMolecules,
   handleSetMolecule,
   handleDeleteMolecule,
   handlePredictSpectraFromMolecule,

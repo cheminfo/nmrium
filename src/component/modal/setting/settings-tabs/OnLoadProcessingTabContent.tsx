@@ -37,7 +37,7 @@ function OnLoadProcessingTabContent() {
 }
 
 function FiltersTable({ data, nucleus }) {
-  const COLUMNS: CustomColumn<OnLoadProcessing>[] = [
+  const COLUMNS: Array<CustomColumn<OnLoadProcessing>> = [
     {
       index: 1,
       Header: '#',

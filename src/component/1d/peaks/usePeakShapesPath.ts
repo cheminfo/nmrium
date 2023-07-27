@@ -1,4 +1,4 @@
-import { DataXY, DoubleArray } from 'cheminfo-types';
+import { DataXY } from 'cheminfo-types';
 import { Spectrum1D } from 'nmr-load-save';
 import { Peak1D, peakToXY, peaksToXY } from 'nmr-processing';
 
@@ -26,7 +26,7 @@ export function usePeakShapesPath(spectrum: Spectrum1D) {
     const { target } = options;
 
     const frequency = spectrum.info.originFrequency;
-    let pathSeries: DataXY<DoubleArray> | null = null;
+    let pathSeries: DataXY | null = null;
     switch (target) {
       case 'peakShape': {
         const { peak } = options;

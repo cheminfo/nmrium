@@ -6,6 +6,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
 import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
+import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
+import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import {
   usePreferences,
   useWorkspacesList,
@@ -21,7 +23,6 @@ import DropDownButton, {
 import { useAlert } from '../../elements/popup/Alert';
 import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
-import { copyTextToClipboard } from '../../utility/export';
 import PredefinedWorkspaces from '../../workspaces';
 
 import WorkspaceItem from './WorkspaceItem';
@@ -36,7 +37,8 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
-  width: 800px;
+  width: 50vw;
+  min-width: 800px;
 
   .main-content {
     width: 100%;
@@ -222,21 +224,25 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     );
   }
 
+  const {
+    readText,
+    rawWriteWithType,
+    shouldFallback,
+    cleanShouldFallback,
+    text,
+  } = useClipboard();
+
   function handleCopyWorkspace() {
     const data = { [workspaceName]: refForm.current?.values };
-    void copyTextToClipboard(JSON.stringify(data)).then((flag) => {
-      if (flag) {
-        alert.success('Workspace copied to clipboard');
-      } else {
-        alert.error('copied not completed');
-      }
+    void rawWriteWithType(JSON.stringify(data)).then(() => {
+      alert.success('Workspace copied to clipboard');
     });
   }
 
   const setWorkspaceSetting = useCallback(
     (inputWorkspace) => {
       const parseWorkspaceName = Object.keys(inputWorkspace)[0];
-      if (preferences?.workspace.current === parseWorkspaceName) {
+      if (preferences.workspace.current === parseWorkspaceName) {
         refForm.current?.setValues(inputWorkspace[parseWorkspaceName]);
       } else if (preferences.workspaces[parseWorkspaceName]) {
         pastRef.current = inputWorkspace;
@@ -249,19 +255,8 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         });
       }
     },
-    [dispatch, preferences?.workspace, preferences.workspaces],
+    [dispatch, preferences.workspace, preferences.workspaces],
   );
-
-  function handlePastWorkspace() {
-    void navigator.clipboard.readText().then((text) => {
-      try {
-        const parseWorkspaces = JSON.parse(text);
-        setWorkspaceSetting(parseWorkspaces);
-      } catch {
-        alert.error('object parse error');
-      }
-    });
-  }
 
   useEffect(() => {
     if (pastRef.current) {
@@ -269,6 +264,23 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       pastRef.current = null;
     }
   }, [setWorkspaceSetting]);
+
+  function handlePastWorkspace(text: string | undefined) {
+    if (!text) return;
+
+    try {
+      const parseWorkspaces = JSON.parse(text);
+      setWorkspaceSetting(parseWorkspaces);
+    } catch {
+      alert.error('object parse error');
+    }
+
+    cleanShouldFallback();
+  }
+
+  function handlePastWorkspaceAction() {
+    void readText().then(handlePastWorkspace);
+  }
 
   return (
     <>
@@ -279,13 +291,17 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       >
         <FaWrench />
       </Toolbar.Item>
-      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
+      <Modal
+        hasCloseButton
+        isOpen={isOpenDialog}
+        onRequestClose={closeDialog}
+        maxWidth={1000}
+      >
         <Modal.Header>
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              width: '100%',
             }}
           >
             <span>General Settings</span>
@@ -301,7 +317,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
                 <DropDownButton
                   data={workspacesList}
                   renderItem={renderItem}
-                  selectedKey={preferences?.workspace.current}
+                  selectedKey={preferences.workspace.current}
                   onSelect={ChangeWorkspaceHandler}
                 />
               </Label>
@@ -332,7 +348,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               <Button.Action
                 size="xSmall"
                 fill="outline"
-                onClick={handlePastWorkspace}
+                onClick={handlePastWorkspaceAction}
                 toolTip="Past workspace preferences"
                 tooltipOrientation="horizontal"
                 style={{
@@ -430,6 +446,14 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         </Modal.Footer>
       </Modal>
       <SaveSettingsModal />
+
+      <ClipboardFallbackModal
+        mode={shouldFallback}
+        onDismiss={cleanShouldFallback}
+        onReadText={handlePastWorkspace}
+        text={text}
+        label="Workspace"
+      />
     </>
   );
 }

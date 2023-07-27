@@ -73,7 +73,7 @@ function flattenFields(
 ) {
   for (const fieldKey in data) {
     let _keysPath: string[] = [];
-    let _keysPathObject = parentObject || null;
+    const _keysPathObject = parentObject || null;
     let _level = level || 0;
 
     if (keysPath) {

@@ -39,10 +39,10 @@ import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
 import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { AssignmentProvider } from './assignment';
-import { ChartDataProvider } from './context/ChartContext';
+import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
-import { LoggerProvider } from './context/LoggerContext';
+import { LoggerProvider, useLogger } from './context/LoggerContext';
 import { PreferencesProvider } from './context/PreferencesContext';
 import { AlertProvider } from './elements/popup/Alert';
 import { ModalProvider } from './elements/popup/Modal';
@@ -65,7 +65,7 @@ const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
   display: flex;
   flex: 1;
-  flex-direction: 'column';
+  flex-direction: column;
   height: 100%;
   margin-left: -1px;
 `;
@@ -116,6 +116,7 @@ export type NMRiumWorkspace =
   | 'prediction'
   | 'embedded'
   | 'assignment'
+  | 'simulation'
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
@@ -127,6 +128,7 @@ export type OnNMRiumChange = (
 export interface NMRiumProps {
   data?: NMRiumData;
   onChange?: OnNMRiumChange;
+  noErrorBoundary?: boolean;
   onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
   customWorkspaces?: CustomWorkspaces;
@@ -147,7 +149,7 @@ type DeepPartial<T> = {
 export interface NMRiumData {
   source?: WebSource;
   molecules?: Molecules;
-  spectra: DeepPartial<Spectrum>[];
+  spectra: Array<DeepPartial<Spectrum>>;
   correlations?: CorrelationData;
 }
 
@@ -163,14 +165,19 @@ const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
   props: NMRiumProps,
   ref,
 ) {
-  const { onError, ...otherProps } = props;
-  return (
-    <RootLayout style={{ width: '100%' }}>
-      <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
-        <InnerNMRium {...otherProps} innerRef={ref} />
-      </ErrorBoundary>
-    </RootLayout>
+  const { noErrorBoundary = false, onError, ...otherProps } = props;
+
+  const innerNmrium = <InnerNMRium {...otherProps} innerRef={ref} />;
+
+  const children = noErrorBoundary ? (
+    innerNmrium
+  ) : (
+    <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
+      {innerNmrium}
+    </ErrorBoundary>
   );
+
+  return <RootLayout style={{ width: '100%' }}>{children}</RootLayout>;
 });
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
@@ -298,6 +305,7 @@ function InnerNMRium({
         })
         .catch((error) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
+
           // eslint-disable-next-line no-alert
           alert(error.message);
           reportError(error);
@@ -354,6 +362,7 @@ function InnerNMRium({
                     <HighlightProvider>
                       <AssignmentProvider spectraData={spectraData}>
                         <SpinnerProvider value={getSpinner}>
+                          <StateError />
                           <div
                             className="nmrium-container"
                             ref={rootRef}
@@ -440,3 +449,19 @@ function InnerNMRium({
   );
 }
 export default memo(NMRium);
+
+/**
+ * Alert user in UI when state have errorAction (error from reducer)
+ */
+function StateError() {
+  const { errorAction } = useChartData();
+  const { logger } = useLogger();
+
+  useEffect(() => {
+    if (!errorAction) return;
+
+    logger.error(errorAction);
+  }, [errorAction, logger]);
+
+  return null;
+}

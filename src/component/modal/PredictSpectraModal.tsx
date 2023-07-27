@@ -1,20 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrFt } from 'cheminfo-font';
 import { useCallback, useRef, useState, useMemo } from 'react';
+import { Checkbox, CheckedState, Modal, useOnOff } from 'react-science/ui';
 
 import {
-  defaultPredictionOptions,
+  getDefaultPredictionOptions,
   predictSpectra,
 } from '../../data/PredictionManager';
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
-import CheckBox from '../elements/CheckBox';
-import CloseButton from '../elements/CloseButton';
 import { useAlert } from '../elements/popup/Alert';
-import { useModal } from '../elements/popup/Modal';
-import { positions } from '../elements/popup/options';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
@@ -41,6 +40,12 @@ const styles = css`
       margin: 5px 5px 5px 0;
     }
   }
+
+  .header {
+    padding: 0;
+    margin: 0 30%;
+    width: 40%;
+  }
 `;
 
 interface PredictSpectraModalProps {
@@ -48,17 +53,19 @@ interface PredictSpectraModalProps {
   molecule: StateMoleculeExtended;
 }
 
-function PredictSpectraModal({
+export function PredictSpectraModal({
   onClose = () => null,
   molecule,
 }: PredictSpectraModalProps) {
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const refForm = useRef<any>();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [isApproved, setApproved] = useState(false);
   const [predictionPreferences, setPredictionPreferences] =
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
+  const { isApproved: isAgree = false, ...options } = predictionPreferences;
+  const [isApproved, setApproved] = useState<CheckedState>(isAgree);
   const {
     toolOptions: {
       data: { predictionIndex },
@@ -70,13 +77,12 @@ function PredictSpectraModal({
   }, []);
 
   const initValues = useMemo(() => {
-    const { isApproved: isAgree, ...options } = predictionPreferences;
-    setApproved(isAgree);
-    return Object.assign(defaultPredictionOptions, options, {
+    return Object.assign(getDefaultPredictionOptions(), options, {
       name: `Prediction ${predictionIndex + 1}`,
     });
-  }, [predictionPreferences, predictionIndex]);
+  }, [options, predictionIndex]);
 
+  const { logger } = useLogger();
   const submitHandler = useCallback(
     (values) => {
       void (async () => {
@@ -91,6 +97,9 @@ function PredictSpectraModal({
             }
           }
 
+          onClose();
+          closeDialog();
+
           const hideLoading = await alert.showLoading(
             `Predict ${predictedSpectra.join(',')} in progress`,
           );
@@ -100,6 +109,7 @@ function PredictSpectraModal({
             dispatch({
               type: 'PREDICT_SPECTRA',
               payload: {
+                logger,
                 predictedSpectra: data.spectra,
                 options: values,
                 molecule,
@@ -109,62 +119,77 @@ function PredictSpectraModal({
             alert.error(error?.message);
           } finally {
             hideLoading();
-            onClose();
           }
         }
       })();
     },
-    [alert, dispatch, isApproved, molecule, onClose, setPredictionPreferences],
+    [
+      alert,
+      dispatch,
+      isApproved,
+      molecule,
+      onClose,
+      logger,
+      setPredictionPreferences,
+      closeDialog,
+    ],
   );
-
-  const approveCheckHandler = useCallback((e) => {
-    setApproved(e.target.checked);
-  }, []);
 
   return (
-    <div css={[ModalStyles, styles]}>
-      <div className="header handle">
-        <span>Prediction of NMR spectrum</span>
-        <CloseButton onClick={onClose} className="close-bt" />
-      </div>
-      <div className="inner-content">
-        <PredictionPreferences
-          onSubmit={submitHandler}
-          options={initValues}
-          ref={refForm}
-        />
-        <p className="warning">
-          In order to predict spectra we are calling an external service and the
-          chemical structure will leave your browser! You should never predict
-          spectra for confidential molecules.
-        </p>
-        <div className="warning-container">
-          <CheckBox
-            onChange={approveCheckHandler}
-            checked={isApproved}
-            key={String(isApproved)}
-          />
-          <p>I confirm that the chemical structure is not confidential.</p>
+    <>
+      <Button.BarButton
+        color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
+        onClick={openDialog}
+        toolTip="Predict spectra"
+        tooltipOrientation="horizontal"
+      >
+        <SvgNmrFt />
+      </Button.BarButton>
+      <Modal
+        hasCloseButton
+        isOpen={isOpenDialog}
+        onRequestClose={() => {
+          onClose();
+          closeDialog();
+        }}
+        width={600}
+        maxWidth={1000}
+      >
+        <div css={[ModalStyles, styles]}>
+          <Modal.Header>
+            <div className="header handle">
+              <span>Prediction of NMR spectrum</span>
+            </div>
+          </Modal.Header>
+          <div className="inner-content">
+            <PredictionPreferences
+              onSubmit={submitHandler}
+              options={initValues}
+              ref={refForm}
+            />
+            <p className="warning">
+              In order to predict spectra we are calling an external service and
+              the chemical structure will leave your browser! You should never
+              predict spectra for confidential molecules.
+            </p>
+            <div className="warning-container">
+              <Checkbox
+                onChange={setApproved}
+                checked={isApproved}
+                key={String(isApproved)}
+                label="I confirm that the chemical structure is not confidential."
+              />
+            </div>
+          </div>
+          <div className="footer-container">
+            <Button.Done onClick={handleSave} disabled={!isApproved}>
+              Predict spectrum
+            </Button.Done>
+          </div>
         </div>
-      </div>
-      <div className="footer-container">
-        <Button.Done onClick={handleSave} disabled={!isApproved}>
-          Predict spectrum
-        </Button.Done>
-      </div>
-    </div>
+      </Modal>
+    </>
   );
-}
-
-export function usePredictSpectraModal() {
-  const modal = useModal();
-  return (molecule: StateMoleculeExtended) => {
-    modal.show(<PredictSpectraModal molecule={molecule} />, {
-      position: positions.TOP_CENTER,
-      enableResizing: true,
-      width: 600,
-    });
-  };
 }
 
 export default PredictSpectraModal;

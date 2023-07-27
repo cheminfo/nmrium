@@ -10,6 +10,8 @@ import {
   useEffect,
 } from 'react';
 
+import { LogsHistoryModal } from '../modal/LogsHistoryModal';
+
 import { usePreferences } from './PreferencesContext';
 
 export const LoggerContext = createContext<{
@@ -40,9 +42,20 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   } = usePreferences();
   const [lastReadLogId, setLastLogId] = useState(0);
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
+  const [isLogHistoryOpened, openLogHistory] = useState(false);
+
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
       onChange: (log, logs) => {
+        if (log && ['warn', 'error', 'fatal'].includes(log.levelLabel)) {
+          //open the log history automatically if we have warn,error, or fatal
+          openLogHistory(true);
+
+          if (log?.error) {
+            // eslint-disable-next-line no-console
+            console.error(log.error);
+          }
+        }
         setLogsHistory(logs.slice());
       },
     }),
@@ -72,6 +85,9 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
 
   return (
     <LoggerContext.Provider value={loggerState}>
+      {isLogHistoryOpened && (
+        <LogsHistoryModal autoOpen onClose={() => openLogHistory(false)} />
+      )}
       {children}
     </LoggerContext.Provider>
   );

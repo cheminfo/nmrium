@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, ReactNode, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
@@ -22,6 +22,7 @@ import FooterBanner from './FooterBanner';
 import SlicingView from './SlicingView';
 import XYLabelPointer from './tools/XYLabelPointer';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
+import { get2DXScale, get2DYScale } from './utilities/scale';
 
 interface Viewer2DProps {
   emptyText: ReactNode;
@@ -40,6 +41,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   } = state;
 
   const dispatch = useDispatch();
+  const brushStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const spectrumData: any[] = useMemo(() => {
     const nuclei = activeTab.split(',');
@@ -59,35 +61,65 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const DIMENSION = get2DDimensionLayout(state);
 
+  function handelBrush(brushData) {
+    const {
+      startX: startXInPixel,
+      endX: endXInPixel,
+      startY: startYInPixel,
+      endY: endYInPixel,
+      mouseButton,
+    } = brushData;
+
+    if (mouseButton === 'secondary') {
+      const scaleX = get2DXScale(state);
+      const scaleY = get2DYScale(state);
+      if (!brushStartRef.current) {
+        const x = scaleX.invert(startXInPixel);
+        const y = scaleY.invert(startYInPixel);
+        brushStartRef.current = { x, y };
+      }
+      const { x, y } = brushStartRef.current;
+      const shiftX = scaleX.invert(endXInPixel) - x;
+      const shiftY = scaleY.invert(endYInPixel) - y;
+
+      dispatch({ type: 'MOVE', payload: { shiftX, shiftY } });
+    }
+  }
+
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
-      const trackID = getLayoutID(DIMENSION, brushData);
-      if (trackID) {
-        if (brushData.altKey) {
-          switch (selectedTool) {
-            default:
-              break;
-          }
-        } else if (brushData.shiftKey) {
-          switch (selectedTool) {
-            case options.zonePicking.id:
-              dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
-              break;
-            default:
-              break;
-          }
-        } else {
-          switch (selectedTool) {
-            default:
-              if (selectedTool != null) {
-                return dispatch({
-                  type: 'BRUSH_END',
-                  payload: {
-                    ...brushData,
-                    trackID: getLayoutID(DIMENSION, brushData),
-                  },
-                });
-              }
+      //reset the brush start
+      brushStartRef.current = null;
+
+      if (brushData.mouseButton === 'main') {
+        const trackID = getLayoutID(DIMENSION, brushData);
+        if (trackID) {
+          if (brushData.altKey) {
+            switch (selectedTool) {
+              default:
+                break;
+            }
+          } else if (brushData.shiftKey) {
+            switch (selectedTool) {
+              case options.zonePicking.id:
+                dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
+                break;
+              default:
+                break;
+            }
+          } else {
+            switch (selectedTool) {
+              default:
+                if (selectedTool != null) {
+                  return dispatch({
+                    type: 'BRUSH_END',
+                    payload: {
+                      ...brushData,
+                      trackID: getLayoutID(DIMENSION, brushData),
+                    },
+                  });
+                }
+            }
           }
         }
       }
@@ -138,7 +170,8 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
           <Spinner isLoading={isLoading} emptyText={emptyText} />
           {data && data.length > 0 && (
             <BrushTracker
-              onBrush={handelBrushEnd}
+              onBrush={handelBrush}
+              onBrushEnd={handelBrushEnd}
               onDoubleClick={handelOnDoubleClick}
               onClick={mouseClick}
               onZoom={handleZoom}

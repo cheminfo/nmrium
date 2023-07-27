@@ -30,7 +30,8 @@ function handleResurrectSpectrumFromJcamp(
   draft: Draft<State>,
   action: ResurrectSpectrumFromJcampAction,
 ) {
-  let { ranges, spectrum } = action.payload;
+  const { ranges } = action.payload;
+  let { spectrum } = action.payload;
   spectrum = {
     ...spectrum,
     ranges: {
@@ -54,12 +55,13 @@ function handleResurrectSpectrumFromRanges(
   action: ResurrectSpectrumFromRangesAction,
 ) {
   const { ranges, info } = action.payload;
-
   const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
-  draft.data.push(datum);
-  setDomain(draft, { isYDomainShared: false });
-  setIntegralsYDomain(draft, [datum]);
-  setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+  if (datum) {
+    draft.data.push(datum);
+    setDomain(draft, { isYDomainShared: false });
+    setIntegralsYDomain(draft, [datum]);
+    setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+  }
 }
 
 export { handleResurrectSpectrumFromRanges, handleResurrectSpectrumFromJcamp };

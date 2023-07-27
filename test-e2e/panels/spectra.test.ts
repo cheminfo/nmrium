@@ -616,3 +616,13 @@ test('Multiple spectra analysis', async ({ page }) => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
 });
+test('Load JResolv', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
+  await nmrium.page.click('li >> text=Cytisine');
+  await nmrium.page.click('li >> text=jResolv cytisine');
+
+  await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+  await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
+    2,
+  );
+});

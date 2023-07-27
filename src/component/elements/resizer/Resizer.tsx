@@ -1,5 +1,3 @@
-import { ReactFragment } from 'react';
-
 import DivResizer from './DivResizer';
 import SVGResizer from './SVGResizer';
 
@@ -8,12 +6,7 @@ export interface Position {
   x2: number;
 }
 
-type ChildType =
-  | Array<React.ReactElement>
-  | React.ReactElement
-  | ReactFragment
-  | boolean
-  | null;
+type ChildType = React.ReactElement[] | React.ReactElement | boolean | null;
 
 export interface ResizerProps {
   children?: ChildType | ((position: Position, isActive: boolean) => ChildType);

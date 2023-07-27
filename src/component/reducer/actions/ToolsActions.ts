@@ -482,13 +482,13 @@ function setDisplayerMode(draft: Draft<State>, data) {
 
 //utility
 function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
-  let tabs2D: any[] = [];
+  const tabs2D: any[] = [];
   const tabActiveSpectrum = {};
 
   const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
   );
-  for (let tabKey of tabkeys) {
+  for (const tabKey of tabkeys) {
     const data = dataGroupByTab[tabKey];
     const nucleusLength = tabKey.split(',').length;
     if (nucleusLength === 2) {

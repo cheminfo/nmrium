@@ -21,7 +21,9 @@ const style = css`
     flex-direction: row-reverse;
     border-radius: 4px;
     background-color: white;
-    box-shadow: rgb(0 0 0 / 15%) 0 0 0 1px, rgb(0 0 0 / 15%) 0 8px 16px;
+    box-shadow:
+      rgb(0 0 0 / 15%) 0 0 0 1px,
+      rgb(0 0 0 / 15%) 0 8px 16px;
     overflow: auto;
     height: 350px;
   }

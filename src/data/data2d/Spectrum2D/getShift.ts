@@ -7,7 +7,7 @@ export interface Shift2D {
 }
 
 export function getShift(spectrum: Spectrum2D): Shift2D {
-  let shift = { x: 0, y: 0 };
+  const shift = { x: 0, y: 0 };
   if (spectrum?.filters) {
     for (const filter of spectrum.filters) {
       if (filter.name === Filters.shift2DX.id) {

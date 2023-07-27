@@ -11,7 +11,7 @@ function useToggleStatus(key, data) {
   const oldIdRef = useRef<any>();
 
   useEffect(() => {
-    let statusflags = {};
+    const statusflags = {};
     if (data && Array.isArray(data)) {
       for (const item of data) {
         statusflags[item[key]] = false;

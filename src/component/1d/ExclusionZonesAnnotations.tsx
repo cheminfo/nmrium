@@ -74,8 +74,8 @@ export default ExclusionZonesAnnotations;
 
 function getExclusionZones(
   data: Spectrum1D,
-): { id: string; zones: ExclusionZone[] }[] {
-  const zones: { id: string; zones: ExclusionZone[] }[] = [];
+): Array<{ id: string; zones: ExclusionZone[] }> {
+  const zones: Array<{ id: string; zones: ExclusionZone[] }> = [];
   for (const filter of data.filters) {
     if (filter.name === Filters.exclusionZones.id && filter.flag) {
       zones.push({ id: Filters.exclusionZones.id, zones: filter.value });

@@ -2,11 +2,11 @@ import { Filter } from 'nmr-processing';
 import { useMemo, useCallback, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
+import { Checkbox } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
-import CheckBox from '../../elements/CheckBox';
 import { ColumnWrapper } from '../../elements/ColumnWrapper';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
@@ -36,7 +36,7 @@ const rowColors = {
 };
 
 interface FiltersTableInnerProps {
-  filters: Array<FiltersProps>;
+  filters: FiltersProps[];
   spectraCounter: number;
   activeFilterID: string | null;
 }
@@ -128,7 +128,7 @@ function FiltersTableInner({
     [alert, dispatch],
   );
 
-  const COLUMNS: Column<any>[] = useMemo(
+  const COLUMNS: Array<Column<any>> = useMemo(
     () => [
       {
         Header: '#',
@@ -161,12 +161,9 @@ function FiltersTableInner({
 
           return (
             <ColumnWrapper>
-              <CheckBox
-                onChange={(event) =>
-                  handelFilterCheck(id, event.target.checked)
-                }
+              <Checkbox
+                onChange={(checked) => handelFilterCheck(id, checked)}
                 checked={flag}
-                style={{ display: 'block', margin: 'auto' }}
               />
             </ColumnWrapper>
           );
