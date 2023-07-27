@@ -11,6 +11,7 @@ import {
 
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import { Scroller } from '../../elements/Scroller';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
@@ -22,7 +23,12 @@ import { SpectraColumnsManager } from './base/SpectraColumnsManager';
 
 function SpectraPreferences(props, ref: any) {
   const formRef = useRef<any>(null);
-  const { data } = useChartData();
+  const {
+    data,
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
   const preferences = usePreferences();
   const nuclei = useNucleus();
 
@@ -102,20 +108,22 @@ function SpectraPreferences(props, ref: any) {
         onSubmit={saveHandler}
         initialValues={preferencesByNuclei}
       >
-        <>
+        <Scroller scrollTo={activeTab}>
           {nuclei?.map((n) => (
-            <NucleusGroup key={n} nucleus={n}>
-              <SpectraColumnsManager
-                nucleus={n}
-                onAdd={handleAdd}
-                onDelete={handleDelete}
-                mapOnChangeValue={mapOnChangeValueHandler}
-                mapValue={mapValue}
-                datalist={datalist}
-              />
-            </NucleusGroup>
+            <Scroller.Item key={n} elementKey={n}>
+              <NucleusGroup nucleus={n}>
+                <SpectraColumnsManager
+                  nucleus={n}
+                  onAdd={handleAdd}
+                  onDelete={handleDelete}
+                  mapOnChangeValue={mapOnChangeValueHandler}
+                  mapValue={mapValue}
+                  datalist={datalist}
+                />
+              </NucleusGroup>
+            </Scroller.Item>
           ))}
-        </>
+        </Scroller>
       </Formik>
     </PreferencesContainer>
   );
