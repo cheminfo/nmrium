@@ -98,8 +98,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
   return (
     <Rnd
       default={moleculeView.floating.bounding}
-      minWidth={100}
-      minHeight={100}
+      minWidth={50}
+      minHeight={80}
       dragHandleClassName="handle"
       enableUserSelectHack={false}
       bounds={viewerRef}
@@ -122,36 +122,39 @@ export function DraggableStructure(props: DraggableStructureProps) {
         <ResponsiveChart>
           {({ width, height }) => {
             return (
-              <OCLnmr
-                OCL={OCL}
-                autoCrop
-                id={`molSVG${index || ''}`}
-                width={width}
-                height={height}
-                molfile={molecule.molfile}
-                setSelectedAtom={handleOnClickAtom}
-                atomHighlightColor={
-                  currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
-                }
-                atomHighlightOpacity={0.35}
-                highlights={
-                  currentDiaIDsToHighlight?.length > 0
-                    ? currentDiaIDsToHighlight
-                    : assignedDiaIDsMerged
-                }
-                setHoverAtom={handleOnAtomHover}
-                setMolfile={(molfile) => {
-                  dispatch({
-                    type: 'SET_MOLECULE',
-                    payload: {
-                      molfile,
-                      id: molecule.id,
-                      label: molecule.label,
-                    },
-                  });
-                }}
-                showAtomNumber={moleculeView.showAtomNumber}
-              />
+              <>
+                <OCLnmr
+                  OCL={OCL}
+                  autoCrop
+                  id={`molSVG${index || ''}`}
+                  width={width}
+                  height={height - 50}
+                  molfile={molecule.molfile}
+                  setSelectedAtom={handleOnClickAtom}
+                  atomHighlightColor={
+                    currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
+                  }
+                  atomHighlightOpacity={0.35}
+                  highlights={
+                    currentDiaIDsToHighlight?.length > 0
+                      ? currentDiaIDsToHighlight
+                      : assignedDiaIDsMerged
+                  }
+                  setHoverAtom={handleOnAtomHover}
+                  setMolfile={(molfile) => {
+                    dispatch({
+                      type: 'SET_MOLECULE',
+                      payload: {
+                        molfile,
+                        id: molecule.id,
+                        label: molecule.label,
+                      },
+                    });
+                  }}
+                  showAtomNumber={moleculeView.showAtomNumber}
+                />
+                <p style={{ textAlign: 'center' }}>{molecule.label}</p>
+              </>
             );
           }}
         </ResponsiveChart>
