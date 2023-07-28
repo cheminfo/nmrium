@@ -237,6 +237,25 @@ function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   return { blob, width, height };
 }
 
+function getMatrix(element) {
+  const transform = window
+    .getComputedStyle(element)
+    .getPropertyValue('transform');
+  return new DOMMatrix(transform);
+}
+
+function createMoleculeLabelElement(element, molElement) {
+  const label = element.querySelector('p').textContent;
+  const { width, height } = molElement.getBBox();
+  const text = document.createElement('text');
+  text.append(label);
+  text.setAttribute('x', `${width / 2}`);
+  text.setAttribute('y', `${height + 10}`);
+  text.setAttribute('fill', '#000');
+  text.setAttribute('text-anchor', 'middle');
+  text.setAttribute('font-size', '0.8em');
+  return text;
+}
 function getMoleculesElement(rootRef) {
   const nmriumViewer: any = (rootRef.getRootNode() as Document).querySelector(
     `#nmrium-viewer`,
@@ -245,18 +264,16 @@ function getMoleculesElement(rootRef) {
   const floatingMoleculesGroup = document.createElement('g');
 
   for (const element of nmriumViewer.querySelectorAll('.draggable-molecule')) {
-    const transform = window
-      .getComputedStyle(element)
-      .getPropertyValue('transform');
-    const matrix = new DOMMatrix(transform);
+    const matrix = getMatrix(element);
     const actionHeaderElement = element.querySelector(
       '.float-molecule-actions',
     );
-    const molElement = element
-      .cloneNode(true)
-      .querySelector('svg[id^="molSVG"]');
+    const molElement = element.querySelector('svg[id^="molSVG"]');
+    const label = createMoleculeLabelElement(element, molElement);
+
     const group = document.createElement('g');
-    group.append(molElement);
+    group.append(molElement.cloneNode(true));
+    group.append(label);
     group.setAttribute(
       'transform',
       `translate(${matrix.m41} ${
