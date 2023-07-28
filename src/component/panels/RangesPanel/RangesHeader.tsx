@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
+import { SvgNmrIntegrate } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
@@ -64,21 +64,6 @@ function RangesHeader({
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
     modal.close();
-  }
-
-  function showChangeRangesSumModal() {
-    modal.show(
-      <ChangeSumModal
-        onClose={() => modal.close()}
-        onSave={changeRangesSumHandler}
-        header={
-          currentSum
-            ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
-            : 'Set new Ranges Sum'
-        }
-        sumOptions={ranges?.options}
-      />,
-    );
   }
 
   function removeAssignments() {
@@ -196,10 +181,20 @@ function RangesHeader({
               : 'Change ranges sum'
           }
           popupPlacement="right"
-          onClick={showChangeRangesSumModal}
           className="btn icon"
         >
-          <SvgNmrSum />
+          <ChangeSumModal
+            onClose={() => modal.close()}
+            onSave={changeRangesSumHandler}
+            header={
+              currentSum
+                ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(
+                    2,
+                  )})`
+                : 'Set new Ranges Sum'
+            }
+            sumOptions={ranges?.options}
+          />
         </Button>
         <Button
           popupTitle="Remove all assignments"

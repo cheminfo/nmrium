@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrSum } from 'cheminfo-font';
 import { Formik } from 'formik';
 import { SumOptions } from 'nmr-load-save';
 import { useEffect, useRef, useState } from 'react';
+import { Modal, useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Button from '../../elements/Button';
-import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import FormikInput from '../../elements/formik/FormikInput';
@@ -21,7 +22,8 @@ const styles = css`
 
   .header {
     display: flex;
-    padding: 10px;
+    justify-content: center;
+    padding: 0;
 
     span {
       font-size: 14px;
@@ -101,6 +103,7 @@ export default function ChangeSumModal({
     },
   } = usePreferences();
 
+  const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const [setOption, setActiveOption] = useState(SumSetOptions.Auto);
   const formRef = useRef<any>(null);
 
@@ -115,18 +118,23 @@ export default function ChangeSumModal({
   }
 
   useEffect(() => {
-    if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
-      setActiveOption(SumSetOptions.Auto);
-      const { mf, moleculeId: id } = sumOptions;
-      formRef.current.setValues({
-        sum: null,
-        molecule: id && mf ? { mf, id } : null,
-      });
-    } else {
-      setActiveOption(SumSetOptions.Manual);
-      formRef.current.setValues({ sum: sumOptions?.sum ?? '', molecule: null });
+    if (isOpenDialog) {
+      if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
+        setActiveOption(SumSetOptions.Auto);
+        const { mf, moleculeId: id } = sumOptions;
+        formRef.current.setValues({
+          sum: null,
+          molecule: id && mf ? { mf, id } : null,
+        });
+      } else {
+        setActiveOption(SumSetOptions.Manual);
+        formRef.current.setValues({
+          sum: sumOptions?.sum ?? '',
+          molecule: null,
+        });
+      }
     }
-  }, [panels?.structuresPanel, sumOptions]);
+  }, [isOpenDialog, panels?.structuresPanel, sumOptions]);
 
   function saveHandler(values) {
     switch (setOption) {
@@ -147,54 +155,70 @@ export default function ChangeSumModal({
         return;
     }
     onClose();
+    closeDialog();
   }
 
   const isStructurePanelVisible = panels?.structuresPanel?.display || false;
 
   return (
-    // <div css={modalContainer}>
-    <div css={[ModalStyles, styles]}>
-      <div className="header handle">
-        <span>{header}</span>
+    <>
+      <button className="sum-button" type="button" onClick={openDialog}>
+        <SvgNmrSum />
+      </button>
 
-        <CloseButton onClick={onClose} />
-      </div>
-      <div className="tab-content">
-        <Formik
-          innerRef={formRef}
-          onSubmit={saveHandler}
-          initialValues={{ sum: '', molecule: null }}
-          validationSchema={getValidationSchema(setOption)}
-        >
-          <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
-            {isStructurePanelVisible && (
-              <Tab title="Auto" tabid={SumSetOptions.Auto}>
-                <SelectMolecule name="molecule" />
-              </Tab>
-            )}
+      <Modal
+        hasCloseButton
+        isOpen={isOpenDialog}
+        onRequestClose={() => {
+          onClose();
+          closeDialog();
+        }}
+        maxWidth={1000}
+      >
+        <div css={[ModalStyles, styles]}>
+          <Modal.Header>
+            <div className="header handle">
+              <span>{header}</span>
+            </div>
+          </Modal.Header>
+          <div className="tab-content">
+            <Formik
+              innerRef={formRef}
+              onSubmit={saveHandler}
+              initialValues={{ sum: '', molecule: null }}
+              validationSchema={getValidationSchema(setOption)}
+            >
+              <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
+                {isStructurePanelVisible && (
+                  <Tab title="Auto" tabid={SumSetOptions.Auto}>
+                    <SelectMolecule name="molecule" />
+                  </Tab>
+                )}
 
-            <Tab title="Manual" tabid={SumSetOptions.Manual}>
-              <div className="manual-container">
-                <FormikInput
-                  name="sum"
-                  type="number"
-                  nullable
-                  placeholder="Enter the new value"
-                  onKeyDown={handleKeyDown}
-                />
-              </div>
-            </Tab>
-          </Tabs>
-        </Formik>
-      </div>
-      <div className="footer-container">
-        <Button.Done
-          onClick={() => formRef.current.submitForm()}
-          style={{ width: '80px' }}
-        >
-          Set
-        </Button.Done>
-      </div>
-    </div>
+                <Tab title="Manual" tabid={SumSetOptions.Manual}>
+                  <div className="manual-container">
+                    <FormikInput
+                      name="sum"
+                      type="number"
+                      nullable
+                      placeholder="Enter the new value"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+                </Tab>
+              </Tabs>
+            </Formik>
+          </div>
+          <div className="footer-container">
+            <Button.Done
+              onClick={() => formRef.current.submitForm()}
+              style={{ width: '80px' }}
+            >
+              Set
+            </Button.Done>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
