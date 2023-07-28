@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { WebSource as Source } from 'filelist-utils';
-import { Draft, produce } from 'immer';
+import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Spectrum, ViewState } from 'nmr-load-save';
 import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
@@ -650,10 +650,28 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
     }
   } catch (error: any) {
     draft.errorAction = error;
-    error.data = { action };
+    error.data = { action, state: getDebugState(draft) };
     reportError(error);
   }
 }
 
 export const spectrumReducer: Reducer<State, Action> =
   produce(innerSpectrumReducer);
+
+function getDebugState(draft) {
+  const state = original(draft);
+  const string = JSON.stringify(state, (key, value) => {
+    if (ArrayBuffer.isView(value)) {
+      return Array.from(value as any).slice(0, 20);
+    }
+    if (Array.isArray(value) && typeof value[0] === 'number') {
+      return value.slice(0, 20);
+    }
+    return value;
+  });
+  if (string.length > 800000) {
+    // fallback, better to have something as a string t han nothing
+    return string.slice(0, 800000);
+  }
+  return JSON.parse(string);
+}
