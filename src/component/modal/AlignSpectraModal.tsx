@@ -53,6 +53,12 @@ function AlignSpectraModal({
     return baseList.concat(list as any);
   }, [nucleus]);
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+
+  const openHandler = useCallback(() => {
+    dispatch({ type: 'RESET_SELECTED_TOOL' });
+    openDialog();
+  }, [dispatch, openDialog]);
+
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
@@ -94,15 +100,16 @@ function AlignSpectraModal({
 
   const styles = css`
     .header {
-      display: flex;
-      justify-content: center;
       padding: 0;
+    }
+    div:has(.header) {
+      justify-content: center;
     }
   `;
 
   return (
     <>
-      <ButtonToolTip popupTitle="Spectra calibration" onClick={openDialog}>
+      <ButtonToolTip popupTitle="Spectra calibration" onClick={openHandler}>
         <SvgNmrOverlay style={{ fontSize: '18px' }} />
       </ButtonToolTip>
 
