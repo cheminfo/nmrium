@@ -267,7 +267,6 @@ function KeysListenerTracker() {
                 handleFullZoomOut();
               }
               break;
-            case 'z':
             case 'Escape':
               if (isToolVisible('zoom')) {
                 handleChangeOption(options.zoom.id);
@@ -281,6 +280,13 @@ function KeysListenerTracker() {
               }
               break;
             }
+            case 'z': {
+              if (isToolVisible('zeroFilling')) {
+                handleChangeOption(options.zeroFilling.id);
+              }
+              break;
+            }
+
             case 'a': {
               if (isToolVisible('apodization')) {
                 handleChangeOption(options.apodization.id);

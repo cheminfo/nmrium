@@ -65,7 +65,7 @@ function FunctionToolBarInner({
             key={options.zoom.id}
             value={options.zoom.id}
             id={options.zoom.id}
-            title={`${options.zoom.label} ( Press z )`}
+            title={`${options.zoom.label}`}
           >
             <FaSearchPlus />
           </ToggleButton>
@@ -159,7 +159,7 @@ function FunctionToolBarInner({
             key={options.zeroFilling.id}
             value={options.zeroFilling.id}
             id={options.zeroFilling.id}
-            title={options.zeroFilling.label}
+            title={`${options.zeroFilling.label} ( Press z )`}
           >
             <SvgNmrZeroFilling />
           </ToggleButton>
