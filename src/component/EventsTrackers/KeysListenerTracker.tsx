@@ -296,6 +296,14 @@ function KeysListenerTracker() {
 
               break;
             }
+            case 't': {
+              if (isToolVisible('fft')) {
+                dispatch({
+                  type: 'APPLY_FFT_FILTER',
+                });
+              }
+              break;
+            }
             case 'b': {
               if (isToolVisible('baselineCorrection')) {
                 handleChangeOption(options.baselineCorrection.id);

@@ -205,7 +205,7 @@ function FunctionToolBarInner({
         <Toolbar.Item
           id={options.fft.id}
           className="cheminfo"
-          title={options.fft.label}
+          title={`${options.fft.label} ( Press t )`}
           onClick={handleOnFFTFilter}
         >
           <SvgNmrFourierTransform />
