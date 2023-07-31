@@ -24,8 +24,8 @@ const styles = css`
   .container {
     overflow-y: auto;
     background-color: white;
-    padding-top: 10px;
     padding: 5px;
+    padding-top: 10px;
     width: 895px;
     height: 355px;
 
