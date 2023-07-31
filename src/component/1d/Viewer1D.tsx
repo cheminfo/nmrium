@@ -2,6 +2,7 @@ import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useEffect, useReducer, ReactNode, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
+import { useOnOff } from 'react-science/ui';
 
 import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
@@ -9,6 +10,7 @@ import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
 import {
   BrushTracker,
+  BrushTrackerContext,
   OnBrush,
   OnClick,
   OnZoom,
@@ -19,7 +21,6 @@ import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useAlert } from '../elements/popup/Alert';
-import { useModal } from '../elements/popup/Modal';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
@@ -69,7 +70,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
-  const modal = useModal();
   const alert = useAlert();
 
   const [scaleState, dispatchScale] = useReducer(
@@ -120,10 +120,16 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     }
   }
 
+  const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
+    useOnOff(false);
+
+  const brushDataRef = useRef<BrushTrackerContext | null>(null);
+
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       //reset the brush start
       brushStartRef.current = null;
+      brushDataRef.current = brushData;
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
@@ -141,19 +147,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         if (brushData.altKey) {
           switch (selectedTool) {
             case options.rangePicking.id: {
-              modal.show(
-                <MultipletAnalysisModal
-                  data={data}
-                  activeSpectrum={activeSpectrum}
-                  scaleX={scaleState.scaleX}
-                  {...brushData}
-                />,
-                {
-                  onClose: () => {
-                    modal.close();
-                  },
-                },
-              );
+              openAnalysisModal();
               break;
             }
             default:
@@ -268,8 +262,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     [
       scaleState,
       selectedTool,
-      modal,
       data,
+      openAnalysisModal,
       activeSpectrum,
       dispatch,
       dispatchPreferences,
@@ -387,6 +381,16 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                     </MouseTracker>
                   </BrushTracker>
                 )}
+              {brushDataRef.current && (
+                <MultipletAnalysisModal
+                  isOpen={isOpenAnalysisModal}
+                  onClose={closeAnalysisModal}
+                  data={data}
+                  activeSpectrum={activeSpectrum}
+                  scaleX={scaleState.scaleX}
+                  {...brushDataRef.current}
+                />
+              )}
             </div>
           </ViewerResponsiveWrapper>
         )}
