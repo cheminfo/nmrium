@@ -102,6 +102,7 @@ function AlignSpectraModal({
     .header {
       padding: 0;
     }
+
     div:has(.header) {
       justify-content: center;
     }
