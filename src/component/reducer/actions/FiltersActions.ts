@@ -27,6 +27,8 @@ import { activateTool, resetSelectedTool } from './ToolsActions';
 
 const {
   fft,
+  fftDimension1,
+  fftDimension2,
   apodization,
   baselineCorrection,
   phaseCorrection,
@@ -497,17 +499,17 @@ function handleApplyFFtDimension1Filter(draft: Draft<State>) {
     //apply filter into the spectrum
     FiltersManager.applyFilter(
       draft.data[index],
-      [{ name: Filters.fftDimension1.id, value: {} }],
+      [{ name: fftDimension1.id, value: {} }],
       { filterIndex: activeFilterIndex },
     );
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.fftDimension1.id,
+        key: fftDimension1.id,
       });
     } else {
-      updateView(draft, Filters.fftDimension1.DOMAIN_UPDATE_RULES);
+      updateView(draft, fftDimension1.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -521,17 +523,17 @@ function handleApplyFFtDimension2Filter(draft: Draft<State>) {
     //apply filter into the spectrum
     FiltersManager.applyFilter(
       draft.data[index],
-      [{ name: Filters.fftDimension2.id, value: {} }],
+      [{ name: fftDimension2.id, value: {} }],
       { filterIndex: activeFilterIndex },
     );
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
-        key: Filters.fftDimension2.id,
+        key: fftDimension2.id,
       });
     } else {
-      updateView(draft, Filters.fftDimension2.DOMAIN_UPDATE_RULES);
+      updateView(draft, fftDimension2.DOMAIN_UPDATE_RULES);
     }
   }
 }
