@@ -1,9 +1,7 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { formatNumber } from '../../utility/formatNumber';
@@ -27,16 +25,8 @@ function PeakAnnotationsTreeStyle() {
   const { displayerKey, xDomain } = useChartData();
   const { scaleX } = useScaleChecked();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
-  const peaksViewState = useActiveSpectrumPeaksViewState();
   const { deltaPPM } = usePanelPreferences('peaks', spectrum.info.nucleus);
 
-  if (
-    !spectrum?.peaks?.values ||
-    !spectrum.display.isVisible ||
-    !peaksViewState.isPeaksVisible
-  ) {
-    return null;
-  }
   const decimalsCount = getDecimalsCount(xDomain[1], deltaPPM.format);
   const mapPeaks = spectrum.peaks.values
     .map((peak) => ({
@@ -109,4 +99,4 @@ function PeakAnnotationsTreeStyle() {
   );
 }
 
-export default memo(PeakAnnotationsTreeStyle);
+export default PeakAnnotationsTreeStyle;
