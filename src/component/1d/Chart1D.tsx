@@ -10,7 +10,7 @@ import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
-import PeakAnnotations from './peaks/PeakAnnotations';
+import { PeaksGroup } from './peaks/PeaksGroup';
 import PeaksShapes from './peaks/PeaksShapes';
 import Ranges from './ranges/Ranges';
 import BaseLineZones from './tool/BaseLineZones';
@@ -42,7 +42,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <LinesSeries />
       <ApodizationLine />
       <IntegralsSeries />
-      <PeakAnnotations />
+      <PeaksGroup />
       <Ranges />
       <JGraph />
       <MultiAnalysisRanges />

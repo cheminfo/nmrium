@@ -2,7 +2,7 @@ import { v4 } from '@lukeed/uuid';
 import { NmrData1D } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D, PeaksViewState } from 'nmr-load-save';
 import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
@@ -12,6 +12,7 @@ import {
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
@@ -40,7 +41,7 @@ type ChangePeaksShapeAction = ActionType<
 type TogglePeaksViewAction = ActionType<
   'TOGGLE_PEAKS_VIEW_PROPERTY',
   {
-    key: keyof typeof defaultPeaksViewState;
+    key: keyof FilterType<PeaksViewState, boolean>;
   }
 >;
 
@@ -51,7 +52,8 @@ export type PeaksActions =
   | OptimizePeaksAction
   | AutoPeaksPickingAction
   | ChangePeaksShapeAction
-  | TogglePeaksViewAction;
+  | TogglePeaksViewAction
+  | ActionType<'TOGGLE_PEAKS_DISPLAYING_MODE'>;
 
 //action
 function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
@@ -222,7 +224,7 @@ function handleTogglePeaksViewProperty(
 
 function togglePeaksViewProperty(
   draft: Draft<State>,
-  key: keyof typeof defaultPeaksViewState,
+  key: keyof FilterType<PeaksViewState, boolean>,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -237,6 +239,24 @@ function togglePeaksViewProperty(
     }
   }
 }
+function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const peaksView = draft.view.peaks;
+    if (peaksView[activeSpectrum.id]) {
+      peaksView[activeSpectrum.id].displayingMode =
+        peaksView[activeSpectrum.id].displayingMode === 'single'
+          ? 'group'
+          : 'single';
+    } else {
+      const defaultPeaksView = { ...defaultPeaksViewState };
+      defaultPeaksView.displayingMode =
+        defaultPeaksView.displayingMode === 'single' ? 'group' : 'single';
+      peaksView[activeSpectrum.id] = defaultPeaksView;
+    }
+  }
+}
 
 export {
   handleAddPeak,
@@ -246,4 +266,5 @@ export {
   handleOptimizePeaks,
   handleChangePeakShape,
   handleTogglePeaksViewProperty,
+  handleChangePeaksDisplayingMode,
 };

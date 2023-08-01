@@ -382,6 +382,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return PeaksActions.handleChangePeakShape(draft, action);
       case 'TOGGLE_PEAKS_VIEW_PROPERTY':
         return PeaksActions.handleTogglePeaksViewProperty(draft, action);
+      case 'TOGGLE_PEAKS_DISPLAYING_MODE':
+        return PeaksActions.handleChangePeaksDisplayingMode(draft);
       case 'ADD_INTEGRAL':
         return IntegralsActions.handleAddIntegral(draft, action);
       case 'DELETE_INTEGRAL':
