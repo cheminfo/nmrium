@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrSum } from 'cheminfo-font';
 import { Formik } from 'formik';
 import { SumOptions } from 'nmr-load-save';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Modal, useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
@@ -72,6 +71,7 @@ interface ChangeSumModalProps {
   sumType: string;
   currentSum: number | null;
   sumOptions: SumOptions;
+  renderButton: (onClick: () => void) => ReactNode;
 }
 
 function getValidationSchema(option) {
@@ -96,6 +96,7 @@ export default function ChangeSumModal({
   sumType,
   currentSum,
   sumOptions,
+  renderButton,
 }: ChangeSumModalProps) {
   const {
     current: {
@@ -161,9 +162,7 @@ export default function ChangeSumModal({
 
   return (
     <>
-      <button className="sum-button" type="button" onClick={openDialog}>
-        <SvgNmrSum />
-      </button>
+      {renderButton(openDialog)}
 
       <Modal
         hasCloseButton

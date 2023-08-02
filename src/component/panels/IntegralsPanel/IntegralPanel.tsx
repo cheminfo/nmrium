@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
@@ -156,6 +157,11 @@ function IntegralPanelInner({
               sumType="integrals"
               currentSum={currentSum}
               sumOptions={integrals?.options}
+              renderButton={(onClick) => (
+                <button className="sum-button" type="button" onClick={onClick}>
+                  <SvgNmrSum />
+                </button>
+              )}
             />
           </ToolTip>
 
