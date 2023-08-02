@@ -340,6 +340,7 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: false,
+    isExperimental: true,
   },
   fftDimension2: {
     id: 'fftDimension2',
@@ -357,6 +358,7 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: false,
+    isExperimental: true,
   },
   import: {
     id: 'import',
