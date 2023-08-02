@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@lukeed/uuid": "^2.0.1",
     "cheminfo-font": "^1.10.0",
     "cheminfo-types": "^1.7.2",
