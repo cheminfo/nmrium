@@ -152,7 +152,6 @@ function IntegralPanelInner({
             popupPlacement="right"
           >
             <ChangeSumModal
-              onClose={() => modal.close()}
               onSave={changeIntegralSumHandler}
               header={
                 currentSum
