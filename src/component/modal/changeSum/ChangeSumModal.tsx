@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { Formik } from 'formik';
 import { SumOptions } from 'nmr-load-save';
 import { ReactNode, useEffect, useRef, useState } from 'react';
@@ -11,49 +9,10 @@ import Button from '../../elements/Button';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import FormikInput from '../../elements/formik/FormikInput';
-import { ModalStyles } from '../ModalStyle';
 
 import SelectMolecule from './SelectMolecule';
 
-const styles = css`
-  width: 450px;
-  height: 400px;
-
-  .header {
-    display: flex;
-    justify-content: center;
-    padding: 0;
-
-    span {
-      font-size: 14px;
-      flex: 1;
-    }
-  }
-
-  .tab-content {
-    flex: 1;
-  }
-
-  .manual-container {
-    padding: 30px 5px;
-
-    .input {
-      width: 80% !important;
-      height: 36px;
-      margin: 0 auto;
-    }
-
-    .input input {
-      padding: 5px;
-      text-align: center;
-    }
-  }
-`;
-
-enum SumSetOptions {
-  Auto = 'auto',
-  Manual = 'manual',
-}
+type SumSetOption = 'auto' | 'manual';
 
 type SaveInput =
   | {
@@ -74,14 +33,14 @@ interface ChangeSumModalProps {
   renderButton: (onClick: () => void) => ReactNode;
 }
 
-function getValidationSchema(option) {
+function getValidationSchema(option: SumSetOption) {
   switch (option) {
-    case SumSetOptions.Auto: {
+    case 'auto': {
       return Yup.object({
         molecule: Yup.object().required(),
       });
     }
-    case SumSetOptions.Manual: {
+    case 'manual': {
       return Yup.object({
         sum: Yup.number().required(),
       });
@@ -105,7 +64,7 @@ export default function ChangeSumModal({
   } = usePreferences();
 
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const [setOption, setActiveOption] = useState(SumSetOptions.Auto);
+  const [setOption, setActiveOption] = useState<SumSetOption>('auto');
   const formRef = useRef<any>(null);
 
   function handleKeyDown(event) {
@@ -121,14 +80,14 @@ export default function ChangeSumModal({
   useEffect(() => {
     if (isOpenDialog) {
       if (sumOptions?.sumAuto && panels?.structuresPanel?.display) {
-        setActiveOption(SumSetOptions.Auto);
+        setActiveOption('auto');
         const { mf, moleculeId: id } = sumOptions;
         formRef.current.setValues({
           sum: null,
           molecule: id && mf ? { mf, id } : null,
         });
       } else {
-        setActiveOption(SumSetOptions.Manual);
+        setActiveOption('manual');
         formRef.current.setValues({
           sum: sumOptions?.sum ?? '',
           molecule: null,
@@ -139,7 +98,7 @@ export default function ChangeSumModal({
 
   function saveHandler(values) {
     switch (setOption) {
-      case SumSetOptions.Auto: {
+      case 'auto': {
         const {
           molecule: { mf, id: moleculeId },
         } = values;
@@ -147,7 +106,7 @@ export default function ChangeSumModal({
         onSave({ sumAuto: true, mf, moleculeId });
         break;
       }
-      case SumSetOptions.Manual: {
+      case 'manual': {
         const { sum } = values;
         onSave({ sum, sumAuto: false });
         break;
@@ -168,55 +127,48 @@ export default function ChangeSumModal({
         hasCloseButton
         isOpen={isOpenDialog}
         onRequestClose={closeDialog}
-        maxWidth={1000}
+        width={500}
+        height={400}
       >
-        <div css={[ModalStyles, styles]}>
-          <Modal.Header>
-            <div className="header handle">
-              <span>
-                {currentSum
-                  ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`
-                  : `Set new ${sumType} Sum`}
-              </span>
-            </div>
-          </Modal.Header>
-          <div className="tab-content">
-            <Formik
-              innerRef={formRef}
-              onSubmit={saveHandler}
-              initialValues={{ sum: '', molecule: null }}
-              validationSchema={getValidationSchema(setOption)}
-            >
-              <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
-                {isStructurePanelVisible && (
-                  <Tab title="Auto" tabid={SumSetOptions.Auto}>
-                    <SelectMolecule name="molecule" />
-                  </Tab>
-                )}
-
-                <Tab title="Manual" tabid={SumSetOptions.Manual}>
-                  <div className="manual-container">
-                    <FormikInput
-                      name="sum"
-                      type="number"
-                      nullable
-                      placeholder="Enter the new value"
-                      onKeyDown={handleKeyDown}
-                    />
-                  </div>
+        <Modal.Header>
+          {currentSum
+            ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`
+            : `Set new ${sumType} Sum`}
+        </Modal.Header>
+        <Modal.Body>
+          <Formik
+            innerRef={formRef}
+            onSubmit={saveHandler}
+            initialValues={{ sum: '', molecule: null }}
+            validationSchema={getValidationSchema(setOption)}
+          >
+            <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
+              {isStructurePanelVisible && (
+                <Tab title="Auto" tabid="auto">
+                  <SelectMolecule name="molecule" />
                 </Tab>
-              </Tabs>
-            </Formik>
-          </div>
-          <div className="footer-container">
-            <Button.Done
-              onClick={() => formRef.current.submitForm()}
-              style={{ width: '80px' }}
-            >
-              Set
-            </Button.Done>
-          </div>
-        </div>
+              )}
+
+              <Tab title="Manual" tabid="manual">
+                <FormikInput
+                  name="sum"
+                  type="number"
+                  nullable
+                  placeholder="Enter the new value"
+                  onKeyDown={handleKeyDown}
+                />
+              </Tab>
+            </Tabs>
+          </Formik>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button.Done
+            onClick={() => formRef.current.submitForm()}
+            style={{ width: 80 }}
+          >
+            Set
+          </Button.Done>
+        </Modal.Footer>
       </Modal>
     </>
   );
