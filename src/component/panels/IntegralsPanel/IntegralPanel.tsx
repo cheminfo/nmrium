@@ -146,20 +146,15 @@ function IntegralPanelInner({
           <ToolTip
             title={
               currentSum
-                ? `Change Integrals Sum (${Number(currentSum).toFixed(2)})`
-                : 'Change Integrals Sum'
+                ? `Change integrals sum (${currentSum.toFixed(2)})`
+                : 'Change integrals sum'
             }
             popupPlacement="right"
           >
             <ChangeSumModal
               onSave={changeIntegralSumHandler}
-              header={
-                currentSum
-                  ? `Set new integrals Sum (Current: ${Number(
-                      currentSum,
-                    ).toFixed(2)})`
-                  : 'Set new integrals Sum'
-              }
+              sumType="integrals"
+              currentSum={currentSum}
               sumOptions={integrals?.options}
             />
           </ToolTip>

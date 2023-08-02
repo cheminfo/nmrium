@@ -177,7 +177,7 @@ function RangesHeader({
         <Button
           popupTitle={
             currentSum
-              ? `Change ranges sum (${Number(currentSum).toFixed(2)})`
+              ? `Change ranges sum (${currentSum.toFixed(2)})`
               : 'Change ranges sum'
           }
           popupPlacement="right"
@@ -185,13 +185,8 @@ function RangesHeader({
         >
           <ChangeSumModal
             onSave={changeRangesSumHandler}
-            header={
-              currentSum
-                ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(
-                    2,
-                  )})`
-                : 'Set new Ranges Sum'
-            }
+            sumType="ranges"
+            currentSum={currentSum}
             sumOptions={ranges?.options}
           />
         </Button>
