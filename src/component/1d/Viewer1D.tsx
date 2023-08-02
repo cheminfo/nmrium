@@ -1,6 +1,13 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, useEffect, useReducer, ReactNode, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useReducer,
+  ReactNode,
+  useRef,
+  useState,
+} from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 import { useOnOff } from 'react-science/ui';
 
@@ -123,13 +130,13 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
     useOnOff(false);
 
-  const brushDataRef = useRef<BrushTrackerContext | null>(null);
+  const [brushData, setBrushData] = useState<BrushTrackerContext | null>(null);
 
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       //reset the brush start
       brushStartRef.current = null;
-      brushDataRef.current = brushData;
+      setBrushData(brushData);
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
@@ -381,14 +388,14 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                     </MouseTracker>
                   </BrushTracker>
                 )}
-              {brushDataRef.current && (
+              {brushData && (
                 <MultipletAnalysisModal
                   isOpen={isOpenAnalysisModal}
                   onClose={closeAnalysisModal}
                   data={data}
                   activeSpectrum={activeSpectrum}
                   scaleX={scaleState.scaleX}
-                  {...brushDataRef.current}
+                  {...brushData}
                 />
               )}
             </div>
