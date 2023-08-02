@@ -20,6 +20,7 @@ export interface ToolOptionItem {
   isToggle: boolean;
   hasOptionPanel: boolean;
   isFilter: boolean;
+  isExperimental?: true;
 }
 
 export type Tool =
