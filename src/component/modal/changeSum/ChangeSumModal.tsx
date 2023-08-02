@@ -69,7 +69,6 @@ type SaveInput =
 
 interface ChangeSumModalProps {
   onSave: (saveInput: SaveInput) => void;
-  onClose: () => void;
   header: string;
   sumOptions: SumOptions;
 }
@@ -93,7 +92,6 @@ function getValidationSchema(option) {
 
 export default function ChangeSumModal({
   onSave,
-  onClose,
   header,
   sumOptions,
 }: ChangeSumModalProps) {
@@ -154,7 +152,6 @@ export default function ChangeSumModal({
       default:
         return;
     }
-    onClose();
     closeDialog();
   }
 
@@ -170,7 +167,6 @@ export default function ChangeSumModal({
         hasCloseButton
         isOpen={isOpenDialog}
         onRequestClose={() => {
-          onClose();
           closeDialog();
         }}
         maxWidth={1000}

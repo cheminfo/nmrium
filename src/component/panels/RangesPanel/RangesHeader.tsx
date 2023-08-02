@@ -184,7 +184,6 @@ function RangesHeader({
           className="btn icon"
         >
           <ChangeSumModal
-            onClose={() => modal.close()}
             onSave={changeRangesSumHandler}
             header={
               currentSum
