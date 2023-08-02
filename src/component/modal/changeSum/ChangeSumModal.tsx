@@ -69,7 +69,8 @@ type SaveInput =
 
 interface ChangeSumModalProps {
   onSave: (saveInput: SaveInput) => void;
-  header: string;
+  sumType: string;
+  currentSum: number | null;
   sumOptions: SumOptions;
 }
 
@@ -92,7 +93,8 @@ function getValidationSchema(option) {
 
 export default function ChangeSumModal({
   onSave,
-  header,
+  sumType,
+  currentSum,
   sumOptions,
 }: ChangeSumModalProps) {
   const {
@@ -166,15 +168,17 @@ export default function ChangeSumModal({
       <Modal
         hasCloseButton
         isOpen={isOpenDialog}
-        onRequestClose={() => {
-          closeDialog();
-        }}
+        onRequestClose={closeDialog}
         maxWidth={1000}
       >
         <div css={[ModalStyles, styles]}>
           <Modal.Header>
             <div className="header handle">
-              <span>{header}</span>
+              <span>
+                {currentSum
+                  ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`
+                  : `Set new ${sumType} Sum`}
+              </span>
             </div>
           </Modal.Header>
           <div className="tab-content">
