@@ -309,7 +309,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
-    await nmrium.page.click('_react=RangesTablePanel >> .sum-button');
+    await nmrium.page
+      .locator('_react=ButtonToolTip[popupTitle="Change ranges sum"]')
+      .click();
     await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
       nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),

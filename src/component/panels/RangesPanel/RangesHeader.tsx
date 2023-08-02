@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrIntegrate } from 'cheminfo-font';
+import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
@@ -174,22 +174,26 @@ function RangesHeader({
         >
           <FaFileExport />
         </Button>
-        <Button
-          popupTitle={
-            currentSum
-              ? `Change ranges sum (${currentSum.toFixed(2)})`
-              : 'Change ranges sum'
-          }
-          popupPlacement="right"
-          className="btn icon"
-        >
-          <ChangeSumModal
-            onSave={changeRangesSumHandler}
-            sumType="ranges"
-            currentSum={currentSum}
-            sumOptions={ranges?.options}
-          />
-        </Button>
+        <ChangeSumModal
+          onSave={changeRangesSumHandler}
+          sumType="ranges"
+          currentSum={currentSum}
+          sumOptions={ranges?.options}
+          renderButton={(onClick) => (
+            <Button
+              popupTitle={
+                currentSum
+                  ? `Change ranges sum (${currentSum.toFixed(2)})`
+                  : 'Change ranges sum'
+              }
+              popupPlacement="right"
+              className="btn icon"
+              onClick={onClick}
+            >
+              <SvgNmrSum />
+            </Button>
+          )}
+        />
         <Button
           popupTitle="Remove all assignments"
           popupPlacement="right"
