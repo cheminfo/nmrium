@@ -24,7 +24,7 @@ export function PeaksGroup() {
     return null;
   }
 
-  const mode = peaks?.[spectrum.id]?.displayingMode || 'single';
+  const mode = peaks?.[spectrum.id]?.displayingMode || 'group';
 
   if (mode === 'group') {
     return <PeakAnnotationsTreeStyle />;

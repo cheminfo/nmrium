@@ -8,7 +8,7 @@ export const defaultPeaksViewState: PeaksViewState = {
   isPeaksVisible: true,
   showPeaksShapes: false,
   showPeaksSum: false,
-  displayingMode: 'single',
+  displayingMode: 'group',
 };
 
 export function useActiveSpectrumPeaksViewState() {
