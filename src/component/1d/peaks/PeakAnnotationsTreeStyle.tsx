@@ -6,6 +6,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { formatNumber } from '../../utility/formatNumber';
 import { resolve } from '../utilities/intersectionResolver';
+import { PeakEditionListener } from './PeakEditionManager';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 const notationWidth = 10;
@@ -72,15 +73,22 @@ function PeakAnnotationsTreeStyle() {
                       height={decimalsCount * 10}
                       fill="white"
                     />
-                    <text
-                      transform={`rotate(-90) translate(0 ${gStartX})`}
-                      dominantBaseline="middle"
-                      textAnchor="start"
-                      fontSize="11px"
-                      fill="black"
+                    <PeakEditionListener
+                      value={item.x}
+                      x={group.meta.groupStartX + gStartX}
+                      y={decimalsCount * 10}
+                      id={item.id}
                     >
-                      {formatNumber(item.x, deltaPPM.format)}
-                    </text>
+                      <text
+                        transform={`rotate(-90) translate(0 ${gStartX})`}
+                        dominantBaseline="middle"
+                        textAnchor="start"
+                        fontSize="11px"
+                        fill="black"
+                      >
+                        {formatNumber(item.x, deltaPPM.format)}
+                      </text>
+                    </PeakEditionListener>
                     <path
                       d={`M ${gStartX} 5 v 5 L ${
                         item.scaleX - group.meta.groupStartX

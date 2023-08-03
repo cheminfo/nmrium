@@ -1,162 +1,48 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import {
-  useRef,
-  useState,
-  useCallback,
-  useLayoutEffect,
-  useEffect,
-  useMemo,
-} from 'react';
-
-import { useDispatch } from '../../context/DispatchContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { formatNumber } from '../../utility/formatNumber';
-
-const styles = css`
-  input {
-    user-select: text;
-  }
-
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button {
-    appearance: none;
-    margin: 0;
-  }
-
-  input[type='number'] {
-    appearance: textfield;
-  }
-
-  .notification-input-normal {
-    opacity: 1;
-    left: 4px;
-    position: fixed;
-    font-size: 10px;
-    outline: none;
-    background-color: transparent;
-  }
-
-  .notification-input-normal input:focus {
-    outline: none;
-    background-color: white;
-  }
-
-  .input-over {
-    background-color: white;
-    outline: none;
-  }
-`;
+import { PeakEditionListener } from './PeakEditionManager';
+import { useScaleChecked } from '../../context/ScaleContext';
+import { Peak1D } from 'nmr-processing';
 
 interface PeakAnnotationProps {
-  id: string;
-  x: number;
-  y: number;
-  sign: number;
+  peak: Peak1D;
+  spectrumId: string;
   color: string;
-  value: number;
   nucleus: string;
 }
 
 function PeakAnnotation({
-  id,
-  x,
-  y,
-  sign, // 1 positive -1 negative
-  value,
+  peak,
+  spectrumId,
   color,
   nucleus,
 }: PeakAnnotationProps) {
-  const refText = useRef<SVGTextElement>(null);
-  const [isSelected, setIsSelected] = useState(false);
-  const [_value, setValue] = useState(value);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const { id, x, y } = peak;
+  const sign = Math.sign(y);
+
   const { deltaPPM } = usePanelPreferences('peaks', nucleus);
   const highlight = useHighlight([id], {
     type: HighlightEventSource.PEAK,
     extra: { id },
   });
+  const { scaleX, scaleY } = useScaleChecked();
 
-  const dispatch = useDispatch();
-
-  const handleOnPeakChange = useCallback(
-    (e) =>
-      dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift: e.shiftValue } }),
-    [dispatch],
-  );
-
-  useLayoutEffect(() => {
-    const textBox = refText.current?.getBBox();
-    setContainerSize({
-      width: textBox?.width || 0,
-      height: textBox?.height || 0,
-    });
-  }, [isSelected]);
-
-  useEffect(() => {
-    setValue(value);
-  }, [value]);
-
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter') {
-        const newValue = event.currentTarget.valueAsNumber;
-        if (!Number.isNaN(newValue)) {
-          const shiftValue = newValue - value;
-
-          handleOnPeakChange({
-            id,
-            value: newValue,
-            oldValue: value,
-            shiftValue,
-          });
-
-          event.currentTarget.blur();
-          setIsSelected(false);
-        }
-      } else if (event.key === 'Escape') {
-        setValue(value);
-        event.currentTarget.blur();
-        setIsSelected(false);
-      }
-    },
-    [value, handleOnPeakChange, id],
-  );
-
-  const handleChange = useCallback((event) => {
-    setValue(event.target.value);
-  }, []);
-
-  const handleSelectPeakAnnotation = useCallback((e) => {
-    e.stopPropagation();
-    setIsSelected(true);
-    return false;
-  }, []);
-
-  const handleOnEnterNotation = useCallback(() => {
+  function handleOnEnterNotation() {
     highlight.show();
-  }, [highlight]);
+  }
 
-  const handleOnMouseLeaveNotation = useCallback(() => {
+  function handleOnMouseLeaveNotation() {
     highlight.hide();
-  }, [highlight]);
+  }
 
-  const newValue = useMemo(
-    () => (isSelected ? value : formatNumber(value, deltaPPM.format)),
-    [deltaPPM.format, isSelected, value],
-  );
-  const oldValue = useMemo(
-    () => (isSelected ? _value : formatNumber(_value, deltaPPM.format)),
-    [_value, deltaPPM.format, isSelected],
-  );
+  const sx = scaleX()(x);
+  const sy = scaleY(spectrumId)(y) - 5;
 
   return (
     <g
-      css={styles}
-      id={id}
       style={{ outline: 'none' }}
-      transform={`translate(${x}, ${y})`}
+      transform={`translate(${sx}, ${sy})`}
       onMouseEnter={handleOnEnterNotation}
       onMouseLeave={handleOnMouseLeaveNotation}
     >
@@ -168,54 +54,26 @@ function PeakAnnotation({
         stroke={color}
         strokeWidth={highlight.isActive ? '7px' : '1px'}
       />
-      <text
-        ref={refText}
-        className="peaks-text"
-        x="0"
-        y={sign === -1 ? 28 : -12}
-        dy="0"
-        dx="0.35em"
-        fill="transparent"
-        fontSize="10px"
-        fontWeight="100"
-        style={{
-          position: 'absolute',
-        }}
+      <PeakEditionListener
+        value={x}
+        x={x}
+        y={y}
+        useScaleX
+        useScaleY
+        id={id}
+        dy={sign === -1 ? 0 : -26}
       >
-        {newValue}
-      </text>
-      <foreignObject
-        x="0"
-        y={sign === -1 ? 16 : -22}
-        dy="0.1em"
-        dx="0.35em"
-        width={containerSize.width + 20}
-        height="40px"
-        data-no-export="true"
-      >
-        <div
-          style={{
-            width: containerSize.width + 20,
-            height: '100%',
-            paddingRight: 5,
-          }}
+        <text
+          x="0"
+          y={sign === -1 ? 26 : -10}
+          dy="0"
+          dx="0.35em"
+          fontSize="11px"
+          fill={color}
         >
-          <input
-            onClick={handleSelectPeakAnnotation}
-            className={isSelected ? 'input-over' : 'notification-input-normal'}
-            style={{
-              width: 'inherit',
-              border: isSelected ? `1px solid ${color}` : `0`,
-              userSelect: 'none',
-              color,
-            }}
-            value={oldValue}
-            onKeyDown={handleKeyDown}
-            onChange={handleChange}
-            type="number"
-          />
-        </div>
-      </foreignObject>
+          {formatNumber(x, deltaPPM.format)}
+        </text>
+      </PeakEditionListener>
     </g>
   );
 }
