@@ -7,6 +7,7 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { options, ToolOptionItem } from '../toolbar/ToolTypes';
 
+import useCheckExperimentalFeature from './useCheckExperimentalFeature';
 import useSpectrum from './useSpectrum';
 
 type SpectrumInfo = Info1D | Info2D;
@@ -24,6 +25,7 @@ export function useCheckToolsVisibility(): (
   const { displayerMode } = useChartData();
   const preferences = usePreferences();
   const spectrum = useSpectrum(null);
+  const isExperimentalFeatureActivated = useCheckExperimentalFeature();
 
   return useCallback(
     (toolKey, checkOptions: CheckOptions = {}) => {
@@ -33,12 +35,13 @@ export function useCheckToolsVisibility(): (
         extraInfoCheckParameters,
       } = checkOptions;
 
+      const { spectraOptions, mode, isExperimental } = options[toolKey];
+
       const flag = lodashGet(
         preferences.current,
         `display.toolBarButtons.${toolKey}`,
         false,
       );
-      const { spectraOptions, mode } = options[toolKey];
 
       const modeFlag =
         !checkMode || (checkMode && (!mode || displayerMode === mode));
@@ -47,8 +50,11 @@ export function useCheckToolsVisibility(): (
         !checkSpectrumType ||
         (checkSpectrumType && checkSpectrum(spectrum, spectraOptions));
 
+      const isToolActivated =
+        (flag && !isExperimental) ||
+        (isExperimental && isExperimentalFeatureActivated);
       return (
-        flag &&
+        isToolActivated &&
         modeFlag &&
         spectrumCheckFlag &&
         (!extraInfoCheckParameters ||
@@ -56,7 +62,7 @@ export function useCheckToolsVisibility(): (
       );
     },
 
-    [displayerMode, preferences, spectrum],
+    [displayerMode, isExperimentalFeatureActivated, preferences, spectrum],
   );
 }
 

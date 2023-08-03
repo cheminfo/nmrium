@@ -1,0 +1,17 @@
+##TITLE= Parameter file, TOPSPIN		Version 2.1
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 2	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= Administrator
+$$ 2008-01-30 18:04:21.408 +0100  Administrator@VISTA400
+$$ C:/data/strcorr/nmr/ionon/3/acqu2
+$$ process C:\Bruker\TopSpin\prog\mod\dataserver.exe
+##$BF1= 100.612769
+##$FnMODE= 6
+##$NUC1= <13C>
+##$O1= 7503.73
+##$SFO1= 100.62027273
+##$SW= 165.639251554533
+##$TD= 256
+##END=

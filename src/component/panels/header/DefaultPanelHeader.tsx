@@ -34,7 +34,6 @@ interface DefaultPanelHeaderProps {
   canDelete?: boolean;
   disableDelete?: boolean;
   showSettingButton?: boolean;
-  showCounter?: boolean;
   children?: ReactNode;
   style?: CSSProperties;
   className?: string;

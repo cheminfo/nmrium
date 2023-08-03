@@ -125,6 +125,10 @@
         "title": "Bruker Directory without expno level"
       },
       {
+        "file": "./data/brukerFolders/cosyAndHsqcFid.json",
+        "title": "Bruker Directory 2D FIDs"
+      },
+      {
         "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
         "title": "FileCollection with link to jcamp"
       },

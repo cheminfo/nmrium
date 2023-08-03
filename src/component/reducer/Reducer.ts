@@ -421,6 +421,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleCalculateZeroFillingFilter(draft, action);
       case 'APPLY_FFT_FILTER':
         return FiltersActions.handleApplyFFTFilter(draft);
+      case 'APPLY_FFT_DIMENSION_1_FILTER':
+        return FiltersActions.handleApplyFFtDimension1Filter(draft);
+      case 'APPLY_FFT_DIMENSION_2_FILTER':
+        return FiltersActions.handleApplyFFtDimension2Filter(draft);
       case 'APPLY_MANUAL_PHASE_CORRECTION_FILTER':
         return FiltersActions.handleApplyManualPhaseCorrectionFilter(
           draft,

@@ -1,0 +1,113 @@
+{
+  "data": {
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/brukerFolders/cosyAndHsqcFid/2/acqu2s",
+            "data/brukerFolders/cosyAndHsqcFid/2/acqus",
+            "data/brukerFolders/cosyAndHsqcFid/2/ser",
+            "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/procs",
+            "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2s"
+          ]
+        },
+        "id": "861117f8-fa58-40f5-b334-316527ec1137",
+        "filters": [],
+        "display": {
+          "isPositiveVisible": true,
+          "isNegativeVisible": true,
+          "isVisible": true,
+          "dimension": 2
+        },
+        "zones": {
+          "values": [],
+          "options": {}
+        }
+      },
+      {
+        "sourceSelector": {
+          "files": [
+            "data/brukerFolders/cosyAndHsqcFid/3/acqu2s",
+            "data/brukerFolders/cosyAndHsqcFid/3/acqus",
+            "data/brukerFolders/cosyAndHsqcFid/3/ser",
+            "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/procs",
+            "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2s"
+          ]
+        },
+        "id": "1117f8fa-58d0-4573-b431-6527ec1137b1",
+        "filters": [],
+        "display": {
+          "isPositiveVisible": true,
+          "isNegativeVisible": true,
+          "isVisible": true,
+          "dimension": 2
+        },
+        "zones": {
+          "values": [],
+          "options": {}
+        }
+      }
+    ],
+    "molecules": [],
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu2"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqu2s"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/acqus"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/proc2s"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/pdata/1/procs"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/2/ser"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu2"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqu2s"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/acqus"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/proc2s"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/pdata/1/procs"
+        },
+        {
+          "relativePath": "data/brukerFolders/cosyAndHsqcFid/3/ser"
+        }
+      ]
+    }
+  },
+  "version": 4
+}

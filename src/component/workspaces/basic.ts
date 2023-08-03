@@ -34,6 +34,8 @@ export const basic: InnerWorkspace = {
       phaseCorrection: true,
       baselineCorrection: true,
       autoRangeAndZonePicking: true,
+      fftDimension1: true,
+      fftDimension2: true,
     },
   },
 };
