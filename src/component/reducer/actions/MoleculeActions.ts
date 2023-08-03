@@ -227,7 +227,6 @@ function checkPredictions(
   const { spectra } = inputOptions;
   const missing2DPrediction: string[] = [];
   const molecule = OCL.Molecule.fromMolfile(molfile);
-  molecule.addImplicitHydrogens();
   const { atoms } = getAtoms(molecule);
   for (const [experiment, required] of Object.entries(spectra)) {
     if (!required || predictedSpectra[experiment]) continue;
