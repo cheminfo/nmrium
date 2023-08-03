@@ -154,7 +154,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       workspaceName,
       originalWorkspaces,
     );
-    refForm.current?.setValues(workSpaceDisplayPreferences);
+    void refForm.current?.setValues(workSpaceDisplayPreferences);
   };
 
   function submitHandler(values) {
@@ -243,7 +243,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     (inputWorkspace) => {
       const parseWorkspaceName = Object.keys(inputWorkspace)[0];
       if (preferences.workspace.current === parseWorkspaceName) {
-        refForm.current?.setValues(inputWorkspace[parseWorkspaceName]);
+        void refForm.current?.setValues(inputWorkspace[parseWorkspaceName]);
       } else if (preferences.workspaces[parseWorkspaceName]) {
         pastRef.current = inputWorkspace;
         dispatch({

@@ -38,7 +38,7 @@ function ZonesPreferences(props, ref) {
   const zonesPreferences = usePanelPreferencesByNuclei('zones', nuclei);
 
   useEffect(() => {
-    formRef.current?.setValues(zonesPreferences);
+    void formRef.current?.setValues(zonesPreferences);
   }, [zonesPreferences]);
 
   const saveHandler = useCallback(
