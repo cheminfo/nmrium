@@ -247,12 +247,12 @@ function handleChangePeaksDisplayingMode(draft: Draft<State>) {
     if (peaksView[activeSpectrum.id]) {
       peaksView[activeSpectrum.id].displayingMode =
         peaksView[activeSpectrum.id].displayingMode === 'single'
-          ? 'group'
+          ? 'spread'
           : 'single';
     } else {
       const defaultPeaksView = { ...defaultPeaksViewState };
       defaultPeaksView.displayingMode =
-        defaultPeaksView.displayingMode === 'single' ? 'group' : 'single';
+        defaultPeaksView.displayingMode === 'single' ? 'spread' : 'single';
       peaksView[activeSpectrum.id] = defaultPeaksView;
     }
   }

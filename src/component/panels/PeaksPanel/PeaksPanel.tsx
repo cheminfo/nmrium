@@ -212,14 +212,14 @@ function PeaksPanelInner({
           <ActiveButton
             style={{ marginLeft: '2px', marginRight: '2px' }}
             popupTitle={
-              peaksViewState.displayingMode === 'group'
+              peaksViewState.displayingMode === 'spread'
                 ? 'Single Mode'
-                : 'Group mode'
+                : 'Spread mode'
             }
             popupPlacement="right"
             onClick={toggleDisplayingMode}
             disabled={!peaks?.values || peaks.values.length === 0}
-            value={peaksViewState.displayingMode === 'group'}
+            value={peaksViewState.displayingMode === 'spread'}
           >
             <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
           </ActiveButton>
