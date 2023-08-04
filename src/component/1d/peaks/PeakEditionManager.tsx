@@ -131,7 +131,11 @@ export function PeakEditionProvider({ children }) {
 
   return (
     <PeaksEditionContext.Provider value={editiionManagerState}>
-      <div onClick={() => setPeak(null)} style={{ position: 'relative' }}>
+      <div
+        onClick={() => setPeak(null)}
+        onContextMenu={() => setPeak(null)}
+        style={{ position: 'relative' }}
+      >
         {peak && (
           <div
             style={{
@@ -141,16 +145,20 @@ export function PeakEditionProvider({ children }) {
             }}
           >
             <Formik
+              key={peak.id}
               initialValues={{ value: peak.value }}
-              enableReinitialize
               onSubmit={hanldeOnSubmit}
               validationSchema={validationSchema}
             >
               {({ submitForm }) => (
                 <FormikNumberInput
-                  style={{ height: `${InputDimension.height}px` }}
+                  style={{
+                    height: `${InputDimension.height}px`,
+                    padding: '5px',
+                    outline: 'none',
+                  }}
                   name="value"
-                  autoFocus
+                  enableAutoSelect
                   onKeyDown={(e) => keyDownCheck(e) && submitForm()}
                   onClick={stopPropagation}
                   onMouseDown={stopPropagation}
