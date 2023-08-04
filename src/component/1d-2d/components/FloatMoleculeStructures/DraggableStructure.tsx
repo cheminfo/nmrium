@@ -100,8 +100,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
   return (
     <Rnd
       default={moleculeView.floating.bounding}
-      minWidth={90+AUTO_CROP_MARGIN*2}
-      minHeight={100+AUTO_CROP_MARGIN*2}
+      minWidth={90 + AUTO_CROP_MARGIN * 2}
+      minHeight={100 + AUTO_CROP_MARGIN * 2}
       dragHandleClassName="handle"
       enableUserSelectHack={false}
       bounds={viewerRef}
@@ -129,9 +129,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 id={`molSVG${index || ''}`}
                 autoCrop
                 autoCropMargin={AUTO_CROP_MARGIN}
-                height={height-AUTO_CROP_MARGIN*2}
-                width={width-AUTO_CROP_MARGIN*2}
-
+                height={height - AUTO_CROP_MARGIN * 2}
+                width={width - AUTO_CROP_MARGIN * 2}
                 label={molecule.label}
                 molfile={molecule.molfile}
                 setSelectedAtom={handleOnClickAtom}
