@@ -129,6 +129,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 id={`molSVG${index || ''}`}
                 autoCrop
                 autoCropMargin={AUTO_CROP_MARGIN}
+                labelFontSize="15px"
                 height={height - AUTO_CROP_MARGIN * 2}
                 width={width - AUTO_CROP_MARGIN * 2}
                 label={molecule.label}
