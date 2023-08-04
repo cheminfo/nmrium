@@ -23,7 +23,7 @@ export interface NumberInputProps
   max?: any;
   value?: number;
   style?: CSSProperties;
-  enableAutoSelect?: boolean;
+  autoSelect?: boolean;
 }
 
 const NumberInput = forwardRef(
@@ -37,7 +37,7 @@ const NumberInput = forwardRef(
       step = 'any',
       min = 'any',
       max = 'any',
-      enableAutoSelect = false,
+      autoSelect = false,
       ...otherProps
     }: NumberInputProps,
     ref: ForwardedRef<HTMLInputElement>,
@@ -45,7 +45,7 @@ const NumberInput = forwardRef(
     const combinedRef = useCombinedRefs([ref]);
 
     useEffect(() => {
-      if (enableAutoSelect) {
+      if (autoSelect) {
         combinedRef?.current?.select();
       }
     }, [combinedRef]);
