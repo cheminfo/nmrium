@@ -66,7 +66,6 @@ export function PeakEditionProvider({ children }) {
   const [peak, setPeak] = useState<Required<PeakEditionListenerProps> | null>(
     null,
   );
-  const dispatch = useDispatch();
 
   function getPosition() {
     let x = 0;
@@ -106,22 +105,6 @@ export function PeakEditionProvider({ children }) {
     [],
   );
 
-  function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter') {
-      return true;
-    } else if (event.key === 'Escape') {
-      setPeak(null);
-      return false;
-    }
-  }
-  function hanldeOnSubmit({ value }) {
-    if (peak) {
-      const shift = value - peak.value;
-      dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
-      setPeak(null);
-    }
-  }
-
   const editiionManagerState = useMemo<PeaksEditionContextProps>(
     () => ({ onEdit: handleOnEdit, id: peak?.id }),
     [peak?.id, handleOnEdit],
@@ -144,32 +127,59 @@ export function PeakEditionProvider({ children }) {
               transform: `translate(${x}px,${y}px)`,
             }}
           >
-            <Formik
+            <PeakField
               key={peak.id}
-              initialValues={{ value: peak.value }}
-              onSubmit={hanldeOnSubmit}
-              validationSchema={validationSchema}
-            >
-              {({ submitForm }) => (
-                <FormikNumberInput
-                  style={{
-                    height: `${InputDimension.height}px`,
-                    padding: '5px',
-                    outline: 'none',
-                  }}
-                  name="value"
-                  enableAutoSelect
-                  onKeyDown={(e) => keyDownCheck(e) && submitForm()}
-                  onClick={stopPropagation}
-                  onMouseDown={stopPropagation}
-                />
-              )}
-            </Formik>
+              peak={peak}
+              onClose={() => setPeak(null)}
+            />
           </div>
         )}
         {children}
       </div>
     </PeaksEditionContext.Provider>
+  );
+}
+
+function PeakField({ peak, onClose }) {
+  const dispatch = useDispatch();
+
+  function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      return true;
+    } else if (event.key === 'Escape') {
+      onClose();
+      return false;
+    }
+  }
+  function hanldeOnSubmit({ value }) {
+    if (peak) {
+      const shift = value - peak.value;
+      dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
+      onClose();
+    }
+  }
+
+  return (
+    <Formik
+      initialValues={{ value: peak.value }}
+      onSubmit={hanldeOnSubmit}
+      validationSchema={validationSchema}
+    >
+      {({ submitForm }) => (
+        <FormikNumberInput
+          style={{
+            height: `${InputDimension.height}px`,
+            padding: '5px',
+            outline: 'none',
+          }}
+          name="value"
+          enableAutoSelect
+          onKeyDown={(e) => keyDownCheck(e) && submitForm()}
+          onClick={stopPropagation}
+          onMouseDown={stopPropagation}
+        />
+      )}
+    </Formik>
   );
 }
 

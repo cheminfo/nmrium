@@ -54,27 +54,11 @@ function PeakAnnotationsTreeStyle() {
               key={group.meta.id}
               transform={`translate(${group.meta.groupStartX},0)`}
             >
-              {/* draw a rectangle to set background color for the group */}
-              {/* <rect
-              x={group.meta.groupStartX - (notationWidth + notationMargin) / 2}
-              y="0"
-              width={group.meta.groupWidth}
-              height="20"
-              fill="red"
-            /> */}
               {group.group.map((item, index) => {
                 const gStartX = index * (notationWidth + notationMargin);
 
                 return (
                   <>
-                    {/* draw a rectangle to set background color for the label */}
-                    {/* <rect
-                      x={gStartX - notationWidth / 2}
-                      y={-decimalsCount * 10}
-                      width={notationWidth}
-                      height={decimalsCount * 10}
-                      fill="white"
-                    /> */}
                     <PeakEditionListener
                       value={item.x}
                       x={group.meta.groupStartX + gStartX}
