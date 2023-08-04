@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import analyze from 'rollup-plugin-analyzer';
-import { AliasOptions, splitVendorChunkPlugin, defineConfig } from 'vite';
+import { AliasOptions, defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default () => {
@@ -22,10 +22,21 @@ export default () => {
       sourcemap: true,
       rollupOptions: {
         plugins: process.env.ANALYZE ? [analyze()] : [],
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/openchemlib/')) {
+              return 'openchemlib';
+            }
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+            return 'index';
+          },
+        },
       },
       minify: process.env.NO_MINIFY ? false : 'esbuild',
     },
-    plugins: [react(), splitVendorChunkPlugin()],
+    plugins: [react()],
     resolve: {
       alias: resolveAliases,
     },
