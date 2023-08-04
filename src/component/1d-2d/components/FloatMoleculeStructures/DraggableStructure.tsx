@@ -29,6 +29,8 @@ interface DraggableStructureProps {
   index?: number;
 }
 
+const AUTO_CROP_MARGIN = 30;
+
 const style = css`
   border: 1px solid transparent;
 
@@ -98,8 +100,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
   return (
     <Rnd
       default={moleculeView.floating.bounding}
-      minWidth={50}
-      minHeight={80}
+      minWidth={90+AUTO_CROP_MARGIN*2}
+      minHeight={100+AUTO_CROP_MARGIN*2}
       dragHandleClassName="handle"
       enableUserSelectHack={false}
       bounds={viewerRef}
@@ -122,39 +124,39 @@ export function DraggableStructure(props: DraggableStructureProps) {
         <ResponsiveChart>
           {({ width, height }) => {
             return (
-              <>
-                <OCLnmr
-                  OCL={OCL}
-                  autoCrop
-                  id={`molSVG${index || ''}`}
-                  width={width}
-                  height={height - 50}
-                  molfile={molecule.molfile}
-                  setSelectedAtom={handleOnClickAtom}
-                  atomHighlightColor={
-                    currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
-                  }
-                  atomHighlightOpacity={0.35}
-                  highlights={
-                    currentDiaIDsToHighlight?.length > 0
-                      ? currentDiaIDsToHighlight
-                      : assignedDiaIDsMerged
-                  }
-                  setHoverAtom={handleOnAtomHover}
-                  setMolfile={(molfile) => {
-                    dispatch({
-                      type: 'SET_MOLECULE',
-                      payload: {
-                        molfile,
-                        id: molecule.id,
-                        label: molecule.label,
-                      },
-                    });
-                  }}
-                  showAtomNumber={moleculeView.showAtomNumber}
-                />
-                <p style={{ textAlign: 'center' }}>{molecule.label}</p>
-              </>
+              <OCLnmr
+                OCL={OCL}
+                id={`molSVG${index || ''}`}
+                autoCrop
+                autoCropMargin={AUTO_CROP_MARGIN}
+                height={height-AUTO_CROP_MARGIN*2}
+                width={width-AUTO_CROP_MARGIN*2}
+
+                label={molecule.label}
+                molfile={molecule.molfile}
+                setSelectedAtom={handleOnClickAtom}
+                atomHighlightColor={
+                  currentDiaIDsToHighlight?.length > 0 ? 'red' : '#FFD700'
+                }
+                atomHighlightOpacity={0.35}
+                highlights={
+                  currentDiaIDsToHighlight?.length > 0
+                    ? currentDiaIDsToHighlight
+                    : assignedDiaIDsMerged
+                }
+                setHoverAtom={handleOnAtomHover}
+                setMolfile={(molfile) => {
+                  dispatch({
+                    type: 'SET_MOLECULE',
+                    payload: {
+                      molfile,
+                      id: molecule.id,
+                      label: molecule.label,
+                    },
+                  });
+                }}
+                showAtomNumber={moleculeView.showAtomNumber}
+              />
             );
           }}
         </ResponsiveChart>

@@ -244,18 +244,6 @@ function getMatrix(element) {
   return new DOMMatrix(transform);
 }
 
-function createMoleculeLabelElement(element, molElement) {
-  const label = element.querySelector('p').textContent;
-  const { width, height } = molElement.getBBox();
-  const text = document.createElement('text');
-  text.append(label);
-  text.setAttribute('x', `${width / 2}`);
-  text.setAttribute('y', `${height + 10}`);
-  text.setAttribute('fill', '#000');
-  text.setAttribute('text-anchor', 'middle');
-  text.setAttribute('font-size', '0.8em');
-  return text;
-}
 function getMoleculesElement(rootRef) {
   const nmriumViewer: any = (rootRef.getRootNode() as Document).querySelector(
     `#nmrium-viewer`,
@@ -268,12 +256,11 @@ function getMoleculesElement(rootRef) {
     const actionHeaderElement = element.querySelector(
       '.float-molecule-actions',
     );
-    const molElement = element.querySelector('svg[id^="molSVG"]');
-    const label = createMoleculeLabelElement(element, molElement);
-
+    const molElement = element
+      .cloneNode(true)
+      .querySelector('svg[id^="molSVG"]');
     const group = document.createElement('g');
-    group.append(molElement.cloneNode(true));
-    group.append(label);
+    group.append(molElement);
     group.setAttribute(
       'transform',
       `translate(${matrix.m41} ${

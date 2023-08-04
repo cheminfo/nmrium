@@ -27,8 +27,8 @@ export const DRAGGABLE_STRUCTURE_INITIAL_BOUNDING_REACT: MoleculeBoundingRect =
   {
     x: 100,
     y: 50,
-    width: 100,
-    height: 150,
+    width: 190,
+    height: 200,
   };
 
 export type MoleculesView = Record<string, MoleculeView>;
