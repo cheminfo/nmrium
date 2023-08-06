@@ -34,7 +34,7 @@ export default function SpectrumSimulationSimpleOptions({
         padding: '0 10px',
       }}
     >
-      <Label title="Spin system" style={labelStyle}>
+      <Label title="" style={labelStyle}>
         <Select
           items={SPIN_SYSTEMS}
           style={selectStyles}
