@@ -129,10 +129,11 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 id={`molSVG${index || ''}`}
                 autoCrop
                 autoCropMargin={AUTO_CROP_MARGIN}
-                labelFontSize={15}
                 height={height - AUTO_CROP_MARGIN * 2}
                 width={width - AUTO_CROP_MARGIN * 2}
                 label={molecule.label}
+                labelFontSize={15}
+                labelColor="rgb(0,0,0)"
                 molfile={molecule.molfile}
                 setSelectedAtom={handleOnClickAtom}
                 atomHighlightColor={
