@@ -1,4 +1,6 @@
-import { useReducer, useMemo, useEffect, Reducer } from 'react';
+import { useReducer, useMemo, useEffect, Reducer, ReactNode } from 'react';
+
+import { useChartData } from '../context/ChartContext';
 
 import {
   AssignmentContext,
@@ -8,8 +10,13 @@ import {
 } from './AssignmentsContext';
 import assignmentReducer, { AssignmentsActions } from './AssignmentsReducer';
 
-export function AssignmentProvider(props) {
-  const { spectraData: spectra, children } = props;
+interface AssignmentProviderProps {
+  children: ReactNode;
+}
+
+export function AssignmentProvider(props: AssignmentProviderProps) {
+  const { children } = props;
+  const { data: spectra } = useChartData();
   const [data, dispatch] = useReducer<
     Reducer<AssignmentState, AssignmentsActions>
   >(assignmentReducer, assignmentState);
@@ -20,6 +27,8 @@ export function AssignmentProvider(props) {
     if (spectra) {
       dispatch({
         type: 'INITIATE_ASSIGNMENTS',
+        // TODO: Fix this type error. It's been here for a long time because this component wasn't typed.
+        // @ts-expect-error This should be fixed.
         payload: { spectra },
       });
     }

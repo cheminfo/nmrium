@@ -8,6 +8,7 @@ import Viewer1D from '../1d/Viewer1D';
 import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures';
 import Viewer2D from '../2d/Viewer2D';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
+import { useChartData } from '../context/ChartContext';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
@@ -63,7 +64,6 @@ const containerStyles = css`
 `;
 
 interface InnerNMRiumContentsProps {
-  displayerMode: DISPLAYER_MODE;
   isFullscreenEnabled: boolean;
   toggleFullscreen: () => void;
   emptyText: NMRiumProps['emptyText'];
@@ -75,7 +75,6 @@ interface InnerNMRiumContentsProps {
 
 export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
   const {
-    displayerMode,
     isFullscreenEnabled,
     toggleFullscreen,
     emptyText,
@@ -84,6 +83,8 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
     rootRef,
     viewerRef,
   } = props;
+
+  const { displayerMode } = useChartData();
 
   const preventContextMenuHandler = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
