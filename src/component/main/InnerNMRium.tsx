@@ -1,10 +1,6 @@
-/** @jsxImportSource @emotion/react */
-
-import { css } from '@emotion/react';
 import { readNMRiumObject, NmriumState } from 'nmr-load-save';
 import {
   useEffect,
-  useCallback,
   useReducer,
   useRef,
   useImperativeHandle,
@@ -14,11 +10,6 @@ import { useOnOff } from 'react-science/ui';
 import { useFullscreen } from 'react-use';
 
 import { toJSON } from '../../data/SpectraManager';
-import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
-import Viewer1D from '../1d/Viewer1D';
-import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures';
-import Viewer2D from '../2d/Viewer2D';
-import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
 import { AssignmentProvider } from '../assignment';
 import { ChartDataProvider } from '../context/ChartContext';
 import { DispatchProvider } from '../context/DispatchContext';
@@ -27,24 +18,18 @@ import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
 import { AlertProvider } from '../elements/popup/Alert';
 import { ModalProvider } from '../elements/popup/Modal';
-import Header from '../header/Header';
 import { HighlightProvider } from '../highlight';
-import DropZone from '../loader/DropZone';
 import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
-import Panels from '../panels/Panels';
 import checkActionType from '../reducer/IgnoreActions';
 import { spectrumReducer, initialState, initState } from '../reducer/Reducer';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
   initPreferencesState,
 } from '../reducer/preferences/preferencesReducer';
-import ToolBar from '../toolbar/ToolBar';
 import { getBlob } from '../utility/export';
 
+import { InnerNMRiumContents } from './InnerNMRiumContents';
 import type { NMRiumProps, NMRiumRef } from './NMRium';
-import { SplitPaneWrapper } from './SplitPaneWrapper';
-import { StateError } from './StateError';
 import { NMRiumChangeCb, NMRiumData } from './types';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
@@ -54,49 +39,6 @@ type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
 const defaultData: NMRiumData = {
   spectra: [],
 };
-
-const viewerContainerStyle = css`
-  border: 0.55px #e6e6e6 solid;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  margin-left: -1px;
-`;
-
-const containerStyles = css`
-  background-color: white;
-  width: 100%;
-  display: block;
-  height: 100%;
-
-  div:focus {
-    outline: none !important;
-  }
-
-  button {
-    cursor: pointer;
-  }
-
-  button,
-  button:active,
-  button:hover,
-  button:focus,
-  [type='button']:focus {
-    outline: none !important;
-  }
-
-  button:disabled {
-    cursor: default;
-  }
-
-  * {
-    -webkit-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
-    user-select: none;
-  }
-`;
 
 export function InnerNMRium({
   data: dataProp = defaultData,
@@ -111,7 +53,8 @@ export function InnerNMRium({
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const [show, , setOff, toggle] = useOnOff(false);
+  const [enableFullscreen, , disableFullscreen, toggleFullscreen] =
+    useOnOff(false);
   const mainDivRef = useRef<HTMLDivElement>(null);
 
   const handleChange = useRef<NMRiumChangeCb | undefined>(onChange);
@@ -119,8 +62,8 @@ export function InnerNMRium({
     handleChange.current = onChange;
   }, [onChange]);
 
-  const isFullscreen = useFullscreen(rootRef, show, {
-    onClose: setOff,
+  const isFullscreenEnabled = useFullscreen(rootRef, enableFullscreen, {
+    onClose: disableFullscreen,
   });
 
   const [state, dispatch] = useReducer(
@@ -182,7 +125,7 @@ export function InnerNMRium({
 
   useEffect(() => {
     rootRef.current?.focus();
-  }, [isFullscreen]);
+  }, [isFullscreenEnabled]);
 
   useEffect(() => {
     dispatchPreferences({
@@ -226,12 +169,6 @@ export function InnerNMRium({
     }
   }, [dataProp]);
 
-  const preventContextMenuHandler = useCallback((e) => {
-    if (!checkModifierKeyActivated(e)) {
-      e.preventDefault();
-    }
-  }, []);
-
   useEffect(() => {
     const div = mainDivRef.current;
     if (!div) {
@@ -258,15 +195,15 @@ export function InnerNMRium({
   }, []);
 
   return (
-    <GlobalProvider
-      value={{
-        rootRef: rootRef.current,
-        elementsWrapperRef: elementsWrapperRef.current,
-        viewerRef: viewerRef.current,
-      }}
-    >
-      <PreferencesProvider value={preferencesState}>
-        <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
+    <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
+      <GlobalProvider
+        value={{
+          rootRef: rootRef.current,
+          elementsWrapperRef: elementsWrapperRef.current,
+          viewerRef: viewerRef.current,
+        }}
+      >
+        <PreferencesProvider value={preferencesState}>
           <LoggerProvider>
             <AlertProvider wrapperRef={elementsWrapperRef.current}>
               <DispatchProvider value={dispatch}>
@@ -275,79 +212,15 @@ export function InnerNMRium({
                     <HighlightProvider>
                       <AssignmentProvider spectraData={spectraData}>
                         <SpinnerProvider value={getSpinner}>
-                          <StateError />
-                          <div
-                            className="nmrium-container"
-                            ref={rootRef}
-                            css={containerStyles}
-                            onContextMenu={preventContextMenuHandler}
-                            style={{ height: '100%', width: '100%' }}
-                          >
-                            <DropZone>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  backgroundColor: 'white',
-                                  width: '100%',
-                                }}
-                              >
-                                <Header
-                                  isFullscreen={isFullscreen}
-                                  onMaximize={toggle}
-                                />
-
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    height: '100%',
-                                  }}
-                                >
-                                  <ToolBar />
-                                  <SplitPaneWrapper>
-                                    <div css={viewerContainerStyle}>
-                                      <KeysListenerTracker />
-                                      <div
-                                        id="nmrium-viewer"
-                                        data-test-id="viewer"
-                                        ref={viewerRef}
-                                        style={{
-                                          width: '100%',
-                                          height: '100%',
-                                          position: 'relative',
-                                        }}
-                                      >
-                                        <FloatMoleculeStructures />
-                                        {displayerMode ===
-                                        DISPLAYER_MODE.DM_1D ? (
-                                          <Viewer1D emptyText={emptyText} />
-                                        ) : (
-                                          <Viewer2D emptyText={emptyText} />
-                                        )}
-                                      </div>
-                                    </div>
-                                    <Panels />
-                                  </SplitPaneWrapper>
-
-                                  <div
-                                    ref={elementsWrapperRef}
-                                    key={String(isFullscreen)}
-                                    id="main-wrapper"
-                                    style={{
-                                      position: 'absolute',
-                                      pointerEvents: 'none',
-                                      zIndex: 2,
-                                      left: 0,
-                                      right: 0,
-                                      top: 0,
-                                      bottom: 0,
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </DropZone>
-                          </div>
+                          <InnerNMRiumContents
+                            displayerMode={displayerMode}
+                            isFullscreenEnabled={isFullscreenEnabled}
+                            toggleFullscreen={toggleFullscreen}
+                            emptyText={emptyText}
+                            elementsWrapperRef={elementsWrapperRef}
+                            rootRef={rootRef}
+                            viewerRef={viewerRef}
+                          />
                         </SpinnerProvider>
                       </AssignmentProvider>
                     </HighlightProvider>
@@ -356,8 +229,8 @@ export function InnerNMRium({
               </DispatchProvider>
             </AlertProvider>
           </LoggerProvider>
-        </div>
-      </PreferencesProvider>
-    </GlobalProvider>
+        </PreferencesProvider>
+      </GlobalProvider>
+    </div>
   );
 }
