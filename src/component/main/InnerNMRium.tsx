@@ -1,63 +1,59 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import {
-  readNMRiumObject,
-  NmriumState,
-  CustomWorkspaces,
-  WorkspacePreferences as NMRiumPreferences,
-} from 'nmr-load-save';
+import { readNMRiumObject, NmriumState } from 'nmr-load-save';
 import {
   useEffect,
   useCallback,
   useReducer,
   useRef,
-  memo,
-  ReactElement,
-  ReactNode,
-  forwardRef,
   useImperativeHandle,
   ForwardedRef,
 } from 'react';
-import {
-  ErrorBoundary,
-  ErrorBoundaryPropsWithComponent,
-} from 'react-error-boundary';
-import { RootLayout, useOnOff } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 import { useFullscreen } from 'react-use';
 
-import { toJSON } from '../data/SpectraManager';
-import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
-
-import Viewer1D from './1d/Viewer1D';
-import FloatMoleculeStructures from './1d-2d/components/FloatMoleculeStructures';
-import Viewer2D from './2d/Viewer2D';
-import ErrorOverlay from './ErrorOverlay';
-import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
-import { SplitPaneWrapper } from './SplitPaneWrapper';
-import { AssignmentProvider } from './assignment';
-import { ChartDataProvider, useChartData } from './context/ChartContext';
-import { DispatchProvider } from './context/DispatchContext';
-import { GlobalProvider } from './context/GlobalContext';
-import { LoggerProvider, useLogger } from './context/LoggerContext';
-import { PreferencesProvider } from './context/PreferencesContext';
-import { AlertProvider } from './elements/popup/Alert';
-import { ModalProvider } from './elements/popup/Modal';
-import Header from './header/Header';
-import { HighlightProvider } from './highlight';
-import DropZone from './loader/DropZone';
-import { defaultGetSpinner, SpinnerProvider } from './loader/SpinnerContext';
-import { NMRiumChangeCb, NMRiumData, NMRiumWorkspace } from './main/types';
-import Panels from './panels/Panels';
-import checkActionType from './reducer/IgnoreActions';
-import { spectrumReducer, initialState, initState } from './reducer/Reducer';
-import { DISPLAYER_MODE } from './reducer/core/Constants';
+import { toJSON } from '../../data/SpectraManager';
+import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
+import Viewer1D from '../1d/Viewer1D';
+import FloatMoleculeStructures from '../1d-2d/components/FloatMoleculeStructures';
+import Viewer2D from '../2d/Viewer2D';
+import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
+import { AssignmentProvider } from '../assignment';
+import { ChartDataProvider } from '../context/ChartContext';
+import { DispatchProvider } from '../context/DispatchContext';
+import { GlobalProvider } from '../context/GlobalContext';
+import { LoggerProvider } from '../context/LoggerContext';
+import { PreferencesProvider } from '../context/PreferencesContext';
+import { AlertProvider } from '../elements/popup/Alert';
+import { ModalProvider } from '../elements/popup/Modal';
+import Header from '../header/Header';
+import { HighlightProvider } from '../highlight';
+import DropZone from '../loader/DropZone';
+import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
+import Panels from '../panels/Panels';
+import checkActionType from '../reducer/IgnoreActions';
+import { spectrumReducer, initialState, initState } from '../reducer/Reducer';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
   initPreferencesState,
-} from './reducer/preferences/preferencesReducer';
-import ToolBar from './toolbar/ToolBar';
-import { BlobObject, getBlob } from './utility/export';
+} from '../reducer/preferences/preferencesReducer';
+import ToolBar from '../toolbar/ToolBar';
+import { getBlob } from '../utility/export';
+
+import type { NMRiumProps, NMRiumRef } from './NMRium';
+import { SplitPaneWrapper } from './SplitPaneWrapper';
+import { StateError } from './StateError';
+import { NMRiumChangeCb, NMRiumData } from './types';
+
+type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
+  innerRef: ForwardedRef<NMRiumRef>;
+};
+
+const defaultData: NMRiumData = {
+  spectra: [],
+};
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
@@ -102,53 +98,7 @@ const containerStyles = css`
   }
 `;
 
-export interface NMRiumProps {
-  data?: NMRiumData;
-  onChange?: NMRiumChangeCb;
-  noErrorBoundary?: boolean;
-  onError?: ErrorBoundaryPropsWithComponent['onError'];
-  workspace?: NMRiumWorkspace;
-  customWorkspaces?: CustomWorkspaces;
-  preferences?: NMRiumPreferences;
-  emptyText?: ReactNode;
-  /**
-   * Returns a custom spinner that will be rendered while loading data.
-   */
-  getSpinner?: () => ReactElement;
-}
-
-const defaultData: NMRiumData = {
-  spectra: [],
-};
-
-export interface NMRiumRef {
-  getSpectraViewerAsBlob: () => BlobObject | null;
-}
-
-const NMRiumBase = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
-  props: NMRiumProps,
-  ref,
-) {
-  const { noErrorBoundary = false, onError, ...otherProps } = props;
-
-  const innerNmrium = <InnerNMRium {...otherProps} innerRef={ref} />;
-
-  const children = noErrorBoundary ? (
-    innerNmrium
-  ) : (
-    <ErrorBoundary FallbackComponent={ErrorOverlay} onError={onError}>
-      {innerNmrium}
-    </ErrorBoundary>
-  );
-
-  return <RootLayout style={{ width: '100%' }}>{children}</RootLayout>;
-});
-
-type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
-  innerRef: ForwardedRef<NMRiumRef>;
-};
-
-function InnerNMRium({
+export function InnerNMRium({
   data: dataProp = defaultData,
   workspace,
   customWorkspaces,
@@ -222,7 +172,6 @@ function InnerNMRium({
 
   useEffect(() => {
     // trigger onChange callback if view object changed
-
     handleChange.current?.(stateRef.current as NmriumState, 'view');
   }, [view]);
 
@@ -411,22 +360,4 @@ function InnerNMRium({
       </PreferencesProvider>
     </GlobalProvider>
   );
-}
-
-export const NMRium = memo(NMRiumBase);
-
-/**
- * Alert user in UI when state have errorAction (error from reducer)
- */
-function StateError() {
-  const { errorAction } = useChartData();
-  const { logger } = useLogger();
-
-  useEffect(() => {
-    if (!errorAction) return;
-
-    logger.error(errorAction);
-  }, [errorAction, logger]);
-
-  return null;
 }
