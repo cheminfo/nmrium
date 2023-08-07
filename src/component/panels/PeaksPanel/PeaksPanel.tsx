@@ -21,7 +21,9 @@ import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import { FilterType } from '../../utility/filterType';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
@@ -126,7 +128,7 @@ function PeaksPanelInner({
   function toggleDisplayingMode() {
     dispatch({ type: 'TOGGLE_PEAKS_DISPLAYING_MODE' });
   }
-
+  const counter = peaks?.values?.length || 0;
   return (
     <div
       css={[
@@ -144,15 +146,17 @@ function PeaksPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={peaks?.values?.length}
+          counter={counter}
+          counterLabel={createFilterLabel(
+            counter,
+            filterIsActive && filteredPeaks?.length,
+          )}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
           }
-          filterIsActive={filterIsActive}
-          counterFiltered={filteredPeaks.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
