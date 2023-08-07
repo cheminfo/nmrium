@@ -29,6 +29,8 @@ interface DraggableStructureProps {
   index?: number;
 }
 
+const AUTO_CROP_MARGIN = 30;
+
 const style = css`
   border: 1px solid transparent;
 
@@ -98,8 +100,8 @@ export function DraggableStructure(props: DraggableStructureProps) {
   return (
     <Rnd
       default={moleculeView.floating.bounding}
-      minWidth={100}
-      minHeight={100}
+      minWidth={90 + AUTO_CROP_MARGIN * 2}
+      minHeight={100 + AUTO_CROP_MARGIN * 2}
       dragHandleClassName="handle"
       enableUserSelectHack={false}
       bounds={viewerRef}
@@ -124,10 +126,14 @@ export function DraggableStructure(props: DraggableStructureProps) {
             return (
               <OCLnmr
                 OCL={OCL}
-                autoCrop
                 id={`molSVG${index || ''}`}
-                width={width}
-                height={height}
+                autoCrop
+                autoCropMargin={AUTO_CROP_MARGIN}
+                height={height - AUTO_CROP_MARGIN * 2}
+                width={width - AUTO_CROP_MARGIN * 2}
+                label={molecule.label}
+                labelFontSize={15}
+                labelColor="rgb(0,0,0)"
                 molfile={molecule.molfile}
                 setSelectedAtom={handleOnClickAtom}
                 atomHighlightColor={
