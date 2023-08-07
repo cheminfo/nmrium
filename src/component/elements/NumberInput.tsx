@@ -1,4 +1,5 @@
-import { CSSProperties, ForwardedRef, forwardRef } from 'react';
+import { CSSProperties, ForwardedRef, forwardRef, useEffect } from 'react';
+import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const inputStyle: CSSProperties = {
   height: '100%',
@@ -16,6 +17,7 @@ export interface NumberInputProps
   max?: any;
   value?: number;
   style?: CSSProperties;
+  autoSelect?: boolean;
 }
 
 const NumberInput = forwardRef(
@@ -29,13 +31,22 @@ const NumberInput = forwardRef(
       step = 'any',
       min = 'any',
       max = 'any',
+      autoSelect = false,
       ...otherProps
     }: NumberInputProps,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
+    const combinedRef = useCombinedRefs([ref]);
+
+    useEffect(() => {
+      if (autoSelect) {
+        combinedRef?.current?.select();
+      }
+    }, [autoSelect, combinedRef]);
+
     return (
       <input
-        ref={ref}
+        ref={combinedRef}
         name={name}
         style={{ ...inputStyle, ...style }}
         type="number"
