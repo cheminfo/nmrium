@@ -1,9 +1,10 @@
 import { NmriumState, readNMRiumObject } from 'nmr-load-save';
-import { ReactNode, useEffect, useReducer, useRef } from 'react';
+import { ReactNode, useCallback, useEffect, useReducer, useRef } from 'react';
 
 import { toJSON } from '../../data/SpectraManager';
 import { ChartDataProvider } from '../context/ChartContext';
 import { DispatchProvider } from '../context/DispatchContext';
+import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
 import checkActionType from '../reducer/IgnoreActions';
 import { spectrumReducer, initialState, initState } from '../reducer/Reducer';
@@ -23,12 +24,21 @@ const defaultData: NMRiumData = {
 export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
   const { children, onChange, nmriumData = defaultData } = props;
 
+  const { logger } = useLogger();
   const preferencesState = usePreferences();
 
-  const [state, dispatch] = useReducer(
+  const [state, dispatchRaw] = useReducer(
     spectrumReducer,
     initialState,
     initState,
+  );
+
+  const dispatch = useCallback<typeof dispatchRaw>(
+    (action) => {
+      logger.trace({ action }, `Dispatch main reducer action: ${action.type}`);
+      dispatchRaw(action);
+    },
+    [logger],
   );
 
   const {
@@ -99,7 +109,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           reportError(error);
         });
     }
-  }, [nmriumData]);
+  }, [nmriumData, dispatch]);
 
   return (
     <DispatchProvider value={dispatch}>
