@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { WebSource } from 'filelist-utils';
-import { CorrelationData } from 'nmr-correlation';
 import {
   readNMRiumObject,
   NmriumState,
   CustomWorkspaces,
   WorkspacePreferences as NMRiumPreferences,
-  Spectrum,
 } from 'nmr-load-save';
 import {
   useEffect,
@@ -50,6 +47,7 @@ import Header from './header/Header';
 import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import { defaultGetSpinner, SpinnerProvider } from './loader/SpinnerContext';
+import { NMRiumChangeCb, NMRiumData, NMRiumWorkspace } from './main/types';
 import Panels from './panels/Panels';
 import checkActionType from './reducer/IgnoreActions';
 import { spectrumReducer, initialState, initState } from './reducer/Reducer';
@@ -103,31 +101,10 @@ const containerStyles = css`
     user-select: none;
   }
 `;
-export { serializeNmriumState } from 'nmr-load-save';
-export type {
-  NmriumState,
-  WorkspacePreferences as NMRiumPreferences,
-} from 'nmr-load-save';
-
-export type NMRiumWorkspace =
-  | 'exercise'
-  | 'process1D'
-  | 'default'
-  | 'prediction'
-  | 'embedded'
-  | 'assignment'
-  | 'simulation'
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string & {});
-
-export type OnNMRiumChange = (
-  state: NmriumState,
-  source: 'data' | 'view' | 'settings',
-) => void;
 
 export interface NMRiumProps {
   data?: NMRiumData;
-  onChange?: OnNMRiumChange;
+  onChange?: NMRiumChangeCb;
   noErrorBoundary?: boolean;
   onError?: ErrorBoundaryPropsWithComponent['onError'];
   workspace?: NMRiumWorkspace;
@@ -140,19 +117,6 @@ export interface NMRiumProps {
   getSpinner?: () => ReactElement;
 }
 
-export type Molecules = Array<{ molfile: string }>;
-
-type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
-};
-
-export interface NMRiumData {
-  source?: WebSource;
-  molecules?: Molecules;
-  spectra: Array<DeepPartial<Spectrum>>;
-  correlations?: CorrelationData;
-}
-
 const defaultData: NMRiumData = {
   spectra: [],
 };
@@ -161,7 +125,7 @@ export interface NMRiumRef {
   getSpectraViewerAsBlob: () => BlobObject | null;
 }
 
-const NMRium = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
+const NMRiumBase = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
   props: NMRiumProps,
   ref,
 ) {
@@ -200,7 +164,7 @@ function InnerNMRium({
   const [show, , setOff, toggle] = useOnOff(false);
   const mainDivRef = useRef<HTMLDivElement>(null);
 
-  const handleChange = useRef<OnNMRiumChange | undefined>(onChange);
+  const handleChange = useRef<NMRiumChangeCb | undefined>(onChange);
   useEffect(() => {
     handleChange.current = onChange;
   }, [onChange]);
@@ -448,7 +412,8 @@ function InnerNMRium({
     </GlobalProvider>
   );
 }
-export default memo(NMRium);
+
+export const NMRium = memo(NMRiumBase);
 
 /**
  * Alert user in UI when state have errorAction (error from reducer)

@@ -8,7 +8,7 @@ import { Reducer } from 'react';
 import { SplitPaneSize } from 'react-science/ui';
 
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
-import { NMRiumWorkspace, NMRiumPreferences } from '../../NMRium';
+import type { NMRiumWorkspace, NMRiumPreferences } from '../../main';
 import {
   getLocalStorage,
   removeData,

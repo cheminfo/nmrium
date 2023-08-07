@@ -6,7 +6,7 @@ import { FaRegCopy, FaCheck } from 'react-icons/fa';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import NMRium from '../../component/NMRium';
+import { NMRium } from '../../component/main';
 import { ClipboardFallbackModal } from '../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../utils/clipboard/clipboardHooks';
 

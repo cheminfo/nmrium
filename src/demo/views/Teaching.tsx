@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NMRium from '../../component/NMRium';
+import { NMRium } from '../../component/main';
 
 async function loadData(file) {
   const response = await fetch(file);

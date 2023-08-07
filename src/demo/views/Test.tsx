@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useReducer } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { DropZone } from 'react-science/ui';
 
-import NMRium from '../../component/NMRium';
+import { NMRium } from '../../component/main';
 
 import { loadData } from './View';
 

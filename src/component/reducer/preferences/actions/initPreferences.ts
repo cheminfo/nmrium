@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { NMRiumWorkspace } from '../../../NMRium';
+import type { NMRiumWorkspace } from '../../../main';
 import { getLocalStorage } from '../../../utility/LocalStorage';
 import { PreferencesState, WORKSPACES_KEYS } from '../preferencesReducer';
 import { initWorkspace } from '../utilities/initWorkspace';
