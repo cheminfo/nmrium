@@ -1,10 +1,4 @@
-import {
-  CSSProperties,
-  ForwardedRef,
-  forwardRef,
-  useEffect,
-  useRef,
-} from 'react';
+import { CSSProperties, ForwardedRef, forwardRef, useEffect } from 'react';
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const inputStyle: CSSProperties = {
@@ -48,7 +42,7 @@ const NumberInput = forwardRef(
       if (autoSelect) {
         combinedRef?.current?.select();
       }
-    }, [combinedRef]);
+    }, [autoSelect, combinedRef]);
 
     return (
       <input
