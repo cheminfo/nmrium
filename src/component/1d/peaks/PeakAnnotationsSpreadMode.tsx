@@ -7,6 +7,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { formatNumber } from '../../utility/formatNumber';
 import { resolve } from '../utilities/intersectionResolver';
 import { PeakEditionListener } from './PeakEditionManager';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 const notationWidth = 10;
@@ -55,40 +56,71 @@ function PeakAnnotationsTreeStyle() {
               transform={`translate(${group.meta.groupStartX},0)`}
             >
               {group.group.map((item, index) => {
-                const gStartX = index * (notationWidth + notationMargin);
-
+                const { id, x: value, scaleX } = item;
+                const startX = index * (notationWidth + notationMargin);
+                const x = scaleX - group.meta.groupStartX;
                 return (
-                  <>
-                    <PeakEditionListener
-                      value={item.x}
-                      x={group.meta.groupStartX + gStartX}
-                      y={decimalsCount * 10}
-                      id={item.id}
-                    >
-                      <text
-                        transform={`rotate(-90) translate(0 ${gStartX})`}
-                        dominantBaseline="middle"
-                        textAnchor="start"
-                        fontSize="11px"
-                        fill="black"
-                      >
-                        {formatNumber(item.x, deltaPPM.format)}
-                      </text>
-                    </PeakEditionListener>
-                    <path
-                      d={`M ${gStartX} 5 v 5 L ${
-                        item.scaleX - group.meta.groupStartX
-                      } 20 v 5`}
-                      stroke={spectrum.display.color}
-                      fill="transparent"
-                    />
-                  </>
+                  <PeakAnnotation
+                    key={id}
+                    startX={startX}
+                    x={x}
+                    id={id}
+                    value={value}
+                    format={deltaPPM.format}
+                    color={spectrum.display.color}
+                    peakEditionFieldPositon={{
+                      x: group.meta.groupStartX + startX,
+                      y: decimalsCount * 10,
+                    }}
+                  />
                 );
               })}
             </g>
           );
         })}
       </g>
+    </g>
+  );
+}
+
+interface PeakAnnotationProps {
+  startX: number;
+  x: number;
+  format: string;
+  color: string;
+  id: string;
+  value: number;
+  peakEditionFieldPositon: { x: number; y: number };
+}
+function PeakAnnotation(props: PeakAnnotationProps) {
+  const { startX, format, color, id, value, x, peakEditionFieldPositon } =
+    props;
+  const highlight = useHighlight([id], {
+    type: HighlightEventSource.PEAK,
+    extra: { id },
+  });
+  return (
+    <g
+      onMouseEnter={() => highlight.show()}
+      onMouseLeave={() => highlight.hide()}
+    >
+      <PeakEditionListener {...{ ...peakEditionFieldPositon, id, value }}>
+        <text
+          transform={`rotate(-90) translate(0 ${startX})`}
+          dominantBaseline="middle"
+          textAnchor="start"
+          fontSize="11px"
+          fill="black"
+        >
+          {formatNumber(value, format)}
+        </text>
+      </PeakEditionListener>
+      <path
+        d={`M ${startX} 5 v 5 L ${x} 20 v 5`}
+        stroke={color}
+        fill="transparent"
+        strokeWidth={highlight.isActive ? '3px' : '1px'}
+      />
     </g>
   );
 }

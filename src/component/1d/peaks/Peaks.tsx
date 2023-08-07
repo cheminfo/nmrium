@@ -5,11 +5,11 @@ import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPe
 import useSpectrum from '../../hooks/useSpectrum';
 
 import PeakAnnotations from './PeakAnnotations';
-import PeakAnnotationsTreeStyle from './PeakAnnotationsTreeStyle';
+import PeakAnnotationsSpreadMode from './PeakAnnotationsSpreadMode';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 
-export function PeaksGroup() {
+export function Peaks() {
   const {
     view: { peaks },
   } = useChartData();
@@ -27,7 +27,7 @@ export function PeaksGroup() {
   const mode = peaks?.[spectrum.id]?.displayingMode || 'spread';
 
   if (mode === 'spread') {
-    return <PeakAnnotationsTreeStyle />;
+    return <PeakAnnotationsSpreadMode />;
   }
 
   return <PeakAnnotations />;

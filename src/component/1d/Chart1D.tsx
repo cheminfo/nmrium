@@ -11,7 +11,7 @@ import IntegralsSeries from './integral/IntegralsSeries';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import { PeakEditionProvider } from './peaks/PeakEditionManager';
-import { PeaksGroup } from './peaks/PeaksGroup';
+import { Peaks } from './peaks/Peaks';
 import PeaksShapes from './peaks/PeaksShapes';
 import Ranges from './ranges/Ranges';
 import BaseLineZones from './tool/BaseLineZones';
@@ -44,7 +44,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <LinesSeries />
         <ApodizationLine />
         <IntegralsSeries />
-        <PeaksGroup />
+        <Peaks />
         <Ranges />
         <JGraph />
         <MultiAnalysisRanges />

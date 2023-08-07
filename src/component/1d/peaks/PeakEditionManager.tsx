@@ -127,7 +127,7 @@ export function PeakEditionProvider({ children }) {
               transform: `translate(${x}px,${y}px)`,
             }}
           >
-            <PeakField
+            <PeakEditionField
               key={peak.id}
               value={peak.value}
               onClose={() => setPeak(null)}
@@ -145,7 +145,7 @@ interface PeakFieldProps {
   onClose: () => void;
 }
 
-function PeakField({ value, onClose }: PeakFieldProps) {
+function PeakEditionField({ value, onClose }: PeakFieldProps) {
   const dispatch = useDispatch();
 
   function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -156,9 +156,9 @@ function PeakField({ value, onClose }: PeakFieldProps) {
       return false;
     }
   }
-  function hanldeOnSubmit({ value }) {
+  function hanldeOnSubmit({ value: newValue }) {
     if (value) {
-      const shift = value - value;
+      const shift = newValue - value;
       dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
       onClose();
     }
