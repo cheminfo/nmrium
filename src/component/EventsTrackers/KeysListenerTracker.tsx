@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import { useAssignmentData } from '../assignment/AssignmentsContext';
@@ -15,11 +15,16 @@ import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 
-function KeysListenerTracker() {
+interface KeysListenerTrackerProps {
+  mainDivRef: RefObject<HTMLDivElement>;
+}
+
+function KeysListenerTracker(props: KeysListenerTrackerProps) {
+  const { mainDivRef } = props;
+
   const {
     keysPreferences,
     displayerMode,
-    overDisplayer,
     data,
     view: {
       spectra: { activeTab },
@@ -43,6 +48,26 @@ function KeysListenerTracker() {
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
+
+  const mouseIsOverDisplayer = useRef(false);
+  useEffect(() => {
+    const div = mainDivRef.current;
+    if (!div) {
+      return;
+    }
+    function mouseEnterHandler() {
+      mouseIsOverDisplayer.current = true;
+    }
+    function mouseLeaveHandler() {
+      mouseIsOverDisplayer.current = false;
+    }
+    div.addEventListener('mouseenter', mouseEnterHandler);
+    div.addEventListener('mouseleave', mouseLeaveHandler);
+    return () => {
+      div.removeEventListener('mouseenter', mouseEnterHandler);
+      div.removeEventListener('mouseleave', mouseLeaveHandler);
+    };
+  }, [mainDivRef]);
 
   const assignmentData = useAssignmentData();
   const allow1DTool = useMemo(() => {
@@ -407,7 +432,7 @@ function KeysListenerTracker() {
 
   const handleOnKeyDown = useCallback(
     (e) => {
-      if (checkNotInputField(e) && overDisplayer) {
+      if (checkNotInputField(e) && mouseIsOverDisplayer.current) {
         const num = Number(e.code.slice(-1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
@@ -426,7 +451,6 @@ function KeysListenerTracker() {
       deleteHandler,
       highlight,
       keysPreferencesListenerHandler,
-      overDisplayer,
       toolsListenerHandler,
     ],
   );

@@ -169,31 +169,6 @@ export function InnerNMRium({
     }
   }, [dataProp]);
 
-  useEffect(() => {
-    const div = mainDivRef.current;
-    if (!div) {
-      return;
-    }
-    function mouseEnterHandler() {
-      dispatch({
-        type: 'SET_MOUSE_OVER_DISPLAYER',
-        payload: { isMouseOverDisplayer: true },
-      });
-    }
-    function mouseLeaveHandler() {
-      dispatch({
-        type: 'SET_MOUSE_OVER_DISPLAYER',
-        payload: { isMouseOverDisplayer: false },
-      });
-    }
-    div.addEventListener('mouseenter', mouseEnterHandler);
-    div.addEventListener('mouseleave', mouseLeaveHandler);
-    return () => {
-      div.removeEventListener('mouseenter', mouseEnterHandler);
-      div.removeEventListener('mouseleave', mouseLeaveHandler);
-    };
-  }, []);
-
   return (
     <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
       <GlobalProvider
@@ -217,6 +192,7 @@ export function InnerNMRium({
                             isFullscreenEnabled={isFullscreenEnabled}
                             toggleFullscreen={toggleFullscreen}
                             emptyText={emptyText}
+                            mainDivRef={mainDivRef}
                             elementsWrapperRef={elementsWrapperRef}
                             rootRef={rootRef}
                             viewerRef={viewerRef}
