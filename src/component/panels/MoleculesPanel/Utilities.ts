@@ -117,7 +117,7 @@ export function getCurrentDiaIDsToHighlight(assignmentData: AssignmentContext) {
   const assignment = highlighted ? assignments[highlighted.id] : null;
   const axisHover = highlighted ? highlighted.axis : null;
 
-  if (axisHover && assignment && assignment[axisHover]) {
+  if (axisHover && assignment?.[axisHover]) {
     return assignment[axisHover];
   } else {
     return (assignment?.x || []).concat(assignment?.y || []);
