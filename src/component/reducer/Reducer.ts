@@ -18,7 +18,6 @@ import * as DatabaseActions from './actions/DatabaseActions';
 import * as DimensionsActions from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import * as FiltersActions from './actions/FiltersActions';
-import * as GlobalActions from './actions/GlobalActions';
 import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
 import * as MoleculeActions from './actions/MoleculeActions';
@@ -116,7 +115,6 @@ export const getInitialState = (): State => ({
   zoom: {
     history: {} as ZoomHistory,
   },
-  overDisplayer: false,
   toolOptions: {
     selectedTool: 'zoom',
     selectedOptionPanel: null,
@@ -275,13 +273,6 @@ export interface State {
   zoom: {
     history: ZoomHistory;
   };
-
-  /**
-   * boolean indicator to check if the mouse over the displayer or not
-   * value change to true once the mouse come over the displayer and vice versa true once the mouse out of the displayer
-   * @default false
-   */
-  overDisplayer: boolean;
 
   /**
    * Basic options for the tools
@@ -648,9 +639,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
-
-      case 'SET_MOUSE_OVER_DISPLAYER':
-        return GlobalActions.handleSetIsOverDisplayer(draft, action);
 
       default:
     }

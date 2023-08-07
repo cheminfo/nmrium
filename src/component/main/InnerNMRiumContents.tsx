@@ -67,6 +67,7 @@ interface InnerNMRiumContentsProps {
   isFullscreenEnabled: boolean;
   toggleFullscreen: () => void;
   emptyText: NMRiumProps['emptyText'];
+  mainDivRef: RefObject<HTMLDivElement>;
   elementsWrapperRef: RefObject<HTMLDivElement>;
   rootRef: RefObject<HTMLDivElement>;
   viewerRef: RefObject<HTMLDivElement>;
@@ -78,6 +79,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
     isFullscreenEnabled,
     toggleFullscreen,
     emptyText,
+    mainDivRef,
     elementsWrapperRef,
     rootRef,
     viewerRef,
@@ -126,7 +128,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
               <ToolBar />
               <SplitPaneWrapper>
                 <div css={viewerContainerStyle}>
-                  <KeysListenerTracker />
+                  <KeysListenerTracker mainDivRef={mainDivRef} />
                   <div
                     id="nmrium-viewer"
                     data-test-id="viewer"
