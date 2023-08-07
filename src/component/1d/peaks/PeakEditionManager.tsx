@@ -129,7 +129,7 @@ export function PeakEditionProvider({ children }) {
           >
             <PeakField
               key={peak.id}
-              peak={peak}
+              value={peak.value}
               onClose={() => setPeak(null)}
             />
           </div>
@@ -140,7 +140,12 @@ export function PeakEditionProvider({ children }) {
   );
 }
 
-function PeakField({ peak, onClose }) {
+interface PeakFieldProps {
+  value: number;
+  onClose: () => void;
+}
+
+function PeakField({ value, onClose }: PeakFieldProps) {
   const dispatch = useDispatch();
 
   function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -152,8 +157,8 @@ function PeakField({ peak, onClose }) {
     }
   }
   function hanldeOnSubmit({ value }) {
-    if (peak) {
-      const shift = value - peak.value;
+    if (value) {
+      const shift = value - value;
       dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
       onClose();
     }
@@ -161,7 +166,7 @@ function PeakField({ peak, onClose }) {
 
   return (
     <Formik
-      initialValues={{ value: peak.value }}
+      initialValues={{ value }}
       onSubmit={hanldeOnSubmit}
       validationSchema={validationSchema}
     >
@@ -173,7 +178,7 @@ function PeakField({ peak, onClose }) {
             outline: 'none',
           }}
           name="value"
-          enableAutoSelect
+          autoSelect
           onKeyDown={(e) => keyDownCheck(e) && submitForm()}
           onClick={stopPropagation}
           onMouseDown={stopPropagation}
