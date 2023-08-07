@@ -3,9 +3,9 @@
   "description": "React component to display and process nuclear magnetic resonance (NMR) spectra.",
   "version": "0.42.0",
   "license": "MIT",
-  "main": "lib-cjs/component/NMRium.js",
-  "module": "lib/component/NMRium.js",
-  "types": "lib/component/NMRium.d.ts",
+  "main": "lib-cjs/component/main/index.js",
+  "module": "lib/component/main/index.js",
+  "types": "lib/component/main/index.d.ts",
   "files": [
     "lib",
     "lib-cjs"
