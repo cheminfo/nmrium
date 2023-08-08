@@ -196,7 +196,7 @@ export default function Test(props) {
                   : {}
               }
             >
-              <span data-test-id="data-count">{dataCount}</span> - Data Change:
+              <span data-testid="data-count">{dataCount}</span> - Data Change:
             </h3>
             <Inspector data={dataCallBack.data} />
             <h3
@@ -206,7 +206,7 @@ export default function Test(props) {
                   : {}
               }
             >
-              <span data-test-id="view-count">{viewCount}</span> - View Change:
+              <span data-testid="view-count">{viewCount}</span> - View Change:
             </h3>
             <Inspector data={viewCallBack.data} />
             <h3
@@ -216,7 +216,7 @@ export default function Test(props) {
                   : {}
               }
             >
-              <span data-test-id="settings-count">{settingsCount}</span> -
+              <span data-testid="settings-count">{settingsCount}</span> -
               Settings Change:
             </h3>
             <Inspector data={settingsCallBack.data} />

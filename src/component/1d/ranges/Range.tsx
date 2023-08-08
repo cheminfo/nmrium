@@ -115,7 +115,7 @@ function Range({
 
   return (
     <g
-      data-test-id="range"
+      data-testid="range"
       style={{ outline: 'none' }}
       key={id}
       onMouseEnter={mouseEnterHandler}

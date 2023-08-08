@@ -132,7 +132,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                   <KeysListenerTracker mainDivRef={mainDivRef} />
                   <div
                     id="nmrium-viewer"
-                    data-test-id="viewer"
+                    data-testid="viewer"
                     ref={viewerRef}
                     style={{
                       width: '100%',
