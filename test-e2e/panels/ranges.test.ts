@@ -14,7 +14,7 @@ async function addRange(
     startX,
     endX,
   });
-  await expect(nmrium.page.locator(`data-test-id=range`)).toHaveCount(count);
+  await expect(nmrium.page.getByTestId(`range`)).toHaveCount(count);
 }
 
 async function shiftSignal(nmrium: NmriumPage) {
@@ -32,9 +32,11 @@ async function shiftSignal(nmrium: NmriumPage) {
 }
 
 async function resizeRange(nmrium: NmriumPage) {
-  const rightResizer = nmrium.page.locator(
-    'data-test-id=range >> nth=0 >> _react=SVGResizerHandle >> nth=1',
-  );
+  const rightResizer = nmrium.page
+    .getByTestId('range')
+    .nth(0)
+    .locator('_react=SVGResizerHandle')
+    .nth(1);
 
   const {
     x,
@@ -53,9 +55,11 @@ async function resizeRange(nmrium: NmriumPage) {
   });
   await nmrium.page.mouse.up();
 
-  const greenArea = nmrium.page.locator(
-    'data-test-id=range >> nth=0 >> rect >> nth=0',
-  );
+  const greenArea = nmrium.page
+    .getByTestId('range')
+    .nth(0)
+    .locator('rect')
+    .nth(0);
 
   const { width } = (await greenArea.boundingBox()) as BoundingBox;
 
@@ -67,7 +71,7 @@ async function deleteRange(nmrium: NmriumPage) {
   const rangeLocator = nmrium.page.locator('_react=Range >> nth=0 ');
   await rangeLocator.hover();
   await nmrium.page.keyboard.press('Delete');
-  await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(1);
+  await expect(nmrium.page.getByTestId('range')).toHaveCount(1);
 }
 
 test('Should ranges Add/resize/delete', async ({ page }) => {
@@ -109,9 +113,9 @@ test('Automatic ranges detection should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
 
-  expect(
-    await nmrium.page.locator('data-test-id=range').count(),
-  ).toBeGreaterThanOrEqual(10);
+  expect(await nmrium.page.getByTestId('range').count()).toBeGreaterThanOrEqual(
+    10,
+  );
   const ranges = nmrium.page.locator(
     '_react=RangesTable >> _react=RangesTableRow',
   );
@@ -303,7 +307,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
     //open ranges panel
     await nmrium.clickPanel('Ranges');
-    await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(16);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(16);
     await expect(
       nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
     ).toContainText('[ 16 ]');
@@ -312,7 +316,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
   await test.step("Check 13C spectrum's ranges", async () => {
     // switch to 13C tab.
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="13C"]');
-    await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(15);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(15);
     await expect(
       nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');

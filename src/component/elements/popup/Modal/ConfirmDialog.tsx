@@ -91,7 +91,7 @@ function ConfirmationDialog({
   );
 
   return (
-    <div style={style} css={styles} data-test-id={id}>
+    <div style={style} css={styles} data-testid={id}>
       {render ? (
         render({ message, className: 'message' })
       ) : (

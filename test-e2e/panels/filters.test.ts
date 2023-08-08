@@ -19,9 +19,7 @@ async function apodizationFilter(
     await nmrium.clickTool('apodization');
   }
 
-  await expect(
-    nmrium.page.locator('data-test-id=apodization-line'),
-  ).toBeVisible();
+  await expect(nmrium.page.getByTestId('apodization-line')).toBeVisible();
 
   await nmrium.page.click('button >> text=Apply');
 
@@ -134,9 +132,7 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     ).toHaveCount(6);
   });
   await test.step('Check spectrum is displayed', async () => {
-    await expect(
-      nmrium.page.locator('data-test-id=spectrum-line'),
-    ).toBeVisible();
+    await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
   });
 });
 test('process 13c spectrum with shortcuts', async ({ page }) => {

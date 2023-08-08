@@ -491,15 +491,13 @@ async function getCount(locator: Locator): Promise<number> {
 
 test('check callbacks count on changing structures', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
-  const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
+  const dataCount = nmrium.page.getByTestId('data-count');
+  const viewCount = nmrium.page.getByTestId('view-count');
   await test.step('open test page', async () => {
     await nmrium.page.click('li >> text=Callback');
     await nmrium.page.click('li >> text=1H spectrum cytisine');
     // wait the spectrum to load
-    await expect(
-      nmrium.page.locator('data-test-id=spectrum-line'),
-    ).toBeVisible();
+    await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
 
     await expect(dataCount).toContainText(/[2-5]/);
     await expect(viewCount).toContainText(/[2-5]/);
