@@ -47,7 +47,7 @@
     "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "volta": {
-    "node": "18.16.1"
+    "node": "18.17.0"
   },
   "overrides": {
     "react": "$react",
@@ -69,7 +69,7 @@
     "eventemitter3": "^5.0.1",
     "fifo-logger": "^0.6.1",
     "file-saver": "^2.0.5",
-    "filelist-utils": "^1.10.0",
+    "filelist-utils": "^1.10.1",
     "formik": "^2.4.3",
     "immer": "^10.0.2",
     "jszip": "^3.10.1",
@@ -105,7 +105,7 @@
     "react-ocl-nmr": "^2.3.0",
     "react-plot": "^1.4.2",
     "react-rnd": "^10.4.1",
-    "react-science": "^0.24.3",
+    "react-science": "^0.25.0",
     "react-slider": "^2.0.6",
     "react-table": "^7.8.0",
     "react-transition-group": "^4.4.5",
@@ -120,9 +120,9 @@
     "@playwright/test": "^1.36.2",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.4.0",
-    "@types/node": "^20.4.6",
+    "@types/node": "^20.4.8",
     "@types/papaparse": "^5.3.7",
-    "@types/react": "^18.2.18",
+    "@types/react": "^18.2.19",
     "@types/react-dom": "^18.2.7",
     "@types/react-table": "^7.7.14",
     "@vitejs/plugin-react-swc": "^3.3.2",
@@ -145,7 +145,7 @@
     "stylelint": "^15.10.2",
     "stylelint-config-standard": "^34.0.0",
     "typescript": "~5.1.6",
-    "vite": "^4.4.8",
+    "vite": "^4.4.9",
     "vitest": "^0.34.1"
   }
 }
