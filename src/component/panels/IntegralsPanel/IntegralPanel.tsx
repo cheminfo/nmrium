@@ -136,9 +136,7 @@ function IntegralPanelInner({
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Integrals"
           onFilter={handleOnFilter}
-          filterToolTip={
-            filterIsActive ? 'Show all integrals' : 'Hide integrals out of view'
-          }
+          filterToolTip={filterIsActive ? 'Show integrals' : 'Hide integrals'}
           filterIsActive={filterIsActive}
           counterFiltered={filteredData.length}
           showSettingButton
@@ -147,8 +145,8 @@ function IntegralPanelInner({
           <ToolTip
             title={
               currentSum
-                ? `Change integrals sum (${currentSum.toFixed(2)})`
-                : 'Change integrals sum'
+                ? `Change integration sum (${currentSum.toFixed(2)})`
+                : 'Change integration sum'
             }
             popupPlacement="right"
           >
@@ -167,7 +165,7 @@ function IntegralPanelInner({
 
           <ActiveButton
             className="icon"
-            popupTitle="Fix integral values"
+            popupTitle="Fixed integration sum"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
             value={integrals?.options?.isSumConstant || false}
