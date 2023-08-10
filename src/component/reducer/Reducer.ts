@@ -391,6 +391,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'CUT_INTEGRAL':
+        return IntegralsActions.handleCutIntegral(draft, action);
 
       case 'SET_X_DOMAIN':
         return DomainActions.handleSetXDomain(draft, action);
