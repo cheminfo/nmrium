@@ -17,20 +17,19 @@ const styles: Record<'leftContainer' | 'counterLabel', CSSProperties> = {
     margin: 0,
     textAlign: 'right',
     lineHeight: '22px',
-    padding: '0 10px',
+    padding: '0 5px',
     whiteSpace: 'nowrap',
   },
 };
 
 interface DefaultPanelHeaderProps {
   counter?: number;
-  counterFiltered?: number;
+  counterLabel?: string;
   deleteToolTip?: string;
   filterToolTip?: string;
   onDelete?: () => void;
   onFilter?: () => void;
   onSettingClick?: () => void;
-  filterIsActive?: boolean;
   canDelete?: boolean;
   disableDelete?: boolean;
   showSettingButton?: boolean;
@@ -40,14 +39,20 @@ interface DefaultPanelHeaderProps {
   renderRightButtons?: () => ReactNode;
 }
 
+export function createFilterLabel(total: number, counter: number | false) {
+  if (typeof counter === 'boolean') {
+    return `[ ${total || 0} ]`;
+  }
+  return `[ ${counter}/${total} ]`;
+}
+
 function DefaultPanelHeader({
   counter,
+  counterLabel,
   onDelete = () => null,
   deleteToolTip = 'Delete',
   onFilter = () => null,
   filterToolTip = '',
-  filterIsActive = false,
-  counterFiltered = 0,
   children,
   onSettingClick = () => null,
   showSettingButton = false,
@@ -78,7 +83,6 @@ function DefaultPanelHeader({
             popupTitle={filterToolTip}
             popupPlacement="right"
             onClick={onFilter}
-            defaultValue={filterIsActive}
           >
             <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
           </ToggleButton>
@@ -87,15 +91,7 @@ function DefaultPanelHeader({
         {children}
       </div>
       {renderRightButtons?.()}
-      {counter !== undefined && (
-        <p style={styles.counterLabel}>
-          [{' '}
-          {filterIsActive && counterFiltered !== undefined
-            ? `${counterFiltered}/${counter}`
-            : counter}{' '}
-          ]
-        </p>
-      )}
+      {counterLabel && <p style={styles.counterLabel}>{counterLabel}</p>}
       {showSettingButton && (
         <ToolTip title="Preferences" popupPlacement="left">
           <button type="button" onClick={onSettingClick}>

@@ -26,7 +26,9 @@ import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
@@ -493,19 +495,22 @@ function SummaryPanel() {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
+  const counter = correlationsData ? correlationsData.values.length : 0;
   return (
     <div css={panelStyle}>
       <DefaultPanelHeader
         canDelete={false}
-        counter={correlationsData ? correlationsData.values.length : 0}
+        counter={counter}
+        counterLabel={createFilterLabel(
+          counter,
+          filterIsActive && filteredCorrelationsData?.values.length,
+        )}
         onFilter={handleOnFilter}
         filterToolTip={
           filterIsActive
             ? 'Show all correlations'
             : 'Hide correlations out of view'
         }
-        filterIsActive={filterIsActive}
-        counterFiltered={filteredCorrelationsData?.values.length}
       >
         <ToolTip
           title={`Set molecular formula (${correlationsData.options.mf})`}
