@@ -324,6 +324,12 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               payload: { cutValue: xPPM },
             });
             break;
+          case options.rangePicking.id:
+            dispatch({
+              type: 'CUT_RANGE',
+              payload: { cutValue: xPPM },
+            });
+            break;
           default:
             break;
         }
