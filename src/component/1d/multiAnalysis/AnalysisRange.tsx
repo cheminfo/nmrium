@@ -7,6 +7,7 @@ import { usePreferences } from '../../context/PreferencesContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { useHighlight } from '../../highlight';
+import { useResizerStatus } from '../../hooks/useResizerStatus';
 
 const styles = {
   common: css`
@@ -72,7 +73,7 @@ function AnalysisRange({
 
   const from = scaleX()(rangeData.from);
   const to = scaleX()(rangeData.to);
-
+  const isResizeingActive = useResizerStatus('multipleSpectraAnalysis');
   return (
     <g {...highlight.onHover} {...highlight.onHover}>
       <Resizer
@@ -81,6 +82,7 @@ function AnalysisRange({
         initialPosition={{ x2: from, x1: to }}
         parentElement={viewerRef}
         key={`${columnKey}_${to}_${from}`}
+        disabled={!isResizeingActive}
       >
         {({ x1, x2 }, isActive) => (
           <g
