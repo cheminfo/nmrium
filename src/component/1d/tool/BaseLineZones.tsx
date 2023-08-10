@@ -1,31 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-
 import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import DeleteButton from '../../elements/DeleteButton';
-
-const styles = css`
-  pointer-events: bounding-box;
-  user-select: 'none';
-  user-select: none;
-
-  .zone-area {
-    height: 100%;
-    fill: #b8b8b857;
-    cursor: pointer;
-  }
-
-  .delete-button {
-    display: none;
-    cursor: pointer;
-  }
-
-  :hover .delete-button {
-    display: block;
-  }
-`;
+import { BaselineCorrectionZone } from 'nmr-processing';
+import { useHighlight } from '../../highlight';
 
 function BaseLineZones() {
   const {
@@ -35,12 +11,6 @@ function BaseLineZones() {
     },
   } = useChartData();
 
-  const { scaleX } = useScaleChecked();
-  const dispatch = useDispatch();
-
-  const deleteRangeHandler = (id) => {
-    dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
-  };
   const baseLineZones = baselineCorrection.zones;
 
   if (selectedTool !== 'baselineCorrection' || baseLineZones.length === 0) {
@@ -50,23 +20,32 @@ function BaseLineZones() {
   return (
     <g>
       {baselineCorrection.zones.map((zone) => (
-        <g
-          key={zone.id}
-          transform={`translate(${scaleX()(zone.to)},0)`}
-          css={styles}
-        >
-          <DeleteButton
-            x={-20}
-            y={10}
-            onDelete={() => deleteRangeHandler(zone.id)}
-          />
-          <rect
-            x="0"
-            width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
-            className="zone-area"
-          />
-        </g>
+        <BaseLineZone key={zone.id} {...zone} />
       ))}
+    </g>
+  );
+}
+
+function BaseLineZone(props: BaselineCorrectionZone) {
+  const { from, to, id } = props;
+  const {
+    onHover,
+    isActive,
+    defaultActiveStyle: { backgroundColor: activeFill },
+  } = useHighlight([id], { type: 'BASELINE_ZONE', extra: { id } });
+  const { scaleX } = useScaleChecked();
+  const x = scaleX()(to);
+  const width = scaleX()(from) - scaleX()(to);
+
+  return (
+    <g transform={`translate(${x},0)`} {...onHover}>
+      <rect
+        x="0"
+        width={width}
+        height="100%"
+        style={{ backgroundColor: 'red' }}
+        fill={isActive ? activeFill : '#b8b8b857'}
+      />
     </g>
   );
 }
