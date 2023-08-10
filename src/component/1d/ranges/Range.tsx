@@ -19,6 +19,7 @@ import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
+import { useResizerStatus } from '../../hooks/useResizerStatus';
 
 const style = css`
   .target {
@@ -112,6 +113,7 @@ function Range({
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
   const isAssigned = isRangeAssigned(range);
+  const isResizeingActive = useResizerStatus('rangePicking');
 
   return (
     <g
@@ -128,7 +130,7 @@ function Range({
         onEnd={handleOnStopResizing}
         parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
-        disabled={selectedTool !== options.rangePicking.id}
+        disabled={!isResizeingActive}
       >
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;
