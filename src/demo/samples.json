@@ -141,6 +141,10 @@
         "title": "FileCollection with bruker folder"
       },
       {
+        "file": "./data/aspirin/aspirin_filecollection_with_integrals.json",
+        "title": "FileCollection with integrals"
+      },
+      {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
       },
