@@ -5,11 +5,11 @@ import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
   Zone,
-  predictAll,
+  predict,
   signalsToXY,
   signals2DToZ,
   getFrequency,
-  PredictedAll,
+  Predicted,
   signalsToRanges,
   Prediction1D,
   Prediction2D,
@@ -88,13 +88,17 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export async function predictSpectra(molfile: string): Promise<PredictedAll> {
+export async function predictSpectra(molfile: string): Promise<Predicted> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
-  return predictAll(molecule, {
+  return predict(molecule, {
     predictOptions: {
       C: {
         webserviceURL: `${baseURL}/v1/predict/carbon`,
       },
+      H: {},
+      hsqc: {},
+      hmbc: {},
+      cosy: {},
     },
   });
 }
