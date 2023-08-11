@@ -36,7 +36,7 @@ const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
     margin: 0,
     textAlign: 'right',
     lineHeight: '22px',
-    padding: '0 10px',
+    padding: '0 5px',
     whiteSpace: 'nowrap',
   },
   atomLabel: {
@@ -290,11 +290,11 @@ export default function MoleculePanelHeader({
         <p style={styles.atomLabel}>#</p>
       </ActiveButton>
       <div style={{ flex: 1 }}>{children}</div>
-      <p style={styles.counter}>
-        {molecules &&
-          molecules.length > 0 &&
-          `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
-      </p>
+      {molecules && molecules.length > 0 && (
+        <p style={styles.counter}>
+          {`${+(currentIndex + 1)} / ${molecules.length}`}
+        </p>
+      )}
       {onClickPreferences && (
         <Button.BarButton
           color={{ base: 'black', hover: 'black' }}

@@ -391,6 +391,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'CUT_INTEGRAL':
+        return IntegralsActions.handleCutIntegral(draft, action);
 
       case 'SET_X_DOMAIN':
         return DomainActions.handleSetXDomain(draft, action);
@@ -592,6 +594,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleAutoSpectraRangesDetection(draft);
       case 'SHOW_J_GRAPH':
         return RangesActions.handleShowJGraph(draft, action);
+      case 'CUT_RANGE':
+        return RangesActions.handleCutRange(draft, action);
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);

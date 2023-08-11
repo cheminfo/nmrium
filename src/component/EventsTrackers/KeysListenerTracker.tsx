@@ -230,6 +230,15 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
+        case HighlightEventSource.BASELINE_ZONE: {
+          const { id } = extra || {};
+          if (id) {
+            dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+          break;
+        }
 
         default:
           break;

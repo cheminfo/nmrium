@@ -11,6 +11,7 @@ import {
 } from '../../../data/data1d/Spectrum1D';
 import {
   SetSumOptions,
+  SumParams,
   initSumOptions,
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager';
@@ -20,6 +21,7 @@ import getRange from '../helper/getRange';
 import { ActionType } from '../types/ActionType';
 
 import { setIntegralsYDomain } from './DomainActions';
+import { getSpectrum } from '../helper/getSpectrum';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',
@@ -38,6 +40,7 @@ type ChangeIntegralRelativeValueAction = ActionType<
   'CHANGE_INTEGRAL_RELATIVE',
   { id: string; value: number }
 >;
+type CutIntegralAction = ActionType<'CUT_INTEGRAL', { cutValue: number }>;
 
 export type IntegralsActions =
   | ChangeIntegralSumAction
@@ -45,6 +48,7 @@ export type IntegralsActions =
   | DeleteIntegralAction
   | ChangeIntegralAction
   | ChangeIntegralRelativeValueAction
+  | CutIntegralAction
   | ActionType<'CHANGE_INTEGRALS_SUM_FLAG'>;
 
 function handleChangeIntegralSum(
@@ -69,6 +73,38 @@ function handleChangeIntegralSum(
   }
 }
 
+interface AddIntegralOptions {
+  from: number;
+  to: number;
+}
+
+function initiateIntergalSumOptions(datum: Spectrum1D, options: SumParams) {
+  const { molecules, nucleus } = options;
+  datum.integrals.options = initSumOptions(datum.integrals.options, {
+    molecules,
+    nucleus,
+  });
+}
+
+function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
+  const { from, to } = options;
+  const { x, re } = datum.data;
+
+  const shiftX = getShiftX(datum);
+  const integration = xyIntegration({ x, y: re }, { from, to, reverse: true });
+  const integral = {
+    id: v4(),
+    originFrom: from - shiftX,
+    originTo: to - shiftX,
+    from,
+    to,
+    integral: integration,
+    absolute: integration,
+    kind: 'signal',
+  };
+  datum.integrals.values.push(integral);
+}
+
 function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
   const { startX, endX } = action.payload;
   const {
@@ -80,34 +116,11 @@ function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
   } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
-
-  const [from, to] = getRange(draft, { startX, endX });
-
   if (activeSpectrum?.id) {
+    const [from, to] = getRange(draft, { startX, endX });
     const datum = data[activeSpectrum.index] as Spectrum1D;
-
-    const { x, re } = datum.data;
-
-    const shiftX = getShiftX(datum);
-    const integration = xyIntegration(
-      { x, y: re },
-      { from, to, reverse: true },
-    );
-    const integral = {
-      id: v4(),
-      originFrom: from - shiftX,
-      originTo: to - shiftX,
-      from,
-      to,
-      integral: integration,
-      absolute: integration,
-      kind: 'signal',
-    };
-    datum.integrals.values.push(integral);
-    datum.integrals.options = initSumOptions(datum.integrals.options, {
-      molecules,
-      nucleus,
-    });
+    addIntegral(datum, { from, to });
+    initiateIntergalSumOptions(datum, { molecules, nucleus });
     updateIntegralsRelativeValues(datum);
     setIntegralsYDomain(draft, datum);
   }
@@ -192,7 +205,26 @@ function handleChangeIntegralsSumFlag(draft) {
   }
 }
 
+function handleCutIntegral(draft: Draft<State>, action: CutIntegralAction) {
+  const { cutValue } = action.payload;
+  const spectrum = getSpectrum(draft) as Spectrum1D;
+  const integrals = spectrum.integrals.values;
+
+  for (let i = 0; i < integrals.length; i++) {
+    const { to, from } = integrals[i];
+    if (cutValue > from && cutValue < to) {
+      integrals.splice(i, 1);
+      addIntegral(spectrum, { from, to: cutValue });
+      addIntegral(spectrum, { from: cutValue, to });
+    }
+  }
+
+  updateIntegralsRelativeValues(spectrum);
+  setIntegralsYDomain(draft, spectrum);
+}
+
 export {
+  handleCutIntegral,
   handleChangeIntegralSum,
   handleAddIntegral,
   handleDeleteIntegral,
