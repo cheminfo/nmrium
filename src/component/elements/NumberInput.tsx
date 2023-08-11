@@ -1,4 +1,5 @@
 import { CSSProperties, ForwardedRef, forwardRef, useEffect } from 'react';
+
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const inputStyle: CSSProperties = {

@@ -18,10 +18,10 @@ import {
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { getSpectrum } from '../helper/getSpectrum';
 import { ActionType } from '../types/ActionType';
 
 import { setIntegralsYDomain } from './DomainActions';
-import { getSpectrum } from '../helper/getSpectrum';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',

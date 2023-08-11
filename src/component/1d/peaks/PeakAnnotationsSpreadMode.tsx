@@ -2,12 +2,13 @@ import { Spectrum1D } from 'nmr-load-save';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import { HighlightEventSource, useHighlight } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { formatNumber } from '../../utility/formatNumber';
 import { resolve } from '../utilities/intersectionResolver';
+
 import { PeakEditionListener } from './PeakEditionManager';
-import { HighlightEventSource, useHighlight } from '../../highlight';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 const notationWidth = 10;
