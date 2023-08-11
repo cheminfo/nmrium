@@ -153,8 +153,8 @@ function IntegralPanelInner({
           <ToolTip
             title={
               currentSum
-                ? `Change integrals sum (${currentSum.toFixed(2)})`
-                : 'Change integrals sum'
+                ? `Change integration sum (${currentSum.toFixed(2)})`
+                : 'Change integration sum'
             }
             popupPlacement="right"
           >
@@ -173,7 +173,7 @@ function IntegralPanelInner({
 
           <ActiveButton
             className="icon"
-            popupTitle="Fix integral values"
+            popupTitle="Fixed integration values"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
             value={integrals?.options?.isSumConstant || false}
