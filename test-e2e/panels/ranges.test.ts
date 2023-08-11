@@ -134,6 +134,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await expect(range).toContainText(r);
   }
 });
+
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -192,6 +193,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     ).toBeVisible();
   });
 });
+
 test('Range state', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -278,6 +280,7 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
   });
 });
+
 test('Auto peak picking on all spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -352,5 +355,69 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 44 ]');
+  });
+});
+
+test('2D spectra reference change', async ({ page }) => {
+  const xAxisDefault = ['δ [ppm]', 1, 2, 3, 4, 5, 6, 7, 8].join('');
+  const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160].join('');
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+    await expect(nmrium.page.locator('_react=XAxis')).toHaveText(xAxisDefault);
+    await expect(nmrium.page.locator('_react=YAxis')).toHaveText(yAxisDefault);
+  });
+
+  await test.step('Auto zone picking', async () => {
+    await nmrium.clickTool('zonePicking');
+    await nmrium.page.click('text=Auto Zones Picking');
+  });
+
+  await test.step("Check spectrum's zones", async () => {
+    await expect(nmrium.page.locator('.zone')).toHaveCount(15);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 15 ]');
+
+    const x = 2.91;
+    const y = 35.65;
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(`_react=SignalCrosshair[key=/^${x}\\d*,${y}\\d*/]`),
+    ).toHaveCount(1);
+  });
+  await test.step('Change reference', async () => {
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      )
+      .dblclick();
+    await nmrium.page.keyboard.type('8');
+    await nmrium.page.keyboard.press('Enter');
+
+    const x = 8;
+    const y = 35.65;
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(`_react=SignalCrosshair[key=/^${x}\\d*,${y}\\d*/]`),
+    ).toHaveCount(1);
+    await expect(nmrium.page.locator('_react=XAxis')).toHaveText(xAxisDefault);
+    await expect(nmrium.page.locator('_react=YAxis')).toHaveText(yAxisDefault);
   });
 });
