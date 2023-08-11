@@ -398,7 +398,7 @@ test('2D spectra reference change', async ({ page }) => {
       nmrium.page.locator(
         `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
       ),
-    ).toHaveCount(1);
+    ).toBeVisible();
   });
   await test.step('Change reference', async () => {
     await nmrium.page
@@ -420,7 +420,7 @@ test('2D spectra reference change', async ({ page }) => {
       nmrium.page.locator(
         `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
       ),
-    ).toHaveCount(1);
+    ).toBeVisible();
     await expect(nmrium.page.locator('_react=XAxis')).toHaveText(xAxisDefault);
     await expect(nmrium.page.locator('_react=YAxis')).toHaveText(yAxisDefault);
   });
