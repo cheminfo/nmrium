@@ -243,7 +243,7 @@ function RangesHeader({
 
         <ActiveButton
           className="icon"
-          popupTitle="Fix integral values"
+          popupTitle="Fixed integration sum"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
           value={ranges?.options?.isSumConstant}
