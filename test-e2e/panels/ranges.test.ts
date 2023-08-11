@@ -381,8 +381,8 @@ test('2D spectra reference change', async ({ page }) => {
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
 
-    const x = 2.91;
-    const y = 35.65;
+    const x = 2.9139017520509753;
+    const y = 35.65263186073236;
     await expect(
       nmrium.page.locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
@@ -395,7 +395,9 @@ test('2D spectra reference change', async ({ page }) => {
     ).toHaveText(y.toFixed(2));
 
     await expect(
-      nmrium.page.locator(`_react=SignalCrosshair[key=/^${x}\\d*,${y}\\d*/]`),
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
     ).toHaveCount(1);
   });
   await test.step('Change reference', async () => {
@@ -408,14 +410,16 @@ test('2D spectra reference change', async ({ page }) => {
     await nmrium.page.keyboard.press('Enter');
 
     const x = 8;
-    const y = 35.65;
+    const y = 35.65263186073236;
     await expect(
       nmrium.page.locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
       ),
     ).toHaveText(x.toFixed(2));
     await expect(
-      nmrium.page.locator(`_react=SignalCrosshair[key=/^${x}\\d*,${y}\\d*/]`),
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
     ).toHaveCount(1);
     await expect(nmrium.page.locator('_react=XAxis')).toHaveText(xAxisDefault);
     await expect(nmrium.page.locator('_react=YAxis')).toHaveText(yAxisDefault);

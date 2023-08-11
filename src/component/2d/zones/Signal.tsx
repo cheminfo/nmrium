@@ -59,10 +59,7 @@ function Signal({ signal, isVisible }: SignalProps) {
     <g className="zone-signal">
       {isVisible.signals && (
         <g>
-          <SignalCrosshair
-            signal={signal}
-            key={`${signal.x.delta},${signal.y.delta}`}
-          />
+          <SignalCrosshair signal={signal} />
           <circle
             onMouseEnter={() => {
               assignment.show();
