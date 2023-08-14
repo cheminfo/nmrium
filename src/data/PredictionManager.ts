@@ -88,7 +88,10 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
   { value: 1200, label: '1200 MHz' },
 ];
 
-export async function predictSpectra(molfile: string, options: any): Promise<Predicted> {
+export async function predictSpectra(
+  molfile: string,
+  options: any,
+): Promise<Predicted> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
   const predictOptions = {};
   for (const key in options) {
