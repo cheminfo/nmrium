@@ -359,15 +359,19 @@ test('Auto peak picking on all spectra', async ({ page }) => {
 });
 
 test('2D spectra reference change', async ({ page }) => {
-  const xAxisDefault = ['δ [ppm]', 1, 2, 3, 4, 5, 6, 7, 8].join('');
-  const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160].join('');
+  const xAxisDefault = [1, 2, 3, 4, 5, 6, 7, 8];
+  const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160];
   const nmrium = await NmriumPage.create(page);
   await test.step('Open 2D spectrum', async () => {
     await nmrium.page.click('li >> text=Cytisine');
     await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
-    await expect(nmrium.page.locator('_react=XAxis')).toHaveText(xAxisDefault);
-    await expect(nmrium.page.locator('_react=YAxis')).toHaveText(yAxisDefault);
+    await expect(nmrium.page.locator('_react=XAxis')).toContainText(
+      xAxisDefault.join(''),
+    );
+    await expect(nmrium.page.locator('_react=YAxis')).toContainText(
+      yAxisDefault.join(''),
+    );
   });
 
   await test.step('Auto zone picking', async () => {
@@ -401,16 +405,26 @@ test('2D spectra reference change', async ({ page }) => {
     ).toBeVisible();
   });
   await test.step('Change reference', async () => {
+    const x = 1000;
+    const y = 2000;
     await nmrium.page
       .locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
       )
       .dblclick();
-    await nmrium.page.keyboard.type('8');
+
+    await nmrium.page.keyboard.type(x.toString());
     await nmrium.page.keyboard.press('Enter');
 
-    const x = 8;
-    const y = 35.65263186073236;
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(y.toString());
+    await nmrium.page.keyboard.press('Enter');
+
     await expect(
       nmrium.page.locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
@@ -418,10 +432,25 @@ test('2D spectra reference change', async ({ page }) => {
     ).toHaveText(x.toFixed(2));
     await expect(
       nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
         `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
       ),
     ).toBeVisible();
-    await expect(nmrium.page.locator('_react=XAxis')).toHaveText(xAxisDefault);
-    await expect(nmrium.page.locator('_react=YAxis')).toHaveText(yAxisDefault);
+
+    const xShift = 997;
+    const yShift = 1960;
+    const newXAxis = xAxisDefault.map((n) => n + xShift);
+    const newYAxis = yAxisDefault.map((n) => n + yShift);
+    await expect(nmrium.page.locator('_react=XAxis')).toContainText(
+      newXAxis.join(''),
+    );
+    await expect(nmrium.page.locator('_react=YAxis')).toContainText(
+      newYAxis.join(''),
+    );
   });
 });
