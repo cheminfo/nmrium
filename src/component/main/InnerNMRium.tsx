@@ -10,6 +10,7 @@ import { useFullscreen } from 'react-use';
 
 import { AssignmentProvider } from '../assignment';
 import { GlobalProvider } from '../context/GlobalContext';
+import { KeyModifiersProvider } from '../context/KeyModifierContext';
 import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
 import { AlertProvider } from '../elements/popup/Alert';
@@ -25,7 +26,6 @@ import { getBlob } from '../utility/export';
 import { InnerNMRiumContents } from './InnerNMRiumContents';
 import type { NMRiumProps, NMRiumRef } from './NMRium';
 import NMRiumStateProvider from './NMRiumStateProvider';
-import { KeyModifiersProvider } from '../context/KeyModifierContext';
 
 type InnerNMRiumProps = Omit<NMRiumProps, 'onError'> & {
   innerRef: ForwardedRef<NMRiumRef>;

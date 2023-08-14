@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   ReactNode,
   createContext,
@@ -6,13 +7,13 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { Formik } from 'formik';
 import * as Yup from 'yup';
+
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { useChartData } from '../../context/ChartContext';
 
 const validationSchema = Yup.object({
   value: Yup.number().required(),

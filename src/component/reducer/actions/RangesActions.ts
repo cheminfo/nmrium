@@ -33,12 +33,12 @@ import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
 import { rangeStateInit, State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { getSpectrum } from '../helper/getSpectrum';
 import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain, setIntegralsYDomain } from './DomainActions';
 import { resetSelectedTool } from './ToolsActions';
-import { getSpectrum } from '../helper/getSpectrum';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',

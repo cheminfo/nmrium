@@ -8,9 +8,9 @@ import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight/index';
+import { useResizerStatus } from '../../hooks/useResizerStatus';
 
 import { IntegralIndicator } from './IntegralIndicator';
-import { useResizerStatus } from '../../hooks/useResizerStatus';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
