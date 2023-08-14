@@ -1,15 +1,15 @@
 import { Spectrum1D } from 'nmr-load-save';
+import { Peak1D } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import useSpectrum from '../../hooks/useSpectrum';
-
-import { formatNumber } from '../../utility/formatNumber';
-import { PeakEditionListener } from './PeakEditionManager';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { HighlightEventSource, useHighlight } from '../../highlight';
-import { Peak1D } from 'nmr-processing';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import useSpectrum from '../../hooks/useSpectrum';
+import { formatNumber } from '../../utility/formatNumber';
+
+import { PeakEditionListener } from './PeakEditionManager';
 
 const emptyData = { peaks: {}, info: {}, display: {} };
 

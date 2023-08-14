@@ -5,14 +5,16 @@ import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
   Zone,
-  predictAll,
+  predict,
   signalsToXY,
   signals2DToZ,
   getFrequency,
-  PredictedAll,
+  Predicted,
   signalsToRanges,
   Prediction1D,
   Prediction2D,
+  PredictionBase1D,
+  PredictionBase2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -28,7 +30,7 @@ import { adjustAlpha } from './utilities/generateColor';
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
 export type PredictedSpectraResult = Partial<
-  Record<Experiment, Prediction1D | Prediction2D>
+  Record<Experiment, PredictionBase1D | PredictionBase2D>
 >;
 
 export interface PredictionOptions {
@@ -86,17 +88,18 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
   { value: 1200, label: '1200 MHz' },
 ];
 
-const baseURL = 'https://nmr-prediction.service.zakodium.com';
-
-export async function predictSpectra(molfile: string): Promise<PredictedAll> {
+export async function predictSpectra(
+  molfile: string,
+  options: any,
+): Promise<Predicted> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
-  return predictAll(molecule, {
-    predictOptions: {
-      C: {
-        webserviceURL: `${baseURL}/v1/predict/carbon`,
-      },
-    },
-  });
+  const predictOptions = {};
+  for (const key in options) {
+    if (!options[key]) continue;
+    const experiment = key === 'proton' ? 'H' : key === 'carbon' ? 'C' : key;
+    predictOptions[experiment] = {};
+  }
+  return predict(molecule, { predictOptions });
 }
 
 function generateName(

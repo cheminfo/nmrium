@@ -1,6 +1,7 @@
+import { BaselineCorrectionZone } from 'nmr-processing';
+
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { BaselineCorrectionZone } from 'nmr-processing';
 import { useHighlight } from '../../highlight';
 
 function BaseLineZones() {
