@@ -366,10 +366,10 @@ test('2D spectra reference change', async ({ page }) => {
     await nmrium.page.click('li >> text=Cytisine');
     await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
-    await expect(nmrium.page.locator('_react=XAxis')).toContainText(
+    await expect(nmrium.page.locator('.x')).toContainText(
       xAxisDefault.join(''),
     );
-    await expect(nmrium.page.locator('_react=YAxis')).toContainText(
+    await expect(nmrium.page.locator('.y')).toContainText(
       yAxisDefault.join(''),
     );
   });
@@ -446,11 +446,7 @@ test('2D spectra reference change', async ({ page }) => {
     const yShift = 1960;
     const newXAxis = xAxisDefault.map((n) => n + xShift);
     const newYAxis = yAxisDefault.map((n) => n + yShift);
-    await expect(nmrium.page.locator('_react=XAxis')).toContainText(
-      newXAxis.join(''),
-    );
-    await expect(nmrium.page.locator('_react=YAxis')).toContainText(
-      newYAxis.join(''),
-    );
+    await expect(nmrium.page.locator('.x')).toContainText(newXAxis.join(''));
+    await expect(nmrium.page.locator('.y')).toContainText(newYAxis.join(''));
   });
 });
