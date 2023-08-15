@@ -345,7 +345,7 @@ function CorrelationTableRow({
         >
           <span>{`All signals of ${correlation.label.origin} (${(
             getCorrelationDelta(correlation) as number
-          ).toFixed(2)}) will be deleted. Are you sure?`}</span>
+          )?.toFixed(2)}) will be deleted. Are you sure?`}</span>
         </div>
       </ConfirmModal>
     </tr>
