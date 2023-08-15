@@ -122,6 +122,7 @@ export const getInitialState = (): State => ({
       baselineCorrection: {
         options: {},
         zones: [],
+        livePreview: true,
       },
       apodizationOptions: {} as ApodizationOptions,
       pivot: { value: 0, index: 0 },
@@ -300,6 +301,7 @@ export interface State {
       baselineCorrection: {
         zones: BaselineCorrectionZone[];
         options: any;
+        livePreview: boolean;
       };
       apodizationOptions: ApodizationOptions;
       /**
@@ -452,7 +454,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleAddExclusionZone(draft, action);
       case 'DELETE_EXCLUSION_ZONE':
         return FiltersActions.handleDeleteExclusionZone(draft, action);
-
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,

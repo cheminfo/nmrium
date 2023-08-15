@@ -46,11 +46,11 @@ type ShiftSpectrumAlongXAxisAction = ActionType<
 >;
 type ApodizationFilterAction = ActionType<
   'APPLY_APODIZATION_FILTER' | 'CALCULATE_APODIZATION_FILTER',
-  ApodizationOptions
+  { options: ApodizationOptions; livePreview?: boolean }
 >;
 type ZeroFillingFilterAction = ActionType<
   'APPLY_ZERO_FILLING_FILTER' | 'CALCULATE_ZERO_FILLING_FILTER',
-  { nbPoints: number }
+  { options: { nbPoints: number }; livePreview?: boolean }
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
@@ -58,10 +58,11 @@ type ManualPhaseCorrectionFilterAction = ActionType<
   { ph0: number; ph1: number }
 >;
 
-type BaselineCorrectionFilterProps = Omit<
-  BaselineCorrectionOptions,
-  'zones'
-> & { livePreview: boolean };
+type BaselineCorrectionFilterOptions = Omit<BaselineCorrectionOptions, 'zones'>;
+interface BaselineCorrectionFilterProps {
+  options: BaselineCorrectionFilterOptions;
+  livePreview?: boolean;
+}
 
 type BaselineCorrectionFilterAction = ActionType<
   'APPLY_BASE_LINE_CORRECTION_FILTER' | 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
@@ -323,6 +324,27 @@ function updateView(
   changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
 }
 
+function disableLivePreview(draft: Draft<State>, id: string) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum) {
+    const index = activeSpectrum.index;
+    const { data } = draft.tempData[index] as Spectrum1D;
+    draft.data[index].data = data;
+    setDomain(draft);
+
+    // reset default options
+    switch (id) {
+      case apodization.name: {
+        draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
+        break;
+      }
+      default: {
+        return null;
+      }
+    }
+  }
+}
+
 //action
 function handleShiftSpectrumAlongXAxis(
   draft: Draft<State>,
@@ -364,7 +386,7 @@ function handleApplyZeroFillingFilter(
     const filters = [
       {
         name: zeroFilling.id,
-        value: action.payload,
+        value: action.payload.options,
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters, {
@@ -390,21 +412,26 @@ function handleCalculateZeroFillingFilter(
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
-    const index = activeSpectrum.index;
-    const {
-      data: { x, re, im },
-      filters,
-      info,
-    } = draft.tempData[index] as Spectrum1D;
+    const { options, livePreview } = action.payload;
+    if (livePreview) {
+      const index = activeSpectrum.index;
+      const {
+        data: { x, re, im },
+        filters,
+        info,
+      } = draft.tempData[index] as Spectrum1D;
 
-    const _data = { data: { x, re, im }, filters, info };
-    zeroFilling.apply(_data as Spectrum1D, action.payload);
-    const { im: newIm, re: newRe, x: newX } = _data.data;
-    const datum = draft.data[index] as Spectrum1D;
-    datum.data.x = newX;
-    datum.data.im = newIm;
-    datum.data.re = newRe;
-    draft.xDomain = [newX[0], newX.at(-1) as number];
+      const _data = { data: { x, re, im }, filters, info };
+      zeroFilling.apply(_data as Spectrum1D, options);
+      const { im: newIm, re: newRe, x: newX } = _data.data;
+      const datum = draft.data[index] as Spectrum1D;
+      datum.data.x = newX;
+      datum.data.im = newIm;
+      datum.data.re = newRe;
+      draft.xDomain = [newX[0], newX.at(-1) as number];
+    } else {
+      disableLivePreview(draft, zeroFilling.name);
+    }
   }
 }
 
@@ -416,19 +443,23 @@ function handleCalculateApodizationFilter(
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const index = activeSpectrum.index;
-    const options = action.payload;
-    const {
-      data: { x, re, im },
-      info,
-    } = draft.tempData[index] as Spectrum1D;
+    const { livePreview, options } = action.payload;
+    if (livePreview) {
+      const {
+        data: { x, re, im },
+        info,
+      } = draft.tempData[index] as Spectrum1D;
 
-    const _data = { data: { x, re, im }, info };
-    draft.toolOptions.data.apodizationOptions = options;
-    apodization.apply(_data as Spectrum1D, options);
-    const { im: newIm, re: newRe } = _data.data;
-    const datum = draft.data[index] as Spectrum1D;
-    datum.data.im = newIm;
-    datum.data.re = newRe;
+      const _data = { data: { x, re, im }, info };
+      draft.toolOptions.data.apodizationOptions = options;
+      apodization.apply(_data as Spectrum1D, options);
+      const { im: newIm, re: newRe } = _data.data;
+      const datum = draft.data[index] as Spectrum1D;
+      datum.data.im = newIm;
+      datum.data.re = newRe;
+    } else {
+      disableLivePreview(draft, apodization.name);
+    }
   }
 }
 
@@ -447,7 +478,7 @@ function handleApplyApodizationFilter(
       [
         {
           name: apodization.id,
-          value: action.payload,
+          value: action.payload.options,
         },
       ],
       { filterIndex: activeFilterIndex },
@@ -666,7 +697,7 @@ function handleBaseLineCorrectionFilter(
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { zones } = draft.toolOptions.data.baselineCorrection;
-    const { livePreview, ...options } = action.payload;
+    const { options } = action.payload;
     const activeFilterIndex = getActiveFilterIndex(draft);
     FiltersManager.applyFilter(
       draft.data[activeSpectrum.index],
@@ -709,21 +740,23 @@ function calculateBaseLineCorrection(
     // save the baseline options temporary
     draft.toolOptions.data.baselineCorrection = {
       ...draft.toolOptions.data.baselineCorrection,
-      ...(baseLineOptions ? { options: baseLineOptions } : {}),
+      ...(baseLineOptions && baseLineOptions),
     };
 
-    const { zones, options } = draft.toolOptions.data.baselineCorrection;
-    const { livePreview, ...filterOptions } = options;
+    const { zones, options, livePreview } =
+      draft.toolOptions.data.baselineCorrection;
     if (livePreview) {
       const _data = { data: { x, re, im }, info };
       baselineCorrection.apply(_data as Spectrum1D, {
         zones,
-        ...filterOptions,
+        ...options,
       });
       const { im: newIm, re: newRe } = _data.data;
       const datum = draft.data[index] as Spectrum1D;
       datum.data.im = newIm;
       datum.data.re = newRe;
+    } else {
+      disableLivePreview(draft, baselineCorrection.id);
     }
   }
 }
