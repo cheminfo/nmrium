@@ -6,6 +6,7 @@ import {
   Link,
 } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
+import { useOnOff, ConfirmModal } from 'react-science/ui';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
@@ -31,6 +32,7 @@ function CorrelationTableRow({
   spectraData,
 }) {
   const contextRef = useRef<any>();
+  const [isOpen, open, close] = useOnOff();
   const modal = useModal();
 
   const highlightIDsRow = useMemo(() => {
@@ -186,6 +188,11 @@ function CorrelationTableRow({
     styleRow,
   ]);
 
+  const confirmHandler = useCallback(() => {
+    onEditCorrelationTableCellHandler([correlation], 'removeAll');
+    close();
+  }, [close, correlation, onEditCorrelationTableCellHandler]);
+
   const contextMenu = useMemo(() => {
     return correlation.pseudo === false
       ? correlation.link
@@ -218,23 +225,7 @@ function CorrelationTableRow({
             {
               label: `delete ${correlation.label.origin}`,
               onClick: () => {
-                modal.showConfirmDialog({
-                  message: `All signals of ${correlation.label.origin} (${(
-                    getCorrelationDelta(correlation) as number
-                  ).toFixed(2)}) will be deleted. Are you sure?`,
-                  buttons: [
-                    {
-                      text: 'Yes',
-                      handler: () => {
-                        onEditCorrelationTableCellHandler(
-                          [correlation],
-                          'removeAll',
-                        );
-                      },
-                    },
-                    { text: 'No' },
-                  ],
-                });
+                open();
                 highlightRow.hide();
               },
             },
@@ -246,6 +237,7 @@ function CorrelationTableRow({
     modal,
     onEditCorrelationTableCellHandler,
     correlations,
+    open,
   ]);
 
   const contextMenuHandler = useCallback(
@@ -326,6 +318,36 @@ function CorrelationTableRow({
         )}
       </td>
       {additionalColumnFields}
+      <ConfirmModal
+        headerColor="red"
+        onConfirm={confirmHandler}
+        onCancel={() => {
+          close();
+        }}
+        isOpen={isOpen}
+        onRequestClose={() => {
+          close();
+        }}
+        saveText="Yes"
+        cancelText="No"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flex: '1 1 0%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            margin: 25,
+            fontSize: 14,
+            color: 'rgb(175, 0, 0)',
+          }}
+        >
+          <span>{`All signals of ${correlation.label.origin} (${(
+            getCorrelationDelta(correlation) as number
+          ).toFixed(2)}) will be deleted. Are you sure?`}</span>
+        </div>
+      </ConfirmModal>
     </tr>
   );
 }

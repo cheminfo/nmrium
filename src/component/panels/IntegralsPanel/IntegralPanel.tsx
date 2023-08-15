@@ -6,12 +6,12 @@ import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
+import { useOnOff, ConfirmModal } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
-import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -48,21 +48,19 @@ function IntegralPanelInner({
 }: IntegralPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
+  const [isOpen, open, close] = useOnOff();
   const dispatch = useDispatch();
-  const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
 
-  const yesHandler = useCallback(() => {
+  const confirmHandler = useCallback(() => {
     dispatch({ type: 'DELETE_INTEGRAL', payload: {} });
-  }, [dispatch]);
+    close();
+  }, [close, dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All records will be deleted, Are You sure?',
-      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
-    });
-  }, [modal, yesHandler]);
+    open();
+  }, [open]);
 
   const changeIntegralSumHandler = useCallback(
     (options) => {
@@ -195,6 +193,34 @@ function IntegralPanelInner({
           <IntegralsPreferences ref={settingRef} />
         )}
       </div>
+      <ConfirmModal
+        headerColor="red"
+        onConfirm={confirmHandler}
+        onCancel={() => {
+          close();
+        }}
+        isOpen={isOpen}
+        onRequestClose={() => {
+          close();
+        }}
+        saveText="Yes"
+        cancelText="No"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flex: '1 1 0%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            margin: 25,
+            fontSize: 14,
+            color: 'rgb(175, 0, 0)',
+          }}
+        >
+          <span>All records will be deleted, Are You sure?</span>
+        </div>
+      </ConfirmModal>
     </div>
   );
 }

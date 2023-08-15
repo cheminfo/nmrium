@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
+import { useOnOff, ConfirmModal } from 'react-science/ui';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
@@ -19,6 +20,7 @@ function AdditionalColumnHeader({
   onEdit,
 }) {
   const contextRef = useRef<any>();
+  const [isOpen, open, close] = useOnOff();
   const modal = useModal();
 
   const highlightIDsAdditionalColumn = useMemo(() => {
@@ -109,6 +111,11 @@ function AdditionalColumnHeader({
         };
   }, [correlation]);
 
+  const confirmHandler = useCallback(() => {
+    onEdit([correlation], 'removeAll');
+    close();
+  }, [close, correlation, onEdit]);
+
   const contextMenu = useMemo(() => {
     return correlation.pseudo === false
       ? correlation.link
@@ -138,20 +145,7 @@ function AdditionalColumnHeader({
             {
               label: `delete all (${correlation.label.origin})`,
               onClick: () => {
-                modal.showConfirmDialog({
-                  message: `All signals of ${correlation.label.origin} (${(
-                    getCorrelationDelta(correlation) as number
-                  ).toFixed(2)}) will be deleted. Are you sure?`,
-                  buttons: [
-                    {
-                      text: 'Yes',
-                      handler: () => {
-                        onEdit([correlation], 'removeAll');
-                      },
-                    },
-                    { text: 'No' },
-                  ],
-                });
+                open();
                 highlightAdditionalColumn.hide();
               },
             },
@@ -163,6 +157,7 @@ function AdditionalColumnHeader({
     highlightAdditionalColumn,
     modal,
     onEdit,
+    open,
   ]);
 
   const contextMenuHandler = useCallback(
@@ -198,6 +193,36 @@ function AdditionalColumnHeader({
         </p>
         <ContextMenu ref={contextRef} context={contextMenu} />
       </div>
+      <ConfirmModal
+        headerColor="red"
+        onConfirm={confirmHandler}
+        onCancel={() => {
+          close();
+        }}
+        isOpen={isOpen}
+        onRequestClose={() => {
+          close();
+        }}
+        saveText="Yes"
+        cancelText="No"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flex: '1 1 0%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            margin: 25,
+            fontSize: 14,
+            color: 'rgb(175, 0, 0)',
+          }}
+        >
+          <span>{`All signals of ${correlation.label.origin} (${(
+            getCorrelationDelta(correlation) as number
+          ).toFixed(2)}) will be deleted. Are you sure?`}</span>
+        </div>
+      </ConfirmModal>
     </th>
   );
 }

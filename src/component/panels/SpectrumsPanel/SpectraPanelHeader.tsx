@@ -7,12 +7,12 @@ import {
   FaEyeSlash,
 } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
+import { ConfirmModal, useOnOff } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { ActiveSpectrum } from '../../reducer/Reducer';
@@ -53,32 +53,20 @@ function SpectraPanelHeaderInner({
   displayerMode,
   onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
-  const modal = useModal();
+  const [isOpen, open, close] = useOnOff();
   const alert = useAlert();
   const dispatch = useDispatch();
 
   const spectra = getSpectraByNucleus(activeTab, data);
 
+  const confirmHandler = useCallback(async () => {
+    dispatch({ type: 'DELETE_SPECTRA', payload: {} });
+    close();
+  }, [close, dispatch]);
+
   const handleDelete = useCallback(() => {
-    modal.showConfirmDialog({
-      message: (
-        <span>
-          You are about to delete
-          <span style={{ color: 'black' }}> {activeSpectra?.length} </span>
-          spectra, Are you sure?
-        </span>
-      ),
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            dispatch({ type: 'DELETE_SPECTRA', payload: {} });
-          },
-        },
-        { text: 'No' },
-      ],
-    });
-  }, [activeSpectra?.length, dispatch, modal]);
+    open();
+  }, [open]);
 
   function showAllSpectrumsHandler() {
     dispatch({
@@ -183,6 +171,38 @@ function SpectraPanelHeaderInner({
       >
         <IoColorPaletteOutline />
       </Button.BarButton>
+      <ConfirmModal
+        headerColor="red"
+        onConfirm={confirmHandler}
+        onCancel={() => {
+          close();
+        }}
+        isOpen={isOpen}
+        onRequestClose={() => {
+          close();
+        }}
+        saveText="Yes"
+        cancelText="No"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flex: '1 1 0%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            margin: 25,
+            fontSize: 14,
+            color: 'rgb(175, 0, 0)',
+          }}
+        >
+          <span>
+            You are about to delete
+            <span style={{ color: 'black' }}> {activeSpectra?.length} </span>
+            spectra, Are you sure?
+          </span>
+        </div>
+      </ConfirmModal>
     </DefaultPanelHeader>
   );
 }
