@@ -283,7 +283,7 @@ test('2d spectrum', async ({ page }) => {
     });
     await nmrium.page.click('_react=Button[toolTip="Delete selected spectra"]');
     //confirm delete the selected
-    await nmrium.page.click('_react=ConfirmationDialog >> text=Yes');
+    await nmrium.page.click('_react=ConfirmModal >> text=Yes');
 
     // Check tabs
     const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
