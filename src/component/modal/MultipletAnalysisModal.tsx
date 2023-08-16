@@ -22,12 +22,9 @@ const styles = css`
   }
 
   .container {
+    padding: 10px;
+    max-height: 500px;
     overflow-y: auto;
-    background-color: white;
-    padding: 5px;
-    padding-top: 10px;
-    width: 895px;
-    height: 355px;
 
     .row {
       outline: none;
@@ -35,15 +32,12 @@ const styles = css`
       flex-direction: row;
       margin: 0;
 
-      div {
-        flex: 4;
-      }
-
       .multiplicity {
         flex: 2;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0 20px;
       }
     }
 
@@ -180,86 +174,82 @@ export default function MultipletAnalysisModal({
   }
 
   return (
-    <Modal
-      hasCloseButton
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      width={900}
-      height={400}
-    >
+    <Modal hasCloseButton isOpen={isOpen} onRequestClose={onClose}>
       <div css={styles}>
         <Modal.Header>
           <div className="header handle">
             <span>Analyse Multiplet</span>
           </div>
         </Modal.Header>
-        <div className="container">
-          {analysisData?.debug?.steps.map((d, index) => {
-            return (
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={index} className="row">
-                <Plot
-                  width={400}
-                  height={200}
-                  svgStyle={{ overflow: 'visible' }}
-                  seriesViewportStyle={{ stroke: 'black' }}
-                >
-                  <LineSeries data={xyToXYObject(d.multiplet)} />
-                  <Axis
-                    id="y"
-                    position="left"
-                    tickPosition="inner"
-                    displayPrimaryGridLines
-                    hiddenTicks
-                    paddingStart={0.1}
-                    paddingEnd={0.1}
-                  />
-                  <Axis
-                    id="x"
-                    position="bottom"
-                    tickPosition="inner"
-                    displayPrimaryGridLines
-                  />
-                </Plot>
-                <div className="multiplicity">
-                  <p>
-                    {analysisData.js[index]
-                      ? `${analysisData.js[index]
-                          ?.multiplicity}: ${analysisData.js[
-                          index
-                        ]?.coupling.toFixed(3)} Hz`
-                      : ''}
-                  </p>
+        <Modal.Body>
+          <div className="container">
+            {analysisData?.debug?.steps.map((d, index) => {
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <div key={index} className="row">
+                  <Plot
+                    width={400}
+                    height={200}
+                    svgStyle={{ overflow: 'visible' }}
+                    seriesViewportStyle={{ stroke: 'black' }}
+                  >
+                    <LineSeries data={xyToXYObject(d.multiplet)} />
+                    <Axis
+                      id="y"
+                      position="left"
+                      tickPosition="inner"
+                      displayPrimaryGridLines
+                      hiddenTicks
+                      paddingStart={0.1}
+                      paddingEnd={0.1}
+                    />
+                    <Axis
+                      id="x"
+                      position="bottom"
+                      tickPosition="inner"
+                      displayPrimaryGridLines
+                    />
+                  </Plot>
+                  <div className="multiplicity">
+                    <p>
+                      {analysisData.js[index]
+                        ? `${analysisData.js[index]
+                            ?.multiplicity}: ${analysisData.js[
+                            index
+                          ]?.coupling.toFixed(3)} Hz`
+                        : ''}
+                    </p>
+                  </div>
+                  <Plot
+                    width={400}
+                    height={200}
+                    seriesViewportStyle={{ stroke: 'black' }}
+                  >
+                    <LineSeries
+                      data={xyToXYObject(d.errorFunction)}
+                      lineStyle={{ strokeWidth: 1 }}
+                    />
+                    <Axis
+                      id="y"
+                      position="left"
+                      tickPosition="inner"
+                      displayPrimaryGridLines
+                      hiddenTicks
+                      paddingStart={0.1}
+                      paddingEnd={0.1}
+                    />
+                    <Axis
+                      id="x"
+                      position="bottom"
+                      tickPosition="inner"
+                      displayPrimaryGridLines
+                    />
+                  </Plot>
                 </div>
-                <Plot
-                  width={400}
-                  height={200}
-                  seriesViewportStyle={{ stroke: 'black' }}
-                >
-                  <LineSeries
-                    data={xyToXYObject(d.errorFunction)}
-                    lineStyle={{ strokeWidth: 1 }}
-                  />
-                  <Axis
-                    id="y"
-                    position="left"
-                    tickPosition="inner"
-                    displayPrimaryGridLines
-                    hiddenTicks
-                    paddingStart={0.1}
-                    paddingEnd={0.1}
-                  />
-                  <Axis
-                    id="x"
-                    position="bottom"
-                    tickPosition="inner"
-                    displayPrimaryGridLines
-                  />
-                </Plot>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </Modal.Body>
       </div>
     </Modal>
   );

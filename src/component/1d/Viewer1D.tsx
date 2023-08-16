@@ -388,20 +388,20 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                     </MouseTracker>
                   </BrushTracker>
                 )}
-              {brushData && (
-                <MultipletAnalysisModal
-                  isOpen={isOpenAnalysisModal}
-                  onClose={closeAnalysisModal}
-                  data={data}
-                  activeSpectrum={activeSpectrum}
-                  scaleX={scaleState.scaleX}
-                  {...brushData}
-                />
-              )}
             </div>
           </ViewerResponsiveWrapper>
         )}
       </ResponsiveChart>
+      {brushData && (
+        <MultipletAnalysisModal
+          isOpen={isOpenAnalysisModal}
+          onClose={closeAnalysisModal}
+          data={data}
+          activeSpectrum={activeSpectrum}
+          scaleX={scaleState.scaleX}
+          {...brushData}
+        />
+      )}
     </ScaleProvider>
   );
 }
