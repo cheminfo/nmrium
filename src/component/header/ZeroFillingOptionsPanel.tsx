@@ -1,18 +1,20 @@
 import { NmrData1D } from 'cheminfo-types';
 import { Filters } from 'nmr-processing';
-import { useEffect, useState, memo } from 'react';
-import { Checkbox, CheckedState } from 'react-science/ui';
+import { memo, useRef } from 'react';
 
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
-import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import { Formik } from 'formik';
+import FormikSelect from '../elements/formik/FormikSelect';
+import FormikCheckBox from '../elements/formik/FormikCheckBox';
+import FormikOnChange from '../elements/formik/FormikOnChange';
 
 const Sizes = generateNumbersPowerOfX(8, 21);
 
@@ -28,17 +30,42 @@ function useInitZeroFillingSize() {
 }
 
 function ZeroFillingOptionsInnerPanel(props: { size: number }) {
+  const { size } = props;
   const dispatch = useDispatch();
-  const [livePreview, setLivePreview] = useState<CheckedState>(true);
-  const [size, setSize] = useState<number>(props.size);
+  const previousPreviewRef = useRef<boolean>(true);
 
-  function handleApplyFilter() {
-    dispatch({
-      type: 'APPLY_ZERO_FILLING_FILTER',
-      payload: {
-        nbPoints: size,
-      },
-    });
+  function handleApplyFilter(
+    values,
+    triggerSource: 'apply' | 'onChange' = 'apply',
+  ) {
+    const { livePreview, ...options } = values;
+    switch (triggerSource) {
+      case 'onChange': {
+        if (livePreview || previousPreviewRef !== livePreview) {
+          dispatch({
+            type: 'CALCULATE_ZERO_FILLING_FILTER',
+            payload: {
+              options,
+              livePreview,
+            },
+          });
+        }
+        break;
+      }
+
+      case 'apply': {
+        dispatch({
+          type: 'APPLY_ZERO_FILLING_FILTER',
+          payload: {
+            options,
+          },
+        });
+        break;
+      }
+      default:
+        break;
+    }
+    previousPreviewRef.current = livePreview;
   }
 
   function handleCancelFilter() {
@@ -47,42 +74,36 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     });
   }
 
-  function dispatchLiveChanges(nbPoints) {
-    dispatch({
-      type: 'CALCULATE_ZERO_FILLING_FILTER',
-      payload: {
-        nbPoints,
-      },
-    });
-  }
-
-  function handleChangeSizeHandler(value) {
-    setSize(value);
-  }
-
-  useEffect(() => {
-    if (livePreview && size) {
-      dispatchLiveChanges(size);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [size, livePreview]);
-
   return (
     <HeaderContainer>
-      <Label title="Size:  " style={headerLabelStyle}>
-        <Select
-          items={Sizes}
-          style={{ marginLeft: 10, marginRight: 10 }}
-          value={size}
-          onChange={handleChangeSizeHandler}
-        />
-      </Label>
-      <Checkbox
-        label="Live preview"
-        checked={livePreview}
-        onChange={setLivePreview}
-      />
-      <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
+      <Formik
+        onSubmit={(values) => handleApplyFilter(values)}
+        initialValues={{ nbPoints: size, livePreview: true }}
+      >
+        {({ submitForm }) => (
+          <>
+            <Label title="Size:  " style={headerLabelStyle}>
+              <FormikSelect
+                items={Sizes}
+                style={{ marginLeft: 10, marginRight: 10 }}
+                name="nbPoints"
+              />
+            </Label>
+            <Label
+              title="Live preview "
+              htmlFor="livePreview"
+              style={{ label: { padding: '0 5px' } }}
+            >
+              <FormikCheckBox name="livePreview" />
+            </Label>
+            <FormikOnChange
+              onChange={(values) => handleApplyFilter(values, 'onChange')}
+              enableOnload
+            />
+            <ActionButtons onDone={submitForm} onCancel={handleCancelFilter} />
+          </>
+        )}
+      </Formik>
     </HeaderContainer>
   );
 }
