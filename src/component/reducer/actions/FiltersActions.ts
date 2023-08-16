@@ -45,12 +45,20 @@ type ShiftSpectrumAlongXAxisAction = ActionType<
   { shift: number }
 >;
 type ApodizationFilterAction = ActionType<
-  'APPLY_APODIZATION_FILTER' | 'CALCULATE_APODIZATION_FILTER',
-  { options: ApodizationOptions; livePreview?: boolean }
+  'APPLY_APODIZATION_FILTER',
+  { options: ApodizationOptions }
+>;
+type ApodizationFilterLiveAction = ActionType<
+  'CALCULATE_APODIZATION_FILTER',
+  { options: ApodizationOptions; livePreview: boolean }
 >;
 type ZeroFillingFilterAction = ActionType<
-  'APPLY_ZERO_FILLING_FILTER' | 'CALCULATE_ZERO_FILLING_FILTER',
-  { options: { nbPoints: number }; livePreview?: boolean }
+  'APPLY_ZERO_FILLING_FILTER',
+  { options: { nbPoints: number } }
+>;
+type ZeroFillingFilterLiveAction = ActionType<
+  'CALCULATE_ZERO_FILLING_FILTER',
+  { options: { nbPoints: number }; livePreview: boolean }
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
@@ -61,11 +69,15 @@ type ManualPhaseCorrectionFilterAction = ActionType<
 type BaselineCorrectionFilterOptions = Omit<BaselineCorrectionOptions, 'zones'>;
 interface BaselineCorrectionFilterProps {
   options: BaselineCorrectionFilterOptions;
-  livePreview?: boolean;
+  livePreview: boolean;
 }
 
 type BaselineCorrectionFilterAction = ActionType<
-  'APPLY_BASE_LINE_CORRECTION_FILTER' | 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
+  'APPLY_BASE_LINE_CORRECTION_FILTER',
+  { options: BaselineCorrectionFilterOptions }
+>;
+type BaselineCorrectionFilterLiveAction = ActionType<
+  'CALCULATE_BASE_LINE_CORRECTION_FILTER',
   BaselineCorrectionFilterProps
 >;
 type EnableFilterAction = ActionType<
@@ -97,9 +109,12 @@ type ApplySignalProcessingAction = ActionType<
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
   | ApodizationFilterAction
+  | ApodizationFilterLiveAction
   | ZeroFillingFilterAction
+  | ZeroFillingFilterLiveAction
   | ManualPhaseCorrectionFilterAction
   | BaselineCorrectionFilterAction
+  | BaselineCorrectionFilterLiveAction
   | EnableFilterAction
   | DeleteFilterAction
   | DeleteSpectraFilterAction
@@ -408,7 +423,7 @@ function handleApplyZeroFillingFilter(
 //action
 function handleCalculateZeroFillingFilter(
   draft: Draft<State>,
-  action: ZeroFillingFilterAction,
+  action: ZeroFillingFilterLiveAction,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
@@ -438,7 +453,7 @@ function handleCalculateZeroFillingFilter(
 //action
 function handleCalculateApodizationFilter(
   draft: Draft<State>,
-  action: ApodizationFilterAction,
+  action: ApodizationFilterLiveAction,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
@@ -763,7 +778,7 @@ function calculateBaseLineCorrection(
 //action
 function handleCalculateBaseLineCorrection(
   draft: Draft<State>,
-  action: BaselineCorrectionFilterAction,
+  action: BaselineCorrectionFilterLiveAction,
 ) {
   calculateBaseLineCorrection(draft, action.payload);
 }
