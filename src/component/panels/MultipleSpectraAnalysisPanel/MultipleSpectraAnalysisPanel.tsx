@@ -27,9 +27,11 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];
+  displayerMode: DISPLAYER_MODE;
   activeTab: string;
   showLegend: boolean;
 }
@@ -38,6 +40,7 @@ function MultipleSpectraAnalysisPanelInner({
   activeTab,
   spectra,
   showLegend,
+  displayerMode,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
@@ -115,18 +118,26 @@ function MultipleSpectraAnalysisPanelInner({
           >
             <FaFileExport />
           </Button>
-          <Button popupTitle="Spectra calibration" onClick={openAlignSpectra}>
-            <SvgNmrOverlay style={{ fontSize: '18px' }} />
-          </Button>
-          <ToggleButton
-            popupTitle="Y spectra tracker"
-            popupPlacement="right"
-            onClick={showTrackerHandler}
-            defaultValue={showLegend}
-            key={`${showLegend}`}
-          >
-            <IoPulseOutline />
-          </ToggleButton>
+          {displayerMode === DISPLAYER_MODE.DM_1D && (
+            <>
+              <Button
+                popupTitle="Spectra calibration"
+                onClick={openAlignSpectra}
+              >
+                <SvgNmrOverlay style={{ fontSize: '18px' }} />
+              </Button>
+
+              <ToggleButton
+                popupTitle="Y spectra tracker"
+                popupPlacement="right"
+                onClick={showTrackerHandler}
+                defaultValue={showLegend}
+                key={`${showLegend}`}
+              >
+                <IoPulseOutline />
+              </ToggleButton>
+            </>
+          )}
         </DefaultPanelHeader>
       )}
       {isFlipped && (
@@ -172,6 +183,7 @@ export default function MultipleSpectraAnalysisPanel() {
       spectra: { activeTab, showLegend },
     },
     displayerKey,
+    displayerMode,
   } = useChartData();
 
   const spectra = getSpectraByNucleus(activeTab, data) as Spectrum1D[];
@@ -182,7 +194,7 @@ export default function MultipleSpectraAnalysisPanel() {
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel
-      {...{ activeTab, displayerKey, spectra, showLegend }}
+      {...{ activeTab, displayerMode, displayerKey, spectra, showLegend }}
     />
   );
 }
