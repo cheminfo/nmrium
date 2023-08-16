@@ -29,9 +29,12 @@ export const REFERENCES: Record<string, Record<string, ReferenceInfo>> = {
   '13C': {},
 };
 
-export function getRange(
-  options: { nucleus?: string; reference?: string } = {},
-): ReferenceInfo {
+export interface GetRangeOptions {
+  nucleus?: string;
+  reference?: string;
+}
+
+export function getRange(options: GetRangeOptions = {}): ReferenceInfo {
   const { nucleus = '1H', reference = 'tms' } = options;
 
   if (!REFERENCES[nucleus]) {
