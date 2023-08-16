@@ -57,6 +57,18 @@ function FunctionToolBarInner({
     });
   }, [dispatch]);
 
+  const handleFFtDimension1Filter = useCallback(() => {
+    dispatch({
+      type: 'APPLY_FFT_DIMENSION_1_FILTER',
+    });
+  }, [dispatch]);
+
+  const handleFFtDimension2Filter = useCallback(() => {
+    dispatch({
+      type: 'APPLY_FFT_DIMENSION_2_FILTER',
+    });
+  }, [dispatch]);
+
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
@@ -65,7 +77,7 @@ function FunctionToolBarInner({
             key={options.zoom.id}
             value={options.zoom.id}
             id={options.zoom.id}
-            title={`${options.zoom.label} ( Press z )`}
+            title={`${options.zoom.label}`}
           >
             <FaSearchPlus />
           </ToggleButton>
@@ -159,7 +171,7 @@ function FunctionToolBarInner({
             key={options.zeroFilling.id}
             value={options.zeroFilling.id}
             id={options.zeroFilling.id}
-            title={options.zeroFilling.label}
+            title={`${options.zeroFilling.label} ( Press z )`}
           >
             <SvgNmrZeroFilling />
           </ToggleButton>
@@ -205,8 +217,28 @@ function FunctionToolBarInner({
         <Toolbar.Item
           id={options.fft.id}
           className="cheminfo"
-          title={options.fft.label}
+          title={`${options.fft.label} ( Press t )`}
           onClick={handleOnFFTFilter}
+        >
+          <SvgNmrFourierTransform />
+        </Toolbar.Item>
+      )}
+      {isButtonVisible('fftDimension1') && (
+        <Toolbar.Item
+          id={options.fftDimension1.id}
+          className="cheminfo"
+          title={options.fftDimension1.label}
+          onClick={handleFFtDimension1Filter}
+        >
+          <SvgNmrFourierTransform />
+        </Toolbar.Item>
+      )}
+      {isButtonVisible('fftDimension2') && (
+        <Toolbar.Item
+          id={options.fftDimension2.id}
+          className="cheminfo"
+          title={options.fftDimension2.label}
+          onClick={handleFFtDimension2Filter}
         >
           <SvgNmrFourierTransform />
         </Toolbar.Item>

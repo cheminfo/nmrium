@@ -297,10 +297,11 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const mouseClick = useCallback<OnClick>(
     (position) => {
-      const propagateEvent = () => {
-        if (!scaleState.scaleX) return;
+      if (!scaleState.scaleX) return;
 
-        const xPPM = scaleState.scaleX().invert(position.x);
+      const xPPM = scaleState.scaleX().invert(position.x);
+
+      const propagateEvent = () => {
         Events.emit('mouseClick', {
           ...position,
           xPPM,
@@ -317,6 +318,18 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             break;
           case options.editRange.id:
             propagateEvent();
+            break;
+          case options.integral.id:
+            dispatch({
+              type: 'CUT_INTEGRAL',
+              payload: { cutValue: xPPM },
+            });
+            break;
+          case options.rangePicking.id:
+            dispatch({
+              type: 'CUT_RANGE',
+              payload: { cutValue: xPPM },
+            });
             break;
           default:
             break;

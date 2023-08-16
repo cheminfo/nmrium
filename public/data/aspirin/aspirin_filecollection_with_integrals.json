@@ -1,0 +1,55 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/acqu"
+        },
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/acqus"
+        },
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/pdata/1/1r"
+        },
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/pdata/1/1i"
+        },
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/pdata/1/integrals.txt"
+        },
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/pdata/1/proc"
+        },
+        {
+          "relativePath": "data/aspirin/aspirinFiles/1/pdata/1/procs"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "display": {
+          "name": "1/1",
+          "isVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isRealSpectrumVisible": true,
+          "isVisibleInDomain": true
+        },
+        "sourceSelector": {
+          "files": [
+            "data/aspirin/aspirinFiles/1/acqu",
+            "data/aspirin/aspirinFiles/1/acqus",
+            "data/aspirin/aspirinFiles/1/pdata/1/1r",
+            "data/aspirin/aspirinFiles/1/pdata/1/1i",
+            "data/aspirin/aspirinFiles/1/pdata/1/proc",
+            "data/aspirin/aspirinFiles/1/pdata/1/integrals.txt",  
+            "data/aspirin/aspirinFiles/1/pdata/1/procs"
+          ]
+        }
+      }
+    ],
+    "molecules": []
+  },
+  "version": 4,
+  "append": true
+}

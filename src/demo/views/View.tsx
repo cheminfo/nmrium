@@ -2,7 +2,7 @@ import { CustomWorkspaces } from 'nmr-load-save';
 import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import NMRium, { NMRiumWorkspace } from '../../component/NMRium';
+import { NMRium, NMRiumWorkspace } from '../../component/main';
 import { PageConfig } from '../layouts/Main';
 
 export async function loadData(file) {

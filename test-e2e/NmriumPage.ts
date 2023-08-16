@@ -10,7 +10,7 @@ export default class NmriumPage {
 
   public constructor(page: Page) {
     this.page = page;
-    this.viewerLocator = page.locator('data-test-id=viewer');
+    this.viewerLocator = page.getByTestId('viewer');
   }
 
   public static async create(page: Page): Promise<NmriumPage> {
@@ -53,9 +53,7 @@ export default class NmriumPage {
     await this.page.mouse.move(x + width / 2, y + height / 2);
   }
   public async getNumberOfDistinctColors() {
-    const Lines = this.page.locator(
-      `data-test-id=spectrum-line >> _react=Line`,
-    );
+    const Lines = this.page.getByTestId('spectrum-line').locator('_react=Line');
     // get all lines from locator
     const lines = await Lines.all();
     // get all colors from lines
@@ -152,9 +150,11 @@ export default class NmriumPage {
     await this.page.locator('input[name="workspaceName"]').fill(name);
 
     // Save the user workspace.
-    await this.page.click(
-      'data-test-id=save-workspace-dialog >> button >> text=Save',
-    );
+    await this.page
+      .getByTestId('save-workspace-dialog')
+      .locator('button')
+      .locator('text=Save')
+      .click();
 
     await this.dismissAlert('Preferences saved');
   }

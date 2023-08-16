@@ -28,7 +28,7 @@ async function addPeaks(nmrium: NmriumPage) {
     modifiers: ['Shift'],
     position: {
       x: 200,
-      y: 20,
+      y: 200,
     },
   });
 
@@ -36,16 +36,16 @@ async function addPeaks(nmrium: NmriumPage) {
 }
 
 async function shiftX(nmrium: NmriumPage) {
-  const peakInputLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0 >> input',
+  const peakLocator = nmrium.page.locator(
+    '_react=PeakAnnotation >> nth=0 >> text',
   );
 
-  await peakInputLocator.click();
-  await peakInputLocator.selectText();
+  await peakLocator.click();
+  const peakInputLocator = nmrium.page.locator('_react=PeakEditionField');
   await peakInputLocator.type('10');
   await peakInputLocator.press('Enter');
 
-  await expect(peakInputLocator).toHaveValue('10.00');
+  await expect(peakLocator).toHaveText('10.00');
 }
 
 async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
@@ -60,9 +60,9 @@ async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   await inputLocator.press('Enter');
 
   const peakInputLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0 >> input',
+    '_react=PeakAnnotation >> nth=0 >>text',
   );
-  await expect(peakInputLocator).toHaveValue('20.00');
+  await expect(peakInputLocator).toHaveText('20.00');
 }
 
 async function deletePeak(nmrium: NmriumPage) {

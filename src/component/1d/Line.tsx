@@ -49,7 +49,7 @@ function Line({ data, id, display, index }: LineProps) {
   return (
     <path
       className="line"
-      data-test-id="spectrum-line"
+      data-testid="spectrum-line"
       key={id}
       stroke={stroke}
       fill="none"

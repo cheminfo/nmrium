@@ -309,7 +309,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
-    await nmrium.page.click('_react=RangesTablePanel >> .sum-button');
+    await nmrium.page
+      .locator('_react=ButtonToolTip[popupTitle="Change ranges sum"]')
+      .click();
     await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
       nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
@@ -489,15 +491,13 @@ async function getCount(locator: Locator): Promise<number> {
 
 test('check callbacks count on changing structures', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
-  const dataCount = nmrium.page.locator('[data-test-id="data-count"]');
-  const viewCount = nmrium.page.locator('[data-test-id="view-count"]');
+  const dataCount = nmrium.page.getByTestId('data-count');
+  const viewCount = nmrium.page.getByTestId('view-count');
   await test.step('open test page', async () => {
     await nmrium.page.click('li >> text=Callback');
     await nmrium.page.click('li >> text=1H spectrum cytisine');
     // wait the spectrum to load
-    await expect(
-      nmrium.page.locator('data-test-id=spectrum-line'),
-    ).toBeVisible();
+    await expect(nmrium.page.getByTestId('spectrum-line')).toBeVisible();
 
     await expect(dataCount).toContainText(/[2-5]/);
     await expect(viewCount).toContainText(/[2-5]/);

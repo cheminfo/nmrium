@@ -33,7 +33,7 @@ const FormikOnChange = (props: FormikOnChangeProps) => {
         if (Object.keys(errors).length === 0 && isChanged) {
           debounceOnChange.current(values);
         } else {
-          setTouched(errors);
+          void setTouched(errors);
         }
       } else {
         debounceOnChange.current(values);

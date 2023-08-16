@@ -6,10 +6,10 @@ test('Should 1d spectrum hide/show', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  const spectrumButtonLocator = nmrium.page.locator(
-    'data-test-id=hide-show-spectrum-button',
+  const spectrumButtonLocator = nmrium.page.getByTestId(
+    'hide-show-spectrum-button',
   );
-  const spectrumLineLocator = nmrium.page.locator('data-test-id=spectrum-line');
+  const spectrumLineLocator = nmrium.page.getByTestId('spectrum-line');
 
   // Click on hide/show spectrum button.
   await spectrumButtonLocator.click();
@@ -44,10 +44,9 @@ test('Should Zoom', async ({ page }) => {
 
   const cursorStartX = boundingBox.x + boundingBox.width / 2;
   const cursorStartY = boundingBox.y + boundingBox.height / 2;
-  const previousPath = (await nmrium.page.getAttribute(
-    'data-test-id=spectrum-line',
-    'd',
-  )) as string;
+  const previousPath = (await nmrium.page
+    .getByTestId('spectrum-line')
+    .getAttribute('d')) as string;
 
   await nmrium.page.mouse.move(cursorStartX, cursorStartY, { steps: 15 });
   await nmrium.page.mouse.down();
@@ -56,10 +55,9 @@ test('Should Zoom', async ({ page }) => {
   });
   await nmrium.page.mouse.up();
 
-  const path = (await nmrium.page.getAttribute(
-    'data-test-id=spectrum-line',
-    'd',
-  )) as string;
+  const path = (await nmrium.page
+    .getByTestId('spectrum-line')
+    .getAttribute('d')) as string;
 
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
@@ -97,9 +95,7 @@ test('Should 2d deactivate spectrum', async ({ page }) => {
     '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
   );
 
-  const spectrumLineLocator = nmrium.page.locator(
-    'data-test-id=spectrum-line >> nth=0',
-  );
+  const spectrumLineLocator = nmrium.page.getByTestId('spectrum-line').nth(0);
 
   // deactivate spectrum
   await spectrumButtonLocator.click();
@@ -132,9 +128,9 @@ test('2d spectrum', async ({ page }) => {
     ).toBeVisible();
     // Check spectrum initial color match with ColorIndicator
     await expect(
-      nmrium.page.locator(
-        'data-test-id=spectrum-line >> _react=Line[display.color="#7c2353"]',
-      ),
+      nmrium.page
+        .getByTestId('spectrum-line')
+        .locator('_react=Line[display.color="#7c2353"]'),
     ).toBeVisible();
 
     // Open Change color modal
@@ -151,9 +147,9 @@ test('2d spectrum', async ({ page }) => {
     ).toBeVisible();
     // Check that spectrum color changed
     await expect(
-      nmrium.page.locator(
-        'data-test-id=spectrum-line >> _react=Line[display.color="#ddb1c9ff"]',
-      ),
+      nmrium.page
+        .getByTestId('spectrum-line')
+        .locator('_react=Line[display.color="#ddb1c9ff"]'),
     ).toBeVisible();
 
     // Close color picker
@@ -177,9 +173,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      2,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
   await test.step('Change 1H,1H spectrum color', async () => {
     // Check ColorIndicator initial color
@@ -243,9 +237,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      1,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(1);
 
     // Hide negative spectrum
     await nmrium.page.click(
@@ -257,9 +249,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeHidden();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      0,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(0);
     // Show positive spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
@@ -270,9 +260,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeHidden();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      1,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(1);
 
     // Show negative spectrum
     await nmrium.page.click(
@@ -284,9 +272,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      2,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
   await test.step('Delete 1H tab', async () => {
     // Go to 1H tab
@@ -314,9 +300,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      2,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
   await test.step('Add projection', async () => {
     // Click add missing projection btn
@@ -338,9 +322,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ContoursPaths[sign="negative"]'),
     ).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      2,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
   });
 });
 
@@ -352,41 +334,31 @@ test('show/hide spectrum', async ({ page }) => {
     await nmrium.page.click('li >> text=Coffee');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      13,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
   await test.step('Check hide spectrums', async () => {
     // Hide positive spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
     );
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      12,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(12);
 
     // Hide negative spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
     );
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      11,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(11);
     // Show positive spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
     );
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      12,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(12);
 
     // Show negative spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=1',
     );
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      13,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
 });
 
@@ -565,9 +537,7 @@ test('Multiple spectra analysis', async ({ page }) => {
     await nmrium.page.click('li >> text=Coffee');
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
-    await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-      13,
-    );
+    await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
   await test.step('Check spectra names', async () => {
     for (let i = 0; i < 13; i++) {
@@ -622,7 +592,5 @@ test('Load JResolv', async ({ page }) => {
   await nmrium.page.click('li >> text=jResolv cytisine');
 
   await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
-  await expect(nmrium.page.locator('data-test-id=spectrum-line')).toHaveCount(
-    2,
-  );
+  await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(2);
 });

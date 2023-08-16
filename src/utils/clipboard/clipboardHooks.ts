@@ -97,7 +97,6 @@ export interface UseClipboardReturn {
    */
   rawWriteWithType: (
     data: string,
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     type?: 'text/html' | 'text/plain' | string,
   ) => Promise<void>;
 

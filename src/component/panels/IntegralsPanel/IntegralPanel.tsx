@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
@@ -14,7 +15,9 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
@@ -116,6 +119,8 @@ function IntegralPanelInner({
     return [];
   }, [filterIsActive, info.dimension, integrals, xDomain]);
 
+  const counter = integrals?.values?.length || 0;
+
   return (
     <div
       css={[
@@ -131,43 +136,44 @@ function IntegralPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={integrals?.values?.length}
+          counter={counter}
+          counterLabel={createFilterLabel(
+            counter,
+            filterIsActive && filteredData?.length,
+          )}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Integrals"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all integrals' : 'Hide integrals out of view'
           }
-          filterIsActive={filterIsActive}
-          counterFiltered={filteredData.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
           <ToolTip
             title={
               currentSum
-                ? `Change Integrals Sum (${Number(currentSum).toFixed(2)})`
-                : 'Change Integrals Sum'
+                ? `Change integration sum (${currentSum.toFixed(2)})`
+                : 'Change integration sum'
             }
             popupPlacement="right"
           >
             <ChangeSumModal
-              onClose={() => modal.close()}
               onSave={changeIntegralSumHandler}
-              header={
-                currentSum
-                  ? `Set new integrals Sum (Current: ${Number(
-                      currentSum,
-                    ).toFixed(2)})`
-                  : 'Set new integrals Sum'
-              }
+              sumType="integrals"
+              currentSum={currentSum}
               sumOptions={integrals?.options}
+              renderButton={(onClick) => (
+                <button className="sum-button" type="button" onClick={onClick}>
+                  <SvgNmrSum />
+                </button>
+              )}
             />
           </ToolTip>
 
           <ActiveButton
             className="icon"
-            popupTitle="Fix integral values"
+            popupTitle="Fixed integration values"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
             value={integrals?.options?.isSumConstant || false}

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrFt, SvgNmrPeaks } from 'cheminfo-font';
+import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
 import { Info1D, Peak1D, Peaks } from 'nmr-processing';
@@ -15,15 +15,15 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import {
-  defaultPeaksViewState,
-  useActiveSpectrumPeaksViewState,
-} from '../../hooks/useActiveSpectrumPeaksViewState';
+import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
+import { FilterType } from '../../utility/filterType';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
@@ -122,10 +122,13 @@ function PeaksPanelInner({
     }
   };
 
-  function toggleViewProperty(key: keyof typeof defaultPeaksViewState) {
+  function toggleViewProperty(key: keyof FilterType<PeaksViewState, boolean>) {
     dispatch({ type: 'TOGGLE_PEAKS_VIEW_PROPERTY', payload: { key } });
   }
-
+  function toggleDisplayingMode() {
+    dispatch({ type: 'TOGGLE_PEAKS_DISPLAYING_MODE' });
+  }
+  const counter = peaks?.values?.length || 0;
   return (
     <div
       css={[
@@ -143,15 +146,17 @@ function PeaksPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={peaks?.values?.length}
+          counter={counter}
+          counterLabel={createFilterLabel(
+            counter,
+            filterIsActive && filteredPeaks?.length,
+          )}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
           }
-          filterIsActive={filterIsActive}
-          counterFiltered={filteredPeaks.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
@@ -206,6 +211,23 @@ function PeaksPanelInner({
             value={peaksViewState.isPeaksVisible}
           >
             <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
+          </ActiveButton>
+
+          <ActiveButton
+            style={{ marginLeft: '2px', marginRight: '2px' }}
+            popupTitle={
+              peaksViewState.displayingMode === 'spread'
+                ? 'Single Mode'
+                : 'Spread mode'
+            }
+            popupPlacement="right"
+            onClick={toggleDisplayingMode}
+            disabled={!peaks?.values || peaks.values.length === 0}
+            value={peaksViewState.displayingMode === 'spread'}
+          >
+            <SvgNmrPeaksTopLabels
+              style={{ pointerEvents: 'none', fontSize: '12px' }}
+            />
           </ActiveButton>
         </DefaultPanelHeader>
       )}

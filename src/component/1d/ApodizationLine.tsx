@@ -93,7 +93,7 @@ function ApodizationLine() {
 
   return (
     <path
-      data-test-id="apodization-line"
+      data-testid="apodization-line"
       stroke="green"
       fill="none"
       strokeWidth="2"

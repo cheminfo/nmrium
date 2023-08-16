@@ -14,7 +14,9 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { zoneStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
@@ -174,6 +176,8 @@ function ZonesPanelInner({
     dispatch({ type: 'SHOW_ZONES_PEAKS', payload: { id } });
   };
 
+  const counter = zones?.values?.length || 0;
+
   return (
     <div
       css={[
@@ -189,15 +193,17 @@ function ZonesPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={zones.values ? zones.values.length : 0}
+          counter={counter}
+          counterLabel={createFilterLabel(
+            counter,
+            filterIsActive && tableData?.length,
+          )}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Zones"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all zones' : 'Hide zones out of view'
           }
-          filterIsActive={filterIsActive}
-          counterFiltered={tableData?.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >

@@ -83,7 +83,7 @@ export default function SpectrumSimulation() {
 
   function saveSettingsHandler(values) {
     simulateHandler(values);
-    formRef.current?.setValues(values);
+    void formRef.current?.setValues(values);
   }
 
   return (
