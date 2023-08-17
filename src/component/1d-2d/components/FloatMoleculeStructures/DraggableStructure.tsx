@@ -131,7 +131,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 autoCropMargin={AUTO_CROP_MARGIN}
                 height={height - AUTO_CROP_MARGIN * 2}
                 width={width - AUTO_CROP_MARGIN * 2}
-                //@ts-expect-error will be solved with new version of react-ocl-nmr
                 label={molecule.label}
                 labelFontSize={15}
                 labelColor="rgb(0,0,0)"

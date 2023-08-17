@@ -227,6 +227,7 @@ function checkPredictions(
   const { spectra } = inputOptions;
   const missing2DPrediction: string[] = [];
   const molecule = OCL.Molecule.fromMolfile(molfile);
+  //@ts-expect-error Will be fixed once OCL-utils is typed correctly
   const { atoms } = getAtoms(molecule);
   for (const [experiment, required] of Object.entries(spectra)) {
     if (!required || predictedSpectra[experiment]) continue;
