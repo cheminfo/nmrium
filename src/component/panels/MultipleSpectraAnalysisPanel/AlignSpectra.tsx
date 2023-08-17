@@ -146,7 +146,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
 
     .body {
       overflow: auto;
-      padding: 5px 0;
+      padding: 10px 10px 25px 0;
     }
 
     .header {
@@ -163,68 +163,55 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
 
   return (
     <div css={styles}>
-      <div className="body" style={{ flex: 1 }}>
-        <div className="header">
-          <span>Spectra calibration</span>
-        </div>
-        <Formik
-          initialValues={options}
-          enableReinitialize
-          onSubmit={submitHandler}
-          validationSchema={schemaValidation}
-          validate={() => setError('')}
-        >
-          {({ submitForm }) => (
-            <>
-              <div
-                className="inner-content"
-                style={{ flex: 1, minHeight: '220px' }}
+      <Formik
+        initialValues={options}
+        enableReinitialize
+        onSubmit={submitHandler}
+        validationSchema={schemaValidation}
+        validate={() => setError('')}
+      >
+        {({ submitForm }) => (
+          <>
+            <div className="body" style={{ flex: 1 }}>
+              <div className="header">
+                <span>Spectra calibration</span>
+              </div>
+              {error && <Message type="error">{error}</Message>}
+              <Label title="Options" style={labelStyle}>
+                <Select
+                  items={List}
+                  style={{ width: '100%', height: 30 }}
+                  onChange={optionChangeHandler}
+                />
+              </Label>
+
+              <Label title="Range" style={labelStyle}>
+                <Label title="From">
+                  <FormikInput name="from" type="number" style={inputStyle} />
+                </Label>
+                <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                  <FormikInput name="to" type="number" style={inputStyle} />
+                </Label>
+              </Label>
+
+              <Label title="Number of Peaks" style={labelStyle}>
+                <FormikInput name="nbPeaks" type="number" style={inputStyle} />
+              </Label>
+              <Label title="Target PPM" style={labelStyle}>
+                <FormikInput name="targetX" type="number" style={inputStyle} />
+              </Label>
+            </div>
+            <div className="footer">
+              <Button.Done
+                style={{ padding: '5px 14px', fontSize: 14 }}
+                onClick={submitForm}
               >
-                {error && <Message type="error">{error}</Message>}
-                <Label title="Options" style={labelStyle}>
-                  <Select
-                    items={List}
-                    style={{ width: '100%', height: 30 }}
-                    onChange={optionChangeHandler}
-                  />
-                </Label>
-
-                <Label title="Range" style={labelStyle}>
-                  <Label title="From">
-                    <FormikInput name="from" type="number" style={inputStyle} />
-                  </Label>
-                  <Label title="To" style={{ label: { padding: '0 10px' } }}>
-                    <FormikInput name="to" type="number" style={inputStyle} />
-                  </Label>
-                </Label>
-
-                <Label title="Number of Peaks" style={labelStyle}>
-                  <FormikInput
-                    name="nbPeaks"
-                    type="number"
-                    style={inputStyle}
-                  />
-                </Label>
-                <Label title="Target PPM" style={labelStyle}>
-                  <FormikInput
-                    name="targetX"
-                    type="number"
-                    style={inputStyle}
-                  />
-                </Label>
-              </div>
-              <div className="footer">
-                <Button.Done
-                  style={{ padding: '5px 14px', fontSize: 14 }}
-                  onClick={submitForm}
-                >
-                  Done
-                </Button.Done>
-              </div>
-            </>
-          )}
-        </Formik>
-      </div>
+                Done
+              </Button.Done>
+            </div>
+          </>
+        )}
+      </Formik>
     </div>
   );
 }
