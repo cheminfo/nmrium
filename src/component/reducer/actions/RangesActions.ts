@@ -19,6 +19,8 @@ import {
 } from '../../../data/data1d/Spectrum1D';
 import {
   SetSumOptions,
+  SumParams,
+  initSumOptions,
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager';
 import { ChangeRangeRelativeValueProps } from '../../../data/data1d/Spectrum1D/ranges/changeRangeRelativeValue';
@@ -31,6 +33,7 @@ import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
 import { rangeStateInit, State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { getSpectrum } from '../helper/getSpectrum';
 import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
@@ -120,6 +123,7 @@ type ToggleAction = ActionType<
   'SHOW_MULTIPLICITY_TREES' | 'SHOW_RANGES_INTEGRALS' | 'SHOW_J_GRAPH',
   { id: string }
 >;
+type CutRangAction = ActionType<'CUT_RANGE', { cutValue: number }>;
 
 export type RangesActions =
   | AutoRangesDetectionAction
@@ -136,6 +140,7 @@ export type RangesActions =
   | ChangeRangeSignalValueAction
   | UpdateRangAction
   | ToggleAction
+  | CutRangAction
   | ActionType<'AUTO_RANGES_SPECTRA_PICKING' | 'CHANGE_RANGES_SUM_FLAG'>;
 
 function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
@@ -457,6 +462,14 @@ function handleChangeRangeSum(
   }
 }
 
+function initiateRangeSumOptions(datum: Spectrum1D, options: SumParams) {
+  const { nucleus, molecules } = options;
+  datum.ranges.options = initSumOptions(datum.ranges.options, {
+    molecules,
+    nucleus,
+  });
+}
+
 //action
 function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
   const { startX, endX } = action.payload;
@@ -472,12 +485,16 @@ function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    addRange(data[index] as Spectrum1D, {
+    const datum = data[index] as Spectrum1D;
+    addRange(datum, {
       from,
       to,
+    });
+    initiateRangeSumOptions(datum, {
       nucleus,
       molecules,
     });
+    updateRangesRelativeValues(datum);
     handleUpdateCorrelations(draft);
     setIntegralsYDomain(draft, data[index] as Spectrum1D);
   }
@@ -594,7 +611,27 @@ function handleShowJGraph(draft: Draft<State>, action: ToggleAction) {
   }
 }
 
+function handleCutRange(draft: Draft<State>, action: CutRangAction) {
+  const { cutValue } = action.payload;
+  const spectrum = getSpectrum(draft) as Spectrum1D;
+  const ranges = spectrum.ranges.values;
+
+  for (let i = 0; i < ranges.length; i++) {
+    const { to, from } = ranges[i];
+    if (cutValue > from && cutValue < to) {
+      ranges.splice(i, 1);
+      addRange(spectrum, { from, to: cutValue });
+      addRange(spectrum, { from: cutValue, to });
+    }
+  }
+
+  updateRangesRelativeValues(spectrum);
+  setIntegralsYDomain(draft, spectrum);
+  handleUpdateCorrelations(draft);
+}
+
 export {
+  handleCutRange,
   handleAutoRangesDetection,
   handleDeleteRange,
   deleteSignal1D,

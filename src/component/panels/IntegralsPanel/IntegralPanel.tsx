@@ -15,7 +15,9 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
@@ -117,6 +119,8 @@ function IntegralPanelInner({
     return [];
   }, [filterIsActive, info.dimension, integrals, xDomain]);
 
+  const counter = integrals?.values?.length || 0;
+
   return (
     <div
       css={[
@@ -132,23 +136,25 @@ function IntegralPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={integrals?.values?.length}
+          counter={counter}
+          counterLabel={createFilterLabel(
+            counter,
+            filterIsActive && filteredData?.length,
+          )}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Integrals"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all integrals' : 'Hide integrals out of view'
           }
-          filterIsActive={filterIsActive}
-          counterFiltered={filteredData.length}
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
           <ToolTip
             title={
               currentSum
-                ? `Change integrals sum (${currentSum.toFixed(2)})`
-                : 'Change integrals sum'
+                ? `Change integration sum (${currentSum.toFixed(2)})`
+                : 'Change integration sum'
             }
             popupPlacement="right"
           >
@@ -167,7 +173,7 @@ function IntegralPanelInner({
 
           <ActiveButton
             className="icon"
-            popupTitle="Fix integral values"
+            popupTitle="Fixed integration values"
             popupPlacement="right"
             onClick={toggleConstantSumHandler}
             value={integrals?.options?.isSumConstant || false}

@@ -10,6 +10,7 @@ import { useFullscreen } from 'react-use';
 
 import { AssignmentProvider } from '../assignment';
 import { GlobalProvider } from '../context/GlobalContext';
+import { KeyModifiersProvider } from '../context/KeyModifierContext';
 import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
 import { AlertProvider } from '../elements/popup/Alert';
@@ -94,27 +95,32 @@ export function InnerNMRium({
       >
         <PreferencesProvider value={preferencesState}>
           <LoggerProvider>
-            <AlertProvider wrapperRef={elementsWrapperRef.current}>
-              <NMRiumStateProvider onChange={onChange} nmriumData={nmriumData}>
-                <ModalProvider wrapperRef={elementsWrapperRef.current}>
-                  <HighlightProvider>
-                    <AssignmentProvider>
-                      <SpinnerProvider value={getSpinner}>
-                        <InnerNMRiumContents
-                          isFullscreenEnabled={isFullscreenEnabled}
-                          toggleFullscreen={toggleFullscreen}
-                          emptyText={emptyText}
-                          mainDivRef={mainDivRef}
-                          elementsWrapperRef={elementsWrapperRef}
-                          rootRef={rootRef}
-                          viewerRef={viewerRef}
-                        />
-                      </SpinnerProvider>
-                    </AssignmentProvider>
-                  </HighlightProvider>
-                </ModalProvider>
-              </NMRiumStateProvider>
-            </AlertProvider>
+            <KeyModifiersProvider>
+              <AlertProvider wrapperRef={elementsWrapperRef.current}>
+                <NMRiumStateProvider
+                  onChange={onChange}
+                  nmriumData={nmriumData}
+                >
+                  <ModalProvider wrapperRef={elementsWrapperRef.current}>
+                    <HighlightProvider>
+                      <AssignmentProvider>
+                        <SpinnerProvider value={getSpinner}>
+                          <InnerNMRiumContents
+                            isFullscreenEnabled={isFullscreenEnabled}
+                            toggleFullscreen={toggleFullscreen}
+                            emptyText={emptyText}
+                            mainDivRef={mainDivRef}
+                            elementsWrapperRef={elementsWrapperRef}
+                            rootRef={rootRef}
+                            viewerRef={viewerRef}
+                          />
+                        </SpinnerProvider>
+                      </AssignmentProvider>
+                    </HighlightProvider>
+                  </ModalProvider>
+                </NMRiumStateProvider>
+              </AlertProvider>
+            </KeyModifiersProvider>
           </LoggerProvider>
         </PreferencesProvider>
       </GlobalProvider>

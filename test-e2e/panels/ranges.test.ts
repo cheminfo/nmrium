@@ -134,6 +134,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await expect(range).toContainText(r);
   }
 });
+
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -192,6 +193,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     ).toBeVisible();
   });
 });
+
 test('Range state', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -278,6 +280,7 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
   });
 });
+
 test('Auto peak picking on all spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -352,5 +355,98 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 44 ]');
+  });
+});
+
+test('2D spectra reference change', async ({ page }) => {
+  const xAxisDefault = [1, 2, 3, 4, 5, 6, 7, 8];
+  const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+    await expect(nmrium.page.locator('.x')).toContainText(
+      xAxisDefault.join(''),
+    );
+    await expect(nmrium.page.locator('.y')).toContainText(
+      yAxisDefault.join(''),
+    );
+  });
+
+  await test.step('Auto zone picking', async () => {
+    await nmrium.clickTool('zonePicking');
+    await nmrium.page.click('text=Auto Zones Picking');
+  });
+
+  await test.step("Check spectrum's zones", async () => {
+    await expect(nmrium.page.locator('.zone')).toHaveCount(15);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 15 ]');
+
+    const x = 2.9139017520509753;
+    const y = 35.65263186073236;
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
+    ).toBeVisible();
+  });
+  await test.step('Change reference', async () => {
+    const x = 1000;
+    const y = 2000;
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(x.toString());
+    await nmrium.page.keyboard.press('Enter');
+
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(y.toString());
+    await nmrium.page.keyboard.press('Enter');
+
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
+    ).toBeVisible();
+
+    const xShift = 997;
+    const yShift = 1960;
+    const newXAxis = xAxisDefault.map((n) => n + xShift);
+    const newYAxis = yAxisDefault.map((n) => n + yShift);
+    await expect(nmrium.page.locator('.x')).toContainText(newXAxis.join(''));
+    await expect(nmrium.page.locator('.y')).toContainText(newYAxis.join(''));
   });
 });

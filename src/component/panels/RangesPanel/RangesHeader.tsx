@@ -18,7 +18,9 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 
 const style = css`
   .btn {
@@ -149,19 +151,21 @@ function RangesHeader({
   }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
-
+  const counter = ranges?.values?.length || 0;
   return (
     <div css={style}>
       <DefaultPanelHeader
-        counter={ranges?.values?.length || 0}
+        counter={counter}
+        counterLabel={createFilterLabel(
+          counter,
+          isFilterActive && filterCounter,
+        )}
         onDelete={handleDeleteAll}
         deleteToolTip="Delete All Ranges"
         onFilter={onFilterActivated}
         filterToolTip={
           isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
-        filterIsActive={isFilterActive}
-        counterFiltered={filterCounter}
         showSettingButton
         onSettingClick={onSettingClick}
       >
@@ -239,7 +243,7 @@ function RangesHeader({
 
         <ActiveButton
           className="icon"
-          popupTitle="Fix integral values"
+          popupTitle="Fixed integration sum"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
           value={ranges?.options?.isSumConstant}

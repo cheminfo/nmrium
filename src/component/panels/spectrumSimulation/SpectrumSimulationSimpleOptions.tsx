@@ -31,7 +31,6 @@ export default function SpectrumSimulationSimpleOptions({
         display: 'flex',
         justifyContent: 'flex-end',
         flex: '1',
-        padding: '0 10px',
       }}
     >
       <Label title="" style={labelStyle}>
