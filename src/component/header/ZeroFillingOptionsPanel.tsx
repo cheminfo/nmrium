@@ -1,4 +1,5 @@
 import { NmrData1D } from 'cheminfo-types';
+import { Formik } from 'formik';
 import { Filters } from 'nmr-processing';
 import { memo, useRef } from 'react';
 
@@ -6,15 +7,14 @@ import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOf
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
+import FormikCheckBox from '../elements/formik/FormikCheckBox';
+import FormikOnChange from '../elements/formik/FormikOnChange';
+import FormikSelect from '../elements/formik/FormikSelect';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import { Formik } from 'formik';
-import FormikSelect from '../elements/formik/FormikSelect';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikOnChange from '../elements/formik/FormikOnChange';
 
 const Sizes = generateNumbersPowerOfX(8, 21);
 
