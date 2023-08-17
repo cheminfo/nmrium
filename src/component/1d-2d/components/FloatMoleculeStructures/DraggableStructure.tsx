@@ -65,7 +65,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   } = props;
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
-  const openMoleculeEditor = useMoleculeEditor();
+  const { modal, openMoleculeEditor } = useMoleculeEditor();
   const {
     currentDiaIDsToHighlight,
     handleOnAtomHover,
@@ -162,6 +162,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
           }}
         </ResponsiveChart>
       </div>
+      {modal}
     </Rnd>
   );
 }

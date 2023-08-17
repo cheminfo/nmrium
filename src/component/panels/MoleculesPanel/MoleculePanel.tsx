@@ -77,7 +77,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
   const [molecules, setMolecules] = useState<StateMoleculeExtended[]>([]);
 
   const dispatch = useDispatch();
-  const openMoleculeEditor = useMoleculeEditor();
+  const { modal, openMoleculeEditor } = useMoleculeEditor();
 
   const {
     currentDiaIDsToHighlight,
@@ -191,6 +191,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
           </ResponsiveChart>
         </div>
       </div>
+      {modal}
     </div>
   );
 }
