@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrOverlay } from 'cheminfo-font';
 import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
 import { FaFileExport } from 'react-icons/fa';
@@ -17,12 +18,12 @@ import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
+import AlignSpectra from './AlignSpectra';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
 
@@ -38,6 +39,7 @@ function MultipleSpectraAnalysisPanelInner({
   showLegend,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
+  const [calibration, setCalibration] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
 
@@ -104,7 +106,14 @@ function MultipleSpectraAnalysisPanelInner({
           >
             <FaFileExport />
           </Button>
-          <AlignSpectraModal nucleus={activeTab} />
+          <Button
+            popupTitle="Spectra calibration"
+            onClick={() => {
+              setCalibration((value) => !value);
+            }}
+          >
+            <SvgNmrOverlay style={{ fontSize: '18px' }} />
+          </Button>
           <ToggleButton
             popupTitle="Y spectra tracker"
             popupPlacement="right"
@@ -123,18 +132,23 @@ function MultipleSpectraAnalysisPanelInner({
         />
       )}
       <div className="inner-container">
-        {!isFlipped ? (
-          <MultipleSpectraAnalysisTable
-            data={spectraAnalysis}
-            resortSpectra={preferences.analysisOptions.resortSpectra}
-            activeTab={activeTab}
-          />
-        ) : (
+        {isFlipped ? (
           <MultipleSpectraAnalysisPreferences
             data={spectraAnalysis}
             activeTab={activeTab}
             onAfterSave={afterSaveHandler}
             ref={settingRef}
+          />
+        ) : calibration ? (
+          <AlignSpectra
+            nucleus={activeTab}
+            onClose={() => setCalibration(false)}
+          />
+        ) : (
+          <MultipleSpectraAnalysisTable
+            data={spectraAnalysis}
+            resortSpectra={preferences.analysisOptions.resortSpectra}
+            activeTab={activeTab}
           />
         )}
       </div>
