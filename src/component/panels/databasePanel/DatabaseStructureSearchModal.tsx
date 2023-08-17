@@ -4,7 +4,6 @@ import { StructureEditor } from 'react-ocl/full';
 import { Modal, useOnOff } from 'react-science/ui';
 
 import Button from '../../elements/Button';
-import { ModalStyles } from '../../modal/ModalStyle';
 
 interface DatabaseStructureSearchModalProps {
   onChange: (idCode: string) => void;
@@ -49,29 +48,25 @@ export function DatabaseStructureSearchModal({
         }}
         maxWidth={1000}
       >
-        <div css={ModalStyles}>
-          <Modal.Header>
-            <div
-              className="header handle"
-              style={{
-                padding: '0',
-                margin: '0 30%',
-                width: '40%',
-              }}
-            >
-              <span>Search by structure</span>
-            </div>
-          </Modal.Header>
-
-          <div className="main-content">
-            <StructureEditor
-              initialIDCode={idCode}
-              svgMenu
-              fragment
-              onChange={(molFile, molecule, idCode) => onChange(idCode)}
-            />
+        <Modal.Header>
+          <div
+            style={{
+              color: 'rgb(0, 93, 158)',
+              width: '100%',
+              textAlign: 'center',
+            }}
+          >
+            <span>Search by structure</span>
           </div>
-        </div>
+        </Modal.Header>
+        <Modal.Body>
+          <StructureEditor
+            initialIDCode={idCode}
+            svgMenu
+            fragment
+            onChange={(molFile, molecule, idCode) => onChange(idCode)}
+          />
+        </Modal.Body>
       </Modal>
     </>
   );
