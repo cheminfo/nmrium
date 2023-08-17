@@ -47,6 +47,8 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       zoom: false,
       peakPicking: false,
       autoRangeAndZonePicking: false,
+      fftDimension1: false,
+      fftDimension2: false,
     },
   },
 

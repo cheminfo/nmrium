@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NMRium from '../../component/NMRium';
+import { NMRium } from '../../component/main';
 
 export default function SingleView(props) {
   const [data, setData] = useState<

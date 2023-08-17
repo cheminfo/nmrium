@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import NMRium, { NMRiumData } from '../../component/NMRium';
+import { NMRium, NMRiumData } from '../../component/main';
 
 const answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 

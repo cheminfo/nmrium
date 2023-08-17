@@ -23,7 +23,7 @@ function SlicingView() {
   const activeSpectrum = useActiveSpectrum();
 
   const chart2d = useMemo(() => {
-    if (position && activeSpectrum && activeSpectrum.id) {
+    if (position && activeSpectrum?.id) {
       const { x, y } = position;
       const scale2dX = get2DXScale({ margin, width, xDomain });
       const scale2dY = get2DYScale({ margin, height, yDomain });

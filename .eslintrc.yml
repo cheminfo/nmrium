@@ -27,5 +27,10 @@ rules:
     - error
     - ignore:
         - 'css'
+  react/forbid-dom-props:
+    - error
+    - forbid:
+        - propName: data-test-id
+          message: Use data-testid instead (testing framework standard)
 parserOptions:
   sourceType: module

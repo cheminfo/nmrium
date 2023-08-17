@@ -75,16 +75,16 @@ const styles = css`
 `;
 
 interface HeaderInnerProps {
-  onMaximize?: () => void;
-  isFullscreen: boolean;
+  onEnableFullscreen: () => void;
+  isFullscreenEnabled: boolean;
   selectedOptionPanel: string | null;
   height: number;
 }
 
 function HeaderInner(props: HeaderInnerProps) {
   const {
-    isFullscreen,
-    onMaximize = () => null,
+    isFullscreenEnabled,
+    onEnableFullscreen,
     selectedOptionPanel,
     height,
   } = props;
@@ -187,10 +187,10 @@ function HeaderInner(props: HeaderInnerProps) {
                 <GeneralSettingsModal height={height / 2} />
               )}
 
-              {!isFullscreen && (
+              {!isFullscreenEnabled && (
                 <Toolbar.Item
                   id="full-screen"
-                  onClick={onMaximize}
+                  onClick={onEnableFullscreen}
                   title="Full Screen"
                   className="windowButton"
                 >
@@ -239,7 +239,13 @@ function SaveButton() {
 
 const MemoizedHeader = memo(HeaderInner);
 
-export default function HeaderWrapper({ isFullscreen, onMaximize }) {
+export default function HeaderWrapper({
+  isFullscreenEnabled,
+  onEnableFullscreen,
+}: {
+  isFullscreenEnabled: HeaderInnerProps['isFullscreenEnabled'];
+  onEnableFullscreen: HeaderInnerProps['onEnableFullscreen'];
+}) {
   const {
     toolOptions: { selectedOptionPanel },
     height,
@@ -248,8 +254,8 @@ export default function HeaderWrapper({ isFullscreen, onMaximize }) {
     <MemoizedHeader
       {...{
         selectedOptionPanel,
-        isFullscreen,
-        onMaximize,
+        isFullscreenEnabled,
+        onEnableFullscreen,
         height,
       }}
     />

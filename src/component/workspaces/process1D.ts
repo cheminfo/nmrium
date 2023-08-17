@@ -32,6 +32,8 @@ export const process1D: InnerWorkspace = {
       exclusionZones: true,
       multipleSpectraAnalysis: true,
       autoRangeAndZonePicking: true,
+      fftDimension1: true,
+      fftDimension2: true,
     },
   },
 };

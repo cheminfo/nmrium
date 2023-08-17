@@ -3,6 +3,13 @@ import { InnerWorkspace } from 'nmr-load-save';
 export const prediction: InnerWorkspace = {
   version: 1,
   label: 'Prediction',
+  general: {
+    dimmedSpectraOpacity: 0.5,
+    verticalSplitterPosition: '440px',
+    verticalSplitterCloseThreshold: 600,
+    spectraRendering: 'auto',
+    loggingLevel: 'info',
+  },
   display: {
     panels: {
       spectraPanel: { display: true },
@@ -30,6 +37,8 @@ export const prediction: InnerWorkspace = {
       zoomOut: true,
       zoom: true,
       autoRangeAndZonePicking: true,
+      fftDimension1: true,
+      fftDimension2: true,
     },
   },
   formatting: {

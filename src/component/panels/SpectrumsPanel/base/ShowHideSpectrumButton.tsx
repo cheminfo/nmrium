@@ -64,7 +64,7 @@ function DisplayButtons1D(props: ShowHideSpectrumButtonProps) {
 
   return (
     <button
-      data-test-id="hide-show-spectrum-button"
+      data-testid="hide-show-spectrum-button"
       style={buttonStyle}
       type="button"
       onClick={(e) => {

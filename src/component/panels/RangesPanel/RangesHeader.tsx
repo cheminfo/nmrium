@@ -18,7 +18,9 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { getNumberOfDecimals } from '../../utility/formatNumber';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 
 const style = css`
   .btn {
@@ -64,21 +66,6 @@ function RangesHeader({
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
     modal.close();
-  }
-
-  function showChangeRangesSumModal() {
-    modal.show(
-      <ChangeSumModal
-        onClose={() => modal.close()}
-        onSave={changeRangesSumHandler}
-        header={
-          currentSum
-            ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
-            : 'Set new Ranges Sum'
-        }
-        sumOptions={ranges?.options}
-      />,
-    );
   }
 
   function removeAssignments() {
@@ -164,19 +151,21 @@ function RangesHeader({
   }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
-
+  const counter = ranges?.values?.length || 0;
   return (
     <div css={style}>
       <DefaultPanelHeader
-        counter={ranges?.values?.length || 0}
+        counter={counter}
+        counterLabel={createFilterLabel(
+          counter,
+          isFilterActive && filterCounter,
+        )}
         onDelete={handleDeleteAll}
         deleteToolTip="Delete All Ranges"
         onFilter={onFilterActivated}
         filterToolTip={
           isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
-        filterIsActive={isFilterActive}
-        counterFiltered={filterCounter}
         showSettingButton
         onSettingClick={onSettingClick}
       >
@@ -189,18 +178,26 @@ function RangesHeader({
         >
           <FaFileExport />
         </Button>
-        <Button
-          popupTitle={
-            currentSum
-              ? `Change ranges sum (${Number(currentSum).toFixed(2)})`
-              : 'Change ranges sum'
-          }
-          popupPlacement="right"
-          onClick={showChangeRangesSumModal}
-          className="btn icon"
-        >
-          <SvgNmrSum />
-        </Button>
+        <ChangeSumModal
+          onSave={changeRangesSumHandler}
+          sumType="ranges"
+          currentSum={currentSum}
+          sumOptions={ranges?.options}
+          renderButton={(onClick) => (
+            <Button
+              popupTitle={
+                currentSum
+                  ? `Change ranges sum (${currentSum.toFixed(2)})`
+                  : 'Change ranges sum'
+              }
+              popupPlacement="right"
+              className="btn icon"
+              onClick={onClick}
+            >
+              <SvgNmrSum />
+            </Button>
+          )}
+        />
         <Button
           popupTitle="Remove all assignments"
           popupPlacement="right"
@@ -246,7 +243,7 @@ function RangesHeader({
 
         <ActiveButton
           className="icon"
-          popupTitle="Fix integral values"
+          popupTitle="Fixed integration sum"
           popupPlacement="right"
           onClick={changeSumConstantFlagHandler}
           value={ranges?.options?.isSumConstant}

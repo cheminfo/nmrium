@@ -8,7 +8,7 @@ import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight/index';
-import { options } from '../../toolbar/ToolTypes';
+import { useResizerStatus } from '../../hooks/useResizerStatus';
 
 import { IntegralIndicator } from './IntegralIndicator';
 
@@ -51,11 +51,7 @@ function IntegralResizable({
   integralData,
   integralFormat,
 }: IntegralResizableProps) {
-  const {
-    height,
-    margin,
-    toolOptions: { selectedTool },
-  } = useChartData();
+  const { height, margin } = useChartData();
   const { viewerRef } = useGlobal();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
@@ -83,6 +79,8 @@ function IntegralResizable({
 
   const bottom = height - margin.bottom;
 
+  const isResizeingActive = useResizerStatus('integral');
+
   return (
     <g
       onMouseEnter={() => highlight.show()}
@@ -94,7 +92,7 @@ function IntegralResizable({
         onEnd={handleOnStopResizing}
         parentElement={viewerRef}
         key={`${id}_${to}_${from}`}
-        disabled={selectedTool !== options.integral.id}
+        disabled={!isResizeingActive}
       >
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;

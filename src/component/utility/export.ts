@@ -237,6 +237,13 @@ function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   return { blob, width, height };
 }
 
+function getMatrix(element) {
+  const transform = window
+    .getComputedStyle(element)
+    .getPropertyValue('transform');
+  return new DOMMatrix(transform);
+}
+
 function getMoleculesElement(rootRef) {
   const nmriumViewer: any = (rootRef.getRootNode() as Document).querySelector(
     `#nmrium-viewer`,
@@ -245,10 +252,7 @@ function getMoleculesElement(rootRef) {
   const floatingMoleculesGroup = document.createElement('g');
 
   for (const element of nmriumViewer.querySelectorAll('.draggable-molecule')) {
-    const transform = window
-      .getComputedStyle(element)
-      .getPropertyValue('transform');
-    const matrix = new DOMMatrix(transform);
+    const matrix = getMatrix(element);
     const actionHeaderElement = element.querySelector(
       '.float-molecule-actions',
     );

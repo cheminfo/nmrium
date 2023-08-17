@@ -14,7 +14,7 @@ async function addRange(
     startX,
     endX,
   });
-  await expect(nmrium.page.locator(`data-test-id=range`)).toHaveCount(count);
+  await expect(nmrium.page.getByTestId(`range`)).toHaveCount(count);
 }
 
 async function shiftSignal(nmrium: NmriumPage) {
@@ -32,9 +32,11 @@ async function shiftSignal(nmrium: NmriumPage) {
 }
 
 async function resizeRange(nmrium: NmriumPage) {
-  const rightResizer = nmrium.page.locator(
-    'data-test-id=range >> nth=0 >> _react=SVGResizerHandle >> nth=1',
-  );
+  const rightResizer = nmrium.page
+    .getByTestId('range')
+    .nth(0)
+    .locator('_react=SVGResizerHandle')
+    .nth(1);
 
   const {
     x,
@@ -53,9 +55,11 @@ async function resizeRange(nmrium: NmriumPage) {
   });
   await nmrium.page.mouse.up();
 
-  const greenArea = nmrium.page.locator(
-    'data-test-id=range >> nth=0 >> rect >> nth=0',
-  );
+  const greenArea = nmrium.page
+    .getByTestId('range')
+    .nth(0)
+    .locator('rect')
+    .nth(0);
 
   const { width } = (await greenArea.boundingBox()) as BoundingBox;
 
@@ -67,7 +71,7 @@ async function deleteRange(nmrium: NmriumPage) {
   const rangeLocator = nmrium.page.locator('_react=Range >> nth=0 ');
   await rangeLocator.hover();
   await nmrium.page.keyboard.press('Delete');
-  await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(1);
+  await expect(nmrium.page.getByTestId('range')).toHaveCount(1);
 }
 
 test('Should ranges Add/resize/delete', async ({ page }) => {
@@ -109,9 +113,9 @@ test('Automatic ranges detection should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('text=Auto ranges picking');
 
-  expect(
-    await nmrium.page.locator('data-test-id=range').count(),
-  ).toBeGreaterThanOrEqual(10);
+  expect(await nmrium.page.getByTestId('range').count()).toBeGreaterThanOrEqual(
+    10,
+  );
   const ranges = nmrium.page.locator(
     '_react=RangesTable >> _react=RangesTableRow',
   );
@@ -130,6 +134,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await expect(range).toContainText(r);
   }
 });
+
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -188,6 +193,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     ).toBeVisible();
   });
 });
+
 test('Range state', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -274,6 +280,7 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
   });
 });
+
 test('Auto peak picking on all spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -303,7 +310,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
     //open ranges panel
     await nmrium.clickPanel('Ranges');
-    await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(16);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(16);
     await expect(
       nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
     ).toContainText('[ 16 ]');
@@ -312,7 +319,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
   await test.step("Check 13C spectrum's ranges", async () => {
     // switch to 13C tab.
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="13C"]');
-    await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(15);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(15);
     await expect(
       nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
@@ -348,5 +355,98 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 44 ]');
+  });
+});
+
+test('2D spectra reference change', async ({ page }) => {
+  const xAxisDefault = [1, 2, 3, 4, 5, 6, 7, 8];
+  const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+    await expect(nmrium.page.locator('.x')).toContainText(
+      xAxisDefault.join(''),
+    );
+    await expect(nmrium.page.locator('.y')).toContainText(
+      yAxisDefault.join(''),
+    );
+  });
+
+  await test.step('Auto zone picking', async () => {
+    await nmrium.clickTool('zonePicking');
+    await nmrium.page.click('text=Auto Zones Picking');
+  });
+
+  await test.step("Check spectrum's zones", async () => {
+    await expect(nmrium.page.locator('.zone')).toHaveCount(15);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 15 ]');
+
+    const x = 2.9139017520509753;
+    const y = 35.65263186073236;
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
+    ).toBeVisible();
+  });
+  await test.step('Change reference', async () => {
+    const x = 1000;
+    const y = 2000;
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(x.toString());
+    await nmrium.page.keyboard.press('Enter');
+
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(y.toString());
+    await nmrium.page.keyboard.press('Enter');
+
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
+    ).toBeVisible();
+
+    const xShift = 997;
+    const yShift = 1960;
+    const newXAxis = xAxisDefault.map((n) => n + xShift);
+    const newYAxis = yAxisDefault.map((n) => n + yShift);
+    await expect(nmrium.page.locator('.x')).toContainText(newXAxis.join(''));
+    await expect(nmrium.page.locator('.y')).toContainText(newYAxis.join(''));
   });
 });

@@ -6,7 +6,6 @@ import { DatabaseActions } from '../reducer/actions/DatabaseActions';
 import { DimensionsActions } from '../reducer/actions/DimensionsActions';
 import { DomainActions } from '../reducer/actions/DomainActions';
 import { FiltersActions } from '../reducer/actions/FiltersActions';
-import { GlobalActions } from '../reducer/actions/GlobalActions';
 import { IntegralsActions } from '../reducer/actions/IntegralsActions';
 import { LoadActions } from '../reducer/actions/LoadActions';
 import { MoleculeActions } from '../reducer/actions/MoleculeActions';
@@ -23,7 +22,6 @@ export type Action =
   | ToolsActions
   | SpectrumActions
   | SpectraAnalysisActions
-  | GlobalActions
   | LoadActions
   | IntegralsActions
   | RangesActions

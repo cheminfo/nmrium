@@ -94,7 +94,10 @@ export default function PredictionPanel() {
         );
 
         try {
-          const data = await predictSpectra(molfile);
+          const data = await predictSpectra(
+            molfile,
+            predictionPreferences.spectra,
+          );
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {

@@ -4,11 +4,11 @@ import { CustomWorkspaces } from 'nmr-load-save';
 import { CSSProperties } from 'react';
 import { FaLink, FaPlus, FaTimes } from 'react-icons/fa';
 
-import { NMRiumWorkspace } from '../../../NMRium';
 import Button from '../../../elements/Button';
 import { GroupPane } from '../../../elements/GroupPane';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import FormikInput from '../../../elements/formik/FormikInput';
+import type { NMRiumWorkspace } from '../../../main';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument';
 

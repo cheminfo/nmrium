@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { WebSource as Source } from 'filelist-utils';
-import { Draft, produce } from 'immer';
+import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
 import { Spectrum, ViewState } from 'nmr-load-save';
 import { ApodizationOptions, BaselineCorrectionZone } from 'nmr-processing';
@@ -18,7 +18,6 @@ import * as DatabaseActions from './actions/DatabaseActions';
 import * as DimensionsActions from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import * as FiltersActions from './actions/FiltersActions';
-import * as GlobalActions from './actions/GlobalActions';
 import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
 import * as MoleculeActions from './actions/MoleculeActions';
@@ -116,7 +115,6 @@ export const getInitialState = (): State => ({
   zoom: {
     history: {} as ZoomHistory,
   },
-  overDisplayer: false,
   toolOptions: {
     selectedTool: 'zoom',
     selectedOptionPanel: null,
@@ -277,13 +275,6 @@ export interface State {
   };
 
   /**
-   * boolean indicator to check if the mouse over the displayer or not
-   * value change to true once the mouse come over the displayer and vice versa true once the mouse out of the displayer
-   * @default false
-   */
-  overDisplayer: boolean;
-
-  /**
    * Basic options for the tools
    */
   toolOptions: {
@@ -382,6 +373,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return PeaksActions.handleChangePeakShape(draft, action);
       case 'TOGGLE_PEAKS_VIEW_PROPERTY':
         return PeaksActions.handleTogglePeaksViewProperty(draft, action);
+      case 'TOGGLE_PEAKS_DISPLAYING_MODE':
+        return PeaksActions.handleChangePeaksDisplayingMode(draft);
       case 'ADD_INTEGRAL':
         return IntegralsActions.handleAddIntegral(draft, action);
       case 'DELETE_INTEGRAL':
@@ -398,6 +391,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'CUT_INTEGRAL':
+        return IntegralsActions.handleCutIntegral(draft, action);
 
       case 'SET_X_DOMAIN':
         return DomainActions.handleSetXDomain(draft, action);
@@ -421,6 +416,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleCalculateZeroFillingFilter(draft, action);
       case 'APPLY_FFT_FILTER':
         return FiltersActions.handleApplyFFTFilter(draft);
+      case 'APPLY_FFT_DIMENSION_1_FILTER':
+        return FiltersActions.handleApplyFFtDimension1Filter(draft);
+      case 'APPLY_FFT_DIMENSION_2_FILTER':
+        return FiltersActions.handleApplyFFtDimension2Filter(draft);
       case 'APPLY_MANUAL_PHASE_CORRECTION_FILTER':
         return FiltersActions.handleApplyManualPhaseCorrectionFilter(
           draft,
@@ -595,6 +594,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleAutoSpectraRangesDetection(draft);
       case 'SHOW_J_GRAPH':
         return RangesActions.handleShowJGraph(draft, action);
+      case 'CUT_RANGE':
+        return RangesActions.handleCutRange(draft, action);
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);
@@ -643,17 +644,32 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
 
-      case 'SET_MOUSE_OVER_DISPLAYER':
-        return GlobalActions.handleSetIsOverDisplayer(draft, action);
-
       default:
     }
   } catch (error: any) {
     draft.errorAction = error;
-    error.data = { action };
+    error.data = { action, state: getDebugState(draft) };
     reportError(error);
   }
 }
 
 export const spectrumReducer: Reducer<State, Action> =
   produce(innerSpectrumReducer);
+
+function getDebugState(draft) {
+  const state = original(draft);
+  const string = JSON.stringify(state, (key, value) => {
+    if (ArrayBuffer.isView(value)) {
+      return Array.from(value as any).slice(0, 20);
+    }
+    if (Array.isArray(value) && typeof value[0] === 'number') {
+      return value.slice(0, 20);
+    }
+    return value;
+  });
+  if (string.length > 800000) {
+    // fallback, better to have something as a string t han nothing
+    return string.slice(0, 800000);
+  }
+  return JSON.parse(string);
+}

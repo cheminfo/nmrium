@@ -112,7 +112,7 @@ function ContoursPaths({
   return (
     <path
       fill="none"
-      data-test-id="spectrum-line"
+      data-testid="spectrum-line"
       stroke={color}
       strokeWidth="1"
       opacity={opacity}

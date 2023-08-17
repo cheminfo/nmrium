@@ -125,6 +125,10 @@
         "title": "Bruker Directory without expno level"
       },
       {
+        "file": "./data/brukerFolders/cosyAndHsqcFid.json",
+        "title": "Bruker Directory 2D FIDs"
+      },
+      {
         "file": "./data/cytisine/1H_Cytisin_linkJcamp.json",
         "title": "FileCollection with link to jcamp"
       },
@@ -135,6 +139,10 @@
       {
         "file": "./data/aspirin/aspirin_bruker_files.json",
         "title": "FileCollection with bruker folder"
+      },
+      {
+        "file": "./data/aspirin/aspirin_filecollection_with_integrals.json",
+        "title": "FileCollection with integrals"
       },
       {
         "file": "./data/50-78-2/linked-jcamp.json",
