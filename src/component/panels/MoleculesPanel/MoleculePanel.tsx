@@ -16,7 +16,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import NextPrev from '../../elements/NextPrev';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+import { DisplayerMode } from '../../reducer/Reducer';
 
 import MoleculeHeader from './MoleculeHeader';
 import MoleculePanelHeader from './MoleculePanelHeader';
@@ -61,7 +61,7 @@ interface MoleculePanelInnerProps {
   molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
   activeTab: string;
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
 }
 
 function MoleculePanelInner(props: MoleculePanelInnerProps) {

@@ -1,15 +1,14 @@
 import { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { Filters } from 'nmr-processing';
-
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
+import { DisplayerMode } from '../reducer/Reducer';
 
 type InfoKey = keyof Info1D | keyof Info2D;
 
 export interface ToolOptionItem {
   id: string;
   label: string;
-  mode?: DISPLAYER_MODE;
+  mode?: DisplayerMode;
   spectraOptions?: Array<
     | {
         info?: Array<{ key: InfoKey; value: any }>; // check if the active spectrum has these info
@@ -47,7 +46,7 @@ export const options: RecordOptions = {
     label: 'Peaks picking',
     hasOptionPanel: true,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -61,7 +60,7 @@ export const options: RecordOptions = {
     label: 'Integral Tool',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -75,7 +74,7 @@ export const options: RecordOptions = {
     label: 'Zone tool',
     hasOptionPanel: true,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_2D,
+    mode: '2D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -89,7 +88,7 @@ export const options: RecordOptions = {
     label: 'Slicing tool',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_2D,
+    mode: '2D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -103,7 +102,7 @@ export const options: RecordOptions = {
     label: 'Move spectrum horizontally',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -117,7 +116,7 @@ export const options: RecordOptions = {
     label: 'Equalizer tool',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -131,7 +130,7 @@ export const options: RecordOptions = {
     label: 'Range picking and multiplet analysis',
     hasOptionPanel: true,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -145,7 +144,7 @@ export const options: RecordOptions = {
     label: Filters.apodization.name,
     hasOptionPanel: true,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [
@@ -162,7 +161,7 @@ export const options: RecordOptions = {
     label: Filters.zeroFilling.name,
     hasOptionPanel: true,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [
@@ -179,7 +178,7 @@ export const options: RecordOptions = {
     label: Filters.phaseCorrection.name,
     hasOptionPanel: true,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [
@@ -196,7 +195,7 @@ export const options: RecordOptions = {
     label: Filters.baselineCorrection.name,
     hasOptionPanel: true,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -210,7 +209,7 @@ export const options: RecordOptions = {
     label: 'range general selector',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -225,7 +224,7 @@ export const options: RecordOptions = {
     label: 'edit range',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -240,7 +239,7 @@ export const options: RecordOptions = {
     label: 'Multiple spectra analysis',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -257,7 +256,7 @@ export const options: RecordOptions = {
     label: 'Exclusion zones',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -274,7 +273,7 @@ export const options: RecordOptions = {
     label: 'Matrix generations exclusion zones',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -291,7 +290,7 @@ export const options: RecordOptions = {
     label: 'Filter database',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],
@@ -312,7 +311,7 @@ export const options: RecordOptions = {
     label: 'Fourier transform',
     hasOptionPanel: false,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [
@@ -329,7 +328,7 @@ export const options: RecordOptions = {
     label: 'Fourier transform dimension 1',
     hasOptionPanel: false,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_2D,
+    mode: '2D',
     spectraOptions: [
       {
         info: [
@@ -347,7 +346,7 @@ export const options: RecordOptions = {
     label: 'Fourier transform dimension 2',
     hasOptionPanel: false,
     isFilter: true,
-    mode: DISPLAYER_MODE.DM_2D,
+    mode: '2D',
     spectraOptions: [
       {
         info: [
@@ -372,7 +371,7 @@ export const options: RecordOptions = {
     label: 'Real / Imaginary',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isComplex', value: true }],
@@ -386,7 +385,7 @@ export const options: RecordOptions = {
     label: 'Align spectrum',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     isToggle: false,
   },
   spectraStackAlignments: {
@@ -394,7 +393,7 @@ export const options: RecordOptions = {
     label: 'Stack spectra',
     hasOptionPanel: false,
     isFilter: false,
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
     spectraOptions: [
       {
         info: [{ key: 'isFt', value: true }],

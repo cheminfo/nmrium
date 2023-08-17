@@ -12,7 +12,7 @@ import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { rangeStateInit, State } from '../Reducer';
-import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
+import { MARGIN } from '../core/Constants';
 import {
   setZoom,
   wheelZoom,
@@ -283,7 +283,7 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 }
 
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
-  const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
+  const is2D = draft.displayerMode === '2D';
 
   const { height, margin, yDomain, yDomains, width, xDomains, xDomain, mode } =
     draft;
@@ -337,7 +337,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
 
   const activeSpectra = getActiveSpectra(draft);
 
-  if (displayerMode === DISPLAYER_MODE.DM_2D) {
+  if (displayerMode === '2D') {
     const index =
       trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
     if (index !== null) {
@@ -388,7 +388,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
       { xDomain, yDomain },
     );
 
-    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    if (draft.displayerMode === '1D') {
       switch (zoomType) {
         case ZOOM_TYPES.HORIZONTAL: {
           draft.xDomain = xDomain;
@@ -454,12 +454,12 @@ function setMargin(draft: Draft<State>) {
     (activeSpectrum?.id && draft.data[activeSpectrum.index]) || null;
 
   if (
-    draft.displayerMode === DISPLAYER_MODE.DM_2D &&
+    draft.displayerMode === '2D' &&
     (draft.toolOptions.selectedTool === Tools.slicing.id ||
       spectrum?.info.isFid)
   ) {
     draft.margin = MARGIN['2D'];
-  } else if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+  } else if (draft.displayerMode === '2D') {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
       : MARGIN['1D'].top;
@@ -467,7 +467,7 @@ function setMargin(draft: Draft<State>) {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+  } else if (draft.displayerMode === '1D') {
     draft.margin = MARGIN['1D'];
   }
 }
@@ -476,8 +476,8 @@ function setMargin(draft: Draft<State>) {
 function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
     data && (data as Spectrum[]).some((d) => d.info.dimension === 2)
-      ? DISPLAYER_MODE.DM_2D
-      : DISPLAYER_MODE.DM_1D;
+      ? '2D'
+      : '1D';
 }
 
 //utility
@@ -625,7 +625,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
 }
 
 function setSpectraSameTopHandler(draft: Draft<State>) {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+  if (draft.displayerMode === '1D') {
     draft.originDomain.shareYDomain = false;
     setZoom(draft, { scale: 0.8 });
   }

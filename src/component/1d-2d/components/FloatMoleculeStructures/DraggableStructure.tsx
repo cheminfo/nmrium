@@ -15,7 +15,7 @@ import { useDispatch } from '../../../context/DispatchContext';
 import { useGlobal } from '../../../context/GlobalContext';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment';
-import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
+import { DisplayerMode } from '../../../reducer/Reducer';
 
 import ActionsButton from './ActionsButton';
 
@@ -25,7 +25,7 @@ interface DraggableStructureProps {
   molecule: StateMoleculeExtended;
   moleculeView: MoleculeView;
   activeTab: string;
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
   index?: number;
 }
 

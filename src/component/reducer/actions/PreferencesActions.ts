@@ -4,7 +4,6 @@ import { Spectrum1D } from 'nmr-load-save';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';
-import { DISPLAYER_MODE } from '../core/Constants';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
 
@@ -146,7 +145,7 @@ function handleApplyKeyPreferences(
     draft.originDomain = preferences.originDomain;
     draft.yDomains = preferences.yDomains;
 
-    if (draft.displayerMode !== DISPLAYER_MODE.DM_2D) {
+    if (draft.displayerMode !== '2D') {
       draft.zoom = preferences.zoom;
     }
   }
