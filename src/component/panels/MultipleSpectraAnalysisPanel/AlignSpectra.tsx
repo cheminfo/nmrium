@@ -1,15 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Formik } from 'formik';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { useEffect, useState } from 'react';
+import * as Yup from 'yup';
 
 import { REFERENCES } from '../../../data/constants/References';
+import { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
+import Message from '../../elements/Message';
 import Select from '../../elements/Select';
 import FormikInput from '../../elements/formik/FormikInput';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import Events from '../../utility/Events';
 
 const labelStyle: LabelStyle = {
@@ -31,41 +37,83 @@ interface AlignSpectraProps {
   onClose: () => void;
 }
 
+const DEFAULT_OPTIONS: CalibrateOptions = {
+  from: -1,
+  to: 1,
+  nbPeaks: 1,
+  targetX: 0,
+};
+
+const schemaValidation = Yup.object({
+  from: Yup.number().required(),
+  to: Yup.number().required(),
+  nbPeaks: Yup.number().required(),
+  targetX: Yup.number().required(),
+});
+
+function checkSpectra(options: CalibrateOptions, spectra: Spectrum1D[]) {
+  const { from, to } = options;
+  for (const spectrum of spectra) {
+    const {
+      data: { x },
+    } = spectrum;
+    const min = x[0];
+    const max = x.at(-1) as number;
+    if (from < min || to > max) {
+      throw new Error('Some spectra do not have data in the selected range');
+    }
+    if (Math.abs(xFindClosestIndex(x, from) - xFindClosestIndex(x, to)) < 10) {
+      throw new Error(
+        'The selected range is too small to provide accurate results',
+      );
+    }
+  }
+}
+
+function checkOptions(options: CalibrateOptions) {
+  const returnedOptions = { ...options };
+  if (options.from > options.to) {
+    returnedOptions.to = options.from;
+    returnedOptions.from = options.to;
+  }
+  return returnedOptions;
+}
+
+function getList(nucleus) {
+  if (!REFERENCES?.[nucleus]) {
+    return [];
+  }
+  const list = Object.entries(REFERENCES[nucleus]).map((item) => ({
+    value: item[0],
+    label: item[0],
+  }));
+
+  return baseList.concat(list as any);
+}
+
 function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
-  const refForm = useRef<any>();
+  const spectra = useSpectraByActiveNucleus();
   const dispatch = useDispatch();
-  const List = useMemo(() => {
-    const list = REFERENCES[nucleus]
-      ? Object.entries(REFERENCES[nucleus]).map((item) => ({
-          value: item[0],
-          label: item[0],
-        }))
-      : [];
+  const [options, setOptions] = useState<CalibrateOptions>(DEFAULT_OPTIONS);
+  const [error, setError] = useState<string>('');
+  function submitHandler(inputOptions) {
+    const options = checkOptions(inputOptions);
+    setOptions(options);
+    try {
+      checkSpectra(options, spectra as Spectrum1D[]);
 
-    return baseList.concat(list as any);
-  }, [nucleus]);
-
-  useEffect(() => {
-    dispatch({ type: 'RESET_SELECTED_TOOL' });
-  }, [dispatch]);
-
-  const handleSave = useCallback(() => {
-    refForm.current.submitForm();
-    onClose();
-  }, [onClose]);
-
-  const submitHandler = useCallback(
-    (values) => {
-      dispatch({ type: 'ALIGN_SPECTRA', payload: values });
+      dispatch({ type: 'ALIGN_SPECTRA', payload: options });
       onClose();
-    },
-    [dispatch, onClose],
-  );
+    } catch (error: unknown) {
+      const message = (error as Error).message;
+      setError(message);
+    }
+  }
 
   useEffect(() => {
     function handler(event: any) {
       const [from, to] = event.range;
-      refForm.current.setValues({ ...refForm.current.values, from, to });
+      setOptions((prevOptions) => ({ ...prevOptions, from, to }));
     }
 
     Events.on('brushEnd', handler);
@@ -75,18 +123,19 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
     };
   }, []);
 
-  const optionChangeHandler = useCallback(
-    (id) => {
-      const value = REFERENCES[nucleus][id];
-      const { delta = 0, ...resValues } = value || { delta: 0 };
-      refForm.current.setValues({
-        ...refForm.current.values,
-        targetX: delta,
-        ...resValues,
-      });
-    },
-    [nucleus],
-  );
+  function optionChangeHandler(key) {
+    const { delta: targetX = 0, ...otherOptions } =
+      REFERENCES?.[nucleus]?.[key] || {};
+    const value = {
+      ...DEFAULT_OPTIONS,
+      targetX,
+      ...otherOptions,
+    };
+
+    setOptions(value);
+    setError('');
+  }
+  const List = getList(nucleus);
 
   const styles = css`
     max-height: 100%;
@@ -117,44 +166,62 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
           <span>Spectra calibration</span>
         </div>
         <Formik
-          innerRef={refForm}
-          initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
+          initialValues={options}
+          enableReinitialize
           onSubmit={submitHandler}
+          validationSchema={schemaValidation}
+          validate={() => setError('')}
         >
-          <>
-            <Label title="Options" style={labelStyle}>
-              <Select
-                items={List}
-                style={{ width: '100%', height: 30 }}
-                onChange={optionChangeHandler}
-              />
-            </Label>
+          {({ submitForm }) => (
+            <>
+              <div
+                className="inner-content"
+                style={{ flex: 1, minHeight: '220px' }}
+              >
+                {error && <Message type="error">{error}</Message>}
+                <Label title="Options" style={labelStyle}>
+                  <Select
+                    items={List}
+                    style={{ width: '100%', height: 30 }}
+                    onChange={optionChangeHandler}
+                  />
+                </Label>
 
-            <Label title="Range" style={labelStyle}>
-              <Label title="From">
-                <FormikInput name="from" type="number" style={inputStyle} />
-              </Label>
-              <Label title="To" style={{ label: { padding: '0 10px' } }}>
-                <FormikInput name="to" type="number" style={inputStyle} />
-              </Label>
-            </Label>
+                <Label title="Range" style={labelStyle}>
+                  <Label title="From">
+                    <FormikInput name="from" type="number" style={inputStyle} />
+                  </Label>
+                  <Label title="To" style={{ label: { padding: '0 10px' } }}>
+                    <FormikInput name="to" type="number" style={inputStyle} />
+                  </Label>
+                </Label>
 
-            <Label title="Number of Peaks" style={labelStyle}>
-              <FormikInput name="nbPeaks" type="number" style={inputStyle} />
-            </Label>
-            <Label title="Target PPM" style={labelStyle}>
-              <FormikInput name="targetX" type="number" style={inputStyle} />
-            </Label>
-          </>
+                <Label title="Number of Peaks" style={labelStyle}>
+                  <FormikInput
+                    name="nbPeaks"
+                    type="number"
+                    style={inputStyle}
+                  />
+                </Label>
+                <Label title="Target PPM" style={labelStyle}>
+                  <FormikInput
+                    name="targetX"
+                    type="number"
+                    style={inputStyle}
+                  />
+                </Label>
+              </div>
+              <div className="footer">
+                <Button.Done
+                  style={{ padding: '5px 14px', fontSize: 14 }}
+                  onClick={submitForm}
+                >
+                  Done
+                </Button.Done>
+              </div>
+            </>
+          )}
         </Formik>
-      </div>
-      <div className="footer">
-        <Button.Done
-          style={{ padding: '5px 14px', fontSize: 14 }}
-          onClick={handleSave}
-        >
-          Save
-        </Button.Done>
       </div>
     </div>
   );

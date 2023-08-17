@@ -155,7 +155,7 @@ export default function MultipletAnalysisModal({
       try {
         const result = analyseMultiplet(analysesProps, {
           frequency: info.originFrequency,
-          minimalResolution: 0.3,
+          minimalResolution: 0.1,
           maxTestedJ: 17,
           takeBestPartMultiplet: true,
           correctVerticalOffset: true,

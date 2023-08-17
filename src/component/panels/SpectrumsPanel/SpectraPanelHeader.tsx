@@ -15,8 +15,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
-import { ActiveSpectrum } from '../../reducer/Reducer';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+import { ActiveSpectrum, DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
@@ -42,7 +41,7 @@ interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
   activeTab: string;
   activeSpectrum: Spectrum2D | null;
   activeSpectra: ActiveSpectrum[] | null;
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
 }
 
 function SpectraPanelHeaderInner({
@@ -148,7 +147,7 @@ function SpectraPanelHeaderInner({
       >
         <FaEye />
       </Button.BarButton>
-      {displayerMode === DISPLAYER_MODE.DM_2D && activeSpectrum?.info.isFt && (
+      {displayerMode === '2D' && activeSpectrum?.info.isFt && (
         <Button.BarButton
           toolTip="Add missing projection"
           tooltipOrientation="horizontal"
@@ -157,7 +156,7 @@ function SpectraPanelHeaderInner({
           <FaCreativeCommonsSamplingPlus />
         </Button.BarButton>
       )}
-      {displayerMode === DISPLAYER_MODE.DM_1D && spectra.length > 1 && (
+      {displayerMode === '1D' && spectra.length > 1 && (
         <>
           <Button.BarButton
             tooltipOrientation="horizontal"

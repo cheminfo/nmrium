@@ -18,6 +18,7 @@ import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -29,6 +30,7 @@ import MultipleSpectraAnalysisPreferences from './preferences';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];
+  displayerMode: DisplayerMode;
   activeTab: string;
   showLegend: boolean;
 }
@@ -37,6 +39,7 @@ function MultipleSpectraAnalysisPanelInner({
   activeTab,
   spectra,
   showLegend,
+  displayerMode,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
   const [calibration, setCalibration] = useState(false);
@@ -106,23 +109,31 @@ function MultipleSpectraAnalysisPanelInner({
           >
             <FaFileExport />
           </Button>
-          <Button
-            popupTitle="Spectra calibration"
-            onClick={() => {
-              setCalibration((value) => !value);
-            }}
-          >
-            <SvgNmrOverlay style={{ fontSize: '18px' }} />
-          </Button>
-          <ToggleButton
-            popupTitle="Y spectra tracker"
-            popupPlacement="right"
-            onClick={showTrackerHandler}
-            defaultValue={showLegend}
-            key={`${showLegend}`}
-          >
-            <IoPulseOutline />
-          </ToggleButton>
+          {displayerMode === '1D' && (
+            <>
+              <Button
+                popupTitle="Spectra calibration"
+                onClick={() => {
+                  setCalibration((value) => {
+                    if (value) dispatch({ type: 'RESET_SELECTED_TOOL' });
+                    return !value;
+                  });
+                }}
+              >
+                <SvgNmrOverlay style={{ fontSize: '18px' }} />
+              </Button>
+
+              <ToggleButton
+                popupTitle="Y spectra tracker"
+                popupPlacement="right"
+                onClick={showTrackerHandler}
+                defaultValue={showLegend}
+                key={`${showLegend}`}
+              >
+                <IoPulseOutline />
+              </ToggleButton>
+            </>
+          )}
         </DefaultPanelHeader>
       )}
       {isFlipped && (
@@ -173,6 +184,7 @@ export default function MultipleSpectraAnalysisPanel() {
       spectra: { activeTab, showLegend },
     },
     displayerKey,
+    displayerMode,
   } = useChartData();
 
   const spectra = getSpectraByNucleus(activeTab, data) as Spectrum1D[];
@@ -183,7 +195,7 @@ export default function MultipleSpectraAnalysisPanel() {
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel
-      {...{ activeTab, displayerKey, spectra, showLegend }}
+      {...{ activeTab, displayerMode, displayerKey, spectra, showLegend }}
     />
   );
 }

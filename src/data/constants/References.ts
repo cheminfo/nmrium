@@ -5,7 +5,11 @@ interface ReferenceInfo {
   delta: number;
 }
 
-export const REFERENCES: Record<string, Record<string, ReferenceInfo>> = {
+export type OneHReferences = 'tms' | 'tsp' | 'glucose';
+
+export const REFERENCES:
+  | Record<'1H', Record<OneHReferences, ReferenceInfo>>
+  | Record<'13C', any> = {
   '1H': {
     tms: {
       from: -0.1,
@@ -29,9 +33,12 @@ export const REFERENCES: Record<string, Record<string, ReferenceInfo>> = {
   '13C': {},
 };
 
-export function getRange(
-  options: { nucleus?: string; reference?: string } = {},
-): ReferenceInfo {
+export interface GetRangeOptions {
+  nucleus?: string;
+  reference?: string;
+}
+
+export function getRange(options: GetRangeOptions = {}): ReferenceInfo {
   const { nucleus = '1H', reference = 'tms' } = options;
 
   if (!REFERENCES[nucleus]) {
