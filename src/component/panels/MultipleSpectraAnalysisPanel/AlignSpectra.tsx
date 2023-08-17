@@ -143,6 +143,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
     display: flex;
     flex-direction: column;
     flex: 1;
+
     .body {
       overflow: auto;
       padding: 5px 0;
@@ -153,6 +154,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
       font-size: 15;
       font-weight: bold;
     }
+
     .footer {
       display: flex;
       padding-top: 5px;
