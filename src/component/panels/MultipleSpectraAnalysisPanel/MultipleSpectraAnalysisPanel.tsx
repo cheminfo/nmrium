@@ -27,11 +27,11 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
+import { DisplayerMode } from '../../reducer/Reducer';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
   activeTab: string;
   showLegend: boolean;
 }
@@ -118,7 +118,7 @@ function MultipleSpectraAnalysisPanelInner({
           >
             <FaFileExport />
           </Button>
-          {displayerMode === DISPLAYER_MODE.DM_1D && (
+          {displayerMode === '1D' && (
             <>
               <Button
                 popupTitle="Spectra calibration"

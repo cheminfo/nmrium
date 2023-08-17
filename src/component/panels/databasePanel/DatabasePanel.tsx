@@ -35,7 +35,6 @@ import { useAlert } from '../../elements/popup/Alert';
 import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
@@ -476,7 +475,7 @@ export default function PeaksPanel() {
     data.filter((datum) => datum.enabled),
   ) as Array<Database | LocalDatabase>;
 
-  if (!activeTab || displayerMode !== DISPLAYER_MODE.DM_1D) {
+  if (!activeTab || displayerMode !== '1D') {
     return (
       <PanelNoData>
         Databases are only available when 1D experimental spectrum is displayed.

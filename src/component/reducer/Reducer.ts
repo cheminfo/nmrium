@@ -28,7 +28,6 @@ import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { DISPLAYER_MODE } from './core/Constants';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 
 export interface ActiveSpectrum {
@@ -46,6 +45,9 @@ export const zoneStateInit = {
   showSignals: true,
   showPeaks: true,
 };
+
+export type DisplayerMode = '1D' | '2D';
+
 export interface Margin {
   top: number;
   right: number;
@@ -109,7 +111,7 @@ export const getInitialState = (): State => ({
   },
   isLoading: false,
   keysPreferences: {},
-  displayerMode: DISPLAYER_MODE.DM_1D,
+  displayerMode: '1D',
   correlations: {},
   displayerKey: '',
   zoom: {
@@ -256,7 +258,7 @@ export interface State {
    * displayer mode '1D' or '2D'
    * @default '1D'
    */
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
   /**
    * unique key identifier per Displayer instance
    */

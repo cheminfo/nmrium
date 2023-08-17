@@ -7,7 +7,6 @@ import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
-import { DISPLAYER_MODE } from '../core/Constants';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
@@ -190,7 +189,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   let domain;
 
   if (draft.view.spectra.activeTab) {
-    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    if (draft.displayerMode === '1D') {
       domain = getDomain(draft);
     } else {
       domain = get2DDomain(draft);
@@ -204,7 +203,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
 
     if (updateYDomain) {
       draft.yDomain = domain.yDomain;
-      if (draft.displayerMode === DISPLAYER_MODE.DM_1D && isYDomainShared) {
+      if (draft.displayerMode === '1D' && isYDomainShared) {
         draft.yDomains = Object.fromEntries(
           Object.keys(domain.yDomains).map((key) => {
             return [key, domain.yDomain];
