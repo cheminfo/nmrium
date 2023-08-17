@@ -1,4 +1,5 @@
 import { Range, Zone } from 'nmr-processing';
+import { DiaIDAndInfo } from 'openchemlib-utils';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
@@ -14,7 +15,6 @@ import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 
 import {
-  Atom,
   AtomData,
   extractFromAtom,
   findDatumAndSignalIndex,
@@ -140,11 +140,11 @@ export default function useAtomAssignment({
   }, []);
 
   const handleOnClickAtom = useCallback(
-    (atom: Atom, event: MouseEvent) => {
+    (diaIDAndInfo: DiaIDAndInfo | undefined, event: MouseEvent) => {
       if (!checkModifierKeyActivated(event) && activeAssignment.activated) {
         const { axis, id } = activeAssignment.activated;
         if (id && axis) {
-          const atomInformation = extractFromAtom(atom, nucleus, axis);
+          const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
           if (atomInformation.nbAtoms > 0) {
             // save assignment in assignment hook
             const dimension =
@@ -226,8 +226,8 @@ export default function useAtomAssignment({
   );
 
   const handleOnAtomHover = useCallback(
-    (atom: Atom) => {
-      const { oclIDs } = extractFromAtom(atom, nucleus);
+    (diaIDAndInfo: DiaIDAndInfo | undefined) => {
+      const { oclIDs } = extractFromAtom(diaIDAndInfo, nucleus);
 
       // on enter the atom
       if (oclIDs.length > 0) {
