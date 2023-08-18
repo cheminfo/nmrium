@@ -152,7 +152,6 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
                 <FormikInput
                   name="sum"
                   type="number"
-                  nullable
                   placeholder="Enter the new value"
                   onKeyDown={handleKeyDown}
                 />

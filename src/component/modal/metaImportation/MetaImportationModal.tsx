@@ -275,7 +275,6 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                         }}
                         placeholder="Example: info.plus"
                         datalist={datalist}
-                        nullable
                         mapOnChangeValue={(key) => paths?.[key] || null}
                         mapValue={(paths) => convertPathArrayToString(paths)}
                       />
