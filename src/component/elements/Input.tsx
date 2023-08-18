@@ -43,6 +43,10 @@ const styles: Record<'input' | 'inputWrapper' | 'clearButton', CSSProperties> =
     },
   };
 
+function mapValue(value) {
+  return typeof value === 'number' && value === 0 ? value : value || '';
+}
+
 export interface InputStyle {
   input?: CSSProperties;
   inputWrapper?: CSSProperties;
@@ -83,9 +87,9 @@ const Input = forwardRef(
       ...otherProps
     } = props;
 
-    const [internalValue, setInternalValue] = useState<string>('');
+    const [internalValue, setInternalValue] =
+      useState<React.InputHTMLAttributes<HTMLInputElement>['value']>();
     const value = debounceTime ? internalValue : externalValue;
-
     const localRef = useRef<HTMLInputElement>();
     const combinedRef = useCombinedRefs([ref, localRef]);
 
@@ -105,7 +109,7 @@ const Input = forwardRef(
 
     useEffect(() => {
       if (debounceTime) {
-        setInternalValue((externalValue || '') as string);
+        setInternalValue(externalValue);
       }
     }, [debounceTime, externalValue]);
 
@@ -147,7 +151,7 @@ const Input = forwardRef(
             ...style?.input,
           }}
           type={type}
-          value={value || ''}
+          value={mapValue(value)}
           onChange={onChangeHandler}
           list={`${name || ''}-data-list`}
         />
