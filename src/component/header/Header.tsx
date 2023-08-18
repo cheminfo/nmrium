@@ -21,8 +21,8 @@ import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
 import { useSaveSettings } from '../hooks/useSaveSettings';
-import AboutUsModal from '../modal/AboutUsModal';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal';
+import AboutUsModal from '../modal/aboutUs/AboutUsModal';
 import GeneralSettingsModal from '../modal/setting/GeneralSettings';
 import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
