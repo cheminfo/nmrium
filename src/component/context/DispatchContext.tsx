@@ -35,7 +35,8 @@ export type Action =
   | ZonesActions
   | FiltersActions
   | CorrelationsActions
-  | ActionType<'INITIALIZE_NMRIUM'>;
+  | ActionType<'INITIALIZE_NMRIUM'>
+  | ActionType<'SECRET_THROW_ERROR', { randomNumber: number }>;
 // // eslint-disable-next-line @typescript-eslint/ban-types
 // | { type: string & {}; payload?: Object };
 

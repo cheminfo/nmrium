@@ -2,6 +2,7 @@ import { Action } from '../context/DispatchContext';
 
 const ignoreActions = new Set<Partial<Action['type']>>([
   'INITIALIZE_NMRIUM',
+  'SECRET_THROW_ERROR',
   'APPLY_KEY_PREFERENCES',
   'BRUSH_END',
   'RESET_SELECTED_TOOL',

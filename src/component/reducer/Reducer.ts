@@ -647,6 +647,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
 
+      case 'SECRET_THROW_ERROR': {
+        throw new Error('Error thrown in main reducer');
+      }
+
       default:
     }
   } catch (error: any) {
