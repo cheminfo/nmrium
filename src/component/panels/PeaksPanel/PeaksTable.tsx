@@ -94,6 +94,7 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
               )}
               onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
               type="number"
+              validate={(val) => val !== ''}
             />
           ),
         },
