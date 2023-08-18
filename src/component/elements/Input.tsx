@@ -1,6 +1,5 @@
 import debounce from 'lodash/debounce';
 import {
-  useState,
   useEffect,
   useRef,
   CSSProperties,
@@ -8,209 +7,131 @@ import {
   ForwardedRef,
   ReactElement,
   useMemo,
+  ChangeEvent,
+  useState,
 } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
-const styles: Record<
-  'label' | 'input' | 'inputWrapper' | 'clearButton',
-  CSSProperties
-> = {
-  label: {
-    lineHeight: 2,
-    userSelect: 'none',
-  },
-
-  inputWrapper: {
-    borderRadius: '5px',
-    borderWidth: '0.55px',
-    borderColor: '#c7c7c7',
-    borderStyle: 'solid',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  input: {
-    outline: 'none',
-    flex: 1,
-    height: '100%',
-    textAlign: 'center',
-    width: '100%',
-  },
-  clearButton: {
-    height: 'calc(100% - 4px)',
-    borderRadius: '50%',
-    backgroundColor: 'gray',
-    color: 'white',
-    aspectRatio: '1',
-    fontSize: '60%',
-    padding: 0,
-  },
-};
-
-function check(value, type) {
-  if (type === 'number') {
-    const pattern = /^(?:-?\d*|\d+)(?:\.\d{0,20})?$/;
-    if (value.trim() === '' || pattern.test(value)) {
-      return true;
-    }
-    return false;
-  }
-  return true;
-}
-
-export type InputKeyboardEvent = React.KeyboardEvent & {
-  target: { name: string; value: string | number };
-};
+const styles: Record<'input' | 'inputWrapper' | 'clearButton', CSSProperties> =
+  {
+    inputWrapper: {
+      borderRadius: '5px',
+      borderWidth: '0.55px',
+      borderColor: '#c7c7c7',
+      borderStyle: 'solid',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      overflow: 'hidden',
+    },
+    input: {
+      outline: 'none',
+      flex: 1,
+      height: '100%',
+      textAlign: 'center',
+      width: '100%',
+    },
+    clearButton: {
+      height: 'calc(100% - 4px)',
+      borderRadius: '50%',
+      backgroundColor: 'gray',
+      color: 'white',
+      aspectRatio: '1',
+      fontSize: '60%',
+      padding: 0,
+    },
+  };
 
 export interface InputStyle {
   input?: CSSProperties;
   inputWrapper?: CSSProperties;
 }
+
 export interface InputProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'style' | 'onKeyDown' | 'onKeyUp'
-  > {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'style'> {
   style?: InputStyle;
-  enableAutoSelect?: boolean;
-  debounceTime?: number;
+  autoSelect?: boolean;
   checkValue?: (element: number | string) => boolean;
   format?: () => (element: string) => number | string;
   renderIcon?: (() => ReactElement) | null;
   canClear?: boolean;
   onClear?: () => void;
-  onKeyDown?: (event: InputKeyboardEvent) => void;
-  onKeyUp?: (event: InputKeyboardEvent) => void;
-  nullable?: boolean;
   datalist?: string[];
-}
-
-function identity<T = unknown>(value: T): T {
-  return value;
-}
-
-function preventPropagate(event) {
-  event.stopPropagation();
+  debounceTime?: number;
 }
 
 const Input = forwardRef(
   (props: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
     const {
-      value = '',
+      value: externalValue = undefined,
       name,
       style = {
         input: {},
         inputWrapper: {},
       },
-      onChange = () => null,
-      debounceTime = 0,
-      onKeyDown = () => null,
-      onKeyUp = () => null,
+      onChange,
       checkValue = () => true,
       type = 'text',
-      enableAutoSelect = false,
+      autoSelect = false,
       className,
-      format = () => identity,
-      onBlur = () => null,
-      onFocus = () => null,
-      renderIcon = null,
+      renderIcon,
       canClear = false,
-      nullable = false,
       onClear,
       datalist = [],
+      debounceTime = 0,
       ...otherProps
     } = props;
-    const [val, setVal] = useState(value ?? '');
-    const valueRef = useRef(value);
-    const localRef = useRef<any>();
+
+    const [internalValue, setInternalValue] = useState<string>('');
+    const value = debounceTime ? internalValue : externalValue;
+
+    const localRef = useRef<HTMLInputElement>();
     const combinedRef = useCombinedRefs([ref, localRef]);
 
     const debounceOnChange = useMemo(
       () =>
-        debounce((val) => {
-          onChange?.(val);
+        debounce((e) => {
+          onChange?.(e);
         }, debounceTime),
       [debounceTime, onChange],
     );
 
     useEffect(() => {
-      setVal((prevVal) => (prevVal !== value ? value ?? '' : prevVal));
-    }, [value]);
-
-    useEffect(() => {
-      if (enableAutoSelect) {
+      if (autoSelect) {
         combinedRef?.current?.select();
       }
-    }, [enableAutoSelect, combinedRef]);
+    }, [autoSelect, combinedRef]);
 
-    function getValue(value) {
-      const val =
-        type === 'number'
-          ? String(value).trim() === '-'
-            ? Number(0)
-            : nullable && !value
-            ? null
-            : Number(value)
-          : nullable && !value
-          ? null
-          : value;
+    useEffect(() => {
+      if (debounceTime) {
+        setInternalValue((externalValue || '') as string);
+      }
+    }, [debounceTime, externalValue]);
 
-      return format()(val);
-    }
-
-    function onChangeHandler(e) {
+    function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
       e.stopPropagation();
       e.preventDefault();
-      const _value: string = e.target.value;
-      if (check(_value, type) && checkValue(_value)) {
-        const formatValue = format();
-        setVal(formatValue(_value));
-
-        valueRef.current = _value;
-        const val = {
-          ...e,
-          target: { name: e.target.name, value: getValue(_value) },
-        };
-
+      const val = e.target.value;
+      if (checkValue(val)) {
         if (debounceTime) {
-          debounceOnChange(val);
+          setInternalValue(val);
+          debounceOnChange(e);
         } else {
-          onChange?.(val);
+          onChange?.(e);
         }
       }
     }
 
-    function handleKeyDown(event) {
-      onKeyDown({
-        ...event,
-        target: {
-          name: event.target.name,
-          value: getValue(valueRef.current),
-        },
-      });
-    }
-
-    function handleKeyUp(event) {
-      onKeyUp({
-        ...event,
-        target: {
-          name: event.target.name,
-          value: getValue(valueRef.current),
-        },
-      });
-    }
-
     function clearHandler() {
-      setVal('');
+      localRef.current?.setAttribute('value', '');
       onClear?.();
     }
 
     return (
       <div
         style={{
-          ...(renderIcon || (canClear && { padding: '0 5px' })),
+          ...((renderIcon || canClear) && { padding: '0 5px' }),
           ...styles.inputWrapper,
           ...style?.inputWrapper,
         }}
@@ -225,18 +146,12 @@ const Input = forwardRef(
             ...styles.input,
             ...style?.input,
           }}
-          type="text"
-          value={val}
+          type={type}
+          value={value || ''}
           onChange={onChangeHandler}
-          onKeyDown={handleKeyDown}
-          onKeyUp={handleKeyUp}
-          onKeyPress={preventPropagate}
-          onDoubleClick={(e) => e.stopPropagation()}
-          onFocus={onFocus}
-          onBlur={onBlur}
           list={`${name || ''}-data-list`}
         />
-        {canClear && val && (
+        {canClear && value && (
           <button
             type="button"
             style={styles.clearButton}
