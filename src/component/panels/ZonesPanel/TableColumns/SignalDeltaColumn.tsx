@@ -1,5 +1,4 @@
 import lodashGet from 'lodash/get';
-import { Fragment, useCallback } from 'react';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
@@ -25,35 +24,30 @@ function SignalDeltaColumn({
   const signalDeltaY = lodashGet(rowData, 'tableMetaInfo.signal.y.delta', null);
   const id = lodashGet(rowData, 'tableMetaInfo.signal.id', undefined);
 
-  const saveXHandler = useCallback(
-    (event) => {
-      const value = event.target.value;
-      dispatch({
-        type: 'CHANGE_ZONE_SIGNAL_VALUE',
-        payload: {
-          zoneId: rowData.id,
-          signal: { id, deltaX: value },
-        },
-      });
-    },
-    [dispatch, id, rowData.id],
-  );
-  const saveYHandler = useCallback(
-    (event) => {
-      const value = event.target.value;
-      dispatch({
-        type: 'CHANGE_ZONE_SIGNAL_VALUE',
-        payload: {
-          zoneId: rowData.id,
-          signal: { id, deltaY: value },
-        },
-      });
-    },
-    [dispatch, id, rowData.id],
-  );
+  function saveXHandler(event) {
+    const value = Number(event.target.value);
+    dispatch({
+      type: 'CHANGE_ZONE_SIGNAL_VALUE',
+      payload: {
+        zoneId: rowData.id,
+        signal: { id, deltaX: value },
+      },
+    });
+  }
+
+  function saveYHandler(event) {
+    const value = Number(event.target.value);
+    dispatch({
+      type: 'CHANGE_ZONE_SIGNAL_VALUE',
+      payload: {
+        zoneId: rowData.id,
+        signal: { id, deltaY: value },
+      },
+    });
+  }
 
   return (
-    <Fragment>
+    <>
       <td {...onHoverSignalX}>
         {signalDeltaX !== null ? (
           <EditableColumn
@@ -61,6 +55,7 @@ function SignalDeltaColumn({
             onSave={saveXHandler}
             type="number"
             style={{ padding: '0.1rem 0.4rem' }}
+            validate={(val) => val !== ''}
           />
         ) : (
           ''
@@ -73,12 +68,13 @@ function SignalDeltaColumn({
             onSave={saveYHandler}
             type="number"
             style={{ padding: '0.1rem 0.4rem' }}
+            validate={(val) => val !== ''}
           />
         ) : (
           ''
         )}
       </td>
-    </Fragment>
+    </>
   );
 }
 

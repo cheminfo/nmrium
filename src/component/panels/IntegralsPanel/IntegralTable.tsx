@@ -140,6 +140,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
               value={integral}
               onSave={(event) => saveRelativeHandler(event, row.original)}
               type="number"
+              validate={(val) => val !== ''}
             />
           );
         },

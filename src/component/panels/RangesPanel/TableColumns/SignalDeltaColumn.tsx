@@ -37,6 +37,7 @@ function SignalDeltaColumn({
           onSave={saveHandler}
           type="number"
           style={{ padding: '0.1rem 0.4rem' }}
+          validate={(val) => val !== ''}
         />
       )}
     </td>

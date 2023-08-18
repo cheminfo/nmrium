@@ -31,6 +31,7 @@ function RelativeColumn({
       <EditableColumn
         value={integralVal}
         onSave={saveHandler}
+        validate={(val) => val !== ''}
         type="number"
         style={{ padding: '0.1rem 0.4rem' }}
       />
