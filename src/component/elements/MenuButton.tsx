@@ -70,6 +70,12 @@ function MenuItem({ icon, label, onClick }: MenuItemProps) {
     </button>
   );
 }
+export interface BoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 interface MenuListProps {
   items: Array<MenuItemProps & { id: string }>;

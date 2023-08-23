@@ -14,8 +14,8 @@ export interface NumberInputProps
   pattern?: string;
   name?: string;
   step?: string;
-  min?: string;
-  max?: string;
+  min?: number | string;
+  max?: number | string;
   value?: number;
   style?: CSSProperties;
   autoSelect?: boolean;

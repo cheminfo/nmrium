@@ -9,6 +9,8 @@ import {
 } from 'react';
 import { Toolbar } from 'react-science/ui';
 
+import { BoundingBox } from './MenuButton';
+
 const menuStyles = css`
   .menu {
     box-shadow: 0 0 10px rgb(0 0 0 / 50%);
@@ -64,7 +66,7 @@ const menuStyles = css`
 interface MenuItemProps {
   icon: ReactNode;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 function MenuItem({ icon, label, onClick }: MenuItemProps) {
@@ -124,9 +126,11 @@ function MenuList({
   );
 }
 
-interface MenuButtonProps extends Pick<MenuListProps, 'items' | 'onClick'> {
+interface MenuButtonProps {
   component: ReactNode;
   toolTip: string;
+  items?: Array<MenuItemProps & { id: string }>;
+  onClick?: (element: MenuItemProps & { id: string }) => void;
 }
 
 export default function ToolbarMenu({
