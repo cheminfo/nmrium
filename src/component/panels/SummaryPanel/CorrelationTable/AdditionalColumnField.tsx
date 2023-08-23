@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import ContextMenu from '../../../elements/ContextMenu';
+import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
 import {
@@ -132,7 +132,7 @@ function AdditionalColumnField({
     [columnCorrelation, onEdit, rowCorrelation],
   );
 
-  const contextMenu = useMemo(() => {
+  const contextMenu: ContextMenuProps['context'] = useMemo(() => {
     // allow the edition of correlations
     const commonLinksMenu = commonLinks.flatMap((commonLink) => {
       const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${

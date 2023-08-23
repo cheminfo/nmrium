@@ -79,10 +79,14 @@ function MenuItem({ icon, label, onClick }: MenuItemProps) {
 interface MenuListProps {
   items: Array<MenuItemProps & { id: string }>;
   onClick: (element: MenuItemProps & { id: string }) => void;
-  boxBounding: any;
+  boxBounding?: BoundingBox;
 }
 
-function MenuList({ items, boxBounding, onClick }: MenuListProps) {
+function MenuList({
+  items,
+  boxBounding = { x: 0, y: 0, width: 0, height: 0 },
+  onClick,
+}: MenuListProps) {
   const listRef = useRef<any>();
   const [translate, setTranslate] = useState({
     x: boxBounding.width,
@@ -120,11 +124,9 @@ function MenuList({ items, boxBounding, onClick }: MenuListProps) {
   );
 }
 
-interface MenuButtonProps {
-  component: any;
+interface MenuButtonProps extends Pick<MenuListProps, 'items' | 'onClick'> {
+  component: ReactNode;
   toolTip: string;
-  items: any[];
-  onClick: (element: any) => void;
 }
 
 export default function ToolbarMenu({

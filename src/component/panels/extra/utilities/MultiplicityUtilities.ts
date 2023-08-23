@@ -9,7 +9,7 @@ function getMultiplicityNumber(string) {
   return multiplet ? multiplet.multiplicity : null;
 }
 
-function hasCouplingConstant(multiplet) {
+function hasCouplingConstant(multiplet: string) {
   if (multiplet.length > 1) {
     multiplet = translateMultiplet(multiplet);
   }

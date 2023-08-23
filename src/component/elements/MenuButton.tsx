@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { SerializedStyles, css } from '@emotion/react';
 import { ReactNode, useState, useCallback, useRef } from 'react';
 
 import ToolTip from './ToolTip/ToolTip';
@@ -74,10 +74,14 @@ function MenuItem({ icon, label, onClick }: MenuItemProps) {
 interface MenuListProps {
   items: Array<MenuItemProps & { id: string }>;
   onClick: (element: MenuItemProps & { id: string }) => void;
-  boxBounding: any;
+  boxBounding?: BoundingBox;
 }
 
-function MenuList({ items, boxBounding, onClick }: MenuListProps) {
+function MenuList({
+  items,
+  boxBounding = { x: 0, y: 0, width: 0, height: 0 },
+  onClick,
+}: MenuListProps) {
   return (
     <div
       className="menu"
@@ -94,13 +98,11 @@ function MenuList({ items, boxBounding, onClick }: MenuListProps) {
   );
 }
 
-interface MenuButtonProps {
-  style?: any;
-  component: any;
+interface MenuButtonProps extends Pick<MenuListProps, 'items' | 'onClick'> {
+  style?: SerializedStyles;
+  component: ReactNode;
   toolTip: string;
   className?: string;
-  items: any[];
-  onClick: (element: any) => void;
 }
 
 export default function MenuButton({

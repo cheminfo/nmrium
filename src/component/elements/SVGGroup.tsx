@@ -1,14 +1,14 @@
 import {
   Children,
   cloneElement,
-  ReactNode,
+  ReactElement,
   useLayoutEffect,
   useRef,
   SVGAttributes,
 } from 'react';
 
 interface SVGGroupProps extends SVGAttributes<SVGElement> {
-  children: ReactNode;
+  children: ReactElement | ReactElement[];
   direction?: 'row' | 'column';
   space?: number;
 }
@@ -37,7 +37,7 @@ export function SVGGroup(props: SVGGroupProps) {
 
   return (
     <g {...resProps}>
-      {Children.toArray(children).map((child: any, indx) => {
+      {Children.map(children, (child: ReactElement, indx) => {
         return cloneElement(child, {
           ref: (ref: SVGElement) => {
             elementsRefs.current[indx] = ref;

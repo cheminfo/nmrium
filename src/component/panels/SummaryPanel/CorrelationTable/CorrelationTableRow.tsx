@@ -9,7 +9,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import ContextMenu from '../../../elements/ContextMenu';
+import ContextMenu, { ContextMenuProps } from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
@@ -186,7 +186,7 @@ function CorrelationTableRow({
     styleRow,
   ]);
 
-  const contextMenu = useMemo(() => {
+  const contextMenu: ContextMenuProps['context'] = useMemo(() => {
     return correlation.pseudo === false
       ? correlation.link
           .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)

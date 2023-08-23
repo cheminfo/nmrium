@@ -7,6 +7,7 @@ import {
   useRef,
   useEffect,
   forwardRef,
+  MouseEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -49,25 +50,28 @@ const styles = css`
     border: none;
   }
 `;
-interface ContextMenuItem {
-  onClick: <T>(data: T) => void;
+interface ContextMenuItem<T> {
+  onClick: (data?: T) => void;
   label: string;
 }
 
-export interface ContextMenuProps {
-  context: ContextMenuItem[] | null;
+export interface ContextMenuProps<T = unknown> {
+  context: Array<ContextMenuItem<T>>;
 }
 // TODO: remove this hacky ref usage.
-function ContextMenu({ context }: ContextMenuProps, ref: any) {
-  const [position, setPosition] = useState<{ left: any; top: any }>({
+function ContextMenu<T = unknown>({ context }: ContextMenuProps<T>, ref: any) {
+  const [position, setPosition] = useState<{
+    left: string | number;
+    top: string | number;
+  }>({
     left: 0,
     top: 0,
   });
   const { rootRef, elementsWrapperRef } = useGlobal();
-  const [data, setData] = useState();
+  const [data, setData] = useState<T>();
   const [isVisible, show] = useState<boolean>();
   const [sourceElement, setSourceElement] = useState(null);
-  const root = useRef<any>();
+  const root = useRef<HTMLDivElement>();
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -94,37 +98,23 @@ function ContextMenu({ context }: ContextMenuProps, ref: any) {
     const rootH = 0;
 
     const right = screenW - clickX > rootW;
-    let left: any = !right;
-    let top: any = screenH - clickY > rootH;
-    const bottom = !top;
-    if (right) {
-      left = `${clickX + 5}px`;
-    }
+    const bottom = screenH - clickY <= rootH;
 
-    if (left) {
-      left = `${clickX - rootW - 5}px`;
-    }
-
-    if (top) {
-      top = `${clickY + 5}px`;
-    }
-
-    if (bottom) {
-      top = `${clickY - rootH - 5}px`;
-    }
+    const left = right ? `${clickX + 5}px` : `${clickX - rootW - 5}px`;
+    const top = bottom ? `${clickY - rootH - 5}px` : `${clickY + 5}px`;
 
     setPosition({ left, top });
   };
 
   useImperativeHandle(ref, () => ({
-    handleContextMenu: (e, _data) => {
+    handleContextMenu: (e, _data: T) => {
       setData(_data);
       contextMenuHandler(e);
     },
   }));
 
   const clickHandler = useCallback(
-    (event, click) => {
+    (event: MouseEvent, click: (data?: T) => void) => {
       event.preventDefault();
       click(data);
       show(false);

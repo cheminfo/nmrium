@@ -13,9 +13,9 @@ export interface NumberInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'style'> {
   pattern?: string;
   name?: string;
-  step?: any;
-  min?: any;
-  max?: any;
+  step?: string;
+  min?: string;
+  max?: string;
   value?: number;
   style?: CSSProperties;
   autoSelect?: boolean;

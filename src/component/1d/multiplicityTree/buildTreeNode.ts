@@ -1,4 +1,5 @@
 import lodashGet from 'lodash/get';
+import { Spectrum1D } from 'nmr-load-save';
 import { Signal1D } from 'nmr-processing';
 
 import {
@@ -8,12 +9,19 @@ import {
 
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-function createTreeNodes(signal: Signal1D, spectrumData) {
+export interface treeNodeData {
+  startX: number;
+  _startX: number;
+  ratio: number;
+  multiplicityIndex: number;
+  color: string;
+}
+function createTreeNodes(signal: Signal1D, spectrumData: Spectrum1D) {
   function buildTreeNodesData(
-    multiplicityIndex,
-    jIndices,
-    treeNodesData,
-    startX,
+    multiplicityIndex: number,
+    jIndices: number[],
+    treeNodesData: treeNodeData[],
+    startX: number,
   ) {
     if (!signal.multiplicity) {
       return null;
