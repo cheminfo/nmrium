@@ -20,7 +20,6 @@ import Events from '../utility/Events';
 
 import { ModalStyles } from './ModalStyle';
 
-
 const labelStyle: LabelStyle = {
   label: { flex: 4, fontWeight: '500' },
   wrapper: { flex: 8, display: 'flex', alignItems: 'center' },
