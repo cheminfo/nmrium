@@ -20,6 +20,7 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
+import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -27,7 +28,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
-import { DisplayerMode } from '../../reducer/Reducer';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];

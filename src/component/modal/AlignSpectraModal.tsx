@@ -1,24 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { Formik } from 'formik';
+import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Spectrum1D } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
+import * as Yup from 'yup';
 
 import { REFERENCES } from '../../data/constants/References';
+import { CalibrateOptions } from '../../data/data1d/Spectrum1D/getReferenceShift';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import CloseButton from '../elements/CloseButton';
 import { InputStyle } from '../elements/Input';
 import Label, { LabelStyle } from '../elements/Label';
+import Message from '../elements/Message';
 import Select from '../elements/Select';
 import FormikInput from '../elements/formik/FormikInput';
+import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
 import Events from '../utility/Events';
 
 import { ModalStyles } from './ModalStyle';
-import { CalibrateOptions } from '../../data/data1d/Spectrum1D/getReferenceShift';
-import { Spectrum1D } from 'nmr-load-save';
-import { xFindClosestIndex } from 'ml-spectra-processing';
-import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
-import * as Yup from 'yup';
-import Message from '../elements/Message';
+
 
 const labelStyle: LabelStyle = {
   label: { flex: 4, fontWeight: '500' },
