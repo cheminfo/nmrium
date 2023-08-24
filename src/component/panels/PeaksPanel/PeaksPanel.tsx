@@ -239,7 +239,7 @@ function PeaksPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <PeaksTable data={filteredPeaks} activeTab={activeTab} />
+          <PeaksTable data={filteredPeaks} info={info} activeTab={activeTab} />
         ) : (
           <PeaksPreferences ref={settingRef} />
         )}

@@ -8,6 +8,9 @@ import useTableSortBy from '../../hooks/useTableSortBy';
 
 import ZonesTableRow from './ZonesTableRow';
 import { useMapZones } from './hooks/useMapZones';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
+import NoTableData from '../extra/placeholder/NoTableData';
+import { Info2D } from 'nmr-processing';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -77,19 +80,23 @@ interface ZonesTableProps {
     axis: any,
   ) => void;
   nuclei: string[];
-  experiment: string;
+  info: Info2D;
 }
 
-function ZonesTable({
-  tableData,
-  onUnlink,
-  nuclei,
-  experiment,
-}: ZonesTableProps) {
+function ZonesTable({ tableData, onUnlink, nuclei, info }: ZonesTableProps) {
+  const { experiment, isFid } = info;
   const data = useMapZones(tableData, { nuclei, experiment });
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
   const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
   const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);
+
+  if (isFid) {
+    return <NoDataForFid />;
+  }
+
+  if (!tableData || tableData.length === 0) {
+    return <NoTableData />;
+  }
 
   return (
     <div>
