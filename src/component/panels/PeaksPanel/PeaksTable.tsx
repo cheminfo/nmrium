@@ -16,17 +16,20 @@ import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { PeakRecord } from './PeaksPanel';
+import { Info1D } from 'nmr-processing';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
 
 interface PeaksTableProps {
   activeTab: string;
-  data: any;
+  data: PeakRecord[];
+  info: Info1D;
 }
 
 function handleActiveRow(row) {
   return row.original.isConstantlyHighlighted;
 }
 
-function PeaksTable({ activeTab, data }: PeaksTableProps) {
+function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
   const dispatch = useDispatch();
   const modal = useModal();
   const peaksPreferences = usePanelPreferences('peaks', activeTab);
@@ -208,7 +211,15 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [COLUMNS, initialColumns, peaksPreferences]);
 
-  return data && data.length > 0 ? (
+  if (info?.isFid) {
+    return <NoDataForFid />;
+  }
+
+  if (!data || data.length === 0) {
+    return <NoTableData />;
+  }
+
+  return (
     <ReactTable
       activeRow={handleActiveRow}
       rowStyle={{ activated: { backgroundColor: '#f5f5dc' } }}
@@ -217,8 +228,6 @@ function PeaksTable({ activeTab, data }: PeaksTableProps) {
       approxItemHeight={24}
       enableVirtualScroll
     />
-  ) : (
-    <NoTableData />
   );
 }
 

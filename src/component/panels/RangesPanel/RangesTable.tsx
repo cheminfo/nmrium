@@ -9,6 +9,8 @@ import useTableSortBy from '../../hooks/useTableSortBy';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './hooks/useMapRanges';
+import NoTableData from '../extra/placeholder/NoTableData';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -74,6 +76,14 @@ function RangesTable({
   const element = activeTab?.replace(/\d/g, '');
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
+
+  if (info?.isFid) {
+    return <NoDataForFid />;
+  }
+
+  if (!tableData || tableData.length === 0) {
+    return <NoTableData />;
+  }
 
   return (
     <table css={tableStyle}>

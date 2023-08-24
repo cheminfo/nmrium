@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Integral } from 'nmr-processing';
+import { Info1D, Integral } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -17,15 +17,17 @@ import { formatNumber } from '../../utility/formatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
 
 const selectStyle = { width: '100%', border: 'none' };
 
 interface IntegralTableProps
   extends Pick<IntegralPanelInnerProps, 'activeTab'> {
   data: Integral[];
+  info: Info1D;
 }
 
-function IntegralTable({ activeTab, data }: IntegralTableProps) {
+function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   const dispatch = useDispatch();
   const deleteIntegralHandler = useCallback(
     (e, row) => {
@@ -182,11 +184,15 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     return columns.sort((object1, object2) => object1.index - object2.index);
   }, [COLUMNS, initialColumns, integralsPreferences]);
 
-  return data && data.length > 0 ? (
-    <ReactTable data={data} columns={tableColumns} />
-  ) : (
-    <NoTableData />
-  );
+  if (info?.isFid) {
+    return <NoDataForFid />;
+  }
+
+  if (!data || data.length === 0) {
+    return <NoTableData />;
+  }
+
+  return <ReactTable data={data} columns={tableColumns} />;
 }
 
 export default memo(IntegralTable);

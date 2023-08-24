@@ -19,7 +19,6 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { rangeStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';
@@ -201,19 +200,15 @@ function RangesTablePanelInner({
       <div className="inner-container">
         {!isFlipped ? (
           <div className="table-container">
-            {rangesData && rangesData.length > 0 ? (
-              <RangesTable
-                activeTab={activeTab}
-                tableData={rangesData}
-                onUnlink={unlinkRangeHandler}
-                contextMenu={rangesContextMenuOptions}
-                onContextMenuSelect={contextMenuSelectHandler}
-                preferences={preferences}
-                info={info}
-              />
-            ) : (
-              <NoTableData />
-            )}
+            <RangesTable
+              activeTab={activeTab}
+              tableData={rangesData}
+              onUnlink={unlinkRangeHandler}
+              contextMenu={rangesContextMenuOptions}
+              onContextMenuSelect={contextMenuSelectHandler}
+              preferences={preferences}
+              info={info}
+            />
           </div>
         ) : (
           <RangesPreferences ref={settingRef} />

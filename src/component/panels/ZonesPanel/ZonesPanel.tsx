@@ -13,7 +13,6 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { zoneStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader, {
   createFilterLabel,
 } from '../header/DefaultPanelHeader';
@@ -50,7 +49,7 @@ function ZonesPanelInner({
   activeTab,
   xDomain,
   yDomain,
-  experiment,
+  info,
   showZones,
   showSignals,
   showPeaks,
@@ -252,20 +251,16 @@ function ZonesPanelInner({
       <div className="inner-container">
         {!isFlipped ? (
           <div className="table-container">
-            {tableData && tableData.length > 0 ? (
-              <ZonesTable
-                tableData={tableData}
-                onUnlink={unlinkZoneHandler}
-                nuclei={
-                  activeTab && activeTab.split(',').length === 2
-                    ? activeTab.split(',')
-                    : ['?', '?']
-                }
-                experiment={experiment}
-              />
-            ) : (
-              <NoTableData />
-            )}
+            <ZonesTable
+              tableData={tableData}
+              onUnlink={unlinkZoneHandler}
+              nuclei={
+                activeTab && activeTab.split(',').length === 2
+                  ? activeTab.split(',')
+                  : ['?', '?']
+              }
+              info={info}
+            />
           </div>
         ) : (
           <ZonesPreferences ref={settingRef} />
@@ -300,7 +295,7 @@ export default function ZonesPanel() {
         activeTab,
         displayerKey,
         zones,
-        experiment: info.experiment,
+        info,
         ...zoneProps,
       }}
     />
