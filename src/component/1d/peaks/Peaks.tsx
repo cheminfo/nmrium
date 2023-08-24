@@ -17,9 +17,10 @@ export function Peaks() {
   const peaksViewState = useActiveSpectrumPeaksViewState();
 
   if (
-    !spectrum?.peaks?.values ||
+    !spectrum.peaks?.values ||
     !spectrum.display.isVisible ||
-    !peaksViewState.isPeaksVisible
+    !peaksViewState.isPeaksVisible ||
+    spectrum.info?.isFid
   ) {
     return null;
   }
