@@ -29,7 +29,6 @@ const styles: Record<'input' | 'inputWrapper' | 'clearButton', CSSProperties> =
       outline: 'none',
       flex: 1,
       height: '100%',
-      textAlign: 'center',
       width: '100%',
     },
     clearButton: {
