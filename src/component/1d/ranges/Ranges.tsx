@@ -47,6 +47,8 @@ function RangesInner({
 
 const MemoizedRanges = memo(RangesInner);
 
+const emptyData = { ranges: {}, info: {}, display: {} };
+
 export default function Ranges() {
   const {
     displayerKey,
@@ -65,10 +67,14 @@ export default function Ranges() {
         : rangeStateInit,
     [activeSpectrum, rangeState],
   );
-  const spectrum = useSpectrum() as Spectrum1D;
+  const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
-  if (!spectrum?.display?.isVisible) {
+  if (
+    !spectrum.ranges?.values ||
+    !spectrum.display.isVisible ||
+    spectrum.info?.isFid
+  ) {
     return null;
   }
 
