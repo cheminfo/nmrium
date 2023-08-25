@@ -19,8 +19,16 @@ export interface SumParams {
 
 export type SetSumOptions = Omit<SumOptions, 'isSumConstant'>;
 
-export function initSumOptions(options: SumOptions, params: SumParams) {
-  let newOptions = { ...options };
+export function initSumOptions(
+  options: Partial<SumOptions>,
+  params: SumParams,
+) {
+  let newOptions: SumOptions = {
+    sum: undefined,
+    isSumConstant: true,
+    sumAuto: true,
+    ...options,
+  };
   const { molecules, nucleus } = params;
 
   if (options.sumAuto && Array.isArray(molecules) && molecules.length > 0) {
