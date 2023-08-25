@@ -7,6 +7,11 @@ export const embedded: InnerWorkspace = {
     general: {
       experimentalFeatures: { display: true },
       hidePanelOnLoad: true,
+      hideHelp: true,
+      hideLogs: true,
+      hideMaximize: true,
+      hideWorkspaces: true,
+      hideGeneralSettings: true,
     },
 
     panels: {
