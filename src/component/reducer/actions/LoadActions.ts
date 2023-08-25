@@ -23,6 +23,7 @@ import { ActionType } from '../types/ActionType';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 
 //TODO use viewState type instead of any { view?: ViewState }
 interface InitiateProps {
@@ -133,6 +134,7 @@ function setData(
     initSpectra(spectra, {
       usedColors: draft.usedColors,
       onLoadProcessing: autoOnLoadProcessing ? onLoadProcessing : {},
+      molecules: draft.molecules,
     }),
   );
   setCorrelation(draft, correlations);
@@ -149,15 +151,21 @@ function setData(
 
 function initSpectra(
   inputSpectra: Spectrum[],
-  options: { usedColors: UsedColors; onLoadProcessing: OnLoadProcessing },
+  options: {
+    usedColors: UsedColors;
+    onLoadProcessing: OnLoadProcessing;
+    molecules: StateMoleculeExtended[];
+  },
 ) {
   const spectra: any = [];
-  const { usedColors, onLoadProcessing } = options;
+  const { usedColors, onLoadProcessing, molecules } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
       const filters = onLoadProcessing?.[nucleusToString(info.nucleus)] || [];
-      spectra.push(initiateDatum1D(spectrum, { usedColors, filters }));
+      spectra.push(
+        initiateDatum1D(spectrum, { usedColors, filters, molecules }),
+      );
     } else if (info.dimension === 2) {
       spectra.push(initiateDatum2D({ ...spectrum }, { usedColors }));
     }
