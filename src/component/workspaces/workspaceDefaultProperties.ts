@@ -8,6 +8,9 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       experimentalFeatures: { display: false },
       hidePanelOnLoad: false,
       hideLogs: false,
+      hideHelp: false,
+      hideMaximize: false,
+      hideWorkspaces: false,
     },
 
     panels: {
