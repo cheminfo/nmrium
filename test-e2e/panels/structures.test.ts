@@ -310,7 +310,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
     await nmrium.page
-      .locator('_react=ButtonToolTip[popupTitle="Change ranges sum"]')
+      .locator('_react=ButtonToolTip[popupTitle*="Change ranges sum" i]')
       .click();
     await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
