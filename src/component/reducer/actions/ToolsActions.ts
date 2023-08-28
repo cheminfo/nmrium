@@ -410,6 +410,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
         default: {
           draft.xDomain = xDomain;
           setZoom(draft, { scale: 0.8 });
+          zoomHistory.clear();
           break;
         }
       }

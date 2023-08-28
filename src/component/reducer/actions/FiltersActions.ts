@@ -533,6 +533,9 @@ function handleApplyFFTFilter(draft: Draft<State>) {
     } else {
       updateView(draft, fft.DOMAIN_UPDATE_RULES);
     }
+
+    //clear zoom history
+    draft.zoom.history[draft.view.spectra.activeTab] = [];
   }
 }
 
