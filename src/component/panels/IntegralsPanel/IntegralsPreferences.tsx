@@ -12,7 +12,6 @@ import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import { formatFieldLabelStyle } from '../../elements/formik/FormikColumnFormatField';
-import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -21,6 +20,7 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import FormikInput from '../../elements/formik/FormikInput';
 
 const formatFields: NucleusPreferenceField[] = [
   {
@@ -91,12 +91,17 @@ function IntegralsPreferences(props, ref) {
                   <Label title="stroke width :" style={formatFieldLabelStyle}>
                     <div style={{ display: 'flex', padding: '2px 0' }}>
                       <div style={{ width: '23px' }} />
-                      <FormikNumberInput
+                      <FormikInput
                         name={`nuclei.${n}.strokeWidth`}
+                        type="number"
                         style={{
-                          width: '60%',
-                          textAlign: 'center',
-                          padding: '2px',
+                          input: {
+                            textAlign: 'center',
+                            padding: '2px',
+                          },
+                          inputWrapper: {
+                            width: '60%',
+                          },
                         }}
                         min={1}
                         max={9}

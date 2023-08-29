@@ -28,7 +28,7 @@ const getAlgorithmsList = () => {
 };
 
 const inputStyle: InputStyle = {
-  input: { width: '50px' },
+  input: { width: '50px', textAlign: 'center' },
   inputWrapper: { height: '100%' },
 };
 
