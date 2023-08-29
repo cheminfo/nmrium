@@ -9,10 +9,10 @@ import {
 } from '../../../data/PredictionManager';
 import { usePreferences } from '../../context/PreferencesContext';
 import Label, { LabelStyle } from '../../elements/Label';
-import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import FormikSelect from '../../elements/formik/FormikSelect';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import FormikInput from '../../elements/formik/FormikInput';
 
 const predictionFormValidation = Yup.object().shape({
   '1d': Yup.object({
@@ -67,10 +67,10 @@ function PredictionSimpleOptions() {
           />
         </Label>
         <Label title="Line Width" style={labelStyle}>
-          <FormikNumberInput
+          <FormikInput
             name="1d.lineWidth"
             type="number"
-            style={{ margin: 0, width: '40px' }}
+            style={{ input: { width: '40px', textAlign: 'center' } }}
           />
           <span style={{ padding: '0 5px' }}>Hz</span>
         </Label>

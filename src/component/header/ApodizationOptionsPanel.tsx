@@ -17,7 +17,7 @@ import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const inputStyle: InputStyle = {
-  input: { width: '60px' },
+  input: { width: '60px', textAlign: 'center' },
   inputWrapper: { height: '100%' },
 };
 
@@ -102,6 +102,7 @@ function ApodizationOptionsInnerPanel(
                 name="lineBroadening"
                 min={0}
                 max={1}
+                step={0.1}
                 style={inputStyle}
                 debounceTime={250}
               />
@@ -116,6 +117,7 @@ function ApodizationOptionsInnerPanel(
                 name="gaussBroadening"
                 min={0}
                 max={1}
+                step={0.1}
                 style={inputStyle}
                 debounceTime={250}
               />
@@ -130,6 +132,7 @@ function ApodizationOptionsInnerPanel(
                 name="lineBroadeningCenter"
                 min={0}
                 max={1}
+                step={0.1}
                 style={inputStyle}
                 debounceTime={250}
               />
