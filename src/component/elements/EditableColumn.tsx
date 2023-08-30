@@ -11,6 +11,14 @@ import {
 
 import Input, { InputProps } from './Input';
 
+function extractNumber(val: string | number, type: string) {
+  if (type === 'number' && typeof val !== 'number') {
+    return Number(val.replaceAll(/[^\d.-]/g, ''));
+  }
+
+  return val;
+}
+
 interface EditableColumnProps
   extends Omit<InputProps, 'style' | 'value' | 'type'> {
   onSave?: (element: any) => void;
@@ -41,8 +49,7 @@ const EditableColumn = forwardRef(function EditableColumn(
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
   const [isValid, setValid] = useState<boolean>(true);
-  const [val, setVal] = useState(value);
-
+  const [val, setVal] = useState(extractNumber(value, type));
   useEffect(() => {
     enableEdit(editStatus);
   }, [editStatus]);

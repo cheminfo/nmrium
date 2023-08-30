@@ -139,6 +139,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
 
           return (
             <EditableColumn
+              key={`${integral}`}
               value={integral}
               onSave={(event) => saveRelativeHandler(event, row.original)}
               type="number"
