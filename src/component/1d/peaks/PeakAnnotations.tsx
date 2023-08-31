@@ -1,34 +1,29 @@
-import { Spectrum1D } from 'nmr-load-save';
-import { Peak1D } from 'nmr-processing';
-
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightEventSource, useHighlight } from '../../highlight';
+import { useHighlight } from '../../highlight';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
 import { formatNumber } from '../../utility/formatNumber';
 
 import { PeakEditionListener } from './PeakEditionManager';
+import { Peak, PeaksAnnotationsProps, PeaksSource } from './Peaks';
 
-const emptyData = { peaks: {}, info: {}, display: {} };
-
-function PeakAnnotations() {
+function PeakAnnotations(props: PeaksAnnotationsProps) {
+  const { peaks, peaksSource, spectrumId, peakFormat } = props;
   const { displayerKey } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { shiftY } = useScaleChecked();
-  const spectrum = useSpectrum(emptyData) as Spectrum1D;
 
   return (
     <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       <g transform={`translate(0,-${(activeSpectrum?.index || 0) * shiftY})`}>
-        {spectrum.peaks.values.map((peak) => (
+        {peaks.map((peak) => (
           <PeakAnnotation
             key={peak.id}
-            spectrumId={spectrum.id}
+            spectrumId={spectrumId}
             peak={peak}
             color="#730000"
-            nucleus={spectrum.info.nucleus}
+            peaksSource={peaksSource}
+            format={peakFormat}
           />
         ))}
       </g>
@@ -37,24 +32,24 @@ function PeakAnnotations() {
 }
 
 interface PeakAnnotationProps {
-  peak: Peak1D;
+  peak: Peak;
   spectrumId: string;
   color: string;
-  nucleus: string;
+  peaksSource: PeaksSource;
+  format: string;
 }
 
-function PeakAnnotation({
+export function PeakAnnotation({
   peak,
   spectrumId,
   color,
-  nucleus,
+  peaksSource,
+  format,
 }: PeakAnnotationProps) {
   const { id, x, y } = peak;
   const sign = Math.sign(y);
-
-  const { deltaPPM } = usePanelPreferences('peaks', nucleus);
   const highlight = useHighlight([id], {
-    type: HighlightEventSource.PEAK,
+    type: peaksSource === 'peaks' ? 'PEAK' : 'RANGE',
     extra: { id },
   });
   const { scaleX, scaleY } = useScaleChecked();
@@ -94,7 +89,7 @@ function PeakAnnotation({
           fontSize="11px"
           fill={color}
         >
-          {formatNumber(x, deltaPPM.format)}
+          {formatNumber(x, format)}
         </text>
       </PeakEditionListener>
     </g>
