@@ -13,7 +13,7 @@ import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScale } from '../utilities/scale';
 
 function DatabaseSpectrum() {
-  const { displayerKey, height, yDomain, margin } = useChartData();
+  const { displayerKey, height, yDomain, yDomains, margin } = useChartData();
   const verticalAlign = useVerticalAlign();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -32,8 +32,17 @@ function DatabaseSpectrum() {
         margin: { top: margin.top, bottom: margin.bottom + marginBottom },
         verticalAlign,
         yDomain,
+        yDomains,
       }),
-    [verticalAlign, height, margin.bottom, margin.top, marginBottom, yDomain],
+    [
+      verticalAlign,
+      height,
+      margin.bottom,
+      margin.top,
+      marginBottom,
+      yDomain,
+      yDomains,
+    ],
   );
 
   const loadSpectrum = useRef(
