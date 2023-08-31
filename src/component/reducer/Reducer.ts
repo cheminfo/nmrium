@@ -44,6 +44,9 @@ export interface Margin {
   left: number;
 }
 
+export type Domains = Record<string, number[]>;
+export type SpectraDirection = 'RTL' | 'LTR';
+
 export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
@@ -166,13 +169,13 @@ export interface State {
    * value change when vertical scale change for the selected spectrum
    * @default {}
    */
-  yDomains: Record<string, number[]>;
+  yDomains: Domains;
   /**
    * X axis domain per spectrum
    * value change when zooming in/out for the selected spectrum
    * @default {}
    */
-  xDomains: Record<string, number[]>;
+  xDomains: Domains;
   /**
    * Domain for X and Y axis once it calculated and it change in one case  when we load new spectra
    * @default {}
@@ -180,8 +183,8 @@ export interface State {
   originDomain: {
     xDomain: number[];
     yDomain: number[];
-    xDomains: Record<string, number[]>;
-    yDomains: Record<string, number[]>;
+    xDomains: Domains;
+    yDomains: Domains;
     shareYDomain: boolean;
   };
   /**
@@ -210,7 +213,7 @@ export interface State {
    * Scale direction
    * @default 'RTL'
    */
-  mode: 'RTL' | 'LTR';
+  mode: SpectraDirection;
   /**
    * molecules
    * @default []

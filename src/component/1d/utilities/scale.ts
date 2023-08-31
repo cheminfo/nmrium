@@ -31,7 +31,7 @@ function getXScale(
 
 interface ScaleYOptions {
   height: number;
-  margin: Margin;
+  margin: Pick<Margin, 'top' | 'bottom'>;
   yDomains: Domains;
   yDomain: number[];
   verticalAlign: VerticalAlignment;
@@ -59,7 +59,7 @@ interface IntegralYScaleOptions {
   height: number;
   margin: Margin;
   integralsYDomains: Domains;
-  activeSpectrum: ActiveSpectrum;
+  activeSpectrum: ActiveSpectrum | null;
   verticalAlign: VerticalAlignment;
 }
 
