@@ -1,7 +1,27 @@
 import { scaleLinear, zoomIdentity } from 'd3';
+import {
+  ActiveSpectrum,
+  Domains,
+  Margin,
+  SpectraDirection,
+  VerticalAlignment,
+} from '../../reducer/Reducer';
+import { useChartData } from '../../context/ChartContext';
+import { useCallback } from 'react';
+import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 
-function getXScale(state, spectrumId: number | null | string = null) {
-  const { width, margin, xDomains, xDomain, mode } = state;
+interface ScaleXOptions {
+  width: number;
+  margin: Margin;
+  xDomains: Domains;
+  xDomain: number[];
+  mode: SpectraDirection;
+}
+function getXScale(
+  options: ScaleXOptions,
+  spectrumId: number | null | string = null,
+) {
+  const { width, margin, xDomains, xDomain, mode } = options;
   const range =
     mode === 'RTL'
       ? [width - margin.right, margin.left]
@@ -9,8 +29,19 @@ function getXScale(state, spectrumId: number | null | string = null) {
   return scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
 }
 
-function getYScale(state, spectrumId: number | null | string = null) {
-  const { height, margin, verticalAlign, yDomain, yDomains } = state;
+interface ScaleYOptions {
+  height: number;
+  margin: Margin;
+  yDomains: Domains;
+  yDomain: number[];
+  verticalAlign: VerticalAlignment;
+}
+
+function getYScale(
+  options: ScaleYOptions,
+  spectrumId: number | null | string = null,
+) {
+  const { height, margin, verticalAlign, yDomain, yDomains } = options;
   const _height =
     verticalAlign === 'center'
       ? (height - 40) / 2
@@ -24,9 +55,17 @@ function getYScale(state, spectrumId: number | null | string = null) {
   return scaleLinear(domainY, [_height, margin.top]);
 }
 
-function getIntegralYScale(state) {
+interface IntegralYScaleOptions {
+  height: number;
+  margin: Margin;
+  integralsYDomains: Domains;
+  activeSpectrum: ActiveSpectrum;
+  verticalAlign: VerticalAlignment;
+}
+
+function getIntegralYScale(options: IntegralYScaleOptions) {
   const { height, margin, verticalAlign, integralsYDomains, activeSpectrum } =
-    state;
+    options;
   const _height = verticalAlign === 'center' ? height / 2 : height;
   return scaleLinear(
     activeSpectrum?.id && integralsYDomains?.[activeSpectrum?.id]
@@ -47,4 +86,33 @@ function reScaleY(scale: number, { domain, height, margin }) {
   return t.rescaleY(_scale).domain();
 }
 
-export { getXScale, getYScale, getIntegralYScale, reScaleY };
+function useScaleX() {
+  const { margin, mode, width, xDomain, xDomains } = useChartData();
+  return useCallback(
+    (spectrumId = null) =>
+      getXScale({ margin, mode, width, xDomain, xDomains }, spectrumId),
+    [margin, mode, width, xDomain, xDomains],
+  );
+}
+function useScaleY() {
+  const { margin, height, yDomain, yDomains } = useChartData();
+  const verticalAlign = useVerticalAlign();
+
+  return useCallback(
+    (spectrumId = null) =>
+      getYScale(
+        { margin, height, verticalAlign, yDomain, yDomains },
+        spectrumId,
+      ),
+    [margin, height, verticalAlign, yDomain, yDomains],
+  );
+}
+
+export {
+  useScaleX,
+  useScaleY,
+  getXScale,
+  getYScale,
+  getIntegralYScale,
+  reScaleY,
+};
