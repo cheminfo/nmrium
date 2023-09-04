@@ -3,7 +3,6 @@ import { Info1D, Integral } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../data/constants/SignalsKinds';
 import { checkIntegralKind } from '../../../data/data1d/Spectrum1D';
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
@@ -18,6 +17,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';
 import NoDataForFid from '../extra/placeholder/NoDataForFid';
+import { useSignalKinds } from '../../hooks/useSignalKinds';
 
 const selectStyle = { width: '100%', border: 'none' };
 
@@ -29,6 +29,8 @@ interface IntegralTableProps
 
 function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   const dispatch = useDispatch();
+  const signalKinds = useSignalKinds();
+
   const deleteIntegralHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -158,7 +160,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
         Cell: ({ row }) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
-            items={SignalKinds}
+            items={signalKinds}
             style={selectStyle}
             defaultValue={row.original.kind}
           />
@@ -170,6 +172,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
       changeIntegralDataHandler,
       integralsPreferences,
       saveRelativeHandler,
+      signalKinds,
     ],
   );
 

@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { Fragment, CSSProperties } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import Select from '../../../elements/Select';
 import {
   OnHoverEvent,
@@ -11,6 +10,7 @@ import {
   RowSpanTags,
 } from '../RangesTableRow';
 import useEditRangeModal from '../hooks/useEditRangeModal';
+import { useSignalKinds } from '../../../hooks/useSignalKinds';
 
 const styles = css`
   width: 66px;
@@ -50,6 +50,7 @@ function ActionsColumn({
 }: ActionsColumnProps) {
   const { editRange, deleteRange, changeRangeSignalKind, zoomRange } =
     useEditRangeModal(row);
+  const signalKinds = useSignalKinds();
 
   return (
     <Fragment>
@@ -57,7 +58,7 @@ function ActionsColumn({
         <td {...onHoverSignal}>
           <Select
             onChange={changeRangeSignalKind}
-            items={SignalKinds}
+            items={signalKinds}
             defaultValue={row.tableMetaInfo.signal.kind}
             style={selectBoxStyle}
           />

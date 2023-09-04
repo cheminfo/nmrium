@@ -1,7 +1,6 @@
 import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import { useAssignmentData } from '../../../assignment/AssignmentsContext';
 import { useDispatch } from '../../../context/DispatchContext';
 import Select from '../../../elements/Select';
@@ -12,6 +11,7 @@ import {
 } from '../../../elements/popup/Modal';
 import EditZoneModal from '../../../modal/editZone/EditZoneModal';
 import { ZoneData } from '../hooks/useMapZones';
+import { useSignalKinds } from '../../../hooks/useSignalKinds';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -28,6 +28,7 @@ interface ActionsColumnProps {
 function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
+  const signalKinds = useSignalKinds();
   const modal = useModal();
 
   const changeSignalKindHandler = useCallback(
@@ -115,7 +116,7 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
           onChange={(value) => {
             changeSignalKindHandler(value);
           }}
-          items={SignalKinds}
+          items={signalKinds}
           defaultValue={rowData.tableMetaInfo.signal.kind}
           style={selectBoxStyle}
         />

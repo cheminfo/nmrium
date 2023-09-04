@@ -1,37 +1,12 @@
-export const SignalKinds: Array<{ label: string; value: string }> = [
-  {
-    label: 'Signal',
-    value: 'signal',
-  },
-  {
-    label: 'Reference',
-    value: 'reference',
-  },
-  {
-    label: 'Solvent',
-    value: 'solvent',
-  },
-  {
-    label: 'Impurity',
-    value: 'impurity',
-  },
-  {
-    label: 'Standard',
-    value: 'standard',
-  },
-  {
-    label: 'P1',
-    value: 'p1',
-  },
-  {
-    label: 'P2',
-    value: 'p2',
-  },
-  {
-    label: 'P3',
-    value: 'p3',
-  },
+import { SignalKind } from '../types/common/SignalKind';
+
+export const SIGNAL_KINDS: SignalKind[] = [
+  'undefined',
+  'signal',
+  'reference',
+  'solvent',
+  'standard',
 ];
 
-export const SignalKindsToInclude = ['signal'];
+export const SignalKindsToInclude: SignalKind[] = ['signal'];
 export const DatumKind = { signal: 'signal', mixed: 'mixed' };
