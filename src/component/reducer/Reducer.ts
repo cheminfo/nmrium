@@ -35,12 +35,6 @@ export interface ActiveSpectrum {
   index: number;
 }
 
-export const zoneStateInit = {
-  showZones: true,
-  showSignals: true,
-  showPeaks: true,
-};
-
 export type DisplayerMode = '1D' | '2D';
 
 export interface Margin {
@@ -54,7 +48,7 @@ export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
     ranges: {},
-    zones: [],
+    zones: {},
     peaks: {},
     spectra: {
       activeSpectra: {},
@@ -618,12 +612,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleSetDiaIDZone(draft, action);
       case 'AUTO_ZONES_SPECTRA_PICKING':
         return ZonesActions.handleAutoSpectraZonesDetection(draft);
-      case 'SHOW_ZONES':
-        return ZonesActions.handleShowZones(draft, action);
-      case 'SHOW_ZONES_SIGNALS':
-        return ZonesActions.handleShowSignals(draft, action);
-      case 'SHOW_ZONES_PEAKS':
-        return ZonesActions.handleShowPeaks(draft, action);
+      case 'TOGGLE_ZONES_VIEW_PROPERTY':
+        return ZonesActions.handleToggleZonesViewProperty(draft, action);
       case 'SAVE_EDITED_ZONE':
         return ZonesActions.handleSaveEditedZone(draft, action);
 

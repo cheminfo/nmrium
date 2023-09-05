@@ -239,6 +239,7 @@ function togglePeaksViewProperty(
     }
   }
 }
+
 function handleChangePeaksDisplayingMode(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrum(draft);
 
