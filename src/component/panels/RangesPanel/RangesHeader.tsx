@@ -42,7 +42,6 @@ const style = css`
 `;
 
 function RangesHeader({
-  id,
   ranges,
   info,
   onUnlink,
@@ -98,15 +97,24 @@ function RangesHeader({
   }
 
   function handleSetShowMultiplicityTrees() {
-    dispatch({ type: 'SHOW_MULTIPLICITY_TREES', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showMultiplicityTrees' },
+    });
   }
 
   function handleShowIntegrals() {
-    dispatch({ type: 'SHOW_RANGES_INTEGRALS', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showRangesIntegrals' },
+    });
   }
 
   function handleShowJGraph() {
-    dispatch({ type: 'SHOW_J_GRAPH', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showJGraph' },
+    });
   }
 
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
