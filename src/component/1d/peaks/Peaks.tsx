@@ -19,7 +19,7 @@ export function Peaks() {
   if (
     !spectrum.peaks?.values ||
     !spectrum.display.isVisible ||
-    !peaksViewState.isPeaksVisible ||
+    !peaksViewState.showPeaks ||
     spectrum.info?.isFid
   ) {
     return null;

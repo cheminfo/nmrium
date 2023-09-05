@@ -202,13 +202,11 @@ function PeaksPanelInner({
           )}
           <ActiveButton
             style={{ marginLeft: '2px', marginRight: '2px' }}
-            popupTitle={
-              peaksViewState.isPeaksVisible ? 'Hide peaks' : 'Show peaks'
-            }
+            popupTitle={peaksViewState.showPeaks ? 'Hide peaks' : 'Show peaks'}
             popupPlacement="right"
-            onClick={() => toggleViewProperty('isPeaksVisible')}
+            onClick={() => toggleViewProperty('showPeaks')}
             disabled={!peaks?.values || peaks.values.length === 0}
-            value={peaksViewState.isPeaksVisible}
+            value={peaksViewState.showPeaks}
           >
             <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
           </ActiveButton>
