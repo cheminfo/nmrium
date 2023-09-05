@@ -32,6 +32,7 @@ const {
   apodization,
   baselineCorrection,
   phaseCorrection,
+  phaseCorrectionDimension1,
   zeroFilling,
   shiftX,
   shift2DX,
@@ -545,7 +546,37 @@ function handleApplyFFtDimension1Filter(draft: Draft<State>) {
     //apply filter into the spectrum
     FiltersManager.applyFilter(
       draft.data[index],
-      [{ name: fftDimension1.id, value: {} }],
+      [
+        {
+          name: fftDimension1.id,
+          value: {
+            phaseCorrection: {
+              ph0: 30,
+              ph1: 0,
+              mode: 'pk',
+            },
+            zeroFilling: {
+              nbPoints: 2048,
+            },
+            apodization: {
+              apply: true,
+              compose: {
+                shapes: [
+                  {
+                    shape: {
+                      kind: 'sineBell',
+                      options: {
+                        exponent: 2,
+                        offset: 0.5,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        }
+      ],
       { filterIndex: activeFilterIndex },
     );
 
@@ -569,7 +600,44 @@ function handleApplyFFtDimension2Filter(draft: Draft<State>) {
     //apply filter into the spectrum
     FiltersManager.applyFilter(
       draft.data[index],
-      [{ name: fftDimension2.id, value: {} }],
+      [
+        {
+          name: fftDimension2.id,
+          value: {
+            phaseCorrection: {
+              ph0: 30,
+              ph1: 0, //-360 * 0.98,
+              mode: 'no',
+            },
+            zeroFilling: {
+              nbPoints: 1024,
+            },
+            apodization: {
+              apply: true,
+              compose: {
+                shapes: [
+                  {
+                    shape: {
+                      kind: 'sineBell',
+                      options: {
+                        exponent: 2,
+                        offset: 0.5,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+        // {
+        //   name: phaseCorrectionDimension1.id,
+        //   value: {
+        //     ph0: 30,
+        //     ph1: 0,
+        //   }
+        // }
+      ],
       { filterIndex: activeFilterIndex },
     );
 
