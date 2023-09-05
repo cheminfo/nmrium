@@ -11,7 +11,6 @@ import ActiveButton from '../../elements/ActiveButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
-import { zoneStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
   createFilterLabel,
@@ -20,6 +19,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 
 const style = css`
   .remove-assignments-btn {
@@ -53,7 +53,6 @@ function ZonesPanelInner({
   showZones,
   showSignals,
   showPeaks,
-  id,
 }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -166,13 +165,22 @@ function ZonesPanelInner({
   }, []);
 
   const handleSetShowZones = () => {
-    dispatch({ type: 'SHOW_ZONES', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showZones' },
+    });
   };
   const handleSetShowSignals = () => {
-    dispatch({ type: 'SHOW_ZONES_SIGNALS', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showSignals' },
+    });
   };
   const handleSetShowPeaks = () => {
-    dispatch({ type: 'SHOW_ZONES_PEAKS', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showPeaks' },
+    });
   };
 
   const counter = zones?.values?.length || 0;
@@ -280,16 +288,14 @@ export default function ZonesPanel() {
     xDomain,
     yDomain,
     view: {
-      zones: zoneState,
       spectra: { activeTab },
     },
   } = useChartData();
-  const { zones, info, id } = useSpectrum(emptyData) as Spectrum2D;
-  const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
+  const { zones, info } = useSpectrum(emptyData) as Spectrum2D;
+  const zoneProps = useActiveSpectrumZonesViewState();
   return (
     <MemoizedZonesPanel
       {...{
-        id,
         xDomain,
         yDomain,
         activeTab,

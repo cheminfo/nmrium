@@ -10,6 +10,7 @@ import { HighlightEventSource, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -44,14 +45,12 @@ const stylesHighlighted = css`
 
 interface ZoneProps {
   zoneData: ZoneType;
-  isVisible: {
-    zones: boolean;
-  };
 }
 
-function Zone({ zoneData, isVisible }: ZoneProps) {
+function Zone({ zoneData }: ZoneProps) {
   const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
+  const { showZones } = useActiveSpectrumZonesViewState();
   const highlightZone = useHighlight([assignmentZone.id], {
     type: HighlightEventSource.ZONE,
     extra: { id: assignmentZone.id },
@@ -86,7 +85,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
         highlightZone.hide();
       }}
     >
-      {isVisible.zones && (
+      {showZones && (
         <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
           <rect
             x="0"
@@ -100,7 +99,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
         </g>
       )}
       {signals.map((_signal, i) => (
-        <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
+        <Signal key={`${id + i}`} signal={_signal} />
       ))}
     </g>
   );
