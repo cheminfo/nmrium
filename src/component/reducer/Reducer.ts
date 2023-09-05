@@ -35,11 +35,6 @@ export interface ActiveSpectrum {
   index: number;
 }
 
-export const rangeStateInit = {
-  showMultiplicityTrees: false,
-  showRangesIntegrals: true,
-  showJGraph: false,
-};
 export const zoneStateInit = {
   showZones: true,
   showSignals: true,
@@ -58,7 +53,7 @@ export interface Margin {
 export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
-    ranges: [],
+    ranges: {},
     zones: [],
     peaks: {},
     spectra: {
@@ -589,14 +584,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleSetDiaIDRange(draft, action);
       case 'UPDATE_RANGE':
         return RangesActions.handleUpdateRange(draft, action);
-      case 'SHOW_MULTIPLICITY_TREES':
-        return RangesActions.handleShowMultiplicityTrees(draft, action);
-      case 'SHOW_RANGES_INTEGRALS':
-        return RangesActions.handleShowRangesIntegrals(draft, action);
+      case 'TOGGLE_RANGES_VIEW_PROPERTY':
+        return RangesActions.handleToggleRangesViewProperty(draft, action);
       case 'AUTO_RANGES_SPECTRA_PICKING':
         return RangesActions.handleAutoSpectraRangesDetection(draft);
-      case 'SHOW_J_GRAPH':
-        return RangesActions.handleShowJGraph(draft, action);
       case 'CUT_RANGE':
         return RangesActions.handleCutRange(draft, action);
 

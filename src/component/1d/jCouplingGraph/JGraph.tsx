@@ -7,9 +7,9 @@ import generateJGraphData, {
   CouplingLink,
 } from '../../../data/data1d/Spectrum1D/generateJGraphData';
 import { useChartData } from '../../context/ChartContext';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 
 import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
@@ -40,15 +40,12 @@ export default function JGraph() {
   const {
     height,
     view: {
-      ranges: rangeState,
       spectra: { activeTab },
     },
   } = useChartData();
   const spectrum = useSpectrum() as Spectrum1D;
 
-  const { showJGraph } =
-    rangeState.find((r) => r.spectrumID === spectrum?.id) || rangeStateInit;
-
+  const { showJGraph } = useActiveSpectrumRangesViewState();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   const graphHeight = height / 4;

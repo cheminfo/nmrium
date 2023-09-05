@@ -15,9 +15,9 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -238,12 +238,10 @@ export default function RangesTablePanel() {
     },
     molecules,
     toolOptions: { selectedTool },
-    view: { ranges: rangeState },
   } = useChartData();
-  const { showMultiplicityTrees, showRangesIntegrals, showJGraph } = useMemo(
-    () => rangeState.find((r) => r.spectrumID === id) || rangeStateInit,
-    [id, rangeState],
-  );
+
+  const { showMultiplicityTrees, showRangesIntegrals, showJGraph } =
+    useActiveSpectrumRangesViewState();
 
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
