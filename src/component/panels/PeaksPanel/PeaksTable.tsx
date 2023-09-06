@@ -6,7 +6,8 @@ import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
-  CustomColumn,
+  ControlCustomColumn,
+  createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { useModal } from '../../elements/popup/Modal';
 import { positions, transitions } from '../../elements/popup/options';
@@ -35,9 +36,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
   const peaksPreferences = usePanelPreferences('peaks', activeTab);
 
   const deletePeakHandler = useCallback(
-    (e, row) => {
-      e.preventDefault();
-      e.stopPropagation();
+    (row) => {
       const params = row.original;
       dispatch({
         type: 'DELETE_PEAK',
@@ -47,10 +46,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     [dispatch],
   );
   const editPeakHandler = useCallback(
-    (e, row) => {
-      e.preventDefault();
-      e.stopPropagation();
-
+    (row) => {
       modal.show(
         <EditPeakShapeModal
           peak={row.original}
@@ -74,133 +70,122 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     },
     [dispatch],
   );
-  const COLUMNS: Array<CustomColumn<PeakRecord> & { showWhen: string }> =
-    useMemo(
-      () => [
-        {
-          showWhen: 'peakNumber.show',
-          index: 1,
-          Header: '#',
-          accessor: (_, index) => index + 1,
-          style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
-        },
-        {
-          showWhen: 'deltaPPM.show',
-          index: 3,
-          Header: 'δ (ppm)',
-          accessor: 'x',
-          Cell: ({ row }) => (
-            <EditableColumn
-              value={formatNumber(
-                row.original.x,
-                peaksPreferences.deltaPPM.format,
-              )}
-              onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
-              type="number"
-              validate={(val) => val !== ''}
-            />
-          ),
-        },
-        {
-          showWhen: 'deltaHz.show',
-          index: 4,
-          Header: 'δ (Hz)',
-          accessor: 'xHz',
-          Cell: ({ row }) =>
-            formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
-        },
-        {
-          showWhen: 'intensity.show',
-          index: 5,
-          Header: 'Intensity',
-          style: { maxWidth: '80px' },
-          accessor: 'y',
-          Cell: ({ row }) =>
-            formatNumber(row.original.y, peaksPreferences.intensity.format),
-        },
-        {
-          showWhen: 'peakWidth.show',
-          index: 6,
-          Header: 'Width (Hz)',
-          accessor: 'width',
-          Cell: ({ row }) =>
-            formatNumber(row.original.width, peaksPreferences.peakWidth.format),
-        },
-        {
-          showWhen: 'showKind',
-          index: 7,
-          Header: 'Kind',
-          accessor: (row) => row.shape?.kind || '',
-        },
-        {
-          showWhen: 'fwhm.show',
-          index: 8,
-          Header: 'fwhm',
-          accessor: (row) => row?.shape?.fwhm || '',
-          Cell: ({ row }) => {
-            const fwhm = row.original?.shape?.fwhm;
-            if (fwhm) {
-              return formatNumber(fwhm, peaksPreferences.fwhm.format);
-            }
-            return '';
-          },
-        },
-        {
-          showWhen: 'mu.show',
-          index: 9,
-          Header: 'mu',
-          accessor: (row) =>
-            (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
-          Cell: ({ row }) => {
-            const mu =
-              row.original?.shape?.kind === 'pseudoVoigt' &&
-              row.original?.shape?.mu;
-            if (mu) {
-              return formatNumber(mu, peaksPreferences.mu.format);
-            }
-            return '';
-          },
-        },
-      ],
-      [peaksPreferences, saveDeltaPPMRefsHandler],
-    );
-
-  const initialColumns: Array<CustomColumn<any>> = useMemo(
+  const COLUMNS: Array<ControlCustomColumn<PeakRecord>> = useMemo(
     () => [
       {
-        index: 20,
-        Header: '',
-        style: {
-          width: '1%',
-          maxWidth: '48px',
-          minWidth: '48px',
-        },
-        id: 'actions',
+        showWhen: 'showSerialNumber',
+        index: 1,
+        Header: '#',
+        accessor: (_, index) => index + 1,
+        style: { width: '1%', maxWidth: '40px', minWidth: '40px' },
+      },
+      {
+        showWhen: 'deltaPPM.show',
+        index: 3,
+        Header: 'δ (ppm)',
+        accessor: 'x',
         Cell: ({ row }) => (
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <button
-              type="button"
-              className="edit-button"
-              onClick={(e) => editPeakHandler(e, row)}
-            >
-              <FaEdit />
-            </button>
-            <button
-              type="button"
-              className="delete-button"
-              onClick={(e) => deletePeakHandler(e, row)}
-            >
-              <FaRegTrashAlt />
-            </button>
-          </div>
+          <EditableColumn
+            value={formatNumber(
+              row.original.x,
+              peaksPreferences.deltaPPM.format,
+            )}
+            onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
+            type="number"
+            validate={(val) => val !== ''}
+          />
         ),
       },
+      {
+        showWhen: 'deltaHz.show',
+        index: 4,
+        Header: 'δ (Hz)',
+        accessor: 'xHz',
+        Cell: ({ row }) =>
+          formatNumber(row.original.xHz, peaksPreferences.deltaHz.format),
+      },
+      {
+        showWhen: 'intensity.show',
+        index: 5,
+        Header: 'Intensity',
+        style: { maxWidth: '80px' },
+        accessor: 'y',
+        Cell: ({ row }) =>
+          formatNumber(row.original.y, peaksPreferences.intensity.format),
+      },
+      {
+        showWhen: 'peakWidth.show',
+        index: 6,
+        Header: 'Width (Hz)',
+        accessor: 'width',
+        Cell: ({ row }) =>
+          formatNumber(row.original.width, peaksPreferences.peakWidth.format),
+      },
+      {
+        showWhen: 'showKind',
+        index: 7,
+        Header: 'Kind',
+        accessor: (row) => row.shape?.kind || '',
+      },
+      {
+        showWhen: 'fwhm.show',
+        index: 8,
+        Header: 'fwhm',
+        accessor: (row) => row?.shape?.fwhm || '',
+        Cell: ({ row }) => {
+          const fwhm = row.original?.shape?.fwhm;
+          if (fwhm) {
+            return formatNumber(fwhm, peaksPreferences.fwhm.format);
+          }
+          return '';
+        },
+      },
+      {
+        showWhen: 'mu.show',
+        index: 9,
+        Header: 'mu',
+        accessor: (row) =>
+          (row?.shape?.kind === 'pseudoVoigt' && row?.shape?.mu) || '',
+        Cell: ({ row }) => {
+          const mu =
+            row.original?.shape?.kind === 'pseudoVoigt' &&
+            row.original?.shape?.mu;
+          if (mu) {
+            return formatNumber(mu, peaksPreferences.mu.format);
+          }
+          return '';
+        },
+      },
+      {
+        showWhen: 'showEditPeakShapeAction',
+        ...createActionColumn<PeakRecord>({
+          index: 20,
+          icon: <FaEdit />,
+          onClick: editPeakHandler,
+          style: {
+            borderRight: '0px',
+          },
+        }),
+      },
+      {
+        showWhen: 'showDeleteAction',
+        ...createActionColumn<PeakRecord>({
+          index: 21,
+          icon: <FaRegTrashAlt />,
+          onClick: deletePeakHandler,
+        }),
+      },
     ],
-    [deletePeakHandler, editPeakHandler],
+    [
+      peaksPreferences,
+      saveDeltaPPMRefsHandler,
+      deletePeakHandler,
+      editPeakHandler,
+    ],
   );
 
   const tableColumns = useMemo(() => {
-    const columns = [...initialColumns];
+    const columns: Array<ControlCustomColumn<PeakRecord>> = [];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
       if (lodashGet(peaksPreferences, showWhen)) {
@@ -209,7 +194,7 @@ function PeaksTable({ activeTab, data, info }: PeaksTableProps) {
     }
 
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [COLUMNS, initialColumns, peaksPreferences]);
+  }, [COLUMNS, peaksPreferences]);
 
   if (info?.isFid) {
     return <NoDataForFid />;
