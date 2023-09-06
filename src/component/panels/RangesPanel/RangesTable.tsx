@@ -85,11 +85,15 @@ function RangesTable({
     return <NoTableData />;
   }
 
+  const showActions =
+    preferences.showDeleteAction ||
+    preferences.showEditAction ||
+    preferences.showZoomAction;
   return (
     <table css={tableStyle}>
       <thead>
         <tr>
-          <th>#</th>
+          {preferences.showSerialNumber && <th>#</th>}
           {preferences.from.show && (
             <th id="from" {...onSort}>
               From
@@ -110,16 +114,20 @@ function RangesTable({
             </th>
           )}
           {preferences.absolute.show && <th>Absolute</th>}
-          <th>Mult.</th>
+          {preferences.showMultiplicity && <th>Mult.</th>}
           {preferences.coupling.show && <th>J (Hz)</th>}
-          <th title="Assign multiplets">
-            <FaLink style={{ fontSize: 10, margin: 'auto' }} />
-          </th>
-          <th title="Assign ranges" style={{ minWidth: '50px' }}>
-            Σ
-          </th>
+          {preferences.showAssignment && (
+            <>
+              <th title="Assign multiplets">
+                <FaLink style={{ fontSize: 10, margin: 'auto' }} />
+              </th>
+              <th title="Assign ranges" style={{ minWidth: '50px' }}>
+                Σ
+              </th>
+            </>
+          )}
           {preferences.showKind && <th>Kind</th>}
-          <th>{''}</th>
+          {showActions && <th>{''}</th>}
         </tr>
       </thead>
       <tbody>
