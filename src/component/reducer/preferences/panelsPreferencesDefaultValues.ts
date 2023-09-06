@@ -3,6 +3,7 @@ import {
   PanelsPreferences,
   SpectraNucleusPreferences,
 } from 'nmr-load-save';
+import { is2DNucleus } from '../../utility/nucleusToString';
 
 function getPreferences<T>(data: T, nucleus?: string) {
   return { nuclei: { ...(nucleus ? { [nucleus]: data } : {}) } };
@@ -73,13 +74,33 @@ const getIntegralDefaultValues = (
   return getPreferences(preferences, nucleus);
 };
 
-const getZoneDefaultValues = (
-  nucleus?: string,
-): PanelsPreferences['zones'] => ({
-  absolute: { show: false, format: '0.00' },
-  relative: { show: true, format: '0.00' },
-  ...getPreferences({ deltaPPM: { show: true, format: '0.00' } }, nucleus),
-});
+const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
+  const common = {
+    absolute: { show: false, format: '0.00' },
+    relative: { show: true, format: '0.00' },
+  };
+
+  if (!nucleus) {
+    return { nuclei: {} };
+  }
+
+  if (is2DNucleus(nucleus)) {
+    const perferences2D = {
+      showSerialNumber: true,
+      showKind: true,
+      showDeleteAction: true,
+      showZoomAction: true,
+      showEditAction: true,
+      showAssignment: true,
+    };
+    return { ...common, ...getPreferences(perferences2D, nucleus) };
+  } else {
+    const perferences1D = {
+      deltaPPM: { show: true, format: '0.00' },
+    };
+    return { ...common, ...getPreferences(perferences1D, nucleus) };
+  }
+};
 
 const getRangeDefaultValues = (
   nucleus?: string,

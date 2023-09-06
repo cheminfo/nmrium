@@ -23,12 +23,24 @@ const selectBoxStyle: CSSProperties = {
 interface ActionsColumnProps {
   rowData: ZoneData;
   rowSpanTags: any;
+  showKind: boolean;
+  showDeleteAction: boolean;
+  showEditAction: boolean;
+  showZoomAction: boolean;
 }
 
-function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
+function ActionsColumn({
+  rowData,
+  rowSpanTags,
+  showKind,
+  showDeleteAction,
+  showEditAction,
+  showZoomAction,
+}: ActionsColumnProps) {
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
   const modal = useModal();
+  const showActions = showDeleteAction || showEditAction || showZoomAction;
 
   const changeSignalKindHandler = useCallback(
     (kind) => {
@@ -110,35 +122,49 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
 
   return (
     <Fragment>
-      <td>
-        <Select
-          onChange={(value) => {
-            changeSignalKindHandler(value);
-          }}
-          items={SignalKinds}
-          defaultValue={rowData.tableMetaInfo.signal.kind}
-          style={selectBoxStyle}
-        />
-      </td>
-      <td {...rowSpanTags}>
-        <button
-          type="button"
-          className="delete-button"
-          onClick={deleteZoneHandler}
-        >
-          <FaRegTrashAlt />
-        </button>
-        <button type="button" className="zoom-button" onClick={zoomZoneHandler}>
-          <FaSearchPlus title="Zoom to zone in spectrum" />
-        </button>
-        <button
-          type="button"
-          className="edit-button"
-          onClick={openEditZoneHandler}
-        >
-          <FaEdit color="blue" />
-        </button>
-      </td>
+      {showKind && (
+        <td>
+          <Select
+            onChange={(value) => {
+              changeSignalKindHandler(value);
+            }}
+            items={SignalKinds}
+            defaultValue={rowData.tableMetaInfo.signal.kind}
+            style={selectBoxStyle}
+          />
+        </td>
+      )}
+      {showActions && (
+        <td {...rowSpanTags}>
+          {showDeleteAction && (
+            <button
+              type="button"
+              className="delete-button"
+              onClick={deleteZoneHandler}
+            >
+              <FaRegTrashAlt />
+            </button>
+          )}
+          {showZoomAction && (
+            <button
+              type="button"
+              className="zoom-button"
+              onClick={zoomZoneHandler}
+            >
+              <FaSearchPlus title="Zoom to zone in spectrum" />
+            </button>
+          )}
+          {showEditAction && (
+            <button
+              type="button"
+              className="edit-button"
+              onClick={openEditZoneHandler}
+            >
+              <FaEdit color="blue" />
+            </button>
+          )}
+        </td>
+      )}
     </Fragment>
   );
 }
