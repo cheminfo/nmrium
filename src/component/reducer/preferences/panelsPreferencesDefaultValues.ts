@@ -59,12 +59,17 @@ const getIntegralDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['integrals'] => {
   const preferences = {
+    showSerialNumber: true,
     absolute: { show: false, format: '0.00' },
     relative: { show: true, format: '0.00' },
+    from: { show: true, format: '0.00' },
+    to: { show: true, format: '0.00' },
     color: '#000000',
     strokeWidth: 1,
     showKind: true,
+    showDeleteAction: true,
   };
+
   return getPreferences(preferences, nucleus);
 };
 
@@ -80,6 +85,7 @@ const getRangeDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['ranges'] => {
   const preferences = {
+    showSerialNumber: true,
     from: { show: false, format: '0.00' },
     to: { show: false, format: '0.00' },
     absolute: { show: false, format: '0.00' },
@@ -89,6 +95,11 @@ const getRangeDefaultValues = (
     coupling: { show: true, format: '0.00' },
     jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
     showKind: true,
+    showMultiplicity: true,
+    showAssignment: true,
+    showDeleteAction: true,
+    showZoomAction: true,
+    showEditAction: true,
   };
 
   return getPreferences(preferences, nucleus);
@@ -98,14 +109,16 @@ const getPeaksDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['peaks'] => {
   const preferences = {
-    peakNumber: { show: true, format: '0' },
+    showSerialNumber: true,
     deltaPPM: { show: true, format: '0.00' },
     deltaHz: { show: false, format: '0.00' },
     peakWidth: { show: false, format: '0.00' },
     intensity: { show: true, format: '0.00' },
-    showKind: true,
     fwhm: { show: true, format: '0.00000' },
     mu: { show: false, format: '0.00000' },
+    showDeleteAction: true,
+    showEditPeakShapeAction: true,
+    showKind: true,
   };
 
   return getPreferences(preferences, nucleus);
