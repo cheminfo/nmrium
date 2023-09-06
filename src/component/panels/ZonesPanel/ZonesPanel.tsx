@@ -262,11 +262,7 @@ function ZonesPanelInner({
             <ZonesTable
               tableData={tableData}
               onUnlink={unlinkZoneHandler}
-              nuclei={
-                activeTab && activeTab.split(',').length === 2
-                  ? activeTab.split(',')
-                  : ['?', '?']
-              }
+              nucleus={activeTab}
               info={info}
             />
           </div>
