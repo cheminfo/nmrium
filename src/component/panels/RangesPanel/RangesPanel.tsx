@@ -15,7 +15,6 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -41,9 +40,6 @@ interface RangesTablePanelInnerProps {
   xDomain: number[];
   activeTab: string;
   molecules: StateMoleculeExtended[];
-  showMultiplicityTrees: boolean;
-  showJGraph: boolean;
-  showRangesIntegrals: boolean;
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 
@@ -56,9 +52,6 @@ function RangesTablePanelInner({
   preferences,
   activeTab,
   molecules,
-  showMultiplicityTrees,
-  showJGraph,
-  showRangesIntegrals,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
   const assignmentData = useAssignmentData();
@@ -180,9 +173,6 @@ function RangesTablePanelInner({
             info,
             activeTab,
             molecules,
-            showRangesIntegrals,
-            showMultiplicityTrees,
-            showJGraph,
             isFilterActive,
           }}
           onUnlink={unlinkRangeHandler}
@@ -240,9 +230,6 @@ export default function RangesTablePanel() {
     toolOptions: { selectedTool },
   } = useChartData();
 
-  const { showMultiplicityTrees, showRangesIntegrals, showJGraph } =
-    useActiveSpectrumRangesViewState();
-
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   return (
@@ -252,9 +239,6 @@ export default function RangesTablePanel() {
         ranges,
         data,
         info,
-        showMultiplicityTrees,
-        showJGraph,
-        showRangesIntegrals,
         selectedTool,
         displayerKey,
         preferences: rangesPreferences,

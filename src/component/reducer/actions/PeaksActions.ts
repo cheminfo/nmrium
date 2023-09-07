@@ -2,7 +2,12 @@ import { v4 } from '@lukeed/uuid';
 import { NmrData1D } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D, PeaksViewState } from 'nmr-load-save';
+import {
+  Spectrum1D,
+  PeaksViewState,
+  ViewState,
+  RangesViewState,
+} from 'nmr-load-save';
 import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
@@ -17,6 +22,7 @@ import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { ActionType } from '../types/ActionType';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
@@ -240,23 +246,43 @@ function togglePeaksViewProperty(
   }
 }
 
-function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+type TogglePeaksViewState = RangesViewState | PeaksViewState;
+function toggleDisplayingPeaks(
+  draft: Draft<State>,
+  key: keyof Pick<ViewState, 'peaks' | 'ranges'>,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
-    const peaksView = draft.view.peaks;
-    if (peaksView[activeSpectrum.id]) {
-      peaksView[activeSpectrum.id].displayingMode =
-        peaksView[activeSpectrum.id].displayingMode === 'single'
+    const viewOptions = draft.view[key];
+    if (viewOptions[activeSpectrum.id]) {
+      viewOptions[activeSpectrum.id].displayingMode =
+        viewOptions[activeSpectrum.id].displayingMode === 'single'
           ? 'spread'
           : 'single';
     } else {
-      const defaultPeaksView = { ...defaultPeaksViewState };
-      defaultPeaksView.displayingMode =
-        defaultPeaksView.displayingMode === 'single' ? 'spread' : 'single';
-      peaksView[activeSpectrum.id] = defaultPeaksView;
+      let defaultsViewOptions = {} as TogglePeaksViewState;
+      switch (key) {
+        case 'peaks':
+          defaultsViewOptions = { ...defaultPeaksViewState };
+
+          break;
+        case 'ranges':
+          defaultsViewOptions = { ...defaultRangesViewState };
+          break;
+        default:
+          break;
+      }
+
+      defaultsViewOptions.displayingMode =
+        defaultsViewOptions.displayingMode === 'single' ? 'spread' : 'single';
+      viewOptions[activeSpectrum.id] = defaultsViewOptions;
     }
   }
+}
+
+function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+  toggleDisplayingPeaks(draft, 'peaks');
 }
 
 export {
@@ -268,4 +294,5 @@ export {
   handleChangePeakShape,
   handleTogglePeaksViewProperty,
   handleChangePeaksDisplayingMode,
+  toggleDisplayingPeaks,
 };

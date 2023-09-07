@@ -27,7 +27,7 @@ const styles = css`
   }
 `;
 
-interface ActiveButtonProps {
+export interface ActiveButtonProps {
   /**
    * The state of the button
    */
@@ -35,7 +35,7 @@ interface ActiveButtonProps {
   popupTitle: string;
   popupPlacement: string;
   style?: CSSProperties;
-  onClick: (element: boolean) => void;
+  onClick: (value: boolean) => void;
   disabled?: boolean;
   children: ReactNode;
   className?: string;

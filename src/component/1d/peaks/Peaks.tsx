@@ -11,6 +11,7 @@ import { v4 } from '@lukeed/uuid';
 import { memo, useMemo } from 'react';
 import { useScaleX } from '../utilities/scale';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
 interface SpreadPeak1D extends Peak1D {
   scaleX: number;
@@ -127,13 +128,12 @@ function InnerPeaks(props: InnerPeaksProps) {
 
 const MemoizedPeaksPanel = memo(InnerPeaks);
 
-const emptyData = { peaks: {}, info: {}, display: {} };
+const emptyData = { peaks: {}, ranges: {}, info: {}, display: {} };
 
 export default function Peaks(props) {
   const { peaksSource } = props;
   const {
     view: {
-      peaks: peaksView,
       spectra: { activeTab: nucleus },
     },
     displayerKey,
@@ -141,6 +141,7 @@ export default function Peaks(props) {
   } = useChartData();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const peaksViewState = useActiveSpectrumPeaksViewState();
+  const rangesViewState = useActiveSpectrumRangesViewState();
   const {
     deltaPPM: { format: peakFormat },
   } = usePanelPreferences(
@@ -161,13 +162,19 @@ export default function Peaks(props) {
 
   if (
     peaksSource === 'ranges' &&
-    (!spectrum.ranges?.values || canDisplaySpectrumPeaks)
+    (!spectrum.ranges?.values ||
+      !rangesViewState.showPeaks ||
+      canDisplaySpectrumPeaks)
   ) {
     return null;
   }
 
   if (peaksSource === 'peaks') {
-    mode = peaksView?.[spectrum.id]?.displayingMode || 'spread';
+    mode = peaksViewState?.displayingMode || 'spread';
+  }
+
+  if (peaksSource === 'ranges') {
+    mode = rangesViewState?.displayingMode || 'spread';
   }
 
   return (
