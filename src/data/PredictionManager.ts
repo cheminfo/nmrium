@@ -297,8 +297,8 @@ function mapZones(zones: Array<Partial<Zone>>) {
       return {
         id: id || v4(),
         kind: 'signal',
-        x: { ...x, originDelta: x.delta || 0 },
-        y: { ...y, originDelta: y.delta || 0 },
+        x: { ...x, originalDelta: x.delta || 0 },
+        y: { ...y, originalDelta: y.delta || 0 },
         ...resSignal,
       };
     });
