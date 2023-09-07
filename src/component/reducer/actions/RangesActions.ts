@@ -41,6 +41,7 @@ import { ActionType } from '../types/ActionType';
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain, setIntegralsYDomain } from './DomainActions';
 import { resetSelectedTool } from './ToolsActions';
+import { toggleDisplayingPeaks } from './PeaksActions';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',
@@ -146,7 +147,11 @@ export type RangesActions =
   | UpdateRangAction
   | CutRangAction
   | ToggleRangesViewAction
-  | ActionType<'AUTO_RANGES_SPECTRA_PICKING' | 'CHANGE_RANGES_SUM_FLAG'>;
+  | ActionType<
+      | 'AUTO_RANGES_SPECTRA_PICKING'
+      | 'CHANGE_RANGES_SUM_FLAG'
+      | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
+    >;
 
 function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
   return (draft.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
@@ -604,6 +609,10 @@ function handleCutRange(draft: Draft<State>, action: CutRangAction) {
   handleUpdateCorrelations(draft);
 }
 
+function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+  toggleDisplayingPeaks(draft, 'ranges');
+}
+
 export {
   handleCutRange,
   handleAutoRangesDetection,
@@ -624,4 +633,5 @@ export {
   handleUpdateRange,
   handleAutoSpectraRangesDetection,
   handleToggleRangesViewProperty,
+  handleChangePeaksDisplayingMode,
 };

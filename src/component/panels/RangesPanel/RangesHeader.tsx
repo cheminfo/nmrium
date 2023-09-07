@@ -21,6 +21,10 @@ import { getNumberOfDecimals } from '../../utility/formatNumber';
 import DefaultPanelHeader, {
   createFilterLabel,
 } from '../header/DefaultPanelHeader';
+import { PeaksToggleActions } from '../PeaksPanel/PeaksToggleActions';
+import { FilterType } from '../../utility/filterType';
+import { RangesViewState } from 'nmr-load-save';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
 const style = css`
   .btn {
@@ -49,9 +53,6 @@ function RangesHeader({
   onSettingClick,
   isFilterActive,
   filterCounter,
-  showMultiplicityTrees,
-  showJGraph,
-  showRangesIntegrals,
   activeTab,
 }) {
   const dispatch = useDispatch();
@@ -61,6 +62,13 @@ function RangesHeader({
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const {
+    showMultiplicityTrees,
+    showJGraph,
+    showRangesIntegrals,
+    showPeaks,
+    displayingMode,
+  } = useActiveSpectrumRangesViewState();
 
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
@@ -156,6 +164,13 @@ function RangesHeader({
     dispatch({
       type: 'CHANGE_RANGES_SUM_FLAG',
     });
+  }
+
+  function toggleViewProperty(key: keyof FilterType<RangesViewState, boolean>) {
+    dispatch({ type: 'TOGGLE_RANGES_VIEW_PROPERTY', payload: { key } });
+  }
+  function toggleDisplayingMode() {
+    dispatch({ type: 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE' });
   }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
@@ -258,6 +273,13 @@ function RangesHeader({
         >
           <ImLink />
         </ActiveButton>
+        <PeaksToggleActions
+          disbale={!hasRanges}
+          showPeaks={showPeaks}
+          onShowToggle={() => toggleViewProperty('showPeaks')}
+          displayingMode={displayingMode}
+          onDisplayingModeToggle={toggleDisplayingMode}
+        />
       </DefaultPanelHeader>
 
       <ClipboardFallbackModal
