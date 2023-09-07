@@ -7,7 +7,6 @@ import useSpectrum from '../../hooks/useSpectrum';
 import PeakAnnotations from './PeakAnnotations';
 import PeakAnnotationsSpreadMode from './PeakAnnotationsSpreadMode';
 import { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
-import { v4 } from '@lukeed/uuid';
 import { memo, useMemo } from 'react';
 import { useScaleX } from '../utilities/scale';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -57,7 +56,6 @@ function mapPeaks(peaks: Peak[], scale: (value: number) => number) {
     .map((peak) => ({
       ...peak,
       scaleX: scale(peak.x),
-      id: peak.id || v4(),
     }))
     .sort((p1, p2) => p2.x - p1.x);
 }
