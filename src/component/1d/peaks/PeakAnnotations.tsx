@@ -5,7 +5,13 @@ import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { formatNumber } from '../../utility/formatNumber';
 
 import { PeakEditionListener } from './PeakEditionManager';
-import { Peak, PeaksAnnotationsProps, PeaksSource } from './Peaks';
+import {
+  Peak,
+  PeaksAnnotationsProps,
+  PeaksSource,
+  getHighlightExtraId,
+  getHighlightSource,
+} from './Peaks';
 
 function PeakAnnotations(props: PeaksAnnotationsProps) {
   const { peaks, peaksSource, spectrumId, peakFormat } = props;
@@ -46,11 +52,11 @@ export function PeakAnnotation({
   peaksSource,
   format,
 }: PeakAnnotationProps) {
-  const { id, x, y } = peak;
+  const { id, parentKeys, x, y } = peak;
   const sign = Math.sign(y);
   const highlight = useHighlight([id], {
-    type: peaksSource === 'peaks' ? 'PEAK' : 'RANGE',
-    extra: { id },
+    type: getHighlightSource(peaksSource),
+    extra: { id: getHighlightExtraId(peaksSource, id, parentKeys) },
   });
   const { scaleX, scaleY } = useScaleChecked();
 

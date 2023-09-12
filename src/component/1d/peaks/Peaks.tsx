@@ -12,10 +12,17 @@ import { useScaleX } from '../utilities/scale';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
-interface SpreadPeak1D extends Peak1D {
+interface Peak1DWithParentKeys extends Peak1D {
+  parentKeys?: string[];
+}
+interface NMRPeak1DWithParentKeys extends NMRPeak1D {
+  parentKeys?: string[];
+}
+
+interface SpreadPeak1D extends Peak1DWithParentKeys {
   scaleX: number;
 }
-interface SpreadNMRPeak1D extends NMRPeak1D {
+interface SpreadNMRPeak1D extends NMRPeak1DWithParentKeys {
   scaleX: number;
 }
 
@@ -27,7 +34,6 @@ type FilterPeaksBy = `Source[${PeaksSource}]_Mode[${PeaksMode}]`;
 
 export interface BasePeaksProps {
   peaksSource: PeaksSource;
-
   displayerKey: string;
   xDomain: number[];
   peakFormat: string;
@@ -39,16 +45,28 @@ export interface PeaksAnnotationsProps extends BasePeaksProps {
   spectrumId: string;
 }
 
+export function getHighlightSource(peaksSource: PeaksSource) {
+  return peaksSource === 'peaks' ? 'PEAK' : 'RANGE_PEAK';
+}
+
+export function getHighlightExtraId(
+  peaksSource: PeaksSource,
+  id: string,
+  parentKeys: string[],
+) {
+  return peaksSource === 'peaks' ? id : [...parentKeys, id].join(',');
+}
+
 function flatRangesPeaks(ranges: Range[]) {
-  const peaks: NMRPeak1D[] = [];
-  for (const range of ranges) {
-    for (const signal of range?.signals || []) {
-      if (signal.peaks) {
-        peaks.push(...signal.peaks);
+  const results: NMRPeak1DWithParentKeys[] = [];
+  for (const { signals = [], id: rangeID } of ranges) {
+    for (const { peaks = [], id: signalID } of signals) {
+      for (const peak of peaks) {
+        results.push({ ...peak, parentKeys: [rangeID, signalID] });
       }
     }
   }
-  return peaks;
+  return results;
 }
 
 function mapPeaks(peaks: Peak[], scale: (value: number) => number) {

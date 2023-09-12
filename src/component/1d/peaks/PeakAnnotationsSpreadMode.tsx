@@ -4,7 +4,12 @@ import { resolve } from '../utilities/intersectionResolver';
 
 import { PeakEditionListener } from './PeakEditionManager';
 import { getDecimalsCount } from '../utilities/getDecimalsCount';
-import { PeaksAnnotationsProps, PeaksSource } from './Peaks';
+import {
+  PeaksAnnotationsProps,
+  PeaksSource,
+  getHighlightExtraId,
+  getHighlightSource,
+} from './Peaks';
 import { memo } from 'react';
 
 const notationWidth = 10;
@@ -38,7 +43,7 @@ function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
               transform={`translate(${group.meta.groupStartX},0)`}
             >
               {group.group.map((item, index) => {
-                const { id, x: value, scaleX } = item;
+                const { id, x: value, scaleX, parentKeys } = item;
                 const startX = index * (notationWidth + notationMargin);
                 const x = scaleX - group.meta.groupStartX;
                 return (
@@ -47,6 +52,7 @@ function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
                     startX={startX}
                     x={x}
                     id={id}
+                    parentKeys={parentKeys}
                     value={value}
                     format={peakFormat}
                     color={spectrumColor}
@@ -75,6 +81,7 @@ interface PeakAnnotationProps {
   value: number;
   peakEditionFieldPositon: { x: number; y: number };
   peaksSource: PeaksSource;
+  parentKeys: string[];
 }
 function PeakAnnotation(props: PeakAnnotationProps) {
   const {
@@ -86,10 +93,11 @@ function PeakAnnotation(props: PeakAnnotationProps) {
     x,
     peakEditionFieldPositon,
     peaksSource,
+    parentKeys,
   } = props;
   const highlight = useHighlight([id], {
-    type: peaksSource === 'peaks' ? 'PEAK' : 'RANGE',
-    extra: { id },
+    type: getHighlightSource(peaksSource),
+    extra: { id: getHighlightExtraId(peaksSource, id, parentKeys) },
   });
   return (
     <g
