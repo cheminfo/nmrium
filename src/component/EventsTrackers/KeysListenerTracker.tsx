@@ -106,6 +106,21 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
           break;
         }
+        case HighlightEventSource.RANGE_PEAK: {
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_RANGE_PEAK',
+              payload: {
+                id,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+
+          break;
+        }
         case HighlightEventSource.RANGE: {
           const { id } = extra || {};
           if (id) {

@@ -131,6 +131,8 @@ type ToggleRangesViewAction = ActionType<
   }
 >;
 
+type DeleteRangePeakAction = ActionType<'DELETE_RANGE_PEAK', { id: string }>;
+
 export type RangesActions =
   | AutoRangesDetectionAction
   | DeleteRangeAction
@@ -147,6 +149,7 @@ export type RangesActions =
   | UpdateRangAction
   | CutRangAction
   | ToggleRangesViewAction
+  | DeleteRangePeakAction
   | ActionType<
       | 'AUTO_RANGES_SPECTRA_PICKING'
       | 'CHANGE_RANGES_SUM_FLAG'
@@ -613,6 +616,25 @@ function handleChangePeaksDisplayingMode(draft: Draft<State>) {
   toggleDisplayingPeaks(draft, 'ranges');
 }
 
+//action
+function handleDeleteRangePeak(
+  draft: Draft<State>,
+  action: DeleteRangePeakAction,
+) {
+  const { id } = action.payload;
+  const [rangeKey, signalKey, peakKey] = id.split(',');
+
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    const datum = draft.data[activeSpectrum?.index] as Spectrum1D;
+    const range = datum.ranges.values.find((range) => range.id === rangeKey);
+    const signal = range?.signals.find((singla) => singla.id === signalKey);
+    if (signal) {
+      signal.peaks = signal.peaks?.filter((peak) => peak.id !== peakKey);
+    }
+  }
+}
+
 export {
   handleCutRange,
   handleAutoRangesDetection,
@@ -634,4 +656,5 @@ export {
   handleAutoSpectraRangesDetection,
   handleToggleRangesViewProperty,
   handleChangePeaksDisplayingMode,
+  handleDeleteRangePeak,
 };
