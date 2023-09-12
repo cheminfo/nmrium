@@ -25,6 +25,7 @@ export const embedded: InnerWorkspace = {
       zonesPanel: { display: true, open: false },
     },
     toolBarButtons: {
+      peakPicking: true,
       baselineCorrection: true,
       exclusionZones: true,
       exportAs: true,
