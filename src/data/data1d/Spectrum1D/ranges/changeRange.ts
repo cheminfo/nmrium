@@ -3,7 +3,7 @@ import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Range, updateRangesRelativeValues } from 'nmr-processing';
 
-import detectSignal from './detectSignal';
+import detectSignals from './detectSignals';
 
 export function changeRange(spectrum: Spectrum1D, range: Range) {
   const { from, to, id } = range;
@@ -13,7 +13,7 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
   const index = spectrum.ranges.values.findIndex((i) => i.id === id);
   const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
 
-  const signals = detectSignal(
+  const signals = detectSignals(
     { x, y },
     {
       from,

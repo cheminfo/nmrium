@@ -3,7 +3,7 @@ import { xyAutoRangesPicking } from 'nmr-processing';
 
 export const MAX_LENGTH = 4092;
 
-export default function detectSignal(
+export default function detectSignals(
   data: DataXY,
   options: {
     from: number;

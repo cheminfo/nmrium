@@ -11,7 +11,7 @@ import {
 import { ResponsiveChart } from 'react-d3-utils';
 import { useOnOff } from 'react-science/ui';
 
-import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
+import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignals';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';

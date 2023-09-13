@@ -5,7 +5,7 @@ import { Signal1D, mapRanges } from 'nmr-processing';
 
 import { DATUM_KIND } from '../../../constants/signalsKinds';
 
-import detectSignal from './detectSignal';
+import detectSignals from './detectSignals';
 
 interface RangeOptions {
   from: number;
@@ -36,7 +36,7 @@ export function addRange(spectrum: Spectrum1D, options: RangeOptions) {
 
   const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
 
-  const signals = detectSignal(
+  const signals = detectSignals(
     { x, y },
     {
       from,
