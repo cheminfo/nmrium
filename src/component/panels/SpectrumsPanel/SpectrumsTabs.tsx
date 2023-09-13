@@ -13,6 +13,7 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { SpectraTable } from './SpectraTable';
 import SpectrumSetting from './base/setting/SpectrumSetting';
+import { getModifiers } from '../../context/KeyModifierContext';
 
 interface SpectrumsTabsInnerProps {
   data: Spectrum[];
@@ -68,8 +69,9 @@ function SpectrumsTabsInner({
 
   function handleChangeActiveSpectrum(e, spectrum) {
     setTimeout(() => {
-      const modifier = `shift[${e.shiftKey ? 'true' : 'false'}]_ctrl[${
-        e.ctrlKey ? 'true' : 'false'
+      const { ctrlKey, shiftKey } = getModifiers(e);
+      const modifier = `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${
+        ctrlKey ? 'true' : 'false'
       }]`;
       dispatch({
         type: 'CHANGE_ACTIVE_SPECTRUM',
