@@ -7,18 +7,19 @@ import detectSignal from './detectSignal';
 
 export function changeRange(spectrum: Spectrum1D, range: Range) {
   const { from, to, id } = range;
-  const { x, re } = spectrum.data;
+  const { x, re: y } = spectrum.data;
+  const { originFrequency: frequency, nucleus } = spectrum.info;
 
   const index = spectrum.ranges.values.findIndex((i) => i.id === id);
-  const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
+  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
 
-  const signal = detectSignal(
-    { x, re },
+  const signals = detectSignal(
+    { x, y },
     {
       from,
       to,
-      frequency: spectrum.info.originFrequency,
-      checkMaxLength: false,
+      nucleus,
+      frequency,
     },
   );
 
@@ -29,18 +30,7 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
       originalTo: to,
       ...range,
       absolute,
-      signals: [
-        {
-          id: v4(),
-          ...(signal || {
-            multiplicity: 's',
-            kind: 'signal',
-            delta: 0,
-            js: [],
-            diaIDs: [],
-          }),
-        },
-      ],
+      signals: signals.map((s) => ({ id: v4(), ...s })),
     };
     updateRangesRelativeValues(spectrum);
   }

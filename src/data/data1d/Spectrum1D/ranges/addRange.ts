@@ -16,14 +16,14 @@ export function createRangeObj({
   from,
   to,
   absolute,
-  signal,
-}: RangeOptions & { signal: Omit<Signal1D, 'id'>; absolute: number }) {
+  signals,
+}: RangeOptions & { signals: Array<Omit<Signal1D, 'id'>>; absolute: number }) {
   return {
     id: v4(),
     from,
     to,
     absolute, // the real value,
-    signals: [{ id: v4(), ...signal }],
+    signals: signals.map((signal) => ({ id: v4(), ...signal })),
     kind: DATUM_KIND.signal,
     integration: 0,
   };
@@ -31,27 +31,29 @@ export function createRangeObj({
 
 export function addRange(spectrum: Spectrum1D, options: RangeOptions) {
   const { from, to } = options;
-  const { x, re } = spectrum.data;
-  const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
+  const { x, re: y } = spectrum.data;
+  const { nucleus, originFrequency: frequency } = spectrum.info;
 
-  // detectSignal use the advance multiplet-analysis that can crash if too many points
-  const signal = detectSignal(
-    { x, re },
+  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
+
+  const signals = detectSignal(
+    { x, y },
     {
       from,
       to,
-      frequency: spectrum.info.originFrequency,
+      nucleus,
+      frequency,
     },
   );
 
   let range;
 
-  if (signal) {
+  if (signals) {
     range = createRangeObj({
       from,
       to,
       absolute,
-      signal,
+      signals,
     });
   }
 
