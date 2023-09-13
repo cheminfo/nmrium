@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.44.0](https://github.com/cheminfo/nmrium/compare/v0.43.0...v0.44.0) (2023-09-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename key prefix 'origin' to 'original'
+
+### Features
+
+* control the visibility of NMRium header items ([7a24c77](https://github.com/cheminfo/nmrium/commit/7a24c779adb15e310a99378a376fe9c473d75ce4))
+* delete range peak ([045418d](https://github.com/cheminfo/nmrium/commit/045418d20e4811998ab73b7c8ae3f26d8e420ec6))
+* display ranges peaks ([5655c02](https://github.com/cheminfo/nmrium/commit/5655c020fbeeab71ca5a6813877c631145793705))
+* helper function to create action column ([123377c](https://github.com/cheminfo/nmrium/commit/123377cb6bb15b8655d7b43242f6c21c5e08f948))
+* improve bruker files loading ([#2662](https://github.com/cheminfo/nmrium/issues/2662)) ([d3d231f](https://github.com/cheminfo/nmrium/commit/d3d231f0b9cdce41e1b28820de278d35bf07d254))
+* improve peaks and integrals preferences ([123377c](https://github.com/cheminfo/nmrium/commit/123377cb6bb15b8655d7b43242f6c21c5e08f948))
+* improve ranges preferences ([a8b397f](https://github.com/cheminfo/nmrium/commit/a8b397fe573fb033eb8e343badeef52265a561bc))
+* improve signal kinds for ranges and integrals ([a8ca174](https://github.com/cheminfo/nmrium/commit/a8ca174863b498fc78b99b21702e9da3dcf9e7dd)), closes [#2600](https://github.com/cheminfo/nmrium/issues/2600)
+* improve zones preferences ([4966d90](https://github.com/cheminfo/nmrium/commit/4966d90b6fc9e5117d3a33bf11700fc00daa55db))
+* toggle 'ranges peaks' visibility and displaying mode ([133de16](https://github.com/cheminfo/nmrium/commit/133de16bc499b7fbd683d8ade8dc62a09d9db956))
+* validate the option and the spectra based on the selected options ([f5eb365](https://github.com/cheminfo/nmrium/commit/f5eb365fa50f5205879d5b21758aae1dfb83d37f))
+
+
+### Bug Fixes
+
+* check peaks array before mapping ([a43bfb7](https://github.com/cheminfo/nmrium/commit/a43bfb7c0ad0e7d928844abc202b1803465ff7c1))
+* consecutive selection ([53fff90](https://github.com/cheminfo/nmrium/commit/53fff90b3f3fe28cc69fe7531b34e719db63949d)), closes [#2664](https://github.com/cheminfo/nmrium/issues/2664)
+* define sum options for ranges and integrals when initiating the spectrum ([d1fc56f](https://github.com/cheminfo/nmrium/commit/d1fc56fb24db69c600ae9ec053d86f927112264d))
+* do not raise an error if no 1D trace spectra are found ([ac56101](https://github.com/cheminfo/nmrium/commit/ac5610169be72ad4d14fbaa2a45991ca38378289)), closes [#2643](https://github.com/cheminfo/nmrium/issues/2643)
+* extract the number correctly from the editable column value ([0e11fd6](https://github.com/cheminfo/nmrium/commit/0e11fd6dbd88888b76a4e2e411e0d37de39fea4a))
+* full zoom out ([#2640](https://github.com/cheminfo/nmrium/issues/2640)) ([ff0361f](https://github.com/cheminfo/nmrium/commit/ff0361f829b5919409ba23fb915de1c63239d2d8)), closes [#2639](https://github.com/cheminfo/nmrium/issues/2639)
+* integrals in fid data ([1291818](https://github.com/cheminfo/nmrium/commit/12918182c102f46b5c4d65442c3061fdd6466b9d))
+* recalculate integration when toggling or deleting filter ([81d4388](https://github.com/cheminfo/nmrium/commit/81d43886b2f6c9836552720ce8baabd6b54d60d7)), closes [#2637](https://github.com/cheminfo/nmrium/issues/2637)
+* reduce min resolution for smart range picking ([#2630](https://github.com/cheminfo/nmrium/issues/2630)) ([f01d0e4](https://github.com/cheminfo/nmrium/commit/f01d0e4a4f372e33cbac146925982a4d59182cf6))
+* spectra calibration ([f5eb365](https://github.com/cheminfo/nmrium/commit/f5eb365fa50f5205879d5b21758aae1dfb83d37f)), closes [#2566](https://github.com/cheminfo/nmrium/issues/2566)
+
+
+### Code Refactoring
+
+* rename key prefix 'origin' to 'original' ([adfe8d3](https://github.com/cheminfo/nmrium/commit/adfe8d384ae5b1253b2deac17d36eb7153c252ef))
+
 ## [0.43.0](https://github.com/cheminfo/nmrium/compare/v0.42.0...v0.43.0) (2023-08-17)
 
 
