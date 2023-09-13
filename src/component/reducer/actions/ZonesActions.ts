@@ -7,9 +7,9 @@ import type { Signal2D, Zone } from 'nmr-processing';
 import { Filters, FiltersManager } from 'nmr-processing';
 
 import {
-  DatumKind,
-  SignalKindsToInclude,
-} from '../../../data/constants/SignalsKinds';
+  DATUM_KIND,
+  SIGNAL_INLCUDED_KINDS,
+} from '../../../data/constants/signalsKinds';
 import {
   changeZoneSignal,
   detectZones,
@@ -245,9 +245,9 @@ function handleChangeZoneSignalKind(
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
     const _zone = (draft.data[index] as Spectrum2D).zones.values[zoneIndex];
     _zone.signals[zoneData.tableMetaInfo.signalIndex].kind = kind;
-    _zone.kind = SignalKindsToInclude.includes(kind)
-      ? DatumKind.signal
-      : DatumKind.mixed;
+    _zone.kind = SIGNAL_INLCUDED_KINDS.includes(kind)
+      ? DATUM_KIND.signal
+      : DATUM_KIND.mixed;
     handleUpdateCorrelations(draft);
   }
 }

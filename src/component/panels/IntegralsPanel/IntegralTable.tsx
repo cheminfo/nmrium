@@ -3,7 +3,7 @@ import { Info1D, Integral } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../data/constants/SignalsKinds';
+import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds';
 import { checkIntegralKind } from '../../../data/data1d/Spectrum1D';
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
@@ -139,7 +139,7 @@ function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
         Cell: ({ row }) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
-            items={SignalKinds}
+            items={SIGNAL_KINDS}
             style={selectStyle}
             defaultValue={row.original.kind}
           />

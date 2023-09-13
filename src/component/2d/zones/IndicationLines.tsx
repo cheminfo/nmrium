@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Spectrum1D } from 'nmr-load-save';
 import { useState, useEffect, useMemo } from 'react';
 
-import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
+import { SIGNAL_INLCUDED_KINDS } from '../../../data/constants/signalsKinds';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
@@ -52,7 +52,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
       const deltas = ranges.flatMap((_range) =>
         _range.signals
           .filter((_signal) =>
-            SignalKindsToInclude.includes(_signal.kind as string),
+            SIGNAL_INLCUDED_KINDS.includes(_signal.kind as string),
           )
           .map((_signal) => _signal.delta),
       );
