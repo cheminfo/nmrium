@@ -1,7 +1,7 @@
 import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../../data/constants/SignalsKinds';
+import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
 import { useAssignmentData } from '../../../assignment/AssignmentsContext';
 import { useDispatch } from '../../../context/DispatchContext';
 import Select from '../../../elements/Select';
@@ -128,7 +128,7 @@ function ActionsColumn({
             onChange={(value) => {
               changeSignalKindHandler(value);
             }}
-            items={SignalKinds}
+            items={SIGNAL_KINDS}
             defaultValue={rowData.tableMetaInfo.signal.kind}
             style={selectBoxStyle}
           />

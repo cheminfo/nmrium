@@ -18,7 +18,7 @@ import {
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
-import { DatumKind } from './constants/SignalsKinds';
+import { DATUM_KIND } from './constants/signalsKinds';
 import {
   initiateDatum1D,
   mapRanges,
@@ -306,7 +306,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
       id: v4(),
       ...resZone,
       signals: newSignals,
-      kind: DatumKind.signal,
+      kind: DATUM_KIND.signal,
     };
   });
 }

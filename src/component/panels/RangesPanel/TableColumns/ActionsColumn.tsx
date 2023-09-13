@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Fragment, CSSProperties } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../../data/constants/SignalsKinds';
+import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
 import Select from '../../../elements/Select';
 import {
   OnHoverEvent,
@@ -64,7 +64,7 @@ function ActionsColumn({
         <td {...onHoverSignal}>
           <Select
             onChange={changeRangeSignalKind}
-            items={SignalKinds}
+            items={SIGNAL_KINDS}
             defaultValue={row.tableMetaInfo.signal.kind}
             style={selectBoxStyle}
           />
