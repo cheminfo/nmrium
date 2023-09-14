@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "types": [
-      "vite/client"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -17,19 +11,13 @@
     "noImplicitAny": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "node16",
+    "module": "esnext",
+    "moduleResolution": "Node16",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "test-e2e",
-    "playwright.config.ts",
-    "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "test-e2e", "playwright.config.ts", "vite.config.ts"],
+  "exclude": ["node_modules"]
 }
