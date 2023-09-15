@@ -3,12 +3,10 @@
   "description": "React component to display and process nuclear magnetic resonance (NMR) spectra.",
   "version": "0.44.0",
   "license": "MIT",
-  "main": "lib-cjs/component/main/index.js",
   "module": "lib/component/main/index.js",
   "types": "lib/component/main/index.d.ts",
   "files": [
-    "lib",
-    "lib-cjs"
+    "lib"
   ],
   "scripts": {
     "build": "vite build --outDir build",
@@ -18,9 +16,9 @@
     "build-no-minify": "cross-env NO_MINIFY=true npm run build",
     "build-with-profiling": "cross-env WITH_PROFILING=true NO_MINIFY=true npm run build",
     "check-types": "tsc --project tsconfig.esm.json",
-    "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
+    "compile": "tsc --project tsconfig.esm.json",
     "copy-samples-toc": "cp src/demo/samples.json build/",
-    "clean-lib": "rimraf lib lib-cjs",
+    "clean-lib": "rimraf lib",
     "dev": "vite --host localhost --port 3000 --strictPort --open",
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
