@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import {
   Filters,
   FiltersManager,
@@ -9,12 +9,19 @@ import {
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
+import { getSlice, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
+import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 import { options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
-import { ActiveSpectrum, getInitialState, State } from '../Reducer';
+import {
+  ActiveSpectrum,
+  getInitialState,
+  State,
+  TraceDirection,
+} from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
@@ -62,7 +69,9 @@ type ZeroFillingFilterLiveAction = ActionType<
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
-  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
+  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER'
+  | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+  | 'CALCULATE_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER',
   { ph0: number; ph1: number }
 >;
 
@@ -105,6 +114,14 @@ type ApplySignalProcessingAction = ActionType<
   'APPLY_SIGNAL_PROCESSING_FILTER',
   { options: MatrixOptions }
 >;
+type AddPhaseCorrectionTraceAction = ActionType<
+  'ADD_PHASE_CORRECTION_TRACE',
+  { x: number; y: number }
+>;
+type ChangePhaseCorrectionDirectionAction = ActionType<
+  'CHANGE_PHASE_CORRECTION_DIRECTION',
+  { direction: TraceDirection }
+>;
 
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
@@ -122,13 +139,15 @@ export type FiltersActions =
   | AddExclusionZoneAction
   | DeleteExclusionZoneAction
   | ApplySignalProcessingAction
+  | AddPhaseCorrectionTraceAction
+  | ChangePhaseCorrectionDirectionAction
   | ActionType<
-      | 'APPLY_FFT_FILTER'
-      | 'APPLY_FFT_DIMENSION_1_FILTER'
-      | 'APPLY_FFT_DIMENSION_2_FILTER'
-      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-      | 'APPLY_ABSOLUTE_FILTER'
-    >;
+    | 'APPLY_FFT_FILTER'
+    | 'APPLY_FFT_DIMENSION_1_FILTER'
+    | 'APPLY_FFT_DIMENSION_2_FILTER'
+    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+    | 'APPLY_ABSOLUTE_FILTER'
+  >;
 
 function getFilterUpdateDomainRules(filterName: string) {
   return (
@@ -623,6 +642,68 @@ function handleApplyManualPhaseCorrectionFilter(
 }
 
 //action
+function handleAddPhaseCorrectionTrace(
+  draft: Draft<State>,
+  action: AddPhaseCorrectionTraceAction,
+) {
+  const { x, y } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+  const {
+    margin,
+    width,
+    height,
+    xDomain,
+    yDomain,
+    toolOptions: {
+      data: {
+        twoDimensionPhaseCorrection: { traces, activeTraceDirection },
+      },
+    },
+    data: spectra,
+    mode
+  } = draft;
+
+  const tracesSpectra = traces[activeTraceDirection].spectra;
+
+  if (activeSpectrum?.id) {
+    const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+
+    if (isSpectrum2D(spectrum)) {
+      const scale2dX = get2DXScale({ margin, width, xDomain, mode });
+      const scale2dY = get2DYScale({ margin, height, yDomain });
+      const xPPM = scale2dX.invert(x);
+      const yPPM = scale2dY.invert(y);
+      const sliceData = getSlice(spectrum, {
+        x: xPPM,
+        y: yPPM,
+      });
+
+      if (sliceData) {
+        const { data } = sliceData[activeTraceDirection];
+        tracesSpectra.push({
+          data,
+          id: v4(),
+          x: xPPM,
+          y: yPPM,
+        });
+      }
+    }
+  }
+}
+//action
+function handleChangePhaseCorrectionDirection(
+  draft: Draft<State>,
+  action: ChangePhaseCorrectionDirectionAction,
+) {
+  const { direction } = action.payload;
+  const {
+    data: { twoDimensionPhaseCorrection },
+  } = draft.toolOptions;
+
+  twoDimensionPhaseCorrection.activeTraceDirection = direction;
+}
+
+//action
 function handleCalculateManualPhaseCorrection(
   draft: Draft<State>,
   action: ManualPhaseCorrectionFilterAction,
@@ -1005,4 +1086,6 @@ export {
   handleSignalProcessingFilter,
   rollbackSpectrum,
   rollbackSpectrumByFilter,
+  handleAddPhaseCorrectionTrace,
+  handleChangePhaseCorrectionDirection,
 };

@@ -22,6 +22,7 @@ import SlicingView from './SlicingView';
 import XYLabelPointer from './tools/XYLabelPointer';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 import { get2DXScale, get2DYScale } from './utilities/scale';
+import { PhaseTraces } from './1d-tracer/phace-correction-traces';
 
 interface Viewer2DProps {
   emptyText: ReactNode;
@@ -155,11 +156,14 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { x, y } = position;
       switch (selectedTool) {
+        case 'phaseCorrectionTwoDimension':
+          dispatch({ type: 'ADD_PHASE_CORRECTION_TRACE', payload: { x, y } });
+          break;
         default:
           break;
       }
     },
-    [selectedTool],
+    [selectedTool, dispatch],
   );
 
   return (
@@ -183,11 +187,15 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
               }}
             >
               <MouseTracker
-                style={{ width: '100%', height: `100%`, position: 'absolute' }}
+                style={{ width: '100%', height: `100%`, position: 'relative' }}
               >
                 {selectedTool && selectedTool === options.slicing.id && (
                   <SlicingView />
                 )}
+                {selectedTool &&
+                  selectedTool === options.phaseCorrectionTwoDimension.id && (
+                    <PhaseTraces />
+                  )}
 
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
