@@ -29,6 +29,7 @@ import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
+import { NmrData1D } from 'cheminfo-types';
 
 export interface ActiveSpectrum {
   id: string;
@@ -36,6 +37,11 @@ export interface ActiveSpectrum {
 }
 
 export type DisplayerMode = '1D' | '2D';
+
+export interface Pivot {
+  value: number;
+  index: number;
+}
 
 export interface Margin {
   top: number;
@@ -46,6 +52,22 @@ export interface Margin {
 
 export type Domains = Record<string, number[]>;
 export type SpectraDirection = 'RTL' | 'LTR';
+export type TraceDirection = 'vertical' | 'horizontal';
+export type SpctraTraces = Array<{
+  id: string;
+  data: NmrData1D;
+  x: number;
+  y: number;
+}>;
+
+export type PhaseCorrrectionTraces = Record<
+  TraceDirection,
+  { spectra: SpctraTraces; ph0: number; ph1: number; pivot: Pivot | null }
+>;
+export interface TwoDimensionPhaseCorrrection {
+  traces: PhaseCorrrectionTraces;
+  activeTraceDirection: TraceDirection;
+}
 
 export function getDefaultViewState(): ViewState {
   return {
@@ -119,6 +141,23 @@ export const getInitialState = (): State => ({
         livePreview: true,
       },
       apodizationOptions: {} as ApodizationOptions,
+      twoDimensionPhaseCorrection: {
+        activeTraceDirection: 'horizontal',
+        traces: {
+          horizontal: {
+            ph0: 0,
+            ph1: 0,
+            pivot: null,
+            spectra: [],
+          },
+          vertical: {
+            ph0: 0,
+            ph1: 0,
+            pivot: null,
+            spectra: [],
+          },
+        },
+      },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -295,11 +334,12 @@ export interface State {
        * pivot point for manual phase correction
        * @default {value:0,index:0}
        */
-      pivot: { value: number; index: number };
+      pivot: Pivot;
       /**
        * Noise factor for auto zones detection
        * @default 1
        */
+      twoDimensionPhaseCorrection: TwoDimensionPhaseCorrrection;
       zonesNoiseFactor: number;
 
       /**
@@ -441,6 +481,13 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleAddExclusionZone(draft, action);
       case 'DELETE_EXCLUSION_ZONE':
         return FiltersActions.handleDeleteExclusionZone(draft, action);
+      case 'ADD_PHASE_CORRECTION_TRACE':
+        return FiltersActions.handleAddPhaseCorrectionTrace(draft, action);
+      case 'CHANGE_PHASE_CORRECTION_DIRECTION':
+        return FiltersActions.handleChangePhaseCorrectionDirection(
+          draft,
+          action,
+        );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,

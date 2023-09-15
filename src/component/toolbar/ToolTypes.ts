@@ -359,6 +359,20 @@ export const options: RecordOptions = {
     isToggle: false,
     isExperimental: true,
   },
+  phaseCorrectionTwoDimension: {
+    id: 'phaseCorrectionTwoDimension',
+    label: 'Phase correction two dimension',
+    hasOptionPanel: true,
+    isFilter: true,
+    mode: '2D',
+    spectraOptions: [
+      {
+        active: true,
+      },
+    ],
+    isToggle: true,
+    isExperimental: true,
+  },
   import: {
     id: 'import',
     label: 'Import',

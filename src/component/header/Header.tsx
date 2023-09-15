@@ -35,6 +35,7 @@ import PhaseCorrectionPanel from './PhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
+import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 
 export const headerLabelStyle: LabelStyle = {
   label: {
@@ -112,6 +113,8 @@ function HeaderInner(props: HeaderInnerProps) {
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
         return <PhaseCorrectionPanel />;
+      case options.phaseCorrectionTwoDimension.id:
+        return <PhaseCorrectionTwoDimensionsPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;
       case options.rangePicking.id:

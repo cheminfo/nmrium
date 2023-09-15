@@ -21,6 +21,7 @@ const allowTools = new Set([
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,
+  options.phaseCorrectionTwoDimension.id,
   options.baselineCorrection.id,
   options.rangePicking.id,
   options.zonePicking.id,

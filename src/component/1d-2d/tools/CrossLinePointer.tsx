@@ -20,6 +20,7 @@ const allowTools = new Set([
   options.apodization.id,
   options.equalizer.id,
   options.baselineCorrection.id,
+  options.phaseCorrectionTwoDimension.id,
   options.zonePicking.id,
   options.slicing.id,
   options.integral.id,

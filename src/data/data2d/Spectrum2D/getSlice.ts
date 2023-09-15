@@ -1,8 +1,9 @@
 import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
-import type { Spectrum2D } from 'nmr-load-save';
+import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
+import { TraceDirection } from '../../../component/reducer/Reducer';
 
 /** get 2d projection
  * @param {number} x in ppm
@@ -14,7 +15,10 @@ interface SlicePosition {
   y: number;
 }
 
-export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
+export function getSlice(
+  spectrum: Spectrum2D,
+  position: SlicePosition,
+): Record<TraceDirection, Spectrum1D> | undefined {
   const { data: spectraData, info } = spectrum;
   const data = info.isFid
     ? (spectraData as NmrData2DFid).re
