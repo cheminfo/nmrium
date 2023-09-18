@@ -212,12 +212,18 @@ test('Range state', async ({ page }) => {
     await nmrium.page.click('text=Auto ranges picking');
   });
   await test.step('Active range tools', async () => {
-    // Check that the integrals btn is on
+    // Check that the peaks btn is off
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide integrals" i] >> .toggle-active',
+        '_react=RangesPanel >> _react=ToolTip[title="Show peaks" i] >> .toggle-active',
       ),
-    ).toBeVisible();
+    ).toBeHidden();
+    // Check that the integrals btn is off
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Show integrals" i] >> .toggle-active',
+      ),
+    ).toBeHidden();
     // Check that the multiplicity tree btn is off
     await expect(
       nmrium.page.locator(
@@ -225,13 +231,22 @@ test('Range state', async ({ page }) => {
       ),
     ).toBeHidden();
 
-    // Check range integral
-    expect(
-      await nmrium.page.locator('_react=RangeIntegral').count(),
-    ).toBeGreaterThan(0);
+    // Check peaks within ranges are hidden
+    await expect(nmrium.page.locator('_react=PeakAnnotation')).toBeHidden();
+    // Check integrals within ranges are hidden
+    await expect(nmrium.page.locator('_react=RangeIntegral')).toBeHidden();
 
     // Check multiplicity tree
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
+
+    //show integrals
+    await nmrium.page.click(
+      '_react=RangesPanel >> _react=ToolTip[title="Show peaks" i] >> button',
+    );
+    //show integrals
+    await nmrium.page.click(
+      '_react=ToolTip[title="Show integrals" i] >> button',
+    );
 
     //show multiplicity trees
     await nmrium.page.click(
@@ -243,6 +258,14 @@ test('Range state', async ({ page }) => {
         '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
+    // Check peaks within ranges are visible
+    expect(
+      await nmrium.page.locator('_react=PeakAnnotation').count(),
+    ).toBeGreaterThan(0);
+    // Check integrals within ranges are visible
+    expect(
+      await nmrium.page.locator('_react=RangeIntegral').count(),
+    ).toBeGreaterThan(0);
     // Check multiplicity tree is visible
     expect(
       await nmrium.page.locator('_react=MultiplicityTree').count(),
@@ -257,19 +280,27 @@ test('Range state', async ({ page }) => {
     await nmrium.page.click(
       '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
     );
-    // Check that the integrals btn is on
+    // Check that the peaks btn is not active
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide integrals" i] >> .toggle-active',
+        '_react=RangesPanel >> _react=ToolTip[title="Hide peaks" i]',
       ),
+    ).toBeVisible();
+    // Check that the integrals btn is not active
+    await expect(
+      nmrium.page.locator('_react=ToolTip[title="Hide integrals" i]'),
     ).toBeVisible();
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i]',
       ),
     ).toBeVisible();
 
+    // Check range peaks
+    expect(
+      await nmrium.page.locator('_react=PeakAnnotation').count(),
+    ).toBeGreaterThan(0);
     // Check range integrals
     expect(
       await nmrium.page.locator('_react=RangeIntegral').count(),
@@ -312,7 +343,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.clickPanel('Ranges');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(16);
     await expect(
-      nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
+      nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
     ).toContainText('[ 16 ]');
   });
 
@@ -321,7 +352,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="13C"]');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(15);
     await expect(
-      nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
+      nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
   });
 
