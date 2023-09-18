@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { useActiveSpectrum } from './useActiveSpectrum';
 
 export const defaultRangesViewState: RangesViewState = {
-  showPeaks: true,
+  showPeaks: false,
   showMultiplicityTrees: false,
   showRangesIntegrals: true,
   showJGraph: false,
