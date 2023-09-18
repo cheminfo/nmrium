@@ -218,7 +218,7 @@ const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
 
 const emptyData = { ranges: {}, data: {}, info: {} };
 
-export default function RangesTablePanel() {
+export default function RangesPanel() {
   const { ranges, data, info, id } = useSpectrum(emptyData) as Spectrum1D;
   const {
     displayerKey,
