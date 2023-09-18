@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, updateRangesRelativeValues } from 'nmr-processing';
+import { Range, mapRanges, updateRangesRelativeValues } from 'nmr-processing';
 
 import detectSignals from './detectSignals';
 
@@ -24,20 +24,20 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
   );
 
   if (index !== -1) {
-    spectrum.ranges.values[index] = {
-      ...spectrum.ranges.values[index],
-      originalFrom: from,
-      originalTo: to,
-      ...range,
-      absolute,
-      signals: signals.map((s) => {
-        return {
-          id: v4(),
-          ...s,
-          peaks: s.peaks?.map((p) => ({ id: v4(), ...p })),
-        };
-      }),
-    };
+    spectrum.ranges.values[index] = mapRanges(
+      [
+        {
+          ...spectrum.ranges.values[index],
+          originalFrom: from,
+          originalTo: to,
+          ...range,
+          absolute,
+          signals: signals.map((s) => ({ id: v4(), ...s })),
+        },
+      ],
+      spectrum,
+    )[0];
+
     updateRangesRelativeValues(spectrum);
   }
 }
