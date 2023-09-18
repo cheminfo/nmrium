@@ -30,7 +30,13 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
       originalTo: to,
       ...range,
       absolute,
-      signals: signals.map((s) => ({ id: v4(), ...s })),
+      signals: signals.map((s) => {
+        return {
+          id: v4(),
+          ...s,
+          peaks: s.peaks?.map((p) => ({ id: v4(), ...p })),
+        };
+      }),
     };
     updateRangesRelativeValues(spectrum);
   }

@@ -49,12 +49,12 @@ export function addRange(spectrum: Spectrum1D, options: RangeOptions) {
   let range;
 
   if (signals) {
-    range = createRangeObj({
+    range = {
       from,
       to,
       absolute,
       signals,
-    });
+    };
   }
 
   try {
