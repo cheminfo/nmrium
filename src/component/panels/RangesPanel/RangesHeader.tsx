@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
+import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
@@ -14,17 +15,15 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { getNumberOfDecimals } from '../../utility/formatNumber';
+import { FilterType } from '../../utility/filterType';
+import { PeaksToggleActions } from '../PeaksPanel/PeaksToggleActions';
 import DefaultPanelHeader, {
   createFilterLabel,
 } from '../header/DefaultPanelHeader';
-import { PeaksToggleActions } from '../PeaksPanel/PeaksToggleActions';
-import { FilterType } from '../../utility/filterType';
-import { RangesViewState } from 'nmr-load-save';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
 const style = css`
   .btn {
@@ -62,6 +61,7 @@ function RangesHeader({
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+
   const {
     showMultiplicityTrees,
     showJGraph,
@@ -138,15 +138,10 @@ function RangesHeader({
     if (Array.isArray(ranges?.values) && ranges.values.length > 0) {
       const { originFrequency: observedFrequency, nucleus } = info;
 
-      const nbDecimalDelta = getNumberOfDecimals(
-        rangesPreferences.deltaPPM.format,
-      );
-      const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
-
       const result = rangesToACS(ranges.values, {
         nucleus, // '19f'
-        nbDecimalDelta, // 2
-        nbDecimalJ, // 1
+        deltaFormat: rangesPreferences.deltaPPM.format,
+        couplingFormat: rangesPreferences.coupling.format,
         observedFrequency, //400
       });
       modal.show(
