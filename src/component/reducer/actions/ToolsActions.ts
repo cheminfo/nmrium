@@ -326,12 +326,7 @@ function setVerticalIndicatorXPosition(
 
 function handleZoom(draft: Draft<State>, action: ZoomAction) {
   const { event, trackID, selectedTool } = action.payload;
-  const {
-    view: { ranges: rangeState },
-    displayerMode,
-    yDomains,
-    integralsYDomains,
-  } = draft;
+  const { displayerMode, yDomains, integralsYDomains } = draft;
 
   const activeSpectra = getActiveSpectra(draft);
 
@@ -350,9 +345,8 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     if (selectedTool === Tools.integral.id && event.shiftKey) {
       for (const activeSpectrum of activeSpectra) {
         //check if the integrals is visible
-        const { showRangesIntegrals } = rangeState?.[activeSpectrum.id] || {};
         const domain = integralsYDomains?.[activeSpectrum?.id];
-        if (showRangesIntegrals && domain) {
+        if (domain) {
           integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
         }
       }
