@@ -140,8 +140,8 @@ function RangesHeader({
 
       const result = rangesToACS(ranges.values, {
         nucleus, // '19f'
-        nbDecimalDelta: rangesPreferences.deltaPPM.format,
-        nbDecimalJ: rangesPreferences.coupling.format,
+        deltaFormat: rangesPreferences.deltaPPM.format,
+        couplingFormat: rangesPreferences.coupling.format,
         observedFrequency, //400
       });
       modal.show(
