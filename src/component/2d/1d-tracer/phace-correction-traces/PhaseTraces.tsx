@@ -1,5 +1,6 @@
 import { useChartData } from '../../../context/ChartContext';
 import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
+
 import { PhaseTraceWithMouse } from './PhaseTraceWithMouse';
 import { SpectraPhaseTraces } from './SpectraPhaseTraces';
 

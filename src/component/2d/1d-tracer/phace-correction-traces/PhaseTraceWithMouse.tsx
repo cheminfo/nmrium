@@ -1,10 +1,12 @@
 import { Spectrum2D } from 'nmr-load-save';
+
 import { getSlice } from '../../../../data/data2d/Spectrum2D';
 import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../../context/ChartContext';
 import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
-import { SpectrumPhaseTrace } from './SpectrumPhaseTrace';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
+
+import { SpectrumPhaseTrace } from './SpectrumPhaseTrace';
 import { useActivePhaseTraces } from './useActivePhaseTraces';
 
 export function PhaseTraceWithMouse() {
@@ -41,7 +43,7 @@ export function PhaseTraceWithMouse() {
   return (
     <SpectrumPhaseTrace
       data={data}
-      yShift={position.y}
+      position={position}
       color={color}
       direction={activeTraceDirection}
     />
