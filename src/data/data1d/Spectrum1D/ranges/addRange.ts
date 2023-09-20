@@ -36,33 +36,28 @@ export function addRange(spectrum: Spectrum1D, options: RangeOptions) {
 
   const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
 
-  const signals = detectSignals(
-    { x, y },
-    {
-      from,
-      to,
-      nucleus,
-      frequency,
-    },
-  );
+  const signals =
+    detectSignals(
+      { x, y },
+      {
+        from,
+        to,
+        nucleus,
+        frequency,
+      },
+    ) || [];
 
-  let range;
-
-  if (signals) {
-    range = {
-      from,
-      to,
-      absolute,
-      signals,
-    };
-  }
+  const range = {
+    from,
+    to,
+    absolute,
+    signals,
+  };
 
   try {
-    if (range) {
-      spectrum.ranges.values = spectrum.ranges.values.concat(
-        mapRanges([range], spectrum),
-      );
-    }
+    spectrum.ranges.values = spectrum.ranges.values.concat(
+      mapRanges([range], spectrum),
+    );
   } catch (error) {
     reportError(error);
     throw new Error('Could not calculate the multiplicity');
