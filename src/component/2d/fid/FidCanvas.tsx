@@ -25,19 +25,22 @@ export function FidCanvas() {
       const imageObject = new Image();
 
       if (context && xDomain && yDomain) {
-        const scale2dX = get2DXScale({
-          margin,
-          width,
-          xDomain: originDomain.xDomain,
-        });
+        const scale2dX = get2DXScale(
+          {
+            margin,
+            width,
+            xDomain: originDomain.xDomain,
+          },
+          true,
+        );
         const scale2dY = get2DYScale({
           margin,
           height,
           yDomain: originDomain.yDomain,
         });
-        const x1 = scale2dX(xDomain[1]) - top;
+        const x1 = scale2dX(xDomain[0]) - top;
         const y1 = scale2dY(yDomain[0]) - left;
-        const x2 = scale2dX(xDomain[0]) - top;
+        const x2 = scale2dX(xDomain[1]) - top;
         const y2 = scale2dY(yDomain[1]) - left;
 
         const w = Math.max(canvasWidth, imageData.width);

@@ -32,8 +32,8 @@ function TrackerContainer() {
   if (!position || !spectrum || spectrum?.info?.isFt) return null;
 
   const { x, y } = position;
-  const scale2dX = get2DXScale({ margin, width, xDomain });
-  const scale2dY = get2DYScale({ margin, height, yDomain }, true);
+  const scale2dX = get2DXScale({ margin, width, xDomain }, true);
+  const scale2dY = get2DYScale({ margin, height, yDomain });
   const data = getSlice(spectrum, {
     x: scale2dX.invert(x),
     y: scale2dY.invert(y),
@@ -43,8 +43,8 @@ function TrackerContainer() {
 
   return (
     <g>
-      <HorizontalSliceChart data={data.horizontal.data} reverseScale />
-      <VerticalSliceChart data={data.vertical.data} reverseScale />
+      <HorizontalSliceChart data={data.horizontal.data} reverse />
+      <VerticalSliceChart data={data.vertical.data} />
     </g>
   );
 }
