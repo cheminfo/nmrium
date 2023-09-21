@@ -1,14 +1,17 @@
+import { ReactNode } from 'react';
+
 import { useChartData } from '../../../context/ChartContext';
 import { TraceDirection } from '../../../reducer/Reducer';
 import { PathBuilder } from '../../../utility/PathBuilder';
 import { getYScale } from '../../utilities/SliceScale';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
 
-interface SpectrumPhaseTraceProps {
+interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
   data: { x: Float64Array; re: Float64Array };
   position: { x: number; y: number };
   color: string;
   direction: TraceDirection;
+  children?: ReactNode;
 }
 
 function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
@@ -42,7 +45,7 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
 }
 
 export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
-  const { data, position, color, direction } = props;
+  const { data, position, color, direction, children, ...othersProps } = props;
   const { width, margin, height } = useChartData();
 
   const { x, re } = data;
@@ -54,15 +57,21 @@ export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
   const translateX = direction === 'vertical' ? position.x - innerWidth : 0;
 
   return (
-    <path
-      className="line"
-      stroke={color}
-      strokeWidth="1"
-      fill="transparent"
-      d={path}
+    <g
       style={{
         transform: `translate(${translateX}px,${translateY}px) `,
       }}
-    />
+      {...othersProps}
+    >
+      <path
+        className="line"
+        stroke={color}
+        strokeWidth="1"
+        fill="transparent"
+        d={path}
+        pointerEvents="none"
+      />
+      {children}
+    </g>
   );
 }

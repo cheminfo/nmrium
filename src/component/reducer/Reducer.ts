@@ -53,16 +53,16 @@ export interface Margin {
 export type Domains = Record<string, number[]>;
 export type SpectraDirection = 'RTL' | 'LTR';
 export type TraceDirection = 'vertical' | 'horizontal';
-export type SpctraTraces = Array<{
+export interface SpectrumTrace {
   id: string;
   data: NmrData1D;
   x: number;
   y: number;
-}>;
+}
 
 export type PhaseCorrrectionTraces = Record<
   TraceDirection,
-  { spectra: SpctraTraces; ph0: number; ph1: number; pivot: Pivot | null }
+  { spectra: SpectrumTrace[]; ph0: number; ph1: number; pivot: Pivot | null }
 >;
 export interface TwoDimensionPhaseCorrrection {
   traces: PhaseCorrrectionTraces;
@@ -488,6 +488,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'DELETE_PHASE_CORRECTION_TRACE':
+        return FiltersActions.handleDeletePhaseCorrectionTrace(draft, action);
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,
