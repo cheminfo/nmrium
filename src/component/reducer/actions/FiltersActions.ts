@@ -1,5 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { current, Draft } from 'immer';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import {
   Filters,
@@ -12,6 +13,7 @@ import { defaultApodizationOptions } from '../../../data/constants/DefaultApodiz
 import { getSlice, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
+import { getXScale } from '../../1d/utilities/scale';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 import { options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
@@ -128,6 +130,11 @@ type DeletePhaseCorrectionTrace = ActionType<
   { id: string }
 >;
 
+type SetOneDimensionPhaseCorrectionPivotPoint = ActionType<
+  'SET_ONE_DIMENSION_PIVOT_POINT',
+  { value: number }
+>;
+
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
   | ApodizationFilterAction
@@ -147,6 +154,7 @@ export type FiltersActions =
   | AddPhaseCorrectionTraceAction
   | ChangePhaseCorrectionDirectionAction
   | DeletePhaseCorrectionTrace
+  | SetOneDimensionPhaseCorrectionPivotPoint
   | ActionType<
     | 'APPLY_FFT_FILTER'
     | 'APPLY_FFT_DIMENSION_1_FILTER'
@@ -1088,6 +1096,21 @@ function handleDeleteExclusionZone(
   }
 }
 
+function handleSetOneDimensionPhaseCorrectionPivotPoint(
+  draft: Draft<State>,
+  action: SetOneDimensionPhaseCorrectionPivotPoint,
+) {
+  const { value: xValue } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    const scaleX = getXScale(draft);
+    const value = scaleX.invert(xValue);
+    const datum = draft.data[activeSpectrum.index] as Spectrum1D;
+    const index = xFindClosestIndex(datum.data.x, value);
+    draft.toolOptions.data.pivot = { value, index };
+  }
+}
+
 export {
   handleShiftSpectrumAlongXAxis,
   handleApplyZeroFillingFilter,
@@ -1116,4 +1139,5 @@ export {
   handleAddPhaseCorrectionTrace,
   handleChangePhaseCorrectionDirection,
   handleDeletePhaseCorrectionTrace,
+  handleSetOneDimensionPhaseCorrectionPivotPoint,
 };

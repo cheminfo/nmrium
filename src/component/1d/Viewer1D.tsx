@@ -295,24 +295,24 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   );
 
   const mouseClick = useCallback<OnClick>(
-    (position) => {
+    (event) => {
       if (!scaleState.scaleX) return;
 
-      const xPPM = scaleState.scaleX().invert(position.x);
+      const xPPM = scaleState.scaleX().invert(event.x);
 
       const propagateEvent = () => {
         Events.emit('mouseClick', {
-          ...position,
+          ...event,
           xPPM,
         });
       };
 
-      if (position.shiftKey) {
+      if (event.shiftKey) {
         switch (selectedTool) {
           case options.peakPicking.id:
             dispatch({
               type: 'ADD_PEAK',
-              payload: position,
+              payload: event,
             });
             break;
           case options.editRange.id:
@@ -330,20 +330,21 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               payload: { cutValue: xPPM },
             });
             break;
+
+          case options.phaseCorrection.id:
+            dispatch({
+              type: 'SET_ONE_DIMENSION_PIVOT_POINT',
+              payload: {
+                value: event.x,
+              },
+            });
+
+            break;
           default:
             break;
         }
       } else {
         switch (selectedTool) {
-          case options.phaseCorrection.id:
-            dispatch({
-              type: 'SET_VERTICAL_INDICATOR_X_POSITION',
-              payload: {
-                position: position.x,
-              },
-            });
-            break;
-
           default:
         }
       }

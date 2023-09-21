@@ -1,6 +1,5 @@
 import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
-import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
@@ -74,10 +73,6 @@ type DeleteBaseLineZoneAction = ActionType<
 >;
 
 type BrushEndAction = ActionType<'BRUSH_END', BrushBoundary>;
-type SetVerticalIndicatorXPositionAction = ActionType<
-  'SET_VERTICAL_INDICATOR_X_POSITION',
-  { position: number }
->;
 
 type ZoomAction = ActionType<
   'SET_ZOOM',
@@ -107,7 +102,6 @@ export type ToolsActions =
   | AddBaseLineZoneAction
   | DeleteBaseLineZoneAction
   | BrushEndAction
-  | SetVerticalIndicatorXPositionAction
   | ZoomAction
   | ZoomOutAction
   | SetActiveTabAction
@@ -305,21 +299,6 @@ function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
   addToBrushHistory(draft, { trackID, xDomain: domainX, yDomain: domainY });
-}
-
-function setVerticalIndicatorXPosition(
-  draft: Draft<State>,
-  action: SetVerticalIndicatorXPositionAction,
-) {
-  const { position } = action.payload;
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const scaleX = getXScale(draft);
-    const value = scaleX.invert(position);
-    const datum = draft.data[activeSpectrum.index] as Spectrum1D;
-    const index = xFindClosestIndex(datum.data.x, value);
-    draft.toolOptions.data.pivot = { value, index };
-  }
 }
 
 function handleZoom(draft: Draft<State>, action: ZoomAction) {
@@ -667,7 +646,6 @@ export {
   handleDeleteBaseLineZone,
   handleToggleRealImaginaryVisibility,
   handleBrushEnd,
-  setVerticalIndicatorXPosition,
   handleZoom,
   zoomOut,
   handelSetActiveTab,
