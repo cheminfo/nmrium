@@ -5,6 +5,7 @@ import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
+import FormikInput from '../elements/formik/FormikInput';
 import { useAlert } from '../elements/popup/Alert';
 import {
   MIN_AREA_POINTS,
@@ -13,7 +14,6 @@ import {
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import FormikInput from '../elements/formik/FormikInput';
 
 const validationSchema = Yup.object().shape({
   minMaxRatio: Yup.number().min(0).required(),

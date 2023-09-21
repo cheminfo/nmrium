@@ -1,6 +1,7 @@
 import { SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
-import ActiveButton, { ActiveButtonProps } from '../../elements/ActiveButton';
 import { CSSProperties } from 'react';
+
+import ActiveButton, { ActiveButtonProps } from '../../elements/ActiveButton';
 
 interface PeaksToggleProps {
   disbale: boolean;

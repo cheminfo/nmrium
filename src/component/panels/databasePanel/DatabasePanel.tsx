@@ -37,9 +37,9 @@ import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
+import { DatabaseSearchOptions } from './DatabaseSearchOptions';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
-import { DatabaseSearchOptions } from './DatabaseSearchOptions';
 
 export type Databases = Array<LocalDatabase | Database>;
 

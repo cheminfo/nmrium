@@ -2,8 +2,8 @@ import type { NmrData1D, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
-import { initiateDatum1D } from '../../data1d/Spectrum1D';
 import { TraceDirection } from '../../../component/reducer/Reducer';
+import { initiateDatum1D } from '../../data1d/Spectrum1D';
 
 /** get 2d projection
  * @param {number} x in ppm

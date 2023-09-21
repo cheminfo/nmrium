@@ -12,8 +12,8 @@ import * as Yup from 'yup';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import FormikInput from '../../elements/formik/FormikInput';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 
 const validationSchema = Yup.object({
   value: Yup.number().required(),

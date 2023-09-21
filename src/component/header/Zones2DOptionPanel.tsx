@@ -5,11 +5,11 @@ import * as Yup from 'yup';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
+import FormikInput from '../elements/formik/FormikInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import FormikInput from '../elements/formik/FormikInput';
 
 const validationSchema = Yup.object().shape({
   zonesNoiseFactor: Yup.number().min(0).required(),
