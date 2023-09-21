@@ -490,6 +490,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         );
       case 'DELETE_PHASE_CORRECTION_TRACE':
         return FiltersActions.handleDeletePhaseCorrectionTrace(draft, action);
+      case 'SET_ONE_DIMENSION_PIVOT_POINT':
+        return FiltersActions.handleSetOneDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,
@@ -551,9 +556,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);
       case 'BRUSH_END':
         return ToolsActions.handleBrushEnd(draft, action);
-
-      case 'SET_VERTICAL_INDICATOR_X_POSITION':
-        return ToolsActions.setVerticalIndicatorXPosition(draft, action);
       case 'SET_SPECTRUMS_VERTICAL_ALIGN':
         return ToolsActions.setSpectrumsVerticalAlign(draft);
       case 'SET_ACTIVE_TAB':
