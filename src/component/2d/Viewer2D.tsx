@@ -16,13 +16,14 @@ import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
 
+import { PhaseTraces } from './1d-tracer/phace-correction-traces';
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
 import SlicingView from './SlicingView';
+import PivotIndicator from './tools/PivotIndicator';
 import XYLabelPointer from './tools/XYLabelPointer';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 import { get2DXScale, get2DYScale } from './utilities/scale';
-import { PhaseTraces } from './1d-tracer/phace-correction-traces';
 
 interface Viewer2DProps {
   emptyText: ReactNode;
@@ -152,15 +153,28 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   };
 
   const mouseClick: OnClick = useCallback(
-    (position) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { x, y } = position;
-      switch (selectedTool) {
-        case 'phaseCorrectionTwoDimension':
-          dispatch({ type: 'ADD_PHASE_CORRECTION_TRACE', payload: { x, y } });
-          break;
-        default:
-          break;
+    (event) => {
+      const { x, y, shiftKey } = event;
+
+      if (shiftKey) {
+        switch (selectedTool) {
+          case 'phaseCorrectionTwoDimensions':
+            dispatch({
+              type: 'SET_TWO_DIMENSION_PIVOT_POINT',
+              payload: { x, y },
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedTool) {
+          case 'phaseCorrectionTwoDimensions':
+            dispatch({ type: 'ADD_PHASE_CORRECTION_TRACE', payload: { x, y } });
+            break;
+          default:
+            break;
+        }
       }
     },
     [selectedTool, dispatch],
@@ -193,7 +207,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                   <SlicingView />
                 )}
                 {selectedTool &&
-                  selectedTool === options.phaseCorrectionTwoDimension.id && (
+                  selectedTool === options.phaseCorrectionTwoDimensions.id && (
                     <PhaseTraces />
                   )}
 
@@ -220,6 +234,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                     />
                   )}
                 </>
+                <PivotIndicator />
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
 
                 <Chart2D spectra={spectrumData} />
