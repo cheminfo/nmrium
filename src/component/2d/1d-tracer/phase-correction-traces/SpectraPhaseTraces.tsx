@@ -15,6 +15,7 @@ const style = css`
   .target {
     fill: transparent;
   }
+
   &:hover {
     .target {
       fill: #ff6f0057;

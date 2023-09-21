@@ -32,10 +32,10 @@ import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
 import PhaseCorrectionPanel from './PhaseCorrectionPanel';
+import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
-import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 
 export const headerLabelStyle: LabelStyle = {
   label: {

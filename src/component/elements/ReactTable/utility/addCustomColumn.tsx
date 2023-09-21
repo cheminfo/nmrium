@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
-import { Column } from '../ReactTable';
 import { CSSProperties, MouseEvent, ReactNode } from 'react';
+
+import { Column } from '../ReactTable';
 
 export type CustomColumn<T extends object> = Column<T> & { index: number };
 export type ControlCustomColumn<T extends object> = CustomColumn<T> & {

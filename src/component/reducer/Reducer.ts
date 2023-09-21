@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData1D } from 'cheminfo-types';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
@@ -29,7 +30,6 @@ import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
-import { NmrData1D } from 'cheminfo-types';
 
 export interface ActiveSpectrum {
   id: string;

@@ -22,7 +22,9 @@ import {
 } from '../../../data/utilities/ZoneUtilities';
 import { isNumber } from '../../../data/utilities/isNumber';
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
+import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import { ZoneData } from '../../panels/ZonesPanel/hooks/useMapZones';
+import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import get2DRange, { ZoneBoundary } from '../helper/get2DRange';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
@@ -30,8 +32,6 @@ import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
-import { FilterType } from '../../utility/filterType';
-import { defaultZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 
 interface DeleteSignal2DProps {
   spectrum: Spectrum;

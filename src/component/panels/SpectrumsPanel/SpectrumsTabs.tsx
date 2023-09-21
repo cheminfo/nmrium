@@ -5,6 +5,7 @@ import { useState, useMemo, memo, useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { getModifiers } from '../../context/KeyModifierContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
@@ -13,7 +14,6 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { SpectraTable } from './SpectraTable';
 import SpectrumSetting from './base/setting/SpectrumSetting';
-import { getModifiers } from '../../context/KeyModifierContext';
 
 interface SpectrumsTabsInnerProps {
   data: Spectrum[];

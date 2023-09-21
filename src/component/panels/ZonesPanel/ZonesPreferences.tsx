@@ -13,12 +13,12 @@ import { usePreferences } from '../../context/PreferencesContext';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
+import { is2DNucleus } from '../../utility/nucleusToString';
 import {
   NucleusPreferences,
   NucleusPreferenceField,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import { is2DNucleus } from '../../utility/nucleusToString';
 
 const preferences1DFields: NucleusPreferenceField[] = [
   {

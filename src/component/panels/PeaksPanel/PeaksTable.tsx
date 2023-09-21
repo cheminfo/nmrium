@@ -1,4 +1,5 @@
 import lodashGet from 'lodash/get';
+import { Info1D } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
@@ -14,11 +15,10 @@ import { positions, transitions } from '../../elements/popup/options';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import EditPeakShapeModal from '../../modal/EditPeakShapeModal';
 import { formatNumber } from '../../utility/formatNumber';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { PeakRecord } from './PeaksPanel';
-import { Info1D } from 'nmr-processing';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
 
 interface PeaksTableProps {
   activeTab: string;

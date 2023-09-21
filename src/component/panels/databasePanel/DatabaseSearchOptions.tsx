@@ -1,21 +1,23 @@
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
+import { FaICursor } from 'react-icons/fa';
+import { IoSearchOutline } from 'react-icons/io5';
+
 import Button from '../../elements/Button';
 import { CounterLabel } from '../../elements/CounterLabel';
 import Input from '../../elements/Input';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 import Select from '../../elements/Select';
-import PanelHeader from '../header/PanelHeader';
+import ToggleButton from '../../elements/ToggleButton';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { options } from '../../toolbar/ToolTypes';
 import { createFilterLabel } from '../header/DefaultPanelHeader';
-import { FaICursor } from 'react-icons/fa';
-import { IoSearchOutline } from 'react-icons/io5';
+import PanelHeader from '../header/PanelHeader';
+
 import {
   DataBaseSearchResultEntry,
   DatabaseSearchKeywords,
   Databases,
 } from './DatabasePanel';
-import ToggleButton from '../../elements/ToggleButton';
 
 type OnClick = React.ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
 

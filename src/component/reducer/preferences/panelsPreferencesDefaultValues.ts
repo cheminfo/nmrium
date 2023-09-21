@@ -3,6 +3,7 @@ import {
   PanelsPreferences,
   SpectraNucleusPreferences,
 } from 'nmr-load-save';
+
 import { is2DNucleus } from '../../utility/nucleusToString';
 
 function getPreferences<T>(data: T, nucleus?: string) {
