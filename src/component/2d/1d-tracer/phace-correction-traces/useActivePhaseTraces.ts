@@ -11,7 +11,7 @@ export function useActivePhaseTraces() {
   } = useChartData();
   const color = activeTraceDirection === 'horizontal' ? COLORS[0] : COLORS[1];
   return {
-    spectra: traces[activeTraceDirection].spectra,
+    ...traces[activeTraceDirection],
     activeTraceDirection,
     color,
   };

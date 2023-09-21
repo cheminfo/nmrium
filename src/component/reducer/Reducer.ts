@@ -495,6 +495,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'SET_TWO_DIMENSION_PIVOT_POINT':
+        return FiltersActions.handleSetTwoDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,

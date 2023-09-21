@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData2DFt } from 'cheminfo-types';
 import { current, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
@@ -11,6 +12,7 @@ import {
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
 import { getSlice, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
+import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import { getXScale } from '../../1d/utilities/scale';
@@ -27,7 +29,6 @@ import {
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
-import { getSpectrum } from '../helper/getSpectrum';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
 import { ActionType } from '../types/ActionType';
 
@@ -134,6 +135,10 @@ type SetOneDimensionPhaseCorrectionPivotPoint = ActionType<
   'SET_ONE_DIMENSION_PIVOT_POINT',
   { value: number }
 >;
+type SetTwoDimensionPhaseCorrectionPivotPoint = ActionType<
+  'SET_TWO_DIMENSION_PIVOT_POINT',
+  { x: number; y: number }
+>;
 
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
@@ -155,13 +160,14 @@ export type FiltersActions =
   | ChangePhaseCorrectionDirectionAction
   | DeletePhaseCorrectionTrace
   | SetOneDimensionPhaseCorrectionPivotPoint
+  | SetTwoDimensionPhaseCorrectionPivotPoint
   | ActionType<
-    | 'APPLY_FFT_FILTER'
-    | 'APPLY_FFT_DIMENSION_1_FILTER'
-    | 'APPLY_FFT_DIMENSION_2_FILTER'
-    | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
-    | 'APPLY_ABSOLUTE_FILTER'
-  >;
+      | 'APPLY_FFT_FILTER'
+      | 'APPLY_FFT_DIMENSION_1_FILTER'
+      | 'APPLY_FFT_DIMENSION_2_FILTER'
+      | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
+      | 'APPLY_ABSOLUTE_FILTER'
+    >;
 
 function getFilterUpdateDomainRules(filterName: string) {
   return (
@@ -674,7 +680,7 @@ function handleAddPhaseCorrectionTrace(
       },
     },
     data: spectra,
-    mode
+    mode,
   } = draft;
 
   const tracesSpectra = traces[activeTraceDirection].spectra;
@@ -1110,6 +1116,55 @@ function handleSetOneDimensionPhaseCorrectionPivotPoint(
     draft.toolOptions.data.pivot = { value, index };
   }
 }
+function handleSetTwoDimensionPhaseCorrectionPivotPoint(
+  draft: Draft<State>,
+  action: SetTwoDimensionPhaseCorrectionPivotPoint,
+) {
+  const {
+    data: spectra,
+    margin,
+    width,
+    height,
+    yDomain,
+    xDomain,
+    toolOptions: {
+      data: {
+        twoDimensionPhaseCorrection: { activeTraceDirection, traces },
+      },
+    },
+    mode,
+  } = draft;
+  const { x, y } = action.payload;
+  const traceDirection = traces[activeTraceDirection];
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    switch (activeTraceDirection) {
+      case 'horizontal':
+        {
+          const scale = get2DXScale({ margin, width, xDomain, mode });
+          const pivotValue = scale.invert(x);
+          const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+          const datum = getProjection((spectrum.data as NmrData2DFt).rr, 0);
+          const index = xFindClosestIndex(datum.x, pivotValue);
+          traceDirection.pivot = { value: pivotValue, index };
+        }
+        break;
+      case 'vertical':
+        {
+          const scale = get2DYScale({ margin, height, yDomain });
+          const pivotValue = scale.invert(y);
+          const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+          const datum = getProjection((spectrum.data as NmrData2DFt).rr, 1);
+          const index = xFindClosestIndex(datum.x, pivotValue);
+          traceDirection.pivot = { value: pivotValue, index };
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+}
 
 export {
   handleShiftSpectrumAlongXAxis,
@@ -1140,4 +1195,5 @@ export {
   handleChangePhaseCorrectionDirection,
   handleDeletePhaseCorrectionTrace,
   handleSetOneDimensionPhaseCorrectionPivotPoint,
+  handleSetTwoDimensionPhaseCorrectionPivotPoint,
 };
