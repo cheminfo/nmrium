@@ -25,6 +25,7 @@ import {
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
+import { getSpectrum } from '../helper/getSpectrum';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
 import { ActionType } from '../types/ActionType';
 
@@ -122,6 +123,10 @@ type ChangePhaseCorrectionDirectionAction = ActionType<
   'CHANGE_PHASE_CORRECTION_DIRECTION',
   { direction: TraceDirection }
 >;
+type DeletePhaseCorrectionTrace = ActionType<
+  'DELETE_PHASE_CORRECTION_TRACE',
+  { id: string }
+>;
 
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
@@ -141,6 +146,7 @@ export type FiltersActions =
   | ApplySignalProcessingAction
   | AddPhaseCorrectionTraceAction
   | ChangePhaseCorrectionDirectionAction
+  | DeletePhaseCorrectionTrace
   | ActionType<
     | 'APPLY_FFT_FILTER'
     | 'APPLY_FFT_DIMENSION_1_FILTER'
@@ -704,6 +710,27 @@ function handleChangePhaseCorrectionDirection(
 }
 
 //action
+function handleDeletePhaseCorrectionTrace(
+  draft: Draft<State>,
+  action: DeletePhaseCorrectionTrace,
+) {
+  const {
+    toolOptions: {
+      data: {
+        twoDimensionPhaseCorrection: { traces, activeTraceDirection },
+      },
+    },
+  } = draft;
+
+  const { id } = action.payload;
+  const traceDirection = traces[activeTraceDirection];
+
+  traceDirection.spectra = traceDirection.spectra.filter(
+    (trace) => trace.id !== id,
+  );
+}
+
+//action
 function handleCalculateManualPhaseCorrection(
   draft: Draft<State>,
   action: ManualPhaseCorrectionFilterAction,
@@ -1088,4 +1115,5 @@ export {
   rollbackSpectrumByFilter,
   handleAddPhaseCorrectionTrace,
   handleChangePhaseCorrectionDirection,
+  handleDeletePhaseCorrectionTrace,
 };
