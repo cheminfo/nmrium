@@ -45,11 +45,14 @@ function XAxis(props: XAxisProps) {
   useEffect(() => {
     if (!show) return;
 
-    const scaleX = get2DXScale({
-      width,
-      margin,
-      xDomain,
-    });
+    const scaleX = get2DXScale(
+      {
+        width,
+        margin,
+        xDomain,
+      },
+      !!spectrum?.info?.isFid,
+    );
 
     const xAxis = d3.axisBottom(scaleX).ticks(8).tickFormat(d3.format('0'));
 

@@ -50,10 +50,7 @@ function YAxis(props: YAxisProps) {
   useEffect(() => {
     if (!show || !yDomain) return;
 
-    const scaleY = get2DYScale(
-      { height, yDomain, margin },
-      !!spectrum?.info?.isFid,
-    );
+    const scaleY = get2DYScale({ height, yDomain, margin });
 
     const axis = d3.axisRight(scaleY).ticks(8).tickFormat(d3.format('0'));
 
