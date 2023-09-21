@@ -1,5 +1,4 @@
 import { Spectrum2D } from 'nmr-load-save';
-import { useMemo } from 'react';
 
 import { getSlice } from '../../data/data2d/Spectrum2D';
 import { useMouseTracker } from '../EventsTrackers/MouseTracker';
@@ -22,51 +21,37 @@ function SlicingView() {
   const position = useMouseTracker();
   const activeSpectrum = useActiveSpectrum();
 
-  const chart2d = useMemo(() => {
-    if (position && activeSpectrum?.id) {
-      const { x, y } = position;
-      const scale2dX = get2DXScale({ margin, width, xDomain });
-      const scale2dY = get2DYScale({ margin, height, yDomain });
-      const data = getSlice(spectra[activeSpectrum.index] as Spectrum2D, {
-        x: scale2dX.invert(x),
-        y: scale2dY.invert(y),
-      });
-      return (
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          width={width}
-          height={height}
-          style={{
-            position: 'absolute',
-            backgroundColor: 'rgba(255,255,255,0.8)',
-          }}
-        >
-          {data?.horizontal && (
-            <HorizontalSliceChart data={data.horizontal.data} />
-          )}
-          {data?.vertical && (
-            <VerticalSliceChart data={data.vertical.data} reverseScale />
-          )}
-        </svg>
-      );
-    }
-    return null;
-  }, [
-    position,
-    activeSpectrum,
-    margin,
-    width,
-    xDomain,
-    height,
-    yDomain,
-    spectra,
-  ]);
-
-  if (!position) {
+  if (!position || !activeSpectrum?.id) {
     return null;
   }
 
-  return chart2d;
+  let { x, y } = position;
+
+  if (x - margin.left < 0) {
+    x = 0;
+  } else if (y - margin.top < 0) {
+    y = 0;
+  }
+  const scale2dX = get2DXScale({ margin, width, xDomain });
+  const scale2dY = get2DYScale({ margin, height, yDomain });
+  const data = getSlice(spectra[activeSpectrum.index] as Spectrum2D, {
+    x: scale2dX.invert(x),
+    y: scale2dY.invert(y),
+  });
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      width={width}
+      height={height}
+      style={{
+        position: 'absolute',
+        backgroundColor: 'rgba(255,255,255,0.8)',
+      }}
+    >
+      {data?.horizontal && <HorizontalSliceChart data={data.horizontal.data} />}
+      {data?.vertical && <VerticalSliceChart data={data.vertical.data} />}
+    </svg>
+  );
 }
 
 export default SlicingView;

@@ -1,4 +1,5 @@
 import { extent, scaleLinear } from 'd3';
+import { xMaxValue } from 'ml-spectra-processing';
 
 function getTopXScale(
   width: number,
@@ -35,8 +36,9 @@ function getLeftXScale(
   };
 }
 
-function getYScale(height: number, y: Float64Array, margin = 10) {
-  return scaleLinear(extent(y) as number[], [height - margin, margin]);
+function getScale(size: number, data: Float64Array, margin = 10) {
+  const max = xMaxValue(data);
+  return scaleLinear([0, max] as number[], [size - margin, margin]);
 }
 
-export { getTopXScale, getLeftXScale, getYScale };
+export { getTopXScale, getLeftXScale, getScale };
