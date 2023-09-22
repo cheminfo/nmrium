@@ -2,8 +2,7 @@ import { NmrData1D } from 'cheminfo-types';
 
 import { useChartData } from '../../context/ChartContext';
 import { PathBuilder } from '../../utility/PathBuilder';
-import { getScale } from '../utilities/SliceScale';
-import { get2DYScale } from '../utilities/scale';
+import { getSliceYScale, useScale2DY } from '../utilities/scale';
 
 interface BaseProps {
   reverse?: boolean;
@@ -19,23 +18,21 @@ interface usePathOptions extends BaseProps {
 }
 
 function usePath(data, props: usePathOptions) {
-  const { reverse = false, width = 100, horizontalMargin = 10 } = props;
-  const { height, margin, yDomain } = useChartData();
+  const { reverse, width = 100, horizontalMargin = 10 } = props;
+  const { mode } = useChartData();
+  const scaleX = useScale2DY(reverse);
 
-  if (!data) return '';
   const { x, re: y } = data;
-  const scaleX = get2DYScale({ height, margin, yDomain }, reverse);
 
-  const scaleY = getScale(width, y, horizontalMargin);
+  const scaleY = getSliceYScale(y, width, mode, horizontalMargin);
 
   const pathBuilder = new PathBuilder();
 
-  pathBuilder.moveTo(scaleY(y[0]), scaleX(x[0]));
+  pathBuilder.moveTo(scaleY(y.at(-1)), scaleX(x.at(-1)));
 
-  for (let i = 1; i < x.length; i++) {
+  for (let i = x.length - 2; i >= 0; i--) {
     pathBuilder.lineTo(scaleY(y[i]), scaleX(x[i]));
   }
-
   return pathBuilder.toString();
 }
 

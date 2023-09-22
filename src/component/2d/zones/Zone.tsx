@@ -5,12 +5,11 @@ import { useState, useEffect } from 'react';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
+import { useScale2DX, useScale2DY } from '../utilities/scale';
 
 import Signal from './Signal';
-import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -55,9 +54,8 @@ function Zone({ zoneData }: ZoneProps) {
     type: HighlightEventSource.ZONE,
     extra: { id: assignmentZone.id },
   });
-  const { margin, width, height, xDomain, yDomain } = useChartData();
-  const scaleX = get2DXScale({ margin, width, xDomain });
-  const scaleY = get2DYScale({ margin, height, yDomain });
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
 
   const { from: x1 = 0, to: x2 = 0 } = x;
   const { from: y1 = 0, to: y2 = 0 } = y;

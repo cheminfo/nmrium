@@ -5,10 +5,15 @@ import { useEffect, useRef, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import {
+  get2DXScale,
+  get2DYScale,
+  useScale2DX,
+  useScale2DY,
+} from '../utilities/scale';
 
 export function FidCanvas() {
-  const { width, height, margin, xDomain, yDomain, originDomain } =
+  const { width, height, margin, mode, xDomain, yDomain, originDomain } =
     useChartData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const spectrum = useSpectrum() as Spectrum2D;
@@ -18,30 +23,30 @@ export function FidCanvas() {
   const canvasHeight = height - top - bottom;
 
   const imageData = useMemo(() => getImageData(spectrum), [spectrum]);
+  const scale2DX = useScale2DX();
+  const scale2DY = useScale2DY();
 
   useEffect(() => {
     if (canvasRef.current && imageData) {
       const context = canvasRef.current.getContext('2d');
       const imageObject = new Image();
-
-      if (context && xDomain && yDomain) {
-        const scale2dX = get2DXScale(
-          {
-            margin,
-            width,
-            xDomain: originDomain.xDomain,
-          },
-          true,
-        );
-        const scale2dY = get2DYScale({
+      if (context) {
+        const scale2DX = get2DXScale({
+          margin,
+          mode,
+          width,
+          xDomain: originDomain.xDomain,
+        });
+        const scale2DY = get2DYScale({
           margin,
           height,
           yDomain: originDomain.yDomain,
         });
-        const x1 = scale2dX(xDomain[0]) - top;
-        const y1 = scale2dY(yDomain[0]) - left;
-        const x2 = scale2dX(xDomain[1]) - top;
-        const y2 = scale2dY(yDomain[1]) - left;
+
+        const x1 = scale2DX(xDomain[0]) - top;
+        const y1 = scale2DY(yDomain[0]) - left;
+        const x2 = scale2DX(xDomain[1]) - top;
+        const y2 = scale2DY(yDomain[1]) - left;
 
         const w = Math.max(canvasWidth, imageData.width);
         const h = Math.max(canvasHeight, imageData.height);
@@ -73,7 +78,11 @@ export function FidCanvas() {
     imageData,
     left,
     margin,
-    originDomain,
+    mode,
+    originDomain.xDomain,
+    originDomain.yDomain,
+    scale2DX,
+    scale2DY,
     top,
     width,
     xDomain,
