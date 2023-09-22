@@ -7,19 +7,14 @@ import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 
 import HorizontalSliceChart from './1d-tracer/HorizontalSliceChart';
 import VerticalSliceChart from './1d-tracer/VerticalSliceChart';
-import { get2DXScale, get2DYScale } from './utilities/scale';
+import { useScale2DX, useScale2DY } from './utilities/scale';
 
 function SlicingView() {
-  const {
-    width,
-    height,
-    margin,
-    data: spectra,
-    xDomain,
-    yDomain,
-  } = useChartData();
+  const { width, height, margin, data: spectra } = useChartData();
   const position = useMouseTracker();
   const activeSpectrum = useActiveSpectrum();
+  const scale2dX = useScale2DX();
+  const scale2dY = useScale2DY();
 
   if (!position || !activeSpectrum?.id) {
     return null;
@@ -32,8 +27,6 @@ function SlicingView() {
   } else if (y - margin.top < 0) {
     y = 0;
   }
-  const scale2dX = get2DXScale({ margin, width, xDomain });
-  const scale2dY = get2DYScale({ margin, height, yDomain });
   const data = getSlice(spectra[activeSpectrum.index] as Spectrum2D, {
     x: scale2dX.invert(x),
     y: scale2dY.invert(y),

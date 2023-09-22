@@ -2,8 +2,7 @@ import { NmrData1D } from 'cheminfo-types';
 
 import { useChartData } from '../../context/ChartContext';
 import { PathBuilder } from '../../utility/PathBuilder';
-import { getScale } from '../utilities/SliceScale';
-import { get2DXScale } from '../utilities/scale';
+import { useScale2DX, getSliceYScale } from '../utilities/scale';
 
 interface BaseProps {
   vericalMargin?: number;
@@ -18,15 +17,15 @@ interface UsePathOptions extends BaseProps {
 }
 
 function usePath(data: NmrData1D, options: UsePathOptions) {
-  const { height = 100, reverse = false, vericalMargin = 10 } = options;
-  const { width, margin: originMargin, xDomain } = useChartData();
+  const { height = 100, vericalMargin = 10 } = options;
+  const { mode } = useChartData();
+  const scaleX = useScale2DX();
 
   if (!data) return '';
 
   const { x, re: y } = data;
-  const scaleX = get2DXScale({ margin: originMargin, width, xDomain }, reverse);
 
-  const scaleY = getScale(height, y, vericalMargin);
+  const scaleY = getSliceYScale(y, height, mode, vericalMargin);
 
   const pathBuilder = new PathBuilder();
   pathBuilder.moveTo(scaleX(x[0]), scaleY(y[0]));

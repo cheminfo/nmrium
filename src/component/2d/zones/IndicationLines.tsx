@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Spectrum1D } from 'nmr-load-save';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 import { SIGNAL_INLCUDED_KINDS } from '../../../data/constants/signalsKinds';
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import { useScale2DX, useScale2DY } from '../utilities/scale';
 
 const lineStyle = css`
   stroke: lightgrey;
@@ -24,17 +24,14 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
     view: {
       spectra: { activeTab },
     },
-    margin,
-    width,
-    height,
     xDomain,
     yDomain,
     displayerMode,
   } = useChartData();
   const [deltas1D, setDeltas1D] = useState<number[]>([]);
 
-  const scaleX = get2DXScale({ margin, width, xDomain });
-  const scaleY = get2DYScale({ margin, height, yDomain });
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
 
   useEffect(() => {
     const split = activeTab.split(',');
@@ -62,36 +59,39 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
     }
   }, [activeTab, axis, data, displayerMode]);
 
-  const indicationLines = useMemo(() => {
-    if (show && deltas1D.length > 0) {
-      const lines = deltas1D.map((_delta, i) => {
-        return axis === 'X' ? (
-          <line
-            css={lineStyle}
-            // eslint-disable-next-line react/no-array-index-key
-            key={`indicationLine${axis}${i}`}
-            x1={scaleX(_delta)}
-            x2={scaleX(_delta)}
-            y1={scaleY(yDomain[0])}
-            y2={scaleY(yDomain[1])}
-          />
-        ) : axis === 'Y' ? (
-          <line
-            css={lineStyle}
-            // eslint-disable-next-line react/no-array-index-key
-            key={`indicationLine${axis}${i}`}
-            x1={scaleX(xDomain[0])}
-            x2={scaleX(xDomain[1])}
-            y1={scaleY(_delta)}
-            y2={scaleY(_delta)}
-          />
-        ) : null;
-      });
-      return lines;
-    }
-  }, [axis, deltas1D, scaleX, scaleY, show, xDomain, yDomain]);
+  if (!show || !deltas1D?.length) return null;
 
-  return <g>{indicationLines}</g>;
+  return (
+    <g>
+      {deltas1D.map((_delta, i) => {
+        if (axis === 'X') {
+          return (
+            <line
+              css={lineStyle}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`indicationLine${axis}${i}`}
+              x1={scaleX(_delta)}
+              x2={scaleX(_delta)}
+              y1={scaleY(yDomain[0])}
+              y2={scaleY(yDomain[1])}
+            />
+          );
+        } else {
+          return (
+            <line
+              css={lineStyle}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`indicationLine${axis}${i}`}
+              x1={scaleX(xDomain[0])}
+              x2={scaleX(xDomain[1])}
+              y1={scaleY(_delta)}
+              y2={scaleY(_delta)}
+            />
+          );
+        }
+      })}
+    </g>
+  );
 }
 
 export default IndicationLines;
