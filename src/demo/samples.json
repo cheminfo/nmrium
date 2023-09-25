@@ -129,6 +129,10 @@
         "title": "Bruker Directory without expno level"
       },
       {
+        "file": "./data/brukerFolders/alphaIonone.json",
+        "title": "Bruker 2D spectrum with quadrants"
+      },
+      {
         "file": "./data/brukerFolders/cosyAndHsqcFid.json",
         "title": "Bruker Directory 2D FIDs"
       },
