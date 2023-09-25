@@ -25,7 +25,9 @@ import zoomHistoryManager, {
 } from '../helper/ZoomHistoryManager';
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
+import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions';
 import { getVerticalAlign } from '../helper/getVerticalAlign';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
 import { setRangesViewProperty } from '../helper/setRangesViewProperty';
 import { ActionType } from '../types/ActionType';
 
@@ -36,7 +38,6 @@ import {
   rollbackSpectrum,
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
 
 interface BrushBoundary {
   startX: number;
@@ -309,17 +310,25 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     toolOptions: { selectedTool },
   } = draft;
   const scaleRatio = toScaleRatio(event);
-
   switch (displayerMode) {
     case '2D': {
-      // change the vertical scale of 1D traces
-      const index =
-        trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
-      if (index !== null) {
-        const id = getSpectrumID(draft, index);
-        if (id) {
-          const domain = yDomains[id];
-          yDomains[id] = wheelZoom(event, domain);
+      // change the vertical scale for traces in 2D phase correction
+      if (
+        selectedTool === 'phaseCorrectionTwoDimensions' &&
+        trackID === 'CENTER_2D'
+      ) {
+        const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
+        activeTraces.scaleRatio *= scaleRatio;
+      } else {
+        // change the vertical scale of 1D traces
+        const index =
+          trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
+        if (index !== null) {
+          const id = getSpectrumID(draft, index);
+          if (id) {
+            const domain = yDomains[id];
+            yDomains[id] = wheelZoom(event, domain);
+          }
         }
       }
 

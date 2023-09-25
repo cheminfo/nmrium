@@ -140,14 +140,17 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   );
 
   const handleZoom: OnZoom = (event) => {
-    const { x: startX, y: startY } = event;
+    const { x: startX, y: startY, shiftKey } = event;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
-      if (trackID === 'CENTER_2D') {
-        dispatch({ type: 'SET_2D_LEVEL', payload: event });
-      } else {
+      if (
+        trackID !== 'CENTER_2D' ||
+        (selectedTool === 'phaseCorrectionTwoDimension' && !shiftKey)
+      ) {
         dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
+      } else {
+        dispatch({ type: 'SET_2D_LEVEL', payload: event });
       }
     }
   };

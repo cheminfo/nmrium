@@ -8,6 +8,7 @@ import {
   get2DYScale,
   getSliceYScale,
 } from '../../utilities/scale';
+import { useActivePhaseTraces } from './useActivePhaseTraces';
 
 interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
   data: { x: Float64Array; re: Float64Array };
@@ -19,10 +20,14 @@ interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
 
 function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
   const { width, margin, height, xDomain, yDomain, mode } = useChartData();
+  const { scaleRatio } = useActivePhaseTraces();
 
   if (direction === 'horizontal') {
     const scaleX = get2DXScale({ margin, width, xDomain, mode });
-    const scaleY = getSliceYScale(y, height, 'RTL', margin.top + margin.bottom);
+    const scaleY = getSliceYScale(y, height, 'RTL', {
+      margin: margin.top + margin.bottom,
+      scaleRatio,
+    });
 
     const pathBuilder = new PathBuilder();
     pathBuilder.moveTo(scaleX(x[0]), scaleY(y[0]));
@@ -34,7 +39,10 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
   }
 
   const scaleX = get2DYScale({ margin, height, yDomain });
-  const scaleY = getSliceYScale(y, width, 'RTL', margin.left + margin.right);
+  const scaleY = getSliceYScale(y, width, 'RTL', {
+    margin: margin.left + margin.right,
+    scaleRatio,
+  });
 
   const pathBuilder = new PathBuilder();
 
