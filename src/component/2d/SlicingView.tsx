@@ -38,6 +38,7 @@ function SlicingView() {
       height={height}
       style={{
         position: 'absolute',
+        zIndex: 1,
         backgroundColor: 'rgba(255,255,255,0.8)',
       }}
     >
