@@ -13,6 +13,7 @@ function getStyle(direction: TraceDirection, translate: number) {
     top: '0px',
     left: '0px',
     backgroundColor: 'black',
+    zIndex: 9,
   };
   if (direction === 'horizontal') {
     return {

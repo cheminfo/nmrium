@@ -69,6 +69,7 @@ function CrossLinePointer() {
         overflow: 'visible',
         width: 2 * width,
         height: 2 * height,
+        zIndex: 9,
       }}
     >
       <svg width={2 * width} height={2 * height}>
