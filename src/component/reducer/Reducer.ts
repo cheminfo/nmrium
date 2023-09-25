@@ -62,7 +62,13 @@ export interface SpectrumTrace {
 
 export type PhaseCorrrectionTraces = Record<
   TraceDirection,
-  { spectra: SpectrumTrace[]; ph0: number; ph1: number; pivot: Pivot | null }
+  {
+    spectra: SpectrumTrace[];
+    ph0: number;
+    ph1: number;
+    pivot: Pivot | null;
+    scaleRatio: number;
+  }
 >;
 export interface TwoDimensionPhaseCorrrection {
   traces: PhaseCorrrectionTraces;
@@ -149,12 +155,14 @@ export const getInitialState = (): State => ({
             ph1: 0,
             pivot: null,
             spectra: [],
+            scaleRatio: 1,
           },
           vertical: {
             ph0: 0,
             ph1: 0,
             pivot: null,
             spectra: [],
+            scaleRatio: 1,
           },
         },
       },

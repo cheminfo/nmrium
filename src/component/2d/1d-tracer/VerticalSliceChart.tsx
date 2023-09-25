@@ -24,7 +24,7 @@ function usePath(data, props: usePathOptions) {
 
   const { x, re: y } = data;
 
-  const scaleY = getSliceYScale(y, width, mode, horizontalMargin);
+  const scaleY = getSliceYScale(y, width, mode, { margin: horizontalMargin });
 
   const pathBuilder = new PathBuilder();
 

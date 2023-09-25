@@ -681,7 +681,6 @@ function handleAddPhaseCorrectionTrace(
       },
     },
     data: spectra,
-    mode,
   } = draft;
 
   const tracesSpectra = traces[activeTraceDirection].spectra;
@@ -1134,7 +1133,6 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
         twoDimensionPhaseCorrection: { activeTraceDirection, traces },
       },
     },
-    mode,
   } = draft;
   const { x, y } = action.payload;
   const traceDirection = traces[activeTraceDirection];
