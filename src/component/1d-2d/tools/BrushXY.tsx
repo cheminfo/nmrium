@@ -11,6 +11,7 @@ const styles: Record<'container', CSSProperties> = {
     top: '0px',
     left: '0px',
     zoom: '100%',
+    zIndex: 9,
   },
 };
 
