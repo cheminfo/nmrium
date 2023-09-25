@@ -33,8 +33,11 @@ export function getSlice(
     ? (spectraData as NmrData2DFid).im
     : (spectraData as NmrData2DFt).ir;
 
-  const xStep = (realData.maxX - realData.minX) / (realData.z[0].length - 1);
-  const yStep = (realData.maxY - realData.minY) / (realData.z.length - 1);
+  const xLength = realData.z[0].length;
+  const yLength = realData.z.length;
+
+  const xStep = (realData.maxX - realData.minX) / (xLength - 1);
+  const yStep = (realData.maxY - realData.minY) / (yLength - 1);
   const xIndex = Math.floor((position.x - realData.minX) / xStep);
   const yIndex = Math.floor((position.y - realData.minY) / yStep);
 
@@ -56,23 +59,20 @@ export function getSlice(
   };
 
   const dataX: NmrData1D = {
-    x: zoneToX(
-      { from: realData.minX, to: realData.maxX },
-      realData.z[0].length,
-    ),
-    re: new Float64Array(realData.z[0].length),
+    x: zoneToX({ from: realData.minX, to: realData.maxX }, xLength),
+    re: new Float64Array(xLength),
   };
 
   const dataY: NmrData1D = {
-    x: zoneToX({ from: realData.minY, to: realData.maxY }, realData.z.length),
-    re: new Float64Array(realData.z.length),
+    x: zoneToX({ from: realData.minY, to: realData.maxY }, yLength),
+    re: new Float64Array(yLength),
   };
 
   if (['real', 'both'].includes(sliceType)) {
-    for (let i = 0; i < realData.z[0].length; i++) {
+    for (let i = 0; i < xLength; i++) {
       dataX.re[i] += realData.z[yIndex][i];
     }
-    for (let i = 0; i < realData.z.length; i++) {
+    for (let i = 0; i < yLength; i++) {
       dataY.re[i] += realData.z[i][xIndex];
     }
   }
@@ -80,14 +80,14 @@ export function getSlice(
   if (imaginaryData && ['imaginary', 'both'].includes(sliceType)) {
     infoX.isComplex = true;
     infoY.isComplex = true;
-    dataX.im = new Float64Array(imaginaryData.z[0].length);
-    dataY.im = new Float64Array(realData.z.length);
+    dataX.im = new Float64Array(xLength);
+    dataY.im = new Float64Array(yLength);
 
-    for (let i = 0; i < imaginaryData.z[0].length; i++) {
+    for (let i = 0; i < xLength; i++) {
       dataX.im[i] += imaginaryData.z[yIndex][i];
     }
 
-    for (let i = 0; i < imaginaryData.z.length; i++) {
+    for (let i = 0; i < yLength; i++) {
       dataY.im[i] += imaginaryData.z[i][xIndex];
     }
   }
