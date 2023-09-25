@@ -674,6 +674,7 @@ function handleAddPhaseCorrectionTrace(
     height,
     xDomain,
     yDomain,
+    mode,
     toolOptions: {
       data: {
         twoDimensionPhaseCorrection: { traces, activeTraceDirection },
@@ -1127,6 +1128,7 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
     height,
     yDomain,
     xDomain,
+    mode,
     toolOptions: {
       data: {
         twoDimensionPhaseCorrection: { activeTraceDirection, traces },
