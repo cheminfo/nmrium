@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 import { useChartData } from '../../context/ChartContext';
 import { TraceDirection } from '../../reducer/Reducer';
 import { options } from '../../toolbar/ToolTypes';
-import { useActivePhaseTraces } from '../1d-tracer/phace-correction-traces/useActivePhaseTraces';
+import { useActivePhaseTraces } from '../1d-tracer/phase-correction-traces/useActivePhaseTraces';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 function getStyle(direction: TraceDirection, translate: number) {

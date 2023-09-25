@@ -16,7 +16,7 @@ import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
 
-import { PhaseTraces } from './1d-tracer/phace-correction-traces';
+import { PhaseTraces } from './1d-tracer/phase-correction-traces';
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
 import SlicingView from './SlicingView';
