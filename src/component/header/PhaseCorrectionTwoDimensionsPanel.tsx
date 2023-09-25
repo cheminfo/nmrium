@@ -1,7 +1,15 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { CSSProperties, useCallback, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { stringCapitalize } from '../../utils/stringCapitalize';
+import { useActivePhaseTraces } from '../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Input, { InputStyle } from '../elements/Input';
@@ -9,11 +17,10 @@ import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
 import useSpectrum from '../hooks/useSpectrum';
+import { TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import { TraceDirection } from '../reducer/Reducer';
-import { stringCapitalize } from '../../utils/stringCapitalize';
 
 const selectStyle: CSSProperties = {
   marginLeft: '5px',
@@ -42,18 +49,10 @@ const TRACE_DIRECTIONS: Array<{ label: string; value: TraceDirection }> = (
 const emptyData = { datum: {}, filter: null };
 
 export default function PhaseCorrectionTwoDimensionsPanel() {
-  const {
-    toolOptions: {
-      data: {
-        twoDimensionPhaseCorrection: { activeTraceDirection, traces },
-      },
-    },
-  } = useChartData();
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { pivot, ph0, ph1 } = traces[activeTraceDirection];
+  const { ph0, ph1, pivot, activeTraceDirection } = useActivePhaseTraces();
 
   const { data } = useSpectrum(emptyData) as Spectrum1D;
+  const activeDirection = useDeferredValue(activeTraceDirection);
 
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
@@ -61,6 +60,13 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
 
   const ph0Ref = useRef<any>();
   const ph1Ref = useRef<any>();
+
+  useEffect(() => {
+    if (activeDirection !== activeTraceDirection) {
+      setValue({ ph0, ph1 });
+      valueRef.current = { ph0, ph1 };
+    }
+  }, [activeDirection, activeTraceDirection, ph0, ph1]);
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
@@ -71,7 +77,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
           diff0 - (diff1 * (data.re.length - pivot?.index)) / data.re.length;
       }
       dispatch({
-        type: 'CALCULATE_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER',
+        type: 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
         payload: newValues,
       });
     },
@@ -125,7 +131,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
     });
   }
 
-  /*eslint-disable @typescript-eslint/no-empty-function, unicorn/consistent-function-scoping, no-trailing-spaces */
+  /*eslint-disable unicorn/consistent-function-scoping */
   function handleApplyFilter() {
     //TODO implement apply filter
   }

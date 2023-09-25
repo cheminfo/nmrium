@@ -60,18 +60,16 @@ export interface SpectrumTrace {
   y: number;
 }
 
-export type PhaseCorrrectionTraces = Record<
-  TraceDirection,
-  {
-    spectra: SpectrumTrace[];
-    ph0: number;
-    ph1: number;
-    pivot: Pivot | null;
-    scaleRatio: number;
-  }
->;
-export interface TwoDimensionPhaseCorrrection {
-  traces: PhaseCorrrectionTraces;
+export interface PhaseCorrectionTraceData {
+  spectra: SpectrumTrace[];
+  ph0: number;
+  ph1: number;
+  pivot: Pivot | null;
+  scaleRatio: number;
+}
+
+export interface TwoDimensionPhaseCorrection {
+  traces: Record<TraceDirection, PhaseCorrectionTraceData>;
   activeTraceDirection: TraceDirection;
 }
 
@@ -347,7 +345,7 @@ export interface State {
        * Noise factor for auto zones detection
        * @default 1
        */
-      twoDimensionPhaseCorrection: TwoDimensionPhaseCorrrection;
+      twoDimensionPhaseCorrection: TwoDimensionPhaseCorrection;
       zonesNoiseFactor: number;
 
       /**
@@ -505,6 +503,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         );
       case 'SET_TWO_DIMENSION_PIVOT_POINT':
         return FiltersActions.handleSetTwoDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
+      case 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER':
+        return FiltersActions.handleCalculateManualTwoDimensionPhaseCorrection(
           draft,
           action,
         );
