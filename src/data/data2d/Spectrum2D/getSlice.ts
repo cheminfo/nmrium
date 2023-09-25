@@ -1,4 +1,4 @@
-import type { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import type { NmrData1D, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 
@@ -15,22 +15,31 @@ interface SlicePosition {
   y: number;
 }
 
+interface SliceOptions {
+  sliceType?: 'real' | 'imaginary' | 'both';
+}
+
 export function getSlice(
   spectrum: Spectrum2D,
   position: SlicePosition,
+  options: SliceOptions = {},
 ): Record<TraceDirection, Spectrum1D> | undefined {
+  const { sliceType = 'real' } = options;
   const { data: spectraData, info } = spectrum;
-  const data = info.isFid
+  const realData = info.isFid
     ? (spectraData as NmrData2DFid).re
     : (spectraData as NmrData2DFt).rr;
+  const imaginaryData = info.isFid
+    ? (spectraData as NmrData2DFid).im
+    : (spectraData as NmrData2DFt).ir;
 
-  const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
-  const yStep = (data.maxY - data.minY) / (data.z.length - 1);
-  const xIndex = Math.floor((position.x - data.minX) / xStep);
-  const yIndex = Math.floor((position.y - data.minY) / yStep);
+  const xStep = (realData.maxX - realData.minX) / (realData.z[0].length - 1);
+  const yStep = (realData.maxY - realData.minY) / (realData.z.length - 1);
+  const xIndex = Math.floor((position.x - realData.minX) / xStep);
+  const yIndex = Math.floor((position.y - realData.minY) / yStep);
 
-  if (xIndex < 0 || xIndex >= data.z[0].length) return;
-  if (yIndex < 0 || yIndex >= data.z.length) return;
+  if (xIndex < 0 || xIndex >= realData.z[0].length) return;
+  if (yIndex < 0 || yIndex >= realData.z.length) return;
 
   const infoX = {
     nucleus: info.nucleus[0], // 1H, 13C, 19F, ...
@@ -39,15 +48,6 @@ export function getSlice(
     dimension: 1,
   };
 
-  const dataX = {
-    x: zoneToX({ from: data.minX, to: data.maxX }, data.z[0].length),
-    re: new Float64Array(data.z[0].length),
-  };
-
-  for (let i = 0; i < data.z[0].length; i++) {
-    dataX.re[i] += data.z[yIndex][i];
-  }
-
   const infoY = {
     nucleus: info.nucleus[1], // 1H, 13C, 19F, ...
     isFid: false,
@@ -55,13 +55,41 @@ export function getSlice(
     dimension: 1,
   };
 
-  const dataY = {
-    x: zoneToX({ from: data.minY, to: data.maxY }, data.z.length),
-    re: new Float64Array(data.z.length),
+  const dataX: NmrData1D = {
+    x: zoneToX(
+      { from: realData.minX, to: realData.maxX },
+      realData.z[0].length,
+    ),
+    re: new Float64Array(realData.z[0].length),
   };
 
-  for (let i = 0; i < data.z.length; i++) {
-    dataY.re[i] += data.z[i][xIndex];
+  const dataY: NmrData1D = {
+    x: zoneToX({ from: realData.minY, to: realData.maxY }, realData.z.length),
+    re: new Float64Array(realData.z.length),
+  };
+
+  if (['real', 'both'].includes(sliceType)) {
+    for (let i = 0; i < realData.z[0].length; i++) {
+      dataX.re[i] += realData.z[yIndex][i];
+    }
+    for (let i = 0; i < realData.z.length; i++) {
+      dataY.re[i] += realData.z[i][xIndex];
+    }
+  }
+
+  if (imaginaryData && ['imaginary', 'both'].includes(sliceType)) {
+    infoX.isComplex = true;
+    infoY.isComplex = true;
+    dataX.im = new Float64Array(imaginaryData.z[0].length);
+    dataY.im = new Float64Array(realData.z.length);
+
+    for (let i = 0; i < imaginaryData.z[0].length; i++) {
+      dataX.im[i] += imaginaryData.z[yIndex][i];
+    }
+
+    for (let i = 0; i < imaginaryData.z.length; i++) {
+      dataY.im[i] += imaginaryData.z[i][xIndex];
+    }
   }
 
   const horizontal = initiateDatum1D({ info: infoX, data: dataX });
