@@ -30,6 +30,7 @@ import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
+import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions';
 import { ActionType } from '../types/ActionType';
 
 import { setDomain, setMode } from './DomainActions';
@@ -75,7 +76,7 @@ type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
   | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER'
   | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-  | 'CALCULATE_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER',
+  | 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
   { ph0: number; ph1: number }
 >;
 
@@ -675,15 +676,11 @@ function handleAddPhaseCorrectionTrace(
     xDomain,
     yDomain,
     mode,
-    toolOptions: {
-      data: {
-        twoDimensionPhaseCorrection: { traces, activeTraceDirection },
-      },
-    },
     data: spectra,
   } = draft;
 
-  const tracesSpectra = traces[activeTraceDirection].spectra;
+  const { activeTraces, activeTraceDirection } =
+    getTwoDimensionPhaseCorrectionOptions(draft);
 
   if (activeSpectrum?.id) {
     const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
@@ -700,7 +697,7 @@ function handleAddPhaseCorrectionTrace(
 
       if (sliceData) {
         const { data } = sliceData[activeTraceDirection];
-        tracesSpectra.push({
+        activeTraces.spectra.push({
           data,
           id: v4(),
           x: xPPM,
@@ -1128,14 +1125,10 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
     yDomain,
     xDomain,
     mode,
-    toolOptions: {
-      data: {
-        twoDimensionPhaseCorrection: { activeTraceDirection, traces },
-      },
-    },
   } = draft;
   const { x, y } = action.payload;
-  const traceDirection = traces[activeTraceDirection];
+  const { activeTraces, activeTraceDirection } =
+    getTwoDimensionPhaseCorrectionOptions(draft);
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     switch (activeTraceDirection) {
@@ -1146,7 +1139,7 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
           const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
           const datum = getProjection((spectrum.data as NmrData2DFt).rr, 0);
           const index = xFindClosestIndex(datum.x, pivotValue);
-          traceDirection.pivot = { value: pivotValue, index };
+          activeTraces.pivot = { value: pivotValue, index };
         }
         break;
       case 'vertical':
@@ -1156,12 +1149,46 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
           const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
           const datum = getProjection((spectrum.data as NmrData2DFt).rr, 1);
           const index = xFindClosestIndex(datum.x, pivotValue);
-          traceDirection.pivot = { value: pivotValue, index };
+          activeTraces.pivot = { value: pivotValue, index };
         }
         break;
 
       default:
         break;
+    }
+  }
+}
+
+//action
+function handleCalculateManualTwoDimensionPhaseCorrection(
+  draft: Draft<State>,
+  action: ManualPhaseCorrectionFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
+    const { activeTraces, activeTraceDirection } =
+      getTwoDimensionPhaseCorrectionOptions(draft);
+    const { ph0, ph1 } = action.payload;
+    activeTraces.ph0 = ph0;
+    activeTraces.ph1 = ph1;
+
+    for (const spectrumTrace of activeTraces.spectra) {
+      const { x, y } = spectrumTrace;
+      const spectrumData = draft.data[index] as Spectrum2D;
+      const sliceData = getSlice(spectrumData, { x, y }, { sliceType: 'both' });
+      if (sliceData) {
+        const { data, info } = sliceData[activeTraceDirection];
+        const _data = {
+          data,
+          info,
+        };
+        phaseCorrection.apply(_data as unknown as Spectrum1D, { ph0, ph1 });
+        const { im: newIm, re: newRe } = _data.data;
+
+        spectrumTrace.data.im = newIm;
+        spectrumTrace.data.re = newRe;
+      }
     }
   }
 }
@@ -1196,4 +1223,5 @@ export {
   handleDeletePhaseCorrectionTrace,
   handleSetOneDimensionPhaseCorrectionPivotPoint,
   handleSetTwoDimensionPhaseCorrectionPivotPoint,
+  handleCalculateManualTwoDimensionPhaseCorrection,
 };

@@ -1,10 +1,16 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { State } from '../Reducer';
+import type {
+  PhaseCorrectionTraceData,
+  State,
+  TwoDimensionPhaseCorrection,
+} from '../Reducer';
 
 export function getTwoDimensionPhaseCorrectionOptions(
   state: Draft<State> | State,
-) {
+): Draft<
+  TwoDimensionPhaseCorrection & { activeTraces: PhaseCorrectionTraceData }
+> {
   const {
     toolOptions: {
       data: {
