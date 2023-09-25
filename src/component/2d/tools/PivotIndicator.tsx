@@ -40,6 +40,7 @@ function PivotIndicator() {
     margin,
     yDomain,
     xDomain,
+    mode,
   } = useChartData();
 
   if (options.phaseCorrectionTwoDimension.id !== selectedTool || !pivot) {
@@ -49,7 +50,7 @@ function PivotIndicator() {
   let translate = 0;
 
   if (activeTraceDirection === 'horizontal') {
-    const scale = get2DXScale({ width, margin, xDomain });
+    const scale = get2DXScale({ width, margin, xDomain, mode });
     translate = scale(pivot.value);
   }
 

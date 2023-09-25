@@ -3,8 +3,11 @@ import { ReactNode } from 'react';
 import { useChartData } from '../../../context/ChartContext';
 import { TraceDirection } from '../../../reducer/Reducer';
 import { PathBuilder } from '../../../utility/PathBuilder';
-import { getYScale } from '../../utilities/SliceScale';
-import { get2DXScale, get2DYScale } from '../../utilities/scale';
+import {
+  get2DXScale,
+  get2DYScale,
+  getSliceYScale,
+} from '../../utilities/scale';
 
 interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
   data: { x: Float64Array; re: Float64Array };
@@ -15,11 +18,11 @@ interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
 }
 
 function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
-  const { width, margin, height, xDomain, yDomain } = useChartData();
+  const { width, margin, height, xDomain, yDomain, mode } = useChartData();
 
   if (direction === 'horizontal') {
-    const scaleX = get2DXScale({ margin, width, xDomain });
-    const scaleY = getYScale(height, y, margin.top + margin.bottom);
+    const scaleX = get2DXScale({ margin, width, xDomain, mode });
+    const scaleY = getSliceYScale(y, height, 'RTL', margin.top + margin.bottom);
 
     const pathBuilder = new PathBuilder();
     pathBuilder.moveTo(scaleX(x[0]), scaleY(y[0]));
@@ -30,8 +33,8 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
     return pathBuilder.toString();
   }
 
-  const scaleX = get2DYScale({ margin, height, yDomain }, true);
-  const scaleY = getYScale(width, y, margin.left + margin.right);
+  const scaleX = get2DYScale({ margin, height, yDomain });
+  const scaleY = getSliceYScale(y, width, 'RTL', margin.left + margin.right);
 
   const pathBuilder = new PathBuilder();
 

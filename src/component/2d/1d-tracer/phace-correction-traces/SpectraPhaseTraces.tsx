@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { useChartData } from '../../../context/ChartContext';
 import { HighlightEventSource, useHighlight } from '../../../highlight';
 import { SpectrumTrace, TraceDirection } from '../../../reducer/Reducer';
-import { get2DXScale, get2DYScale } from '../../utilities/scale';
+import { useScale2DX, useScale2DY } from '../../utilities/scale';
 
 import { SpectrumPhaseTrace } from './SpectrumPhaseTrace';
 import { useActivePhaseTraces } from './useActivePhaseTraces';
@@ -49,7 +49,7 @@ interface SpectrumTraceProps {
 }
 
 function PhaseTrace(props: SpectrumTraceProps) {
-  const { width, height, margin, yDomain, xDomain } = useChartData();
+  const { width, height, margin } = useChartData();
 
   const {
     spectrum: { data, x, y, id },
@@ -61,8 +61,8 @@ function PhaseTrace(props: SpectrumTraceProps) {
     extra: { id },
   });
 
-  const scale2dX = get2DXScale({ margin, width, xDomain });
-  const scale2dY = get2DYScale({ margin, height, yDomain });
+  const scale2dX = useScale2DX();
+  const scale2dY = useScale2DY();
 
   const innerheight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
