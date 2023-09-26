@@ -53,6 +53,7 @@ export function getDefaultViewState(): ViewState {
     ranges: {},
     zones: {},
     peaks: {},
+    integrals: {},
     spectra: {
       activeSpectra: {},
       activeTab: '',
@@ -82,7 +83,6 @@ export const getInitialState = (): State => ({
     yDomains: {},
     shareYDomain: false,
   },
-  integralsYDomains: {},
   width: 0,
   height: 0,
   margin: {
@@ -187,13 +187,6 @@ export interface State {
     yDomains: Domains;
     shareYDomain: boolean;
   };
-  /**
-   * y axis domain per spectrum for integrals
-   * value change when vertical scale change for the integrals
-   * @default {}
-   */
-  integralsYDomains: Record<string, number[]>;
-
   /**
    * plot chart area width
    * @default 0

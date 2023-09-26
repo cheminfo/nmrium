@@ -14,7 +14,7 @@ export const ZOOM_TYPES = {
 
 export type ZoomType = keyof typeof ZOOM_TYPES;
 
-function toScaleRatio(event: WheelEvent, zoomOptions: ZoomOptions = {}) {
+export function toScaleRatio(event: WheelEvent, zoomOptions: ZoomOptions = {}) {
   const { factor = 1, invert = false } = zoomOptions;
 
   const deltaY =
