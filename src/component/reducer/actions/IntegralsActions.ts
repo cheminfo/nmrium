@@ -21,8 +21,6 @@ import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
 import { ActionType } from '../types/ActionType';
 
-import { setIntegralsYDomain } from './DomainActions';
-
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',
   { options: SetSumOptions }
@@ -122,7 +120,6 @@ function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
     addIntegral(datum, { from, to });
     initiateIntergalSumOptions(datum, { molecules, nucleus });
     updateIntegralsRelativeValues(datum);
-    setIntegralsYDomain(draft, datum);
   }
 }
 
@@ -220,7 +217,6 @@ function handleCutIntegral(draft: Draft<State>, action: CutIntegralAction) {
   }
 
   updateIntegralsRelativeValues(spectrum);
-  setIntegralsYDomain(draft, spectrum);
 }
 
 export {

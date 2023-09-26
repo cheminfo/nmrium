@@ -16,6 +16,7 @@ import { State } from '../Reducer';
 import { MARGIN } from '../core/Constants';
 import {
   setZoom,
+  toScaleRatio,
   wheelZoom,
   ZOOM_TYPES,
   ZoomType,
@@ -26,20 +27,17 @@ import zoomHistoryManager, {
 import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getVerticalAlign } from '../helper/getVerticalAlign';
+import { setRangesViewProperty } from '../helper/setRangesViewProperty';
 import { ActionType } from '../types/ActionType';
 
-import {
-  setDomain,
-  SetDomainOptions,
-  setIntegralsYDomain,
-  setMode,
-} from './DomainActions';
+import { setDomain, SetDomainOptions, setMode } from './DomainActions';
 import {
   calculateBaseLineCorrection,
   rollbackSpectrumByFilter,
   rollbackSpectrum,
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
 
 interface BrushBoundary {
   startX: number;
@@ -329,9 +327,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
   const {
     displayerMode,
     yDomains,
-    integralsYDomains,
     toolOptions: { selectedTool },
   } = draft;
+  const scaleRatio = toScaleRatio(event);
 
   switch (displayerMode) {
     case '2D': {
@@ -352,32 +350,45 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     case '1D': {
       const activeSpectra = getActiveSpectra(draft);
 
-      if (activeSpectra && activeSpectra?.length > 0) {
-        // rescale the active spectra integrals;
-        if (selectedTool === Tools.integral.id && event.shiftKey) {
-          for (const activeSpectrum of activeSpectra) {
-            //check if the integrals is visible
-            const domain = integralsYDomains?.[activeSpectrum?.id];
-            if (domain) {
-              integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
-            }
-          }
-        } else {
-          // rescale the active spectra
-          for (const activeSpectrum of activeSpectra) {
-            const domain = yDomains?.[activeSpectrum?.id];
-            if (domain) {
-              yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
-            }
-          }
-        }
-      } else {
+      if (!activeSpectra) {
         // rescale the spectra
         for (const key of Object.keys(yDomains)) {
           const domain = yDomains[key];
           yDomains[key] = wheelZoom(event, domain);
         }
+        return;
       }
+
+      if (activeSpectra.length === 1 && event.shiftKey) {
+        switch (selectedTool) {
+          case 'rangePicking': {
+            setRangesViewProperty(
+              draft,
+              'integralsScaleRatio',
+              (scale) => scale * scaleRatio,
+            );
+            break;
+          }
+          case 'integral': {
+            setIntegralsViewProperty(
+              draft,
+              'scaleRatio',
+              (scale) => scale * scaleRatio,
+            );
+            break;
+          }
+          default:
+            break;
+        }
+      } else {
+        for (const activeSpectrum of activeSpectra) {
+          const domain = yDomains?.[activeSpectrum?.id];
+          if (domain) {
+            yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+          }
+        }
+      }
+
       break;
     }
 
@@ -579,7 +590,6 @@ function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
   resetTool(draft);
 
   setDomain(draft, domainOptions);
-  setIntegralsYDomain(draft, dataGroupByNucleus[draft.view.spectra.activeTab]);
   const zoomHistory = zoomHistoryManager(
     draft.zoom.history,
     draft.view.spectra.activeTab,
