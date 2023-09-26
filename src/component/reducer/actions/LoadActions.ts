@@ -12,6 +12,7 @@ import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra';
 import { UsedColors } from '../../../types/UsedColors';
@@ -23,7 +24,6 @@ import { ActionType } from '../types/ActionType';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setSpectraMetaInfo } from './SpectrumsActions';
 import { setActiveTab } from './ToolsActions';
-import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 
 //TODO use viewState type instead of any { view?: ViewState }
 interface InitiateProps {

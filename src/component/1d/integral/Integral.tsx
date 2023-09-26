@@ -1,17 +1,20 @@
-import { Integral as IntegralType } from 'nmr-processing';
-
+import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 import useIntegralPath from '../../hooks/useIntegralPath';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import IntegralResizable from './IntegralResizable';
+import { IntegralData } from './IntegralsSeries';
 
 interface IntegralProps {
-  integral: IntegralType;
+  integral: IntegralData;
   nucleus: string;
+  max: number;
 }
 
-function Integral({ integral, nucleus }: IntegralProps) {
-  const path = useIntegralPath(integral);
+function Integral({ integral, nucleus, max }: IntegralProps) {
+  const { x, y } = integral;
+  const { scaleRatio } = useActiveSpectrumIntegralsViewState();
+  const path = useIntegralPath({ x, y, max, scaleRatio });
   const integralPreferences = usePanelPreferences('integrals', nucleus);
 
   return (
