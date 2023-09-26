@@ -325,46 +325,64 @@ function setVerticalIndicatorXPosition(
 }
 
 function handleZoom(draft: Draft<State>, action: ZoomAction) {
-  const { event, trackID, selectedTool } = action.payload;
-  const { displayerMode, yDomains, integralsYDomains } = draft;
+  const { event, trackID } = action.payload;
+  const {
+    displayerMode,
+    yDomains,
+    integralsYDomains,
+    toolOptions: { selectedTool },
+  } = draft;
 
-  const activeSpectra = getActiveSpectra(draft);
-
-  if (displayerMode === '2D') {
-    const index =
-      trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
-    if (index !== null) {
-      const id = getSpectrumID(draft, index);
-      if (id) {
-        const domain = yDomains[id];
-        yDomains[id] = wheelZoom(event, domain);
-      }
-    }
-  } else if (activeSpectra && activeSpectra?.length > 0) {
-    // rescale the active spectra integrals;
-    if (selectedTool === Tools.integral.id && event.shiftKey) {
-      for (const activeSpectrum of activeSpectra) {
-        //check if the integrals is visible
-        const domain = integralsYDomains?.[activeSpectrum?.id];
-        if (domain) {
-          integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+  switch (displayerMode) {
+    case '2D': {
+      // change the vertical scale of 1D traces
+      const index =
+        trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
+      if (index !== null) {
+        const id = getSpectrumID(draft, index);
+        if (id) {
+          const domain = yDomains[id];
+          yDomains[id] = wheelZoom(event, domain);
         }
       }
-    } else {
-      // rescale the active spectra
-      for (const activeSpectrum of activeSpectra) {
-        const domain = yDomains?.[activeSpectrum?.id];
-        if (domain) {
-          yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+
+      break;
+    }
+
+    case '1D': {
+      const activeSpectra = getActiveSpectra(draft);
+
+      if (activeSpectra && activeSpectra?.length > 0) {
+        // rescale the active spectra integrals;
+        if (selectedTool === Tools.integral.id && event.shiftKey) {
+          for (const activeSpectrum of activeSpectra) {
+            //check if the integrals is visible
+            const domain = integralsYDomains?.[activeSpectrum?.id];
+            if (domain) {
+              integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+            }
+          }
+        } else {
+          // rescale the active spectra
+          for (const activeSpectrum of activeSpectra) {
+            const domain = yDomains?.[activeSpectrum?.id];
+            if (domain) {
+              yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+            }
+          }
+        }
+      } else {
+        // rescale the spectra
+        for (const key of Object.keys(yDomains)) {
+          const domain = yDomains[key];
+          yDomains[key] = wheelZoom(event, domain);
         }
       }
+      break;
     }
-  } else {
-    // rescale the spectra
-    for (const key of Object.keys(yDomains)) {
-      const domain = yDomains[key];
-      yDomains[key] = wheelZoom(event, domain);
-    }
+
+    default:
+      break;
   }
 }
 
