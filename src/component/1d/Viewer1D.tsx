@@ -289,9 +289,9 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const handleZoom = useCallback<OnZoom>(
     (event) => {
-      dispatch({ type: 'SET_ZOOM', payload: { event, selectedTool } });
+      dispatch({ type: 'SET_ZOOM', payload: { event } });
     },
-    [dispatch, selectedTool],
+    [dispatch],
   );
 
   const mouseClick = useCallback<OnClick>(
