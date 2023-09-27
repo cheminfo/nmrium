@@ -12,7 +12,9 @@ interface UseDraggable {
   dragHandleClassName?: string;
 }
 export interface Draggable {
-  onMouseDown: (event: React.MouseEvent<HTMLDivElement | SVGElement>) => void;
+  onPointerDown: (
+    event: React.PointerEvent<HTMLDivElement | SVGElement>,
+  ) => void;
   position: { value: Position; action: Action };
   isActive: boolean;
 }
@@ -35,8 +37,8 @@ export default function useDraggable(props: UseDraggable): Draggable {
     },
   );
 
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLDivElement | SVGElement>) => {
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement | SVGElement>) => {
       e.stopPropagation();
       isActive.current = true;
       const eventTarget = e.currentTarget as HTMLElement;
@@ -66,11 +68,11 @@ export default function useDraggable(props: UseDraggable): Draggable {
           setPosition((prevPortion) => ({ ...prevPortion, action: 'start' }));
         }
 
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
+        window.addEventListener('pointermove', moveCallback);
+        window.addEventListener('pointerup', upCallback);
       }
 
-      function onMouseUp(e: MouseEvent) {
+      function upCallback(e: PointerEvent) {
         e.stopPropagation();
         if (isActive.current) {
           setPosition({
@@ -83,10 +85,10 @@ export default function useDraggable(props: UseDraggable): Draggable {
           isActive.current = false;
         }
 
-        window.removeEventListener('mousemove', onMouseMove);
-        window.removeEventListener('mouseup', onMouseUp);
+        window.removeEventListener('pointermove', moveCallback);
+        window.removeEventListener('pointerup', upCallback);
       }
-      function onMouseMove(e: MouseEvent) {
+      function moveCallback(e: PointerEvent) {
         e.stopPropagation();
 
         if (isActive.current) {
@@ -105,10 +107,10 @@ export default function useDraggable(props: UseDraggable): Draggable {
 
   return useMemo(
     () => ({
-      onMouseDown,
+      onPointerDown,
       position,
       isActive: isActive.current,
     }),
-    [onMouseDown, position],
+    [onPointerDown, position],
   );
 }
