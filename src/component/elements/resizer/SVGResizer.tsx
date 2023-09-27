@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CSSProperties, MouseEventHandler } from 'react';
+import { CSSProperties } from 'react';
 
 import { ResizerProps } from './Resizer';
 import useResizer from './useResizer';
@@ -45,9 +45,9 @@ export default function SVGResizer(props: ResizerProps) {
       {!disabled && (
         <>
           {' '}
-          <SVGResizerHandle onMouseDown={left.onMouseDown} position={0} />
+          <SVGResizerHandle onPointerDown={left.onPointerDown} position={0} />
           <SVGResizerHandle
-            onMouseDown={right.onMouseDown}
+            onPointerDown={right.onPointerDown}
             position={Math.ceil(currentPosition.x2 - currentPosition.x1)}
           />
         </>
@@ -57,12 +57,12 @@ export default function SVGResizer(props: ResizerProps) {
 }
 
 function SVGResizerHandle(props: {
-  onMouseDown: MouseEventHandler<SVGGElement>;
+  onPointerDown: React.PointerEventHandler<SVGAElement>;
   position: number;
 }) {
   return (
     <g
-      onMouseDown={props.onMouseDown}
+      onPointerDown={props.onPointerDown}
       css={styles.container}
       style={{ transform: `translateX(${props.position}px)` }}
       data-no-export="true"
