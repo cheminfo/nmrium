@@ -7,7 +7,7 @@ import Test from './demo/views/Test';
 
 // Reset styles so they do not affect development of the React component.
 import 'modern-normalize/modern-normalize.css';
-import './demo/preflight.css';
+import 'react-science/styles/preflight.css';
 
 import './demo/index.css';
 
