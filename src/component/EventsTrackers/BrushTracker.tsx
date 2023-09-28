@@ -82,7 +82,7 @@ interface Position {
 export type OnClick = (element: React.MouseEvent & Position) => void;
 export type { OnClick as OnDoubleClick };
 export type OnZoom = (
-  event: Pick<React.WheelEvent, 'deltaY' | 'shiftKey' | 'deltaMode'> & Position,
+  event: Pick<React.WheelEvent, 'deltaY' | 'shiftKey'> & Position,
 ) => void;
 export type OnBrush = (state: BrushTrackerContext) => void;
 
@@ -115,11 +115,13 @@ export function BrushTracker({
   const [mouseDownTime, setMouseDownTime] = useState<number>(0);
   const debounceClickEventsRef = useRef<any[]>([]);
   const lastPointRef = useRef<number>(0);
+  const pointerRef = useRef<Position | null>();
+  const panYTouchStartRef = useRef<boolean>(false);
 
   const pointerDownHandler = useCallback(
     (event: React.PointerEvent) => {
       //check that the right or left mouse button pressed
-      if ([0, 2].includes(event.button)) {
+      if ([0, 2].includes(event.button) && !panYTouchStartRef.current) {
         if (noPropagation) {
           event.stopPropagation();
         }
@@ -207,8 +209,8 @@ export function BrushTracker({
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;
 
-      const { deltaY, deltaX, shiftKey, deltaMode } = event;
-      onZoom({ deltaY: deltaY || deltaX, shiftKey, deltaMode, x, y });
+      const { deltaY, deltaX, shiftKey } = event;
+      onZoom({ deltaY: deltaY || deltaX, shiftKey, x, y });
     },
     [onZoom],
   );
@@ -232,6 +234,27 @@ export function BrushTracker({
     }
   }, [onBrush, onBrushEnd, state]);
 
+  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    if (event.targetTouches.length >= 2) {
+      panYTouchStartRef.current = true;
+      const { clientX: x, clientY: y } = event.targetTouches[0];
+      pointerRef.current = { x, y };
+    }
+  }
+  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+    if (pointerRef.current) {
+      const { clientX: x, clientY: y } = event.targetTouches[0];
+      const { x: px, y: py } = pointerRef.current;
+      const deltaX = x - px;
+      const deltaY = y - py;
+      onZoom({ deltaY, shiftKey: false, x: deltaX, y: deltaY });
+    }
+  }
+  function handleTouchEnd() {
+    pointerRef.current = null;
+    panYTouchStartRef.current = false;
+  }
+
   return (
     <BrushContext.Provider value={state}>
       <div
@@ -240,6 +263,10 @@ export function BrushTracker({
         onPointerDown={pointerDownHandler}
         onClick={clickHandler}
         onWheel={handleMouseWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
         onMouseEnter={() => {
           // disable page scrolling once the mouse over the Displayer
           window.addEventListener('wheel', stopPageScrolling, {
