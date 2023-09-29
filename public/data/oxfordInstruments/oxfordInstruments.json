@@ -1,0 +1,84 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/oxfordInstruments/ethylCrotonate.zip"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "filters": [
+          {
+            "name": "digitalFilter",
+            "label": "Digital Filter",
+            "value": {
+              "digitalFilterValue": 0
+            },
+            "id": "00167756-e605-4129-ae90-7f17274ac7ee",
+            "flag": true,
+            "isDeleteAllow": false
+          },
+          {
+            "name": "apodization",
+            "label": "Apodization",
+            "value": {
+              "lineBroadening": 1,
+              "gaussBroadening": 0,
+              "lineBroadeningCenter": 0
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "zeroFilling",
+            "label": "Zero Filling",
+            "value": {
+              "nbPoints": 32768
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "backwardLinearPrediction",
+            "label": "Backward Linear Prediction Filter",
+            "value": {
+              "nbPoints": -16,
+              "nbInputs": 16384,
+              "nbCoefficients": 24
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fft",
+            "label": "FFT",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "phaseCorrection",
+            "label": "Phase correction",
+            "value": {
+              "ph0": -126,
+              "ph1": 0,
+              "absolute": false
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ],
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
+          ]
+        }
+      }
+    ],
+    "molecules": []
+  },
+  "version": 5
+}
