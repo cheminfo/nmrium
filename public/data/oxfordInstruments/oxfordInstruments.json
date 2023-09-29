@@ -45,7 +45,7 @@
             "name": "backwardLinearPrediction",
             "label": "Backward Linear Prediction Filter",
             "value": {
-              "nbPoints": -16,
+              "nbPoints": -8,
               "nbInputs": 16384,
               "nbCoefficients": 24
             },
@@ -74,6 +74,13 @@
         "sourceSelector": {
           "files": [
             "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
+          ]
+        }
+      },
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H-1H COSY.jdx"
           ]
         }
       }
