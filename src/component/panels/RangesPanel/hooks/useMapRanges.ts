@@ -6,21 +6,28 @@ export interface RangeData extends Range {
   rowKey: string;
   tableMetaInfo: any;
 }
+//TODO need to refactor the ranges table
 
 function useMapRanges(data) {
   return useMemo(() => {
     const rangesData: RangeData[] = [];
     for (const [i, range] of data.entries()) {
-      if (range.signals.length === 1) {
+      if (!range?.signals || range?.signals?.length === 0) {
         rangesData.push({
           rowKey: v4(),
           ...range,
+        });
+      } else if (range.signals.length === 1) {
+        const signal = range.signals[0];
+        rangesData.push({
+          rowKey: signal.id,
+          ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
-            signal: range.signals[0],
+            signal,
             rowIndex: i,
             signalIndex: 0,
-            id: range.signals[0].id,
+            id: signal.id,
           },
         });
       } else if (range.signals.length > 1) {

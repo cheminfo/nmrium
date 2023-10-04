@@ -6,11 +6,11 @@ import { FaLink } from 'react-icons/fa';
 
 import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
+import NoTableData from '../extra/placeholder/NoTableData';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './hooks/useMapRanges';
-import NoTableData from '../extra/placeholder/NoTableData';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
 
 const tableStyle = css`
   border-spacing: 0;
