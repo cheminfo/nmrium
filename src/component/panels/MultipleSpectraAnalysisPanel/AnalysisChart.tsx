@@ -49,8 +49,8 @@ function usePlotData(
   const spectra = useSpectraByActiveNucleus();
 
   const { yPath, xPath, paths } = options;
-  const xPathKeys = paths[xPath];
-  const yPathKeys = paths[xPath];
+  const xPathKeys = paths?.[xPath];
+  const yPathKeys = paths?.[yPath];
 
   let xData;
   let yData;
