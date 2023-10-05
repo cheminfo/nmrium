@@ -10,6 +10,11 @@
     },
     "spectra": [
       {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
+          ]
+        },
         "filters": [
           {
             "name": "digitalFilter",
@@ -70,19 +75,7 @@
             "flag": true,
             "isDeleteAllow": true
           }
-        ],
-        "sourceSelector": {
-          "files": [
-            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
-          ]
-        }
-      },
-      {
-        "sourceSelector": {
-          "files": [
-            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H-1H COSY.jdx"
-          ]
-        }
+        ]
       }
     ],
     "molecules": []
