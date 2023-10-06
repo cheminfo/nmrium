@@ -186,12 +186,12 @@ function FunctionToolBarInner({
             <SvgNmrPhaseCorrection />
           </ToggleButton>
         )}
-        {isButtonVisible('phaseCorrectionTwoDimension') && (
+        {isButtonVisible('phaseCorrectionTwoDimensions') && (
           <ToggleButton
-            key={options.phaseCorrectionTwoDimension.id}
-            value={options.phaseCorrectionTwoDimension.id}
-            id={options.phaseCorrectionTwoDimension.id}
-            title={`${options.phaseCorrectionTwoDimension.label} ( Press a )`}
+            key={options.phaseCorrectionTwoDimensions.id}
+            value={options.phaseCorrectionTwoDimensions.id}
+            id={options.phaseCorrectionTwoDimensions.id}
+            title={`${options.phaseCorrectionTwoDimensions.label} ( Press a )`}
           >
             <SvgNmrPhaseCorrection />
           </ToggleButton>

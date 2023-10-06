@@ -44,7 +44,7 @@ function PivotIndicator() {
     mode,
   } = useChartData();
 
-  if (options.phaseCorrectionTwoDimension.id !== selectedTool || !pivot) {
+  if (options.phaseCorrectionTwoDimensions.id !== selectedTool || !pivot) {
     return null;
   }
 

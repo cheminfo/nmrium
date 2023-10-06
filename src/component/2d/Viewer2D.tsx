@@ -146,7 +146,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     if (trackID) {
       if (
         trackID !== 'CENTER_2D' ||
-        (selectedTool === 'phaseCorrectionTwoDimension' && !shiftKey)
+        (selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey)
       ) {
         dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
       } else {
