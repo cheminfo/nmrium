@@ -1,7 +1,11 @@
-import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, mapRanges, updateRangesRelativeValues } from 'nmr-processing';
+import {
+  Range,
+  Signal1D,
+  mapRanges,
+  updateRangesRelativeValues,
+} from 'nmr-processing';
 
 import detectSignals from './detectSignals';
 
@@ -21,7 +25,7 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
       nucleus,
       frequency,
     },
-  );
+  ) as Signal1D[];
 
   if (index !== -1) {
     spectrum.ranges.values[index] = mapRanges(
@@ -32,7 +36,7 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
           originalTo: to,
           ...range,
           absolute,
-          signals: signals.map((s) => ({ id: v4(), ...s })),
+          signals,
         },
       ],
       spectrum,

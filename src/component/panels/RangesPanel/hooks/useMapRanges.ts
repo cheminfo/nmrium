@@ -16,6 +16,10 @@ function useMapRanges(data) {
         rangesData.push({
           rowKey: v4(),
           ...range,
+          tableMetaInfo: {
+            ...range.tableMetaInfo,
+            rowIndex: i,
+          },
         });
       } else if (range.signals.length === 1) {
         const signal = range.signals[0];

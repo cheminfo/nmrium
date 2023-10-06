@@ -12,7 +12,7 @@ function SignalDeltaColumn({
   rowSpanTags,
 }: RangeColumnProps) {
   const dispatch = useDispatch();
-  const signal = row.tableMetaInfo.signal;
+  const signal = row?.tableMetaInfo?.signal;
 
   function saveHandler(event) {
     dispatch({

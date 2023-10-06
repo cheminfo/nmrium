@@ -26,7 +26,7 @@ export interface AssignmentsData
   id: string;
   isActive: boolean;
   isOver: boolean;
-  assigned: Record<Axis, string[]>;
+  assigned: Partial<Record<Axis, string[]>>;
   removeAll: (axis: Axis) => void;
   toggle: (atomIDs: string[], dimension: AssignmentDimension) => void;
   setActive: (axis: Axis) => void;
@@ -64,9 +64,10 @@ export function useAssignment(key: number | string): AssignmentsData {
     dispatch,
   } = useAssignmentData();
 
-  if ((typeof key !== 'string' && typeof key !== 'number') || key === '') {
+  if (!['string', 'number'].includes(typeof key)) {
     throw new Error(`assignment key must be a non-empty string or number`);
   }
+
   const id = String(key);
 
   const isActive = useMemo(() => {
@@ -77,51 +78,73 @@ export function useAssignment(key: number | string): AssignmentsData {
   }, [highlighted?.id, id]);
 
   const assigned = useMemo(() => {
-    return assignments[id] || null;
+    if (!(id in assignments)) {
+      return {};
+    }
+
+    return assignments[id];
   }, [assignments, id]);
 
   const removeAll = useCallback(
     (axis: Axis) => {
-      dispatch({
-        type: 'REMOVE',
-        payload: { ids: [id], axis },
-      });
+      if (id) {
+        dispatch({
+          type: 'REMOVE',
+          payload: { ids: [id], axis },
+        });
+        return true;
+      }
+      return false;
     },
     [dispatch, id],
   );
 
   const toggle = useCallback(
     (atomIDs: string[], dimension: AssignmentDimension) => {
-      dispatch({
-        type: 'TOGGLE',
-        payload: { atomIDs, id, dimension },
-      });
+      if (id) {
+        dispatch({
+          type: 'TOGGLE',
+          payload: { atomIDs, id, dimension },
+        });
+        return true;
+      }
+      return false;
     },
     [dispatch, id],
   );
 
   const setActive = useCallback(
     (axis: Axis) => {
-      dispatch({
-        type: 'SET_ACTIVE',
-        payload: {
-          id,
-          axis,
-        },
-      });
+      if (id) {
+        dispatch({
+          type: 'SET_ACTIVE',
+          payload: {
+            id,
+            axis,
+          },
+        });
+        return true;
+      }
+
+      return false;
     },
     [dispatch, id],
   );
 
   const show = useCallback(
     (axis?: Axis) => {
-      dispatch({
-        type: 'SHOW',
-        payload: {
-          id,
-          axis,
-        },
-      });
+      if (id) {
+        dispatch({
+          type: 'SHOW',
+          payload: {
+            id,
+            axis,
+          },
+        });
+
+        return true;
+      }
+      return false;
     },
     [dispatch, id],
   );

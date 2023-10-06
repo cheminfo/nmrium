@@ -23,9 +23,9 @@ function Signal({ signal }: SignalProps) {
     return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
   }, []);
 
-  const assignment = useAssignment(signal.id);
+  const assignment = useAssignment(signal?.id || '');
   const { showSignals, showPeaks } = useActiveSpectrumZonesViewState();
-  const highlight = useHighlight(buildIDs(assignment.id));
+  const highlight = useHighlight(buildIDs(assignment?.id));
   const highlightData = useHighlightData();
 
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -35,14 +35,14 @@ function Signal({ signal }: SignalProps) {
       highlightData.highlight.highlighted.some((_highlighted) =>
         buildIDs(signal.id).includes(_highlighted),
       ) ||
-      assignment.isActive
+      assignment?.isActive
     ) {
       setIsHighlighted(true);
     } else {
       setIsHighlighted(false);
     }
   }, [
-    assignment.isActive,
+    assignment?.isActive,
     buildIDs,
     highlightData.highlight.highlighted,
     signal.id,
@@ -57,11 +57,11 @@ function Signal({ signal }: SignalProps) {
           <SignalCrosshair signal={signal} />
           <circle
             onMouseEnter={() => {
-              assignment.show();
+              assignment?.show();
               highlight.show();
             }}
             onMouseLeave={() => {
-              assignment.hide();
+              assignment?.hide();
               highlight.hide();
             }}
             key={signal.id}

@@ -65,7 +65,7 @@ function ActionsColumn({
           <Select
             onChange={changeRangeSignalKind}
             items={SIGNAL_KINDS}
-            defaultValue={row.tableMetaInfo.signal.kind}
+            defaultValue={row?.tableMetaInfo?.signal?.kind}
             style={selectBoxStyle}
           />
         </td>
