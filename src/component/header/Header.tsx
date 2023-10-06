@@ -113,7 +113,7 @@ function HeaderInner(props: HeaderInnerProps) {
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
         return <PhaseCorrectionPanel />;
-      case options.phaseCorrectionTwoDimension.id:
+      case options.phaseCorrectionTwoDimensions.id:
         return <PhaseCorrectionTwoDimensionsPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;

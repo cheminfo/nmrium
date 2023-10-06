@@ -359,8 +359,8 @@ export const options: RecordOptions = {
     isToggle: false,
     isExperimental: true,
   },
-  phaseCorrectionTwoDimension: {
-    id: 'phaseCorrectionTwoDimension',
+  phaseCorrectionTwoDimensions: {
+    id: 'phaseCorrectionTwoDimensions',
     label: 'Phase correction two dimension',
     hasOptionPanel: true,
     isFilter: true,
