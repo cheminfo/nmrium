@@ -8,6 +8,8 @@ import Test from './demo/views/Test';
 // Reset styles so they do not affect development of the React component.
 import 'modern-normalize/modern-normalize.css';
 import 'react-science/styles/preflight.css';
+import '@blueprintjs/core/lib/css/blueprint.css';
+import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 import './demo/index.css';
 
