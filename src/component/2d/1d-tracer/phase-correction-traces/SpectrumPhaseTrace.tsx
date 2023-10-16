@@ -8,6 +8,7 @@ import {
   get2DYScale,
   getSliceYScale,
 } from '../../utilities/scale';
+
 import { useActivePhaseTraces } from './useActivePhaseTraces';
 
 interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
