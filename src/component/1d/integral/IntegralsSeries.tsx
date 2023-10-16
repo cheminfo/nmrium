@@ -5,7 +5,7 @@ import { Integral as IntegralType } from 'nmr-processing';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 
-import Integral from './Integral';
+import { Integration } from './Integration';
 
 const emptyData = { integrals: {}, info: {}, display: {} };
 
@@ -14,7 +14,7 @@ export interface IntegralData extends IntegralType {
   y: Float64Array;
 }
 
-function IntegralsSeries() {
+export default function IntegralsSeries() {
   const {
     displayerKey,
     view: {
@@ -26,17 +26,15 @@ function IntegralsSeries() {
   if (!integrals) return null;
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
-      <g className="integrals">
-        {integrals.values.map((integral) => (
-          <Integral
-            nucleus={nucleus}
-            key={integral.id}
-            integral={integral}
-            max={integrals.max}
-          />
-        ))}
-      </g>
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="integrals">
+      {integrals.values.map((integral) => (
+        <Integration
+          nucleus={nucleus}
+          key={integral.id}
+          integral={integral}
+          max={integrals.max}
+        />
+      ))}
     </g>
   );
 }
@@ -76,5 +74,3 @@ function useIntegrals() {
 
   return { max, values };
 }
-
-export default IntegralsSeries;

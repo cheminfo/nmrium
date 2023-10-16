@@ -11,7 +11,7 @@ interface IntegralProps {
   max: number;
 }
 
-function Integral({ integral, nucleus, max }: IntegralProps) {
+export function Integration({ integral, nucleus, max }: IntegralProps) {
   const { x, y } = integral;
   const { scaleRatio } = useActiveSpectrumIntegralsViewState();
   const path = useIntegralPath({ x, y, max, scaleRatio });
@@ -34,5 +34,3 @@ function Integral({ integral, nucleus, max }: IntegralProps) {
     </g>
   );
 }
-
-export default Integral;
