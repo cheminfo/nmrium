@@ -22,7 +22,7 @@ export function write(data: ClipboardItemInterface[]): Promise<void> {
 }
 
 export function newClipboardItem(
-  items: Record<string, string | Blob | PromiseLike<string | Blob>>,
+  items: Record<string, string | Blob>,
   options?: ClipboardItemOptions,
 ): Promise<ClipboardItem> {
   return import('clipboard-polyfill').then(
