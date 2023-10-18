@@ -1,0 +1,60 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/oxfordInstruments/ethylCrotonate.zip"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H-1H COSY.jdx"
+          ]
+        },
+        "filters": [
+          {
+            "name": "blpDimension1",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fftDimension1",
+            "value": {
+              "apodization": {
+                "compose": {
+                  "shapes": [
+                    {
+                      "shape": {
+                        "kind": "sineBell",
+                        "options": {
+                          "offset": 0,
+                          "exponent": 2
+                        }
+                      }
+                    }
+                  ]
+                },
+                "apply": true
+              }
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fftDimension2",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ]
+      }
+    ],
+    "molecules": []
+  },
+  "version": 5
+}

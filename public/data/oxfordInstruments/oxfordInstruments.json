@@ -50,9 +50,7 @@
             "name": "backwardLinearPrediction",
             "label": "Backward Linear Prediction Filter",
             "value": {
-              "nbPoints": -8,
-              "nbInputs": 16384,
-              "nbCoefficients": 24
+              "nbInputs": 16384
             },
             "flag": true,
             "isDeleteAllow": true

@@ -125,6 +125,10 @@
         "title": "Ethyl Crotonate - oxford"
       },
       {
+        "file": "./data/oxfordInstruments/oxfordCosy.json",
+        "title": "Ethyl Crotonate - COSY - oxford"
+      },
+      {
         "file": "./data/nmredata/nmredata.json",
         "title": "NMReDATA Menthol 1D"
       },
