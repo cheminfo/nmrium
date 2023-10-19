@@ -280,6 +280,7 @@ function CorrelationTableRow({
             value={correlation.equivalence}
             style={equivalenceCellStyle}
             onSave={onSaveEquivalencesHandler}
+            validate={(val) => val !== ''}
           />
         ) : (
           <span style={equivalenceCellStyle}>{correlation.equivalence}</span>
@@ -292,6 +293,7 @@ function CorrelationTableRow({
             value={correlation.protonsCount.join(',')}
             style={correlation.edited.protonsCount ? { color: 'blue' } : {}}
             onSave={(e) => onSaveEditNumericValuesHandler(e, 'protonsCount')}
+            validate={(val) => val !== ''}
           />
         ) : (
           ''
@@ -312,6 +314,7 @@ function CorrelationTableRow({
               .join(',')}
             style={correlation.edited.hybridization ? { color: 'blue' } : {}}
             onSave={(e) => onSaveEditNumericValuesHandler(e, 'hybridization')}
+            validate={(val) => val !== ''}
           />
         ) : (
           ''

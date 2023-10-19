@@ -21,9 +21,9 @@ import { PreferencesContainer } from '../extra/preferences/PreferencesContainer'
 const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
-    label: 'Peak Number :',
-    checkControllerName: 'peakNumber.show',
-    formatControllerName: 'peakNumber.format',
+    label: 'Serial number :',
+    checkControllerName: 'showSerialNumber',
+    hideFormatField: true,
   },
   {
     id: 2,
@@ -65,6 +65,18 @@ const formatFields: NucleusPreferenceField[] = [
     label: 'mu :',
     checkControllerName: 'mu.show',
     formatControllerName: 'mu.format',
+  },
+  {
+    id: 9,
+    label: 'Delete action :',
+    checkControllerName: 'showDeleteAction',
+    hideFormatField: true,
+  },
+  {
+    id: 10,
+    label: 'Edit peak shape action :',
+    checkControllerName: 'showEditPeakShapeAction',
+    hideFormatField: true,
   },
 ];
 

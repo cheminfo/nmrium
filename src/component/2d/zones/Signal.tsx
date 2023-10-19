@@ -1,35 +1,30 @@
 /** @jsxImportSource @emotion/react */
 
 import { Signal2D } from 'nmr-processing';
-import { memo, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
+import { useScale2DX, useScale2DY } from '../utilities/scale';
 
 import SignalCrosshair from './SignalCrosshair';
 
 interface SignalProps {
   signal: Signal2D;
-  isVisible: {
-    signals?: boolean;
-    peaks?: boolean;
-    zones?: boolean;
-  };
 }
 
-function Signal({ signal, isVisible }: SignalProps) {
-  const { margin, width, height, xDomain, yDomain } = useChartData();
-  const scaleX = get2DXScale({ margin, width, xDomain });
-  const scaleY = get2DYScale({ margin, height, yDomain });
+function Signal({ signal }: SignalProps) {
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
 
   const buildIDs = useCallback((id) => {
     return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
   }, []);
 
   const assignment = useAssignment(signal.id);
+  const { showSignals, showPeaks } = useActiveSpectrumZonesViewState();
   const highlight = useHighlight(buildIDs(assignment.id));
   const highlightData = useHighlightData();
 
@@ -57,7 +52,7 @@ function Signal({ signal, isVisible }: SignalProps) {
 
   return (
     <g className="zone-signal">
-      {isVisible.signals && (
+      {showSignals && (
         <g>
           <SignalCrosshair signal={signal} />
           <circle
@@ -78,7 +73,7 @@ function Signal({ signal, isVisible }: SignalProps) {
         </g>
       )}
       <g className="zone-signal-peak" style={{ pointerEvents: 'none' }}>
-        {isVisible.peaks &&
+        {showPeaks &&
           signal?.peaks?.map((peak, i) => (
             <circle
               key={`${signal.id + i}`}
@@ -93,4 +88,4 @@ function Signal({ signal, isVisible }: SignalProps) {
   );
 }
 
-export default memo(Signal);
+export default Signal;

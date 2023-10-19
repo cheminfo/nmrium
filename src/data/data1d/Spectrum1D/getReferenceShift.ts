@@ -5,6 +5,16 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import { getRange } from '../../constants/References';
 
+export interface CalibrateOptions {
+  from: number;
+  to: number;
+  nbPeaks: number;
+  targetX: number;
+}
+export interface GetReferenceShiftOptions extends CalibrateOptions {
+  reference?: string;
+}
+
 /**
  *
  * @param {*} datum1D
@@ -16,7 +26,7 @@ import { getRange } from '../../constants/References';
  * @param {number} [options.targetX]
  * @param {string} [options.reference]
  */
-export function getReferenceShift(datum1D, options) {
+export function getReferenceShift(datum1D, options: GetReferenceShiftOptions) {
   const { reference } = options;
   let { from, to, nbPeaks, targetX } = options;
   if (reference) {

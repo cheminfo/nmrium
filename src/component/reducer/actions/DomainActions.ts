@@ -7,8 +7,8 @@ import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
-import { DISPLAYER_MODE } from '../core/Constants';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager';
+import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
 
@@ -190,7 +190,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   let domain;
 
   if (draft.view.spectra.activeTab) {
-    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    if (draft.displayerMode === '1D') {
       domain = getDomain(draft);
     } else {
       domain = get2DDomain(draft);
@@ -204,7 +204,7 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
 
     if (updateYDomain) {
       draft.yDomain = domain.yDomain;
-      if (draft.displayerMode === DISPLAYER_MODE.DM_1D && isYDomainShared) {
+      if (draft.displayerMode === '1D' && isYDomainShared) {
         draft.yDomains = Object.fromEntries(
           Object.keys(domain.yDomains).map((key) => {
             return [key, domain.yDomain];
@@ -253,12 +253,32 @@ function setIntegralsYDomain(
 }
 
 function setMode(draft: Draft<State>) {
-  const datum_ = draft.data.find(
-    (datum) =>
-      draft.xDomains[datum.id] &&
-      nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab,
-  );
-  draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
+  const { xDomains, view, data, displayerMode } = draft;
+  const nuclues = view.spectra.activeTab;
+
+  if (displayerMode === '1D') {
+    const datum_ = data.find(
+      (datum) =>
+        xDomains[datum.id] && nucleusToString(datum.info.nucleus) === nuclues,
+    );
+    draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
+  } else {
+    const activeSpectra = getActiveSpectra(draft);
+    let hasFt = false;
+    if (Array.isArray(activeSpectra) && activeSpectra?.length > 0) {
+      hasFt = activeSpectra.some(
+        (spectrum) => !data[spectrum.index].info.isFid,
+      );
+    } else {
+      hasFt = data.some(
+        (spectrum) =>
+          !spectrum.info.isFid &&
+          nucleusToString(spectrum.info.nucleus) === nuclues,
+      );
+    }
+
+    draft.mode = hasFt ? 'RTL' : 'LTR';
+  }
 }
 
 //action

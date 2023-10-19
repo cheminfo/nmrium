@@ -1,10 +1,10 @@
 import {
   Children,
-  cloneElement,
   ReactNode,
   useLayoutEffect,
   useRef,
   SVGAttributes,
+  ReactElement,
 } from 'react';
 
 interface SVGGroupProps extends SVGAttributes<SVGElement> {
@@ -35,14 +35,23 @@ export function SVGGroup(props: SVGGroupProps) {
     }
   });
 
+  const items = Children.toArray(children);
+
   return (
     <g {...resProps}>
-      {Children.toArray(children).map((child: any, indx) => {
-        return cloneElement(child, {
-          ref: (ref: SVGElement) => {
-            elementsRefs.current[indx] = ref;
-          },
-        });
+      {Children.map(items, (child, index) => {
+        return (
+          <g
+            key={(child as ReactElement)?.key || `${index}`}
+            ref={(ref) => {
+              if (ref) {
+                elementsRefs.current[index] = ref;
+              }
+            }}
+          >
+            {child}
+          </g>
+        );
       })}
     </g>
   );

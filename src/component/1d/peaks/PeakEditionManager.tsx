@@ -1,3 +1,4 @@
+import { Formik } from 'formik';
 import {
   ReactNode,
   createContext,
@@ -6,13 +7,13 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { useDispatch } from '../../context/DispatchContext';
-import { Formik } from 'formik';
 import * as Yup from 'yup';
-import FormikNumberInput from '../../elements/formik/FormikNumberInput';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import FormikInput from '../../elements/formik/FormikInput';
 
 const validationSchema = Yup.object({
   value: Yup.number().required(),
@@ -171,11 +172,14 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
       validationSchema={validationSchema}
     >
       {({ submitForm }) => (
-        <FormikNumberInput
+        <FormikInput
+          type="number"
           style={{
-            height: `${InputDimension.height}px`,
-            padding: '5px',
-            outline: 'none',
+            input: {
+              height: `${InputDimension.height}px`,
+              padding: '5px',
+              outline: 'none',
+            },
           }}
           name="value"
           autoSelect

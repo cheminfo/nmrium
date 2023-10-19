@@ -1,12 +1,12 @@
 import merge from 'lodash/merge';
 import { Spectrum1D } from 'nmr-load-save';
-import { Peaks, mapPeaks } from 'nmr-processing';
+import { mapPeaks } from 'nmr-processing';
 
 export function initiatePeaks(
-  options: Partial<{ peaks: Peaks }>,
+  inputSpectrum: Partial<Spectrum1D>,
   spectrum: Spectrum1D,
 ) {
-  return merge({ values: [], options: {} }, options.peaks, {
-    values: mapPeaks(options?.peaks?.values || [], spectrum),
+  return merge({ values: [], options: {} }, inputSpectrum.peaks, {
+    values: mapPeaks(inputSpectrum?.peaks?.values || [], spectrum),
   });
 }

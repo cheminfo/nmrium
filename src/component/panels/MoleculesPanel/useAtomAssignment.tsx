@@ -1,4 +1,5 @@
-import { Range, Zone } from 'nmr-processing';
+import { Range, Ranges, Zone, Zones } from 'nmr-processing';
+import { DiaIDAndInfo } from 'openchemlib-utils';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
@@ -11,10 +12,8 @@ import { filterForIDsWithAssignment } from '../../assignment/utilities/filterFor
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 
 import {
-  Atom,
   AtomData,
   extractFromAtom,
   findDatumAndSignalIndex,
@@ -22,13 +21,21 @@ import {
   getHighlightsOnHover,
   toggleDiaIDs,
 } from './Utilities';
+import { DisplayerMode } from '../../reducer/Reducer';
+
+interface UseAtomAssignmentProps {
+  displayerMode: DisplayerMode;
+  activeTab: string;
+  zones: Zones;
+  ranges: Ranges;
+}
 
 export default function useAtomAssignment({
   displayerMode,
   activeTab: nucleus,
   zones,
   ranges,
-}) {
+}: UseAtomAssignmentProps) {
   const alert = useAlert();
   const dispatch = useDispatch();
   const highlightData = useHighlightData();
@@ -69,9 +76,9 @@ export default function useAtomAssignment({
 
   const data = useMemo(() => {
     if (zones || ranges) {
-      if (displayerMode === DISPLAYER_MODE.DM_1D && ranges?.values) {
+      if (displayerMode === '1D' && ranges?.values) {
         return ranges.values;
-      } else if (displayerMode === DISPLAYER_MODE.DM_2D && zones?.values) {
+      } else if (displayerMode === '2D' && zones?.values) {
         return zones.values;
       }
     }
@@ -140,15 +147,14 @@ export default function useAtomAssignment({
   }, []);
 
   const handleOnClickAtom = useCallback(
-    (atom: Atom, event: MouseEvent) => {
+    (diaIDAndInfo: DiaIDAndInfo | undefined, event: MouseEvent) => {
       if (!checkModifierKeyActivated(event) && activeAssignment.activated) {
         const { axis, id } = activeAssignment.activated;
         if (id && axis) {
-          const atomInformation = extractFromAtom(atom, nucleus, axis);
+          const atomInformation = extractFromAtom(diaIDAndInfo, nucleus, axis);
           if (atomInformation.nbAtoms > 0) {
             // save assignment in assignment hook
-            const dimension =
-              displayerMode === DISPLAYER_MODE.DM_1D ? '1D' : '2D';
+            const dimension = displayerMode === '1D' ? '1D' : '2D';
             activeAssignment.toggle(atomInformation.oclIDs, dimension);
             // save assignment (diaIDs) in range/zone data
             const { datum, signalIndex } = findDatumAndSignalIndex(
@@ -160,7 +166,7 @@ export default function useAtomAssignment({
               // let nbAtoms = 0;
               // on range/zone level
 
-              if (displayerMode === DISPLAYER_MODE.DM_1D) {
+              if (displayerMode === '1D') {
                 const range = datum as Range;
                 let _diaIDs: string[] = [];
                 if (signalIndex === undefined) {
@@ -226,8 +232,8 @@ export default function useAtomAssignment({
   );
 
   const handleOnAtomHover = useCallback(
-    (atom: Atom) => {
-      const { oclIDs } = extractFromAtom(atom, nucleus);
+    (diaIDAndInfo: DiaIDAndInfo | undefined) => {
+      const { oclIDs } = extractFromAtom(diaIDAndInfo, nucleus);
 
       // on enter the atom
       if (oclIDs.length > 0) {

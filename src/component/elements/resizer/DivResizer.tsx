@@ -70,7 +70,7 @@ export default function DivResizer(props: ResizerProps) {
       {!disabled && (
         <div
           data-no-export="true"
-          onMouseDown={right.onMouseDown}
+          onPointerDown={right.onPointerDown}
           css={styles.container(right.position.value.x)}
         >
           <div style={anchorStyle} />
@@ -84,7 +84,7 @@ export default function DivResizer(props: ResizerProps) {
       {!disabled && (
         <div
           data-no-export="true"
-          onMouseDown={left.onMouseDown}
+          onPointerDown={left.onPointerDown}
           css={styles.container(left.position.value.x)}
         >
           <div style={anchorStyle} />

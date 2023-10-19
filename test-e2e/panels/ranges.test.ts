@@ -134,6 +134,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
     await expect(range).toContainText(r);
   }
 });
+
 test('Multiplicity should be visible', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -192,6 +193,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     ).toBeVisible();
   });
 });
+
 test('Range state', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -210,12 +212,18 @@ test('Range state', async ({ page }) => {
     await nmrium.page.click('text=Auto ranges picking');
   });
   await test.step('Active range tools', async () => {
-    // Check that the integrals btn is on
+    // Check that the peaks btn is off
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide integrals" i] >> .toggle-active',
+        '_react=RangesPanel >> _react=ToolTip[title="Show peaks" i] >> .toggle-active',
       ),
-    ).toBeVisible();
+    ).toBeHidden();
+    // Check that the integrals btn is off
+    await expect(
+      nmrium.page.locator(
+        '_react=ToolTip[title="Show integrals" i] >> .toggle-active',
+      ),
+    ).toBeHidden();
     // Check that the multiplicity tree btn is off
     await expect(
       nmrium.page.locator(
@@ -223,13 +231,22 @@ test('Range state', async ({ page }) => {
       ),
     ).toBeHidden();
 
-    // Check range integral
-    expect(
-      await nmrium.page.locator('_react=RangeIntegral').count(),
-    ).toBeGreaterThan(0);
+    // Check peaks within ranges are hidden
+    await expect(nmrium.page.locator('_react=PeakAnnotation')).toBeHidden();
+    // Check integrals within ranges are hidden
+    await expect(nmrium.page.locator('_react=RangeIntegral')).toBeHidden();
 
     // Check multiplicity tree
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
+
+    //show integrals
+    await nmrium.page.click(
+      '_react=RangesPanel >> _react=ToolTip[title="Show peaks" i] >> button',
+    );
+    //show integrals
+    await nmrium.page.click(
+      '_react=ToolTip[title="Show integrals" i] >> button',
+    );
 
     //show multiplicity trees
     await nmrium.page.click(
@@ -241,6 +258,14 @@ test('Range state', async ({ page }) => {
         '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
       ),
     ).toBeVisible();
+    // Check peaks within ranges are visible
+    expect(
+      await nmrium.page.locator('_react=PeakAnnotation').count(),
+    ).toBeGreaterThan(0);
+    // Check integrals within ranges are visible
+    expect(
+      await nmrium.page.locator('_react=RangeIntegral').count(),
+    ).toBeGreaterThan(0);
     // Check multiplicity tree is visible
     expect(
       await nmrium.page.locator('_react=MultiplicityTree').count(),
@@ -255,19 +280,27 @@ test('Range state', async ({ page }) => {
     await nmrium.page.click(
       '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
     );
-    // Check that the integrals btn is on
+    // Check that the peaks btn is not active
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide integrals" i] >> .toggle-active',
+        '_react=RangesPanel >> _react=ToolTip[title="Hide peaks" i]',
       ),
+    ).toBeVisible();
+    // Check that the integrals btn is not active
+    await expect(
+      nmrium.page.locator('_react=ToolTip[title="Hide integrals" i]'),
     ).toBeVisible();
     // Check that the multiplicity tree btn is on
     await expect(
       nmrium.page.locator(
-        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
+        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i]',
       ),
     ).toBeVisible();
 
+    // Check range peaks
+    expect(
+      await nmrium.page.locator('_react=PeakAnnotation').count(),
+    ).toBeGreaterThan(0);
     // Check range integrals
     expect(
       await nmrium.page.locator('_react=RangeIntegral').count(),
@@ -278,6 +311,7 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
   });
 });
+
 test('Auto peak picking on all spectra', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await test.step('Open FULL ethylbenzene 2D spectrum', async () => {
@@ -309,7 +343,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.clickPanel('Ranges');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(16);
     await expect(
-      nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
+      nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
     ).toContainText('[ 16 ]');
   });
 
@@ -318,7 +352,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="13C"]');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(15);
     await expect(
-      nmrium.page.locator('_react=RangesTablePanel >> _react=PanelHeader'),
+      nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
   });
 
@@ -352,5 +386,98 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await expect(
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 44 ]');
+  });
+});
+
+test('2D spectra reference change', async ({ page }) => {
+  const xAxisDefault = [1, 2, 3, 4, 5, 6, 7, 8];
+  const yAxisDefault = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+  const nmrium = await NmriumPage.create(page);
+  await test.step('Open 2D spectrum', async () => {
+    await nmrium.page.click('li >> text=Cytisine');
+    await nmrium.page.click('li >> text=HSQC cytisine + 1D spectra');
+    await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
+    await expect(nmrium.page.locator('.x')).toContainText(
+      xAxisDefault.join(''),
+    );
+    await expect(nmrium.page.locator('.y')).toContainText(
+      yAxisDefault.join(''),
+    );
+  });
+
+  await test.step('Auto zone picking', async () => {
+    await nmrium.clickTool('zonePicking');
+    await nmrium.page.click('text=Auto Zones Picking');
+  });
+
+  await test.step("Check spectrum's zones", async () => {
+    await expect(nmrium.page.locator('.zone')).toHaveCount(15);
+    await expect(
+      nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
+    ).toContainText('[ 15 ]');
+
+    const x = 2.9139017520509753;
+    const y = 35.65263186073236;
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
+    ).toBeVisible();
+  });
+  await test.step('Change reference', async () => {
+    const x = 1000;
+    const y = 2000;
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(x.toString());
+    await nmrium.page.keyboard.press('Enter');
+
+    await nmrium.page
+      .locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      )
+      .dblclick();
+
+    await nmrium.page.keyboard.type(y.toString());
+    await nmrium.page.keyboard.press('Enter');
+
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
+      ),
+    ).toHaveText(x.toFixed(2));
+    await expect(
+      nmrium.page.locator(
+        '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=2',
+      ),
+    ).toHaveText(y.toFixed(2));
+
+    await expect(
+      nmrium.page.locator(
+        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+      ),
+    ).toBeVisible();
+
+    const xShift = 997;
+    const yShift = 1960;
+    const newXAxis = xAxisDefault.map((n) => n + xShift);
+    const newYAxis = yAxisDefault.map((n) => n + yShift);
+    await expect(nmrium.page.locator('.x')).toContainText(newXAxis.join(''));
+    await expect(nmrium.page.locator('.y')).toContainText(newYAxis.join(''));
   });
 });

@@ -19,7 +19,7 @@ import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { generateColor } from '../../../data/utilities/generateColor';
 import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import { State } from '../Reducer';
-import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
+import { MARGIN } from '../core/Constants';
 import { ActionType } from '../types/ActionType';
 
 import { unlinkRange } from './RangesActions';
@@ -136,10 +136,10 @@ function removeAssignments(
   draft: Draft<State>,
   assignmentData: AssignmentContext,
 ) {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+  if (draft.displayerMode === '1D') {
     unlinkRange(draft, { assignmentData });
   }
-  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+  if (draft.displayerMode === '2D') {
     unlinkZone(draft, { assignmentData });
   }
 }
@@ -227,6 +227,7 @@ function checkPredictions(
   const { spectra } = inputOptions;
   const missing2DPrediction: string[] = [];
   const molecule = OCL.Molecule.fromMolfile(molfile);
+  //@ts-expect-error Will be fixed once OCL-utils is typed correctly
   const { atoms } = getAtoms(molecule);
   for (const [experiment, required] of Object.entries(spectra)) {
     if (!required || predictedSpectra[experiment]) continue;

@@ -31,7 +31,7 @@ export default function detectSignal(
 
     const result = analyseMultiplet(dataRoi, {
       frequency,
-      minimalResolution: 0.3,
+      minimalResolution: 0.1,
       maxTestedJ: 17,
       checkSymmetryFirst: true,
       takeBestPartMultiplet: true,

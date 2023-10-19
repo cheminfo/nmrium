@@ -5,18 +5,20 @@ import { Spectrum } from 'nmr-load-save';
 import {
   Signal2D,
   Zone,
-  predictAll,
+  predict,
   signalsToXY,
   signals2DToZ,
   getFrequency,
-  PredictedAll,
+  Predicted,
   signalsToRanges,
   Prediction1D,
   Prediction2D,
+  PredictionBase1D,
+  PredictionBase2D,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
-import { DatumKind } from './constants/SignalsKinds';
+import { DATUM_KIND } from './constants/signalsKinds';
 import {
   initiateDatum1D,
   mapRanges,
@@ -28,7 +30,7 @@ import { adjustAlpha } from './utilities/generateColor';
 export type Experiment = 'proton' | 'carbon' | 'cosy' | 'hsqc' | 'hmbc';
 export type SpectraPredictionOptions = Record<Experiment, boolean>;
 export type PredictedSpectraResult = Partial<
-  Record<Experiment, Prediction1D | Prediction2D>
+  Record<Experiment, PredictionBase1D | PredictionBase2D>
 >;
 
 export interface PredictionOptions {
@@ -86,17 +88,18 @@ export const FREQUENCIES: Array<{ value: number; label: string }> = [
   { value: 1200, label: '1200 MHz' },
 ];
 
-const baseURL = 'https://nmr-prediction.service.zakodium.com';
-
-export async function predictSpectra(molfile: string): Promise<PredictedAll> {
+export async function predictSpectra(
+  molfile: string,
+  options: any,
+): Promise<Predicted> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
-  return predictAll(molecule, {
-    predictOptions: {
-      C: {
-        webserviceURL: `${baseURL}/v1/predict/carbon`,
-      },
-    },
-  });
+  const predictOptions = {};
+  for (const key in options) {
+    if (!options[key]) continue;
+    const experiment = key === 'proton' ? 'H' : key === 'carbon' ? 'C' : key;
+    predictOptions[experiment] = {};
+  }
+  return predict(molecule, { predictOptions });
 }
 
 function generateName(
@@ -294,8 +297,8 @@ function mapZones(zones: Array<Partial<Zone>>) {
       return {
         id: id || v4(),
         kind: 'signal',
-        x: { ...x, originDelta: x.delta || 0 },
-        y: { ...y, originDelta: y.delta || 0 },
+        x: { ...x, originalDelta: x.delta || 0 },
+        y: { ...y, originalDelta: y.delta || 0 },
         ...resSignal,
       };
     });
@@ -303,7 +306,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
       id: v4(),
       ...resZone,
       signals: newSignals,
-      kind: DatumKind.signal,
+      kind: DATUM_KIND.signal,
     };
   });
 }

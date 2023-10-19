@@ -1,7 +1,7 @@
 import omit from 'lodash/omit';
 import { Range, Signal1D } from 'nmr-processing';
 
-import { DatumKind } from '../constants/SignalsKinds';
+import { DATUM_KIND } from '../constants/signalsKinds';
 
 export function getDiaIDs(range: Range): string[] {
   return ([] as string[]).concat(
@@ -88,7 +88,7 @@ export function addDefaultSignal(range) {
 }
 
 export function checkRangeKind(range) {
-  return range.kind === DatumKind.signal;
+  return range.kind === DATUM_KIND.signal;
 }
 
 export function checkSignalKinds(range, kinds) {

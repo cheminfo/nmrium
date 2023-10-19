@@ -51,7 +51,7 @@ export default function PredictionPanel() {
     utils: { toggle: openSpectraPanel },
   } = useAccordionContext('Spectra');
   const predictionPreferences = usePanelPreferences('prediction');
-  const openMoleculeEditor = useMoleculeEditor(true);
+  const { modal, openMoleculeEditor } = useMoleculeEditor(true);
   const refreshSlider = useRef<boolean>(false);
 
   useEffect(() => {
@@ -94,7 +94,10 @@ export default function PredictionPanel() {
         );
 
         try {
-          const data = await predictSpectra(molfile);
+          const data = await predictSpectra(
+            molfile,
+            predictionPreferences.spectra,
+          );
           dispatch({
             type: 'PREDICT_SPECTRA',
             payload: {
@@ -240,6 +243,7 @@ export default function PredictionPanel() {
           </div>
         </>
       )}
+      {modal}
     </div>
   );
 }

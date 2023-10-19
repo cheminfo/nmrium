@@ -98,7 +98,10 @@ function SpectraPreferences(props, ref: any) {
       },
     });
   }, []);
-  const mapOnChangeValueHandler = useCallback((key) => paths[key], [paths]);
+  const mapOnChangeValueHandler = useCallback(
+    (key) => paths?.[key] || key,
+    [paths],
+  );
   const mapValue = useCallback((value) => convertPathArrayToString(value), []);
 
   return (

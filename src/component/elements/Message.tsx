@@ -48,7 +48,6 @@ function Message(props: MessageProps) {
   return (
     <div
       style={{
-        fontSize: '1rem',
         padding: '0.375rem 0.75rem',
         borderRadius: '0.25rem',
         backgroundColor: messagesColorPalettes[type].tint,

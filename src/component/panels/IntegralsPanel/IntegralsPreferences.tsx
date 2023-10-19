@@ -12,7 +12,6 @@ import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import { formatFieldLabelStyle } from '../../elements/formik/FormikColumnFormatField';
-import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -21,24 +20,49 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
+import FormikInput from '../../elements/formik/FormikInput';
 
 const formatFields: NucleusPreferenceField[] = [
   {
     id: 1,
+    label: 'Serial number :',
+    checkControllerName: 'showSerialNumber',
+    hideFormatField: true,
+  },
+  {
+    id: 2,
     label: 'Absolute :',
     checkControllerName: 'absolute.show',
     formatControllerName: 'absolute.format',
   },
   {
-    id: 2,
+    id: 3,
     label: 'Relative :',
     checkControllerName: 'relative.show',
     formatControllerName: 'relative.format',
   },
   {
-    id: 3,
+    id: 4,
+    label: 'from :',
+    checkControllerName: 'from.show',
+    formatControllerName: 'from.format',
+  },
+  {
+    id: 5,
+    label: 'to :',
+    checkControllerName: 'to.show',
+    formatControllerName: 'to.format',
+  },
+  {
+    id: 6,
     label: 'Kind :',
     checkControllerName: 'showKind',
+    hideFormatField: true,
+  },
+  {
+    id: 7,
+    label: 'Delete action :',
+    checkControllerName: 'showDeleteAction',
     hideFormatField: true,
   },
 ];
@@ -91,12 +115,17 @@ function IntegralsPreferences(props, ref) {
                   <Label title="stroke width :" style={formatFieldLabelStyle}>
                     <div style={{ display: 'flex', padding: '2px 0' }}>
                       <div style={{ width: '23px' }} />
-                      <FormikNumberInput
+                      <FormikInput
                         name={`nuclei.${n}.strokeWidth`}
+                        type="number"
                         style={{
-                          width: '60%',
-                          textAlign: 'center',
-                          padding: '2px',
+                          input: {
+                            textAlign: 'center',
+                            padding: '2px',
+                          },
+                          inputWrapper: {
+                            width: '60%',
+                          },
                         }}
                         min={1}
                         max={9}

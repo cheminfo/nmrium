@@ -1,6 +1,6 @@
-import { Formik, FormikProps } from 'formik';
+import { Formik } from 'formik';
 import { Filter, Filters, BaselineCorrectionOptions } from 'nmr-processing';
-import { useRef, useState, memo } from 'react';
+import { useState, memo, useRef } from 'react';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -28,7 +28,7 @@ const getAlgorithmsList = () => {
 };
 
 const inputStyle: InputStyle = {
-  input: { width: '50px' },
+  input: { width: '50px', textAlign: 'center' },
   inputWrapper: { height: '100%' },
 };
 
@@ -78,7 +78,7 @@ function BaseLineCorrectionInnerPanel(
   props: BaseLineCorrectionInnerPanelProps,
 ) {
   const dispatch = useDispatch();
-  const formRef = useRef<FormikProps<any>>(null);
+  const previousPreviewRef = useRef<boolean>(true);
   const { algorithm: baseAlgorithm = 'polynomial' } =
     props?.filter?.value || {};
 
@@ -88,13 +88,34 @@ function BaseLineCorrectionInnerPanel(
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
-    dispatch({
-      type:
-        triggerSource === 'onChange'
-          ? 'CALCULATE_BASE_LINE_CORRECTION_FILTER'
-          : 'APPLY_BASE_LINE_CORRECTION_FILTER',
-      payload: values,
-    });
+    const { livePreview, ...options } = values;
+    switch (triggerSource) {
+      case 'onChange': {
+        if (livePreview || previousPreviewRef !== livePreview) {
+          dispatch({
+            type: 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
+            payload: {
+              options,
+              livePreview,
+            },
+          });
+        }
+        break;
+      }
+
+      case 'apply': {
+        dispatch({
+          type: 'APPLY_BASE_LINE_CORRECTION_FILTER',
+          payload: {
+            options,
+          },
+        });
+        break;
+      }
+      default:
+        break;
+    }
+    previousPreviewRef.current = livePreview;
   };
 
   const handleCancelFilter = () => {
@@ -120,71 +141,68 @@ function BaseLineCorrectionInnerPanel(
       </Label>
 
       <Formik
-        innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
         initialValues={form.values}
         validationSchema={form.validation}
         enableReinitialize
       >
-        <>
-          {algorithm && algorithm === 'airpls' && (
-            <div style={{ display: 'flex' }}>
-              <Label title="maxIterations:" style={headerLabelStyle}>
-                <FormikInput
-                  type="number"
-                  name="maxIterations"
-                  debounceTime={250}
-                  style={inputStyle}
-                />
-              </Label>
-              <Label title="tolerance:" style={headerLabelStyle}>
-                <FormikInput
-                  type="number"
-                  name="tolerance"
-                  debounceTime={250}
-                  style={inputStyle}
-                />
-              </Label>
-            </div>
-          )}
-
-          {algorithm &&
-            ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-              <Label
-                title="degree [ 1 - 6 ]:"
-                shortTitle="degree :"
-                style={headerLabelStyle}
-              >
-                <FormikInput
-                  type="number"
-                  name="degree"
-                  min={1}
-                  max={6}
-                  style={inputStyle}
-                  debounceTime={250}
-                />
-              </Label>
+        {({ submitForm }) => (
+          <>
+            {algorithm && algorithm === 'airpls' && (
+              <div style={{ display: 'flex' }}>
+                <Label title="maxIterations:" style={headerLabelStyle}>
+                  <FormikInput
+                    type="number"
+                    name="maxIterations"
+                    debounceTime={250}
+                    style={inputStyle}
+                  />
+                </Label>
+                <Label title="tolerance:" style={headerLabelStyle}>
+                  <FormikInput
+                    type="number"
+                    name="tolerance"
+                    debounceTime={250}
+                    style={inputStyle}
+                  />
+                </Label>
+              </div>
             )}
 
-          <Label
-            title="live preview "
-            htmlFor="livePreview"
-            style={headerLabelStyle}
-          >
-            <FormikCheckBox name="livePreview" />
-          </Label>
+            {algorithm &&
+              ['autoPolynomial', 'polynomial'].includes(algorithm) && (
+                <Label
+                  title="degree [ 1 - 6 ]:"
+                  shortTitle="degree :"
+                  style={headerLabelStyle}
+                >
+                  <FormikInput
+                    type="number"
+                    name="degree"
+                    min={1}
+                    max={6}
+                    style={inputStyle}
+                    debounceTime={250}
+                  />
+                </Label>
+              )}
 
-          <FormikOnChange
-            onChange={(values) => handleApplyFilter(values, 'onChange')}
-            enableOnload
-          />
-        </>
+            <Label
+              title="live preview "
+              htmlFor="livePreview"
+              style={headerLabelStyle}
+            >
+              <FormikCheckBox name="livePreview" />
+            </Label>
+
+            <FormikOnChange
+              onChange={(values) => handleApplyFilter(values, 'onChange')}
+              enableOnload
+            />
+            <ActionButtons onDone={submitForm} onCancel={handleCancelFilter} />
+          </>
+        )}
       </Formik>
-
-      <ActionButtons
-        onDone={() => formRef.current?.submitForm()}
-        onCancel={handleCancelFilter}
-      />
     </HeaderContainer>
   );
 }

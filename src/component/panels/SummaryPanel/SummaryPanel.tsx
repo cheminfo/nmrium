@@ -25,7 +25,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import DefaultPanelHeader, {
   createFilterLabel,
 } from '../header/DefaultPanelHeader';
@@ -113,7 +112,7 @@ function SummaryPanel() {
       const yDomain0 = yDomain[0] * factor;
       const yDomain1 = yDomain[1] * factor;
 
-      if (displayerMode === DISPLAYER_MODE.DM_1D) {
+      if (displayerMode === '1D') {
         const firstLink1D = correlation.link.find(
           (link: Link) => getLinkDim(link) === 1,
         );
@@ -157,7 +156,7 @@ function SummaryPanel() {
         ) {
           return true;
         }
-      } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+      } else if (displayerMode === '2D') {
         if (!atomTypesInView.includes(correlation.atomType)) {
           return false;
         }

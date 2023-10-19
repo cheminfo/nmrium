@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
+import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { useState } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
@@ -16,10 +17,12 @@ import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { getNumberOfDecimals } from '../../utility/formatNumber';
+import { FilterType } from '../../utility/filterType';
+import { PeaksToggleActions } from '../PeaksPanel/PeaksToggleActions';
 import DefaultPanelHeader, {
   createFilterLabel,
 } from '../header/DefaultPanelHeader';
@@ -44,7 +47,6 @@ const style = css`
 `;
 
 function RangesHeader({
-  id,
   ranges,
   info,
   onUnlink,
@@ -52,9 +54,6 @@ function RangesHeader({
   onSettingClick,
   isFilterActive,
   filterCounter,
-  showMultiplicityTrees,
-  showJGraph,
-  showRangesIntegrals,
   activeTab,
 }) {
   const dispatch = useDispatch();
@@ -69,6 +68,14 @@ function RangesHeader({
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+
+  const {
+    showMultiplicityTrees,
+    showJGraph,
+    showRangesIntegrals,
+    showPeaks,
+    displayingMode,
+  } = useActiveSpectrumRangesViewState();
 
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
@@ -102,15 +109,24 @@ function RangesHeader({
   }
 
   function handleSetShowMultiplicityTrees() {
-    dispatch({ type: 'SHOW_MULTIPLICITY_TREES', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showMultiplicityTrees' },
+    });
   }
 
   function handleShowIntegrals() {
-    dispatch({ type: 'SHOW_RANGES_INTEGRALS', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showRangesIntegrals' },
+    });
   }
 
   function handleShowJGraph() {
-    dispatch({ type: 'SHOW_J_GRAPH', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showJGraph' },
+    });
   }
 
   const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
@@ -126,15 +142,10 @@ function RangesHeader({
     if (Array.isArray(ranges?.values) && ranges.values.length > 0) {
       const { originFrequency: observedFrequency, nucleus } = info;
 
-      const nbDecimalDelta = getNumberOfDecimals(
-        rangesPreferences.deltaPPM.format,
-      );
-      const nbDecimalJ = getNumberOfDecimals(rangesPreferences.deltaHz.format);
-
       const result = rangesToACS(ranges.values, {
         nucleus, // '19f'
-        nbDecimalDelta, // 2
-        nbDecimalJ, // 1
+        deltaFormat: rangesPreferences.deltaPPM.format,
+        couplingFormat: rangesPreferences.coupling.format,
         observedFrequency, //400
       });
       modal.show(
@@ -152,6 +163,13 @@ function RangesHeader({
     dispatch({
       type: 'CHANGE_RANGES_SUM_FLAG',
     });
+  }
+
+  function toggleViewProperty(key: keyof FilterType<RangesViewState, boolean>) {
+    dispatch({ type: 'TOGGLE_RANGES_VIEW_PROPERTY', payload: { key } });
+  }
+  function toggleDisplayingMode() {
+    dispatch({ type: 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE' });
   }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
@@ -254,6 +272,13 @@ function RangesHeader({
         >
           <ImLink />
         </ActiveButton>
+        <PeaksToggleActions
+          disbale={!hasRanges}
+          showPeaks={showPeaks}
+          onShowToggle={() => toggleViewProperty('showPeaks')}
+          displayingMode={displayingMode}
+          onDisplayingModeToggle={toggleDisplayingMode}
+        />
       </DefaultPanelHeader>
 
       <ClipboardFallbackModal

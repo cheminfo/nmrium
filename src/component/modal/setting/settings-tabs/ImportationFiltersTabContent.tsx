@@ -95,7 +95,6 @@ const COLUMNS: Array<Column<ListItem>> = [
               name={`nmrLoaders.${row.original.name}`}
               type="string"
               style={{ input: { width: '100%', padding: 0 } }}
-              nullable
             />
           );
         case 'select':

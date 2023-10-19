@@ -6,7 +6,6 @@ import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
 
@@ -58,7 +57,7 @@ function ExclusionZonesAnnotations() {
 
   const spectra = useSpectraByActiveNucleus() as Spectrum1D[];
 
-  if (displayerMode !== DISPLAYER_MODE.DM_1D) return null;
+  if (displayerMode !== '1D') return null;
 
   return (
     <MemoizedPeakAnnotations

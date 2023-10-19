@@ -1,3 +1,5 @@
+import type { ClipboardItemDataType } from 'clipboard-polyfill';
+
 export function readText(): Promise<string> {
   return import('clipboard-polyfill').then((c) => c.readText());
 }
@@ -22,7 +24,7 @@ export function write(data: ClipboardItemInterface[]): Promise<void> {
 }
 
 export function newClipboardItem(
-  items: Record<string, string | Blob | PromiseLike<string | Blob>>,
+  items: Record<string, ClipboardItemDataType>,
   options?: ClipboardItemOptions,
 ): Promise<ClipboardItem> {
   return import('clipboard-polyfill').then(

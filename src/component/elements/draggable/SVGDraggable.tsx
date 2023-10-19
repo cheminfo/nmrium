@@ -41,7 +41,7 @@ export default function SVGDraggable(props: DraggableProps) {
       value: { x, y },
       action,
     },
-    onMouseDown,
+    onPointerDown,
   } = useDraggable({
     position: initialPosition,
     parentElement,
@@ -74,7 +74,7 @@ export default function SVGDraggable(props: DraggableProps) {
       style={{
         transform: `translate(${x}px,${y}px)`,
       }}
-      onMouseDown={onMouseDown}
+      onPointerDown={onPointerDown}
     >
       {typeof children === 'function' ? children(width, height) : children}
     </g>
