@@ -19,6 +19,8 @@ export function useMapZones(
 ): ZoneData[] {
   return useMemo(() => {
     const zonesData: ZoneData[] = [];
+    if (!data) return [];
+
     for (const [i, zone] of data.entries()) {
       if (zone.signals.length === 1) {
         zonesData.push({

@@ -19,8 +19,7 @@ import {
   findSpectrum,
 } from '../../../../data/utilities/FindUtilities';
 import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPathLength';
-import { ActiveSpectrum } from '../../../reducer/Reducer';
-import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
+import { ActiveSpectrum, DisplayerMode } from '../../../reducer/Reducer';
 import { ErrorColors } from '../CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
@@ -475,7 +474,7 @@ function isInView(
   activeSpectrum: ActiveSpectrum | null,
   xDomain: number[],
   yDomain: number[],
-  displayerMode: DISPLAYER_MODE,
+  displayerMode: DisplayerMode,
   correlation: Correlation,
 ): boolean {
   if (correlation.pseudo === true) {
@@ -497,7 +496,7 @@ function isInView(
   const yDomain0 = yDomain[0] * factor;
   const yDomain1 = yDomain[1] * factor;
 
-  if (displayerMode === DISPLAYER_MODE.DM_1D) {
+  if (displayerMode === '1D') {
     const firstLink1D = correlation.link.find((link) => getLinkDim(link) === 1);
     if (!firstLink1D) {
       return false;
@@ -529,7 +528,7 @@ function isInView(
     ) {
       return true;
     }
-  } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+  } else if (displayerMode === '2D') {
     if (!atomTypesInView.includes(correlation.atomType)) {
       return false;
     }

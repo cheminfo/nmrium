@@ -190,7 +190,11 @@ function IntegralPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <IntegralTable data={filteredData} activeTab={activeTab} />
+          <IntegralTable
+            data={filteredData}
+            info={info}
+            activeTab={activeTab}
+          />
         ) : (
           <IntegralsPreferences ref={settingRef} />
         )}

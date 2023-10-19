@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrFt, SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
+import { SvgNmrFt } from 'cheminfo-font';
 import SvgPeaks from 'cheminfo-font/lib-react-cjs/lib-react-tsx/nmr/Peaks';
 import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
 import { Info1D, Peak1D, Peaks } from 'nmr-processing';
@@ -28,6 +28,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
 import PeaksTable from './PeaksTable';
+import { PeaksToggleActions } from './PeaksToggleActions';
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
@@ -129,6 +130,8 @@ function PeaksPanelInner({
     dispatch({ type: 'TOGGLE_PEAKS_DISPLAYING_MODE' });
   }
   const counter = peaks?.values?.length || 0;
+
+  const disbale = !peaks?.values || peaks.values.length === 0;
   return (
     <div
       css={[
@@ -171,7 +174,7 @@ function PeaksPanelInner({
                 }
                 popupPlacement="right"
                 onClick={() => toggleViewProperty('showPeaksShapes')}
-                disabled={!peaks?.values || peaks.values.length === 0}
+                disabled={disbale}
                 value={peaksViewState.showPeaksShapes}
               >
                 <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
@@ -185,7 +188,7 @@ function PeaksPanelInner({
                 }
                 popupPlacement="right"
                 onClick={() => toggleViewProperty('showPeaksSum')}
-                disabled={!peaks?.values || peaks.values.length === 0}
+                disabled={disbale}
                 value={peaksViewState.showPeaksSum}
               >
                 <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
@@ -200,35 +203,13 @@ function PeaksPanelInner({
               </Button.BarButton>
             </>
           )}
-          <ActiveButton
-            style={{ marginLeft: '2px', marginRight: '2px' }}
-            popupTitle={
-              peaksViewState.isPeaksVisible ? 'Hide peaks' : 'Show peaks'
-            }
-            popupPlacement="right"
-            onClick={() => toggleViewProperty('isPeaksVisible')}
-            disabled={!peaks?.values || peaks.values.length === 0}
-            value={peaksViewState.isPeaksVisible}
-          >
-            <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-          </ActiveButton>
-
-          <ActiveButton
-            style={{ marginLeft: '2px', marginRight: '2px' }}
-            popupTitle={
-              peaksViewState.displayingMode === 'spread'
-                ? 'Single Mode'
-                : 'Spread mode'
-            }
-            popupPlacement="right"
-            onClick={toggleDisplayingMode}
-            disabled={!peaks?.values || peaks.values.length === 0}
-            value={peaksViewState.displayingMode === 'spread'}
-          >
-            <SvgNmrPeaksTopLabels
-              style={{ pointerEvents: 'none', fontSize: '12px' }}
-            />
-          </ActiveButton>
+          <PeaksToggleActions
+            disbale={disbale}
+            showPeaks={peaksViewState.showPeaks}
+            onShowToggle={() => toggleViewProperty('showPeaks')}
+            displayingMode={peaksViewState.displayingMode}
+            onDisplayingModeToggle={toggleDisplayingMode}
+          />
         </DefaultPanelHeader>
       )}
       {isFlipped && (
@@ -239,7 +220,7 @@ function PeaksPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <PeaksTable data={filteredPeaks} activeTab={activeTab} />
+          <PeaksTable data={filteredPeaks} info={info} activeTab={activeTab} />
         ) : (
           <PeaksPreferences ref={settingRef} />
         )}

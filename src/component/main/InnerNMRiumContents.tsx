@@ -12,7 +12,6 @@ import { useChartData } from '../context/ChartContext';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import ToolBar from '../toolbar/ToolBar';
 
 import { SplitPaneWrapper } from './SplitPaneWrapper';
@@ -141,7 +140,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                     }}
                   >
                     <FloatMoleculeStructures />
-                    {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                    {displayerMode === '1D' ? (
                       <Viewer1D emptyText={emptyText} />
                     ) : (
                       <Viewer2D emptyText={emptyText} />

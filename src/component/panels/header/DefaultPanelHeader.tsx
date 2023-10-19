@@ -1,24 +1,18 @@
 import { CSSProperties, ReactNode } from 'react';
-import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
+import { FaRegTrashAlt, FaFilter } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
 import ToggleButton from '../../elements/ToggleButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 
 import PanelHeader from './PanelHeader';
+import { PreferencesButton } from '../../elements/PreferencesButton';
+import { CounterLabel } from '../../elements/CounterLabel';
 
-const styles: Record<'leftContainer' | 'counterLabel', CSSProperties> = {
+const styles: Record<'leftContainer', CSSProperties> = {
   leftContainer: {
     display: 'flex',
     flexDirection: 'row',
     flex: 1,
-  },
-  counterLabel: {
-    margin: 0,
-    textAlign: 'right',
-    lineHeight: '22px',
-    padding: '0 5px',
-    whiteSpace: 'nowrap',
   },
 };
 
@@ -91,14 +85,8 @@ function DefaultPanelHeader({
         {children}
       </div>
       {renderRightButtons?.()}
-      {counterLabel && <p style={styles.counterLabel}>{counterLabel}</p>}
-      {showSettingButton && (
-        <ToolTip title="Preferences" popupPlacement="left">
-          <button type="button" onClick={onSettingClick}>
-            <FaCog />
-          </button>
-        </ToolTip>
-      )}
+      {counterLabel && <CounterLabel>{counterLabel}</CounterLabel>}
+      {showSettingButton && <PreferencesButton onClick={onSettingClick} />}
     </PanelHeader>
   );
 }

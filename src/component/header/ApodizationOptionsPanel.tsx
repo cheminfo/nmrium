@@ -1,4 +1,4 @@
-import { Formik, FormikProps } from 'formik';
+import { Formik } from 'formik';
 import { Filters, Filter, ApodizationOptions } from 'nmr-processing';
 import { useRef, memo } from 'react';
 import * as Yup from 'yup';
@@ -17,7 +17,7 @@ import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
 const inputStyle: InputStyle = {
-  input: { width: '60px' },
+  input: { width: '60px', textAlign: 'center' },
   inputWrapper: { height: '100%' },
 };
 
@@ -40,24 +40,36 @@ function ApodizationOptionsInnerPanel(
   props: ApodizationOptionsInnerPanelProps,
 ) {
   const dispatch = useDispatch();
-  const formRef = useRef<FormikProps<any>>(null);
+  const previousPreviewRef = useRef<boolean>(initialValues.livePreview);
 
   function handleApplyFilter(
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) {
-    const { livePreview, ...filterOptions } = values;
-    if (livePreview && triggerSource === 'onChange') {
-      dispatch({
-        type: 'CALCULATE_APODIZATION_FILTER',
-        payload: filterOptions,
-      });
-    } else if (triggerSource === 'apply') {
-      dispatch({
-        type: 'APPLY_APODIZATION_FILTER',
-        payload: filterOptions,
-      });
+    const { livePreview, ...options } = values;
+    switch (triggerSource) {
+      case 'onChange': {
+        if (livePreview || previousPreviewRef.current !== livePreview) {
+          dispatch({
+            type: 'CALCULATE_APODIZATION_FILTER',
+            payload: { livePreview, options },
+          });
+        }
+        break;
+      }
+
+      case 'apply': {
+        dispatch({
+          type: 'APPLY_APODIZATION_FILTER',
+          payload: { options },
+        });
+        break;
+      }
+      default:
+        break;
     }
+
+    previousPreviewRef.current = livePreview;
   }
 
   function handleCancelFilter() {
@@ -74,73 +86,73 @@ function ApodizationOptionsInnerPanel(
   return (
     <HeaderContainer>
       <Formik
-        innerRef={formRef}
         onSubmit={(values) => handleApplyFilter(values)}
         initialValues={formData}
         validationSchema={validationSchema}
       >
-        <>
-          <Label
-            title="Line broadening : "
-            shortTitle="LB :"
-            style={headerLabelStyle}
-          >
-            <FormikInput
-              type="number"
-              name="lineBroadening"
-              min={0}
-              max={1}
-              style={inputStyle}
-              debounceTime={250}
-            />
-          </Label>
-          <Label
-            title="Gauss broadening :"
-            shortTitle="GB :"
-            style={headerLabelStyle}
-          >
-            <FormikInput
-              type="number"
-              name="gaussBroadening"
-              min={0}
-              max={1}
-              style={inputStyle}
-              debounceTime={250}
-            />
-          </Label>
-          <Label
-            title="lineBroadeningCenter [0 - 1] : "
-            shortTitle="LB Center :"
-            style={headerLabelStyle}
-          >
-            <FormikInput
-              type="number"
-              name="lineBroadeningCenter"
-              min={0}
-              max={1}
-              style={inputStyle}
-              debounceTime={250}
-            />
-          </Label>
-          <Label
-            title="Live preview "
-            htmlFor="livePreview"
-            style={{ label: { padding: '0 5px' } }}
-          >
-            <FormikCheckBox name="livePreview" />
-          </Label>
+        {({ submitForm }) => (
+          <>
+            <Label
+              title="Line broadening : "
+              shortTitle="LB :"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="lineBroadening"
+                min={0}
+                max={1}
+                step={0.1}
+                style={inputStyle}
+                debounceTime={250}
+              />
+            </Label>
+            <Label
+              title="Gauss broadening :"
+              shortTitle="GB :"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="gaussBroadening"
+                min={0}
+                max={1}
+                step={0.1}
+                style={inputStyle}
+                debounceTime={250}
+              />
+            </Label>
+            <Label
+              title="lineBroadeningCenter [0 - 1] : "
+              shortTitle="LB Center :"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="lineBroadeningCenter"
+                min={0}
+                max={1}
+                step={0.1}
+                style={inputStyle}
+                debounceTime={250}
+              />
+            </Label>
+            <Label
+              title="Live preview "
+              htmlFor="livePreview"
+              style={{ label: { padding: '0 5px' } }}
+            >
+              <FormikCheckBox name="livePreview" />
+            </Label>
 
-          <FormikOnChange
-            onChange={(values) => handleApplyFilter(values, 'onChange')}
-            enableOnload
-          />
-        </>
+            <FormikOnChange
+              onChange={(values) => handleApplyFilter(values, 'onChange')}
+              enableOnload
+            />
+            <ActionButtons onDone={submitForm} onCancel={handleCancelFilter} />
+          </>
+        )}
       </Formik>
-
-      <ActionButtons
-        onDone={() => formRef.current?.submitForm()}
-        onCancel={handleCancelFilter}
-      />
     </HeaderContainer>
   );
 }

@@ -6,7 +6,6 @@ import { Accordion } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment';
 import InformationPanel from './InformationPanel';
@@ -23,13 +22,14 @@ import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
 import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation';
+import { DisplayerMode } from '../reducer/Reducer';
 
 interface AccordionItem {
   title: string;
   component: ReactElement;
   style?: CSSProperties;
   hidePreferenceKey: string;
-  mode: '1D' | '2D' | null;
+  mode: DisplayerMode | null;
   isExperimental?: boolean;
 }
 
@@ -51,7 +51,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Peaks',
     component: <PeaksPanel />,
     hidePreferenceKey: 'peaksPanel',
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
   },
   {
     title: 'Processings',
@@ -63,13 +63,13 @@ const accordionItems: AccordionItem[] = [
     title: 'Integrals',
     component: <IntegralPanel />,
     hidePreferenceKey: 'integralsPanel',
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
   },
   {
     title: 'Ranges',
     component: <RangesPanel />,
     hidePreferenceKey: 'rangesPanel',
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
   },
   {
     title: 'Multiple Spectra Analysis',
@@ -81,13 +81,13 @@ const accordionItems: AccordionItem[] = [
     title: 'Matrix Generation',
     component: <MatrixGenerationPanel />,
     hidePreferenceKey: 'matrixGenerationPanel',
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
   },
   {
     title: 'Zones',
     component: <ZonesPanel />,
     hidePreferenceKey: 'zonesPanel',
-    mode: DISPLAYER_MODE.DM_2D,
+    mode: '2D',
   },
   {
     title: 'Summary',
@@ -123,7 +123,7 @@ const accordionItems: AccordionItem[] = [
     title: 'Spectrum Simulation',
     component: <SpectrumSimulation />,
     hidePreferenceKey: 'simulationPanel',
-    mode: DISPLAYER_MODE.DM_1D,
+    mode: '1D',
   },
 ];
 

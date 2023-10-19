@@ -25,6 +25,7 @@ const selectStyle: CSSProperties = {
 const inputStyle: InputStyle = {
   input: {
     width: '70px',
+    textAlign: 'center',
   },
   inputWrapper: {
     height: '100%',
@@ -127,7 +128,6 @@ export default function PhaseCorrectionPanel() {
         newValues.ph0 +=
           diff0 - (diff1 * (data.re.length - pivot?.index)) / data.re.length;
       }
-
       dispatch({
         type: 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
         payload: newValues,
@@ -146,7 +146,7 @@ export default function PhaseCorrectionPanel() {
     (e) => {
       const { name, value } = e.target;
       if (e.target) {
-        const newValue = { ...valueRef.current, [name]: value };
+        const newValue = { ...valueRef.current, [name]: Number(value) };
 
         if (String(value).trim() !== '-') {
           calcPhaseCorrectionHandler(newValue, name);

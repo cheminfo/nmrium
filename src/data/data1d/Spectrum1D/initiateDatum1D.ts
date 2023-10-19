@@ -9,19 +9,22 @@ import { get1DColor } from './get1DColor';
 import { initiateIntegrals } from './integrals/initiateIntegrals';
 import { initiatePeaks } from './peaks/initiatePeaks';
 import { initiateRanges } from './ranges/initiateRanges';
+import { initSumOptions } from './SumManager';
+import { StateMoleculeExtended } from '../../molecules/Molecule';
 
 export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
   filters?: any[];
+  molecules?: StateMoleculeExtended[];
 }
 
 export function initiateDatum1D(
   spectrum: any,
   options: InitiateDatum1DOptions = {},
 ): Spectrum1D {
-  const { usedColors = {}, filters = [] } = options;
+  const { usedColors = {}, filters = [], molecules = [] } = options;
 
-  const { ranges, ...restSpectrum } = spectrum;
+  const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
   spectrumObj.id = spectrum.id || v4();
 
@@ -52,18 +55,34 @@ export function initiateDatum1D(
 
   spectrumObj.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
+  const { nucleus } = spectrumObj.info;
+
   spectrumObj.peaks = initiatePeaks(spectrum, spectrumObj);
 
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  spectrumObj.integrals = initiateIntegrals(spectrum, spectrumObj); // array of object (from: xIndex, to: xIndex)
-  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj);
+  const integralsOptions = initSumOptions(integrals?.options || {}, {
+    nucleus,
+    molecules,
+  });
+  spectrumObj.integrals = initiateIntegrals(
+    spectrum,
+    spectrumObj,
+    integralsOptions,
+  ); // array of object (from: xIndex, to: xIndex)
+
+  const rangesOptions = initSumOptions(ranges?.options || {}, {
+    nucleus,
+    molecules,
+  });
+  spectrumObj.ranges = initiateRanges(spectrum, spectrumObj, rangesOptions);
 
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(spectrumObj);
 
   preprocessing(spectrumObj, filters);
+
   return spectrumObj;
 }
 

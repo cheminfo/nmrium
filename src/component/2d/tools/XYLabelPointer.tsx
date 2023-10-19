@@ -5,9 +5,8 @@ import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import useSpectrum from '../../hooks/useSpectrum';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
-import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
+import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale';
 
 const style: CSSProperties = {
   cursor: 'crosshair',
@@ -30,8 +29,6 @@ function XYLabelPointer({ layout, data1D }) {
     margin,
     width,
     height,
-    xDomain,
-    yDomain,
     yDomains,
     view: {
       spectra: { activeTab },
@@ -48,42 +45,35 @@ function XYLabelPointer({ layout, data1D }) {
 
   const nuclei = activeTab.split(',');
   const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
-  const spectrum = useSpectrum();
+  // const spectrum = useSpectrum();
+  const scale2DX = useScale2DX();
+  const scale2DY = useScale2DY();
 
   const scaleX = useMemo(() => {
     if (!activeSpectrum || !data1D || data1D.length === 0) {
-      return get2DXScale({ width, margin, xDomain });
+      return scale2DX;
     }
 
     switch (trackID) {
       case LAYOUT.TOP_1D:
       case LAYOUT.CENTER_2D: {
-        return get2DXScale({ width, margin, xDomain });
+        return scale2DX;
       }
       case LAYOUT.LEFT_1D: {
-        return get2DYScale({ height, margin, yDomain });
+        return scale2DY;
       }
       default:
         return null;
     }
-  }, [
-    activeSpectrum,
-    data1D,
-    height,
-    margin,
-    trackID,
-    width,
-    xDomain,
-    yDomain,
-  ]);
+  }, [activeSpectrum, data1D, scale2DX, scale2DY, trackID]);
 
   const scaleY = useMemo(() => {
     if (!activeSpectrum || !data1D || data1D.length === 0) {
-      return get2DYScale({ height, margin, yDomain });
+      return scale2DY;
     }
     switch (trackID) {
       case LAYOUT.CENTER_2D: {
-        return get2DYScale({ height, margin, yDomain }, !!spectrum?.info.isFid);
+        return scale2DY;
       }
       case LAYOUT.TOP_1D: {
         return data1D[0]
@@ -101,11 +91,10 @@ function XYLabelPointer({ layout, data1D }) {
   }, [
     activeSpectrum,
     data1D,
-    height,
-    margin,
-    spectrum?.info.isFid,
+    margin.left,
+    margin.top,
+    scale2DY,
     trackID,
-    yDomain,
     yDomains,
   ]);
 

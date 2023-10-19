@@ -8,11 +8,12 @@ import { Nucleus } from '../../../data/types/common/Nucleus';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT, Layout } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { rangeStateInit, State } from '../Reducer';
-import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
+import { State } from '../Reducer';
+import { MARGIN } from '../core/Constants';
 import {
   setZoom,
   wheelZoom,
@@ -165,17 +166,14 @@ function activateTool(draft, options: ActivateToolOptions) {
       if (toolId === Tools.editRange.id) {
         const activeSpectrum = getActiveSpectrum(draft);
         if (activeSpectrum) {
-          const range = draft.view.ranges.find(
-            (r) => r.spectrumID === activeSpectrum?.id,
-          );
+          const range = draft.view.ranges?.[activeSpectrum?.id];
           if (range) {
             range.showMultiplicityTrees = true;
           } else {
-            draft.view.ranges.push({
-              spectrumID: activeSpectrum.id,
-              ...rangeStateInit,
+            draft.view.ranges[activeSpectrum.id] = {
+              ...defaultRangesViewState,
               showMultiplicityTrees: true,
-            });
+            };
           }
         }
       }
@@ -283,7 +281,7 @@ function handleToggleRealImaginaryVisibility(draft: Draft<State>) {
 }
 
 function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
-  const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
+  const is2D = draft.displayerMode === '2D';
 
   const { height, margin, yDomain, yDomains, width, xDomains, xDomain, mode } =
     draft;
@@ -328,16 +326,11 @@ function setVerticalIndicatorXPosition(
 
 function handleZoom(draft: Draft<State>, action: ZoomAction) {
   const { event, trackID, selectedTool } = action.payload;
-  const {
-    view: { ranges: rangeState },
-    displayerMode,
-    yDomains,
-    integralsYDomains,
-  } = draft;
+  const { displayerMode, yDomains, integralsYDomains } = draft;
 
   const activeSpectra = getActiveSpectra(draft);
 
-  if (displayerMode === DISPLAYER_MODE.DM_2D) {
+  if (displayerMode === '2D') {
     const index =
       trackID === LAYOUT.TOP_1D ? 0 : trackID === LAYOUT.LEFT_1D ? 1 : null;
     if (index !== null) {
@@ -352,11 +345,8 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     if (selectedTool === Tools.integral.id && event.shiftKey) {
       for (const activeSpectrum of activeSpectra) {
         //check if the integrals is visible
-        const { showRangesIntegrals } =
-          rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
-          rangeStateInit;
         const domain = integralsYDomains?.[activeSpectrum?.id];
-        if (showRangesIntegrals && domain) {
+        if (domain) {
           integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
         }
       }
@@ -388,7 +378,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
       { xDomain, yDomain },
     );
 
-    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    if (draft.displayerMode === '1D') {
       switch (zoomType) {
         case ZOOM_TYPES.HORIZONTAL: {
           draft.xDomain = xDomain;
@@ -410,6 +400,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
         default: {
           draft.xDomain = xDomain;
           setZoom(draft, { scale: 0.8 });
+          zoomHistory.clear();
           break;
         }
       }
@@ -454,12 +445,12 @@ function setMargin(draft: Draft<State>) {
     (activeSpectrum?.id && draft.data[activeSpectrum.index]) || null;
 
   if (
-    draft.displayerMode === DISPLAYER_MODE.DM_2D &&
+    draft.displayerMode === '2D' &&
     (draft.toolOptions.selectedTool === Tools.slicing.id ||
       spectrum?.info.isFid)
   ) {
     draft.margin = MARGIN['2D'];
-  } else if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+  } else if (draft.displayerMode === '2D') {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
       : MARGIN['1D'].top;
@@ -467,7 +458,7 @@ function setMargin(draft: Draft<State>) {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+  } else if (draft.displayerMode === '1D') {
     draft.margin = MARGIN['1D'];
   }
 }
@@ -476,8 +467,8 @@ function setMargin(draft: Draft<State>) {
 function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
     data && (data as Spectrum[]).some((d) => d.info.dimension === 2)
-      ? DISPLAYER_MODE.DM_2D
-      : DISPLAYER_MODE.DM_1D;
+      ? '2D'
+      : '1D';
 }
 
 //utility
@@ -625,7 +616,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
 }
 
 function setSpectraSameTopHandler(draft: Draft<State>) {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+  if (draft.displayerMode === '1D') {
     draft.originDomain.shareYDomain = false;
     setZoom(draft, { scale: 0.8 });
   }

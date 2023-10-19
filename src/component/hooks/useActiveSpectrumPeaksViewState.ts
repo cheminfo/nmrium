@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { useActiveSpectrum } from './useActiveSpectrum';
 
 export const defaultPeaksViewState: PeaksViewState = {
-  isPeaksVisible: true,
+  showPeaks: true,
   showPeaksShapes: false,
   showPeaksSum: false,
   displayingMode: 'spread',

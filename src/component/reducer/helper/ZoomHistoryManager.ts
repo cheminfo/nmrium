@@ -2,7 +2,6 @@ import { Draft } from 'immer';
 
 import { Layout } from '../../2d/utilities/DimensionLayout';
 import { State } from '../Reducer';
-import { DISPLAYER_MODE } from '../core/Constants';
 
 interface HistoryItem {
   xDomain: number[];
@@ -71,7 +70,7 @@ export function addToBrushHistory(
     // eslint-disable-next-line unicorn/consistent-destructuring
     draft.view.spectra.activeTab,
   );
-  if (displayerMode === DISPLAYER_MODE.DM_2D) {
+  if (displayerMode === '2D') {
     switch (trackID) {
       case 'CENTER_2D':
         draft.xDomain = xDomain;

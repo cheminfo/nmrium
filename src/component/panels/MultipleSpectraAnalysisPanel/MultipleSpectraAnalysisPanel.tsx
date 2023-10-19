@@ -3,8 +3,9 @@ import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
 import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
-import { FaFileExport } from 'react-icons/fa';
+import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
+import { useToggle } from 'react-use';
 
 import {
   getDataAsString,
@@ -14,22 +15,25 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
-import ToggleButton from '../../elements/ToggleButton';
 import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
+import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
+import AnalysisChart from './AnalysisChart';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   spectra: Spectrum1D[];
+  displayerMode: DisplayerMode;
   activeTab: string;
   showLegend: boolean;
 }
@@ -38,11 +42,12 @@ function MultipleSpectraAnalysisPanelInner({
   activeTab,
   spectra,
   showLegend,
+  displayerMode,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
-
+  const [showAnalysisChart, toggleAnalysisChart] = useToggle(false);
   const spectraAnalysis = generateAnalyzeSpectra(
     preferences as any,
     spectra,
@@ -115,18 +120,37 @@ function MultipleSpectraAnalysisPanelInner({
           >
             <FaFileExport />
           </Button>
-          <Button popupTitle="Spectra calibration" onClick={openAlignSpectra}>
-            <SvgNmrOverlay style={{ fontSize: '18px' }} />
-          </Button>
-          <ToggleButton
-            popupTitle="Y spectra tracker"
-            popupPlacement="right"
-            onClick={showTrackerHandler}
-            defaultValue={showLegend}
-            key={`${showLegend}`}
-          >
-            <IoPulseOutline />
-          </ToggleButton>
+          {displayerMode === '1D' && (
+            <>
+              <Button
+                popupTitle="Spectra calibration"
+                onClick={openAlignSpectra}
+              >
+                <SvgNmrOverlay style={{ fontSize: '16px' }} />
+              </Button>
+
+              <ActiveButton
+                popupTitle="Y spectra tracker"
+                popupPlacement="right"
+                onClick={showTrackerHandler}
+                value={showLegend}
+                key={`${showLegend}`}
+              >
+                <IoPulseOutline />
+              </ActiveButton>
+              <ActiveButton
+                popupTitle={`${
+                  !showAnalysisChart ? 'Show' : 'Hide'
+                } analysis chart`}
+                popupPlacement="right"
+                onClick={() => toggleAnalysisChart()}
+                value={showAnalysisChart}
+                style={{ marginLeft: '5px' }}
+              >
+                <FaChartBar />
+              </ActiveButton>
+            </>
+          )}
         </DefaultPanelHeader>
       )}
       {isFlipped && (
@@ -137,11 +161,16 @@ function MultipleSpectraAnalysisPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <MultipleSpectraAnalysisTable
-            data={spectraAnalysis}
-            resortSpectra={preferences.analysisOptions.resortSpectra}
-            activeTab={activeTab}
-          />
+          <div style={{ overflow: 'auto' }}>
+            {showAnalysisChart && (
+              <AnalysisChart spectraAnalysisData={spectraAnalysis} />
+            )}
+            <MultipleSpectraAnalysisTable
+              data={spectraAnalysis}
+              resortSpectra={preferences.analysisOptions.resortSpectra}
+              activeTab={activeTab}
+            />
+          </div>
         ) : (
           <MultipleSpectraAnalysisPreferences
             data={spectraAnalysis}
@@ -172,6 +201,7 @@ export default function MultipleSpectraAnalysisPanel() {
       spectra: { activeTab, showLegend },
     },
     displayerKey,
+    displayerMode,
   } = useChartData();
 
   const spectra = getSpectraByNucleus(activeTab, data) as Spectrum1D[];
@@ -182,7 +212,7 @@ export default function MultipleSpectraAnalysisPanel() {
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel
-      {...{ activeTab, displayerKey, spectra, showLegend }}
+      {...{ activeTab, displayerMode, displayerKey, spectra, showLegend }}
     />
   );
 }

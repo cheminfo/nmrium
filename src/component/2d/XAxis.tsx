@@ -7,7 +7,7 @@ import { useEffect, useRef, memo } from 'react';
 import { useChartData } from '../context/ChartContext';
 import useSpectrum from '../hooks/useSpectrum';
 
-import { get2DXScale } from './utilities/scale';
+import { useScale2DX } from './utilities/scale';
 
 const axisStyles = css`
   user-select: none;
@@ -37,25 +37,20 @@ interface XAxisProps {
 function XAxis(props: XAxisProps) {
   const { show = true, margin: marginProps = defaultMargin } = props;
 
-  const { xDomain, height, width, margin } = useChartData();
+  const { height, width, margin } = useChartData();
   const spectrum = useSpectrum() as Spectrum2D;
+  const scaleX = useScale2DX();
 
   const refAxis = useRef<SVGGElement>(null);
 
   useEffect(() => {
     if (!show) return;
 
-    const scaleX = get2DXScale({
-      width,
-      margin,
-      xDomain,
-    });
-
     const xAxis = d3.axisBottom(scaleX).ticks(8).tickFormat(d3.format('0'));
 
     // @ts-expect-error actually well typed
     d3.select(refAxis.current).call(xAxis);
-  }, [height, margin, show, spectrum, width, xDomain]);
+  }, [height, margin, scaleX, show, spectrum, width]);
 
   if (!width || !height) {
     return null;
