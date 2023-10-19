@@ -51,18 +51,7 @@ export default function FiltersPanel() {
         saveText="Yes"
         cancelText="No"
       >
-        <div
-          style={{
-            display: 'flex',
-            flex: '1 1 0%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 'bold',
-            margin: 25,
-            fontSize: 14,
-            color: 'rgb(175, 0, 0)',
-          }}
-        >
+        <div>
           <span>
             You are about to delete all processing steps, Are you sure?
           </span>

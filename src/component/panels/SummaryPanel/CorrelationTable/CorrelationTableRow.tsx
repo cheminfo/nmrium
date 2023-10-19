@@ -331,18 +331,7 @@ function CorrelationTableRow({
         saveText="Yes"
         cancelText="No"
       >
-        <div
-          style={{
-            display: 'flex',
-            flex: '1 1 0%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 'bold',
-            margin: 25,
-            fontSize: 14,
-            color: 'rgb(175, 0, 0)',
-          }}
-        >
+        <div>
           <span>{`All signals of ${correlation.label.origin} (${(
             getCorrelationDelta(correlation) as number
           )?.toFixed(2)}) will be deleted. Are you sure?`}</span>
