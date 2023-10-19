@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
-import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
 import {
@@ -15,9 +14,15 @@ import {
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import FormikInput from '../elements/formik/FormikInput';
+import { InputStyle } from '../elements/Input';
 
-const inputStyle = {
-  width: '60px',
+const inputStyle: InputStyle = {
+  input: {
+    width: '60px',
+    textAlign: 'center',
+  },
+  inputWrapper: { height: '100%' },
 };
 
 const LookFor = [
@@ -86,10 +91,12 @@ function AutoPeakPickingOptionPanel() {
               shortTitle="Peaks number :"
               style={headerLabelStyle}
             >
-              <FormikNumberInput
+              <FormikInput
+                type="number"
                 name="maxNumberOfPeaks"
                 style={inputStyle}
                 min={0}
+                step={1}
               />
             </Label>
             <Label
@@ -97,7 +104,8 @@ function AutoPeakPickingOptionPanel() {
               shortTitle="Noise :"
               style={headerLabelStyle}
             >
-              <FormikNumberInput
+              <FormikInput
+                type="number"
                 name="noiseFactor"
                 style={inputStyle}
                 min={0}
@@ -108,10 +116,11 @@ function AutoPeakPickingOptionPanel() {
               shortTitle="Ratio :"
               style={headerLabelStyle}
             >
-              <FormikNumberInput
+              <FormikInput
+                type="number"
                 name="minMaxRatio"
                 style={inputStyle}
-                step="0.01"
+                step={0.01}
                 min={0}
               />
             </Label>

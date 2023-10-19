@@ -19,6 +19,7 @@ export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
   const data = info.isFid
     ? (spectraData as NmrData2DFid).re
     : (spectraData as NmrData2DFt).rr;
+
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   const xIndex = Math.floor((position.x - data.minX) / xStep);
@@ -55,10 +56,10 @@ export function getSlice(spectrum: Spectrum2D, position: SlicePosition) {
     re: new Float64Array(data.z.length),
   };
 
-  let index = data.z.length - 1;
   for (let i = 0; i < data.z.length; i++) {
-    dataY.re[i] += data.z[index--][xIndex];
+    dataY.re[i] += data.z[i][xIndex];
   }
+
   const horizontal = initiateDatum1D({ info: infoX, data: dataX });
   const vertical = initiateDatum1D({ info: infoY, data: dataY });
   return { horizontal, vertical };

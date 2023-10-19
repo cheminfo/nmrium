@@ -6,6 +6,7 @@ import {
   string,
   ValidationError,
   type ObjectShape,
+  number,
 } from 'yup';
 
 const formattingElementValidation = (obj: Workspace): ObjectShape => {
@@ -83,11 +84,15 @@ const infoBlockValidation = object({
     }),
   ),
 });
+const generalValidation = object({
+  dimmedSpectraOpacity: number().required(),
+});
 
 export const validation: any = lazy((obj: Workspace) =>
   object().shape({
     formatting: formattingValidation(obj),
     databases: databasesValidation,
     infoBlock: infoBlockValidation,
+    general: generalValidation,
   }),
 );

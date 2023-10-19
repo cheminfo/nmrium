@@ -1,93 +1,63 @@
-import { useMemo, memo } from 'react';
+import { NmrData1D } from 'cheminfo-types';
 
 import { useChartData } from '../../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
 import { PathBuilder } from '../../utility/PathBuilder';
-import { getYScale } from '../utilities/SliceScale';
-import { get2DYScale } from '../utilities/scale';
+import { getSliceYScale, useScale2DY } from '../utilities/scale';
 
-interface VerticalSliceChartProps {
-  margin?: number;
-  data: {
-    x: Float64Array;
-    re: Float64Array;
-  };
-  reverseScale?: boolean;
+interface BaseProps {
+  reverse?: boolean;
+  horizontalMargin?: number;
 }
 
-function VerticalSliceChart({
-  margin: marginValue = 10,
-  data,
-  reverseScale = false,
-}: VerticalSliceChartProps) {
-  const {
-    height: originHeight,
-    margin,
-    yDomain,
-    displayerKey,
-  } = useChartData();
-  const xyReduce = useXYReduce(XYReducerDomainAxis.YAxis);
+interface VerticalSliceChartProps extends BaseProps {
+  data: NmrData1D;
+}
 
-  const height = margin.left;
+interface usePathOptions extends BaseProps {
+  width?: number;
+}
 
-  const paths = useMemo(() => {
-    if (data) {
-      const { x, re: y } = data;
-      const scaleX = get2DYScale(
-        { height: originHeight, margin, yDomain },
-        reverseScale,
-      );
+function usePath(data, props: usePathOptions) {
+  const { reverse, width = 100, horizontalMargin = 10 } = props;
+  const { mode } = useChartData();
+  const scaleX = useScale2DY(reverse);
 
-      const scaleY = getYScale(height, y, marginValue);
+  const { x, re: y } = data;
 
-      const pathPoints = xyReduce({ x, y });
+  const scaleY = getSliceYScale(y, width, mode, horizontalMargin);
 
-      const pathBuilder = new PathBuilder();
+  const pathBuilder = new PathBuilder();
 
-      pathBuilder.moveTo(
-        scaleY(pathPoints.y.at(-1) as number),
-        scaleX(pathPoints.x.at(-1) as number),
-      );
+  pathBuilder.moveTo(scaleY(y.at(-1)), scaleX(x.at(-1)));
 
-      for (let i = pathPoints.x.length - 2; i >= 0; i--) {
-        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(pathPoints.x[i]));
-      }
+  for (let i = x.length - 2; i >= 0; i--) {
+    pathBuilder.lineTo(scaleY(y[i]), scaleX(x[i]));
+  }
+  return pathBuilder.toString();
+}
 
-      return pathBuilder.toString();
-    } else {
-      return undefined;
-    }
-  }, [
-    data,
-    height,
-    margin,
-    marginValue,
-    originHeight,
-    reverseScale,
-    xyReduce,
-    yDomain,
-  ]);
+function VerticalSliceChart(props: VerticalSliceChartProps) {
+  const { horizontalMargin = 10, data, reverse = false } = props;
+  const { height, margin, displayerKey } = useChartData();
 
-  const mainHeight = originHeight - margin.bottom - margin.top;
+  const width = margin.left;
 
-  if (!mainHeight || !height) return null;
+  const path = usePath(data, { width, horizontalMargin, reverse });
+
+  const innerHeight = height - margin.bottom - margin.top;
 
   return (
-    <svg
-      viewBox={`0 0 ${height} ${mainHeight + margin.top}`}
-      width={height}
-      height={mainHeight + margin.top}
-    >
+    <svg viewBox={`0 0 ${height} ${height}`} width={height} height={height}>
       <defs>
         <clipPath id={`${displayerKey}clip-left`}>
-          <rect width={height} height={mainHeight} x="0" y={margin.top} />
+          <rect width={height} height={innerHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-left)`}>
-        <path className="line" stroke="red" fill="none" d={paths} />
+        <path className="line" stroke="red" fill="none" d={path} />
       </g>
     </svg>
   );
 }
 
-export default memo(VerticalSliceChart);
+export default VerticalSliceChart;

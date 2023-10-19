@@ -21,8 +21,8 @@ import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
 import { useSaveSettings } from '../hooks/useSaveSettings';
-import AboutUsModal from '../modal/AboutUsModal';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal';
+import AboutUsModal from '../modal/aboutUs/AboutUsModal';
 import GeneralSettingsModal from '../modal/setting/GeneralSettings';
 import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
@@ -98,9 +98,11 @@ function HeaderInner(props: HeaderInnerProps) {
   } = usePreferences();
 
   const workspacesList = useWorkspacesList();
+
   const hideGeneralSettings = !!(
     general?.hideGeneralSettings && workspace.base
   );
+  const hideWorkspaces = !!(general?.hideWorkspaces && workspace.base);
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
@@ -161,33 +163,33 @@ function HeaderInner(props: HeaderInnerProps) {
             alignItems: 'center',
           }}
         >
-          {!hideGeneralSettings && (
-            <>
-              <DropDownButton
-                data={workspacesList}
-                selectedKey={workspace.current}
-                onSelect={changeWorkspaceHandler}
-                renderItem={renderItem}
-              />
-              <SaveButton />
-            </>
+          {!hideWorkspaces && (
+            <DropDownButton
+              data={workspacesList}
+              selectedKey={workspace.current}
+              onSelect={changeWorkspaceHandler}
+              renderItem={renderItem}
+            />
           )}
+          {!hideGeneralSettings && <SaveButton />}
           {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
             <Toolbar orientation="horizontal">
-              <Toolbar.Item
-                id="user-manual"
-                title="User manual"
-                onClick={() => window.open(docsBaseUrl, '_blank')}
-              >
-                <FaQuestionCircle />
-              </Toolbar.Item>
+              {!general?.hideHelp && (
+                <Toolbar.Item
+                  id="user-manual"
+                  title="User manual"
+                  onClick={() => window.open(docsBaseUrl, '_blank')}
+                >
+                  <FaQuestionCircle />
+                </Toolbar.Item>
+              )}
               {!hideGeneralSettings && (
                 <GeneralSettingsModal height={height / 2} />
               )}
 
-              {!isFullscreenEnabled && (
+              {!isFullscreenEnabled && !general?.hideMaximize && (
                 <Toolbar.Item
                   id="full-screen"
                   onClick={onEnableFullscreen}

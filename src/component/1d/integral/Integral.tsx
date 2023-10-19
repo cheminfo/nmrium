@@ -7,11 +7,10 @@ import IntegralResizable from './IntegralResizable';
 
 interface IntegralProps {
   integral: IntegralType;
-  isActive: boolean;
   nucleus: string;
 }
 
-function Integral({ integral, isActive, nucleus }: IntegralProps) {
+function Integral({ integral, nucleus }: IntegralProps) {
   const path = useIntegralPath(integral);
   const integralPreferences = usePanelPreferences('integrals', nucleus);
 
@@ -22,9 +21,6 @@ function Integral({ integral, isActive, nucleus }: IntegralProps) {
         stroke={integralPreferences.color}
         strokeWidth={integralPreferences.strokeWidth}
         fill="none"
-        style={{
-          opacity: isActive ? 1 : 0.2,
-        }}
         d={path}
       />
 

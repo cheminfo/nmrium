@@ -35,17 +35,6 @@ export interface ActiveSpectrum {
   index: number;
 }
 
-export const rangeStateInit = {
-  showMultiplicityTrees: false,
-  showRangesIntegrals: true,
-  showJGraph: false,
-};
-export const zoneStateInit = {
-  showZones: true,
-  showSignals: true,
-  showPeaks: true,
-};
-
 export type DisplayerMode = '1D' | '2D';
 
 export interface Margin {
@@ -55,11 +44,14 @@ export interface Margin {
   left: number;
 }
 
+export type Domains = Record<string, number[]>;
+export type SpectraDirection = 'RTL' | 'LTR';
+
 export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
-    ranges: [],
-    zones: [],
+    ranges: {},
+    zones: {},
     peaks: {},
     spectra: {
       activeSpectra: {},
@@ -177,13 +169,13 @@ export interface State {
    * value change when vertical scale change for the selected spectrum
    * @default {}
    */
-  yDomains: Record<string, number[]>;
+  yDomains: Domains;
   /**
    * X axis domain per spectrum
    * value change when zooming in/out for the selected spectrum
    * @default {}
    */
-  xDomains: Record<string, number[]>;
+  xDomains: Domains;
   /**
    * Domain for X and Y axis once it calculated and it change in one case  when we load new spectra
    * @default {}
@@ -191,8 +183,8 @@ export interface State {
   originDomain: {
     xDomain: number[];
     yDomain: number[];
-    xDomains: Record<string, number[]>;
-    yDomains: Record<string, number[]>;
+    xDomains: Domains;
+    yDomains: Domains;
     shareYDomain: boolean;
   };
   /**
@@ -221,7 +213,7 @@ export interface State {
    * Scale direction
    * @default 'RTL'
    */
-  mode: 'RTL' | 'LTR';
+  mode: SpectraDirection;
   /**
    * molecules
    * @default []
@@ -589,16 +581,16 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleSetDiaIDRange(draft, action);
       case 'UPDATE_RANGE':
         return RangesActions.handleUpdateRange(draft, action);
-      case 'SHOW_MULTIPLICITY_TREES':
-        return RangesActions.handleShowMultiplicityTrees(draft, action);
-      case 'SHOW_RANGES_INTEGRALS':
-        return RangesActions.handleShowRangesIntegrals(draft, action);
+      case 'TOGGLE_RANGES_VIEW_PROPERTY':
+        return RangesActions.handleToggleRangesViewProperty(draft, action);
       case 'AUTO_RANGES_SPECTRA_PICKING':
         return RangesActions.handleAutoSpectraRangesDetection(draft);
-      case 'SHOW_J_GRAPH':
-        return RangesActions.handleShowJGraph(draft, action);
       case 'CUT_RANGE':
         return RangesActions.handleCutRange(draft, action);
+      case 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE':
+        return RangesActions.handleChangePeaksDisplayingMode(draft);
+      case 'DELETE_RANGE_PEAK':
+        return RangesActions.handleDeleteRangePeak(draft, action);
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);
@@ -627,12 +619,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleSetDiaIDZone(draft, action);
       case 'AUTO_ZONES_SPECTRA_PICKING':
         return ZonesActions.handleAutoSpectraZonesDetection(draft);
-      case 'SHOW_ZONES':
-        return ZonesActions.handleShowZones(draft, action);
-      case 'SHOW_ZONES_SIGNALS':
-        return ZonesActions.handleShowSignals(draft, action);
-      case 'SHOW_ZONES_PEAKS':
-        return ZonesActions.handleShowPeaks(draft, action);
+      case 'TOGGLE_ZONES_VIEW_PROPERTY':
+        return ZonesActions.handleToggleZonesViewProperty(draft, action);
       case 'SAVE_EDITED_ZONE':
         return ZonesActions.handleSaveEditedZone(draft, action);
 
@@ -646,6 +634,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
+
+      case 'SECRET_THROW_ERROR': {
+        throw new Error('Error thrown in main reducer');
+      }
 
       default:
     }

@@ -1,3 +1,4 @@
+import { SerializedStyles } from '@emotion/react';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
@@ -165,8 +166,12 @@ function copyBlobToClipboard(canvas: HTMLCanvasElement) {
   });
 }
 
-function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
-  const { blob, width, height } = getBlob(rootRef, elementID);
+function copyPNGToClipboard(
+  rootRef: HTMLDivElement,
+  elementID: string,
+  css?: SerializedStyles,
+) {
+  const { blob, width, height } = getBlob(rootRef, elementID, css);
   try {
     const canvas = document.createElement('canvas');
     canvas.width = width;
@@ -203,7 +208,11 @@ export interface BlobObject {
   height: number;
 }
 
-function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
+function getBlob(
+  rootRef: HTMLDivElement,
+  elementID: string,
+  css?: SerializedStyles,
+): BlobObject {
   const _svg: any = (rootRef.getRootNode() as Document)
     .querySelector(`#${elementID}`)
     ?.cloneNode(true);
@@ -218,19 +227,20 @@ function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   const floatingMoleculesGroup = getMoleculesElement(rootRef);
   _svg.append(floatingMoleculesGroup);
 
-  const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
+  const nmrCss = `
+  .grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
   } 
- 
   .nmr-svg,.contours{
     background-color:white;
     fill:white;
   }
-  
+  `;
 
-  
+  const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const style = `<style>
+  ${css?.styles || nmrCss}
   </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
   const blob = new Blob([svg], { type: 'image/svg+xml' });

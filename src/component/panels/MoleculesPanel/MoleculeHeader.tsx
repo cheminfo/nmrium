@@ -8,7 +8,6 @@ import {
 } from '../../../data/molecules/MoleculeManager';
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
-import { InputKeyboardEvent } from '../../elements/Input';
 import Label from '../../elements/Label';
 
 interface MoleculeHeaderProps {
@@ -46,7 +45,7 @@ export default function MoleculeHeader(props: MoleculeHeaderProps) {
     [molecules],
   );
   const saveLabelHandler = useCallback(
-    (id: string, event: InputKeyboardEvent) => {
+    (id: string, event) => {
       const label = event.target.value as string;
       dispatch({ type: 'CHANGE_MOLECULE_LABEL', payload: { label, id } });
     },

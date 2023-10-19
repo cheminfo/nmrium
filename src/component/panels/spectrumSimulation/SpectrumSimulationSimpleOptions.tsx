@@ -2,7 +2,7 @@ import { FREQUENCIES } from '../../../data/PredictionManager';
 import { getSpinSystems } from '../../../data/data1d/spectrumSimulation';
 import Label, { LabelStyle } from '../../elements/Label';
 import Select from '../../elements/Select';
-import FormikNumberInput from '../../elements/formik/FormikNumberInput';
+import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
 
 const SPIN_SYSTEMS = getSpinSystems().map((key) => ({
@@ -49,10 +49,15 @@ export default function SpectrumSimulationSimpleOptions({
         />
       </Label>
       <Label title="Line Width" style={labelStyle}>
-        <FormikNumberInput
+        <FormikInput
           name="options.lineWidth"
           type="number"
-          style={{ margin: 0, width: '40px' }}
+          style={{
+            input: {
+              width: '40px',
+              textAlign: 'center',
+            },
+          }}
         />
         <span style={{ padding: '0 5px' }}>Hz</span>
       </Label>

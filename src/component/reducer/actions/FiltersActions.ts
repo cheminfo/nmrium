@@ -21,9 +21,10 @@ import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
 import { ActionType } from '../types/ActionType';
 
-import { setDomain, setMode } from './DomainActions';
+import { setDomain, setIntegralsYDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { activateTool, resetSelectedTool } from './ToolsActions';
+import { getSpectrum } from '../helper/getSpectrum';
 
 const {
   fft,
@@ -333,8 +334,12 @@ function updateView(
 ) {
   draft.tempData = null;
   const { updateXDomain, updateYDomain } = filterUpdateDomainRules;
+  const spectrum = getSpectrum(draft);
   resetSelectedTool(draft);
   setDomain(draft, { updateXDomain, updateYDomain });
+  if (spectrum) {
+    setIntegralsYDomain(draft, spectrum);
+  }
   setMode(draft);
   changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
 }
@@ -533,6 +538,9 @@ function handleApplyFFTFilter(draft: Draft<State>) {
     } else {
       updateView(draft, fft.DOMAIN_UPDATE_RULES);
     }
+
+    //clear zoom history
+    draft.zoom.history[draft.view.spectra.activeTab] = [];
   }
 }
 

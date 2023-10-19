@@ -3,8 +3,9 @@ import { css } from '@emotion/react';
 import { SvgNmrOverlay } from 'cheminfo-font';
 import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
-import { FaFileExport } from 'react-icons/fa';
+import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
+import { useToggle } from 'react-use';
 
 import {
   getDataAsString,
@@ -14,8 +15,8 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
-import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { DisplayerMode } from '../../reducer/Reducer';
@@ -45,7 +46,7 @@ function MultipleSpectraAnalysisPanelInner({
   const [calibration, setCalibration] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
-
+  const [showAnalysisChart, toggleAnalysisChart] = useToggle(false);
   const spectraAnalysis = generateAnalyzeSpectra(
     preferences as any,
     spectra,
@@ -120,18 +121,29 @@ function MultipleSpectraAnalysisPanelInner({
                   });
                 }}
               >
-                <SvgNmrOverlay style={{ fontSize: '18px' }} />
+                <SvgNmrOverlay style={{ fontSize: '16px' }} />
               </Button>
 
-              <ToggleButton
+              <ActiveButton
                 popupTitle="Y spectra tracker"
                 popupPlacement="right"
                 onClick={showTrackerHandler}
-                defaultValue={showLegend}
+                value={showLegend}
                 key={`${showLegend}`}
               >
                 <IoPulseOutline />
-              </ToggleButton>
+              </ActiveButton>
+              <ActiveButton
+                popupTitle={`${
+                  !showAnalysisChart ? 'Show' : 'Hide'
+                } analysis chart`}
+                popupPlacement="right"
+                onClick={() => toggleAnalysisChart()}
+                value={showAnalysisChart}
+                style={{ marginLeft: '5px' }}
+              >
+                <FaChartBar />
+              </ActiveButton>
             </>
           )}
         </DefaultPanelHeader>
