@@ -3,21 +3,17 @@ import { Spectrum1D } from 'nmr-load-save';
 import { Ranges, mapRanges } from 'nmr-processing';
 
 export function initiateRanges(
-  options: Partial<{ ranges: Ranges }>,
+  inputSpectrum: Partial<Spectrum1D>,
   spectrum: Spectrum1D,
+  options: Ranges['options'],
 ) {
   return merge(
     {
       values: [],
-      options: {
-        sum: undefined,
-        isSumConstant: true,
-        sumAuto: true,
-      },
+      options,
     },
-    options.ranges,
     {
-      values: mapRanges(options?.ranges?.values || [], spectrum),
+      values: mapRanges(inputSpectrum?.ranges?.values || [], spectrum),
     },
   );
 }

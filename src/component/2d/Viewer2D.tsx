@@ -1,6 +1,7 @@
 import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, ReactNode, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
+import { assert } from 'react-science/ui';
 
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
@@ -16,7 +17,6 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
-import { assert } from '../utility/assert';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
@@ -194,9 +194,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                 )}
 
                 <CrossLinePointer />
-                {spectrumData && (
-                  <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
-                )}
+                <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
 
                 <BrushXY
                   brushType={BRUSH_TYPE.XY}
@@ -218,9 +216,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                     />
                   )}
                 </>
-                {spectrumData && (
-                  <FooterBanner data1D={spectrumData} layout={DIMENSION} />
-                )}
+                <FooterBanner data1D={spectrumData} layout={DIMENSION} />
 
                 <Chart2D spectra={spectrumData} />
               </MouseTracker>

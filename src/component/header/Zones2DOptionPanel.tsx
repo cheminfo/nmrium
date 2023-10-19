@@ -5,11 +5,11 @@ import * as Yup from 'yup';
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
-import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import FormikOnChange from '../elements/formik/FormikOnChange';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import FormikInput from '../elements/formik/FormikInput';
 
 const validationSchema = Yup.object().shape({
   zonesNoiseFactor: Yup.number().min(0).required(),
@@ -53,10 +53,15 @@ function Zones2DOptionPanel() {
               htmlFor="livePreview"
               style={headerLabelStyle}
             >
-              <FormikNumberInput
+              <FormikInput
+                type="number"
                 name="zonesNoiseFactor"
-                style={{ width: '50px' }}
+                style={{
+                  input: { width: '50px', textAlign: 'center' },
+                  inputWrapper: { height: '100%' },
+                }}
                 min={0}
+                step={1}
               />
             </Label>
             <FormikOnChange

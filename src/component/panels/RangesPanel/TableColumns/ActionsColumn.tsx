@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Fragment, CSSProperties } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../../data/constants/SignalsKinds';
+import { SIGNAL_KINDS } from '../../../../data/constants/signalsKinds';
 import Select from '../../../elements/Select';
 import {
   OnHoverEvent,
@@ -40,6 +40,9 @@ interface ActionsColumnProps
   onHoverSignal?: OnHoverEvent['onHover'];
   onHoverRange?: OnHoverEvent['onHover'];
   showKind: boolean;
+  showDeleteAction: boolean;
+  showEditAction: boolean;
+  showZoomAction: boolean;
 }
 
 function ActionsColumn({
@@ -47,9 +50,13 @@ function ActionsColumn({
   onHoverSignal,
   rowSpanTags,
   showKind,
+  showDeleteAction,
+  showEditAction,
+  showZoomAction,
 }: ActionsColumnProps) {
   const { editRange, deleteRange, changeRangeSignalKind, zoomRange } =
     useEditRangeModal(row);
+  const showActions = showDeleteAction || showEditAction || showZoomAction;
 
   return (
     <Fragment>
@@ -57,35 +64,43 @@ function ActionsColumn({
         <td {...onHoverSignal}>
           <Select
             onChange={changeRangeSignalKind}
-            items={SignalKinds}
+            items={SIGNAL_KINDS}
             defaultValue={row.tableMetaInfo.signal.kind}
             style={selectBoxStyle}
           />
         </td>
       )}
-      <td {...rowSpanTags} css={styles}>
-        <button
-          type="button"
-          className="delete-button"
-          onClick={() => deleteRange()}
-        >
-          <FaRegTrashAlt />
-        </button>
-        <button
-          type="button"
-          className="zoom-button"
-          onClick={() => zoomRange()}
-        >
-          <FaSearchPlus title="Zoom to range in spectrum" />
-        </button>
-        <button
-          type="button"
-          className="edit-button"
-          onClick={() => editRange()}
-        >
-          <FaEdit color="blue" />
-        </button>
-      </td>
+      {showActions && (
+        <td {...rowSpanTags} css={styles}>
+          {showDeleteAction && (
+            <button
+              type="button"
+              className="delete-button"
+              onClick={() => deleteRange()}
+            >
+              <FaRegTrashAlt />
+            </button>
+          )}
+          {showZoomAction && (
+            <button
+              type="button"
+              className="zoom-button"
+              onClick={() => zoomRange()}
+            >
+              <FaSearchPlus title="Zoom to range in spectrum" />
+            </button>
+          )}
+          {showEditAction && (
+            <button
+              type="button"
+              className="edit-button"
+              onClick={() => editRange()}
+            >
+              <FaEdit color="blue" />
+            </button>
+          )}
+        </td>
+      )}
     </Fragment>
   );
 }

@@ -7,7 +7,7 @@ import { useEffect, useRef, memo } from 'react';
 import { useChartData } from '../context/ChartContext';
 import useSpectrum from '../hooks/useSpectrum';
 
-import { get2DYScale } from './utilities/scale';
+import { useScale2DY } from './utilities/scale';
 
 const axisStyles = css`
   user-select: none;
@@ -44,22 +44,18 @@ function YAxis(props: YAxisProps) {
 
   const refAxis = useRef<SVGGElement>(null);
 
-  const { yDomain, width, height, margin } = useChartData();
+  const { yDomain, width, height } = useChartData();
+  const scaleY = useScale2DY();
   const spectrum = useSpectrum() as Spectrum2D;
 
   useEffect(() => {
     if (!show || !yDomain) return;
 
-    const scaleY = get2DYScale(
-      { height, yDomain, margin },
-      !!spectrum?.info?.isFid,
-    );
-
     const axis = d3.axisRight(scaleY).ticks(8).tickFormat(d3.format('0'));
 
     // @ts-expect-error well typed
     d3.select(refAxis.current).call(axis);
-  }, [spectrum, height, yDomain, margin, show]);
+  }, [spectrum, yDomain, show, scaleY]);
 
   if (!width || !height) {
     return null;

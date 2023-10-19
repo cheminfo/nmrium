@@ -1,6 +1,6 @@
 import { Zone } from 'nmr-processing';
 
-import { DatumKind } from '../constants/SignalsKinds';
+import { DATUM_KIND } from '../constants/signalsKinds';
 
 export function getDiaIDs(zone: Zone, axis: string): string[] {
   return ([] as string[]).concat(
@@ -39,7 +39,7 @@ export function resetDiaIDs(zone: Zone, axis: string) {
 }
 
 export function checkZoneKind(zone: Zone): boolean {
-  return zone.kind === DatumKind.signal;
+  return zone.kind === DATUM_KIND.signal;
 }
 
 export function checkSignalKinds(zone: Zone, kinds: string[]): boolean {

@@ -25,8 +25,8 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
   if (index !== -1) {
     spectrum.ranges.values[index] = {
       ...spectrum.ranges.values[index],
-      originFrom: from,
-      originTo: to,
+      originalFrom: from,
+      originalTo: to,
       ...range,
       absolute,
       signals: [

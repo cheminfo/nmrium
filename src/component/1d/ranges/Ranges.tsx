@@ -1,12 +1,11 @@
 import { Spectrum1D } from 'nmr-load-save';
 import { Ranges as RangesProps } from 'nmr-processing';
-import { Fragment, memo, useMemo } from 'react';
+import { Fragment, memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 
 import Range from './Range';
 import RangeIntegral from './RangeIntegral';
@@ -47,28 +46,26 @@ function RangesInner({
 
 const MemoizedRanges = memo(RangesInner);
 
+const emptyData = { ranges: {}, info: {}, display: {} };
+
 export default function Ranges() {
   const {
     displayerKey,
     view: {
-      ranges: rangeState,
       spectra: { activeTab },
     },
     toolOptions: { selectedTool },
   } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
-  const { showMultiplicityTrees, showRangesIntegrals } = useMemo(
-    () =>
-      activeSpectrum
-        ? rangeState.find((r) => r.spectrumID === activeSpectrum.id) ||
-          rangeStateInit
-        : rangeStateInit,
-    [activeSpectrum, rangeState],
-  );
-  const spectrum = useSpectrum() as Spectrum1D;
+  const { showMultiplicityTrees, showRangesIntegrals } =
+    useActiveSpectrumRangesViewState();
+  const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
-  if (!spectrum?.display?.isVisible) {
+  if (
+    !spectrum.ranges?.values ||
+    !spectrum.display.isVisible ||
+    spectrum.info?.isFid
+  ) {
     return null;
   }
 

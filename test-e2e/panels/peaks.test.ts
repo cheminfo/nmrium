@@ -6,7 +6,9 @@ import NmriumPage from '../NmriumPage';
 import { selectRange } from '../utilities/selectRange';
 
 async function addPeaks(nmrium: NmriumPage) {
-  const peakAnnotationLocator = nmrium.page.locator('_react=PeakAnnotation');
+  const peaksAnnotationLocator = nmrium.page.locator(
+    '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
+  );
 
   // select peak picking tool
   await nmrium.clickTool('peakPicking');
@@ -18,7 +20,7 @@ async function addPeaks(nmrium: NmriumPage) {
     endX: 100,
   });
 
-  await expect(peakAnnotationLocator).toHaveCount(1);
+  await expect(peaksAnnotationLocator).toHaveCount(1);
 
   // TODO: Get rid of this timeout.
   // Without it, the click seems to have no effect.
@@ -32,12 +34,12 @@ async function addPeaks(nmrium: NmriumPage) {
     },
   });
 
-  await expect(peakAnnotationLocator).toHaveCount(2);
+  await expect(peaksAnnotationLocator).toHaveCount(2);
 }
 
 async function shiftX(nmrium: NmriumPage) {
   const peakLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0 >> text',
+    '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation >> nth=0 >> text',
   );
 
   await peakLocator.click();
@@ -60,20 +62,24 @@ async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   await inputLocator.press('Enter');
 
   const peakInputLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0 >>text',
+    '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation >> nth=0 >>text',
   );
   await expect(peakInputLocator).toHaveText('20.00');
 }
 
 async function deletePeak(nmrium: NmriumPage) {
   const peakAnnotationLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0',
+    '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation >> nth=0',
   );
   await peakAnnotationLocator.hover();
   await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
-  await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(1);
+  await expect(
+    nmrium.page.locator(
+      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
+    ),
+  ).toHaveCount(1);
 }
 
 test('add/shift/delete peaks', async ({ page }) => {
@@ -105,7 +111,11 @@ test('Automatic peak picking should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('button >> text=Apply');
 
-  await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(50);
+  await expect(
+    nmrium.page.locator(
+      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
+    ),
+  ).toHaveCount(50);
 });
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);

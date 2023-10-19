@@ -1,0 +1,26 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "name": "menthol_1D_1H_assigned_J.nmredata",
+          "size": 1,
+          "relativePath": "data/nmredata/menthol_1D_1H_assigned_J.nmredata",
+          "lastModified": 0
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata"  
+          ]
+        }
+      }
+    ],
+    "molecules": []
+  },
+  "version": 4
+}

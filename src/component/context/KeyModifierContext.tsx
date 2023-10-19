@@ -38,7 +38,7 @@ interface KeyModifierProviderProps {
 const isMac =
   navigator !== undefined && navigator.userAgent.toLowerCase().includes('mac');
 
-function getModifiers(event: KeyboardEvent) {
+export function getModifiers(event: KeyboardEvent) {
   const { shiftKey, altKey, metaKey } = event;
   const ctrlKey = isMac ? metaKey : event.ctrlKey;
   return { ctrlKey, shiftKey, altKey };

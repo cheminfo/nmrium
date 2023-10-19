@@ -8,10 +8,11 @@ import { Nucleus } from '../../../data/types/common/Nucleus';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT, Layout } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { rangeStateInit, State } from '../Reducer';
+import { State } from '../Reducer';
 import { MARGIN } from '../core/Constants';
 import {
   setZoom,
@@ -165,17 +166,14 @@ function activateTool(draft, options: ActivateToolOptions) {
       if (toolId === Tools.editRange.id) {
         const activeSpectrum = getActiveSpectrum(draft);
         if (activeSpectrum) {
-          const range = draft.view.ranges.find(
-            (r) => r.spectrumID === activeSpectrum?.id,
-          );
+          const range = draft.view.ranges?.[activeSpectrum?.id];
           if (range) {
             range.showMultiplicityTrees = true;
           } else {
-            draft.view.ranges.push({
-              spectrumID: activeSpectrum.id,
-              ...rangeStateInit,
+            draft.view.ranges[activeSpectrum.id] = {
+              ...defaultRangesViewState,
               showMultiplicityTrees: true,
-            });
+            };
           }
         }
       }
@@ -328,12 +326,7 @@ function setVerticalIndicatorXPosition(
 
 function handleZoom(draft: Draft<State>, action: ZoomAction) {
   const { event, trackID, selectedTool } = action.payload;
-  const {
-    view: { ranges: rangeState },
-    displayerMode,
-    yDomains,
-    integralsYDomains,
-  } = draft;
+  const { displayerMode, yDomains, integralsYDomains } = draft;
 
   const activeSpectra = getActiveSpectra(draft);
 
@@ -352,11 +345,8 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     if (selectedTool === Tools.integral.id && event.shiftKey) {
       for (const activeSpectrum of activeSpectra) {
         //check if the integrals is visible
-        const { showRangesIntegrals } =
-          rangeState.find((r) => r.spectrumID === activeSpectrum?.id) ||
-          rangeStateInit;
         const domain = integralsYDomains?.[activeSpectrum?.id];
-        if (showRangesIntegrals && domain) {
+        if (domain) {
           integralsYDomains[activeSpectrum?.id] = wheelZoom(event, domain);
         }
       }
@@ -410,6 +400,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
         default: {
           draft.xDomain = xDomain;
           setZoom(draft, { scale: 0.8 });
+          zoomHistory.clear();
           break;
         }
       }

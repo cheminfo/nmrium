@@ -7,6 +7,11 @@ export const embedded: InnerWorkspace = {
     general: {
       experimentalFeatures: { display: true },
       hidePanelOnLoad: true,
+      hideHelp: true,
+      hideLogs: true,
+      hideMaximize: true,
+      hideWorkspaces: true,
+      hideGeneralSettings: true,
     },
 
     panels: {
@@ -20,6 +25,7 @@ export const embedded: InnerWorkspace = {
       zonesPanel: { display: true, open: false },
     },
     toolBarButtons: {
+      peakPicking: true,
       baselineCorrection: true,
       exclusionZones: true,
       exportAs: true,

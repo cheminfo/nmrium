@@ -5,7 +5,6 @@ import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikNumberInput from '../elements/formik/FormikNumberInput';
 import { useAlert } from '../elements/popup/Alert';
 import {
   MIN_AREA_POINTS,
@@ -14,6 +13,7 @@ import {
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import FormikInput from '../elements/formik/FormikInput';
 
 const validationSchema = Yup.object().shape({
   minMaxRatio: Yup.number().min(0).required(),
@@ -59,12 +59,17 @@ function RangesPickingOptionPanel() {
               <FormikCheckBox name="lookNegative" />
             </Label>
             <Label title="Min Max Ratio:" style={headerLabelStyle}>
-              <FormikNumberInput
+              <FormikInput
+                type="number"
                 name="minMaxRatio"
                 style={{
-                  width: '70px',
+                  input: {
+                    width: '70px',
+                    textAlign: 'center',
+                  },
+                  inputWrapper: { height: '100%' },
                 }}
-                step="0.01"
+                step={0.01}
                 min={0}
               />
             </Label>
