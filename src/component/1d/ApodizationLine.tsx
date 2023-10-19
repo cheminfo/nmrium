@@ -15,13 +15,14 @@ import { getYScale } from './utilities/scale';
 const emptyData = { data: {}, info: {} };
 
 function useWindowYScale() {
-  const { height, margin } = useChartData();
+  const { height, margin, yDomains } = useChartData();
   const verticalAlign = useVerticalAlign();
   return getYScale({
     height,
     margin,
     verticalAlign,
     yDomain: [0, 1],
+    yDomains,
   });
 }
 

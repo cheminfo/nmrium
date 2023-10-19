@@ -1,5 +1,7 @@
 import {
   CSSProperties,
+  ChangeEvent,
+  KeyboardEvent,
   forwardRef,
   useCallback,
   useEffect,
@@ -7,7 +9,15 @@ import {
   useState,
 } from 'react';
 
-import Input, { InputKeyboardEvent, InputProps } from './Input';
+import Input, { InputProps } from './Input';
+
+function extractNumber(val: string | number, type: string) {
+  if (type === 'number' && typeof val !== 'number') {
+    return Number(val.replaceAll(/[^\d.-]/g, ''));
+  }
+
+  return val;
+}
 
 interface EditableColumnProps
   extends Omit<InputProps, 'style' | 'value' | 'type'> {
@@ -39,7 +49,7 @@ const EditableColumn = forwardRef(function EditableColumn(
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
   const [isValid, setValid] = useState<boolean>(true);
-
+  const [val, setVal] = useState(extractNumber(value, type));
   useEffect(() => {
     enableEdit(editStatus);
   }, [editStatus]);
@@ -60,30 +70,30 @@ const EditableColumn = forwardRef(function EditableColumn(
     }
   }, []);
 
-  const startEditHandler = useCallback(() => {
+  function startEditHandler() {
     window.addEventListener('mousedown', mouseClickCallback);
     onEditStart(true);
     enableEdit(true);
-  }, [mouseClickCallback, onEditStart]);
+  }
 
-  const editHandler = useCallback(
-    (event: InputKeyboardEvent) => {
-      const valid = validate(event?.target.value);
-      setValid(valid);
+  function editHandler(event: KeyboardEvent<HTMLInputElement>) {
+    const valid = validate(val);
+    setValid(valid);
+    // when press Enter or Tab
+    if (valid && ['Enter', 'Tab'].includes(event.key)) {
+      onSave(event);
+      enableEdit(false);
+    }
+    // close edit mode if press Enter, Tab or Escape
+    if (['Escape'].includes(event.key)) {
+      enableEdit(false);
+      window.removeEventListener('mousedown', mouseClickCallback);
+    }
+  }
 
-      // when press Enter or Tab
-      if (valid && ['Enter', 'Tab'].includes(event.key)) {
-        onSave(event);
-        enableEdit(false);
-      }
-      // close edit mode if press Enter, Tab or Escape
-      if (['Escape'].includes(event.key)) {
-        enableEdit(false);
-        window.removeEventListener('mousedown', mouseClickCallback);
-      }
-    },
-    [mouseClickCallback, onSave, validate],
-  );
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setVal(e.target.value);
+  }
 
   return (
     <div
@@ -122,14 +132,18 @@ const EditableColumn = forwardRef(function EditableColumn(
                 width: '100%',
               },
               input: {
+                padding: '5px',
                 width: '100%',
+                minWidth: '60px',
               },
             }}
-            enableAutoSelect
+            autoSelect
             className="editable-column"
-            value={value}
+            value={val}
             type={type}
+            onChange={handleChange}
             onKeyUp={editHandler}
+            onMouseDown={(e) => e.stopPropagation()}
             {...InputProps}
           />
         </div>

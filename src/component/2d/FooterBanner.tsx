@@ -73,6 +73,7 @@ function FooterBanner({ layout, data1D }) {
     },
     data,
     toolOptions: { selectedTool },
+    mode,
   } = useChartData();
 
   const activeSpectrum = useActiveSpectrum();
@@ -88,13 +89,13 @@ function FooterBanner({ layout, data1D }) {
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
-      return get2DXScale({ width, margin, xDomain });
+      return get2DXScale({ width, margin, xDomain, mode });
     }
     if (selectedTool !== options.slicing.id) {
       switch (trackID) {
         case LAYOUT.TOP_1D:
         case LAYOUT.CENTER_2D: {
-          return get2DXScale({ width, margin, xDomain });
+          return get2DXScale({ width, margin, xDomain, mode });
         }
         case LAYOUT.LEFT_1D: {
           return get2DYScale({ height, margin, yDomain });
@@ -104,7 +105,17 @@ function FooterBanner({ layout, data1D }) {
       }
     }
     return null;
-  }, [data1D, height, margin, selectedTool, trackID, width, xDomain, yDomain]);
+  }, [
+    data1D,
+    height,
+    margin,
+    selectedTool,
+    trackID,
+    width,
+    xDomain,
+    yDomain,
+    mode,
+  ]);
 
   const scaleY = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -138,7 +149,8 @@ function FooterBanner({ layout, data1D }) {
     position.y < 10 ||
     position.x < 10 ||
     position.x > width - margin.right ||
-    position.y > height - margin.bottom
+    position.y > height - margin.bottom ||
+    !data1D
   ) {
     return <div css={styles} />;
   }
@@ -149,7 +161,7 @@ function FooterBanner({ layout, data1D }) {
     } else if (trackID === LAYOUT.LEFT_1D) {
       index = 1;
     }
-    if (index != null && scaleX != null) {
+    if (index != null && scaleX != null && data1D[index]) {
       const datum = get1DDataXY(data1D[index]);
       const xIndex = xFindClosestIndex(datum.x, scaleX.invert(coordinate));
       return datum.y[xIndex];

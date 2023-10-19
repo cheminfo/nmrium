@@ -116,8 +116,8 @@ export function BrushTracker({
   const debounceClickEventsRef = useRef<any[]>([]);
   const lastPointRef = useRef<number>(0);
 
-  const mouseDownHandler = useCallback(
-    (event: React.MouseEvent) => {
+  const pointerDownHandler = useCallback(
+    (event: React.PointerEvent) => {
       //check that the right or left mouse button pressed
       if ([0, 2].includes(event.button)) {
         if (noPropagation) {
@@ -140,7 +140,8 @@ export function BrushTracker({
         setMouseDownTime(event.timeStamp);
       }
 
-      function moveCallback(event: MouseEvent) {
+      function moveCallback(event: PointerEvent) {
+        // event.preventDefault();
         dispatch({
           type: 'MOVE',
           payload: {
@@ -152,16 +153,16 @@ export function BrushTracker({
         });
       }
 
-      function mouseUpCallback() {
+      function upCallback() {
         dispatch({
           type: 'UP',
         });
-        window.removeEventListener('mousemove', moveCallback);
-        window.removeEventListener('mouseup', mouseUpCallback);
+        window.removeEventListener('pointermove', moveCallback);
+        window.removeEventListener('pointerup', upCallback);
       }
 
-      window.addEventListener('mousemove', moveCallback);
-      window.addEventListener('mouseup', mouseUpCallback);
+      window.addEventListener('pointermove', moveCallback);
+      window.addEventListener('pointerup', upCallback);
 
       return false;
     },
@@ -235,8 +236,8 @@ export function BrushTracker({
     <BrushContext.Provider value={state}>
       <div
         className={className}
-        style={style}
-        onMouseDown={mouseDownHandler}
+        style={{ ...style, touchAction: 'none' }}
+        onPointerDown={pointerDownHandler}
         onClick={clickHandler}
         onWheel={handleMouseWheel}
         onMouseEnter={() => {

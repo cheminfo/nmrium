@@ -1,8 +1,9 @@
 import { Spectrum } from 'nmr-load-save';
 
-export function getSpectraObjectPaths(spectra: Spectrum[]) {
-  const keys = ['display', 'meta', 'info', 'customInfo'];
-
+export function getSpectraObjectPaths(
+  spectra: Spectrum[],
+  keys: Array<keyof Spectrum> = ['display', 'meta', 'info', 'customInfo'],
+) {
   const paths = {};
 
   for (const spectrum of spectra) {

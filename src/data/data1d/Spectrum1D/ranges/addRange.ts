@@ -3,7 +3,7 @@ import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Signal1D, mapRanges } from 'nmr-processing';
 
-import { DatumKind } from '../../../constants/SignalsKinds';
+import { DATUM_KIND } from '../../../constants/signalsKinds';
 
 import detectSignal from './detectSignal';
 
@@ -24,7 +24,7 @@ export function createRangeObj({
     to,
     absolute, // the real value,
     signals: [{ id: v4(), ...signal }],
-    kind: DatumKind.signal,
+    kind: DATUM_KIND.signal,
     integration: 0,
   };
 }

@@ -2,6 +2,7 @@ import { Action } from '../context/DispatchContext';
 
 const ignoreActions = new Set<Partial<Action['type']>>([
   'INITIALIZE_NMRIUM',
+  'SECRET_THROW_ERROR',
   'APPLY_KEY_PREFERENCES',
   'BRUSH_END',
   'RESET_SELECTED_TOOL',
@@ -26,14 +27,7 @@ const ignoreActions = new Set<Partial<Action['type']>>([
   'TOGGLE_REAL_IMAGINARY_VISIBILITY',
   'FLOAT_MOLECULE_OVER_SPECTRUM',
   'TOGGLE_SPECTRA_LEGEND',
-  'TOGGLE_PEAKS_VIEW_PROPERTY',
   'TOGGLE_MOLECULE_ATOM_NUMBER',
-  'SHOW_J_GRAPH',
-  'SHOW_MULTIPLICITY_TREES',
-  'SHOW_RANGES_INTEGRALS',
-  'SHOW_ZONES',
-  'SHOW_ZONES_PEAKS',
-  'SHOW_ZONES_SIGNALS',
 ]);
 
 function checkActionType(type: Action['type']): boolean {

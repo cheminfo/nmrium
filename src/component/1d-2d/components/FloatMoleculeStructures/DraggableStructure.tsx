@@ -15,7 +15,7 @@ import { useDispatch } from '../../../context/DispatchContext';
 import { useGlobal } from '../../../context/GlobalContext';
 import { useMoleculeEditor } from '../../../modal/MoleculeStructureEditorModal';
 import useAtomAssignment from '../../../panels/MoleculesPanel/useAtomAssignment';
-import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
+import { DisplayerMode } from '../../../reducer/Reducer';
 
 import ActionsButton from './ActionsButton';
 
@@ -25,7 +25,7 @@ interface DraggableStructureProps {
   molecule: StateMoleculeExtended;
   moleculeView: MoleculeView;
   activeTab: string;
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
   index?: number;
 }
 
@@ -65,7 +65,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
   } = props;
   const { viewerRef } = useGlobal();
   const dispatch = useDispatch();
-  const openMoleculeEditor = useMoleculeEditor();
+  const { modal, openMoleculeEditor } = useMoleculeEditor();
   const {
     currentDiaIDsToHighlight,
     handleOnAtomHover,
@@ -131,7 +131,6 @@ export function DraggableStructure(props: DraggableStructureProps) {
                 autoCropMargin={AUTO_CROP_MARGIN}
                 height={height - AUTO_CROP_MARGIN * 2}
                 width={width - AUTO_CROP_MARGIN * 2}
-                //@ts-expect-error will be solved with new version of react-ocl-nmr
                 label={molecule.label}
                 labelFontSize={15}
                 labelColor="rgb(0,0,0)"
@@ -163,6 +162,7 @@ export function DraggableStructure(props: DraggableStructureProps) {
           }}
         </ResponsiveChart>
       </div>
+      {modal}
     </Rnd>
   );
 }

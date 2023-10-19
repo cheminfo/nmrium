@@ -45,6 +45,9 @@ function GeneralTabContent() {
             name="general.dimmedSpectraOpacity"
             checkValue={(value) => Number(value) >= 0 && Number(value) <= 1}
             type="number"
+            step={0.1}
+            min={0}
+            max={1}
           />
         </Label>
       </GroupPane>

@@ -1,90 +1,62 @@
-import { useMemo, memo } from 'react';
+import { NmrData1D } from 'cheminfo-types';
 
 import { useChartData } from '../../context/ChartContext';
-import useXYReduce, { XYReducerDomainAxis } from '../../hooks/useXYReduce';
 import { PathBuilder } from '../../utility/PathBuilder';
-import { getYScale } from '../utilities/SliceScale';
-import { get2DXScale } from '../utilities/scale';
+import { useScale2DX, getSliceYScale } from '../utilities/scale';
 
-interface HorizontalSliceChartProps {
-  margin?: number;
-  data: {
-    x: Float64Array;
-    re: Float64Array;
-  };
-  reverseScale?: boolean;
+interface BaseProps {
+  vericalMargin?: number;
+  reverse?: boolean;
+}
+interface HorizontalSliceChartProps extends BaseProps {
+  data: NmrData1D;
 }
 
-function HorizontalSliceChart({
-  margin: marginProps = 10,
-  data,
-  reverseScale = false,
-}: HorizontalSliceChartProps) {
-  const { width, margin: originMargin, xDomain, displayerKey } = useChartData();
-  const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
+interface UsePathOptions extends BaseProps {
+  height?: number;
+}
 
-  const height = originMargin.top;
+function usePath(data: NmrData1D, options: UsePathOptions) {
+  const { height = 100, vericalMargin = 10 } = options;
+  const { mode } = useChartData();
+  const scaleX = useScale2DX();
 
-  const paths = useMemo(() => {
-    if (data) {
-      const { x, re: y } = data;
-      const scaleX = get2DXScale(
-        { margin: originMargin, width, xDomain },
-        reverseScale,
-      );
+  if (!data) return '';
 
-      const scaleY = getYScale(height, y, marginProps);
-      const pathPoints = xyReduce({ x, y });
+  const { x, re: y } = data;
 
-      const pathBuilder = new PathBuilder();
-      pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
-      for (let i = 1; i < pathPoints.x.length; i++) {
-        pathBuilder.lineTo(scaleX(pathPoints.x[i]), scaleY(pathPoints.y[i]));
-      }
+  const scaleY = getSliceYScale(y, height, mode, vericalMargin);
 
-      return pathBuilder.toString();
-    } else {
-      return undefined;
-    }
-  }, [
-    data,
-    height,
-    marginProps,
-    originMargin,
-    reverseScale,
-    width,
-    xDomain,
-    xyReduce,
-  ]);
-
-  if (!width || !height) {
-    return null;
+  const pathBuilder = new PathBuilder();
+  pathBuilder.moveTo(scaleX(x[0]), scaleY(y[0]));
+  for (let i = 1; i < x.length; i++) {
+    pathBuilder.lineTo(scaleX(x[i]), scaleY(y[i]));
   }
+
+  return pathBuilder.toString();
+}
+
+function HorizontalSliceChart(props: HorizontalSliceChartProps) {
+  const { vericalMargin = 10, data, reverse = false } = props;
+  const { width, margin, displayerKey } = useChartData();
+  const height = margin.top;
+
+  const path = usePath(data, { height, reverse, vericalMargin });
+
+  const innerWidth = width - margin.left - margin.right;
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
         <clipPath id={`${displayerKey}clip-top`}>
-          <rect
-            width={width - originMargin.left - originMargin.right}
-            height={height}
-            x={originMargin.left}
-            y={`${0}`}
-          />
+          <rect width={innerWidth} height={height} x={margin.left} />
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-top)`}>
-        <rect
-          width={width - originMargin.left - originMargin.right}
-          height={height}
-          x={originMargin.left}
-          y={`${0}`}
-          fillOpacity="0"
-        />
-        <path className="line" stroke="red" fill="none" d={paths} />
+        <path className="line" stroke="red" fill="none" d={path} />
       </g>
     </svg>
   );
 }
 
-export default memo(HorizontalSliceChart);
+export default HorizontalSliceChart;

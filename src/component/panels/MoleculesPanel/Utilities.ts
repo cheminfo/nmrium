@@ -1,14 +1,8 @@
 import { Range, Zone } from 'nmr-processing';
+import { DiaIDAndInfo } from 'openchemlib-utils';
 
 import { AssignmentContext, Axis } from '../../assignment/AssignmentsContext';
 
-export interface Atom {
-  oclID: string;
-  atomLabel: string;
-  nbAtoms: number;
-  nbHydrogens: number;
-  hydrogenOCLIDs: string[];
-}
 export interface AtomData {
   oclIDs: string[];
   nbAtoms: number;
@@ -27,36 +21,44 @@ function getElements(activeTab: string) {
  * In case of an heavy atom with bonded hydrogens the OCL id(s)
  * and number of these hydrogens are added as well.
  *
- * @param {Atom} atom - atom returned by OCLnmr component
+ * @param {DiaIDAndInfo} diaIDAndInfo - atom returned by OCLnmr component
  * @param {string} activeTab - active tab
  * @param {Axis} axis - current axis
  *
  */
 export function extractFromAtom(
-  atom: Atom,
+  diaIDAndInfo: DiaIDAndInfo | undefined,
   activeTab: string,
   axis?: Axis | null,
 ): AtomData {
   const elements = getElements(activeTab);
 
-  if (elements && elements.length > 0 && Object.keys(atom).length > 0) {
+  if (elements && elements.length > 0 && diaIDAndInfo) {
     const dim = axis === 'x' ? 0 : axis === 'y' ? 1 : null;
     switch (dim !== null && elements[dim]) {
-      case atom.atomLabel: {
+      case diaIDAndInfo.atomLabel: {
         // take always oclID if atom type is same as element of activeTab)
-        return { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms };
+        return {
+          oclIDs: [diaIDAndInfo.idCode],
+          nbAtoms: diaIDAndInfo.nbEquivalentAtoms,
+        };
       }
       case 'H': {
         // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
         return {
-          oclIDs: atom.hydrogenOCLIDs,
-          nbAtoms: atom.nbAtoms * atom.nbHydrogens,
+          oclIDs: diaIDAndInfo.attachedHydrogensIDCodes,
+          nbAtoms:
+            diaIDAndInfo.nbEquivalentAtoms * diaIDAndInfo.nbAttachedHydrogens,
         };
       }
       default:
         return {
-          oclIDs: [atom.oclID].concat(atom.hydrogenOCLIDs),
-          nbAtoms: atom.nbAtoms + atom.nbAtoms * atom.nbHydrogens,
+          oclIDs: [diaIDAndInfo.idCode].concat(
+            diaIDAndInfo.attachedHydrogensIDCodes,
+          ),
+          nbAtoms:
+            diaIDAndInfo.nbEquivalentAtoms +
+            diaIDAndInfo.nbEquivalentAtoms * diaIDAndInfo.nbAttachedHydrogens,
         };
     }
   }

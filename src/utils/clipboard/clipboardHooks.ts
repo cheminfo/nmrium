@@ -199,9 +199,7 @@ export function useClipboard(): UseClipboardReturn {
       async rawWriteWithType(data: string, type = 'text/plain') {
         try {
           const item = await newClipboardItem({
-            [type]: new Promise((resolve) => {
-              resolve(new Blob([data], { type }));
-            }),
+            [type]: new Blob([data], { type }),
           });
           return await write([item]);
         } catch {

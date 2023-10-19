@@ -1,37 +1,51 @@
 import { scaleLinear } from 'd3';
+import { xMaxValue } from 'ml-spectra-processing';
+
+import { useChartData } from '../../context/ChartContext';
+import { Margin, SpectraDirection } from '../../reducer/Reducer';
 
 import { LAYOUT, Layout } from './DimensionLayout';
 
-function get2DXScale(
-  props: {
-    width: number;
-    margin: { right: number; left: number };
-    xDomain: number[];
-  },
-  reverse = false,
-) {
-  const { width, margin, xDomain } = props;
-  const range = !reverse
+interface Scale2DXOptions {
+  width: number;
+  margin: Pick<Margin, 'left' | 'right'>;
+  xDomain: number[];
+  mode: SpectraDirection;
+}
+
+function get2DXScale(options: Scale2DXOptions, reverse?: boolean) {
+  const { width, margin, xDomain, mode } = options;
+  const isReversed = reverse !== undefined ? reverse : mode === 'RTL';
+  const range = isReversed
     ? [width - margin.right, margin.left]
     : [margin.left, width - margin.right];
   return scaleLinear(xDomain, range);
 }
 
-function get2DYScale(
-  props: {
-    height: number;
-    margin: { bottom: number; top: number };
-    yDomain: number[];
-  },
-  reverse = false,
-) {
-  const { height, margin, yDomain } = props;
+function useScale2DX(reverse?: boolean) {
+  const { width, margin, xDomain, mode } = useChartData();
+  return get2DXScale({ width, margin, xDomain, mode }, reverse);
+}
+
+interface Scale2DYOptions {
+  height: number;
+  margin: Pick<Margin, 'top' | 'bottom'>;
+  yDomain: number[];
+}
+
+function get2DYScale(options: Scale2DYOptions, reverse = false) {
+  const { height, margin, yDomain } = options;
   return scaleLinear(
     yDomain,
     reverse
       ? [height - margin.bottom, margin.top]
       : [margin.top, height - margin.bottom],
   );
+}
+
+function useScale2DY(reverse?: boolean) {
+  const { height, margin, yDomain } = useChartData();
+  return get2DYScale({ height, margin, yDomain }, reverse);
 }
 
 interface TopLayout {
@@ -71,4 +85,33 @@ function get1DYScale(yDomain: number[], height: number, margin = 10) {
   return scaleLinear(yDomain, [height - margin, margin]);
 }
 
-export { get2DXScale, get2DYScale, get1DXScale, get1DYScale };
+function use1DTraceYScale(
+  SpectrumId: string,
+  height: number,
+  verticalMargin: number,
+) {
+  const { yDomains } = useChartData();
+  return get1DYScale(yDomains[SpectrumId], height, verticalMargin);
+}
+
+function getSliceYScale(
+  data: Float64Array,
+  size: number,
+  mode: SpectraDirection,
+  margin = 10,
+) {
+  const max = xMaxValue(data);
+  size = mode === 'RTL' ? size : size / 2;
+  return scaleLinear([0, max] as number[], [size - margin, margin]);
+}
+
+export {
+  get2DXScale,
+  getSliceYScale,
+  get2DYScale,
+  get1DXScale,
+  get1DYScale,
+  useScale2DX,
+  useScale2DY,
+  use1DTraceYScale,
+};

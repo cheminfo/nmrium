@@ -12,7 +12,6 @@ import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 
 interface KeysListenerTrackerProps {
@@ -71,7 +70,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
   const assignmentData = useAssignmentData();
   const allow1DTool = useMemo(() => {
-    return displayerMode === DISPLAYER_MODE.DM_1D && data && data.length > 0;
+    return displayerMode === '1D' && data && data.length > 0;
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
@@ -97,6 +96,21 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           if (id) {
             dispatch({
               type: 'DELETE_PEAK',
+              payload: {
+                id,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+
+          break;
+        }
+        case HighlightEventSource.RANGE_PEAK: {
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_RANGE_PEAK',
               payload: {
                 id,
               },

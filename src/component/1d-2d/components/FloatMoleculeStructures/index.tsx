@@ -9,7 +9,7 @@ import {
 } from '../../../../data/molecules/Molecule';
 import { useChartData } from '../../../context/ChartContext';
 import useSpectrum from '../../../hooks/useSpectrum';
-import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
+import { DisplayerMode } from '../../../reducer/Reducer';
 import { assert } from '../../../utility/assert';
 
 import { DraggableStructure } from './DraggableStructure';
@@ -20,7 +20,7 @@ interface FloatMoleculeStructuresProps {
   molecules: StateMoleculeExtended[];
   moleculesView: MoleculesView;
   activeTab: string;
-  displayerMode: DISPLAYER_MODE;
+  displayerMode: DisplayerMode;
 }
 
 export function FloatMoleculeStructuresInner(

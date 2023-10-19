@@ -7,25 +7,19 @@ export interface InputMapValueFunctions {
   mapOnChangeValue?: (value: string | number) => any;
   mapValue?: (value: any) => string | number;
 }
-interface FormikInputProps extends InputProps, InputMapValueFunctions {
+interface FormikInputProps extends InputMapValueFunctions {
   name: string;
   checkErrorAfterInputTouched?: boolean;
 }
 
-function identity<T = unknown>(value: T): T {
-  return value;
-}
-
-function FormikInput(props: FormikInputProps) {
+function FormikInput(props: FormikInputProps & InputProps) {
   const {
     name,
     style = { label: {}, input: {}, inputWrapper: {} },
-    onChange = () => null,
-    checkValue = () => true,
+    onChange,
     type = 'text',
     className = '',
     value = null,
-    format = () => identity,
     checkErrorAfterInputTouched = true,
     mapOnChangeValue,
     mapValue,
@@ -36,7 +30,7 @@ function FormikInput(props: FormikInputProps) {
     useFormikContext();
 
   function changeHandler(e) {
-    onChange(e);
+    onChange?.(e);
     if (mapOnChangeValue) {
       void setFieldValue(name, mapOnChangeValue(e.target.value));
     } else {
@@ -72,9 +66,7 @@ function FormikInput(props: FormikInputProps) {
             : {}),
         },
       }}
-      checkValue={checkValue}
       className={className}
-      format={format}
       {...resProps}
     />
   );

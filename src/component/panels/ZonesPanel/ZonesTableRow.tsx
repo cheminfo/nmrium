@@ -18,6 +18,7 @@ import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
 import { ZoneData } from './hooks/useMapZones';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
@@ -32,7 +33,7 @@ interface ZonesTableRowProps extends ContextMenuProps {
     axis: Axis,
   ) => void;
   rowIndex: number;
-  format: { x: string; y: string };
+  nucleus: string;
 }
 
 function ZonesTableRow({
@@ -41,7 +42,7 @@ function ZonesTableRow({
   contextMenu = [],
   onContextMenuSelect,
   rowIndex,
-  format,
+  nucleus,
 }: ZonesTableRowProps) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
@@ -66,6 +67,14 @@ function ZonesTableRow({
       buildID(assignmentSignal.id, 'Crosshair'),
     ),
   );
+  const {
+    showSerialNumber,
+    showAssignment,
+    showKind,
+    showDeleteAction,
+    showEditAction,
+    showZoomAction,
+  } = usePanelPreferences('zones', nucleus);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -184,35 +193,43 @@ function ZonesTableRow({
       }
       {...highlightZone.onHover}
     >
-      <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>
+      {showSerialNumber && <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>}
       <SignalDeltaColumn
         rowData={rowData}
         onHoverSignalX={onHoverSignalX}
         onHoverSignalY={onHoverSignalY}
-        format={format}
+        nucleus={nucleus}
       />
-      <SignalAssignmentsColumns
+      {showAssignment && (
+        <>
+          <SignalAssignmentsColumns
+            rowData={rowData}
+            assignmentSignal={assignmentSignal}
+            onHoverSignalX={onHoverSignalX}
+            onHoverSignalY={onHoverSignalY}
+            onClick={clickHandler}
+            onUnlink={unlinkHandler}
+            highlightSignalX={highlightSignalX}
+            highlightSignalY={highlightSignalY}
+          />
+          <ZoneAssignmentsColumns
+            rowData={rowData}
+            assignmentZone={assignmentZone}
+            onHoverZoneX={onHoverZoneX}
+            onHoverZoneY={onHoverZoneY}
+            rowSpanTags={rowSpanTags}
+            onClick={clickHandler}
+            onUnlink={unlinkHandler}
+            highlightZoneX={highlightZoneX}
+            highlightZoneY={highlightZoneY}
+          />
+        </>
+      )}
+      <ActionsColumn
         rowData={rowData}
-        assignmentSignal={assignmentSignal}
-        onHoverSignalX={onHoverSignalX}
-        onHoverSignalY={onHoverSignalY}
-        onClick={clickHandler}
-        onUnlink={unlinkHandler}
-        highlightSignalX={highlightSignalX}
-        highlightSignalY={highlightSignalY}
-      />
-      <ZoneAssignmentsColumns
-        rowData={rowData}
-        assignmentZone={assignmentZone}
-        onHoverZoneX={onHoverZoneX}
-        onHoverZoneY={onHoverZoneY}
         rowSpanTags={rowSpanTags}
-        onClick={clickHandler}
-        onUnlink={unlinkHandler}
-        highlightZoneX={highlightZoneX}
-        highlightZoneY={highlightZoneY}
+        {...{ showKind, showDeleteAction, showEditAction, showZoomAction }}
       />
-      <ActionsColumn rowData={rowData} rowSpanTags={rowSpanTags} />
     </DropdownMenu>
   );
 }

@@ -3,8 +3,10 @@ import { css } from '@emotion/react';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
-import versionInfo from '../../versionInfo';
-import Logo from '../elements/Logo';
+import versionInfo from '../../../versionInfo';
+import Logo from '../../elements/Logo';
+
+import AboutUsZakodium from './AboutUsZakodium';
 
 const styles = css`
   width: 40vw;
@@ -148,7 +150,9 @@ function AboutUsModal() {
                   IDNMR grant, which part of the Scientific Library Services and
                   Information Systems (LIS) initiative of the DFG.
                 </li>
-                <li>Zakodium Sàrl (Switzerland).</li>
+                <li>
+                  <AboutUsZakodium />
+                </li>
                 <li>Universidad del Valle (Cali, Colombia).</li>
               </ul>
             </div>

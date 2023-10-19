@@ -10,9 +10,6 @@ import {
 import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
-import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
-import { FaICursor } from 'react-icons/fa';
-import { IoSearchOutline } from 'react-icons/io5';
 import { useAccordionContext } from 'react-science/ui';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
@@ -27,15 +24,9 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import Button from '../../elements/Button';
-import Input from '../../elements/Input';
-import Select from '../../elements/Select';
-import ToggleButton from '../../elements/ToggleButton';
 import { useAlert } from '../../elements/popup/Alert';
 import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
-import useToolsFunctions from '../../hooks/useToolsFunctions';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { exportAsJSON } from '../../utility/export';
@@ -43,21 +34,28 @@ import nucleusToString from '../../utility/nucleusToString';
 import { PanelNoData } from '../PanelNoData';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
 import { DatabaseStructureSearchModal } from './DatabaseStructureSearchModal';
 import DatabaseTable from './DatabaseTable';
+import { DatabaseSearchOptions } from './DatabaseSearchOptions';
+
+export type Databases = Array<LocalDatabase | Database>;
 
 export interface DatabaseInnerProps {
   nucleus: string;
   selectedTool: string;
-  databases: Array<LocalDatabase | Database>;
+  databases: Databases;
   defaultDatabase: string;
 }
 
-interface ResultEntry {
+export interface DatabaseSearchKeywords {
+  solvent: string;
+  searchKeywords: string;
+}
+
+export interface DataBaseSearchResultEntry {
   data: DatabaseNMREntry[];
   databases: Array<{ key: string; value: string }>;
   solvents: Array<{ label: string; value: string }>;
@@ -87,17 +85,14 @@ function DatabasePanelInner({
   const modal = useModal();
   const { item } = useAccordionContext('Databases');
 
-  const { handleChangeOption } = useToolsFunctions();
   const format = useFormatNumberByNucleus(nucleus);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
-  const [keywords, setKeywords] = useState<{
-    solvent: string;
-    searchKeywords: string;
-  }>(emptyKeywords);
+  const [keywords, setKeywords] =
+    useState<DatabaseSearchKeywords>(emptyKeywords);
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
   const databaseDataRef = useRef<DatabaseNMREntry[]>([]);
-  const [result, setResult] = useState<ResultEntry>({
+  const [result, setResult] = useState<DataBaseSearchResultEntry>({
     data: [],
     databases: [],
     solvents: [],
@@ -111,18 +106,6 @@ function DatabasePanelInner({
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
     setFlipStatus(false);
-  }, []);
-
-  const handleSearch = useCallback((input) => {
-    if (typeof input === 'string' || input === -1) {
-      const solvent = String(input);
-      setKeywords((prevState) => ({ ...prevState, solvent }));
-    } else {
-      setKeywords((prevState) => ({
-        ...prevState,
-        searchKeywords: input.target.value,
-      }));
-    }
   }, []);
 
   const search = useCallback(
@@ -314,18 +297,6 @@ function DatabasePanelInner({
     [alert, result],
   );
 
-  const clearHandler = useCallback(() => {
-    setKeywords((prevState) => ({ ...prevState, searchKeywords: '' }));
-  }, []);
-
-  const enableFilterHandler = useCallback(
-    (flag) => {
-      const tool = !flag ? options.zoom.id : options.databaseRangesSelection.id;
-      handleChangeOption(tool);
-    },
-    [handleChangeOption],
-  );
-
   const searchByStructureHandler = (idCodeValue: string) => {
     setIdCode(idCodeValue);
   };
@@ -359,74 +330,21 @@ function DatabasePanelInner({
       ]}
     >
       {!isFlipped && (
-        <DefaultPanelHeader
-          showSettingButton
+        <DatabaseSearchOptions
+          databases={databases}
+          defaultDatabase={defaultDatabase}
+          idCode={idCode}
+          keywords={keywords}
+          result={result}
+          selectedTool={selectedTool}
+          total={databaseInstance.current?.data.length || 0}
+          onKeywordsChange={(options) =>
+            setKeywords((prevKeywords) => ({ ...prevKeywords, ...options }))
+          }
           onSettingClick={settingsPanelHandler}
-          canDelete={false}
-        >
-          <ToggleButton
-            key={`${selectedTool}`}
-            defaultValue={selectedTool === options.databaseRangesSelection.id}
-            popupTitle="Filter by select ranges"
-            popupPlacement="right"
-            onClick={enableFilterHandler}
-          >
-            <FaICursor
-              style={{
-                pointerEvents: 'none',
-                fontSize: '12px',
-                transform: 'rotate(90deg)',
-              }}
-            />
-          </ToggleButton>
-          <Select
-            style={{ flex: 2, marginLeft: '5px' }}
-            items={databases}
-            itemTextField="label"
-            itemValueField="key"
-            onChange={handleChangeDatabase}
-            placeholder="Select database"
-            defaultValue={defaultDatabase}
-          />
-          <Select
-            style={{ flex: 1, margin: '0px 5px' }}
-            items={result.solvents}
-            placeholder="Solvent"
-            onChange={handleSearch}
-            value={keywords.solvent}
-          />
-          <Input
-            value={keywords.searchKeywords}
-            renderIcon={() => <IoSearchOutline />}
-            style={{ inputWrapper: { flex: 3 } }}
-            className="search-input"
-            type="text"
-            debounceTime={250}
-            placeholder="Search for parameter..."
-            onChange={handleSearch}
-            onClear={clearHandler}
-            canClear
-          />
-          <Button.Done
-            fill="clear"
-            onClick={openSearchByStructure}
-            style={{ marginLeft: '5px' }}
-          >
-            {!idCode ? (
-              <BsHexagon
-                style={{
-                  fontSize: '14px',
-                }}
-              />
-            ) : (
-              <BsHexagonFill
-                style={{
-                  fontSize: '14px',
-                }}
-              />
-            )}
-          </Button.Done>
-        </DefaultPanelHeader>
+          onStructureClick={openSearchByStructure}
+          onDatabaseChange={handleChangeDatabase}
+        />
       )}
       {isFlipped && (
         <PreferencesHeader
@@ -474,9 +392,9 @@ export default function PeaksPanel() {
   const { data, defaultDatabase } = current.databases;
   const databases = DATA_BASES.concat(
     data.filter((datum) => datum.enabled),
-  ) as Array<Database | LocalDatabase>;
+  ) as Databases;
 
-  if (!activeTab || displayerMode !== DISPLAYER_MODE.DM_1D) {
+  if (!activeTab || displayerMode !== '1D') {
     return (
       <PanelNoData>
         Databases are only available when 1D experimental spectrum is displayed.
