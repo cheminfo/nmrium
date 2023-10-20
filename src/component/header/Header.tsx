@@ -32,6 +32,7 @@ import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
 import PhaseCorrectionPanel from './PhaseCorrectionPanel';
+import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
@@ -112,6 +113,8 @@ function HeaderInner(props: HeaderInnerProps) {
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
         return <PhaseCorrectionPanel />;
+      case options.phaseCorrectionTwoDimensions.id:
+        return <PhaseCorrectionTwoDimensionsPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;
       case options.rangePicking.id:
@@ -121,6 +124,7 @@ function HeaderInner(props: HeaderInnerProps) {
       case options.zonePicking.id:
         return <Zones2DOptionPanel />;
       default:
+        return null;
         break;
     }
   }, [selectedOptionPanel]);

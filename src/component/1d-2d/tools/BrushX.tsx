@@ -10,6 +10,7 @@ const styles: Record<'container', CSSProperties> = {
     position: 'absolute',
     top: '0px',
     left: '0px',
+    zIndex: 9,
   },
 };
 

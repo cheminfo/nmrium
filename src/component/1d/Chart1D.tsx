@@ -14,6 +14,7 @@ import { PeakEditionProvider } from './peaks/PeakEditionManager';
 import Peaks from './peaks/Peaks';
 import PeaksShapes from './peaks/PeaksShapes';
 import Ranges from './ranges/Ranges';
+import RangesIntegrals from './ranges/RangesIntegrals';
 import BaseLineZones from './tool/BaseLineZones';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
@@ -45,6 +46,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <ApodizationLine />
         <IntegralsSeries />
         <Peaks peaksSource="peaks" />
+        <RangesIntegrals />
         <Ranges />
         <Peaks peaksSource="ranges" />
         <JGraph />

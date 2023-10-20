@@ -253,6 +253,18 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           }
           break;
         }
+        case HighlightEventSource.PHASE_CORRECTION_TRACE: {
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_PHASE_CORRECTION_TRACE',
+              payload: { id },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+          break;
+        }
 
         default:
           break;

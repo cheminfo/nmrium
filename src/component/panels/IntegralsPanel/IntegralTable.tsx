@@ -15,10 +15,10 @@ import addCustomColumn, {
 import Select from '../../elements/Select';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { formatNumber } from '../../utility/formatNumber';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
 
 const selectStyle = { width: '100%', border: 'none' };
 

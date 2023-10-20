@@ -94,15 +94,24 @@ function use1DTraceYScale(
   return get1DYScale(yDomains[SpectrumId], height, verticalMargin);
 }
 
+interface SliceYScaleOptions {
+  margin?: number;
+  scaleRatio?: number;
+}
+
 function getSliceYScale(
   data: Float64Array,
   size: number,
   mode: SpectraDirection,
-  margin = 10,
+  options: SliceYScaleOptions = {},
 ) {
+  const { margin = 10, scaleRatio = 1 } = options;
   const max = xMaxValue(data);
   size = mode === 'RTL' ? size : size / 2;
-  return scaleLinear([0, max] as number[], [size - margin, margin]);
+  return scaleLinear([0, max * scaleRatio] as number[], [
+    size - margin,
+    margin,
+  ]);
 }
 
 export {

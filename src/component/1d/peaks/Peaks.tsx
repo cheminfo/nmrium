@@ -1,16 +1,16 @@
 import { Spectrum1D } from 'nmr-load-save';
+import { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
+import { memo, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
+import { useScaleX } from '../utilities/scale';
 
 import PeakAnnotations from './PeakAnnotations';
 import PeakAnnotationsSpreadMode from './PeakAnnotationsSpreadMode';
-import { NMRPeak1D, Peak1D, Range } from 'nmr-processing';
-import { memo, useMemo } from 'react';
-import { useScaleX } from '../utilities/scale';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
 interface Peak1DWithParentKeys extends Peak1D {
   parentKeys?: string[];

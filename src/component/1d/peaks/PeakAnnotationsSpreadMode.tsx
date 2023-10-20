@@ -1,16 +1,17 @@
+import { memo } from 'react';
+
 import { useHighlight } from '../../highlight';
 import { formatNumber } from '../../utility/formatNumber';
+import { getDecimalsCount } from '../utilities/getDecimalsCount';
 import { resolve } from '../utilities/intersectionResolver';
 
 import { PeakEditionListener } from './PeakEditionManager';
-import { getDecimalsCount } from '../utilities/getDecimalsCount';
 import {
   PeaksAnnotationsProps,
   PeaksSource,
   getHighlightExtraId,
   getHighlightSource,
 } from './Peaks';
-import { memo } from 'react';
 
 const notationWidth = 10;
 const notationMargin = 2;

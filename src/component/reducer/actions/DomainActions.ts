@@ -229,29 +229,6 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   }
 }
 
-function getSpectrumIntegralsDomain(datum: Spectrum1D) {
-  const { integrals, ranges } = datum;
-  let max = Number.NEGATIVE_INFINITY;
-  for (const integral of integrals.values) {
-    max = Math.max(max, integral.absolute);
-  }
-  for (const range of ranges.values) {
-    max = Math.max(max, range.absolute);
-  }
-  return [0, max];
-}
-function setIntegralsYDomain(
-  draft: Draft<State>,
-  data: Spectrum1D[] | Spectrum1D,
-) {
-  for (const spectrum of Array.isArray(data) ? data : [data]) {
-    if (spectrum?.info?.dimension === 1) {
-      draft.integralsYDomains[spectrum.id] =
-        getSpectrumIntegralsDomain(spectrum);
-    }
-  }
-}
-
 function setMode(draft: Draft<State>) {
   const { xDomains, view, data, displayerMode } = draft;
   const nuclues = view.spectra.activeTab;
@@ -331,7 +308,6 @@ export {
   getDomain,
   setDomain,
   setMode,
-  setIntegralsYDomain,
   handleSetXDomain,
   handleSetYDomain,
   handleMoveOverXAxis,

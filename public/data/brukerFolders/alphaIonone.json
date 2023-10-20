@@ -1,0 +1,41 @@
+{
+  "data": {
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/acqu2s",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/acqus",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/pdata/1/procs",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/pdata/1/proc2s",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/pdata/1/2rr",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/pdata/1/2ri",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/pdata/1/2ir",
+            "data/brukerFolders/alphaIonone.zip/alphaIonone/3/pdata/1/2ii"
+          ]
+        },
+        "filters": [],
+        "display": {
+          "isPositiveVisible": true,
+          "isNegativeVisible": true,
+          "isVisible": true,
+          "dimension": 2
+        },
+        "zones": {
+          "values": [],
+          "options": {}
+        }
+      }
+    ],
+    "molecules": [],
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/brukerFolders/alphaIonone.zip"
+        }
+      ]
+    }
+  },
+  "version": 4
+}

@@ -12,13 +12,13 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import { useHighlight } from '../../highlight';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import ActionsColumn from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
 import { ZoneData } from './hooks/useMapZones';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 

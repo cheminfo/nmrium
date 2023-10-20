@@ -29,19 +29,19 @@ import {
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
 import { AssignmentContext } from '../../assignment/AssignmentsContext';
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
 import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
+import { setRangesViewProperty } from '../helper/setRangesViewProperty';
 import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
-import { setDomain, setIntegralsYDomain } from './DomainActions';
-import { resetSelectedTool } from './ToolsActions';
+import { setDomain } from './DomainActions';
 import { toggleDisplayingPeaks } from './PeaksActions';
+import { resetSelectedTool } from './ToolsActions';
 
 type AutoRangesDetectionAction = ActionType<
   'AUTO_RANGES_DETECTION',
@@ -210,7 +210,6 @@ function handleAutoRangesDetection(
       nucleus,
     });
     handleUpdateCorrelations(draft);
-    setIntegralsYDomain(draft, datum);
   }
 }
 
@@ -499,7 +498,6 @@ function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
     });
     updateRangesRelativeValues(datum);
     handleUpdateCorrelations(draft);
-    setIntegralsYDomain(draft, data[index] as Spectrum1D);
   }
 }
 
@@ -570,18 +568,7 @@ function toggleRangesViewProperty(
   draft: Draft<State>,
   key: keyof FilterType<RangesViewState, boolean>,
 ) {
-  const activeSpectrum = getActiveSpectrum(draft);
-
-  if (activeSpectrum?.id) {
-    const rangesView = draft.view.ranges;
-    if (rangesView[activeSpectrum.id]) {
-      rangesView[activeSpectrum.id][key] = !rangesView[activeSpectrum.id][key];
-    } else {
-      const defaultRangesView = { ...defaultRangesViewState };
-      defaultRangesView[key] = !defaultRangesView[key];
-      rangesView[activeSpectrum.id] = defaultRangesView;
-    }
-  }
+  setRangesViewProperty(draft, key, (flag) => !flag);
 }
 
 //action
@@ -608,7 +595,6 @@ function handleCutRange(draft: Draft<State>, action: CutRangAction) {
   }
 
   updateRangesRelativeValues(spectrum);
-  setIntegralsYDomain(draft, spectrum);
   handleUpdateCorrelations(draft);
 }
 
