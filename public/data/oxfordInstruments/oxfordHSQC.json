@@ -48,6 +48,11 @@
             "value": {
               "zeroFilling": {
                 "nbPoints": 2048
+              },
+              "phaseCorrection": {
+                "mode": "pk",
+                "ph0": -47,
+                "ph1": 236
               }
             },
             "flag": true,
