@@ -124,6 +124,7 @@ function HeaderInner(props: HeaderInnerProps) {
       case options.zonePicking.id:
         return <Zones2DOptionPanel />;
       default:
+        return null;
         break;
     }
   }, [selectedOptionPanel]);
