@@ -23,24 +23,30 @@
             "isDeleteAllow": true
           },
           {
-            "name": "fftDimension1",
+            "id": "apodizationDimension1",
+            "name": "apodizationDimension1",
             "value": {
-              "apodization": {
-                "compose": {
-                  "shapes": [
-                    {
-                      "shape": {
-                        "kind": "sineBell",
-                        "options": {
-                          "offset": 0,
-                          "exponent": 2
-                        }
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
                       }
                     }
-                  ]
-                },
-                "apply": true
+                  }
+                ]
               },
+              "apply": true
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fftDimension1",
+            "value": {
               "zeroFilling": {
                 "nbPoints": 2048
               },
@@ -52,30 +58,38 @@
             "isDeleteAllow": true
           },
           {
+            "id": "flpDimension2",
             "name": "flpDimension2",
             "value": {},
             "flag": true,
             "isDeleteAllow": true
           },
           {
-            "name": "fftDimension2",
+            "id": "apodizationDimension2",
+            "name": "apodizationDimension2",
             "value": {
-              "apodization": {
-                "compose": {
-                  "shapes": [
-                    {
-                      "shape": {
-                        "kind": "sineBell",
-                        "options": {
-                          "offset": 0,
-                          "exponent": 2
-                        }
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
                       }
                     }
-                  ]
-                },
-                "apply": true
+                  }
+                ]
               },
+              "apply": true
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "id": "fftDimension2",
+            "name": "fftDimension2",
+            "value": {
               "zeroFilling": {
                 "nbPoints": 2048
               },
@@ -87,8 +101,75 @@
             "isDeleteAllow": true
           },
           {
+            "id": "symmetrizeCosyLike",
             "name": "symmetrizeCosyLike",
             "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ]
+      },
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
+          ]
+        },
+        "filters": [
+          {
+            "name": "digitalFilter",
+            "label": "Digital Filter",
+            "value": {
+              "digitalFilterValue": 0
+            },
+            "id": "00167756-e605-4129-ae90-7f17274ac7ee",
+            "flag": true,
+            "isDeleteAllow": false
+          },
+          {
+            "name": "apodization",
+            "label": "Apodization",
+            "value": {
+              "lineBroadening": 1,
+              "gaussBroadening": 0,
+              "lineBroadeningCenter": 0
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "zeroFilling",
+            "label": "Zero Filling",
+            "value": {
+              "nbPoints": 32768
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "backwardLinearPrediction",
+            "label": "Backward Linear Prediction Filter",
+            "value": {
+              "nbInputs": 16384
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fft",
+            "label": "FFT",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "phaseCorrection",
+            "label": "Phase correction",
+            "value": {
+              "ph0": -126,
+              "ph1": 0,
+              "absolute": false
+            },
             "flag": true,
             "isDeleteAllow": true
           }
