@@ -1,16 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Info2D } from 'nmr-processing';
 import { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
+import NoTableData from '../extra/placeholder/NoTableData';
 
 import ZonesTableRow from './ZonesTableRow';
 import { useMapZones } from './hooks/useMapZones';
-import NoDataForFid from '../extra/placeholder/NoDataForFid';
-import NoTableData from '../extra/placeholder/NoTableData';
-import { Info2D } from 'nmr-processing';
 
 const tableStyle = css`
   border-spacing: 0;

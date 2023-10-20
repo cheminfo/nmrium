@@ -17,12 +17,12 @@ import {
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { ActionType } from '../types/ActionType';
-import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;

@@ -92,7 +92,9 @@ test('should load .nmrium data from version 3', async ({ page }) => {
   });
 
   await test.step('check integrals', async () => {
-    const integrals = nmrium.page.locator('_react=Integral');
+    const integrals = nmrium.page.locator(
+      '_react=IntegralsSeries >> _react=Integration',
+    );
     await expect(integrals).toHaveCount(1);
   });
 

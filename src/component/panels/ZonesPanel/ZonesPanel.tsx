@@ -10,6 +10,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
@@ -19,7 +20,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
-import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 
 const style = css`
   .remove-assignments-btn {

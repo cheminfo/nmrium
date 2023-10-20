@@ -20,6 +20,7 @@ const allowTools = new Set([
   options.apodization.id,
   options.equalizer.id,
   options.baselineCorrection.id,
+  options.phaseCorrectionTwoDimensions.id,
   options.zonePicking.id,
   options.slicing.id,
   options.integral.id,
@@ -68,6 +69,7 @@ function CrossLinePointer() {
         overflow: 'visible',
         width: 2 * width,
         height: 2 * height,
+        zIndex: 9,
       }}
     >
       <svg width={2 * width} height={2 * height}>

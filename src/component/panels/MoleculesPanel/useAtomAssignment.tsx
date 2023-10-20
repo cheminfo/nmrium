@@ -12,6 +12,7 @@ import { filterForIDsWithAssignment } from '../../assignment/utilities/filterFor
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
+import { DisplayerMode } from '../../reducer/Reducer';
 
 import {
   AtomData,
@@ -21,7 +22,6 @@ import {
   getHighlightsOnHover,
   toggleDiaIDs,
 } from './Utilities';
-import { DisplayerMode } from '../../reducer/Reducer';
 
 interface UseAtomAssignmentProps {
   displayerMode: DisplayerMode;

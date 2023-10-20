@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import CloseButton from '../../elements/CloseButton';
 
@@ -99,45 +99,20 @@ export default function SetShiftToleranceModal({
     }
   }, [previousTolerance]);
 
-  const onSaveHandler = useCallback(() => {
+  function onSaveHandler() {
     onSave?.(tolerance);
     onClose?.();
-  }, [onClose, onSave, tolerance]);
+  }
 
-  const onChangeHandler = useCallback(
-    (e, atomType: string) => {
-      const value: string = e.target.value;
-      if (value.trim().length > 0) {
-        setTolerance({ ...tolerance, [atomType]: Number(value) });
-        setIsValid({ ...isValid, [atomType]: true });
-      } else {
-        setIsValid({ ...isValid, [atomType]: false });
-      }
-    },
-    [isValid, tolerance],
-  );
-
-  const rows = useMemo(() => {
-    return tolerance
-      ? Object.keys(tolerance).map((atomType) => {
-          return (
-            <tr key={`tolerance_${atomType}`}>
-              <td>{atomType}</td>
-              <td>
-                <input
-                  type="number"
-                  onChange={(e) => onChangeHandler(e, atomType)}
-                  defaultValue={tolerance[atomType]}
-                  style={
-                    !isValid[atomType] ? { backgroundColor: 'orange' } : {}
-                  }
-                />
-              </td>
-            </tr>
-          );
-        })
-      : undefined;
-  }, [isValid, onChangeHandler, tolerance]);
+  function onChangeHandler(e, atomType: string) {
+    const value: string = e.target.value;
+    if (value.trim().length > 0) {
+      setTolerance({ ...tolerance, [atomType]: Number(value) });
+      setIsValid({ ...isValid, [atomType]: true });
+    } else {
+      setIsValid({ ...isValid, [atomType]: false });
+    }
+  }
 
   return (
     <div css={modalContainer}>
@@ -153,7 +128,13 @@ export default function SetShiftToleranceModal({
             <th>Value</th>
           </tr>
         </thead>
-        <tbody>{rows}</tbody>
+        <tbody>
+          <Rows
+            onChange={onChangeHandler}
+            isValid={isValid}
+            tolerance={tolerance}
+          />
+        </tbody>
       </table>
       <button
         type="button"
@@ -164,4 +145,22 @@ export default function SetShiftToleranceModal({
       </button>
     </div>
   );
+}
+
+function Rows({ tolerance, onChange, isValid }) {
+  return Object.keys(tolerance).map((atomType) => {
+    return (
+      <tr key={`tolerance_${atomType}`}>
+        <td>{atomType}</td>
+        <td>
+          <input
+            type="number"
+            onChange={(e) => onChange(e, atomType)}
+            defaultValue={tolerance[atomType]}
+            style={!isValid[atomType] ? { backgroundColor: 'orange' } : {}}
+          />
+        </td>
+      </tr>
+    );
+  });
 }

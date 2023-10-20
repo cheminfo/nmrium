@@ -2,9 +2,9 @@ import lodashGet from 'lodash/get';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
+import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
 import { formatNumber } from '../../../utility/formatNumber';
 import { ZoneData } from '../hooks/useMapZones';
-import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
 
 interface SignalDeltaColumnProps {
   rowData: ZoneData;

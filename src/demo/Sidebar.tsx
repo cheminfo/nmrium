@@ -86,8 +86,7 @@ const logoNormalCss = css`
 const sidebarWrapperCss = css`
   position: relative;
   height: calc(100vh - 75px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
   width: 260px;
   z-index: 4;
   padding-bottom: 100px;
