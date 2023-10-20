@@ -16,7 +16,7 @@ interface DetectRangesOptions {
     frequencyCluster?: number; // default 16
     clean?: boolean; // default true
     keepPeaks?: boolean; //default true
-    lookNegative?: boolean; //default false
+    direction?: 'negative' | 'positive' | 'both'; //default positive
   };
   impurities?: {
     solvent: string;
