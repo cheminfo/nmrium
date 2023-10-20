@@ -164,9 +164,8 @@ export default function ToolbarMenu({
           title={toolTip}
           active={isShown}
           onClick={handleClick}
-        >
-          {component}
-        </Toolbar.Item>
+          icon={component}
+        />
       </div>
       {isShown && (
         <MenuList

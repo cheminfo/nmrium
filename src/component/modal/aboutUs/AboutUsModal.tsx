@@ -96,20 +96,10 @@ function AboutUsModal() {
     <>
       <Toolbar.Item
         onClick={openDialog}
-        titleOrientation="horizontal"
         id="logo"
         title="About NMRium"
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <SvgLogoNmrium />
-        </div>
-      </Toolbar.Item>
+        icon={<SvgLogoNmrium />}
+      />
       <Modal
         hasCloseButton
         isOpen={isOpenDialog}

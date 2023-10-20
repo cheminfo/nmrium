@@ -44,8 +44,12 @@ export default function ToggleButton(
   }
 
   return (
-    <Toolbar.Item onClick={toggleButton} title={title} id={id} active={active}>
-      {children}
-    </Toolbar.Item>
+    <Toolbar.Item
+      onClick={toggleButton}
+      title={title}
+      id={id}
+      active={active}
+      icon={children}
+    />
   );
 }
