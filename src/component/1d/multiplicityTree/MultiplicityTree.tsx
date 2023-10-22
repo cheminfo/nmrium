@@ -18,7 +18,7 @@ import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
 import LevelNode from './LevelNode';
 import StringNode from './StringNode';
 import TreeNodes from './TreeNodes';
-import createTreeNodes, { treeNodeData } from './buildTreeNode';
+import createTreeNodes, { TreeNodeData } from './buildTreeNode';
 
 const styles = {
   cursor: 'default',
@@ -163,7 +163,7 @@ interface TreeResult {
   width: number;
   height: number;
   levelHeight: number;
-  nodes: treeNodeData[];
+  nodes: TreeNodeData[];
   signal: Signal1D;
   range: Omit<Range, 'signals'>;
 }
@@ -179,7 +179,7 @@ function getTree(range: Range, spectrum: Spectrum1D, scale) {
     let width = 0;
     let height = 0;
     let levelHeight = 0;
-    const nodes: treeNodeData[] = [];
+    const nodes: TreeNodeData[] = [];
     let startX = 0;
 
     const { from, to } = range;

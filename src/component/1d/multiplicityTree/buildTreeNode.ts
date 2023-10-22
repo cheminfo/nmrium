@@ -9,18 +9,19 @@ import {
 
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-export interface treeNodeData {
+export interface TreeNodeData {
   startX: number;
   _startX: number;
   ratio: number;
   multiplicityIndex: number;
   color: string;
 }
+
 function createTreeNodes(signal: Signal1D, spectrumData: Spectrum1D) {
   function buildTreeNodesData(
     multiplicityIndex: number,
     jIndices: number[],
-    treeNodesData: treeNodeData[],
+    treeNodesData: TreeNodeData[],
     startX: number,
   ) {
     if (!signal.multiplicity) {
