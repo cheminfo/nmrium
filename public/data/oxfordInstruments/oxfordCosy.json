@@ -18,13 +18,14 @@
         "filters": [
           {
             "name": "blpDimension1",
+            "label": "Backward-LP Dimension 1",
             "value": {},
             "flag": true,
             "isDeleteAllow": true
           },
           {
-            "id": "apodizationDimension1",
             "name": "apodizationDimension1",
+            "label": "Apodization on Dimension 1",
             "value": {
               "compose": {
                 "shapes": [
@@ -46,27 +47,28 @@
           },
           {
             "name": "fftDimension1",
+            "label": "FFT Dimension 1",
             "value": {
-              "zeroFilling": {
-                "nbPoints": 2048
-              },
               "phaseCorrection": {
                 "mode": "mc"
+              },
+              "zeroFilling": {
+                "nbPoints": 2048
               }
             },
             "flag": true,
             "isDeleteAllow": true
           },
           {
-            "id": "flpDimension2",
             "name": "flpDimension2",
+            "label": "Forward-LP Dimension 2",
             "value": {},
             "flag": true,
             "isDeleteAllow": true
           },
           {
-            "id": "apodizationDimension2",
             "name": "apodizationDimension2",
+            "label": "Apodization on Dimension 2",
             "value": {
               "compose": {
                 "shapes": [
@@ -87,22 +89,22 @@
             "isDeleteAllow": true
           },
           {
-            "id": "fftDimension2",
             "name": "fftDimension2",
+            "label": "FFT Dimension 2",
             "value": {
-              "zeroFilling": {
-                "nbPoints": 2048
-              },
               "phaseCorrection": {
                 "mode": "mc"
+              },
+              "zeroFilling": {
+                "nbPoints": 2048
               }
             },
             "flag": true,
             "isDeleteAllow": true
           },
           {
-            "id": "symmetrizeCosyLike",
             "name": "symmetrizeCosyLike",
+            "label": "symmetrize COSY-like",
             "value": {},
             "flag": true,
             "isDeleteAllow": true
@@ -117,14 +119,13 @@
         },
         "filters": [
           {
-            "name": "digitalFilter",
-            "label": "Digital Filter",
+            "name": "backwardLinearPrediction",
+            "label": "Backward Linear Prediction Filter",
             "value": {
-              "digitalFilterValue": 0
+              "nbInputs": 16384
             },
-            "id": "00167756-e605-4129-ae90-7f17274ac7ee",
             "flag": true,
-            "isDeleteAllow": false
+            "isDeleteAllow": true
           },
           {
             "name": "apodization",
@@ -142,15 +143,6 @@
             "label": "Zero Filling",
             "value": {
               "nbPoints": 32768
-            },
-            "flag": true,
-            "isDeleteAllow": true
-          },
-          {
-            "name": "backwardLinearPrediction",
-            "label": "Backward Linear Prediction Filter",
-            "value": {
-              "nbInputs": 16384
             },
             "flag": true,
             "isDeleteAllow": true
