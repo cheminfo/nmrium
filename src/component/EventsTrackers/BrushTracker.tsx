@@ -16,7 +16,7 @@ import {
 import { ActionType } from '../reducer/types/ActionType';
 
 type Step = 'initial' | 'start' | 'end' | 'brushing';
-interface BrushTrackerContext {
+export interface BrushTrackerContext {
   step: Step;
   startX: number;
   endX: number;
