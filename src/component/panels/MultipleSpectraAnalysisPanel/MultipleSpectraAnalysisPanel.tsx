@@ -17,17 +17,15 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/ButtonToolTip';
-import { positions, useAlert } from '../../elements/popup/Alert';
-import { useModal } from '../../elements/popup/Modal';
+import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
-import AnalysisChart from './AnalysisChart';
+import AlignSpectra from './AlignSpectra';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
 
@@ -45,6 +43,7 @@ function MultipleSpectraAnalysisPanelInner({
   displayerMode,
 }: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
+  const [calibration, setCalibration] = useState(false);
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
   const preferences = usePanelPreferences('multipleSpectraAnalysis', activeTab);
   const [showAnalysisChart, toggleAnalysisChart] = useToggle(false);
@@ -56,7 +55,6 @@ function MultipleSpectraAnalysisPanelInner({
 
   const settingRef = useRef<any>();
   const alert = useAlert();
-  const modal = useModal();
   const dispatch = useDispatch();
 
   const settingsPanelHandler = useCallback(() => {
@@ -74,14 +72,6 @@ function MultipleSpectraAnalysisPanelInner({
   const showTrackerHandler = useCallback(() => {
     dispatch({ type: 'TOGGLE_SPECTRA_LEGEND' });
   }, [dispatch]);
-  const openAlignSpectra = useCallback(() => {
-    dispatch({ type: 'RESET_SELECTED_TOOL' });
-    modal.show(<AlignSpectraModal nucleus={activeTab} />, {
-      isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
-      width: 500,
-    });
-  }, [activeTab, modal, dispatch]);
 
   const { rawWriteWithType, cleanShouldFallback, shouldFallback, text } =
     useClipboard();
@@ -124,7 +114,12 @@ function MultipleSpectraAnalysisPanelInner({
             <>
               <Button
                 popupTitle="Spectra calibration"
-                onClick={openAlignSpectra}
+                onClick={() => {
+                  setCalibration((value) => {
+                    if (value) dispatch({ type: 'RESET_SELECTED_TOOL' });
+                    return !value;
+                  });
+                }}
               >
                 <SvgNmrOverlay style={{ fontSize: '16px' }} />
               </Button>
@@ -160,23 +155,23 @@ function MultipleSpectraAnalysisPanelInner({
         />
       )}
       <div className="inner-container">
-        {!isFlipped ? (
-          <div style={{ overflow: 'auto' }}>
-            {showAnalysisChart && (
-              <AnalysisChart spectraAnalysisData={spectraAnalysis} />
-            )}
-            <MultipleSpectraAnalysisTable
-              data={spectraAnalysis}
-              resortSpectra={preferences.analysisOptions.resortSpectra}
-              activeTab={activeTab}
-            />
-          </div>
-        ) : (
+        {isFlipped ? (
           <MultipleSpectraAnalysisPreferences
             data={spectraAnalysis}
             activeTab={activeTab}
             onAfterSave={afterSaveHandler}
             ref={settingRef}
+          />
+        ) : calibration ? (
+          <AlignSpectra
+            nucleus={activeTab}
+            onClose={() => setCalibration(false)}
+          />
+        ) : (
+          <MultipleSpectraAnalysisTable
+            data={spectraAnalysis}
+            resortSpectra={preferences.analysisOptions.resortSpectra}
+            activeTab={activeTab}
           />
         )}
       </div>

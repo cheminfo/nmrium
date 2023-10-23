@@ -1,24 +1,22 @@
 /** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { Formik } from 'formik';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 
-import { REFERENCES } from '../../data/constants/References';
-import { CalibrateOptions } from '../../data/data1d/Spectrum1D/getReferenceShift';
-import { useDispatch } from '../context/DispatchContext';
-import Button from '../elements/Button';
-import CloseButton from '../elements/CloseButton';
-import { InputStyle } from '../elements/Input';
-import Label, { LabelStyle } from '../elements/Label';
-import Message from '../elements/Message';
-import Select from '../elements/Select';
-import FormikInput from '../elements/formik/FormikInput';
-import useSpectraByActiveNucleus from '../hooks/useSpectraPerNucleus';
-import Events from '../utility/Events';
-
-import { ModalStyles } from './ModalStyle';
+import { REFERENCES } from '../../../data/constants/References';
+import { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift';
+import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
+import { InputStyle } from '../../elements/Input';
+import Label, { LabelStyle } from '../../elements/Label';
+import Message from '../../elements/Message';
+import Select from '../../elements/Select';
+import FormikInput from '../../elements/formik/FormikInput';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
+import Events from '../../utility/Events';
 
 const labelStyle: LabelStyle = {
   label: { flex: 4, fontWeight: '500' },
@@ -34,9 +32,9 @@ const inputStyle: InputStyle = {
 
 const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
-interface AlignSpectraModalProps {
-  onClose?: (element?: string) => void;
+interface AlignSpectraProps {
   nucleus: any;
+  onClose: () => void;
 }
 
 const DEFAULT_OPTIONS: CalibrateOptions = {
@@ -93,10 +91,7 @@ function getList(nucleus) {
   return baseList.concat(list as any);
 }
 
-function AlignSpectraModal({
-  onClose = () => null,
-  nucleus,
-}: AlignSpectraModalProps) {
+function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
   const spectra = useSpectraByActiveNucleus();
   const dispatch = useDispatch();
   const [options, setOptions] = useState<CalibrateOptions>(DEFAULT_OPTIONS);
@@ -104,7 +99,6 @@ function AlignSpectraModal({
   function submitHandler(inputOptions) {
     const options = checkOptions(inputOptions);
     setOptions(options);
-
     try {
       checkSpectra(options, spectra as Spectrum1D[]);
 
@@ -143,8 +137,32 @@ function AlignSpectraModal({
   }
   const List = getList(nucleus);
 
+  const styles = css`
+    max-height: 100%;
+    padding: 10px 0 5px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .body {
+      overflow: auto;
+      padding: 10px 10px 25px 0;
+    }
+
+    .header {
+      padding: 5px 0;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .footer {
+      display: flex;
+      padding-top: 5px;
+    }
+  `;
+
   return (
-    <div css={ModalStyles}>
+    <div css={styles}>
       <Formik
         initialValues={options}
         enableReinitialize
@@ -154,14 +172,10 @@ function AlignSpectraModal({
       >
         {({ submitForm }) => (
           <>
-            <div className="header handle">
-              <span>Spectra calibration</span>
-              <CloseButton onClick={onClose} className="close-bt" />
-            </div>
-            <div
-              className="inner-content"
-              style={{ flex: 1, minHeight: '220px' }}
-            >
+            <div className="body" style={{ flex: 1 }}>
+              <div className="header">
+                <span>Spectra calibration</span>
+              </div>
               {error && <Message type="error">{error}</Message>}
               <Label title="Options" style={labelStyle}>
                 <Select
@@ -187,8 +201,13 @@ function AlignSpectraModal({
                 <FormikInput name="targetX" type="number" style={inputStyle} />
               </Label>
             </div>
-            <div className="footer-container">
-              <Button.Done onClick={submitForm}>Done</Button.Done>
+            <div className="footer">
+              <Button.Done
+                style={{ padding: '5px 14px', fontSize: 14 }}
+                onClick={submitForm}
+              >
+                Done
+              </Button.Done>
             </div>
           </>
         )}
@@ -197,4 +216,4 @@ function AlignSpectraModal({
   );
 }
 
-export default AlignSpectraModal;
+export default AlignSpectra;
