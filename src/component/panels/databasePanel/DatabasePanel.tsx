@@ -10,7 +10,7 @@ import {
 import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
-import { useAccordionContext } from 'react-science/ui';
+import { useAccordionContext, useOnOff } from 'react-science/ui';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { getSum } from '../../../data/data1d/Spectrum1D/SumManager';
@@ -25,7 +25,6 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { positions, transitions, useModal } from '../../elements/popup/Modal';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
@@ -82,11 +81,15 @@ function DatabasePanelInner({
 }: DatabaseInnerProps) {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const modal = useModal();
   const { item } = useAccordionContext('Databases');
 
   const format = useFormatNumberByNucleus(nucleus);
   const [isFlipped, setFlipStatus] = useState(false);
+  const [
+    isOpenSearchByStructure,
+    openSearchByStructure,
+    closeSearchByStructure,
+  ] = useOnOff(false);
   const settingRef = useRef<any>();
   const [keywords, setKeywords] =
     useState<DatabaseSearchKeywords>(emptyKeywords);
@@ -296,24 +299,9 @@ function DatabasePanelInner({
     },
     [alert, result],
   );
-
   const searchByStructureHandler = (idCodeValue: string) => {
     setIdCode(idCodeValue);
   };
-  const openSearchByStructure = () => {
-    modal.show(
-      <DatabaseStructureSearchModal
-        onChange={searchByStructureHandler}
-        idCode={idCode}
-      />,
-      {
-        position: positions.MIDDLE,
-        transition: transitions.SCALE,
-        isBackgroundBlur: false,
-      },
-    );
-  };
-
   return (
     <div
       css={[
@@ -330,21 +318,29 @@ function DatabasePanelInner({
       ]}
     >
       {!isFlipped && (
-        <DatabaseSearchOptions
-          databases={databases}
-          defaultDatabase={defaultDatabase}
-          idCode={idCode}
-          keywords={keywords}
-          result={result}
-          selectedTool={selectedTool}
-          total={databaseInstance.current?.data.length || 0}
-          onKeywordsChange={(options) =>
-            setKeywords((prevKeywords) => ({ ...prevKeywords, ...options }))
-          }
-          onSettingClick={settingsPanelHandler}
-          onStructureClick={openSearchByStructure}
-          onDatabaseChange={handleChangeDatabase}
-        />
+        <>
+          <DatabaseSearchOptions
+            databases={databases}
+            defaultDatabase={defaultDatabase}
+            idCode={idCode}
+            keywords={keywords}
+            result={result}
+            selectedTool={selectedTool}
+            total={databaseInstance.current?.data.length || 0}
+            onKeywordsChange={(options) =>
+              setKeywords((prevKeywords) => ({ ...prevKeywords, ...options }))
+            }
+            onSettingClick={settingsPanelHandler}
+            onStructureClick={openSearchByStructure}
+            onDatabaseChange={handleChangeDatabase}
+          />
+          <DatabaseStructureSearchModal
+            isOpen={isOpenSearchByStructure}
+            onClose={closeSearchByStructure}
+            onChange={searchByStructureHandler}
+            idCode={idCode}
+          />
+        </>
       )}
       {isFlipped && (
         <PreferencesHeader

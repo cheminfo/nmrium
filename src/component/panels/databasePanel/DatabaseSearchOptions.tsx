@@ -125,10 +125,11 @@ export function DatabaseSearchOptions({
             }}
           />
         </ToggleButton>
+
         <Input
           value={keywords.searchKeywords}
           renderIcon={() => <IoSearchOutline />}
-          style={{ inputWrapper: { margin: '0 5px', flex: 1 } }}
+          style={{ inputWrapper: { flex: 3 } }}
           className="search-input"
           type="text"
           debounceTime={250}
@@ -137,6 +138,7 @@ export function DatabaseSearchOptions({
           onClear={clearHandler}
           canClear
         />
+
         <Button.Done
           fill="clear"
           onClick={onStructureClick}
