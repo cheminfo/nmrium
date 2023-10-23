@@ -198,7 +198,7 @@ function handleAutoRangesDetection(
         clean: true,
         keepPeaks: true,
         minMaxRatio,
-        lookNegative,
+        direction: lookNegative ? 'both' : 'positive',
       },
     };
 
