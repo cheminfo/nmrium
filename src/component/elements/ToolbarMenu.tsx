@@ -9,6 +9,8 @@ import {
 } from 'react';
 import { Toolbar } from 'react-science/ui';
 
+import { BoundingBox } from './MenuButton';
+
 const menuStyles = css`
   .menu {
     box-shadow: 0 0 10px rgb(0 0 0 / 50%);
@@ -64,7 +66,7 @@ const menuStyles = css`
 interface MenuItemProps {
   icon: ReactNode;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 function MenuItem({ icon, label, onClick }: MenuItemProps) {
@@ -79,10 +81,14 @@ function MenuItem({ icon, label, onClick }: MenuItemProps) {
 interface MenuListProps {
   items: Array<MenuItemProps & { id: string }>;
   onClick: (element: MenuItemProps & { id: string }) => void;
-  boxBounding: any;
+  boxBounding?: BoundingBox;
 }
 
-function MenuList({ items, boxBounding, onClick }: MenuListProps) {
+function MenuList({
+  items,
+  boxBounding = { x: 0, y: 0, width: 0, height: 0 },
+  onClick,
+}: MenuListProps) {
   const listRef = useRef<any>();
   const [translate, setTranslate] = useState({
     x: boxBounding.width,
@@ -121,10 +127,10 @@ function MenuList({ items, boxBounding, onClick }: MenuListProps) {
 }
 
 interface MenuButtonProps {
-  component: any;
+  component: ReactNode;
   toolTip: string;
-  items: any[];
-  onClick: (element: any) => void;
+  items?: Array<MenuItemProps & { id: string }>;
+  onClick?: (element: MenuItemProps & { id: string }) => void;
 }
 
 export default function ToolbarMenu({

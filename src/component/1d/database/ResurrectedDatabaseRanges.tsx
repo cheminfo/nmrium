@@ -32,7 +32,7 @@ function ResurrectedDatabaseRanges() {
 
   const { ranges = [] } = highlight.sourceData.extra || {};
 
-  const yDomain: any[] = [0, 0];
+  const yDomain: number[] = [0, 0];
 
   const spectra = ranges.map((range) => {
     const { from, to } = range;

@@ -38,8 +38,8 @@ export interface SelectProps
     React.SelectHTMLAttributes<HTMLSelectElement>,
     'style' | 'onChange'
   > {
-  onChange?: (element: any) => void;
-  items: any[];
+  onChange?: (element: string) => void;
+  items: object[];
   defaultValue?: string | number | undefined;
   style?: CSSProperties;
   placeholder?: string;
@@ -76,7 +76,6 @@ const Select = forwardRef(function Select(
     },
     [itemValueField, onChange, returnValue],
   );
-
   return (
     <select
       ref={ref}
@@ -95,15 +94,24 @@ const Select = forwardRef(function Select(
         </option>
       )}
 
-      {items.map((option) => (
-        <option
-          key={JSON.stringify(option)}
-          value={option[itemValueField]}
-          data-value={JSON.stringify(option)}
-        >
-          {textRender?.(option[itemTextField]) || option[itemTextField]}
-        </option>
-      ))}
+      {items.map((option) => {
+        if (
+          typeof option[itemValueField] !== 'string' ||
+          typeof option[itemTextField] !== 'string'
+        ) {
+          // TODO: throw error
+          return null;
+        }
+        return (
+          <option
+            key={JSON.stringify(option)}
+            value={option[itemValueField]}
+            data-value={JSON.stringify(option)}
+          >
+            {textRender?.(option[itemTextField]) || option[itemTextField]}
+          </option>
+        );
+      })}
     </select>
   );
 });

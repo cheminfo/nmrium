@@ -1,6 +1,5 @@
 import {
   Children,
-  ReactNode,
   useLayoutEffect,
   useRef,
   SVGAttributes,
@@ -8,7 +7,7 @@ import {
 } from 'react';
 
 interface SVGGroupProps extends SVGAttributes<SVGElement> {
-  children: ReactNode;
+  children: ReactElement | ReactElement[];
   direction?: 'row' | 'column';
   space?: number;
 }

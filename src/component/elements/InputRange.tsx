@@ -34,7 +34,7 @@ const styles: Record<'container' | 'label', CSSProperties> = {
 interface InputRangeProps {
   name: string;
   value?: number;
-  onChange: (element: any) => void;
+  onChange: (element: { value: number; name: string }) => void;
   label?: string;
   shortLabel?: string;
   style?: CSSProperties;

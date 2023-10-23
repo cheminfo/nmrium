@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
-  ReactNode,
   useState,
   Children,
   useMemo,
@@ -9,6 +8,7 @@ import {
   useCallback,
   memo,
   CSSProperties,
+  ReactElement,
 } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
@@ -63,7 +63,7 @@ function Arrow({ direction, onClick, style = {} }: ArrowProps) {
 const transition = 0.45;
 
 interface NextPrevProps {
-  children: ReactNode;
+  children: ReactElement | ReactElement[];
   loop?: boolean;
   defaultIndex?: number;
   onChange?: (element: number) => void;
@@ -86,7 +86,7 @@ function NextPrev(props: NextPrevProps) {
 
   const Sliders = useMemo(
     () =>
-      Children.map(children, (child: any) => {
+      Children.map(children, (child: ReactElement) => {
         return (
           <div
             key={child.key}

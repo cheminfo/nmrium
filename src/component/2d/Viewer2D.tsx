@@ -1,5 +1,7 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, ReactNode, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
+import { assert } from 'react-science/ui';
 
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
@@ -44,20 +46,22 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  const spectrumData: any[] = useMemo(() => {
+  const spectrumData: Spectrum1D[] = useMemo(() => {
     const nuclei = activeTab.split(',');
-
-    return nuclei.map((nucleus) => {
-      const spectra = activeSpectra[nucleus];
-      if (spectra?.length === 1) {
-        const id = spectra[0].id;
-        const spectrum = data.find(
-          (datum) => datum.id === id && !datum.info.isFid,
-        );
-        return spectrum;
-      }
-      return null;
-    });
+    return nuclei
+      .map((nucleus) => {
+        const spectra = activeSpectra[nucleus];
+        if (spectra?.length === 1) {
+          const id = spectra[0].id;
+          const spectrum = data.find(
+            (datum) => datum.id === id && !datum.info.isFid,
+          );
+          assert(spectrum, `Spectrum with id ${id} not found`);
+          return spectrum;
+        }
+        return null;
+      })
+      .filter((d) => d !== null) as Spectrum1D[];
   }, [activeTab, data, activeSpectra]);
 
   const DIMENSION = get2DDimensionLayout(state);
@@ -253,7 +257,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 interface ViewerResponsiveWrapperProps {
   width: number;
   height: number;
-  children: any;
+  children: ReactNode;
 }
 
 export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {

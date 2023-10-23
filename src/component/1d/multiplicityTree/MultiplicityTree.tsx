@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, checkMultiplicity } from 'nmr-processing';
+import { Range, Signal1D, checkMultiplicity } from 'nmr-processing';
 import { CSSProperties, useMemo } from 'react';
 
 import {
@@ -18,7 +18,7 @@ import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
 import LevelNode from './LevelNode';
 import StringNode from './StringNode';
 import TreeNodes from './TreeNodes';
-import createTreeNodes from './buildTreeNode';
+import createTreeNodes, { TreeNodeData } from './buildTreeNode';
 
 const styles = {
   cursor: 'default',
@@ -156,11 +156,21 @@ export function MultiplicityTree(props: MultiplicityTreeProps) {
     </g>
   );
 }
-
+interface TreeResult {
+  isMassive: boolean;
+  startX: number;
+  startY: number;
+  width: number;
+  height: number;
+  levelHeight: number;
+  nodes: TreeNodeData[];
+  signal: Signal1D;
+  range: Omit<Range, 'signals'>;
+}
 function getTree(range: Range, spectrum: Spectrum1D, scale) {
   const SHIFT_X = 30;
 
-  const treeResult: any[] = [];
+  const treeResult: TreeResult[] = [];
 
   const { signals = [], ...otherRangeProps } = range;
   for (const signal of signals) {
@@ -169,7 +179,7 @@ function getTree(range: Range, spectrum: Spectrum1D, scale) {
     let width = 0;
     let height = 0;
     let levelHeight = 0;
-    let nodes = [];
+    const nodes: TreeNodeData[] = [];
     let startX = 0;
 
     const { from, to } = range;
@@ -179,9 +189,10 @@ function getTree(range: Range, spectrum: Spectrum1D, scale) {
       const jIndices = signal.multiplicity
         .split('')
         .map((_mult, i) => (hasCouplingConstant(_mult) ? i : undefined))
-        .filter((_i) => _i !== undefined);
+        .filter((i) => i !== undefined) as number[];
 
-      nodes = buildTreeNodesData(0, jIndices, [], signal.delta);
+      const treeNodes = buildTreeNodesData(0, jIndices, [], signal.delta);
+      if (treeNodes) nodes.push(...treeNodes);
     }
 
     // +2 because of multiplicity text and start level node before the actual tree starts

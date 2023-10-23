@@ -21,13 +21,13 @@ function extractNumber(val: string | number, type: string) {
 
 interface EditableColumnProps
   extends Omit<InputProps, 'style' | 'value' | 'type'> {
-  onSave?: (element: any) => void;
-  onEditStart?: (element: any) => void;
+  onSave?: (element: KeyboardEvent<HTMLInputElement>) => void;
+  onEditStart?: (element: boolean) => void;
   type?: 'number' | 'text';
   editStatus?: boolean;
   value: string | number;
   style?: CSSProperties;
-  validate?: (value?: any) => boolean;
+  validate?: (value?: string | number) => boolean;
   textOverFlowEllipses?: boolean;
 }
 
