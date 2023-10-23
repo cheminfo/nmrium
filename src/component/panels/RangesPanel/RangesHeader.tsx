@@ -4,8 +4,10 @@ import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
+import { useState } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
+import { ConfirmModal, useOnOff } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
@@ -55,6 +57,11 @@ function RangesHeader({
   activeTab,
 }) {
   const dispatch = useDispatch();
+  const [isOpen, open, close] = useOnOff();
+  const [{ message, confirmHandler }, setModalData] = useState({
+    message: '',
+    confirmHandler: () => {},
+  });
   const modal = useModal();
   const alert = useAlert();
   const assignmentData = useAssignmentData();
@@ -72,35 +79,32 @@ function RangesHeader({
 
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
-    modal.close();
   }
 
   function removeAssignments() {
     onUnlink();
+    close();
   }
 
   function handleOnRemoveAssignments() {
-    modal.showConfirmDialog({
+    open();
+    setModalData({
       message: 'All assignments will be removed. Are you sure?',
-      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
+      confirmHandler: removeAssignments,
     });
   }
 
   function handleDeleteAll() {
-    modal.showConfirmDialog({
+    open();
+    setModalData({
       message: 'All ranges will be deleted. Are You sure?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            dispatch({
-              type: 'DELETE_RANGE',
-              payload: { assignmentData },
-            });
-          },
-        },
-        { text: 'No' },
-      ],
+      confirmHandler: () => {
+        dispatch({
+          type: 'DELETE_RANGE',
+          payload: { assignmentData },
+        });
+        close();
+      },
     });
   }
 
@@ -283,6 +287,23 @@ function RangesHeader({
         text={text}
         label="Preview publication string"
       />
+      <ConfirmModal
+        headerColor="red"
+        onConfirm={confirmHandler}
+        onCancel={() => {
+          close();
+        }}
+        isOpen={isOpen}
+        onRequestClose={() => {
+          close();
+        }}
+        saveText="Yes"
+        cancelText="No"
+      >
+        <div>
+          <span>{message}</span>
+        </div>
+      </ConfirmModal>
     </div>
   );
 }

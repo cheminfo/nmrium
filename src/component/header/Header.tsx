@@ -154,7 +154,7 @@ function HeaderInner(props: HeaderInnerProps) {
           }}
         >
           <div>
-            <Toolbar orientation="horizontal">
+            <Toolbar>
               <AboutUsModal />
             </Toolbar>
           </div>
@@ -179,15 +179,14 @@ function HeaderInner(props: HeaderInnerProps) {
           {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
-            <Toolbar orientation="horizontal">
+            <Toolbar>
               {!general?.hideHelp && (
                 <Toolbar.Item
                   id="user-manual"
                   title="User manual"
                   onClick={() => window.open(docsBaseUrl, '_blank')}
-                >
-                  <FaQuestionCircle />
-                </Toolbar.Item>
+                  icon={<FaQuestionCircle />}
+                />
               )}
               {!hideGeneralSettings && (
                 <GeneralSettingsModal height={height / 2} />
@@ -199,9 +198,8 @@ function HeaderInner(props: HeaderInnerProps) {
                   onClick={onEnableFullscreen}
                   title="Full Screen"
                   className="windowButton"
-                >
-                  <FaRegWindowMaximize />
-                </Toolbar.Item>
+                  icon={<FaRegWindowMaximize />}
+                />
               )}
             </Toolbar>
           </div>

@@ -88,9 +88,8 @@ function FunctionToolBarInner({
             id="zoom-out"
             onClick={handleFullZoomOut}
             title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-          >
-            <FaExpand />
-          </Toolbar.Item>
+            icon={<FaExpand />}
+          />
         )}
 
         {isButtonVisible('peakPicking') && (
@@ -229,9 +228,8 @@ function FunctionToolBarInner({
           className="cheminfo"
           title={`${options.fft.label} ( Press t )`}
           onClick={handleOnFFTFilter}
-        >
-          <SvgNmrFourierTransform />
-        </Toolbar.Item>
+          icon={<SvgNmrFourierTransform />}
+        />
       )}
       {isButtonVisible('fftDimension1') && (
         <Toolbar.Item
@@ -239,9 +237,8 @@ function FunctionToolBarInner({
           className="cheminfo"
           title={options.fftDimension1.label}
           onClick={handleFFtDimension1Filter}
-        >
-          <SvgNmrFourierTransform />
-        </Toolbar.Item>
+          icon={<SvgNmrFourierTransform />}
+        />
       )}
       {isButtonVisible('fftDimension2') && (
         <Toolbar.Item
@@ -249,9 +246,8 @@ function FunctionToolBarInner({
           className="cheminfo"
           title={options.fftDimension2.label}
           onClick={handleFFtDimension2Filter}
-        >
-          <SvgNmrFourierTransform />
-        </Toolbar.Item>
+          icon={<SvgNmrFourierTransform />}
+        />
       )}
     </>
   );

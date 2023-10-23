@@ -6,6 +6,7 @@ import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
 import { Info1D, Peak1D, Peaks } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
+import { useOnOff, ConfirmModal } from 'react-science/ui';
 
 import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
@@ -14,7 +15,6 @@ import { usePreferences } from '../../context/PreferencesContext';
 import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
@@ -51,26 +51,24 @@ function PeaksPanelInner({
   peaksViewState,
 }: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
+  const [isOpen, open, close] = useOnOff();
   const [isFlipped, setFlipStatus] = useState(false);
   const format = useFormatNumberByNucleus(info.nucleus);
 
   const dispatch = useDispatch();
-  const modal = useModal();
   const alert = useAlert();
   const isExperimental = useCheckExperimentalFeature();
 
   const settingRef = useRef<any>();
 
-  const yesHandler = useCallback(() => {
+  const confirmHandler = useCallback(() => {
     dispatch({ type: 'DELETE_PEAK', payload: {} });
-  }, [dispatch]);
+    close();
+  }, [close, dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All records will be deleted, Are You sure?',
-      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
-    });
-  }, [modal, yesHandler]);
+    open();
+  }, [open]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -225,6 +223,23 @@ function PeaksPanelInner({
           <PeaksPreferences ref={settingRef} />
         )}
       </div>
+      <ConfirmModal
+        headerColor="red"
+        onConfirm={confirmHandler}
+        onCancel={() => {
+          close();
+        }}
+        isOpen={isOpen}
+        onRequestClose={() => {
+          close();
+        }}
+        saveText="Yes"
+        cancelText="No"
+      >
+        <div>
+          <span>All records will be deleted, Are You sure?</span>
+        </div>
+      </ConfirmModal>
     </div>
   );
 }

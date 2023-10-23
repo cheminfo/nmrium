@@ -235,13 +235,14 @@ function BasicToolBarInner({
           className="cheminfo"
           title="Spectra alignment ( Press s )"
           onClick={changeDisplayViewModeHandler}
-        >
-          {verticalAlign === 'stack' ? (
-            <SvgNmrOverlay3Aligned />
-          ) : (
-            <SvgNmrOverlay3 />
-          )}
-        </Toolbar.Item>
+          icon={
+            verticalAlign === 'stack' ? (
+              <SvgNmrOverlay3Aligned />
+            ) : (
+              <SvgNmrOverlay3 />
+            )
+          }
+        />
       )}
       {isButtonVisible('realImaginary') && (
         <Toolbar.Item
@@ -249,9 +250,8 @@ function BasicToolBarInner({
           title={isRealSpectrumShown ? 'Display real ' : 'Display imaginary'}
           onClick={changeSpectrumViewHandler}
           className="cheminfo"
-        >
-          <SvgNmrRealImag />
-        </Toolbar.Item>
+          icon={<SvgNmrRealImag />}
+        />
       )}
       {isButtonVisible('spectraCenterAlignments') &&
         (ftCounter > 0 || fidCounter > 0) && (
@@ -264,15 +264,14 @@ function BasicToolBarInner({
             }
             onClick={alignSpectrumsVerticallyHandler}
             className="cheminfo"
-          >
-            <div style={{ fontSize: 24 }}>
-              {verticalAlign === 'bottom' ? (
-                <SvgNmrAlignCenter />
+            icon={
+              verticalAlign === 'bottom' ? (
+                <SvgNmrAlignCenter fontSize={24} />
               ) : (
-                <SvgNmrAlignBottom />
-              )}
-            </div>
-          </Toolbar.Item>
+                <SvgNmrAlignBottom fontSize={24} />
+              )
+            }
+          />
         )}
     </Fragment>
   );
