@@ -1,78 +1,51 @@
-import { NmrData1D } from 'cheminfo-types';
 import { ScaleLinear } from 'd3';
-import { xyIntegral, xyReduce } from 'ml-spectra-processing';
-import { useMemo } from 'react';
+import { xyReduce } from 'ml-spectra-processing';
 
 import { getIntegralYScale } from '../1d/utilities/scale';
 import { useChartData } from '../context/ChartContext';
 import { PathBuilder } from '../utility/PathBuilder';
 
-import { useActiveSpectrum } from './useActiveSpectrum';
-import { useVerticalAlign } from './useVerticalAlign';
 import { useXScale } from './useXScale';
 
-function useIntegralYDomain(): ScaleLinear<number, number, number> {
-  const { height, margin, integralsYDomains } = useChartData();
-  const verticalAlign = useVerticalAlign();
-  const activeSpectrum = useActiveSpectrum();
-  return useMemo(
-    () =>
-      getIntegralYScale({
-        height,
-        margin,
-        verticalAlign,
-        activeSpectrum,
-        integralsYDomains,
-      }),
-    [activeSpectrum, height, integralsYDomains, margin, verticalAlign],
-  );
+function useIntegralYDomain(
+  max: number,
+  scaleRatio = 1,
+): ScaleLinear<number, number, number> {
+  const { height, margin } = useChartData();
+  return getIntegralYScale({
+    height,
+    margin,
+    yDomain: [0, max],
+    scaleRatio,
+  });
 }
 
-export default function useIntegralPath(integralOptions: {
-  from: number;
-  to: number;
-}) {
-  const { data } = useChartData();
+interface UseIntegralPathOptions {
+  x: Float64Array;
+  y: Float64Array;
+  max: number;
+  scaleRatio: number;
+}
 
-  const activeSpectrum = useActiveSpectrum();
+export default function useIntegralPath(options: UseIntegralPathOptions) {
+  const { x, y, max, scaleRatio } = options;
+
   const scaleX = useXScale();
-  const scaleY = useIntegralYDomain();
-  const integral = useMemo(() => {
-    if (activeSpectrum) {
-      const { x, re } = data[activeSpectrum?.index].data as NmrData1D;
-      const { from, to } = integralOptions;
-      return xyIntegral(
-        { x, y: re },
-        {
-          from,
-          to,
-          reverse: true,
-        },
-      );
-    }
-    return { x: [], y: [] };
-  }, [activeSpectrum, data, integralOptions]);
+  const scaleY = useIntegralYDomain(max, scaleRatio);
 
-  const paths = useMemo(() => {
-    if (integral) {
-      const xySeries = xyReduce(integral, {
-        // from: xDomain[0],
-        // to: xDomain[1],
-        nbPoints: 200,
-        optimize: true,
-      });
+  const xySeries = xyReduce(
+    { x, y },
+    {
+      nbPoints: 200,
+      optimize: true,
+    },
+  );
 
-      const pathBuilder = new PathBuilder();
-      pathBuilder.moveTo(scaleX(xySeries.x[0]), scaleY(xySeries.y[0]));
-      for (let i = 1; i < xySeries.x.length; i++) {
-        pathBuilder.lineTo(scaleX(xySeries.x[i]), scaleY(xySeries.y[i]));
-      }
+  const pathBuilder = new PathBuilder();
+  pathBuilder.moveTo(scaleX(xySeries.x[0]), scaleY(xySeries.y[0]));
+  for (let i = 1; i < xySeries.x.length; i++) {
+    pathBuilder.lineTo(scaleX(xySeries.x[i]), scaleY(xySeries.y[i]));
+  }
 
-      return pathBuilder.toString();
-    } else {
-      return '';
-    }
-  }, [integral, scaleX, scaleY]);
-
-  return paths;
+  return pathBuilder.toString();
 }

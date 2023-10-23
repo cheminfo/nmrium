@@ -7,9 +7,10 @@ import { useActiveSpectrum } from './useActiveSpectrum';
 export const defaultRangesViewState: RangesViewState = {
   showPeaks: false,
   showMultiplicityTrees: false,
-  showRangesIntegrals: false,
+  showIntegrals: false,
   showJGraph: false,
   displayingMode: 'spread',
+  integralsScaleRatio: 1,
 };
 
 export function useActiveSpectrumRangesViewState() {

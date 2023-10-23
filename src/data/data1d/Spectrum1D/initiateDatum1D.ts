@@ -11,6 +11,7 @@ import { initiatePeaks } from './peaks/initiatePeaks';
 import { initiateRanges } from './ranges/initiateRanges';
 import { initSumOptions } from './SumManager';
 import { StateMoleculeExtended } from '../../molecules/Molecule';
+import { initiateFilters } from '../../initiateFilters';
 
 export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
@@ -53,7 +54,7 @@ export function initiateDatum1D(
 
   spectrumObj.originalData = spectrumObj.data;
 
-  spectrumObj.filters = Object.assign([], spectrum.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
+  spectrumObj.filters = initiateFilters(spectrum?.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
 
   const { nucleus } = spectrumObj.info;
 

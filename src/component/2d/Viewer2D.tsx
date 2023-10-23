@@ -18,9 +18,11 @@ import { useDispatch } from '../context/DispatchContext';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
 
+import { PhaseTraces } from './1d-tracer/phase-correction-traces';
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
 import SlicingView from './SlicingView';
+import PivotIndicator from './tools/PivotIndicator';
 import XYLabelPointer from './tools/XYLabelPointer';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 import { get2DXScale, get2DYScale } from './utilities/scale';
@@ -142,28 +144,47 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   );
 
   const handleZoom: OnZoom = (event) => {
-    const { x: startX, y: startY } = event;
+    const { x: startX, y: startY, shiftKey } = event;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
-      if (trackID === 'CENTER_2D') {
-        dispatch({ type: 'SET_2D_LEVEL', payload: event });
-      } else {
+      if (
+        trackID !== 'CENTER_2D' ||
+        (selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey)
+      ) {
         dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
+      } else {
+        dispatch({ type: 'SET_2D_LEVEL', payload: event });
       }
     }
   };
 
   const mouseClick: OnClick = useCallback(
-    (position) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { x, y } = position;
-      switch (selectedTool) {
-        default:
-          break;
+    (event) => {
+      const { x, y, shiftKey } = event;
+
+      if (shiftKey) {
+        switch (selectedTool) {
+          case 'phaseCorrectionTwoDimensions':
+            dispatch({
+              type: 'SET_TWO_DIMENSION_PIVOT_POINT',
+              payload: { x, y },
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedTool) {
+          case 'phaseCorrectionTwoDimensions':
+            dispatch({ type: 'ADD_PHASE_CORRECTION_TRACE', payload: { x, y } });
+            break;
+          default:
+            break;
+        }
       }
     },
-    [selectedTool],
+    [selectedTool, dispatch],
   );
 
   return (
@@ -187,11 +208,15 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
               }}
             >
               <MouseTracker
-                style={{ width: '100%', height: `100%`, position: 'absolute' }}
+                style={{ width: '100%', height: `100%`, position: 'relative' }}
               >
                 {selectedTool && selectedTool === options.slicing.id && (
                   <SlicingView />
                 )}
+                {selectedTool &&
+                  selectedTool === options.phaseCorrectionTwoDimensions.id && (
+                    <PhaseTraces />
+                  )}
 
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
@@ -216,6 +241,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                     />
                   )}
                 </>
+                <PivotIndicator />
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
 
                 <Chart2D spectra={spectrumData} />

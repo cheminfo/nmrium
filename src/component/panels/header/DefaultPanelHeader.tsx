@@ -2,11 +2,11 @@ import { CSSProperties, ReactNode } from 'react';
 import { FaRegTrashAlt, FaFilter } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
+import { CounterLabel } from '../../elements/CounterLabel';
+import { PreferencesButton } from '../../elements/PreferencesButton';
 import ToggleButton from '../../elements/ToggleButton';
 
 import PanelHeader from './PanelHeader';
-import { PreferencesButton } from '../../elements/PreferencesButton';
-import { CounterLabel } from '../../elements/CounterLabel';
 
 const styles: Record<'leftContainer', CSSProperties> = {
   leftContainer: {

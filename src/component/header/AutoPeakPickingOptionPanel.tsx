@@ -4,7 +4,9 @@ import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
+import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
+import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
 import {
@@ -14,8 +16,6 @@ import {
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import FormikInput from '../elements/formik/FormikInput';
-import { InputStyle } from '../elements/Input';
 
 const inputStyle: InputStyle = {
   input: {

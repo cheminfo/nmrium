@@ -24,7 +24,7 @@ function usePath(data, props: usePathOptions) {
 
   const { x, re: y } = data;
 
-  const scaleY = getSliceYScale(y, width, mode, horizontalMargin);
+  const scaleY = getSliceYScale(y, width, mode, { margin: horizontalMargin });
 
   const pathBuilder = new PathBuilder();
 
@@ -50,7 +50,7 @@ function VerticalSliceChart(props: VerticalSliceChartProps) {
     <svg viewBox={`0 0 ${height} ${height}`} width={height} height={height}>
       <defs>
         <clipPath id={`${displayerKey}clip-left`}>
-          <rect width={height} height={innerHeight} x="0" y={margin.top} />
+          <rect width={width} height={innerHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-left)`}>

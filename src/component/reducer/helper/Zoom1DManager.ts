@@ -14,6 +14,17 @@ export const ZOOM_TYPES = {
 
 export type ZoomType = keyof typeof ZOOM_TYPES;
 
+function toScaleRatio(event: WheelEvent, zoomOptions: ZoomOptions = {}) {
+  const { factor = 1, invert = false } = zoomOptions;
+
+  const deltaY =
+    Math.abs(event.deltaY) < 100 ? event.deltaY * 100 : event.deltaY;
+  const delta = deltaY * (invert ? -0.001 : 0.001) * factor;
+  const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
+
+  return ratio;
+}
+
 interface ZoomOptions {
   factor?: number;
   invert?: boolean;
@@ -23,14 +34,8 @@ function wheelZoom(
   domain: number[],
   zoomOptions: ZoomOptions = {},
 ): number[] {
-  const { factor = 1, invert = false } = zoomOptions;
-  const deltaY =
-    Math.abs(event.deltaY) < 100 ? event.deltaY * 100 : event.deltaY;
-  const delta = deltaY * (invert ? -0.001 : 0.001) * factor;
-  const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
-
+  const ratio = toScaleRatio(event, zoomOptions);
   const [min, max] = domain;
-
   return [min * ratio, max * ratio];
 }
 
@@ -91,4 +96,4 @@ function setZoom(
   }
 }
 
-export { setZoom, wheelZoom };
+export { setZoom, wheelZoom, toScaleRatio };

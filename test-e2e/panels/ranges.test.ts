@@ -234,7 +234,9 @@ test('Range state', async ({ page }) => {
     // Check peaks within ranges are hidden
     await expect(nmrium.page.locator('_react=PeakAnnotation')).toBeHidden();
     // Check integrals within ranges are hidden
-    await expect(nmrium.page.locator('_react=RangeIntegral')).toBeHidden();
+    await expect(
+      nmrium.page.locator('_react=RangesIntegrals >> _react=Integral'),
+    ).toBeHidden();
 
     // Check multiplicity tree
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
@@ -264,7 +266,9 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
     // Check integrals within ranges are visible
     expect(
-      await nmrium.page.locator('_react=RangeIntegral').count(),
+      await nmrium.page
+        .locator('_react=RangesIntegrals >> _react=Integral')
+        .count(),
     ).toBeGreaterThan(0);
     // Check multiplicity tree is visible
     expect(
@@ -303,7 +307,9 @@ test('Range state', async ({ page }) => {
     ).toBeGreaterThan(0);
     // Check range integrals
     expect(
-      await nmrium.page.locator('_react=RangeIntegral').count(),
+      await nmrium.page
+        .locator('_react=RangesIntegrals >> _react=Integral')
+        .count(),
     ).toBeGreaterThan(0);
     // Check multiplicity tree is visible
     expect(

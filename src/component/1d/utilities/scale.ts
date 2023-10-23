@@ -1,14 +1,14 @@
 import { scaleLinear, zoomIdentity } from 'd3';
+import { useCallback } from 'react';
+
+import { useChartData } from '../../context/ChartContext';
+import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 import {
-  ActiveSpectrum,
   Domains,
   Margin,
   SpectraDirection,
   VerticalAlignment,
 } from '../../reducer/Reducer';
-import { useChartData } from '../../context/ChartContext';
-import { useCallback } from 'react';
-import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 
 interface ScaleXOptions {
   width: number;
@@ -58,20 +58,16 @@ function getYScale(
 interface IntegralYScaleOptions {
   height: number;
   margin: Margin;
-  integralsYDomains: Domains;
-  activeSpectrum: ActiveSpectrum | null;
-  verticalAlign: VerticalAlignment;
+  yDomain: number[];
+  scaleRatio: number;
 }
 
 function getIntegralYScale(options: IntegralYScaleOptions) {
-  const { height, margin, verticalAlign, integralsYDomains, activeSpectrum } =
-    options;
-  const _height = verticalAlign === 'center' ? height / 2 : height;
+  const { height, margin, yDomain, scaleRatio } = options;
+  const [min, max] = yDomain;
   return scaleLinear(
-    activeSpectrum?.id && integralsYDomains?.[activeSpectrum?.id]
-      ? integralsYDomains[activeSpectrum?.id]
-      : [0, 0],
-    [_height * 0.3, margin.top + _height * 0.1],
+    [min * scaleRatio, max * scaleRatio],
+    [height * 0.3, margin.top + height * 0.1],
   );
 }
 

@@ -40,6 +40,7 @@ function chart2DInner({
       height={height}
       id="nmrSVG"
       shapeRendering={SpectraRendering}
+      style={{ position: 'absolute' }}
     >
       <defs>
         <clipPath id={`${displayerKey}clip-chart-2d`}>

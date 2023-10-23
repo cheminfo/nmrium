@@ -121,12 +121,24 @@
         "title": "Zip file as source with multiple spectra"
       },
       {
+        "file": "./data/oxfordInstruments/oxfordInstruments.json",
+        "title": "Ethyl Crotonate - oxford"
+      },
+      {
+        "file": "./data/oxfordInstruments/oxfordCosy.json",
+        "title": "Ethyl Crotonate - COSY - oxford"
+      },
+      {
         "file": "./data/nmredata/nmredata.json",
         "title": "NMReDATA Menthol 1D"
       },
       {
         "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
         "title": "Bruker Directory without expno level"
+      },
+      {
+        "file": "./data/brukerFolders/alphaIonone.json",
+        "title": "Bruker 2D spectrum with quadrants"
       },
       {
         "file": "./data/brukerFolders/cosyAndHsqcFid.json",

@@ -25,7 +25,7 @@ function usePath(data: NmrData1D, options: UsePathOptions) {
 
   const { x, re: y } = data;
 
-  const scaleY = getSliceYScale(y, height, mode, vericalMargin);
+  const scaleY = getSliceYScale(y, height, mode, { margin: vericalMargin });
 
   const pathBuilder = new PathBuilder();
   pathBuilder.moveTo(scaleX(x[0]), scaleY(y[0]));
