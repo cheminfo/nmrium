@@ -151,7 +151,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
 
     .header {
       padding: 5px 0;
-      font-size: 15;
+      font-size: 15px;
       font-weight: bold;
     }
 

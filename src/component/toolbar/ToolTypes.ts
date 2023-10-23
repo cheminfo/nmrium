@@ -1,6 +1,7 @@
 import { NMRiumToolBarPreferences } from 'nmr-load-save';
 import type { Info1D, Info2D } from 'nmr-processing';
 import { Filters } from 'nmr-processing';
+
 import { DisplayerMode } from '../reducer/Reducer';
 
 type InfoKey = keyof Info1D | keyof Info2D;
@@ -357,6 +358,20 @@ export const options: RecordOptions = {
       },
     ],
     isToggle: false,
+    isExperimental: true,
+  },
+  phaseCorrectionTwoDimensions: {
+    id: 'phaseCorrectionTwoDimensions',
+    label: 'Phase correction two dimension',
+    hasOptionPanel: true,
+    isFilter: true,
+    mode: '2D',
+    spectraOptions: [
+      {
+        active: true,
+      },
+    ],
+    isToggle: true,
     isExperimental: true,
   },
   import: {

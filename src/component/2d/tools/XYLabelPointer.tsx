@@ -20,6 +20,7 @@ const style: CSSProperties = {
   userSelect: 'none',
   width: '85px',
   textAlign: 'right',
+  zIndex: 9,
 };
 
 function XYLabelPointer({ layout, data1D }) {

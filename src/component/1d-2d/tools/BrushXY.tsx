@@ -11,6 +11,7 @@ const styles: Record<'container', CSSProperties> = {
     top: '0px',
     left: '0px',
     zoom: '100%',
+    zIndex: 9,
   },
 };
 
@@ -21,6 +22,7 @@ const allowTools = new Set([
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,
+  options.phaseCorrectionTwoDimensions.id,
   options.baselineCorrection.id,
   options.rangePicking.id,
   options.zonePicking.id,

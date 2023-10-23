@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData1D } from 'cheminfo-types';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
@@ -37,6 +38,11 @@ export interface ActiveSpectrum {
 
 export type DisplayerMode = '1D' | '2D';
 
+export interface Pivot {
+  value: number;
+  index: number;
+}
+
 export interface Margin {
   top: number;
   right: number;
@@ -46,6 +52,26 @@ export interface Margin {
 
 export type Domains = Record<string, number[]>;
 export type SpectraDirection = 'RTL' | 'LTR';
+export type TraceDirection = 'vertical' | 'horizontal';
+export interface SpectrumTrace {
+  id: string;
+  data: NmrData1D;
+  x: number;
+  y: number;
+}
+
+export interface PhaseCorrectionTraceData {
+  spectra: SpectrumTrace[];
+  ph0: number;
+  ph1: number;
+  pivot: Pivot | null;
+  scaleRatio: number;
+}
+
+export interface TwoDimensionPhaseCorrection {
+  traces: Record<TraceDirection, PhaseCorrectionTraceData>;
+  activeTraceDirection: TraceDirection;
+}
 
 export function getDefaultViewState(): ViewState {
   return {
@@ -53,6 +79,7 @@ export function getDefaultViewState(): ViewState {
     ranges: {},
     zones: {},
     peaks: {},
+    integrals: {},
     spectra: {
       activeSpectra: {},
       activeTab: '',
@@ -82,7 +109,6 @@ export const getInitialState = (): State => ({
     yDomains: {},
     shareYDomain: false,
   },
-  integralsYDomains: {},
   width: 0,
   height: 0,
   margin: {
@@ -119,6 +145,25 @@ export const getInitialState = (): State => ({
         livePreview: true,
       },
       apodizationOptions: {} as ApodizationOptions,
+      twoDimensionPhaseCorrection: {
+        activeTraceDirection: 'horizontal',
+        traces: {
+          horizontal: {
+            ph0: 0,
+            ph1: 0,
+            pivot: null,
+            spectra: [],
+            scaleRatio: 1,
+          },
+          vertical: {
+            ph0: 0,
+            ph1: 0,
+            pivot: null,
+            spectra: [],
+            scaleRatio: 1,
+          },
+        },
+      },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -187,13 +232,6 @@ export interface State {
     yDomains: Domains;
     shareYDomain: boolean;
   };
-  /**
-   * y axis domain per spectrum for integrals
-   * value change when vertical scale change for the integrals
-   * @default {}
-   */
-  integralsYDomains: Record<string, number[]>;
-
   /**
    * plot chart area width
    * @default 0
@@ -302,11 +340,12 @@ export interface State {
        * pivot point for manual phase correction
        * @default {value:0,index:0}
        */
-      pivot: { value: number; index: number };
+      pivot: Pivot;
       /**
        * Noise factor for auto zones detection
        * @default 1
        */
+      twoDimensionPhaseCorrection: TwoDimensionPhaseCorrection;
       zonesNoiseFactor: number;
 
       /**
@@ -448,6 +487,30 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleAddExclusionZone(draft, action);
       case 'DELETE_EXCLUSION_ZONE':
         return FiltersActions.handleDeleteExclusionZone(draft, action);
+      case 'ADD_PHASE_CORRECTION_TRACE':
+        return FiltersActions.handleAddPhaseCorrectionTrace(draft, action);
+      case 'CHANGE_PHASE_CORRECTION_DIRECTION':
+        return FiltersActions.handleChangePhaseCorrectionDirection(
+          draft,
+          action,
+        );
+      case 'DELETE_PHASE_CORRECTION_TRACE':
+        return FiltersActions.handleDeletePhaseCorrectionTrace(draft, action);
+      case 'SET_ONE_DIMENSION_PIVOT_POINT':
+        return FiltersActions.handleSetOneDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
+      case 'SET_TWO_DIMENSION_PIVOT_POINT':
+        return FiltersActions.handleSetTwoDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
+      case 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER':
+        return FiltersActions.handleCalculateManualTwoDimensionPhaseCorrection(
+          draft,
+          action,
+        );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,
@@ -509,9 +572,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);
       case 'BRUSH_END':
         return ToolsActions.handleBrushEnd(draft, action);
-
-      case 'SET_VERTICAL_INDICATOR_X_POSITION':
-        return ToolsActions.setVerticalIndicatorXPosition(draft, action);
       case 'SET_SPECTRUMS_VERTICAL_ALIGN':
         return ToolsActions.setSpectrumsVerticalAlign(draft);
       case 'SET_ACTIVE_TAB':

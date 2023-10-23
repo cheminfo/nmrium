@@ -65,7 +65,7 @@ function RangesHeader({
   const {
     showMultiplicityTrees,
     showJGraph,
-    showRangesIntegrals,
+    showIntegrals,
     showPeaks,
     displayingMode,
   } = useActiveSpectrumRangesViewState();
@@ -114,7 +114,7 @@ function RangesHeader({
   function handleShowIntegrals() {
     dispatch({
       type: 'TOGGLE_RANGES_VIEW_PROPERTY',
-      payload: { key: 'showRangesIntegrals' },
+      payload: { key: 'showIntegrals' },
     });
   }
 
@@ -248,10 +248,10 @@ function RangesHeader({
           <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ActiveButton>
         <ActiveButton
-          popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
+          popupTitle={showIntegrals ? 'Hide integrals' : 'Show integrals'}
           popupPlacement="right"
           onClick={handleShowIntegrals}
-          value={showRangesIntegrals}
+          value={showIntegrals}
           disabled={!hasRanges}
         >
           <SvgNmrIntegrate

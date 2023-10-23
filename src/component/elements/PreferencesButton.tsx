@@ -1,4 +1,5 @@
 import { FaCog } from 'react-icons/fa';
+
 import ToolTip from './ToolTip/ToolTip';
 
 type PreferencesButtonProps = Pick<

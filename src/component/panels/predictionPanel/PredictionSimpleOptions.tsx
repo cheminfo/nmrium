@@ -9,10 +9,10 @@ import {
 } from '../../../data/PredictionManager';
 import { usePreferences } from '../../context/PreferencesContext';
 import Label, { LabelStyle } from '../../elements/Label';
+import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import FormikSelect from '../../elements/formik/FormikSelect';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import FormikInput from '../../elements/formik/FormikInput';
 
 const predictionFormValidation = Yup.object().shape({
   '1d': Yup.object({

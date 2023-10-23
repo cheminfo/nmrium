@@ -12,6 +12,7 @@ import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import { formatFieldLabelStyle } from '../../elements/formik/FormikColumnFormatField';
+import FormikInput from '../../elements/formik/FormikInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { getUniqueNuclei } from '../../utility/getUniqueNuclei';
@@ -20,7 +21,6 @@ import {
   NucleusPreferences,
 } from '../extra/preferences/NucleusPreferences';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
-import FormikInput from '../../elements/formik/FormikInput';
 
 const formatFields: NucleusPreferenceField[] = [
   {

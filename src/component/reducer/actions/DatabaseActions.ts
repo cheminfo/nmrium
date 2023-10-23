@@ -11,7 +11,7 @@ import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { ActionType } from '../types/ActionType';
 
-import { setDomain, setIntegralsYDomain } from './DomainActions';
+import { setDomain } from './DomainActions';
 
 type ResurrectSpectrumFromJcampAction = ActionType<
   'RESURRECTING_SPECTRUM_FROM_JCAMP',
@@ -46,7 +46,6 @@ function handleResurrectSpectrumFromJcamp(
 
   draft.data.push(spectrum);
   setDomain(draft);
-  setIntegralsYDomain(draft, [spectrum]);
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
 
@@ -59,7 +58,6 @@ function handleResurrectSpectrumFromRanges(
   if (datum) {
     draft.data.push(datum);
     setDomain(draft, { isYDomainShared: false });
-    setIntegralsYDomain(draft, [datum]);
     setZoom(draft, { scale: 0.8, spectrumID: datum.id });
   }
 }

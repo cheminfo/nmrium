@@ -1,35 +1,48 @@
 /** @jsxImportSource @emotion/react */
 import { StructureEditor } from 'react-ocl/full';
-
-import CloseButton from '../../elements/CloseButton';
-import { ModalStyles } from '../../modal/ModalStyle';
+import { Modal } from 'react-science/ui';
 
 interface DatabaseStructureSearchModalProps {
   onChange: (idCode: string) => void;
+  isOpen: boolean;
   idCode: string | undefined;
   onClose?: () => void;
 }
 
 export function DatabaseStructureSearchModal({
   onChange,
+  isOpen,
   idCode,
   onClose,
 }: DatabaseStructureSearchModalProps) {
   return (
-    <div css={ModalStyles}>
-      <div className="header handle">
-        <span>Search by structure</span>
-        <CloseButton onClick={onClose} className="close-bt" />
-      </div>
-
-      <div className="main-content">
+    <Modal
+      hasCloseButton
+      isOpen={isOpen}
+      onRequestClose={() => {
+        onClose?.();
+      }}
+      maxWidth={1000}
+    >
+      <Modal.Header>
+        <div
+          style={{
+            color: 'rgb(0, 93, 158)',
+            width: '100%',
+            textAlign: 'center',
+          }}
+        >
+          <span>Search by structure</span>
+        </div>
+      </Modal.Header>
+      <Modal.Body>
         <StructureEditor
           initialIDCode={idCode}
           svgMenu
           fragment
           onChange={(molFile, molecule, idCode) => onChange(idCode)}
         />
-      </div>
-    </div>
+      </Modal.Body>
+    </Modal>
   );
 }

@@ -5,6 +5,7 @@ import { FiltersManager } from 'nmr-processing';
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 import { get2DColor } from './get2DColor';
 import { initiateZones } from './zones/initiateZones';
+import { initiateFilters } from '../../initiateFilters';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
@@ -40,7 +41,7 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
 
   datum.data = getData(datum, spectrum);
   datum.originalData = datum.data;
-  datum.filters = Object.assign([], spectrum.filters);
+  datum.filters = initiateFilters(spectrum?.filters);
 
   datum.zones = initiateZones(spectrum, datum as Spectrum2D);
 
