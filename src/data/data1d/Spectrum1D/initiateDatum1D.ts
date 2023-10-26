@@ -3,15 +3,15 @@ import { Spectrum1D } from 'nmr-load-save';
 import { BaseFilter, FiltersManager, Filters } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
+import { initiateFilters } from '../../initiateFilters';
+import { StateMoleculeExtended } from '../../molecules/Molecule';
 
+import { initSumOptions } from './SumManager';
 import { convertDataToFloat64Array } from './convertDataToFloat64Array';
 import { get1DColor } from './get1DColor';
 import { initiateIntegrals } from './integrals/initiateIntegrals';
 import { initiatePeaks } from './peaks/initiatePeaks';
 import { initiateRanges } from './ranges/initiateRanges';
-import { initSumOptions } from './SumManager';
-import { StateMoleculeExtended } from '../../molecules/Molecule';
-import { initiateFilters } from '../../initiateFilters';
 
 export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;

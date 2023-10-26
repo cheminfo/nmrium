@@ -2,10 +2,11 @@ import { v4 } from '@lukeed/uuid';
 import { Spectrum2D } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
 
+import { initiateFilters } from '../../initiateFilters';
+
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 import { get2DColor } from './get2DColor';
 import { initiateZones } from './zones/initiateZones';
-import { initiateFilters } from '../../initiateFilters';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
