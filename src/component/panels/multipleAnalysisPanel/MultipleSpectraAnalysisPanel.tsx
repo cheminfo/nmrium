@@ -26,6 +26,7 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import AlignSpectra from './AlignSpectra';
+import AnalysisChart from './AnalysisChart';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 import MultipleSpectraAnalysisPreferences from './preferences';
 
@@ -168,11 +169,16 @@ function MultipleSpectraAnalysisPanelInner({
             onClose={() => setCalibration(false)}
           />
         ) : (
-          <MultipleSpectraAnalysisTable
-            data={spectraAnalysis}
-            resortSpectra={preferences.analysisOptions.resortSpectra}
-            activeTab={activeTab}
-          />
+          <div style={{ overflow: 'auto', maxHeight: '100%' }}>
+            {showAnalysisChart && (
+              <AnalysisChart spectraAnalysisData={spectraAnalysis} />
+            )}
+            <MultipleSpectraAnalysisTable
+              data={spectraAnalysis}
+              resortSpectra={preferences.analysisOptions.resortSpectra}
+              activeTab={activeTab}
+            />
+          </div>
         )}
       </div>
       <ClipboardFallbackModal
