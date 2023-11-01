@@ -10,8 +10,7 @@ type ChildType = React.ReactElement[] | React.ReactElement | boolean | null;
 
 export interface ResizerProps {
   children?: ChildType | ((position: Position, isActive: boolean) => ChildType);
-  initialPosition?: Position;
-  position?: Position;
+  position: Position;
   onStart?: PositionChangeHandler;
   onMove?: PositionChangeHandler;
   onEnd?: PositionChangeHandler;

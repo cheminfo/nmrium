@@ -34,21 +34,19 @@ const styles = {
 };
 
 export default function SVGResizer(props: ResizerProps) {
-  const { children, disabled } = props;
-  const { left, right, currentPosition, isActive } = useResizer(props);
+  const { children, disabled, position } = props;
+  const { left, right, isActive } = useResizer(props);
 
   return (
-    <g transform={`translate(${currentPosition.x1} 0)`}>
-      {typeof children === 'function'
-        ? children(currentPosition, isActive)
-        : children}
+    <g transform={`translate(${position.x1} 0)`}>
+      {typeof children === 'function' ? children(position, isActive) : children}
       {!disabled && (
         <>
           {' '}
           <SVGResizerHandle onPointerDown={left.onPointerDown} position={0} />
           <SVGResizerHandle
             onPointerDown={right.onPointerDown}
-            position={Math.ceil(currentPosition.x2 - currentPosition.x1)}
+            position={Math.ceil(position.x2 - position.x1)}
           />
         </>
       )}
