@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-processing';
+import { useEffect, useState } from 'react';
 
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
@@ -11,13 +12,13 @@ import {
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import { useScaleChecked } from '../../context/ScaleContext';
 import Resizer from '../../elements/resizer/Resizer';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
+import { useScaleX } from '../utilities/scale';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 
@@ -47,7 +48,7 @@ function Range({
   relativeFormat,
 }: RangeProps) {
   const { viewerRef } = useGlobal();
-  const { id, integration, signals, diaIDs } = range;
+  const { id, integration, signals, diaIDs, from, to } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -60,8 +61,15 @@ function Range({
     { type: HighlightEventSource.RANGE, extra: { id } },
   );
 
-  const { scaleX } = useScaleChecked();
+  const scaleX = useScaleX();
   const dispatch = useDispatch();
+  const [position, setPosition] = useState({ x1: 0, x2: 0 });
+
+  useEffect(() => {
+    const x2 = scaleX()(from);
+    const x1 = scaleX()(to);
+    setPosition({ x1, x2 });
+  }, [from, scaleX, to]);
 
   const isBlockedByEditing =
     selectedTool && selectedTool === options.editRange.id;
@@ -105,9 +113,6 @@ function Range({
     }
   }
 
-  const from = scaleX()(range.from);
-  const to = scaleX()(range.to);
-
   const isNotSignal = !checkRangeKind(range);
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
@@ -126,14 +131,14 @@ function Range({
     >
       <Resizer
         tag="svg"
-        initialPosition={{ x1: to, x2: from }}
+        position={position}
         onEnd={handleOnStopResizing}
         parentElement={viewerRef}
-        key={`${id}_${to}_${from}`}
         disabled={!isResizeingActive}
+        onMove={(p) => setPosition(p)}
       >
-        {({ x1, x2 }, isActive) => {
-          const width = x2 - x1;
+        {(xs, isActive) => {
+          const width = position.x2 - position.x1;
           return (
             <g>
               {isAssigned && !isHighlighted && !isActive && (
