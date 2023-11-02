@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-processing';
-import { useEffect, useState } from 'react';
 
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
@@ -11,8 +10,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
-import Resizer from '../../elements/resizer/Resizer';
+import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import { options } from '../../toolbar/ToolTypes';
@@ -47,7 +45,6 @@ function Range({
   selectedTool,
   relativeFormat,
 }: RangeProps) {
-  const { viewerRef } = useGlobal();
   const { id, integration, signals, diaIDs, from, to } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
@@ -63,13 +60,6 @@ function Range({
 
   const scaleX = useScaleX();
   const dispatch = useDispatch();
-  const [position, setPosition] = useState({ x1: 0, x2: 0 });
-
-  useEffect(() => {
-    const x2 = scaleX()(from);
-    const x1 = scaleX()(to);
-    setPosition({ x1, x2 });
-  }, [from, scaleX, to]);
 
   const isBlockedByEditing =
     selectedTool && selectedTool === options.editRange.id;
@@ -118,7 +108,7 @@ function Range({
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
   const isAssigned = isRangeAssigned(range);
-  const isResizeingActive = useResizerStatus('rangePicking');
+  const isResizingActive = useResizerStatus('rangePicking');
 
   return (
     <g
@@ -129,16 +119,14 @@ function Range({
       onMouseLeave={mouseLeaveHandler}
       {...(!assignmentRange.isActive && { css: style })}
     >
-      <Resizer
-        tag="svg"
-        position={position}
+      <ResizerWithScale
+        from={from}
+        to={to}
         onEnd={handleOnStopResizing}
-        parentElement={viewerRef}
-        disabled={!isResizeingActive}
-        onMove={(p) => setPosition(p)}
+        disabled={!isResizingActive}
       >
-        {(xs, isActive) => {
-          const width = position.x2 - position.x1;
+        {({ x1, x2 }, isActive) => {
+          const width = x2 - x1;
           return (
             <g>
               {isAssigned && !isHighlighted && !isActive && (
@@ -166,14 +154,14 @@ function Range({
             </g>
           );
         }}
-      </Resizer>
+      </ResizerWithScale>
 
       {showMultiplicityTrees && (
         <MultiplicityTree range={range} onUnlink={unAssignHandler} />
       )}
       <AssignmentActionsButtons
         isActive={!!(assignmentRange.isActive || diaIDs)}
-        x={from - 16}
+        x={scaleX()(from) - 16}
         onAssign={assignHandler}
         onUnAssign={() => unAssignHandler()}
       />
