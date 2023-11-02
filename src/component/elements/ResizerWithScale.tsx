@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useScaleX } from '../1d/utilities/scale';
 import { useGlobal } from '../context/GlobalContext';
 
-import Resizer, { ResizerProps } from './resizer/Resizer';
+import SVGResizer, { ResizerProps } from './resizer/SVGResizer';
 
 interface ResizerWithScaleProps {
   disabled: boolean;
@@ -28,8 +28,7 @@ export function ResizerWithScale(props: ResizerWithScaleProps) {
   }, [from, scaleX, to]);
 
   return (
-    <Resizer
-      tag="svg"
+    <SVGResizer
       position={position}
       onEnd={onEnd}
       parentElement={viewerRef}
@@ -37,6 +36,6 @@ export function ResizerWithScale(props: ResizerWithScaleProps) {
       onMove={(p) => setPosition(p)}
     >
       {children}
-    </Resizer>
+    </SVGResizer>
   );
 }
