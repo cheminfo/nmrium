@@ -1,6 +1,6 @@
 import { v4 } from '@lukeed/uuid';
 import { Spectrum1D } from 'nmr-load-save';
-import { BaseFilter, FiltersManager, Filters } from 'nmr-processing';
+import { FiltersManager } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
 import { initiateFilters } from '../../initiateFilters';
@@ -15,7 +15,6 @@ import { initiateRanges } from './ranges/initiateRanges';
 
 export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
-  filters?: any[];
   molecules?: StateMoleculeExtended[];
 }
 
@@ -23,7 +22,7 @@ export function initiateDatum1D(
   spectrum: any,
   options: InitiateDatum1DOptions = {},
 ): Spectrum1D {
-  const { usedColors = {}, filters = [], molecules = [] } = options;
+  const { usedColors = {}, molecules = [] } = options;
 
   const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
@@ -82,40 +81,5 @@ export function initiateDatum1D(
   //reapply filters after load the original data
   FiltersManager.reapplyFilters(spectrumObj);
 
-  preprocessing(spectrumObj, filters);
-
   return spectrumObj;
-}
-
-function preprocessing(datum, onLoadFilters: BaseFilter[] = []) {
-  if (datum.info.isFid) {
-    if (onLoadFilters?.length === 0) {
-      FiltersManager.applyFilter(datum, [
-        {
-          name: Filters.digitalFilter.id,
-          value: {},
-          isDeleteAllow: false,
-        },
-      ]);
-    } else {
-      const filters: BaseFilter[] = [];
-
-      for (let filter of onLoadFilters) {
-        if (
-          (!datum.info?.digitalFilter &&
-            filter.name === Filters.digitalFilter.id) ||
-          !filter.flag
-        ) {
-          continue;
-        }
-        if (filter.name === Filters.digitalFilter.id) {
-          filter = { ...filter, isDeleteAllow: false };
-        }
-
-        filters.push(filter);
-      }
-
-      FiltersManager.applyFilter(datum, filters);
-    }
-  }
 }
