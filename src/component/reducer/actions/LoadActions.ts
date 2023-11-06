@@ -96,7 +96,7 @@ function setData(
 ) {
   const {
     nmriumState: { data, view },
-    onLoadProcessing = {},
+    onLoadProcessing = { autoProcessing: true },
     parseMetaFileResult = null,
   } = input || {
     nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
@@ -133,7 +133,9 @@ function setData(
   draft.data = draft.data.concat(
     initSpectra(spectra, {
       usedColors: draft.usedColors,
-      onLoadProcessing: autoOnLoadProcessing ? onLoadProcessing : {},
+      onLoadProcessing: autoOnLoadProcessing
+        ? onLoadProcessing
+        : { autoProcessing: true },
       molecules: draft.molecules,
     }),
   );

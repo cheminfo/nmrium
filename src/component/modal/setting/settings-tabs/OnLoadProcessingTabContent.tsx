@@ -1,5 +1,6 @@
 import { useFormikContext } from 'formik';
-import { OnLoadProcessing, WorkspacePreferences } from 'nmr-load-save';
+import { WorkspacePreferences } from 'nmr-load-save';
+import { BaseFilter } from 'nmr-processing';
 import { useState } from 'react';
 import { TabItem, Tabs } from 'react-science/ui';
 
@@ -37,7 +38,7 @@ function OnLoadProcessingTabContent() {
 }
 
 function FiltersTable({ data, nucleus }) {
-  const COLUMNS: Array<CustomColumn<OnLoadProcessing>> = [
+  const COLUMNS: Array<CustomColumn<BaseFilter>> = [
     {
       index: 1,
       Header: '#',
