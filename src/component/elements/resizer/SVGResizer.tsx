@@ -1,8 +1,8 @@
+/* eslint-disable react/no-unused-prop-types */
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { CSSProperties } from 'react';
 
-import { ResizerProps } from './Resizer';
 import useResizer from './useResizer';
 
 const style: Record<'anchor' | 'innerContainer', CSSProperties> = {
@@ -33,22 +33,40 @@ const styles = {
   `,
 };
 
+export interface Position {
+  x1: number;
+  x2: number;
+}
+
+type ChildType = React.ReactElement[] | React.ReactElement | boolean | null;
+
+export interface ResizerProps {
+  children?: ChildType | ((position: Position, isActive: boolean) => ChildType);
+  position: Position;
+  onStart?: PositionChangeHandler;
+  onMove?: PositionChangeHandler;
+  onEnd?: PositionChangeHandler;
+  parentElement?: HTMLElement | null;
+  dragHandleClassName?: string;
+  disabled?: boolean;
+}
+
+type PositionChangeHandler = (data: Position) => void;
+
 export default function SVGResizer(props: ResizerProps) {
-  const { children, disabled } = props;
-  const { left, right, currentPosition, isActive } = useResizer(props);
+  const { children, disabled, position } = props;
+  const { left, right, isActive } = useResizer(props);
 
   return (
-    <g transform={`translate(${currentPosition.x1} 0)`}>
-      {typeof children === 'function'
-        ? children(currentPosition, isActive)
-        : children}
+    <g transform={`translate(${position.x1} 0)`}>
+      {typeof children === 'function' ? children(position, isActive) : children}
       {!disabled && (
         <>
           {' '}
           <SVGResizerHandle onPointerDown={left.onPointerDown} position={0} />
           <SVGResizerHandle
             onPointerDown={right.onPointerDown}
-            position={Math.ceil(currentPosition.x2 - currentPosition.x1)}
+            position={Math.ceil(position.x2 - position.x1)}
           />
         </>
       )}

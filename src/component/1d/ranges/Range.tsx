@@ -10,14 +10,13 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import Resizer from '../../elements/resizer/Resizer';
+import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
+import { useScaleX } from '../utilities/scale';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 
@@ -46,8 +45,7 @@ function Range({
   selectedTool,
   relativeFormat,
 }: RangeProps) {
-  const { viewerRef } = useGlobal();
-  const { id, integration, signals, diaIDs } = range;
+  const { id, integration, signals, diaIDs, from, to } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -60,7 +58,7 @@ function Range({
     { type: HighlightEventSource.RANGE, extra: { id } },
   );
 
-  const { scaleX } = useScaleChecked();
+  const scaleX = useScaleX();
   const dispatch = useDispatch();
 
   const isBlockedByEditing =
@@ -105,15 +103,12 @@ function Range({
     }
   }
 
-  const from = scaleX()(range.from);
-  const to = scaleX()(range.to);
-
   const isNotSignal = !checkRangeKind(range);
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
   const isAssigned = isRangeAssigned(range);
-  const isResizeingActive = useResizerStatus('rangePicking');
+  const isResizingActive = useResizerStatus('rangePicking');
 
   return (
     <g
@@ -124,13 +119,11 @@ function Range({
       onMouseLeave={mouseLeaveHandler}
       {...(!assignmentRange.isActive && { css: style })}
     >
-      <Resizer
-        tag="svg"
-        initialPosition={{ x1: to, x2: from }}
+      <ResizerWithScale
+        from={from}
+        to={to}
         onEnd={handleOnStopResizing}
-        parentElement={viewerRef}
-        key={`${id}_${to}_${from}`}
-        disabled={!isResizeingActive}
+        disabled={!isResizingActive}
       >
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;
@@ -161,14 +154,14 @@ function Range({
             </g>
           );
         }}
-      </Resizer>
+      </ResizerWithScale>
 
       {showMultiplicityTrees && (
         <MultiplicityTree range={range} onUnlink={unAssignHandler} />
       )}
       <AssignmentActionsButtons
         isActive={!!(assignmentRange.isActive || diaIDs)}
-        x={from - 16}
+        x={scaleX()(from) - 16}
         onAssign={assignHandler}
         onUnAssign={() => unAssignHandler()}
       />

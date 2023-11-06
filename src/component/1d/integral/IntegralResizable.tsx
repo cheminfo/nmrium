@@ -4,9 +4,8 @@ import { Integral } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import Resizer from '../../elements/resizer/Resizer';
+import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight/index';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 
@@ -52,10 +51,9 @@ function IntegralResizable({
   integralFormat,
 }: IntegralResizableProps) {
   const { height, margin } = useChartData();
-  const { viewerRef } = useGlobal();
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
-  const { id, integral } = integralData;
+  const { id, integral, to, from } = integralData;
   const highlight = useHighlight([id], {
     type: HighlightEventSource.INTEGRAL,
     extra: { id },
@@ -74,25 +72,20 @@ function IntegralResizable({
     });
   }
 
-  const from = integralData.from ? scaleX()(integralData.from) : 0;
-  const to = integralData.to ? scaleX()(integralData.to) : 0;
-
   const bottom = height - margin.bottom;
 
-  const isResizeingActive = useResizerStatus('integral');
+  const isResizingActive = useResizerStatus('integral');
 
   return (
     <g
       onMouseEnter={() => highlight.show()}
       onMouseLeave={() => highlight.hide()}
     >
-      <Resizer
-        tag="svg"
-        initialPosition={{ x1: to, x2: from }}
+      <ResizerWithScale
+        from={from}
+        to={to}
         onEnd={handleOnStopResizing}
-        parentElement={viewerRef}
-        key={`${id}_${to}_${from}`}
-        disabled={!isResizeingActive}
+        disabled={!isResizingActive}
       >
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;
@@ -119,7 +112,7 @@ function IntegralResizable({
             </g>
           );
         }}
-      </Resizer>
+      </ResizerWithScale>
     </g>
   );
 }
