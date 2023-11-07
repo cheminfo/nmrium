@@ -14,6 +14,7 @@ import { LoaderProvider } from '../context/LoaderContext';
 import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 
@@ -59,6 +60,7 @@ function DropZone(props) {
   const openImportMetaInformationModal = useMetaInformationImportationModal();
   const alert = useAlert();
   const { logger } = useLogger();
+  const experimentalFeatures = useCheckExperimentalFeature();
 
   async function loadFilesHandler(files) {
     try {
@@ -73,13 +75,14 @@ function DropZone(props) {
         if (metaFile) {
           parseMetaFileResult = await parseMetaFile(metaFile);
         }
-
         const { nmrLoaders: sourceSelector } = preferences.current;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
           {
             sourceSelector,
             logger: logger.child({ context: 'nmr-processing' }),
+            onLoadProcessing: current.onLoadProcessing,
+            experimentalFeatures,
           },
         );
 
@@ -97,7 +100,6 @@ function DropZone(props) {
           payload: {
             nmriumState,
             containsNmrium,
-            onLoadProcessing: current.onLoadProcessing,
             parseMetaFileResult,
           },
         });

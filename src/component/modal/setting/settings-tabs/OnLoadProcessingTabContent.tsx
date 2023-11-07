@@ -1,27 +1,46 @@
 import { useFormikContext } from 'formik';
-import { OnLoadProcessing, WorkspacePreferences } from 'nmr-load-save';
+import { WorkspacePreferences } from 'nmr-load-save';
+import { BaseFilter } from 'nmr-processing';
 import { useState } from 'react';
 import { TabItem, Tabs } from 'react-science/ui';
 
 import { Nucleus } from '../../../../data/types/common/Nucleus';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import IsotopesViewer from '../../../elements/IsotopesViewer';
+import Label from '../../../elements/Label';
 import ReactTable from '../../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
+import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 
 function OnLoadProcessingTabContent() {
   const { values } = useFormikContext<WorkspacePreferences>();
-  const [activeTab, setActiveTab] = useState<Nucleus>('1H');
+  const isExperimentalFeatures =
+    values.display?.general?.experimentalFeatures?.display || false;
 
-  const tabItems: TabItem[] = Object.keys(values?.onLoadProcessing || {}).map(
+  return (
+    <div>
+      <Label
+        title="Enable auto processing"
+        htmlFor="onLoadProcessing.autoProcessing"
+        style={{ wrapper: { padding: '10px 0' } }}
+      >
+        <FormikCheckBox name="onLoadProcessing.autoProcessing" />
+      </Label>
+      {isExperimentalFeatures && <AutoProcessingFilters />}
+    </div>
+  );
+}
+
+function AutoProcessingFilters() {
+  const { values } = useFormikContext<WorkspacePreferences>();
+  const [activeTab, setActiveTab] = useState<Nucleus>('1H');
+  const autoProcessingFilters = values?.onLoadProcessing?.filters || {};
+  const tabItems: TabItem[] = Object.keys(autoProcessingFilters).map(
     (nucleus) => ({
       id: nucleus,
       title: <IsotopesViewer value={nucleus} />,
       content: (
-        <FiltersTable
-          data={values?.onLoadProcessing?.[nucleus]}
-          nucleus={nucleus}
-        />
+        <FiltersTable data={autoProcessingFilters[nucleus]} nucleus={nucleus} />
       ),
     }),
   );
@@ -37,7 +56,7 @@ function OnLoadProcessingTabContent() {
 }
 
 function FiltersTable({ data, nucleus }) {
-  const COLUMNS: Array<CustomColumn<OnLoadProcessing>> = [
+  const COLUMNS: Array<CustomColumn<BaseFilter>> = [
     {
       index: 1,
       Header: '#',
@@ -54,7 +73,7 @@ function FiltersTable({ data, nucleus }) {
       Header: 'Enable',
       Cell: ({ row }) => (
         <CheckBoxCell
-          name={`onLoadProcessing.${nucleus}.${row.index}.flag`}
+          name={`onLoadProcessing.filters.${nucleus}.${row.index}.flag`}
           defaultValue={false}
         />
       ),

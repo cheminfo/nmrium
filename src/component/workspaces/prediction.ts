@@ -9,6 +9,7 @@ export const prediction: InnerWorkspace = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    invert: false,
   },
   display: {
     panels: {

@@ -61,6 +61,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    invert: false,
   },
   formatting: {
     nuclei: {
@@ -121,76 +122,79 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     ],
   },
   onLoadProcessing: {
-    '1H': [
-      {
-        name: Filters.digitalFilter.id,
-        label: Filters.digitalFilter.name,
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.apodization.id,
-        label: Filters.apodization.name,
-        value: {},
-        flag: false,
-      },
-      {
-        name: Filters.zeroFilling.id,
-        label: Filters.zeroFilling.name,
+    autoProcessing: true,
+    filters: {
+      '1H': [
+        {
+          name: Filters.digitalFilter.id,
+          label: Filters.digitalFilter.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.apodization.id,
+          label: Filters.apodization.name,
+          value: {},
+          flag: false,
+        },
+        {
+          name: Filters.zeroFilling.id,
+          label: Filters.zeroFilling.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.fft.id,
-        label: Filters.fft.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.fft.id,
+          label: Filters.fft.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.phaseCorrection.id,
-        label: Filters.phaseCorrection.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.phaseCorrection.id,
+          label: Filters.phaseCorrection.name,
 
-        value: {},
-        flag: true,
-      },
-    ],
-    '13C': [
-      {
-        name: Filters.digitalFilter.id,
-        label: Filters.digitalFilter.name,
+          value: {},
+          flag: true,
+        },
+      ],
+      '13C': [
+        {
+          name: Filters.digitalFilter.id,
+          label: Filters.digitalFilter.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.apodization.id,
-        label: Filters.apodization.name,
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.zeroFilling.id,
-        label: Filters.zeroFilling.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.apodization.id,
+          label: Filters.apodization.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.zeroFilling.id,
+          label: Filters.zeroFilling.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.fft.id,
-        label: Filters.fft.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.fft.id,
+          label: Filters.fft.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.phaseCorrection.id,
-        label: Filters.phaseCorrection.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.phaseCorrection.id,
+          label: Filters.phaseCorrection.name,
 
-        value: {},
-        flag: true,
-      },
-    ],
+          value: {},
+          flag: true,
+        },
+      ],
+    },
   },
 };
