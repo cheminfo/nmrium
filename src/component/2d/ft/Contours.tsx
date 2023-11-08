@@ -36,7 +36,6 @@ function usePath(
 ) {
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
-  const shift = getShift(spectrum);
 
   const pathBuilder = new PathBuilder();
   for (const element of contours) {
@@ -44,14 +43,8 @@ function usePath(
       const lines = element.lines;
       if (lines.length < 1e6) {
         for (let i = 0; i < lines.length; i += 4) {
-          pathBuilder.moveTo(
-            scaleX(lines[i] + shift.x),
-            scaleY(lines[i + 1] + shift.y),
-          );
-          pathBuilder.lineTo(
-            scaleX(lines[i + 2] + shift.x),
-            scaleY(lines[i + 3] + shift.y),
-          );
+          pathBuilder.moveTo(scaleX(lines[i]), scaleY(lines[i + 1]));
+          pathBuilder.lineTo(scaleX(lines[i + 2]), scaleY(lines[i + 3]));
         }
       }
     }
