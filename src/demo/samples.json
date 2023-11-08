@@ -276,6 +276,11 @@
         "file": "https://cheminfo.github.io/bruker-data-test/data/zipped/aspirin-1h.zip",
         "title": "NMR Load Save",
         "view": "WebSourceView"
+      },
+      {
+        "file": "https://cheminfo.github.io/nmr-dataset-demo/oxford/ethylCrotonate.zip",
+        "title": "Auto processing",
+        "view": "AuoProcessingView"
       }
     ]
   },
