@@ -8,6 +8,7 @@ import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import { options } from '../../toolbar/ToolTypes';
 
 const styles = {
@@ -29,13 +30,13 @@ function PeakPointer() {
     height,
     width,
     margin,
-    data,
     mode,
     toolOptions: { selectedTool },
   } = useChartData();
   const { scaleX, scaleY, shiftY } = useScaleChecked();
 
   const activeSpectrum = useActiveSpectrum();
+  const spectra = useSpectraByActiveNucleus();
   const position = useMouseTracker();
   const brushState = useBrushTracker();
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
@@ -55,12 +56,13 @@ function PeakPointer() {
         });
 
         // get the active spectrum data by looking for it by id
-        const spectrum = data.find(
+        const spectrumIndex = spectra.findIndex(
           (d) => d.id === activeSpectrum.id,
-        ) as Spectrum1D;
+        );
 
-        if (!spectrum) throw new Error('Unreachable');
-        const datum = get1DDataXY(spectrum);
+        if (spectrumIndex === -1) throw new Error('Unreachable');
+
+        const datum = get1DDataXY(spectra[spectrumIndex] as Spectrum1D);
         const maxIndex = datum.x.findIndex((number) => number >= range[1]) - 1;
         const minIndex = datum.x.findIndex((number) => number >= range[0]);
 
@@ -71,9 +73,7 @@ function PeakPointer() {
           const xValue = datum.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
-            y:
-              scaleY(activeSpectrum.id)(yValue) -
-              activeSpectrum?.index * shiftY,
+            y: scaleY(activeSpectrum.id)(yValue) - spectrumIndex * shiftY,
             xIndex: minIndex + xIndex,
           };
         }
@@ -85,13 +85,13 @@ function PeakPointer() {
     setPosition(candidatePeakPosition);
   }, [
     activeSpectrum,
-    data,
     mode,
     position,
     scaleX,
     scaleY,
     selectedTool,
     shiftY,
+    spectra,
   ]);
 
   if (
