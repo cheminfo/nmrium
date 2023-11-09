@@ -1,6 +1,5 @@
 import max from 'ml-array-max';
 import { Spectrum1D } from 'nmr-load-save';
-import { useEffect, useState } from 'react';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
@@ -22,7 +21,26 @@ const styles = {
 interface PeakPosition {
   x: number;
   y: number;
-  xIndex: number;
+}
+
+const LookWidth = 10;
+
+function getClosePeak(
+  spectrum: Spectrum1D,
+  range: number[],
+): PeakPosition | null {
+  const datum = get1DDataXY(spectrum);
+  const maxIndex = datum.x.findIndex((number) => number >= range[1]) - 1;
+  const minIndex = datum.x.findIndex((number) => number >= range[0]);
+
+  const yDataRange = datum.y.slice(minIndex, maxIndex);
+  if (!yDataRange || yDataRange.length === 0) return null;
+
+  const y = max(yDataRange);
+  const xIndex = minIndex + yDataRange.indexOf(y);
+  const x = datum.x[xIndex];
+
+  return { x, y };
 }
 
 function PeakPointer() {
@@ -30,7 +48,6 @@ function PeakPointer() {
     height,
     width,
     margin,
-    mode,
     toolOptions: { selectedTool },
   } = useChartData();
   const { scaleX, scaleY, shiftY } = useScaleChecked();
@@ -39,64 +56,9 @@ function PeakPointer() {
   const spectra = useSpectraByActiveNucleus();
   const position = useMouseTracker();
   const brushState = useBrushTracker();
-  const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
-
-  useEffect(() => {
-    const getClosePeak = (xShift, mouseCoordinates) => {
-      if (
-        activeSpectrum &&
-        position &&
-        selectedTool === options.peakPicking.id
-      ) {
-        const range = [
-          scaleX().invert(mouseCoordinates.x - xShift),
-          scaleX().invert(mouseCoordinates.x + xShift),
-        ].sort((a, b) => {
-          return a - b;
-        });
-
-        // get the active spectrum data by looking for it by id
-        const spectrumIndex = spectra.findIndex(
-          (d) => d.id === activeSpectrum.id,
-        );
-
-        if (spectrumIndex === -1) throw new Error('Unreachable');
-
-        const datum = get1DDataXY(spectra[spectrumIndex] as Spectrum1D);
-        const maxIndex = datum.x.findIndex((number) => number >= range[1]) - 1;
-        const minIndex = datum.x.findIndex((number) => number >= range[0]);
-
-        const yDataRange = datum.y.slice(minIndex, maxIndex);
-        if (yDataRange && yDataRange.length > 0) {
-          const yValue = max(yDataRange);
-          const xIndex = yDataRange.indexOf(yValue);
-          const xValue = datum.x[minIndex + xIndex];
-          return {
-            x: scaleX()(xValue),
-            y: scaleY(activeSpectrum.id)(yValue) - spectrumIndex * shiftY,
-            xIndex: minIndex + xIndex,
-          };
-        }
-      }
-      return null;
-    };
-
-    const candidatePeakPosition = getClosePeak(10, position);
-    setPosition(candidatePeakPosition);
-  }, [
-    activeSpectrum,
-    mode,
-    position,
-    scaleX,
-    scaleY,
-    selectedTool,
-    shiftY,
-    spectra,
-  ]);
 
   if (
     selectedTool !== options.peakPicking.id ||
-    !closePeakPosition ||
     !activeSpectrum ||
     brushState.step === 'brushing' ||
     !position ||
@@ -108,12 +70,29 @@ function PeakPointer() {
     return null;
   }
 
+  const spectrumIndex = spectra.findIndex((d) => d.id === activeSpectrum.id);
+
+  if (spectrumIndex === -1) return null;
+
+  const range = [
+    scaleX().invert(position.x - LookWidth),
+    scaleX().invert(position.x + LookWidth),
+  ].sort((a, b) => {
+    return a - b;
+  });
+
+  const closePeak = getClosePeak(spectra[spectrumIndex] as Spectrum1D, range);
+  if (!closePeak) return null;
+
+  const x = scaleX()(closePeak.x);
+  const y = scaleY(activeSpectrum.id)(closePeak.y) - spectrumIndex * shiftY;
+
   return (
     <div
       key="peakPointer"
       style={{
         cursor: 'crosshair',
-        transform: `translate(${closePeakPosition.x}px, ${closePeakPosition.y}px)`,
+        transform: `translate(${x}px, ${y}px)`,
         transformOrigin: 'top left',
         position: 'absolute',
         top: -(styles.radius + styles.SVGPadding),
