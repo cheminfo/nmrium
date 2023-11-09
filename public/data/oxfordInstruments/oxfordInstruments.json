@@ -66,10 +66,21 @@
             "name": "phaseCorrection",
             "label": "Phase correction",
             "value": {
-              "ph0": -126,
+              "ph0": -128.9,
               "ph1": 0,
               "absolute": false
             },
+            "flag": true,
+            "isDeleteAllow": true,
+            "id": "6ae7ba0d-db09-486c-9cbf-2ac7e57dbc3d"
+          },
+          {
+            "name": "shiftX",
+            "label": "Shift X",
+            "value": {
+              "shift": -0.10005791743496187
+            },
+            "id": "f86c9cbf-2ac7-457d-bc3d-9465b326c07b",
             "flag": true,
             "isDeleteAllow": true
           }
