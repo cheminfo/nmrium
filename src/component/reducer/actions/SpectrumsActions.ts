@@ -369,8 +369,13 @@ function handleChangeActiveSpectrum(
     });
   }
 
-  //set the active spectra
-  activeSpectra[activeTab] = newActiveSpectra;
+  if (newActiveSpectra.length > 0) {
+    //set the active spectra
+    activeSpectra[activeTab] = newActiveSpectra;
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete activeSpectra[activeTab];
+  }
 
   //check if the previous selected spectra contain FT
   const previousActiveSpectraHasFT = spectra?.some(
