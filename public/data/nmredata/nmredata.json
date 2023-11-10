@@ -4,10 +4,7 @@
       "baseURL": "",
       "entries": [
         {
-          "name": "menthol_1D_1H_assigned_J.nmredata",
-          "size": 1,
-          "relativePath": "data/nmredata/menthol_1D_1H_assigned_J.nmredata",
-          "lastModified": 0
+          "relativePath": "data/nmredata/menthol_1D_1H_assigned_J.nmredata"
         }
       ]
     },
@@ -15,7 +12,14 @@
       {
         "sourceSelector": {
           "files": [
-            "data/nmredata/menthol_1D_1H_assigned_J.nmredata"  
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/AN-menthol/10/acqu",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/AN-menthol/10/acqus",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/AN-menthol/10/pdata/1/1i",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/AN-menthol/10/pdata/1/1r",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/AN-menthol/10/pdata/1/proc",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/AN-menthol/10/pdata/1/procs",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/compound1_with_jcamp.nmredata.sdf",
+            "data/nmredata/menthol_1D_1H_assigned_J.nmredata/jcamp_nmr_spectra/1d1h.jcamp"
           ]
         }
       }
