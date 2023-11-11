@@ -79,16 +79,20 @@ export function getSlice(
 
   if (imaginaryData && ['imaginary', 'both'].includes(sliceType)) {
     infoX.isComplex = true;
-    infoY.isComplex = true;
     dataX.im = new Float64Array(xLength);
-    dataY.im = new Float64Array(yLength);
-
     for (let i = 0; i < xLength; i++) {
       dataX.im[i] += imaginaryData.z[yIndex][i];
     }
 
-    for (let i = 0; i < yLength; i++) {
-      dataY.im[i] += imaginaryData.z[i][xIndex];
+    const imaginaryVerticalData = !info.isFid
+      ? (spectraData as NmrData2DFt).ri
+      : imaginaryData;
+    if (imaginaryVerticalData) {
+      infoY.isComplex = true;
+      for (let i = 0; i < yLength; i++) {
+        dataY.im = new Float64Array(yLength);
+        dataY.im[i] += imaginaryVerticalData.z[i][xIndex];
+      }
     }
   }
 
