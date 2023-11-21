@@ -47,8 +47,8 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
       onChange: (log, logs) => {
-        if (log && ['warn', 'error', 'fatal'].includes(log.levelLabel)) {
-          //open the log history automatically if we have warn,error, or fatal
+        if (log && ['error', 'fatal'].includes(log.levelLabel)) {
+          //open the log history automatically if we have error or fatal
           openLogHistory(true);
 
           if (log?.error) {
