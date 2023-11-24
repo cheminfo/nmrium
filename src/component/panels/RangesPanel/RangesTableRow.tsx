@@ -256,7 +256,9 @@ function RangesTableRow({
       )}
       {preferences.showMultiplicity && (
         <td {...onHoverSignal}>
-          {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
+          {!rowData?.tableMetaInfo?.signal
+            ? 'm'
+            : lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
         </td>
       )}
 

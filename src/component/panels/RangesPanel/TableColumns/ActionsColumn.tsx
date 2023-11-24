@@ -62,12 +62,16 @@ function ActionsColumn({
     <Fragment>
       {showKind && (
         <td {...onHoverSignal}>
-          <Select
-            onChange={changeRangeSignalKind}
-            items={SIGNAL_KINDS}
-            defaultValue={row?.tableMetaInfo?.signal?.kind}
-            style={selectBoxStyle}
-          />
+          {!row?.tableMetaInfo?.signal ? (
+            ''
+          ) : (
+            <Select
+              onChange={changeRangeSignalKind}
+              items={SIGNAL_KINDS}
+              defaultValue={row?.tableMetaInfo?.signal?.kind}
+              style={selectBoxStyle}
+            />
+          )}
         </td>
       )}
       {showActions && (
