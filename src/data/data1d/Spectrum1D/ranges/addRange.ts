@@ -5,7 +5,7 @@ import { Signal1D, mapRanges } from 'nmr-processing';
 
 import { DATUM_KIND } from '../../../constants/signalsKinds';
 
-import detectSignal from './detectSignal';
+import detectSignals from './detectSignals';
 
 interface RangeOptions {
   from: number;
@@ -16,14 +16,14 @@ export function createRangeObj({
   from,
   to,
   absolute,
-  signal,
-}: RangeOptions & { signal: Omit<Signal1D, 'id'>; absolute: number }) {
+  signals,
+}: RangeOptions & { signals: Array<Omit<Signal1D, 'id'>>; absolute: number }) {
   return {
     id: v4(),
     from,
     to,
     absolute, // the real value,
-    signals: [{ id: v4(), ...signal }],
+    signals: signals.map((signal) => ({ id: v4(), ...signal })),
     kind: DATUM_KIND.signal,
     integration: 0,
   };
@@ -31,36 +31,33 @@ export function createRangeObj({
 
 export function addRange(spectrum: Spectrum1D, options: RangeOptions) {
   const { from, to } = options;
-  const { x, re } = spectrum.data;
-  const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
+  const { x, re: y } = spectrum.data;
+  const { nucleus, originFrequency: frequency } = spectrum.info;
 
-  // detectSignal use the advance multiplet-analysis that can crash if too many points
-  const signal = detectSignal(
-    { x, re },
-    {
-      from,
-      to,
-      frequency: spectrum.info.originFrequency,
-    },
-  );
+  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
 
-  let range;
+  const signals =
+    detectSignals(
+      { x, y },
+      {
+        from,
+        to,
+        nucleus,
+        frequency,
+      },
+    ) || [];
 
-  if (signal) {
-    range = createRangeObj({
-      from,
-      to,
-      absolute,
-      signal,
-    });
-  }
+  const range = {
+    from,
+    to,
+    absolute,
+    signals,
+  };
 
   try {
-    if (range) {
-      spectrum.ranges.values = spectrum.ranges.values.concat(
-        mapRanges([range], spectrum),
-      );
-    }
+    spectrum.ranges.values = spectrum.ranges.values.concat(
+      mapRanges([range], spectrum),
+    );
   } catch (error) {
     reportError(error);
     throw new Error('Could not calculate the multiplicity');

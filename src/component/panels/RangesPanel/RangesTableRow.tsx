@@ -91,9 +91,12 @@ function RangesTableRow({
     assignmentRange.assigned?.x || [],
     { type: HighlightEventSource.RANGE },
   );
-  const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
+  const assignmentSignal = useAssignment(rowData?.tableMetaInfo?.id || '');
+
   const highlightSignal = useHighlight(
-    [assignmentSignal.id].concat(assignmentSignal.assigned?.x || []),
+    assignmentSignal?.id
+      ? [assignmentSignal.id].concat(assignmentSignal.assigned?.x || [])
+      : [],
     { type: HighlightEventSource.SIGNAL },
   );
   const highlightData = useHighlightData();
@@ -253,7 +256,9 @@ function RangesTableRow({
       )}
       {preferences.showMultiplicity && (
         <td {...onHoverSignal}>
-          {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
+          {!rowData?.tableMetaInfo?.signal
+            ? 'm'
+            : lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
         </td>
       )}
 

@@ -1,47 +1,47 @@
-import { v4 } from '@lukeed/uuid';
 import { xyIntegration } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, updateRangesRelativeValues } from 'nmr-processing';
+import {
+  Range,
+  Signal1D,
+  mapRanges,
+  updateRangesRelativeValues,
+} from 'nmr-processing';
 
-import detectSignal from './detectSignal';
+import detectSignals from './detectSignals';
 
 export function changeRange(spectrum: Spectrum1D, range: Range) {
   const { from, to, id } = range;
-  const { x, re } = spectrum.data;
+  const { x, re: y } = spectrum.data;
+  const { originFrequency: frequency, nucleus } = spectrum.info;
 
   const index = spectrum.ranges.values.findIndex((i) => i.id === id);
-  const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
+  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
 
-  const signal = detectSignal(
-    { x, re },
+  const signals = detectSignals(
+    { x, y },
     {
       from,
       to,
-      frequency: spectrum.info.originFrequency,
-      checkMaxLength: false,
+      nucleus,
+      frequency,
     },
-  );
+  ) as Signal1D[];
 
   if (index !== -1) {
-    spectrum.ranges.values[index] = {
-      ...spectrum.ranges.values[index],
-      originalFrom: from,
-      originalTo: to,
-      ...range,
-      absolute,
-      signals: [
+    spectrum.ranges.values[index] = mapRanges(
+      [
         {
-          id: v4(),
-          ...(signal || {
-            multiplicity: 's',
-            kind: 'signal',
-            delta: 0,
-            js: [],
-            diaIDs: [],
-          }),
+          ...spectrum.ranges.values[index],
+          originalFrom: from,
+          originalTo: to,
+          ...range,
+          absolute,
+          signals,
         },
       ],
-    };
+      spectrum,
+    )[0];
+
     updateRangesRelativeValues(spectrum);
   }
 }

@@ -83,7 +83,7 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
 
   await test.step('Add ranges', async () => {
     //add two ranges
-    await addRange(nmrium, 50, 60, 1);
+    await addRange(nmrium, 200, 210, 1);
     await addRange(nmrium, 110, 120, 2);
   });
 
