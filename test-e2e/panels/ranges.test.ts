@@ -422,8 +422,8 @@ test('2D spectra reference change', async ({ page }) => {
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),
     ).toContainText('[ 15 ]');
 
-    const x = 2.9139017520509753;
-    const y = 35.65263186073236;
+    const x = 2.9139017520593895;
+    const y = 35.65263186072366;
     await expect(
       nmrium.page.locator(
         '_react=ZonesPanel >> _react=ZonesTableRow >> nth=0 >> td >> nth=1',
