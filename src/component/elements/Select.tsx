@@ -95,20 +95,36 @@ const Select = forwardRef(function Select(
       )}
 
       {items.map((option) => {
-        if (
-          typeof option[itemValueField] !== 'string' ||
-          typeof option[itemTextField] !== 'string'
-        ) {
-          // TODO: throw error
+        const value = option[itemValueField];
+
+        if (!['number', 'string'].includes(typeof option[itemTextField])) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `The '${itemTextField}' field should be a string , option : ${JSON.stringify(
+              option,
+            )}`,
+          );
           return null;
         }
+        if (!['number', 'string'].includes(typeof value)) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `The '${itemValueField}' field should be either a string or a number, option : ${JSON.stringify(
+              option,
+            )}`,
+          );
+          return null;
+        }
+
+        const label = String(option[itemTextField]);
+
         return (
           <option
             key={JSON.stringify(option)}
-            value={option[itemValueField]}
+            value={value}
             data-value={JSON.stringify(option)}
           >
-            {textRender?.(option[itemTextField]) || option[itemTextField]}
+            {textRender?.(label) || label}
           </option>
         );
       })}

@@ -21,6 +21,6 @@ function formatNumber(number: number): string | number {
   } else if (number >= 1024) {
     return `${number / 1024}K`;
   } else {
-    return number;
+    return `${number}`;
   }
 }
