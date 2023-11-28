@@ -37,7 +37,9 @@ function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
   const result = {};
   if (activeSpectra) {
     for (const activeSpectrum of activeSpectra) {
-      result[activeSpectrum.id] = true;
+      if (activeSpectrum?.selected) {
+        result[activeSpectrum.id] = true;
+      }
     }
   }
   return result;

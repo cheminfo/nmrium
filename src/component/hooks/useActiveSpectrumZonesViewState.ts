@@ -16,7 +16,11 @@ export function useActiveSpectrumZonesViewState() {
     view: { zones },
   } = useChartData();
 
-  if (activeSpectrum?.id && zones[activeSpectrum?.id]) {
+  if (
+    activeSpectrum?.id &&
+    activeSpectrum?.selected &&
+    zones[activeSpectrum?.id]
+  ) {
     return zones[activeSpectrum?.id];
   } else {
     return defaultZonesViewState;

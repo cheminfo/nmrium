@@ -34,6 +34,7 @@ import { ZoomHistory } from './helper/ZoomHistoryManager';
 export interface ActiveSpectrum {
   id: string;
   index: number;
+  selected: boolean;
 }
 
 export type DisplayerMode = '1D' | '2D';

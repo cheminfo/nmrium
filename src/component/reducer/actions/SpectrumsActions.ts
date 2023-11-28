@@ -366,6 +366,7 @@ function handleChangeActiveSpectrum(
     newActiveSpectra.push({
       id: spectrumId,
       index: spectraObj[spectrumId].index,
+      selected: true,
     });
   }
 

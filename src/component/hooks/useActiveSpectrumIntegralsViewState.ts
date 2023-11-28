@@ -14,7 +14,11 @@ export function useActiveSpectrumIntegralsViewState() {
     view: { integrals },
   } = useChartData();
 
-  if (activeSpectrum?.id && integrals[activeSpectrum?.id]) {
+  if (
+    activeSpectrum?.id &&
+    activeSpectrum?.selected &&
+    integrals[activeSpectrum?.id]
+  ) {
     return integrals[activeSpectrum?.id];
   } else {
     return defaultIntegralsViewState;

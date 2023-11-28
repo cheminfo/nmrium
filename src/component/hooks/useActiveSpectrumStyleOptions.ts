@@ -18,9 +18,15 @@ export default function useActiveSpectrumStyleOptions(
 
   return useMemo(() => {
     const index = activeSpectra?.findIndex(
-      (activeSpectrum) => activeSpectrum.id === id,
+      (activeSpectrum) => activeSpectrum?.selected && activeSpectrum.id === id,
     );
-    const isActive = !!(activeSpectra?.length === 0 || index !== -1);
+    let isNoneSelected = false;
+    isNoneSelected =
+      activeSpectra?.every((activeSpectrum) => !activeSpectrum?.selected) ||
+      false;
+
+    const isActive =
+      !!(activeSpectra?.length === 0 || index !== -1) || isNoneSelected;
     const opacity = isActive
       ? 1
       : get(preferences.current, 'general.dimmedSpectraOpacity', 0.1);
