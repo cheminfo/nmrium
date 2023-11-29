@@ -19,7 +19,7 @@ import {
 } from './MatrixGenerationPanel';
 
 const inputStyle: InputStyle = {
-  input: { padding: '0.2em 0.1em', width: '100%' },
+  input: { padding: '0.4em', width: '100%' },
 };
 
 export function FiltersOptions() {
@@ -176,7 +176,16 @@ function FiltersPanelGroupHeader({ index, name }) {
       className="section-header"
       style={{ display: 'flex', padding: '5px 0px' }}
     >
-      <p style={{ flex: 1, ...GroupPanelStyle.header }}>{index + 1}-</p>
+      <p
+        style={{
+          flex: 1,
+          margin: 0,
+          paddingRight: '5px',
+          ...GroupPanelStyle.header,
+        }}
+      >
+        {index + 1}-
+      </p>
       <Select
         value={name}
         items={DEFAULT_MATRIX_FILTERS}
@@ -189,7 +198,11 @@ function FiltersPanelGroupHeader({ index, name }) {
       />
 
       <div style={{ display: 'flex' }}>
-        <Button.Danger fill="outline" onClick={() => handleDelete(index)}>
+        <Button.Danger
+          fill="outline"
+          onClick={() => handleDelete(index)}
+          style={{ marginLeft: '5px' }}
+        >
           <FaTimes />
         </Button.Danger>
 

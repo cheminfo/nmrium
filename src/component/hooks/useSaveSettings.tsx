@@ -29,7 +29,7 @@ const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
             placeholder="Enter workspace Name"
             style={{
               input: {
-                height: '35px',
+                padding: '0.5em',
                 width: '90%',
                 fontWeight: 'normal',
                 color: 'black',
