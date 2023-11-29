@@ -10,7 +10,7 @@ export default function useSpectrum(defaultValue: any = null) {
   const activeSpectrum = useActiveSpectrum();
 
   return useMemo<Spectrum>(() => {
-    if (data && activeSpectrum?.id) {
+    if (data && activeSpectrum?.id && activeSpectrum?.selected) {
       const datum =
         data.find((datum) => datum.id === activeSpectrum.id) || defaultValue;
       return datum;

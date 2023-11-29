@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Spectrum } from 'nmr-load-save';
+import { ActiveSpectrum, Spectrum } from 'nmr-load-save';
 import { useState, useMemo, memo, useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
@@ -9,7 +9,6 @@ import { getModifiers } from '../../context/KeyModifierContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
-import { ActiveSpectrum } from '../../reducer/Reducer';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { SpectraTable } from './SpectraTable';

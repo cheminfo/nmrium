@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import { ActiveSpectrum, Spectrum1D } from 'nmr-load-save';
 import { memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
@@ -14,7 +14,6 @@ import { useScaleChecked } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../hooks/useSpectrum';
-import { ActiveSpectrum } from '../reducer/Reducer';
 
 const styles = css`
   display: flex;

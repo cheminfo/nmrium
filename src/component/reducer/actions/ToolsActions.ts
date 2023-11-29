@@ -505,25 +505,26 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
 
     if (data.length === 1) {
       const index = draft.data.findIndex((datum) => datum.id === data[0].id);
-      tabActiveSpectrum[tabKey] = [{ id: data[0].id, index }];
+      tabActiveSpectrum[tabKey] = [{ id: data[0].id, index, selected: true }];
     } else {
       const tabSpectra = dataGroupByTab[tabKey];
       const tabSpectraLength = tabSpectra.length;
       if (tabSpectraLength >= 2) {
         const FTSpectrums = tabSpectra.filter((d) => !d.info.isFid);
-        if (
-          FTSpectrums.length > 0 &&
-          (nucleusLength === 2 ||
-            (nucleusLength === 1 && tabSpectraLength !== FTSpectrums.length))
-        ) {
+        if (FTSpectrums.length > 0) {
+          const selected =
+            nucleusLength === 2 ||
+            (nucleusLength === 1 && tabSpectraLength !== FTSpectrums.length);
           const index = draft.data.findIndex(
             (datum) => datum.id === FTSpectrums[0].id,
           );
-          tabActiveSpectrum[tabKey] = [{ id: FTSpectrums[0].id, index }];
+          tabActiveSpectrum[tabKey] = [
+            { id: FTSpectrums[0].id, index, selected },
+          ];
         } else if (tabSpectraLength - FTSpectrums > 0) {
           const id = tabSpectra[0].id;
           const index = draft.data.findIndex((datum) => datum.id === id);
-          tabActiveSpectrum[tabKey] = [{ id, index }];
+          tabActiveSpectrum[tabKey] = [{ id, index, selected: true }];
         } else {
           tabActiveSpectrum[tabKey] = null;
         }

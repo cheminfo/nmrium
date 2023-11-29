@@ -2,7 +2,12 @@ import { v4 } from '@lukeed/uuid';
 import { NmrData2DFt } from 'cheminfo-types';
 import { current, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import {
+  ActiveSpectrum,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+} from 'nmr-load-save';
 import {
   Filters,
   FiltersManager,
@@ -20,12 +25,7 @@ import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 import { options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
-import {
-  ActiveSpectrum,
-  getInitialState,
-  State,
-  TraceDirection,
-} from '../Reducer';
+import { getInitialState, State, TraceDirection } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';

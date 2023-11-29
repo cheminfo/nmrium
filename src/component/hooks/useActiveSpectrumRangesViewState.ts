@@ -19,7 +19,11 @@ export function useActiveSpectrumRangesViewState() {
     view: { ranges },
   } = useChartData();
 
-  if (activeSpectrum?.id && ranges[activeSpectrum?.id]) {
+  if (
+    activeSpectrum?.id &&
+    activeSpectrum?.selected &&
+    ranges[activeSpectrum?.id]
+  ) {
     return ranges[activeSpectrum?.id];
   } else {
     return defaultRangesViewState;

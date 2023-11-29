@@ -17,7 +17,11 @@ export function useActiveSpectrumPeaksViewState() {
     view: { peaks },
   } = useChartData();
 
-  if (activeSpectrum?.id && peaks[activeSpectrum?.id]) {
+  if (
+    activeSpectrum?.id &&
+    activeSpectrum?.selected &&
+    peaks[activeSpectrum?.id]
+  ) {
     return peaks[activeSpectrum?.id];
   } else {
     return defaultPeaksViewState;
