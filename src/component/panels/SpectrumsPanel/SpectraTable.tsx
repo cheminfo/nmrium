@@ -1,5 +1,6 @@
 import lodashGet from 'lodash/get';
 import {
+  ActiveSpectrum,
   JpathTableColumn,
   PredefinedSpectraColumn,
   PredefinedTableColumn,
@@ -18,7 +19,6 @@ import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
-import { ActiveSpectrum } from '../../reducer/Reducer';
 
 import ColorIndicator from './base/ColorIndicator';
 import ShowHideSpectrumButton, {

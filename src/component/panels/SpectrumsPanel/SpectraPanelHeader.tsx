@@ -1,5 +1,5 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
-import { Spectrum, Spectrum2D } from 'nmr-load-save';
+import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
@@ -15,7 +15,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
-import { ActiveSpectrum, DisplayerMode } from '../../reducer/Reducer';
+import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
