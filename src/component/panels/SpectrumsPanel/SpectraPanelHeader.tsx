@@ -17,7 +17,9 @@ import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  createFilterLabel,
+} from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
 function getMissingProjection(SpectrumsData, activeTab) {
@@ -55,8 +57,6 @@ function SpectraPanelHeaderInner({
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
-
-  const spectra = getSpectraByNucleus(activeTab, data);
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
@@ -119,13 +119,14 @@ function SpectraPanelHeaderInner({
       payload: {},
     });
   }
-
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
+  const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
 
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
-      counter={spectra?.length}
+      counter={data?.length}
+      counterLabel={createFilterLabel(data?.length, spectraLengthPerTab)}
       deleteToolTip="Delete selected spectra"
       disableDelete={!hasActiveSpectra}
       showSettingButton
@@ -156,7 +157,7 @@ function SpectraPanelHeaderInner({
           <FaCreativeCommonsSamplingPlus />
         </Button.BarButton>
       )}
-      {displayerMode === '1D' && spectra.length > 1 && (
+      {displayerMode === '1D' && spectraLengthPerTab > 1 && (
         <>
           <Button.BarButton
             tooltipOrientation="horizontal"
@@ -200,6 +201,7 @@ export default function SpectrumsTabs({
   } = useChartData();
   const spectrum = useSpectrum() as Spectrum2D;
   const activeSpectra = useActiveSpectra();
+
   return (
     <MemoizedSpectraPanelHeader
       {...{
