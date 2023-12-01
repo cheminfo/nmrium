@@ -90,7 +90,7 @@
     "nmredata": "^0.9.7",
     "numeral": "^2.0.6",
     "openchemlib": "^8.7.1",
-    "openchemlib-utils": "^5.4.0",
+    "openchemlib-utils": "^5.6.0",
     "papaparse": "^5.4.1",
     "re-resizable": "6.9.11",
     "react-d3-utils": "^1.0.0",
