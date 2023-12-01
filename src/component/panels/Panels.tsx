@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { Button, ButtonGroup } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { PanelPreferencesType } from 'nmr-load-save';
 import { useCallback, memo, ReactElement, CSSProperties } from 'react';
@@ -23,6 +26,32 @@ import FilterPanel from './filtersPanel/FilterPanel';
 import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
 import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation';
+
+const styles = css`
+  width: 100%;
+  height: 100%;
+  flex: 1 1 0%;
+  container-type: inline-size;
+
+  .nmrium-small-right-panels {
+    display: none;
+  }
+
+  .nmrium-right-panels {
+    height: 100%;
+    width: 100%;
+  }
+
+  @container (max-width:150px) {
+    .nmrium-small-right-panels {
+      display: flex;
+    }
+
+    .nmrium-right-panels {
+      display: none;
+    }
+  }
+`;
 
 interface AccordionItem {
   title: string;
@@ -164,6 +193,7 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
 }
 
 function PanelsInner({ displayerMode: displayedMode }) {
+  const { dispatch } = usePreferences();
   const getPanelPreferences = usePanelPreferences();
   const isExperimental = useCheckExperimentalFeature();
   const check = useCallback(
@@ -188,23 +218,49 @@ function PanelsInner({ displayerMode: displayedMode }) {
     [getPanelPreferences],
   );
 
+  function changeResizer() {
+    dispatch({
+      type: 'SET_VERTICAL_SPLITTER_POSITION',
+      payload: {
+        value: '400px',
+      },
+    });
+  }
+
   return (
-    <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
-      <Accordion>
-        {accordionItems.map((item) => {
-          return (
-            check(item) && (
-              <Accordion.Item
-                key={item.title}
-                title={item.title}
-                defaultOpened={isOpened(item)}
-              >
-                {item.component}
-              </Accordion.Item>
-            )
-          );
-        })}
-      </Accordion>
+    <div css={styles}>
+      <ButtonGroup
+        vertical
+        alignText="left"
+        className="nmrium-small-right-panels"
+      >
+        {accordionItems
+          .filter((item) => check(item))
+          .map((item) => {
+            return (
+              <Button icon="modal" key={item.title} onClick={changeResizer}>
+                {item.title}
+              </Button>
+            );
+          })}
+      </ButtonGroup>
+      <div className="nmrium-right-panels">
+        <Accordion>
+          {accordionItems.map((item) => {
+            return (
+              check(item) && (
+                <Accordion.Item
+                  key={item.title}
+                  title={item.title}
+                  defaultOpened={isOpened(item)}
+                >
+                  {item.component}
+                </Accordion.Item>
+              )
+            );
+          })}
+        </Accordion>
+      </div>
     </div>
   );
 }
