@@ -71,6 +71,7 @@ export function Dashboard(props: DashboardProps) {
         onMenuToggle={toggleMenu}
       />
       <div
+        className="demo-main-container"
         css={css(
           mainPanelCss,
           menuIsClosed ? mainPanelClosedCss : mainPanelOpenCss,
