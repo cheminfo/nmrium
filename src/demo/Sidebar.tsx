@@ -102,6 +102,7 @@ function Sidebar(props) {
 
   return (
     <div
+      className="demo-side-bar"
       css={css(
         sidebarCss,
         props.menuIsClosed ? sidebarClosedCss : sidebarOpenCss,

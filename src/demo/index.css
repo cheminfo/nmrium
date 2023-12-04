@@ -1,3 +1,19 @@
+@media print {
+  .demo-main-container,
+  .demo-main-container>div {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .demo-side-bar,
+  .demo-main-container>div>div:first-child {
+    display: none !important;
+  }
+
+
+}
+
 .rc-menu {
   border: none !important;
   box-shadow: none !important;
@@ -27,7 +43,7 @@
   background-color: white;
 }
 
-.rc-menu-submenu > .rc-menu {
+.rc-menu-submenu>.rc-menu {
   background-color: #28a4fb;
   color: #000;
   font-size: 12px;

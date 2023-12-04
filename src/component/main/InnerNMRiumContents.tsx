@@ -60,6 +60,22 @@ const containerStyles = css`
     -o-user-drag: none;
     user-select: none;
   }
+
+  @media print {
+    @page {
+      size: a4 landscape;
+      margin: 0%;
+    }
+
+    * {
+      visibility: hidden;
+    }
+
+    #nmrium-viewer,
+    #nmrium-viewer * {
+      visibility: visible;
+    }
+  }
 `;
 
 interface InnerNMRiumContentsProps {
