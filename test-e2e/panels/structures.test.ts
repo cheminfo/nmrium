@@ -305,7 +305,8 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(
       nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=ModalCloseButton');
+    //TODO check why we have Button2 in development env and Button in production
+    await nmrium.page.click('dialog >> button:has(svg[data-icon="cross"])');
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
@@ -335,7 +336,8 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(
       nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=ModalCloseButton');
+    //TODO check why we have Button2 in development env and Button in production
+    await nmrium.page.click('dialog >> button:has(svg[data-icon="cross"])');
   });
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.

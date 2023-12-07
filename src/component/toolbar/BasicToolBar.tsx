@@ -31,6 +31,7 @@ import ImportPublicationStringModal from '../modal/ImportPublicationStringModal'
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
+import { options } from './ToolTypes';
 
 const IMPORT_MENU: DropdownMenuProps['options'] = [
   {
@@ -234,7 +235,11 @@ function BasicToolBarInner({
           }}
           options={importMenu}
         >
-          <Toolbar.Item title="Import " icon={<FaFileImport />} />
+          <Toolbar.Item
+            id={options.import.id}
+            title={options.import.label}
+            icon={<FaFileImport />}
+          />
         </DropdownMenu>
       )}
       {isButtonVisible('exportAs') && (
@@ -244,7 +249,11 @@ function BasicToolBarInner({
           }}
           options={exportMenu}
         >
-          <Toolbar.Item title="Export as " icon={<FaFileExport />} />
+          <Toolbar.Item
+            id={options.exportAs.id}
+            title={options.import.label}
+            icon={<FaFileExport />}
+          />
         </DropdownMenu>
       )}
 
