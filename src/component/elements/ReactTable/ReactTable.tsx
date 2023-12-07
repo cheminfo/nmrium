@@ -13,7 +13,6 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { DropdownMenuProps } from 'react-science/ui';
 import {
   useTable,
   useSortBy,
@@ -28,6 +27,7 @@ import {
 import { useMeasure } from 'react-use';
 
 import { HighlightEventSource } from '../../highlight';
+import { BaseContextMenuProps } from '../ContextMenuBluePrint';
 
 import { EmptyDataRow } from './Elements/EmptyDataRow';
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -69,14 +69,14 @@ export interface BaseRowStyle {
   base?: CSSProperties;
 }
 
-export interface ContextMenuProps {
+export interface TableContextMenuProps {
   onContextMenuSelect?: (
-    selected: Parameters<DropdownMenuProps<any, any>['onSelect']>[0],
+    selected: Parameters<BaseContextMenuProps['onSelect']>[0],
     data: any,
   ) => void;
-  contextMenu?: DropdownMenuProps<any, any>['options'];
+  contextMenu?: BaseContextMenuProps['options'];
 }
-interface ReactTableProps extends ContextMenuProps, ClickEvent, SortEvent {
+interface ReactTableProps extends TableContextMenuProps, ClickEvent, SortEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;

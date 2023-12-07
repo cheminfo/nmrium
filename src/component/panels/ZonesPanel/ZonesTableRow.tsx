@@ -2,7 +2,6 @@
 
 import lodashGet from 'lodash/get';
 import { CSSProperties, useMemo, useCallback, MouseEvent } from 'react';
-import { DropdownMenu } from 'react-science/ui';
 
 import { buildID } from '../../../data/utilities/Concatenation';
 import {
@@ -10,7 +9,8 @@ import {
   useAssignment,
   AssignmentsData,
 } from '../../assignment/AssignmentsContext';
-import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import { useHighlight } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
@@ -24,7 +24,7 @@ const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-interface ZonesTableRowProps extends ContextMenuProps {
+interface ZonesTableRowProps extends TableContextMenuProps {
   rowData: ZoneData;
   onUnlink: (
     rowData: ZoneData,
@@ -179,8 +179,7 @@ function ZonesTableRow({
   }, [assignmentSignal, highlightSignalY]);
 
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
@@ -230,7 +229,7 @@ function ZonesTableRow({
         rowSpanTags={rowSpanTags}
         {...{ showKind, showDeleteAction, showEditAction, showZoomAction }}
       />
-    </DropdownMenu>
+    </ContextMenu>
   );
 }
 

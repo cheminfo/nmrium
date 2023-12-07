@@ -10,11 +10,14 @@ import {
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useDispatch } from '../../context/DispatchContext';
+import {
+  ContextMenu,
+  ContextMenuItem,
+} from '../../elements/ContextMenuBluePrint';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -58,10 +61,9 @@ interface SpectraTableProps extends OnChangeVisibilityEvent {
   nucleus: string;
 }
 
-const options: DropdownMenuProps<string, any>['options'] = [
+const options: ContextMenuItem[] = [
   {
-    label: 'Recolor based on distinct value',
-    type: 'option',
+    text: 'Recolor based on distinct value',
     icon: <IoColorPaletteOutline />,
   },
 ];
@@ -72,32 +74,28 @@ enum SpectraContextMenuOptionsKeys {
   ExportAsJcamp = 'ExportAsJcamp',
 }
 
-const Spectra2DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+const Spectra2DContextMenuOptions: ContextMenuItem[] = [
   {
-    label: 'Copy to Clipboard',
-    type: 'option',
+    text: 'Copy to Clipboard',
     icon: <FaCopy />,
     data: { id: SpectraContextMenuOptionsKeys.CopyToClipboard },
   },
   {
-    label: 'Delete',
-    type: 'option',
+    text: 'Delete',
     icon: <FaRegTrashAlt />,
     data: { id: SpectraContextMenuOptionsKeys.Delete },
   },
   {
-    label: 'Export as jcamp',
-    type: 'option',
+    text: 'Export as jcamp',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
   },
 ];
 
-const Spectra1DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+const Spectra1DContextMenuOptions: ContextMenuItem[] = [
   ...Spectra2DContextMenuOptions,
   {
-    label: 'Export as jcamp',
-    type: 'option',
+    text: 'Export as jcamp',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
   },
@@ -200,7 +198,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
   const selectContextMenuHandler = useCallback(
     (option, spectrum) => {
-      const { id } = option.data;
+      const { id } = option;
       switch (id) {
         case SpectraContextMenuOptionsKeys.CopyToClipboard: {
           void (async () => {
@@ -349,20 +347,16 @@ const ColumnHeader = ({
   }
 
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={options}
       onSelect={selectHandler}
+      style={{
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
     >
-      <div
-        style={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {label}
-      </div>
-    </DropdownMenu>
+      {label}
+    </ContextMenu>
   );
 };

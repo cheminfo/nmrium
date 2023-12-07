@@ -4,7 +4,6 @@ import lodashGet from 'lodash/get';
 import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { useMemo, useCallback, MouseEvent, CSSProperties } from 'react';
-import { DropdownMenu } from 'react-science/ui';
 
 import {
   AssignmentsData,
@@ -12,7 +11,8 @@ import {
   useAssignmentData,
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
-import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import {
   HighlightEventSource,
   useHighlight,
@@ -38,7 +38,7 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-interface RangesTableRowProps extends ContextMenuProps {
+interface RangesTableRowProps extends TableContextMenuProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
@@ -189,8 +189,7 @@ function RangesTableRow({
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
@@ -302,7 +301,7 @@ function RangesTableRow({
         showEditAction={preferences.showEditAction}
         showZoomAction={preferences.showZoomAction}
       />
-    </DropdownMenu>
+    </ContextMenu>
   );
 }
 
