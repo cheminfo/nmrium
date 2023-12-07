@@ -288,9 +288,9 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         id="general-settings"
         onClick={openDialog}
         title="General settings"
-      >
-        <FaWrench />
-      </Toolbar.Item>
+        icon={<FaWrench />}
+      />
+
       <Modal
         hasCloseButton
         isOpen={isOpenDialog}
