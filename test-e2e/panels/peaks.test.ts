@@ -144,8 +144,11 @@ test('Processed spectra peaks', async ({ page }) => {
     ];
     for (const [i, { p, intensity }] of peaksData.entries()) {
       const peak = peaks.nth(i);
+      // eslint-disable-next-line no-await-in-loop
       await expect(peak).toBeVisible();
+      // eslint-disable-next-line no-await-in-loop
       await expect(peak).toContainText(p);
+      // eslint-disable-next-line no-await-in-loop
       await expect(peak).toContainText(intensity);
     }
   });
@@ -168,6 +171,7 @@ test('Check no negative peaks in processed spectra', async ({ page }) => {
 
     for (let i = 0; i < 16; i++) {
       const peak = peaks.nth(i);
+      // eslint-disable-next-line no-await-in-loop
       expect(await peak.locator('td >> nth=2').textContent()).not.toContain(
         '-',
       );

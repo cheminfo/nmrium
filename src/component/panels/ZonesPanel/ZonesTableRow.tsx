@@ -188,8 +188,8 @@ function ZonesTableRow({
         highlightZone.isActive || assignmentZone.isActive
           ? (HighlightedRowStyle as any)
           : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
-          ? ConstantlyHighlightedRowStyle
-          : null
+            ? ConstantlyHighlightedRowStyle
+            : null
       }
       {...highlightZone.onHover}
     >

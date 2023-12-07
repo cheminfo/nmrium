@@ -128,8 +128,8 @@ export function usePanelPreferences<T extends Panel>(
 ): T extends 'matrixGeneration'
   ? MatrixOptions
   : T extends 'multipleSpectraAnalysis'
-  ? MultipleSpectraAnalysisPreferences
-  : WorkSpacePanelPreferences[T];
+    ? MultipleSpectraAnalysisPreferences
+    : WorkSpacePanelPreferences[T];
 export function usePanelPreferences<T extends 'database' | 'prediction'>(
   panelKey: T,
 ): WorkSpacePanelPreferences[T];
@@ -149,18 +149,18 @@ export type UsePanelPreferencesByNucleiResult<T extends Panel> =
   T extends 'spectra'
     ? PanelsPreferences['spectra']
     : T extends 'peaks'
-    ? PanelsPreferences['peaks']
-    : T extends 'integrals'
-    ? PanelsPreferences['integrals']
-    : T extends 'zones'
-    ? PanelsPreferences['zones']
-    : T extends 'ranges'
-    ? PanelsPreferences['ranges']
-    : T extends 'multipleSpectraAnalysis'
-    ? PanelsPreferences['multipleSpectraAnalysis']
-    : T extends 'matrixGeneration'
-    ? PanelsPreferences['matrixGeneration']
-    : void;
+      ? PanelsPreferences['peaks']
+      : T extends 'integrals'
+        ? PanelsPreferences['integrals']
+        : T extends 'zones'
+          ? PanelsPreferences['zones']
+          : T extends 'ranges'
+            ? PanelsPreferences['ranges']
+            : T extends 'multipleSpectraAnalysis'
+              ? PanelsPreferences['multipleSpectraAnalysis']
+              : T extends 'matrixGeneration'
+                ? PanelsPreferences['matrixGeneration']
+                : void;
 
 export function usePanelPreferencesByNuclei<T extends Panel>(
   panelKey: T,

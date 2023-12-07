@@ -129,8 +129,11 @@ test('Automatic ranges detection should work', async ({ page }) => {
   ];
   for (const [i, { s, r }] of rangesData.entries()) {
     const range = ranges.nth(i);
+    // eslint-disable-next-line no-await-in-loop
     await expect(range).toBeVisible();
+    // eslint-disable-next-line no-await-in-loop
     await expect(range).toContainText(s);
+    // eslint-disable-next-line no-await-in-loop
     await expect(range).toContainText(r);
   }
 });

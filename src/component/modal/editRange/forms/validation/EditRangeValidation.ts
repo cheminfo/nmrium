@@ -14,8 +14,10 @@ const editRangeFormValidation = Yup.object().shape({
                 'checkValue',
                 '',
                 function testCoupling(value) {
+                  // eslint-disable-next-line no-invalid-this
                   const { path, createError } = this;
                   const hasCoupling = hasCouplingConstant(
+                    // eslint-disable-next-line no-invalid-this
                     this.parent.multiplicity,
                   );
                   if ((!hasCoupling && !value) || (hasCoupling && value)) {

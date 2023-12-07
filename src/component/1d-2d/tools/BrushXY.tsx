@@ -102,14 +102,14 @@ export default function BrushXY({
     dimensionBorder.endX && endX > dimensionBorder.endX
       ? dimensionBorder.endX
       : dimensionBorder.startX && endX < dimensionBorder.startX
-      ? dimensionBorder.startX
-      : endX;
+        ? dimensionBorder.startX
+        : endX;
   endY =
     dimensionBorder.endY && endY > dimensionBorder.endY
       ? dimensionBorder.endY
       : dimensionBorder.startY && endY < dimensionBorder.startY
-      ? dimensionBorder.startY
-      : endY;
+        ? dimensionBorder.startY
+        : endY;
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY

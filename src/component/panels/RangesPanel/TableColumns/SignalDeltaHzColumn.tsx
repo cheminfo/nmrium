@@ -25,8 +25,8 @@ function SignalDeltaHzColumn({
             format,
           )} - ${formatNumber(row.to * info.originFrequency, format)}`
         : info?.originFrequency
-        ? formatNumber(signal.delta * info.originFrequency, format)
-        : ''}
+          ? formatNumber(signal.delta * info.originFrequency, format)
+          : ''}
     </td>
   );
 }

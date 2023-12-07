@@ -169,8 +169,8 @@ function CorrelationTableRow({
         backgroundColor: highlightRow.isActive
           ? '#ff6f0057'
           : isInView
-          ? '#f5f5dc'
-          : 'inherit',
+            ? '#f5f5dc'
+            : 'inherit',
       },
       title: correlation.pseudo === false && title,
       onMouseEnter: mouseEnterHandler,

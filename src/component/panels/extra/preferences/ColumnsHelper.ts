@@ -48,8 +48,7 @@ export default class ColumnsHelper {
     if (this.checkPreferences(preferences, flagKey)) {
       this.setCustomColumn(columns, columnIndex, columnLabel, (row) => {
         const format =
-          preferences &&
-          Object.prototype.hasOwnProperty.call(preferences, formatKey)
+          preferences && Object.hasOwn(preferences, formatKey)
             ? preferences[formatKey]
             : this.defaultPreference[formatKey];
 

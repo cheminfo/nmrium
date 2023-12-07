@@ -114,8 +114,8 @@ export function toJSON(
       dataType === 'ROW_DATA'
         ? 'rawData'
         : dataType === 'NO_DATA'
-        ? 'noData'
-        : 'dataSource';
+          ? 'noData'
+          : 'dataSource';
 
     return serializeNmriumState(nmriumState, {
       includeData,

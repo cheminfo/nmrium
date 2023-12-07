@@ -184,8 +184,8 @@ function RangesTableRow({
     return highlightRange.isActive || assignmentRange.isActive
       ? HighlightedRowStyle
       : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
-      ? ConstantlyHighlightedRowStyle
-      : null;
+        ? ConstantlyHighlightedRowStyle
+        : null;
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
