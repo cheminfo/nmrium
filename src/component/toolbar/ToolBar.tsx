@@ -12,7 +12,7 @@ interface ToolBarInnerProps {
 
 function ToolBarInner({ selectedTool }: ToolBarInnerProps) {
   return (
-    <Toolbar orientation="vertical">
+    <Toolbar vertical intent="none">
       <FunctionToolBar defaultValue={selectedTool} />
       <BasicToolBar />
     </Toolbar>

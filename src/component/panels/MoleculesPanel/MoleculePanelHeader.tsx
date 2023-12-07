@@ -11,7 +11,6 @@ import {
   FaRegTrashAlt,
 } from 'react-icons/fa';
 import { IoOpenOutline } from 'react-icons/io5';
-import { DropdownMenuProps, DropdownMenu } from 'react-science/ui';
 
 import {
   MoleculesView,
@@ -25,6 +24,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
+import { DropdownMenu, DropdownMenuProps } from '../../elements/DropdownMenu';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
@@ -49,39 +49,31 @@ const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
   },
 };
 
-const LabelWrapper = ({ children }) => {
-  return <p style={{ padding: '0.4em' }}>{children}</p>;
-};
-
-const MOL_EXPORT_MENU: DropdownMenuProps<{ id: string }, void>['options'] = [
+const MOL_EXPORT_MENU: DropdownMenuProps['options'] = [
   {
-    type: 'option',
     icon: <FaCopy />,
-    label: <LabelWrapper>Copy as molfile V3</LabelWrapper>,
+    text: 'Copy as molfile V3',
     data: {
       id: 'molfileV3',
     },
   },
   {
-    type: 'option',
     icon: <FaCopy />,
-    label: <LabelWrapper>Copy as molfile V2</LabelWrapper>,
+    text: 'Copy as molfile V2',
     data: {
       id: 'molfileV2',
     },
   },
   {
-    type: 'option',
     icon: <FaFileImage />,
-    label: <LabelWrapper>Copy as PNG</LabelWrapper>,
+    text: 'Copy as PNG',
     data: {
       id: 'png',
     },
   },
   {
-    type: 'option',
     icon: <FaDownload />,
-    label: <LabelWrapper>Export as SVG</LabelWrapper>,
+    text: 'Export as SVG',
     data: {
       id: 'svg',
     },
@@ -145,7 +137,7 @@ export default function MoleculePanelHeader({
     (selected) => {
       const molecule = molecules?.[currentIndex];
       if (molecule) {
-        switch (selected?.data.id) {
+        switch (selected?.id) {
           case 'molfileV3':
             saveAsMolHandler(molecule.molfile);
             break;
@@ -222,11 +214,7 @@ export default function MoleculePanelHeader({
     <PanelHeader>
       {renderSource === 'predictionPanel' && <AboutPredictionModal />}
       {renderSource === 'moleculePanel' && (
-        <DropdownMenu
-          trigger="click"
-          options={MOL_EXPORT_MENU}
-          onSelect={exportHandler}
-        >
+        <DropdownMenu options={MOL_EXPORT_MENU} onSelect={exportHandler}>
           <Button.BarButton
             as="div"
             disabled={!hasMolecules}

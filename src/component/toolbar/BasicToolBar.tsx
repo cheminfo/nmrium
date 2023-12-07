@@ -19,7 +19,7 @@ import { Toolbar, useOnOff } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useLoader } from '../context/LoaderContext';
-import ToolbarMenu from '../elements/ToolbarMenu';
+import { DropdownMenu, DropdownMenuProps } from '../elements/DropdownMenu';
 import { useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
@@ -32,59 +32,79 @@ import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
 
-const IMPORT_MENU = [
+const IMPORT_MENU: DropdownMenuProps['options'] = [
   {
-    id: 'importFile',
     icon: <FaFile />,
-    label: 'Import from file system (Press Ctrl + O)',
+    text: 'Import from file system (Press Ctrl + O)',
+    data: {
+      id: 'importFile',
+    },
   },
   {
-    id: 'importJDX',
     icon: <FaFile />,
-    label: 'Add JCAMP-DX from URL',
+    text: 'Add JCAMP-DX from URL',
+    data: {
+      id: 'importJDX',
+    },
   },
   {
-    id: 'importPublicationString',
     icon: <FaFile />,
-    label: 'Import from publication string',
+    text: 'Import from publication string',
+    data: {
+      id: 'importPublicationString',
+    },
   },
   {
-    id: 'importMetaInformation',
     icon: <FaFile />,
-    label: 'Import meta information',
+    text: 'Import meta information',
+    data: {
+      id: 'importMetaInformation',
+    },
   },
 ];
 
-const EXPORT_MENU = [
+const EXPORT_MENU: DropdownMenuProps['options'] = [
   {
-    id: 'svg',
     icon: <FaDownload />,
-    label: 'Export as SVG',
+    text: 'Export as SVG',
+    data: {
+      id: 'svg',
+    },
   },
   {
-    id: 'png',
     icon: <FaFileImage />,
-    label: 'Export as PNG',
+    text: 'Export as PNG',
+    data: {
+      id: 'png',
+    },
   },
   {
-    id: 'json',
     icon: <FaFileDownload />,
-    label: 'Save data ( Press Ctrl + S )',
+    text: 'Save data ( Press Ctrl + S )',
+    data: {
+      id: 'json',
+    },
   },
   {
-    id: 'advance_save',
     icon: <FaFileDownload />,
-    label: 'Save data as  ( Press Ctrl + Shift + S )',
+    text: 'Save data as  ( Press Ctrl + Shift + S )',
+    data: {
+      id: 'advance_save',
+    },
   },
   {
-    id: 'nmre',
     icon: <FaFileDownload />,
-    label: 'Save NMRE data',
+    text: 'Save NMRE data',
+    data: {
+      id: 'nmre',
+    },
   },
   {
-    id: 'copy',
     icon: <FaCopy />,
-    label: 'Copy image to Clipboard ( Press Ctrl + C )',
+    text: 'Copy image to Clipboard ( Press Ctrl + C )',
+    data: {
+      id: 'copy',
+    },
   },
 ];
 
@@ -142,8 +162,8 @@ function BasicToolBarInner({
   }, [modal]);
 
   const importHandler = useCallback(
-    ({ id }) => {
-      switch (id) {
+    (data) => {
+      switch (data?.id) {
         case 'importFile':
           openLoader();
           break;
@@ -168,8 +188,8 @@ function BasicToolBarInner({
   );
 
   const exportHandler = useCallback(
-    ({ id }) => {
-      switch (id) {
+    (data) => {
+      switch (data?.id) {
         case 'svg':
           void saveAsSVGHandler();
           break;
@@ -207,26 +227,25 @@ function BasicToolBarInner({
       />
 
       {isButtonVisible('import') && (
-        <ToolbarMenu
-          component={<FaFileImport />}
-          toolTip="Import"
-          onClick={(element) => {
-            importHandler(element);
-            return null;
+        <DropdownMenu
+          placement="right"
+          onSelect={(data) => {
+            importHandler(data);
           }}
-          items={importMenu}
-        />
+          options={importMenu}
+        >
+          <Toolbar.Item title="Import " icon={<FaFileImport />} />
+        </DropdownMenu>
       )}
       {isButtonVisible('exportAs') && (
-        <ToolbarMenu
-          component={<FaFileExport />}
-          toolTip="Export As"
-          onClick={(element) => {
-            exportHandler(element);
-            return null;
+        <DropdownMenu
+          onSelect={(data) => {
+            exportHandler(data);
           }}
-          items={exportMenu}
-        />
+          options={exportMenu}
+        >
+          <Toolbar.Item title="Export as " icon={<FaFileExport />} />
+        </DropdownMenu>
       )}
 
       {isButtonVisible('spectraStackAlignments') && ftCounter > 1 && (
@@ -235,13 +254,14 @@ function BasicToolBarInner({
           className="cheminfo"
           title="Spectra alignment ( Press s )"
           onClick={changeDisplayViewModeHandler}
-        >
-          {verticalAlign === 'stack' ? (
-            <SvgNmrOverlay3Aligned />
-          ) : (
-            <SvgNmrOverlay3 />
-          )}
-        </Toolbar.Item>
+          icon={
+            verticalAlign === 'stack' ? (
+              <SvgNmrOverlay3Aligned />
+            ) : (
+              <SvgNmrOverlay3 />
+            )
+          }
+        />
       )}
       {isButtonVisible('realImaginary') && (
         <Toolbar.Item
@@ -249,9 +269,8 @@ function BasicToolBarInner({
           title={isRealSpectrumShown ? 'Display real ' : 'Display imaginary'}
           onClick={changeSpectrumViewHandler}
           className="cheminfo"
-        >
-          <SvgNmrRealImag />
-        </Toolbar.Item>
+          icon={<SvgNmrRealImag />}
+        />
       )}
       {isButtonVisible('spectraCenterAlignments') &&
         (ftCounter > 0 || fidCounter > 0) && (
@@ -264,15 +283,16 @@ function BasicToolBarInner({
             }
             onClick={alignSpectrumsVerticallyHandler}
             className="cheminfo"
-          >
-            <div style={{ fontSize: 24 }}>
-              {verticalAlign === 'bottom' ? (
-                <SvgNmrAlignCenter />
-              ) : (
-                <SvgNmrAlignBottom />
-              )}
-            </div>
-          </Toolbar.Item>
+            icon={
+              <div style={{ fontSize: 24 }}>
+                {verticalAlign === 'bottom' ? (
+                  <SvgNmrAlignCenter />
+                ) : (
+                  <SvgNmrAlignBottom />
+                )}
+              </div>
+            }
+          />
         )}
     </Fragment>
   );
