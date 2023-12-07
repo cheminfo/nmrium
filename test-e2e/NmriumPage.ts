@@ -36,7 +36,7 @@ export default class NmriumPage {
   }
 
   public async clickTool(id: string) {
-    await this.page.click(`_react=ToolbarItem[id="${id}"]`);
+    await this.page.click(`_react=ToolbarItem[id="${id}"] >> nth=0`);
   }
 
   public async assertXScaleDomain(min: number, max: number) {

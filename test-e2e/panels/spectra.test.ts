@@ -277,10 +277,7 @@ test('2d spectrum', async ({ page }) => {
   await test.step('Delete 1H tab', async () => {
     // Go to 1H tab
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
-    // Delete 1H Spectrum item
-    await nmrium.page.click('_react=SpectraTable >> _react=ReactTableRow ', {
-      button: 'right',
-    });
+
     await nmrium.page.click('_react=Button[toolTip="Delete selected spectra"]');
     //confirm delete the selected
     await nmrium.page.click('_react=ConfirmationDialog >> text=Yes');
@@ -368,8 +365,8 @@ test('Export source from 1H spectrum', async ({ page }) => {
     await nmrium.open1D();
   });
   await test.step('Open Save as window ', async () => {
-    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
-    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.clickTool('exportAs');
+    await nmrium.page.click('_react=DropdownMenu  >> text=Save data as');
   });
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator('_react=ModalContent >> _react=Field');
@@ -407,8 +404,8 @@ test('Export source from 1H spectrum', async ({ page }) => {
   });
   await test.step('Check export DATA SOURCE', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
-    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.clickTool('exportAs');
+    await nmrium.page.click('_react=DropdownMenu  >> text=Save data as');
     await nmrium.page.click(
       '_react=ModalContent >> _react=Field[value="DATA_SOURCE"]',
     );
@@ -433,8 +430,8 @@ test('Export source from 1H spectrum', async ({ page }) => {
   });
   await test.step('Check export NO Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
-    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.clickTool('exportAs');
+    await nmrium.page.click('_react=DropdownMenu >> text=Save data as');
     await nmrium.page.click(
       '_react=ModalContent >> _react=Field[value="NO_DATA"]',
     );
@@ -466,8 +463,8 @@ test('Export source from imported spectrum', async ({ page }) => {
     );
   });
   await test.step('Open Save as window ', async () => {
-    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
-    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.clickTool('exportAs');
+    await nmrium.page.click('_react=DropdownMenu  >> text=Save data as');
   });
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator('_react=ModalContent >>_react=Field');
@@ -505,8 +502,8 @@ test('Export source from imported spectrum', async ({ page }) => {
   });
   await test.step('Check export NO Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.page.click('_react=ToolbarMenu[toolTip="Export As"]');
-    await nmrium.page.click('_react=MenuItem >> text=Save data as');
+    await nmrium.clickTool('exportAs');
+    await nmrium.page.click('_react=DropdownMenu >> text=Save data as');
     await nmrium.page.click(
       '_react=ModalContent >> _react=Field[value="NO_DATA"]',
     );
@@ -544,8 +541,7 @@ test('Multiple spectra analysis', async ({ page }) => {
       // eslint-disable-next-line no-await-in-loop
       await expect(
         nmrium.page.locator(
-          `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=Coffee ${
-            i + 1
+          `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=coffee ${i + 1
           }`,
         ),
       ).toBeVisible();
