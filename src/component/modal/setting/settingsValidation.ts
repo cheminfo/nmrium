@@ -55,6 +55,7 @@ const formattingValidation = (obj: Workspace) =>
                   new ValidationError(
                     `${key} nucleus must te be unique`,
                     nuclei[key].name,
+                    // eslint-disable-next-line no-invalid-this
                     `${this.path}.${field}.name`,
                   ),
                 );

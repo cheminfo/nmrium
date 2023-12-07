@@ -541,6 +541,7 @@ test('Multiple spectra analysis', async ({ page }) => {
   });
   await test.step('Check spectra names', async () => {
     for (let i = 0; i < 13; i++) {
+      // eslint-disable-next-line no-await-in-loop
       await expect(
         nmrium.page.locator(
           `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=Coffee ${

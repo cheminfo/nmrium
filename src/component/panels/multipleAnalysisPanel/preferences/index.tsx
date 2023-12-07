@@ -157,6 +157,7 @@ function columnSchema(columns) {
               new Yup.ValidationError(
                 `${key} nucleus must te be unique`,
                 key,
+                // eslint-disable-next-line no-invalid-this
                 this.path,
               ),
             );
@@ -178,6 +179,7 @@ function columnSchema(columns) {
               new Yup.ValidationError(
                 `${column.tempKey} formula value is required`,
                 column.formula,
+                // eslint-disable-next-line no-invalid-this
                 this.path,
               ),
             );

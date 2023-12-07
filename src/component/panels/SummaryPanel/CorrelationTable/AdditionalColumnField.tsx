@@ -231,8 +231,8 @@ function AdditionalColumnField({
         backgroundColor: highlightCommonLinks.isActive
           ? '#ff6f0057'
           : isInViewColumn || isInViewRow
-          ? '#f5f5dc'
-          : 'inherit',
+            ? '#f5f5dc'
+            : 'inherit',
       }}
       title={getTitle(commonLinks)}
       onMouseEnter={mouseEnterHandler}
