@@ -9,15 +9,17 @@ import {
   SvgNmrRangePicking,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
+import { NMRiumToolBarPreferences } from 'nmr-load-save';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import ToggleButton from '../elements/toggle/ToggleButton';
-import ToggleButtonGroup from '../elements/toggle/ToggleButtonGroup';
-import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
+import {
+  CheckOptions,
+  useCheckToolsVisibility,
+} from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 
@@ -26,6 +28,15 @@ import { options } from './ToolTypes';
 interface FunctionToolBarInnerProps {
   defaultValue: string;
   ftCounter: number;
+}
+
+interface ToolItemConfig {
+  id: keyof NMRiumToolBarPreferences;
+  label: string;
+  onClick?: () => void;
+  icon: ToolbarItemProps['icon'];
+  checkOptions?: CheckOptions;
+  condition?: boolean;
 }
 
 function FunctionToolBarInner({
@@ -69,186 +80,121 @@ function FunctionToolBarInner({
     });
   }, [dispatch]);
 
+  const toolItems: ToolItemConfig[] = [
+    {
+      id: 'zoom',
+      label: options.zoom.label,
+      icon: <FaSearchPlus />,
+    },
+    {
+      id: 'zoomOut',
+      label: options.zoomOut.label,
+      onClick: handleFullZoomOut,
+      icon: <FaExpand />,
+    },
+    {
+      id: 'peakPicking',
+      label: `${options.peakPicking.label} ( Press p )`,
+      icon: <SvgNmrPeakPicking />,
+    },
+    {
+      id: 'integral',
+      label: `${options.integral.label} ( Press i )`,
+      icon: <SvgNmrIntegrate />,
+    },
+    {
+      id: 'zonePicking',
+      label: `${options.zonePicking.label} ( Press r )`,
+      icon: <FaDiceFour />,
+    },
+    {
+      id: 'slicing',
+      label: options.slicing.label,
+      icon: <p>Slic</p>,
+    },
+    {
+      id: 'rangePicking',
+      label: `${options.rangePicking.label} ( Press r )`,
+      icon: <SvgNmrRangePicking />,
+    },
+    {
+      id: 'multipleSpectraAnalysis',
+      label: options.multipleSpectraAnalysis.label,
+      icon: <SvgNmrMultipleAnalysis />,
+      checkOptions: { checkSpectrumType: false },
+      condition: ftCounter > 1,
+    },
+    {
+      id: 'apodization',
+      label: `${options.apodization.label} (Press a)`,
+      icon: <SvgNmrApodization />,
+    },
+    {
+      id: 'zeroFilling',
+      label: `${options.zeroFilling.label} ( Press z )`,
+      icon: <SvgNmrZeroFilling />,
+    },
+    {
+      id: 'phaseCorrection',
+      label: `${options.phaseCorrection.label} ( Press a )`,
+      icon: <SvgNmrPhaseCorrection />,
+    },
+    {
+      id: 'phaseCorrectionTwoDimensions',
+      label: `${options.phaseCorrectionTwoDimensions.label} ( Press a )`,
+      icon: <SvgNmrPhaseCorrection />,
+    },
+    {
+      id: 'baselineCorrection',
+      label: `${options.baselineCorrection.label} ( Press b )`,
+      icon: <SvgNmrBaselineCorrection />,
+    },
+    {
+      id: 'exclusionZones',
+      label: `${options.exclusionZones.label} ( Press e )`,
+      icon: <SvgNmrMultipleAnalysis />,
+      checkOptions: { checkSpectrumType: false },
+      condition: ftCounter > 0,
+    },
+    {
+      id: 'fft',
+      label: `${options.fft.label} ( Press t )`,
+      onClick: handleOnFFTFilter,
+      icon: <SvgNmrFourierTransform />,
+    },
+    {
+      id: 'fftDimension1',
+      label: options.fftDimension1.label,
+      onClick: handleFFtDimension1Filter,
+      icon: <SvgNmrFourierTransform />,
+    },
+    {
+      id: 'fftDimension2',
+      label: options.fftDimension2.label,
+      onClick: handleFFtDimension2Filter,
+      icon: <SvgNmrFourierTransform />,
+    },
+  ];
+
   return (
     <>
-      <ToggleButtonGroup value={option} onChange={handleChange}>
-        {isButtonVisible('zoom') && (
-          <ToggleButton
-            key={options.zoom.id}
-            value={options.zoom.id}
-            id={options.zoom.id}
-            title={`${options.zoom.label}`}
-          >
-            <FaSearchPlus />
-          </ToggleButton>
-        )}
+      {toolItems.map((item) => {
+        const { id, icon, label, checkOptions, onClick, condition } = item;
 
-        {isButtonVisible('zoomOut') && (
-          <Toolbar.Item
-            id="zoom-out"
-            onClick={handleFullZoomOut}
-            title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-            icon={<FaExpand />}
-          />
-        )}
-
-        {isButtonVisible('peakPicking') && (
-          <ToggleButton
-            key={options.peakPicking.id}
-            value={options.peakPicking.id}
-            title={`${options.peakPicking.label} ( Press p )`}
-            id={options.peakPicking.id}
-          >
-            <SvgNmrPeakPicking />
-          </ToggleButton>
-        )}
-        {isButtonVisible('integral') && (
-          <ToggleButton
-            key={options.integral.id}
-            value={options.integral.id}
-            id={options.integral.id}
-            title={`${options.integral.label} ( Press i )`}
-          >
-            <SvgNmrIntegrate />
-          </ToggleButton>
-        )}
-        {isButtonVisible('zonePicking') && (
-          <ToggleButton
-            key={options.zonePicking.id}
-            value={options.zonePicking.id}
-            id={options.zonePicking.id}
-            title={`${options.zonePicking.label} ( Press r )`}
-          >
-            <FaDiceFour />
-          </ToggleButton>
-        )}
-        {isButtonVisible('slicing') && (
-          <ToggleButton
-            key={options.slicing.id}
-            value={options.slicing.id}
-            id={options.slicing.id}
-            title={`${options.slicing.label}`}
-          >
-            <p>Slic</p>
-          </ToggleButton>
-        )}
-        {isButtonVisible('rangePicking') && (
-          <ToggleButton
-            key={options.rangePicking.id}
-            value={options.rangePicking.id}
-            title={`${options.rangePicking.label} ( Press r )`}
-            id={options.rangePicking.id}
-          >
-            <SvgNmrRangePicking />
-          </ToggleButton>
-        )}
-        {isButtonVisible('multipleSpectraAnalysis', {
-          checkSpectrumType: false,
-        }) &&
-          ftCounter > 1 && (
-            <ToggleButton
-              key={options.multipleSpectraAnalysis.id}
-              value={options.multipleSpectraAnalysis.id}
-              id={options.multipleSpectraAnalysis.id}
-              title={options.multipleSpectraAnalysis.label}
-            >
-              <SvgNmrMultipleAnalysis />
-            </ToggleButton>
-          )}
-        {isButtonVisible('apodization') && (
-          <ToggleButton
-            key={options.apodization.id}
-            value={options.apodization.id}
-            id={options.apodization.id}
-            title={`${options.apodization.label} (Press a)`}
-          >
-            <SvgNmrApodization />
-          </ToggleButton>
-        )}
-        {isButtonVisible('zeroFilling') && (
-          <ToggleButton
-            key={options.zeroFilling.id}
-            value={options.zeroFilling.id}
-            id={options.zeroFilling.id}
-            title={`${options.zeroFilling.label} ( Press z )`}
-          >
-            <SvgNmrZeroFilling />
-          </ToggleButton>
-        )}
-        {isButtonVisible('phaseCorrection') && (
-          <ToggleButton
-            key={options.phaseCorrection.id}
-            value={options.phaseCorrection.id}
-            id={options.phaseCorrection.id}
-            title={`${options.phaseCorrection.label} ( Press a )`}
-          >
-            <SvgNmrPhaseCorrection />
-          </ToggleButton>
-        )}
-        {isButtonVisible('phaseCorrectionTwoDimensions') && (
-          <ToggleButton
-            key={options.phaseCorrectionTwoDimensions.id}
-            value={options.phaseCorrectionTwoDimensions.id}
-            id={options.phaseCorrectionTwoDimensions.id}
-            title={`${options.phaseCorrectionTwoDimensions.label} ( Press a )`}
-          >
-            <SvgNmrPhaseCorrection />
-          </ToggleButton>
-        )}
-
-        {isButtonVisible('baselineCorrection') && (
-          <ToggleButton
-            key={options.baselineCorrection.id}
-            value={options.baselineCorrection.id}
-            id={options.baselineCorrection.id}
-            title={`${options.baselineCorrection.label} ( Press b )`}
-          >
-            <SvgNmrBaselineCorrection />
-          </ToggleButton>
-        )}
-
-        {isButtonVisible('exclusionZones', { checkSpectrumType: false }) &&
-          ftCounter > 0 && (
-            <ToggleButton
-              key={options.exclusionZones.id}
-              value={options.exclusionZones.id}
-              title={`${options.exclusionZones.label} ( Press e )`}
-              id={options.exclusionZones.id}
-            >
-              <div style={{ fontSize: 18 }}>
-                <SvgNmrMultipleAnalysis />
-              </div>
-            </ToggleButton>
-          )}
-      </ToggleButtonGroup>
-
-      {isButtonVisible('fft') && (
-        <Toolbar.Item
-          id={options.fft.id}
-          className="cheminfo"
-          title={`${options.fft.label} ( Press t )`}
-          onClick={handleOnFFTFilter}
-          icon={<SvgNmrFourierTransform />}
-        />
-      )}
-      {isButtonVisible('fftDimension1') && (
-        <Toolbar.Item
-          id={options.fftDimension1.id}
-          className="cheminfo"
-          title={options.fftDimension1.label}
-          onClick={handleFFtDimension1Filter}
-          icon={<SvgNmrFourierTransform />}
-        />
-      )}
-      {isButtonVisible('fftDimension2') && (
-        <Toolbar.Item
-          id={options.fftDimension2.id}
-          className="cheminfo"
-          title={options.fftDimension2.label}
-          onClick={handleFFtDimension2Filter}
-          icon={<SvgNmrFourierTransform />}
-        />
-      )}
+        return (
+          isButtonVisible(id, checkOptions) &&
+          (condition === undefined || condition) && (
+            <Toolbar.Item
+              key={id}
+              onClick={onClick || (() => handleChange(id))}
+              title={label}
+              id={id}
+              active={option === id}
+              icon={icon}
+            />
+          )
+        );
+      })}
     </>
   );
 }

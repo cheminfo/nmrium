@@ -12,7 +12,7 @@ import useSpectrum from './useSpectrum';
 
 type SpectrumInfo = Info1D | Info2D;
 
-interface CheckOptions {
+export interface CheckOptions {
   checkSpectrumType?: boolean;
   checkMode?: boolean;
   extraInfoCheckParameters?: SpectrumInfo;
