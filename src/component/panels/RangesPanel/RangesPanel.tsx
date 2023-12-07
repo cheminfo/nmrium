@@ -6,7 +6,6 @@ import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D, Ranges } from 'nmr-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
-import { DropdownMenuProps } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
@@ -14,6 +13,7 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -24,10 +24,9 @@ import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
 
-const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+const rangesContextMenuOptions: BaseContextMenuProps['options'] = [
   {
-    label: 'Copy to Clipboard',
-    type: 'option',
+    text: 'Copy to Clipboard',
     icon: <FaCopy />,
   },
 ];

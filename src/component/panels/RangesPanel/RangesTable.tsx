@@ -4,7 +4,7 @@ import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { FaLink } from 'react-icons/fa';
 
-import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import useTableSortBy from '../../hooks/useTableSortBy';
 import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -56,7 +56,7 @@ const tableStyle = css`
     }
   }
 `;
-interface RangesTableProps extends ContextMenuProps {
+interface RangesTableProps extends TableContextMenuProps {
   onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
   tableData: any;
