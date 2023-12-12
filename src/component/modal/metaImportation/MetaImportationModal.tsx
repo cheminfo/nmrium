@@ -224,8 +224,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
           {!parseResult ? (
             <DropZone
               fileValidator={fileValidator}
-              color="gray"
-              emptyText="Drag and Drop CSV or tab-delimited file (.csv, .txt or .tsv)"
+              emptyDescription="Drag and Drop CSV or tab-delimited file (.csv, .txt or .tsv)"
               onDrop={handleDrop}
             />
           ) : (
