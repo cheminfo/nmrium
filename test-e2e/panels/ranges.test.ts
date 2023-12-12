@@ -127,15 +127,17 @@ test('Automatic ranges detection should work', async ({ page }) => {
     { s: '2.15', r: '0.07' },
     { s: '2.31 - 2.34', r: '1.01' },
   ];
+
+  const testPromises: Array<Promise<void>> = [];
   for (const [i, { s, r }] of rangesData.entries()) {
     const range = ranges.nth(i);
-    // eslint-disable-next-line no-await-in-loop
-    await expect(range).toBeVisible();
-    // eslint-disable-next-line no-await-in-loop
-    await expect(range).toContainText(s);
-    // eslint-disable-next-line no-await-in-loop
-    await expect(range).toContainText(r);
+    testPromises.push(
+      expect(range).toBeVisible(),
+      expect(range).toContainText(s),
+      expect(range).toContainText(r),
+    );
   }
+  await Promise.all(testPromises);
 });
 
 test('Multiplicity should be visible', async ({ page }) => {
