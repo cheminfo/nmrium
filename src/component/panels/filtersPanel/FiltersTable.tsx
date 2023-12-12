@@ -1,8 +1,8 @@
+import { Checkbox } from '@blueprintjs/core';
 import { Filter } from 'nmr-processing';
 import { useMemo, useCallback, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
-import { Checkbox } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
