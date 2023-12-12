@@ -537,16 +537,18 @@ test('Multiple spectra analysis', async ({ page }) => {
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
   await test.step('Check spectra names', async () => {
+    const testPremisses: Array<Promise<void>> = [];
     for (let i = 0; i < 13; i++) {
-      // eslint-disable-next-line no-await-in-loop
-      await expect(
+      const test = expect(
         nmrium.page.locator(
-          `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=coffee ${
+          `_react=SpectraTable >> _react=SpectrumName >> text="coffee ${
             i + 1
-          }`,
+          }"`,
         ),
       ).toBeVisible();
+      testPremisses.push(test);
     }
+    await Promise.all(testPremisses);
   });
   await test.step('Check spectra colors', async () => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
