@@ -31,6 +31,7 @@ import ImportPublicationStringModal from '../modal/ImportPublicationStringModal'
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
 import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
 import { VerticalAlignment } from '../reducer/Reducer';
+
 import { options } from './ToolTypes';
 
 const IMPORT_MENU: DropdownMenuProps['options'] = [
@@ -234,27 +235,34 @@ function BasicToolBarInner({
             importHandler(data);
           }}
           options={importMenu}
-        >
-          <Toolbar.Item
-            id={options.import.id}
-            title={options.import.label}
-            icon={<FaFileImport />}
-          />
-        </DropdownMenu>
+          renderTarget={(targetProps) => (
+            <div {...targetProps} style={{ flex: 'none' }}>
+              <Toolbar.Item
+                id={options.import.id}
+                title={options.import.label}
+                icon={<FaFileImport />}
+              />
+            </div>
+          )}
+        />
       )}
       {isButtonVisible('exportAs') && (
         <DropdownMenu
           onSelect={(data) => {
             exportHandler(data);
           }}
+          placement="right"
           options={exportMenu}
-        >
-          <Toolbar.Item
-            id={options.exportAs.id}
-            title={options.import.label}
-            icon={<FaFileExport />}
-          />
-        </DropdownMenu>
+          renderTarget={(targetProps) => (
+            <div {...targetProps} style={{ flex: 'none' }}>
+              <Toolbar.Item
+                id={options.exportAs.id}
+                title={options.import.label}
+                icon={<FaFileExport />}
+              />
+            </div>
+          )}
+        />
       )}
 
       {isButtonVisible('spectraStackAlignments') && ftCounter > 1 && (
@@ -293,13 +301,13 @@ function BasicToolBarInner({
             onClick={alignSpectrumsVerticallyHandler}
             className="cheminfo"
             icon={
-              <div style={{ fontSize: 24 }}>
+              <>
                 {verticalAlign === 'bottom' ? (
                   <SvgNmrAlignCenter />
                 ) : (
                   <SvgNmrAlignBottom />
                 )}
-              </div>
+              </>
             }
           />
         )}

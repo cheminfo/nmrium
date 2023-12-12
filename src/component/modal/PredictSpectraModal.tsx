@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Checkbox } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { SvgNmrFt } from 'cheminfo-font';
 import { useCallback, useRef, useState, useMemo } from 'react';
-import { Checkbox, CheckedState, Modal, useOnOff } from 'react-science/ui';
+import { Modal, useOnOff } from 'react-science/ui';
 
 import {
   getDefaultPredictionOptions,
@@ -65,7 +66,7 @@ export function PredictSpectraModal({
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
   const { isApproved: isAgree = false, ...options } = predictionPreferences;
-  const [isApproved, setApproved] = useState<CheckedState>(isAgree);
+  const [isApproved, setApproved] = useState<boolean>(isAgree);
   const {
     toolOptions: {
       data: { predictionIndex },
@@ -174,9 +175,8 @@ export function PredictSpectraModal({
             </p>
             <div className="warning-container">
               <Checkbox
-                onChange={setApproved}
+                onChange={(value) => setApproved(value.target.checked)}
                 checked={isApproved}
-                key={String(isApproved)}
                 label="I confirm that the chemical structure is not confidential."
               />
             </div>
