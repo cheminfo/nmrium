@@ -541,7 +541,8 @@ test('Multiple spectra analysis', async ({ page }) => {
       // eslint-disable-next-line no-await-in-loop
       await expect(
         nmrium.page.locator(
-          `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=coffee ${i + 1
+          `_react=SpectraTable >> _react=SpectrumName >> nth=${i} >> text=coffee ${
+            i + 1
           }`,
         ),
       ).toBeVisible();

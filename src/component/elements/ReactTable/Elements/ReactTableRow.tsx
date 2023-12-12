@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { css, CSSObject } from '@emotion/react';
+import { css, CSSObject, SerializedStyles } from '@emotion/react';
 import { useMemo, useEffect, useCallback } from 'react';
 
 import { HighlightEventSource, useHighlight } from '../../../highlight/index';
@@ -11,7 +11,7 @@ function getRowStyle(
   isActive: boolean,
   rowStyle: BaseRowStyle = {},
   disableDefaultRowStyle?: boolean,
-) {
+): SerializedStyles {
   const { hover = {}, active = {}, base = {}, activated = {} } = rowStyle;
 
   const hoverStyle = disableDefaultRowStyle
@@ -21,7 +21,7 @@ function getRowStyle(
     ? (active as CSSObject)
     : { backgroundColor: '#ff6f0070', ...active };
   const baseStyle = disableDefaultRowStyle
-    ? (base as CSSObject)
+    ? (base as object)
     : { backgroundColor: 'white', ...base };
 
   return css([
