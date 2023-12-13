@@ -88,7 +88,8 @@ function FunctionToolBarInner({
     },
     {
       id: 'zoomOut',
-      label: options.zoomOut.label,
+      label:
+        'Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )',
       onClick: handleFullZoomOut,
       icon: <FaExpand />,
     },
