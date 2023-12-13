@@ -5,7 +5,6 @@ export { initiateDatum1D } from './initiateDatum1D';
 export { changeIntegralsRelative } from './integrals/changeIntegralsRelative';
 export { isSpectrum1D } from './isSpectrum1D';
 export { autoPeakPicking } from './peaks/autoPeakPicking';
-export { lookupPeak } from './peaks/lookupPeak';
 export { optimizePeaks } from './peaks/optimizePeaks';
 export { addRange } from './ranges/addRange';
 export { changeRange } from './ranges/changeRange';
