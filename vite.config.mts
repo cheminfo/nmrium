@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react-swc';
 import analyze from 'rollup-plugin-analyzer';
-import { AliasOptions, defineConfig } from 'vite';
+import type { AliasOptions } from 'vite'
+import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default () => {
