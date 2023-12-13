@@ -42,17 +42,23 @@ function getYScale(
   spectrumId: number | null | string = null,
 ) {
   const { height, margin, verticalAlign, yDomain, yDomains } = options;
-  const _height =
-    verticalAlign === 'center'
-      ? (height - 40) / 2
-      : height - margin.bottom - 40;
-  let domainY: [number, number] | [] = [];
-  if (spectrumId === null || yDomains[spectrumId] === undefined) {
-    domainY = [0, yDomain[1]];
-  } else {
-    domainY = [0, yDomains[spectrumId][1]];
+  let domainY: number[] = yDomain;
+  if (spectrumId && yDomains?.[spectrumId]) {
+    domainY = yDomains[spectrumId];
   }
-  return scaleLinear(domainY, [_height, margin.top]);
+  const [min, max] = domainY;
+  let bottomShift = 40;
+
+  if (verticalAlign === 'center') {
+    bottomShift = 0;
+    const maxim = Math.max(Math.abs(max), Math.abs(min));
+    domainY = [-maxim, maxim];
+  } else {
+    domainY = [0, domainY[1]];
+  }
+  const innerHeight = height - margin.bottom - bottomShift;
+
+  return scaleLinear(domainY, [innerHeight, margin.top]);
 }
 
 interface IntegralYScaleOptions {

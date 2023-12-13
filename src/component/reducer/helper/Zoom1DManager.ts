@@ -61,7 +61,7 @@ function setZoom(
         ]);
         const [min, max] = shareYDomain ? yDomain : yDomains[id];
         const maxPoint = Math.max(Math.abs(max), Math.abs(min));
-        const scalePoint = maxPoint === max ? 0 : min;
+        const scalePoint = maxPoint === Math.max(max) ? 0 : min;
         const t = zoomIdentity
           .translate(
             0,
