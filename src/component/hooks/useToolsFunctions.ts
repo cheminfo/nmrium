@@ -46,7 +46,7 @@ export default function useToolsFunctions() {
     if (debounceClickEventsRef.current.clicks.length === 0) {
       dispatch({
         type: 'FULL_ZOOM_OUT',
-        payload: { zoomType: 'FULL' },
+        payload: { zoomType: 'HORIZONTAL' },
       });
     }
     const callback = lodashDebounce(() => {
@@ -63,7 +63,7 @@ export default function useToolsFunctions() {
       debounceClickEventsRef.current.clicks = [];
       dispatch({
         type: 'FULL_ZOOM_OUT',
-        payload: {},
+        payload: { zoomType: 'FULL' },
       });
     }
   }, [dispatch, debounceClickEventsRef]);
