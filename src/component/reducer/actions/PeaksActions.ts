@@ -1,5 +1,4 @@
 import { v4 } from '@lukeed/uuid';
-import { NmrData1D } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import {
@@ -12,7 +11,6 @@ import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
   getShiftX,
-  lookupPeak,
   autoPeakPicking,
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
@@ -23,6 +21,7 @@ import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { ActionType } from '../types/ActionType';
+import { getClosePeak } from '../../utility/getClosePeak';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;
@@ -74,7 +73,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
     const startX = mouseXPosition - xShift;
     const endX = mouseXPosition + xShift;
     const [from, to] = getRange(draft, { startX, endX });
-    const candidatePeak = lookupPeak(state.data[index].data as NmrData1D, {
+    const candidatePeak = getClosePeak(state.data[index] as Spectrum1D, {
       from,
       to,
     });
@@ -108,7 +107,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
     const [from, to] = getRange(draft, { startX, endX });
 
     if (from !== to) {
-      const peak = lookupPeak(datumOriginal.data, { from, to });
+      const peak = getClosePeak(datumOriginal, { from, to });
 
       const shiftX = getShiftX(draft.data[index] as Spectrum1D);
 
