@@ -18,6 +18,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "test-e2e", "playwright.config.ts", "vite.config.ts"],
+  "include": ["src", "test-e2e", "playwright.config.ts", "vite.config.mts"],
   "exclude": ["node_modules"]
 }
