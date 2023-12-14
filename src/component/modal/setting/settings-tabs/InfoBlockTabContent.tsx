@@ -85,7 +85,7 @@ function InfoBlockTabContent() {
             <FormikInput
               name={`infoBlock.fields.${row.index}.jpath`}
               style={{ input: styles.input }}
-              mapOnChangeValue={(key) => paths?.[key] || null}
+              mapOnChangeValue={(key) => paths?.[key] || key}
               mapValue={(paths) => convertPathArrayToString(paths)}
               datalist={datalist}
             />
