@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.46.0](https://github.com/cheminfo/nmrium/compare/v0.45.0...v0.46.0) (2023-12-14)
+
+
+### Features
+
+* load files in parallel ([82a15d4](https://github.com/cheminfo/nmrium/commit/82a15d4457624dd21848b54dd0148144f910ee5a))
+* remap existing assignments when molecule is edited ([#2779](https://github.com/cheminfo/nmrium/issues/2779)) ([840c3e5](https://github.com/cheminfo/nmrium/commit/840c3e50851035678ac49b45f2c85bdfb142e619))
+
+
+### Bug Fixes
+
+* auto phase correction ([82a15d4](https://github.com/cheminfo/nmrium/commit/82a15d4457624dd21848b54dd0148144f910ee5a))
+* auto phase correction ([#2787](https://github.com/cheminfo/nmrium/issues/2787)) ([82a15d4](https://github.com/cheminfo/nmrium/commit/82a15d4457624dd21848b54dd0148144f910ee5a))
+* check spectrum has imaginary part before calling xMultiply ([e8d736b](https://github.com/cheminfo/nmrium/commit/e8d736b879410aecb71c34467106b95462d5ab59))
+* could loose assignement of expanded hydrogens ([#2793](https://github.com/cheminfo/nmrium/issues/2793)) ([cde96e1](https://github.com/cheminfo/nmrium/commit/cde96e1d15c8763e8b02a7dccb2c992ad6f89a8a))
+* filter out bruker experiments without required files to process ([a40c318](https://github.com/cheminfo/nmrium/commit/a40c318a0b3bff9eebcd8ffe7954d4a96b923011))
+* inverted fft spectrum-migration to 6 version ([#2766](https://github.com/cheminfo/nmrium/issues/2766)) ([1995e6d](https://github.com/cheminfo/nmrium/commit/1995e6dde22829170c0108ec36192a94bc44f4de))
+* large negative spectra peak scale ([3262b0d](https://github.com/cheminfo/nmrium/commit/3262b0daabbcd3bbdcd68c685ad41d2f6afe0b80)), closes [#1657](https://github.com/cheminfo/nmrium/issues/1657)
+* large negative spectra peak scale ([19fd560](https://github.com/cheminfo/nmrium/commit/19fd560c3ec9991e788e5afc8fbe3b6dc32f3479)), closes [#1657](https://github.com/cheminfo/nmrium/issues/1657)
+* negative peak picking ([c35089f](https://github.com/cheminfo/nmrium/commit/c35089fe984cee6fe7db759e093d6262170ad39a))
+* render the info value correctly in the info block ([d51ce3d](https://github.com/cheminfo/nmrium/commit/d51ce3d7630e3984304207c039513aceb923a051))
+* set the first FT spectrum for 2d projection if none selected ([#2770](https://github.com/cheminfo/nmrium/issues/2770)) ([2d3fcd8](https://github.com/cheminfo/nmrium/commit/2d3fcd85cce855671a93a15fe1476d9f04ec07fd))
+* title block field filter ([0345ccb](https://github.com/cheminfo/nmrium/commit/0345ccbd070b3952ebde55f871769cca4ff6c4a9)), closes [#2778](https://github.com/cheminfo/nmrium/issues/2778)
+* update react-science with Modal fix ([5a74af1](https://github.com/cheminfo/nmrium/commit/5a74af1d3137f07f245ec415266459d42785fb04))
+* zero filling size list ([d44f519](https://github.com/cheminfo/nmrium/commit/d44f51972c5458c88643baffe0e511ebe66a1949))
+* zoom out ([76fb39b](https://github.com/cheminfo/nmrium/commit/76fb39b1c5368cd7946aa7a75b719c001778629d))
+
 ## [0.45.0](https://github.com/cheminfo/nmrium/compare/v0.44.0...v0.45.0) (2023-11-24)
 
 
