@@ -125,7 +125,6 @@ function HeaderInner(props: HeaderInnerProps) {
         return <Zones2DOptionPanel />;
       default:
         return null;
-        break;
     }
   }, [selectedOptionPanel]);
 
@@ -147,7 +146,9 @@ function HeaderInner(props: HeaderInnerProps) {
 
   return (
     <div css={styles}>
-      <Header style={{ leftStyle: { flex: 1 } }}>
+      <Header
+        style={{ leftStyle: { flex: 1 }, containerStyle: { padding: '2px' } }}
+      >
         <HeaderContainer
           style={{
             alignItems: 'center',
