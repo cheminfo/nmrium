@@ -15,7 +15,7 @@ const styles: Record<'header', CSSProperties> = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottom: '1px solid rgb(247, 247, 247);',
+    borderBottom: '1px solid rgb(247, 247, 247)',
     boxShadow: 'rgb(255, 255, 255) 0px 1px 0px 0px inset',
   },
 };
