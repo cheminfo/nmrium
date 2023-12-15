@@ -28,7 +28,7 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
   ) as Signal1D[];
 
   if (index !== -1) {
-    spectrum.ranges.values[index] = mapRanges(
+    const [newRange] = mapRanges(
       [
         {
           ...spectrum.ranges.values[index],
@@ -40,8 +40,11 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
         },
       ],
       spectrum,
-    )[0];
+    );
 
-    updateRangesRelativeValues(spectrum);
+    if (newRange) {
+      spectrum.ranges.values[index] = newRange;
+      updateRangesRelativeValues(spectrum);
+    }
   }
 }
