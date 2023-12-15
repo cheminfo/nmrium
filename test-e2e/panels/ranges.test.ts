@@ -31,6 +31,18 @@ async function shiftSignal(nmrium: NmriumPage) {
   await expect(trackerLocator).toHaveCount(1);
 }
 
+async function simulateResizeWithoutChange(nmrium: NmriumPage) {
+  const rightResizer = nmrium.page
+    .getByTestId('range')
+    .nth(0)
+    .locator('_react=SVGResizerHandle')
+    .nth(1);
+
+  await rightResizer.dblclick();
+
+  await expect(nmrium.page.getByTestId(`range`)).toHaveCount(2);
+}
+
 async function resizeRange(nmrium: NmriumPage) {
   const rightResizer = nmrium.page
     .getByTestId('range')
@@ -64,7 +76,7 @@ async function resizeRange(nmrium: NmriumPage) {
   const { width } = (await greenArea.boundingBox()) as BoundingBox;
 
   expect(width).toBeGreaterThan(29);
-  expect(width).toBeLessThan(32);
+  expect(width).toBeLessThanOrEqual(32);
 }
 
 async function deleteRange(nmrium: NmriumPage) {
@@ -85,6 +97,10 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
     //add two ranges
     await addRange(nmrium, 200, 210, 1);
     await addRange(nmrium, 110, 120, 2);
+  });
+
+  await test.step('Clicking and subsequently releasing the resizing action should not crash or add a new range', async () => {
+    await simulateResizeWithoutChange(nmrium);
   });
 
   await test.step('resize one of the ranges', async () => {
