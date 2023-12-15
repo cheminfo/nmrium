@@ -29,7 +29,7 @@ import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
-import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
+import { useMetaInformationImportationModal } from '../modal/metaImportation';
 import { VerticalAlignment } from '../reducer/Reducer';
 
 import { options } from './ToolTypes';
@@ -230,39 +230,37 @@ function BasicToolBarInner({
 
       {isButtonVisible('import') && (
         <DropdownMenu
-          placement="right"
+          placement="right-start"
           onSelect={(data) => {
             importHandler(data);
           }}
+          targetTagName="div"
+          targetProps={{ style: { flex: 'none' } }}
           options={importMenu}
-          renderTarget={(targetProps) => (
-            <div {...targetProps} style={{ flex: 'none' }}>
-              <Toolbar.Item
-                id={options.import.id}
-                title={options.import.label}
-                icon={<FaFileImport />}
-              />
-            </div>
-          )}
-        />
+        >
+          <Toolbar.Item
+            id={options.import.id}
+            title={options.import.label}
+            icon={<FaFileImport />}
+          />
+        </DropdownMenu>
       )}
       {isButtonVisible('exportAs') && (
         <DropdownMenu
           onSelect={(data) => {
             exportHandler(data);
           }}
-          placement="right"
+          placement="right-start"
+          targetTagName="div"
+          targetProps={{ style: { flex: 'none' } }}
           options={exportMenu}
-          renderTarget={(targetProps) => (
-            <div {...targetProps} style={{ flex: 'none' }}>
-              <Toolbar.Item
-                id={options.exportAs.id}
-                title={options.import.label}
-                icon={<FaFileExport />}
-              />
-            </div>
-          )}
-        />
+        >
+          <Toolbar.Item
+            id={options.exportAs.id}
+            title={options.import.label}
+            icon={<FaFileExport />}
+          />
+        </DropdownMenu>
       )}
 
       {isButtonVisible('spectraStackAlignments') && ftCounter > 1 && (
