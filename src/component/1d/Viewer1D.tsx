@@ -1,5 +1,3 @@
-import { xGetFromToIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
 import {
   useCallback,
   useEffect,
@@ -11,7 +9,6 @@ import {
 import { ResponsiveChart } from 'react-d3-utils';
 import { useOnOff } from 'react-science/ui';
 
-import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignals';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
@@ -169,29 +166,13 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               });
               break;
             case options.rangePicking.id: {
-              const [from, to] = getRange(state, {
-                startX: brushData.startX,
-                endX: brushData.endX,
-              });
 
               if (!activeSpectrum) break;
 
-              const {
-                data: { x },
-              } = data[activeSpectrum.index] as Spectrum1D;
-
-              const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
-
-              if (toIndex - fromIndex <= MAX_LENGTH) {
-                dispatch({
-                  type: 'ADD_RANGE',
-                  payload: brushData,
-                });
-              } else {
-                alert.error(
-                  `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
-                );
-              }
+              dispatch({
+                type: 'ADD_RANGE',
+                payload: brushData,
+              });
 
               break;
             }
