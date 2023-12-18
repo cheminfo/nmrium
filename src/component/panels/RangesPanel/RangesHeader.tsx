@@ -269,7 +269,7 @@ function RangesHeader({
           <ImLink />
         </ActiveButton>
         <PeaksToggleActions
-          disbale={!hasRanges}
+          disabled={!hasRanges}
           showPeaks={showPeaks}
           onShowToggle={() => toggleViewProperty('showPeaks')}
           displayingMode={displayingMode}
