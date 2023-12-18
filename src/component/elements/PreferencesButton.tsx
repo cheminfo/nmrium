@@ -1,18 +1,12 @@
 import { FaCog } from 'react-icons/fa';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
-import ToolTip from './ToolTip/ToolTip';
-
-type PreferencesButtonProps = Pick<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'onClick'
->;
+type PreferencesButtonProps = Pick<ToolbarItemProps, 'onClick'>;
 
 export function PreferencesButton({ onClick }: PreferencesButtonProps) {
   return (
-    <ToolTip title="Preferences" popupPlacement="left">
-      <button type="button" onClick={onClick}>
-        <FaCog />
-      </button>
-    </ToolTip>
+    <Toolbar>
+      <Toolbar.Item icon={<FaCog />} title="Preferences" onClick={onClick} />
+    </Toolbar>
   );
 }
