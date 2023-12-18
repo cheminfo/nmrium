@@ -17,7 +17,7 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
-import CloseButton from '../../elements/CloseButton';
+import { CloseButton } from '../../elements/CloseButton';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';

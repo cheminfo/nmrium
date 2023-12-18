@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { FaCopy } from 'react-icons/fa';
 
-import CloseButton from '../elements/CloseButton';
+import { CloseButton } from '../elements/CloseButton';
 
 const styles = css`
   overflow: auto;
