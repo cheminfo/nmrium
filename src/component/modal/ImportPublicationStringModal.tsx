@@ -6,7 +6,7 @@ import * as yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
-import CloseButton from '../elements/CloseButton';
+import { CloseButton } from '../elements/CloseButton';
 import FormikTextarea from '../elements/formik/FormikTextarea';
 import { useAlert } from '../elements/popup/Alert';
 

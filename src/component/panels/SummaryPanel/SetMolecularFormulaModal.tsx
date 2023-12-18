@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
 
-import CloseButton from '../../elements/CloseButton';
+import { CloseButton } from '../../elements/CloseButton';
 import MolecularFormulaInput from '../../elements/MolecularFormulaInput';
 import MoleculeSelection from '../../elements/MoleculeSelection';
 
