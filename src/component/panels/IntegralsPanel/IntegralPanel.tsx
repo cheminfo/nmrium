@@ -6,11 +6,10 @@ import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
@@ -22,16 +21,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
 import IntegralsPreferences from './IntegralsPreferences';
-
-const style = css`
-  .sum-button {
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
 
 export interface IntegralPanelInnerProps {
   integrals: Integrals;
@@ -125,7 +114,6 @@ function IntegralPanelInner({
     <div
       css={[
         tablePanelStyle,
-        style,
         isFlipped &&
           css`
             th {
@@ -150,36 +138,31 @@ function IntegralPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          <ToolTip
-            title={
-              currentSum
-                ? `Change integration sum (${currentSum.toFixed(2)})`
-                : 'Change integration sum'
-            }
-            popupPlacement="right"
-          >
+          <Toolbar>
             <ChangeSumModal
               onSave={changeIntegralSumHandler}
               sumType="integrals"
               currentSum={currentSum}
               sumOptions={integrals?.options}
               renderButton={(onClick) => (
-                <button className="sum-button" type="button" onClick={onClick}>
-                  <SvgNmrSum />
-                </button>
+                <Toolbar.Item
+                  icon={<SvgNmrSum />}
+                  title={
+                    currentSum
+                      ? `Change integration sum (${currentSum.toFixed(2)})`
+                      : 'Change integration sum'
+                  }
+                  onClick={onClick}
+                />
               )}
             />
-          </ToolTip>
-
-          <ActiveButton
-            className="icon"
-            popupTitle="Fixed integration values"
-            popupPlacement="right"
-            onClick={toggleConstantSumHandler}
-            value={integrals?.options?.isSumConstant || false}
-          >
-            <ImLink />
-          </ActiveButton>
+            <Toolbar.Item
+              icon={<ImLink />}
+              title="Fixed integration values"
+              onClick={toggleConstantSumHandler}
+              active={integrals?.options?.isSumConstant}
+            />
+          </Toolbar>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
