@@ -6,13 +6,12 @@ import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
 import { Info1D, Peak1D, Peaks } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import ActiveButton from '../../elements/ActiveButton';
-import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
@@ -131,7 +130,7 @@ function PeaksPanelInner({
   }
   const counter = peaks?.values?.length || 0;
 
-  const disbale = !peaks?.values || peaks.values.length === 0;
+  const disabled = !peaks?.values || peaks.values.length === 0;
   return (
     <div
       css={[
@@ -165,46 +164,40 @@ function PeaksPanelInner({
         >
           {isExperimental && (
             <>
-              <ActiveButton
-                style={{ marginLeft: '2px', marginRight: '2px' }}
-                popupTitle={
-                  peaksViewState.showPeaksShapes
-                    ? 'Hide peaks shapes'
-                    : 'Show peaks shapes'
-                }
-                popupPlacement="right"
-                onClick={() => toggleViewProperty('showPeaksShapes')}
-                disabled={disbale}
-                value={peaksViewState.showPeaksShapes}
-              >
-                <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-              </ActiveButton>
-              <ActiveButton
-                style={{ marginLeft: '2px', marginRight: '2px' }}
-                popupTitle={
-                  peaksViewState.showPeaksSum
-                    ? 'Hide peaks sum'
-                    : 'Show peaks sum'
-                }
-                popupPlacement="right"
-                onClick={() => toggleViewProperty('showPeaksSum')}
-                disabled={disbale}
-                value={peaksViewState.showPeaksSum}
-              >
-                <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
-              </ActiveButton>
-
-              <Button.BarButton
-                onClick={optimizePeaksHandler}
-                toolTip="Optimize peaks"
-                tooltipOrientation="horizontal"
-              >
-                <FaThinkPeaks />
-              </Button.BarButton>
+              <Toolbar disabled={disabled}>
+                <Toolbar.Item
+                  icon={<SvgPeaks />}
+                  title={
+                    peaksViewState.showPeaksShapes
+                      ? 'Hide peaks shapes'
+                      : 'Show peaks shapes'
+                  }
+                  onClick={() => toggleViewProperty('showPeaksShapes')}
+                  active={peaksViewState.showPeaksShapes}
+                />
+                <Toolbar.Item
+                  icon={<SvgNmrFt />}
+                  title={
+                    peaksViewState.showPeaksSum
+                      ? 'Hide peaks sum'
+                      : 'Show peaks sum'
+                  }
+                  onClick={() => toggleViewProperty('showPeaksSum')}
+                  active={peaksViewState.showPeaksSum}
+                />
+              </Toolbar>
+              <Toolbar>
+                <Toolbar.Item
+                  icon={<FaThinkPeaks />}
+                  title="Optimize peaks"
+                  onClick={optimizePeaksHandler}
+                />
+              </Toolbar>
             </>
           )}
+
           <PeaksToggleActions
-            disbale={disbale}
+            disabled={disabled}
             showPeaks={peaksViewState.showPeaks}
             onShowToggle={() => toggleViewProperty('showPeaks')}
             displayingMode={peaksViewState.displayingMode}

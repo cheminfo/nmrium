@@ -1,22 +1,17 @@
 import { SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
-import { CSSProperties } from 'react';
-
-import ActiveButton, { ActiveButtonProps } from '../../elements/ActiveButton';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 interface PeaksToggleProps {
-  disbale: boolean;
+  disabled: boolean;
   displayingMode: 'single' | 'spread';
   showPeaks: boolean;
-  onShowToggle: ActiveButtonProps['onClick'];
-  onDisplayingModeToggle: ActiveButtonProps['onClick'];
+  onShowToggle: ToolbarItemProps['onClick'];
+  onDisplayingModeToggle: ToolbarItemProps['onClick'];
 }
 
-const style: CSSProperties = {
-  margin: '0 2px',
-};
 export function PeaksToggleActions(props: PeaksToggleProps) {
   const {
-    disbale,
+    disabled,
     displayingMode,
     showPeaks,
     onShowToggle,
@@ -24,29 +19,19 @@ export function PeaksToggleActions(props: PeaksToggleProps) {
   } = props;
 
   return (
-    <>
-      <ActiveButton
-        style={style}
-        popupTitle={showPeaks ? 'Hide peaks' : 'Show peaks'}
-        popupPlacement="right"
+    <Toolbar disabled={disabled}>
+      <Toolbar.Item
+        icon={<SvgNmrPeaks />}
+        title={showPeaks ? 'Hide peaks' : 'Show peaks'}
         onClick={onShowToggle}
-        disabled={disbale}
-        value={showPeaks}
-      >
-        <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-      </ActiveButton>
-      <ActiveButton
-        style={style}
-        popupTitle={displayingMode === 'spread' ? 'Single Mode' : 'Spread mode'}
-        popupPlacement="right"
+        active={showPeaks}
+      />
+      <Toolbar.Item
+        icon={<SvgNmrPeaksTopLabels />}
+        title={displayingMode === 'spread' ? 'Single Mode' : 'Spread mode'}
         onClick={onDisplayingModeToggle}
-        disabled={disbale}
-        value={displayingMode === 'spread'}
-      >
-        <SvgNmrPeaksTopLabels
-          style={{ pointerEvents: 'none', fontSize: '12px' }}
-        />
-      </ActiveButton>
-    </>
+        active={displayingMode === 'spread'}
+      />
+    </Toolbar>
   );
 }
