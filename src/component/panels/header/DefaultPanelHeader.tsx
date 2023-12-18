@@ -1,9 +1,10 @@
+import { ButtonProps } from '@blueprintjs/core';
 import { CSSProperties, ReactNode, useState } from 'react';
 import { FaRegTrashAlt, FaFilter } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
 
 import { CounterLabel } from '../../elements/CounterLabel';
 import { PreferencesButton } from '../../elements/PreferencesButton';
+import { ToolBarButton } from '../../elements/ToolBarButton';
 
 import PanelHeader from './PanelHeader';
 
@@ -39,6 +40,19 @@ export function createFilterLabel(total: number, counter: number | false) {
   return `[ ${counter}/${total} ]`;
 }
 
+interface DefaultHeaderButtonProps
+  extends Pick<ButtonProps, 'onClick' | 'title' | 'disabled' | 'active'> {
+  title: string;
+}
+
+function DeleteButton(props: DefaultHeaderButtonProps) {
+  return <ToolBarButton intent="danger" {...props} icon={<FaRegTrashAlt />} />;
+}
+
+function FilterButton(props: DefaultHeaderButtonProps) {
+  return <ToolBarButton {...props} icon={<FaFilter />} />;
+}
+
 function DefaultPanelHeader({
   counter,
   counterLabel,
@@ -66,26 +80,20 @@ function DefaultPanelHeader({
     <PanelHeader {...{ style, className }}>
       <div style={styles.leftContainer}>
         {canDelete && (
-          <Toolbar disabled={counter === 0 || disableDelete}>
-            <Toolbar.Item
-              icon={<FaRegTrashAlt />}
-              intent="danger"
-              title={deleteToolTip}
-              onClick={onDelete}
-            />
-          </Toolbar>
+          <DeleteButton
+            disabled={counter === 0 || disableDelete}
+            title={deleteToolTip}
+            onClick={onDelete}
+          />
         )}
 
         {/* Optional if there is no filter needed, e.g. in spectra panel */}
         {filterToolTip && (
-          <Toolbar>
-            <Toolbar.Item
-              icon={<FaFilter />}
-              title={filterToolTip}
-              onClick={handleFilter}
-              active={isFiltered}
-            />
-          </Toolbar>
+          <FilterButton
+            onClick={handleFilter}
+            active={isFiltered}
+            title={filterToolTip}
+          />
         )}
         {children}
       </div>

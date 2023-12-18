@@ -1,25 +1,7 @@
 import { FaCheck } from 'react-icons/fa';
-import { Button, ButtonProps } from 'react-science/ui';
 
-export function SaveButton(props: ButtonProps) {
-  const { title = 'Save', onClick, ...otherProps } = props;
+import { ToolBarButton, ToolBarButtonProps } from './ToolBarButton';
 
-  return (
-    <Button
-      {...otherProps}
-      minimal
-      intent="success"
-      onClick={onClick}
-      icon={<FaCheck />}
-      tooltipProps={{
-        content: title,
-        placement: 'bottom-start',
-        intent: 'success',
-        compact: true,
-      }}
-      style={{
-        fontSize: '1.25em',
-      }}
-    />
-  );
+export function SaveButton(props: Pick<ToolBarButtonProps, "onClick" | "title">) {
+  return <ToolBarButton {...props} intent="success" icon={<FaCheck />} placement='bottom-start' />;
 }
