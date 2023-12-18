@@ -1,25 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { memo } from 'react';
-
-import CloseButton from '../../elements/CloseButton';
-import SaveButton from '../../elements/SaveButton';
-
-const styles = css`
-  display: flex;
-  flex-direction: row-reverse;
-  border-bottom: 0.55px solid rgb(240 240 240);
-
-  button {
-    background-color: transparent;
-    border: none;
-    padding: 5px;
-  }
-
-  button:disabled {
-    opacity: 0.6;
-  }
-`;
+import { CloseButton } from '../../elements/CloseButton';
+import { SaveButton } from '../../elements/SaveButton';
 
 interface PreferencesHeaderProps {
   onClose: () => void;
@@ -28,11 +8,17 @@ interface PreferencesHeaderProps {
 
 function PreferencesHeader({ onClose, onSave }: PreferencesHeaderProps) {
   return (
-    <div css={styles}>
-      <CloseButton onClick={onClose} popupTitle="Close preferences" />
-      <SaveButton onClick={onSave} popupTitle="Save preferences" />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        borderBottom: '0.55px solid rgb(240 240 240)',
+      }}
+    >
+      <CloseButton onClick={onClose} title="Close preferences" />
+      <SaveButton onClick={onSave} title="Save preferences" />
     </div>
   );
 }
 
-export default memo(PreferencesHeader);
+export default PreferencesHeader;
