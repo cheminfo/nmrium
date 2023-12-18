@@ -3,7 +3,6 @@ import { CSSProperties, ReactNode } from 'react';
 const labelStyle: CSSProperties = {
   margin: 0,
   textAlign: 'right',
-  lineHeight: '22px',
   padding: '0 5px',
   whiteSpace: 'nowrap',
 };
