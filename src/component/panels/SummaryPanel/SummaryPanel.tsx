@@ -277,11 +277,11 @@ function SummaryPanel() {
     const columnTypes = ['H', 'H-H'].concat(
       correlationsData
         ? correlationsData.values
-          .map((correlation) => correlation.atomType)
-          .filter(
-            (atomType, i, array) =>
-              atomType !== 'H' && array.indexOf(atomType) === i,
-          )
+            .map((correlation) => correlation.atomType)
+            .filter(
+              (atomType, i, array) =>
+                atomType !== 'H' && array.indexOf(atomType) === i,
+            )
         : [],
     );
 
@@ -300,11 +300,11 @@ function SummaryPanel() {
     setAdditionalColumnData(
       filteredCorrelationsData
         ? filteredCorrelationsData.values
-          .filter(
-            (correlation) =>
-              correlation.atomType === _selectedAdditionalColumnsAtomType,
-          )
-          .reverse()
+            .filter(
+              (correlation) =>
+                correlation.atomType === _selectedAdditionalColumnsAtomType,
+            )
+            .reverse()
         : [],
     );
   }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
