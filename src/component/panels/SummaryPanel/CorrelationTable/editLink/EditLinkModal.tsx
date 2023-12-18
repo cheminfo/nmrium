@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { getLinkDim, Link } from 'nmr-correlation';
 import { useCallback, useMemo, useState } from 'react';
 
-import CloseButton from '../../../../elements/CloseButton';
+import { CloseButton } from '../../../../elements/CloseButton';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../../../elements/Tab/Tabs';
 import { getEditedCorrelations } from '../../utilities/Utilities';
