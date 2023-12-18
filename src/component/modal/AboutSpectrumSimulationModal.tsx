@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { FaInfo } from 'react-icons/fa';
-import { Modal, useOnOff } from 'react-science/ui';
-
-import Button from '../elements/Button';
+import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
 const styles = css`
   width: 600px;
@@ -48,13 +46,14 @@ function AboutSpectrumSimulationModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
-      <Button.BarButton
-        onClick={openDialog}
-        tooltipOrientation="horizontal"
-        toolTip="About Prediction"
-      >
-        <FaInfo />
-      </Button.BarButton>
+      <Toolbar>
+        <Toolbar.Item
+          onClick={openDialog}
+          title="About Prediction"
+          icon={<FaInfo />}
+        />
+      </Toolbar>
+
       <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
         <div css={styles}>
           <Modal.Header>
