@@ -1,18 +1,15 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
+import { Toolbar } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
@@ -24,25 +21,6 @@ import { PeaksToggleActions } from '../PeaksPanel/PeaksToggleActions';
 import DefaultPanelHeader, {
   createFilterLabel,
 } from '../header/DefaultPanelHeader';
-
-const style = css`
-  .btn {
-    background-color: transparent;
-    border: none;
-  }
-
-  .icon svg {
-    font-size: 12px;
-  }
-
-  .preview-publication-icon svg {
-    font-size: 13px;
-  }
-
-  button {
-    margin-right: 2px;
-  }
-`;
 
 function RangesHeader({
   ranges,
@@ -178,7 +156,7 @@ function RangesHeader({
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
   const counter = ranges?.values?.length || 0;
   return (
-    <div css={style}>
+    <div>
       <DefaultPanelHeader
         counter={counter}
         counterLabel={createFilterLabel(
@@ -194,102 +172,75 @@ function RangesHeader({
         showSettingButton
         onSettingClick={onSettingClick}
       >
-        <Button
-          popupTitle="Preview publication string"
-          popupPlacement="right"
-          onClick={saveAsHTMLHandler}
-          className="btn preview-publication-icon"
-          disabled={!hasRanges}
-        >
-          <FaFileExport />
-        </Button>
-        <ChangeSumModal
-          onSave={changeRangesSumHandler}
-          sumType="ranges"
-          currentSum={currentSum}
-          sumOptions={ranges?.options}
-          renderButton={(onClick) => (
-            <Button
-              popupTitle={
-                currentSum
-                  ? `Change ranges sum (${currentSum.toFixed(2)})`
-                  : 'Change ranges sum'
-              }
-              popupPlacement="right"
-              className="btn icon"
-              onClick={onClick}
-            >
-              <SvgNmrSum />
-            </Button>
-          )}
-        />
-        <Button
-          popupTitle="Remove all assignments"
-          popupPlacement="right"
-          onClick={handleOnRemoveAssignments}
-          disabled={!hasRanges}
-          className="btn icon"
-        >
-          <FaUnlink />
-        </Button>
-        <ActiveButton
-          popupTitle={
-            showMultiplicityTrees
-              ? 'Hide multiplicity trees in spectrum'
-              : 'Show multiplicity trees in spectrum'
-          }
-          popupPlacement="right"
-          onClick={handleSetShowMultiplicityTrees}
-          value={showMultiplicityTrees}
-          disabled={!hasRanges}
-        >
-          <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ActiveButton>
-        <ActiveButton
-          popupTitle={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
-          popupPlacement="right"
-          onClick={handleShowJGraph}
-          value={showJGraph}
-          disabled={!hasRanges}
-        >
-          <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ActiveButton>
-        <ActiveButton
-          popupTitle={showIntegrals ? 'Hide integrals' : 'Show integrals'}
-          popupPlacement="right"
-          onClick={handleShowIntegrals}
-          value={showIntegrals}
-          disabled={!hasRanges}
-        >
-          <SvgNmrIntegrate
-            style={{ pointerEvents: 'none', fontSize: '12px' }}
+        <Toolbar disabled={!hasRanges}>
+          <Toolbar.Item
+            icon={<FaFileExport />}
+            title="Preview publication string"
+            onClick={saveAsHTMLHandler}
           />
-        </ActiveButton>
-        <ActiveButton
-          popupTitle={
-            showIntegralsValues
-              ? 'Hide integrals values'
-              : 'Show integrals values'
-          }
-          popupPlacement="right"
-          onClick={handleShowIntegralsValues}
-          value={showIntegralsValues}
-          disabled={!hasRanges}
-        >
-          <SvgNmrIntegrate
-            style={{ pointerEvents: 'none', fontSize: '12px' }}
+          <Toolbar.Item
+            icon={<SvgNmrIntegrate />}
+            title={
+              showIntegralsValues
+                ? 'Hide integrals values'
+                : 'Show integrals values'
+            }
+            onClick={handleShowIntegralsValues}
+            active={showIntegralsValues}
           />
-        </ActiveButton>
-
-        <ActiveButton
-          className="icon"
-          popupTitle="Fixed integration sum"
-          popupPlacement="right"
-          onClick={changeSumConstantFlagHandler}
-          value={ranges?.options?.isSumConstant}
-        >
-          <ImLink />
-        </ActiveButton>
+          <ChangeSumModal
+            onSave={changeRangesSumHandler}
+            sumType="ranges"
+            currentSum={currentSum}
+            sumOptions={ranges?.options}
+            renderButton={(onClick) => (
+              <Toolbar.Item
+                icon={<SvgNmrSum />}
+                title={
+                  currentSum
+                    ? `Change ranges sum (${currentSum.toFixed(2)})`
+                    : 'Change ranges sum'
+                }
+                onClick={onClick}
+              />
+            )}
+          />
+          <Toolbar.Item
+            icon={<FaUnlink />}
+            title="Remove all assignments"
+            onClick={handleOnRemoveAssignments}
+          />
+          <Toolbar.Item
+            icon={<FaSitemap />}
+            title={
+              showMultiplicityTrees
+                ? 'Hide multiplicity trees in spectrum'
+                : 'Show multiplicity trees in spectrum'
+            }
+            onClick={handleSetShowMultiplicityTrees}
+            active={showMultiplicityTrees}
+          />
+          <Toolbar.Item
+            icon={<FaChartBar />}
+            title={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
+            onClick={handleShowJGraph}
+            active={showJGraph}
+          />
+          <Toolbar.Item
+            icon={<SvgNmrIntegrate />}
+            title={showIntegrals ? 'Hide integrals' : 'Show integrals'}
+            onClick={handleShowIntegrals}
+            active={showIntegrals}
+          />
+        </Toolbar>
+        <Toolbar>
+          <Toolbar.Item
+            icon={<ImLink />}
+            title="Fixed integration sum"
+            onClick={changeSumConstantFlagHandler}
+            active={ranges?.options?.isSumConstant}
+          />
+        </Toolbar>
         <PeaksToggleActions
           disabled={!hasRanges}
           showPeaks={showPeaks}
