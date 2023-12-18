@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { SvgNmrAssignment2 } from 'cheminfo-font';
 import { FaBolt } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D';
 import { useChartData } from '../../context/ChartContext';
-import Button from '../../elements/Button';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
@@ -28,22 +28,23 @@ function AutomaticAssignment() {
   return (
     <div css={tablePanelStyle}>
       <DefaultPanelHeader showSettingButton={false} canDelete={false}>
-        <SpectraAutomaticPickingButton />
-        <Button.BarButton
-          tooltipOrientation="horizontal"
-          toolTip="Automatic assignment"
-          onClick={getAssignments}
-          disabled={!enabled}
-        >
-          <SvgNmrAssignment2 />
-        </Button.BarButton>
-        <Button.BarButton
-          tooltipOrientation="horizontal"
-          toolTip="Reset assignment"
-          onClick={restAssignments}
-        >
-          <FaBolt />
-        </Button.BarButton>
+        <Toolbar>
+          <SpectraAutomaticPickingButton />
+        </Toolbar>
+        <Toolbar disabled={!enabled}>
+          <Toolbar.Item
+            icon={<SvgNmrAssignment2 />}
+            title="Automatic assignment"
+            onClick={getAssignments}
+          />
+        </Toolbar>
+        <Toolbar>
+          <Toolbar.Item
+            icon={<FaBolt />}
+            title="Reset assignment"
+            onClick={restAssignments}
+          />
+        </Toolbar>
       </DefaultPanelHeader>
 
       <div className="inner-container">
