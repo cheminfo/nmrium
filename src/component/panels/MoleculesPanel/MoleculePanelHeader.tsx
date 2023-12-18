@@ -1,7 +1,6 @@
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 import { CSSProperties, ReactNode, useCallback } from 'react';
 import {
-  FaCog,
   FaCopy,
   FaDownload,
   FaFileExport,
@@ -11,6 +10,7 @@ import {
   FaRegTrashAlt,
 } from 'react-icons/fa';
 import { IoOpenOutline } from 'react-icons/io5';
+import { Toolbar } from 'react-science/ui';
 
 import {
   MoleculesView,
@@ -22,9 +22,8 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import ActiveButton from '../../elements/ActiveButton';
-import Button from '../../elements/Button';
 import { DropdownMenu, DropdownMenuProps } from '../../elements/DropdownMenu';
+import { PreferencesButton } from '../../elements/PreferencesButton';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
@@ -214,85 +213,70 @@ export default function MoleculePanelHeader({
     <PanelHeader>
       {renderSource === 'predictionPanel' && <AboutPredictionModal />}
       {renderSource === 'moleculePanel' && (
-        <DropdownMenu options={MOL_EXPORT_MENU} onSelect={exportHandler}>
-          <Button.BarButton
-            as="div"
-            disabled={!hasMolecules}
-            color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-            toolTip="Export As"
-            tooltipOrientation="horizontal"
+        <Toolbar disabled={!hasMolecules}>
+          <DropdownMenu
+            onSelect={(data) => {
+              exportHandler(data);
+            }}
+            placement="right-start"
+            targetTagName="div"
+            targetProps={{ style: { flex: 'none' } }}
+            options={MOL_EXPORT_MENU}
           >
-            <FaFileExport />
-          </Button.BarButton>
-        </DropdownMenu>
+            <Toolbar.Item title="Export As" icon={<FaFileExport />} />
+          </DropdownMenu>
+        </Toolbar>
       )}
-      <Button.BarButton
-        onClick={handlePasteMolfileAction}
-        color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-        toolTip="Paste molfile"
-        tooltipOrientation="horizontal"
-      >
-        <FaPaste />
-      </Button.BarButton>
-      <Button.BarButton
-        onClick={onOpenMoleculeEditor}
-        color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-        toolTip="Add molecule"
-        tooltipOrientation="horizontal"
-      >
-        <FaPlus />
-      </Button.BarButton>
+
+      <Toolbar>
+        <Toolbar.Item
+          title="Paste molfile"
+          icon={<FaPaste />}
+          onClick={handlePasteMolfileAction}
+        />
+        <Toolbar.Item
+          title="Add molecule"
+          icon={<FaPlus />}
+          onClick={onOpenMoleculeEditor}
+        />
+      </Toolbar>
       {renderSource === 'moleculePanel' && (
         <>
-          <Button.BarButton
-            onClick={handleDelete}
-            color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-            toolTip="Delete molecule"
-            tooltipOrientation="horizontal"
-            disabled={!hasMolecules}
-          >
-            <FaRegTrashAlt />
-          </Button.BarButton>
+          <Toolbar disabled={!hasMolecules}>
+            <Toolbar.Item
+              title="Delete molecule"
+              icon={<FaRegTrashAlt />}
+              onClick={handleDelete}
+            />
+          </Toolbar>
           {hasMolecules && (
             <PredictSpectraModal molecule={molecules[currentIndex]} />
           )}
         </>
       )}
-      <ActiveButton
-        value={moleculesView?.[moleculeKey]?.floating.visible || false}
-        popupTitle="Float molecule"
-        popupPlacement="left"
-        onClick={floatMoleculeHandler}
-        disabled={!hasMolecules}
-      >
-        <IoOpenOutline />
-      </ActiveButton>
-      <ActiveButton
-        style={{ marginLeft: '2px' }}
-        value={moleculesView?.[moleculeKey]?.showAtomNumber || false}
-        popupTitle="Show atom number"
-        popupPlacement="left"
-        onClick={showAtomNumbersHandler}
-        disabled={!hasMolecules}
-      >
-        <p style={styles.atomLabel}>#</p>
-      </ActiveButton>
+
+      <Toolbar disabled={!hasMolecules}>
+        <Toolbar.Item
+          title="Float molecule"
+          icon={<IoOpenOutline />}
+          onClick={floatMoleculeHandler}
+          active={moleculesView?.[moleculeKey]?.floating.visible || false}
+        />
+        <Toolbar.Item
+          title="Show atom number"
+          icon={<p style={styles.atomLabel}>#</p>}
+          onClick={showAtomNumbersHandler}
+          active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
+        />
+      </Toolbar>
+
       <div style={{ flex: 1 }}>{children}</div>
       {molecules && molecules.length > 0 && (
         <p style={styles.counter}>
           {`${+(currentIndex + 1)} / ${molecules.length}`}
         </p>
       )}
-      {onClickPreferences && (
-        <Button.BarButton
-          color={{ base: 'black', hover: 'black' }}
-          onClick={onClickPreferences}
-          toolTip="Preferences"
-          tooltipOrientation="vertical"
-        >
-          <FaCog />
-        </Button.BarButton>
-      )}
+      {onClickPreferences && <PreferencesButton onClick={onClickPreferences} />}
 
       <ClipboardFallbackModal
         mode={shouldFallback}

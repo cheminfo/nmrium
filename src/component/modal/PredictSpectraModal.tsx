@@ -3,7 +3,7 @@ import { Checkbox } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { SvgNmrFt } from 'cheminfo-font';
 import { useCallback, useRef, useState, useMemo } from 'react';
-import { Modal, useOnOff } from 'react-science/ui';
+import { Modal, Toolbar, useOnOff } from 'react-science/ui';
 
 import {
   getDefaultPredictionOptions,
@@ -138,14 +138,13 @@ export function PredictSpectraModal({
 
   return (
     <>
-      <Button.BarButton
-        color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-        onClick={openDialog}
-        toolTip="Predict spectra"
-        tooltipOrientation="horizontal"
-      >
-        <SvgNmrFt />
-      </Button.BarButton>
+      <Toolbar>
+        <Toolbar.Item
+          icon={<SvgNmrFt />}
+          title="Predict spectra"
+          onClick={openDialog}
+        />
+      </Toolbar>
       <Modal
         hasCloseButton
         isOpen={isOpenDialog}
