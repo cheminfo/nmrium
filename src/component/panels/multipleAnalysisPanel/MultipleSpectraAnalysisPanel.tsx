@@ -5,6 +5,7 @@ import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
 import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
+import { Toolbar } from 'react-science/ui';
 import { useToggle } from 'react-use';
 
 import {
@@ -15,8 +16,6 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { DisplayerMode } from '../../reducer/Reducer';
@@ -86,6 +85,13 @@ function MultipleSpectraAnalysisPanelInner({
     );
   }, [alert, rawWriteWithType, spectra, spectraAnalysis, spectraPreferences]);
 
+  function handleSpectraCalibration() {
+    setCalibration((value) => {
+      if (value) dispatch({ type: 'RESET_SELECTED_TOOL' });
+      return !value;
+    });
+  }
+
   return (
     <div
       css={[
@@ -105,48 +111,37 @@ function MultipleSpectraAnalysisPanelInner({
           canDelete={false}
           onSettingClick={settingsPanelHandler}
         >
-          <Button
-            popupTitle="Copy To Clipboard"
-            onClick={copyToClipboardHandler}
-          >
-            <FaFileExport />
-          </Button>
-          {displayerMode === '1D' && (
-            <>
-              <Button
-                popupTitle="Spectra calibration"
-                onClick={() => {
-                  setCalibration((value) => {
-                    if (value) dispatch({ type: 'RESET_SELECTED_TOOL' });
-                    return !value;
-                  });
-                }}
-              >
-                <SvgNmrOverlay style={{ fontSize: '16px' }} />
-              </Button>
-
-              <ActiveButton
-                popupTitle="Y spectra tracker"
-                popupPlacement="right"
-                onClick={showTrackerHandler}
-                value={showLegend}
-                key={`${showLegend}`}
-              >
-                <IoPulseOutline />
-              </ActiveButton>
-              <ActiveButton
-                popupTitle={`${
-                  !showAnalysisChart ? 'Show' : 'Hide'
-                } analysis chart`}
-                popupPlacement="right"
-                onClick={() => toggleAnalysisChart()}
-                value={showAnalysisChart}
-                style={{ marginLeft: '5px' }}
-              >
-                <FaChartBar />
-              </ActiveButton>
-            </>
-          )}
+          <Toolbar>
+            <Toolbar.Item
+              icon={<FaFileExport />}
+              title="Copy To Clipboard"
+              onClick={copyToClipboardHandler}
+            />
+            {displayerMode === '1D' && (
+              <>
+                <Toolbar.Item
+                  icon={<SvgNmrOverlay />}
+                  title="Spectra calibration"
+                  onClick={handleSpectraCalibration}
+                  active={calibration}
+                />
+                <Toolbar.Item
+                  icon={<IoPulseOutline />}
+                  title="Y spectra tracker"
+                  onClick={showTrackerHandler}
+                  active={showLegend}
+                />
+                <Toolbar.Item
+                  icon={<FaChartBar />}
+                  title={`${
+                    !showAnalysisChart ? 'Show' : 'Hide'
+                  } analysis chart`}
+                  onClick={toggleAnalysisChart}
+                  active={showAnalysisChart}
+                />
+              </>
+            )}
+          </Toolbar>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
