@@ -8,8 +8,8 @@ import { FaSearchPlus } from 'react-icons/fa';
 
 import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
 import Button from '../../elements/Button';
-import CloseButton from '../../elements/CloseButton';
-import SaveButton from '../../elements/SaveButton';
+import { CloseButton } from '../../elements/CloseButton';
+import { SaveButton } from '../../elements/SaveButton';
 
 import SignalsForm from './SignalsForm';
 import zoneFormValidation from './validation/EditZoneValidation';
@@ -146,7 +146,7 @@ function EditZoneModal({
             <span>{`Zone and Signal edition`}</span>
             <SaveButton
               onClick={() => formRef.current.submitForm()}
-              popupTitle="Save and Exit"
+              title="Save and Exit"
             />
             <CloseButton onClick={handleOnClose} />
           </div>
