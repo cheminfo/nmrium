@@ -257,7 +257,7 @@ function BasicToolBarInner({
         >
           <Toolbar.Item
             id={options.exportAs.id}
-            title={options.import.label}
+            title={options.exportAs.label}
             icon={<FaFileExport />}
           />
         </DropdownMenu>
