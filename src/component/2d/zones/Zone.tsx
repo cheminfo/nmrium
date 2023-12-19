@@ -97,7 +97,7 @@ function Zone({ zoneData }: ZoneProps) {
         </g>
       )}
       {signals.map((_signal, i) => (
-        <Signal key={`${id + i}`} signal={_signal} />
+        <Signal key={String(id + i)} signal={_signal} />
       ))}
     </g>
   );

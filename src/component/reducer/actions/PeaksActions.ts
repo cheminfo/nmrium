@@ -17,11 +17,11 @@ import {
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { FilterType } from '../../utility/filterType';
+import { getClosePeak } from '../../utility/getClosePeak';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { ActionType } from '../types/ActionType';
-import { getClosePeak } from '../../utility/getClosePeak';
 
 type AddPeakAction = ActionType<'ADD_PEAK', { x: number }>;
 type AddPeaksAction = ActionType<'ADD_PEAKS', { startX: number; endX: number }>;

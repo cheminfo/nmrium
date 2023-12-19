@@ -76,7 +76,7 @@ function Signal({ signal }: SignalProps) {
         {showPeaks &&
           signal?.peaks?.map((peak, i) => (
             <circle
-              key={`${signal.id + i}`}
+              key={String(signal.id + i)}
               cx={scaleX(peak.x)}
               cy={scaleY(peak.y)}
               r={2}
