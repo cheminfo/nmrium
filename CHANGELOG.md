@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.46.1](https://github.com/cheminfo/nmrium/compare/v0.46.0...v0.46.1) (2023-12-19)
+
+
+### Bug Fixes
+
+* Blueprint-related warnings ([#2808](https://github.com/cheminfo/nmrium/issues/2808)) ([6618ec1](https://github.com/cheminfo/nmrium/commit/6618ec1f26eec0a2c22bda4a17aae6e5f218c0cc))
+* combined approach in manual range picking ([51f88dd](https://github.com/cheminfo/nmrium/commit/51f88ddad070a9e2474f075de49206805443db99))
+* resizing range to the same size should not add a new range ([#2807](https://github.com/cheminfo/nmrium/issues/2807)) ([592fe11](https://github.com/cheminfo/nmrium/commit/592fe11db9bfdbf56f98a810775fe3fae3851c4c))
+
 ## [0.46.0](https://github.com/cheminfo/nmrium/compare/v0.45.0...v0.46.0) (2023-12-14)
 
 
