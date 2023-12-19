@@ -24,7 +24,6 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
-import { useAlert } from '../elements/popup/Alert';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
@@ -74,7 +73,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
-  const alert = useAlert();
 
   const [scaleState, dispatchScale] = useReducer(
     scaleReducer,
@@ -166,7 +164,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               });
               break;
             case options.rangePicking.id: {
-
               if (!activeSpectrum) break;
 
               dispatch({
@@ -250,7 +247,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     [
       scaleState,
       selectedTool,
-      data,
       openAnalysisModal,
       activeSpectrum,
       dispatch,
@@ -258,7 +254,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       activeTab,
       xDomain,
       state,
-      alert,
     ],
   );
 
