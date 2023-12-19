@@ -103,7 +103,8 @@ function getMultiplicity(
   if (js?.length > 0) {
     return js.map((j) => j.multiplicity).join('');
   }
-
+  //check if the massive center is closer to the shift from multiplet-analysis,
+  //if true, is it possibly a singlet.
   if (Math.abs(cs - delta) / cs < 1e-3) {
     let peaks: NMRPeak1DWithShapeID[] = [];
 
