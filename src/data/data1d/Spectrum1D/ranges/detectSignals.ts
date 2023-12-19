@@ -2,6 +2,7 @@ import { DataXY } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import {
+  NMRPeak1DWithShapeID,
   signalJoinCouplings,
   xyAutoPeaksPicking,
   xyAutoRangesPicking,
@@ -80,25 +81,40 @@ function detectSignalsByMultipletAnalysis(data: DataXY, options: any) {
   }
   cs /= area;
 
-  const peakList =
-    js.length === 0 ? xyAutoPeaksPicking(dataRoi, { frequency }) : [];
+  const multiplicity = getMultiplicity(js, { cs, data, delta, frequency });
 
   return [
     {
-      multiplicity:
-        js.length > 0
-          ? js.map((j) => j.multiplicity).join('')
-          : Math.abs(cs - delta) / cs < 1e-3
-            ? peakList.length === 1
-              ? 's'
-              : 'm'
-            : 'm',
+      multiplicity,
       kind: 'signal',
       delta: cs,
       js,
       diaIDs: [],
     },
   ];
+}
+
+function getMultiplicity(
+  js,
+  options: { cs: number; delta: number; frequency: number; data: DataXY },
+) {
+  const { cs, delta, frequency, data } = options;
+
+  if (js?.length > 0) {
+    return js.map((j) => j.multiplicity).join('');
+  }
+
+  if (Math.abs(cs - delta) / cs < 1e-3) {
+    let peaks: NMRPeak1DWithShapeID[] = [];
+
+    if (js?.length === 0) {
+      peaks = xyAutoPeaksPicking(data, { frequency });
+    }
+
+    if (peaks.length === 1) return 's';
+  }
+
+  return 'm';
 }
 
 function joinCouplings(result: any) {
