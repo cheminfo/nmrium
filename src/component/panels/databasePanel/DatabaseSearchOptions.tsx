@@ -111,7 +111,7 @@ export function DatabaseSearchOptions({
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <ToggleButton
-          key={`${selectedTool}`}
+          key={selectedTool}
           defaultValue={selectedTool === options.databaseRangesSelection.id}
           popupTitle="Filter by select ranges"
           popupPlacement="right"

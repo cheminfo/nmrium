@@ -49,7 +49,7 @@ interface MoveLinkProps {
 
 function getCorrelationLabel(correlation: Correlation) {
   const delta = getCorrelationDelta(correlation);
-  return `${delta ? delta.toFixed(2) : '?'}`;
+  return delta ? delta.toFixed(2) : '?';
 }
 
 function MoveLink({

@@ -49,7 +49,7 @@ function Top1DChart({ verticalMargin = 10, data: spectrum }: Top1DChartProps) {
     <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
         <clipPath id={`${displayerKey}clip-top`}>
-          <rect width={innerWidth} height={height} x={margin.left} y={`${0}`} />
+          <rect width={innerWidth} height={height} x={margin.left} y="0" />
         </clipPath>
       </defs>
       <g clipPath={`url(#${displayerKey}clip-top)`}>

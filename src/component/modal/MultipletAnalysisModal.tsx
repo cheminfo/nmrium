@@ -166,7 +166,7 @@ function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
           maxTestedJ: 17,
           takeBestPartMultiplet: true,
           correctVerticalOffset: true,
-          symmetrizeEachStep: false,
+          symmetrizeEachStep: true,
           decreasingJvalues: true,
           makeShortCutForSpeed: true,
           debug: true,

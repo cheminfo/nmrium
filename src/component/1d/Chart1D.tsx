@@ -23,6 +23,8 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       general: { spectraRendering },
     },
   } = usePreferences();
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.bottom;
   return (
     <PeakEditionProvider>
       <svg
@@ -35,10 +37,10 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <defs>
           <clipPath id={`${displayerKey}clip-chart-1d`}>
             <rect
-              width={`${width - margin.left - margin.right}`}
-              height={`${height}`}
-              x={`${margin.left}`}
-              y={`${0}`}
+              width={innerWidth}
+              height={innerHeight}
+              x={margin.left}
+              y="0"
             />
           </clipPath>
         </defs>
