@@ -38,7 +38,7 @@ function getLabelColor(correlationData, correlation) {
       if (
         key !== 'incomplete' && // do not consider this for a single atom type
         (key === 'notAttached' || key === 'ambiguousAttachment') &&
-        lodashGet(error, `${key}`, []).some(
+        lodashGet(error, key, []).some(
           (index) => correlationData.values[index].id === correlation.id,
         )
       ) {

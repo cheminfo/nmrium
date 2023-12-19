@@ -237,7 +237,7 @@ function ExclusionZonesGroupHeader({ text }) {
     >
       <p style={{ flex: 1, ...GroupPanelStyle.header }}>{text}</p>
       <ToggleButton
-        key={`${selectedTool}`}
+        key={selectedTool}
         defaultValue={
           selectedTool === options.matrixGenerationExclusionZones.id
         }

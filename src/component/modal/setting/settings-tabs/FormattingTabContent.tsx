@@ -96,7 +96,7 @@ function FormattingTabContent() {
             {nucleiList?.map((key, index) => {
               const num = index + 1;
               return (
-                <tr key={`${key}`}>
+                <tr key={key}>
                   <td className="counter-col">
                     <span>{num} - </span>{' '}
                   </td>
