@@ -40,7 +40,7 @@ function handleResurrectSpectrumFromJcamp(
     },
     display: {
       ...spectrum.display,
-      ...get1DColor(spectrum.display, draft.usedColors),
+      ...get1DColor(spectrum.display, { usedColors: draft.usedColors }),
     },
   };
 

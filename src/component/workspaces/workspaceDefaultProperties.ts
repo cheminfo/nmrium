@@ -197,4 +197,45 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       ],
     },
   },
+  spectraColors: {
+    oneDimension: [],
+    twoDimensions: [
+      {
+        jpath: ['info', 'experiment'],
+        value: 'cosy',
+        positiveColor: 'darkblue',
+        negativeColor: 'blue',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'noesy',
+        positiveColor: 'pink',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'roesy',
+        positiveColor: 'pink',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'tocsy',
+        positiveColor: 'green',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'hsqc',
+        positiveColor: 'black',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'hmbc',
+        positiveColor: 'darkviolet',
+        negativeColor: 'yellow',
+      },
+    ],
+  },
 };

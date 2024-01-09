@@ -2,7 +2,7 @@ import { Draft } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import { Spectrum, ViewState, NmriumState } from 'nmr-load-save';
+import { Spectrum, ViewState, NmriumState, SpectraColors } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
@@ -28,6 +28,7 @@ interface InputProps extends InitiateProps {
   usedColors?: UsedColors;
   parseMetaFileResult?: ParseResult<any> | null;
   resetSourceObject?: boolean;
+  spectraColors?: SpectraColors;
 }
 
 type SetIsLoadingAction = ActionType<
@@ -84,6 +85,7 @@ function setData(draft: Draft<State>, input: InputProps) {
   const {
     nmriumState: { data, view },
     parseMetaFileResult = null,
+    spectraColors = { oneDimension: [], twoDimensions: [] },
   } = input || {
     nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
     multipleAnalysis: {},
@@ -119,6 +121,7 @@ function setData(draft: Draft<State>, input: InputProps) {
     initSpectra(spectra, {
       usedColors: draft.usedColors,
       molecules: draft.molecules,
+      spectraColors,
     }),
   );
   setCorrelation(draft, correlations);
@@ -138,16 +141,28 @@ function initSpectra(
   options: {
     usedColors: UsedColors;
     molecules: StateMoleculeExtended[];
+    spectraColors: SpectraColors;
   },
 ) {
   const spectra: any = [];
-  const { usedColors, molecules } = options;
+  const { usedColors, molecules, spectraColors } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
-      spectra.push(initiateDatum1D(spectrum, { usedColors, molecules }));
+      spectra.push(
+        initiateDatum1D(spectrum, {
+          usedColors,
+          molecules,
+          colors: spectraColors.oneDimension,
+        }),
+      );
     } else if (info.dimension === 2) {
-      spectra.push(initiateDatum2D({ ...spectrum }, { usedColors }));
+      spectra.push(
+        initiateDatum2D(
+          { ...spectrum },
+          { usedColors, colors: spectraColors.twoDimensions },
+        ),
+      );
     }
   }
   return spectra;

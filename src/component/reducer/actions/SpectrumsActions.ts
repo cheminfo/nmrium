@@ -597,17 +597,18 @@ function handleRecolorSpectraBasedOnDistinctValue(
     }
   } else {
     //reset spectra colors
-    const usedColor = { '1d': [], '2d': [] };
-
+    const usedColors = { '1d': [], '2d': [] };
     for (const spectrum of spectra) {
       if (isSpectrum1D(spectrum)) {
-        spectrum.display.color = get1DColor(spectrum, usedColor, true).color;
+        spectrum.display.color = get1DColor(spectrum, {
+          usedColors,
+          regenerate: true,
+        }).color;
       } else {
-        const { positiveColor, negativeColor } = get2DColor(
-          spectrum,
-          usedColor,
-          true,
-        );
+        const { positiveColor, negativeColor } = get2DColor(spectrum, {
+          usedColors,
+          regenerate: true,
+        });
         spectrum.display.positiveColor = positiveColor;
         spectrum.display.negativeColor = negativeColor;
       }

@@ -33,6 +33,7 @@ import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
 import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
 import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabContent';
+import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent';
 import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
@@ -420,6 +421,11 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
                 <Tab title="On Load Processing" tabid="on-load-processing">
                   <div className="inner-content">
                     <OnLoadProcessingTabContent />
+                  </div>
+                </Tab>
+                <Tab title="Spectra colors" tabid="spectra-colors">
+                  <div className="inner-content">
+                    <SpectraColorsTabContent />
                   </div>
                 </Tab>
               </Tabs>
