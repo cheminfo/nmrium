@@ -10,7 +10,7 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
-import FormikColorInput from '../../elements/formik/FormikColorInput';
+import FormikColorPickerDropdown from '../../elements/formik/FormikColorPickerDropdown';
 import { formatFieldLabelStyle } from '../../elements/formik/FormikColumnFormatField';
 import FormikInput from '../../elements/formik/FormikInput';
 import useNucleus from '../../hooks/useNucleus';
@@ -109,7 +109,7 @@ function IntegralsPreferences(props, ref) {
                   <Label title="Color" style={formatFieldLabelStyle}>
                     <div style={{ display: 'flex', padding: '2px 0' }}>
                       <div style={{ width: '23px' }} />
-                      <FormikColorInput name={`nuclei.${n}.color`} />
+                      <FormikColorPickerDropdown name={`nuclei.${n}.color`} />
                     </div>
                   </Label>
                   <Label title="stroke width :" style={formatFieldLabelStyle}>
