@@ -52,7 +52,8 @@ function FiltersTableInner({
   const selectedFilterIndex = useRef<number>();
 
   const handelFilterCheck = useCallback(
-    (id, enabled) => {
+    (id, event) => {
+      const { checked: enabled } = event.target;
       void (async () => {
         const hideLoading = await alert.showLoading(
           `${enabled ? 'Enable' : 'Disable'} filter in progress`,
@@ -162,7 +163,7 @@ function FiltersTableInner({
           return (
             <ColumnWrapper>
               <Checkbox
-                onChange={(checked) => handelFilterCheck(id, checked)}
+                onChange={(event) => handelFilterCheck(id, event)}
                 checked={flag}
               />
             </ColumnWrapper>
