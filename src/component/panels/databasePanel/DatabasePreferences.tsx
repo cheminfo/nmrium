@@ -9,7 +9,7 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import Label from '../../elements/Label';
-import FormikColorInput from '../../elements/formik/FormikColorInput';
+import FormikColorPickerDropdown from '../../elements/formik/FormikColorPickerDropdown';
 import FormikColumnFormatField, {
   formatFieldInputStyle,
   formatFieldLabelStyle,
@@ -56,7 +56,7 @@ function DatabasePreferences(props, ref) {
               hideFormatField
             />
             <Label title="Color" style={formatFieldLabelStyle}>
-              <FormikColorInput name="color" />
+              <FormikColorPickerDropdown name="color" />
             </Label>
             <Label title="Margin bottom (px) :" style={formatFieldLabelStyle}>
               <FormikInput
