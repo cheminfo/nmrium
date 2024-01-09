@@ -54,7 +54,8 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences, current } = usePreferences();
+  const { dispatch: dispatchPreferences, current: workspacePreferences } =
+    usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
   const openImportMetaInformationModal = useMetaInformationImportationModal();
@@ -76,12 +77,13 @@ function DropZone(props) {
           parseMetaFileResult = await parseMetaFile(metaFile);
         }
         const { nmrLoaders: sourceSelector } = preferences.current;
+        const { onLoadProcessing, spectraColors } = workspacePreferences;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
           {
             sourceSelector,
             logger: logger.child({ context: 'nmr-processing' }),
-            onLoadProcessing: current.onLoadProcessing,
+            onLoadProcessing,
             experimentalFeatures,
           },
         );
@@ -101,6 +103,7 @@ function DropZone(props) {
             nmriumState,
             containsNmrium,
             parseMetaFileResult,
+            spectraColors,
           },
         });
       }

@@ -1,18 +1,54 @@
-import { Color2D } from 'nmr-load-save';
+import lodashGet from 'lodash/get';
+import { Color2D, Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 
+import { UsedColors } from '../../../types/UsedColors';
 import { generate2DColor } from '../../utilities/generateColor';
 
-export function get2DColor(options, usedColors, regenerate = false): Color2D {
+function getColor(spectrum: Spectrum2D, colors?: SpectrumTwoDimensionsColor[]) {
+  if (!colors || colors.length === 0) return null;
+
+  let color: Color2D | null = null;
+  for (const { jpath, value, negativeColor, positiveColor } of colors) {
+    const spectrumValue = lodashGet(spectrum, jpath);
+    if (spectrumValue && spectrumValue === value) {
+      color = { negativeColor, positiveColor };
+      break;
+    }
+  }
+
+  return color;
+}
+
+interface GetTwoDimensionsColorOption {
+  usedColors?: UsedColors;
+  colors?: SpectrumTwoDimensionsColor[];
+  regenerate?: boolean;
+}
+
+export function get2DColor(
+  spectrum,
+  options: GetTwoDimensionsColorOption,
+): Color2D {
+  const { regenerate = false, usedColors = {}, colors } = options;
+
   let color: Partial<Color2D> = {};
   if (
-    options?.display?.negativeColor === undefined ||
-    options?.display?.positiveColor === undefined ||
+    spectrum?.display?.negativeColor === undefined ||
+    spectrum?.display?.positiveColor === undefined ||
     regenerate
   ) {
-    color = generate2DColor(options.info.experiment, usedColors['2d'] || []);
+    const customColor = getColor(spectrum, colors);
+    if (customColor) {
+      color = customColor;
+    } else {
+      color = generate2DColor(
+        spectrum.info.experiment,
+        usedColors?.['2d'] || [],
+      );
+    }
   } else {
     const { positiveColor = 'red', negativeColor = 'blue' } =
-      options?.display || {};
+      spectrum?.display || {};
     color = { positiveColor, negativeColor };
   }
   if (usedColors['2d']) {

@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum1D } from 'nmr-load-save';
+import { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
@@ -16,13 +16,14 @@ import { initiateRanges } from './ranges/initiateRanges';
 export interface InitiateDatum1DOptions {
   usedColors?: UsedColors;
   molecules?: StateMoleculeExtended[];
+  colors?: SpectrumOneDimensionColor[];
 }
 
 export function initiateDatum1D(
   spectrum: any,
   options: InitiateDatum1DOptions = {},
 ): Spectrum1D {
-  const { usedColors = {}, molecules = [] } = options;
+  const { usedColors, colors, molecules = [] } = options;
 
   const { integrals, ranges, ...restSpectrum } = spectrum;
   const spectrumObj: Spectrum1D = { ...restSpectrum };
@@ -32,7 +33,7 @@ export function initiateDatum1D(
     isVisible: true,
     isRealSpectrumVisible: true,
     ...spectrum.display,
-    ...get1DColor(spectrum, usedColors),
+    ...get1DColor(spectrum, { usedColors, colors }),
   };
 
   spectrumObj.info = {
