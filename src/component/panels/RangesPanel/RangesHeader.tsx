@@ -66,6 +66,7 @@ function RangesHeader({
     showMultiplicityTrees,
     showJGraph,
     showIntegrals,
+    showIntegralsValues,
     showPeaks,
     displayingMode,
   } = useActiveSpectrumRangesViewState();
@@ -111,6 +112,12 @@ function RangesHeader({
     });
   }
 
+  function handleShowIntegralsValues() {
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showIntegralsValues' },
+    });
+  }
   function handleShowIntegrals() {
     dispatch({
       type: 'TOGGLE_RANGES_VIEW_PROPERTY',
@@ -252,6 +259,21 @@ function RangesHeader({
           popupPlacement="right"
           onClick={handleShowIntegrals}
           value={showIntegrals}
+          disabled={!hasRanges}
+        >
+          <SvgNmrIntegrate
+            style={{ pointerEvents: 'none', fontSize: '12px' }}
+          />
+        </ActiveButton>
+        <ActiveButton
+          popupTitle={
+            showIntegralsValues
+              ? 'Hide integrals values'
+              : 'Show integrals values'
+          }
+          popupPlacement="right"
+          onClick={handleShowIntegralsValues}
+          value={showIntegralsValues}
           disabled={!hasRanges}
         >
           <SvgNmrIntegrate

@@ -423,6 +423,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         );
       case 'CUT_INTEGRAL':
         return IntegralsActions.handleCutIntegral(draft, action);
+      case 'TOGGLE_INTEGRALS_VIEW_PROPERTY':
+        return IntegralsActions.handleToggleIntegralsViewProperty(
+          draft,
+          action,
+        );
 
       case 'SET_X_DOMAIN':
         return DomainActions.handleSetXDomain(draft, action);

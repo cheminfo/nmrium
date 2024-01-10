@@ -15,6 +15,7 @@ export function Integration({ integral, nucleus, max }: IntegralProps) {
   const { x, y } = integral;
   const { scaleRatio } = useActiveSpectrumIntegralsViewState();
   const path = useIntegralPath({ x, y, max, scaleRatio });
+  const { showIntegralsValues } = useActiveSpectrumIntegralsViewState();
   const integralPreferences = usePanelPreferences('integrals', nucleus);
 
   return (
@@ -27,10 +28,12 @@ export function Integration({ integral, nucleus, max }: IntegralProps) {
         d={path}
       />
 
-      <IntegralResizable
-        integralData={integral}
-        integralFormat={integralPreferences.relative.format}
-      />
+      {showIntegralsValues && (
+        <IntegralResizable
+          integralData={integral}
+          integralFormat={integralPreferences.relative.format}
+        />
+      )}
     </g>
   );
 }

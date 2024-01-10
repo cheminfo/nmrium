@@ -6,6 +6,7 @@ import { useActiveSpectrum } from './useActiveSpectrum';
 
 export const defaultIntegralsViewState: IntegralsViewState = {
   scaleRatio: 1,
+  showIntegralsValues: true,
 };
 
 export function useActiveSpectrumIntegralsViewState() {
