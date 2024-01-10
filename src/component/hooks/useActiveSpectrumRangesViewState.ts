@@ -8,6 +8,7 @@ export const defaultRangesViewState: RangesViewState = {
   showPeaks: false,
   showMultiplicityTrees: false,
   showIntegrals: false,
+  showIntegralsValues: true,
   showJGraph: false,
   displayingMode: 'spread',
   integralsScaleRatio: 1,

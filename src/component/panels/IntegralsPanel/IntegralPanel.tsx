@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrSum } from 'cheminfo-font';
+import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
@@ -22,6 +22,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
 import IntegralsPreferences from './IntegralsPreferences';
+import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 
 const style = css`
   .sum-button {
@@ -30,6 +31,10 @@ const style = css`
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  button {
+    margin-right: 2px;
   }
 `;
 
@@ -49,9 +54,18 @@ function IntegralPanelInner({
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const dispatch = useDispatch();
+  const { showIntegralsValues } = useActiveSpectrumIntegralsViewState();
+
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
+
+  function handleShowIntegralsValues() {
+    dispatch({
+      type: 'TOGGLE_INTEGRALS_VIEW_PROPERTY',
+      payload: { key: 'showIntegralsValues' },
+    });
+  }
 
   const yesHandler = useCallback(() => {
     dispatch({ type: 'DELETE_INTEGRAL', payload: {} });
@@ -179,6 +193,20 @@ function IntegralPanelInner({
             value={integrals?.options?.isSumConstant || false}
           >
             <ImLink />
+          </ActiveButton>
+          <ActiveButton
+            popupTitle={
+              showIntegralsValues
+                ? 'Hide integrals values'
+                : 'Show integrals values'
+            }
+            popupPlacement="right"
+            onClick={handleShowIntegralsValues}
+            value={showIntegralsValues}
+          >
+            <SvgNmrIntegrate
+              style={{ pointerEvents: 'none', fontSize: '12px' }}
+            />
           </ActiveButton>
         </DefaultPanelHeader>
       )}

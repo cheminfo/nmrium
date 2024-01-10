@@ -340,26 +340,23 @@ function generated2DSpectrum(params: {
     experiment,
   });
   const spectralWidth = getSpectralWidth(experiment, options);
-  const datum = initiateDatum2D(
-    {
-      data: { rr: { ...minMaxContent, noise: 0.01 } },
-      display: {
-        positiveColor: color,
-        negativeColor: adjustAlpha(color, 40),
-      },
-      info: {
-        name: SpectrumName,
-        title: SpectrumName,
-        nucleus: nuclei,
-        originFrequency: frequency,
-        baseFrequency: frequency,
-        pulseSequence: 'prediction',
-        spectralWidth,
-        experiment,
-      },
+  const datum = initiateDatum2D({
+    data: { rr: { ...minMaxContent, noise: 0.01 } },
+    display: {
+      positiveColor: color,
+      negativeColor: adjustAlpha(color, 40),
     },
-    [],
-  );
+    info: {
+      name: SpectrumName,
+      title: SpectrumName,
+      nucleus: nuclei,
+      originFrequency: frequency,
+      baseFrequency: frequency,
+      pulseSequence: 'prediction',
+      spectralWidth,
+      experiment,
+    },
+  });
   datum.zones.values = mapZones(zones);
   return datum;
 }

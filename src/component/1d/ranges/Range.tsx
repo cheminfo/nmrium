@@ -12,6 +12,7 @@ import { filterForIDsWithAssignment } from '../../assignment/utilities/filterFor
 import { useDispatch } from '../../context/DispatchContext';
 import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
@@ -60,6 +61,7 @@ function Range({
 
   const scaleX = useScaleX();
   const dispatch = useDispatch();
+  const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const isBlockedByEditing =
     selectedTool && selectedTool === options.editRange.id;
@@ -145,12 +147,14 @@ function Range({
                 data-no-export="true"
               />
 
-              <IntegralIndicator
-                value={integration}
-                format={relativeFormat}
-                width={width}
-                opacity={isNotSignal ? 0.5 : 1}
-              />
+              {showIntegralsValues && (
+                <IntegralIndicator
+                  value={integration}
+                  format={relativeFormat}
+                  width={width}
+                  opacity={isNotSignal ? 0.5 : 1}
+                />
+              )}
             </g>
           );
         }}

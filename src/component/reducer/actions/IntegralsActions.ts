@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import { IntegralsViewState, Spectrum1D } from 'nmr-load-save';
 import { Integral } from 'nmr-processing';
 
 import {
@@ -20,6 +20,8 @@ import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
 import { ActionType } from '../types/ActionType';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
+import { FilterType } from '../../utility/filterType';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',
@@ -40,6 +42,13 @@ type ChangeIntegralRelativeValueAction = ActionType<
 >;
 type CutIntegralAction = ActionType<'CUT_INTEGRAL', { cutValue: number }>;
 
+type ToggleIntegralsViewAction = ActionType<
+  'TOGGLE_INTEGRALS_VIEW_PROPERTY',
+  {
+    key: keyof FilterType<IntegralsViewState, boolean>;
+  }
+>;
+
 export type IntegralsActions =
   | ChangeIntegralSumAction
   | AddIntegralAction
@@ -47,6 +56,7 @@ export type IntegralsActions =
   | ChangeIntegralAction
   | ChangeIntegralRelativeValueAction
   | CutIntegralAction
+  | ToggleIntegralsViewAction
   | ActionType<'CHANGE_INTEGRALS_SUM_FLAG'>;
 
 function handleChangeIntegralSum(
@@ -219,6 +229,22 @@ function handleCutIntegral(draft: Draft<State>, action: CutIntegralAction) {
   updateIntegralsRelativeValues(spectrum);
 }
 
+function toggleIntegralsViewProperty(
+  draft: Draft<State>,
+  key: keyof FilterType<IntegralsViewState, boolean>,
+) {
+  setIntegralsViewProperty(draft, key, (flag) => !flag);
+}
+
+//action
+function handleToggleIntegralsViewProperty(
+  draft: Draft<State>,
+  action: ToggleIntegralsViewAction,
+) {
+  const { key } = action.payload;
+  toggleIntegralsViewProperty(draft, key);
+}
+
 export {
   handleCutIntegral,
   handleChangeIntegralSum,
@@ -227,4 +253,5 @@ export {
   handleChangeIntegral,
   handleChangeIntegralsRelativeValue,
   handleChangeIntegralsSumFlag,
+  handleToggleIntegralsViewProperty,
 };
