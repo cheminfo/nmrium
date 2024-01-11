@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.47.0](https://github.com/cheminfo/nmrium/compare/v0.46.1...v0.47.0) (2024-01-11)
+
+
+### Features
+
+* custom color schema validation ([cb0fa8c](https://github.com/cheminfo/nmrium/commit/cb0fa8c6504668be5a81f20e9ac5b4d7a847d749))
+* customize the color scheme for spectra ([cb0fa8c](https://github.com/cheminfo/nmrium/commit/cb0fa8c6504668be5a81f20e9ac5b4d7a847d749)), closes [#2794](https://github.com/cheminfo/nmrium/issues/2794)
+* show/hide the value of integrals ([f2a0ce3](https://github.com/cheminfo/nmrium/commit/f2a0ce3bafd1424277b6e5689ce3e3ba99ac6a4b)), closes [#2797](https://github.com/cheminfo/nmrium/issues/2797)
+
+
+### Bug Fixes
+
+* add missing peaks when use multiplet-analysis ([#2814](https://github.com/cheminfo/nmrium/issues/2814)) ([12d03b8](https://github.com/cheminfo/nmrium/commit/12d03b85a12085593210dcd986a2f6c1522ca8f1))
+* disable/enable filter ([dbab8f8](https://github.com/cheminfo/nmrium/commit/dbab8f893c84e0a76f446475f5c63a1c066fb95e))
+
 ## [0.46.1](https://github.com/cheminfo/nmrium/compare/v0.46.0...v0.46.1) (2023-12-19)
 
 
