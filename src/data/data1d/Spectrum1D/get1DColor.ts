@@ -1,8 +1,8 @@
-import lodashGet from 'lodash/get';
-import { Spectrum1D, SpectrumOneDimensionColor } from 'nmr-load-save';
+import { SpectrumOneDimensionColor } from 'nmr-load-save';
 
 import { UsedColors } from '../../../types/UsedColors';
 import { generateColor } from '../../utilities/generateColor';
+import { getCustomColor } from '../../utilities/getCustomColor';
 
 interface GetOnDimensionColorOption {
   usedColors?: UsedColors;
@@ -10,27 +10,12 @@ interface GetOnDimensionColorOption {
   regenerate?: boolean;
 }
 
-function getColor(spectrum: Spectrum1D, colors?: SpectrumOneDimensionColor[]) {
-  if (!colors || colors.length === 0) return null;
-
-  let color: string | null = null;
-  for (const item of colors) {
-    const spectrumValue = lodashGet(spectrum, item.jpath);
-    if (spectrumValue && spectrumValue === item.value) {
-      color = item.color;
-      break;
-    }
-  }
-
-  return color;
-}
-
 export function get1DColor(spectrum, options: GetOnDimensionColorOption) {
   const { regenerate = false, usedColors = {}, colors } = options;
   let color = 'black';
 
   if (!spectrum?.display?.color || regenerate) {
-    const customColor = getColor(spectrum, colors);
+    const customColor = getCustomColor(spectrum, colors);
 
     if (customColor) {
       color = customColor;

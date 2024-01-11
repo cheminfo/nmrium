@@ -1,23 +1,8 @@
-import lodashGet from 'lodash/get';
-import { Color2D, Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
+import { Color2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 
 import { UsedColors } from '../../../types/UsedColors';
 import { generate2DColor } from '../../utilities/generateColor';
-
-function getColor(spectrum: Spectrum2D, colors?: SpectrumTwoDimensionsColor[]) {
-  if (!colors || colors.length === 0) return null;
-
-  let color: Color2D | null = null;
-  for (const { jpath, value, negativeColor, positiveColor } of colors) {
-    const spectrumValue = lodashGet(spectrum, jpath);
-    if (spectrumValue && spectrumValue === value) {
-      color = { negativeColor, positiveColor };
-      break;
-    }
-  }
-
-  return color;
-}
+import { getCustomColor } from '../../utilities/getCustomColor';
 
 interface GetTwoDimensionsColorOption {
   usedColors?: UsedColors;
@@ -37,7 +22,7 @@ export function get2DColor(
     spectrum?.display?.positiveColor === undefined ||
     regenerate
   ) {
-    const customColor = getColor(spectrum, colors);
+    const customColor = getCustomColor(spectrum, colors);
     if (customColor) {
       color = customColor;
     } else {
