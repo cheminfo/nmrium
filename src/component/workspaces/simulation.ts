@@ -12,6 +12,11 @@ export const simulation: InnerWorkspace = {
     invert: false,
   },
   display: {
+    general: {
+      hideGeneralSettings: true,
+      hideLogs: true,
+      hideWorkspaces: true,
+    },
     panels: {
       spectraPanel: { display: true },
       simulationPanel: { display: true, open: true },

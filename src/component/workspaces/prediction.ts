@@ -12,6 +12,11 @@ export const prediction: InnerWorkspace = {
     invert: false,
   },
   display: {
+    general: {
+      hideGeneralSettings: true,
+      hideLogs: true,
+      hideWorkspaces: true,
+    },
     panels: {
       spectraPanel: { display: true },
       rangesPanel: { display: true },
