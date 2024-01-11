@@ -12,6 +12,7 @@ import {
 import { NMRiumToolBarPreferences } from 'nmr-load-save';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
+import { PiKnifeBold } from 'react-icons/pi';
 import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
@@ -111,7 +112,7 @@ function FunctionToolBarInner({
     {
       id: 'slicing',
       label: options.slicing.label,
-      icon: <p>Slic</p>,
+      icon: <PiKnifeBold />,
     },
     {
       id: 'rangePicking',
