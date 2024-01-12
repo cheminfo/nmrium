@@ -24,17 +24,11 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 
 import ColorIndicator from './base/ColorIndicator';
+import { RenderAsHTML } from './base/RenderAsHTML';
 import ShowHideSpectrumButton, {
   OnChangeVisibilityEvent,
 } from './base/ShowHideSpectrumButton';
 import { SpectrumName } from './base/SpectrumName';
-
-function formatValueAsHTML(value) {
-  if (value) {
-    value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
-  }
-  return value;
-}
 
 function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
   const result = {};
@@ -116,10 +110,12 @@ export function SpectraTable(props: SpectraTableProps) {
   const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
   const [exportedSpectrum, setExportedSpectrum] = useState<Spectrum | null>();
 
-  const COLUMNS: Record<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    (string & {}) | PredefinedSpectraColumn,
-    Column<Spectrum>
+  const COLUMNS: Partial<
+    Record<
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      (string & {}) | PredefinedSpectraColumn,
+      Column<Spectrum>
+    >
   > = useMemo(
     () => ({
       visible: {
@@ -135,33 +131,6 @@ export function SpectraTable(props: SpectraTableProps) {
               data={row.original}
               onChangeVisibility={onChangeVisibility}
             />
-          );
-        },
-      },
-      name: {
-        Header: '',
-        style: columnStyle,
-        accessor: (row) => row.info.name,
-        Cell: ({ row }) => {
-          return <SpectrumName data={row.original} />;
-        },
-      },
-      solvent: {
-        Header: '',
-        style: columnStyle,
-        accessor: (row) => row.info.solvent,
-        Cell: ({ row }) => {
-          const info: any = row.original.info;
-          return (
-            info?.solvent && (
-              <div
-                // style={styles.info}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: formatValueAsHTML(info.solvent),
-                }}
-              />
-            )
           );
         },
       },
@@ -254,21 +223,35 @@ export function SpectraTable(props: SpectraTableProps) {
           ...COLUMNS[name],
           Header: () => <ColumnHeader label={col.label} col={col} />,
           id: name,
-          style:
-            name === 'name' && visibleColumns.length > 3
-              ? {
-                  ...COLUMNS[name].style,
-                  width: '50%',
-                }
-              : COLUMNS[name].style,
         });
       } else {
-        columns.push({
+        const pathString = path.join('.');
+        let style: CSSProperties = columnStyle;
+        let cellRender: Column<Spectrum>['Cell'] | null = null;
+        if (pathString === 'info.name') {
+          if (visibleColumns.length > 3) {
+            style = { ...columnStyle, width: '50%' };
+          }
+          cellRender = ({ row }) => {
+            return <SpectrumName data={row.original} />;
+          };
+        }
+
+        if (pathString === 'info.solvent') {
+          cellRender = ({ row }) => {
+            return <RenderAsHTML data={row.original} jpath={pathString} />;
+          };
+        }
+
+        const cell: Column<Spectrum> = {
           Header: () => <ColumnHeader label={col.label} col={col} />,
           accessor: (row) => lodashGet(row, path, ''),
+          ...(cellRender && { Cell: cellRender }),
           id: `${index}`,
-          style: columnStyle,
-        });
+          style,
+        };
+
+        columns.push(cell);
       }
       index++;
     }
