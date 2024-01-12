@@ -38,7 +38,7 @@ function getZones(x: Float64Array): FromTo[] {
   let i = 1;
   for (; i < x.length; i++) {
     if (Math.abs(x[i + 1] - x[i] - deltaX) > deltaTol) {
-      zones.push({ from, to: x[i] })
+      zones.push({ from, to: x[i] });
       from = x[i + 1];
       i++;
     }
@@ -46,7 +46,6 @@ function getZones(x: Float64Array): FromTo[] {
   zones.push({ from, to: x[i - 1] });
 
   if (zones.length >= x.length / 10) {
-    // There are too many zones compared with the original x
     return [];
   }
 
