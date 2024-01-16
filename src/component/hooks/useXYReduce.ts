@@ -1,8 +1,9 @@
-import { DataXY, FromTo } from 'cheminfo-types';
+import { DataXY } from 'cheminfo-types';
 import { xyReduce } from 'ml-spectra-processing';
 import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import getFromToFromX from '../utility/getFromToFromX';
 
 export enum XYReducerDomainAxis {
   XAxis = 'XAxis',
@@ -23,31 +24,15 @@ export default function useXYReduce(
         domainAxis === XYReducerDomainAxis.XAxis ? xDomain : yDomain;
       return xyReduce(
         { x, y },
-        { from, to, nbPoints: width * 4, optimize: true, zones: getZones(x) },
+        {
+          from,
+          to,
+          nbPoints: width * 4,
+          optimize: true,
+          zones: getFromToFromX(x),
+        },
       );
     },
     [domainAxis, width, xDomain, yDomain],
   );
-}
-
-function getZones(x: Float64Array): FromTo[] {
-  const zones: FromTo[] = [];
-  let from = x[0];
-  const deltaX = x[1] - x[0];
-  const deltaTol = deltaX * 0.005;
-  let i = 1;
-  for (; i < x.length; i++) {
-    if (Math.abs(x[i + 1] - x[i] - deltaX) > deltaTol) {
-      zones.push({ from, to: x[i] });
-      from = x[i + 1];
-      i++;
-    }
-  }
-  zones.push({ from, to: x[i - 1] });
-
-  if (zones.length >= x.length / 10) {
-    return [];
-  }
-
-  return zones;
 }
