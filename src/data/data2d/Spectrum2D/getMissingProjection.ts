@@ -1,6 +1,6 @@
 import { NmrData2DFt } from 'cheminfo-types';
 import { zoneToX } from 'ml-spectra-processing';
-import { Info2D } from 'nmr-processing';
+import { Info1D, Info2D } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
 import { initiateDatum1D } from '../../data1d/Spectrum1D';
@@ -45,7 +45,9 @@ export function getMissingProjection(
   if (index === -1) index = 0;
 
   const info = {
-    nucleus: datumInfo.nucleus[index], // 1H, 13C, 19F, ...
+    ...getInfo(datumInfo, index),
+    experiment: '1d',
+    pulseSequence: 'projection',
     isFid: false,
     isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     dimension: 1,
@@ -54,4 +56,12 @@ export function getMissingProjection(
   const data = getProjection(datum, index);
 
   return initiateDatum1D({ info, data }, { usedColors });
+}
+
+function getInfo(info, index) {
+  const newInfo: any = {};
+  for (const key in info) {
+    newInfo[key] = Array.isArray(info[key]) ? info[key][index] : info[key];
+  }
+  return newInfo as Info1D;
 }
