@@ -81,6 +81,7 @@ function MatrixGenerationPanel() {
     'matrixGeneration',
     activeTab,
   );
+  const spectraPreferences = usePanelPreferences('spectra', activeTab);
 
   const matrixOptions = getMatrixOptions(nucleusMatrixOptions, {
     from: xDomain[0],
@@ -88,7 +89,7 @@ function MatrixGenerationPanel() {
   });
 
   function handleExportAsMatrix() {
-    exportAsMatrix(data, 'Spectra Matrix');
+    exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
   }
 
   function handleSave(options) {
