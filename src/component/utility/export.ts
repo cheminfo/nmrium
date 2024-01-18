@@ -1,6 +1,8 @@
 import { SerializedStyles } from '@emotion/react';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+import lodashGet from 'lodash/get';
+import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
 import { newClipboardItem, write } from '../../utils/clipboard/clipboard';
 
@@ -45,21 +47,38 @@ async function exportAsJSON(
   }
 }
 
-function exportAsMatrix(data, fileName = 'experiment') {
+function exportAsMatrix(
+  data,
+  spectraColumns: SpectraTableColumn[],
+  fileName = 'experiment',
+) {
   //columns labels
-  const columnsLables = ['name', 'experiment'];
-  for (const value of data[0].data.x) {
-    columnsLables.push(value);
+  const columnsLabels: string[] = [];
+  // listed the spectra panel columns
+  for (const col of spectraColumns) {
+    if (col.visible && 'jpath' in col) {
+      columnsLabels.push(col.label);
+    }
   }
-  let matrix = `${columnsLables.join('\t')}\n`;
+
+  for (const value of data[0].data.x) {
+    columnsLabels.push(value);
+  }
+  let matrix = `${columnsLabels.join('\t')}\n`;
 
   for (const spectrum of data) {
     const {
       data: { re },
-      info: { experiment },
-      display: { name },
     } = spectrum;
-    const cellsValues = [name, experiment];
+
+    const cellsValues: string[] = [];
+    // listed the spectra cell values
+    for (const col of spectraColumns) {
+      if (col.visible && 'jpath' in col) {
+        const jpath = (col as JpathTableColumn)?.jpath;
+        cellsValues.push(lodashGet(spectrum, jpath, `null`));
+      }
+    }
     for (const value of re) {
       cellsValues.push(value);
     }
