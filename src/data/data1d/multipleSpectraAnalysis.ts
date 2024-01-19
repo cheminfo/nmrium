@@ -194,19 +194,23 @@ export function generateAnalyzeSpectra(
       const result = Object.fromEntries(
         Object.keys(columns).map((key) => {
           const isFormula = columns[key].type === AnalysisColumnsTypes.FORMULA;
-          return [
-            key,
-            isFormula
-              ? {
-                  colKey: key,
-                  value: calculate(
-                    columns,
-                    data[spectra[0]],
-                    columns[key].formula,
-                  ),
-                }
-              : { ...spectra[1][key], colKey: key },
-          ];
+          if (isFormula) {
+            const { SID, id } = spectra[1][key];
+            return [
+              key,
+              {
+                SID,
+                id,
+                colKey: key,
+                value: calculate(
+                  columns,
+                  data[spectra[0]],
+                  columns[key].formula,
+                ),
+              },
+            ];
+          }
+          return [key, { ...spectra[1][key], colKey: key }];
         }),
       );
       return [spectra[0], result];
