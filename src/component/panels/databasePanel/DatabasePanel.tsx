@@ -66,7 +66,12 @@ const emptyKeywords = {
 };
 
 function mapKeywordsToArray(searchKeywords: string, solvent: string) {
-  const values = searchKeywords ? searchKeywords.split(' ') : [];
+  const values = searchKeywords
+    ? searchKeywords
+        .trim()
+        .split(' ')
+        .filter((value) => value !== '')
+    : [];
   if (solvent !== '-1') {
     values.unshift(`solvent:${solvent}`);
   }
