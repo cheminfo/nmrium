@@ -999,7 +999,6 @@ function handleSignalProcessingFilter(
   const { data, view } = draft;
   const nucleus = view.spectra.activeTab;
   const value = action.payload.options;
-  const activeFilterIndex = getActiveFilterIndex(draft);
 
   const spectra = getSpectraByNucleus(nucleus, data) as Spectrum1D[];
   for (const spectrum of spectra) {
@@ -1011,7 +1010,7 @@ function handleSignalProcessingFilter(
           value,
         },
       ],
-      { filterIndex: activeFilterIndex },
+      { forceReapply: true },
     );
   }
   const { updateXDomain, updateYDomain } = signalProcessing.DOMAIN_UPDATE_RULES;
