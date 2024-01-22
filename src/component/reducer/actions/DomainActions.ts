@@ -80,8 +80,8 @@ function getDomain(draft: Draft<State>) {
   }
 
   return {
-    xDomain: extent(xArray),
-    yDomain: extent(yArray),
+    xDomain: xArray?.length > 0 ? extent(xArray) : [],
+    yDomain: yArray?.length > 0 ? extent(yArray) : [],
     yDomains,
     xDomains,
   };

@@ -246,14 +246,19 @@ function handleChangeSpectrumVisibilityById(
   action: ChangeSpectrumVisibilityByIdAction,
 ) {
   const { id, key } = action.payload;
+  const { xDomain, data } = draft;
 
-  const spectrum = draft.data.find((d) => d.id === id);
+  const spectrum = data.find((d) => d.id === id);
   if (spectrum) {
     spectrum.display[key] = !spectrum.display[key];
 
     if (spectrum.info.dimension === 2) {
       spectrum.display.isVisible = checkIsVisible2D(spectrum as Spectrum2D);
     }
+  }
+
+  if (xDomain?.length === 0) {
+    setDomain(draft);
   }
 }
 
