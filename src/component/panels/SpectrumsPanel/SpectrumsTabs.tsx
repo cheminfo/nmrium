@@ -5,10 +5,10 @@ import { useState, useMemo, memo, useCallback } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { getModifiers } from '../../context/KeyModifierContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
+import { useSetActiveSpectrumAction } from '../../hooks/useSetActiveSpectrumAction';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { SpectraTable } from './SpectraTable';
@@ -38,6 +38,7 @@ function SpectrumsTabsInner({
     const groupByNucleus = groupByInfoKey('nucleus');
     return groupByNucleus(data, true);
   }, [data]);
+  const { setActiveSpectrum } = useSetActiveSpectrumAction();
 
   function onTabChangeHandler(tab) {
     dispatch({ type: 'SET_ACTIVE_TAB', payload: { tab: tab.tabid } });
@@ -67,16 +68,7 @@ function SpectrumsTabsInner({
   );
 
   function handleChangeActiveSpectrum(e, spectrum) {
-    setTimeout(() => {
-      const { ctrlKey, shiftKey } = getModifiers(e);
-      const modifier = `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${
-        ctrlKey ? 'true' : 'false'
-      }]`;
-      dispatch({
-        type: 'CHANGE_ACTIVE_SPECTRUM',
-        payload: { modifier, id: spectrum.id },
-      });
-    }, 0);
+    setActiveSpectrum(e, spectrum.id);
   }
 
   function mouseLeaveHandler() {
