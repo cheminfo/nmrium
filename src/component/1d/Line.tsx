@@ -48,6 +48,7 @@ function Line({ data, id, display, index }: LineProps) {
 
   return (
     <path
+      id={id}
       className="line"
       data-testid="spectrum-line"
       stroke={stroke}
