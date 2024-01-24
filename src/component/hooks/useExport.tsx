@@ -25,8 +25,8 @@ export default function useExport() {
       const hideLoading = await alert.showLoading(
         'Exporting as NMRium process in progress',
       );
-      setTimeout(() => {
-        copyPNGToClipboard(rootRef, 'nmrSVG');
+      setTimeout(async () => {
+        await copyPNGToClipboard(rootRef, 'nmrSVG');
         hideLoading();
         alert.success('Image copied to clipboard');
       }, 0);
