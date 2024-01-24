@@ -124,7 +124,7 @@ export default function AnalysisChart(props: PlotChartPros) {
 
   function handleCopy() {
     if (chartParentRef.current) {
-      copyPNGToClipboard(
+      void copyPNGToClipboard(
         chartParentRef.current,
         svgId,
         css({ text: { fill: 'black' } }),

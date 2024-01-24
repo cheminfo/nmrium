@@ -110,9 +110,9 @@ export default function MoleculePanelHeader({
     exportAsSVG(rootRef, `molSVG${currentIndex} `, 'molFile');
   }, [rootRef, currentIndex]);
 
-  const saveAsPNGHandler = useCallback(() => {
+  const saveAsPNGHandler = useCallback(async () => {
     if (!rootRef) return;
-    copyPNGToClipboard(rootRef, `molSVG${currentIndex} `);
+    await copyPNGToClipboard(rootRef, `molSVG${currentIndex} `);
     alert.success('MOL copied as PNG to clipboard');
   }, [rootRef, alert, currentIndex]);
 
@@ -149,7 +149,7 @@ export default function MoleculePanelHeader({
             break;
           }
           case 'png':
-            saveAsPNGHandler();
+            void saveAsPNGHandler();
             break;
           case 'svg':
             saveAsSVGHandler();
