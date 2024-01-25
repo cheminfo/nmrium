@@ -87,6 +87,7 @@ interface MoleculePanelHeaderProps {
   onOpenMoleculeEditor: () => void;
   renderSource?: 'moleculePanel' | 'predictionPanel';
   onClickPreferences?: () => void;
+  onClickPastMolecule?: () => void;
   children?: ReactNode;
 }
 
@@ -98,6 +99,7 @@ export default function MoleculePanelHeader({
   onOpenMoleculeEditor,
   renderSource = 'moleculePanel',
   onClickPreferences,
+  onClickPastMolecule,
   children,
 }: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
@@ -169,6 +171,7 @@ export default function MoleculePanelHeader({
   );
 
   function handlePasteMolfileAction() {
+    onClickPastMolecule?.();
     void readText().then(handlePasteMolfile);
   }
   async function handlePasteMolfile(molfile: string | undefined) {
