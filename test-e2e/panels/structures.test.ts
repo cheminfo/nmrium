@@ -394,11 +394,15 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
 
       // Paste the molecule (not working on Firefox).
-      await nmrium.page.click('_react=Button[toolTip="Paste molfile" i]');
+      await nmrium.page.click(
+        '_react=Button[toolTip="Paste molfile or SMILES" i]',
+      );
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
 
       // Paste the molecule (not working on Firefox).
-      await nmrium.page.click('_react=Button[toolTip="Paste molfile" i]');
+      await nmrium.page.click(
+        '_react=Button[toolTip="Paste molfile or SMILES" i]',
+      );
 
       await expect(
         nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),

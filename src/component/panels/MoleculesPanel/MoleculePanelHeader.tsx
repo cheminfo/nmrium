@@ -229,7 +229,7 @@ export default function MoleculePanelHeader({
       <Button.BarButton
         onClick={handlePasteMolfileAction}
         color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-        toolTip="Paste molfile"
+        toolTip="Paste molfile or SMILES"
         tooltipOrientation="horizontal"
       >
         <FaPaste />
