@@ -85,7 +85,11 @@ export function InnerNMRium({
   );
 
   return (
-    <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
+    <div
+      ref={mainDivRef}
+      style={{ height: '100%', position: 'relative' }}
+      translate="no"
+    >
       <GlobalProvider
         value={{
           rootRef: rootRef.current,
