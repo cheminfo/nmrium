@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { useCallback, useState, useRef, useMemo } from 'react';
+import * as Yup from 'yup';
 
 import {
   SpectrumSimulationOptions,
@@ -20,6 +21,20 @@ import SpectrumSimulationPreferences, {
 } from './SpectrumSimulationPreferences';
 import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions';
 import { SpinSystemTable } from './SpinSystemTable';
+
+const validationSchema = Yup.object({
+  data: Yup.array().of(
+    Yup.array().of(
+      Yup.lazy((value) => {
+        if (value === null) {
+          return Yup.mixed().nullable();
+        }
+
+        return Yup.number().required();
+      }),
+    ),
+  ),
+});
 
 export default function SpectrumSimulation() {
   const dispatch = useDispatch();
@@ -68,10 +83,12 @@ export default function SpectrumSimulation() {
     values: SpectrumSimulationOptions,
     keepSpectrum = false,
   ) {
-    dispatch({
-      type: 'SIMULATE_SPECTRUM',
-      payload: { ...values, spinSystem: spinSystemRef.current, keepSpectrum },
-    });
+    if (validationSchema.isValidSync(values)) {
+      dispatch({
+        type: 'SIMULATE_SPECTRUM',
+        payload: { ...values, spinSystem: spinSystemRef.current, keepSpectrum },
+      });
+    }
   }
 
   function addSpectrumHandler() {
