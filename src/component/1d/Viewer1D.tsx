@@ -152,6 +152,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           });
         };
 
+        let executeDefaultAction = false;
+
         switch (keyModifiers) {
           // when Alt key is active
           case 'invert[true]_shift[false]_ctrl[false]_alt[true]':
@@ -162,6 +164,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 break;
               }
               default:
+                executeDefaultAction = true;
                 break;
             }
             break;
@@ -169,6 +172,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
           case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
             switch (selectedTool) {
+              case options.zoom.id: {
+                executeDefaultAction = true;
+                break;
+              }
               case options.integral.id:
                 dispatch({
                   type: 'ADD_INTEGRAL',
@@ -248,12 +255,15 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             break;
           }
           default: {
-            if (selectedTool != null) {
-              dispatch({ type: 'BRUSH_END', payload: brushData });
+            if (selectedTool !== options.zoom.id) {
+              executeDefaultAction = true;
             }
-
             break;
           }
+        }
+
+        if (executeDefaultAction && selectedTool != null) {
+          dispatch({ type: 'BRUSH_END', payload: brushData });
         }
       }
     },
@@ -297,50 +307,53 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           xPPM,
         });
       };
+      const keyModifiers = toModifiersKey(event as unknown as MouseEvent);
 
-      if (event.shiftKey) {
-        switch (selectedTool) {
-          case options.peakPicking.id:
-            dispatch({
-              type: 'ADD_PEAK',
-              payload: event,
-            });
-            break;
-          case options.editRange.id:
-            propagateEvent();
-            break;
-          case options.integral.id:
-            dispatch({
-              type: 'CUT_INTEGRAL',
-              payload: { cutValue: xPPM },
-            });
-            break;
-          case options.rangePicking.id:
-            dispatch({
-              type: 'CUT_RANGE',
-              payload: { cutValue: xPPM },
-            });
-            break;
+      switch (keyModifiers) {
+        case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
+        case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
+          switch (selectedTool) {
+            case options.peakPicking.id:
+              dispatch({
+                type: 'ADD_PEAK',
+                payload: event,
+              });
+              break;
+            case options.editRange.id:
+              propagateEvent();
+              break;
+            case options.integral.id:
+              dispatch({
+                type: 'CUT_INTEGRAL',
+                payload: { cutValue: xPPM },
+              });
+              break;
+            case options.rangePicking.id:
+              dispatch({
+                type: 'CUT_RANGE',
+                payload: { cutValue: xPPM },
+              });
+              break;
 
-          case options.phaseCorrection.id:
-            dispatch({
-              type: 'SET_ONE_DIMENSION_PIVOT_POINT',
-              payload: {
-                value: event.x,
-              },
-            });
+            case options.phaseCorrection.id:
+              dispatch({
+                type: 'SET_ONE_DIMENSION_PIVOT_POINT',
+                payload: {
+                  value: event.x,
+                },
+              });
 
-            break;
-          default:
-            break;
+              break;
+            default:
+              break;
+          }
+          break;
         }
-      } else {
-        switch (selectedTool) {
-          default:
-        }
+        default:
+          break;
       }
     },
-    [dispatch, scaleState, selectedTool],
+    [dispatch, scaleState, selectedTool, toModifiersKey],
   );
 
   return (

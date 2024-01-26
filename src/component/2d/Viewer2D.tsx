@@ -99,6 +99,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       brushStartRef.current = null;
 
       const modifierKey = toModifierKey(brushData as unknown as MouseEvent);
+      let executeDefaultAction = false;
 
       if (brushData.mouseButton === 'main') {
         const trackID = getLayoutID(DIMENSION, brushData);
@@ -107,6 +108,10 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
             case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
             case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
               switch (selectedTool) {
+                case options.zoom.id: {
+                  executeDefaultAction = true;
+                  break;
+                }
                 case options.zonePicking.id: {
                   dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
 
@@ -119,17 +124,20 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
               break;
             }
             default: {
-              if (selectedTool != null) {
-                return dispatch({
-                  type: 'BRUSH_END',
-                  payload: {
-                    ...brushData,
-                    trackID: getLayoutID(DIMENSION, brushData),
-                  },
-                });
-              }
+              executeDefaultAction = true;
+
               break;
             }
+          }
+
+          if (executeDefaultAction && selectedTool != null) {
+            return dispatch({
+              type: 'BRUSH_END',
+              payload: {
+                ...brushData,
+                trackID: getLayoutID(DIMENSION, brushData),
+              },
+            });
           }
         }
       }
