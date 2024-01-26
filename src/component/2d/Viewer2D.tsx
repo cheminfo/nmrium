@@ -15,6 +15,7 @@ import {
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useMapKeyModifiers } from '../context/KeyModifierContext';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
 
@@ -45,6 +46,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
+  const toModifierKey = useMapKeyModifiers();
 
   const spectrumData: Spectrum1D[] = useMemo(() => {
     const nuclei = activeTab.split(',');
@@ -96,40 +98,43 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       //reset the brush start
       brushStartRef.current = null;
 
+      const modifierKey = toModifierKey(brushData as unknown as MouseEvent);
+
       if (brushData.mouseButton === 'main') {
         const trackID = getLayoutID(DIMENSION, brushData);
         if (trackID) {
-          if (brushData.altKey) {
-            switch (selectedTool) {
-              default:
-                break;
-            }
-          } else if (brushData.shiftKey) {
-            switch (selectedTool) {
-              case options.zonePicking.id:
-                dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
-                break;
-              default:
-                break;
-            }
-          } else {
-            switch (selectedTool) {
-              default:
-                if (selectedTool != null) {
-                  return dispatch({
-                    type: 'BRUSH_END',
-                    payload: {
-                      ...brushData,
-                      trackID: getLayoutID(DIMENSION, brushData),
-                    },
-                  });
+          switch (modifierKey) {
+            case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
+            case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
+              switch (selectedTool) {
+                case options.zonePicking.id: {
+                  dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
+
+                  break;
                 }
+                default:
+                  break;
+              }
+
+              break;
+            }
+            default: {
+              if (selectedTool != null) {
+                return dispatch({
+                  type: 'BRUSH_END',
+                  payload: {
+                    ...brushData,
+                    trackID: getLayoutID(DIMENSION, brushData),
+                  },
+                });
+              }
+              break;
             }
           }
         }
       }
     },
-    [selectedTool, dispatch, DIMENSION],
+    [toModifierKey, DIMENSION, selectedTool, dispatch],
   );
 
   const handelOnDoubleClick: OnDoubleClick = useCallback(

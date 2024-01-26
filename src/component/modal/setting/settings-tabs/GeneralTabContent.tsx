@@ -39,7 +39,7 @@ const LOGS_LEVELS = [
 function GeneralTabContent() {
   return (
     <>
-      <GroupPane text="Spectra">
+      <GroupPane text="General">
         <Label title="Opacity of dimmed spectra [ 0 - 1 ]">
           <FormikInput
             name="general.dimmedSpectraOpacity"
@@ -49,6 +49,9 @@ function GeneralTabContent() {
             min={0}
             max={1}
           />
+        </Label>
+        <Label title="Invert actions" htmlFor="general.invert">
+          <FormikCheckBox name="general.invert" />
         </Label>
       </GroupPane>
       <GroupPane text="Experimental features">
