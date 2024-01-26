@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.48.0](https://github.com/cheminfo/nmrium/compare/v0.47.0...v0.48.0) (2024-01-26)
+
+
+### Features
+
+* allow save range with no signals ([6f7bfad](https://github.com/cheminfo/nmrium/commit/6f7bfadae2610cd54c1fdec6f587a466c66f0b19))
+* allow to delete info.name and info.solvent ([8fcfb77](https://github.com/cheminfo/nmrium/commit/8fcfb7719c7fd5fe0fb038c730486585b8d9b009)), closes [#2823](https://github.com/cheminfo/nmrium/issues/2823)
+* improve matrix exportation ([8b57b9f](https://github.com/cheminfo/nmrium/commit/8b57b9f9c0c0f3db93dac0833a94ec394107d801)), closes [#2837](https://github.com/cheminfo/nmrium/issues/2837)
+* select spectrum from the displayer ([313c3bd](https://github.com/cheminfo/nmrium/commit/313c3bde8fd08b841826a725e81ecc04d7e6612f)), closes [#2849](https://github.com/cheminfo/nmrium/issues/2849)
+
+
+### Bug Fixes
+
+* copy image to clipboard in Firefox ([21ce320](https://github.com/cheminfo/nmrium/commit/21ce3209fab4c7ec9c9ef4c64e748f02760f8392))
+* create info1D for projections ([#2841](https://github.com/cheminfo/nmrium/issues/2841)) ([1571b50](https://github.com/cheminfo/nmrium/commit/1571b506abec003628a3566d73ca0b5c6c267f6b))
+* disable auto-translate of the NMRium component ([#2859](https://github.com/cheminfo/nmrium/issues/2859)) ([d5e178e](https://github.com/cheminfo/nmrium/commit/d5e178e4df44f5c335c1ccd1377fba2adf37cfb2))
+* plotting the derived value ([f176fc0](https://github.com/cheminfo/nmrium/commit/f176fc0cf50b001e8408fb719c4a7b27dbc9d166)), closes [#2834](https://github.com/cheminfo/nmrium/issues/2834)
+* reapply filters when applying spectra processing filter ([14b344c](https://github.com/cheminfo/nmrium/commit/14b344c0bbfa819e3b0e7c69df14a4fae95aef94)), closes [#2835](https://github.com/cheminfo/nmrium/issues/2835)
+* refresh local molecule state after past a new one ([1162900](https://github.com/cheminfo/nmrium/commit/1162900969ac8980ed5574dd7a383b30f44b0394))
+* refresh the X domain after hiding all spectra and then showing one ([b7a80af](https://github.com/cheminfo/nmrium/commit/b7a80af25d6a06bc2f642b1ed1f013d2086a19ef))
+* remove empty values from search key array ([7fe44d2](https://github.com/cheminfo/nmrium/commit/7fe44d2035745388a34184523444c9896e210d83)), closes [#2831](https://github.com/cheminfo/nmrium/issues/2831)
+* set a fixed virtual scrolling height for spectra table rows ([15084d7](https://github.com/cheminfo/nmrium/commit/15084d790b632667455ef0fad5acf89264b277e9)), closes [#2824](https://github.com/cheminfo/nmrium/issues/2824)
+* validate spin system data ([47c5fba](https://github.com/cheminfo/nmrium/commit/47c5fbaa7a1a656fbb02e14f1c5f390f533eb79c))
+
 ## [0.47.0](https://github.com/cheminfo/nmrium/compare/v0.46.1...v0.47.0) (2024-01-11)
 
 
