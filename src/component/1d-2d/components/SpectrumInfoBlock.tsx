@@ -26,7 +26,7 @@ const styles: Record<'value' | 'label' | 'colorIndicator', CSSProperties> = {
 
 function getInfoValue(
   spectrum: Spectrum,
-  field: { jpath: string; format: string },
+  field: { jpath: string[]; format: string },
 ) {
   const { jpath, format } = field;
   const value = lodashGet(spectrum, jpath, '');
