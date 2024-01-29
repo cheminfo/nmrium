@@ -1,6 +1,8 @@
+/** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FormEvent, useCallback, useEffect, useMemo, useRef } from 'react';
-import { Modal } from 'react-science/ui';
 
 import Button from '../../component/elements/Button';
 
@@ -123,15 +125,16 @@ export function ClipboardFallbackModal(props: ClipboardFallbackProps) {
   };
 
   return (
-    <Modal hasCloseButton isOpen onRequestClose={props.onDismiss}>
-      <Modal.Header>
-        <h2>{titles[props.mode]}</h2>
-      </Modal.Header>
-
-      <Modal.Body>
+    <Dialog isOpen onClose={props.onDismiss} title={titles[props.mode]}>
+      <DialogBody
+        css={css`
+          padding: 0;
+          background-color: white;
+        `}
+      >
         <ClipboardFallback {...props} />
-      </Modal.Body>
-    </Modal>
+      </DialogBody>
+    </Dialog>
   );
 }
 

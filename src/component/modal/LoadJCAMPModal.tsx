@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { readFromWebSource } from 'nmr-load-save';
 import { useRef } from 'react';
-import { Modal } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -74,43 +75,49 @@ export function LoadJCAMPModal({ onCloseDialog, isOpen }: LoadJCAMPModalProps) {
   }
 
   return (
-    <Modal hasCloseButton isOpen onRequestClose={onCloseDialog}>
-      <Modal.Header>Load JCAMP Dialog</Modal.Header>
-      <Modal.Body>
-        <div style={{ minWidth: '400px', padding: '1.5em' }}>
-          <Formik
-            initialValues={{ url: '' }}
-            validationSchema={loadFormValidation}
-            onSubmit={loadJCAMPHandler}
-            innerRef={ref}
-          >
-            <Label title="URL" style={labelStyle}>
-              <FormikError name="url" style={{ container: { flex: 1 } }}>
-                <FormikInput
-                  name="url"
-                  type="string"
-                  style={{
-                    input: {
-                      padding: '0.8em',
-                      textAlign: 'left',
-                      width: '100%',
-                    },
-                    inputWrapper: { width: '100%' },
-                  }}
-                  placeholder="Enter URL to JCAMP-DX file"
-                />
-              </FormikError>
-            </Label>
-          </Formik>
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
+    <Dialog
+      isOpen
+      onClose={onCloseDialog}
+      title="Load JCAMP Dialog"
+      style={{ minWidth: '400px' }}
+    >
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
+        <Formik
+          initialValues={{ url: '' }}
+          validationSchema={loadFormValidation}
+          onSubmit={loadJCAMPHandler}
+          innerRef={ref}
+        >
+          <Label title="URL" style={labelStyle}>
+            <FormikError name="url" style={{ container: { flex: 1 } }}>
+              <FormikInput
+                name="url"
+                type="string"
+                style={{
+                  input: {
+                    padding: '0.8em',
+                    textAlign: 'left',
+                    width: '100%',
+                  },
+                  inputWrapper: { width: '100%' },
+                }}
+                placeholder="Enter URL to JCAMP-DX file"
+              />
+            </FormikError>
+          </Label>
+        </Formik>
+      </DialogBody>
+      <DialogFooter>
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button.Done onClick={() => ref.current?.submitForm()}>
             Load
           </Button.Done>
         </div>
-      </Modal.Footer>
-    </Modal>
+      </DialogFooter>
+    </Dialog>
   );
 }

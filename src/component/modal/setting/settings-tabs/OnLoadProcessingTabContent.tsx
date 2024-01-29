@@ -1,10 +1,8 @@
+import { Tab, Tabs } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { WorkspacePreferences } from 'nmr-load-save';
 import { BaseFilter } from 'nmr-processing';
-import { useState } from 'react';
-import { TabItem, Tabs } from 'react-science/ui';
 
-import { Nucleus } from '../../../../data/types/common/Nucleus';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import IsotopesViewer from '../../../elements/IsotopesViewer';
 import Label from '../../../elements/Label';
@@ -33,24 +31,26 @@ function OnLoadProcessingTabContent() {
 
 function AutoProcessingFilters() {
   const { values } = useFormikContext<WorkspacePreferences>();
-  const [activeTab, setActiveTab] = useState<Nucleus>('1H');
   const autoProcessingFilters = values?.onLoadProcessing?.filters || {};
-  const tabItems: TabItem[] = Object.keys(autoProcessingFilters).map(
-    (nucleus) => ({
-      id: nucleus,
-      title: <IsotopesViewer value={nucleus} />,
-      content: (
-        <FiltersTable data={autoProcessingFilters[nucleus]} nucleus={nucleus} />
-      ),
-    }),
-  );
+  const tabItems = Object.keys(autoProcessingFilters).map((nucleus) => ({
+    id: nucleus,
+    title: <IsotopesViewer value={nucleus} />,
+    content: (
+      <FiltersTable data={autoProcessingFilters[nucleus]} nucleus={nucleus} />
+    ),
+  }));
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <Tabs
-        items={tabItems}
-        opened={activeTab}
-        onClick={(id) => setActiveTab(id)}
-      />
+      <Tabs>
+        {tabItems.map((item) => (
+          <Tab
+            id={item.id}
+            key={item.id}
+            title={item.title}
+            panel={item.content}
+          />
+        ))}
+      </Tabs>
     </div>
   );
 }

@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter, Classes } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { Workspace } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
-import { Modal, Toolbar, useOnOff } from 'react-science/ui';
+import { Toolbar, useOnOff } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
@@ -38,16 +39,6 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
-  width: 50vw;
-  min-width: 800px;
-
-  .main-content {
-    width: 100%;
-    flex: 1;
-    overflow: auto;
-    border: none;
-  }
-
   .tab-content {
     width: 100%;
   }
@@ -69,18 +60,6 @@ const styles = css`
   .input {
     font-size: 14px;
     padding: 3px;
-  }
-
-  .close-bt {
-    border: none;
-    color: red;
-    background-color: transparent;
-    outline: none;
-    position: absolute;
-    right: 10px;
-    top: 2px;
-    width: 30px;
-    height: 30px;
   }
 
   .checkbox-label {
@@ -292,76 +271,75 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         icon={<FaWrench />}
       />
 
-      <Modal
-        hasCloseButton
+      <Dialog
         isOpen={isOpenDialog}
-        onRequestClose={closeDialog}
-        maxWidth={1000}
+        onClose={closeDialog}
+        style={{ maxWidth: 1000, width: '50vw', minWidth: 800 }}
+        title="General Settings"
+        icon="cog"
       >
-        <Modal.Header>
+        <div>
           <div
+            className={Classes.DIALOG_HEADER}
             style={{
-              display: 'flex',
-              flexDirection: 'column',
+              cursor: 'default',
+              paddingTop: '10px',
+              boxShadow: 'none',
+              backgroundColor: '#f8f8f8',
             }}
           >
-            <span>General Settings</span>
-            <div
+            <Label title="Workspace">
+              <DropDownButton
+                data={workspacesList}
+                renderItem={renderItem}
+                selectedKey={preferences.workspace.current}
+                onSelect={ChangeWorkspaceHandler}
+              />
+            </Label>
+            <Button.Action
+              size="xSmall"
+              onClick={handleReset}
+              toolTip="Reset workspace preferences"
+              tooltipOrientation="horizontal"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                cursor: 'default',
-                paddingTop: '10px',
+                marginLeft: '10px',
+              }}
+              disabled={isRestDisabled}
+            >
+              <FaBolt />
+            </Button.Action>
+            <Button.Done
+              size="xSmall"
+              fill="outline"
+              onClick={handleCopyWorkspace}
+              toolTip="Copy workspace preferences"
+              tooltipOrientation="horizontal"
+              style={{
+                marginLeft: '10px',
               }}
             >
-              <Label title="Workspace">
-                <DropDownButton
-                  data={workspacesList}
-                  renderItem={renderItem}
-                  selectedKey={preferences.workspace.current}
-                  onSelect={ChangeWorkspaceHandler}
-                />
-              </Label>
-              <Button.Action
-                size="xSmall"
-                onClick={handleReset}
-                toolTip="Reset workspace preferences"
-                tooltipOrientation="horizontal"
-                style={{
-                  marginLeft: '10px',
-                }}
-                disabled={isRestDisabled}
-              >
-                <FaBolt />
-              </Button.Action>
-              <Button.Done
-                size="xSmall"
-                fill="outline"
-                onClick={handleCopyWorkspace}
-                toolTip="Copy workspace preferences"
-                tooltipOrientation="horizontal"
-                style={{
-                  marginLeft: '10px',
-                }}
-              >
-                <FaRegCopy />
-              </Button.Done>
-              <Button.Action
-                size="xSmall"
-                fill="outline"
-                onClick={handlePastWorkspaceAction}
-                toolTip="Past workspace preferences"
-                tooltipOrientation="horizontal"
-                style={{
-                  marginLeft: '10px',
-                }}
-              >
-                <FaPaste />
-              </Button.Action>
-            </div>
+              <FaRegCopy />
+            </Button.Done>
+            <Button.Action
+              size="xSmall"
+              fill="outline"
+              onClick={handlePastWorkspaceAction}
+              toolTip="Past workspace preferences"
+              tooltipOrientation="horizontal"
+              style={{
+                marginLeft: '10px',
+              }}
+            >
+              <FaPaste />
+            </Button.Action>
           </div>
-        </Modal.Header>
-        <Modal.Body>
+        </div>
+        <DialogBody
+          css={css`
+            padding: 0;
+            background-color: white;
+          `}
+        >
           <div css={styles} style={{ height }}>
             <Formik
               enableReinitialize
@@ -431,8 +409,8 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               </Tabs>
             </Formik>
           </div>
-        </Modal.Body>
-        <Modal.Footer>
+        </DialogBody>
+        <DialogFooter>
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ActionButtons
               style={{ flexDirection: 'row-reverse', margin: 0 }}
@@ -449,8 +427,8 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               Apply
             </Button.Secondary>
           </div>
-        </Modal.Footer>
-      </Modal>
+        </DialogFooter>
+      </Dialog>
       <SaveSettingsModal />
 
       <ClipboardFallbackModal

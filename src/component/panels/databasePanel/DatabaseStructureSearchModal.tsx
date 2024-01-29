@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { StructureEditor } from 'react-ocl/full';
-import { Modal } from 'react-science/ui';
 
 interface DatabaseStructureSearchModalProps {
   onChange: (idCode: string) => void;
@@ -16,33 +17,27 @@ export function DatabaseStructureSearchModal({
   onClose,
 }: DatabaseStructureSearchModalProps) {
   return (
-    <Modal
-      hasCloseButton
+    <Dialog
       isOpen={isOpen}
-      onRequestClose={() => {
+      onClose={() => {
         onClose?.();
       }}
-      maxWidth={1000}
+      style={{ maxWidth: 1000 }}
+      title="Search by structure"
     >
-      <Modal.Header>
-        <div
-          style={{
-            color: 'rgb(0, 93, 158)',
-            width: '100%',
-            textAlign: 'center',
-          }}
-        >
-          <span>Search by structure</span>
-        </div>
-      </Modal.Header>
-      <Modal.Body>
+      <DialogBody
+        css={css`
+          padding: 0;
+          background-color: white;
+        `}
+      >
         <StructureEditor
           initialIDCode={idCode}
           svgMenu
           fragment
           onChange={(molFile, molecule, idCode) => onChange(idCode)}
         />
-      </Modal.Body>
-    </Modal>
+      </DialogBody>
+    </Dialog>
   );
 }

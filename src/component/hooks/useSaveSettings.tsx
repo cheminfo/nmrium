@@ -1,7 +1,8 @@
+import { Dialog } from '@blueprintjs/core';
 import { Formik, FormikProps } from 'formik';
 import { Workspace } from 'nmr-load-save';
 import { useRef, forwardRef } from 'react';
-import { Modal, useOnOff } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../context/PreferencesContext';
@@ -96,13 +97,13 @@ export function useSaveSettings() {
         onClose: closeDialog,
       };
       return (
-        <Modal
-          hasCloseButton
+        <Dialog
+          onClose={closeDialog}
           isOpen={isOpenDialog}
-          onRequestClose={closeDialog}
+          title="Save workspace"
         >
-          <ConfirmationDialog {...alertConfig} />
-        </Modal>
+          <ConfirmationDialog disableDefaultStyle {...alertConfig} />
+        </Dialog>
       );
     },
   };

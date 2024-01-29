@@ -98,15 +98,18 @@ function FiltersTableInner({
         });
       }
 
-      modal.showConfirmDialog({
-        message: (
-          <span>
-            You are about to delete this processing step
-            <span style={{ color: 'black' }}> {label} </span> , Are you sure?
-          </span>
-        ),
-        buttons,
-      });
+      modal.showConfirmDialog(
+        {
+          message: (
+            <span>
+              You are about to delete this processing step
+              <span style={{ color: 'black' }}> {label} </span> , Are you sure?
+            </span>
+          ),
+          buttons,
+        },
+        { height: 'auto', width: 'auto' },
+      );
     },
     [alert, dispatch, modal, spectraCounter],
   );

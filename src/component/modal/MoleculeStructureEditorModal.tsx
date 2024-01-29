@@ -1,12 +1,15 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
 import { TopicMolecule } from 'openchemlib-utils';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { StructureEditor, IStructureEditorProps } from 'react-ocl/full';
-import { ConfirmModal, Modal, useOnOff } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
@@ -101,23 +104,30 @@ function MoleculeStructureEditorModal(
   ]);
 
   return (
-    <ConfirmModal
-      headerColor="transparent"
-      isOpen={isOpen}
-      onRequestClose={handleClose}
-      onCancel={handleClose}
-      onConfirm={handleSave}
-      maxWidth={700}
-    >
-      <Modal.Body>
+    <Dialog isOpen={isOpen} onClose={handleClose} style={{ width: 710 }}>
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
         <StructureEditor
           initialMolfile={initialEnhancedMolfile?.molfile}
           svgMenu
           fragment={false}
           onChange={cb}
         />
-      </Modal.Body>
-    </ConfirmModal>
+      </DialogBody>
+      <DialogFooter>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={() => {
+            onClose();
+          }}
+        />
+      </DialogFooter>
+    </Dialog>
   );
 }
 
