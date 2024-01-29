@@ -147,7 +147,7 @@ export default class NmriumPage {
 
   async saveWorkspaceModal(name: string) {
     // Save changes.
-    await this.page.click('_react=Modal >> text=Apply and Save');
+    await this.page.click('div[role="dialog"] >> text=Apply and Save');
 
     // Enter a name for the workspace.
     await this.page.locator('input[name="workspaceName"]').fill(name);

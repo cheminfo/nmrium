@@ -33,6 +33,8 @@ test('should draw structure and display it with MF', async ({ page }) => {
     await nmrium.page.click('button >> text=Save');
   });
 
+  await nmrium.page.locator('div[role="dialog"]').waitFor({ state: 'hidden' });
+
   await test.step('Check the visibly of the aromatic ring molecule', async () => {
     // The molecule SVG rendering should now be visible in the panel.
     await expect(
@@ -282,62 +284,98 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
     await nmrium.page.click('_react=IntegralPanel >> .sum-button');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 14!'),
-    ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG1')).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H6 - 78.11'),
+      nmrium.page.locator('div[role="dialog"] >> text=C11H14N2O - 190.25'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 6!'),
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 14!',
+      ),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG2')).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H12 - 84.16'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
+      nmrium.page.locator('div[role="dialog"] >> text=C6H6 - 78.11'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 6!',
+      ),
+    ).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> text=C6H12 - 84.16'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 12!',
+      ),
     ).toBeVisible();
     //TODO check why we have Button2 in development env and Button in production
-    await nmrium.page.click('dialog >> button:has(svg[data-icon="cross"])');
+    await nmrium.page.click(
+      'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
+    );
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
     await nmrium.page
       .locator('_react=ButtonToolTip[popupTitle*="Change ranges sum" i]')
       .click();
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 14!'),
-    ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG1')).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H6 - 78.11'),
+      nmrium.page.locator('div[role="dialog"] >> text=C11H14N2O - 190.25'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 6!'),
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 14!',
+      ),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG2')).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H12 - 84.16'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
+      nmrium.page.locator('div[role="dialog"] >> text=C6H6 - 78.11'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 6!',
+      ),
+    ).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> text=C6H12 - 84.16'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 12!',
+      ),
     ).toBeVisible();
     //TODO check why we have Button2 in development env and Button in production
-    await nmrium.page.click('dialog >> button:has(svg[data-icon="cross"])');
+    await nmrium.page.click(
+      'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
+    );
   });
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
