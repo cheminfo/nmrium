@@ -1,15 +1,17 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import { ActiveSpectrum, Spectrum } from 'nmr-load-save';
 import { useState, useEffect } from 'react';
 import { Plot, LineSeries, Axis } from 'react-plot';
-import { Modal } from 'react-science/ui';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D';
 
 const styles = css`
+  background-color: white;
+
   button:focus {
     outline: none;
   }
@@ -52,8 +54,6 @@ const loaderStyles = css`
   justify-content: center;
   flex-direction: column;
   user-select: none;
-  width: 900px;
-  height: 400px;
 
   svg {
     animation-name: spin-animation;
@@ -100,26 +100,24 @@ export default function MultipletAnalysisModal({
   isOpen,
 }: MultipletAnalysisModalProps) {
   return (
-    <Modal hasCloseButton isOpen={isOpen} onRequestClose={onClose}>
-      <div css={styles}>
-        <Modal.Header>
-          <div className="header handle">
-            <span>Analyse Multiplet</span>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <InnerMultipleAnalysis
-            {...{
-              data,
-              activeSpectrum,
-              scaleX,
-              startX,
-              endX,
-            }}
-          />
-        </Modal.Body>
-      </div>
-    </Modal>
+    <Dialog
+      isOpen={isOpen}
+      onClose={() => onClose()}
+      title="Analyse Multiplet"
+      style={{ width: 900, height: 400 }}
+    >
+      <DialogBody css={styles}>
+        <InnerMultipleAnalysis
+          {...{
+            data,
+            activeSpectrum,
+            scaleX,
+            startX,
+            endX,
+          }}
+        />
+      </DialogBody>
+    </Dialog>
   );
 }
 

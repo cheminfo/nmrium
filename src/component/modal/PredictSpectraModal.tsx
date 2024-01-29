@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox } from '@blueprintjs/core';
+import { Checkbox, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { SvgNmrFt } from 'cheminfo-font';
 import { useCallback, useRef, useState, useMemo } from 'react';
-import { Modal, useOnOff } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 
 import {
   getDefaultPredictionOptions,
@@ -18,9 +18,9 @@ import { useAlert } from '../elements/popup/Alert';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
-import { ModalStyles } from './ModalStyle';
-
 const styles = css`
+  background-color: white;
+
   .inner-content {
     flex: 1;
   }
@@ -146,48 +146,40 @@ export function PredictSpectraModal({
       >
         <SvgNmrFt />
       </Button.BarButton>
-      <Modal
-        hasCloseButton
+      <Dialog
         isOpen={isOpenDialog}
-        onRequestClose={() => {
+        onClose={() => {
           onClose();
           closeDialog();
         }}
-        width={600}
-        maxWidth={1000}
+        style={{ width: 600, maxWidth: 1000 }}
+        title="Prediction of NMR spectrum"
       >
-        <div css={[ModalStyles, styles]}>
-          <Modal.Header>
-            <div className="header handle">
-              <span>Prediction of NMR spectrum</span>
-            </div>
-          </Modal.Header>
-          <div className="inner-content">
-            <PredictionPreferences
-              onSubmit={submitHandler}
-              options={initValues}
-              ref={refForm}
+        <DialogBody css={styles}>
+          <PredictionPreferences
+            onSubmit={submitHandler}
+            options={initValues}
+            ref={refForm}
+          />
+          <p className="warning">
+            In order to predict spectra we are calling an external service and
+            the chemical structure will leave your browser! You should never
+            predict spectra for confidential molecules.
+          </p>
+          <div className="warning-container">
+            <Checkbox
+              onChange={(value) => setApproved(value.target.checked)}
+              checked={isApproved}
+              label="I confirm that the chemical structure is not confidential."
             />
-            <p className="warning">
-              In order to predict spectra we are calling an external service and
-              the chemical structure will leave your browser! You should never
-              predict spectra for confidential molecules.
-            </p>
-            <div className="warning-container">
-              <Checkbox
-                onChange={(value) => setApproved(value.target.checked)}
-                checked={isApproved}
-                label="I confirm that the chemical structure is not confidential."
-              />
-            </div>
           </div>
-          <div className="footer-container">
-            <Button.Done onClick={handleSave} disabled={!isApproved}>
-              Predict spectrum
-            </Button.Done>
-          </div>
-        </div>
-      </Modal>
+        </DialogBody>
+        <DialogFooter className="footer-container">
+          <Button.Done onClick={handleSave} disabled={!isApproved}>
+            Predict spectrum
+          </Button.Done>
+        </DialogFooter>
+      </Dialog>
     </>
   );
 }

@@ -1,9 +1,12 @@
+/** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { LogEntry } from 'fifo-logger';
 import { useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoBugOutline } from 'react-icons/io5';
 import { ObjectInspector } from 'react-inspector';
-import { useOnOff, Modal } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 
 import { useLogger } from '../context/LoggerContext';
 import Button from '../elements/Button';
@@ -157,35 +160,37 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
         </Button.BarButton>
       )}
 
-      <Modal
-        hasCloseButton
+      <Dialog
         isOpen={isOpenDialog}
-        onRequestClose={() => {
+        onClose={() => {
           markAsRead();
           closeDialog();
           onClose?.();
         }}
+        title="Logs History"
+        style={{ width: '50vw', height: '50vh' }}
       >
-        <Modal.Header>Logs History </Modal.Header>
-        <Modal.Body>
-          <div style={{ width: '50vw', height: '50vh', padding: '0.5em' }}>
-            <ReactTable
-              columns={COLUMNS}
-              data={sortedLogs}
-              emptyDataRowText="No Logs"
-              rowStyle={handleRowStyle}
-            />
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
+        <DialogBody
+          css={css`
+            background-color: white;
+          `}
+        >
+          <ReactTable
+            columns={COLUMNS}
+            data={sortedLogs}
+            emptyDataRowText="No Logs"
+            rowStyle={handleRowStyle}
+          />
+        </DialogBody>
+        <DialogFooter>
           <Button.Danger onClick={() => logger.clear()} fill="outline">
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <FaRegTrashAlt />
               <span style={{ paddingLeft: '5px' }}>Clear Logs</span>
             </div>
           </Button.Danger>
-        </Modal.Footer>
-      </Modal>
+        </DialogFooter>
+      </Dialog>
     </>
   );
 }
