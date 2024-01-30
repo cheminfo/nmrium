@@ -105,7 +105,11 @@ function RangesTable({
               To {isSortedDesc('to').content}
             </th>
           )}
-          {preferences.deltaPPM.show && <th>δ (ppm) </th>}
+          {preferences.deltaPPM.show && (
+            <th id="from" {...onSort}>
+              δ (ppm) {isSortedDesc('from').content}
+            </th>
+          )}
           {preferences.deltaHz.show && <th>δ (Hz) </th>}
 
           {preferences.relative.show && (
