@@ -20,6 +20,7 @@ import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
 import { useScaleX } from '../utilities/scale';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
+import { Atoms } from './Atoms';
 
 const style = css`
   .target {
@@ -46,7 +47,7 @@ function Range({
   selectedTool,
   relativeFormat,
 }: RangeProps) {
-  const { id, integration, signals, diaIDs, from, to } = range;
+  const { id, integration, signals, diaIDs: rangeDiaIDs, from, to } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -111,7 +112,7 @@ function Range({
 
   const isAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
-
+  const startX = scaleX()(from) - 16;
   return (
     <g
       data-testid="range"
@@ -163,9 +164,11 @@ function Range({
       {showMultiplicityTrees && (
         <MultiplicityTree range={range} onUnlink={unAssignHandler} />
       )}
+      <Atoms range={range} x={startX} />
+
       <AssignmentActionsButtons
-        isActive={!!(assignmentRange.isActive || diaIDs)}
-        x={scaleX()(from) - 16}
+        isActive={!!(assignmentRange.isActive || rangeDiaIDs)}
+        x={startX}
         onAssign={assignHandler}
         onUnAssign={() => unAssignHandler()}
       />
