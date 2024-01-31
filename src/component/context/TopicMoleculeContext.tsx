@@ -27,10 +27,14 @@ export function TopicMoleculeProvider({
   const { molecules } = useChartData();
 
   useEffect(() => {
-    for (const molecule of molecules) {
-      moleculesRef.current[molecule.id] = new TopicMolecule(
-        OCL.Molecule.fromMolfile(molecule.molfile),
-      );
+    for (const { id, molfile } of molecules) {
+      const topicMolecule = moleculesRef.current?.[id];
+      const molecule = OCL.Molecule.fromMolfile(molfile);
+      if (topicMolecule) {
+        moleculesRef.current[id] = topicMolecule.fromMolecule(molecule);
+      } else {
+        moleculesRef.current[id] = new TopicMolecule(molecule);
+      }
     }
   }, [molecules]);
 
