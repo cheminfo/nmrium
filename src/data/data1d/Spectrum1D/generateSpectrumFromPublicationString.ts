@@ -13,6 +13,15 @@ export function generateSpectrumFromPublicationString(
     experiment: { nucleus, solvent },
     parts,
   } = resurrect(publicationString);
+
+  if (ranges.length === 0) {
+    throw new Error('there is not signals in the ACS string');
+  }
+
+  if (!nucleus) {
+    throw new Error('nucleus does not exists in the ACS string');
+  }
+
   return generateSpectrumFromRanges(
     ranges,
     { nucleus, solvent, name: parts[0] },
