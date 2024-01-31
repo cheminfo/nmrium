@@ -39,6 +39,7 @@ import Events from '../utility/Events';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
+import BaseLine from './tool/BaseLine';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
@@ -375,6 +376,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                         mode={mode}
                         displayerKey={displayerKey}
                       />
+                      <BaseLine />
                     </MouseTracker>
                   </BrushTracker>
                 )}
