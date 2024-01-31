@@ -1,9 +1,11 @@
 import { Range } from 'nmr-processing';
 
+import { useChartData } from '../../context/ChartContext';
 import { useTopicMolecule } from '../../context/TopicMoleculeContext';
 
 const fontSize = 12;
-const lineHeight = fontSize * 1.5;
+const lineHeight = fontSize * 1.1;
+const marginTop = 55;
 
 function getDiaIds(range: Range) {
   const { diaIDs = [], signals } = range;
@@ -19,19 +21,22 @@ function getDiaIds(range: Range) {
 function useAtoms(range: Range) {
   const topicMolecule = useTopicMolecule();
   const diaIDs = getDiaIds(range);
-  const atomsList: number[][] = [];
+  const atomsList: Array<{ id: string; atoms: number[] }> = [];
 
-  for (const topicMoleculeObject of Object.values(topicMolecule)) {
+  for (const [id, topicMoleculeObject] of Object.entries(topicMolecule)) {
     const atoms: number[] = [];
     const diaIDsObject = topicMoleculeObject.getDiaIDsObject();
     for (const id of diaIDs) {
-      if (diaIDsObject[id]?.counter > 0) {
-        atoms.push(...diaIDsObject[id].existingAtoms);
+      const existingAtoms = diaIDsObject[id]?.existingAtoms;
+      if (existingAtoms?.length > 0) {
+        atoms.push(...existingAtoms);
       }
     }
-    const uniqueAtoms = [...new Set(atoms.sort((a, b) => a - b))];
-    atomsList.push(uniqueAtoms);
+    if (atoms.length > 0) {
+      atomsList.push({ id, atoms: [...new Set(atoms.sort((a, b) => a - b))] });
+    }
   }
+
   return atomsList;
 }
 
@@ -41,13 +46,19 @@ interface AtomsProps {
 }
 export function Atoms(props: AtomsProps) {
   const { range, x } = props;
-  const atomsList = useAtoms(range);
+  const {
+    view: { molecules },
+  } = useChartData();
+  const atomsList = useAtoms(range).filter(
+    (atomsList) => molecules?.[atomsList.id]?.showAtomNumber,
+  );
+
   return (
-    <g transform={`translate(${x},55)`}>
+    <g transform={`translate(${x},${marginTop})`}>
       {atomsList.map((row, rowIndex) => (
         // eslint-disable-next-line react/no-array-index-key
         <g key={rowIndex} transform={`translate(${rowIndex * lineHeight}, 0)`}>
-          {row.map((item, colIndex) => (
+          {row.atoms.map((item, colIndex) => (
             <text
               // eslint-disable-next-line react/no-array-index-key
               key={colIndex}
