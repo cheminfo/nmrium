@@ -385,16 +385,18 @@ function disableLivePreview(draft: Draft<State>, id: string) {
     const index = activeSpectrum.index;
     const { data } = draft.tempData[index] as Spectrum1D;
     draft.data[index].data = data;
-    setDomain(draft);
 
     // reset default options
     switch (id) {
-      case apodization.name: {
+      case baselineCorrection.id: {
         draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
         break;
       }
       default: {
-        return null;
+        if (baselineCorrection.name !== id) {
+          setDomain(draft);
+        }
+        break;
       }
     }
   }
