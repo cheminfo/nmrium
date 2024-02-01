@@ -133,9 +133,13 @@ function ImportPublicationStringModal(
         {({ isValid }) => (
           <>
             {' '}
-            <Modal.Header>Import from publication string</Modal.Header>
+            <Modal.Header>
+              Generate spectrum from publication string
+            </Modal.Header>
             <Modal.Body>
               <div style={{ width: 800, height: 400, padding: '10px' }}>
+                Paste a publication string in the text area below and click on
+                the button <i>Generate spectrum</i>
                 <FormikTextarea
                   style={{
                     width: '100%',
@@ -152,7 +156,6 @@ function ImportPublicationStringModal(
                   placeholder="Enter publication string"
                   onChange={handleOnChange}
                 />
-
                 <GroupPane
                   text="Logs"
                   style={{ container: { height: '130px' } }}
@@ -172,7 +175,7 @@ function ImportPublicationStringModal(
                   onClick={() => formRef.current.submitForm()}
                   disabled={isNotValid || !isValid}
                 >
-                  Import
+                  Generate spectrum
                 </Button.Done>
               </div>
             </Modal.Footer>

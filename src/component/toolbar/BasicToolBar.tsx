@@ -50,7 +50,7 @@ const IMPORT_MENU: DropdownMenuProps['options'] = [
   },
   {
     icon: <FaFile />,
-    text: 'Import from publication string',
+    text: 'Generate spectrum from publication string',
     data: {
       id: 'importPublicationString',
     },
