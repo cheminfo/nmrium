@@ -1,6 +1,6 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { useCallback, useEffect, useMemo, CSSProperties } from 'react';
+import { useCallback, useEffect, CSSProperties } from 'react';
 
 interface FormikTextareaProps
   extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'style'> {
@@ -37,9 +37,7 @@ function FormikTextarea(props: FormikTextareaProps) {
     }
   }, [name, setFieldValue, value]);
 
-  const isInvalid = useMemo(() => {
-    return lodashGet(errors, name);
-  }, [errors, name]);
+  const isInvalid = lodashGet(errors, name);
 
   return (
     <textarea
@@ -48,11 +46,12 @@ function FormikTextarea(props: FormikTextareaProps) {
       onChange={changeHandler}
       style={{
         ...style,
-        ...(isInvalid && {
-          borderColor: 'red',
-          borderWidth: '1px',
-          outline: 'none',
-        }),
+        ...(isInvalid
+          ? {
+              borderColor: 'red',
+              borderWidth: '1px',
+            }
+          : {}),
       }}
       {...resProps}
     />

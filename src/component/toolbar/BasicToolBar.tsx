@@ -5,7 +5,7 @@ import {
   SvgNmrAlignBottom,
   SvgNmrAlignCenter,
 } from 'cheminfo-font';
-import { Fragment, useCallback, memo } from 'react';
+import { memo } from 'react';
 import {
   FaDownload,
   FaFileDownload,
@@ -20,7 +20,6 @@ import { Toolbar, useOnOff } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { useLoader } from '../context/LoaderContext';
 import { DropdownMenu, DropdownMenuProps } from '../elements/DropdownMenu';
-import { useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
@@ -121,13 +120,18 @@ function BasicToolBarInner({
   ftCounter,
   fidCounter,
 }: BasicToolBarInnerProps) {
-  const modal = useModal();
   const openLoader = useLoader();
   const openMetaInformationModal = useMetaInformationImportationModal();
 
   const isExperimentalFeature = useCheckExperimentalFeature();
   const isButtonVisible = useCheckToolsVisibility();
-  const [isLoadModalOpened, openLoadModal, closeLoadModal] = useOnOff(false);
+  const [isLoadJCAMPModalOpened, openLoadJCAMPModal, closeLoadJCAMPModal] =
+    useOnOff(false);
+  const [
+    isPublicationStringModalOpened,
+    openPublicationStringModal,
+    closePublicationStringModal,
+  ] = useOnOff(false);
 
   const importMenu = isExperimentalFeature
     ? IMPORT_MENU
@@ -152,80 +156,56 @@ function BasicToolBarInner({
     saveAsHandler,
   } = useExport();
 
-  const importJCAMPFile = useCallback(() => {
-    openLoadModal();
-  }, [openLoadModal]);
+  function importHandler(data) {
+    switch (data?.id) {
+      case 'importFile':
+        openLoader();
+        break;
+      case 'importJDX':
+        openLoadJCAMPModal();
+        break;
+      case 'importPublicationString':
+        openPublicationStringModal();
+        break;
+      case 'importMetaInformation':
+        openMetaInformationModal();
+        break;
+      default:
+    }
+  }
 
-  const openImportPublicationStringModal = useCallback(() => {
-    modal.show(
-      <ImportPublicationStringModal onClose={() => modal.close()} />,
-      {},
-    );
-  }, [modal]);
+  function exportHandler(data) {
+    switch (data?.id) {
+      case 'svg':
+        void saveAsSVGHandler();
+        break;
+      case 'png':
+        void saveAsPNGHandler();
+        break;
+      case 'json':
+        saveAsJSONHandler();
+        break;
+      case 'advance_save':
+        void saveAsHandler();
+        break;
+      case 'copy':
+        void saveToClipboardHandler();
+        break;
 
-  const importHandler = useCallback(
-    (data) => {
-      switch (data?.id) {
-        case 'importFile':
-          openLoader();
-          break;
-        case 'importJDX':
-          importJCAMPFile();
-          break;
-        case 'importPublicationString':
-          openImportPublicationStringModal();
-          break;
-        case 'importMetaInformation':
-          openMetaInformationModal();
-          break;
-        default:
-      }
-    },
-    [
-      openLoader,
-      importJCAMPFile,
-      openImportPublicationStringModal,
-      openMetaInformationModal,
-    ],
-  );
-
-  const exportHandler = useCallback(
-    (data) => {
-      switch (data?.id) {
-        case 'svg':
-          void saveAsSVGHandler();
-          break;
-        case 'png':
-          void saveAsPNGHandler();
-          break;
-        case 'json':
-          saveAsJSONHandler();
-          break;
-        case 'advance_save':
-          void saveAsHandler();
-          break;
-        case 'copy':
-          void saveToClipboardHandler();
-          break;
-
-        default:
-          break;
-      }
-    },
-    [
-      saveAsSVGHandler,
-      saveAsPNGHandler,
-      saveAsJSONHandler,
-      saveAsHandler,
-      saveToClipboardHandler,
-    ],
-  );
+      default:
+        break;
+    }
+  }
 
   return (
-    <Fragment>
+    <>
       <LoadJCAMPModal
-        isOpen={isLoadModalOpened}
-        onCloseDialog={closeLoadModal}
+        isOpen={isLoadJCAMPModalOpened}
+        onCloseDialog={closeLoadJCAMPModal}
+      />
+      <ImportPublicationStringModal
+        isOpen={isPublicationStringModalOpened}
+        onClose={closePublicationStringModal}
       />
 
       {isButtonVisible('import') && (
@@ -309,7 +289,7 @@ function BasicToolBarInner({
             }
           />
         )}
-    </Fragment>
+    </>
   );
 }
 
