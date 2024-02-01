@@ -93,7 +93,7 @@ function ImportPublicationStringModal(
       );
       const {
         ranges,
-        experiment: { nucleus, solvent },
+        info: { nucleus, solvent = '', frequency },
         parts,
       } = resurrect(publicationText, { logger: loggerRef.current });
       setTimeout(() => {
@@ -101,7 +101,7 @@ function ImportPublicationStringModal(
           type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
           payload: {
             ranges,
-            info: { nucleus, solvent, name: parts[0] },
+            info: { nucleus, solvent, frequency, name: parts[0] },
           },
         });
         hideLoading();

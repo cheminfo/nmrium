@@ -114,6 +114,7 @@ type GenerateSpectrumFromPublicationStringAction = ActionType<
     info: {
       nucleus: string;
       solvent: string;
+      frequency: number;
       name: string;
     };
   }
