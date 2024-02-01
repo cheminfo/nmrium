@@ -158,7 +158,7 @@ function NextPrev(props: NextPrevProps) {
     >
       <div
         css={css`
-          transform: translateX(-${translation}px);
+          transform: translateX(-${translation});
           transition: transform ease-out ${transition}s;
           height: 100%;
           width: ${slidersWidth}px;
