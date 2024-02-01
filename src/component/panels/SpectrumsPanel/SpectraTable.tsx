@@ -81,7 +81,7 @@ const Spectra2DContextMenuOptions: ContextMenuItem[] = [
     data: { id: SpectraContextMenuOptionsKeys.Delete },
   },
   {
-    text: 'Export as jcamp',
+    text: 'Export as JCAMP-DX',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
   },
@@ -90,7 +90,7 @@ const Spectra2DContextMenuOptions: ContextMenuItem[] = [
 const Spectra1DContextMenuOptions: ContextMenuItem[] = [
   ...Spectra2DContextMenuOptions,
   {
-    text: 'Export as jcamp',
+    text: 'Export as JCAMP-DX',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
   },
