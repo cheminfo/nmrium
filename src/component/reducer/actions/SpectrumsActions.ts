@@ -10,14 +10,14 @@ import {
   Display1D,
   Display2D,
 } from 'nmr-load-save';
-import { Filters, FiltersManager } from 'nmr-processing';
+import { Filters, FiltersManager, NMRRange } from 'nmr-processing';
 
 import {
-  generateSpectrumFromPublicationString,
   getReferenceShift,
   isSpectrum1D,
   get1DColor,
   initiateDatum1D,
+  generateSpectrumFromRanges,
 } from '../../../data/data1d/Spectrum1D';
 import {
   SpectrumSimulationOptions,
@@ -106,10 +106,17 @@ type AlignSpectraAction = ActionType<
     targetX: number;
   }
 >;
+
 type GenerateSpectrumFromPublicationStringAction = ActionType<
   'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
   {
-    publicationText: string;
+    ranges: NMRRange[];
+    info: {
+      nucleus: string;
+      solvent: string;
+      frequency: number;
+      name: string;
+    };
   }
 >;
 type ImportSpectraMetaInfoAction = ActionType<
@@ -246,14 +253,19 @@ function handleChangeSpectrumVisibilityById(
   action: ChangeSpectrumVisibilityByIdAction,
 ) {
   const { id, key } = action.payload;
+  const { xDomain, data } = draft;
 
-  const spectrum = draft.data.find((d) => d.id === id);
+  const spectrum = data.find((d) => d.id === id);
   if (spectrum) {
     spectrum.display[key] = !spectrum.display[key];
 
     if (spectrum.info.dimension === 2) {
       spectrum.display.isVisible = checkIsVisible2D(spectrum as Spectrum2D);
     }
+  }
+
+  if (xDomain?.length === 0) {
+    setDomain(draft);
   }
 }
 
@@ -528,12 +540,9 @@ function handleGenerateSpectrumFromPublicationStringHandler(
   draft: Draft<State>,
   action: GenerateSpectrumFromPublicationStringAction,
 ) {
-  const publicationString = action.payload.publicationText;
+  const { ranges, info } = action.payload;
+  const spectrum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
 
-  const spectrum = generateSpectrumFromPublicationString(
-    publicationString,
-    draft.usedColors,
-  );
   if (spectrum) {
     draft.data.push(spectrum);
     setActiveTab(draft);

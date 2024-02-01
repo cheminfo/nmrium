@@ -87,6 +87,7 @@ interface MoleculePanelHeaderProps {
   onOpenMoleculeEditor: () => void;
   renderSource?: 'moleculePanel' | 'predictionPanel';
   onClickPreferences?: () => void;
+  onClickPastMolecule?: () => void;
   children?: ReactNode;
 }
 
@@ -98,6 +99,7 @@ export default function MoleculePanelHeader({
   onOpenMoleculeEditor,
   renderSource = 'moleculePanel',
   onClickPreferences,
+  onClickPastMolecule,
   children,
 }: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
@@ -110,9 +112,9 @@ export default function MoleculePanelHeader({
     exportAsSVG(rootRef, `molSVG${currentIndex} `, 'molFile');
   }, [rootRef, currentIndex]);
 
-  const saveAsPNGHandler = useCallback(() => {
+  const saveAsPNGHandler = useCallback(async () => {
     if (!rootRef) return;
-    copyPNGToClipboard(rootRef, `molSVG${currentIndex} `);
+    await copyPNGToClipboard(rootRef, `molSVG${currentIndex} `);
     alert.success('MOL copied as PNG to clipboard');
   }, [rootRef, alert, currentIndex]);
 
@@ -149,7 +151,7 @@ export default function MoleculePanelHeader({
             break;
           }
           case 'png':
-            saveAsPNGHandler();
+            void saveAsPNGHandler();
             break;
           case 'svg':
             saveAsSVGHandler();
@@ -169,6 +171,7 @@ export default function MoleculePanelHeader({
   );
 
   function handlePasteMolfileAction() {
+    onClickPastMolecule?.();
     void readText().then(handlePasteMolfile);
   }
   async function handlePasteMolfile(molfile: string | undefined) {
@@ -229,7 +232,7 @@ export default function MoleculePanelHeader({
       <Button.BarButton
         onClick={handlePasteMolfileAction}
         color={{ base: '#4e4e4e', hover: '#4e4e4e' }}
-        toolTip="Paste molfile"
+        toolTip="Paste molfile or SMILES"
         tooltipOrientation="horizontal"
       >
         <FaPaste />

@@ -4,8 +4,6 @@ import JSZip from 'jszip';
 import lodashGet from 'lodash/get';
 import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
-import { newClipboardItem, write } from '../../utils/clipboard/clipboard';
-
 /**
  * export the experiments result in JSON format
  * @param data
@@ -161,31 +159,34 @@ function copyDataURLClipboardFireFox(image) {
   img.remove();
 }
 
-function copyBlobToClipboard(canvas: HTMLCanvasElement) {
-  canvas.toBlob((b) => {
-    if (!b) return;
-
-    (async () => {
-      const clip = await newClipboardItem({
-        [b.type]: b,
-      });
-
-      await write([clip]);
-    })()
-      .catch(() => {
-        const png = canvas.toDataURL('image/png', 1);
-        copyDataURLClipboardFireFox(png);
-        URL.revokeObjectURL(png);
-      })
-      .then(() => {
-        // eslint-disable-next-line no-console
-        console.log('experiment copied.');
-      })
-      .catch(reportError);
+async function resolveBlob(b: Blob): Promise<Blob> {
+  return new Promise((resolve) => {
+    resolve(b);
   });
 }
 
-function copyPNGToClipboard(
+async function writeImageToClipboard(image: Blob, isSafari = false) {
+  await navigator.clipboard.write([
+    new ClipboardItem({ [image.type]: isSafari ? resolveBlob(image) : image }),
+  ]);
+}
+async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
+  canvas.toBlob(async (b) => {
+    if (!b) return;
+    const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
+      navigator.userAgent,
+    );
+    if (typeof ClipboardItem !== 'undefined') {
+      await writeImageToClipboard(b, isSafari).catch(reportError);
+    } else {
+      const png = canvas.toDataURL('image/png', 1);
+      copyDataURLClipboardFireFox(png);
+      URL.revokeObjectURL(png);
+    }
+  });
+}
+
+async function copyPNGToClipboard(
   rootRef: HTMLDivElement,
   elementID: string,
   css?: SerializedStyles,
@@ -204,16 +205,16 @@ function copyPNGToClipboard(
 
     const img = new Image();
     const url = URL.createObjectURL(blob);
-    img.addEventListener('load', () => {
+    img.addEventListener('load', async () => {
       context?.drawImage(img, 0, 0);
-      copyBlobToClipboard(canvas);
+      await copyBlobToClipboard(canvas);
     });
     img.src = url;
   } catch (error) {
     if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
       alert(
-        'Your browser does not support this feature, please use Google Chrome',
+        'Your browser does not support this feature, please use Google Chrome or Firefox',
       );
     }
     // TODO: handle error.

@@ -37,6 +37,8 @@ interface ScaleYOptions {
   verticalAlign: VerticalAlignment;
 }
 
+export const SPECTRA_BOTTOM_MARGIN = 40;
+
 function getYScale(
   options: ScaleYOptions,
   spectrumId: number | null | string = null,
@@ -47,7 +49,7 @@ function getYScale(
     domainY = yDomains[spectrumId];
   }
   const [min, max] = domainY;
-  let bottomShift = 40;
+  let bottomShift = SPECTRA_BOTTOM_MARGIN;
 
   if (verticalAlign === 'center') {
     bottomShift = 0;

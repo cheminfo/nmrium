@@ -25,6 +25,7 @@ function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
     displayerKey,
     peakFormat,
   } = props;
+
   const decimalsCount = getDecimalsCount(xDomain[1], peakFormat);
 
   const mapPeaks = resolve(peaks, {

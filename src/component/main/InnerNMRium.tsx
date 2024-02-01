@@ -13,6 +13,7 @@ import { GlobalProvider } from '../context/GlobalContext';
 import { KeyModifiersProvider } from '../context/KeyModifierContext';
 import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
+import { TopicMoleculeProvider } from '../context/TopicMoleculeContext';
 import { AlertProvider } from '../elements/popup/Alert';
 import { ModalProvider } from '../elements/popup/Modal';
 import { HighlightProvider } from '../highlight';
@@ -85,7 +86,11 @@ export function InnerNMRium({
   );
 
   return (
-    <div ref={mainDivRef} style={{ height: '100%', position: 'relative' }}>
+    <div
+      ref={mainDivRef}
+      style={{ height: '100%', position: 'relative' }}
+      translate="no"
+    >
       <GlobalProvider
         value={{
           rootRef: rootRef.current,
@@ -101,23 +106,25 @@ export function InnerNMRium({
                   onChange={onChange}
                   nmriumData={nmriumData}
                 >
-                  <ModalProvider wrapperRef={elementsWrapperRef.current}>
-                    <HighlightProvider>
-                      <AssignmentProvider>
-                        <SpinnerProvider value={getSpinner}>
-                          <InnerNMRiumContents
-                            isFullscreenEnabled={isFullscreenEnabled}
-                            toggleFullscreen={toggleFullscreen}
-                            emptyText={emptyText}
-                            mainDivRef={mainDivRef}
-                            elementsWrapperRef={elementsWrapperRef}
-                            rootRef={rootRef}
-                            viewerRef={viewerRef}
-                          />
-                        </SpinnerProvider>
-                      </AssignmentProvider>
-                    </HighlightProvider>
-                  </ModalProvider>
+                  <TopicMoleculeProvider>
+                    <ModalProvider wrapperRef={elementsWrapperRef.current}>
+                      <HighlightProvider>
+                        <AssignmentProvider>
+                          <SpinnerProvider value={getSpinner}>
+                            <InnerNMRiumContents
+                              isFullscreenEnabled={isFullscreenEnabled}
+                              toggleFullscreen={toggleFullscreen}
+                              emptyText={emptyText}
+                              mainDivRef={mainDivRef}
+                              elementsWrapperRef={elementsWrapperRef}
+                              rootRef={rootRef}
+                              viewerRef={viewerRef}
+                            />
+                          </SpinnerProvider>
+                        </AssignmentProvider>
+                      </HighlightProvider>
+                    </ModalProvider>
+                  </TopicMoleculeProvider>
                 </NMRiumStateProvider>
               </AlertProvider>
             </KeyModifiersProvider>

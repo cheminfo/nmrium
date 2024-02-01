@@ -45,6 +45,7 @@ function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
 const columnStyle: CSSProperties = {
   maxWidth: 0,
   overflow: 'hidden',
+  height: '24px',
 };
 
 interface SpectraTableProps extends OnChangeVisibilityEvent {
@@ -124,6 +125,7 @@ export function SpectraTable(props: SpectraTableProps) {
         style: {
           width: '35px',
           maxWidth: '55px',
+          height: '24px',
         },
         Cell: ({ row }) => {
           return (
@@ -139,6 +141,7 @@ export function SpectraTable(props: SpectraTableProps) {
         style: {
           width: '30px',
           maxWidth: '30px',
+          height: '24px',
         },
         Cell: ({ row }) => {
           const {
@@ -283,7 +286,7 @@ export function SpectraTable(props: SpectraTableProps) {
         columns={tableColumns}
         onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
         enableVirtualScroll
-        approxItemHeight={26}
+        approxItemHeight={24}
         contextMenu={
           data.info && data.info.dimension === 1
             ? Spectra1DContextMenuOptions

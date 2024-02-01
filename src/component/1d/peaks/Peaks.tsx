@@ -168,17 +168,19 @@ export default function Peaks(props) {
   const canDisplaySpectrumPeaks =
     !spectrum.display.isVisible || spectrum.info?.isFid;
   let mode: PeaksMode = 'spread';
+
   if (
-    !spectrum.peaks?.values ||
-    !peaksViewState.showPeaks ||
-    canDisplaySpectrumPeaks
+    peaksSource === 'peaks' &&
+    (spectrum.peaks?.values?.length === 0 ||
+      !peaksViewState.showPeaks ||
+      canDisplaySpectrumPeaks)
   ) {
     return null;
   }
 
   if (
     peaksSource === 'ranges' &&
-    (!spectrum.ranges?.values ||
+    (spectrum.ranges?.values?.length === 0 ||
       !rangesViewState.showPeaks ||
       canDisplaySpectrumPeaks)
   ) {
