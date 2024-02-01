@@ -1,4 +1,3 @@
-export { generateSpectrumFromPublicationString } from './generateSpectrumFromPublicationString';
 export { get1DDataXY } from './get1DDataXY';
 export { getReferenceShift } from './getReferenceShift';
 export { initiateDatum1D } from './initiateDatum1D';
