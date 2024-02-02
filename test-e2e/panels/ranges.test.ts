@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
 
 async function addRange(
   nmrium: NmriumPage,
@@ -9,10 +8,11 @@ async function addRange(
   endX: number,
   count: number,
 ) {
-  await selectRange(nmrium, {
-    axis: 'X',
+  await nmrium.viewer.drawRectangle({
+    axis: 'x',
     startX,
     endX,
+    shift: true,
   });
   await expect(nmrium.page.getByTestId(`range`)).toHaveCount(count);
 }

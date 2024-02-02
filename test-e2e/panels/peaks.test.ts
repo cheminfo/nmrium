@@ -1,9 +1,6 @@
-import { setTimeout as wait } from 'node:timers/promises';
-
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
 
 const PEAK_ANNOTATIONS_SELECTOR =
   '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation';
@@ -12,28 +9,24 @@ const FIRST_PEAK_ANNOTATION_SELECTOR = `${PEAK_ANNOTATIONS_SELECTOR} >> nth=0 >>
 async function addPeaks(nmrium: NmriumPage) {
   const peaksAnnotationLocator = nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR);
 
-  // select peak picking tool
+  // Select peak picking tool.
   await nmrium.clickTool('peakPicking');
 
-  // add peak by select range
-  await selectRange(nmrium, {
-    axis: 'X',
-    startX: 50,
-    endX: 100,
+  // Add peak by selecting range.
+  await nmrium.viewer.drawRectangle({
+    axis: 'x',
+    startX: 75,
+    endX: 115,
+    shift: true,
   });
 
   await expect(peaksAnnotationLocator).toHaveCount(1);
 
-  // TODO: Get rid of this timeout.
-  // Without it, the click seems to have no effect.
-  await wait(500);
-
-  await nmrium.viewerLocator.click({
+  // Add peak by clicking above it.
+  await nmrium.viewer.moveMouse({ x: 210, y: 200 });
+  await nmrium.viewer.locator.click({
+    position: { x: 210, y: 200 },
     modifiers: ['Shift'],
-    position: {
-      x: 200,
-      y: 200,
-    },
   });
 
   await expect(peaksAnnotationLocator).toHaveCount(2);

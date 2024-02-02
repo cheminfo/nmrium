@@ -40,20 +40,11 @@ test('Should Zoom', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  const boundingBox = (await nmrium.viewerLocator.boundingBox()) as BoundingBox;
-
-  const cursorStartX = boundingBox.x + boundingBox.width / 2;
-  const cursorStartY = boundingBox.y + boundingBox.height / 2;
   const previousPath = (await nmrium.page
     .getByTestId('spectrum-line')
     .getAttribute('d')) as string;
 
-  await nmrium.page.mouse.move(cursorStartX, cursorStartY, { steps: 15 });
-  await nmrium.page.mouse.down();
-  await nmrium.page.mouse.move(cursorStartX + 100, cursorStartY, {
-    steps: 15,
-  });
-  await nmrium.page.mouse.up();
+  await nmrium.viewer.drawRectangle({ axis: 'x', startX: 100, endX: 200 });
 
   const path = (await nmrium.page
     .getByTestId('spectrum-line')
@@ -153,7 +144,7 @@ test('2d spectrum', async ({ page }) => {
     ).toBeVisible();
 
     // Close color picker
-    await nmrium.viewerLocator.click({ force: true });
+    await nmrium.viewer.locator.click({ force: true });
     await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
   });
   await test.step('Change H1,H1 spectrum', async () => {
@@ -223,7 +214,7 @@ test('2d spectrum', async ({ page }) => {
       ),
     ).toBeVisible();
     // Close color picker
-    await nmrium.viewerLocator.click({ force: true });
+    await nmrium.viewer.locator.click({ force: true });
     await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
   });
   await test.step('Check hide spectrums', async () => {
