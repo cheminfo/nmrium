@@ -35,6 +35,7 @@ export const exercise: InnerWorkspace = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    popupLoggingLevel: 'error',
     invert: false,
   },
   formatting: {

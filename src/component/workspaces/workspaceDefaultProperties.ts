@@ -61,6 +61,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    popupLoggingLevel: 'error',
     invert: false,
   },
   formatting: {
