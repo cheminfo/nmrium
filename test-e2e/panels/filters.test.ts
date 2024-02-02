@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
 
 async function open13CFidSpectrum(nmrium: NmriumPage) {
   await nmrium.page.click('li >> text=Cytisine');
@@ -13,7 +12,7 @@ async function apodizationFilter(
   { keyboard = false } = {},
 ) {
   if (keyboard) {
-    await nmrium.moveMouseToViewer();
+    await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyA');
   } else {
     await nmrium.clickTool('apodization');
@@ -50,7 +49,7 @@ async function baselineCorrectionFilter(
   { keyboard = false } = {},
 ) {
   if (keyboard) {
-    await nmrium.moveMouseToViewer();
+    await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyB');
   } else {
     await nmrium.clickTool('baselineCorrection');
@@ -67,7 +66,7 @@ async function addPeaks(
   { keyboard = false, ratio = 0.1 } = {},
 ) {
   if (keyboard) {
-    await nmrium.moveMouseToViewer();
+    await nmrium.viewer.moveMouse();
     await nmrium.page.keyboard.press('KeyP');
   } else {
     await nmrium.clickTool('peakPicking');
@@ -225,8 +224,13 @@ test('Exclusion zones', async ({ page }) => {
   await test.step('add exclusion zones', async () => {
     //select exclusion zones tool
     await nmrium.clickTool('exclusionZones');
-    //add exclusion zones
-    await selectRange(nmrium, { axis: 'X', startX: 100, endX: 150 });
+    // Add exclusion zones.
+    await nmrium.viewer.drawRectangle({
+      axis: 'x',
+      startX: 100,
+      endX: 150,
+      shift: true,
+    });
     // check that the filters applied to all spectra
     await expect(
       nmrium.page.locator('_react=ExclusionZoneAnnotation'),
@@ -249,8 +253,13 @@ test('Exclusion zones', async ({ page }) => {
     //select exclusion zones tool
     await nmrium.clickTool('exclusionZones');
 
-    //add exclusion zones to the last spectrum which is active from the previous step
-    await selectRange(nmrium, { axis: 'X', startX: 200, endX: 220 });
+    // Add exclusion zones to the last spectrum which is active from the previous step.
+    await nmrium.viewer.drawRectangle({
+      axis: 'x',
+      startX: 200,
+      endX: 220,
+      shift: true,
+    });
 
     // the number of exclusion zones  should become 14 since the previous count for all spectra is 13
     await expect(

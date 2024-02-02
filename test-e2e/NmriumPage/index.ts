@@ -1,16 +1,18 @@
 import { readFileSync } from 'node:fs';
 
-import { Locator, Page, expect } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
+
+import { NmriumPageViewer } from './NmriumPageViewer';
 
 type ClickOptions = Parameters<Page['click']>[1];
 
 export default class NmriumPage {
   public readonly page: Page;
-  public readonly viewerLocator: Locator;
+  public readonly viewer: NmriumPageViewer;
 
   public constructor(page: Page) {
     this.page = page;
-    this.viewerLocator = page.getByTestId('viewer');
+    this.viewer = new NmriumPageViewer(page);
   }
 
   public static async create(page: Page): Promise<NmriumPage> {
@@ -47,11 +49,6 @@ export default class NmriumPage {
     await expect(lastTick).toHaveText(max.toString());
   }
 
-  public async moveMouseToViewer() {
-    const { x, y, width, height } =
-      (await this.viewerLocator.boundingBox()) as BoundingBox;
-    await this.page.mouse.move(x + width / 2, y + height / 2);
-  }
   public async getNumberOfDistinctColors() {
     const Lines = this.page.getByTestId('spectrum-line').locator('_react=Line');
     // get all lines from locator
@@ -76,7 +73,7 @@ export default class NmriumPage {
     const { keyboard = false, mode = 'manual' } = options;
 
     if (keyboard) {
-      await this.moveMouseToViewer();
+      await this.viewer.moveMouse();
       await this.page.keyboard.press('KeyA');
     } else {
       await this.clickTool('phaseCorrection');

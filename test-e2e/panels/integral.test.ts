@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
 
 async function addIntegral(
   nmrium: NmriumPage,
@@ -9,10 +8,11 @@ async function addIntegral(
   endX: number,
   childIndex: number,
 ) {
-  await selectRange(nmrium, {
-    axis: 'X',
+  await nmrium.viewer.drawRectangle({
+    axis: 'x',
     startX,
     endX,
+    shift: true,
   });
 
   // Should have integral with at least 1000 points
