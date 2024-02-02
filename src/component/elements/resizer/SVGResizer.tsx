@@ -82,7 +82,7 @@ function SVGResizerHandle(props: {
     <g
       onPointerDown={props.onPointerDown}
       css={styles.container}
-      style={{ transform: `translateX(${props.position}px)` }}
+      transform={`translate(${props.position})`}
       data-no-export="true"
     >
       <rect x="-5px" style={style.innerContainer} />

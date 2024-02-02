@@ -13,10 +13,7 @@ export default function JsCoupling({ value }: JsCouplingProps) {
   if (!scaleY) return null;
 
   return (
-    <g
-      className="coupling"
-      style={{ transform: `translate(0px,${scaleY(value)}px)` }}
-    >
+    <g className="coupling" transform={`translate(0 ${scaleY(value)})`}>
       <circle
         onMouseEnter={() => setOver(true)}
         onMouseLeave={() => setOver(false)}
@@ -27,7 +24,7 @@ export default function JsCoupling({ value }: JsCouplingProps) {
         pointerEvents="all"
       />
       {isOver && (
-        <g style={{ transform: `translate(0px,15px)` }}>
+        <g transform="translate(0 15)">
           <text
             pointerEvents="none"
             stroke="white"

@@ -23,10 +23,10 @@ export function SVGGroup(props: SVGGroupProps) {
         if (element) {
           const boundary = element.getBoundingClientRect();
           if (direction === 'row') {
-            element.style.transform = `translate(${shift}px,0)`;
+            element.setAttribute('transform', `translate(${shift} 0)`);
             shift += boundary.width + space;
           } else {
-            element.style.transform = `translate(0,${shift}px)`;
+            element.setAttribute('transform', `translate(0 ${shift})`);
             shift += boundary.height + space;
           }
         }

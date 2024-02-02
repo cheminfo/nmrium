@@ -61,7 +61,7 @@ function ExportAsJcampModal(props: ExportAsJCAMPProps) {
   function submitHandler(options) {
     void (async () => {
       const hideLoading = await alert.showLoading(
-        'export as JCAMP in progress',
+        'export as JCAMP-DX in progress',
       );
       try {
         exportAsJcamp(spectrum, options);

@@ -56,7 +56,12 @@ const VerticalAxis = forwardRef<SVGGElement | null, VerticalRenderProps>(
               />
             )}
             <line y1={position} y2={position} x1={15} x2={10} stroke="black" />
-            <text y={position} dominantBaseline="middle" textAnchor="end">
+            <text
+              y={position}
+              dominantBaseline="middle"
+              textAnchor="end"
+              fill="black"
+            >
               {label}
             </text>
           </g>

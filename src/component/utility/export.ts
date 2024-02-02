@@ -248,6 +248,9 @@ function getBlob(
   _svg.append(floatingMoleculesGroup);
 
   const nmrCss = `
+  * {
+    font-family: Arial, Helvetica, sans-serif;
+  }
   .grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
