@@ -25,7 +25,7 @@ async function shiftSignal(nmrium: NmriumPage) {
   await signalColumnLocator.dblclick();
   const inputLocator = signalColumnLocator.locator('input');
   await inputLocator.selectText();
-  await inputLocator.type('100');
+  await inputLocator.fill('100');
   await inputLocator.press('Enter');
   const trackerLocator = nmrium.page.locator('_react=XAxis >> text=100');
   await expect(trackerLocator).toHaveCount(1);
