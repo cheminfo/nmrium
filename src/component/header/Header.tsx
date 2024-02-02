@@ -5,6 +5,7 @@ import {
   FaRegWindowMaximize,
   FaQuestionCircle,
   FaRegSave,
+  FaFilm,
 } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
@@ -189,6 +190,15 @@ function HeaderInner(props: HeaderInnerProps) {
                   icon={<FaQuestionCircle />}
                 />
               )}
+              <Toolbar.Item
+                id="user-manual"
+                title="NMRium channel"
+                onClick={() =>
+                  window.open('https://www.youtube.com/@nmrium', '_blank')
+                }
+                icon={<FaFilm />}
+              />
+
               {!hideGeneralSettings && (
                 <GeneralSettingsModal height={height / 2} />
               )}
