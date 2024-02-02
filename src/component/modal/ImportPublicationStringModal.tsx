@@ -1,9 +1,9 @@
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { FifoLogger, LogEntry } from 'fifo-logger';
 import { Formik } from 'formik';
 import debounce from 'lodash/debounce';
 import { resurrect } from 'nmr-processing';
 import { useMemo, useRef, useState } from 'react';
-import { Modal } from 'react-science/ui';
 import * as yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -123,7 +123,12 @@ function ImportPublicationStringModal(
   );
 
   return (
-    <Modal hasCloseButton isOpen onRequestClose={onClose}>
+    <Dialog
+      title="Generate spectrum from publication string"
+      isOpen
+      onClose={onClose}
+      style={{ width: 800, height: 500 }}
+    >
       <Formik
         innerRef={formRef}
         initialValues={INITIAL_VALUES}
@@ -132,42 +137,50 @@ function ImportPublicationStringModal(
       >
         {({ isValid }) => (
           <>
-            <Modal.Header>
-              Generate spectrum from publication string
-            </Modal.Header>
-            <Modal.Body>
-              <div style={{ width: 800, minHeight: 400, padding: '10px' }}>
-                <p>
-                  Paste a publication string in the text area below and click on
-                  the button <i>Generate spectrum</i>
-                </p>
-                <FormikTextarea
-                  style={{
-                    width: '100%',
-                    height: '180px',
-                    outline: 'none',
-                    borderWidth: '1px',
-                    borderColor: '#dedede',
-                    borderRadius: '5px',
-                    resize: 'none',
-                    padding: '15px',
-                  }}
-                  name="publicationText"
-                  className="text-area"
-                  placeholder="Enter publication string"
-                  onChange={handleOnChange}
-                />
+            <DialogBody>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+                >
+                  <p>
+                    Paste a publication string in the text area below and click
+                    on the button <i>Generate spectrum</i>
+                  </p>
+                  <FormikTextarea
+                    style={{
+                      width: '100%',
+                      flex: 1,
+                      outline: 'none',
+                      borderWidth: '1px',
+                      borderColor: '#dedede',
+                      borderRadius: '5px',
+                      resize: 'none',
+                      padding: '15px',
+                    }}
+                    name="publicationText"
+                    className="text-area"
+                    placeholder="Enter publication string"
+                    onChange={handleOnChange}
+                  />
+                </div>
                 <GroupPane text="Logs">
                   <ReactTable
                     columns={COLUMNS}
                     data={logs}
                     emptyDataRowText="No Logs"
                     rowStyle={handleRowStyle}
+                    style={{ height: '120px' }}
                   />
                 </GroupPane>
               </div>
-            </Modal.Body>
-            <Modal.Footer>
+            </DialogBody>
+            <DialogFooter>
               <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button.Done
                   onClick={() => formRef.current.submitForm()}
@@ -176,11 +189,11 @@ function ImportPublicationStringModal(
                   Generate spectrum
                 </Button.Done>
               </div>
-            </Modal.Footer>
+            </DialogFooter>
           </>
         )}
       </Formik>
-    </Modal>
+    </Dialog>
   );
 }
 
