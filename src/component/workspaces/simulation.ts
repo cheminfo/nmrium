@@ -9,6 +9,7 @@ export const simulation: InnerWorkspace = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    popupLoggingLevel: 'error',
     invert: false,
   },
   display: {
@@ -44,9 +45,7 @@ export const simulation: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'name',
                 label: 'Spectrum Name',
-                description: 'Spectrum Name',
                 jpath: ['info', 'name'],
                 visible: true,
               },
