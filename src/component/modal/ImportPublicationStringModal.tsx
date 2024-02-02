@@ -132,18 +132,19 @@ function ImportPublicationStringModal(
       >
         {({ isValid }) => (
           <>
-            {' '}
             <Modal.Header>
               Generate spectrum from publication string
             </Modal.Header>
             <Modal.Body>
-              <div style={{ width: 800, height: 400, padding: '10px' }}>
-                Paste a publication string in the text area below and click on
-                the button <i>Generate spectrum</i>
+              <div style={{ width: 800, minHeight: 400, padding: '10px' }}>
+                <p>
+                  Paste a publication string in the text area below and click on
+                  the button <i>Generate spectrum</i>
+                </p>
                 <FormikTextarea
                   style={{
                     width: '100%',
-                    height: '200px',
+                    height: '180px',
                     outline: 'none',
                     borderWidth: '1px',
                     borderColor: '#dedede',
@@ -156,10 +157,7 @@ function ImportPublicationStringModal(
                   placeholder="Enter publication string"
                   onChange={handleOnChange}
                 />
-                <GroupPane
-                  text="Logs"
-                  style={{ container: { height: '130px' } }}
-                >
+                <GroupPane text="Logs">
                   <ReactTable
                     columns={COLUMNS}
                     data={logs}
