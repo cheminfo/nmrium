@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
-import { CSSObject, SerializedStyles } from '@emotion/react';
+import { CSSObject, SerializedStyles, css } from '@emotion/react';
 import {
   useRef,
   memo,
@@ -485,11 +485,13 @@ function ReactTable(props: ReactTableProps) {
     <ReactTableProvider value={tableVirtualBoundary}>
       <div
         ref={mRef}
-        style={{
-          position: 'relative',
-          height: '100%',
-        }}
-        css={style}
+        css={css(
+          {
+            position: 'relative',
+            height: '100%',
+          },
+          style,
+        )}
       >
         <ReactTableInner
           onScroll={scrollHandler}
