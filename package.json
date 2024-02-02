@@ -23,6 +23,7 @@
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "playwright": "playwright test --ui",
     "prepack": "npm run clean-lib && npm run compile",
     "prepublishOnly": "npm run set-version-npm",
     "prettier": "prettier --check src test-e2e",
