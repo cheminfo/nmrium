@@ -35,14 +35,14 @@ function chart2DInner({
 }: Chart2DInnerProps) {
   return (
     <svg
+      id="nmrSVG"
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
-      id="nmrSVG"
+      fontFamily="Arial, Helvetica, sans-serif"
       shapeRendering={SpectraRendering}
       style={{
         position: 'absolute',
-        fontFamily: 'Arial, Helvetica, sans-serif',
       }}
     >
       <defs>

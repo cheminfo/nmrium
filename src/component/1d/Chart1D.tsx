@@ -28,11 +28,11 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
   return (
     <PeakEditionProvider>
       <svg
-        style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}
-        viewBox={`0 0 ${width} ${height}`}
+        id="nmrSVG"
         width={width}
         height={height}
-        id="nmrSVG"
+        viewBox={`0 0 ${width} ${height}`}
+        fontFamily="Arial, Helvetica, sans-serif"
         shapeRendering={spectraRendering}
       >
         <defs>
