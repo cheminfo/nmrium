@@ -104,6 +104,10 @@
         "title": "Coffee"
       },
       {
+        "file": "./data/t1-bruker-pseudo2d/t1_pseudo2d_bruker.json",
+        "title": "T1 pseudo-2D Bruker"
+      },
+      {
         "file": "./data/t1/t1.json",
         "title": "T1 samples (1H + 13C)"
       },
