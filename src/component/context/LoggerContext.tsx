@@ -34,27 +34,40 @@ interface LoggerProviderProps {
   children: ReactNode;
 }
 
+export const LOGGER_LEVELS = {
+  fatal: 60,
+  error: 50,
+  warn: 40,
+  info: 30,
+  debug: 20,
+  trace: 10,
+  silent: 0,
+} as const;
+
 export function LoggerProvider({ children }: LoggerProviderProps) {
   const {
     current: {
-      general: { loggingLevel },
+      general: { loggingLevel, popupLoggingLevel },
     },
   } = usePreferences();
   const [lastReadLogId, setLastLogId] = useState(0);
   const [logsHistory, setLogsHistory] = useState<LogEntry[]>([]);
   const [isLogHistoryOpened, openLogHistory] = useState(false);
+  const popupLoggingLevelRef = useRef<LogEntry['levelLabel']>();
 
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
       onChange: (log, logs) => {
-        if (log && ['error', 'fatal'].includes(log.levelLabel)) {
-          //open the log history automatically if we have error or fatal
+        if (
+          log &&
+          popupLoggingLevelRef.current &&
+          log.level === LOGGER_LEVELS[popupLoggingLevelRef.current]
+        ) {
           openLogHistory(true);
-
-          if (log?.error) {
-            // eslint-disable-next-line no-console
-            console.error(log.error);
-          }
+        }
+        if (log?.error) {
+          // eslint-disable-next-line no-console
+          console.error(log.error);
         }
         setLogsHistory(logs.slice());
       },
@@ -82,6 +95,10 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
       lastReadLogId,
     };
   }, [lastReadLogId, logsHistory, markAsRead]);
+
+  useEffect(() => {
+    popupLoggingLevelRef.current = popupLoggingLevel;
+  }, [logsHistory, popupLoggingLevel]);
 
   return (
     <LoggerContext.Provider value={loggerState}>
