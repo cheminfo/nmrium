@@ -46,7 +46,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
-  const toModifierKey = useMapKeyModifiers();
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
 
   const spectrumData: Spectrum1D[] = useMemo(() => {
     const nuclei = activeTab.split(',');
@@ -98,15 +98,14 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       //reset the brush start
       brushStartRef.current = null;
 
-      const modifierKey = toModifierKey(brushData as unknown as MouseEvent);
+      const modifierKey = getModifiersKey(brushData as unknown as MouseEvent);
       let executeDefaultAction = false;
 
       if (brushData.mouseButton === 'main') {
         const trackID = getLayoutID(DIMENSION, brushData);
         if (trackID) {
           switch (modifierKey) {
-            case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
-            case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
+            case primaryKeyIdentifier: {
               switch (selectedTool) {
                 case options.zoom.id: {
                   executeDefaultAction = true;
@@ -125,12 +124,18 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
             }
             default: {
               executeDefaultAction = true;
-
               break;
             }
           }
+          const isNotDistanceMeasurementTool =
+            selectedTool !== 'zoom' ||
+            (selectedTool === 'zoom' && !brushData.shiftKey);
 
-          if (executeDefaultAction && selectedTool != null) {
+          if (
+            executeDefaultAction &&
+            selectedTool != null &&
+            isNotDistanceMeasurementTool
+          ) {
             return dispatch({
               type: 'BRUSH_END',
               payload: {
@@ -142,7 +147,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
         }
       }
     },
-    [toModifierKey, DIMENSION, selectedTool, dispatch],
+    [getModifiersKey, DIMENSION, selectedTool, primaryKeyIdentifier, dispatch],
   );
 
   const handelOnDoubleClick: OnDoubleClick = useCallback(

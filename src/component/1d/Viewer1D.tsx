@@ -129,7 +129,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const [brushData, setBrushData] = useState<BrushTrackerContext | null>(null);
 
-  const toModifiersKey = useMapKeyModifiers();
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
 
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
@@ -137,7 +137,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       brushStartRef.current = null;
       setBrushData(brushData);
 
-      const keyModifiers = toModifiersKey(brushData as unknown as MouseEvent);
+      const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
@@ -156,21 +156,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
         switch (keyModifiers) {
           // when Alt key is active
-          case 'invert[true]_shift[false]_ctrl[false]_alt[true]':
-          case 'invert[false]_shift[false]_ctrl[false]_alt[true]': {
-            switch (selectedTool) {
-              case options.rangePicking.id: {
-                openAnalysisModal();
-                break;
-              }
-              default:
-                executeDefaultAction = true;
-                break;
-            }
-            break;
-          }
-          case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
-          case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
+          case primaryKeyIdentifier: {
             switch (selectedTool) {
               case options.zoom.id: {
                 executeDefaultAction = true;
@@ -254,30 +240,51 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             }
             break;
           }
-          default: {
-            if (selectedTool !== options.zoom.id) {
-              executeDefaultAction = true;
+          case 'shift[false]_ctrl[false]_alt[true]': {
+            switch (selectedTool) {
+              case options.rangePicking.id: {
+                openAnalysisModal();
+                break;
+              }
+              default:
+                executeDefaultAction = true;
+                break;
             }
+            break;
+          }
+
+          default: {
+            executeDefaultAction = true;
+
             break;
           }
         }
 
-        if (executeDefaultAction && selectedTool != null) {
+        const isNotDistanceMeasurementTool =
+          selectedTool !== 'zoom' ||
+          (selectedTool === 'zoom' && !brushData.shiftKey);
+
+        if (
+          executeDefaultAction &&
+          selectedTool != null &&
+          isNotDistanceMeasurementTool
+        ) {
           dispatch({ type: 'BRUSH_END', payload: brushData });
         }
       }
     },
     [
-      toModifiersKey,
-      scaleState,
+      getModifiersKey,
       selectedTool,
-      openAnalysisModal,
+      scaleState,
+      primaryKeyIdentifier,
       dispatch,
       activeSpectrum,
       dispatchPreferences,
       activeTab,
       state,
       xDomain,
+      openAnalysisModal,
     ],
   );
 
@@ -307,11 +314,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           xPPM,
         });
       };
-      const keyModifiers = toModifiersKey(event as unknown as MouseEvent);
+      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
 
       switch (keyModifiers) {
-        case 'invert[true]_shift[false]_ctrl[false]_alt[false]':
-        case 'invert[false]_shift[true]_ctrl[false]_alt[false]': {
+        case primaryKeyIdentifier: {
           switch (selectedTool) {
             case options.peakPicking.id:
               dispatch({
@@ -353,7 +359,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           break;
       }
     },
-    [dispatch, scaleState, selectedTool, toModifiersKey],
+    [dispatch, getModifiersKey, primaryKeyIdentifier, scaleState, selectedTool],
   );
 
   return (

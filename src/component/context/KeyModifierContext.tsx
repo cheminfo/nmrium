@@ -1,16 +1,26 @@
 import {
   ReactNode,
   createContext,
-  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
 import { usePreferences } from './PreferencesContext';
 
-type ModifiersKey =
-  `invert[${boolean}]_shift[${boolean}]_ctrl[${boolean}]_alt[${boolean}]`;
+type ModifiersKey = `shift[${boolean}]_ctrl[${boolean}]_alt[${boolean}]`;
+
+type PrimaryKey =
+  | 'shift[true]_ctrl[false]_alt[false]'
+  | 'shift[false]_ctrl[false]_alt[false]';
+
+function getPrimaryKey(invert: boolean): PrimaryKey {
+  if (invert) {
+    return 'shift[false]_ctrl[false]_alt[false]';
+  }
+  return 'shift[true]_ctrl[false]_alt[false]';
+}
 
 interface KeyModifiers {
   ctrlKey: boolean;
@@ -54,12 +64,14 @@ export function getModifiers(event: KeyboardEvent | MouseEvent) {
   return { ctrlKey, shiftKey, altKey };
 }
 
-export function toModifiersKey(
-  keyModifiers: KeyModifiers,
-  invert: boolean,
-): ModifiersKey {
+export function toModifiersKey(keyModifiers: KeyModifiers): ModifiersKey {
   const { shiftKey, altKey, ctrlKey } = keyModifiers;
-  return `invert[${invert}]_shift[${shiftKey ? 'true' : 'false'}]_ctrl[${ctrlKey ? 'true' : 'false'}]_alt[${altKey ? 'true' : 'false'}]`;
+  return `shift[${shiftKey ? 'true' : 'false'}]_ctrl[${ctrlKey ? 'true' : 'false'}]_alt[${altKey ? 'true' : 'false'}]`;
+}
+
+function getModifiersKey(event: MouseEvent | KeyboardEvent) {
+  const keyModifiers = getModifiers(event);
+  return toModifiersKey(keyModifiers);
 }
 
 export function useMapKeyModifiers() {
@@ -69,13 +81,14 @@ export function useMapKeyModifiers() {
     },
   } = usePreferences();
 
-  return useCallback(
-    (event: KeyboardEvent | MouseEvent) => {
-      const keyModifiers = getModifiers(event);
-      return toModifiersKey(keyModifiers, invert);
-    },
-    [invert],
-  );
+  return useMemo(() => {
+    const primaryKeyIdentifier = getPrimaryKey(invert);
+
+    return {
+      primaryKeyIdentifier,
+      getModifiersKey,
+    };
+  }, [invert]);
 }
 
 export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
@@ -91,13 +104,13 @@ export function KeyModifiersProvider({ children }: KeyModifierProviderProps) {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       const keyModifiers = getModifiers(event);
-      const modifiersKey = toModifiersKey(keyModifiers, invert);
+      const modifiersKey = toModifiersKey(keyModifiers);
       setModifiers({ ...keyModifiers, modifiersKey });
     }
 
     function handleKeyUp(event: KeyboardEvent) {
       const keyModifiers = getModifiers(event);
-      const modifiersKey = toModifiersKey(keyModifiers, invert);
+      const modifiersKey = toModifiersKey(keyModifiers);
       setModifiers({ ...keyModifiers, modifiersKey });
     }
 
