@@ -22,6 +22,7 @@ import {
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useMapKeyModifiers } from '../context/KeyModifierContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
@@ -128,11 +129,15 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const [brushData, setBrushData] = useState<BrushTrackerContext | null>(null);
 
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
+
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       //reset the brush start
       brushStartRef.current = null;
       setBrushData(brushData);
+
+      const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
@@ -147,114 +152,139 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           });
         };
 
-        if (brushData.altKey) {
-          switch (selectedTool) {
-            case options.rangePicking.id: {
-              openAnalysisModal();
-              break;
-            }
-            default:
-              break;
-          }
-        } else if (brushData.shiftKey) {
-          switch (selectedTool) {
-            case options.integral.id:
-              dispatch({
-                type: 'ADD_INTEGRAL',
-                payload: brushData,
-              });
-              break;
-            case options.rangePicking.id: {
-              if (!activeSpectrum) break;
+        let executeDefaultAction = false;
 
-              dispatch({
-                type: 'ADD_RANGE',
-                payload: brushData,
-              });
+        switch (keyModifiers) {
+          // when Alt key is active
+          case primaryKeyIdentifier: {
+            switch (selectedTool) {
+              case options.zoom.id: {
+                executeDefaultAction = true;
+                break;
+              }
+              case options.integral.id:
+                dispatch({
+                  type: 'ADD_INTEGRAL',
+                  payload: brushData,
+                });
+                break;
+              case options.rangePicking.id: {
+                if (!activeSpectrum) break;
 
-              break;
-            }
-            case options.multipleSpectraAnalysis.id:
-              if (scaleState.scaleX) {
-                const { startX, endX } = brushData;
-                const start = scaleState.scaleX().invert(startX);
-                const end = scaleState.scaleX().invert(endX);
-                dispatchPreferences({
-                  type: 'ANALYZE_SPECTRA',
+                dispatch({
+                  type: 'ADD_RANGE',
+                  payload: brushData,
+                });
+
+                break;
+              }
+              case options.multipleSpectraAnalysis.id:
+                if (scaleState.scaleX) {
+                  const { startX, endX } = brushData;
+                  const start = scaleState.scaleX().invert(startX);
+                  const end = scaleState.scaleX().invert(endX);
+                  dispatchPreferences({
+                    type: 'ANALYZE_SPECTRA',
+                    payload: {
+                      start,
+                      end,
+                      nucleus: activeTab,
+                    },
+                  });
+                }
+                break;
+
+              case options.peakPicking.id:
+                dispatch({
+                  type: 'ADD_PEAKS',
+                  payload: brushData,
+                });
+                break;
+
+              case options.baselineCorrection.id:
+                dispatch({
+                  type: 'ADD_BASE_LINE_ZONE',
                   payload: {
-                    start,
-                    end,
-                    nucleus: activeTab,
+                    startX: brushData.startX,
+                    endX: brushData.endX,
                   },
                 });
-              }
-              break;
+                break;
 
-            case options.peakPicking.id:
-              dispatch({
-                type: 'ADD_PEAKS',
-                payload: brushData,
-              });
-              break;
-
-            case options.baselineCorrection.id:
-              dispatch({
-                type: 'ADD_BASE_LINE_ZONE',
-                payload: {
+              case options.exclusionZones.id:
+                dispatch({
+                  type: 'ADD_EXCLUSION_ZONE',
+                  payload: { startX: brushData.startX, endX: brushData.endX },
+                });
+                break;
+              case options.matrixGenerationExclusionZones.id: {
+                const [from, to] = getRange(state, {
                   startX: brushData.startX,
                   endX: brushData.endX,
-                },
-              });
-              break;
+                });
+                dispatchPreferences({
+                  type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+                  payload: {
+                    zone: { from, to },
+                    nucleus: activeTab,
+                    range: { from: xDomain[0], to: xDomain[1] },
+                  },
+                });
 
-            case options.exclusionZones.id:
-              dispatch({
-                type: 'ADD_EXCLUSION_ZONE',
-                payload: { startX: brushData.startX, endX: brushData.endX },
-              });
-              break;
-            case options.matrixGenerationExclusionZones.id: {
-              const [from, to] = getRange(state, {
-                startX: brushData.startX,
-                endX: brushData.endX,
-              });
-              dispatchPreferences({
-                type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
-                payload: {
-                  zone: { from, to },
-                  nucleus: activeTab,
-                  range: { from: xDomain[0], to: xDomain[1] },
-                },
-              });
-
-              break;
-            }
-
-            default:
-              propagateEvent();
-              break;
-          }
-        } else {
-          switch (selectedTool) {
-            default:
-              if (selectedTool != null) {
-                dispatch({ type: 'BRUSH_END', payload: brushData });
+                break;
               }
-              break;
+
+              default:
+                propagateEvent();
+                break;
+            }
+            break;
           }
+          case 'shift[false]_ctrl[false]_alt[true]': {
+            switch (selectedTool) {
+              case options.rangePicking.id: {
+                openAnalysisModal();
+                break;
+              }
+              default:
+                executeDefaultAction = true;
+                break;
+            }
+            break;
+          }
+
+          default: {
+            executeDefaultAction = true;
+
+            break;
+          }
+        }
+
+        const isNotDistanceMeasurementTool =
+          selectedTool !== 'zoom' ||
+          (selectedTool === 'zoom' && !brushData.shiftKey);
+
+        if (
+          executeDefaultAction &&
+          selectedTool != null &&
+          isNotDistanceMeasurementTool
+        ) {
+          dispatch({ type: 'BRUSH_END', payload: brushData });
         }
       }
     },
     [
-      scaleState,
+      getModifiersKey,
       selectedTool,
-      openAnalysisModal,
-      activeSpectrum,
+      scaleState,
+      primaryKeyIdentifier,
       dispatch,
+      activeSpectrum,
       dispatchPreferences,
       activeTab,
-      xDomain,
       state,
+      xDomain,
+      openAnalysisModal,
     ],
   );
 
@@ -284,50 +314,52 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           xPPM,
         });
       };
+      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
 
-      if (event.shiftKey) {
-        switch (selectedTool) {
-          case options.peakPicking.id:
-            dispatch({
-              type: 'ADD_PEAK',
-              payload: event,
-            });
-            break;
-          case options.editRange.id:
-            propagateEvent();
-            break;
-          case options.integral.id:
-            dispatch({
-              type: 'CUT_INTEGRAL',
-              payload: { cutValue: xPPM },
-            });
-            break;
-          case options.rangePicking.id:
-            dispatch({
-              type: 'CUT_RANGE',
-              payload: { cutValue: xPPM },
-            });
-            break;
+      switch (keyModifiers) {
+        case primaryKeyIdentifier: {
+          switch (selectedTool) {
+            case options.peakPicking.id:
+              dispatch({
+                type: 'ADD_PEAK',
+                payload: event,
+              });
+              break;
+            case options.editRange.id:
+              propagateEvent();
+              break;
+            case options.integral.id:
+              dispatch({
+                type: 'CUT_INTEGRAL',
+                payload: { cutValue: xPPM },
+              });
+              break;
+            case options.rangePicking.id:
+              dispatch({
+                type: 'CUT_RANGE',
+                payload: { cutValue: xPPM },
+              });
+              break;
 
-          case options.phaseCorrection.id:
-            dispatch({
-              type: 'SET_ONE_DIMENSION_PIVOT_POINT',
-              payload: {
-                value: event.x,
-              },
-            });
+            case options.phaseCorrection.id:
+              dispatch({
+                type: 'SET_ONE_DIMENSION_PIVOT_POINT',
+                payload: {
+                  value: event.x,
+                },
+              });
 
-            break;
-          default:
-            break;
+              break;
+            default:
+              break;
+          }
+          break;
         }
-      } else {
-        switch (selectedTool) {
-          default:
-        }
+        default:
+          break;
       }
     },
-    [dispatch, scaleState, selectedTool],
+    [dispatch, getModifiersKey, primaryKeyIdentifier, scaleState, selectedTool],
   );
 
   return (

@@ -17,7 +17,7 @@ export const PreferencesContext = createContext<PreferencesState>(
 );
 export const PreferencesProvider = PreferencesContext.Provider;
 
-export function usePreferences() {
+export function usePreferences(): PreferencesContextData {
   const context = useContext(PreferencesContext);
   if (!context) {
     throw new Error('Preferences context was not found');
