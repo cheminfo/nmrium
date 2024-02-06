@@ -34,8 +34,8 @@ import { ActionType } from '../types/ActionType';
 
 import { setDomain, SetDomainOptions, setMode } from './DomainActions';
 import {
+  RollbackSpectrumOptions,
   calculateBaseLineCorrection,
-  rollbackSpectrumByFilter,
   rollbackSpectrum,
 } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
@@ -50,8 +50,9 @@ interface BrushBoundary {
 interface ResetToolOptions {
   resetToDefaultTool?: boolean;
   defaultToolId?: Tool;
-  resetSpectrum?: boolean;
   resetFiltersOptionPanel?: boolean;
+  reset?: boolean;
+  toolId?: string;
 }
 
 interface SetActiveTabOptions {
@@ -119,7 +120,8 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
     resetToDefaultTool = true,
     resetFiltersOptionPanel = true,
     defaultToolId = 'zoom',
-    resetSpectrum = false,
+    reset,
+    toolId,
   } = options;
   // reset temp range
   if (resetFiltersOptionPanel) {
@@ -129,12 +131,13 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
     draft.toolOptions.selectedTool = defaultToolId;
   }
 
-  if (
-    (draft.toolOptions.data.activeFilterID || draft.tempData) &&
-    resetSpectrum
-  ) {
-    rollbackSpectrumByFilter(draft, { reset: true });
+  let rollOptions: RollbackSpectrumOptions = { reset: true };
+
+  if (toolId && Tools?.[toolId]?.isFilter) {
+    rollOptions = { filterKey: toolId, reset };
   }
+
+  rollbackSpectrum(draft, rollOptions);
 }
 
 function handleResetSelectedTool(draft: Draft<State>) {
@@ -146,54 +149,55 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
       Tools[draft.toolOptions.selectedTool].isFilter) ||
     !filterOnly
   ) {
-    resetTool(draft, { resetSpectrum: true });
+    resetTool(draft, { reset: true });
   }
 }
 
 interface ActivateToolOptions {
-  toolId: string;
+  toolId: Tool;
   reset?: boolean;
 }
 
 //utility
-function activateTool(draft, options: ActivateToolOptions) {
+function activateTool(draft: Draft<State>, options: ActivateToolOptions) {
   const { toolId, reset = false } = options;
 
-  if (draft?.data.length > 0) {
-    if (toolId) {
-      // start Range edit mode
-      if (toolId === Tools.editRange.id) {
-        const activeSpectrum = getActiveSpectrum(draft);
-        if (activeSpectrum) {
-          const range = draft.view.ranges?.[activeSpectrum?.id];
-          if (range) {
-            range.showMultiplicityTrees = true;
-          } else {
-            draft.view.ranges[activeSpectrum.id] = {
-              ...defaultRangesViewState,
-              showMultiplicityTrees: true,
-            };
-          }
-        }
-      }
-
-      if (toolId !== draft.toolOptions.selectedTool) {
-        resetTool(draft, { resetToDefaultTool: false });
-      }
-
-      draft.toolOptions.selectedTool = toolId;
-      if (Tools[toolId]?.hasOptionPanel) {
-        draft.toolOptions.selectedOptionPanel = toolId;
-      }
-
-      if (Tools?.[toolId]?.isFilter) {
-        rollbackSpectrum(draft, { filterKey: toolId, reset });
-      }
-    } else {
-      resetTool(draft, { resetToDefaultTool: false });
-    }
-    setMargin(draft);
+  if (draft?.data.length === 0) {
+    return;
   }
+
+  if (!toolId || toolId !== draft.toolOptions.selectedTool) {
+    resetTool(draft, { resetToDefaultTool: false, toolId, reset });
+  }
+
+  if (!toolId || reset) {
+    draft.toolOptions.selectedOptionPanel = null;
+    draft.toolOptions.selectedTool = 'zoom';
+    draft.toolOptions.data.activeFilterID = null;
+  } else {
+    draft.toolOptions.selectedTool = toolId;
+    if (Tools[toolId]?.hasOptionPanel) {
+      draft.toolOptions.selectedOptionPanel = toolId;
+    }
+  }
+
+  // start Range edit mode
+  if (toolId === Tools.editRange.id) {
+    const activeSpectrum = getActiveSpectrum(draft);
+    if (activeSpectrum) {
+      const range = draft.view.ranges?.[activeSpectrum?.id];
+      if (range) {
+        range.showMultiplicityTrees = true;
+      } else {
+        draft.view.ranges[activeSpectrum.id] = {
+          ...defaultRangesViewState,
+          showMultiplicityTrees: true,
+        };
+      }
+    }
+  }
+
+  setMargin(draft);
 }
 
 function setSelectedTool(draft: Draft<State>, action: SetSelectedToolAction) {

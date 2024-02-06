@@ -22,7 +22,7 @@ import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import { getXScale } from '../../1d/utilities/scale';
 import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
-import { options as Tools } from '../../toolbar/ToolTypes';
+import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
 import { getInitialState, State, TraceDirection } from '../Reducer';
@@ -179,7 +179,7 @@ function getFilterUpdateDomainRules(filterName: string) {
   );
 }
 
-interface RollbackSpectrumByFilterOptions {
+export interface RollbackSpectrumByFilterOptions {
   applyFilter?: boolean;
   reset?: boolean;
   searchBy?: 'id' | 'name';
@@ -255,21 +255,25 @@ function rollbackSpectrumByFilter(
         draft.toolOptions.selectedOptionPanel = null;
         draft.toolOptions.selectedTool = 'zoom';
       }
-    } else {
+    }
+
+    if (filterIndex === -1 || reset) {
+      if (draft.tempData) {
+        FiltersManager.reapplyFilters(datum);
+      }
       //if the filter is not exists, create a clone of the current data
       draft.tempData = current(draft).data;
     }
+
     // re-implement all filters and rest all view property that related to filters
     if (reset) {
+      draft.toolOptions.data.activeFilterID = null;
       draft.tempData = null;
-      FiltersManager.reapplyFilters(datum);
       updateDomainOptions = { updateXDomain: true, updateYDomain: true };
       const {
         toolOptions: { data },
       } = getInitialState();
       draft.toolOptions.data = data;
-      draft.toolOptions.selectedOptionPanel = null;
-      draft.toolOptions.selectedTool = 'zoom';
       currentIsFid = datum.info.isFid;
     }
   }
@@ -281,9 +285,9 @@ function rollbackSpectrumByFilter(
   }
 }
 
-interface RollbackSpectrumOptions {
+export interface RollbackSpectrumOptions {
   updateFilterViewOptions?: boolean;
-  filterKey: string;
+  filterKey?: string;
   reset?: boolean;
 }
 
@@ -294,14 +298,16 @@ function rollbackSpectrum(
   const { filterKey, reset = false, updateFilterViewOptions = true } = options;
   //return back the spectra data to point of time before applying a specific filter
 
-  const applyFilter = [
-    phaseCorrection.id,
-    fft.id,
-    shiftX.id,
-    shift2DX.id,
-    shift2DY.id,
-    signalProcessing.id,
-  ].includes(filterKey);
+  const applyFilter = !filterKey
+    ? true
+    : [
+        phaseCorrection.id,
+        fft.id,
+        shiftX.id,
+        shift2DX.id,
+        shift2DY.id,
+        signalProcessing.id,
+      ].includes(filterKey);
 
   rollbackSpectrumByFilter(draft, {
     searchBy: 'name',
@@ -983,11 +989,9 @@ function handleSetFilterSnapshotHandler(
 ) {
   const { name: filterKey, id } = action.payload;
   const reset = draft.toolOptions.data.activeFilterID === id;
-
   if (Tools?.[filterKey]?.isFilter) {
-    activateTool(draft, { toolId: filterKey, reset });
+    activateTool(draft, { toolId: filterKey as Tool, reset });
   } else {
-    resetSelectedTool(draft);
     rollbackSpectrum(draft, { filterKey, reset });
   }
 }
