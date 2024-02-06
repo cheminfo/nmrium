@@ -1,4 +1,4 @@
-import { Draft } from 'immer';
+import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
@@ -201,14 +201,15 @@ function initData(
   const viewState = view as ViewState;
   if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
-    setData(state, action.payload);
-    setActiveTab(state, { tab: viewState?.spectra?.activeTab || '' });
-    state.width = draft.width;
-    state.height = draft.height;
-    setPreferences(state, viewState);
-    state.isLoading = false;
-    state.actionType = action.type;
-    return state;
+    return produce(state, (initialDraft) => {
+      setData(initialDraft, action.payload);
+      setActiveTab(initialDraft, { tab: viewState?.spectra?.activeTab || '' });
+      initialDraft.width = draft.width;
+      initialDraft.height = draft.height;
+      setPreferences(initialDraft, viewState);
+      initialDraft.isLoading = false;
+      initialDraft.actionType = action.type;
+    });
   } else {
     if (view) {
       const defaultViewState = getDefaultViewState();
