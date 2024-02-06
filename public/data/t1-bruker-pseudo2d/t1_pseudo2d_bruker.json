@@ -2,7 +2,6 @@
   "data": {
     "spectra": [
       {
-        "id": "2x1trt1tr2d",
         "sourceSelector": {
           "files": [
             "data/t1-bruker-pseudo2d/1H_T1_2D.dx"
