@@ -1,6 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { original, Draft } from 'immer';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { BaselineCorrectionZone } from 'nmr-processing';
 
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Nucleus } from '../../../data/types/common/Nucleus';
@@ -68,6 +69,10 @@ type AddBaseLineZoneAction = ActionType<
   'ADD_BASE_LINE_ZONE',
   { startX: number; endX: number }
 >;
+type ResizeBaseLineZoneAction = ActionType<
+  'RESIZE_BASE_LINE_ZONE',
+  BaselineCorrectionZone
+>;
 type DeleteBaseLineZoneAction = ActionType<
   'DELETE_BASE_LINE_ZONE',
   { id: string }
@@ -102,6 +107,7 @@ export type ToolsActions =
   | SetSelectedToolAction
   | AddBaseLineZoneAction
   | DeleteBaseLineZoneAction
+  | ResizeBaseLineZoneAction
   | BrushEndAction
   | ZoomAction
   | ZoomOutAction
@@ -244,6 +250,19 @@ function handleAddBaseLineZone(
   });
   draft.toolOptions.data.baselineCorrection.zones = zones.slice();
 
+  calculateBaseLineCorrection(draft);
+}
+function handleResizeBaseLineZone(
+  draft: Draft<State>,
+  action: ResizeBaseLineZoneAction,
+) {
+  const { from, to, id } = action.payload;
+
+  const zones = draft.toolOptions.data.baselineCorrection.zones;
+  const zoneIndex = zones.findIndex((zone) => zone.id === id);
+  if (zoneIndex !== -1) {
+    zones[zoneIndex] = { id, from, to };
+  }
   calculateBaseLineCorrection(draft);
 }
 
@@ -654,6 +673,7 @@ export {
   handleChangeSpectrumDisplayMode,
   handleAddBaseLineZone,
   handleDeleteBaseLineZone,
+  handleResizeBaseLineZone,
   handleToggleRealImaginaryVisibility,
   handleBrushEnd,
   handleZoom,

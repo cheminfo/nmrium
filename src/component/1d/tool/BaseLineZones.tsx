@@ -1,8 +1,11 @@
 import { BaselineCorrectionZone } from 'nmr-processing';
 
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { useHighlight } from '../../highlight';
+import { useResizerStatus } from '../../hooks/useResizerStatus';
 
 function BaseLineZones() {
   const {
@@ -35,18 +38,39 @@ function BaseLineZone(props: BaselineCorrectionZone) {
     defaultActiveStyle: { backgroundColor: activeFill },
   } = useHighlight([id], { type: 'BASELINE_ZONE', extra: { id } });
   const { scaleX } = useScaleChecked();
-  const x = scaleX()(to);
-  const width = scaleX()(from) - scaleX()(to);
+  const dispatch = useDispatch();
+
+  function handleOnStopResizing(position) {
+    dispatch({
+      type: 'RESIZE_BASE_LINE_ZONE',
+      payload: {
+        id,
+        from: scaleX().invert(position.x2),
+        to: scaleX().invert(position.x1),
+      },
+    });
+  }
+
+  const isResizingActive = useResizerStatus('baselineCorrection');
 
   return (
-    <g transform={`translate(${x},0)`} {...onHover}>
-      <rect
-        x="0"
-        width={width}
-        height="100%"
-        style={{ backgroundColor: 'red' }}
-        fill={isActive ? activeFill : '#b8b8b857'}
-      />
+    <g {...onHover} className="base-line-zones">
+      <ResizerWithScale
+        from={from}
+        to={to}
+        onEnd={handleOnStopResizing}
+        disabled={!isResizingActive}
+      >
+        {({ x1, x2 }, isResizeActive) => {
+          return (
+            <rect
+              width={Math.abs(x2 - x1)}
+              height="100%"
+              fill={isActive && !isResizeActive ? activeFill : '#b8b8b857'}
+            />
+          );
+        }}
+      </ResizerWithScale>
     </g>
   );
 }
