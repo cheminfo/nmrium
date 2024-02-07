@@ -143,13 +143,12 @@ function resetTool(draft: Draft<State>, options: ResetToolOptions = {}) {
 function handleResetSelectedTool(draft: Draft<State>) {
   resetSelectedTool(draft);
 }
-function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
+function resetSelectedTool(draft: Draft<State>) {
   if (
-    (draft.toolOptions.selectedTool &&
-      Tools[draft.toolOptions.selectedTool].isFilter) ||
-    !filterOnly
+    draft.toolOptions.selectedTool &&
+    Tools[draft.toolOptions.selectedTool].isFilter
   ) {
-    resetTool(draft, { reset: true });
+    resetTool(draft, { reset: true, toolId: draft.toolOptions.selectedTool });
   }
 }
 
