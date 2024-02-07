@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useScaleX } from '../1d/utilities/scale';
 import { useGlobal } from '../context/GlobalContext';
 
-import SVGResizer, { ResizerProps } from './resizer/SVGResizer';
+import SVGResizer, { Position, ResizerProps } from './resizer/SVGResizer';
 
 interface ResizerWithScaleProps {
   disabled: boolean;
@@ -20,6 +20,7 @@ export function ResizerWithScale(props: ResizerWithScaleProps) {
   const x2 = scaleX()(from);
   const x1 = scaleX()(to);
   const [position, setPosition] = useState({ x1, x2 });
+  const startPositionRef = useRef<Position>();
 
   useEffect(() => {
     const x2 = scaleX()(from);
@@ -27,13 +28,32 @@ export function ResizerWithScale(props: ResizerWithScaleProps) {
     setPosition({ x1, x2 });
   }, [from, scaleX, to]);
 
+  function handleMove(p: Position) {
+    if (p.x2 >= p.x1) {
+      setPosition(p);
+    }
+  }
+
+  function handleEndMove(p: Position) {
+    if (p.x2 >= p.x1) {
+      onEnd?.(p);
+    } else if (startPositionRef.current) {
+      setPosition({ ...startPositionRef.current });
+    }
+  }
+
+  function handleStartResize(p: Position) {
+    startPositionRef.current = p;
+  }
+
   return (
     <SVGResizer
       position={position}
-      onEnd={onEnd}
+      onStart={handleStartResize}
+      onEnd={handleEndMove}
       parentElement={viewerRef}
       disabled={disabled}
-      onMove={(p) => setPosition(p)}
+      onMove={handleMove}
     >
       {children}
     </SVGResizer>
