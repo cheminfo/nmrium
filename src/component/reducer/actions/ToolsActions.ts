@@ -165,7 +165,7 @@ function activateTool(draft: Draft<State>, options: ActivateToolOptions) {
     return;
   }
 
-  if (!toolId || toolId !== draft.toolOptions.selectedTool) {
+  if (!toolId || toolId !== draft.toolOptions.selectedTool || reset) {
     resetTool(draft, { resetToDefaultTool: false, toolId, reset });
   }
 

@@ -208,10 +208,12 @@ function getFilterDomain(
     const { updateXDomain, updateYDomain } = getFilterUpdateDomainRules(
       datum.filters[i].name,
     );
-    updateDomainOptions.updateXDomain =
-      updateXDomain || updateDomainOptions.updateXDomain;
-    updateDomainOptions.updateYDomain =
-      updateYDomain || updateDomainOptions.updateYDomain;
+    if (!updateDomainOptions.updateXDomain) {
+      updateDomainOptions.updateXDomain = updateXDomain;
+    }
+    if (!updateDomainOptions.updateYDomain) {
+      updateDomainOptions.updateYDomain = updateYDomain;
+    }
   }
   return updateDomainOptions;
 }
@@ -244,22 +246,20 @@ function rollbackSpectrumByFilter(
     const filterIndex = datum.filters.findIndex((f) => f[searchBy] === key);
 
     if (filterIndex !== -1 && !reset) {
+      const { activeFilterID } = draft.toolOptions.data;
+      const activeFilterIndex = activeFilterID
+        ? datum.filters.findIndex((f) => f.id === activeFilterID)
+        : datum.filters.length - 1;
       //set active filter
       draft.toolOptions.data.activeFilterID =
         datum.filters?.[filterIndex]?.id || null;
 
       const filters: any[] = datum.filters.slice(0, filterIndex || 1);
 
-      const isLastFilter = datum.filters.length - 1 === filterIndex;
-
-      if (isLastFilter) {
-        updateDomainOptions = getFilterUpdateDomainRules(key || '');
-      } else {
-        updateDomainOptions = getFilterDomain(datum, {
-          startIndex: 0,
-          lastIndex: filterIndex,
-        });
-      }
+      updateDomainOptions = getFilterDomain(datum, {
+        startIndex: Math.min(activeFilterIndex, filterIndex),
+        lastIndex: Math.max(activeFilterIndex, filterIndex),
+      });
 
       FiltersManager.reapplyFilters(datum, filters);
 
@@ -267,18 +267,15 @@ function rollbackSpectrumByFilter(
 
       // apply the current Filters
       if (applyFilter) {
-        FiltersManager.reapplyFilters(
-          datum,
-          datum.filters.slice(0, filterIndex + 1),
-        );
+        const { name, value } = datum.filters[filterIndex];
+        Filters[name].apply(datum, value);
       }
 
       currentIsFid = datum.info.isFid;
 
       //if we still point to the same filter then close the filter options panel and reset the selected tool to default one (zoom tool)
       if (
-        draft.toolOptions.data.activeFilterID ===
-          datum.filters[filterIndex].id &&
+        activeFilterID === datum.filters[filterIndex].id &&
         triggerSource === 'Apply'
       ) {
         draft.toolOptions.selectedOptionPanel = null;
@@ -286,16 +283,16 @@ function rollbackSpectrumByFilter(
       }
     }
 
-    if (filterIndex === -1) {
+    if (filterIndex === -1 || reset) {
+      if (draft.tempData) {
+        FiltersManager.reapplyFilters(datum);
+      }
       //if the filter is not exists, create a clone of the current data
       draft.tempData = current(draft).data;
     }
 
     // re-implement all filters and rest all view property that related to filters
     if (reset) {
-      if (draft.tempData) {
-        FiltersManager.reapplyFilters(datum);
-      }
       draft.toolOptions.data.activeFilterID = null;
       draft.tempData = null;
 

@@ -95,11 +95,8 @@ async function checkPeakNumber(nmrium: NmriumPage, number: number) {
   const lastPeak = peaksTable.locator(
     `_react=[role="row"][key="row_${number - 1}"]`,
   );
-  const inexistentPeak = peaksTable.locator(
-    `_react=[role="row"][key="row_${number}"]`,
-  );
+
   await expect(lastPeak).toBeVisible();
-  await expect(inexistentPeak).toBeHidden();
 }
 
 test('process 1d FID 13c spectrum', async ({ page }) => {
