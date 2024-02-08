@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { NmrData2DFt } from 'cheminfo-types';
+import { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import { current, Draft } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import {
@@ -13,6 +13,7 @@ import {
   FiltersManager,
   BaselineCorrectionOptions,
   ApodizationOptions,
+  getBaselineZones,
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
@@ -318,7 +319,6 @@ function rollbackSpectrumByFilter(
 }
 
 export interface RollbackSpectrumOptions {
-  updateFilterViewOptions?: boolean;
   filterKey?: string;
   reset?: boolean;
 }
@@ -327,7 +327,7 @@ function rollbackSpectrum(
   draft: Draft<State>,
   options: RollbackSpectrumOptions,
 ) {
-  const { filterKey, reset = false, updateFilterViewOptions = true } = options;
+  const { filterKey, reset = false } = options;
   //return back the spectra data to point of time before applying a specific filter
 
   const applyFilter = !filterKey
@@ -341,6 +341,8 @@ function rollbackSpectrum(
         signalProcessing.id,
       ].includes(filterKey);
 
+  beforeRollback(draft, filterKey);
+
   rollbackSpectrumByFilter(draft, {
     searchBy: 'name',
     key: filterKey,
@@ -348,14 +350,40 @@ function rollbackSpectrum(
     reset,
   });
 
-  if (updateFilterViewOptions) {
-    updateFilterOptionsInView(draft, filterKey);
-  }
+  afterRollback(draft, filterKey);
 }
 
-function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
+function beforeRollback(draft: Draft<State>, filterKey) {
   const activeSpectrum = getActiveSpectrum(draft);
 
+  switch (filterKey) {
+    case baselineCorrection.id: {
+      if (activeSpectrum) {
+        const datum = current(draft).data[activeSpectrum.index];
+        const baselineCorrectionFilter: any = datum.filters.find(
+          (filter) => filter.name === Tools.baselineCorrection.id,
+        );
+        if (
+          !baselineCorrectionFilter ||
+          (baselineCorrectionFilter &&
+            baselineCorrectionFilter.value.zones?.length === 0)
+        ) {
+          draft.toolOptions.data.baselineCorrection.zones = getBaselineZones(
+            datum.data as NmrData1D,
+          );
+        } else {
+          draft.toolOptions.data.baselineCorrection.zones =
+            baselineCorrectionFilter.value.zones;
+        }
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+function afterRollback(draft: Draft<State>, filterKey) {
   switch (filterKey) {
     case phaseCorrection.id: {
       // look for the strongest peak to set it as a pivot
@@ -366,21 +394,6 @@ function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
 
       draft.toolOptions.data.pivot = { value: xValue, index };
 
-      break;
-    }
-    case baselineCorrection.id: {
-      if (activeSpectrum) {
-        const baselineCorrectionFilter: any = current(draft).data[
-          activeSpectrum.index
-        ].filters.find((filter) => filter.name === Tools.baselineCorrection.id);
-
-        if (baselineCorrectionFilter) {
-          draft.toolOptions.data.baselineCorrection.zones =
-            baselineCorrectionFilter
-              ? baselineCorrectionFilter.value.zones
-              : [];
-        }
-      }
       break;
     }
     case apodization.id: {
