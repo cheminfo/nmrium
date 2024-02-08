@@ -1,5 +1,5 @@
 import { v4 } from '@lukeed/uuid';
-import { original, Draft } from 'immer';
+import { Draft } from 'immer';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { BaselineCorrectionZone } from 'nmr-processing';
 
@@ -274,9 +274,8 @@ function handleDeleteBaseLineZone(
   action: DeleteBaseLineZoneAction,
 ) {
   const { id } = action.payload;
-  const state = original(draft) as State;
   draft.toolOptions.data.baselineCorrection.zones =
-    state.toolOptions.data.baselineCorrection.zones.filter(
+    draft.toolOptions.data.baselineCorrection.zones.filter(
       (zone) => zone.id !== id,
     );
   calculateBaseLineCorrection(draft);
