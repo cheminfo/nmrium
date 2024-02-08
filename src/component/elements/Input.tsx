@@ -91,11 +91,13 @@ const Input = forwardRef(
     const value = debounceTime ? internalValue : externalValue;
     const localRef = useRef<HTMLInputElement>();
     const combinedRef = useCombinedRefs([ref, localRef]);
+    const [isDebounced, setDebouncedStatus] = useState<boolean>(false);
 
     const debounceOnChange = useMemo(
       () =>
         debounce((e) => {
           onChange?.(e);
+          setDebouncedStatus(true);
         }, debounceTime),
       [debounceTime, onChange],
     );
@@ -116,6 +118,7 @@ const Input = forwardRef(
       e.stopPropagation();
       e.preventDefault();
       const val = e.target.value;
+      setDebouncedStatus(false);
       if (checkValue(val)) {
         if (debounceTime) {
           setInternalValue(val);
@@ -138,11 +141,12 @@ const Input = forwardRef(
           ...styles.inputWrapper,
           ...style?.inputWrapper,
         }}
-        className={`input ${className || ''}`}
+        className={`input ${className || ''} `}
       >
         {renderIcon?.()}
         <input
           {...otherProps}
+          className={isDebounced ? 'debounce-end' : ''}
           ref={combinedRef}
           name={name}
           style={{

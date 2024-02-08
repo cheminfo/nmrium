@@ -79,10 +79,16 @@ export default class NmriumPage {
       await this.clickTool('phaseCorrection');
     }
     if (mode === 'manual') {
-      await this.page.fill('input[name="ph1"]', '-100');
-      await this.page.fill('input[name="ph0"]', '-104');
-      await this.page.locator('input[name="ph0"]').blur();
+      await this.page.fill('input[name="ph1"]', '100');
+      await this.page
+        .locator('input[name="ph1"].debounce-end')
+        .waitFor({ state: 'visible' });
+      await this.page.fill('input[name="ph0"]', '-28');
+      await this.page
+        .locator('input[name="ph0"].debounce-end')
+        .waitFor({ state: 'visible' });
     }
+
     if (mode === 'automatic') {
       const select = this.page.locator('select');
       await select.selectOption('automatic');
