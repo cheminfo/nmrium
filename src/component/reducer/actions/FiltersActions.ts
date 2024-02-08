@@ -360,7 +360,7 @@ function beforeRollback(draft: Draft<State>, filterKey) {
     case baselineCorrection.id: {
       if (activeSpectrum) {
         const datum = current(draft).data[activeSpectrum.index];
-        const baselineCorrectionFilter: any = datum.filters.find(
+        const baselineCorrectionFilter = datum.filters.find(
           (filter) => filter.name === Tools.baselineCorrection.id,
         );
         if (
@@ -931,9 +931,8 @@ function calculateBaseLineCorrection(
       ...draft.toolOptions.data.baselineCorrection,
       ...(baseLineOptions && baseLineOptions),
     };
-
     const { zones, options, livePreview } =
-      draft.toolOptions.data.baselineCorrection;
+      current(draft).toolOptions.data.baselineCorrection;
     if (livePreview) {
       const _data = { data: { x, re, im }, info };
       baselineCorrection.apply(_data as Spectrum1D, {
