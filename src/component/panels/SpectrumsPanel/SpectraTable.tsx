@@ -228,7 +228,7 @@ export function SpectraTable(props: SpectraTableProps) {
           id: name,
         });
       } else {
-        const pathString = path.join('.');
+        const pathString = Array.isArray(path) ? path.join('.') : '';
         let style: CSSProperties = columnStyle;
         let cellRender: Column<Spectrum>['Cell'] | null = null;
         if (pathString === 'info.name') {

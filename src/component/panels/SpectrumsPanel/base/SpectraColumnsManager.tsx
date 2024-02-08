@@ -1,24 +1,28 @@
 import { useFormikContext } from 'formik';
 import { PanelsPreferences, SpectraTableColumn } from 'nmr-load-save';
-import { useMemo, CSSProperties } from 'react';
+import { useMemo } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 
 import Button from '../../../elements/Button';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import { InputStyle } from '../../../elements/Input';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import FormikInput, {
   InputMapValueFunctions,
 } from '../../../elements/formik/FormikInput';
 
-const style: CSSProperties = {
-  width: '100%',
-  fontSize: '1.1em',
-  textAlign: 'left',
-  padding: '0.1em 0.1em',
-};
-
-const inputStyle: CSSProperties = {
-  border: 'none',
+const inputStyle: InputStyle = {
+  input: {
+    width: '100%',
+    fontSize: '1.1em',
+    textAlign: 'left',
+    backgroundColor: 'transparent',
+  },
+  inputWrapper: {
+    padding: '0.25rem 0.5rem',
+    borderRadius: 0,
+    borderColor: 'white',
+  },
 };
 
 interface SpectraColumnsManagerProps extends InputMapValueFunctions {
@@ -48,26 +52,30 @@ export function SpectraColumnsManager({
       },
       {
         Header: 'Label',
+        style: { padding: 0 },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.label`}
-              style={{
-                input: { ...style, ...inputStyle },
-                inputWrapper: { border: 'none' },
-              }}
+              style={inputStyle}
             />
           );
         },
       },
       {
         Header: 'Column',
+        style: { padding: 0 },
         Cell: ({ row }) => {
           const column: any = row.original;
 
           if (column?.name) {
             return (
-              <span style={style}>
+              <span
+                style={{
+                  ...inputStyle.input,
+                  padding: '0.25rem 0.5rem',
+                }}
+              >
                 {column?.jpath?.join('.') || column.description}
               </span>
             );
@@ -76,10 +84,7 @@ export function SpectraColumnsManager({
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.jpath`}
-              style={{
-                input: { ...style, ...inputStyle },
-                inputWrapper: { border: 'none' },
-              }}
+              style={inputStyle}
               datalist={datalist}
               mapOnChangeValue={mapOnChangeValue}
               mapValue={mapValue}

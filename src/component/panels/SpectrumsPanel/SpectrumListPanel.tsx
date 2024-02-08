@@ -23,8 +23,10 @@ function SpectrumListPanel() {
   }
 
   function saveSettingHandler() {
-    settingsRef.current.saveSetting();
-    setFlipStatus(!isFlipped);
+    const isValid = settingsRef.current.saveSetting();
+    if (isValid) {
+      setFlipStatus(!isFlipped);
+    }
   }
 
   return (
