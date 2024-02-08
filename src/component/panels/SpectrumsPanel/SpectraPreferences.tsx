@@ -1,5 +1,5 @@
-import { Formik } from 'formik';
-import { PanelsPreferences } from 'nmr-load-save';
+import { Formik, FormikProps } from 'formik';
+import { PanelsPreferences, Workspace } from 'nmr-load-save';
 import {
   useImperativeHandle,
   useRef,
@@ -8,6 +8,7 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -21,8 +22,38 @@ import { PreferencesContainer } from '../extra/preferences/PreferencesContainer'
 
 import { SpectraColumnsManager } from './base/SpectraColumnsManager';
 
+function validationColumns(obj) {
+  const validationObject = {};
+  for (const key of Object.keys(obj.nuclei)) {
+    validationObject[key] = Yup.object({
+      columns: Yup.array().of(
+        Yup.object().shape(
+          {
+            jpath: Yup.array().when('jpath', {
+              is: (jpath) => {
+                return jpath !== undefined;
+              },
+              // eslint-disable-next-line unicorn/no-thenable
+              then: () => Yup.array().of(Yup.string()).required().min(1),
+            }),
+          },
+          [['jpath', 'jpath']],
+        ),
+      ),
+    });
+  }
+  return validationObject;
+}
+
+const spectraPreferencesValidation: any = Yup.lazy(
+  (obj: Workspace['formatting']['panels']['spectra']) =>
+    Yup.object().shape({
+      nuclei: Yup.object().shape(validationColumns(obj)),
+    }),
+);
+
 function SpectraPreferences(props, ref: any) {
-  const formRef = useRef<any>(null);
+  const formRef = useRef<FormikProps<any>>(null);
   const {
     data,
     view: {
@@ -50,13 +81,17 @@ function SpectraPreferences(props, ref: any) {
     ref,
     () => ({
       saveSetting: () => {
-        formRef.current.submitForm();
+        if (!formRef.current) return;
+
+        void formRef.current.submitForm();
+        return formRef.current?.isValid;
       },
     }),
     [],
   );
 
   const handleAdd = useCallback((nucleus, index) => {
+    if (!formRef.current) return;
     const data: PanelsPreferences['spectra'] = formRef.current.values;
     let columns = data.nuclei[nucleus]?.columns || [];
 
@@ -70,7 +105,7 @@ function SpectraPreferences(props, ref: any) {
       ...columns.slice(index),
     ];
 
-    formRef.current.setValues({
+    void formRef.current.setValues({
       ...data,
       nuclei: {
         ...data.nuclei,
@@ -83,11 +118,13 @@ function SpectraPreferences(props, ref: any) {
   }, []);
 
   const handleDelete = useCallback((nucleus, index) => {
+    if (!formRef.current) return;
+
     const data: PanelsPreferences['spectra'] = formRef.current.values;
     const columns = data.nuclei[nucleus]?.columns.filter(
       (_, columnIndex) => columnIndex !== index,
     );
-    formRef.current.setValues({
+    void formRef.current.setValues({
       ...data,
       nuclei: {
         ...data.nuclei,
@@ -99,7 +136,14 @@ function SpectraPreferences(props, ref: any) {
     });
   }, []);
   const mapOnChangeValueHandler = useCallback(
-    (key) => paths?.[key] || key,
+    (key) => {
+      const path = paths?.[key];
+      if (path) {
+        return path;
+      }
+
+      return key || ' ';
+    },
     [paths],
   );
   const mapValue = useCallback((value) => convertPathArrayToString(value), []);
@@ -110,6 +154,7 @@ function SpectraPreferences(props, ref: any) {
         innerRef={formRef}
         onSubmit={saveHandler}
         initialValues={preferencesByNuclei}
+        validationSchema={spectraPreferencesValidation}
       >
         <Scroller scrollTo={activeTab}>
           {nuclei?.map((n) => (
