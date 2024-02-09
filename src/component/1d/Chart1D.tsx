@@ -50,8 +50,8 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <IntegralsSeries />
         <Peaks peaksSource="peaks" />
         <RangesIntegrals />
-        <Ranges />
         <Peaks peaksSource="ranges" />
+        <Ranges />
         <JGraph />
         <MultiAnalysisRanges />
         <BaseLineZones />
