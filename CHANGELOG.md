@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.49.0](https://github.com/cheminfo/nmrium/compare/v0.48.0...v0.49.0) (2024-02-09)
+
+
+### Features
+
+* add a general preference for a popup logging level ([7b532c1](https://github.com/cheminfo/nmrium/commit/7b532c1a4db54a98dc76da0922d9729615c26365))
+* add a link to NMRium videos channel ([4ddf7fe](https://github.com/cheminfo/nmrium/commit/4ddf7fe872fc080b53ac0e4ab56ef65edfbb568c)), closes [#2883](https://github.com/cheminfo/nmrium/issues/2883)
+* detect baseline zones automatically ([6358e89](https://github.com/cheminfo/nmrium/commit/6358e89db0d33f509aa99334efbff5713657239b))
+* display horizontal line at y = 0 for phase and baseline correction ([fda80c5](https://github.com/cheminfo/nmrium/commit/fda80c5f483a3d457312ed7af3506b5e8f4a449b)), closes [#2870](https://github.com/cheminfo/nmrium/issues/2870) [#2871](https://github.com/cheminfo/nmrium/issues/2871)
+* improve resurrect spectrum from publication string and avoid crash ([#2879](https://github.com/cheminfo/nmrium/issues/2879)) ([004d983](https://github.com/cheminfo/nmrium/commit/004d98374acac909df2e2219772887e6c9c4beb2))
+* improve SVG exportation ([#2882](https://github.com/cheminfo/nmrium/issues/2882)) ([a974c15](https://github.com/cheminfo/nmrium/commit/a974c1507e1a453bc52268090bbaa3ba56f9cf35))
+* invert actions ([#2862](https://github.com/cheminfo/nmrium/issues/2862)) ([3b18b4e](https://github.com/cheminfo/nmrium/commit/3b18b4ebf3f0e31bdb0e6035d4f710dd2cfe5c56))
+* resize baseline zones ([a3291b7](https://github.com/cheminfo/nmrium/commit/a3291b77599f268845c4955fba185e5841a6dd3a))
+* show assignment atoms over ranges ([#2869](https://github.com/cheminfo/nmrium/issues/2869)) ([63e7785](https://github.com/cheminfo/nmrium/commit/63e77859f2d816d31af68d4ae8c8f979622ed192))
+* sort ranges by chemical shifts ([d88c8c2](https://github.com/cheminfo/nmrium/commit/d88c8c216025f7d5dd1404f360efb07c055d8b7c)), closes [#2866](https://github.com/cheminfo/nmrium/issues/2866)
+* split pseudo2D inversion recovery spectra ([#2846](https://github.com/cheminfo/nmrium/issues/2846)) ([ab43ee2](https://github.com/cheminfo/nmrium/commit/ab43ee2dbaef18073edb1194c78d33cf9d5e63ec))
+
+
+### Bug Fixes
+
+* baseline correction options ([44261ae](https://github.com/cheminfo/nmrium/commit/44261aea95738f856e15492273e8d0b95f0d1d04))
+* correct rollback spectrum behaviour ([4f316a3](https://github.com/cheminfo/nmrium/commit/4f316a34284900f5a6b9a6f3030cc0851d360cf1)), closes [#2876](https://github.com/cheminfo/nmrium/issues/2876) [#2889](https://github.com/cheminfo/nmrium/issues/2889)
+* prevent the refresh of the scale in baseline correction ([cdeb286](https://github.com/cheminfo/nmrium/commit/cdeb286d7373c3b1da9f0a6592037dcfbe2678bf)), closes [#2872](https://github.com/cheminfo/nmrium/issues/2872)
+* reorder sub matrices from bruker data n fix varian loading ([#2847](https://github.com/cheminfo/nmrium/issues/2847)) ([ef7e1b3](https://github.com/cheminfo/nmrium/commit/ef7e1b33585340d5ec85fb0ce1c83f988805ef41))
+* spectra preferences validation ([788cb45](https://github.com/cheminfo/nmrium/commit/788cb4537fc08b29c488ac609b568d3c31824800))
+
 ## [0.48.0](https://github.com/cheminfo/nmrium/compare/v0.47.0...v0.48.0) (2024-01-26)
 
 
