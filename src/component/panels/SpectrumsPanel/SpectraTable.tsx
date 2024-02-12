@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import lodashGet from 'lodash/get';
 import {
   ActiveSpectrum,
@@ -11,6 +12,7 @@ import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useDispatch } from '../../context/DispatchContext';
@@ -67,6 +69,8 @@ enum SpectraContextMenuOptionsKeys {
   CopyToClipboard = 'CopyToClipboard',
   Delete = 'Delete',
   ExportAsJcamp = 'ExportAsJcamp',
+  ExportAsText = 'ExportAsText',
+  CopyAsText = 'CopyAsText',
 }
 
 const Spectra2DContextMenuOptions: ContextMenuItem[] = [
@@ -80,11 +84,6 @@ const Spectra2DContextMenuOptions: ContextMenuItem[] = [
     icon: <FaRegTrashAlt />,
     data: { id: SpectraContextMenuOptionsKeys.Delete },
   },
-  {
-    text: 'Export as JCAMP-DX',
-    icon: <FaFileExport />,
-    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
-  },
 ];
 
 const Spectra1DContextMenuOptions: ContextMenuItem[] = [
@@ -93,6 +92,16 @@ const Spectra1DContextMenuOptions: ContextMenuItem[] = [
     text: 'Export as JCAMP-DX',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
+  },
+  {
+    text: 'Export as text',
+    icon: <FaFileExport />,
+    data: { id: SpectraContextMenuOptionsKeys.ExportAsText },
+  },
+  {
+    text: 'Copy as text',
+    icon: <FaCopy />,
+    data: { id: SpectraContextMenuOptionsKeys.CopyAsText },
   },
 ];
 
@@ -110,6 +119,8 @@ export function SpectraTable(props: SpectraTableProps) {
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
   const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
   const [exportedSpectrum, setExportedSpectrum] = useState<Spectrum | null>();
+  const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
+    useClipboard();
 
   const COLUMNS: Partial<
     Record<
@@ -165,9 +176,6 @@ export function SpectraTable(props: SpectraTableProps) {
     [onChangeVisibility, onOpenSettingModal],
   );
 
-  const { rawWriteWithType, cleanShouldFallback, shouldFallback, text } =
-    useClipboard();
-
   const selectContextMenuHandler = useCallback(
     (option, spectrum) => {
       const { id } = option;
@@ -195,6 +203,19 @@ export function SpectraTable(props: SpectraTableProps) {
         }
         case SpectraContextMenuOptionsKeys.ExportAsJcamp: {
           setExportedSpectrum(spectrum);
+          break;
+        }
+        case SpectraContextMenuOptionsKeys.ExportAsText: {
+          const data = convertSpectrumToText(spectrum);
+          const blob = new Blob([data], { type: 'text/plain' });
+          saveAs(blob, `${spectrum.info.name}.tsv`);
+          break;
+        }
+        case SpectraContextMenuOptionsKeys.CopyAsText: {
+          const data = convertSpectrumToText(spectrum);
+          void rawWriteWithType(data, 'text/plain').then(() =>
+            alert.success('Spectrum copied to clipboard'),
+          );
           break;
         }
 
@@ -277,6 +298,10 @@ export function SpectraTable(props: SpectraTableProps) {
     };
   }
 
+  const contextMenu =
+    nucleus.split(',').length === 1
+      ? Spectra1DContextMenuOptions
+      : Spectra2DContextMenuOptions;
   return (
     <>
       <ReactTable
@@ -287,11 +312,7 @@ export function SpectraTable(props: SpectraTableProps) {
         onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
         enableVirtualScroll
         approxItemHeight={24}
-        contextMenu={
-          data.info && data.info.dimension === 1
-            ? Spectra1DContextMenuOptions
-            : Spectra2DContextMenuOptions
-        }
+        contextMenu={contextMenu}
         onContextMenuSelect={selectContextMenuHandler}
         onSortEnd={handleSortEnd}
         style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
@@ -346,3 +367,16 @@ const ColumnHeader = ({
     </ContextMenu>
   );
 };
+
+function convertSpectrumToText(spectrum: Spectrum) {
+  if (!isSpectrum1D(spectrum)) return '';
+
+  const {
+    data: { x, re },
+  } = spectrum;
+  const lines = ['x\ty'];
+  for (let i = 0; i < x.length; i++) {
+    lines.push(`${x[i]}\t${re[i]}`);
+  }
+  return lines.join('\n');
+}
