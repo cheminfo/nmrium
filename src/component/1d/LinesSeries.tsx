@@ -52,11 +52,11 @@ function LinesSeries() {
               onClick={(e) => {
                 setActiveSpectrum(e as unknown as MouseEvent, d.id);
               }}
+              data-no-export="true"
             />
           )}
         </g>
       ))}
-
       {activeSpectra?.map((activeSpectrum) => (
         <use key={activeSpectrum.id} href={`#${activeSpectrum.id}`} />
       ))}
