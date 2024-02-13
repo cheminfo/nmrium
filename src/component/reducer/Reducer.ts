@@ -79,6 +79,7 @@ export function getDefaultViewState(): ViewState {
       activeSpectra: {},
       activeTab: '',
       showLegend: false,
+      showSimilarityTree: false,
       selectReferences: {},
     },
     zoom: {
@@ -693,6 +694,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);
       case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
         return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
+      case 'TOGGLE_SIMILARITY_TREE':
+        return DatabaseActions.handleToggleSimilarityTree(draft);
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);

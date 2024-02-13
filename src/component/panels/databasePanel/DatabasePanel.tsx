@@ -330,7 +330,6 @@ function DatabasePanelInner({
             idCode={idCode}
             keywords={keywords}
             result={result}
-            selectedTool={selectedTool}
             total={databaseInstance.current?.data.length || 0}
             onKeywordsChange={(options) =>
               setKeywords((prevKeywords) => ({ ...prevKeywords, ...options }))

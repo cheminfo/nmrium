@@ -1,0 +1,110 @@
+import { createTree } from 'ml-tree-similarity';
+import { Spectrum1D } from 'nmr-load-save';
+import { CSSProperties, Fragment } from 'react';
+
+import { useChartData } from '../context/ChartContext';
+import { useScaleChecked } from '../context/ScaleContext';
+import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
+import useSpectrum from '../hooks/useSpectrum';
+
+const circleSize = 3;
+const marginTop = circleSize + 10;
+const circleColor: CSSProperties['color'] = 'red';
+const lineColor: CSSProperties['color'] = 'black';
+const textColor: CSSProperties['color'] = 'red';
+const textPadding = circleSize + 2;
+const textSize = 10;
+const maxTreeLevels = 25;
+
+export default function SimilarityTree() {
+  const {
+    height,
+    view: {
+      spectra: { activeTab, showSimilarityTree },
+    },
+  } = useChartData();
+  const spectrum = useSpectrum();
+  const format = useFormatNumberByNucleus(activeTab);
+  const { scaleX } = useScaleChecked();
+  const scaleY = (value: number) => (height * value) / maxTreeLevels;
+  const treeHeadLength = height / maxTreeLevels;
+
+  if (!spectrum || !showSimilarityTree) return null;
+
+  const {
+    data: { x, re },
+  } = spectrum as Spectrum1D;
+  const tree = createTree({ x, y: re });
+  const data = mapTreeToArray(tree, 0);
+
+  return (
+    <g className="similarity-tree" transform={`translate(0,${marginTop})`}>
+      <g className="tree-lines">
+        {data.map(({ level, center, parentCenter, parentLevel }) => {
+          if (parentCenter === undefined) return null;
+
+          const startX = scaleX()(parentCenter);
+          const startY = scaleY(parentLevel);
+          const midY = startY + treeHeadLength / 2;
+          const endX = scaleX()(center);
+          const endY = scaleY(level);
+          const path = `M ${startX} ${startY} L ${startX} ${midY} L${endX} ${midY} L${endX} ${endY}`;
+
+          return <path key={path} d={path} fill="none" stroke={lineColor} />;
+        })}
+      </g>
+      <g className="tree-nodes">
+        {data.map(({ level, center }) => {
+          const x = scaleX()(center);
+          const y = scaleY(level);
+          return (
+            <Fragment key={`${level}${center}`}>
+              <circle cx={x} cy={y} r={circleSize} fill={circleColor} />
+              <text
+                x={x + textPadding}
+                y={y}
+                textAnchor="start"
+                alignmentBaseline="middle"
+                fill={textColor}
+                fontSize={textSize}
+              >
+                {format(center)}
+              </text>
+            </Fragment>
+          );
+        })}
+      </g>
+    </g>
+  );
+}
+
+interface TreeItem {
+  center: number;
+  sum: number;
+  level: number;
+  parentCenter?: number;
+  parentLevel?: number;
+}
+
+function mapTreeToArray(
+  node: any,
+  level: number,
+  parentCenter = null,
+  parentLevel = -1,
+) {
+  if (!node) return [];
+
+  const { center, sum } = node;
+  const result: TreeItem[] = [{ center, sum, level }];
+
+  for (const obj of result) {
+    if (parentCenter) {
+      obj.parentCenter = parentCenter;
+      obj.parentLevel = parentLevel;
+    }
+  }
+
+  const left = mapTreeToArray(node.left, level + 1, center, parentLevel + 1);
+  const right = mapTreeToArray(node.right, level + 1, center, parentLevel + 1);
+  return result.concat(left, right);
+}
