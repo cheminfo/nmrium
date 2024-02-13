@@ -23,6 +23,7 @@ type ResurrectSpectrumFromRangesAction = ActionType<
 >;
 
 export type DatabaseActions =
+  | ActionType<'TOGGLE_SIMILARITY_TREE'>
   | ResurrectSpectrumFromJcampAction
   | ResurrectSpectrumFromRangesAction;
 
@@ -62,4 +63,13 @@ function handleResurrectSpectrumFromRanges(
   }
 }
 
-export { handleResurrectSpectrumFromRanges, handleResurrectSpectrumFromJcamp };
+function handleToggleSimilarityTree(draft: Draft<State>) {
+  draft.view.spectra.showSimilarityTree =
+    !draft.view.spectra.showSimilarityTree;
+}
+
+export {
+  handleResurrectSpectrumFromRanges,
+  handleResurrectSpectrumFromJcamp,
+  handleToggleSimilarityTree,
+};

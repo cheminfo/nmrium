@@ -1,13 +1,16 @@
 import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
+import { TbBinaryTree } from 'react-icons/tb';
 
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import ActiveButton from '../../elements/ActiveButton';
 import Button from '../../elements/Button';
 import { CounterLabel } from '../../elements/CounterLabel';
 import Input from '../../elements/Input';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 import Select from '../../elements/Select';
-import ToggleButton from '../../elements/ToggleButton';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { options } from '../../toolbar/ToolTypes';
 import { createFilterLabel } from '../header/DefaultPanelHeader';
@@ -26,7 +29,6 @@ interface DatabaseSearchOptionsProps {
   defaultDatabase: string;
   keywords: DatabaseSearchKeywords;
   result: DataBaseSearchResultEntry;
-  selectedTool: string;
   idCode?: string;
   total: number;
   onKeywordsChange: (k: Partial<DatabaseSearchKeywords>) => void;
@@ -40,7 +42,6 @@ export function DatabaseSearchOptions({
   defaultDatabase,
   keywords,
   result,
-  selectedTool,
   idCode,
   total,
   onKeywordsChange,
@@ -49,7 +50,13 @@ export function DatabaseSearchOptions({
   onDatabaseChange,
 }: DatabaseSearchOptionsProps) {
   const { handleChangeOption } = useToolsFunctions();
-
+  const {
+    view: {
+      spectra: { showSimilarityTree },
+    },
+    toolOptions: { selectedTool },
+  } = useChartData();
+  const dispatch = useDispatch();
   function enableFilterHandler(flag) {
     const tool = !flag ? options.zoom.id : options.databaseRangesSelection.id;
     handleChangeOption(tool);
@@ -70,6 +77,10 @@ export function DatabaseSearchOptions({
     onKeywordsChange({ searchKeywords: '' });
   }
 
+  function handleShowSimilarityTree() {
+    dispatch({ type: 'TOGGLE_SIMILARITY_TREE' });
+  }
+
   return (
     <PanelHeader style={{ flexDirection: 'column', alignItems: 'normal' }}>
       <div
@@ -79,6 +90,16 @@ export function DatabaseSearchOptions({
           paddingBottom: '2px',
         }}
       >
+        <ActiveButton
+          popupTitle={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
+          popupPlacement="right"
+          onClick={handleShowSimilarityTree}
+          value={showSimilarityTree}
+          style={{ marginRight: '5px' }}
+        >
+          <TbBinaryTree style={{ pointerEvents: 'none', fontSize: '12px' }} />
+        </ActiveButton>
+
         <Select
           style={{ flex: 6 }}
           items={databases}
@@ -110,12 +131,12 @@ export function DatabaseSearchOptions({
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <ToggleButton
-          key={selectedTool}
-          defaultValue={selectedTool === options.databaseRangesSelection.id}
+        <ActiveButton
           popupTitle="Filter by select ranges"
           popupPlacement="right"
           onClick={enableFilterHandler}
+          value={selectedTool === options.databaseRangesSelection.id}
+          style={{ marginRight: '5px' }}
         >
           <FaICursor
             style={{
@@ -124,7 +145,7 @@ export function DatabaseSearchOptions({
               transform: 'rotate(90deg)',
             }}
           />
-        </ToggleButton>
+        </ActiveButton>
 
         <Input
           value={keywords.searchKeywords}

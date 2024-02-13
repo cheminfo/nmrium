@@ -4,6 +4,7 @@ import { usePreferences } from '../context/PreferencesContext';
 import ApodizationLine from './ApodizationLine';
 import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 import LinesSeries from './LinesSeries';
+import SimilarityTree from './SimilarityTree';
 import SpectraTracker from './SpectraLegends';
 import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
@@ -60,6 +61,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <PeaksShapes />
         <SpectraTracker />
         <SpectrumInfoBlock />
+        <SimilarityTree />
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis showGrid mode={mode} />
         </g>
