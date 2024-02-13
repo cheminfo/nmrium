@@ -1,7 +1,7 @@
 import { createTree } from 'ml-tree-similarity';
-import { Spectrum1D } from 'nmr-load-save';
 import { CSSProperties, Fragment } from 'react';
 
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { useFormatNumberByNucleus } from '../hooks/useFormatNumberByNucleus';
@@ -9,9 +9,8 @@ import useSpectrum from '../hooks/useSpectrum';
 
 const circleSize = 3;
 const marginTop = circleSize + 10;
-const circleColor: CSSProperties['color'] = 'red';
 const lineColor: CSSProperties['color'] = 'black';
-const textColor: CSSProperties['color'] = 'red';
+const textColor: CSSProperties['color'] = 'black';
 const textPadding = circleSize + 2;
 const textSize = 10;
 const maxTreeLevels = 25;
@@ -29,11 +28,12 @@ export default function SimilarityTree() {
   const scaleY = (value: number) => (height * value) / maxTreeLevels;
   const treeHeadLength = height / maxTreeLevels;
 
-  if (!spectrum || !showSimilarityTree) return null;
+  if (!spectrum || !showSimilarityTree || !isSpectrum1D(spectrum)) return null;
 
   const {
     data: { x, re },
-  } = spectrum as Spectrum1D;
+    display: { color },
+  } = spectrum;
   const tree = createTree({ x, y: re });
   const data = mapTreeToArray(tree, 0);
 
@@ -59,7 +59,7 @@ export default function SimilarityTree() {
           const y = scaleY(level);
           return (
             <Fragment key={`${level}${center}`}>
-              <circle cx={x} cy={y} r={circleSize} fill={circleColor} />
+              <circle cx={x} cy={y} r={circleSize} fill={color} />
               <text
                 x={x + textPadding}
                 y={y}
