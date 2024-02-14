@@ -37,22 +37,27 @@ export default function SimilarityTree() {
   const tree = createTree({ x, y: re });
   const data = mapTreeToArray(tree, 0);
 
+  const paths: string[] = [];
+  for (const { level, center, parentCenter, parentLevel } of data) {
+    if (parentCenter === undefined) continue;
+    const startX = scaleX()(parentCenter);
+    const startY = scaleY(parentLevel);
+    const midY = startY + treeHeadLength / 2;
+    const endX = scaleX()(center);
+    const endY = scaleY(level);
+    const path = `M ${startX} ${startY} L ${startX} ${midY} L ${endX} ${midY} L${endX} ${endY}`;
+    paths.push(path);
+  }
+
   return (
     <g className="similarity-tree" transform={`translate(0,${marginTop})`}>
-      <g className="tree-lines">
-        {data.map(({ level, center, parentCenter, parentLevel }) => {
-          if (parentCenter === undefined) return null;
-
-          const startX = scaleX()(parentCenter);
-          const startY = scaleY(parentLevel);
-          const midY = startY + treeHeadLength / 2;
-          const endX = scaleX()(center);
-          const endY = scaleY(level);
-          const path = `M ${startX} ${startY} L ${startX} ${midY} L${endX} ${midY} L${endX} ${endY}`;
-
-          return <path key={path} d={path} fill="none" stroke={lineColor} />;
-        })}
-      </g>
+      <path
+        className="tree-lines"
+        d={paths.join(' ')}
+        fill="none"
+        stroke={lineColor}
+      />
+      ;
       <g className="tree-nodes">
         {data.map(({ level, center }) => {
           const x = scaleX()(center);
