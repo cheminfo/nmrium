@@ -16,10 +16,8 @@ import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumR
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
-import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
 import { useScaleX } from '../utilities/scale';
 
-import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 import { Atoms } from './Atoms';
 
 const style = css`
@@ -41,13 +39,8 @@ interface RangeProps {
   relativeFormat: string;
 }
 
-function Range({
-  range,
-  showMultiplicityTrees,
-  selectedTool,
-  relativeFormat,
-}: RangeProps) {
-  const { id, integration, signals, diaIDs: rangeDiaIDs, from, to } = range;
+function Range({ range, selectedTool, relativeFormat }: RangeProps) {
+  const { id, integration, signals, from, to } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -88,22 +81,6 @@ function Range({
   function mouseLeaveHandler() {
     assignmentRange.hide();
     highlightRange.hide();
-  }
-
-  function unAssignHandler(signalIndex = -1) {
-    dispatch({
-      type: 'UNLINK_RANGE',
-      payload: {
-        range,
-        assignmentData,
-        signalIndex,
-      },
-    });
-  }
-  function assignHandler() {
-    if (!isBlockedByEditing) {
-      assignmentRange.setActive('x');
-    }
   }
 
   const isNotSignal = !checkRangeKind(range);
@@ -161,17 +138,7 @@ function Range({
         }}
       </ResizerWithScale>
 
-      {showMultiplicityTrees && (
-        <MultiplicityTree range={range} onUnlink={unAssignHandler} />
-      )}
       <Atoms range={range} x={startX} />
-
-      <AssignmentActionsButtons
-        isActive={!!(assignmentRange.isActive || rangeDiaIDs)}
-        x={startX}
-        onAssign={assignHandler}
-        onUnAssign={() => unAssignHandler()}
-      />
     </g>
   );
 }
