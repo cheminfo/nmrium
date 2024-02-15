@@ -6,7 +6,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 
-import MultiplicityTreeNode from './MultiplicityTreeNode';
+import MultiplicityTreeNode from './MultiplicityTree';
 
 interface MultiplicityTreesInnerProps {
   displayerKey: string;
