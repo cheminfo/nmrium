@@ -45,7 +45,7 @@ const TREE_LEVEL_COLORS: string[] = ['red', 'green', 'blue', 'magenta'];
 
 const marginBottom = 20;
 const headTextMargin = 5;
-const tailLengthScale = 30;
+const tailLengthScale = 60;
 const boxPadding = 20;
 export default function MultiplicityTree(props: MultiplicityTreeProps) {
   const { range } = props;
@@ -107,12 +107,12 @@ function Tree(props: TreeProps) {
     treeWidth = scaleX()(min) - scaleX()(max);
     widthRatio = treeWidth / width;
   } else {
-    treeWidth = 5;
+    treeWidth = 4;
     widthRatio = (scaleX()(from) - scaleX()(to)) / width;
   }
 
   const tailLength = widthRatio * tailLengthScale;
-  const rationTextSize = widthRatio * 20;
+  const rationTextSize = widthRatio * 30;
   let multiplicityTextSize = rationTextSize;
 
   if (multiplicityTextSize < 10) {
@@ -162,6 +162,11 @@ function Tree(props: TreeProps) {
 
   const isHighlighted = highlight.isActive || assignment.isActive;
   const padding = boxPadding * widthRatio;
+  const x = scaleX()(max) - padding;
+  const y = startY - headTextMargin - multiplicityTextSize - padding;
+  const boxWidth = treeWidth + padding * 2;
+  const boxHeight =
+    treeHeight + headTextMargin + multiplicityTextSize + padding * 2;
 
   return (
     <g
@@ -180,10 +185,10 @@ function Tree(props: TreeProps) {
       {...(!assignment.isActive && { css: cssStyle })}
     >
       <rect
-        x={headX - padding - treeWidth / 2}
-        y={startY - padding}
-        width={treeWidth + padding * 2}
-        height={treeHeight + (multiplicity !== 's' ? tailLength : 0)}
+        x={x}
+        y={y}
+        width={boxWidth}
+        height={boxHeight}
         fill={isHighlighted ? '#ff6f0057' : 'transparent'}
         data-no-export="true"
       />
@@ -244,7 +249,12 @@ function Tree(props: TreeProps) {
       </g>
       <AssignmentActionsButtons
         className="signal-target"
-        isActive={!!(assignment.isActive || diaIDs)}
+        isActive={
+          !!(
+            assignment.isActive ||
+            (Array.isArray(diaIDs) && diaIDs.length > 0)
+          )
+        }
         y={startY - 16}
         x={headX - 30}
         onAssign={assignHandler}
