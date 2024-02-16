@@ -50,6 +50,7 @@ const panelStyle = css`
     display: flex;
     flex: 1;
     justify-content: center;
+
     .overview-container {
       width: 100%;
       display: flex;
