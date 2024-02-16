@@ -172,22 +172,14 @@ function RangesHeader({
         showSettingButton
         onSettingClick={onSettingClick}
       >
-        <Toolbar disabled={!hasRanges}>
+        <Toolbar>
           <Toolbar.Item
+            disabled={!hasRanges}
             icon={<FaFileExport />}
             title="Preview publication string"
             onClick={saveAsHTMLHandler}
           />
-          <Toolbar.Item
-            icon={<SvgNmrIntegrate />}
-            title={
-              showIntegralsValues
-                ? 'Hide integrals values'
-                : 'Show integrals values'
-            }
-            onClick={handleShowIntegralsValues}
-            active={showIntegralsValues}
-          />
+
           <ChangeSumModal
             onSave={changeRangesSumHandler}
             sumType="ranges"
@@ -195,6 +187,7 @@ function RangesHeader({
             sumOptions={ranges?.options}
             renderButton={(onClick) => (
               <Toolbar.Item
+                disabled={!hasRanges}
                 icon={<SvgNmrSum />}
                 title={
                   currentSum
@@ -206,11 +199,13 @@ function RangesHeader({
             )}
           />
           <Toolbar.Item
+            disabled={!hasRanges}
             icon={<FaUnlink />}
             title="Remove all assignments"
             onClick={handleOnRemoveAssignments}
           />
           <Toolbar.Item
+            disabled={!hasRanges}
             icon={<FaSitemap />}
             title={
               showMultiplicityTrees
@@ -221,33 +216,44 @@ function RangesHeader({
             active={showMultiplicityTrees}
           />
           <Toolbar.Item
+            disabled={!hasRanges}
             icon={<FaChartBar />}
             title={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
             onClick={handleShowJGraph}
             active={showJGraph}
           />
           <Toolbar.Item
+            disabled={!hasRanges}
             icon={<SvgNmrIntegrate />}
             title={showIntegrals ? 'Hide integrals' : 'Show integrals'}
             onClick={handleShowIntegrals}
             active={showIntegrals}
           />
-        </Toolbar>
-        <Toolbar>
+          <Toolbar.Item
+            disabled={!hasRanges}
+            icon={<SvgNmrIntegrate />}
+            title={
+              showIntegralsValues
+                ? 'Hide integrals values'
+                : 'Show integrals values'
+            }
+            onClick={handleShowIntegralsValues}
+            active={showIntegralsValues}
+          />
           <Toolbar.Item
             icon={<ImLink />}
             title="Fixed integration sum"
             onClick={changeSumConstantFlagHandler}
             active={ranges?.options?.isSumConstant}
           />
+          <PeaksToggleActions
+            disabled={!hasRanges}
+            showPeaks={showPeaks}
+            onShowToggle={() => toggleViewProperty('showPeaks')}
+            displayingMode={displayingMode}
+            onDisplayingModeToggle={toggleDisplayingMode}
+          />
         </Toolbar>
-        <PeaksToggleActions
-          disabled={!hasRanges}
-          showPeaks={showPeaks}
-          onShowToggle={() => toggleViewProperty('showPeaks')}
-          displayingMode={displayingMode}
-          onDisplayingModeToggle={toggleDisplayingMode}
-        />
       </DefaultPanelHeader>
 
       <ClipboardFallbackModal

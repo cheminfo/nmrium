@@ -19,19 +19,21 @@ export function PeaksToggleActions(props: PeaksToggleProps) {
   } = props;
 
   return (
-    <Toolbar disabled={disabled}>
+    <>
       <Toolbar.Item
+        disabled={disabled}
         icon={<SvgNmrPeaks />}
         title={showPeaks ? 'Hide peaks' : 'Show peaks'}
         onClick={onShowToggle}
         active={showPeaks}
       />
       <Toolbar.Item
+        disabled={disabled}
         icon={<SvgNmrPeaksTopLabels />}
         title={displayingMode === 'spread' ? 'Single Mode' : 'Spread mode'}
         onClick={onDisplayingModeToggle}
         active={displayingMode === 'spread'}
       />
-    </Toolbar>
+    </>
   );
 }

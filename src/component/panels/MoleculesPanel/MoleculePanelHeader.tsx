@@ -215,63 +215,65 @@ export default function MoleculePanelHeader({
   return (
     <PanelHeader>
       {renderSource === 'predictionPanel' && <AboutPredictionModal />}
-      {renderSource === 'moleculePanel' && (
-        <Toolbar>
-          <DropdownMenu
-            onSelect={(data) => {
-              exportHandler(data);
-            }}
-            placement="right-start"
-            targetTagName="div"
-            targetProps={{ style: { flex: 'none' } }}
-            options={MOL_EXPORT_MENU}
-          >
+      <Toolbar>
+        {renderSource === 'moleculePanel' && (
+          <>
+            {' '}
+            <DropdownMenu
+              onSelect={(data) => {
+                exportHandler(data);
+              }}
+              placement="right-start"
+              targetTagName="div"
+              targetProps={{ style: { flex: 'none' } }}
+              options={MOL_EXPORT_MENU}
+            >
+              <Toolbar.Item
+                disabled={!hasMolecules}
+                title="Export As"
+                icon={<FaFileExport />}
+              />
+            </DropdownMenu>
             <Toolbar.Item
-              disabled={!hasMolecules}
-              title="Export As"
-              icon={<FaFileExport />}
+              title="Paste molfile"
+              icon={<FaPaste />}
+              onClick={handlePasteMolfileAction}
             />
-          </DropdownMenu>
-          <Toolbar.Item
-            title="Paste molfile"
-            icon={<FaPaste />}
-            onClick={handlePasteMolfileAction}
-          />
-          <Toolbar.Item
-            title="Add molecule"
-            icon={<FaPlus />}
-            onClick={onOpenMoleculeEditor}
-          />
-        </Toolbar>
-      )}
+            <Toolbar.Item
+              title="Add molecule"
+              icon={<FaPlus />}
+              onClick={onOpenMoleculeEditor}
+            />
+          </>
+        )}
 
-      {renderSource === 'moleculePanel' && (
-        <>
-          <Toolbar disabled={!hasMolecules}>
+        {renderSource === 'moleculePanel' && (
+          <>
             <Toolbar.Item
               title="Delete molecule"
               icon={<FaRegTrashAlt />}
               onClick={handleDelete}
+              disabled={!hasMolecules}
             />
-          </Toolbar>
-          {hasMolecules && (
-            <PredictSpectraModal molecule={molecules[currentIndex]} />
-          )}
-        </>
-      )}
+            {hasMolecules && (
+              <PredictSpectraModal molecule={molecules[currentIndex]} />
+            )}
+          </>
+        )}
 
-      <Toolbar disabled={!hasMolecules}>
         <Toolbar.Item
           title="Float molecule"
           icon={<IoOpenOutline />}
           onClick={floatMoleculeHandler}
           active={moleculesView?.[moleculeKey]?.floating.visible || false}
+          disabled={!hasMolecules}
         />
         <Toolbar.Item
           title="Show atom number"
           icon={<p style={styles.atomLabel}>#</p>}
           onClick={showAtomNumbersHandler}
           active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
+          disabled={!hasMolecules}
         />
       </Toolbar>
 

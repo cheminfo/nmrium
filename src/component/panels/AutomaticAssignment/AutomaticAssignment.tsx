@@ -30,15 +30,13 @@ function AutomaticAssignment() {
       <DefaultPanelHeader showSettingButton={false} canDelete={false}>
         <Toolbar>
           <SpectraAutomaticPickingButton />
-        </Toolbar>
-        <Toolbar disabled={!enabled}>
+
           <Toolbar.Item
             icon={<SvgNmrAssignment2 />}
             title="Automatic assignment"
             onClick={getAssignments}
+            disabled={!enabled}
           />
-        </Toolbar>
-        <Toolbar>
           <Toolbar.Item
             icon={<FaBolt />}
             title="Reset assignment"

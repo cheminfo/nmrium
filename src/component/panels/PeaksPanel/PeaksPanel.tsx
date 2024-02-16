@@ -162,10 +162,11 @@ function PeaksPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          {isExperimental && (
-            <>
-              <Toolbar disabled={disabled}>
+          <Toolbar>
+            {isExperimental && (
+              <>
                 <Toolbar.Item
+                  disabled={disabled}
                   icon={<SvgPeaks />}
                   title={
                     peaksViewState.showPeaksShapes
@@ -176,6 +177,7 @@ function PeaksPanelInner({
                   active={peaksViewState.showPeaksShapes}
                 />
                 <Toolbar.Item
+                  disabled={disabled}
                   icon={<SvgNmrFt />}
                   title={
                     peaksViewState.showPeaksSum
@@ -185,24 +187,22 @@ function PeaksPanelInner({
                   onClick={() => toggleViewProperty('showPeaksSum')}
                   active={peaksViewState.showPeaksSum}
                 />
-              </Toolbar>
-              <Toolbar>
                 <Toolbar.Item
                   icon={<FaThinkPeaks />}
                   title="Optimize peaks"
                   onClick={optimizePeaksHandler}
                 />
-              </Toolbar>
-            </>
-          )}
+              </>
+            )}
 
-          <PeaksToggleActions
-            disabled={disabled}
-            showPeaks={peaksViewState.showPeaks}
-            onShowToggle={() => toggleViewProperty('showPeaks')}
-            displayingMode={peaksViewState.displayingMode}
-            onDisplayingModeToggle={toggleDisplayingMode}
-          />
+            <PeaksToggleActions
+              disabled={disabled}
+              showPeaks={peaksViewState.showPeaks}
+              onShowToggle={() => toggleViewProperty('showPeaks')}
+              displayingMode={peaksViewState.displayingMode}
+              onDisplayingModeToggle={toggleDisplayingMode}
+            />
+          </Toolbar>
         </DefaultPanelHeader>
       )}
       {isFlipped && (

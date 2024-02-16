@@ -132,20 +132,19 @@ function SpectraPanelHeaderInner({
       showSettingButton
       onSettingClick={onSettingClick}
     >
-      <Toolbar disabled={!hasActiveSpectra}>
+      <Toolbar>
         <Toolbar.Item
+          disabled={!hasActiveSpectra}
           icon={<FaEyeSlash />}
           title="Hide selected spectra"
           onClick={hideAllSpectrumsHandler}
         />
         <Toolbar.Item
+          disabled={!hasActiveSpectra}
           icon={<FaEye />}
           title="Show selected spectra"
           onClick={showAllSpectrumsHandler}
         />
-      </Toolbar>
-
-      <Toolbar>
         {displayerMode === '2D' && activeSpectrum?.info.isFt && (
           <Toolbar.Item
             icon={<FaCreativeCommonsSamplingPlus />}
