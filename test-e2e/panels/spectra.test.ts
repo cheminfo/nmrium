@@ -269,7 +269,9 @@ test('2d spectrum', async ({ page }) => {
     // Go to 1H tab
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
 
-    await nmrium.page.click('_react=Button[toolTip="Delete selected spectra"]');
+    await nmrium.page.click(
+      '_react=DeleteButton[title="Delete selected spectra"]',
+    );
     //confirm delete the selected
     await nmrium.page.click('_react=ConfirmationDialog >> text=Yes');
 
@@ -292,7 +294,7 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Add projection', async () => {
     // Click add missing projection btn
-    await nmrium.page.click('_react=Button[toolTip="Add missing projection"]');
+    await nmrium.clickToolByTitle('Add missing projection');
 
     // Check tabs
     const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
@@ -573,7 +575,7 @@ test('Multiple spectra analysis', async ({ page }) => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
   });
   await test.step('Check Recolour BarButton', async () => {
-    await nmrium.page.click('_react=Button[toolTip="Recolor spectra"]');
+    await nmrium.clickToolByTitle('Recolor spectra');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
 });

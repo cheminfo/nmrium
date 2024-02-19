@@ -1,4 +1,4 @@
-import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
+import { SvgNmrIntegrate } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
@@ -185,18 +185,6 @@ function RangesHeader({
             sumType="ranges"
             currentSum={currentSum}
             sumOptions={ranges?.options}
-            renderButton={(onClick) => (
-              <Toolbar.Item
-                disabled={!hasRanges}
-                icon={<SvgNmrSum />}
-                title={
-                  currentSum
-                    ? `Change ranges sum (${currentSum.toFixed(2)})`
-                    : 'Change ranges sum'
-                }
-                onClick={onClick}
-              />
-            )}
           />
           <Toolbar.Item
             disabled={!hasRanges}

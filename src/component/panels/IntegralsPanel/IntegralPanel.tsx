@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
+import { SvgNmrIntegrate } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
@@ -151,20 +151,9 @@ function IntegralPanelInner({
           <Toolbar>
             <ChangeSumModal
               onSave={changeIntegralSumHandler}
-              sumType="integrals"
+              sumType="integration"
               currentSum={currentSum}
               sumOptions={integrals?.options}
-              renderButton={(onClick) => (
-                <Toolbar.Item
-                  icon={<SvgNmrSum />}
-                  title={
-                    currentSum
-                      ? `Change integration sum (${currentSum.toFixed(2)})`
-                      : 'Change integration sum'
-                  }
-                  onClick={onClick}
-                />
-              )}
             />
             <Toolbar.Item
               icon={<ImLink />}

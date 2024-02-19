@@ -1,6 +1,6 @@
 import { Dialog } from '@blueprintjs/core';
-import { ReactNode } from 'react';
-import { useOnOff } from 'react-science/ui';
+import { SvgNmrSum } from 'cheminfo-font';
+import { Toolbar, useOnOff } from 'react-science/ui';
 
 import {
   ChangeSumModalContents,
@@ -9,31 +9,42 @@ import {
 
 export interface ChangeSumModalProps
   extends Omit<ChangeSumModalContentsProps, 'onClose'> {
-  renderButton: (onClick: () => void) => ReactNode;
   currentSum: number | null;
   sumType: string;
+  disabled?: boolean;
 }
 
 export default function ChangeSumModal(props: ChangeSumModalProps) {
-  const { renderButton, currentSum, sumType, ...otherProps } = props;
+  const { disabled = false, currentSum, sumType, ...otherProps } = props;
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
 
   return (
     <>
-      {renderButton(openDialog)}
-
-      <Dialog
-        isOpen={isOpenDialog}
-        onClose={closeDialog}
-        style={{ width: 500, height: 400 }}
+      <Toolbar.Item
+        disabled={disabled}
+        icon={<SvgNmrSum />}
         title={
           currentSum
-            ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`
-            : `Set new ${sumType} Sum`
+            ? `Change ${sumType} sum (${currentSum.toFixed(2)})`
+            : `Change ${sumType} sum`
         }
-      >
-        <ChangeSumModalContents {...otherProps} onClose={closeDialog} />
-      </Dialog>
+        onClick={openDialog}
+      />
+
+      {isOpenDialog && (
+        <Dialog
+          isOpen
+          onClose={closeDialog}
+          style={{ width: 500, height: 400 }}
+          title={
+            currentSum
+              ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`
+              : `Set new ${sumType} Sum`
+          }
+        >
+          <ChangeSumModalContents {...otherProps} onClose={closeDialog} />
+        </Dialog>
+      )}
     </>
   );
 }
