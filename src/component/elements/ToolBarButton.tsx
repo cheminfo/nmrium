@@ -1,4 +1,5 @@
 import { ButtonProps, Placement } from '@blueprintjs/core';
+import { CSSProperties } from 'react';
 import { Button, ToolbarItemProps } from 'react-science/ui';
 
 export interface ToolBarButtonProps
@@ -6,10 +7,17 @@ export interface ToolBarButtonProps
     Pick<ButtonProps, 'onClick' | 'title'> {
   disabled?: boolean;
   placement?: Placement;
+  style?: CSSProperties;
 }
 
 export function ToolBarButton(props: ToolBarButtonProps) {
-  const { intent, title = '', placement = 'bottom', ...other } = props;
+  const {
+    intent,
+    title = '',
+    placement = 'bottom',
+    style = {},
+    ...other
+  } = props;
   return (
     <Button
       {...other}
@@ -23,6 +31,7 @@ export function ToolBarButton(props: ToolBarButtonProps) {
       }}
       style={{
         fontSize: '1.25em',
+        ...style,
       }}
     />
   );
