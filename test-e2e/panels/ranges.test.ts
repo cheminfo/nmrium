@@ -257,10 +257,10 @@ test('Range state', async ({ page }) => {
     // Check multiplicity tree
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
 
-    //show integrals
-    await nmrium.clickToolByTitle('Show peaks', {
-      prefixSelectors: ['_react=RangesPanel'],
-    });
+    //show peaks
+    await nmrium.page.click(
+      `_react=RangesPanel >> ToolbarItem[title="Show peaks"] >> nth=0`,
+    );
 
     //show integrals
     await nmrium.clickToolByTitle('Show integrals');
@@ -301,8 +301,6 @@ test('Range state', async ({ page }) => {
     );
     // Check that the peaks btn is not active
 
-    const l = nmrium.page.locator(`_react=RangesHeader`);
-    console.log('what is resolved', await l.innerHTML());
     await expect(
       nmrium.getToolLocatorByTitle('Hide peaks', {
         prefixSelectors: ['_react=RangesHeader'],
@@ -454,7 +452,7 @@ test('2D spectra reference change', async ({ page }) => {
 
     await expect(
       nmrium.page.locator(
-        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+        `_react = Signal[signal.x.delta = ${x}][signal.y.delta = ${y}]`,
       ),
     ).toBeVisible();
   });
@@ -492,7 +490,7 @@ test('2D spectra reference change', async ({ page }) => {
 
     await expect(
       nmrium.page.locator(
-        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+        `_react = Signal[signal.x.delta = ${x}][signal.y.delta = ${y}]`,
       ),
     ).toBeVisible();
 
