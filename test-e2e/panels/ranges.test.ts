@@ -258,8 +258,9 @@ test('Range state', async ({ page }) => {
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
 
     //show peaks
+
     await nmrium.page.click(
-      `_react=RangesPanel >> ToolbarItem[title="Show peaks"] >> nth=0`,
+      `_react=RangesPanel >> _react=ToolbarItem[title="Show peaks" i] >> nth=0`,
     );
 
     //show integrals
@@ -305,7 +306,6 @@ test('Range state', async ({ page }) => {
       nmrium.getToolLocatorByTitle('Hide peaks', {
         prefixSelectors: ['_react=RangesHeader'],
       }),
-      // l
     ).toBeVisible();
     // Check that the integrals btn is not active
     await expect(nmrium.getToolLocatorByTitle('Hide integrals')).toBeVisible();
