@@ -18,6 +18,7 @@ import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { useScaleX } from '../utilities/scale';
 
+import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 import { Atoms } from './Atoms';
 
 const style = css`
@@ -40,7 +41,7 @@ interface RangeProps {
 }
 
 function Range({ range, selectedTool, relativeFormat }: RangeProps) {
-  const { id, integration, signals, from, to } = range;
+  const { id, integration, signals, from, to, diaIDs: rangeDiaIDs } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -81,6 +82,23 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
   function mouseLeaveHandler() {
     assignmentRange.hide();
     highlightRange.hide();
+  }
+
+  function assignHandler() {
+    if (!isBlockedByEditing) {
+      assignmentRange.setActive('x');
+    }
+  }
+
+  function unAssignHandler(signalIndex = -1) {
+    dispatch({
+      type: 'UNLINK_RANGE',
+      payload: {
+        range,
+        assignmentData,
+        signalIndex,
+      },
+    });
   }
 
   const isNotSignal = !checkRangeKind(range);
@@ -139,6 +157,12 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       </ResizerWithScale>
 
       <Atoms range={range} x={startX} />
+      <AssignmentActionsButtons
+        isActive={!!(assignmentRange.isActive || rangeDiaIDs)}
+        x={startX}
+        onAssign={assignHandler}
+        onUnAssign={() => unAssignHandler()}
+      />
     </g>
   );
 }
