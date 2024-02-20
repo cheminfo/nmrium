@@ -66,11 +66,9 @@ export default class NmriumPage {
     if (active !== undefined) {
       selectors.push(`[active=${active}]`);
     }
-    return this.page
-      .getByRole('button')
-      .and(
-        this.page.locator(parentsSelectors.join(' >> ') + selectors.join('')),
-      );
+    return this.page.locator(
+      `${parentsSelectors.join(' >> ') + selectors.join('')} >> nth=0`,
+    );
   }
 
   public async assertXScaleDomain(min: number, max: number) {
