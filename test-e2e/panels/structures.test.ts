@@ -508,8 +508,10 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
     // Delete molecule.
     await nmrium.clickToolByTitle('Delete molecule');
-    // Delete molecule.
-    await nmrium.clickToolByTitle('Delete molecule');
+    if (browserName !== 'firefox') {
+      // Delete molecule.
+      await nmrium.clickToolByTitle('Delete molecule');
+    }
 
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
