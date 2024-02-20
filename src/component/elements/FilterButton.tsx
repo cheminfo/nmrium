@@ -9,5 +9,14 @@ interface FilterButtonProps
 }
 
 export function FilterButton(props: FilterButtonProps) {
-  return <ToolBarButton id="filter-button" {...props} icon={<FaFilter />} />;
+  return (
+    <ToolBarButton
+      id="filter-button"
+      {...props}
+      style={{
+        fontSize: '1.125em',
+      }}
+      icon={<FaFilter />}
+    />
+  );
 }

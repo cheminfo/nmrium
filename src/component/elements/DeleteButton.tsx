@@ -12,6 +12,9 @@ export function DeleteButton(props: DeleteButtonProps) {
   return (
     <ToolBarButton
       intent="danger"
+      style={{
+        fontSize: '1.125em',
+      }}
       {...props}
       id="delete-button"
       icon={<FaRegTrashAlt />}

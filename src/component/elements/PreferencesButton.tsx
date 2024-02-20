@@ -6,6 +6,13 @@ export function PreferencesButton({
   onClick,
 }: Pick<ToolBarButtonProps, 'onClick'>) {
   return (
-    <ToolBarButton id="preferences-button" icon={<FaCog />} onClick={onClick} />
+    <ToolBarButton
+      style={{
+        fontSize: '1.125em',
+      }}
+      id="preferences-button"
+      icon={<FaCog />}
+      onClick={onClick}
+    />
   );
 }
