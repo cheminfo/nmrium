@@ -1,10 +1,9 @@
-import { ButtonProps } from '@blueprintjs/core';
 import { CSSProperties, ReactNode, useState } from 'react';
-import { FaRegTrashAlt, FaFilter } from 'react-icons/fa';
 
 import { CounterLabel } from '../../elements/CounterLabel';
+import { DeleteButton } from '../../elements/DeleteButton';
+import { FilterButton } from '../../elements/FilterButton';
 import { PreferencesButton } from '../../elements/PreferencesButton';
-import { ToolBarButton } from '../../elements/ToolBarButton';
 
 import PanelHeader from './PanelHeader';
 
@@ -38,19 +37,6 @@ export function createFilterLabel(total: number, counter: number | false) {
     return `[ ${total || 0} ]`;
   }
   return `[ ${counter}/${total} ]`;
-}
-
-interface DefaultHeaderButtonProps
-  extends Pick<ButtonProps, 'onClick' | 'title' | 'disabled' | 'active'> {
-  title: string;
-}
-
-function DeleteButton(props: DefaultHeaderButtonProps) {
-  return <ToolBarButton intent="danger" {...props} icon={<FaRegTrashAlt />} />;
-}
-
-function FilterButton(props: DefaultHeaderButtonProps) {
-  return <ToolBarButton {...props} icon={<FaFilter />} />;
 }
 
 function DefaultPanelHeader({
