@@ -269,9 +269,9 @@ test('2d spectrum', async ({ page }) => {
     // Go to 1H tab
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
 
-    await nmrium.page
-      .locator('_react=SpectraPanelHeaderInner >> _react=DeleteButton')
-      .click();
+    await nmrium.page.click(
+      '_react=AccordionItem[title="Spectra"] >> id=delete-button >> nth=0',
+    );
     //confirm delete the selected
     await nmrium.page.click('_react=ConfirmationDialog >> text=Yes');
 

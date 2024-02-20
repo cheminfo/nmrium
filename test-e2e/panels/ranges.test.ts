@@ -305,9 +305,13 @@ test('Range state', async ({ page }) => {
     //available options, and the only way that works for me is using the id _react=ToobarItem[id="ranges-toggle-peaks"] >> nth=0.
     //rather than the old locator selector _react=RangesHeader >> _react=ToobarItem[text="hide peaks" i]  >> nth=0
     await expect(
-      nmrium.page.locator(
-        '_react=ToolbarItem[id="ranges-toggle-peaks"][active=true] >> nth=0',
-      ),
+      nmrium.page
+        .getByRole('button')
+        .and(
+          nmrium.page.locator(
+            '_react=ToolbarItem[id="ranges-toggle-peaks"][active=true]',
+          ),
+        ),
     ).toBeVisible();
     // Check that the integrals btn is not active
     await expect(
