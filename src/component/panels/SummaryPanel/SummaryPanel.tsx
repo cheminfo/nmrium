@@ -11,6 +11,7 @@ import {
 import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import {
   findRange,
@@ -23,7 +24,6 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import DefaultPanelHeader, {
   createFilterLabel,
@@ -48,7 +48,8 @@ const panelStyle = css`
 
   .extra-header-content {
     display: flex;
-    width: 100%;
+    flex: 1;
+    justify-content: center;
 
     .overview-container {
       width: 100%;
@@ -511,19 +512,19 @@ function SummaryPanel() {
             : 'Hide correlations out of view'
         }
       >
-        <ToolTip
-          title={`Set molecular formula (${correlationsData.options.mf})`}
-          popupPlacement="right"
-        >
-          <button type="button" onClick={showSetMolecularFormulaModal}>
-            <FaFlask />
-          </button>
-        </ToolTip>
-        <ToolTip title={`Set shift tolerance`} popupPlacement="right">
-          <button type="button" onClick={showSetShiftToleranceModal}>
-            <FaSlidersH />
-          </button>
-        </ToolTip>
+        <Toolbar>
+          <Toolbar.Item
+            icon={<FaFlask />}
+            title={`Set molecular formula (${correlationsData.options.mf})`}
+            onClick={showSetMolecularFormulaModal}
+          />
+          <Toolbar.Item
+            icon={<FaSlidersH />}
+            title="Set shift tolerance"
+            onClick={showSetShiftToleranceModal}
+          />
+        </Toolbar>
+
         <div className="extra-header-content">
           <div className="overview-container">
             <Overview correlationsData={correlationsData} />

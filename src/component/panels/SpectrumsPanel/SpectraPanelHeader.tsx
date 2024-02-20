@@ -7,10 +7,10 @@ import {
   FaEyeSlash,
 } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
@@ -132,57 +132,48 @@ function SpectraPanelHeaderInner({
       showSettingButton
       onSettingClick={onSettingClick}
     >
-      <Button.BarButton
-        toolTip="Hide selected spectra"
-        onClick={hideAllSpectrumsHandler}
-        tooltipOrientation="horizontal"
-        disabled={!hasActiveSpectra}
-      >
-        <FaEyeSlash />
-      </Button.BarButton>
-      <Button.BarButton
-        onClick={showAllSpectrumsHandler}
-        toolTip="Show selected spectra"
-        tooltipOrientation="horizontal"
-        disabled={!hasActiveSpectra}
-      >
-        <FaEye />
-      </Button.BarButton>
-      {displayerMode === '2D' && activeSpectrum?.info.isFt && (
-        <Button.BarButton
-          toolTip="Add missing projection"
-          tooltipOrientation="horizontal"
-          onClick={addMissingProjectionHandler}
-        >
-          <FaCreativeCommonsSamplingPlus />
-        </Button.BarButton>
-      )}
-      {displayerMode === '1D' && spectraLengthPerTab > 1 && (
-        <>
-          <Button.BarButton
-            tooltipOrientation="horizontal"
-            toolTip="Reset scale"
-            onClick={resetScaleHandler}
-          >
-            <SvgNmrResetScale />
-          </Button.BarButton>
-          <Button.BarButton
-            tooltipOrientation="horizontal"
-            toolTip="Same top"
-            onClick={setSameTopHandler}
-          >
-            <SvgNmrSameTop />
-          </Button.BarButton>
-        </>
-      )}
-      <SpectraAutomaticPickingButton />
-      <Button.BarButton
-        tooltipOrientation="horizontal"
-        toolTip="Recolor spectra"
-        onClick={recolorSpectraHandler}
-      >
-        <IoColorPaletteOutline />
-      </Button.BarButton>
+      <Toolbar>
+        <Toolbar.Item
+          disabled={!hasActiveSpectra}
+          icon={<FaEyeSlash />}
+          title="Hide selected spectra"
+          onClick={hideAllSpectrumsHandler}
+        />
+        <Toolbar.Item
+          disabled={!hasActiveSpectra}
+          icon={<FaEye />}
+          title="Show selected spectra"
+          onClick={showAllSpectrumsHandler}
+        />
+        {displayerMode === '2D' && activeSpectrum?.info.isFt && (
+          <Toolbar.Item
+            icon={<FaCreativeCommonsSamplingPlus />}
+            title="Add missing projection"
+            onClick={addMissingProjectionHandler}
+          />
+        )}
+        {displayerMode === '1D' && spectraLengthPerTab > 1 && (
+          <>
+            <Toolbar.Item
+              icon={<SvgNmrResetScale />}
+              title="Reset scale"
+              onClick={resetScaleHandler}
+            />
+            <Toolbar.Item
+              icon={<SvgNmrSameTop />}
+              title="Same top"
+              onClick={setSameTopHandler}
+            />
+          </>
+        )}
+        <SpectraAutomaticPickingButton />
+
+        <Toolbar.Item
+          icon={<IoColorPaletteOutline />}
+          title="Recolor spectra"
+          onClick={recolorSpectraHandler}
+        />
+      </Toolbar>
     </DefaultPanelHeader>
   );
 }

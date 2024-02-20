@@ -3,12 +3,11 @@ import { css } from '@emotion/react';
 import { Spectrum2D } from 'nmr-load-save';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -20,29 +19,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
-
-const style = css`
-  .remove-assignments-btn {
-    border-radius: 5px;
-    margin-top: 3px;
-    margin-left: 2px;
-    border: none;
-    height: 16px;
-    width: 18px;
-    font-size: 12px;
-    padding: 0;
-    background-color: transparent;
-  }
-
-  .toggle {
-    width: 22px;
-    height: 22px;
-    margin-left: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
 
 function ZonesPanelInner({
   zones,
@@ -189,7 +165,6 @@ function ZonesPanelInner({
     <div
       css={[
         tablePanelStyle,
-        style,
         isFlipped &&
           css`
             th {
@@ -214,40 +189,33 @@ function ZonesPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          <ToolTip title={`Remove all assignments`} popupPlacement="right">
-            <button
-              className="remove-assignments-btn"
-              type="button"
-              onClick={handleOnRemoveAssignments}
+          <Toolbar>
+            <Toolbar.Item
               disabled={!zones.values || zones.values.length === 0}
-            >
-              <FaUnlink />
-            </button>
-          </ToolTip>
-          <ActiveButton
-            popupTitle="Show/Hide zones"
-            popupPlacement="right"
-            value={showZones}
-            onClick={handleSetShowZones}
-          >
-            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
-          </ActiveButton>
-          <ActiveButton
-            popupTitle="Show/Hide signals"
-            popupPlacement="right"
-            value={showSignals}
-            onClick={handleSetShowSignals}
-          >
-            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
-          </ActiveButton>
-          <ActiveButton
-            popupTitle="Show/Hide peaks"
-            popupPlacement="right"
-            value={showPeaks}
-            onClick={handleSetShowPeaks}
-          >
-            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
-          </ActiveButton>
+              icon={<FaUnlink />}
+              title="Remove all assignments"
+              onClick={handleOnRemoveAssignments}
+            />
+
+            <Toolbar.Item
+              icon={<span>z</span>}
+              title="Show/Hide zones"
+              active={showZones}
+              onClick={handleSetShowZones}
+            />
+            <Toolbar.Item
+              icon={<span>s</span>}
+              title="Show/Hide signals"
+              active={showSignals}
+              onClick={handleSetShowSignals}
+            />
+            <Toolbar.Item
+              icon={<span>p</span>}
+              title="Show/Hide peaks"
+              active={showPeaks}
+              onClick={handleSetShowPeaks}
+            />
+          </Toolbar>
         </DefaultPanelHeader>
       )}
       {isFlipped && (

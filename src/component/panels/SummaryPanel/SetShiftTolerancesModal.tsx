@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 
-import CloseButton from '../../elements/CloseButton';
+import { CloseButton } from '../../elements/CloseButton';
 
 const modalContainer = css`
   width: 220px;

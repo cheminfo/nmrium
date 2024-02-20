@@ -1,46 +1,17 @@
-import { CSSProperties, memo } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-import ToolTip from './ToolTip/ToolTip';
+import { ToolBarButton, ToolBarButtonProps } from './ToolBarButton';
 
-const styles: Record<'button' | 'svg', CSSProperties> = {
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  svg: {
-    fill: '#ca0000',
-    fontSize: '16px',
-  },
-};
-
-interface CloseButtonProps {
-  onClick?: () => void;
-  popupTitle?: string;
-  popupPlacement?: string;
-  className?: string;
-}
-
-function CloseButton(props: CloseButtonProps) {
-  const {
-    onClick = () => null,
-    popupTitle = 'Close',
-    popupPlacement = 'left',
-    className = '',
-  } = props;
+export function CloseButton(
+  props: Pick<ToolBarButtonProps, 'onClick' | 'title' | 'className'>,
+) {
   return (
-    <div className={className}>
-      <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
-        <button style={styles.button} type="button" onClick={onClick}>
-          <FaTimes style={styles.svg} />
-        </button>
-      </ToolTip>
-    </div>
+    <ToolBarButton
+      id="close-button"
+      {...props}
+      intent="danger"
+      icon={<FaTimes />}
+      placement="bottom-start"
+    />
   );
 }
-
-export default memo(CloseButton);

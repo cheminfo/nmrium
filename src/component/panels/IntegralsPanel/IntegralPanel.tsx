@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
+import { SvgNmrIntegrate } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -22,21 +22,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
 import IntegralsPreferences from './IntegralsPreferences';
-import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
-
-const style = css`
-  .sum-button {
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  button {
-    margin-right: 2px;
-  }
-`;
 
 export interface IntegralPanelInnerProps {
   integrals: Integrals;
@@ -139,7 +124,6 @@ function IntegralPanelInner({
     <div
       css={[
         tablePanelStyle,
-        style,
         isFlipped &&
           css`
             th {
@@ -164,50 +148,30 @@ function IntegralPanelInner({
           showSettingButton
           onSettingClick={settingsPanelHandler}
         >
-          <ToolTip
-            title={
-              currentSum
-                ? `Change integration sum (${currentSum.toFixed(2)})`
-                : 'Change integration sum'
-            }
-            popupPlacement="right"
-          >
+          <Toolbar>
             <ChangeSumModal
               onSave={changeIntegralSumHandler}
-              sumType="integrals"
+              sumType="integration"
               currentSum={currentSum}
               sumOptions={integrals?.options}
-              renderButton={(onClick) => (
-                <button className="sum-button" type="button" onClick={onClick}>
-                  <SvgNmrSum />
-                </button>
-              )}
             />
-          </ToolTip>
-
-          <ActiveButton
-            className="icon"
-            popupTitle="Fixed integration values"
-            popupPlacement="right"
-            onClick={toggleConstantSumHandler}
-            value={integrals?.options?.isSumConstant || false}
-          >
-            <ImLink />
-          </ActiveButton>
-          <ActiveButton
-            popupTitle={
-              showIntegralsValues
-                ? 'Hide integrals values'
-                : 'Show integrals values'
-            }
-            popupPlacement="right"
-            onClick={handleShowIntegralsValues}
-            value={showIntegralsValues}
-          >
-            <SvgNmrIntegrate
-              style={{ pointerEvents: 'none', fontSize: '12px' }}
+            <Toolbar.Item
+              icon={<ImLink />}
+              title={'Fixed integration values'}
+              onClick={toggleConstantSumHandler}
+              active={integrals?.options?.isSumConstant || false}
             />
-          </ActiveButton>
+            <Toolbar.Item
+              icon={<SvgNmrIntegrate />}
+              title={
+                showIntegralsValues
+                  ? 'Hide integrals values'
+                  : 'Show integrals values'
+              }
+              onClick={handleShowIntegralsValues}
+              active={showIntegralsValues}
+            />
+          </Toolbar>
         </DefaultPanelHeader>
       )}
       {isFlipped && (

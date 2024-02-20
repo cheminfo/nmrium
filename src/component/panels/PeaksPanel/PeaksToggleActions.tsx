@@ -1,52 +1,47 @@
 import { SvgNmrPeaks, SvgNmrPeaksTopLabels } from 'cheminfo-font';
-import { CSSProperties } from 'react';
-
-import ActiveButton, { ActiveButtonProps } from '../../elements/ActiveButton';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 interface PeaksToggleProps {
-  disbale: boolean;
-  displayingMode: 'single' | 'spread';
-  showPeaks: boolean;
-  onShowToggle: ActiveButtonProps['onClick'];
-  onDisplayingModeToggle: ActiveButtonProps['onClick'];
+  disabled: boolean;
+  toggleDisplayingMode: 'single' | 'spread';
+  toggleDisplayingModeId?: string;
+  togglePeaks: boolean;
+  togglePeaksId?: string;
+  onShowToggle: ToolbarItemProps['onClick'];
+  onDisplayingModeToggle: ToolbarItemProps['onClick'];
 }
 
-const style: CSSProperties = {
-  margin: '0 2px',
-};
 export function PeaksToggleActions(props: PeaksToggleProps) {
   const {
-    disbale,
-    displayingMode,
-    showPeaks,
+    disabled,
+    togglePeaks,
+    togglePeaksId,
+    toggleDisplayingMode,
+    toggleDisplayingModeId,
     onShowToggle,
     onDisplayingModeToggle,
   } = props;
 
   return (
     <>
-      <ActiveButton
-        style={style}
-        popupTitle={showPeaks ? 'Hide peaks' : 'Show peaks'}
-        popupPlacement="right"
+      <Toolbar.Item
+        id={togglePeaksId}
+        disabled={disabled}
+        icon={<SvgNmrPeaks />}
+        title={`${togglePeaks ? 'Hide' : 'Show'} peaks`}
         onClick={onShowToggle}
-        disabled={disbale}
-        value={showPeaks}
-      >
-        <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-      </ActiveButton>
-      <ActiveButton
-        style={style}
-        popupTitle={displayingMode === 'spread' ? 'Single Mode' : 'Spread mode'}
-        popupPlacement="right"
+        active={togglePeaks}
+      />
+      <Toolbar.Item
+        id={toggleDisplayingModeId}
+        disabled={disabled}
+        icon={<SvgNmrPeaksTopLabels />}
+        title={
+          toggleDisplayingMode === 'spread' ? 'Single Mode' : 'Spread mode'
+        }
         onClick={onDisplayingModeToggle}
-        disabled={disbale}
-        value={displayingMode === 'spread'}
-      >
-        <SvgNmrPeaksTopLabels
-          style={{ pointerEvents: 'none', fontSize: '12px' }}
-        />
-      </ActiveButton>
+        active={toggleDisplayingMode === 'spread'}
+      />
     </>
   );
 }

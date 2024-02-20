@@ -12,11 +12,11 @@ const SPIN_SYSTEMS = getSpinSystems().map((key) => ({
 
 const labelStyle: LabelStyle = {
   label: { fontSize: '10px' },
-  wrapper: { display: 'flex', alignItems: 'center', height: '100%' },
-  container: { padding: '0 5px', height: '100%' },
+  wrapper: { display: 'flex', alignItems: 'center' },
+  container: { padding: '0 5px' },
 };
 
-const selectStyles = { width: '100%', minWidth: '75px', fontSize: '10px' };
+const selectStyles = { width: '100%', minWidth: '80px', fontSize: '10px' };
 
 export default function SpectrumSimulationSimpleOptions({
   onSpinSystemChange,

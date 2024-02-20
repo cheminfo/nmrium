@@ -1,9 +1,9 @@
 import { SvgNmrRangePicking } from 'cheminfo-font';
 import { useCallback } from 'react';
+import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useCheckToolsVisibility } from '../../hooks/useCheckToolsVisibility';
 
@@ -34,12 +34,10 @@ export function SpectraAutomaticPickingButton() {
   }
 
   return (
-    <Button.BarButton
-      tooltipOrientation="horizontal"
-      toolTip="Automatic Ranges/Zones picking for all spectra"
+    <Toolbar.Item
+      icon={<SvgNmrRangePicking />}
+      title="Automatic Ranges/Zones picking for all spectra"
       onClick={automaticPickingHandler}
-    >
-      <SvgNmrRangePicking />
-    </Button.BarButton>
+    />
   );
 }

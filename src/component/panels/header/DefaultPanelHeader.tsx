@@ -1,10 +1,9 @@
-import { CSSProperties, ReactNode } from 'react';
-import { FaRegTrashAlt, FaFilter } from 'react-icons/fa';
+import { CSSProperties, ReactNode, useState } from 'react';
 
-import Button from '../../elements/Button';
 import { CounterLabel } from '../../elements/CounterLabel';
+import { DeleteButton } from '../../elements/DeleteButton';
+import { FilterButton } from '../../elements/FilterButton';
 import { PreferencesButton } from '../../elements/PreferencesButton';
-import ToggleButton from '../../elements/ToggleButton';
 
 import PanelHeader from './PanelHeader';
 
@@ -56,32 +55,32 @@ function DefaultPanelHeader({
   className = '',
   renderRightButtons,
 }: DefaultPanelHeaderProps) {
+  const [isFiltered, setFilterStatus] = useState(false);
+
+  function handleFilter() {
+    setFilterStatus((previousValue) => !previousValue);
+    onFilter();
+  }
+
   return (
     <PanelHeader {...{ style, className }}>
       <div style={styles.leftContainer}>
         {canDelete && (
-          <Button.BarButton
-            color={{ base: 'black', hover: 'red' }}
-            onClick={onDelete}
+          <DeleteButton
             disabled={counter === 0 || disableDelete}
-            toolTip={deleteToolTip}
-            tooltipOrientation="horizontal"
-          >
-            <FaRegTrashAlt />
-          </Button.BarButton>
+            title={deleteToolTip}
+            onClick={onDelete}
+          />
         )}
 
         {/* Optional if there is no filter needed, e.g. in spectra panel */}
-        {filterToolTip ? (
-          <ToggleButton
-            popupTitle={filterToolTip}
-            popupPlacement="right"
-            onClick={onFilter}
-          >
-            <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
-          </ToggleButton>
-        ) : null}
-
+        {filterToolTip && (
+          <FilterButton
+            onClick={handleFilter}
+            active={isFiltered}
+            title={filterToolTip}
+          />
+        )}
         {children}
       </div>
       {renderRightButtons?.()}

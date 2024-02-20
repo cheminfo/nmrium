@@ -10,8 +10,8 @@ import { FaSearchPlus } from 'react-icons/fa';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
-import CloseButton from '../../elements/CloseButton';
-import SaveButton from '../../elements/SaveButton';
+import { CloseButton } from '../../elements/CloseButton';
+import { SaveButton } from '../../elements/SaveButton';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -228,7 +228,7 @@ function EditRangeModal({
         </span>
         <SaveButton
           onClick={() => formRef.current.submitForm()}
-          popupTitle="Save and Exit"
+          title="Save and Exit"
         />
 
         <CloseButton onClick={handleOnClose} />

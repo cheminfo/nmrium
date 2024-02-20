@@ -6,6 +6,12 @@ import { NmriumPageViewer } from './NmriumPageViewer';
 
 type ClickOptions = Parameters<Page['click']>[1];
 
+interface ToolLocatorOptions {
+  prefixSelectors?: string[];
+  active?: boolean;
+  caseSensitive?: boolean;
+}
+
 export default class NmriumPage {
   public readonly page: Page;
   public readonly viewer: NmriumPageViewer;
@@ -39,6 +45,30 @@ export default class NmriumPage {
 
   public async clickTool(id: string) {
     await this.page.click(`_react=ToolbarItem[id="${id}"] >> nth=0`);
+  }
+  public async clickToolByTitle(title: string) {
+    await this.page.click(`_react=ToolbarItem[title="${title}"] >> nth=0`);
+  }
+
+  public getToolbarLocatorByTitle(
+    title: string,
+    options: ToolLocatorOptions = {},
+  ) {
+    const { prefixSelectors = [], active, caseSensitive = false } = options;
+    const selectors: string[] = [
+      `_react=ToolbarItem[title="${title}" ${caseSensitive ? '' : 'i'}]`,
+    ];
+    const parentsSelectors: string[] = [''];
+    for (const s of prefixSelectors.reverse()) {
+      parentsSelectors.unshift(s);
+    }
+
+    if (active !== undefined) {
+      selectors.push(`[active=${active}]`);
+    }
+    return this.page.locator(
+      `${parentsSelectors.join(' >> ') + selectors.join('')} >> nth=0`,
+    );
   }
 
   public async assertXScaleDomain(min: number, max: number) {

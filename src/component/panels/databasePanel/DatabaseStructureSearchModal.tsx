@@ -22,12 +22,11 @@ export function DatabaseStructureSearchModal({
       onClose={() => {
         onClose?.();
       }}
-      style={{ maxWidth: 1000 }}
+      style={{ width: 720 }}
       title="Search by structure"
     >
       <DialogBody
         css={css`
-          padding: 0;
           background-color: white;
         `}
       >

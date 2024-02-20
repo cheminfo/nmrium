@@ -5,12 +5,14 @@ import { TbBinaryTree } from 'react-icons/tb';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import Button from '../../elements/Button';
 import { CounterLabel } from '../../elements/CounterLabel';
 import Input from '../../elements/Input';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 import Select from '../../elements/Select';
+import {
+  ToolBarButton,
+  ToolBarButtonProps,
+} from '../../elements/ToolBarButton';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { options } from '../../toolbar/ToolTypes';
 import { createFilterLabel } from '../header/DefaultPanelHeader';
@@ -22,8 +24,6 @@ import {
   Databases,
 } from './DatabasePanel';
 
-type OnClick = React.ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
-
 interface DatabaseSearchOptionsProps {
   databases: Databases;
   defaultDatabase: string;
@@ -32,8 +32,8 @@ interface DatabaseSearchOptionsProps {
   idCode?: string;
   total: number;
   onKeywordsChange: (k: Partial<DatabaseSearchKeywords>) => void;
-  onSettingClick: OnClick;
-  onStructureClick: OnClick;
+  onSettingClick: ToolBarButtonProps['onClick'];
+  onStructureClick: ToolBarButtonProps['onClick'];
   onDatabaseChange: (databaseKey: string) => void;
 }
 
@@ -90,15 +90,13 @@ export function DatabaseSearchOptions({
           paddingBottom: '2px',
         }}
       >
-        <ActiveButton
-          popupTitle={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
-          popupPlacement="right"
+        <ToolBarButton
+          title={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
+          icon={<TbBinaryTree />}
+          active={showSimilarityTree}
           onClick={handleShowSimilarityTree}
-          value={showSimilarityTree}
           style={{ marginRight: '5px' }}
-        >
-          <TbBinaryTree style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ActiveButton>
+        />
 
         <Select
           style={{ flex: 6 }}
@@ -127,25 +125,17 @@ export function DatabaseSearchOptions({
           <CounterLabel>
             {createFilterLabel(total || 0, result.data.length)}
           </CounterLabel>
-          <PreferencesButton onClick={onSettingClick} />
+          <PreferencesButton onClick={() => onSettingClick} />
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <ActiveButton
-          popupTitle="Filter by select ranges"
-          popupPlacement="right"
+        <ToolBarButton
+          title="Filter by select ranges"
+          icon={<FaICursor />}
+          active={selectedTool === options.databaseRangesSelection.id}
           onClick={enableFilterHandler}
-          value={selectedTool === options.databaseRangesSelection.id}
           style={{ marginRight: '5px' }}
-        >
-          <FaICursor
-            style={{
-              pointerEvents: 'none',
-              fontSize: '12px',
-              transform: 'rotate(90deg)',
-            }}
-          />
-        </ActiveButton>
+        />
 
         <Input
           value={keywords.searchKeywords}
@@ -159,26 +149,14 @@ export function DatabaseSearchOptions({
           onClear={clearHandler}
           canClear
         />
-
-        <Button.Done
-          fill="clear"
+        <ToolBarButton
+          title="Search by stricture"
+          icon={!idCode ? <BsHexagon /> : <BsHexagonFill />}
+          intent="success"
+          active={!!idCode}
           onClick={onStructureClick}
-          style={{ padding: '5px' }}
-        >
-          {!idCode ? (
-            <BsHexagon
-              style={{
-                fontSize: '12px',
-              }}
-            />
-          ) : (
-            <BsHexagonFill
-              style={{
-                fontSize: '12px',
-              }}
-            />
-          )}
-        </Button.Done>
+          style={{ marginLeft: '5px' }}
+        />
       </div>
     </PanelHeader>
   );

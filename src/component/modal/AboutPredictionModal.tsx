@@ -2,9 +2,7 @@
 import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { FaInfo } from 'react-icons/fa';
-import { useOnOff } from 'react-science/ui';
-
-import Button from '../elements/Button';
+import { Toolbar, useOnOff } from 'react-science/ui';
 
 const styles = css`
   background-color: white;
@@ -45,13 +43,13 @@ function AboutPredictionModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
-      <Button.BarButton
-        onClick={openDialog}
-        tooltipOrientation="horizontal"
-        toolTip="About Prediction"
-      >
-        <FaInfo />
-      </Button.BarButton>
+      <Toolbar>
+        <Toolbar.Item
+          icon={<FaInfo />}
+          onClick={openDialog}
+          title="About Prediction"
+        />
+      </Toolbar>
       <Dialog
         isOpen={isOpenDialog}
         onClose={closeDialog}

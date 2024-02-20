@@ -176,19 +176,18 @@ test('Multiplicity should be visible', async ({ page }) => {
   await test.step('Check multiplicity tree tool', async () => {
     // Check that the multiplicity tree btn is off
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Show multiplicity trees in spectrum', {
+        active: true,
+      }),
     ).toBeHidden();
     //show multiplicity trees
-    await nmrium.page.click(
-      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >>  button',
-    );
+    await nmrium.clickToolByTitle('Show multiplicity trees in spectrum');
+
     // Check that the multiplicity tree btn is on
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
+        active: true,
+      }),
     ).toBeVisible();
     // Check multiplicity tree is visible
     expect(
@@ -208,9 +207,9 @@ test('Multiplicity should be visible', async ({ page }) => {
 
     // Check that MultiplicityTree btn still on
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
+        active: true,
+      }),
     ).toBeVisible();
   });
 });
@@ -235,21 +234,17 @@ test('Range state', async ({ page }) => {
   await test.step('Active range tools', async () => {
     // Check that the peaks btn is off
     await expect(
-      nmrium.page.locator(
-        '_react=RangesPanel >> _react=ToolTip[title="Show peaks" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Show peaks', { active: true }),
     ).toBeHidden();
     // Check that the integrals btn is off
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Show integrals" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Show integrals', { active: true }),
     ).toBeHidden();
     // Check that the multiplicity tree btn is off
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Show Multiplicity Trees in Spectrum', {
+        active: true,
+      }),
     ).toBeHidden();
 
     // Check peaks within ranges are hidden
@@ -262,24 +257,23 @@ test('Range state', async ({ page }) => {
     // Check multiplicity tree
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
 
-    //show integrals
+    //show peaks
     await nmrium.page.click(
-      '_react=RangesPanel >> _react=ToolTip[title="Show peaks" i] >> button',
-    );
-    //show integrals
-    await nmrium.page.click(
-      '_react=ToolTip[title="Show integrals" i] >> button',
+      `_react=RangesPanel >> _react=ToolbarItem[title="Show peaks" i] >> nth=0`,
     );
 
+    //show integrals
+    await nmrium.clickToolByTitle('Show integrals');
+
     //show multiplicity trees
-    await nmrium.page.click(
-      '_react=ToolTip[title="Show Multiplicity Trees in Spectrum" i] >>  button',
-    );
+
+    await nmrium.clickToolByTitle('Show multiplicity trees in spectrum');
+
     // Check that the multiplicity tree btn is on
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
+        active: true,
+      }),
     ).toBeVisible();
     // Check peaks within ranges are visible
     expect(
@@ -306,20 +300,22 @@ test('Range state', async ({ page }) => {
       '_react=SpectraTable >> _react=ReactTableRow >> nth=1',
     );
     // Check that the peaks btn is not active
+
+    //for now i will use the id to access the toggle peals picking toolbar item because I have tried all
+    //available options, and the only way that works for me is using the id _react=ToobarItem[id="ranges-toggle-peaks"] >> nth=0.
+    //rather than the old locator selector _react=RangesHeader >> _react=ToobarItem[text="hide peaks" i]  >> nth=0
     await expect(
       nmrium.page.locator(
-        '_react=RangesPanel >> _react=ToolTip[title="Hide peaks" i]',
+        '_react=ToolbarItem[id="ranges-toggle-peaks"][active=true] >> nth=0',
       ),
     ).toBeVisible();
     // Check that the integrals btn is not active
     await expect(
-      nmrium.page.locator('_react=ToolTip[title="Hide integrals" i]'),
+      nmrium.getToolbarLocatorByTitle('Hide integrals'),
     ).toBeVisible();
     // Check that the multiplicity tree btn is on
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Hide multiplicity trees in spectrum" i]',
-      ),
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum'),
     ).toBeVisible();
 
     // Check range peaks
@@ -358,9 +354,11 @@ test('Auto peak picking on all spectra', async ({ page }) => {
 
   await test.step('Apply automatic picking', async () => {
     // Click on the automatic ranges button.
-    await nmrium.page.click(
+    const SpectraAutomaticPickingButton = nmrium.page.locator(
       '_react=SpectrumListPanel >> _react=SpectraAutomaticPickingButton',
     );
+    await SpectraAutomaticPickingButton.click();
+    await SpectraAutomaticPickingButton.blur();
   });
 
   await test.step("Check 1H spectrum's ranges", async () => {
@@ -458,7 +456,7 @@ test('2D spectra reference change', async ({ page }) => {
 
     await expect(
       nmrium.page.locator(
-        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+        `_react = Signal[signal.x.delta = ${x}][signal.y.delta = ${y}]`,
       ),
     ).toBeVisible();
   });
@@ -496,7 +494,7 @@ test('2D spectra reference change', async ({ page }) => {
 
     await expect(
       nmrium.page.locator(
-        `_react=Signal[signal.x.delta=${x}][signal.y.delta=${y}]`,
+        `_react = Signal[signal.x.delta = ${x}][signal.y.delta = ${y}]`,
       ),
     ).toBeVisible();
 
