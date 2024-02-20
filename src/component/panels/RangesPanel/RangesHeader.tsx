@@ -234,11 +234,13 @@ function RangesHeader({
             onClick={changeSumConstantFlagHandler}
             active={ranges?.options?.isSumConstant}
           />
+
           <PeaksToggleActions
             disabled={!hasRanges}
-            showPeaks={showPeaks}
+            togglePeaksId="ranges-toggle-peaks"
+            togglePeaks={showPeaks}
             onShowToggle={() => toggleViewProperty('showPeaks')}
-            displayingMode={displayingMode}
+            toggleDisplayingMode={displayingMode}
             onDisplayingModeToggle={toggleDisplayingMode}
           />
         </Toolbar>

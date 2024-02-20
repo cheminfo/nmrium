@@ -385,7 +385,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
-      nmrium.getToolLocatorByTitle('Float molecule', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeHidden();
     // Click on float molecule button.
     await nmrium.clickToolByTitle('Float molecule');
@@ -393,7 +393,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
-      nmrium.getToolLocatorByTitle('Float molecule', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
   });
   await test.step('Close float molecule', async () => {
@@ -409,7 +409,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     ).toBeHidden();
     // Check float molecule btn is off.
     await expect(
-      nmrium.getToolLocatorByTitle('Float molecule', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeHidden();
     // Click on float molecule button.
     await nmrium.clickToolByTitle('Float molecule');
@@ -417,7 +417,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
-      nmrium.getToolLocatorByTitle('Float molecule', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
   });
   if (browserName === 'chromium') {
@@ -603,7 +603,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
-      nmrium.getToolLocatorByTitle('Float molecule', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeHidden();
     // Click on float molecule button.
     await nmrium.clickToolByTitle('Float molecule');
@@ -611,7 +611,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
-      nmrium.getToolLocatorByTitle('Float molecule', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));

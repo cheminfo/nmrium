@@ -50,7 +50,7 @@ export default class NmriumPage {
     await this.page.click(`_react=ToolbarItem[title="${title}"] >> nth=0`);
   }
 
-  public getToolLocatorByTitle(
+  public getToolbarLocatorByTitle(
     title: string,
     options: ToolLocatorOptions = {},
   ) {
@@ -66,7 +66,6 @@ export default class NmriumPage {
     if (active !== undefined) {
       selectors.push(`[active=${active}]`);
     }
-    // console.log(parentsSelectors.join(" >> ") + selectors.join('') + (active ? " >> nth=0" : ""))
     return this.page.locator(
       `${parentsSelectors.join(' >> ') + selectors.join('')} >> nth=0`,
     );

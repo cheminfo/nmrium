@@ -29,7 +29,7 @@ test('automatic assignment panel', async ({ page }) => {
     // Wait for auto range to be applied.
     await expect(nmrium.page.locator('_react=Range')).toHaveCount(5);
 
-    await nmrium.getToolLocatorByTitle('Automatic assignment').click();
+    await nmrium.getToolbarLocatorByTitle('Automatic assignment').click();
 
     // Wait for auto assignments process completed.
     const progressLocator = nmrium.page.locator('text=Auto Assignments');

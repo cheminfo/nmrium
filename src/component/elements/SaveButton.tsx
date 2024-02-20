@@ -7,6 +7,7 @@ export function SaveButton(
 ) {
   return (
     <ToolBarButton
+      id="save-button"
       {...props}
       intent="success"
       icon={<FaCheck />}

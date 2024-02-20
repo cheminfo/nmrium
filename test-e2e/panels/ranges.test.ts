@@ -176,7 +176,7 @@ test('Multiplicity should be visible', async ({ page }) => {
   await test.step('Check multiplicity tree tool', async () => {
     // Check that the multiplicity tree btn is off
     await expect(
-      nmrium.getToolLocatorByTitle('Show multiplicity trees in spectrum', {
+      nmrium.getToolbarLocatorByTitle('Show multiplicity trees in spectrum', {
         active: true,
       }),
     ).toBeHidden();
@@ -185,7 +185,7 @@ test('Multiplicity should be visible', async ({ page }) => {
 
     // Check that the multiplicity tree btn is on
     await expect(
-      nmrium.getToolLocatorByTitle('Hide multiplicity trees in spectrum', {
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
         active: true,
       }),
     ).toBeVisible();
@@ -207,7 +207,7 @@ test('Multiplicity should be visible', async ({ page }) => {
 
     // Check that MultiplicityTree btn still on
     await expect(
-      nmrium.getToolLocatorByTitle('Hide multiplicity trees in spectrum', {
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
         active: true,
       }),
     ).toBeVisible();
@@ -234,15 +234,15 @@ test('Range state', async ({ page }) => {
   await test.step('Active range tools', async () => {
     // Check that the peaks btn is off
     await expect(
-      nmrium.getToolLocatorByTitle('Show peaks', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Show peaks', { active: true }),
     ).toBeHidden();
     // Check that the integrals btn is off
     await expect(
-      nmrium.getToolLocatorByTitle('Show integrals', { active: true }),
+      nmrium.getToolbarLocatorByTitle('Show integrals', { active: true }),
     ).toBeHidden();
     // Check that the multiplicity tree btn is off
     await expect(
-      nmrium.getToolLocatorByTitle('Show Multiplicity Trees in Spectrum', {
+      nmrium.getToolbarLocatorByTitle('Show Multiplicity Trees in Spectrum', {
         active: true,
       }),
     ).toBeHidden();
@@ -258,7 +258,6 @@ test('Range state', async ({ page }) => {
     await expect(nmrium.page.locator('_react=MultiplicityTree')).toBeHidden();
 
     //show peaks
-
     await nmrium.page.click(
       `_react=RangesPanel >> _react=ToolbarItem[title="Show peaks" i] >> nth=0`,
     );
@@ -272,7 +271,7 @@ test('Range state', async ({ page }) => {
 
     // Check that the multiplicity tree btn is on
     await expect(
-      nmrium.getToolLocatorByTitle('Hide multiplicity trees in spectrum', {
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum', {
         active: true,
       }),
     ).toBeVisible();
@@ -302,16 +301,21 @@ test('Range state', async ({ page }) => {
     );
     // Check that the peaks btn is not active
 
+    //for now i will use the id to access the toggle peals picking toolbar item because I have tried all
+    //available options, and the only way that works for me is using the id _react=ToobarItem[id="ranges-toggle-peaks"] >> nth=0.
+    //rather than the old locator selector _react=RangesHeader >> _react=ToobarItem[text="hide peaks" i]  >> nth=0
     await expect(
-      nmrium.getToolLocatorByTitle('Hide peaks', {
-        prefixSelectors: ['_react=RangesHeader'],
-      }),
+      nmrium.page.locator(
+        '_react=ToolbarItem[id="ranges-toggle-peaks"][active=true] >> nth=0',
+      ),
     ).toBeVisible();
     // Check that the integrals btn is not active
-    await expect(nmrium.getToolLocatorByTitle('Hide integrals')).toBeVisible();
+    await expect(
+      nmrium.getToolbarLocatorByTitle('Hide integrals'),
+    ).toBeVisible();
     // Check that the multiplicity tree btn is on
     await expect(
-      nmrium.getToolLocatorByTitle('Hide multiplicity trees in spectrum'),
+      nmrium.getToolbarLocatorByTitle('Hide multiplicity trees in spectrum'),
     ).toBeVisible();
 
     // Check range peaks

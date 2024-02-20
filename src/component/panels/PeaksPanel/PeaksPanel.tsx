@@ -197,9 +197,9 @@ function PeaksPanelInner({
 
             <PeaksToggleActions
               disabled={disabled}
-              showPeaks={peaksViewState.showPeaks}
+              togglePeaks={peaksViewState.showPeaks}
               onShowToggle={() => toggleViewProperty('showPeaks')}
-              displayingMode={peaksViewState.displayingMode}
+              toggleDisplayingMode={peaksViewState.displayingMode}
               onDisplayingModeToggle={toggleDisplayingMode}
             />
           </Toolbar>

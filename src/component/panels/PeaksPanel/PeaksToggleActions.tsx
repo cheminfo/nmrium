@@ -3,8 +3,10 @@ import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 interface PeaksToggleProps {
   disabled: boolean;
-  displayingMode: 'single' | 'spread';
-  showPeaks: boolean;
+  toggleDisplayingMode: 'single' | 'spread';
+  toggleDisplayingModeId?: string;
+  togglePeaks: boolean;
+  togglePeaksId?: string;
   onShowToggle: ToolbarItemProps['onClick'];
   onDisplayingModeToggle: ToolbarItemProps['onClick'];
 }
@@ -12,8 +14,10 @@ interface PeaksToggleProps {
 export function PeaksToggleActions(props: PeaksToggleProps) {
   const {
     disabled,
-    displayingMode,
-    showPeaks,
+    togglePeaks,
+    togglePeaksId,
+    toggleDisplayingMode,
+    toggleDisplayingModeId,
     onShowToggle,
     onDisplayingModeToggle,
   } = props;
@@ -21,18 +25,22 @@ export function PeaksToggleActions(props: PeaksToggleProps) {
   return (
     <>
       <Toolbar.Item
+        id={togglePeaksId}
         disabled={disabled}
         icon={<SvgNmrPeaks />}
-        title={showPeaks ? 'Hide peaks' : 'Show peaks'}
+        title={`${togglePeaks ? 'Hide' : 'Show'} peaks`}
         onClick={onShowToggle}
-        active={showPeaks}
+        active={togglePeaks}
       />
       <Toolbar.Item
+        id={toggleDisplayingModeId}
         disabled={disabled}
         icon={<SvgNmrPeaksTopLabels />}
-        title={displayingMode === 'spread' ? 'Single Mode' : 'Spread mode'}
+        title={
+          toggleDisplayingMode === 'spread' ? 'Single Mode' : 'Spread mode'
+        }
         onClick={onDisplayingModeToggle}
-        active={displayingMode === 'spread'}
+        active={toggleDisplayingMode === 'spread'}
       />
     </>
   );

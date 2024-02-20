@@ -7,6 +7,7 @@ export function CloseButton(
 ) {
   return (
     <ToolBarButton
+      id="close-button"
       {...props}
       intent="danger"
       icon={<FaTimes />}
