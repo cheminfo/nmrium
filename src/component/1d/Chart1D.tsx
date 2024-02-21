@@ -11,6 +11,7 @@ import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
+import MultiplicityTrees from './multiplicityTree/MultiplicityTrees';
 import { PeakEditionProvider } from './peaks/PeakEditionManager';
 import Peaks from './peaks/Peaks';
 import PeaksShapes from './peaks/PeaksShapes';
@@ -53,6 +54,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <RangesIntegrals />
         <Peaks peaksSource="ranges" />
         <Ranges />
+        <MultiplicityTrees />
         <JGraph />
         <MultiAnalysisRanges />
         <BaseLineZones />
