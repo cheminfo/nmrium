@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.50.0](https://github.com/cheminfo/nmrium/compare/v0.49.0...v0.50.0) (2024-02-21)
+
+
+### Features
+
+* display the tree for similarity ([2a21d17](https://github.com/cheminfo/nmrium/commit/2a21d1786e74b9fa8b646c07abdf7275a3cb7a51)), closes [#2905](https://github.com/cheminfo/nmrium/issues/2905)
+* export spectrum as text file ([c5ad409](https://github.com/cheminfo/nmrium/commit/c5ad409c30f71bf1b6b1e99263f0ab55f11da16b))
+
+
+### Bug Fixes
+
+* confirmation box ([fe44670](https://github.com/cheminfo/nmrium/commit/fe44670a27ad4938efb5eb75556b8db67fcc8abe))
+* exclude export the the rectangle over the spectrum in stack mode ([b6f9a99](https://github.com/cheminfo/nmrium/commit/b6f9a9910f758de07156833bc6fd366eaf3120d9))
+* experiment type by pulse sequence ([#2920](https://github.com/cheminfo/nmrium/issues/2920)) ([7d51e12](https://github.com/cheminfo/nmrium/commit/7d51e12c09b98bd92801feda89400e0de302f7c5))
+* improve info from Nanalysis n adapt bruker phase correction parameters ([#2914](https://github.com/cheminfo/nmrium/issues/2914)) ([348ed95](https://github.com/cheminfo/nmrium/commit/348ed95dc9d9fc43df6aaa6fa993661b37f101bd))
+* range select for j coupling ([#2917](https://github.com/cheminfo/nmrium/issues/2917)) ([2d033e8](https://github.com/cheminfo/nmrium/commit/2d033e87461b57fa58fbe081281b37441925ed6a))
+
 ## [0.49.0](https://github.com/cheminfo/nmrium/compare/v0.48.0...v0.49.0) (2024-02-09)
 
 
