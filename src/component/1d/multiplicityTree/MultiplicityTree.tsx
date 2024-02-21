@@ -206,7 +206,7 @@ function Tree(props: TreeProps) {
             : treeLevelsColors[level % treeLevelsColors.length];
           return (
             <path
-              key={path.join(' ')}
+              key={path.join(`%${level}`)}
               d={path.join(' ')}
               fill="none"
               stroke={levelColor}
