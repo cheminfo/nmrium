@@ -157,7 +157,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
                 style={{
                   position: 'absolute',
                   pointerEvents: 'none',
-                  zIndex: 2,
+                  zIndex: 10,
                   left: 0,
                   right: 0,
                   top: 0,
