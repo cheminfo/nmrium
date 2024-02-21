@@ -35,7 +35,7 @@ import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
 } from '../reducer/scaleReducer';
-import { options } from '../toolbar/ToolTypes';
+import { Tool, options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 
 import Chart1D from './Chart1D';
@@ -158,10 +158,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           // when Alt key is active
           case primaryKeyIdentifier: {
             switch (selectedTool) {
-              case options.zoom.id: {
-                executeDefaultAction = true;
-                break;
-              }
               case options.integral.id:
                 dispatch({
                   type: 'ADD_INTEGRAL',
@@ -235,7 +231,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               }
 
               default:
-                propagateEvent();
+                executeDefaultAction = true;
                 break;
             }
             break;
@@ -260,16 +256,17 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           }
         }
 
-        const isNotDistanceMeasurementTool =
-          selectedTool !== 'zoom' ||
-          (selectedTool === 'zoom' && !brushData.shiftKey);
+        const tools = new Set<Tool>(['zoom', 'databaseRangesSelection']);
+        const enableDefaultBrush =
+          !tools.has(selectedTool) ||
+          (tools.has(selectedTool) && !brushData.shiftKey);
 
-        if (
-          executeDefaultAction &&
-          selectedTool != null &&
-          isNotDistanceMeasurementTool
-        ) {
-          dispatch({ type: 'BRUSH_END', payload: brushData });
+        if (executeDefaultAction && selectedTool != null) {
+          if (enableDefaultBrush) {
+            dispatch({ type: 'BRUSH_END', payload: brushData });
+          }
+
+          propagateEvent();
         }
       }
     },
