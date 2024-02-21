@@ -70,7 +70,7 @@ export function generateTreeNodes(range: Range, spectrumData: Spectrum1D) {
         x,
         parentX,
         ratio,
-        level: jsIndex + 1,
+        level: jsIndex,
       });
       generateNodes(x, x, js, jsIndex + 1, minMax);
     }

@@ -41,12 +41,12 @@ interface MultiplicityTreeProps {
   range: Range;
 }
 
-const TREE_LEVEL_COLORS: string[] = ['red', 'green', 'blue', 'magenta'];
-
+const treeLevelsColors: string[] = ['red', 'green', 'blue', 'magenta'];
 const marginBottom = 20;
 const headTextMargin = 5;
 const tailLengthScale = 60;
 const boxPadding = 20;
+
 export default function MultiplicityTree(props: MultiplicityTreeProps) {
   const { range } = props;
   const spectrum = useSpectrum();
@@ -85,7 +85,7 @@ function Tree(props: TreeProps) {
     signalIndex,
     range,
     startY: originStartY,
-    treeNodes: { multiplicity, nodes, min, max, signalKey, diaIDs },
+    treeNodes: { multiplicity = '', nodes, min, max, signalKey, diaIDs },
   } = props;
   const { from, to } = range;
   const { width } = useChartData();
@@ -97,8 +97,6 @@ function Tree(props: TreeProps) {
   const highlight = useHighlight(extractID(assignment), {
     type: HighlightEventSource.SIGNAL,
   });
-
-  if (!multiplicity) return null;
 
   let widthRatio = 0;
   let treeWidth = 0;
@@ -127,23 +125,14 @@ function Tree(props: TreeProps) {
 
   const [{ x: head }, ...otherNodes] = nodes;
   const headX = scaleX()(head);
-  const paths: Record<number, string[]> = {};
+  const paths = useTreePaths(otherNodes, {
+    isMassive,
+    levelLength,
+    tailLength,
+    startY,
+  });
 
-  for (const node of otherNodes) {
-    const { x, parentX = 0, level } = node;
-
-    const baseX = scaleX()(parentX);
-    const x1 = scaleX()(x);
-    const y = levelLength * (level - 1) + tailLength;
-
-    const path = `M ${baseX} ${startY + y} L ${x1} ${startY + y + (isMassive ? 0 : tailLength)} l 0 ${tailLength}`;
-
-    if (!paths?.[level]) {
-      paths[level] = [path];
-    } else {
-      paths[level].push(path);
-    }
-  }
+  if (!multiplicity) return null;
 
   function assignHandler() {
     assignment.setActive('x');
@@ -192,45 +181,43 @@ function Tree(props: TreeProps) {
         fill={isHighlighted ? '#ff6f0057' : 'transparent'}
         data-no-export="true"
       />
-      <text
-        x={headX}
-        y={startY - headTextMargin}
-        textAnchor="middle"
-        fontSize={multiplicityTextSize}
-        fill="black"
-      >
-        {multiplicity}
-      </text>
-      <line
-        x1={headX}
-        x2={headX}
-        y1={startY}
-        y2={startY + tailLength}
-        stroke={TREE_LEVEL_COLORS[0]}
-      />
-      <g>
-        {Object.keys(paths).map((level) => {
+      <g className="multiplicity-tree-head">
+        <text
+          x={headX}
+          y={startY - headTextMargin}
+          textAnchor="middle"
+          fontSize={multiplicityTextSize}
+          fill="black"
+        >
+          {multiplicity}
+        </text>
+        <line
+          x1={headX}
+          x2={headX}
+          y1={startY}
+          y2={startY + tailLength}
+          stroke={treeLevelsColors[0]}
+        />
+      </g>
+      <g className="multiplicity-tree-lines">
+        {paths.map((path, level) => {
           return (
             <path
-              key={level}
-              d={paths[level].join(' ')}
+              key={path.join(' ')}
+              d={path.join(' ')}
               fill="none"
-              stroke={
-                isMassive
-                  ? 'blue'
-                  : TREE_LEVEL_COLORS[Number(level) - 1] || 'black'
-              }
+              stroke={isMassive ? 'blue' : treeLevelsColors?.[level] || 'black'}
             />
           );
         })}
       </g>
-      <g>
+      <g className="multiplicity-tree-ration-labels">
         {!isMassive &&
           otherNodes.map((node) => {
             const { x, level, ratio } = node;
             const x1 = scaleX()(x);
 
-            const y = levelLength * (level - 1) + tailLength + tailLength / 2;
+            const y = levelLength * level + tailLength + tailLength / 2;
 
             return (
               <text
@@ -240,7 +227,7 @@ function Tree(props: TreeProps) {
                 textAnchor="middle"
                 alignmentBaseline="middle"
                 fontSize={rationTextSize}
-                fill={TREE_LEVEL_COLORS[Number(level) - 1]}
+                fill={treeLevelsColors?.[level] || 'black'}
               >
                 {ratio}
               </text>
@@ -263,6 +250,43 @@ function Tree(props: TreeProps) {
       />
     </g>
   );
+}
+
+function useTreePaths(
+  otherNodes,
+  options: {
+    tailLength: number;
+    levelLength: number;
+    startY: number;
+    isMassive: boolean;
+  },
+) {
+  const { tailLength, levelLength, startY, isMassive } = options;
+  const { scaleX } = useScaleChecked();
+
+  const paths: string[][] = [];
+
+  for (const node of otherNodes) {
+    const { x, parentX = 0, level } = node;
+
+    const baseX = scaleX()(parentX);
+    const x1 = scaleX()(x);
+
+    let y = tailLength;
+
+    if (!isMassive) {
+      y = levelLength * level + tailLength;
+    }
+
+    const path = `M ${baseX} ${startY + y} L ${x1} ${startY + y + (isMassive ? 0 : tailLength)} l 0 ${tailLength}`;
+
+    if (!paths?.[level]) {
+      paths[level] = [path];
+    } else {
+      paths[level].push(path);
+    }
+  }
+  return paths;
 }
 
 function getMaxY(spectrum: Spectrum1D, options: { from: number; to: number }) {
