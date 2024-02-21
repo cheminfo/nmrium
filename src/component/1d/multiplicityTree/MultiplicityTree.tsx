@@ -201,12 +201,15 @@ function Tree(props: TreeProps) {
       </g>
       <g className="multiplicity-tree-lines">
         {paths.map((path, level) => {
+          const levelColor = isMassive
+            ? 'blue'
+            : treeLevelsColors[level % treeLevelsColors.length];
           return (
             <path
               key={path.join(' ')}
               d={path.join(' ')}
               fill="none"
-              stroke={isMassive ? 'blue' : treeLevelsColors?.[level] || 'black'}
+              stroke={levelColor}
             />
           );
         })}
@@ -218,6 +221,8 @@ function Tree(props: TreeProps) {
             const x1 = scaleX()(x);
 
             const y = levelLength * level + tailLength + tailLength / 2;
+            const levelColor =
+              treeLevelsColors[level % treeLevelsColors.length];
 
             return (
               <text
@@ -227,7 +232,7 @@ function Tree(props: TreeProps) {
                 textAnchor="middle"
                 alignmentBaseline="middle"
                 fontSize={rationTextSize}
-                fill={treeLevelsColors?.[level] || 'black'}
+                fill={levelColor}
               >
                 {ratio}
               </text>
