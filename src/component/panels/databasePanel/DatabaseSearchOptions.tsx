@@ -125,7 +125,7 @@ export function DatabaseSearchOptions({
           <CounterLabel>
             {createFilterLabel(total || 0, result.data.length)}
           </CounterLabel>
-          <PreferencesButton onClick={() => onSettingClick} />
+          <PreferencesButton onClick={onSettingClick} />
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
