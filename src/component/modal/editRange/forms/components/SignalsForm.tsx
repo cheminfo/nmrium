@@ -186,6 +186,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
               padding: '0 1.5rem',
               fontSize: '12px',
               color: '#28ba62',
+              textWrap: 'nowrap',
             }}
           >
             <FaPlus style={{ display: 'inline-block' }} />
