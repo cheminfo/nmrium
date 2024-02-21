@@ -107,14 +107,14 @@ function DatabasePanelInner({
   });
   const [idCode, setIdCode] = useState<string>();
 
-  const settingsPanelHandler = useCallback(() => {
-    setFlipStatus(!isFlipped);
-  }, [isFlipped]);
+  function settingsPanelHandler() {
+    setFlipStatus((flag) => !flag);
+  }
 
-  const saveSettingHandler = useCallback(() => {
+  function saveSettingHandler() {
     settingRef.current.saveSetting();
     setFlipStatus(false);
-  }, []);
+  }
 
   const search = useCallback(
     (solvents?: any[]) => {
