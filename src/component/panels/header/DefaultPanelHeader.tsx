@@ -1,8 +1,8 @@
 import { CSSProperties, ReactNode, useState } from 'react';
+import { FaFilter, FaRegTrashAlt } from 'react-icons/fa';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 import { CounterLabel } from '../../elements/CounterLabel';
-import { DeleteButton } from '../../elements/DeleteButton';
-import { FilterButton } from '../../elements/FilterButton';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 
 import PanelHeader from './PanelHeader';
@@ -22,7 +22,7 @@ interface DefaultPanelHeaderProps {
   filterToolTip?: string;
   onDelete?: () => void;
   onFilter?: () => void;
-  onSettingClick?: () => void;
+  onSettingClick?: ToolbarItemProps['onClick'];
   canDelete?: boolean;
   disableDelete?: boolean;
   showSettingButton?: boolean;
@@ -65,27 +65,36 @@ function DefaultPanelHeader({
   return (
     <PanelHeader {...{ style, className }}>
       <div style={styles.leftContainer}>
-        {canDelete && (
-          <DeleteButton
-            disabled={counter === 0 || disableDelete}
-            title={deleteToolTip}
-            onClick={onDelete}
-          />
-        )}
+        <Toolbar>
+          {canDelete && (
+            <Toolbar.Item
+              id="delete-button"
+              onClick={onDelete}
+              title={deleteToolTip}
+              icon={<FaRegTrashAlt />}
+              intent="danger"
+              disabled={counter === 0 || disableDelete}
+            />
+          )}
 
-        {/* Optional if there is no filter needed, e.g. in spectra panel */}
-        {filterToolTip && (
-          <FilterButton
-            onClick={handleFilter}
-            active={isFiltered}
-            title={filterToolTip}
-          />
-        )}
+          {/* Optional if there is no filter needed, e.g. in spectra panel */}
+          {filterToolTip && (
+            <Toolbar.Item
+              id="filter-button"
+              onClick={handleFilter}
+              active={isFiltered}
+              title={filterToolTip}
+              icon={<FaFilter />}
+            />
+          )}
+        </Toolbar>
         {children}
       </div>
       {renderRightButtons?.()}
       {counterLabel && <CounterLabel>{counterLabel}</CounterLabel>}
-      {showSettingButton && <PreferencesButton onClick={onSettingClick} />}
+      {showSettingButton && (
+        <PreferencesButton title="Preferences" onClick={onSettingClick} />
+      )}
     </PanelHeader>
   );
 }

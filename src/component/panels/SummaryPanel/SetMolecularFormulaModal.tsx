@@ -115,7 +115,7 @@ export default function SetMolecularFormulaModal({
   return (
     <div css={modalContainer}>
       <div className="header handle">
-        <CloseButton onClick={onClose} />
+        <CloseButton title="Close" onClick={onClose} />
       </div>
       <div>
         <p className="info">Please type in a molecular formula!</p>

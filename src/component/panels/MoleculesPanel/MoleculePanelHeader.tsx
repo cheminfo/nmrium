@@ -218,7 +218,6 @@ export default function MoleculePanelHeader({
       <Toolbar>
         {renderSource === 'moleculePanel' && (
           <>
-            {' '}
             <DropdownMenu
               onSelect={(data) => {
                 exportHandler(data);
@@ -283,7 +282,9 @@ export default function MoleculePanelHeader({
           {`${+(currentIndex + 1)} / ${molecules.length}`}
         </p>
       )}
-      {onClickPreferences && <PreferencesButton onClick={onClickPreferences} />}
+      {onClickPreferences && (
+        <PreferencesButton title="Preferences" onClick={onClickPreferences} />
+      )}
 
       <ClipboardFallbackModal
         mode={shouldFallback}

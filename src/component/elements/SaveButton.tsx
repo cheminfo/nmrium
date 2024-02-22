@@ -1,17 +1,15 @@
 import { FaCheck } from 'react-icons/fa';
+import { ToolbarItemProps } from 'react-science/ui';
 
-import { ToolBarButton, ToolBarButtonProps } from './ToolBarButton';
+import { ToolBarButton } from './ToolBarButton';
 
-export function SaveButton(
-  props: Pick<ToolBarButtonProps, 'onClick' | 'title'>,
-) {
+export function SaveButton(props: Pick<ToolbarItemProps, 'onClick' | 'title'>) {
   return (
     <ToolBarButton
       id="save-button"
       {...props}
       intent="success"
       icon={<FaCheck />}
-      placement="bottom-start"
     />
   );
 }

@@ -148,7 +148,7 @@ function EditZoneModal({
               onClick={() => formRef.current.submitForm()}
               title="Save and Exit"
             />
-            <CloseButton onClick={handleOnClose} />
+            <CloseButton title="Close" onClick={handleOnClose} />
           </div>
           <SignalsForm />
         </>

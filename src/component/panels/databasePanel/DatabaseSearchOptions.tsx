@@ -2,6 +2,7 @@ import { BsHexagon, BsHexagonFill } from 'react-icons/bs';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { TbBinaryTree } from 'react-icons/tb';
+import { ToolbarItemProps } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -9,10 +10,7 @@ import { CounterLabel } from '../../elements/CounterLabel';
 import Input from '../../elements/Input';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 import Select from '../../elements/Select';
-import {
-  ToolBarButton,
-  ToolBarButtonProps,
-} from '../../elements/ToolBarButton';
+import { ToolBarButton } from '../../elements/ToolBarButton';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { options } from '../../toolbar/ToolTypes';
 import { createFilterLabel } from '../header/DefaultPanelHeader';
@@ -32,8 +30,8 @@ interface DatabaseSearchOptionsProps {
   idCode?: string;
   total: number;
   onKeywordsChange: (k: Partial<DatabaseSearchKeywords>) => void;
-  onSettingClick: ToolBarButtonProps['onClick'];
-  onStructureClick: ToolBarButtonProps['onClick'];
+  onSettingClick: ToolbarItemProps['onClick'];
+  onStructureClick: ToolbarItemProps['onClick'];
   onDatabaseChange: (databaseKey: string) => void;
 }
 
@@ -95,11 +93,10 @@ export function DatabaseSearchOptions({
           icon={<TbBinaryTree />}
           active={showSimilarityTree}
           onClick={handleShowSimilarityTree}
-          style={{ marginRight: '5px' }}
         />
 
         <Select
-          style={{ flex: 6 }}
+          style={{ flex: 6, marginLeft: '5px' }}
           items={databases}
           itemTextField="label"
           itemValueField="key"
@@ -125,7 +122,7 @@ export function DatabaseSearchOptions({
           <CounterLabel>
             {createFilterLabel(total || 0, result.data.length)}
           </CounterLabel>
-          <PreferencesButton onClick={onSettingClick} />
+          <PreferencesButton title="Preferences" onClick={onSettingClick} />
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -134,13 +131,12 @@ export function DatabaseSearchOptions({
           icon={<FaICursor />}
           active={selectedTool === options.databaseRangesSelection.id}
           onClick={enableFilterHandler}
-          style={{ marginRight: '5px' }}
         />
 
         <Input
           value={keywords.searchKeywords}
           renderIcon={() => <IoSearchOutline />}
-          style={{ inputWrapper: { flex: 3 } }}
+          style={{ inputWrapper: { flex: 3, margin: '0 5px' } }}
           className="search-input"
           type="text"
           debounceTime={250}
@@ -155,7 +151,6 @@ export function DatabaseSearchOptions({
           intent="success"
           active={!!idCode}
           onClick={onStructureClick}
-          style={{ marginLeft: '5px' }}
         />
       </div>
     </PanelHeader>

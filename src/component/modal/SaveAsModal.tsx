@@ -82,7 +82,11 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
         <span>Save as ... </span>
-        <CloseButton onClick={() => onClose?.()} className="close-bt" />
+        <CloseButton
+          title="Close"
+          onClick={() => onClose?.()}
+          className="close-bt"
+        />
       </div>
       <div className="inner-content">
         <Formik

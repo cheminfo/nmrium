@@ -112,7 +112,11 @@ function EditPeakShapeModal({
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
         <span>{`Peak Shape Edition ( ${valuePPM} PPM)`} </span>
-        <CloseButton onClick={() => onClose?.()} className="close-bt" />
+        <CloseButton
+          title="Close"
+          onClick={() => onClose?.()}
+          className="close-bt"
+        />
       </div>
       <div className="inner-content">
         <Formik

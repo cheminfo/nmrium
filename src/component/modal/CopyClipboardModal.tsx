@@ -51,7 +51,7 @@ function CopyClipboardModal({
           <FaCopy />
         </button>
 
-        <CloseButton onClick={onClose} />
+        <CloseButton title="Close" onClick={onClose} />
       </div>
       <div
         className="inner-container"
