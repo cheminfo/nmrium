@@ -19,7 +19,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { toString } from '../../utility/toString';
+import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
   ToolbarItemProps,
@@ -118,7 +118,7 @@ function MultipleSpectraAnalysisPanelInner({
       },
       {
         icon: <FaChartBar />,
-        title: `${toString(!showAnalysisChart)} analysis chart`,
+        title: `${booleanToString(!showAnalysisChart)} analysis chart`,
         onClick: toggleAnalysisChart,
         active: showAnalysisChart,
       },

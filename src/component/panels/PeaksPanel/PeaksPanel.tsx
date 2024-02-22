@@ -18,7 +18,7 @@ import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import { FilterType } from '../../utility/filterType';
-import { toString } from '../../utility/toString';
+import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
   ToolbarItemProps,
@@ -137,7 +137,7 @@ function PeaksPanelInner({
     {
       disabled,
       icon: <SvgNmrPeaks />,
-      title: `${toString(!showPeaks)} peaks`,
+      title: `${booleanToString(!showPeaks)} peaks`,
       onClick: () => toggleViewProperty('showPeaks'),
       active: showPeaks,
     },
@@ -155,14 +155,14 @@ function PeaksPanelInner({
       {
         disabled,
         icon: <SvgPeaks />,
-        title: `${toString(!showPeaksShapes)} peaks shapes`,
+        title: `${booleanToString(!showPeaksShapes)} peaks shapes`,
         onClick: () => toggleViewProperty('showPeaksShapes'),
         active: showPeaksShapes,
       },
       {
         disabled,
         icon: <SvgNmrFt />,
-        title: `${toString(!showPeaksSum)} peaks sum`,
+        title: `${booleanToString(!showPeaksSum)} peaks sum`,
         onClick: () => toggleViewProperty('showPeaksSum'),
         active: showPeaksSum,
       },

@@ -13,7 +13,7 @@ import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { toString } from '../../utility/toString';
+import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -160,7 +160,7 @@ function IntegralPanelInner({
             },
             {
               icon: <SvgNmrIntegrate />,
-              title: `${toString(!showIntegralsValues)} integrals values`,
+              title: `${booleanToString(!showIntegralsValues)} integrals values`,
               onClick: handleShowIntegralsValues,
               active: showIntegralsValues,
             },

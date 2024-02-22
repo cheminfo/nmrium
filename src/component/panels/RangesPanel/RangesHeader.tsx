@@ -20,7 +20,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { FilterType } from '../../utility/filterType';
-import { toString } from '../../utility/toString';
+import { booleanToString } from '../../utility/booleanToString';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 function RangesHeader({
@@ -194,28 +194,28 @@ function RangesHeader({
           {
             disabled: !hasRanges,
             icon: <FaSitemap />,
-            title: `${toString(!showMultiplicityTrees)} multiplicity trees in spectrum`,
+            title: `${booleanToString(!showMultiplicityTrees)} multiplicity trees in spectrum`,
             onClick: handleSetShowMultiplicityTrees,
             active: showMultiplicityTrees,
           },
           {
             disabled: !hasRanges,
             icon: <FaChartBar />,
-            title: `${toString(!showJGraph)} J Graph`,
+            title: `${booleanToString(!showJGraph)} J Graph`,
             onClick: handleShowJGraph,
             active: showJGraph,
           },
           {
             disabled: !hasRanges,
             icon: <SvgNmrIntegrate />,
-            title: `${toString(!showIntegrals)} integrals`,
+            title: `${booleanToString(!showIntegrals)} integrals`,
             onClick: handleShowIntegrals,
             active: showIntegrals,
           },
           {
             disabled: !hasRanges,
             icon: <SvgNmrIntegrate />,
-            title: `${toString(!showIntegralsValues)} integrals values`,
+            title: `${booleanToString(!showIntegralsValues)} integrals values`,
             onClick: handleShowIntegralsValues,
             active: showIntegralsValues,
           },
@@ -229,7 +229,7 @@ function RangesHeader({
             id: 'ranges-toggle-peaks',
             disabled: !hasRanges,
             icon: <SvgNmrPeaks />,
-            title: `${toString(!showPeaks)} peaks`,
+            title: `${booleanToString(!showPeaks)} peaks`,
             onClick: () => toggleViewProperty('showPeaks'),
             active: showPeaks,
           },
