@@ -13,7 +13,7 @@ import Select from '../../elements/Select';
 import { ToolBarButton } from '../../elements/ToolBarButton';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { options } from '../../toolbar/ToolTypes';
-import { createFilterLabel } from '../header/DefaultPanelHeader';
+import { formatCounterLabel } from '../header/DefaultPanelHeader';
 import PanelHeader from '../header/PanelHeader';
 
 import {
@@ -119,9 +119,9 @@ export function DatabaseSearchOptions({
             justifyContent: 'flex-end',
           }}
         >
-          <CounterLabel>
-            {createFilterLabel(total || 0, result.data.length)}
-          </CounterLabel>
+          <CounterLabel
+            value={formatCounterLabel(total || 0, result.data.length)}
+          />
           <PreferencesButton title="Preferences" onClick={onSettingClick} />
         </div>
       </div>

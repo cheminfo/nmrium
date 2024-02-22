@@ -5,7 +5,6 @@ import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useState, useRef, memo } from 'react';
 import { FaChartBar, FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
-import { Toolbar } from 'react-science/ui';
 import { useToggle } from 'react-use';
 
 import {
@@ -20,8 +19,11 @@ import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
+import { toString } from '../../utility/toString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  ToolbarItemProps,
+} from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import AlignSpectra from './AlignSpectra';
@@ -92,6 +94,37 @@ function MultipleSpectraAnalysisPanelInner({
     });
   }
 
+  let lefButtons: ToolbarItemProps[] = [
+    {
+      icon: <FaFileExport />,
+      title: 'Copy To Clipboard',
+      onClick: copyToClipboardHandler,
+    },
+  ];
+
+  if (displayerMode === '1D') {
+    lefButtons = lefButtons.concat([
+      {
+        icon: <SvgNmrOverlay />,
+        title: 'Spectra calibration',
+        onClick: handleSpectraCalibration,
+        active: calibration,
+      },
+      {
+        icon: <IoPulseOutline />,
+        title: 'Y spectra tracker',
+        onClick: showTrackerHandler,
+        active: showLegend,
+      },
+      {
+        icon: <FaChartBar />,
+        title: `${toString(!showAnalysisChart)} analysis chart`,
+        onClick: toggleAnalysisChart,
+        active: showAnalysisChart,
+      },
+    ]);
+  }
+
   return (
     <div
       css={[
@@ -107,42 +140,9 @@ function MultipleSpectraAnalysisPanelInner({
       {!isFlipped && (
         <DefaultPanelHeader
           deleteToolTip="Delete All Peaks"
-          showSettingButton
-          canDelete={false}
           onSettingClick={settingsPanelHandler}
-        >
-          <Toolbar>
-            <Toolbar.Item
-              icon={<FaFileExport />}
-              title="Copy To Clipboard"
-              onClick={copyToClipboardHandler}
-            />
-            {displayerMode === '1D' && (
-              <>
-                <Toolbar.Item
-                  icon={<SvgNmrOverlay />}
-                  title="Spectra calibration"
-                  onClick={handleSpectraCalibration}
-                  active={calibration}
-                />
-                <Toolbar.Item
-                  icon={<IoPulseOutline />}
-                  title="Y spectra tracker"
-                  onClick={showTrackerHandler}
-                  active={showLegend}
-                />
-                <Toolbar.Item
-                  icon={<FaChartBar />}
-                  title={`${
-                    !showAnalysisChart ? 'Show' : 'Hide'
-                  } analysis chart`}
-                  onClick={toggleAnalysisChart}
-                  active={showAnalysisChart}
-                />
-              </>
-            )}
-          </Toolbar>
-        </DefaultPanelHeader>
+          leftButtons={lefButtons}
+        />
       )}
       {isFlipped && (
         <PreferencesHeader

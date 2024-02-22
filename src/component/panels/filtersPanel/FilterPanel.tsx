@@ -39,7 +39,6 @@ export default function FiltersPanel() {
   return (
     <div css={tablePanelStyle}>
       <DefaultPanelHeader
-        showSettingButton={false}
         deleteToolTip="Delete all filters"
         onDelete={handelDeleteFilter}
       />

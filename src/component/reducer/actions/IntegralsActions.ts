@@ -15,13 +15,13 @@ import {
   initSumOptions,
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager';
+import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
-import { ActionType } from '../types/ActionType';
 import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
-import { FilterType } from '../../utility/filterType';
+import { ActionType } from '../types/ActionType';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',

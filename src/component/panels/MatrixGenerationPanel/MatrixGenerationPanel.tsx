@@ -2,7 +2,7 @@
 import { SvgNmrExportAsMatrix, SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Formik, FormikProps } from 'formik';
 import { useRef } from 'react';
-import { Toolbar } from 'react-science/ui';
+import { FaCheck } from 'react-icons/fa';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -14,7 +14,6 @@ import StyledButton from '../../elements/Button';
 import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
-import { SaveButton } from '../../elements/SaveButton';
 import ToggleButton from '../../elements/ToggleButton';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
@@ -115,25 +114,24 @@ function MatrixGenerationPanel() {
 
   return (
     <div css={tablePanelStyle}>
-      {
-        <DefaultPanelHeader
-          canDelete={false}
-          renderRightButtons={() => (
-            <SaveButton
-              onClick={() => formRef.current?.submitForm()}
-              title="Signal processing"
-            />
-          )}
-        >
-          <Toolbar>
-            <Toolbar.Item
-              icon={<SvgNmrExportAsMatrix />}
-              title="Export spectra as a matrix"
-              onClick={handleExportAsMatrix}
-            />
-          </Toolbar>
-        </DefaultPanelHeader>
-      }
+      <DefaultPanelHeader
+        leftButtons={[
+          {
+            icon: <SvgNmrExportAsMatrix />,
+            title: 'Export spectra as a matrix',
+            onClick: handleExportAsMatrix,
+          },
+        ]}
+        rightButtons={[
+          {
+            onClick: () => formRef.current?.submitForm(),
+            title: 'Signal processing',
+            id: 'save-button',
+            intent: 'success',
+            icon: <FaCheck />,
+          },
+        ]}
+      />
 
       <div className="inner-container">
         <PreferencesContainer style={{ backgroundColor: 'white' }}>

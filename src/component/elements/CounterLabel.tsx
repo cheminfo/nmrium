@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import { CSSProperties } from 'react';
 
 const labelStyle: CSSProperties = {
   margin: 0,
@@ -8,12 +8,12 @@ const labelStyle: CSSProperties = {
 };
 
 interface CounterLabelProps {
-  children: ReactNode;
   style?: CSSProperties;
+  value?: string;
 }
 
 export function CounterLabel(props: CounterLabelProps) {
-  const { children, style = {} } = props;
+  const { style = {}, value } = props;
 
-  return <p style={{ ...labelStyle, ...style }}>{children}</p>;
+  return value && <p style={{ ...labelStyle, ...style }}>{value} </p>;
 }
