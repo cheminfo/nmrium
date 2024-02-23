@@ -24,7 +24,7 @@ import {
   FaFileExport,
 } from 'react-icons/fa';
 import { PiKnifeBold } from 'react-icons/pi';
-import { Toolbar, ToolbarItemProps, useOnOff } from 'react-science/ui';
+import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -39,12 +39,13 @@ import {
   useCheckToolsVisibility,
 } from '../hooks/useCheckToolsVisibility';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
+import { useDialogToggle } from '../hooks/useDialogToggle';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
-import { useMetaInformationImportationModal } from '../modal/metaImportation';
+import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
 
 import { options } from './ToolTypes';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu';
@@ -94,16 +95,14 @@ export default function ToolBar() {
   );
 
   const openLoader = useLoader();
-  const openMetaInformationModal = useMetaInformationImportationModal();
-
   const isExperimentalFeature = useCheckExperimentalFeature();
-  const [isLoadJCAMPModalOpened, openLoadJCAMPModal, closeLoadJCAMPModal] =
-    useOnOff(false);
-  const [
-    isPublicationStringModalOpened,
-    openPublicationStringModal,
-    closePublicationStringModal,
-  ] = useOnOff(false);
+
+  const { dialog, closeDialog, openDialog } = useDialogToggle({
+    loadJCAMP: false,
+    importPublicationString: false,
+    metaImportation: false,
+  });
+
   const verticalAlign = useVerticalAlign();
 
   const { fidCounter, ftCounter } = useDatumWithSpectraStatistics();
@@ -148,13 +147,13 @@ export default function ToolBar() {
         openLoader();
         break;
       case 'importJDX':
-        openLoadJCAMPModal();
+        openDialog('loadJCAMP');
         break;
       case 'importPublicationString':
-        openPublicationStringModal();
+        openDialog('importPublicationString');
         break;
       case 'importMetaInformation':
-        openMetaInformationModal();
+        openDialog('metaImportation');
         break;
       default:
     }
@@ -326,13 +325,14 @@ export default function ToolBar() {
 
   return (
     <>
-      <LoadJCAMPModal
-        isOpen={isLoadJCAMPModalOpened}
-        onCloseDialog={closeLoadJCAMPModal}
-      />
+      <LoadJCAMPModal isOpen={dialog.loadJCAMP} onCloseDialog={closeDialog} />
       <ImportPublicationStringModal
-        isOpen={isPublicationStringModalOpened}
-        onClose={closePublicationStringModal}
+        isOpen={dialog.importPublicationString}
+        onClose={closeDialog}
+      />
+      <MetaImportationModal
+        isOpen={dialog.metaImportation}
+        onCloseDialog={closeDialog}
       />
       <Toolbar vertical>
         {toolItems.map((item) => {
