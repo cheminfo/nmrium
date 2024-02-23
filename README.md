@@ -92,13 +92,13 @@ npm start
 
 ## Funding
 
-|                                              |                                                                                                                           |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| <img src="images/zakodium.svg" width="200">  | [Zakodium sàrl](https://www.zakodium.com)                                                                                 |
-| <img src="images/idnmr.png" height="80">     | [Initiative zur Verbesserung der NMR-Datenqualität (IDNMR)](https://idnmr.uni-koeln.de/)                                  |
-| <img src="images/nfdi4chem.png" width="200"> | [NFDI4Chem Chemistry Consortium in the NFDI](https://www.nfdi4chem.de/)                                                   |
-| <img src="images/univalle.svg" height="100"> | [Universidad del Valle / Cali, Colombia](https://darmn.correounivalle.edu.co/)                                            |
-| <img src="images/bigmap.jpg" height="100">   | [Union’s Horizon 2020 research and innovation programme under grant agreement No 957189](https://www.big-map.eu/European) |
+|                                              |                                                                                                                                                                                                                                                                                       |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="images/zakodium.svg" width="200">  | [Zakodium sàrl](https://www.zakodium.com)                                                                                                                                                                                                                                             |
+| <img src="images/idnmr.png" height="80">     | [Initiative zur Verbesserung der NMR-Datenqualität (IDNMR)](https://idnmr.uni-koeln.de/)                                                                                                                                                                                              |
+| <img src="images/nfdi4chem.png" width="200"> | [NFDI4Chem Chemistry Consortium in the NFDI](https://www.nfdi4chem.de/)                                                                                                                                                                                                               |
+| <img src="images/univalle.svg" height="100"> | [Universidad del Valle / Cali, Colombia](https://darmn.correounivalle.edu.co/)                                                                                                                                                                                                        |
+| <img src="images/bigmap.jpg" height="100">   | This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 957189. The project is part of BATTERY 2030+, the large-scale European research initiative for inventing the sustainable batteries of the future. |
 
 ## License
 
