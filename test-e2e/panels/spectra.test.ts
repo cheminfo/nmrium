@@ -359,7 +359,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   });
   await test.step('Open Save as window ', async () => {
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=DropdownMenu  >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
   });
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator('_react=ModalContent >> _react=Field');
@@ -398,7 +398,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   await test.step('Check export DATA SOURCE', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=DropdownMenu  >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
     await nmrium.page.click(
       '_react=ModalContent >> _react=Field[value="DATA_SOURCE"]',
     );
@@ -424,7 +424,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
   await test.step('Check export NO Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=DropdownMenu >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save data as');
     await nmrium.page.click(
       '_react=ModalContent >> _react=Field[value="NO_DATA"]',
     );
@@ -457,7 +457,7 @@ test('Export source from imported spectrum', async ({ page }) => {
   });
   await test.step('Open Save as window ', async () => {
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=DropdownMenu  >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
   });
   await test.step('Check include data options', async () => {
     const fields = nmrium.page.locator('_react=ModalContent >>_react=Field');
@@ -496,7 +496,7 @@ test('Export source from imported spectrum', async ({ page }) => {
   await test.step('Check export NO Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
-    await nmrium.page.click('_react=DropdownMenu >> text=Save data as');
+    await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save data as');
     await nmrium.page.click(
       '_react=ModalContent >> _react=Field[value="NO_DATA"]',
     );
