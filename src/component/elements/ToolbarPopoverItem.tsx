@@ -30,7 +30,7 @@ export function ToolbarPopoverItem(props: ToolbarPopoverItemProps) {
             const { data, ...otherOptions } = option;
             return (
               <MenuItem
-                key={JSON.stringify(options)}
+                key={JSON.stringify(option)}
                 {...otherOptions}
                 onClick={() => onClick(data)}
               />
