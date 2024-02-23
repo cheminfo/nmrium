@@ -22,7 +22,7 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import { DropdownMenu, DropdownMenuProps } from '../../elements/DropdownMenu';
+import { DropdownMenu, DropdownMenuItem } from '../../elements/DropdownMenu';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
@@ -48,7 +48,7 @@ const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
   },
 };
 
-const MOL_EXPORT_MENU: DropdownMenuProps['options'] = [
+const MOL_EXPORT_MENU: DropdownMenuItem[] = [
   {
     icon: <FaCopy />,
     text: 'Copy as molfile V3',
@@ -219,20 +219,13 @@ export default function MoleculePanelHeader({
         {renderSource === 'moleculePanel' && (
           <>
             <DropdownMenu
-              onSelect={(data) => {
-                exportHandler(data);
-              }}
-              placement="right-start"
-              targetTagName="div"
-              targetProps={{ style: { flex: 'none' } }}
               options={MOL_EXPORT_MENU}
-            >
-              <Toolbar.Item
-                disabled={!hasMolecules}
-                title="Export As"
-                icon={<FaFileExport />}
-              />
-            </DropdownMenu>
+              onClick={exportHandler}
+              disabled={!hasMolecules}
+              title="Export As"
+              icon={<FaFileExport />}
+            />
+
             <Toolbar.Item
               title="Paste molfile"
               icon={<FaPaste />}
