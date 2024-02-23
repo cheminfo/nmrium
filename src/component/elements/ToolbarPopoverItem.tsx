@@ -1,22 +1,25 @@
 import { Menu, MenuItem, MenuItemProps } from '@blueprintjs/core';
 import {
   Toolbar,
-  ToolbarPopoverItemProps,
+  ToolbarPopoverItemProps as BaseToolbarPopoverItemProps,
   ToolbarItemProps,
 } from 'react-science/ui';
 
-export interface DropdownMenuItem extends MenuItemProps {
+export interface ToolbarPopoverMenuItem extends MenuItemProps {
   data?: object;
 }
 
-export interface DropdownMenuProps
-  extends Omit<ToolbarPopoverItemProps, 'onClick' | 'content' | 'itemProps'>,
+interface ToolbarPopoverItemProps
+  extends Omit<
+      BaseToolbarPopoverItemProps,
+      'onClick' | 'content' | 'itemProps'
+    >,
     ToolbarItemProps {
-  options: DropdownMenuItem[];
+  options: ToolbarPopoverMenuItem[];
   onClick: (data?: object) => void;
 }
 
-export function DropdownMenu(props: DropdownMenuProps) {
+export function ToolbarPopoverItem(props: ToolbarPopoverItemProps) {
   const { options, onClick, ...itemProps } = props;
 
   return (

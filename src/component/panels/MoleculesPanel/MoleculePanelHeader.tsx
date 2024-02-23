@@ -22,8 +22,11 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import { DropdownMenu, DropdownMenuItem } from '../../elements/DropdownMenu';
 import { PreferencesButton } from '../../elements/PreferencesButton';
+import {
+  ToolbarPopoverItem,
+  ToolbarPopoverMenuItem,
+} from '../../elements/ToolbarPopoverItem';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
@@ -48,7 +51,7 @@ const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
   },
 };
 
-const MOL_EXPORT_MENU: DropdownMenuItem[] = [
+const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaCopy />,
     text: 'Copy as molfile V3',
@@ -218,7 +221,7 @@ export default function MoleculePanelHeader({
       <Toolbar>
         {renderSource === 'moleculePanel' && (
           <>
-            <DropdownMenu
+            <ToolbarPopoverItem
               options={MOL_EXPORT_MENU}
               onClick={exportHandler}
               disabled={!hasMolecules}

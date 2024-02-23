@@ -29,7 +29,10 @@ import { Toolbar, ToolbarItemProps, useOnOff } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
-import { DropdownMenu, DropdownMenuItem } from '../elements/DropdownMenu';
+import {
+  ToolbarPopoverMenuItem,
+  ToolbarPopoverItem,
+} from '../elements/ToolbarPopoverItem';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import {
   CheckOptions,
@@ -58,7 +61,7 @@ interface ToolItem extends BaseToolItem {
 }
 interface PopoverToolItem extends BaseToolItem {
   onClick: (data?: any) => void;
-  menuItems: DropdownMenuItem[];
+  menuItems: ToolbarPopoverMenuItem[];
 }
 
 function isPopoverToolItem(
@@ -343,7 +346,7 @@ export default function ToolBar() {
           if (isPopoverToolItem(item)) {
             const { menuItems, onClick } = item;
             return (
-              <DropdownMenu
+              <ToolbarPopoverItem
                 key={id}
                 options={menuItems}
                 title={label}

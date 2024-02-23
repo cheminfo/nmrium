@@ -6,9 +6,9 @@ import {
   FaFileImage,
 } from 'react-icons/fa';
 
-import { DropdownMenuItem } from '../elements/DropdownMenu';
+import { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem';
 
-const IMPORT_MENU: DropdownMenuItem[] = [
+const IMPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaFile />,
     text: 'Import from file system (Press Ctrl + O)',
@@ -39,7 +39,7 @@ const IMPORT_MENU: DropdownMenuItem[] = [
   },
 ] as const;
 
-const EXPORT_MENU: DropdownMenuItem[] = [
+const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaDownload />,
     text: 'Export as SVG',
