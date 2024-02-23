@@ -51,7 +51,7 @@ import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu';
 
 interface BaseToolItem {
   id: keyof NMRiumToolBarPreferences;
-  label: string;
+  title: string;
   icon: ToolbarItemProps['icon'];
   checkOptions?: CheckOptions;
   condition?: boolean;
@@ -186,115 +186,115 @@ export default function ToolBar() {
   const toolItems: Array<ToolItem | PopoverToolItem> = [
     {
       id: 'zoom',
-      label: options.zoom.label,
+      title: options.zoom.label,
       icon: <FaSearchPlus />,
     },
     {
       id: 'zoomOut',
-      label:
+      title:
         'Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )',
       onClick: handleFullZoomOut,
       icon: <FaExpand />,
     },
     {
       id: 'peakPicking',
-      label: `${options.peakPicking.label} ( Press p )`,
+      title: `${options.peakPicking.label} ( Press p )`,
       icon: <SvgNmrPeakPicking />,
     },
     {
       id: 'integral',
-      label: `${options.integral.label} ( Press i )`,
+      title: `${options.integral.label} ( Press i )`,
       icon: <SvgNmrIntegrate />,
     },
     {
       id: 'zonePicking',
-      label: `${options.zonePicking.label} ( Press r )`,
+      title: `${options.zonePicking.label} ( Press r )`,
       icon: <FaDiceFour />,
     },
     {
       id: 'slicing',
-      label: options.slicing.label,
+      title: options.slicing.label,
       icon: <PiKnifeBold />,
     },
     {
       id: 'rangePicking',
-      label: `${options.rangePicking.label} ( Press r )`,
+      title: `${options.rangePicking.label} ( Press r )`,
       icon: <SvgNmrRangePicking />,
     },
     {
       id: 'multipleSpectraAnalysis',
-      label: options.multipleSpectraAnalysis.label,
+      title: options.multipleSpectraAnalysis.label,
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
       condition: ftCounter > 1,
     },
     {
       id: 'apodization',
-      label: `${options.apodization.label} (Press a)`,
+      title: `${options.apodization.label} (Press a)`,
       icon: <SvgNmrApodization />,
     },
     {
       id: 'zeroFilling',
-      label: `${options.zeroFilling.label} ( Press z )`,
+      title: `${options.zeroFilling.label} ( Press z )`,
       icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'phaseCorrection',
-      label: `${options.phaseCorrection.label} ( Press a )`,
+      title: `${options.phaseCorrection.label} ( Press a )`,
       icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'phaseCorrectionTwoDimensions',
-      label: `${options.phaseCorrectionTwoDimensions.label} ( Press a )`,
+      title: `${options.phaseCorrectionTwoDimensions.label} ( Press a )`,
       icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'baselineCorrection',
-      label: `${options.baselineCorrection.label} ( Press b )`,
+      title: `${options.baselineCorrection.label} ( Press b )`,
       icon: <SvgNmrBaselineCorrection />,
     },
     {
       id: 'exclusionZones',
-      label: `${options.exclusionZones.label} ( Press e )`,
+      title: `${options.exclusionZones.label} ( Press e )`,
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
       condition: ftCounter > 0,
     },
     {
       id: 'fft',
-      label: `${options.fft.label} ( Press t )`,
+      title: `${options.fft.label} ( Press t )`,
       onClick: handleOnFFTFilter,
       icon: <SvgNmrFourierTransform />,
     },
     {
       id: 'fftDimension1',
-      label: options.fftDimension1.label,
+      title: options.fftDimension1.label,
       onClick: handleFFtDimension1Filter,
       icon: <SvgNmrFourierTransform />,
     },
     {
       id: 'fftDimension2',
-      label: options.fftDimension2.label,
+      title: options.fftDimension2.label,
       onClick: handleFFtDimension2Filter,
       icon: <SvgNmrFourierTransform />,
     },
     {
       id: 'import',
-      label: options.import.label,
+      title: options.import.label,
       icon: <FaFileImport />,
       menuItems: importMenu,
       onClick: importHandler,
     },
     {
       id: 'exportAs',
-      label: options.exportAs.label,
+      title: options.exportAs.label,
       icon: <FaFileExport />,
       menuItems: exportMenu,
       onClick: exportHandler,
     },
     {
       id: 'spectraStackAlignments',
-      label: `${options.spectraStackAlignments.label} ( Press s )`,
+      title: `${options.spectraStackAlignments.label} ( Press s )`,
       icon:
         verticalAlign === 'stack' ? (
           <SvgNmrOverlay3Aligned />
@@ -306,13 +306,13 @@ export default function ToolBar() {
     },
     {
       id: 'realImaginary',
-      label: isRealSpectrumShown ? 'Display real ' : 'Display imaginary',
+      title: isRealSpectrumShown ? 'Display real ' : 'Display imaginary',
       icon: <SvgNmrRealImag />,
       onClick: changeSpectrumViewHandler,
     },
     {
       id: 'spectraCenterAlignments',
-      label: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'} ( Press c )`,
+      title: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'} ( Press c )`,
       icon:
         verticalAlign === 'bottom' ? (
           <SvgNmrAlignCenter />
@@ -336,7 +336,7 @@ export default function ToolBar() {
       />
       <Toolbar vertical>
         {toolItems.map((item) => {
-          const { id, icon, label, checkOptions, condition } = item;
+          const { id, icon, title, checkOptions, condition } = item;
           const show =
             isButtonVisible(id, checkOptions) &&
             (condition === undefined || condition);
@@ -349,7 +349,7 @@ export default function ToolBar() {
               <ToolbarPopoverItem
                 key={id}
                 options={menuItems}
-                title={label}
+                title={title}
                 id={id}
                 active={selectedTool === id}
                 icon={icon}
@@ -364,7 +364,7 @@ export default function ToolBar() {
             <Toolbar.Item
               key={id}
               onClick={onClick || (() => handleChange(id))}
-              title={label}
+              title={title}
               id={id}
               active={selectedTool === id}
               icon={icon}
