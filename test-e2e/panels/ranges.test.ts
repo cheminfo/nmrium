@@ -358,7 +358,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
       '_react=SpectrumListPanel >> _react=SpectraAutomaticPickingButton',
     );
     await SpectraAutomaticPickingButton.click();
-    await SpectraAutomaticPickingButton.blur();
+    await nmrium.page.hover('body');
   });
 
   await test.step("Check 1H spectrum's ranges", async () => {

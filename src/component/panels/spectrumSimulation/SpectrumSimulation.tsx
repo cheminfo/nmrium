@@ -129,11 +129,13 @@ export default function SpectrumSimulation() {
           >
             {!isFlipped && (
               <DefaultPanelHeader
-                showSettingButton
                 onSettingClick={settingsPanelHandler}
-                canDelete={false}
+                leftButtons={[
+                  {
+                    component: <AboutSpectrumSimulationModal />,
+                  },
+                ]}
               >
-                <AboutSpectrumSimulationModal />
                 <SpectrumSimulationSimpleOptions
                   onSpinSystemChange={spinSystemChangeHandler}
                   spinSystem={spinSystem}

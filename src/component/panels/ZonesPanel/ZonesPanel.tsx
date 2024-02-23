@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { Spectrum2D } from 'nmr-load-save';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
@@ -12,9 +11,7 @@ import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader, {
-  createFilterLabel,
-} from '../header/DefaultPanelHeader';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
@@ -159,7 +156,7 @@ function ZonesPanelInner({
     });
   };
 
-  const counter = zones?.values?.length || 0;
+  const total = zones?.values?.length || 0;
 
   return (
     <div
@@ -175,48 +172,42 @@ function ZonesPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={counter}
-          counterLabel={createFilterLabel(
-            counter,
-            filterIsActive && tableData?.length,
-          )}
+          total={total}
+          counter={tableData?.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Zones"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all zones' : 'Hide zones out of view'
           }
-          showSettingButton
           onSettingClick={settingsPanelHandler}
-        >
-          <Toolbar>
-            <Toolbar.Item
-              disabled={!zones.values || zones.values.length === 0}
-              icon={<FaUnlink />}
-              title="Remove all assignments"
-              onClick={handleOnRemoveAssignments}
-            />
-
-            <Toolbar.Item
-              icon={<span>z</span>}
-              title="Show/Hide zones"
-              active={showZones}
-              onClick={handleSetShowZones}
-            />
-            <Toolbar.Item
-              icon={<span>s</span>}
-              title="Show/Hide signals"
-              active={showSignals}
-              onClick={handleSetShowSignals}
-            />
-            <Toolbar.Item
-              icon={<span>p</span>}
-              title="Show/Hide peaks"
-              active={showPeaks}
-              onClick={handleSetShowPeaks}
-            />
-          </Toolbar>
-        </DefaultPanelHeader>
+          leftButtons={[
+            {
+              disabled: !zones.values || zones.values.length === 0,
+              icon: <FaUnlink />,
+              title: 'Remove all assignments',
+              onClick: handleOnRemoveAssignments,
+            },
+            {
+              icon: <span>z</span>,
+              title: 'Show/Hide zones',
+              active: showZones,
+              onClick: handleSetShowZones,
+            },
+            {
+              icon: <span>s</span>,
+              title: 'Show/Hide signals',
+              active: showSignals,
+              onClick: handleSetShowSignals,
+            },
+            {
+              icon: <span>p</span>,
+              title: 'Show/Hide peaks',
+              active: showPeaks,
+              onClick: handleSetShowPeaks,
+            },
+          ]}
+        />
       )}
       {isFlipped && (
         <PreferencesHeader

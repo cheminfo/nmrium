@@ -6,7 +6,6 @@ import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
-import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -14,10 +13,9 @@ import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
+import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import DefaultPanelHeader, {
-  createFilterLabel,
-} from '../header/DefaultPanelHeader';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
@@ -118,7 +116,7 @@ function IntegralPanelInner({
     return [];
   }, [filterIsActive, info.dimension, integrals, xDomain]);
 
-  const counter = integrals?.values?.length || 0;
+  const total = integrals?.values?.length || 0;
 
   return (
     <div
@@ -134,45 +132,40 @@ function IntegralPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={counter}
-          counterLabel={createFilterLabel(
-            counter,
-            filterIsActive && filteredData?.length,
-          )}
+          total={total}
+          counter={filteredData?.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Integrals"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all integrals' : 'Hide integrals out of view'
           }
-          showSettingButton
           onSettingClick={settingsPanelHandler}
-        >
-          <Toolbar>
-            <ChangeSumModal
-              onSave={changeIntegralSumHandler}
-              sumType="integration"
-              currentSum={currentSum}
-              sumOptions={integrals?.options}
-            />
-            <Toolbar.Item
-              icon={<ImLink />}
-              title={'Fixed integration values'}
-              onClick={toggleConstantSumHandler}
-              active={integrals?.options?.isSumConstant || false}
-            />
-            <Toolbar.Item
-              icon={<SvgNmrIntegrate />}
-              title={
-                showIntegralsValues
-                  ? 'Hide integrals values'
-                  : 'Show integrals values'
-              }
-              onClick={handleShowIntegralsValues}
-              active={showIntegralsValues}
-            />
-          </Toolbar>
-        </DefaultPanelHeader>
+          leftButtons={[
+            {
+              component: (
+                <ChangeSumModal
+                  onSave={changeIntegralSumHandler}
+                  sumType="integration"
+                  currentSum={currentSum}
+                  sumOptions={integrals?.options}
+                />
+              ),
+            },
+            {
+              icon: <ImLink />,
+              title: 'Fixed integration values',
+              onClick: toggleConstantSumHandler,
+              active: integrals?.options?.isSumConstant || false,
+            },
+            {
+              icon: <SvgNmrIntegrate />,
+              title: `${booleanToString(!showIntegralsValues)} integrals values`,
+              onClick: handleShowIntegralsValues,
+              active: showIntegralsValues,
+            },
+          ]}
+        />
       )}
       {isFlipped && (
         <PreferencesHeader

@@ -22,8 +22,11 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import { DropdownMenu, DropdownMenuProps } from '../../elements/DropdownMenu';
 import { PreferencesButton } from '../../elements/PreferencesButton';
+import {
+  ToolbarPopoverItem,
+  ToolbarPopoverMenuItem,
+} from '../../elements/ToolbarPopoverItem';
 import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
@@ -48,7 +51,7 @@ const styles: Record<'counter' | 'atomLabel', CSSProperties> = {
   },
 };
 
-const MOL_EXPORT_MENU: DropdownMenuProps['options'] = [
+const MOL_EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaCopy />,
     text: 'Copy as molfile V3',
@@ -218,22 +221,14 @@ export default function MoleculePanelHeader({
       <Toolbar>
         {renderSource === 'moleculePanel' && (
           <>
-            {' '}
-            <DropdownMenu
-              onSelect={(data) => {
-                exportHandler(data);
-              }}
-              placement="right-start"
-              targetTagName="div"
-              targetProps={{ style: { flex: 'none' } }}
+            <ToolbarPopoverItem
               options={MOL_EXPORT_MENU}
-            >
-              <Toolbar.Item
-                disabled={!hasMolecules}
-                title="Export As"
-                icon={<FaFileExport />}
-              />
-            </DropdownMenu>
+              onClick={exportHandler}
+              disabled={!hasMolecules}
+              title="Export As"
+              icon={<FaFileExport />}
+            />
+
             <Toolbar.Item
               title="Paste molfile"
               icon={<FaPaste />}
@@ -283,7 +278,9 @@ export default function MoleculePanelHeader({
           {`${+(currentIndex + 1)} / ${molecules.length}`}
         </p>
       )}
-      {onClickPreferences && <PreferencesButton onClick={onClickPreferences} />}
+      {onClickPreferences && (
+        <PreferencesButton title="Preferences" onClick={onClickPreferences} />
+      )}
 
       <ClipboardFallbackModal
         mode={shouldFallback}

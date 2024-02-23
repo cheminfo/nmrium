@@ -11,7 +11,6 @@ import {
 import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
 
 import {
   findRange,
@@ -25,9 +24,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
 import { useModal } from '../../elements/popup/Modal';
-import DefaultPanelHeader, {
-  createFilterLabel,
-} from '../header/DefaultPanelHeader';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
@@ -495,36 +492,31 @@ function SummaryPanel() {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const counter = correlationsData ? correlationsData.values.length : 0;
+  const total = correlationsData ? correlationsData.values.length : 0;
   return (
     <div css={panelStyle}>
       <DefaultPanelHeader
-        canDelete={false}
-        counter={counter}
-        counterLabel={createFilterLabel(
-          counter,
-          filterIsActive && filteredCorrelationsData?.values.length,
-        )}
+        total={total}
+        counter={filteredCorrelationsData?.values.length}
         onFilter={handleOnFilter}
         filterToolTip={
           filterIsActive
             ? 'Show all correlations'
             : 'Hide correlations out of view'
         }
+        leftButtons={[
+          {
+            icon: <FaFlask />,
+            title: `Set molecular formula (${correlationsData.options.mf})`,
+            onClick: showSetMolecularFormulaModal,
+          },
+          {
+            icon: <FaSlidersH />,
+            title: 'Set shift tolerance',
+            onClick: showSetShiftToleranceModal,
+          },
+        ]}
       >
-        <Toolbar>
-          <Toolbar.Item
-            icon={<FaFlask />}
-            title={`Set molecular formula (${correlationsData.options.mf})`}
-            onClick={showSetMolecularFormulaModal}
-          />
-          <Toolbar.Item
-            icon={<FaSlidersH />}
-            title="Set shift tolerance"
-            onClick={showSetShiftToleranceModal}
-          />
-        </Toolbar>
-
         <div className="extra-header-content">
           <div className="overview-container">
             <Overview correlationsData={correlationsData} />

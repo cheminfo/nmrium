@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { SvgNmrAssignment2 } from 'cheminfo-font';
 import { FaBolt } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D/isSpectrum1D';
 import { useChartData } from '../../context/ChartContext';
@@ -25,25 +24,27 @@ function useCheckEnableAutomaticAssignments() {
 function AutomaticAssignment() {
   const { getAssignments, assignments, restAssignments } = useAutoAssignments();
   const enabled = useCheckEnableAutomaticAssignments();
+
   return (
     <div css={tablePanelStyle}>
-      <DefaultPanelHeader showSettingButton={false} canDelete={false}>
-        <Toolbar>
-          <SpectraAutomaticPickingButton />
-
-          <Toolbar.Item
-            icon={<SvgNmrAssignment2 />}
-            title="Automatic assignment"
-            onClick={getAssignments}
-            disabled={!enabled}
-          />
-          <Toolbar.Item
-            icon={<FaBolt />}
-            title="Reset assignment"
-            onClick={restAssignments}
-          />
-        </Toolbar>
-      </DefaultPanelHeader>
+      <DefaultPanelHeader
+        leftButtons={[
+          {
+            component: <SpectraAutomaticPickingButton />,
+          },
+          {
+            icon: <SvgNmrAssignment2 />,
+            title: 'Automatic assignment',
+            onClick: getAssignments,
+            disabled: !enabled,
+          },
+          {
+            icon: <FaBolt />,
+            title: 'Reset assignment',
+            onClick: restAssignments,
+          },
+        ]}
+      />
 
       <div className="inner-container">
         <AutomaticAssignmentTable data={assignments} />

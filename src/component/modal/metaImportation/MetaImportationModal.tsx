@@ -216,7 +216,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
     <div css={ModalStyles} style={{ overflow: 'hidden' }}>
       <div className="header handle">
         <span>Import Meta Information</span>
-        <CloseButton onClick={onClose} className="close-bt" />
+        <CloseButton title="Close" onClick={onClose} className="close-bt" />
       </div>
 
       <div style={styles.container}>

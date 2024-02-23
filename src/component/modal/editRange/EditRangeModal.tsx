@@ -233,7 +233,7 @@ function EditRangeModal({
           title="Save and Exit"
         />
 
-        <CloseButton onClick={handleOnClose} />
+        <CloseButton title="Close" onClick={handleOnClose} />
       </div>
       <Formik
         innerRef={formRef}

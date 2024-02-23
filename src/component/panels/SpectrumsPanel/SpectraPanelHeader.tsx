@@ -7,7 +7,6 @@ import {
   FaEyeSlash,
 } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { Toolbar } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -18,7 +17,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader, {
-  createFilterLabel,
+  ToolbarItemProps,
 } from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
@@ -113,7 +112,7 @@ function SpectraPanelHeaderInner({
     dispatch({ type: 'RESET_SPECTRA_SCALE' });
   }
 
-  function recolorSpectraHandler() {
+  function reColorSpectraHandler() {
     dispatch({
       type: 'RECOLOR_SPECTRA_COLOR',
       payload: {},
@@ -122,59 +121,65 @@ function SpectraPanelHeaderInner({
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
   const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
 
+  let leftButtons: ToolbarItemProps[] = [
+    {
+      disabled: !hasActiveSpectra,
+      icon: <FaEyeSlash />,
+      title: 'Hide selected spectra',
+      onClick: hideAllSpectrumsHandler,
+    },
+    {
+      disabled: !hasActiveSpectra,
+      icon: <FaEye />,
+      title: 'Show selected spectra',
+      onClick: showAllSpectrumsHandler,
+    },
+  ];
+
+  if (displayerMode === '2D' && activeSpectrum?.info.isFt) {
+    leftButtons.push({
+      icon: <FaCreativeCommonsSamplingPlus />,
+      title: 'Add missing projection',
+      onClick: addMissingProjectionHandler,
+    });
+  }
+
+  if (displayerMode === '1D' && spectraLengthPerTab > 1) {
+    leftButtons.push(
+      {
+        icon: <SvgNmrResetScale />,
+        title: 'Reset scale',
+        onClick: resetScaleHandler,
+      },
+      {
+        icon: <SvgNmrSameTop />,
+        title: 'Same top',
+        onClick: setSameTopHandler,
+      },
+    );
+  }
+
+  leftButtons = leftButtons.concat([
+    {
+      component: <SpectraAutomaticPickingButton />,
+    },
+    {
+      icon: <IoColorPaletteOutline />,
+      title: 'Recolor spectra',
+      onClick: reColorSpectraHandler,
+    },
+  ]);
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
-      counter={data?.length}
-      counterLabel={createFilterLabel(data?.length, spectraLengthPerTab)}
+      total={data?.length}
+      counter={spectraLengthPerTab}
       deleteToolTip="Delete selected spectra"
       disableDelete={!hasActiveSpectra}
-      showSettingButton
       onSettingClick={onSettingClick}
-    >
-      <Toolbar>
-        <Toolbar.Item
-          disabled={!hasActiveSpectra}
-          icon={<FaEyeSlash />}
-          title="Hide selected spectra"
-          onClick={hideAllSpectrumsHandler}
-        />
-        <Toolbar.Item
-          disabled={!hasActiveSpectra}
-          icon={<FaEye />}
-          title="Show selected spectra"
-          onClick={showAllSpectrumsHandler}
-        />
-        {displayerMode === '2D' && activeSpectrum?.info.isFt && (
-          <Toolbar.Item
-            icon={<FaCreativeCommonsSamplingPlus />}
-            title="Add missing projection"
-            onClick={addMissingProjectionHandler}
-          />
-        )}
-        {displayerMode === '1D' && spectraLengthPerTab > 1 && (
-          <>
-            <Toolbar.Item
-              icon={<SvgNmrResetScale />}
-              title="Reset scale"
-              onClick={resetScaleHandler}
-            />
-            <Toolbar.Item
-              icon={<SvgNmrSameTop />}
-              title="Same top"
-              onClick={setSameTopHandler}
-            />
-          </>
-        )}
-        <SpectraAutomaticPickingButton />
-
-        <Toolbar.Item
-          icon={<IoColorPaletteOutline />}
-          title="Recolor spectra"
-          onClick={recolorSpectraHandler}
-        />
-      </Toolbar>
-    </DefaultPanelHeader>
+      leftButtons={leftButtons}
+    />
   );
 }
 

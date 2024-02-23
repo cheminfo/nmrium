@@ -118,7 +118,7 @@ export default function SetShiftToleranceModal({
     <div css={modalContainer}>
       <div className="header handle">
         <span>Set Shift Tolerances</span>
-        <CloseButton onClick={onClose} />
+        <CloseButton title="Close" onClick={onClose} />
       </div>
 
       <table>

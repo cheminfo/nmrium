@@ -1,10 +1,13 @@
-import { SvgNmrIntegrate } from 'cheminfo-font';
+import {
+  SvgNmrIntegrate,
+  SvgNmrPeaks,
+  SvgNmrPeaksTopLabels,
+} from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
-import { Toolbar } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
@@ -17,10 +20,8 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { FilterType } from '../../utility/filterType';
-import { PeaksToggleActions } from '../PeaksPanel/PeaksToggleActions';
-import DefaultPanelHeader, {
-  createFilterLabel,
-} from '../header/DefaultPanelHeader';
+import { booleanToString } from '../../utility/booleanToString';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 function RangesHeader({
   ranges,
@@ -154,97 +155,93 @@ function RangesHeader({
   }
 
   const hasRanges = Array.isArray(ranges?.values) && ranges.values.length > 0;
-  const counter = ranges?.values?.length || 0;
+  const total = ranges?.values?.length || 0;
   return (
     <div>
       <DefaultPanelHeader
-        counter={counter}
-        counterLabel={createFilterLabel(
-          counter,
-          isFilterActive && filterCounter,
-        )}
+        total={total}
+        counter={filterCounter}
         onDelete={handleDeleteAll}
         deleteToolTip="Delete All Ranges"
         onFilter={onFilterActivated}
         filterToolTip={
           isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
-        showSettingButton
         onSettingClick={onSettingClick}
-      >
-        <Toolbar>
-          <Toolbar.Item
-            disabled={!hasRanges}
-            icon={<FaFileExport />}
-            title="Preview publication string"
-            onClick={saveAsHTMLHandler}
-          />
-
-          <ChangeSumModal
-            onSave={changeRangesSumHandler}
-            sumType="ranges"
-            currentSum={currentSum}
-            sumOptions={ranges?.options}
-          />
-          <Toolbar.Item
-            disabled={!hasRanges}
-            icon={<FaUnlink />}
-            title="Remove all assignments"
-            onClick={handleOnRemoveAssignments}
-          />
-          <Toolbar.Item
-            disabled={!hasRanges}
-            icon={<FaSitemap />}
-            title={
-              showMultiplicityTrees
-                ? 'Hide multiplicity trees in spectrum'
-                : 'Show multiplicity trees in spectrum'
-            }
-            onClick={handleSetShowMultiplicityTrees}
-            active={showMultiplicityTrees}
-          />
-          <Toolbar.Item
-            disabled={!hasRanges}
-            icon={<FaChartBar />}
-            title={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
-            onClick={handleShowJGraph}
-            active={showJGraph}
-          />
-          <Toolbar.Item
-            disabled={!hasRanges}
-            icon={<SvgNmrIntegrate />}
-            title={showIntegrals ? 'Hide integrals' : 'Show integrals'}
-            onClick={handleShowIntegrals}
-            active={showIntegrals}
-          />
-          <Toolbar.Item
-            disabled={!hasRanges}
-            icon={<SvgNmrIntegrate />}
-            title={
-              showIntegralsValues
-                ? 'Hide integrals values'
-                : 'Show integrals values'
-            }
-            onClick={handleShowIntegralsValues}
-            active={showIntegralsValues}
-          />
-          <Toolbar.Item
-            icon={<ImLink />}
-            title="Fixed integration sum"
-            onClick={changeSumConstantFlagHandler}
-            active={ranges?.options?.isSumConstant}
-          />
-
-          <PeaksToggleActions
-            disabled={!hasRanges}
-            togglePeaksId="ranges-toggle-peaks"
-            togglePeaks={showPeaks}
-            onShowToggle={() => toggleViewProperty('showPeaks')}
-            toggleDisplayingMode={displayingMode}
-            onDisplayingModeToggle={toggleDisplayingMode}
-          />
-        </Toolbar>
-      </DefaultPanelHeader>
+        leftButtons={[
+          {
+            disabled: !hasRanges,
+            icon: <FaFileExport />,
+            title: 'Preview publication string',
+            onClick: saveAsHTMLHandler,
+          },
+          {
+            component: (
+              <ChangeSumModal
+                onSave={changeRangesSumHandler}
+                sumType="ranges"
+                currentSum={currentSum}
+                sumOptions={ranges?.options}
+              />
+            ),
+          },
+          {
+            disabled: !hasRanges,
+            icon: <FaUnlink />,
+            title: 'Remove all assignments',
+            onClick: handleOnRemoveAssignments,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <FaSitemap />,
+            title: `${booleanToString(!showMultiplicityTrees)} multiplicity trees in spectrum`,
+            onClick: handleSetShowMultiplicityTrees,
+            active: showMultiplicityTrees,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <FaChartBar />,
+            title: `${booleanToString(!showJGraph)} J Graph`,
+            onClick: handleShowJGraph,
+            active: showJGraph,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <SvgNmrIntegrate />,
+            title: `${booleanToString(!showIntegrals)} integrals`,
+            onClick: handleShowIntegrals,
+            active: showIntegrals,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <SvgNmrIntegrate />,
+            title: `${booleanToString(!showIntegralsValues)} integrals values`,
+            onClick: handleShowIntegralsValues,
+            active: showIntegralsValues,
+          },
+          {
+            icon: <ImLink />,
+            title: 'Fixed integration sum',
+            onClick: changeSumConstantFlagHandler,
+            active: ranges?.options?.isSumConstant,
+          },
+          {
+            id: 'ranges-toggle-peaks',
+            disabled: !hasRanges,
+            icon: <SvgNmrPeaks />,
+            title: `${booleanToString(!showPeaks)} peaks`,
+            onClick: () => toggleViewProperty('showPeaks'),
+            active: showPeaks,
+          },
+          {
+            disabled: !hasRanges,
+            icon: <SvgNmrPeaksTopLabels />,
+            title: `${displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
+            onClick: toggleDisplayingMode,
+            active: displayingMode === 'spread',
+          },
+        ]}
+      />
 
       <ClipboardFallbackModal
         mode={shouldFallback}
