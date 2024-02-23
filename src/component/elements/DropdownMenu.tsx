@@ -1,39 +1,41 @@
+import { Menu, MenuItem, MenuItemProps } from '@blueprintjs/core';
 import {
-  Menu,
-  MenuItem,
-  MenuItemProps,
-  Popover,
-  PopoverProps,
-} from '@blueprintjs/core';
+  Toolbar,
+  ToolbarPopoverItemProps,
+  ToolbarItemProps,
+} from 'react-science/ui';
 
 export interface DropdownMenuItem extends MenuItemProps {
   data?: object;
 }
 
 export interface DropdownMenuProps
-  extends Omit<PopoverProps, 'onSelect' | 'content'> {
+  extends Omit<ToolbarPopoverItemProps, 'onClick' | 'content' | 'itemProps'>,
+    ToolbarItemProps {
   options: DropdownMenuItem[];
-  onSelect: (data?: object) => void;
+  onClick: (data?: object) => void;
 }
 
 export function DropdownMenu(props: DropdownMenuProps) {
-  const { options, onSelect, children, ...other } = props;
-
-  const content = (
-    <Menu>
-      {options.map((option) => (
-        <MenuItem
-          key={JSON.stringify(option)}
-          {...option}
-          onClick={() => onSelect(option?.data)}
-        />
-      ))}
-    </Menu>
-  );
+  const { options, onClick, ...itemProps } = props;
 
   return (
-    <Popover {...other} content={content}>
-      {children}
-    </Popover>
+    <Toolbar.PopoverItem
+      content={
+        <Menu>
+          {options.map((option) => {
+            const { data, ...otherOptions } = option;
+            return (
+              <MenuItem
+                key={JSON.stringify(options)}
+                {...otherOptions}
+                onClick={() => onClick(data)}
+              />
+            );
+          })}
+        </Menu>
+      }
+      itemProps={itemProps}
+    />
   );
 }
