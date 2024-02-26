@@ -1,12 +1,6 @@
-import { Spectrum1D } from 'nmr-load-save';
-import {
-  CSSProperties,
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Spectrum2D } from 'nmr-load-save';
+import { Filters } from 'nmr-processing';
+import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 
 import { stringCapitalize } from '../../utils/stringCapitalize';
 import { useActivePhaseTraces } from '../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
@@ -16,11 +10,13 @@ import Input, { InputStyle } from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
 import Select from '../elements/Select';
+import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
-import { TraceDirection } from '../reducer/Reducer';
+import { PhaseCorrectionTraceData, TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+import { NmrData2DFt } from 'cheminfo-types';
 
 const selectStyle: CSSProperties = {
   marginLeft: '5px',
@@ -49,10 +45,10 @@ const TRACE_DIRECTIONS: Array<{ label: string; value: TraceDirection }> = (
 const emptyData = { datum: {}, filter: null };
 
 export default function PhaseCorrectionTwoDimensionsPanel() {
-  const { ph0, ph1, pivot, activeTraceDirection } = useActivePhaseTraces();
+  const { activeTraceDirection, pivot } = useActivePhaseTraces();
 
-  const { data } = useSpectrum(emptyData) as Spectrum1D;
-  const activeDirection = useDeferredValue(activeTraceDirection);
+  const { data } = useSpectrum(emptyData) as Spectrum2D;
+  const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
 
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
@@ -62,26 +58,47 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   const ph1Ref = useRef<any>();
 
   useEffect(() => {
-    if (activeDirection !== activeTraceDirection) {
+    if (filter) {
+      const { value } = filter;
+      const { ph0, ph1 } = value[
+        activeTraceDirection
+      ] as PhaseCorrectionTraceData;
       setValue({ ph0, ph1 });
       valueRef.current = { ph0, ph1 };
     }
-  }, [activeDirection, activeTraceDirection, ph0, ph1]);
+    if (ph0Ref.current && ph1Ref.current) {
+      if (filter) {
+        const { value } = filter;
+        const { ph0, ph1 } = value[
+          activeTraceDirection
+        ] as PhaseCorrectionTraceData;
+        ph0Ref.current.setValue(ph0);
+        ph1Ref.current.setValue(ph1);
+      } else {
+        ph0Ref.current.setValue(valueRef.current.ph0);
+        ph1Ref.current.setValue(valueRef.current.ph1);
+      }
+    }
+  }, [activeTraceDirection, filter]);
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
-      if (filedName === 'ph1' && data.re && pivot) {
+      if (filedName === 'ph1' && data && pivot) {
+        const datum = (data as NmrData2DFt).rr;
+        const nbPoints =
+          activeTraceDirection === 'horizontal'
+            ? datum.z[0].length
+            : datum.z.length;
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
-        newValues.ph0 +=
-          diff0 - (diff1 * (data.re.length - pivot?.index)) / data.re.length;
+        newValues.ph0 += diff0 - (diff1 * (nbPoints - pivot?.index)) / nbPoints;
       }
       dispatch({
         type: 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
         payload: newValues,
       });
     },
-    [data.re, dispatch, pivot],
+    [activeTraceDirection, data, dispatch, pivot],
   );
 
   const updateInputRangeInitialValue = useCallback((value) => {
@@ -131,9 +148,8 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
     });
   }
 
-  /*eslint-disable unicorn/consistent-function-scoping */
   function handleApplyFilter() {
-    //TODO implement apply filter
+    dispatch({ type: 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER' });
   }
 
   return (

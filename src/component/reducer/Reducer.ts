@@ -68,6 +68,25 @@ export interface TwoDimensionPhaseCorrection {
   activeTraceDirection: TraceDirection;
 }
 
+export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =
+  (): TwoDimensionPhaseCorrection['traces'] => {
+    const directions: [TraceDirection, TraceDirection] = [
+      'horizontal',
+      'vertical',
+    ];
+    const result = {};
+    for (const direction of directions) {
+      result[direction] = {
+        ph0: 0,
+        ph1: 0,
+        pivot: null,
+        spectra: [],
+        scaleRatio: 1,
+      };
+    }
+    return result as TwoDimensionPhaseCorrection['traces'];
+  };
+
 export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
@@ -143,22 +162,7 @@ export const getInitialState = (): State => ({
       apodizationOptions: {} as ApodizationOptions,
       twoDimensionPhaseCorrection: {
         activeTraceDirection: 'horizontal',
-        traces: {
-          horizontal: {
-            ph0: 0,
-            ph1: 0,
-            pivot: null,
-            spectra: [],
-            scaleRatio: 1,
-          },
-          vertical: {
-            ph0: 0,
-            ph1: 0,
-            pivot: null,
-            spectra: [],
-            scaleRatio: 1,
-          },
-        },
+        traces: getDefaultTwoDimensionsPhaseCorrectionTraceOptions(),
       },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
@@ -511,6 +515,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleCalculateManualTwoDimensionPhaseCorrection(
           draft,
           action,
+        );
+      case 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER':
+        return FiltersActions.handleApplyManualTowDimensionsPhaseCorrectionFilter(
+          draft,
         );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
