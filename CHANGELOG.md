@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.50.1](https://github.com/cheminfo/nmrium/compare/v0.50.0...v0.50.1) (2024-02-26)
+
+
+### Documentation
+
+* add BigMap in about NMRium ([#2925](https://github.com/cheminfo/nmrium/issues/2925)) ([5cb4fc4](https://github.com/cheminfo/nmrium/commit/5cb4fc4cde64221d01d13bff7c8cebb209ca14eb))
+* fix bigmap funding ([#2924](https://github.com/cheminfo/nmrium/issues/2924)) ([52eeaf7](https://github.com/cheminfo/nmrium/commit/52eeaf7608ddd967513bba080e2f552be1c7a864))
+
 ## [0.50.0](https://github.com/cheminfo/nmrium/compare/v0.49.0...v0.50.0) (2024-02-21)
 
 
