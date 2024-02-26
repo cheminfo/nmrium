@@ -85,6 +85,10 @@
       {
         "file": "./data/ethylvinylether/1h.json",
         "title": "1H ethylvinylether"
+      },
+      {
+        "file": "./data/BocAA/BocAA.json",
+        "title": "1H BocAA"
       }
     ]
   },
