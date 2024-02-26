@@ -1,0 +1,22 @@
+{
+  "version": 6,
+  "data": {
+    "source": {
+      "entries": [
+        {
+          "relativePath": "data/BocAA/1h.jdx"
+        }
+      ]
+    },
+    "molecules": [],
+    "spectra": [
+      {
+        "sourceSelector": {
+          "jcamp": {
+            "index": 0
+          }
+        }
+      }
+    ]
+  }
+}
