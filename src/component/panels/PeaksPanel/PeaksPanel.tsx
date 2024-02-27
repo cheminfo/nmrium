@@ -17,8 +17,8 @@ import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPe
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
-import { FilterType } from '../../utility/filterType';
 import { booleanToString } from '../../utility/booleanToString';
+import { FilterType } from '../../utility/filterType';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
   ToolbarItemProps,

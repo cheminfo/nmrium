@@ -18,8 +18,8 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { DisplayerMode } from '../../reducer/Reducer';
-import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { booleanToString } from '../../utility/booleanToString';
+import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
   ToolbarItemProps,

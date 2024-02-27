@@ -1,6 +1,8 @@
+import { Spectrum2D } from 'nmr-load-save';
 import { ReactNode } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
+import useSpectrum from '../../../hooks/useSpectrum';
 import { TraceDirection } from '../../../reducer/Reducer';
 import { PathBuilder } from '../../../utility/PathBuilder';
 import {
@@ -22,10 +24,13 @@ interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
 function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
   const { width, margin, height, xDomain, yDomain, mode } = useChartData();
   const { scaleRatio } = useActivePhaseTraces();
+  const spectrum = useSpectrum() as Spectrum2D;
+
+  if (!spectrum) return '';
 
   if (direction === 'horizontal') {
     const scaleX = get2DXScale({ margin, width, xDomain, mode });
-    const scaleY = getSliceYScale(y, height, 'RTL', {
+    const scaleY = getSliceYScale(spectrum.data, height, 'RTL', {
       margin: margin.top + margin.bottom,
       scaleRatio,
     });
@@ -40,7 +45,7 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
   }
 
   const scaleX = get2DYScale({ margin, height, yDomain });
-  const scaleY = getSliceYScale(y, width, 'RTL', {
+  const scaleY = getSliceYScale(spectrum.data, width, 'RTL', {
     margin: margin.left + margin.right,
     scaleRatio,
   });

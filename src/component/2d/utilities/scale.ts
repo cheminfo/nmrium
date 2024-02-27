@@ -1,5 +1,5 @@
+import { NmrData2D } from 'cheminfo-types';
 import { scaleLinear } from 'd3';
-import { xMaxValue } from 'ml-spectra-processing';
 
 import { useChartData } from '../../context/ChartContext';
 import { Margin, SpectraDirection } from '../../reducer/Reducer';
@@ -99,14 +99,27 @@ interface SliceYScaleOptions {
   scaleRatio?: number;
 }
 
+function getMax(data: NmrData2D) {
+  let max;
+
+  for (const key in data) {
+    const { minZ, maxZ } = data[key];
+    const innerMax = Math.max(Math.abs(minZ), Math.max(maxZ));
+    if (max === undefined || max > innerMax) {
+      max = innerMax;
+    }
+  }
+  return max;
+}
+
 function getSliceYScale(
-  data: Float64Array,
+  data: NmrData2D,
   size: number,
   mode: SpectraDirection,
   options: SliceYScaleOptions = {},
 ) {
   const { margin = 10, scaleRatio = 1 } = options;
-  const max = xMaxValue(data);
+  const max = getMax(data);
   size = mode === 'RTL' ? size : size / 2;
   return scaleLinear([0, max * scaleRatio] as number[], [
     size - margin,

@@ -1,3 +1,4 @@
+import { NmrData2DFt } from 'cheminfo-types';
 import { Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
@@ -16,7 +17,6 @@ import { PhaseCorrectionTraceData, TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import { NmrData2DFt } from 'cheminfo-types';
 
 const selectStyle: CSSProperties = {
   marginLeft: '5px',
