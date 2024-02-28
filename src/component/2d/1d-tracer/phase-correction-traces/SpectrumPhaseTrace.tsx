@@ -2,7 +2,9 @@ import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { ReactNode } from 'react';
 
+import { getSlice } from '../../../../data/data2d/Spectrum2D';
 import { useChartData } from '../../../context/ChartContext';
+import { useActiveSpectrum } from '../../../hooks/useActiveSpectrum';
 import useSpectrum from '../../../hooks/useSpectrum';
 import { TraceDirection } from '../../../reducer/Reducer';
 import { PathBuilder } from '../../../utility/PathBuilder';
@@ -10,17 +12,23 @@ import {
   get2DXScale,
   get2DYScale,
   getSliceYScale,
+  useScale2DX,
+  useScale2DY,
 } from '../../utilities/scale';
 
 import { useActivePhaseTraces } from './useActivePhaseTraces';
 
-interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
-  data: { x: Float64Array; re: Float64Array };
-  position: { x: number; y: number };
+interface BaseComponentProps extends React.SVGAttributes<SVGGElement> {
   children?: ReactNode;
-  dataSource: 'mouse' | 'tracesState';
 }
 
+interface InnerSpectrumPhaseTraceProps extends BaseComponentProps {
+  data: { x: Float64Array; re: Float64Array };
+}
+interface SpectrumPhaseTraceProps extends BaseComponentProps {
+  positionUnit: 'PPM' | 'Pixel';
+  position: { x: number; y: number };
+}
 function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
   const { width, margin, height, xDomain, yDomain, mode } = useChartData();
   const { scaleRatio } = useActivePhaseTraces();
@@ -62,13 +70,67 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
 }
 
 export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
-  const {
-    data: dataBeforePhasing,
-    position,
-    children,
-    dataSource,
-    ...othersProps
-  } = props;
+  const { positionUnit, position, children, ...otherProps } = props;
+  const { tempData, width, margin, height } = useChartData();
+  const { activeTraceDirection: direction } = useActivePhaseTraces();
+
+  const scale2dX = useScale2DX();
+  const scale2dY = useScale2DY();
+
+  const activeSpectrum = useActiveSpectrum();
+  if (!activeSpectrum?.id) {
+    return null;
+  }
+
+  const spectrumBeforePhasing = tempData[activeSpectrum.index] as Spectrum2D;
+  let positionInPixel;
+  let positionInPPM;
+
+  if (positionUnit === 'Pixel') {
+    positionInPixel = position;
+    positionInPPM = {
+      x: scale2dX.invert(position.x),
+      y: scale2dY.invert(position.y),
+    };
+  } else {
+    positionInPixel = {
+      x: scale2dX(position.x),
+      y: scale2dY(position.y),
+    };
+
+    positionInPPM = position;
+  }
+
+  const sliceData = getSlice(spectrumBeforePhasing, positionInPPM, {
+    sliceType: 'both',
+  });
+
+  const data = sliceData?.[direction]?.data;
+  if (!data) {
+    return null;
+  }
+
+  const innerHeight = height - margin.top - margin.bottom;
+  const innerWidth = width - margin.left - margin.right;
+
+  const translateY =
+    direction === 'horizontal' ? positionInPixel.y - innerHeight : 0;
+  const translateX =
+    direction === 'vertical' ? positionInPixel.x - innerWidth : 0;
+
+  return (
+    <InnerSpectrumPhaseTrace
+      transform={`translate(${translateX} ${translateY})`}
+      {...otherProps}
+      data={data}
+    >
+      {children}
+    </InnerSpectrumPhaseTrace>
+  );
+}
+
+function InnerSpectrumPhaseTrace(props: InnerSpectrumPhaseTraceProps) {
+  const { data: dataBeforePhasing, children, ...othersProps } = props;
   const {
     color,
     activeTraceDirection: direction,
@@ -76,7 +138,6 @@ export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
     ph1,
   } = useActivePhaseTraces();
 
-  const { width, margin, height } = useChartData();
   const spectrum = {
     data: dataBeforePhasing,
     info: { isComplex: true, isFid: false },
@@ -89,19 +150,9 @@ export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
 
   const { x, re } = spectrum.data;
   const path = usePath(x, re, direction);
-  const innerheight = height - margin.top - margin.bottom;
-  const innerWidth = width - margin.left - margin.right;
-
-  const translateY = direction === 'horizontal' ? position.y - innerheight : 0;
-  const translateX = direction === 'vertical' ? position.x - innerWidth : 0;
 
   return (
-    <g
-      style={{
-        transform: `translate(${translateX}px,${translateY}px) `,
-      }}
-      {...othersProps}
-    >
+    <g {...othersProps}>
       <path
         className="line"
         stroke={color}

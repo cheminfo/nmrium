@@ -1,5 +1,4 @@
 import { v4 } from '@lukeed/uuid';
-import { NmrData1D } from 'cheminfo-types';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
@@ -50,7 +49,6 @@ export type SpectraDirection = 'RTL' | 'LTR';
 export type TraceDirection = 'vertical' | 'horizontal';
 export interface SpectrumTrace {
   id: string;
-  data: NmrData1D;
   x: number;
   y: number;
 }

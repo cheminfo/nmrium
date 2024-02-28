@@ -1,12 +1,12 @@
 import type { Draft } from 'immer';
 
+import { useChartData } from '../../context/ChartContext';
 import type {
   PhaseCorrectionTraceData,
   State,
   TraceDirection,
   TwoDimensionPhaseCorrection,
 } from '../Reducer';
-import { useChartData } from '../../context/ChartContext';
 
 export function getTwoDimensionPhaseCorrectionOptions(
   state: Draft<State> | State,

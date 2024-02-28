@@ -8,7 +8,7 @@ export function PhaseTraces() {
   const { width, height, margin, displayerKey } = useChartData();
   const activeSpectrum = useActiveSpectrum();
 
-  if (!activeSpectrum?.id) return null;
+  if (!activeSpectrum?.id || !width || !height) return null;
 
   const clipWidth = width - margin.left - margin.right;
   const clipHeight = height - margin.top - margin.bottom;
