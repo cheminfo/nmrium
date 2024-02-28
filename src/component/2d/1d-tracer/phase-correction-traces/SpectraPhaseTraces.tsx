@@ -54,7 +54,6 @@ function PhaseTrace(props: SpectrumTraceProps) {
 
   const {
     spectrum: { data, x, y, id },
-    color,
     direction,
   } = props;
   const highligh = useHighlight([id], {
@@ -72,10 +71,9 @@ function PhaseTrace(props: SpectrumTraceProps) {
 
   return (
     <SpectrumPhaseTrace
+      dataSource="tracesState"
       data={data}
       position={{ x: scale2dX(x), y: scale2dY(y) }}
-      color={color}
-      direction={direction}
       {...highligh.onHover}
       css={style}
     >

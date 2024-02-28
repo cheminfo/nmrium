@@ -10,7 +10,7 @@ import { SpectrumPhaseTrace } from './SpectrumPhaseTrace';
 import { useActivePhaseTraces } from './useActivePhaseTraces';
 
 export function PhaseTraceWithMouse() {
-  const { width, height, data: spectra } = useChartData();
+  const { width, height, tempData } = useChartData();
   const activeSpectrum = useActiveSpectrum();
   const { activeTraceDirection, color } = useActivePhaseTraces();
   const position = useMouseTracker();
@@ -21,12 +21,16 @@ export function PhaseTraceWithMouse() {
   if (!position || !width || !height || !activeSpectrum?.id) {
     return null;
   }
-  const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+  const spectrum = tempData[activeSpectrum.index] as Spectrum2D;
 
-  const sliceData = getSlice(spectrum, {
-    x: scale2dX.invert(position.x),
-    y: scale2dY.invert(position.y),
-  });
+  const sliceData = getSlice(
+    spectrum,
+    {
+      x: scale2dX.invert(position.x),
+      y: scale2dY.invert(position.y),
+    },
+    { sliceType: 'both' },
+  );
 
   const data = sliceData?.[activeTraceDirection]?.data;
   if (!data) {
@@ -35,6 +39,7 @@ export function PhaseTraceWithMouse() {
 
   return (
     <SpectrumPhaseTrace
+      dataSource="mouse"
       data={data}
       position={position}
       color={color}

@@ -1,4 +1,5 @@
-import { Spectrum2D } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { Filters } from 'nmr-processing';
 import { ReactNode } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
@@ -16,9 +17,8 @@ import { useActivePhaseTraces } from './useActivePhaseTraces';
 interface SpectrumPhaseTraceProps extends React.SVGAttributes<SVGGElement> {
   data: { x: Float64Array; re: Float64Array };
   position: { x: number; y: number };
-  color: string;
-  direction: TraceDirection;
   children?: ReactNode;
+  dataSource: 'mouse' | 'tracesState';
 }
 
 function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
@@ -62,10 +62,32 @@ function usePath(x: Float64Array, y: Float64Array, direction: TraceDirection) {
 }
 
 export function SpectrumPhaseTrace(props: SpectrumPhaseTraceProps) {
-  const { data, position, color, direction, children, ...othersProps } = props;
-  const { width, margin, height } = useChartData();
+  const {
+    data: dataBeforePhasing,
+    position,
+    children,
+    dataSource,
+    ...othersProps
+  } = props;
+  const {
+    color,
+    activeTraceDirection: direction,
+    ph0,
+    ph1,
+  } = useActivePhaseTraces();
 
-  const { x, re } = data;
+  const { width, margin, height } = useChartData();
+  const spectrum = {
+    data: dataBeforePhasing,
+    info: { isComplex: true, isFid: false },
+  };
+
+  Filters.phaseCorrection.apply(spectrum as unknown as Spectrum1D, {
+    ph0,
+    ph1,
+  });
+
+  const { x, re } = spectrum.data;
   const path = usePath(x, re, direction);
   const innerheight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
