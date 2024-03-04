@@ -1,29 +1,24 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { NmrData2DFt } from 'cheminfo-types';
 import { Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
-import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { stringCapitalize } from '../../utils/stringCapitalize';
 import { useActivePhaseTraces } from '../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Input, { InputStyle } from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
-import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 import { PhaseCorrectionTraceData, TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-
-const selectStyle: CSSProperties = {
-  marginLeft: '5px',
-  marginRight: '10px',
-  border: 'none',
-  height: '20px',
-};
+import { Toolbar } from 'react-science/ui';
+import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 
 const inputStyle: InputStyle = {
   input: {
@@ -34,13 +29,6 @@ const inputStyle: InputStyle = {
     height: '100%',
   },
 };
-
-const TRACE_DIRECTIONS: Array<{ label: string; value: TraceDirection }> = (
-  ['horizontal', 'vertical'] as TraceDirection[]
-).map((key) => ({
-  label: stringCapitalize(key),
-  value: key,
-}));
 
 const emptyData = { datum: {}, filter: null };
 
@@ -141,7 +129,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
     });
   }, [dispatch]);
 
-  function onChangeHandler(direction) {
+  function onChangeHandler(direction: TraceDirection) {
     dispatch({
       type: 'CHANGE_PHASE_CORRECTION_DIRECTION',
       payload: { direction },
@@ -153,52 +141,66 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   }
 
   return (
-    <HeaderContainer>
-      <Select
-        onChange={onChangeHandler}
-        items={TRACE_DIRECTIONS}
-        defaultValue={activeTraceDirection}
-        style={selectStyle}
-      />
+    <HeaderContainer style={{ padding: '0 5px' }}>
+      <Label title="Direction :" style={headerLabelStyle}>
+        <Toolbar>
+          <Toolbar.Item
+            css={css`
+              border: 1px solid #f7f7f7;
+            `}
+            title="Horizontal"
+            icon={<FaRulerHorizontal />}
+            active={activeTraceDirection === 'horizontal'}
+            onClick={() => onChangeHandler('horizontal')}
+          />
+          <Toolbar.Item
+            css={css`
+              border: 1px solid #f7f7f7;
+            `}
+            title="Vertical"
+            icon={<FaRulerVertical />}
+            active={activeTraceDirection === 'vertical'}
+            onClick={() => onChangeHandler('vertical')}
+          />
+        </Toolbar>
+      </Label>
 
-      <>
-        <Label title="PH0 :" style={headerLabelStyle}>
-          <Input
-            name="ph0"
-            style={inputStyle}
-            onChange={handleInput}
-            value={value.ph0}
-            type="number"
-            debounceTime={250}
-          />
-        </Label>
-        <Label title="PH1 :" style={headerLabelStyle}>
-          <Input
-            name="ph1"
-            style={inputStyle}
-            onChange={handleInput}
-            value={value.ph1}
-            type="number"
-            debounceTime={250}
-          />
-        </Label>
-        <InputRange
-          ref={ph0Ref}
+      <Label title="PH0 :" style={headerLabelStyle}>
+        <Input
           name="ph0"
-          label="Change PH0 (click and drag)"
-          shortLabel="Ph0"
-          style={{ width: '20%' }}
-          onChange={handleRangeChange}
+          style={inputStyle}
+          onChange={handleInput}
+          value={value.ph0}
+          type="number"
+          debounceTime={250}
         />
-        <InputRange
-          ref={ph1Ref}
+      </Label>
+      <Label title="PH1 :" style={headerLabelStyle}>
+        <Input
           name="ph1"
-          label="Change PH1 (click and drag)"
-          shortLabel="Ph1"
-          style={{ width: '20%' }}
-          onChange={handleRangeChange}
+          style={inputStyle}
+          onChange={handleInput}
+          value={value.ph1}
+          type="number"
+          debounceTime={250}
         />
-      </>
+      </Label>
+      <InputRange
+        ref={ph0Ref}
+        name="ph0"
+        label="Change PH0 (click and drag)"
+        shortLabel="Ph0"
+        style={{ width: '20%' }}
+        onChange={handleRangeChange}
+      />
+      <InputRange
+        ref={ph1Ref}
+        name="ph1"
+        label="Change PH1 (click and drag)"
+        shortLabel="Ph1"
+        style={{ width: '20%' }}
+        onChange={handleRangeChange}
+      />
 
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </HeaderContainer>
