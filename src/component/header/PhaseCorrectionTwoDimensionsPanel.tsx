@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { NmrData2DFt } from 'cheminfo-types';
+import debounce from 'lodash/debounce';
 import { Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { useActivePhaseTraces } from '../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
 import { useDispatch } from '../context/DispatchContext';
@@ -17,8 +20,6 @@ import { PhaseCorrectionTraceData, TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-import { Toolbar } from 'react-science/ui';
-import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 
 const inputStyle: InputStyle = {
   input: {
@@ -37,6 +38,14 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
 
   const { data } = useSpectrum(emptyData) as Spectrum2D;
   const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
+  const debounceCalculation = useRef(
+    debounce((options) => {
+      dispatch({
+        type: 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
+        payload: { ...options, applyOn2D: true },
+      });
+    }, 250),
+  );
 
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
@@ -70,7 +79,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   }, [activeTraceDirection, filter]);
 
   const calcPhaseCorrectionHandler = useCallback(
-    (newValues, filedName) => {
+    (newValues, filedName, source: 'input' | 'inputRange') => {
       if (filedName === 'ph1' && data && pivot) {
         const datum = (data as NmrData2DFt).rr;
         const nbPoints =
@@ -81,10 +90,15 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
         const diff1 = newValues.ph1 - valueRef.current.ph1;
         newValues.ph0 += diff0 - (diff1 * (nbPoints - pivot?.index)) / nbPoints;
       }
+
       dispatch({
         type: 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
-        payload: newValues,
+        payload: { ...newValues, applyOn2D: source === 'input' },
       });
+
+      if (source === 'inputRange') {
+        debounceCalculation.current(newValues);
+      }
     },
     [activeTraceDirection, data, dispatch, pivot],
   );
@@ -102,7 +116,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
         const newValue = { ...valueRef.current, [name]: Number(value) };
 
         if (String(value).trim() !== '-') {
-          calcPhaseCorrectionHandler(newValue, name);
+          calcPhaseCorrectionHandler(newValue, name, 'input');
         }
         updateInputRangeInitialValue(newValue);
         valueRef.current = newValue;
@@ -115,7 +129,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   const handleRangeChange = useCallback(
     (e) => {
       const newValue = { ...valueRef.current, [e.name]: e.value };
-      calcPhaseCorrectionHandler(newValue, e.name);
+      calcPhaseCorrectionHandler(newValue, e.name, 'inputRange');
       updateInputRangeInitialValue(newValue);
       valueRef.current = newValue;
       setValue(valueRef.current);

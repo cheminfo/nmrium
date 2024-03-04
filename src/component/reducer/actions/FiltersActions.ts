@@ -85,9 +85,12 @@ type ZeroFillingFilterLiveAction = ActionType<
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
-  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER'
-  | 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
+  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
   { ph0: number; ph1: number }
+>;
+type ManualTwoDimensionsPhaseCorrectionFilterAction = ActionType<
+  'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
+  { ph0: number; ph1: number; applyOn2D?: boolean }
 >;
 
 type BaselineCorrectionFilterOptions = Omit<BaselineCorrectionOptions, 'zones'>;
@@ -172,6 +175,7 @@ export type FiltersActions =
   | DeletePhaseCorrectionTrace
   | SetOneDimensionPhaseCorrectionPivotPoint
   | SetTwoDimensionPhaseCorrectionPivotPoint
+  | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ActionType<
       | 'APPLY_FFT_FILTER'
       | 'APPLY_FFT_DIMENSION_1_FILTER'
@@ -1309,12 +1313,31 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
 //action
 function handleCalculateManualTwoDimensionPhaseCorrection(
   draft: Draft<State>,
-  action: ManualPhaseCorrectionFilterAction,
+  action: ManualTwoDimensionsPhaseCorrectionFilterAction,
 ) {
+  const activeSpectrum = getActiveSpectrum(draft);
   const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
-  const { ph0, ph1 } = action.payload;
+  const { ph0, ph1, applyOn2D = false } = action.payload;
   activeTraces.ph0 = ph0;
   activeTraces.ph1 = ph1;
+
+  if (!applyOn2D || !activeSpectrum) {
+    return;
+  }
+
+  const { index } = activeSpectrum;
+  const spectrum = draft.tempData[index];
+
+  if (!isSpectrum2D(spectrum)) {
+    return;
+  }
+
+  const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
+
+  const { data, info } = spectrum;
+  const _data = { data, info };
+  phaseCorrectionTwoDimensions.apply(_data, filterOptions);
+  draft.data[index].data = _data.data;
 }
 
 function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {
