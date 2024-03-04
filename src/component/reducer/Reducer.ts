@@ -64,6 +64,7 @@ export interface PhaseCorrectionTraceData {
 export interface TwoDimensionPhaseCorrection {
   traces: Record<TraceDirection, PhaseCorrectionTraceData>;
   activeTraceDirection: TraceDirection;
+  addTracesToBothDirections: boolean;
 }
 
 export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =
@@ -160,6 +161,7 @@ export const getInitialState = (): State => ({
       apodizationOptions: {} as ApodizationOptions,
       twoDimensionPhaseCorrection: {
         activeTraceDirection: 'horizontal',
+        addTracesToBothDirections: true,
         traces: getDefaultTwoDimensionsPhaseCorrectionTraceOptions(),
       },
       pivot: { value: 0, index: 0 },
@@ -497,6 +499,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS':
+        return FiltersActions.handleToggleAddTracesToBothDirections(draft);
       case 'DELETE_PHASE_CORRECTION_TRACE':
         return FiltersActions.handleDeletePhaseCorrectionTrace(draft, action);
       case 'SET_ONE_DIMENSION_PIVOT_POINT':

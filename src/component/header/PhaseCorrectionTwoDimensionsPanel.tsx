@@ -6,6 +6,7 @@ import { Spectrum2D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
+import { MdLooksTwo } from 'react-icons/md';
 import { Toolbar } from 'react-science/ui';
 
 import { useActivePhaseTraces } from '../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
@@ -34,7 +35,8 @@ const inputStyle: InputStyle = {
 const emptyData = { datum: {}, filter: null };
 
 export default function PhaseCorrectionTwoDimensionsPanel() {
-  const { activeTraceDirection, pivot } = useActivePhaseTraces();
+  const { activeTraceDirection, pivot, addTracesToBothDirections } =
+    useActivePhaseTraces();
 
   const { data } = useSpectrum(emptyData) as Spectrum2D;
   const filter = useFilter(Filters.phaseCorrectionTwoDimensions.id);
@@ -154,6 +156,10 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
     dispatch({ type: 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER' });
   }
 
+  function handleToggleAddTraceToBothDirections() {
+    dispatch({ type: 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS' });
+  }
+
   return (
     <HeaderContainer style={{ padding: '0 5px' }}>
       <Label title="Direction :" style={headerLabelStyle}>
@@ -178,6 +184,16 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
           />
         </Toolbar>
       </Label>
+      <div style={{ paddingRight: '5px' }}>
+        <Toolbar>
+          <Toolbar.Item
+            title="Add the trace in both directions"
+            icon={<MdLooksTwo />}
+            active={addTracesToBothDirections}
+            onClick={handleToggleAddTraceToBothDirections}
+          />
+        </Toolbar>
+      </div>
 
       <Label title="PH0 :" style={headerLabelStyle}>
         <Input

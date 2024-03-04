@@ -16,7 +16,11 @@ export function getTwoDimensionPhaseCorrectionOptions(
   const {
     toolOptions: {
       data: {
-        twoDimensionPhaseCorrection: { traces, activeTraceDirection },
+        twoDimensionPhaseCorrection: {
+          traces,
+          activeTraceDirection,
+          addTracesToBothDirections,
+        },
       },
     },
   } = state;
@@ -24,6 +28,7 @@ export function getTwoDimensionPhaseCorrectionOptions(
     activeTraces: traces[activeTraceDirection],
     traces,
     activeTraceDirection,
+    addTracesToBothDirections,
   };
 }
 

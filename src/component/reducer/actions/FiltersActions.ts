@@ -183,6 +183,7 @@ export type FiltersActions =
       | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
       | 'APPLY_ABSOLUTE_FILTER'
       | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
     >;
 
 function getFilterUpdateDomainRules(
@@ -843,7 +844,8 @@ function handleAddPhaseCorrectionTrace(
     data: spectra,
   } = draft;
 
-  const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
+  const { activeTraces, traces, addTracesToBothDirections } =
+    getTwoDimensionPhaseCorrectionOptions(draft);
 
   if (activeSpectrum?.id) {
     const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
@@ -853,15 +855,30 @@ function handleAddPhaseCorrectionTrace(
       const scale2dY = get2DYScale({ margin, height, yDomain });
       const xPPM = scale2dX.invert(x);
       const yPPM = scale2dY.invert(y);
-
-      activeTraces.spectra.push({
-        id: v4(),
-        x: xPPM,
-        y: yPPM,
-      });
+      if (addTracesToBothDirections) {
+        for (const direction of Object.keys(traces)) {
+          traces[direction].spectra.push({
+            id: v4(),
+            x: xPPM,
+            y: yPPM,
+          });
+        }
+      } else {
+        activeTraces.spectra.push({
+          id: v4(),
+          x: xPPM,
+          y: yPPM,
+        });
+      }
     }
   }
 }
+//action
+function handleToggleAddTracesToBothDirections(draft: Draft<State>) {
+  const options = draft.toolOptions.data.twoDimensionPhaseCorrection;
+  options.addTracesToBothDirections = !options.addTracesToBothDirections;
+}
+
 //action
 function handleChangePhaseCorrectionDirection(
   draft: Draft<State>,
@@ -1428,4 +1445,5 @@ export {
   handleSetOneDimensionPhaseCorrectionPivotPoint,
   handleSetTwoDimensionPhaseCorrectionPivotPoint,
   handleCalculateManualTwoDimensionPhaseCorrection,
+  handleToggleAddTracesToBothDirections,
 };
