@@ -52,8 +52,8 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <IntegralsSeries />
         <Peaks peaksSource="peaks" />
         <RangesIntegrals />
-        <Peaks peaksSource="ranges" />
         <Ranges />
+        <Peaks peaksSource="ranges" />
         <MultiplicityTrees />
         <JGraph />
         <MultiAnalysisRanges />
