@@ -17,7 +17,7 @@ import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
-import { PhaseCorrectionTraceData, TraceDirection } from '../reducer/Reducer';
+import { TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -33,6 +33,12 @@ const inputStyle: InputStyle = {
 };
 
 const emptyData = { datum: {}, filter: null };
+
+type PhaseOptions = Record<TraceDirection, { ph0: number; ph1: number }>;
+const defaultPhaseOptions: PhaseOptions = {
+  horizontal: { ph0: 0, ph1: 0 },
+  vertical: { ph0: 0, ph1: 0 },
+};
 
 export default function PhaseCorrectionTwoDimensionsPanel() {
   const { activeTraceDirection, pivot, addTracesToBothDirections } =
@@ -50,8 +56,8 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   );
 
   const dispatch = useDispatch();
-  const [value, setValue] = useState({ ph0: 0, ph1: 0 });
-  const valueRef = useRef({ ph0: 0, ph1: 0 });
+  const [value, setValue] = useState<PhaseOptions>(defaultPhaseOptions);
+  const valueRef = useRef<PhaseOptions>(defaultPhaseOptions);
 
   const ph0Ref = useRef<any>();
   const ph1Ref = useRef<any>();
@@ -59,63 +65,74 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   useEffect(() => {
     if (filter) {
       const { value } = filter;
-      const { ph0, ph1 } = value[
-        activeTraceDirection
-      ] as PhaseCorrectionTraceData;
-      setValue({ ph0, ph1 });
-      valueRef.current = { ph0, ph1 };
-    }
-    if (ph0Ref.current && ph1Ref.current) {
-      if (filter) {
-        const { value } = filter;
-        const { ph0, ph1 } = value[
-          activeTraceDirection
-        ] as PhaseCorrectionTraceData;
-        ph0Ref.current.setValue(ph0);
-        ph1Ref.current.setValue(ph1);
-      } else {
-        ph0Ref.current.setValue(valueRef.current.ph0);
-        ph1Ref.current.setValue(valueRef.current.ph1);
+      const phaseOptions: PhaseOptions = defaultPhaseOptions;
+
+      for (const direction of Object.keys(value)) {
+        const { ph0, ph1 } = value[direction];
+        phaseOptions[direction] = { ph0, ph1 };
       }
+
+      setValue(phaseOptions);
+      valueRef.current = phaseOptions;
     }
-  }, [activeTraceDirection, filter]);
+  }, [filter]);
+
+  useEffect(() => {
+    if (ph0Ref.current && ph1Ref.current) {
+      const { ph0, ph1 } = valueRef.current[activeTraceDirection];
+      ph0Ref.current.setValue(ph0);
+      ph1Ref.current.setValue(ph1);
+    }
+  }, [activeTraceDirection]);
 
   const calcPhaseCorrectionHandler = useCallback(
-    (newValues, filedName, source: 'input' | 'inputRange') => {
+    (inputValue, filedName, source: 'input' | 'inputRange') => {
+      const newValue = inputValue[activeTraceDirection];
       if (filedName === 'ph1' && data && pivot) {
         const datum = (data as NmrData2DFt).rr;
         const nbPoints =
           activeTraceDirection === 'horizontal'
             ? datum.z[0].length
             : datum.z.length;
-        const diff0 = newValues.ph0 - valueRef.current.ph0;
-        const diff1 = newValues.ph1 - valueRef.current.ph1;
-        newValues.ph0 += diff0 - (diff1 * (nbPoints - pivot?.index)) / nbPoints;
+        const { ph0, ph1 } = valueRef.current[activeTraceDirection];
+        const diff0 = newValue.ph0 - ph0;
+        const diff1 = newValue.ph1 - ph1;
+        newValue.ph0 += diff0 - (diff1 * (nbPoints - pivot?.index)) / nbPoints;
       }
 
       dispatch({
         type: 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
-        payload: { ...newValues, applyOn2D: source === 'input' },
+        payload: { ...newValue, applyOn2D: source === 'input' },
       });
 
       if (source === 'inputRange') {
-        debounceCalculation.current(newValues);
+        debounceCalculation.current(newValue);
       }
     },
     [activeTraceDirection, data, dispatch, pivot],
   );
 
-  const updateInputRangeInitialValue = useCallback((value) => {
-    // update InputRange initial value
-    ph0Ref.current.setValue(value.ph0);
-    ph1Ref.current.setValue(value.ph1);
-  }, []);
+  const updateInputRangeInitialValue = useCallback(
+    (value) => {
+      // update InputRange initial value
+      const { ph0, ph1 } = value[activeTraceDirection];
+      ph0Ref.current.setValue(ph0);
+      ph1Ref.current.setValue(ph1);
+    },
+    [activeTraceDirection],
+  );
 
   const handleInput = useCallback(
     (e) => {
       const { name, value } = e.target;
       if (e.target) {
-        const newValue = { ...valueRef.current, [name]: Number(value) };
+        const newValue = {
+          ...valueRef.current,
+          [activeTraceDirection]: {
+            ...valueRef.current[activeTraceDirection],
+            [name]: Number(value),
+          },
+        };
 
         if (String(value).trim() !== '-') {
           calcPhaseCorrectionHandler(newValue, name, 'input');
@@ -125,18 +142,32 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
         setValue(valueRef.current);
       }
     },
-    [calcPhaseCorrectionHandler, updateInputRangeInitialValue],
+    [
+      activeTraceDirection,
+      calcPhaseCorrectionHandler,
+      updateInputRangeInitialValue,
+    ],
   );
 
   const handleRangeChange = useCallback(
     (e) => {
-      const newValue = { ...valueRef.current, [e.name]: e.value };
+      const newValue = {
+        ...valueRef.current,
+        [activeTraceDirection]: {
+          ...valueRef.current[activeTraceDirection],
+          [e.name]: e.value,
+        },
+      };
       calcPhaseCorrectionHandler(newValue, e.name, 'inputRange');
       updateInputRangeInitialValue(newValue);
       valueRef.current = newValue;
       setValue(valueRef.current);
     },
-    [calcPhaseCorrectionHandler, updateInputRangeInitialValue],
+    [
+      activeTraceDirection,
+      calcPhaseCorrectionHandler,
+      updateInputRangeInitialValue,
+    ],
   );
 
   const handleCancelFilter = useCallback(() => {
@@ -200,7 +231,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
           name="ph0"
           style={inputStyle}
           onChange={handleInput}
-          value={value.ph0}
+          value={value[activeTraceDirection].ph0}
           type="number"
           debounceTime={250}
         />
@@ -210,7 +241,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
           name="ph1"
           style={inputStyle}
           onChange={handleInput}
-          value={value.ph1}
+          value={value[activeTraceDirection].ph1}
           type="number"
           debounceTime={250}
         />
