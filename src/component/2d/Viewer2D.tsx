@@ -47,21 +47,25 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
   const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
 
-  const spectrumData: Array<Spectrum1D | null> = useMemo(() => {
+  const spectrumData: Spectrum1D[] = useMemo(() => {
     const nuclei = activeTab.split(',');
 
-    return nuclei.map((nucleus) => {
+    const traces: Spectrum1D[] = [];
+    for (const nucleus of nuclei) {
       const spectra = activeSpectra[nucleus];
       if (spectra?.length === 1) {
         const id = spectra[0].id;
         const spectrum = data.find(
-          (datum) => datum.id === id && !datum.info.isFid && datum.info.dimension === 1,
+          (datum) =>
+            datum.id === id && !datum.info.isFid && datum.info.dimension === 1,
         ) as Spectrum1D;
 
-        return spectrum || null;
+        if (spectrum) {
+          traces.push(spectrum);
+        }
       }
-      return null;
-    });
+    }
+    return traces;
   }, [activeTab, data, activeSpectra]);
 
   const DIMENSION = get2DDimensionLayout(state);
