@@ -11,8 +11,6 @@ import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import ActiveButton from '../../elements/ActiveButton';
-import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
@@ -20,9 +18,10 @@ import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 import { FilterType } from '../../utility/filterType';
+import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader, {
-  createFilterLabel,
+  ToolbarItemProps,
 } from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -128,7 +127,52 @@ function PeaksPanelInner({
   function toggleDisplayingMode() {
     dispatch({ type: 'TOGGLE_PEAKS_DISPLAYING_MODE' });
   }
-  const counter = peaks?.values?.length || 0;
+  const total = peaks?.values?.length || 0;
+
+  const disabled = !peaks?.values || peaks.values.length === 0;
+  const { showPeaks, displayingMode, showPeaksShapes, showPeaksSum } =
+    peaksViewState;
+
+  const leftButtons: ToolbarItemProps[] = [
+    {
+      disabled,
+      icon: <SvgNmrPeaks />,
+      title: `${booleanToString(!showPeaks)} peaks`,
+      onClick: () => toggleViewProperty('showPeaks'),
+      active: showPeaks,
+    },
+    {
+      disabled,
+      icon: <SvgNmrPeaksTopLabels />,
+      title: `${displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
+      onClick: toggleDisplayingMode,
+      active: displayingMode === 'spread',
+    },
+  ];
+
+  if (isExperimental) {
+    leftButtons.unshift(
+      {
+        disabled,
+        icon: <SvgPeaks />,
+        title: `${booleanToString(!showPeaksShapes)} peaks shapes`,
+        onClick: () => toggleViewProperty('showPeaksShapes'),
+        active: showPeaksShapes,
+      },
+      {
+        disabled,
+        icon: <SvgNmrFt />,
+        title: `${booleanToString(!showPeaksSum)} peaks sum`,
+        onClick: () => toggleViewProperty('showPeaksSum'),
+        active: showPeaksSum,
+      },
+      {
+        icon: <FaThinkPeaks />,
+        title: 'Optimize peaks',
+        onClick: optimizePeaksHandler,
+      },
+    );
+  }
   return (
     <div
       css={[
@@ -146,90 +190,17 @@ function PeaksPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={counter}
-          counterLabel={createFilterLabel(
-            counter,
-            filterIsActive && filteredPeaks?.length,
-          )}
+          total={total}
+          counter={filteredPeaks?.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
           }
-          showSettingButton
           onSettingClick={settingsPanelHandler}
-        >
-          {isExperimental && (
-            <>
-              <ActiveButton
-                style={{ marginLeft: '2px', marginRight: '2px' }}
-                popupTitle={
-                  peaksViewState.showPeaksShapes
-                    ? 'Hide peaks shapes'
-                    : 'Show peaks shapes'
-                }
-                popupPlacement="right"
-                onClick={() => toggleViewProperty('showPeaksShapes')}
-                disabled={!peaks?.values || peaks.values.length === 0}
-                value={peaksViewState.showPeaksShapes}
-              >
-                <SvgPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-              </ActiveButton>
-              <ActiveButton
-                style={{ marginLeft: '2px', marginRight: '2px' }}
-                popupTitle={
-                  peaksViewState.showPeaksSum
-                    ? 'Hide peaks sum'
-                    : 'Show peaks sum'
-                }
-                popupPlacement="right"
-                onClick={() => toggleViewProperty('showPeaksSum')}
-                disabled={!peaks?.values || peaks.values.length === 0}
-                value={peaksViewState.showPeaksSum}
-              >
-                <SvgNmrFt style={{ pointerEvents: 'none', fontSize: '12px' }} />
-              </ActiveButton>
-
-              <Button.BarButton
-                onClick={optimizePeaksHandler}
-                toolTip="Optimize peaks"
-                tooltipOrientation="horizontal"
-              >
-                <FaThinkPeaks />
-              </Button.BarButton>
-            </>
-          )}
-          <ActiveButton
-            style={{ marginLeft: '2px', marginRight: '2px' }}
-            popupTitle={
-              peaksViewState.isPeaksVisible ? 'Hide peaks' : 'Show peaks'
-            }
-            popupPlacement="right"
-            onClick={() => toggleViewProperty('isPeaksVisible')}
-            disabled={!peaks?.values || peaks.values.length === 0}
-            value={peaksViewState.isPeaksVisible}
-          >
-            <SvgNmrPeaks style={{ pointerEvents: 'none', fontSize: '12px' }} />
-          </ActiveButton>
-
-          <ActiveButton
-            style={{ marginLeft: '2px', marginRight: '2px' }}
-            popupTitle={
-              peaksViewState.displayingMode === 'spread'
-                ? 'Single Mode'
-                : 'Spread mode'
-            }
-            popupPlacement="right"
-            onClick={toggleDisplayingMode}
-            disabled={!peaks?.values || peaks.values.length === 0}
-            value={peaksViewState.displayingMode === 'spread'}
-          >
-            <SvgNmrPeaksTopLabels
-              style={{ pointerEvents: 'none', fontSize: '12px' }}
-            />
-          </ActiveButton>
-        </DefaultPanelHeader>
+          leftButtons={leftButtons}
+        />
       )}
       {isFlipped && (
         <PreferencesHeader
@@ -239,7 +210,7 @@ function PeaksPanelInner({
       )}
       <div className="inner-container">
         {!isFlipped ? (
-          <PeaksTable data={filteredPeaks} activeTab={activeTab} />
+          <PeaksTable data={filteredPeaks} info={info} activeTab={activeTab} />
         ) : (
           <PeaksPreferences ref={settingRef} />
         )}

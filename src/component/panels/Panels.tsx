@@ -6,13 +6,13 @@ import { Accordion } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
+import { DisplayerMode } from '../reducer/Reducer';
 
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment';
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
 import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
 import MoleculePanel from './MoleculesPanel/MoleculePanel';
-import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
@@ -20,9 +20,9 @@ import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
+import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
 import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation';
-import { DisplayerMode } from '../reducer/Reducer';
 
 interface AccordionItem {
   title: string;

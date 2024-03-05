@@ -2,6 +2,7 @@
 import { SvgNmrExportAsMatrix, SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Formik, FormikProps } from 'formik';
 import { useRef } from 'react';
+import { FaCheck } from 'react-icons/fa';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -10,11 +11,9 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import StyledButton from '../../elements/Button';
-import Button from '../../elements/ButtonToolTip';
 import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
-import SaveButton from '../../elements/SaveButton';
 import ToggleButton from '../../elements/ToggleButton';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
@@ -81,6 +80,7 @@ function MatrixGenerationPanel() {
     'matrixGeneration',
     activeTab,
   );
+  const spectraPreferences = usePanelPreferences('spectra', activeTab);
 
   const matrixOptions = getMatrixOptions(nucleusMatrixOptions, {
     from: xDomain[0],
@@ -88,7 +88,7 @@ function MatrixGenerationPanel() {
   });
 
   function handleExportAsMatrix() {
-    exportAsMatrix(data, 'Spectra Matrix');
+    exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
   }
 
   function handleSave(options) {
@@ -114,25 +114,24 @@ function MatrixGenerationPanel() {
 
   return (
     <div css={tablePanelStyle}>
-      {
-        <DefaultPanelHeader
-          canDelete={false}
-          renderRightButtons={() => (
-            <SaveButton
-              onClick={() => formRef.current?.submitForm()}
-              popupTitle="Signal processing"
-            />
-          )}
-        >
-          <Button
-            popupTitle="Export spectra as a matrix"
-            onClick={handleExportAsMatrix}
-            style={{ fontSize: '12px', padding: '5px' }}
-          >
-            <SvgNmrExportAsMatrix />
-          </Button>
-        </DefaultPanelHeader>
-      }
+      <DefaultPanelHeader
+        leftButtons={[
+          {
+            icon: <SvgNmrExportAsMatrix />,
+            title: 'Export spectra as a matrix',
+            onClick: handleExportAsMatrix,
+          },
+        ]}
+        rightButtons={[
+          {
+            onClick: () => formRef.current?.submitForm(),
+            title: 'Signal processing',
+            id: 'save-button',
+            intent: 'success',
+            icon: <FaCheck />,
+          },
+        ]}
+      />
 
       <div className="inner-container">
         <PreferencesContainer style={{ backgroundColor: 'white' }}>
@@ -237,7 +236,7 @@ function ExclusionZonesGroupHeader({ text }) {
     >
       <p style={{ flex: 1, ...GroupPanelStyle.header }}>{text}</p>
       <ToggleButton
-        key={`${selectedTool}`}
+        key={selectedTool}
         defaultValue={
           selectedTool === options.matrixGenerationExclusionZones.id
         }

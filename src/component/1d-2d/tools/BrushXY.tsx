@@ -11,6 +11,7 @@ const styles: Record<'container', CSSProperties> = {
     top: '0px',
     left: '0px',
     zoom: '100%',
+    zIndex: 9,
   },
 };
 
@@ -21,6 +22,7 @@ const allowTools = new Set([
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,
+  options.phaseCorrectionTwoDimensions.id,
   options.baselineCorrection.id,
   options.rangePicking.id,
   options.zonePicking.id,
@@ -100,14 +102,14 @@ export default function BrushXY({
     dimensionBorder.endX && endX > dimensionBorder.endX
       ? dimensionBorder.endX
       : dimensionBorder.startX && endX < dimensionBorder.startX
-      ? dimensionBorder.startX
-      : endX;
+        ? dimensionBorder.startX
+        : endX;
   endY =
     dimensionBorder.endY && endY > dimensionBorder.endY
       ? dimensionBorder.endY
       : dimensionBorder.startY && endY < dimensionBorder.startY
-      ? dimensionBorder.startY
-      : endY;
+        ? dimensionBorder.startY
+        : endY;
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY

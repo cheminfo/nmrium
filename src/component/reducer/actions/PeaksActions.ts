@@ -1,18 +1,23 @@
 import { v4 } from '@lukeed/uuid';
-import { NmrData1D } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum1D, PeaksViewState } from 'nmr-load-save';
+import {
+  Spectrum1D,
+  PeaksViewState,
+  ViewState,
+  RangesViewState,
+} from 'nmr-load-save';
 import { Peak1D, OptionsXYAutoPeaksPicking } from 'nmr-processing';
 
 import {
   getShiftX,
-  lookupPeak,
   autoPeakPicking,
   optimizePeaks,
 } from '../../../data/data1d/Spectrum1D';
 import { defaultPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
+import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { FilterType } from '../../utility/filterType';
+import { getClosePeak } from '../../utility/getClosePeak';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
@@ -68,7 +73,7 @@ function handleAddPeak(draft: Draft<State>, action: AddPeakAction) {
     const startX = mouseXPosition - xShift;
     const endX = mouseXPosition + xShift;
     const [from, to] = getRange(draft, { startX, endX });
-    const candidatePeak = lookupPeak(state.data[index].data as NmrData1D, {
+    const candidatePeak = getClosePeak(state.data[index] as Spectrum1D, {
       from,
       to,
     });
@@ -102,7 +107,7 @@ function handleAddPeaks(draft: Draft<State>, action: AddPeaksAction) {
     const [from, to] = getRange(draft, { startX, endX });
 
     if (from !== to) {
-      const peak = lookupPeak(datumOriginal.data, { from, to });
+      const peak = getClosePeak(datumOriginal, { from, to });
 
       const shiftX = getShiftX(draft.data[index] as Spectrum1D);
 
@@ -239,23 +244,44 @@ function togglePeaksViewProperty(
     }
   }
 }
-function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+
+type TogglePeaksViewState = RangesViewState | PeaksViewState;
+function toggleDisplayingPeaks(
+  draft: Draft<State>,
+  key: keyof Pick<ViewState, 'peaks' | 'ranges'>,
+) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
-    const peaksView = draft.view.peaks;
-    if (peaksView[activeSpectrum.id]) {
-      peaksView[activeSpectrum.id].displayingMode =
-        peaksView[activeSpectrum.id].displayingMode === 'single'
+    const viewOptions = draft.view[key];
+    if (viewOptions[activeSpectrum.id]) {
+      viewOptions[activeSpectrum.id].displayingMode =
+        viewOptions[activeSpectrum.id].displayingMode === 'single'
           ? 'spread'
           : 'single';
     } else {
-      const defaultPeaksView = { ...defaultPeaksViewState };
-      defaultPeaksView.displayingMode =
-        defaultPeaksView.displayingMode === 'single' ? 'spread' : 'single';
-      peaksView[activeSpectrum.id] = defaultPeaksView;
+      let defaultsViewOptions = {} as TogglePeaksViewState;
+      switch (key) {
+        case 'peaks':
+          defaultsViewOptions = { ...defaultPeaksViewState };
+
+          break;
+        case 'ranges':
+          defaultsViewOptions = { ...defaultRangesViewState };
+          break;
+        default:
+          break;
+      }
+
+      defaultsViewOptions.displayingMode =
+        defaultsViewOptions.displayingMode === 'single' ? 'spread' : 'single';
+      viewOptions[activeSpectrum.id] = defaultsViewOptions;
     }
   }
+}
+
+function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+  toggleDisplayingPeaks(draft, 'peaks');
 }
 
 export {
@@ -267,4 +293,5 @@ export {
   handleChangePeakShape,
   handleTogglePeaksViewProperty,
   handleChangePeaksDisplayingMode,
+  toggleDisplayingPeaks,
 };

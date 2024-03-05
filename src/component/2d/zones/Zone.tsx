@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
-import { useChartData } from '../../context/ChartContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
+import { useScale2DX, useScale2DY } from '../utilities/scale';
 
 import Signal from './Signal';
 
@@ -44,21 +44,18 @@ const stylesHighlighted = css`
 
 interface ZoneProps {
   zoneData: ZoneType;
-  isVisible: {
-    zones: boolean;
-  };
 }
 
-function Zone({ zoneData, isVisible }: ZoneProps) {
+function Zone({ zoneData }: ZoneProps) {
   const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
+  const { showZones } = useActiveSpectrumZonesViewState();
   const highlightZone = useHighlight([assignmentZone.id], {
     type: HighlightEventSource.ZONE,
     extra: { id: assignmentZone.id },
   });
-  const { margin, width, height, xDomain, yDomain } = useChartData();
-  const scaleX = get2DXScale({ margin, width, xDomain });
-  const scaleY = get2DYScale({ margin, height, yDomain });
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
 
   const { from: x1 = 0, to: x2 = 0 } = x;
   const { from: y1 = 0, to: y2 = 0 } = y;
@@ -86,7 +83,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
         highlightZone.hide();
       }}
     >
-      {isVisible.zones && (
+      {showZones && (
         <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
           <rect
             x="0"
@@ -100,7 +97,7 @@ function Zone({ zoneData, isVisible }: ZoneProps) {
         </g>
       )}
       {signals.map((_signal, i) => (
-        <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
+        <Signal key={String(id + i)} signal={_signal} />
       ))}
     </g>
   );

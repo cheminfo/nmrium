@@ -1,16 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { FaInfo } from 'react-icons/fa';
-import { Modal, useOnOff } from 'react-science/ui';
-
-import Button from '../elements/Button';
+import { Toolbar, useOnOff } from 'react-science/ui';
 
 const styles = css`
-  width: 600px;
-
-  .content {
-    padding: 2em;
-  }
+  background-color: white;
 
   ul {
     list-style-type: disc;
@@ -48,42 +43,37 @@ function AboutSpectrumSimulationModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
-      <Button.BarButton
-        onClick={openDialog}
-        tooltipOrientation="horizontal"
-        toolTip="About Prediction"
+      <Toolbar>
+        <Toolbar.Item
+          onClick={openDialog}
+          title="About Prediction"
+          icon={<FaInfo />}
+        />
+      </Toolbar>
+      <Dialog
+        isOpen={isOpenDialog}
+        onClose={closeDialog}
+        title="About spectrum simulation"
+        style={{ width: '600px' }}
       >
-        <FaInfo />
-      </Button.BarButton>
-      <Modal hasCloseButton isOpen={isOpenDialog} onRequestClose={closeDialog}>
-        <div css={styles}>
-          <Modal.Header>
-            <div className="header">
-              <span>About spectrum simulation</span>
-            </div>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="content">
-              <p>If you are using our tools please cite us:</p>
-              <ul>
-                <li>
-                  Andrés M. Castillo, Luc Patiny and Julien Wist{' '}
-                  <a
-                    href="http://dx.doi.org/10.1016/j.jmr.2010.12.008"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Fast and Accurate Algorithm for the Simulation of NMR
-                    spectra of Large Spin Systems
-                  </a>{' '}
-                  <i>Journal of Magnetic Resonance</i> <b>2011</b>, 209(2),
-                  123-130.
-                </li>
-              </ul>
-            </div>
-          </Modal.Body>
-        </div>
-      </Modal>
+        <DialogBody css={styles}>
+          <p>If you are using our tools please cite us:</p>
+          <ul>
+            <li>
+              Andrés M. Castillo, Luc Patiny and Julien Wist{' '}
+              <a
+                href="http://dx.doi.org/10.1016/j.jmr.2010.12.008"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Fast and Accurate Algorithm for the Simulation of NMR spectra of
+                Large Spin Systems
+              </a>{' '}
+              <i>Journal of Magnetic Resonance</i> <b>2011</b>, 209(2), 123-130.
+            </li>
+          </ul>
+        </DialogBody>
+      </Dialog>
     </>
   );
 }

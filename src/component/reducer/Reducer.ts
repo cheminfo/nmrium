@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData1D } from 'cheminfo-types';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
@@ -30,23 +31,12 @@ import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 
-export interface ActiveSpectrum {
-  id: string;
+export type DisplayerMode = '1D' | '2D';
+
+export interface Pivot {
+  value: number;
   index: number;
 }
-
-export const rangeStateInit = {
-  showMultiplicityTrees: false,
-  showRangesIntegrals: true,
-  showJGraph: false,
-};
-export const zoneStateInit = {
-  showZones: true,
-  showSignals: true,
-  showPeaks: true,
-};
-
-export type DisplayerMode = '1D' | '2D';
 
 export interface Margin {
   top: number;
@@ -55,16 +45,41 @@ export interface Margin {
   left: number;
 }
 
+export type Domains = Record<string, number[]>;
+export type SpectraDirection = 'RTL' | 'LTR';
+export type TraceDirection = 'vertical' | 'horizontal';
+export interface SpectrumTrace {
+  id: string;
+  data: NmrData1D;
+  x: number;
+  y: number;
+}
+
+export interface PhaseCorrectionTraceData {
+  spectra: SpectrumTrace[];
+  ph0: number;
+  ph1: number;
+  pivot: Pivot | null;
+  scaleRatio: number;
+}
+
+export interface TwoDimensionPhaseCorrection {
+  traces: Record<TraceDirection, PhaseCorrectionTraceData>;
+  activeTraceDirection: TraceDirection;
+}
+
 export function getDefaultViewState(): ViewState {
   return {
     molecules: {},
-    ranges: [],
-    zones: [],
+    ranges: {},
+    zones: {},
     peaks: {},
+    integrals: {},
     spectra: {
       activeSpectra: {},
       activeTab: '',
       showLegend: false,
+      showSimilarityTree: false,
       selectReferences: {},
     },
     zoom: {
@@ -90,7 +105,6 @@ export const getInitialState = (): State => ({
     yDomains: {},
     shareYDomain: false,
   },
-  integralsYDomains: {},
   width: 0,
   height: 0,
   margin: {
@@ -127,6 +141,25 @@ export const getInitialState = (): State => ({
         livePreview: true,
       },
       apodizationOptions: {} as ApodizationOptions,
+      twoDimensionPhaseCorrection: {
+        activeTraceDirection: 'horizontal',
+        traces: {
+          horizontal: {
+            ph0: 0,
+            ph1: 0,
+            pivot: null,
+            spectra: [],
+            scaleRatio: 1,
+          },
+          vertical: {
+            ph0: 0,
+            ph1: 0,
+            pivot: null,
+            spectra: [],
+            scaleRatio: 1,
+          },
+        },
+      },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -177,13 +210,13 @@ export interface State {
    * value change when vertical scale change for the selected spectrum
    * @default {}
    */
-  yDomains: Record<string, number[]>;
+  yDomains: Domains;
   /**
    * X axis domain per spectrum
    * value change when zooming in/out for the selected spectrum
    * @default {}
    */
-  xDomains: Record<string, number[]>;
+  xDomains: Domains;
   /**
    * Domain for X and Y axis once it calculated and it change in one case  when we load new spectra
    * @default {}
@@ -191,17 +224,10 @@ export interface State {
   originDomain: {
     xDomain: number[];
     yDomain: number[];
-    xDomains: Record<string, number[]>;
-    yDomains: Record<string, number[]>;
+    xDomains: Domains;
+    yDomains: Domains;
     shareYDomain: boolean;
   };
-  /**
-   * y axis domain per spectrum for integrals
-   * value change when vertical scale change for the integrals
-   * @default {}
-   */
-  integralsYDomains: Record<string, number[]>;
-
   /**
    * plot chart area width
    * @default 0
@@ -221,7 +247,7 @@ export interface State {
    * Scale direction
    * @default 'RTL'
    */
-  mode: 'RTL' | 'LTR';
+  mode: SpectraDirection;
   /**
    * molecules
    * @default []
@@ -310,11 +336,12 @@ export interface State {
        * pivot point for manual phase correction
        * @default {value:0,index:0}
        */
-      pivot: { value: number; index: number };
+      pivot: Pivot;
       /**
        * Noise factor for auto zones detection
        * @default 1
        */
+      twoDimensionPhaseCorrection: TwoDimensionPhaseCorrection;
       zonesNoiseFactor: number;
 
       /**
@@ -397,6 +424,11 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         );
       case 'CUT_INTEGRAL':
         return IntegralsActions.handleCutIntegral(draft, action);
+      case 'TOGGLE_INTEGRALS_VIEW_PROPERTY':
+        return IntegralsActions.handleToggleIntegralsViewProperty(
+          draft,
+          action,
+        );
 
       case 'SET_X_DOMAIN':
         return DomainActions.handleSetXDomain(draft, action);
@@ -456,6 +488,30 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleAddExclusionZone(draft, action);
       case 'DELETE_EXCLUSION_ZONE':
         return FiltersActions.handleDeleteExclusionZone(draft, action);
+      case 'ADD_PHASE_CORRECTION_TRACE':
+        return FiltersActions.handleAddPhaseCorrectionTrace(draft, action);
+      case 'CHANGE_PHASE_CORRECTION_DIRECTION':
+        return FiltersActions.handleChangePhaseCorrectionDirection(
+          draft,
+          action,
+        );
+      case 'DELETE_PHASE_CORRECTION_TRACE':
+        return FiltersActions.handleDeletePhaseCorrectionTrace(draft, action);
+      case 'SET_ONE_DIMENSION_PIVOT_POINT':
+        return FiltersActions.handleSetOneDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
+      case 'SET_TWO_DIMENSION_PIVOT_POINT':
+        return FiltersActions.handleSetTwoDimensionPhaseCorrectionPivotPoint(
+          draft,
+          action,
+        );
+      case 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER':
+        return FiltersActions.handleCalculateManualTwoDimensionPhaseCorrection(
+          draft,
+          action,
+        );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(
           draft,
@@ -517,9 +573,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);
       case 'BRUSH_END':
         return ToolsActions.handleBrushEnd(draft, action);
-
-      case 'SET_VERTICAL_INDICATOR_X_POSITION':
-        return ToolsActions.setVerticalIndicatorXPosition(draft, action);
       case 'SET_SPECTRUMS_VERTICAL_ALIGN':
         return ToolsActions.setSpectrumsVerticalAlign(draft);
       case 'SET_ACTIVE_TAB':
@@ -528,6 +581,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.handleAddBaseLineZone(draft, action);
       case 'DELETE_BASE_LINE_ZONE':
         return ToolsActions.handleDeleteBaseLineZone(draft, action);
+      case 'RESIZE_BASE_LINE_ZONE':
+        return ToolsActions.handleResizeBaseLineZone(draft, action);
       case 'SET_2D_LEVEL':
         return ToolsActions.levelChangeHandler(draft, action);
 
@@ -589,16 +644,16 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return RangesActions.handleSetDiaIDRange(draft, action);
       case 'UPDATE_RANGE':
         return RangesActions.handleUpdateRange(draft, action);
-      case 'SHOW_MULTIPLICITY_TREES':
-        return RangesActions.handleShowMultiplicityTrees(draft, action);
-      case 'SHOW_RANGES_INTEGRALS':
-        return RangesActions.handleShowRangesIntegrals(draft, action);
+      case 'TOGGLE_RANGES_VIEW_PROPERTY':
+        return RangesActions.handleToggleRangesViewProperty(draft, action);
       case 'AUTO_RANGES_SPECTRA_PICKING':
         return RangesActions.handleAutoSpectraRangesDetection(draft);
-      case 'SHOW_J_GRAPH':
-        return RangesActions.handleShowJGraph(draft, action);
       case 'CUT_RANGE':
         return RangesActions.handleCutRange(draft, action);
+      case 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE':
+        return RangesActions.handleChangePeaksDisplayingMode(draft);
+      case 'DELETE_RANGE_PEAK':
+        return RangesActions.handleDeleteRangePeak(draft, action);
 
       case 'SET_KEY_PREFERENCES':
         return PreferencesActions.handleSetKeyPreferences(draft, action);
@@ -627,12 +682,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleSetDiaIDZone(draft, action);
       case 'AUTO_ZONES_SPECTRA_PICKING':
         return ZonesActions.handleAutoSpectraZonesDetection(draft);
-      case 'SHOW_ZONES':
-        return ZonesActions.handleShowZones(draft, action);
-      case 'SHOW_ZONES_SIGNALS':
-        return ZonesActions.handleShowSignals(draft, action);
-      case 'SHOW_ZONES_PEAKS':
-        return ZonesActions.handleShowPeaks(draft, action);
+      case 'TOGGLE_ZONES_VIEW_PROPERTY':
+        return ZonesActions.handleToggleZonesViewProperty(draft, action);
       case 'SAVE_EDITED_ZONE':
         return ZonesActions.handleSaveEditedZone(draft, action);
 
@@ -643,6 +694,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return DatabaseActions.handleResurrectSpectrumFromRanges(draft, action);
       case 'RESURRECTING_SPECTRUM_FROM_JCAMP':
         return DatabaseActions.handleResurrectSpectrumFromJcamp(draft, action);
+      case 'TOGGLE_SIMILARITY_TREE':
+        return DatabaseActions.handleToggleSimilarityTree(draft);
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);

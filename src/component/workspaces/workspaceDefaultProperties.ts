@@ -8,6 +8,9 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       experimentalFeatures: { display: false },
       hidePanelOnLoad: false,
       hideLogs: false,
+      hideHelp: false,
+      hideMaximize: false,
+      hideWorkspaces: false,
     },
 
     panels: {
@@ -58,6 +61,8 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    popupLoggingLevel: 'error',
+    invert: false,
   },
   formatting: {
     nuclei: {
@@ -95,16 +100,16 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   infoBlock: {
     visible: false,
     fields: [
-      { label: 'name', jpath: ['info', 'name'], visible: true, format: '' },
+      { label: 'Name', jpath: ['info', 'name'], visible: true, format: '' },
       {
-        label: 'Number Of Scan',
+        label: 'Number of scans',
         jpath: ['info', 'numberOfScans'],
         visible: true,
         format: '0',
       },
 
       {
-        label: 'Pulse Sequence',
+        label: 'Pulse sequence',
         jpath: ['info', 'pulseSequence'],
         visible: true,
         format: '',
@@ -118,75 +123,119 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     ],
   },
   onLoadProcessing: {
-    '1H': [
-      {
-        name: Filters.digitalFilter.id,
-        label: Filters.digitalFilter.name,
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.apodization.id,
-        label: Filters.apodization.name,
-        value: {},
-        flag: false,
-      },
-      {
-        name: Filters.zeroFilling.id,
-        label: Filters.zeroFilling.name,
+    autoProcessing: true,
+    filters: {
+      '1H': [
+        {
+          name: Filters.digitalFilter.id,
+          label: Filters.digitalFilter.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.apodization.id,
+          label: Filters.apodization.name,
+          value: {},
+          flag: false,
+        },
+        {
+          name: Filters.zeroFilling.id,
+          label: Filters.zeroFilling.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.fft.id,
-        label: Filters.fft.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.fft.id,
+          label: Filters.fft.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.phaseCorrection.id,
-        label: Filters.phaseCorrection.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.phaseCorrection.id,
+          label: Filters.phaseCorrection.name,
 
-        value: {},
-        flag: true,
-      },
-    ],
-    '13C': [
-      {
-        name: Filters.digitalFilter.id,
-        label: Filters.digitalFilter.name,
+          value: {},
+          flag: true,
+        },
+      ],
+      '13C': [
+        {
+          name: Filters.digitalFilter.id,
+          label: Filters.digitalFilter.name,
 
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.apodization.id,
-        label: Filters.apodization.name,
-        value: {},
-        flag: true,
-      },
-      {
-        name: Filters.zeroFilling.id,
-        label: Filters.zeroFilling.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.apodization.id,
+          label: Filters.apodization.name,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.zeroFilling.id,
+          label: Filters.zeroFilling.name,
 
-        value: {},
-        flag: true,
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.fft.id,
+          label: Filters.fft.name,
+
+          value: {},
+          flag: true,
+        },
+        {
+          name: Filters.phaseCorrection.id,
+          label: Filters.phaseCorrection.name,
+
+          value: {},
+          flag: true,
+        },
+      ],
+    },
+  },
+  spectraColors: {
+    oneDimension: [],
+    twoDimensions: [
+      {
+        jpath: ['info', 'experiment'],
+        value: 'cosy',
+        positiveColor: 'darkblue',
+        negativeColor: 'blue',
       },
       {
-        name: Filters.fft.id,
-        label: Filters.fft.name,
-
-        value: {},
-        flag: true,
+        jpath: ['info', 'experiment'],
+        value: 'noesy',
+        positiveColor: 'pink',
+        negativeColor: 'yellow',
       },
       {
-        name: Filters.phaseCorrection.id,
-        label: Filters.phaseCorrection.name,
-
-        value: {},
-        flag: true,
+        jpath: ['info', 'experiment'],
+        value: 'roesy',
+        positiveColor: 'pink',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'tocsy',
+        positiveColor: 'green',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'hsqc',
+        positiveColor: 'black',
+        negativeColor: 'yellow',
+      },
+      {
+        jpath: ['info', 'experiment'],
+        value: 'hmbc',
+        positiveColor: 'darkviolet',
+        negativeColor: 'yellow',
       },
     ],
   },

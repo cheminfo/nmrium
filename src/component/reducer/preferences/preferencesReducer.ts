@@ -39,7 +39,7 @@ import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPositi
 import { setWorkspace } from './actions/setWorkspace';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
 
-const LOCAL_STORAGE_VERSION = 16;
+const LOCAL_STORAGE_VERSION = 17;
 
 export const WORKSPACES_KEYS = {
   componentKey: `nmrium-component-workspace`,

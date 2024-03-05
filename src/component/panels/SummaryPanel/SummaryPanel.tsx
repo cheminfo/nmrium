@@ -23,11 +23,8 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
-import DefaultPanelHeader, {
-  createFilterLabel,
-} from '../header/DefaultPanelHeader';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
@@ -48,7 +45,8 @@ const panelStyle = css`
 
   .extra-header-content {
     display: flex;
-    width: 100%;
+    flex: 1;
+    justify-content: center;
 
     .overview-container {
       width: 100%;
@@ -494,36 +492,31 @@ function SummaryPanel() {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const counter = correlationsData ? correlationsData.values.length : 0;
+  const total = correlationsData ? correlationsData.values.length : 0;
   return (
     <div css={panelStyle}>
       <DefaultPanelHeader
-        canDelete={false}
-        counter={counter}
-        counterLabel={createFilterLabel(
-          counter,
-          filterIsActive && filteredCorrelationsData?.values.length,
-        )}
+        total={total}
+        counter={filteredCorrelationsData?.values.length}
         onFilter={handleOnFilter}
         filterToolTip={
           filterIsActive
             ? 'Show all correlations'
             : 'Hide correlations out of view'
         }
+        leftButtons={[
+          {
+            icon: <FaFlask />,
+            title: `Set molecular formula (${correlationsData.options.mf})`,
+            onClick: showSetMolecularFormulaModal,
+          },
+          {
+            icon: <FaSlidersH />,
+            title: 'Set shift tolerance',
+            onClick: showSetShiftToleranceModal,
+          },
+        ]}
       >
-        <ToolTip
-          title={`Set molecular formula (${correlationsData.options.mf})`}
-          popupPlacement="right"
-        >
-          <button type="button" onClick={showSetMolecularFormulaModal}>
-            <FaFlask />
-          </button>
-        </ToolTip>
-        <ToolTip title={`Set shift tolerance`} popupPlacement="right">
-          <button type="button" onClick={showSetShiftToleranceModal}>
-            <FaSlidersH />
-          </button>
-        </ToolTip>
         <div className="extra-header-content">
           <div className="overview-container">
             <Overview correlationsData={correlationsData} />

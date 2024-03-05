@@ -1,5 +1,226 @@
 # Changelog
 
+## [0.50.1](https://github.com/cheminfo/nmrium/compare/v0.50.0...v0.50.1) (2024-02-26)
+
+
+### Documentation
+
+* add BigMap in about NMRium ([#2925](https://github.com/cheminfo/nmrium/issues/2925)) ([5cb4fc4](https://github.com/cheminfo/nmrium/commit/5cb4fc4cde64221d01d13bff7c8cebb209ca14eb))
+* fix bigmap funding ([#2924](https://github.com/cheminfo/nmrium/issues/2924)) ([52eeaf7](https://github.com/cheminfo/nmrium/commit/52eeaf7608ddd967513bba080e2f552be1c7a864))
+
+## [0.50.0](https://github.com/cheminfo/nmrium/compare/v0.49.0...v0.50.0) (2024-02-21)
+
+
+### Features
+
+* display the tree for similarity ([2a21d17](https://github.com/cheminfo/nmrium/commit/2a21d1786e74b9fa8b646c07abdf7275a3cb7a51)), closes [#2905](https://github.com/cheminfo/nmrium/issues/2905)
+* export spectrum as text file ([c5ad409](https://github.com/cheminfo/nmrium/commit/c5ad409c30f71bf1b6b1e99263f0ab55f11da16b))
+
+
+### Bug Fixes
+
+* confirmation box ([fe44670](https://github.com/cheminfo/nmrium/commit/fe44670a27ad4938efb5eb75556b8db67fcc8abe))
+* exclude export the the rectangle over the spectrum in stack mode ([b6f9a99](https://github.com/cheminfo/nmrium/commit/b6f9a9910f758de07156833bc6fd366eaf3120d9))
+* experiment type by pulse sequence ([#2920](https://github.com/cheminfo/nmrium/issues/2920)) ([7d51e12](https://github.com/cheminfo/nmrium/commit/7d51e12c09b98bd92801feda89400e0de302f7c5))
+* improve info from Nanalysis n adapt bruker phase correction parameters ([#2914](https://github.com/cheminfo/nmrium/issues/2914)) ([348ed95](https://github.com/cheminfo/nmrium/commit/348ed95dc9d9fc43df6aaa6fa993661b37f101bd))
+* range select for j coupling ([#2917](https://github.com/cheminfo/nmrium/issues/2917)) ([2d033e8](https://github.com/cheminfo/nmrium/commit/2d033e87461b57fa58fbe081281b37441925ed6a))
+
+## [0.49.0](https://github.com/cheminfo/nmrium/compare/v0.48.0...v0.49.0) (2024-02-09)
+
+
+### Features
+
+* add a general preference for a popup logging level ([7b532c1](https://github.com/cheminfo/nmrium/commit/7b532c1a4db54a98dc76da0922d9729615c26365))
+* add a link to NMRium videos channel ([4ddf7fe](https://github.com/cheminfo/nmrium/commit/4ddf7fe872fc080b53ac0e4ab56ef65edfbb568c)), closes [#2883](https://github.com/cheminfo/nmrium/issues/2883)
+* detect baseline zones automatically ([6358e89](https://github.com/cheminfo/nmrium/commit/6358e89db0d33f509aa99334efbff5713657239b))
+* display horizontal line at y = 0 for phase and baseline correction ([fda80c5](https://github.com/cheminfo/nmrium/commit/fda80c5f483a3d457312ed7af3506b5e8f4a449b)), closes [#2870](https://github.com/cheminfo/nmrium/issues/2870) [#2871](https://github.com/cheminfo/nmrium/issues/2871)
+* improve resurrect spectrum from publication string and avoid crash ([#2879](https://github.com/cheminfo/nmrium/issues/2879)) ([004d983](https://github.com/cheminfo/nmrium/commit/004d98374acac909df2e2219772887e6c9c4beb2))
+* improve SVG exportation ([#2882](https://github.com/cheminfo/nmrium/issues/2882)) ([a974c15](https://github.com/cheminfo/nmrium/commit/a974c1507e1a453bc52268090bbaa3ba56f9cf35))
+* invert actions ([#2862](https://github.com/cheminfo/nmrium/issues/2862)) ([3b18b4e](https://github.com/cheminfo/nmrium/commit/3b18b4ebf3f0e31bdb0e6035d4f710dd2cfe5c56))
+* resize baseline zones ([a3291b7](https://github.com/cheminfo/nmrium/commit/a3291b77599f268845c4955fba185e5841a6dd3a))
+* show assignment atoms over ranges ([#2869](https://github.com/cheminfo/nmrium/issues/2869)) ([63e7785](https://github.com/cheminfo/nmrium/commit/63e77859f2d816d31af68d4ae8c8f979622ed192))
+* sort ranges by chemical shifts ([d88c8c2](https://github.com/cheminfo/nmrium/commit/d88c8c216025f7d5dd1404f360efb07c055d8b7c)), closes [#2866](https://github.com/cheminfo/nmrium/issues/2866)
+* split pseudo2D inversion recovery spectra ([#2846](https://github.com/cheminfo/nmrium/issues/2846)) ([ab43ee2](https://github.com/cheminfo/nmrium/commit/ab43ee2dbaef18073edb1194c78d33cf9d5e63ec))
+
+
+### Bug Fixes
+
+* baseline correction options ([44261ae](https://github.com/cheminfo/nmrium/commit/44261aea95738f856e15492273e8d0b95f0d1d04))
+* correct rollback spectrum behaviour ([4f316a3](https://github.com/cheminfo/nmrium/commit/4f316a34284900f5a6b9a6f3030cc0851d360cf1)), closes [#2876](https://github.com/cheminfo/nmrium/issues/2876) [#2889](https://github.com/cheminfo/nmrium/issues/2889)
+* prevent the refresh of the scale in baseline correction ([cdeb286](https://github.com/cheminfo/nmrium/commit/cdeb286d7373c3b1da9f0a6592037dcfbe2678bf)), closes [#2872](https://github.com/cheminfo/nmrium/issues/2872)
+* reorder sub matrices from bruker data n fix varian loading ([#2847](https://github.com/cheminfo/nmrium/issues/2847)) ([ef7e1b3](https://github.com/cheminfo/nmrium/commit/ef7e1b33585340d5ec85fb0ce1c83f988805ef41))
+* spectra preferences validation ([788cb45](https://github.com/cheminfo/nmrium/commit/788cb4537fc08b29c488ac609b568d3c31824800))
+
+## [0.48.0](https://github.com/cheminfo/nmrium/compare/v0.47.0...v0.48.0) (2024-01-26)
+
+
+### Features
+
+* allow save range with no signals ([6f7bfad](https://github.com/cheminfo/nmrium/commit/6f7bfadae2610cd54c1fdec6f587a466c66f0b19))
+* allow to delete info.name and info.solvent ([8fcfb77](https://github.com/cheminfo/nmrium/commit/8fcfb7719c7fd5fe0fb038c730486585b8d9b009)), closes [#2823](https://github.com/cheminfo/nmrium/issues/2823)
+* improve matrix exportation ([8b57b9f](https://github.com/cheminfo/nmrium/commit/8b57b9f9c0c0f3db93dac0833a94ec394107d801)), closes [#2837](https://github.com/cheminfo/nmrium/issues/2837)
+* select spectrum from the displayer ([313c3bd](https://github.com/cheminfo/nmrium/commit/313c3bde8fd08b841826a725e81ecc04d7e6612f)), closes [#2849](https://github.com/cheminfo/nmrium/issues/2849)
+
+
+### Bug Fixes
+
+* copy image to clipboard in Firefox ([21ce320](https://github.com/cheminfo/nmrium/commit/21ce3209fab4c7ec9c9ef4c64e748f02760f8392))
+* create info1D for projections ([#2841](https://github.com/cheminfo/nmrium/issues/2841)) ([1571b50](https://github.com/cheminfo/nmrium/commit/1571b506abec003628a3566d73ca0b5c6c267f6b))
+* disable auto-translate of the NMRium component ([#2859](https://github.com/cheminfo/nmrium/issues/2859)) ([d5e178e](https://github.com/cheminfo/nmrium/commit/d5e178e4df44f5c335c1ccd1377fba2adf37cfb2))
+* plotting the derived value ([f176fc0](https://github.com/cheminfo/nmrium/commit/f176fc0cf50b001e8408fb719c4a7b27dbc9d166)), closes [#2834](https://github.com/cheminfo/nmrium/issues/2834)
+* reapply filters when applying spectra processing filter ([14b344c](https://github.com/cheminfo/nmrium/commit/14b344c0bbfa819e3b0e7c69df14a4fae95aef94)), closes [#2835](https://github.com/cheminfo/nmrium/issues/2835)
+* refresh local molecule state after past a new one ([1162900](https://github.com/cheminfo/nmrium/commit/1162900969ac8980ed5574dd7a383b30f44b0394))
+* refresh the X domain after hiding all spectra and then showing one ([b7a80af](https://github.com/cheminfo/nmrium/commit/b7a80af25d6a06bc2f642b1ed1f013d2086a19ef))
+* remove empty values from search key array ([7fe44d2](https://github.com/cheminfo/nmrium/commit/7fe44d2035745388a34184523444c9896e210d83)), closes [#2831](https://github.com/cheminfo/nmrium/issues/2831)
+* set a fixed virtual scrolling height for spectra table rows ([15084d7](https://github.com/cheminfo/nmrium/commit/15084d790b632667455ef0fad5acf89264b277e9)), closes [#2824](https://github.com/cheminfo/nmrium/issues/2824)
+* validate spin system data ([47c5fba](https://github.com/cheminfo/nmrium/commit/47c5fbaa7a1a656fbb02e14f1c5f390f533eb79c))
+
+## [0.47.0](https://github.com/cheminfo/nmrium/compare/v0.46.1...v0.47.0) (2024-01-11)
+
+
+### Features
+
+* custom color schema validation ([cb0fa8c](https://github.com/cheminfo/nmrium/commit/cb0fa8c6504668be5a81f20e9ac5b4d7a847d749))
+* customize the color scheme for spectra ([cb0fa8c](https://github.com/cheminfo/nmrium/commit/cb0fa8c6504668be5a81f20e9ac5b4d7a847d749)), closes [#2794](https://github.com/cheminfo/nmrium/issues/2794)
+* show/hide the value of integrals ([f2a0ce3](https://github.com/cheminfo/nmrium/commit/f2a0ce3bafd1424277b6e5689ce3e3ba99ac6a4b)), closes [#2797](https://github.com/cheminfo/nmrium/issues/2797)
+
+
+### Bug Fixes
+
+* add missing peaks when use multiplet-analysis ([#2814](https://github.com/cheminfo/nmrium/issues/2814)) ([12d03b8](https://github.com/cheminfo/nmrium/commit/12d03b85a12085593210dcd986a2f6c1522ca8f1))
+* disable/enable filter ([dbab8f8](https://github.com/cheminfo/nmrium/commit/dbab8f893c84e0a76f446475f5c63a1c066fb95e))
+
+## [0.46.1](https://github.com/cheminfo/nmrium/compare/v0.46.0...v0.46.1) (2023-12-19)
+
+
+### Bug Fixes
+
+* Blueprint-related warnings ([#2808](https://github.com/cheminfo/nmrium/issues/2808)) ([6618ec1](https://github.com/cheminfo/nmrium/commit/6618ec1f26eec0a2c22bda4a17aae6e5f218c0cc))
+* combined approach in manual range picking ([51f88dd](https://github.com/cheminfo/nmrium/commit/51f88ddad070a9e2474f075de49206805443db99))
+* resizing range to the same size should not add a new range ([#2807](https://github.com/cheminfo/nmrium/issues/2807)) ([592fe11](https://github.com/cheminfo/nmrium/commit/592fe11db9bfdbf56f98a810775fe3fae3851c4c))
+
+## [0.46.0](https://github.com/cheminfo/nmrium/compare/v0.45.0...v0.46.0) (2023-12-14)
+
+
+### Features
+
+* load files in parallel ([82a15d4](https://github.com/cheminfo/nmrium/commit/82a15d4457624dd21848b54dd0148144f910ee5a))
+* remap existing assignments when molecule is edited ([#2779](https://github.com/cheminfo/nmrium/issues/2779)) ([840c3e5](https://github.com/cheminfo/nmrium/commit/840c3e50851035678ac49b45f2c85bdfb142e619))
+
+
+### Bug Fixes
+
+* auto phase correction ([82a15d4](https://github.com/cheminfo/nmrium/commit/82a15d4457624dd21848b54dd0148144f910ee5a))
+* auto phase correction ([#2787](https://github.com/cheminfo/nmrium/issues/2787)) ([82a15d4](https://github.com/cheminfo/nmrium/commit/82a15d4457624dd21848b54dd0148144f910ee5a))
+* check spectrum has imaginary part before calling xMultiply ([e8d736b](https://github.com/cheminfo/nmrium/commit/e8d736b879410aecb71c34467106b95462d5ab59))
+* could loose assignement of expanded hydrogens ([#2793](https://github.com/cheminfo/nmrium/issues/2793)) ([cde96e1](https://github.com/cheminfo/nmrium/commit/cde96e1d15c8763e8b02a7dccb2c992ad6f89a8a))
+* filter out bruker experiments without required files to process ([a40c318](https://github.com/cheminfo/nmrium/commit/a40c318a0b3bff9eebcd8ffe7954d4a96b923011))
+* inverted fft spectrum-migration to 6 version ([#2766](https://github.com/cheminfo/nmrium/issues/2766)) ([1995e6d](https://github.com/cheminfo/nmrium/commit/1995e6dde22829170c0108ec36192a94bc44f4de))
+* large negative spectra peak scale ([3262b0d](https://github.com/cheminfo/nmrium/commit/3262b0daabbcd3bbdcd68c685ad41d2f6afe0b80)), closes [#1657](https://github.com/cheminfo/nmrium/issues/1657)
+* large negative spectra peak scale ([19fd560](https://github.com/cheminfo/nmrium/commit/19fd560c3ec9991e788e5afc8fbe3b6dc32f3479)), closes [#1657](https://github.com/cheminfo/nmrium/issues/1657)
+* negative peak picking ([c35089f](https://github.com/cheminfo/nmrium/commit/c35089fe984cee6fe7db759e093d6262170ad39a))
+* render the info value correctly in the info block ([d51ce3d](https://github.com/cheminfo/nmrium/commit/d51ce3d7630e3984304207c039513aceb923a051))
+* set the first FT spectrum for 2d projection if none selected ([#2770](https://github.com/cheminfo/nmrium/issues/2770)) ([2d3fcd8](https://github.com/cheminfo/nmrium/commit/2d3fcd85cce855671a93a15fe1476d9f04ec07fd))
+* title block field filter ([0345ccb](https://github.com/cheminfo/nmrium/commit/0345ccbd070b3952ebde55f871769cca4ff6c4a9)), closes [#2778](https://github.com/cheminfo/nmrium/issues/2778)
+* update react-science with Modal fix ([5a74af1](https://github.com/cheminfo/nmrium/commit/5a74af1d3137f07f245ec415266459d42785fb04))
+* zero filling size list ([d44f519](https://github.com/cheminfo/nmrium/commit/d44f51972c5458c88643baffe0e511ebe66a1949))
+* zoom out ([76fb39b](https://github.com/cheminfo/nmrium/commit/76fb39b1c5368cd7946aa7a75b719c001778629d))
+
+## [0.45.0](https://github.com/cheminfo/nmrium/compare/v0.44.0...v0.45.0) (2023-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* The NMRium component is no longer rendered inside an isolated shadow DOM. I depends on a style reset such as the one done by TailwindCSS (available in `react-science/styles/preflight.css`) to function correctly.
+* remove commonJS build and update TS to 5.2 ([#2670](https://github.com/cheminfo/nmrium/issues/2670))
+
+### Features
+
+* change mouse event to pointer event ([5f65a4c](https://github.com/cheminfo/nmrium/commit/5f65a4cb5ffa1b6375ebcfe3887aedc36f8aa43d))
+* delete the phase correction trace ([0a8331d](https://github.com/cheminfo/nmrium/commit/0a8331d28129a52afc116033402ba7dc11d8d405))
+* display spectrum vertically for the vertical phase correction ([af0d95b](https://github.com/cheminfo/nmrium/commit/af0d95b7e18735f43ac4214113fc32cb5f6ecd5c))
+* hide the integrals within ranges by default ([7257d84](https://github.com/cheminfo/nmrium/commit/7257d84649b68e1b6ac772cd1ef0044826064dc8)), closes [#2656](https://github.com/cheminfo/nmrium/issues/2656)
+* hide the peaks within ranges by default ([5492f8a](https://github.com/cheminfo/nmrium/commit/5492f8a848392c92d0ee01f2c968ebdce2c523f9))
+* oxford instrument jcamp by filters ([#2706](https://github.com/cheminfo/nmrium/issues/2706)) ([42bc8e8](https://github.com/cheminfo/nmrium/commit/42bc8e82144715d8babfae31adc3e24641bd4984))
+* phase correction 1d traces ([6b88bc4](https://github.com/cheminfo/nmrium/commit/6b88bc4b9b36b11e348e2ff94770ce0db056ca05))
+* phase correction traces for both directions ([c625982](https://github.com/cheminfo/nmrium/commit/c6259822dfa5c8455e15dc9c815bd20389d583bf))
+* scale 2D phase correction traces ([9cb5a1f](https://github.com/cheminfo/nmrium/commit/9cb5a1f7c73c37b9a132f84483487de53684c565))
+* set two dimension pivot point ([f530827](https://github.com/cheminfo/nmrium/commit/f5308277be6a137b5fc54fc579bd4f2d9f1c637a))
+* spectra multiple analysis chart ([8cd9122](https://github.com/cheminfo/nmrium/commit/8cd9122b91488e44be68e078f9033e0133c8f560))
+
+
+### Bug Fixes
+
+* add peaks in manual range picking ([#2668](https://github.com/cheminfo/nmrium/issues/2668)) ([50de770](https://github.com/cheminfo/nmrium/commit/50de770729ac86bec9dbd680aef57ae214d1319f))
+* add range with no signals ([#2703](https://github.com/cheminfo/nmrium/issues/2703)) ([0365fdf](https://github.com/cheminfo/nmrium/commit/0365fdfe584949422b8d84a85d530dc44dcb2a89)), closes [#2687](https://github.com/cheminfo/nmrium/issues/2687)
+* build esm, not cjs ([#2712](https://github.com/cheminfo/nmrium/issues/2712)) ([00ac175](https://github.com/cheminfo/nmrium/commit/00ac17505475ac151ddca9b5da20e66e13114edb))
+* correct ranges-preferences to generate acs string ([#2684](https://github.com/cheminfo/nmrium/issues/2684)) ([d7c2dc1](https://github.com/cheminfo/nmrium/commit/d7c2dc1a8bd8a4236b5cf49aa02cc73929ac5076))
+* detect negative in auto range picking ([#2719](https://github.com/cheminfo/nmrium/issues/2719)) ([86530ac](https://github.com/cheminfo/nmrium/commit/86530ac4c9d0a8204f16d83521e090ba6e4649db))
+* display title block correctly in Safari ([a281edd](https://github.com/cheminfo/nmrium/commit/a281edd802b499f56ab59b7b99c00c0edd99e52b)), closes [#2677](https://github.com/cheminfo/nmrium/issues/2677)
+* Fid plotting ([b67dfe7](https://github.com/cheminfo/nmrium/commit/b67dfe7241f77c52517bd86cfa66ae325e5e8634))
+* filter spectrum columns correctly ([785850a](https://github.com/cheminfo/nmrium/commit/785850ac1cbd061e5cf3dfb6b98f683f199cb15a)), closes [#2675](https://github.com/cheminfo/nmrium/issues/2675)
+* generating real data in the vertical slicing ([7991f19](https://github.com/cheminfo/nmrium/commit/7991f19d85db8008fa30bc059fbc27f13df4b01e)), closes [#2693](https://github.com/cheminfo/nmrium/issues/2693)
+* integrals vertical zooms ([cacfff4](https://github.com/cheminfo/nmrium/commit/cacfff4a4e738c3be9eac333342b345b21b7e4e2))
+* jcamp tree filtering n wrong scale on F1 ([#2761](https://github.com/cheminfo/nmrium/issues/2761)) ([72447eb](https://github.com/cheminfo/nmrium/commit/72447eb8639d2e95b77ec87e166095657baece59))
+* load jcamp files correctly ([#2752](https://github.com/cheminfo/nmrium/issues/2752)) ([1a32500](https://github.com/cheminfo/nmrium/commit/1a325000aff031cd1d7115859567324f7c08b592)), closes [#2751](https://github.com/cheminfo/nmrium/issues/2751)
+* load spectrum n assignment from jcamp ([#2754](https://github.com/cheminfo/nmrium/issues/2754)) ([c8bee9c](https://github.com/cheminfo/nmrium/commit/c8bee9c92ede5fd32cf7a03dc55d0c8e5b6bf7b2))
+* manual peak picking pointer head position ([4dfa666](https://github.com/cheminfo/nmrium/commit/4dfa66682a5cd4e0a9ce1f37cbb02256ea142ab9))
+* open the log history automatically if we have error or fatal ([5c7629e](https://github.com/cheminfo/nmrium/commit/5c7629eeddac7276beb05b641fda210d900b0815)), closes [#2755](https://github.com/cheminfo/nmrium/issues/2755)
+* phase correction 2D slices ([#2748](https://github.com/cheminfo/nmrium/issues/2748)) ([110998a](https://github.com/cheminfo/nmrium/commit/110998a7cf38344a38df2e7d0c07255e0a9a5773))
+* read gyromagnetic ratio correctly ([db978d9](https://github.com/cheminfo/nmrium/commit/db978d95ffab5ad2cb73f517d8d2820a272beb75))
+* resolve the conflict of the analysis modal correctly ([#2727](https://github.com/cheminfo/nmrium/issues/2727)) ([fe6a81c](https://github.com/cheminfo/nmrium/commit/fe6a81c84413ff6120e8e24b0a8553e63fcfe4a7))
+* set active spectra ([4f0626b](https://github.com/cheminfo/nmrium/commit/4f0626b3c01ab19ea690beb8822e1674e256eec3))
+* shift spectrum 2D ([#2744](https://github.com/cheminfo/nmrium/issues/2744)) ([bd77ab4](https://github.com/cheminfo/nmrium/commit/bd77ab4c61b4efda212c194babfa105f79bfd57b))
+* slicing 1d left trace clip width  and its container's  zindex ([f7e976a](https://github.com/cheminfo/nmrium/commit/f7e976a81834aa678a4b0e48814a013c8a5abbe8))
+* support nmredata extension ([#2692](https://github.com/cheminfo/nmrium/issues/2692)) ([a2736cf](https://github.com/cheminfo/nmrium/commit/a2736cf322edd872289c7e41ec504fdffcb00ae8))
+* traces ([0a8331d](https://github.com/cheminfo/nmrium/commit/0a8331d28129a52afc116033402ba7dc11d8d405))
+
+
+### Miscellaneous Chores
+
+* remove commonJS build and update TS to 5.2 ([#2670](https://github.com/cheminfo/nmrium/issues/2670)) ([82c871c](https://github.com/cheminfo/nmrium/commit/82c871c91ee8f02db393608e61abca5c2745f11a))
+* update react-science ([#2700](https://github.com/cheminfo/nmrium/issues/2700)) ([f918969](https://github.com/cheminfo/nmrium/commit/f918969057d5afea1d6ad21117032b9355dfe010))
+
+## [0.44.0](https://github.com/cheminfo/nmrium/compare/v0.43.0...v0.44.0) (2023-09-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename key prefix 'origin' to 'original'
+
+### Features
+
+* control the visibility of NMRium header items ([7a24c77](https://github.com/cheminfo/nmrium/commit/7a24c779adb15e310a99378a376fe9c473d75ce4))
+* delete range peak ([045418d](https://github.com/cheminfo/nmrium/commit/045418d20e4811998ab73b7c8ae3f26d8e420ec6))
+* display ranges peaks ([5655c02](https://github.com/cheminfo/nmrium/commit/5655c020fbeeab71ca5a6813877c631145793705))
+* helper function to create action column ([123377c](https://github.com/cheminfo/nmrium/commit/123377cb6bb15b8655d7b43242f6c21c5e08f948))
+* improve bruker files loading ([#2662](https://github.com/cheminfo/nmrium/issues/2662)) ([d3d231f](https://github.com/cheminfo/nmrium/commit/d3d231f0b9cdce41e1b28820de278d35bf07d254))
+* improve peaks and integrals preferences ([123377c](https://github.com/cheminfo/nmrium/commit/123377cb6bb15b8655d7b43242f6c21c5e08f948))
+* improve ranges preferences ([a8b397f](https://github.com/cheminfo/nmrium/commit/a8b397fe573fb033eb8e343badeef52265a561bc))
+* improve signal kinds for ranges and integrals ([a8ca174](https://github.com/cheminfo/nmrium/commit/a8ca174863b498fc78b99b21702e9da3dcf9e7dd)), closes [#2600](https://github.com/cheminfo/nmrium/issues/2600)
+* improve zones preferences ([4966d90](https://github.com/cheminfo/nmrium/commit/4966d90b6fc9e5117d3a33bf11700fc00daa55db))
+* toggle 'ranges peaks' visibility and displaying mode ([133de16](https://github.com/cheminfo/nmrium/commit/133de16bc499b7fbd683d8ade8dc62a09d9db956))
+* validate the option and the spectra based on the selected options ([f5eb365](https://github.com/cheminfo/nmrium/commit/f5eb365fa50f5205879d5b21758aae1dfb83d37f))
+
+
+### Bug Fixes
+
+* check peaks array before mapping ([a43bfb7](https://github.com/cheminfo/nmrium/commit/a43bfb7c0ad0e7d928844abc202b1803465ff7c1))
+* consecutive selection ([53fff90](https://github.com/cheminfo/nmrium/commit/53fff90b3f3fe28cc69fe7531b34e719db63949d)), closes [#2664](https://github.com/cheminfo/nmrium/issues/2664)
+* define sum options for ranges and integrals when initiating the spectrum ([d1fc56f](https://github.com/cheminfo/nmrium/commit/d1fc56fb24db69c600ae9ec053d86f927112264d))
+* do not raise an error if no 1D trace spectra are found ([ac56101](https://github.com/cheminfo/nmrium/commit/ac5610169be72ad4d14fbaa2a45991ca38378289)), closes [#2643](https://github.com/cheminfo/nmrium/issues/2643)
+* extract the number correctly from the editable column value ([0e11fd6](https://github.com/cheminfo/nmrium/commit/0e11fd6dbd88888b76a4e2e411e0d37de39fea4a))
+* full zoom out ([#2640](https://github.com/cheminfo/nmrium/issues/2640)) ([ff0361f](https://github.com/cheminfo/nmrium/commit/ff0361f829b5919409ba23fb915de1c63239d2d8)), closes [#2639](https://github.com/cheminfo/nmrium/issues/2639)
+* integrals in fid data ([1291818](https://github.com/cheminfo/nmrium/commit/12918182c102f46b5c4d65442c3061fdd6466b9d))
+* recalculate integration when toggling or deleting filter ([81d4388](https://github.com/cheminfo/nmrium/commit/81d43886b2f6c9836552720ce8baabd6b54d60d7)), closes [#2637](https://github.com/cheminfo/nmrium/issues/2637)
+* reduce min resolution for smart range picking ([#2630](https://github.com/cheminfo/nmrium/issues/2630)) ([f01d0e4](https://github.com/cheminfo/nmrium/commit/f01d0e4a4f372e33cbac146925982a4d59182cf6))
+* spectra calibration ([f5eb365](https://github.com/cheminfo/nmrium/commit/f5eb365fa50f5205879d5b21758aae1dfb83d37f)), closes [#2566](https://github.com/cheminfo/nmrium/issues/2566)
+
+
+### Code Refactoring
+
+* rename key prefix 'origin' to 'original' ([adfe8d3](https://github.com/cheminfo/nmrium/commit/adfe8d384ae5b1253b2deac17d36eb7153c252ef))
+
 ## [0.43.0](https://github.com/cheminfo/nmrium/compare/v0.42.0...v0.43.0) (2023-08-17)
 
 

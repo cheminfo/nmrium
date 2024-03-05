@@ -12,7 +12,7 @@ import useSpectrum from './useSpectrum';
 
 type SpectrumInfo = Info1D | Info2D;
 
-interface CheckOptions {
+export interface CheckOptions {
   checkSpectrumType?: boolean;
   checkMode?: boolean;
   extraInfoCheckParameters?: SpectrumInfo;
@@ -28,7 +28,10 @@ export function useCheckToolsVisibility(): (
   const isExperimentalFeatureActivated = useCheckExperimentalFeature();
 
   return useCallback(
-    (toolKey, checkOptions: CheckOptions = {}) => {
+    (
+      toolKey: keyof NMRiumToolBarPreferences,
+      checkOptions: CheckOptions = {},
+    ) => {
       const {
         checkMode = true,
         checkSpectrumType = true,
@@ -53,12 +56,12 @@ export function useCheckToolsVisibility(): (
       const isToolActivated =
         (flag && !isExperimental) ||
         (isExperimental && isExperimentalFeatureActivated);
-      return (
+      return !!(
         isToolActivated &&
         modeFlag &&
         spectrumCheckFlag &&
         (!extraInfoCheckParameters ||
-          checkInfo(extraInfoCheckParameters, spectrum?.info))
+          checkInfo(extraInfoCheckParameters, spectrum?.info as SpectrumInfo))
       );
     },
 

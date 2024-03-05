@@ -71,7 +71,7 @@ function CouplingsTable({
     <div>
       <Button.Done
         fill="outline"
-        style={{ marginBottom: '10px' }}
+        style={{ overflow: 'auto' }}
         onClick={() =>
           push({
             multiplicity: translateMultiplet('m'),
@@ -84,68 +84,76 @@ function CouplingsTable({
           Add New Coupling
         </span>
       </Button.Done>
-
-      <table css={CouplingsTableStyle}>
-        <tbody>
-          <tr>
-            <th>#</th>
-            <th>Multiplicity</th>
-            <th>J (Hz)</th>
-            <th>{''}</th>
-          </tr>
-          {couplingsList.map((_coupling, i) => (
-            <tr
-              // eslint-disable-next-line react/no-array-index-key
-              key={`editCouplings${values.activeTab}${i}`}
-            >
-              <td>{i + 1}</td>
-              <td>
-                <FormikSelect
-                  className="select-box"
-                  name={`signals.${values.activeTab}.js.${i}.multiplicity`}
-                  items={Multiplets}
-                  itemValueField="label"
-                  onChange={(value) => {
-                    multiplicityChangeHandler(
-                      value,
-                      `signals.${values.activeTab}.js.${i}.coupling`,
-                    );
-                  }}
-                />
-              </td>
-              <td>
-                <FormikInput
-                  name={`signals.${values.activeTab}.js.${i}.coupling`}
-                  type="number"
-                  placeholder={'J (Hz)'}
-                  disabled={!hasCouplingConstant(_coupling.multiplicity)}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                  style={{
-                    input: {
-                      width: '100%',
-                      height: '26px',
-                    },
-                  }}
-                  checkErrorAfterInputTouched={false}
-                />
-              </td>
-              <td>
-                <div style={{ display: 'flex' }}>
-                  <Button.Danger
-                    fill="clear"
-                    onClick={() => {
-                      remove(i);
-                    }}
-                  >
-                    <FaRegTrashAlt title="Delete coupling" />
-                  </Button.Danger>
-                </div>
-              </td>
+      <div style={{ maxHeight: '300px', overflow: 'auto' }}>
+        <table css={CouplingsTableStyle}>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Multiplicity</th>
+              <th>J (Hz)</th>
+              <th>{''}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody style={{ overflow: 'auto' }}>
+            {couplingsList.map((_coupling, i) => (
+              <tr
+                // eslint-disable-next-line react/no-array-index-key
+                key={`editCouplings${values.activeTab}${i}`}
+              >
+                <td>{i + 1}</td>
+                <td>
+                  <FormikSelect
+                    className="select-box"
+                    name={`signals.${values.activeTab}.js.${i}.multiplicity`}
+                    items={Multiplets}
+                    itemValueField="label"
+                    onChange={(value) => {
+                      multiplicityChangeHandler(
+                        value,
+                        `signals.${values.activeTab}.js.${i}.coupling`,
+                      );
+                    }}
+                    style={{
+                      height: '26px',
+                    }}
+                  />
+                </td>
+                <td>
+                  <FormikInput
+                    name={`signals.${values.activeTab}.js.${i}.coupling`}
+                    type="number"
+                    placeholder={'J (Hz)'}
+                    disabled={!hasCouplingConstant(_coupling.multiplicity)}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    style={{
+                      input: {
+                        width: '100%',
+                        height: '26px',
+                        padding: '0.25rem 0.5rem',
+                      },
+                    }}
+                    checkErrorAfterInputTouched={false}
+                  />
+                </td>
+                <td>
+                  <div style={{ display: 'flex' }}>
+                    <Button.Danger
+                      fill="clear"
+                      onClick={() => {
+                        remove(i);
+                      }}
+                    >
+                      <FaRegTrashAlt title="Delete coupling" />
+                    </Button.Danger>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

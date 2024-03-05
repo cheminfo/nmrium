@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import FormikNumberInput from '../../elements/formik/FormikNumberInput';
+import FormikInput from '../../elements/formik/FormikInput';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 
 const validationSchema = Yup.object({
@@ -172,11 +172,14 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
       validationSchema={validationSchema}
     >
       {({ submitForm }) => (
-        <FormikNumberInput
+        <FormikInput
+          type="number"
           style={{
-            height: `${InputDimension.height}px`,
-            padding: '5px',
-            outline: 'none',
+            input: {
+              height: `${InputDimension.height}px`,
+              padding: '5px',
+              outline: 'none',
+            },
           }}
           name="value"
           autoSelect

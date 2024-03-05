@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, memo, useState, useEffect } from 'react';
-import { ColorPicker } from 'react-science/ui';
+import { ColorPicker, ColorPickerProps } from 'react-science/ui';
 
 const style = css`
   display: flex;
@@ -67,7 +67,7 @@ const style = css`
 export interface ColorInputProps {
   value?: string;
   name: string;
-  onColorChange?: (element: any) => void;
+  onColorChange?: ColorPickerProps['onChangeComplete'];
 }
 
 function ColorInput(props: ColorInputProps) {

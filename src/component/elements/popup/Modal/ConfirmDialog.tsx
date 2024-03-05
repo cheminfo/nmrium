@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import { DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { CSSProperties, ReactNode, useCallback } from 'react';
 
 const styles = css`
-  display: block;
-  border-radius: 5px;
-  overflow: hidden;
-  width: 30vw;
-  min-width: 350px;
-  border-top: 10px solid #ed0000;
+  background-color: white;
+  padding: 0;
 
   .message {
     font-weight: bold;
@@ -67,7 +64,15 @@ interface ConfirmationDialogProps {
   message: ReactNode;
   render?: (data: { message: ReactNode; className: string }) => ReactNode;
   id?: string;
+  disableDefaultStyle?: boolean;
 }
+
+const defaultStyle: CSSProperties = {
+  display: 'block',
+  borderRadius: '5px',
+  minWidth: '400px',
+  borderTop: '10px solid #ed0000',
+};
 
 function ConfirmationDialog({
   style = {},
@@ -76,6 +81,7 @@ function ConfirmationDialog({
   message,
   render,
   id,
+  disableDefaultStyle = false,
 }: ConfirmationDialogProps) {
   const optionsHandler = useCallback(
     (
@@ -91,25 +97,30 @@ function ConfirmationDialog({
   );
 
   return (
-    <div style={style} css={styles} data-testid={id}>
-      {render ? (
-        render({ message, className: 'message' })
-      ) : (
-        <p className="message">{message}</p>
-      )}
-      <div className="buttons-container">
-        {buttons.map((option) => (
-          <button
-            key={option.text}
-            type="button"
-            onClick={(e) => optionsHandler(e, option)}
-            style={option.style && option.style}
-          >
-            {option.text}
-          </button>
-        ))}
+    <DialogBody css={styles}>
+      <div
+        style={{ ...(!disableDefaultStyle && defaultStyle), ...style }}
+        data-testid={id}
+      >
+        {render ? (
+          render({ message, className: 'message' })
+        ) : (
+          <p className="message">{message}</p>
+        )}
+        <div className="buttons-container">
+          {buttons.map((option) => (
+            <button
+              key={option.text}
+              type="button"
+              onClick={(e) => optionsHandler(e, option)}
+              style={option.style && option.style}
+            >
+              {option.text}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </DialogBody>
   );
 }
 

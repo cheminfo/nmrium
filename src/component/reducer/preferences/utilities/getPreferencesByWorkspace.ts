@@ -1,5 +1,5 @@
 import lodashMerge from 'lodash/merge';
-import { CustomWorkspaces } from 'nmr-load-save';
+import { CustomWorkspaces, WorkspacePreferences } from 'nmr-load-save';
 
 import type { NMRiumWorkspace } from '../../../main';
 import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefaultProperties';
@@ -7,7 +7,7 @@ import { workspaceDefaultProperties } from '../../../workspaces/workspaceDefault
 export function getPreferencesByWorkspace(
   workspace: NMRiumWorkspace,
   originalWorkspaces: CustomWorkspaces,
-) {
+): Required<WorkspacePreferences> {
   return lodashMerge(
     {},
     workspaceDefaultProperties,

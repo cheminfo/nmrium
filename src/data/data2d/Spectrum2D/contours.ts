@@ -127,7 +127,7 @@ function getRange(min: number, max: number, length: number, exp?: number) {
     factors[0] = 0;
 
     for (let i = 1; i <= length; i++) {
-      factors[i] = factors[i - 1] + (exp - 1) / Math.pow(exp, i);
+      factors[i] = factors[i - 1] + (exp - 1) / exp ** i;
     }
 
     const lastFactor = factors[length];
@@ -201,7 +201,7 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
 
   const max = Math.max(Math.abs(data.maxZ), Math.abs(data.minZ));
 
-  let _range = getRange(median * 1 * Math.pow(2, zoomLevel), max, nbLevels, 2);
+  let _range = getRange(median * 1 * 2 ** zoomLevel, max, nbLevels, 2);
 
   if (negative) {
     _range = _range.map((value) => -value);

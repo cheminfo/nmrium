@@ -1,5 +1,7 @@
+import { saveAs } from 'file-saver';
 import lodashGet from 'lodash/get';
 import {
+  ActiveSpectrum,
   JpathTableColumn,
   PredefinedSpectraColumn,
   PredefinedTableColumn,
@@ -9,35 +11,34 @@ import {
 import { useMemo, CSSProperties, useCallback, useState } from 'react';
 import { FaCopy, FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { DropdownMenu, DropdownMenuProps } from 'react-science/ui';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useDispatch } from '../../context/DispatchContext';
+import {
+  ContextMenu,
+  ContextMenuItem,
+} from '../../elements/ContextMenuBluePrint';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
-import { ActiveSpectrum } from '../../reducer/Reducer';
 
 import ColorIndicator from './base/ColorIndicator';
+import { RenderAsHTML } from './base/RenderAsHTML';
 import ShowHideSpectrumButton, {
   OnChangeVisibilityEvent,
 } from './base/ShowHideSpectrumButton';
 import { SpectrumName } from './base/SpectrumName';
 
-function formatValueAsHTML(value) {
-  if (value) {
-    value = value.replaceAll(/(?<value>\d+)/g, '<sub>$<value></sub>');
-  }
-  return value;
-}
-
 function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
   const result = {};
   if (activeSpectra) {
     for (const activeSpectrum of activeSpectra) {
-      result[activeSpectrum.id] = true;
+      if (activeSpectrum?.selected) {
+        result[activeSpectrum.id] = true;
+      }
     }
   }
   return result;
@@ -46,6 +47,7 @@ function getActiveSpectraAsObject(activeSpectra: ActiveSpectrum[] | null) {
 const columnStyle: CSSProperties = {
   maxWidth: 0,
   overflow: 'hidden',
+  height: '24px',
 };
 
 interface SpectraTableProps extends OnChangeVisibilityEvent {
@@ -56,10 +58,9 @@ interface SpectraTableProps extends OnChangeVisibilityEvent {
   nucleus: string;
 }
 
-const options: DropdownMenuProps<string, any>['options'] = [
+const options: ContextMenuItem[] = [
   {
-    label: 'Recolor based on distinct value',
-    type: 'option',
+    text: 'Recolor based on distinct value',
     icon: <IoColorPaletteOutline />,
   },
 ];
@@ -68,36 +69,39 @@ enum SpectraContextMenuOptionsKeys {
   CopyToClipboard = 'CopyToClipboard',
   Delete = 'Delete',
   ExportAsJcamp = 'ExportAsJcamp',
+  ExportAsText = 'ExportAsText',
+  CopyAsText = 'CopyAsText',
 }
 
-const Spectra2DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+const Spectra2DContextMenuOptions: ContextMenuItem[] = [
   {
-    label: 'Copy to Clipboard',
-    type: 'option',
+    text: 'Copy to Clipboard',
     icon: <FaCopy />,
     data: { id: SpectraContextMenuOptionsKeys.CopyToClipboard },
   },
   {
-    label: 'Delete',
-    type: 'option',
+    text: 'Delete',
     icon: <FaRegTrashAlt />,
     data: { id: SpectraContextMenuOptionsKeys.Delete },
   },
+];
+
+const Spectra1DContextMenuOptions: ContextMenuItem[] = [
+  ...Spectra2DContextMenuOptions,
   {
-    label: 'Export as jcamp',
-    type: 'option',
+    text: 'Export as JCAMP-DX',
     icon: <FaFileExport />,
     data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
   },
-];
-
-const Spectra1DContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
-  ...Spectra2DContextMenuOptions,
   {
-    label: 'Export as jcamp',
-    type: 'option',
+    text: 'Export as text',
     icon: <FaFileExport />,
-    data: { id: SpectraContextMenuOptionsKeys.ExportAsJcamp },
+    data: { id: SpectraContextMenuOptionsKeys.ExportAsText },
+  },
+  {
+    text: 'Copy as text',
+    icon: <FaCopy />,
+    data: { id: SpectraContextMenuOptionsKeys.CopyAsText },
   },
 ];
 
@@ -115,11 +119,15 @@ export function SpectraTable(props: SpectraTableProps) {
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
   const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
   const [exportedSpectrum, setExportedSpectrum] = useState<Spectrum | null>();
+  const { rawWriteWithType, shouldFallback, cleanShouldFallback, text } =
+    useClipboard();
 
-  const COLUMNS: Record<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    (string & {}) | PredefinedSpectraColumn,
-    Column<Spectrum>
+  const COLUMNS: Partial<
+    Record<
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      (string & {}) | PredefinedSpectraColumn,
+      Column<Spectrum>
+    >
   > = useMemo(
     () => ({
       visible: {
@@ -128,6 +136,7 @@ export function SpectraTable(props: SpectraTableProps) {
         style: {
           width: '35px',
           maxWidth: '55px',
+          height: '24px',
         },
         Cell: ({ row }) => {
           return (
@@ -138,38 +147,12 @@ export function SpectraTable(props: SpectraTableProps) {
           );
         },
       },
-      name: {
-        Header: '',
-        style: columnStyle,
-        accessor: (row) => row.info.name,
-        Cell: ({ row }) => {
-          return <SpectrumName data={row.original} />;
-        },
-      },
-      solvent: {
-        Header: '',
-        style: columnStyle,
-        accessor: (row) => row.info.solvent,
-        Cell: ({ row }) => {
-          const info: any = row.original.info;
-          return (
-            info?.solvent && (
-              <div
-                // style={styles.info}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: formatValueAsHTML(info.solvent),
-                }}
-              />
-            )
-          );
-        },
-      },
       color: {
         id: 'spectrum-actions',
         style: {
           width: '30px',
           maxWidth: '30px',
+          height: '24px',
         },
         Cell: ({ row }) => {
           const {
@@ -193,12 +176,9 @@ export function SpectraTable(props: SpectraTableProps) {
     [onChangeVisibility, onOpenSettingModal],
   );
 
-  const { rawWriteWithType, cleanShouldFallback, shouldFallback, text } =
-    useClipboard();
-
   const selectContextMenuHandler = useCallback(
     (option, spectrum) => {
-      const { id } = option.data;
+      const { id } = option;
       switch (id) {
         case SpectraContextMenuOptionsKeys.CopyToClipboard: {
           void (async () => {
@@ -223,6 +203,19 @@ export function SpectraTable(props: SpectraTableProps) {
         }
         case SpectraContextMenuOptionsKeys.ExportAsJcamp: {
           setExportedSpectrum(spectrum);
+          break;
+        }
+        case SpectraContextMenuOptionsKeys.ExportAsText: {
+          const data = convertSpectrumToText(spectrum);
+          const blob = new Blob([data], { type: 'text/plain' });
+          saveAs(blob, `${spectrum.info.name}.tsv`);
+          break;
+        }
+        case SpectraContextMenuOptionsKeys.CopyAsText: {
+          const data = convertSpectrumToText(spectrum);
+          void rawWriteWithType(data, 'text/plain').then(() =>
+            alert.success('Spectrum copied to clipboard'),
+          );
           break;
         }
 
@@ -254,21 +247,35 @@ export function SpectraTable(props: SpectraTableProps) {
           ...COLUMNS[name],
           Header: () => <ColumnHeader label={col.label} col={col} />,
           id: name,
-          style:
-            name === 'name' && visibleColumns.length > 3
-              ? {
-                  ...COLUMNS[name].style,
-                  width: '50%',
-                }
-              : COLUMNS[name].style,
         });
       } else {
-        columns.push({
+        const pathString = Array.isArray(path) ? path.join('.') : '';
+        let style: CSSProperties = columnStyle;
+        let cellRender: Column<Spectrum>['Cell'] | null = null;
+        if (pathString === 'info.name') {
+          if (visibleColumns.length > 3) {
+            style = { ...columnStyle, width: '50%' };
+          }
+          cellRender = ({ row }) => {
+            return <SpectrumName data={row.original} />;
+          };
+        }
+
+        if (pathString === 'info.solvent') {
+          cellRender = ({ row }) => {
+            return <RenderAsHTML data={row.original} jpath={pathString} />;
+          };
+        }
+
+        const cell: Column<Spectrum> = {
           Header: () => <ColumnHeader label={col.label} col={col} />,
           accessor: (row) => lodashGet(row, path, ''),
+          ...(cellRender && { Cell: cellRender }),
           id: `${index}`,
-          style: columnStyle,
-        });
+          style,
+        };
+
+        columns.push(cell);
       }
       index++;
     }
@@ -291,6 +298,10 @@ export function SpectraTable(props: SpectraTableProps) {
     };
   }
 
+  const contextMenu =
+    nucleus.split(',').length === 1
+      ? Spectra1DContextMenuOptions
+      : Spectra2DContextMenuOptions;
   return (
     <>
       <ReactTable
@@ -300,12 +311,8 @@ export function SpectraTable(props: SpectraTableProps) {
         columns={tableColumns}
         onClick={(e, data: any) => onChangeActiveSpectrum(e, data.original)}
         enableVirtualScroll
-        approxItemHeight={26}
-        contextMenu={
-          data.info && data.info.dimension === 1
-            ? Spectra1DContextMenuOptions
-            : Spectra2DContextMenuOptions
-        }
+        approxItemHeight={24}
+        contextMenu={contextMenu}
         onContextMenuSelect={selectContextMenuHandler}
         onSortEnd={handleSortEnd}
         style={{ 'table td': { paddingTop: 0, paddingBottom: 0 } }}
@@ -347,20 +354,29 @@ const ColumnHeader = ({
   }
 
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={options}
       onSelect={selectHandler}
+      style={{
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
     >
-      <div
-        style={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {label}
-      </div>
-    </DropdownMenu>
+      {label}
+    </ContextMenu>
   );
 };
+
+function convertSpectrumToText(spectrum: Spectrum) {
+  if (!isSpectrum1D(spectrum)) return '';
+
+  const {
+    data: { x, re },
+  } = spectrum;
+  const lines = ['x\ty'];
+  for (let i = 0; i < x.length; i++) {
+    lines.push(`${x[i]}\t${re[i]}`);
+  }
+  return lines.join('\n');
+}

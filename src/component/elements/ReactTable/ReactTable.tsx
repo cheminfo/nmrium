@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prefer-logical-operator-over-ternary */
 /** @jsxImportSource @emotion/react */
-import { CSSObject, SerializedStyles } from '@emotion/react';
+import { CSSObject, SerializedStyles, css } from '@emotion/react';
 import {
   useRef,
   memo,
@@ -13,7 +13,6 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { DropdownMenuProps } from 'react-science/ui';
 import {
   useTable,
   useSortBy,
@@ -28,6 +27,7 @@ import {
 import { useMeasure } from 'react-use';
 
 import { HighlightEventSource } from '../../highlight';
+import { BaseContextMenuProps } from '../ContextMenuBluePrint';
 
 import { EmptyDataRow } from './Elements/EmptyDataRow';
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -69,14 +69,14 @@ export interface BaseRowStyle {
   base?: CSSProperties;
 }
 
-export interface ContextMenuProps {
+export interface TableContextMenuProps {
   onContextMenuSelect?: (
-    selected: Parameters<DropdownMenuProps<any, any>['onSelect']>[0],
+    selected: Parameters<BaseContextMenuProps['onSelect']>[0],
     data: any,
   ) => void;
-  contextMenu?: DropdownMenuProps<any, any>['options'];
+  contextMenu?: BaseContextMenuProps['options'];
 }
-interface ReactTableProps extends ContextMenuProps, ClickEvent, SortEvent {
+interface ReactTableProps extends TableContextMenuProps, ClickEvent, SortEvent {
   data: any;
   columns: any;
   highlightedSource?: HighlightEventSource;
@@ -235,7 +235,7 @@ const ReactTableInner = forwardRef(function ReactTableInner(
   const index = rowsData.at(-1)?.original[indexKey] || rowsData.at(-1)?.index;
   const total = totalCount ? totalCount : data.length;
 
-  const startColumn = columns[virtualBoundary.columns.start].Header;
+  const startColumn = columns[virtualBoundary.columns.start]?.Header;
 
   return (
     <>
@@ -485,11 +485,13 @@ function ReactTable(props: ReactTableProps) {
     <ReactTableProvider value={tableVirtualBoundary}>
       <div
         ref={mRef}
-        style={{
-          position: 'relative',
-          height: '100%',
-        }}
-        css={style}
+        css={css(
+          {
+            position: 'relative',
+            height: '100%',
+          },
+          style,
+        )}
       >
         <ReactTableInner
           onScroll={scrollHandler}

@@ -1,36 +1,17 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { FifoLogger, LogEntry } from 'fifo-logger';
 import { Formik } from 'formik';
-import { useCallback, useRef } from 'react';
+import debounce from 'lodash/debounce';
+import { resurrect } from 'nmr-processing';
+import { useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import Button from '../elements/Button';
-import CloseButton from '../elements/CloseButton';
+import { GroupPane } from '../elements/GroupPane';
+import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
 import FormikTextarea from '../elements/formik/FormikTextarea';
 import { useAlert } from '../elements/popup/Alert';
-
-import { ModalStyles } from './ModalStyle';
-
-const styles = css`
-  width: 600px;
-  height: 300px;
-
-  .inner-content {
-    flex: 1;
-    border: none;
-    overflow: hidden;
-    padding: 0;
-  }
-
-  .text-area {
-    width: 100%;
-    height: 100%;
-    outline: none;
-    resize: none;
-    padding: 0 0 0 15px;
-  }
-`;
 
 const validationSchema = yup.object({
   publicationText: yup.string().required(),
@@ -38,62 +19,181 @@ const validationSchema = yup.object({
 
 interface ImportPublicationStringModalProps {
   onClose: () => void;
+  isOpen: boolean;
 }
 
-function ImportPublicationStringModal({
-  onClose,
-}: ImportPublicationStringModalProps) {
+function handleRowStyle(data) {
+  const level = (data?.original as LogEntry).level;
+  let backgroundColor = 'lightgreen';
+  if (level > 40) {
+    backgroundColor = 'pink';
+  } else if (level === 40) {
+    backgroundColor = 'lightyellow';
+  }
+
+  return { base: { backgroundColor } };
+}
+
+const INITIAL_VALUES = {
+  publicationText:
+    '1H NMR (CDCl3, 400MHz) δ 10.58 (b, 1H), 7.40 (d, 1H, J = 8.0 Hz), 6.19 (d, 1H, J = 7.6 Hz), 4.88 (s, 1H), 2.17 (s, 3H), 1.02 (s, 9H), 1.01 (s, 9H), 0.89 (s, 9H)',
+};
+
+function ImportPublicationStringModal(
+  props: ImportPublicationStringModalProps,
+) {
+  const { onClose, isOpen } = props;
+
   const formRef = useRef<any>();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const publicationStringHandler = useCallback(
-    (values) => {
-      void (async () => {
-        const hideLoading = await alert.showLoading(
-          'Generate spectrum from publication string in progress',
-        );
-        setTimeout(() => {
-          dispatch({
-            type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
-            payload: values,
-          });
-          hideLoading();
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const loggerRef = useRef<FifoLogger>(
+    new FifoLogger({
+      onChange: (log, logs) => {
+        setLogs(logs.slice());
+      },
+    }),
+  );
+
+  const COLUMNS: Array<Column<LogEntry>> = useMemo(
+    () => [
+      {
+        Header: '#',
+        accessor: (_, index) => index + 1,
+        style: { width: '40px' },
+      },
+      {
+        Header: 'Label',
+        accessor: 'levelLabel',
+        style: { width: '60px' },
+      },
+      {
+        Header: 'Message',
+        accessor: 'message',
+      },
+    ],
+    [],
+  );
+
+  const debounceChanges = useMemo(
+    () =>
+      debounce((value) => {
+        resurrect(value, { logger: loggerRef.current });
+      }, 250),
+    [],
+  );
+
+  if (!isOpen) return;
+
+  function publicationStringHandler({ publicationText }) {
+    void (async () => {
+      const hideLoading = await alert.showLoading(
+        'Generate spectrum from publication string in progress',
+      );
+      const {
+        ranges,
+        info: { nucleus, solvent = '', frequency },
+        parts,
+      } = resurrect(publicationText, { logger: loggerRef.current });
+      setTimeout(() => {
+        dispatch({
+          type: 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING',
+          payload: {
+            ranges,
+            info: { nucleus, solvent, frequency, name: parts[0] },
+          },
         });
-        onClose();
-      })();
-    },
-    [alert, dispatch, onClose],
+        hideLoading();
+      });
+      onClose();
+    })();
+  }
+
+  function handleOnChange(event) {
+    loggerRef.current.clear();
+    const value = event.target.value;
+    if (value) {
+      debounceChanges(value);
+    }
+  }
+
+  const isNotValid = logs.some((log) =>
+    ['error', 'fatal'].includes(log.levelLabel),
   );
 
   return (
-    <div css={[ModalStyles, styles]}>
-      <div className="header handle">
-        <span>Import from publication string</span>
-        <CloseButton onClick={onClose} className="close-bt" />
-      </div>
-      <div className="inner-content">
-        <Formik
-          innerRef={formRef}
-          initialValues={{
-            publicationText:
-              '1H NMR (CDCl3, 400MHz) δ 10.58 (b, 1H), 7.40 (d, 1H, J = 8.0 Hz), 6.19 (d, 1H, J = 7.6 Hz), 4.88 (s, 1H), 2.17 (s, 3H), 1.02 (s, 9H), 1.01 (s, 9H), 0.89 (s, 9H)',
-          }}
-          validationSchema={validationSchema}
-          onSubmit={publicationStringHandler}
-        >
-          <FormikTextarea
-            name="publicationText"
-            className="text-area"
-            placeholder="Enter publication string"
-          />
-        </Formik>
-      </div>
-      <div className="footer-container">
-        <Button.Done onClick={() => formRef.current.submitForm()}>
-          Import
-        </Button.Done>
-      </div>
-    </div>
+    <Dialog
+      title="Generate spectrum from publication string"
+      isOpen
+      onClose={onClose}
+      style={{ width: 800, height: 500 }}
+    >
+      <Formik
+        innerRef={formRef}
+        initialValues={INITIAL_VALUES}
+        validationSchema={validationSchema}
+        onSubmit={publicationStringHandler}
+      >
+        {({ isValid }) => (
+          <>
+            <DialogBody>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+                >
+                  <p>
+                    Paste a publication string in the text area below and click
+                    on the button <i>Generate spectrum</i>
+                  </p>
+                  <FormikTextarea
+                    style={{
+                      width: '100%',
+                      flex: 1,
+                      outline: 'none',
+                      borderWidth: '1px',
+                      borderColor: '#dedede',
+                      borderRadius: '5px',
+                      resize: 'none',
+                      padding: '15px',
+                    }}
+                    name="publicationText"
+                    className="text-area"
+                    placeholder="Enter publication string"
+                    onChange={handleOnChange}
+                  />
+                </div>
+                <GroupPane text="Logs">
+                  <ReactTable
+                    columns={COLUMNS}
+                    data={logs}
+                    emptyDataRowText="No Logs"
+                    rowStyle={handleRowStyle}
+                    style={{ height: '120px' }}
+                  />
+                </GroupPane>
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                <Button.Done
+                  onClick={() => formRef.current.submitForm()}
+                  disabled={isNotValid || !isValid}
+                >
+                  Generate spectrum
+                </Button.Done>
+              </div>
+            </DialogFooter>
+          </>
+        )}
+      </Formik>
+    </Dialog>
   );
 }
 

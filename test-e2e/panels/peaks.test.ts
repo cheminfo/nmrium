@@ -1,48 +1,43 @@
-import { setTimeout as wait } from 'node:timers/promises';
-
 import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
+
+const PEAK_ANNOTATIONS_SELECTOR =
+  '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation';
+const FIRST_PEAK_ANNOTATION_SELECTOR = `${PEAK_ANNOTATIONS_SELECTOR} >> nth=0 >> text`;
 
 async function addPeaks(nmrium: NmriumPage) {
-  const peakAnnotationLocator = nmrium.page.locator('_react=PeakAnnotation');
+  const peaksAnnotationLocator = nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR);
 
-  // select peak picking tool
+  // Select peak picking tool.
   await nmrium.clickTool('peakPicking');
 
-  // add peak by select range
-  await selectRange(nmrium, {
-    axis: 'X',
-    startX: 50,
-    endX: 100,
+  // Add peak by selecting range.
+  await nmrium.viewer.drawRectangle({
+    axis: 'x',
+    startX: 75,
+    endX: 115,
+    shift: true,
   });
 
-  await expect(peakAnnotationLocator).toHaveCount(1);
+  await expect(peaksAnnotationLocator).toHaveCount(1);
 
-  // TODO: Get rid of this timeout.
-  // Without it, the click seems to have no effect.
-  await wait(500);
-
-  await nmrium.viewerLocator.click({
+  // Add peak by clicking above it.
+  await nmrium.viewer.moveMouse({ x: 210, y: 200 });
+  await nmrium.viewer.locator.click({
+    position: { x: 210, y: 200 },
     modifiers: ['Shift'],
-    position: {
-      x: 200,
-      y: 200,
-    },
   });
 
-  await expect(peakAnnotationLocator).toHaveCount(2);
+  await expect(peaksAnnotationLocator).toHaveCount(2);
 }
 
 async function shiftX(nmrium: NmriumPage) {
-  const peakLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0 >> text',
-  );
+  const peakLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
 
   await peakLocator.click();
   const peakInputLocator = nmrium.page.locator('_react=PeakEditionField');
-  await peakInputLocator.type('10');
+  await peakInputLocator.pressSequentially('10');
   await peakInputLocator.press('Enter');
 
   await expect(peakLocator).toHaveText('10.00');
@@ -56,24 +51,22 @@ async function shiftSpectraByDeltaColumn(nmrium: NmriumPage) {
   await ppmColumnLocator.dblclick();
   const inputLocator = ppmColumnLocator.locator('input');
   await inputLocator.selectText();
-  await inputLocator.type('20');
+  await inputLocator.fill('20');
   await inputLocator.press('Enter');
 
-  const peakInputLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0 >>text',
-  );
+  const peakInputLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
   await expect(peakInputLocator).toHaveText('20.00');
 }
 
 async function deletePeak(nmrium: NmriumPage) {
   const peakAnnotationLocator = nmrium.page.locator(
-    '_react=PeakAnnotation >> nth=0',
+    FIRST_PEAK_ANNOTATION_SELECTOR,
   );
   await peakAnnotationLocator.hover();
   await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
-  await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(1);
+  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(1);
 }
 
 test('add/shift/delete peaks', async ({ page }) => {
@@ -105,7 +98,7 @@ test('Automatic peak picking should work', async ({ page }) => {
   //apply auto ranges detection
   await nmrium.page.click('button >> text=Apply');
 
-  await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(50);
+  await expect(nmrium.page.locator(PEAK_ANNOTATIONS_SELECTOR)).toHaveCount(50);
 });
 test('Processed spectra peaks', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
@@ -134,8 +127,11 @@ test('Processed spectra peaks', async ({ page }) => {
     ];
     for (const [i, { p, intensity }] of peaksData.entries()) {
       const peak = peaks.nth(i);
+      // eslint-disable-next-line no-await-in-loop
       await expect(peak).toBeVisible();
+      // eslint-disable-next-line no-await-in-loop
       await expect(peak).toContainText(p);
+      // eslint-disable-next-line no-await-in-loop
       await expect(peak).toContainText(intensity);
     }
   });
@@ -158,6 +154,7 @@ test('Check no negative peaks in processed spectra', async ({ page }) => {
 
     for (let i = 0; i < 16; i++) {
       const peak = peaks.nth(i);
+      // eslint-disable-next-line no-await-in-loop
       expect(await peak.locator('td >> nth=2').textContent()).not.toContain(
         '-',
       );

@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { Formik, FormikProps } from 'formik';
 import { ParseResult } from 'papaparse';
 import { CSSProperties, useState, useMemo, useRef, useEffect } from 'react';
@@ -17,7 +18,6 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
-import CloseButton from '../../elements/CloseButton';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';
@@ -25,7 +25,6 @@ import FormikSelect from '../../elements/formik/FormikSelect';
 import { useAlert } from '../../elements/popup/Alert/Context';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
-import { ModalStyles } from '../ModalStyle';
 
 import { mapColumnToSelectItems } from './utils/mapColumnToSelectItems';
 
@@ -79,17 +78,41 @@ interface CompareResultItem {
 }
 type CompareResult = Record<number, CompareResultItem>;
 
-interface MetaImportationModalProps {
-  onClose?: () => void;
-  file?: File;
-}
-
 const validationSchema = Yup.object({
   source: Yup.string().required(),
   target: Yup.array(Yup.string()).min(1).required(),
 });
 
-function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
+interface InnerMetaImportationModalPropsProps {
+  file?: File;
+  onCloseDialog: () => void;
+}
+interface MetaImportationModalPropsProps
+  extends InnerMetaImportationModalPropsProps {
+  isOpen: boolean;
+}
+
+export function MetaImportationModal(props: MetaImportationModalPropsProps) {
+  const { isOpen, onCloseDialog, file } = props;
+
+  if (!isOpen) return null;
+
+  return (
+    <Dialog
+      isOpen
+      title="Import Meta Information"
+      style={{ width: 900, height: 600 }}
+      onClose={onCloseDialog}
+    >
+      <InnerMetaImportationModal {...{ onCloseDialog, file }} />
+    </Dialog>
+  );
+}
+
+function InnerMetaImportationModal({
+  file,
+  onCloseDialog,
+}: InnerMetaImportationModalPropsProps) {
   const alert = useAlert();
   const dispatch = useDispatch();
 
@@ -209,24 +232,22 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
       type: 'IMPORT_SPECTRA_META_INFO',
       payload: { spectraMeta: matches },
     });
-    onClose?.();
+    onCloseDialog?.();
   }
 
   return (
-    <div css={ModalStyles} style={{ overflow: 'hidden' }}>
-      <div className="header handle">
-        <span>Import Meta Information</span>
-        <CloseButton onClick={onClose} className="close-bt" />
-      </div>
-
-      <div style={styles.container}>
-        <div style={{ flex: 1, width: '100%' }}>
+    <>
+      <DialogBody>
+        <div
+          style={{ width: '100%', height: '100%' }}
+          onDrop={(e: React.DragEvent<HTMLDivElement>) => e.preventDefault()}
+        >
           {!parseResult ? (
             <DropZone
-              fileValidator={fileValidator}
-              color="gray"
-              emptyText="Drag and Drop CSV or tab-delimited file (.csv, .txt or .tsv)"
+              validator={fileValidator}
+              emptyDescription="Drag and Drop CSV or tab-delimited file (.csv, .txt or .tsv)"
               onDrop={handleDrop}
+              noDragEventsBubbling
             />
           ) : (
             <>
@@ -235,7 +256,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                   innerRef={formRef}
                   initialValues={{
                     source: null,
-                    target: '',
+                    target: [],
                   }}
                   onSubmit={handleLinkSpectra}
                   validationSchema={validationSchema}
@@ -275,7 +296,7 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
                         }}
                         placeholder="Example: info.plus"
                         datalist={datalist}
-                        mapOnChangeValue={(key) => paths?.[key] || null}
+                        mapOnChangeValue={(key) => paths?.[key] || key}
                         mapValue={(paths) => convertPathArrayToString(paths)}
                       />
                     </Label>
@@ -300,16 +321,16 @@ function MetaImportationModal({ onClose, file }: MetaImportationModalProps) {
             </>
           )}
         </div>
-      </div>
-      <div className="footer-container">
+      </DialogBody>
+      <DialogFooter>
         <Button.Done
           onClick={handleImport}
           disabled={Object.keys(matches).length === 0}
         >
           Import
         </Button.Done>
-      </div>
-    </div>
+      </DialogFooter>
+    </>
   );
 }
 
@@ -322,5 +343,3 @@ function fileValidator(file: File): FileError | null {
   }
   return null;
 }
-
-export default MetaImportationModal;

@@ -25,8 +25,8 @@ export function detectRange(
 
   return {
     id: v4(),
-    originFrom: from - shiftX,
-    originTo: to - shiftX,
+    originalFrom: from - shiftX,
+    originalTo: to - shiftX,
     from,
     to,
     absolute, // the real value,

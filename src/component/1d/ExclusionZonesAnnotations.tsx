@@ -12,7 +12,7 @@ import ExclusionZoneAnnotation from './ExclusionZoneAnnotation';
 interface ExclusionZonesAnnotationsInnerProps {
   displayerKey: string;
   spectra: Spectrum1D[];
-  xDomains: any;
+  xDomains: Record<string, number[]>;
   shiftY: number;
 }
 

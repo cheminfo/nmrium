@@ -1,8 +1,10 @@
+/** @jsxImportSource @emotion/react */
+import { DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Formik } from 'formik';
 import { SumOptions } from 'nmr-load-save';
 import { useEffect, useRef, useState } from 'react';
-import { Modal } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../../context/PreferencesContext';
@@ -59,15 +61,13 @@ const ManualContainer = styled.div`
 `;
 
 export interface ChangeSumModalContentsProps {
-  currentSum: number | null;
-  sumType: string;
   sumOptions: SumOptions;
   onSave: (saveInput: SaveInput) => void;
   onClose: () => void;
 }
 
 export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
-  const { currentSum, sumType, sumOptions, onSave, onClose } = props;
+  const { sumOptions, onSave, onClose } = props;
   const {
     current: {
       display: { panels },
@@ -128,12 +128,12 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
 
   return (
     <>
-      <Modal.Header>
-        {currentSum
-          ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`
-          : `Set new ${sumType} Sum`}
-      </Modal.Header>
-      <Modal.Body>
+      <DialogBody
+        css={css`
+          padding: 0;
+          background-color: white;
+        `}
+      >
         <Formik
           innerRef={formRef}
           onSubmit={saveHandler}
@@ -159,15 +159,15 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
             </Tab>
           </Tabs>
         </Formik>
-      </Modal.Body>
-      <Modal.Footer>
+      </DialogBody>
+      <DialogFooter>
         <Button.Done
           onClick={() => formRef.current.submitForm()}
           style={{ width: 80 }}
         >
           Set
         </Button.Done>
-      </Modal.Footer>
+      </DialogFooter>
     </>
   );
 }

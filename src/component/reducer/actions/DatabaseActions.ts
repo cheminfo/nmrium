@@ -11,7 +11,7 @@ import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
 import { ActionType } from '../types/ActionType';
 
-import { setDomain, setIntegralsYDomain } from './DomainActions';
+import { setDomain } from './DomainActions';
 
 type ResurrectSpectrumFromJcampAction = ActionType<
   'RESURRECTING_SPECTRUM_FROM_JCAMP',
@@ -23,6 +23,7 @@ type ResurrectSpectrumFromRangesAction = ActionType<
 >;
 
 export type DatabaseActions =
+  | ActionType<'TOGGLE_SIMILARITY_TREE'>
   | ResurrectSpectrumFromJcampAction
   | ResurrectSpectrumFromRangesAction;
 
@@ -40,13 +41,12 @@ function handleResurrectSpectrumFromJcamp(
     },
     display: {
       ...spectrum.display,
-      ...get1DColor(spectrum.display, draft.usedColors),
+      ...get1DColor(spectrum.display, { usedColors: draft.usedColors }),
     },
   };
 
   draft.data.push(spectrum);
   setDomain(draft);
-  setIntegralsYDomain(draft, [spectrum]);
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
 
@@ -59,9 +59,17 @@ function handleResurrectSpectrumFromRanges(
   if (datum) {
     draft.data.push(datum);
     setDomain(draft, { isYDomainShared: false });
-    setIntegralsYDomain(draft, [datum]);
     setZoom(draft, { scale: 0.8, spectrumID: datum.id });
   }
 }
 
-export { handleResurrectSpectrumFromRanges, handleResurrectSpectrumFromJcamp };
+function handleToggleSimilarityTree(draft: Draft<State>) {
+  draft.view.spectra.showSimilarityTree =
+    !draft.view.spectra.showSimilarityTree;
+}
+
+export {
+  handleResurrectSpectrumFromRanges,
+  handleResurrectSpectrumFromJcamp,
+  handleToggleSimilarityTree,
+};

@@ -1,19 +1,21 @@
 import lodashGet from 'lodash/get';
-import { Integral } from 'nmr-processing';
+import { Info1D, Integral } from 'nmr-processing';
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { SignalKinds } from '../../../data/constants/SignalsKinds';
+import { SIGNAL_KINDS } from '../../../data/constants/signalsKinds';
 import { checkIntegralKind } from '../../../data/data1d/Spectrum1D';
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
   CustomColumn,
+  createActionColumn,
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import Select from '../../elements/Select';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { formatNumber } from '../../utility/formatNumber';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import { IntegralPanelInnerProps } from './IntegralPanel';
@@ -23,14 +25,14 @@ const selectStyle = { width: '100%', border: 'none' };
 interface IntegralTableProps
   extends Pick<IntegralPanelInnerProps, 'activeTab'> {
   data: Integral[];
+  info: Info1D;
 }
 
-function IntegralTable({ activeTab, data }: IntegralTableProps) {
+function IntegralTable({ activeTab, data, info }: IntegralTableProps) {
   const dispatch = useDispatch();
+
   const deleteIntegralHandler = useCallback(
-    (e, row) => {
-      e.preventDefault();
-      e.stopPropagation();
+    (row) => {
       const { id } = row.original;
       dispatch({
         type: 'DELETE_INTEGRAL',
@@ -41,6 +43,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     },
     [dispatch],
   );
+
   const changeIntegralDataHandler = useCallback(
     (value, row) => {
       const integral = { ...row.original, kind: value };
@@ -50,44 +53,6 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
       });
     },
     [dispatch],
-  );
-  const initialColumns: Array<CustomColumn<Integral>> = useMemo(
-    () => [
-      {
-        index: 1,
-        Header: '#',
-        accessor: (_, index) => index + 1,
-        style: { width: '30px', maxWidth: '30px' },
-      },
-
-      {
-        index: 2,
-        Header: 'From',
-        sortType: 'basic',
-        accessor: (row) => row.from.toFixed(2),
-      },
-      {
-        index: 3,
-        Header: 'To',
-        sortType: 'basic',
-        accessor: (row) => row.to.toFixed(2),
-      },
-      {
-        index: 7,
-        style: { width: '1%', maxWidth: '24px', minWidth: '24px' },
-        id: 'delete-button',
-        Cell: ({ row }) => (
-          <button
-            type="button"
-            className="delete-button"
-            onClick={(e) => deleteIntegralHandler(e, row)}
-          >
-            <FaRegTrashAlt />
-          </button>
-        ),
-      },
-    ],
-    [deleteIntegralHandler],
   );
 
   const saveRelativeHandler = useCallback(
@@ -108,15 +73,33 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
   > = useMemo(
     () => [
       {
+        showWhen: 'showSerialNumber',
+        index: 1,
+        Header: '#',
+        accessor: (_, index) => index + 1,
+        style: { width: '30px', maxWidth: '30px' },
+      },
+      {
+        showWhen: 'from.show',
+        index: 2,
+        Header: 'From',
+        sortType: 'basic',
+        accessor: (row) =>
+          formatNumber(row.from, integralsPreferences.from.format),
+      },
+      {
+        showWhen: 'to.show',
+        index: 3,
+        Header: 'To',
+        sortType: 'basic',
+        accessor: (row) => formatNumber(row.to, integralsPreferences.to.format),
+      },
+      {
         showWhen: 'absolute.show',
         index: 4,
         Header: 'Absolute',
-        accessor: 'absolute',
-        Cell: ({ row }) =>
-          formatNumber(
-            row.original.absolute,
-            integralsPreferences.absolute.format,
-          ),
+        accessor: (row) =>
+          formatNumber(row.absolute, integralsPreferences.absolute.format),
       },
       {
         showWhen: 'relative.show',
@@ -137,6 +120,7 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
 
           return (
             <EditableColumn
+              key={`${integral}`}
               value={integral}
               onSave={(event) => saveRelativeHandler(event, row.original)}
               type="number"
@@ -155,11 +139,19 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
         Cell: ({ row }) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
-            items={SignalKinds}
+            items={SIGNAL_KINDS}
             style={selectStyle}
             defaultValue={row.original.kind}
           />
         ),
+      },
+      {
+        showWhen: 'showDeleteAction',
+        ...createActionColumn<Integral>({
+          index: 20,
+          icon: <FaRegTrashAlt />,
+          onClick: deleteIntegralHandler,
+        }),
       },
     ],
     [
@@ -167,11 +159,12 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
       changeIntegralDataHandler,
       integralsPreferences,
       saveRelativeHandler,
+      deleteIntegralHandler,
     ],
   );
 
   const tableColumns = useMemo(() => {
-    const columns = [...initialColumns];
+    const columns: Array<CustomColumn<Integral>> = [];
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
       if (lodashGet(integralsPreferences, showWhen)) {
@@ -180,13 +173,17 @@ function IntegralTable({ activeTab, data }: IntegralTableProps) {
     }
 
     return columns.sort((object1, object2) => object1.index - object2.index);
-  }, [COLUMNS, initialColumns, integralsPreferences]);
+  }, [COLUMNS, integralsPreferences]);
 
-  return data && data.length > 0 ? (
-    <ReactTable data={data} columns={tableColumns} />
-  ) : (
-    <NoTableData />
-  );
+  if (info?.isFid) {
+    return <NoDataForFid />;
+  }
+
+  if (!data || data.length === 0) {
+    return <NoTableData />;
+  }
+
+  return <ReactTable data={data} columns={tableColumns} />;
 }
 
 export default memo(IntegralTable);

@@ -38,8 +38,8 @@ export interface SelectProps
     React.SelectHTMLAttributes<HTMLSelectElement>,
     'style' | 'onChange'
   > {
-  onChange?: (element: any) => void;
-  items: any[];
+  onChange?: (element: string) => void;
+  items: object[];
   defaultValue?: string | number | undefined;
   style?: CSSProperties;
   placeholder?: string;
@@ -76,7 +76,6 @@ const Select = forwardRef(function Select(
     },
     [itemValueField, onChange, returnValue],
   );
-
   return (
     <select
       ref={ref}
@@ -95,15 +94,40 @@ const Select = forwardRef(function Select(
         </option>
       )}
 
-      {items.map((option) => (
-        <option
-          key={JSON.stringify(option)}
-          value={option[itemValueField]}
-          data-value={JSON.stringify(option)}
-        >
-          {textRender?.(option[itemTextField]) || option[itemTextField]}
-        </option>
-      ))}
+      {items.map((option) => {
+        const value = option[itemValueField];
+
+        if (!['number', 'string'].includes(typeof option[itemTextField])) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `The '${itemTextField}' field should be a string , option : ${JSON.stringify(
+              option,
+            )}`,
+          );
+          return null;
+        }
+        if (!['number', 'string'].includes(typeof value)) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `The '${itemValueField}' field should be either a string or a number, option : ${JSON.stringify(
+              option,
+            )}`,
+          );
+          return null;
+        }
+
+        const label = String(option[itemTextField]);
+
+        return (
+          <option
+            key={JSON.stringify(option)}
+            value={value}
+            data-value={JSON.stringify(option)}
+          >
+            {textRender?.(label) || label}
+          </option>
+        );
+      })}
     </select>
   );
 });

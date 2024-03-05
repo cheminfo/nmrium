@@ -22,7 +22,7 @@ interface Chart2DInnerProps extends Chart2DProps {
   height: number;
   margin: Margin;
   displayerKey: string;
-  SpectraRendering: SpectraRendering;
+  spectraRendering: SpectraRendering;
 }
 
 function chart2DInner({
@@ -31,15 +31,19 @@ function chart2DInner({
   height,
   margin,
   displayerKey,
-  SpectraRendering,
+  spectraRendering,
 }: Chart2DInnerProps) {
   return (
     <svg
+      id="nmrSVG"
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
-      id="nmrSVG"
-      shapeRendering={SpectraRendering}
+      fontFamily="Arial, Helvetica, sans-serif"
+      shapeRendering={spectraRendering}
+      style={{
+        position: 'absolute',
+      }}
     >
       <defs>
         <clipPath id={`${displayerKey}clip-chart-2d`}>
@@ -80,13 +84,13 @@ export default function Chart2D({ spectra }: Chart2DProps) {
   const { width, height, margin, displayerKey } = useChartData();
   const {
     current: {
-      general: { SpectraRendering },
+      general: { spectraRendering },
     },
   } = usePreferences();
 
   return (
     <MemoizedChart2D
-      {...{ spectra, width, height, margin, displayerKey, SpectraRendering }}
+      {...{ spectra, width, height, margin, displayerKey, spectraRendering }}
     />
   );
 }

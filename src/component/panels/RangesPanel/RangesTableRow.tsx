@@ -4,7 +4,6 @@ import lodashGet from 'lodash/get';
 import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D } from 'nmr-processing';
 import { useMemo, useCallback, MouseEvent, CSSProperties } from 'react';
-import { DropdownMenu } from 'react-science/ui';
 
 import {
   AssignmentsData,
@@ -12,7 +11,8 @@ import {
   useAssignmentData,
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
-import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import {
   HighlightEventSource,
   useHighlight,
@@ -38,7 +38,7 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-interface RangesTableRowProps extends ContextMenuProps {
+interface RangesTableRowProps extends TableContextMenuProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
   preferences: WorkSpacePanelPreferences['ranges'];
@@ -91,9 +91,12 @@ function RangesTableRow({
     assignmentRange.assigned?.x || [],
     { type: HighlightEventSource.RANGE },
   );
-  const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
+  const assignmentSignal = useAssignment(rowData?.tableMetaInfo?.id || '');
+
   const highlightSignal = useHighlight(
-    [assignmentSignal.id].concat(assignmentSignal.assigned?.x || []),
+    assignmentSignal?.id
+      ? [assignmentSignal.id].concat(assignmentSignal.assigned?.x || [])
+      : [],
     { type: HighlightEventSource.SIGNAL },
   );
   const highlightData = useHighlightData();
@@ -181,21 +184,22 @@ function RangesTableRow({
     return highlightRange.isActive || assignmentRange.isActive
       ? HighlightedRowStyle
       : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
-      ? ConstantlyHighlightedRowStyle
-      : null;
+        ? ConstantlyHighlightedRowStyle
+        : null;
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
       css={trCss}
     >
-      <td {...rowSpanTags} {...onHoverRange}>
-        {rowData.tableMetaInfo.rowIndex + 1}
-      </td>
+      {preferences.showSerialNumber && (
+        <td {...rowSpanTags} {...onHoverRange}>
+          {rowData.tableMetaInfo.rowIndex + 1}
+        </td>
+      )}
 
       {preferences.from.show && (
         <RangeColumn
@@ -249,10 +253,13 @@ function RangesTableRow({
           format={preferences.absolute.format}
         />
       )}
-
-      <td {...onHoverSignal}>
-        {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
-      </td>
+      {preferences.showMultiplicity && (
+        <td {...onHoverSignal}>
+          {!rowData?.tableMetaInfo?.signal
+            ? 'm'
+            : lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
+        </td>
+      )}
 
       {preferences.coupling.show && (
         <CouplingColumn
@@ -261,35 +268,40 @@ function RangesTableRow({
           format={preferences.coupling.format}
         />
       )}
+      {preferences.showAssignment && (
+        <>
+          <SignalAssignmentsColumn
+            row={rowData}
+            assignment={assignmentSignal}
+            highlight={highlightSignal}
+            onHover={onHoverSignal}
+            onLink={linkHandler}
+            onUnlink={unlinkHandler}
+          />
 
-      <SignalAssignmentsColumn
-        row={rowData}
-        assignment={assignmentSignal}
-        highlight={highlightSignal}
-        onHover={onHoverSignal}
-        onLink={linkHandler}
-        onUnlink={unlinkHandler}
-      />
-
-      <RangeAssignmentsColumn
-        row={rowData}
-        assignment={assignmentRange}
-        highlight={highlightRangeAssignmentsColumn}
-        onHover={onHoverRangeAssignmentsColumn}
-        onLink={linkHandler}
-        onUnlink={unlinkHandler}
-        rowSpanTags={rowSpanTags}
-        highlightData={highlightData}
-      />
-
+          <RangeAssignmentsColumn
+            row={rowData}
+            assignment={assignmentRange}
+            highlight={highlightRangeAssignmentsColumn}
+            onHover={onHoverRangeAssignmentsColumn}
+            onLink={linkHandler}
+            onUnlink={unlinkHandler}
+            rowSpanTags={rowSpanTags}
+            highlightData={highlightData}
+          />
+        </>
+      )}
       <ActionsColumn
         row={rowData}
         onHoverSignal={onHoverSignal}
         onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}
         showKind={preferences.showKind}
+        showDeleteAction={preferences.showDeleteAction}
+        showEditAction={preferences.showEditAction}
+        showZoomAction={preferences.showZoomAction}
       />
-    </DropdownMenu>
+    </ContextMenu>
   );
 }
 

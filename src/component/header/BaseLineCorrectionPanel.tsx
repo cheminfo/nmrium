@@ -28,11 +28,12 @@ const getAlgorithmsList = () => {
 };
 
 const inputStyle: InputStyle = {
-  input: { width: '50px' },
+  input: { width: '50px', textAlign: 'center' },
   inputWrapper: { height: '100%' },
 };
 
 const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
+  const { zones, algorithm: baseAlgorithm, ...other } = filterValues;
   switch (algorithm) {
     case 'airpls': {
       const validation = Yup.object().shape({
@@ -46,7 +47,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
           livePreview: true,
           maxIterations: 100,
           tolerance: 0.001,
-          ...(filterValues?.algorithm === 'airpls' ? filterValues : {}),
+          ...(baseAlgorithm === 'airpls' ? other : {}),
         },
       };
     }
@@ -62,7 +63,7 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
           algorithm,
           livePreview: true,
           degree: 3,
-          ...(filterValues?.algorithm === 'polynomial' ? filterValues : {}),
+          ...(baseAlgorithm === 'polynomial' ? other : {}),
         },
       };
     }

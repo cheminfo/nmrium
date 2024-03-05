@@ -44,7 +44,9 @@ test('should load and migrate .nmrium data from version 1 to version 2', async (
 
   await test.step('check Peaks', async () => {
     await nmrium.clickPanel('Peaks');
-    const peaks = nmrium.page.locator('_react=PeakAnnotation');
+    const peaks = nmrium.page.locator(
+      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
+    );
     await expect(peaks).toHaveCount(6);
   });
 
@@ -83,12 +85,16 @@ test('should load .nmrium data from version 3', async ({ page }) => {
 
   await test.step('check Peaks', async () => {
     await nmrium.clickPanel('Peaks');
-    const peaks = nmrium.page.locator('_react=PeakAnnotation');
+    const peaks = nmrium.page.locator(
+      '_react=Peaks[peaksSource="peaks"] >> _react=PeakAnnotation',
+    );
     await expect(peaks).toHaveCount(2);
   });
 
   await test.step('check integrals', async () => {
-    const integrals = nmrium.page.locator('_react=Integral');
+    const integrals = nmrium.page.locator(
+      '_react=IntegralsSeries >> _react=Integration',
+    );
     await expect(integrals).toHaveCount(1);
   });
 

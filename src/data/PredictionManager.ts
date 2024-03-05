@@ -18,7 +18,7 @@ import {
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
-import { DatumKind } from './constants/SignalsKinds';
+import { DATUM_KIND } from './constants/signalsKinds';
 import {
   initiateDatum1D,
   mapRanges,
@@ -297,8 +297,8 @@ function mapZones(zones: Array<Partial<Zone>>) {
       return {
         id: id || v4(),
         kind: 'signal',
-        x: { ...x, originDelta: x.delta || 0 },
-        y: { ...y, originDelta: y.delta || 0 },
+        x: { ...x, originalDelta: x.delta || 0 },
+        y: { ...y, originalDelta: y.delta || 0 },
         ...resSignal,
       };
     });
@@ -306,7 +306,7 @@ function mapZones(zones: Array<Partial<Zone>>) {
       id: v4(),
       ...resZone,
       signals: newSignals,
-      kind: DatumKind.signal,
+      kind: DATUM_KIND.signal,
     };
   });
 }
@@ -340,26 +340,23 @@ function generated2DSpectrum(params: {
     experiment,
   });
   const spectralWidth = getSpectralWidth(experiment, options);
-  const datum = initiateDatum2D(
-    {
-      data: { rr: { ...minMaxContent, noise: 0.01 } },
-      display: {
-        positiveColor: color,
-        negativeColor: adjustAlpha(color, 40),
-      },
-      info: {
-        name: SpectrumName,
-        title: SpectrumName,
-        nucleus: nuclei,
-        originFrequency: frequency,
-        baseFrequency: frequency,
-        pulseSequence: 'prediction',
-        spectralWidth,
-        experiment,
-      },
+  const datum = initiateDatum2D({
+    data: { rr: { ...minMaxContent, noise: 0.01 } },
+    display: {
+      positiveColor: color,
+      negativeColor: adjustAlpha(color, 40),
     },
-    [],
-  );
+    info: {
+      name: SpectrumName,
+      title: SpectrumName,
+      nucleus: nuclei,
+      originFrequency: frequency,
+      baseFrequency: frequency,
+      pulseSequence: 'prediction',
+      spectralWidth,
+      experiment,
+    },
+  });
   datum.zones.values = mapZones(zones);
   return datum;
 }

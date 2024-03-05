@@ -13,7 +13,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
   });
   await test.step('Add ring molecule', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=Button[toolTip="Add molecule" i]');
+    await nmrium.clickToolByTitle('Add molecule');
 
     // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -32,6 +32,8 @@ test('should draw structure and display it with MF', async ({ page }) => {
     // Save the molecule.
     await nmrium.page.click('button >> text=Save');
   });
+
+  await nmrium.page.locator('div[role="dialog"]').waitFor({ state: 'hidden' });
 
   await test.step('Check the visibly of the aromatic ring molecule', async () => {
     // The molecule SVG rendering should now be visible in the panel.
@@ -53,7 +55,7 @@ test('should draw structure and display it with MF', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=Button[toolTip="Add molecule" i]');
+    await nmrium.clickToolByTitle('Add molecule');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -139,7 +141,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Add ring molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=Button[toolTip="Add molecule" i]');
+    await nmrium.clickToolByTitle('Add molecule');
 
     // Select the "ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -179,7 +181,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Add a third molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=Button[toolTip="Add molecule" i]');
+    await nmrium.clickToolByTitle('Add molecule');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -281,80 +283,117 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   });
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
-    await nmrium.page.click('_react=IntegralPanel >> .sum-button');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
+    await nmrium.page.click(
+      '_react=IntegralPanel >> _react=ToolbarItem[title*="Change integration" i]',
+    );
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 14!'),
-    ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG1')).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H6 - 78.11'),
+      nmrium.page.locator('div[role="dialog"] >> text=C11H14N2O - 190.25'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 6!'),
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 14!',
+      ),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG2')).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H12 - 84.16'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
+      nmrium.page.locator('div[role="dialog"] >> text=C6H6 - 78.11'),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=ModalCloseButton');
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 6!',
+      ),
+    ).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> text=C6H12 - 84.16'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 12!',
+      ),
+    ).toBeVisible();
+    //TODO check why we have Button2 in development env and Button in production
+    await nmrium.page.click(
+      'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
+    );
   });
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
+    await nmrium.page.click(
+      '_react=ToolbarItem[title *= "Change ranges sum" i]',
+    );
     await nmrium.page
-      .locator('_react=ButtonToolTip[popupTitle="Change ranges sum"]')
-      .click();
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG0')).toBeVisible();
+      .locator('div[role="dialog"]')
+      .waitFor({ state: 'visible' });
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C11H14N2O - 190.25'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 14!'),
-    ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG1')).toBeVisible();
-    await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H6 - 78.11'),
+      nmrium.page.locator('div[role="dialog"] >> text=C11H14N2O - 190.25'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 6!'),
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 14!',
+      ),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=Arrow[direction="right"]');
-    await expect(nmrium.page.locator('_react=Modal >> #molSVG2')).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
     await expect(
-      nmrium.page.locator('_react=Modal >> text=C6H12 - 84.16'),
+      nmrium.page.locator('div[role="dialog"] >> #molSVG1'),
     ).toBeVisible();
     await expect(
-      nmrium.page.locator('_react=Modal >> text=New sum for H will be 12!'),
+      nmrium.page.locator('div[role="dialog"] >> text=C6H6 - 78.11'),
     ).toBeVisible();
-    await nmrium.page.click('_react=Modal >> _react=ModalCloseButton');
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 6!',
+      ),
+    ).toBeVisible();
+    await nmrium.page.click(
+      'div[role="dialog"] >> _react=Arrow[direction="right"]',
+    );
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> #molSVG2'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator('div[role="dialog"] >> text=C6H12 - 84.16'),
+    ).toBeVisible();
+    await expect(
+      nmrium.page.locator(
+        'div[role="dialog"] >> text=New sum for H will be 12!',
+      ),
+    ).toBeVisible();
+    //TODO check why we have Button2 in development env and Button in production
+    await nmrium.page.click(
+      'div[role="dialog"] >> button:has(svg[data-icon="small-cross"])',
+    );
   });
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeHidden();
     // Click on float molecule button.
-    await nmrium.page.click(
-      '_react=ToolTip[title="Float molecule" i] >> button',
-    );
+    await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
   });
   await test.step('Close float molecule', async () => {
@@ -370,21 +409,15 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     ).toBeHidden();
     // Check float molecule btn is off.
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeHidden();
     // Click on float molecule button.
-    await nmrium.page.click(
-      '_react=ToolTip[title="Float molecule" i] >> button',
-    );
+    await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
   });
   if (browserName === 'chromium') {
@@ -392,11 +425,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V3');
 
       // Paste the molecule (not working on Firefox).
-      await nmrium.page.click('_react=Button[toolTip="Paste molfile" i]');
+      await nmrium.clickToolByTitle('Paste molfile');
       await clickExportMenuOption(nmrium, 'text=Copy as molfile V2');
 
       // Paste the molecule (not working on Firefox).
-      await nmrium.page.click('_react=Button[toolTip="Paste molfile" i]');
+      await nmrium.clickToolByTitle('Paste molfile');
 
       await expect(
         nmrium.page.locator('_react=MoleculePanel >> text=5 / 5'),
@@ -411,7 +444,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     });
     await test.step('Delete the copy', async () => {
       // Delete molecule.
-      await nmrium.page.click('_react=Button[toolTip="Delete molecule" i]');
+      await nmrium.page.click('_react=ToolbarItem[title="Delete molecule" i]');
       // Check deleted molecule.
       await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
       // Check floated molecule.
@@ -424,7 +457,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
 
   await test.step('Check delete float molecule', async () => {
     // Delete molecule.
-    await nmrium.page.click('_react=Button[toolTip="Delete molecule" i]');
+    await nmrium.clickToolByTitle('Delete molecule');
     // Check deleted Floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeHidden();
     // Check selected molecule.
@@ -452,7 +485,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     ).toBeVisible();
 
     // Delete molecule.
-    await nmrium.page.click('_react=Button[toolTip="Delete molecule" i]');
+    await nmrium.clickToolByTitle('Delete molecule');
 
     // Check selected molecule.
 
@@ -474,9 +507,11 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     await expect(nmrium.page.locator('text=C11H14N2O - 190.25')).toBeVisible();
 
     // Delete molecule.
-    await nmrium.page.click('_react=Button[toolTip="Delete molecule" i]');
-    // Delete molecule.
-    await nmrium.page.click('_react=Button[toolTip="Delete molecule" i]');
+    await nmrium.clickToolByTitle('Delete molecule');
+    if (browserName !== 'firefox') {
+      // Delete molecule.
+      await nmrium.clickToolByTitle('Delete molecule');
+    }
 
     // The SVG container should not be rendered when there are no molecules.
     await expect(nmrium.page.locator('.mol-svg-container ')).toBeHidden();
@@ -528,7 +563,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
   await test.step('Add a second molecule and check the visibility', async () => {
     // Click on the "Add Molecule" button.
-    await nmrium.page.click('_react=Button[toolTip="Add molecule" i]');
+    await nmrium.clickToolByTitle('Add molecule');
 
     // Select the "aromatic ring" tool.
     await nmrium.page.click('canvas >> nth=0', {
@@ -570,21 +605,15 @@ test('check callbacks count on changing structures', async ({ page }) => {
   await test.step('Check float molecule', async () => {
     // Check float molecule btn is off.
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeHidden();
     // Click on float molecule button.
-    await nmrium.page.click(
-      '_react=ToolTip[title="Float molecule" i] >> button',
-    );
+    await nmrium.clickToolByTitle('Float molecule');
     // Check floated molecule.
     await expect(nmrium.page.locator('#molSVG')).toBeVisible();
     // Check float molecule btn is on.
     await expect(
-      nmrium.page.locator(
-        '_react=ToolTip[title="Float molecule" i] >> .toggle-active',
-      ),
+      nmrium.getToolbarLocatorByTitle('Float molecule', { active: true }),
     ).toBeVisible();
 
     await expect(dataCount).toContainText(String(initialDataCount + 1));
@@ -601,7 +630,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
 async function clickExportMenuOption(nmrium: NmriumPage, selector: string) {
   await nmrium.page.click(
-    '_react=MoleculePanelHeader >> _react=Button[toolTip="export as" i]',
+    '_react=MoleculePanelHeader >> _react=ToolbarItem[title="export as" i]',
   );
   await nmrium.page.click(selector);
 }

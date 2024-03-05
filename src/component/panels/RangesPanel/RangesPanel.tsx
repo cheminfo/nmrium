@@ -6,7 +6,6 @@ import { Spectrum1D, WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Info1D, Ranges } from 'nmr-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { FaCopy } from 'react-icons/fa';
-import { DropdownMenuProps } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
@@ -14,22 +13,20 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint';
 import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
-import { rangeStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import NoTableData from '../extra/placeholder/NoTableData';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
 
-const rangesContextMenuOptions: DropdownMenuProps<any, any>['options'] = [
+const rangesContextMenuOptions: BaseContextMenuProps['options'] = [
   {
-    label: 'Copy to Clipboard',
-    type: 'option',
+    text: 'Copy to Clipboard',
     icon: <FaCopy />,
   },
 ];
@@ -42,9 +39,6 @@ interface RangesTablePanelInnerProps {
   xDomain: number[];
   activeTab: string;
   molecules: StateMoleculeExtended[];
-  showMultiplicityTrees: boolean;
-  showJGraph: boolean;
-  showRangesIntegrals: boolean;
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 
@@ -57,9 +51,6 @@ function RangesTablePanelInner({
   preferences,
   activeTab,
   molecules,
-  showMultiplicityTrees,
-  showJGraph,
-  showRangesIntegrals,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
   const assignmentData = useAssignmentData();
@@ -181,9 +172,6 @@ function RangesTablePanelInner({
             info,
             activeTab,
             molecules,
-            showRangesIntegrals,
-            showMultiplicityTrees,
-            showJGraph,
             isFilterActive,
           }}
           onUnlink={unlinkRangeHandler}
@@ -201,19 +189,15 @@ function RangesTablePanelInner({
       <div className="inner-container">
         {!isFlipped ? (
           <div className="table-container">
-            {rangesData && rangesData.length > 0 ? (
-              <RangesTable
-                activeTab={activeTab}
-                tableData={rangesData}
-                onUnlink={unlinkRangeHandler}
-                contextMenu={rangesContextMenuOptions}
-                onContextMenuSelect={contextMenuSelectHandler}
-                preferences={preferences}
-                info={info}
-              />
-            ) : (
-              <NoTableData />
-            )}
+            <RangesTable
+              activeTab={activeTab}
+              tableData={rangesData}
+              onUnlink={unlinkRangeHandler}
+              contextMenu={rangesContextMenuOptions}
+              onContextMenuSelect={contextMenuSelectHandler}
+              preferences={preferences}
+              info={info}
+            />
           </div>
         ) : (
           <RangesPreferences ref={settingRef} />
@@ -233,7 +217,7 @@ const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
 
 const emptyData = { ranges: {}, data: {}, info: {} };
 
-export default function RangesTablePanel() {
+export default function RangesPanel() {
   const { ranges, data, info, id } = useSpectrum(emptyData) as Spectrum1D;
   const {
     displayerKey,
@@ -243,12 +227,7 @@ export default function RangesTablePanel() {
     },
     molecules,
     toolOptions: { selectedTool },
-    view: { ranges: rangeState },
   } = useChartData();
-  const { showMultiplicityTrees, showRangesIntegrals, showJGraph } = useMemo(
-    () => rangeState.find((r) => r.spectrumID === id) || rangeStateInit,
-    [id, rangeState],
-  );
 
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
@@ -259,9 +238,6 @@ export default function RangesTablePanel() {
         ranges,
         data,
         info,
-        showMultiplicityTrees,
-        showJGraph,
-        showRangesIntegrals,
         selectedTool,
         displayerKey,
         preferences: rangesPreferences,

@@ -1,0 +1,112 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/oxfordInstruments/ethylCrotonate.zip"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H-13C HSQC-ME.jdx"
+          ]
+        },
+        "filters": [
+          {
+            "name": "blpDimension1",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "apodizationDimension1",
+            "value": {
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "traf",
+                      "options": {
+                        "lb": 0.5
+                      }
+                    }
+                  }
+                ]
+              },
+              "apply": false
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fftDimension1",
+            "label": "FFT on Dimension 1",
+            "value": {
+              "zeroFilling": {
+                "nbPoints": 2048
+              },
+              "phaseCorrection": {
+                "mode": "pk",
+                "ph0": -47,
+                "ph1": 236
+              }
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "flpDimension2",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "apodizationDimension2",
+            "value": {
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "traf",
+                      "options": {
+                        "lb": 0.5
+                      }
+                    }
+                  },
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0.5,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
+              },
+              "apply": false
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fftDimension2",
+            "value": {
+              "zeroFilling": {
+                "nbPoints": 2048
+              }
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ]
+      }
+    ],
+    "molecules": []
+  },
+  "version": 5
+}

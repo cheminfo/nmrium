@@ -13,7 +13,6 @@ const styles: Record<'info' | 'icon', CSSProperties> = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    lineHeight: '24px',
   },
   icon: {
     width: '16px',

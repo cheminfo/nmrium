@@ -2,7 +2,7 @@ import { Logger } from 'cheminfo-types';
 import { FifoLogger } from 'fifo-logger';
 import { Draft } from 'immer';
 import OCL from 'openchemlib/full';
-import { nbLabileH, getAtoms } from 'openchemlib-utils';
+import { nbLabileH, getAtoms, TopicMolecule } from 'openchemlib-utils';
 
 import {
   PredictedSpectraResult,
@@ -25,6 +25,7 @@ import { ActionType } from '../types/ActionType';
 import { unlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { unlinkZone } from './ZonesActions';
+import { deepReplaceDiaIDs } from './utilities/deepReplaceDiaIDs';
 
 interface AddMoleculeProps {
   molfile: string;
@@ -35,7 +36,12 @@ type AddMoleculesAction = ActionType<
   'ADD_MOLECULES',
   { molecules: StateMolecule[] }
 >;
-type SetMoleculeAction = ActionType<'SET_MOLECULE', Required<StateMolecule>>;
+type SetMoleculeAction = ActionType<
+  'SET_MOLECULE',
+  Required<StateMolecule> & {
+    mappings?: ReturnType<TopicMolecule['getDiaIDsMapping']>;
+  }
+>;
 type DeleteMoleculeAction = ActionType<
   'DELETE_MOLECULE',
   { id: string; assignmentData: AssignmentContext }
@@ -108,8 +114,8 @@ function handleAddMolecules(draft: Draft<State>, action: AddMoleculesAction) {
   }
 }
 
-function setMolecule(draft: Draft<State>, props: Required<StateMolecule>) {
-  const { id, label, molfile } = props;
+function setMolecule(draft: Draft<State>, props: SetMoleculeAction['payload']) {
+  const { id, label, molfile, mappings } = props;
   MoleculeManager.setMolfile(draft.molecules, {
     id,
     label,
@@ -120,6 +126,10 @@ function setMolecule(draft: Draft<State>, props: Required<StateMolecule>) {
    * update all spectra that its sum was based on this molecule with the new molecule
    */
   const index = draft.molecules.findIndex((molecule) => molecule.id === id);
+
+  if (mappings) {
+    deepReplaceDiaIDs(draft, mappings);
+  }
 
   changeSpectraRelativeSum(
     draft,
@@ -328,8 +338,7 @@ function getFloatingMoleculeInitialPosition(id: string, draft: Draft<State>) {
   const rows = Math.floor(height / baseHeight);
   const moleculeKeys = Object.keys(molecules);
 
-  let index = 0;
-
+  let index: number;
   if (!molecules[id]) {
     index = moleculeKeys.length - 1;
   } else {

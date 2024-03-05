@@ -101,6 +101,9 @@ export function resolve<T>(
     key,
     threshold: inputThreshold,
   } = options;
+
+  if (!Array.isArray(data) || data.length === 0) return [];
+
   const threshold = inputThreshold || width + margin * 2;
   const groupedData = groupData(data, { threshold, key });
   const resolvedGroups: Array<ResolveData<T>> = [];

@@ -12,7 +12,7 @@ function SignalDeltaColumn({
   rowSpanTags,
 }: RangeColumnProps) {
   const dispatch = useDispatch();
-  const signal = row.tableMetaInfo.signal;
+  const signal = row?.tableMetaInfo?.signal;
 
   function saveHandler(event) {
     dispatch({
@@ -25,21 +25,28 @@ function SignalDeltaColumn({
     });
   }
 
-  if (!signal) return <td>{''}</td>;
+  const rangeText = `${formatNumber(row.from, format)} - ${formatNumber(
+    row.to,
+    format,
+  )}`;
+
+  if (!signal || !checkMultiplicity(signal.multiplicity, ['m'])) {
+    return (
+      <td {...rowSpanTags} {...onHover}>
+        {rangeText}
+      </td>
+    );
+  }
 
   return (
     <td {...rowSpanTags} {...onHover}>
-      {!checkMultiplicity(signal.multiplicity, ['m']) ? (
-        `${formatNumber(row.from, format)} - ${formatNumber(row.to, format)}`
-      ) : (
-        <EditableColumn
-          value={formatNumber(signal.delta, format)}
-          onSave={saveHandler}
-          type="number"
-          style={{ padding: '0.1rem 0.4rem' }}
-          validate={(val) => val !== ''}
-        />
-      )}
+      <EditableColumn
+        value={formatNumber(signal.delta, format)}
+        onSave={saveHandler}
+        type="number"
+        style={{ padding: '0.1rem 0.4rem' }}
+        validate={(val) => val !== ''}
+      />
     </td>
   );
 }

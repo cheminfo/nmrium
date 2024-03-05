@@ -69,6 +69,7 @@ function FormikColumnFormatField(props: ColumnFormatField) {
         style={{
           display: 'flex',
           alignItems: 'center',
+          ...(hideFormatField && { height: '25px' }),
         }}
       >
         {!hideCheckField && checkControllerName ? (

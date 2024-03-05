@@ -48,9 +48,9 @@ function Line({ data, id, display, index }: LineProps) {
 
   return (
     <path
+      id={id}
       className="line"
       data-testid="spectrum-line"
-      key={id}
       stroke={stroke}
       fill="none"
       strokeOpacity={opacity === 1 ? strokeOpacity : opacity}

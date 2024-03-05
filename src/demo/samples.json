@@ -85,6 +85,10 @@
       {
         "file": "./data/ethylvinylether/1h.json",
         "title": "1H ethylvinylether"
+      },
+      {
+        "file": "./data/BocAA/BocAA.json",
+        "title": "1H BocAA"
       }
     ]
   },
@@ -104,6 +108,10 @@
         "title": "Coffee"
       },
       {
+        "file": "./data/t1-bruker-pseudo2d/t1_pseudo2d_bruker.json",
+        "title": "T1 pseudo-2D Bruker"
+      },
+      {
         "file": "./data/t1/t1.json",
         "title": "T1 samples (1H + 13C)"
       },
@@ -121,8 +129,24 @@
         "title": "Zip file as source with multiple spectra"
       },
       {
+        "file": "./data/oxfordInstruments/oxfordInstruments.json",
+        "title": "Ethyl Crotonate - oxford"
+      },
+      {
+        "file": "./data/oxfordInstruments/oxfordCosy.json",
+        "title": "Ethyl Crotonate - COSY - oxford"
+      },
+      {
+        "file": "./data/nmredata/nmredata.json",
+        "title": "NMReDATA Menthol 1D"
+      },
+      {
         "file": "./data/brukerFolders/brukerFolderWithoutExpno.json",
         "title": "Bruker Directory without expno level"
+      },
+      {
+        "file": "./data/brukerFolders/alphaIonone.json",
+        "title": "Bruker 2D spectrum with quadrants"
       },
       {
         "file": "./data/brukerFolders/cosyAndHsqcFid.json",
@@ -260,6 +284,11 @@
         "file": "https://cheminfo.github.io/bruker-data-test/data/zipped/aspirin-1h.zip",
         "title": "NMR Load Save",
         "view": "WebSourceView"
+      },
+      {
+        "file": "https://cheminfo.github.io/nmr-dataset-demo/oxford/ethylCrotonate.zip",
+        "title": "Auto processing",
+        "view": "AuoProcessingView"
       }
     ]
   },

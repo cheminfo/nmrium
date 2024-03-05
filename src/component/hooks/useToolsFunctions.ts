@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useToggleAccordion } from 'react-science/ui';
 
 import { useDispatch } from '../context/DispatchContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
 import { options } from '../toolbar/ToolTypes';
@@ -16,6 +17,11 @@ export default function useToolsFunctions() {
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
 
   const debounceClickEventsRef = useRef<{ clicks: any[] }>({ clicks: [] });
+  const {
+    current: {
+      general: { invert },
+    },
+  } = usePreferences();
   const handleChangeOption = useCallback(
     (selectedTool) => {
       if (
@@ -27,7 +33,9 @@ export default function useToolsFunctions() {
           options.rangePicking.id,
         ].includes(selectedTool)
       ) {
-        alert.show('Press Shift + Left Mouse button to select zone');
+        alert.show(
+          `Press ${!invert ? 'Shift +' : ''} Left Mouse button to select zone`,
+        );
       }
 
       if (Object.keys(TOOLS_PANELS_ACCORDION).includes(selectedTool)) {
@@ -39,7 +47,7 @@ export default function useToolsFunctions() {
         payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
-    [alert, dispatch, openPanel],
+    [alert, dispatch, invert, openPanel],
   );
 
   const handleFullZoomOut = useCallback(() => {
@@ -63,7 +71,7 @@ export default function useToolsFunctions() {
       debounceClickEventsRef.current.clicks = [];
       dispatch({
         type: 'FULL_ZOOM_OUT',
-        payload: {},
+        payload: { zoomType: 'FULL' },
       });
     }
   }, [dispatch, debounceClickEventsRef]);

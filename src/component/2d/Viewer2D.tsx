@@ -1,3 +1,4 @@
+import { Spectrum1D } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, ReactNode, useRef } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
@@ -13,12 +14,15 @@ import {
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useMapKeyModifiers } from '../context/KeyModifierContext';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
 
+import { PhaseTraces } from './1d-tracer/phase-correction-traces';
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
 import SlicingView from './SlicingView';
+import PivotIndicator from './tools/PivotIndicator';
 import XYLabelPointer from './tools/XYLabelPointer';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 import { get2DXScale, get2DYScale } from './utilities/scale';
@@ -41,8 +45,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const dispatch = useDispatch();
   const brushStartRef = useRef<{ x: number; y: number } | null>(null);
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
 
-  const spectrumData: any[] = useMemo(() => {
+  const spectrumData: Array<Spectrum1D | null> = useMemo(() => {
     const nuclei = activeTab.split(',');
 
     return nuclei.map((nucleus) => {
@@ -50,9 +55,10 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       if (spectra?.length === 1) {
         const id = spectra[0].id;
         const spectrum = data.find(
-          (datum) => datum.id === id && !datum.info.isFid,
-        );
-        return spectrum;
+          (datum) => datum.id === id && !datum.info.isFid && datum.info.dimension === 1,
+        ) as Spectrum1D;
+
+        return spectrum || null;
       }
       return null;
     });
@@ -90,40 +96,56 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
       //reset the brush start
       brushStartRef.current = null;
 
+      const modifierKey = getModifiersKey(brushData as unknown as MouseEvent);
+      let executeDefaultAction = false;
+
       if (brushData.mouseButton === 'main') {
         const trackID = getLayoutID(DIMENSION, brushData);
         if (trackID) {
-          if (brushData.altKey) {
-            switch (selectedTool) {
-              default:
-                break;
-            }
-          } else if (brushData.shiftKey) {
-            switch (selectedTool) {
-              case options.zonePicking.id:
-                dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
-                break;
-              default:
-                break;
-            }
-          } else {
-            switch (selectedTool) {
-              default:
-                if (selectedTool != null) {
-                  return dispatch({
-                    type: 'BRUSH_END',
-                    payload: {
-                      ...brushData,
-                      trackID: getLayoutID(DIMENSION, brushData),
-                    },
-                  });
+          switch (modifierKey) {
+            case primaryKeyIdentifier: {
+              switch (selectedTool) {
+                case options.zoom.id: {
+                  executeDefaultAction = true;
+                  break;
                 }
+                case options.zonePicking.id: {
+                  dispatch({ type: 'ADD_2D_ZONE', payload: brushData });
+
+                  break;
+                }
+                default:
+                  break;
+              }
+
+              break;
             }
+            default: {
+              executeDefaultAction = true;
+              break;
+            }
+          }
+          const isNotDistanceMeasurementTool =
+            selectedTool !== 'zoom' ||
+            (selectedTool === 'zoom' && !brushData.shiftKey);
+
+          if (
+            executeDefaultAction &&
+            selectedTool != null &&
+            isNotDistanceMeasurementTool
+          ) {
+            return dispatch({
+              type: 'BRUSH_END',
+              payload: {
+                ...brushData,
+                trackID: getLayoutID(DIMENSION, brushData),
+              },
+            });
           }
         }
       }
     },
-    [selectedTool, dispatch, DIMENSION],
+    [getModifiersKey, DIMENSION, selectedTool, primaryKeyIdentifier, dispatch],
   );
 
   const handelOnDoubleClick: OnDoubleClick = useCallback(
@@ -138,28 +160,47 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   );
 
   const handleZoom: OnZoom = (event) => {
-    const { x: startX, y: startY } = event;
+    const { x: startX, y: startY, shiftKey } = event;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
-      if (trackID === 'CENTER_2D') {
-        dispatch({ type: 'SET_2D_LEVEL', payload: event });
-      } else {
+      if (
+        trackID !== 'CENTER_2D' ||
+        (selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey)
+      ) {
         dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
+      } else {
+        dispatch({ type: 'SET_2D_LEVEL', payload: event });
       }
     }
   };
 
   const mouseClick: OnClick = useCallback(
-    (position) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { x, y } = position;
-      switch (selectedTool) {
-        default:
-          break;
+    (event) => {
+      const { x, y, shiftKey } = event;
+
+      if (shiftKey) {
+        switch (selectedTool) {
+          case 'phaseCorrectionTwoDimensions':
+            dispatch({
+              type: 'SET_TWO_DIMENSION_PIVOT_POINT',
+              payload: { x, y },
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedTool) {
+          case 'phaseCorrectionTwoDimensions':
+            dispatch({ type: 'ADD_PHASE_CORRECTION_TRACE', payload: { x, y } });
+            break;
+          default:
+            break;
+        }
       }
     },
-    [selectedTool],
+    [selectedTool, dispatch],
   );
 
   return (
@@ -183,11 +224,15 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
               }}
             >
               <MouseTracker
-                style={{ width: '100%', height: `100%`, position: 'absolute' }}
+                style={{ width: '100%', height: `100%`, position: 'relative' }}
               >
                 {selectedTool && selectedTool === options.slicing.id && (
                   <SlicingView />
                 )}
+                {selectedTool &&
+                  selectedTool === options.phaseCorrectionTwoDimensions.id && (
+                    <PhaseTraces />
+                  )}
 
                 <CrossLinePointer />
                 <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
@@ -212,6 +257,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                     />
                   )}
                 </>
+                <PivotIndicator />
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
 
                 <Chart2D spectra={spectrumData} />
@@ -227,7 +273,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 interface ViewerResponsiveWrapperProps {
   width: number;
   height: number;
-  children: any;
+  children: ReactNode;
 }
 
 export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {

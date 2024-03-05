@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { getLinkDim, Link } from 'nmr-correlation';
 import { useCallback, useMemo, useState } from 'react';
 
-import CloseButton from '../../../../elements/CloseButton';
+import { CloseButton } from '../../../../elements/CloseButton';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../../../elements/Tab/Tabs';
 import { getEditedCorrelations } from '../../utilities/Utilities';
@@ -188,7 +188,7 @@ export default function EditLinkModal({
   return (
     <div css={modalContainer}>
       <div className="header handle">
-        <CloseButton onClick={onClose} />
+        <CloseButton title="Close" onClick={onClose} />
         <p className="header-info">{`${link.experimentType.toUpperCase()} signal at ${getLinkLabel()}`}</p>
       </div>
       {tabsContainer}

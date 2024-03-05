@@ -1,24 +1,37 @@
 import { v4 } from '@lukeed/uuid';
+import { NmrData1D, NmrData2DFt } from 'cheminfo-types';
 import { current, Draft } from 'immer';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import { xFindClosestIndex } from 'ml-spectra-processing';
+import {
+  ActiveSpectrum,
+  Spectrum,
+  Spectrum1D,
+  Spectrum2D,
+} from 'nmr-load-save';
 import {
   Filters,
   FiltersManager,
   BaselineCorrectionOptions,
   ApodizationOptions,
+  getBaselineZones,
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
+import { getSlice, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
+import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
-import { options as Tools } from '../../toolbar/ToolTypes';
+import { getXScale } from '../../1d/utilities/scale';
+import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
+import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
-import { ActiveSpectrum, getInitialState, State } from '../Reducer';
+import { getInitialState, State, TraceDirection } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getStrongestPeak } from '../helper/getStrongestPeak';
+import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions';
 import { ActionType } from '../types/ActionType';
 
 import { setDomain, setMode } from './DomainActions';
@@ -62,7 +75,9 @@ type ZeroFillingFilterLiveAction = ActionType<
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
-  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
+  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER'
+  | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+  | 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
   { ph0: number; ph1: number }
 >;
 
@@ -105,6 +120,27 @@ type ApplySignalProcessingAction = ActionType<
   'APPLY_SIGNAL_PROCESSING_FILTER',
   { options: MatrixOptions }
 >;
+type AddPhaseCorrectionTraceAction = ActionType<
+  'ADD_PHASE_CORRECTION_TRACE',
+  { x: number; y: number }
+>;
+type ChangePhaseCorrectionDirectionAction = ActionType<
+  'CHANGE_PHASE_CORRECTION_DIRECTION',
+  { direction: TraceDirection }
+>;
+type DeletePhaseCorrectionTrace = ActionType<
+  'DELETE_PHASE_CORRECTION_TRACE',
+  { id: string }
+>;
+
+type SetOneDimensionPhaseCorrectionPivotPoint = ActionType<
+  'SET_ONE_DIMENSION_PIVOT_POINT',
+  { value: number }
+>;
+type SetTwoDimensionPhaseCorrectionPivotPoint = ActionType<
+  'SET_TWO_DIMENSION_PIVOT_POINT',
+  { x: number; y: number }
+>;
 
 export type FiltersActions =
   | ShiftSpectrumAlongXAxisAction
@@ -122,6 +158,11 @@ export type FiltersActions =
   | AddExclusionZoneAction
   | DeleteExclusionZoneAction
   | ApplySignalProcessingAction
+  | AddPhaseCorrectionTraceAction
+  | ChangePhaseCorrectionDirectionAction
+  | DeletePhaseCorrectionTrace
+  | SetOneDimensionPhaseCorrectionPivotPoint
+  | SetTwoDimensionPhaseCorrectionPivotPoint
   | ActionType<
       | 'APPLY_FFT_FILTER'
       | 'APPLY_FFT_DIMENSION_1_FILTER'
@@ -130,22 +171,52 @@ export type FiltersActions =
       | 'APPLY_ABSOLUTE_FILTER'
     >;
 
-function getFilterUpdateDomainRules(filterName: string) {
+function getFilterUpdateDomainRules(
+  filterName: string,
+  defaultRule?: FiltersManager.FilterDomainUpdateRules,
+) {
   return (
-    Filters[filterName]?.DOMAIN_UPDATE_RULES || {
+    Filters[filterName]?.DOMAIN_UPDATE_RULES ||
+    defaultRule || {
       updateXDomain: false,
       updateYDomain: false,
     }
   );
 }
 
-interface RollbackSpectrumByFilterOptions {
+export interface RollbackSpectrumByFilterOptions {
   applyFilter?: boolean;
   reset?: boolean;
   searchBy?: 'id' | 'name';
   key?: string | null;
   activeSpectrum?: ActiveSpectrum | null;
   triggerSource?: 'Apply' | 'none';
+}
+
+function getFilterDomain(
+  datum: Spectrum,
+  options: { startIndex: number; lastIndex: number },
+) {
+  const { startIndex, lastIndex } = options;
+  const updateDomainOptions: FiltersManager.FilterDomainUpdateRules = {
+    updateXDomain: false,
+    updateYDomain: false,
+  };
+
+  if (datum?.filters?.length === 0) return updateDomainOptions;
+
+  for (let i = startIndex; i <= lastIndex; i++) {
+    const { updateXDomain, updateYDomain } = getFilterUpdateDomainRules(
+      datum.filters[i].name,
+    );
+    if (!updateDomainOptions.updateXDomain) {
+      updateDomainOptions.updateXDomain = updateXDomain;
+    }
+    if (!updateDomainOptions.updateYDomain) {
+      updateDomainOptions.updateYDomain = updateYDomain;
+    }
+  }
+  return updateDomainOptions;
 }
 
 function rollbackSpectrumByFilter(
@@ -162,7 +233,7 @@ function rollbackSpectrumByFilter(
   } = options || {};
 
   const currentActiveSpectrum = activeSpectrum || getActiveSpectrum(draft);
-  let updateDomainOptions: FiltersManager.FilterDomainUpdateRules = {
+  let updateDomainOptions: Partial<FiltersManager.FilterDomainUpdateRules> = {
     updateXDomain: false,
     updateYDomain: false,
   };
@@ -175,61 +246,67 @@ function rollbackSpectrumByFilter(
     previousIsFid = datum.info.isFid;
     const filterIndex = datum.filters.findIndex((f) => f[searchBy] === key);
 
-    const activeFilterId = draft.toolOptions.data.activeFilterID;
     if (filterIndex !== -1 && !reset) {
+      const { activeFilterID } = draft.toolOptions.data;
+      const activeFilterIndex = activeFilterID
+        ? datum.filters.findIndex((f) => f.id === activeFilterID)
+        : datum.filters.length - 1;
+      //set active filter
+      draft.toolOptions.data.activeFilterID =
+        datum.filters?.[filterIndex]?.id || null;
+
       const filters: any[] = datum.filters.slice(0, filterIndex || 1);
 
-      //set active filter
-      draft.toolOptions.data.activeFilterID = datum.filters[filterIndex]?.id;
+      updateDomainOptions = getFilterDomain(datum, {
+        startIndex: Math.min(activeFilterIndex, filterIndex),
+        lastIndex: Math.max(activeFilterIndex, filterIndex),
+      });
 
-      if (filters.length > 0) {
-        for (let i = 0; i <= filterIndex; i++) {
-          const { updateXDomain, updateYDomain } = getFilterUpdateDomainRules(
-            datum.filters[i].name,
-          );
-          updateDomainOptions.updateXDomain =
-            updateXDomain || updateDomainOptions.updateXDomain;
-          updateDomainOptions.updateYDomain =
-            updateYDomain || updateDomainOptions.updateYDomain;
-        }
-        FiltersManager.reapplyFilters(datum, filters);
-      }
+      FiltersManager.reapplyFilters(datum, filters);
 
       draft.tempData = current(draft).data;
 
       // apply the current Filters
       if (applyFilter) {
-        FiltersManager.reapplyFilters(
-          datum,
-          datum.filters.slice(0, filterIndex + 1),
-        );
+        const { name, value } = datum.filters[filterIndex];
+        Filters[name].apply(datum, value);
       }
 
       currentIsFid = datum.info.isFid;
 
       //if we still point to the same filter then close the filter options panel and reset the selected tool to default one (zoom tool)
       if (
-        activeFilterId === datum.filters[filterIndex].id &&
+        activeFilterID === datum.filters[filterIndex].id &&
         triggerSource === 'Apply'
       ) {
         draft.toolOptions.selectedOptionPanel = null;
         draft.toolOptions.selectedTool = 'zoom';
       }
-    } else {
+    }
+
+    if (filterIndex === -1 || reset) {
+      if (draft.tempData) {
+        FiltersManager.reapplyFilters(datum);
+      }
       //if the filter is not exists, create a clone of the current data
       draft.tempData = current(draft).data;
     }
+
     // re-implement all filters and rest all view property that related to filters
     if (reset) {
+      draft.toolOptions.data.activeFilterID = null;
       draft.tempData = null;
-      FiltersManager.reapplyFilters(datum);
-      updateDomainOptions = { updateXDomain: true, updateYDomain: true };
+
+      if (datum.filters.length > 0 && filterIndex !== -1) {
+        updateDomainOptions = getFilterDomain(datum, {
+          startIndex: filterIndex,
+          lastIndex: datum.filters.length - 1,
+        });
+      }
       const {
         toolOptions: { data },
       } = getInitialState();
       draft.toolOptions.data = data;
-      draft.toolOptions.selectedOptionPanel = null;
-      draft.toolOptions.selectedTool = 'zoom';
       currentIsFid = datum.info.isFid;
     }
   }
@@ -241,9 +318,8 @@ function rollbackSpectrumByFilter(
   }
 }
 
-interface RollbackSpectrumOptions {
-  updateFilterViewOptions?: boolean;
-  filterKey: string;
+export interface RollbackSpectrumOptions {
+  filterKey?: string;
   reset?: boolean;
 }
 
@@ -251,17 +327,21 @@ function rollbackSpectrum(
   draft: Draft<State>,
   options: RollbackSpectrumOptions,
 ) {
-  const { filterKey, reset = false, updateFilterViewOptions = true } = options;
+  const { filterKey, reset = false } = options;
   //return back the spectra data to point of time before applying a specific filter
 
-  const applyFilter = [
-    phaseCorrection.id,
-    fft.id,
-    shiftX.id,
-    shift2DX.id,
-    shift2DY.id,
-    signalProcessing.id,
-  ].includes(filterKey);
+  const applyFilter = !filterKey
+    ? true
+    : [
+        phaseCorrection.id,
+        fft.id,
+        shiftX.id,
+        shift2DX.id,
+        shift2DY.id,
+        signalProcessing.id,
+      ].includes(filterKey);
+
+  beforeRollback(draft, filterKey);
 
   rollbackSpectrumByFilter(draft, {
     searchBy: 'name',
@@ -270,14 +350,40 @@ function rollbackSpectrum(
     reset,
   });
 
-  if (updateFilterViewOptions) {
-    updateFilterOptionsInView(draft, filterKey);
-  }
+  afterRollback(draft, filterKey);
 }
 
-function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
+function beforeRollback(draft: Draft<State>, filterKey) {
   const activeSpectrum = getActiveSpectrum(draft);
 
+  switch (filterKey) {
+    case baselineCorrection.id: {
+      if (activeSpectrum) {
+        const datum = current(draft).data[activeSpectrum.index];
+        const baselineCorrectionFilter = datum.filters.find(
+          (filter) => filter.name === Tools.baselineCorrection.id,
+        );
+        if (
+          !baselineCorrectionFilter ||
+          (baselineCorrectionFilter &&
+            baselineCorrectionFilter.value.zones?.length === 0)
+        ) {
+          draft.toolOptions.data.baselineCorrection.zones = getBaselineZones(
+            datum.data as NmrData1D,
+          );
+        } else {
+          draft.toolOptions.data.baselineCorrection.zones =
+            baselineCorrectionFilter.value.zones;
+        }
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+function afterRollback(draft: Draft<State>, filterKey) {
   switch (filterKey) {
     case phaseCorrection.id: {
       // look for the strongest peak to set it as a pivot
@@ -288,21 +394,6 @@ function updateFilterOptionsInView(draft: Draft<State>, filterKey) {
 
       draft.toolOptions.data.pivot = { value: xValue, index };
 
-      break;
-    }
-    case baselineCorrection.id: {
-      if (activeSpectrum) {
-        const baselineCorrectionFilter: any = current(draft).data[
-          activeSpectrum.index
-        ].filters.find((filter) => filter.name === Tools.baselineCorrection.id);
-
-        if (baselineCorrectionFilter) {
-          draft.toolOptions.data.baselineCorrection.zones =
-            baselineCorrectionFilter
-              ? baselineCorrectionFilter.value.zones
-              : [];
-        }
-      }
       break;
     }
     case apodization.id: {
@@ -345,17 +436,18 @@ function disableLivePreview(draft: Draft<State>, id: string) {
     const index = activeSpectrum.index;
     const { data } = draft.tempData[index] as Spectrum1D;
     draft.data[index].data = data;
-    setDomain(draft);
+    if (baselineCorrection.id !== id) {
+      setDomain(draft);
+    }
 
     // reset default options
     switch (id) {
-      case apodization.name: {
+      case apodization.id: {
         draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
         break;
       }
-      default: {
-        return null;
-      }
+      default:
+        break;
     }
   }
 }
@@ -533,6 +625,9 @@ function handleApplyFFTFilter(draft: Draft<State>) {
     } else {
       updateView(draft, fft.DOMAIN_UPDATE_RULES);
     }
+
+    //clear zoom history
+    draft.zoom.history[draft.view.spectra.activeTab] = [];
   }
 }
 
@@ -617,6 +712,85 @@ function handleApplyManualPhaseCorrectionFilter(
       updateView(draft, phaseCorrection.DOMAIN_UPDATE_RULES);
     }
   }
+}
+
+//action
+function handleAddPhaseCorrectionTrace(
+  draft: Draft<State>,
+  action: AddPhaseCorrectionTraceAction,
+) {
+  const { x, y } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+  const {
+    margin,
+    width,
+    height,
+    xDomain,
+    yDomain,
+    mode,
+    data: spectra,
+  } = draft;
+
+  const { activeTraces, activeTraceDirection } =
+    getTwoDimensionPhaseCorrectionOptions(draft);
+
+  if (activeSpectrum?.id) {
+    const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+
+    if (isSpectrum2D(spectrum)) {
+      const scale2dX = get2DXScale({ margin, width, xDomain, mode });
+      const scale2dY = get2DYScale({ margin, height, yDomain });
+      const xPPM = scale2dX.invert(x);
+      const yPPM = scale2dY.invert(y);
+      const sliceData = getSlice(spectrum, {
+        x: xPPM,
+        y: yPPM,
+      });
+
+      if (sliceData) {
+        const { data } = sliceData[activeTraceDirection];
+        activeTraces.spectra.push({
+          data,
+          id: v4(),
+          x: xPPM,
+          y: yPPM,
+        });
+      }
+    }
+  }
+}
+//action
+function handleChangePhaseCorrectionDirection(
+  draft: Draft<State>,
+  action: ChangePhaseCorrectionDirectionAction,
+) {
+  const { direction } = action.payload;
+  const {
+    data: { twoDimensionPhaseCorrection },
+  } = draft.toolOptions;
+
+  twoDimensionPhaseCorrection.activeTraceDirection = direction;
+}
+
+//action
+function handleDeletePhaseCorrectionTrace(
+  draft: Draft<State>,
+  action: DeletePhaseCorrectionTrace,
+) {
+  const {
+    toolOptions: {
+      data: {
+        twoDimensionPhaseCorrection: { traces, activeTraceDirection },
+      },
+    },
+  } = draft;
+
+  const { id } = action.payload;
+  const traceDirection = traces[activeTraceDirection];
+
+  traceDirection.spectra = traceDirection.spectra.filter(
+    (trace) => trace.id !== id,
+  );
 }
 
 //action
@@ -757,9 +931,8 @@ function calculateBaseLineCorrection(
       ...draft.toolOptions.data.baselineCorrection,
       ...(baseLineOptions && baseLineOptions),
     };
-
     const { zones, options, livePreview } =
-      draft.toolOptions.data.baselineCorrection;
+      current(draft).toolOptions.data.baselineCorrection;
     if (livePreview) {
       const _data = { data: { x, re, im }, info };
       baselineCorrection.apply(_data as Spectrum1D, {
@@ -860,11 +1033,9 @@ function handleSetFilterSnapshotHandler(
 ) {
   const { name: filterKey, id } = action.payload;
   const reset = draft.toolOptions.data.activeFilterID === id;
-
   if (Tools?.[filterKey]?.isFilter) {
-    activateTool(draft, { toolId: filterKey, reset });
+    activateTool(draft, { toolId: filterKey as Tool, reset });
   } else {
-    resetSelectedTool(draft);
     rollbackSpectrum(draft, { filterKey, reset });
   }
 }
@@ -877,7 +1048,6 @@ function handleSignalProcessingFilter(
   const { data, view } = draft;
   const nucleus = view.spectra.activeTab;
   const value = action.payload.options;
-  const activeFilterIndex = getActiveFilterIndex(draft);
 
   const spectra = getSpectraByNucleus(nucleus, data) as Spectrum1D[];
   for (const spectrum of spectra) {
@@ -889,7 +1059,7 @@ function handleSignalProcessingFilter(
           value,
         },
       ],
-      { filterIndex: activeFilterIndex },
+      { forceReapply: true },
     );
   }
   const { updateXDomain, updateYDomain } = signalProcessing.DOMAIN_UPDATE_RULES;
@@ -977,6 +1147,100 @@ function handleDeleteExclusionZone(
   }
 }
 
+function handleSetOneDimensionPhaseCorrectionPivotPoint(
+  draft: Draft<State>,
+  action: SetOneDimensionPhaseCorrectionPivotPoint,
+) {
+  const { value: xValue } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    const scaleX = getXScale(draft);
+    const value = scaleX.invert(xValue);
+    const datum = draft.data[activeSpectrum.index] as Spectrum1D;
+    const index = xFindClosestIndex(datum.data.x, value);
+    draft.toolOptions.data.pivot = { value, index };
+  }
+}
+function handleSetTwoDimensionPhaseCorrectionPivotPoint(
+  draft: Draft<State>,
+  action: SetTwoDimensionPhaseCorrectionPivotPoint,
+) {
+  const {
+    data: spectra,
+    margin,
+    width,
+    height,
+    yDomain,
+    xDomain,
+    mode,
+  } = draft;
+  const { x, y } = action.payload;
+  const { activeTraces, activeTraceDirection } =
+    getTwoDimensionPhaseCorrectionOptions(draft);
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    switch (activeTraceDirection) {
+      case 'horizontal':
+        {
+          const scale = get2DXScale({ margin, width, xDomain, mode });
+          const pivotValue = scale.invert(x);
+          const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+          const datum = getProjection((spectrum.data as NmrData2DFt).rr, 0);
+          const index = xFindClosestIndex(datum.x, pivotValue);
+          activeTraces.pivot = { value: pivotValue, index };
+        }
+        break;
+      case 'vertical':
+        {
+          const scale = get2DYScale({ margin, height, yDomain });
+          const pivotValue = scale.invert(y);
+          const spectrum = spectra[activeSpectrum.index] as Spectrum2D;
+          const datum = getProjection((spectrum.data as NmrData2DFt).rr, 1);
+          const index = xFindClosestIndex(datum.x, pivotValue);
+          activeTraces.pivot = { value: pivotValue, index };
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+
+//action
+function handleCalculateManualTwoDimensionPhaseCorrection(
+  draft: Draft<State>,
+  action: ManualPhaseCorrectionFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
+    const { activeTraces, activeTraceDirection } =
+      getTwoDimensionPhaseCorrectionOptions(draft);
+    const { ph0, ph1 } = action.payload;
+    activeTraces.ph0 = ph0;
+    activeTraces.ph1 = ph1;
+
+    for (const spectrumTrace of activeTraces.spectra) {
+      const { x, y } = spectrumTrace;
+      const spectrumData = draft.data[index] as Spectrum2D;
+      const sliceData = getSlice(spectrumData, { x, y }, { sliceType: 'both' });
+      if (sliceData) {
+        const { data, info } = sliceData[activeTraceDirection];
+        const _data = {
+          data,
+          info,
+        };
+        phaseCorrection.apply(_data as unknown as Spectrum1D, { ph0, ph1 });
+        const { im: newIm, re: newRe } = _data.data;
+
+        spectrumTrace.data.im = newIm;
+        spectrumTrace.data.re = newRe;
+      }
+    }
+  }
+}
+
 export {
   handleShiftSpectrumAlongXAxis,
   handleApplyZeroFillingFilter,
@@ -1002,4 +1266,10 @@ export {
   handleSignalProcessingFilter,
   rollbackSpectrum,
   rollbackSpectrumByFilter,
+  handleAddPhaseCorrectionTrace,
+  handleChangePhaseCorrectionDirection,
+  handleDeletePhaseCorrectionTrace,
+  handleSetOneDimensionPhaseCorrectionPivotPoint,
+  handleSetTwoDimensionPhaseCorrectionPivotPoint,
+  handleCalculateManualTwoDimensionPhaseCorrection,
 };

@@ -11,7 +11,7 @@ import {
   Correlation,
   Link,
 } from 'nmr-correlation';
-import { Spectrum2D, Spectrum } from 'nmr-load-save';
+import { Spectrum2D, Spectrum, ActiveSpectrum } from 'nmr-load-save';
 
 import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
 import {
@@ -19,7 +19,7 @@ import {
   findSpectrum,
 } from '../../../../data/utilities/FindUtilities';
 import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPathLength';
-import { ActiveSpectrum, DisplayerMode } from '../../../reducer/Reducer';
+import { DisplayerMode } from '../../../reducer/Reducer';
 import { ErrorColors } from '../CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
@@ -38,7 +38,7 @@ function getLabelColor(correlationData, correlation) {
       if (
         key !== 'incomplete' && // do not consider this for a single atom type
         (key === 'notAttached' || key === 'ambiguousAttachment') &&
-        lodashGet(error, `${key}`, []).some(
+        lodashGet(error, key, []).some(
           (index) => correlationData.values[index].id === correlation.id,
         )
       ) {

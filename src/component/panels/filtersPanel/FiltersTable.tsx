@@ -1,8 +1,8 @@
+import { Checkbox } from '@blueprintjs/core';
 import { Filter } from 'nmr-processing';
 import { useMemo, useCallback, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
-import { Checkbox } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -52,7 +52,8 @@ function FiltersTableInner({
   const selectedFilterIndex = useRef<number>();
 
   const handelFilterCheck = useCallback(
-    (id, enabled) => {
+    (id, event) => {
+      const { checked: enabled } = event.target;
       void (async () => {
         const hideLoading = await alert.showLoading(
           `${enabled ? 'Enable' : 'Disable'} filter in progress`,
@@ -97,15 +98,18 @@ function FiltersTableInner({
         });
       }
 
-      modal.showConfirmDialog({
-        message: (
-          <span>
-            You are about to delete this processing step
-            <span style={{ color: 'black' }}> {label} </span> , Are you sure?
-          </span>
-        ),
-        buttons,
-      });
+      modal.showConfirmDialog(
+        {
+          message: (
+            <span>
+              You are about to delete this processing step
+              <span style={{ color: 'black' }}> {label} </span> , Are you sure?
+            </span>
+          ),
+          buttons,
+        },
+        { height: 'auto', width: 'auto' },
+      );
     },
     [alert, dispatch, modal, spectraCounter],
   );
@@ -162,7 +166,7 @@ function FiltersTableInner({
           return (
             <ColumnWrapper>
               <Checkbox
-                onChange={(checked) => handelFilterCheck(id, checked)}
+                onChange={(event) => handelFilterCheck(id, event)}
                 checked={flag}
               />
             </ColumnWrapper>

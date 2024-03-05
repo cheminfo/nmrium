@@ -1,14 +1,20 @@
-import { xGetFromToIndex } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, useEffect, useReducer, ReactNode, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useReducer,
+  ReactNode,
+  useRef,
+  useState,
+} from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
+import { useOnOff } from 'react-science/ui';
 
-import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
 import {
   BrushTracker,
+  BrushTrackerContext,
   OnBrush,
   OnClick,
   OnZoom,
@@ -16,10 +22,9 @@ import {
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useMapKeyModifiers } from '../context/KeyModifierContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
-import { useAlert } from '../elements/popup/Alert';
-import { useModal } from '../elements/popup/Modal';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
@@ -30,11 +35,12 @@ import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
 } from '../reducer/scaleReducer';
-import { options } from '../toolbar/ToolTypes';
+import { Tool, options } from '../toolbar/ToolTypes';
 import Events from '../utility/Events';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
+import BaseLine from './tool/BaseLine';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
@@ -69,8 +75,6 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const activeSpectrum = useActiveSpectrum();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
-  const modal = useModal();
-  const alert = useAlert();
 
   const [scaleState, dispatchScale] = useReducer(
     scaleReducer,
@@ -120,10 +124,20 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     }
   }
 
+  const [isOpenAnalysisModal, openAnalysisModal, closeAnalysisModal] =
+    useOnOff(false);
+
+  const [brushData, setBrushData] = useState<BrushTrackerContext | null>(null);
+
+  const { getModifiersKey, primaryKeyIdentifier } = useMapKeyModifiers();
+
   const handelBrushEnd = useCallback<OnBrush>(
     (brushData) => {
       //reset the brush start
       brushStartRef.current = null;
+      setBrushData(brushData);
+
+      const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
 
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
@@ -138,145 +152,136 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           });
         };
 
-        if (brushData.altKey) {
-          switch (selectedTool) {
-            case options.rangePicking.id: {
-              modal.show(
-                <MultipletAnalysisModal
-                  data={data}
-                  activeSpectrum={activeSpectrum}
-                  scaleX={scaleState.scaleX}
-                  {...brushData}
-                />,
-                {
-                  onClose: () => {
-                    modal.close();
-                  },
-                },
-              );
-              break;
-            }
-            default:
-              break;
-          }
-        } else if (brushData.shiftKey) {
-          switch (selectedTool) {
-            case options.integral.id:
-              dispatch({
-                type: 'ADD_INTEGRAL',
-                payload: brushData,
-              });
-              break;
-            case options.rangePicking.id: {
-              const [from, to] = getRange(state, {
-                startX: brushData.startX,
-                endX: brushData.endX,
-              });
+        let executeDefaultAction = false;
 
-              if (!activeSpectrum) break;
+        switch (keyModifiers) {
+          // when Alt key is active
+          case primaryKeyIdentifier: {
+            switch (selectedTool) {
+              case options.integral.id:
+                dispatch({
+                  type: 'ADD_INTEGRAL',
+                  payload: brushData,
+                });
+                break;
+              case options.rangePicking.id: {
+                if (!activeSpectrum) break;
 
-              const {
-                data: { x },
-              } = data[activeSpectrum.index] as Spectrum1D;
-
-              const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
-
-              if (toIndex - fromIndex <= MAX_LENGTH) {
                 dispatch({
                   type: 'ADD_RANGE',
                   payload: brushData,
                 });
-              } else {
-                alert.error(
-                  `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
-                );
-              }
 
-              break;
-            }
-            case options.multipleSpectraAnalysis.id:
-              if (scaleState.scaleX) {
-                const { startX, endX } = brushData;
-                const start = scaleState.scaleX().invert(startX);
-                const end = scaleState.scaleX().invert(endX);
-                dispatchPreferences({
-                  type: 'ANALYZE_SPECTRA',
+                break;
+              }
+              case options.multipleSpectraAnalysis.id:
+                if (scaleState.scaleX) {
+                  const { startX, endX } = brushData;
+                  const start = scaleState.scaleX().invert(startX);
+                  const end = scaleState.scaleX().invert(endX);
+                  dispatchPreferences({
+                    type: 'ANALYZE_SPECTRA',
+                    payload: {
+                      start,
+                      end,
+                      nucleus: activeTab,
+                    },
+                  });
+                }
+                break;
+
+              case options.peakPicking.id:
+                dispatch({
+                  type: 'ADD_PEAKS',
+                  payload: brushData,
+                });
+                break;
+
+              case options.baselineCorrection.id:
+                dispatch({
+                  type: 'ADD_BASE_LINE_ZONE',
                   payload: {
-                    start,
-                    end,
-                    nucleus: activeTab,
+                    startX: brushData.startX,
+                    endX: brushData.endX,
                   },
                 });
-              }
-              break;
+                break;
 
-            case options.peakPicking.id:
-              dispatch({
-                type: 'ADD_PEAKS',
-                payload: brushData,
-              });
-              break;
-
-            case options.baselineCorrection.id:
-              dispatch({
-                type: 'ADD_BASE_LINE_ZONE',
-                payload: {
+              case options.exclusionZones.id:
+                dispatch({
+                  type: 'ADD_EXCLUSION_ZONE',
+                  payload: { startX: brushData.startX, endX: brushData.endX },
+                });
+                break;
+              case options.matrixGenerationExclusionZones.id: {
+                const [from, to] = getRange(state, {
                   startX: brushData.startX,
                   endX: brushData.endX,
-                },
-              });
-              break;
+                });
+                dispatchPreferences({
+                  type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
+                  payload: {
+                    zone: { from, to },
+                    nucleus: activeTab,
+                    range: { from: xDomain[0], to: xDomain[1] },
+                  },
+                });
 
-            case options.exclusionZones.id:
-              dispatch({
-                type: 'ADD_EXCLUSION_ZONE',
-                payload: { startX: brushData.startX, endX: brushData.endX },
-              });
-              break;
-            case options.matrixGenerationExclusionZones.id: {
-              const [from, to] = getRange(state, {
-                startX: brushData.startX,
-                endX: brushData.endX,
-              });
-              dispatchPreferences({
-                type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
-                payload: {
-                  zone: { from, to },
-                  nucleus: activeTab,
-                  range: { from: xDomain[0], to: xDomain[1] },
-                },
-              });
-
-              break;
-            }
-
-            default:
-              propagateEvent();
-              break;
-          }
-        } else {
-          switch (selectedTool) {
-            default:
-              if (selectedTool != null) {
-                dispatch({ type: 'BRUSH_END', payload: brushData });
+                break;
               }
-              break;
+
+              default:
+                executeDefaultAction = true;
+                break;
+            }
+            break;
           }
+          case 'shift[false]_ctrl[false]_alt[true]': {
+            switch (selectedTool) {
+              case options.rangePicking.id: {
+                openAnalysisModal();
+                break;
+              }
+              default:
+                executeDefaultAction = true;
+                break;
+            }
+            break;
+          }
+
+          default: {
+            executeDefaultAction = true;
+
+            break;
+          }
+        }
+
+        const tools = new Set<Tool>(['zoom', 'databaseRangesSelection']);
+        const enableDefaultBrush =
+          !tools.has(selectedTool) ||
+          (tools.has(selectedTool) && !brushData.shiftKey);
+
+        if (executeDefaultAction && selectedTool != null) {
+          if (enableDefaultBrush) {
+            dispatch({ type: 'BRUSH_END', payload: brushData });
+          }
+
+          propagateEvent();
         }
       }
     },
     [
-      scaleState,
+      getModifiersKey,
       selectedTool,
-      modal,
-      data,
-      activeSpectrum,
+      scaleState,
+      primaryKeyIdentifier,
       dispatch,
+      activeSpectrum,
       dispatchPreferences,
       activeTab,
-      xDomain,
       state,
-      alert,
+      xDomain,
+      openAnalysisModal,
     ],
   );
 
@@ -289,66 +294,69 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const handleZoom = useCallback<OnZoom>(
     (event) => {
-      dispatch({ type: 'SET_ZOOM', payload: { event, selectedTool } });
+      dispatch({ type: 'SET_ZOOM', payload: { event } });
     },
-    [dispatch, selectedTool],
+    [dispatch],
   );
 
   const mouseClick = useCallback<OnClick>(
-    (position) => {
+    (event) => {
       if (!scaleState.scaleX) return;
 
-      const xPPM = scaleState.scaleX().invert(position.x);
+      const xPPM = scaleState.scaleX().invert(event.x);
 
       const propagateEvent = () => {
         Events.emit('mouseClick', {
-          ...position,
+          ...event,
           xPPM,
         });
       };
+      const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
 
-      if (position.shiftKey) {
-        switch (selectedTool) {
-          case options.peakPicking.id:
-            dispatch({
-              type: 'ADD_PEAK',
-              payload: position,
-            });
-            break;
-          case options.editRange.id:
-            propagateEvent();
-            break;
-          case options.integral.id:
-            dispatch({
-              type: 'CUT_INTEGRAL',
-              payload: { cutValue: xPPM },
-            });
-            break;
-          case options.rangePicking.id:
-            dispatch({
-              type: 'CUT_RANGE',
-              payload: { cutValue: xPPM },
-            });
-            break;
-          default:
-            break;
-        }
-      } else {
-        switch (selectedTool) {
-          case options.phaseCorrection.id:
-            dispatch({
-              type: 'SET_VERTICAL_INDICATOR_X_POSITION',
-              payload: {
-                position: position.x,
-              },
-            });
-            break;
+      switch (keyModifiers) {
+        case primaryKeyIdentifier: {
+          switch (selectedTool) {
+            case options.peakPicking.id:
+              dispatch({
+                type: 'ADD_PEAK',
+                payload: event,
+              });
+              break;
+            case options.editRange.id:
+              propagateEvent();
+              break;
+            case options.integral.id:
+              dispatch({
+                type: 'CUT_INTEGRAL',
+                payload: { cutValue: xPPM },
+              });
+              break;
+            case options.rangePicking.id:
+              dispatch({
+                type: 'CUT_RANGE',
+                payload: { cutValue: xPPM },
+              });
+              break;
 
-          default:
+            case options.phaseCorrection.id:
+              dispatch({
+                type: 'SET_ONE_DIMENSION_PIVOT_POINT',
+                payload: {
+                  value: event.x,
+                },
+              });
+
+              break;
+            default:
+              break;
+          }
+          break;
         }
+        default:
+          break;
       }
     },
-    [dispatch, scaleState, selectedTool],
+    [dispatch, getModifiersKey, primaryKeyIdentifier, scaleState, selectedTool],
   );
 
   return (
@@ -397,6 +405,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                         mode={mode}
                         displayerKey={displayerKey}
                       />
+                      <BaseLine />
                     </MouseTracker>
                   </BrushTracker>
                 )}
@@ -404,6 +413,16 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           </ViewerResponsiveWrapper>
         )}
       </ResponsiveChart>
+      {brushData && (
+        <MultipletAnalysisModal
+          isOpen={isOpenAnalysisModal}
+          onClose={closeAnalysisModal}
+          data={data}
+          activeSpectrum={activeSpectrum}
+          scaleX={scaleState.scaleX}
+          {...brushData}
+        />
+      )}
     </ScaleProvider>
   );
 }

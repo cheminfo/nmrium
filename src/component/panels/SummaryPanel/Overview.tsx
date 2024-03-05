@@ -52,8 +52,8 @@ function Overview({ correlationsData }: OverviewProps) {
                   (!error || Object.keys(error).length === 0)
                   ? 'green'
                   : errorColorIndex >= 0
-                  ? ErrorColors[errorColorIndex].color
-                  : 'black'
+                    ? ErrorColors[errorColorIndex].color
+                    : 'black'
                 : 'black',
             }}
           >

@@ -1,46 +1,34 @@
-import { Spectrum1D } from 'nmr-load-save';
+import { memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import { HighlightEventSource, useHighlight } from '../../highlight';
-import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import useSpectrum from '../../hooks/useSpectrum';
+import { useHighlight } from '../../highlight';
 import { formatNumber } from '../../utility/formatNumber';
+import { getDecimalsCount } from '../utilities/getDecimalsCount';
 import { resolve } from '../utilities/intersectionResolver';
 
 import { PeakEditionListener } from './PeakEditionManager';
+import {
+  PeaksAnnotationsProps,
+  PeaksSource,
+  getHighlightExtraId,
+  getHighlightSource,
+} from './Peaks';
 
-const emptyData = { peaks: {}, info: {}, display: {} };
 const notationWidth = 10;
 const notationMargin = 2;
 
-function getDecimalsCount(max: number, format: string) {
-  const numberOfDigits = format.replace(/\./, '').length;
-  const fractionDigits = format.split('.')[1].length;
+function PeakAnnotationsTreeStyle(props: PeaksAnnotationsProps) {
+  const {
+    peaks,
+    peaksSource,
+    spectrumColor,
+    xDomain,
+    displayerKey,
+    peakFormat,
+  } = props;
 
-  return (
-    Math.max(String(max.toFixed(0)).length, numberOfDigits - fractionDigits) +
-    fractionDigits
-  );
-}
+  const decimalsCount = getDecimalsCount(xDomain[1], peakFormat);
 
-function PeakAnnotationsTreeStyle() {
-  const { displayerKey, xDomain } = useChartData();
-  const { scaleX } = useScaleChecked();
-  const spectrum = useSpectrum(emptyData) as Spectrum1D;
-  const { deltaPPM } = usePanelPreferences('peaks', spectrum.info.nucleus);
-
-  const decimalsCount = getDecimalsCount(xDomain[1], deltaPPM.format);
-  const mapPeaks = spectrum.peaks.values
-    .map((peak) => ({
-      ...peak,
-      scaleX: scaleX()(peak.x),
-    }))
-    .sort((p1, p2) => p2.x - p1.x);
-
-  if (!mapPeaks?.length) return null;
-
-  const peaks = resolve(mapPeaks, {
+  const mapPeaks = resolve(peaks, {
     key: 'scaleX',
     width: notationWidth,
     margin: notationMargin,
@@ -50,14 +38,14 @@ function PeakAnnotationsTreeStyle() {
   return (
     <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       <g transform={`translate(0,${decimalsCount * 10})`}>
-        {peaks.map((group) => {
+        {mapPeaks.map((group) => {
           return (
             <g
               key={group.meta.id}
               transform={`translate(${group.meta.groupStartX},0)`}
             >
               {group.group.map((item, index) => {
-                const { id, x: value, scaleX } = item;
+                const { id, x: value, scaleX, parentKeys } = item;
                 const startX = index * (notationWidth + notationMargin);
                 const x = scaleX - group.meta.groupStartX;
                 return (
@@ -66,13 +54,15 @@ function PeakAnnotationsTreeStyle() {
                     startX={startX}
                     x={x}
                     id={id}
+                    parentKeys={parentKeys}
                     value={value}
-                    format={deltaPPM.format}
-                    color={spectrum.display.color}
+                    format={peakFormat}
+                    color={spectrumColor}
                     peakEditionFieldPositon={{
                       x: group.meta.groupStartX + startX,
                       y: decimalsCount * 10,
                     }}
+                    peaksSource={peaksSource}
                   />
                 );
               })}
@@ -92,13 +82,24 @@ interface PeakAnnotationProps {
   id: string;
   value: number;
   peakEditionFieldPositon: { x: number; y: number };
+  peaksSource: PeaksSource;
+  parentKeys: string[];
 }
 function PeakAnnotation(props: PeakAnnotationProps) {
-  const { startX, format, color, id, value, x, peakEditionFieldPositon } =
-    props;
+  const {
+    startX,
+    format,
+    color,
+    id,
+    value,
+    x,
+    peakEditionFieldPositon,
+    peaksSource,
+    parentKeys,
+  } = props;
   const highlight = useHighlight([id], {
-    type: HighlightEventSource.PEAK,
-    extra: { id },
+    type: getHighlightSource(peaksSource),
+    extra: { id: getHighlightExtraId(peaksSource, id, parentKeys) },
   });
   return (
     <g
@@ -126,4 +127,4 @@ function PeakAnnotation(props: PeakAnnotationProps) {
   );
 }
 
-export default PeakAnnotationsTreeStyle;
+export default memo(PeakAnnotationsTreeStyle);

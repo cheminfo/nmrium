@@ -1,35 +1,42 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { StructureEditor } from 'react-ocl/full';
-
-import CloseButton from '../../elements/CloseButton';
-import { ModalStyles } from '../../modal/ModalStyle';
 
 interface DatabaseStructureSearchModalProps {
   onChange: (idCode: string) => void;
+  isOpen: boolean;
   idCode: string | undefined;
   onClose?: () => void;
 }
 
 export function DatabaseStructureSearchModal({
   onChange,
+  isOpen,
   idCode,
   onClose,
 }: DatabaseStructureSearchModalProps) {
   return (
-    <div css={ModalStyles}>
-      <div className="header handle">
-        <span>Search by structure</span>
-        <CloseButton onClick={onClose} className="close-bt" />
-      </div>
-
-      <div className="main-content">
+    <Dialog
+      isOpen={isOpen}
+      onClose={() => {
+        onClose?.();
+      }}
+      style={{ width: 720 }}
+      title="Search by structure"
+    >
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
         <StructureEditor
           initialIDCode={idCode}
           svgMenu
           fragment
           onChange={(molFile, molecule, idCode) => onChange(idCode)}
         />
-      </div>
-    </div>
+      </DialogBody>
+    </Dialog>
   );
 }

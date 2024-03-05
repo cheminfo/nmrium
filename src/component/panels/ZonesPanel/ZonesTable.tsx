@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Info2D } from 'nmr-processing';
 import { ReactNode } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useTableSortBy from '../../hooks/useTableSortBy';
+import NoDataForFid from '../extra/placeholder/NoDataForFid';
+import NoTableData from '../extra/placeholder/NoTableData';
 
 import ZonesTableRow from './ZonesTableRow';
 import { useMapZones } from './hooks/useMapZones';
@@ -76,60 +79,88 @@ interface ZonesTableProps {
     signalIndex: any,
     axis: any,
   ) => void;
-  nuclei: string[];
-  experiment: string;
+  nucleus: string;
+  info: Info2D;
 }
 
-function ZonesTable({
-  tableData,
-  onUnlink,
-  nuclei,
-  experiment,
-}: ZonesTableProps) {
+function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
+  const { experiment, isFid } = info;
+
+  const nuclei = nucleus.split(',');
   const data = useMapZones(tableData, { nuclei, experiment });
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
-  const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei[0]);
-  const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei[1]);
+  const { deltaPPM: deltaX } = usePanelPreferences('zones', nuclei?.[0]);
+  const { deltaPPM: deltaY } = usePanelPreferences('zones', nuclei?.[1]);
+  const {
+    showSerialNumber,
+    showAssignment,
+    showKind,
+    showDeleteAction,
+    showEditAction,
+    showZoomAction,
+  } = usePanelPreferences('zones', nucleus);
+
+  const showActions = showDeleteAction || showEditAction || showZoomAction;
+
+  if (isFid) {
+    return <NoDataForFid />;
+  }
+
+  if (!tableData || tableData.length === 0) {
+    return <NoTableData />;
+  }
 
   return (
     <div>
       <table css={tableStyle}>
         <thead>
           <tr>
-            <th rowSpan={2}>#</th>
-            <th colSpan={2}>δ (ppm)</th>
-            <th colSpan={2}>
-              <FaLink />
-            </th>
-            <th colSpan={2}>Σ</th>
-            <th rowSpan={2}>Kind</th>
-            <th rowSpan={2}>{''}</th>
+            {showSerialNumber && <th rowSpan={2}>#</th>}
+            {(deltaX.show || deltaX.show) && <th colSpan={2}>δ (ppm)</th>}
+            {showAssignment && (
+              <>
+                <th colSpan={2}>
+                  <FaLink />
+                </th>
+                <th colSpan={2}>Σ</th>
+              </>
+            )}
+            {showKind && <th rowSpan={2}>Kind</th>}
+            {showActions && <th rowSpan={2}>{''}</th>}
           </tr>
           <tr>
-            <th id="tableMetaInfo.signal.x.delta" {...onSort}>
-              <SurroundedText text="F2">
-                {nuclei[0]}{' '}
-                {isSortedDesc('tableMetaInfo.signal.x.delta').content}
-              </SurroundedText>
-            </th>
-            <th id="tableMetaInfo.signal.y.delta" {...onSort}>
-              <SurroundedText text="F1">
-                {nuclei[1]}{' '}
-                {isSortedDesc('tableMetaInfo.signal.y.delta').content}
-              </SurroundedText>
-            </th>
-            <th>
-              <SurroundedText text="F2">{nuclei[0]}</SurroundedText>
-            </th>
-            <th>
-              <SurroundedText text="F1">{nuclei[1]}</SurroundedText>
-            </th>
-            <th>
-              <SurroundedText text="F2">{nuclei[0]}</SurroundedText>
-            </th>
-            <th>
-              <SurroundedText text="F1">{nuclei[1]}</SurroundedText>
-            </th>
+            {deltaX.show && (
+              <th id="tableMetaInfo.signal.x.delta" {...onSort}>
+                <SurroundedText text="F2">
+                  {nuclei[0]}{' '}
+                  {isSortedDesc('tableMetaInfo.signal.x.delta').content}
+                </SurroundedText>
+              </th>
+            )}
+            {deltaY.show && (
+              <th id="tableMetaInfo.signal.y.delta" {...onSort}>
+                <SurroundedText text="F1">
+                  {nuclei[1]}{' '}
+                  {isSortedDesc('tableMetaInfo.signal.y.delta').content}
+                </SurroundedText>
+              </th>
+            )}
+            {showAssignment && (
+              <>
+                <th>
+                  <SurroundedText text="F2">{nuclei[0]}</SurroundedText>
+                </th>
+                <th>
+                  <SurroundedText text="F1">{nuclei[1]}</SurroundedText>
+                </th>
+                <th>
+                  <SurroundedText text="F2">{nuclei[0]}</SurroundedText>
+                </th>
+                <th>
+                  <SurroundedText text="F1">{nuclei[1]}</SurroundedText>
+                </th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -139,7 +170,7 @@ function ZonesTable({
               key={`${rowData.tableMetaInfo.id}`}
               rowData={rowData}
               onUnlink={onUnlink}
-              format={{ x: deltaX.format, y: deltaY.format }}
+              nucleus={nucleus}
             />
           ))}
         </tbody>

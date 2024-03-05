@@ -26,14 +26,12 @@ function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
       <FieldArray
         name={`signals.${values.activeTab}.js`}
         render={({ push, remove }) => (
-          <div>
-            <CouplingsTable
-              push={push}
-              remove={remove}
-              onFocus={onFocus}
-              onBlur={onBlur}
-            />
-          </div>
+          <CouplingsTable
+            push={push}
+            remove={remove}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />
         )}
       />
     </div>

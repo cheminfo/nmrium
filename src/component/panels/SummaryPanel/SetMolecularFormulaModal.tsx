@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
 
-import CloseButton from '../../elements/CloseButton';
+import { CloseButton } from '../../elements/CloseButton';
 import MolecularFormulaInput from '../../elements/MolecularFormulaInput';
 import MoleculeSelection from '../../elements/MoleculeSelection';
 
@@ -115,7 +115,7 @@ export default function SetMolecularFormulaModal({
   return (
     <div css={modalContainer}>
       <div className="header handle">
-        <CloseButton onClick={onClose} />
+        <CloseButton title="Close" onClick={onClose} />
       </div>
       <div>
         <p className="info">Please type in a molecular formula!</p>

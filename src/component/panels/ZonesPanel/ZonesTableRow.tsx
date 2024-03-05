@@ -2,7 +2,6 @@
 
 import lodashGet from 'lodash/get';
 import { CSSProperties, useMemo, useCallback, MouseEvent } from 'react';
-import { DropdownMenu } from 'react-science/ui';
 
 import { buildID } from '../../../data/utilities/Concatenation';
 import {
@@ -10,8 +9,10 @@ import {
   useAssignment,
   AssignmentsData,
 } from '../../assignment/AssignmentsContext';
-import { ContextMenuProps } from '../../elements/ReactTable/ReactTable';
+import { ContextMenu } from '../../elements/ContextMenuBluePrint';
+import { TableContextMenuProps } from '../../elements/ReactTable/ReactTable';
 import { useHighlight } from '../../highlight';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 
 import ActionsColumn from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
@@ -23,7 +24,7 @@ const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-interface ZonesTableRowProps extends ContextMenuProps {
+interface ZonesTableRowProps extends TableContextMenuProps {
   rowData: ZoneData;
   onUnlink: (
     rowData: ZoneData,
@@ -32,7 +33,7 @@ interface ZonesTableRowProps extends ContextMenuProps {
     axis: Axis,
   ) => void;
   rowIndex: number;
-  format: { x: string; y: string };
+  nucleus: string;
 }
 
 function ZonesTableRow({
@@ -41,7 +42,7 @@ function ZonesTableRow({
   contextMenu = [],
   onContextMenuSelect,
   rowIndex,
-  format,
+  nucleus,
 }: ZonesTableRowProps) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
@@ -66,6 +67,14 @@ function ZonesTableRow({
       buildID(assignmentSignal.id, 'Crosshair'),
     ),
   );
+  const {
+    showSerialNumber,
+    showAssignment,
+    showKind,
+    showDeleteAction,
+    showEditAction,
+    showZoomAction,
+  } = usePanelPreferences('zones', nucleus);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -170,8 +179,7 @@ function ZonesTableRow({
   }, [assignmentSignal, highlightSignalY]);
 
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, rowData)}
       as="tr"
@@ -179,41 +187,49 @@ function ZonesTableRow({
         highlightZone.isActive || assignmentZone.isActive
           ? (HighlightedRowStyle as any)
           : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
-          ? ConstantlyHighlightedRowStyle
-          : null
+            ? ConstantlyHighlightedRowStyle
+            : null
       }
       {...highlightZone.onHover}
     >
-      <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>
+      {showSerialNumber && <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>}
       <SignalDeltaColumn
         rowData={rowData}
         onHoverSignalX={onHoverSignalX}
         onHoverSignalY={onHoverSignalY}
-        format={format}
+        nucleus={nucleus}
       />
-      <SignalAssignmentsColumns
+      {showAssignment && (
+        <>
+          <SignalAssignmentsColumns
+            rowData={rowData}
+            assignmentSignal={assignmentSignal}
+            onHoverSignalX={onHoverSignalX}
+            onHoverSignalY={onHoverSignalY}
+            onClick={clickHandler}
+            onUnlink={unlinkHandler}
+            highlightSignalX={highlightSignalX}
+            highlightSignalY={highlightSignalY}
+          />
+          <ZoneAssignmentsColumns
+            rowData={rowData}
+            assignmentZone={assignmentZone}
+            onHoverZoneX={onHoverZoneX}
+            onHoverZoneY={onHoverZoneY}
+            rowSpanTags={rowSpanTags}
+            onClick={clickHandler}
+            onUnlink={unlinkHandler}
+            highlightZoneX={highlightZoneX}
+            highlightZoneY={highlightZoneY}
+          />
+        </>
+      )}
+      <ActionsColumn
         rowData={rowData}
-        assignmentSignal={assignmentSignal}
-        onHoverSignalX={onHoverSignalX}
-        onHoverSignalY={onHoverSignalY}
-        onClick={clickHandler}
-        onUnlink={unlinkHandler}
-        highlightSignalX={highlightSignalX}
-        highlightSignalY={highlightSignalY}
-      />
-      <ZoneAssignmentsColumns
-        rowData={rowData}
-        assignmentZone={assignmentZone}
-        onHoverZoneX={onHoverZoneX}
-        onHoverZoneY={onHoverZoneY}
         rowSpanTags={rowSpanTags}
-        onClick={clickHandler}
-        onUnlink={unlinkHandler}
-        highlightZoneX={highlightZoneX}
-        highlightZoneY={highlightZoneY}
+        {...{ showKind, showDeleteAction, showEditAction, showZoomAction }}
       />
-      <ActionsColumn rowData={rowData} rowSpanTags={rowSpanTags} />
-    </DropdownMenu>
+    </ContextMenu>
   );
 }
 

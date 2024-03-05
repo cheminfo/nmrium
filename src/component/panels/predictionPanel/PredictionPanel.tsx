@@ -157,6 +157,9 @@ export default function PredictionPanel() {
             renderSource="predictionPanel"
             onClickPreferences={settingsPanelHandler}
             onOpenMoleculeEditor={() => openMoleculeEditor()}
+            onClickPastMolecule={() => {
+              refreshSlider.current = true;
+            }}
           >
             <PredictionSimpleOptions />
           </MoleculePanelHeader>

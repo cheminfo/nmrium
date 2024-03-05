@@ -9,8 +9,15 @@ export const prediction: InnerWorkspace = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    popupLoggingLevel: 'error',
+    invert: false,
   },
   display: {
+    general: {
+      hideGeneralSettings: true,
+      hideLogs: true,
+      hideWorkspaces: true,
+    },
     panels: {
       spectraPanel: { display: true },
       rangesPanel: { display: true },
@@ -55,9 +62,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'name',
                 label: 'Spectrum Name',
-                description: 'Spectrum Name',
                 jpath: ['info', 'name'],
                 visible: true,
               },
@@ -68,9 +73,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'solvent',
                 label: 'Solvent',
-                description: 'Solvent',
                 jpath: ['info', 'solvent'],
                 visible: false,
               },
@@ -101,9 +104,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'name',
                 label: 'Spectrum Name',
-                description: 'Spectrum Name',
                 jpath: ['info', 'name'],
                 visible: true,
               },
@@ -114,9 +115,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'solvent',
                 label: 'Solvent',
-                description: 'Solvent',
                 jpath: ['info', 'solvent'],
                 visible: false,
               },
@@ -147,9 +146,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'name',
                 label: 'Spectrum Name',
-                description: 'Spectrum Name',
                 jpath: ['info', 'name'],
                 visible: true,
               },
@@ -160,9 +157,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'solvent',
                 label: 'Solvent',
-                description: 'Solvent',
                 jpath: ['info', 'solvent'],
                 visible: false,
               },
@@ -193,9 +188,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'name',
                 label: 'Spectrum Name',
-                description: 'Spectrum Name',
                 jpath: ['info', 'name'],
                 visible: true,
               },
@@ -206,9 +199,7 @@ export const prediction: InnerWorkspace = {
                 visible: true,
               },
               {
-                name: 'solvent',
                 label: 'Solvent',
-                description: 'Solvent',
                 jpath: ['info', 'solvent'],
                 visible: false,
               },

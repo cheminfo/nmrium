@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { fileCollectionFromFileList } from 'filelist-utils';
 import { read as readDropFiles } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
@@ -14,8 +14,9 @@ import { LoaderProvider } from '../context/LoaderContext';
 import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
-import { useMetaInformationImportationModal } from '../modal/metaImportation/index';
+import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
 
 const style = css`
   height: 100%;
@@ -25,7 +26,7 @@ const style = css`
   justify-content: center;
   align-items: center;
   flex-flow: column;
-  z-index: 99999;
+  z-index: 8;
 
   p {
     color: white;
@@ -53,17 +54,20 @@ const containerStyle = css`
 function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences, current } = usePreferences();
+  const { dispatch: dispatchPreferences, current: workspacePreferences } =
+    usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
-  const openImportMetaInformationModal = useMetaInformationImportationModal();
   const alert = useAlert();
   const { logger } = useLogger();
+  const experimentalFeatures = useCheckExperimentalFeature();
+  const [metaInformationFile, openMetaInformationDialog] =
+    useState<File | null>();
 
   async function loadFilesHandler(files) {
     try {
       if (files.length === 1 && isMetaFile(files[0])) {
-        openImportMetaInformationModal(files[0]);
+        openMetaInformationDialog(files[0]);
       } else {
         const fileCollection = await fileCollectionFromFileList(files);
         const metaFile = Object.values(fileCollection.files).find((file) =>
@@ -73,13 +77,15 @@ function DropZone(props) {
         if (metaFile) {
           parseMetaFileResult = await parseMetaFile(metaFile);
         }
-
         const { nmrLoaders: sourceSelector } = preferences.current;
+        const { onLoadProcessing, spectraColors } = workspacePreferences;
         const { nmriumState, containsNmrium } = await readDropFiles(
           fileCollection,
           {
             sourceSelector,
             logger: logger.child({ context: 'nmr-processing' }),
+            onLoadProcessing,
+            experimentalFeatures,
           },
         );
 
@@ -97,8 +103,8 @@ function DropZone(props) {
           payload: {
             nmriumState,
             containsNmrium,
-            onLoadProcessing: current.onLoadProcessing,
             parseMetaFileResult,
+            spectraColors,
           },
         });
       }
@@ -137,6 +143,13 @@ function DropZone(props) {
 
   return (
     <LoaderProvider value={open}>
+      {metaInformationFile && (
+        <MetaImportationModal
+          isOpen
+          file={metaInformationFile}
+          onCloseDialog={() => openMetaInformationDialog(null)}
+        />
+      )}
       <div {...getRootProps()} role="none" css={containerStyle}>
         <input {...getInputProps()} />
         {isDragActive && (

@@ -3,7 +3,6 @@ import get from 'lodash/get';
 import { Spectrum2D } from 'nmr-load-save';
 import { memo, useMemo, useRef } from 'react';
 
-import { getShift } from '../../../data/data2d/Spectrum2D';
 import {
   drawContours,
   getDefaultContoursLevel,
@@ -15,7 +14,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import { get2DXScale, get2DYScale } from '../utilities/scale';
+import { useScale2DX, useScale2DY } from '../utilities/scale';
 
 interface ContoursPathsProps {
   id: string;
@@ -34,25 +33,17 @@ function usePath(
   spectrum: Spectrum2D,
   contours: ReturnType<typeof drawContours>['contours'],
 ) {
-  const { margin, width, height, xDomain, yDomain } = useChartData();
-  const shift = getShift(spectrum);
+  const scaleX = useScale2DX();
+  const scaleY = useScale2DY();
 
-  const _scaleX = get2DXScale({ margin, width, xDomain });
-  const _scaleY = get2DYScale({ margin, height, yDomain });
   const pathBuilder = new PathBuilder();
   for (const element of contours) {
     if (element.lines) {
       const lines = element.lines;
       if (lines.length < 1e6) {
         for (let i = 0; i < lines.length; i += 4) {
-          pathBuilder.moveTo(
-            _scaleX(lines[i] + shift.x),
-            _scaleY(lines[i + 1] + shift.y),
-          );
-          pathBuilder.lineTo(
-            _scaleX(lines[i + 2] + shift.x),
-            _scaleY(lines[i + 3] + shift.y),
-          );
+          pathBuilder.moveTo(scaleX(lines[i]), scaleY(lines[i + 1]));
+          pathBuilder.lineTo(scaleX(lines[i + 2]), scaleY(lines[i + 3]));
         }
       }
     }

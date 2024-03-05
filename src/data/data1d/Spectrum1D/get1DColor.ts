@@ -1,11 +1,29 @@
-import { generateColor } from '../../utilities/generateColor';
+import { SpectrumOneDimensionColor } from 'nmr-load-save';
 
-export function get1DColor(options, usedColors, regenerate = false) {
+import { UsedColors } from '../../../types/UsedColors';
+import { generateColor } from '../../utilities/generateColor';
+import { getCustomColor } from '../../utilities/getCustomColor';
+
+interface GetOnDimensionColorOption {
+  usedColors?: UsedColors;
+  colors?: SpectrumOneDimensionColor[];
+  regenerate?: boolean;
+}
+
+export function get1DColor(spectrum, options: GetOnDimensionColorOption) {
+  const { regenerate = false, usedColors = {}, colors } = options;
   let color = 'black';
-  if (options?.display?.color === undefined || regenerate) {
-    color = generateColor(false, usedColors['1d'] || []);
+
+  if (!spectrum?.display?.color || regenerate) {
+    const customColor = getCustomColor(spectrum, colors);
+
+    if (customColor) {
+      color = customColor;
+    } else {
+      color = generateColor(false, usedColors?.['1d'] || []);
+    }
   } else {
-    color = options.display.color;
+    color = spectrum.display.color;
   }
 
   if (usedColors['1d']) {

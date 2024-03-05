@@ -2,10 +2,9 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
-import { useGlobal } from '../../context/GlobalContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import Resizer from '../../elements/resizer/Resizer';
+import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { useHighlight } from '../../highlight';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 
@@ -55,7 +54,6 @@ function AnalysisRange({
   });
   const { scaleX } = useScaleChecked();
   const { dispatch } = usePreferences();
-  const { viewerRef } = useGlobal();
 
   const resizeEndHandler = useCallback(
     (resized) => {
@@ -71,18 +69,15 @@ function AnalysisRange({
     [activeTab, columnKey, dispatch, scaleX],
   );
 
-  const from = scaleX()(rangeData.from);
-  const to = scaleX()(rangeData.to);
-  const isResizeingActive = useResizerStatus('multipleSpectraAnalysis');
+  const { from, to } = rangeData;
+  const isResizingActive = useResizerStatus('multipleSpectraAnalysis');
   return (
     <g {...highlight.onHover} {...highlight.onHover}>
-      <Resizer
-        tag="svg"
+      <ResizerWithScale
         onEnd={resizeEndHandler}
-        initialPosition={{ x2: from, x1: to }}
-        parentElement={viewerRef}
-        key={`${columnKey}_${to}_${from}`}
-        disabled={!isResizeingActive}
+        from={from}
+        to={to}
+        disabled={!isResizingActive}
       >
         {({ x1, x2 }, isActive) => (
           <g
@@ -114,7 +109,7 @@ function AnalysisRange({
             </text>
           </g>
         )}
-      </Resizer>
+      </ResizerWithScale>
     </g>
   );
 }

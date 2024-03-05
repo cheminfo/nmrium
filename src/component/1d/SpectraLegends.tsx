@@ -71,7 +71,7 @@ function InnerSpectraLegends({
               fill: (spectrum as Spectrum1D).display.color,
             }}
           />
-          <SVGGroup space={5} style={{ transform: 'translate(12px,0)' }}>
+          <SVGGroup space={5} transform="translate(12 0)">
             {legendsFields.map((field) => {
               const predefinedField = field as PredefinedLegendField;
 

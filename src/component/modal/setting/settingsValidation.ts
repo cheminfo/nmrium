@@ -55,6 +55,7 @@ const formattingValidation = (obj: Workspace) =>
                   new ValidationError(
                     `${key} nucleus must te be unique`,
                     nuclei[key].name,
+                    // eslint-disable-next-line no-invalid-this
                     `${this.path}.${field}.name`,
                   ),
                 );
@@ -80,7 +81,21 @@ const infoBlockValidation = object({
   fields: array().of(
     object({
       label: string().required(),
-      jpath: array().of(string()).min(1),
+      jpath: array().of(string()).required().min(1),
+    }),
+  ),
+});
+const spectraColorsSchemaValidation = object({
+  oneDimension: array().of(
+    object({
+      value: string().required(),
+      jpath: array().of(string()).required().min(1),
+    }),
+  ),
+  twoDimensions: array().of(
+    object({
+      value: string().required(),
+      jpath: array().of(string()).required().min(1),
     }),
   ),
 });
@@ -94,5 +109,6 @@ export const validation: any = lazy((obj: Workspace) =>
     databases: databasesValidation,
     infoBlock: infoBlockValidation,
     general: generalValidation,
+    spectraColors: spectraColorsSchemaValidation,
   }),
 );

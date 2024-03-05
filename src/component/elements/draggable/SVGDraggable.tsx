@@ -1,4 +1,4 @@
-import { useEffect, ReactFragment } from 'react';
+import { ReactFragment } from 'react';
 
 import useDraggable, { Position } from './useDraggable';
 
@@ -13,7 +13,7 @@ type PositionChangeHandler = (data: Position) => void;
 
 export interface DraggableProps {
   children?: ChildType | ((x1: number, x2: number) => ChildType);
-  initialPosition?: Position;
+  position?: Position;
   width: number;
   height: number;
   onStart?: PositionChangeHandler;
@@ -26,7 +26,7 @@ export interface DraggableProps {
 export default function SVGDraggable(props: DraggableProps) {
   const {
     children,
-    initialPosition = { x: 0, y: 0 },
+    position: cPosition = { x: 0, y: 0 },
     width,
     height,
     onStart,
@@ -36,45 +36,34 @@ export default function SVGDraggable(props: DraggableProps) {
     dragHandleClassName,
   } = props;
 
-  const {
-    position: {
-      value: { x, y },
-      action,
+  const { onPointerDown } = useDraggable({
+    position: cPosition,
+    onChange: (dragEvent) => {
+      const { action, position } = dragEvent;
+      switch (action) {
+        case 'start':
+          onStart?.(position);
+          break;
+        case 'move':
+          onMove?.(position);
+          break;
+        case 'end':
+          onEnd?.(position);
+          break;
+        default:
+          break;
+      }
     },
-    onMouseDown,
-  } = useDraggable({
-    position: initialPosition,
     parentElement,
     dragHandleClassName,
   });
 
-  useEffect(() => {
-    const position: Position = {
-      x,
-      y,
-    };
-
-    switch (action) {
-      case 'start':
-        onStart?.(position);
-        break;
-      case 'move':
-        onMove?.(position);
-        break;
-      case 'end':
-        onEnd?.(position);
-        break;
-      default:
-        break;
-    }
-  }, [action, onEnd, onMove, onStart, x, y]);
-
   return (
     <g
       style={{
-        transform: `translate(${x}px,${y}px)`,
+        transform: `translate(${cPosition.x}px,${cPosition.y}px)`,
       }}
-      onMouseDown={onMouseDown}
+      onPointerDown={onPointerDown}
     >
       {typeof children === 'function' ? children(width, height) : children}
     </g>

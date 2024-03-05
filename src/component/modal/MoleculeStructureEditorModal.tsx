@@ -1,10 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { useState, useEffect, useCallback } from 'react';
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
+import { Molecule } from 'openchemlib/full';
+import { TopicMolecule } from 'openchemlib-utils';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { StructureEditor, IStructureEditorProps } from 'react-ocl/full';
-import { ConfirmModal, Modal, useOnOff } from 'react-science/ui';
+import { useOnOff } from 'react-science/ui';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { useDispatch } from '../context/DispatchContext';
+import ActionButtons from '../elements/ActionButtons';
 
 interface MoleculeStructureEditorModalProps {
   onClose?: (element?: string) => void;
@@ -23,15 +28,28 @@ function MoleculeStructureEditorModal(
     isOpen = false,
   } = props;
 
+  const initialMolfile = selectedMolecule?.molfile;
+  const initialEnhancedMolfile = useMemo(() => {
+    if (!initialMolfile) {
+      return null;
+    }
+    // Add mapNo to molfile, so we can remap diaIDs after edition.
+    const molecule = Molecule.fromMolfile(initialMolfile);
+    const topicMolecule = new TopicMolecule(molecule);
+    topicMolecule.ensureMapNo();
+    const newMolfile = topicMolecule.toMolfile({ version: 3 });
+    return { molfile: newMolfile, topicMolecule };
+  }, [initialMolfile]);
+
   const [molfile, setMolfile] = useState<string | null>(null);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (selectedMolecule) {
-      setMolfile(selectedMolecule.molfile);
+    if (initialEnhancedMolfile) {
+      setMolfile(initialEnhancedMolfile.molfile);
     } else {
       setMolfile(null);
     }
-  }, [selectedMolecule]);
+  }, [initialEnhancedMolfile]);
 
   const cb = useCallback<Exclude<IStructureEditorProps['onChange'], undefined>>(
     (newMolfile, molecule) => {
@@ -50,14 +68,18 @@ function MoleculeStructureEditorModal(
 
   const handleSave = useCallback(() => {
     if (molfile) {
-      if (selectedMolecule) {
+      if (selectedMolecule && initialEnhancedMolfile) {
         const { id, label } = selectedMolecule;
+        const editedMolecule = Molecule.fromMolfile(molfile);
+        const mappings =
+          initialEnhancedMolfile.topicMolecule.getDiaIDsMapping(editedMolecule);
         dispatch({
           type: 'SET_MOLECULE',
           payload: {
             molfile,
             id,
             label,
+            mappings,
           },
         });
         onClose('replace');
@@ -72,26 +94,40 @@ function MoleculeStructureEditorModal(
         onClose('new');
       }
     }
-  }, [molfile, selectedMolecule, dispatch, floatMoleculeOnSave, onClose]);
+  }, [
+    molfile,
+    selectedMolecule,
+    initialEnhancedMolfile,
+    dispatch,
+    floatMoleculeOnSave,
+    onClose,
+  ]);
 
   return (
-    <ConfirmModal
-      headerColor="transparent"
-      isOpen={isOpen}
-      onRequestClose={handleClose}
-      onCancel={handleClose}
-      onConfirm={handleSave}
-      maxWidth={700}
-    >
-      <Modal.Body>
+    <Dialog isOpen={isOpen} onClose={handleClose} style={{ width: 710 }}>
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
         <StructureEditor
-          initialMolfile={selectedMolecule?.molfile}
+          initialMolfile={initialEnhancedMolfile?.molfile}
           svgMenu
           fragment={false}
           onChange={cb}
         />
-      </Modal.Body>
-    </ConfirmModal>
+      </DialogBody>
+      <DialogFooter>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={handleSave}
+          doneLabel="Save"
+          onCancel={() => {
+            onClose();
+          }}
+        />
+      </DialogFooter>
+    </Dialog>
   );
 }
 
@@ -115,5 +151,3 @@ export function useMoleculeEditor(floatMoleculeOnSave = false) {
   );
   return { modal, openMoleculeEditor };
 }
-
-export default MoleculeStructureEditorModal;

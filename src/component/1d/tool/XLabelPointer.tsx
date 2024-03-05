@@ -1,12 +1,12 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, useMemo, CSSProperties } from 'react';
+import { useCallback, CSSProperties } from 'react';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
+import useSpectrum from '../../hooks/useSpectrum';
 
 const style: CSSProperties = {
   cursor: 'crosshair',
@@ -20,31 +20,25 @@ const style: CSSProperties = {
 };
 
 function XLabelPointer() {
-  const { height, width, margin, data } = useChartData();
-  const activeSpectrum = useActiveSpectrum();
+  const { height, width, margin } = useChartData();
+  const activeSpectrum = useSpectrum(null);
   const { scaleX } = useScaleChecked();
 
   const position = useMouseTracker();
   const brushState = useBrushTracker();
-  const activeSpectrumData = useMemo(() => {
-    const spectrumData = activeSpectrum
-      ? data.find((d) => d.id === activeSpectrum.id)
-      : null;
-    return spectrumData;
-  }, [activeSpectrum, data]);
 
   const format = useFormatNumberByNucleus(
-    (activeSpectrumData as Spectrum1D)?.info.nucleus,
+    (activeSpectrum as Spectrum1D)?.info.nucleus,
   );
 
   const getXValue = useCallback(
     (xVal) => {
-      if (activeSpectrumData) {
+      if (activeSpectrum) {
         const xInvert = scaleX().invert(xVal);
         return format(xInvert);
       }
     },
-    [activeSpectrumData, format, scaleX],
+    [activeSpectrum, format, scaleX],
   );
 
   if (

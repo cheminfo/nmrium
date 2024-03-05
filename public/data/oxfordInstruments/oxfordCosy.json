@@ -1,0 +1,224 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/oxfordInstruments/ethylCrotonate.zip"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H-1H COSY.jdx"
+          ]
+        },
+        "filters": [
+          {
+            "id": "a10b030f-a565-42a4-84b1-b9e9087a3ec9",
+            "name": "blpDimension1",
+            "label": "Backward-LP Dimension 1",
+            "value": {
+              "nbCoefficients": 15,
+              "nbPoints": -2,
+              "nbInputs": 1024
+            },
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "0b030fa5-6552-4484-b1b9-e9087a3ec927",
+            "name": "apodizationDimension1",
+            "label": "Apodization on Dimension 1",
+            "value": {
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "030fa565-52a4-44b1-b9e9-087a3ec92779",
+            "name": "zeroFillingDimension1",
+            "label": "Zero filling on Dimension 1",
+            "value": {
+              "nbPoints": 2048
+            },
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "0fa56552-a484-41b9-a908-7a3ec9277962",
+            "name": "fftDimension1",
+            "label": "FFT Dimension 1",
+            "value": {},
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "a56552a4-84b1-49e9-887a-3ec927796285",
+            "name": "flpDimension2",
+            "label": "Fordward-LP Dimension 2",
+            "value": {
+              "nbCoefficients": 15,
+              "nbPoints": 0,
+              "nbInputs": 113
+            },
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "6552a484-b1b9-4908-ba3e-c9277962857d",
+            "name": "apodizationDimension2",
+            "label": "Apodization on Dimension 2",
+            "value": {
+              "compose": {
+                "shapes": [
+                  {
+                    "shape": {
+                      "kind": "sineBell",
+                      "options": {
+                        "offset": 0,
+                        "exponent": 2
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "52a484b1-b9e9-487a-bec9-277962857d88",
+            "name": "zeroFillingDimension2",
+            "label": "Zero filling on Dimension 2",
+            "value": {
+              "nbPoints": 2048
+            },
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "84b1b9e9-087a-4ec9-a779-62857d888202",
+            "name": "fftDimension2",
+            "label": "FFT Dimension 2",
+            "value": {},
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "id": "a484b1b9-e908-4a3e-8927-7962857d8882",
+            "name": "symmetrizeCosyLike",
+            "label": "symmetrize COSY-like",
+            "value": {},
+            "isDeleteAllow": true,
+            "flag": true
+          },
+          {
+            "name": "shift2DX",
+            "label": "Shift 2D X",
+            "value": {
+              "shift": 0.07471201832594754
+            },
+            "id": "c788ea09-165e-49ba-afba-1e2e362f7eb5",
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "shift2DY",
+            "label": "Shift 2D Y",
+            "value": {
+              "shift": 0.06849902778751127
+            },
+            "id": "09165ee9-ba6f-4a1e-ae36-2f7eb5385f7f",
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ]
+      },
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
+          ]
+        },
+        "filters": [
+          {
+            "name": "backwardLinearPrediction",
+            "label": "Backward Linear Prediction Filter",
+            "value": {
+              "nbInputs": 16384
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "apodization",
+            "label": "Apodization",
+            "value": {
+              "lineBroadening": 1,
+              "gaussBroadening": 0,
+              "lineBroadeningCenter": 0
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "zeroFilling",
+            "label": "Zero Filling",
+            "value": {
+              "nbPoints": 32768
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fft",
+            "label": "FFT",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "phaseCorrection",
+            "label": "Phase correction",
+            "value": {
+              "ph0": -128.9,
+              "ph1": 0,
+              "absolute": false
+            },
+            "flag": true,
+            "isDeleteAllow": true,
+            "id": "6ae7ba0d-db09-486c-9cbf-2ac7e57dbc3d"
+          },
+          {
+            "name": "shiftX",
+            "label": "Shift X",
+            "value": {
+              "shift": -0.10005791743496187
+            },
+            "id": "f86c9cbf-2ac7-457d-bc3d-9465b326c07b",
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ]
+      }
+    ],
+    "molecules": []
+  },
+  "version": 5
+}

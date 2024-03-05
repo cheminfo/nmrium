@@ -10,16 +10,16 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
-import { useScaleChecked } from '../../context/ScaleContext';
-import Resizer from '../../elements/resizer/Resizer';
+import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
+import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
-import { MultiplicityTree } from '../multiplicityTree/MultiplicityTree';
+import { useScaleX } from '../utilities/scale';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
+import { Atoms } from './Atoms';
 
 const style = css`
   .target {
@@ -40,14 +40,8 @@ interface RangeProps {
   relativeFormat: string;
 }
 
-function Range({
-  range,
-  showMultiplicityTrees,
-  selectedTool,
-  relativeFormat,
-}: RangeProps) {
-  const { viewerRef } = useGlobal();
-  const { id, integration, signals, diaIDs } = range;
+function Range({ range, selectedTool, relativeFormat }: RangeProps) {
+  const { id, integration, signals, from, to, diaIDs: rangeDiaIDs } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -60,8 +54,9 @@ function Range({
     { type: HighlightEventSource.RANGE, extra: { id } },
   );
 
-  const { scaleX } = useScaleChecked();
+  const scaleX = useScaleX();
   const dispatch = useDispatch();
+  const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const isBlockedByEditing =
     selectedTool && selectedTool === options.editRange.id;
@@ -89,6 +84,12 @@ function Range({
     highlightRange.hide();
   }
 
+  function assignHandler() {
+    if (!isBlockedByEditing) {
+      assignmentRange.setActive('x');
+    }
+  }
+
   function unAssignHandler(signalIndex = -1) {
     dispatch({
       type: 'UNLINK_RANGE',
@@ -99,22 +100,14 @@ function Range({
       },
     });
   }
-  function assignHandler() {
-    if (!isBlockedByEditing) {
-      assignmentRange.setActive('x');
-    }
-  }
-
-  const from = scaleX()(range.from);
-  const to = scaleX()(range.to);
 
   const isNotSignal = !checkRangeKind(range);
   const isHighlighted =
     isBlockedByEditing || highlightRange.isActive || assignmentRange.isActive;
 
   const isAssigned = isRangeAssigned(range);
-  const isResizeingActive = useResizerStatus('rangePicking');
-
+  const isResizingActive = useResizerStatus('rangePicking');
+  const startX = scaleX()(from) - 16;
   return (
     <g
       data-testid="range"
@@ -124,13 +117,11 @@ function Range({
       onMouseLeave={mouseLeaveHandler}
       {...(!assignmentRange.isActive && { css: style })}
     >
-      <Resizer
-        tag="svg"
-        initialPosition={{ x1: to, x2: from }}
+      <ResizerWithScale
+        from={from}
+        to={to}
         onEnd={handleOnStopResizing}
-        parentElement={viewerRef}
-        key={`${id}_${to}_${from}`}
-        disabled={!isResizeingActive}
+        disabled={!isResizingActive}
       >
         {({ x1, x2 }, isActive) => {
           const width = x2 - x1;
@@ -152,23 +143,23 @@ function Range({
                 data-no-export="true"
               />
 
-              <IntegralIndicator
-                value={integration}
-                format={relativeFormat}
-                width={width}
-                opacity={isNotSignal ? 0.5 : 1}
-              />
+              {showIntegralsValues && (
+                <IntegralIndicator
+                  value={integration}
+                  format={relativeFormat}
+                  width={width}
+                  opacity={isNotSignal ? 0.5 : 1}
+                />
+              )}
             </g>
           );
         }}
-      </Resizer>
+      </ResizerWithScale>
 
-      {showMultiplicityTrees && (
-        <MultiplicityTree range={range} onUnlink={unAssignHandler} />
-      )}
+      <Atoms range={range} x={startX} />
       <AssignmentActionsButtons
-        isActive={!!(assignmentRange.isActive || diaIDs)}
-        x={from - 16}
+        isActive={!!(assignmentRange.isActive || rangeDiaIDs)}
+        x={startX}
         onAssign={assignHandler}
         onUnAssign={() => unAssignHandler()}
       />

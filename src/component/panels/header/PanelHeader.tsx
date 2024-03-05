@@ -4,7 +4,6 @@ const containerStyle: CSSProperties = {
   display: 'flex',
   flexDirection: 'row',
   borderBottom: '0.55px solid rgb(240 240 240)',
-  padding: '2px 5px',
   alignItems: 'center',
 };
 

@@ -1,14 +1,13 @@
 import {
   Children,
-  cloneElement,
-  ReactNode,
   useLayoutEffect,
   useRef,
   SVGAttributes,
+  ReactElement,
 } from 'react';
 
 interface SVGGroupProps extends SVGAttributes<SVGElement> {
-  children: ReactNode;
+  children: ReactElement | ReactElement[];
   direction?: 'row' | 'column';
   space?: number;
 }
@@ -24,10 +23,10 @@ export function SVGGroup(props: SVGGroupProps) {
         if (element) {
           const boundary = element.getBoundingClientRect();
           if (direction === 'row') {
-            element.style.transform = `translate(${shift}px,0)`;
+            element.setAttribute('transform', `translate(${shift} 0)`);
             shift += boundary.width + space;
           } else {
-            element.style.transform = `translate(0,${shift}px)`;
+            element.setAttribute('transform', `translate(0 ${shift})`);
             shift += boundary.height + space;
           }
         }
@@ -35,14 +34,23 @@ export function SVGGroup(props: SVGGroupProps) {
     }
   });
 
+  const items = Children.toArray(children);
+
   return (
     <g {...resProps}>
-      {Children.toArray(children).map((child: any, indx) => {
-        return cloneElement(child, {
-          ref: (ref: SVGElement) => {
-            elementsRefs.current[indx] = ref;
-          },
-        });
+      {Children.map(items, (child, index) => {
+        return (
+          <g
+            key={(child as ReactElement)?.key || `${index}`}
+            ref={(ref) => {
+              if (ref) {
+                elementsRefs.current[index] = ref;
+              }
+            }}
+          >
+            {child}
+          </g>
+        );
       })}
     </g>
   );

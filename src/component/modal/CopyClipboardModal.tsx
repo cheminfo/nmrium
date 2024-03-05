@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { FaCopy } from 'react-icons/fa';
 
-import CloseButton from '../elements/CloseButton';
+import { CloseButton } from '../elements/CloseButton';
 
 const styles = css`
   overflow: auto;
@@ -51,7 +51,7 @@ function CopyClipboardModal({
           <FaCopy />
         </button>
 
-        <CloseButton onClick={onClose} />
+        <CloseButton title="Close" onClick={onClose} />
       </div>
       <div
         className="inner-container"

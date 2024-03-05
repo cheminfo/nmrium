@@ -7,54 +7,25 @@ import { FaUnlink } from 'react-icons/fa';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ActiveButton from '../../elements/ActiveButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
+import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
-import { zoneStateInit } from '../../reducer/Reducer';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
-import NoTableData from '../extra/placeholder/NoTableData';
-import DefaultPanelHeader, {
-  createFilterLabel,
-} from '../header/DefaultPanelHeader';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
-
-const style = css`
-  .remove-assignments-btn {
-    border-radius: 5px;
-    margin-top: 3px;
-    margin-left: 2px;
-    border: none;
-    height: 16px;
-    width: 18px;
-    font-size: 12px;
-    padding: 0;
-    background-color: transparent;
-  }
-
-  .toggle {
-    width: 22px;
-    height: 22px;
-    margin-left: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
 
 function ZonesPanelInner({
   zones,
   activeTab,
   xDomain,
   yDomain,
-  experiment,
+  info,
   showZones,
   showSignals,
   showPeaks,
-  id,
 }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -167,22 +138,30 @@ function ZonesPanelInner({
   }, []);
 
   const handleSetShowZones = () => {
-    dispatch({ type: 'SHOW_ZONES', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showZones' },
+    });
   };
   const handleSetShowSignals = () => {
-    dispatch({ type: 'SHOW_ZONES_SIGNALS', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showSignals' },
+    });
   };
   const handleSetShowPeaks = () => {
-    dispatch({ type: 'SHOW_ZONES_PEAKS', payload: { id } });
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showPeaks' },
+    });
   };
 
-  const counter = zones?.values?.length || 0;
+  const total = zones?.values?.length || 0;
 
   return (
     <div
       css={[
         tablePanelStyle,
-        style,
         isFlipped &&
           css`
             th {
@@ -193,55 +172,42 @@ function ZonesPanelInner({
     >
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={counter}
-          counterLabel={createFilterLabel(
-            counter,
-            filterIsActive && tableData?.length,
-          )}
+          total={total}
+          counter={tableData?.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Zones"
           onFilter={handleOnFilter}
           filterToolTip={
             filterIsActive ? 'Show all zones' : 'Hide zones out of view'
           }
-          showSettingButton
           onSettingClick={settingsPanelHandler}
-        >
-          <ToolTip title={`Remove all assignments`} popupPlacement="right">
-            <button
-              className="remove-assignments-btn"
-              type="button"
-              onClick={handleOnRemoveAssignments}
-              disabled={!zones.values || zones.values.length === 0}
-            >
-              <FaUnlink />
-            </button>
-          </ToolTip>
-          <ActiveButton
-            popupTitle="Show/Hide zones"
-            popupPlacement="right"
-            value={showZones}
-            onClick={handleSetShowZones}
-          >
-            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
-          </ActiveButton>
-          <ActiveButton
-            popupTitle="Show/Hide signals"
-            popupPlacement="right"
-            value={showSignals}
-            onClick={handleSetShowSignals}
-          >
-            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
-          </ActiveButton>
-          <ActiveButton
-            popupTitle="Show/Hide peaks"
-            popupPlacement="right"
-            value={showPeaks}
-            onClick={handleSetShowPeaks}
-          >
-            <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
-          </ActiveButton>
-        </DefaultPanelHeader>
+          leftButtons={[
+            {
+              disabled: !zones.values || zones.values.length === 0,
+              icon: <FaUnlink />,
+              title: 'Remove all assignments',
+              onClick: handleOnRemoveAssignments,
+            },
+            {
+              icon: <span>z</span>,
+              title: 'Show/Hide zones',
+              active: showZones,
+              onClick: handleSetShowZones,
+            },
+            {
+              icon: <span>s</span>,
+              title: 'Show/Hide signals',
+              active: showSignals,
+              onClick: handleSetShowSignals,
+            },
+            {
+              icon: <span>p</span>,
+              title: 'Show/Hide peaks',
+              active: showPeaks,
+              onClick: handleSetShowPeaks,
+            },
+          ]}
+        />
       )}
       {isFlipped && (
         <PreferencesHeader
@@ -252,20 +218,12 @@ function ZonesPanelInner({
       <div className="inner-container">
         {!isFlipped ? (
           <div className="table-container">
-            {tableData && tableData.length > 0 ? (
-              <ZonesTable
-                tableData={tableData}
-                onUnlink={unlinkZoneHandler}
-                nuclei={
-                  activeTab && activeTab.split(',').length === 2
-                    ? activeTab.split(',')
-                    : ['?', '?']
-                }
-                experiment={experiment}
-              />
-            ) : (
-              <NoTableData />
-            )}
+            <ZonesTable
+              tableData={tableData}
+              onUnlink={unlinkZoneHandler}
+              nucleus={activeTab}
+              info={info}
+            />
           </div>
         ) : (
           <ZonesPreferences ref={settingRef} />
@@ -285,22 +243,20 @@ export default function ZonesPanel() {
     xDomain,
     yDomain,
     view: {
-      zones: zoneState,
       spectra: { activeTab },
     },
   } = useChartData();
-  const { zones, info, id } = useSpectrum(emptyData) as Spectrum2D;
-  const zoneProps = zoneState.find((r) => r.spectrumID === id) || zoneStateInit;
+  const { zones, info } = useSpectrum(emptyData) as Spectrum2D;
+  const zoneProps = useActiveSpectrumZonesViewState();
   return (
     <MemoizedZonesPanel
       {...{
-        id,
         xDomain,
         yDomain,
         activeTab,
         displayerKey,
         zones,
-        experiment: info.experiment,
+        info,
         ...zoneProps,
       }}
     />

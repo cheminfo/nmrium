@@ -5,8 +5,6 @@ import {
   JpathTableColumn,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
-  PredefinedSpectraColumn,
-  PredefinedTableColumn,
   WorkSpacePanelPreferences,
   AnalysisOptions,
   AnalysisColumnsTypes,
@@ -196,19 +194,23 @@ export function generateAnalyzeSpectra(
       const result = Object.fromEntries(
         Object.keys(columns).map((key) => {
           const isFormula = columns[key].type === AnalysisColumnsTypes.FORMULA;
-          return [
-            key,
-            isFormula
-              ? {
-                  colKey: key,
-                  value: calculate(
-                    columns,
-                    data[spectra[0]],
-                    columns[key].formula,
-                  ),
-                }
-              : { ...spectra[1][key], colKey: key },
-          ];
+          if (isFormula) {
+            const { SID, id } = spectra[1][key];
+            return [
+              key,
+              {
+                SID,
+                id,
+                colKey: key,
+                value: calculate(
+                  columns,
+                  data[spectra[0]],
+                  columns[key].formula,
+                ),
+              },
+            ];
+          }
+          return [key, { ...spectra[1][key], colKey: key }];
         }),
       );
       return [spectra[0], result];
@@ -276,56 +278,40 @@ export function getDataAsString(
       options: { columns },
     } = spectraAnalysis;
 
-    let result = '';
+    //columns labels
+    const letters = Object.keys(columns);
+
+    const columnsLabels: string[] = letters.slice();
+    let index = 0;
     // listed the spectra panel columns
     for (const col of spectraPanelPreferences.columns) {
-      if (col.visible) {
-        const { name } = col as PredefinedTableColumn<PredefinedSpectraColumn>;
-        if ((name && ['name', 'solvent'].includes(name)) || !name) {
-          result += `${col.label}\t`;
-        }
+      if (col.visible && 'jpath' in col) {
+        columnsLabels.splice(index, 0, col.label);
+        index++;
       }
     }
 
-    const letters = Object.keys(columns);
-
-    // listed the spectra analysis panel columns
-    for (const letter of letters) {
-      result += `${letter}\t`;
-    }
-    result += '\n';
+    let result = `${columnsLabels.join('\t')}\n`;
 
     for (const spectrumAnalysis of Object.values(values)) {
       const spectrum = spectraData[spectrumAnalysis[letters[0]].SID];
+      const cellsValues: string[] = [];
 
       // listed the spectra cell values
       for (const col of spectraPanelPreferences.columns) {
-        if (col.visible) {
-          const name = (col as PredefinedTableColumn<PredefinedSpectraColumn>)
-            ?.name;
-          if (name) {
-            switch (name) {
-              case 'name':
-                result += `${spectrum.info.name}\t`;
-                break;
-              case 'solvent':
-                result += `${spectrum.info.solvent || `null`}\t`;
-                break;
-              default:
-                break;
-            }
-          } else {
-            const path = (col as JpathTableColumn)?.jpath;
-            result += `${lodashGet(spectrum, path, `null`)}\t`;
-          }
+        if (col.visible && 'jpath' in col) {
+          const jpath = (col as JpathTableColumn)?.jpath;
+          const value = lodashGet(spectrum, jpath, `null`);
+          cellsValues.push(value);
         }
       }
 
       // listed the spectra analysis cell values
       for (const letter of letters) {
-        result += `${spectrumAnalysis[letter][columns[letter].valueKey]}\t`;
+        const value = spectrumAnalysis[letter][columns[letter].valueKey];
+        cellsValues.push(value);
       }
-      result += '\n';
+      result += `${cellsValues.join('\t')}\n`;
     }
     return result;
   }

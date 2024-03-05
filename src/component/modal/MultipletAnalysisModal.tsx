@@ -1,51 +1,31 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import { Spectrum } from 'nmr-load-save';
+import { ActiveSpectrum, Spectrum } from 'nmr-load-save';
 import { useState, useEffect } from 'react';
 import { Plot, LineSeries, Axis } from 'react-plot';
 
 import { isSpectrum2D } from '../../data/data2d/Spectrum2D';
-import CloseButton from '../elements/CloseButton';
-import { ActiveSpectrum } from '../reducer/Reducer';
 
 const styles = css`
-  display: flex;
-  flex-direction: column;
-  width: 900px;
-  height: 400px;
-  padding: 5px;
+  background-color: white;
 
   button:focus {
     outline: none;
   }
 
   .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-
-    span {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-    }
-
-    button {
-      background-color: transparent;
-      border: none;
-
-      svg {
-        height: 16px;
-      }
-    }
+    color: #464646;
+    font-size: 15px;
+    height: 20px;
   }
 
   .container {
+    padding: 10px;
+    max-height: 500px;
     overflow-y: auto;
-    background-color: white;
-    padding-top: 10px;
 
     .row {
       outline: none;
@@ -53,15 +33,12 @@ const styles = css`
       flex-direction: row;
       margin: 0;
 
-      div {
-        flex: 4;
-      }
-
       .multiplicity {
         flex: 2;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0 20px;
       }
     }
 
@@ -77,8 +54,6 @@ const loaderStyles = css`
   justify-content: center;
   flex-direction: column;
   user-select: none;
-  width: 900px;
-  height: 400px;
 
   svg {
     animation-name: spin-animation;
@@ -102,13 +77,17 @@ const loaderStyles = css`
   }
 `;
 
-interface MultipletAnalysisModalProps {
+interface InnerMultipleAnalysisProps {
   data: Spectrum[];
   activeSpectrum: ActiveSpectrum | null;
   scaleX: any;
   startX: any;
   endX: any;
-  onClose?: (element?: string) => void;
+}
+
+interface MultipletAnalysisModalProps extends InnerMultipleAnalysisProps {
+  isOpen: boolean;
+  onClose: (element?: string) => void;
 }
 
 export default function MultipletAnalysisModal({
@@ -118,8 +97,31 @@ export default function MultipletAnalysisModal({
   startX,
   endX,
   onClose,
+  isOpen,
 }: MultipletAnalysisModalProps) {
-  const [analysisData, setAnalysisData] = useState<any>();
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={() => onClose()}
+      title="Analyse Multiplet"
+      style={{ width: 900, height: 400 }}
+    >
+      <DialogBody css={styles}>
+        <InnerMultipleAnalysis
+          {...{
+            data,
+            activeSpectrum,
+            scaleX,
+            startX,
+            endX,
+          }}
+        />
+      </DialogBody>
+    </Dialog>
+  );
+}
+
+function InnerMultipleAnalysis(props: InnerMultipleAnalysisProps) {
   const [calcStart, setCalcStartStatus] = useState(false);
   const [isCalcFinished, setCalcFinished] = useState(false);
 
@@ -128,6 +130,9 @@ export default function MultipletAnalysisModal({
       setCalcStartStatus(true);
     }, 400);
   }, []);
+
+  const { data, activeSpectrum, scaleX, startX, endX } = props;
+  const [analysisData, setAnalysisData] = useState<any>();
 
   useEffect(() => {
     if (activeSpectrum && startX && endX && calcStart) {
@@ -159,7 +164,7 @@ export default function MultipletAnalysisModal({
           maxTestedJ: 17,
           takeBestPartMultiplet: true,
           correctVerticalOffset: true,
-          symmetrizeEachStep: false,
+          symmetrizeEachStep: true,
           decreasingJvalues: true,
           makeShortCutForSpeed: true,
           debug: true,
@@ -188,79 +193,71 @@ export default function MultipletAnalysisModal({
   }
 
   return (
-    <div css={styles}>
-      <div className="header handle">
-        <span>Analyse Multiplet</span>
-
-        <CloseButton onClick={onClose} />
-      </div>
-      <div className="container">
-        {analysisData?.debug?.steps.map((d, index) => {
-          return (
-            // eslint-disable-next-line react/no-array-index-key
-            <div key={index} className="row">
-              <Plot
-                width={400}
-                height={200}
-                svgStyle={{ overflow: 'visible' }}
-                seriesViewportStyle={{ stroke: 'black' }}
-              >
-                <LineSeries data={xyToXYObject(d.multiplet)} />
-                <Axis
-                  id="y"
-                  position="left"
-                  tickPosition="inner"
-                  displayPrimaryGridLines
-                  hiddenTicks
-                  paddingStart={0.1}
-                  paddingEnd={0.1}
-                />
-                <Axis
-                  id="x"
-                  position="bottom"
-                  tickPosition="inner"
-                  displayPrimaryGridLines
-                />
-              </Plot>
-              <div className="multiplicity">
-                <p>
-                  {analysisData.js[index]
-                    ? `${analysisData.js[index]
-                        ?.multiplicity}: ${analysisData.js[
-                        index
-                      ]?.coupling.toFixed(3)} Hz`
-                    : ''}
-                </p>
-              </div>
-              <Plot
-                width={400}
-                height={200}
-                seriesViewportStyle={{ stroke: 'black' }}
-              >
-                <LineSeries
-                  data={xyToXYObject(d.errorFunction)}
-                  lineStyle={{ strokeWidth: 1 }}
-                />
-                <Axis
-                  id="y"
-                  position="left"
-                  tickPosition="inner"
-                  displayPrimaryGridLines
-                  hiddenTicks
-                  paddingStart={0.1}
-                  paddingEnd={0.1}
-                />
-                <Axis
-                  id="x"
-                  position="bottom"
-                  tickPosition="inner"
-                  displayPrimaryGridLines
-                />
-              </Plot>
+    <div className="container">
+      {analysisData?.debug?.steps.map((d, index) => {
+        return (
+          // eslint-disable-next-line react/no-array-index-key
+          <div key={index} className="row">
+            <Plot
+              width={400}
+              height={200}
+              svgStyle={{ overflow: 'visible' }}
+              seriesViewportStyle={{ stroke: 'black' }}
+            >
+              <LineSeries data={xyToXYObject(d.multiplet)} />
+              <Axis
+                id="y"
+                position="left"
+                tickPosition="inner"
+                displayPrimaryGridLines
+                hiddenTicks
+                paddingStart={0.1}
+                paddingEnd={0.1}
+              />
+              <Axis
+                id="x"
+                position="bottom"
+                tickPosition="inner"
+                displayPrimaryGridLines
+              />
+            </Plot>
+            <div className="multiplicity">
+              <p>
+                {analysisData.js[index]
+                  ? `${analysisData.js[index]?.multiplicity}: ${analysisData.js[
+                      index
+                    ]?.coupling.toFixed(3)} Hz`
+                  : ''}
+              </p>
             </div>
-          );
-        })}
-      </div>
+            <Plot
+              width={400}
+              height={200}
+              seriesViewportStyle={{ stroke: 'black' }}
+            >
+              <LineSeries
+                data={xyToXYObject(d.errorFunction)}
+                lineStyle={{ strokeWidth: 1 }}
+              />
+              <Axis
+                id="y"
+                position="left"
+                tickPosition="inner"
+                displayPrimaryGridLines
+                hiddenTicks
+                paddingStart={0.1}
+                paddingEnd={0.1}
+              />
+              <Axis
+                id="x"
+                position="bottom"
+                tickPosition="inner"
+                displayPrimaryGridLines
+              />
+            </Plot>
+          </div>
+        );
+      })}
     </div>
   );
 }

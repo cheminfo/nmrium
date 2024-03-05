@@ -1,6 +1,9 @@
 import { v4 } from '@lukeed/uuid';
-import { Spectrum2D } from 'nmr-load-save';
+import { Spectrum2D, SpectrumTwoDimensionsColor } from 'nmr-load-save';
 import { FiltersManager } from 'nmr-processing';
+
+import { UsedColors } from '../../../types/UsedColors';
+import { initiateFilters } from '../../initiateFilters';
 
 import { DEFAULT_CONTOURS_OPTIONS } from './contours';
 import { get2DColor } from './get2DColor';
@@ -8,7 +11,16 @@ import { initiateZones } from './zones/initiateZones';
 
 const defaultMinMax = { z: [], minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
-export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
+export interface InitiateDatum2DOptions {
+  usedColors?: UsedColors;
+  colors?: SpectrumTwoDimensionsColor[];
+}
+
+export function initiateDatum2D(
+  spectrum: any,
+  options: InitiateDatum2DOptions = {},
+): Spectrum2D {
+  const { usedColors, colors } = options;
   const datum: any = { ...spectrum };
 
   datum.id = spectrum.id || v4();
@@ -20,7 +32,7 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
     contourOptions: DEFAULT_CONTOURS_OPTIONS,
     dimension: 2,
     ...spectrum.display,
-    ...get2DColor(spectrum, usedColors),
+    ...get2DColor(spectrum, { usedColors, colors }),
   };
 
   datum.info = {
@@ -40,7 +52,7 @@ export function initiateDatum2D(spectrum: any, usedColors = {}): Spectrum2D {
 
   datum.data = getData(datum, spectrum);
   datum.originalData = datum.data;
-  datum.filters = Object.assign([], spectrum.filters);
+  datum.filters = initiateFilters(spectrum?.filters);
 
   datum.zones = initiateZones(spectrum, datum as Spectrum2D);
 

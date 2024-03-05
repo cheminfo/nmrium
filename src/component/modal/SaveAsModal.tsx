@@ -6,7 +6,7 @@ import { useCallback, useRef } from 'react';
 import { DataExportOptions } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import ActionButtons from '../elements/ActionButtons';
-import CloseButton from '../elements/CloseButton';
+import { CloseButton } from '../elements/CloseButton';
 import Label, { LabelStyle } from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
@@ -82,7 +82,11 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
         <span>Save as ... </span>
-        <CloseButton onClick={onClose} className="close-bt" />
+        <CloseButton
+          title="Close"
+          onClick={() => onClose?.()}
+          className="close-bt"
+        />
       </div>
       <div className="inner-content">
         <Formik

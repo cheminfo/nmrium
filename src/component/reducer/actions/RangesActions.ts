@@ -2,13 +2,13 @@ import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { Spectrum, Spectrum1D } from 'nmr-load-save';
+import { RangesViewState, Spectrum, Spectrum1D } from 'nmr-load-save';
 import { Signal1D, Range, Filters, FiltersManager } from 'nmr-processing';
 
 import {
-  DatumKind,
-  SignalKindsToInclude,
-} from '../../../data/constants/SignalsKinds';
+  DATUM_KIND,
+  SIGNAL_INLCUDED_KINDS,
+} from '../../../data/constants/signalsKinds';
 import {
   addRange,
   changeRangeSignal,
@@ -30,14 +30,17 @@ import {
 } from '../../../data/utilities/RangeUtilities';
 import { AssignmentContext } from '../../assignment/AssignmentsContext';
 import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
-import { rangeStateInit, State } from '../Reducer';
+import { FilterType } from '../../utility/filterType';
+import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
+import { setRangesViewProperty } from '../helper/setRangesViewProperty';
 import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
-import { setDomain, setIntegralsYDomain } from './DomainActions';
+import { setDomain } from './DomainActions';
+import { toggleDisplayingPeaks } from './PeaksActions';
 import { resetSelectedTool } from './ToolsActions';
 
 type AutoRangesDetectionAction = ActionType<
@@ -119,11 +122,16 @@ type ChangeRangeSignalValueAction = ActionType<
   { rangeID: string; signalID: string; value: number }
 >;
 type UpdateRangAction = ActionType<'UPDATE_RANGE', { range: Range }>;
-type ToggleAction = ActionType<
-  'SHOW_MULTIPLICITY_TREES' | 'SHOW_RANGES_INTEGRALS' | 'SHOW_J_GRAPH',
-  { id: string }
->;
 type CutRangAction = ActionType<'CUT_RANGE', { cutValue: number }>;
+
+type ToggleRangesViewAction = ActionType<
+  'TOGGLE_RANGES_VIEW_PROPERTY',
+  {
+    key: keyof FilterType<RangesViewState, boolean>;
+  }
+>;
+
+type DeleteRangePeakAction = ActionType<'DELETE_RANGE_PEAK', { id: string }>;
 
 export type RangesActions =
   | AutoRangesDetectionAction
@@ -139,9 +147,14 @@ export type RangesActions =
   | ChangeRangeRelativeValueAction
   | ChangeRangeSignalValueAction
   | UpdateRangAction
-  | ToggleAction
   | CutRangAction
-  | ActionType<'AUTO_RANGES_SPECTRA_PICKING' | 'CHANGE_RANGES_SUM_FLAG'>;
+  | ToggleRangesViewAction
+  | DeleteRangePeakAction
+  | ActionType<
+      | 'AUTO_RANGES_SPECTRA_PICKING'
+      | 'CHANGE_RANGES_SUM_FLAG'
+      | 'TOGGLE_RANGES_PEAKS_DISPLAYING_MODE'
+    >;
 
 function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
   return (draft.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
@@ -160,24 +173,14 @@ function handleAutoRangesDetection(
     molecules,
     view: {
       spectra: { activeTab: nucleus },
-      ranges,
     },
   } = draft;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
   if (activeSpectrum?.id) {
-    const { index, id } = activeSpectrum;
+    const { index } = activeSpectrum;
     const datum = data[index] as Spectrum1D;
-
-    // add range intial state
-    const range = ranges.find((r) => r.spectrumID === id);
-    if (!range) {
-      ranges.push({
-        spectrumID: id,
-        ...rangeStateInit,
-      });
-    }
 
     const [from, to] = xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
@@ -195,7 +198,7 @@ function handleAutoRangesDetection(
         clean: true,
         keepPeaks: true,
         minMaxRatio,
-        lookNegative,
+        direction: lookNegative ? 'both' : 'positive',
       },
     };
 
@@ -207,7 +210,6 @@ function handleAutoRangesDetection(
       nucleus,
     });
     handleUpdateCorrelations(draft);
-    setIntegralsYDomain(draft, datum);
   }
 }
 
@@ -276,9 +278,9 @@ function handleChangeRangeSignalKind(
     const _range = (draft.data[index] as Spectrum1D).ranges.values[rangeIndex];
     if (_range?.signals) {
       _range.signals[range.tableMetaInfo.signalIndex].kind = kind;
-      _range.kind = SignalKindsToInclude.includes(kind)
-        ? DatumKind.signal
-        : DatumKind.mixed;
+      _range.kind = SIGNAL_INLCUDED_KINDS.includes(kind)
+        ? DATUM_KIND.signal
+        : DATUM_KIND.mixed;
       updateRangesRelativeValues(draft.data[index] as Spectrum1D);
       handleUpdateCorrelations(draft);
     }
@@ -496,7 +498,6 @@ function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
     });
     updateRangesRelativeValues(datum);
     handleUpdateCorrelations(draft);
-    setIntegralsYDomain(draft, data[index] as Spectrum1D);
   }
 }
 
@@ -563,52 +564,20 @@ function handleUpdateRange(draft: Draft<State>, action: UpdateRangAction) {
   }
 }
 
-//action
-function handleShowMultiplicityTrees(
+function toggleRangesViewProperty(
   draft: Draft<State>,
-  action: ToggleAction,
+  key: keyof FilterType<RangesViewState, boolean>,
 ) {
-  const { id } = action.payload;
-  const range = draft.view.ranges.find((r) => r.spectrumID === id);
-  if (range) {
-    range.showMultiplicityTrees = !range.showMultiplicityTrees;
-  } else {
-    draft.view.ranges.push({
-      spectrumID: id,
-      ...rangeStateInit,
-      showMultiplicityTrees: !rangeStateInit.showMultiplicityTrees,
-    });
-  }
+  setRangesViewProperty(draft, key, (flag) => !flag);
 }
 
 //action
-function handleShowRangesIntegrals(draft: Draft<State>, action: ToggleAction) {
-  const { id } = action.payload;
-  const range = draft.view.ranges.find((r) => r.spectrumID === id);
-  if (range) {
-    range.showRangesIntegrals = !range.showRangesIntegrals;
-  } else {
-    draft.view.ranges.push({
-      spectrumID: id,
-      ...rangeStateInit,
-      showRangesIntegrals: !rangeStateInit.showRangesIntegrals,
-    });
-  }
-}
-
-//action
-function handleShowJGraph(draft: Draft<State>, action: ToggleAction) {
-  const { id } = action.payload;
-  const range = draft.view.ranges.find((r) => r.spectrumID === id);
-  if (range) {
-    range.showJGraph = !range.showJGraph;
-  } else {
-    draft.view.ranges.push({
-      spectrumID: id,
-      ...rangeStateInit,
-      showJGraph: !rangeStateInit.showJGraph,
-    });
-  }
+function handleToggleRangesViewProperty(
+  draft: Draft<State>,
+  action: ToggleRangesViewAction,
+) {
+  const { key } = action.payload;
+  toggleRangesViewProperty(draft, key);
 }
 
 function handleCutRange(draft: Draft<State>, action: CutRangAction) {
@@ -626,8 +595,30 @@ function handleCutRange(draft: Draft<State>, action: CutRangAction) {
   }
 
   updateRangesRelativeValues(spectrum);
-  setIntegralsYDomain(draft, spectrum);
   handleUpdateCorrelations(draft);
+}
+
+function handleChangePeaksDisplayingMode(draft: Draft<State>) {
+  toggleDisplayingPeaks(draft, 'ranges');
+}
+
+//action
+function handleDeleteRangePeak(
+  draft: Draft<State>,
+  action: DeleteRangePeakAction,
+) {
+  const { id } = action.payload;
+  const [rangeKey, signalKey, peakKey] = id.split(',');
+
+  const activeSpectrum = getActiveSpectrum(draft);
+  if (activeSpectrum?.id) {
+    const datum = draft.data[activeSpectrum?.index] as Spectrum1D;
+    const range = datum.ranges.values.find((range) => range.id === rangeKey);
+    const signal = range?.signals.find((singla) => singla.id === signalKey);
+    if (signal) {
+      signal.peaks = signal.peaks?.filter((peak) => peak.id !== peakKey);
+    }
+  }
 }
 
 export {
@@ -648,8 +639,8 @@ export {
   handleSetDiaIDRange,
   handleChangeRangesSumFlag,
   handleUpdateRange,
-  handleShowMultiplicityTrees,
-  handleShowRangesIntegrals,
   handleAutoSpectraRangesDetection,
-  handleShowJGraph,
+  handleToggleRangesViewProperty,
+  handleChangePeaksDisplayingMode,
+  handleDeleteRangePeak,
 };

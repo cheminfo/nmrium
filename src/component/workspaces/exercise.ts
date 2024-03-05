@@ -7,6 +7,7 @@ export const exercise: InnerWorkspace = {
     general: {
       hideGeneralSettings: true,
       hideLogs: true,
+      hideWorkspaces: true,
     },
     panels: {
       spectraPanel: { display: true, open: true },
@@ -34,6 +35,8 @@ export const exercise: InnerWorkspace = {
     verticalSplitterCloseThreshold: 600,
     spectraRendering: 'auto',
     loggingLevel: 'info',
+    popupLoggingLevel: 'error',
+    invert: false,
   },
   formatting: {
     nuclei: {},
@@ -41,18 +44,26 @@ export const exercise: InnerWorkspace = {
       integrals: {
         nuclei: {
           '1H': {
+            showSerialNumber: true,
             relative: { show: true, format: '0.00' },
             absolute: { show: false, format: '0.00' },
+            from: { show: true, format: '0.00' },
+            to: { show: true, format: '0.00' },
             color: 'black',
             strokeWidth: 1,
             showKind: false,
+            showDeleteAction: true,
           },
           '13C': {
+            showSerialNumber: true,
             relative: { show: true, format: '0.00' },
             absolute: { show: false, format: '0.00' },
+            from: { show: true, format: '0.00' },
+            to: { show: true, format: '0.00' },
             color: 'black',
             strokeWidth: 1,
             showKind: false,
+            showDeleteAction: true,
           },
         },
       },

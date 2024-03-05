@@ -1,22 +1,17 @@
-import { Draft } from 'immer';
+import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 import lodashMergeWith from 'lodash/mergeWith';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
-import {
-  Spectrum,
-  OnLoadProcessing,
-  ViewState,
-  NmriumState,
-} from 'nmr-load-save';
+import { Spectrum, ViewState, NmriumState, SpectraColors } from 'nmr-load-save';
 import { ParseResult } from 'papaparse';
 
 import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
 import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
+import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { linkMetaWithSpectra } from '../../../data/parseMeta/linkMetaWithSpectra';
 import { UsedColors } from '../../../types/UsedColors';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
-import nucleusToString from '../../utility/nucleusToString';
 import { getDefaultViewState, getInitialState, State } from '../Reducer';
 import { ActionType } from '../types/ActionType';
 
@@ -31,9 +26,9 @@ interface InitiateProps {
 interface InputProps extends InitiateProps {
   containsNmrium?: boolean;
   usedColors?: UsedColors;
-  onLoadProcessing?: OnLoadProcessing;
   parseMetaFileResult?: ParseResult<any> | null;
   resetSourceObject?: boolean;
+  spectraColors?: SpectraColors;
 }
 
 type SetIsLoadingAction = ActionType<
@@ -86,23 +81,16 @@ function setCorrelation(draft: Draft<State>, correlations: CorrelationData) {
   }
 }
 
-function setData(
-  draft: Draft<State>,
-  input: InputProps,
-  options: {
-    autoOnLoadProcessing?: boolean;
-  } = {},
-) {
+function setData(draft: Draft<State>, input: InputProps) {
   const {
     nmriumState: { data, view },
-    onLoadProcessing = {},
     parseMetaFileResult = null,
+    spectraColors = { oneDimension: [], twoDimensions: [] },
   } = input || {
     nmriumState: { data: { spectra: [], molecules: [], correlations: {} } },
     multipleAnalysis: {},
   };
 
-  const { autoOnLoadProcessing = true } = options;
   const {
     source,
     spectra = [],
@@ -132,7 +120,8 @@ function setData(
   draft.data = draft.data.concat(
     initSpectra(spectra, {
       usedColors: draft.usedColors,
-      onLoadProcessing: autoOnLoadProcessing ? onLoadProcessing : {},
+      molecules: draft.molecules,
+      spectraColors,
     }),
   );
   setCorrelation(draft, correlations);
@@ -149,17 +138,31 @@ function setData(
 
 function initSpectra(
   inputSpectra: Spectrum[],
-  options: { usedColors: UsedColors; onLoadProcessing: OnLoadProcessing },
+  options: {
+    usedColors: UsedColors;
+    molecules: StateMoleculeExtended[];
+    spectraColors: SpectraColors;
+  },
 ) {
   const spectra: any = [];
-  const { usedColors, onLoadProcessing } = options;
+  const { usedColors, molecules, spectraColors } = options;
   for (const spectrum of inputSpectra) {
     const { info } = spectrum;
     if (info.dimension === 1) {
-      const filters = onLoadProcessing?.[nucleusToString(info.nucleus)] || [];
-      spectra.push(initiateDatum1D(spectrum, { usedColors, filters }));
+      spectra.push(
+        initiateDatum1D(spectrum, {
+          usedColors,
+          molecules,
+          colors: spectraColors.oneDimension,
+        }),
+      );
     } else if (info.dimension === 2) {
-      spectra.push(initiateDatum2D({ ...spectrum }, { usedColors }));
+      spectra.push(
+        initiateDatum2D(
+          { ...spectrum },
+          { usedColors, colors: spectraColors.twoDimensions },
+        ),
+      );
     }
   }
   return spectra;
@@ -187,10 +190,9 @@ function initData(
   action: LoadDropFilesAction | InitiateAction,
   options: {
     forceInitialize?: boolean;
-    autoOnLoadProcessing?: boolean;
   } = {},
 ) {
-  const { forceInitialize = false, autoOnLoadProcessing = true } = options;
+  const { forceInitialize = false } = options;
 
   const {
     nmriumState: { data, view },
@@ -199,14 +201,15 @@ function initData(
   const viewState = view as ViewState;
   if (data?.spectra?.length || forceInitialize) {
     const state = getInitialState();
-    setData(state, action.payload, { autoOnLoadProcessing });
-    setActiveTab(state, { tab: viewState?.spectra?.activeTab || '' });
-    state.width = draft.width;
-    state.height = draft.height;
-    setPreferences(state, viewState);
-    state.isLoading = false;
-    state.actionType = action.type;
-    return state;
+    return produce(state, (initialDraft) => {
+      setData(initialDraft, action.payload);
+      setActiveTab(initialDraft, { tab: viewState?.spectra?.activeTab || '' });
+      initialDraft.width = draft.width;
+      initialDraft.height = draft.height;
+      setPreferences(initialDraft, viewState);
+      initialDraft.isLoading = false;
+      initialDraft.actionType = action.type;
+    });
   } else {
     if (view) {
       const defaultViewState = getDefaultViewState();
@@ -226,7 +229,6 @@ function handleSetIsLoading(draft: Draft<State>, action: SetIsLoadingAction) {
 function handleInitiate(draft: Draft<State>, action: InitiateAction) {
   return initData(draft, action, {
     forceInitialize: true,
-    autoOnLoadProcessing: false,
   });
 }
 
@@ -241,7 +243,7 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
   } = payload;
 
   if (containsNmrium) {
-    return initData(draft, action, { autoOnLoadProcessing: false });
+    return initData(draft, action);
   } else {
     setData(draft, payload);
     setActiveTab(draft);

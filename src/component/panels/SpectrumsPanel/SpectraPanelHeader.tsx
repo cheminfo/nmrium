@@ -1,5 +1,5 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
-import { Spectrum, Spectrum2D } from 'nmr-load-save';
+import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
@@ -10,14 +10,15 @@ import { IoColorPaletteOutline } from 'react-icons/io5';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
-import { ActiveSpectrum, DisplayerMode } from '../../reducer/Reducer';
+import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
-import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import DefaultPanelHeader, {
+  ToolbarItemProps,
+} from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
 function getMissingProjection(SpectrumsData, activeTab) {
@@ -55,8 +56,6 @@ function SpectraPanelHeaderInner({
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
-
-  const spectra = getSpectraByNucleus(activeTab, data);
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
@@ -113,76 +112,74 @@ function SpectraPanelHeaderInner({
     dispatch({ type: 'RESET_SPECTRA_SCALE' });
   }
 
-  function recolorSpectraHandler() {
+  function reColorSpectraHandler() {
     dispatch({
       type: 'RECOLOR_SPECTRA_COLOR',
       payload: {},
     });
   }
-
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
+  const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
+
+  let leftButtons: ToolbarItemProps[] = [
+    {
+      disabled: !hasActiveSpectra,
+      icon: <FaEyeSlash />,
+      title: 'Hide selected spectra',
+      onClick: hideAllSpectrumsHandler,
+    },
+    {
+      disabled: !hasActiveSpectra,
+      icon: <FaEye />,
+      title: 'Show selected spectra',
+      onClick: showAllSpectrumsHandler,
+    },
+  ];
+
+  if (displayerMode === '2D' && activeSpectrum?.info.isFt) {
+    leftButtons.push({
+      icon: <FaCreativeCommonsSamplingPlus />,
+      title: 'Add missing projection',
+      onClick: addMissingProjectionHandler,
+    });
+  }
+
+  if (displayerMode === '1D' && spectraLengthPerTab > 1) {
+    leftButtons.push(
+      {
+        icon: <SvgNmrResetScale />,
+        title: 'Reset scale',
+        onClick: resetScaleHandler,
+      },
+      {
+        icon: <SvgNmrSameTop />,
+        title: 'Same top',
+        onClick: setSameTopHandler,
+      },
+    );
+  }
+
+  leftButtons = leftButtons.concat([
+    {
+      component: <SpectraAutomaticPickingButton />,
+    },
+    {
+      icon: <IoColorPaletteOutline />,
+      title: 'Recolor spectra',
+      onClick: reColorSpectraHandler,
+    },
+  ]);
 
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
-      counter={spectra?.length}
+      total={data?.length}
+      counter={spectraLengthPerTab}
       deleteToolTip="Delete selected spectra"
       disableDelete={!hasActiveSpectra}
-      showSettingButton
       onSettingClick={onSettingClick}
-    >
-      <Button.BarButton
-        toolTip="Hide selected spectra"
-        onClick={hideAllSpectrumsHandler}
-        tooltipOrientation="horizontal"
-        disabled={!hasActiveSpectra}
-      >
-        <FaEyeSlash />
-      </Button.BarButton>
-      <Button.BarButton
-        onClick={showAllSpectrumsHandler}
-        toolTip="Show selected spectra"
-        tooltipOrientation="horizontal"
-        disabled={!hasActiveSpectra}
-      >
-        <FaEye />
-      </Button.BarButton>
-      {displayerMode === '2D' && activeSpectrum?.info.isFt && (
-        <Button.BarButton
-          toolTip="Add missing projection"
-          tooltipOrientation="horizontal"
-          onClick={addMissingProjectionHandler}
-        >
-          <FaCreativeCommonsSamplingPlus />
-        </Button.BarButton>
-      )}
-      {displayerMode === '1D' && spectra.length > 1 && (
-        <>
-          <Button.BarButton
-            tooltipOrientation="horizontal"
-            toolTip="Reset scale"
-            onClick={resetScaleHandler}
-          >
-            <SvgNmrResetScale />
-          </Button.BarButton>
-          <Button.BarButton
-            tooltipOrientation="horizontal"
-            toolTip="Same top"
-            onClick={setSameTopHandler}
-          >
-            <SvgNmrSameTop />
-          </Button.BarButton>
-        </>
-      )}
-      <SpectraAutomaticPickingButton />
-      <Button.BarButton
-        tooltipOrientation="horizontal"
-        toolTip="Recolor spectra"
-        onClick={recolorSpectraHandler}
-      >
-        <IoColorPaletteOutline />
-      </Button.BarButton>
-    </DefaultPanelHeader>
+      leftButtons={leftButtons}
+    />
   );
 }
 
@@ -200,6 +197,7 @@ export default function SpectrumsTabs({
   } = useChartData();
   const spectrum = useSpectrum() as Spectrum2D;
   const activeSpectra = useActiveSpectra();
+
   return (
     <MemoizedSpectraPanelHeader
       {...{

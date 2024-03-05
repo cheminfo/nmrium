@@ -1,7 +1,8 @@
+import { SerializedStyles } from '@emotion/react';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-
-import { newClipboardItem, write } from '../../utils/clipboard/clipboard';
+import lodashGet from 'lodash/get';
+import { JpathTableColumn, SpectraTableColumn } from 'nmr-load-save';
 
 /**
  * export the experiments result in JSON format
@@ -44,21 +45,38 @@ async function exportAsJSON(
   }
 }
 
-function exportAsMatrix(data, fileName = 'experiment') {
+function exportAsMatrix(
+  data,
+  spectraColumns: SpectraTableColumn[],
+  fileName = 'experiment',
+) {
   //columns labels
-  const columnsLables = ['name', 'experiment'];
-  for (const value of data[0].data.x) {
-    columnsLables.push(value);
+  const columnsLabels: string[] = [];
+  // listed the spectra panel columns
+  for (const col of spectraColumns) {
+    if (col.visible && 'jpath' in col) {
+      columnsLabels.push(col.label);
+    }
   }
-  let matrix = `${columnsLables.join('\t')}\n`;
+
+  for (const value of data[0].data.x) {
+    columnsLabels.push(value);
+  }
+  let matrix = `${columnsLabels.join('\t')}\n`;
 
   for (const spectrum of data) {
     const {
       data: { re },
-      info: { experiment },
-      display: { name },
     } = spectrum;
-    const cellsValues = [name, experiment];
+
+    const cellsValues: string[] = [];
+    // listed the spectra cell values
+    for (const col of spectraColumns) {
+      if (col.visible && 'jpath' in col) {
+        const jpath = (col as JpathTableColumn)?.jpath;
+        cellsValues.push(lodashGet(spectrum, jpath, `null`));
+      }
+    }
     for (const value of re) {
       cellsValues.push(value);
     }
@@ -141,32 +159,39 @@ function copyDataURLClipboardFireFox(image) {
   img.remove();
 }
 
-function copyBlobToClipboard(canvas: HTMLCanvasElement) {
-  canvas.toBlob((b) => {
-    if (!b) return;
-
-    (async () => {
-      const clip = await newClipboardItem({
-        [b.type]: b,
-      });
-
-      await write([clip]);
-    })()
-      .catch(() => {
-        const png = canvas.toDataURL('image/png', 1);
-        copyDataURLClipboardFireFox(png);
-        URL.revokeObjectURL(png);
-      })
-      .then(() => {
-        // eslint-disable-next-line no-console
-        console.log('experiment copied.');
-      })
-      .catch(reportError);
+async function resolveBlob(b: Blob): Promise<Blob> {
+  return new Promise((resolve) => {
+    resolve(b);
   });
 }
 
-function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
-  const { blob, width, height } = getBlob(rootRef, elementID);
+async function writeImageToClipboard(image: Blob, isSafari = false) {
+  await navigator.clipboard.write([
+    new ClipboardItem({ [image.type]: isSafari ? resolveBlob(image) : image }),
+  ]);
+}
+async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
+  canvas.toBlob(async (b) => {
+    if (!b) return;
+    const isSafari = /^(?<safari>(?!chrome|android).)*safari/i.test(
+      navigator.userAgent,
+    );
+    if (typeof ClipboardItem !== 'undefined') {
+      await writeImageToClipboard(b, isSafari).catch(reportError);
+    } else {
+      const png = canvas.toDataURL('image/png', 1);
+      copyDataURLClipboardFireFox(png);
+      URL.revokeObjectURL(png);
+    }
+  });
+}
+
+async function copyPNGToClipboard(
+  rootRef: HTMLDivElement,
+  elementID: string,
+  css?: SerializedStyles,
+) {
+  const { blob, width, height } = getBlob(rootRef, elementID, css);
   try {
     const canvas = document.createElement('canvas');
     canvas.width = width;
@@ -180,16 +205,16 @@ function copyPNGToClipboard(rootRef: HTMLDivElement, elementID: string) {
 
     const img = new Image();
     const url = URL.createObjectURL(blob);
-    img.addEventListener('load', () => {
+    img.addEventListener('load', async () => {
       context?.drawImage(img, 0, 0);
-      copyBlobToClipboard(canvas);
+      await copyBlobToClipboard(canvas);
     });
     img.src = url;
   } catch (error) {
     if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
       alert(
-        'Your browser does not support this feature, please use Google Chrome',
+        'Your browser does not support this feature, please use Google Chrome or Firefox',
       );
     }
     // TODO: handle error.
@@ -203,7 +228,11 @@ export interface BlobObject {
   height: number;
 }
 
-function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
+function getBlob(
+  rootRef: HTMLDivElement,
+  elementID: string,
+  css?: SerializedStyles,
+): BlobObject {
   const _svg: any = (rootRef.getRootNode() as Document)
     .querySelector(`#${elementID}`)
     ?.cloneNode(true);
@@ -218,19 +247,23 @@ function getBlob(rootRef: HTMLDivElement, elementID: string): BlobObject {
   const floatingMoleculesGroup = getMoleculesElement(rootRef);
   _svg.append(floatingMoleculesGroup);
 
-  const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
+  const nmrCss = `
+  * {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
   } 
- 
   .nmr-svg,.contours{
     background-color:white;
     fill:white;
   }
-  
+  `;
 
-  
+  const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const style = `<style>
+  ${css?.styles || nmrCss}
   </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
   const blob = new Blob([svg], { type: 'image/svg+xml' });

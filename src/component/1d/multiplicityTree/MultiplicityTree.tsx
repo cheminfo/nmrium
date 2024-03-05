@@ -1,24 +1,23 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
-import { Range, checkMultiplicity } from 'nmr-processing';
-import { CSSProperties, useMemo } from 'react';
+import { Range } from 'nmr-processing';
 
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import {
   AssignmentsData,
   useAssignment,
+  useAssignmentData,
 } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import useSpectrum from '../../hooks/useSpectrum';
-import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { AssignmentActionsButtons } from '../ranges/AssignmentActionsButtons';
 
-import LevelNode from './LevelNode';
-import StringNode from './StringNode';
-import TreeNodes from './TreeNodes';
-import createTreeNodes from './buildTreeNode';
+import { TreeNodes, generateTreeNodes } from './generateTreeNodes';
 
 const styles = {
   cursor: 'default',
@@ -38,79 +37,218 @@ const cssStyle = css`
   }
 `;
 
-const BOX_PADDING = 5;
-
-interface InnerMultiplicityTreeProps extends MultiplicityTreeProps {
-  data: any;
-  width: number;
-  index: number;
+interface MultiplicityTreeProps {
+  range: Range;
 }
 
-function extractID(assignment: AssignmentsData) {
-  return [assignment.id].concat(assignment.assigned?.x || []);
+const treeLevelsColors: string[] = ['red', 'green', 'blue', 'magenta'];
+const marginBottom = 20;
+const headTextMargin = 5;
+const tailLengthScale = 60;
+const boxPadding = 20;
+
+export default function MultiplicityTree(props: MultiplicityTreeProps) {
+  const { range } = props;
+  const spectrum = useSpectrum();
+  const { scaleY } = useScaleChecked();
+  if (!spectrum || !isSpectrum1D(spectrum)) return null;
+  const { from, to } = range;
+  const maxY = getMaxY(spectrum, { from, to });
+  const startY = scaleY(spectrum.id)(maxY) - marginBottom;
+
+  const tree = generateTreeNodes(range, spectrum);
+
+  return tree.map((treeItem, signalIndex) => {
+    const { rangeKey, signalKey } = treeItem;
+
+    return (
+      <Tree
+        key={rangeKey + signalKey}
+        treeNodes={treeItem}
+        startY={startY}
+        signalIndex={signalIndex}
+        range={range}
+      />
+    );
+  });
 }
 
-function InnerMultiplicityTree({
-  labelOptions,
-  onUnlink,
-  data,
-  width: widthProp,
-  index,
-}: InnerMultiplicityTreeProps) {
-  const { startX, signal, width, height, startY } = data;
+interface TreeProps {
+  startY: number;
+  treeNodes: TreeNodes;
+  signalIndex: number;
+  range: Range;
+}
+
+function Tree(props: TreeProps) {
+  const {
+    signalIndex,
+    range,
+    startY: originStartY,
+    treeNodes: { multiplicity = '', nodes, min, max, signalKey, diaIDs },
+  } = props;
+  const { from, to } = range;
+  const { width } = useChartData();
   const { scaleX } = useScaleChecked();
-  const showLabels = width / widthProp >= 0.1;
-  labelOptions = labelOptions || {
-    distance: 10,
-    fontSize: 11,
-  };
+  const dispatch = useDispatch();
+  const assignmentData = useAssignmentData();
 
-  const assignment = useAssignment(signal.id);
+  const assignment = useAssignment(signalKey);
   const highlight = useHighlight(extractID(assignment), {
     type: HighlightEventSource.SIGNAL,
   });
+
+  let widthRatio = 0;
+  let treeWidth = 0;
+
+  if (nodes?.length > 1) {
+    treeWidth = scaleX()(min) - scaleX()(max);
+    widthRatio = treeWidth / width;
+  } else {
+    treeWidth = 4;
+    widthRatio = (scaleX()(from) - scaleX()(to)) / width;
+  }
+
+  const tailLength = widthRatio * tailLengthScale;
+  const rationTextSize = widthRatio * 30;
+  let multiplicityTextSize = rationTextSize;
+
+  if (multiplicityTextSize < 10) {
+    multiplicityTextSize = 10;
+  }
+
+  const isMassive = ['m', 's'].includes(multiplicity);
+  const levelLength = isMassive ? tailLength : tailLength * 2;
+
+  const treeHeight = multiplicity.split('').length * levelLength + tailLength;
+  const startY = originStartY - treeHeight;
+
+  const [{ x: head }, ...otherNodes] = nodes;
+  const headX = scaleX()(head);
+  const paths = useTreePaths(otherNodes, {
+    isMassive,
+    levelLength,
+    tailLength,
+    startY,
+  });
+
+  if (!multiplicity) return null;
 
   function assignHandler() {
     assignment.setActive('x');
   }
 
   function unAssignHandler() {
-    onUnlink(index);
+    dispatch({
+      type: 'UNLINK_RANGE',
+      payload: {
+        range,
+        assignmentData,
+        signalIndex,
+      },
+    });
   }
 
   const isHighlighted = highlight.isActive || assignment.isActive;
+  const padding = boxPadding * widthRatio;
+  const x = scaleX()(max) - padding;
+  const y = startY - headTextMargin - multiplicityTextSize - padding;
+  const boxWidth = treeWidth + padding * 2;
+  const boxHeight =
+    treeHeight + headTextMargin + multiplicityTextSize + padding * 2;
+
   return (
     <g
       style={
         isHighlighted ? { ...styles, opacity: 1, strokeWidth: 1.5 } : styles
       }
-      {...{
-        onMouseEnter: () => {
-          assignment.show('x');
-          highlight.show();
-        },
-        onMouseLeave: () => {
-          assignment.hide();
-          highlight.hide();
-        },
+      onMouseEnter={() => {
+        assignment.show('x');
+        highlight.show();
+      }}
+      onMouseLeave={() => {
+        assignment.hide();
+        highlight.hide();
       }}
       pointerEvents="bounding-box"
       {...(!assignment.isActive && { css: cssStyle })}
     >
-      {drawTree(data, { scaleX, labelOptions, showLabels })}
       <rect
-        x={startX - BOX_PADDING}
-        y={startY - BOX_PADDING}
-        width={width + BOX_PADDING * 2}
-        height={height + BOX_PADDING * 2}
+        x={x}
+        y={y}
+        width={boxWidth}
+        height={boxHeight}
         fill={isHighlighted ? '#ff6f0057' : 'transparent'}
         data-no-export="true"
       />
+      <g className="multiplicity-tree-head">
+        <text
+          x={headX}
+          y={startY - headTextMargin}
+          textAnchor="middle"
+          fontSize={multiplicityTextSize}
+          fill="black"
+        >
+          {multiplicity}
+        </text>
+        <line
+          x1={headX}
+          x2={headX}
+          y1={startY}
+          y2={startY + tailLength}
+          stroke={treeLevelsColors[0]}
+        />
+      </g>
+      <g className="multiplicity-tree-lines">
+        {paths.map((path, level) => {
+          const levelColor = isMassive
+            ? 'blue'
+            : treeLevelsColors[level % treeLevelsColors.length];
+          return (
+            <path
+              key={path.join(`%${level}`)}
+              d={path.join(' ')}
+              fill="none"
+              stroke={levelColor}
+            />
+          );
+        })}
+      </g>
+      <g className="multiplicity-tree-ration-labels">
+        {!isMassive &&
+          otherNodes.map((node) => {
+            const { x, level, ratio } = node;
+            const x1 = scaleX()(x);
+
+            const y = levelLength * level + tailLength + tailLength / 2;
+            const levelColor =
+              treeLevelsColors[level % treeLevelsColors.length];
+
+            return (
+              <text
+                key={JSON.stringify(node)}
+                x={x1}
+                y={startY + y}
+                textAnchor="middle"
+                alignmentBaseline="middle"
+                fontSize={rationTextSize}
+                fill={levelColor}
+              >
+                {ratio}
+              </text>
+            );
+          })}
+      </g>
       <AssignmentActionsButtons
         className="signal-target"
-        isActive={!!(assignment.isActive || signal?.diaIDs)}
-        y={startY}
-        x={scaleX()(signal.delta) - 30}
+        isActive={
+          !!(
+            assignment.isActive ||
+            (Array.isArray(diaIDs) && diaIDs.length > 0)
+          )
+        }
+        y={startY - 16}
+        x={headX - 30}
         onAssign={assignHandler}
         onUnAssign={unAssignHandler}
         borderRadius={16}
@@ -119,206 +257,59 @@ function InnerMultiplicityTree({
   );
 }
 
-interface MultiplicityTreeProps {
-  range: Range;
-  labelOptions?: {
-    distance: number;
-    fontSize: CSSProperties['fontSize'];
-  };
-  onUnlink: (index: number) => void;
-}
+function useTreePaths(
+  otherNodes,
+  options: {
+    tailLength: number;
+    levelLength: number;
+    startY: number;
+    isMassive: boolean;
+  },
+) {
+  const { tailLength, levelLength, startY, isMassive } = options;
+  const { scaleX } = useScaleChecked();
 
-export function MultiplicityTree(props: MultiplicityTreeProps) {
-  const { width } = useChartData();
-  const spectrum = useSpectrum(null);
-  const { scaleX, scaleY } = useScaleChecked();
-  const treeData = useMemo(
-    () =>
-      spectrum
-        ? getTree(props.range, spectrum as Spectrum1D, { scaleX, scaleY })
-        : [],
-    [props.range, scaleX, scaleY, spectrum],
-  );
+  const paths: string[][] = [];
 
-  if (!spectrum) return null;
+  for (const node of otherNodes) {
+    const { x, parentX = 0, level } = node;
 
-  return (
-    <g>
-      {treeData?.map((data, index) => (
-        <InnerMultiplicityTree
-          index={index}
-          key={data.signal.id}
-          data={data}
-          width={width}
-          {...props}
-        />
-      ))}
-    </g>
-  );
-}
+    const baseX = scaleX()(parentX);
+    const x1 = scaleX()(x);
 
-function getTree(range: Range, spectrum: Spectrum1D, scale) {
-  const SHIFT_X = 30;
+    let y = tailLength;
 
-  const treeResult: any[] = [];
-
-  const { signals = [], ...otherRangeProps } = range;
-  for (const signal of signals) {
-    const isMassive = !checkMultiplicity(signal.multiplicity, ['m']);
-    const length = signal?.multiplicity?.length || 0;
-    let width = 0;
-    let height = 0;
-    let levelHeight = 0;
-    let nodes = [];
-    let startX = 0;
-
-    const { from, to } = range;
-
-    if (signal.multiplicity) {
-      const buildTreeNodesData = createTreeNodes(signal, spectrum);
-      const jIndices = signal.multiplicity
-        .split('')
-        .map((_mult, i) => (hasCouplingConstant(_mult) ? i : undefined))
-        .filter((_i) => _i !== undefined);
-
-      nodes = buildTreeNodesData(0, jIndices, [], signal.delta);
+    if (!isMassive) {
+      y = levelLength * level + tailLength;
     }
 
-    // +2 because of multiplicity text and start level node before the actual tree starts
-    // 2* for levels between nodes (edges)
+    const path = `M ${baseX} ${startY + y} L ${x1} ${startY + y + (isMassive ? 0 : tailLength)} l 0 ${tailLength}`;
 
-    if (isMassive) {
-      startX = scale.scaleX()(to);
-      width = Math.abs(scale.scaleX()(from)) - Math.abs(startX);
-      height = width / 3;
-      levelHeight = height / (length + 2);
+    if (!paths?.[level]) {
+      paths[level] = [path];
     } else {
-      const treeRange = getTreeRange(nodes, signal.delta);
-      startX = scale.scaleX()(treeRange.to);
-      width = Math.abs(scale.scaleX()(treeRange.from)) - Math.abs(startX);
-      height = width / 2;
-      if (signal.multiplicity !== 's') {
-        levelHeight = height / (2 * length + 2);
-        height = width / 2;
-      } else {
-        levelHeight = 3;
-        height = levelHeight * 4;
-      }
+      paths[level].push(path);
     }
-
-    const startY =
-      scale.scaleY(spectrum.id)(getStartY(spectrum, { from, to })) -
-      height -
-      SHIFT_X;
-
-    treeResult.push({
-      isMassive,
-      startX,
-      startY,
-      width,
-      height,
-      levelHeight,
-      nodes,
-      signal,
-      range: otherRangeProps,
-    });
   }
-  return treeResult;
+  return paths;
 }
 
-function getStartY(spectrum, options: { from: number; to: number }) {
-  const {
-    data: { x, re },
-  } = spectrum;
+function getMaxY(spectrum: Spectrum1D, options: { from: number; to: number }) {
   const { from, to } = options;
+  const {
+    data: { re, x },
+  } = spectrum;
+  const fromIndex = xFindClosestIndex(x, from);
+  const toIndex = xFindClosestIndex(x, to);
   let max = Number.NEGATIVE_INFINITY;
-  for (const i in x) {
-    if (x[i] >= from && x[i] <= to && re[i] > max) {
-      max = re[i];
+  for (const value of re.slice(fromIndex, toIndex)) {
+    if (value > max) {
+      max = value;
     }
   }
   return max;
 }
 
-function getTreeRange(nodes, delta: number) {
-  const range = { from: delta, to: delta };
-  for (const node of nodes) {
-    if (node._startX < range.from) {
-      range.from = node._startX;
-    }
-    if (node._startX > range.to) {
-      range.to = node._startX;
-    }
-  }
-
-  return range;
-}
-
-function drawTree(treeData, { scaleX, labelOptions, showLabels }) {
-  const { isMassive, signal, levelHeight, range, nodes, startY } = treeData;
-
-  // const { levelHeight } = treeProps;
-  // first tree level
-  const firstLevelStartY = startY;
-  let _startY = firstLevelStartY;
-  // second tree level
-  const secondLevelStartY = startY + levelHeight;
-  _startY = secondLevelStartY;
-
-  // third tree level
-  _startY += levelHeight;
-
-  if (isMassive) {
-    const _rangeFrom = scaleX()(range.from);
-    const _rangeTo = scaleX()(range.to);
-
-    const pathData = `M ${_rangeFrom} ${
-      _startY + levelHeight
-    } ${_rangeFrom} ${_startY} ${scaleX()(
-      signal.delta,
-    )} ${_startY} ${_rangeTo} ${_startY} ${_rangeTo} ${_startY + levelHeight}`;
-
-    return (
-      <g>
-        <StringNode
-          signal={signal}
-          startY={firstLevelStartY}
-          levelHeight={levelHeight}
-          fontSize={labelOptions.fontSize}
-          showLabels={showLabels}
-        />
-        <LevelNode
-          signal={signal}
-          startY={secondLevelStartY}
-          levelHeight={levelHeight}
-        />
-        <path d={pathData} stroke="blue" fill="none" />
-      </g>
-    );
-  }
-
-  return (
-    <g>
-      <StringNode
-        signal={signal}
-        startY={firstLevelStartY}
-        levelHeight={levelHeight}
-        fontSize={labelOptions.fontSize}
-        showLabels={showLabels}
-      />
-      <LevelNode
-        signal={signal}
-        startY={secondLevelStartY}
-        levelHeight={levelHeight}
-      />
-      <TreeNodes
-        nodesData={nodes}
-        signalID={nodes}
-        showLabels={showLabels}
-        startY={startY}
-        labelOptions={labelOptions}
-        levelHeight={levelHeight}
-      />
-    </g>
-  );
+function extractID(assignment: AssignmentsData) {
+  return [assignment.id].concat(assignment.assigned?.x || []);
 }

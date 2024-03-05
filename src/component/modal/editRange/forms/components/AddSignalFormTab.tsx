@@ -71,6 +71,7 @@ function AddSignalFormTab(
     return Yup.object().shape({
       newSignalDelta: Yup.number()
         .test(`test-range`, '', function testNewSignalDelta(value) {
+          // eslint-disable-next-line no-invalid-this
           const { path, createError } = this;
           if (value && value > range.from && value < range.to) {
             return true;
@@ -115,6 +116,7 @@ function AddSignalFormTab(
                   input: {
                     width: '250px',
                     height: '30px',
+                    padding: '0.25rem 0.5rem',
                   },
                 }}
                 checkErrorAfterInputTouched={false}

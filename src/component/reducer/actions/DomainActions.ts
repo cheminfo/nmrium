@@ -8,6 +8,7 @@ import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { addToBrushHistory } from '../helper/ZoomHistoryManager';
+import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
 
@@ -79,8 +80,8 @@ function getDomain(draft: Draft<State>) {
   }
 
   return {
-    xDomain: extent(xArray),
-    yDomain: extent(yArray),
+    xDomain: xArray?.length > 0 ? extent(xArray) : [],
+    yDomain: yArray?.length > 0 ? extent(yArray) : [],
     yDomains,
     xDomains,
   };
@@ -228,36 +229,33 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
   }
 }
 
-function getSpectrumIntegralsDomain(datum: Spectrum1D) {
-  const { integrals, ranges } = datum;
-  let max = Number.NEGATIVE_INFINITY;
-  for (const integral of integrals.values) {
-    max = Math.max(max, integral.absolute);
-  }
-  for (const range of ranges.values) {
-    max = Math.max(max, range.absolute);
-  }
-  return [0, max];
-}
-function setIntegralsYDomain(
-  draft: Draft<State>,
-  data: Spectrum1D[] | Spectrum1D,
-) {
-  for (const spectrum of Array.isArray(data) ? data : [data]) {
-    if (spectrum?.info?.dimension === 1) {
-      draft.integralsYDomains[spectrum.id] =
-        getSpectrumIntegralsDomain(spectrum);
-    }
-  }
-}
-
 function setMode(draft: Draft<State>) {
-  const datum_ = draft.data.find(
-    (datum) =>
-      draft.xDomains[datum.id] &&
-      nucleusToString(datum.info.nucleus) === draft.view.spectra.activeTab,
-  );
-  draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
+  const { xDomains, view, data, displayerMode } = draft;
+  const nuclues = view.spectra.activeTab;
+
+  if (displayerMode === '1D') {
+    const datum_ = data.find(
+      (datum) =>
+        xDomains[datum.id] && nucleusToString(datum.info.nucleus) === nuclues,
+    );
+    draft.mode = (datum_ as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
+  } else {
+    const activeSpectra = getActiveSpectra(draft);
+    let hasFt = false;
+    if (Array.isArray(activeSpectra) && activeSpectra?.length > 0) {
+      hasFt = activeSpectra.some(
+        (spectrum) => !data[spectrum.index].info.isFid,
+      );
+    } else {
+      hasFt = data.some(
+        (spectrum) =>
+          !spectrum.info.isFid &&
+          nucleusToString(spectrum.info.nucleus) === nuclues,
+      );
+    }
+
+    draft.mode = hasFt ? 'RTL' : 'LTR';
+  }
 }
 
 //action
@@ -310,7 +308,6 @@ export {
   getDomain,
   setDomain,
   setMode,
-  setIntegralsYDomain,
   handleSetXDomain,
   handleSetYDomain,
   handleMoveOverXAxis,

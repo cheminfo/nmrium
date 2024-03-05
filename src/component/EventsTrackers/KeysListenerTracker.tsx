@@ -106,6 +106,21 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
 
           break;
         }
+        case HighlightEventSource.RANGE_PEAK: {
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_RANGE_PEAK',
+              payload: {
+                id,
+              },
+            });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+
+          break;
+        }
         case HighlightEventSource.RANGE: {
           const { id } = extra || {};
           if (id) {
@@ -233,6 +248,18 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           const { id } = extra || {};
           if (id) {
             dispatch({ type: 'DELETE_BASE_LINE_ZONE', payload: { id } });
+            // remove keys from the highlighted list after delete
+            remove();
+          }
+          break;
+        }
+        case HighlightEventSource.PHASE_CORRECTION_TRACE: {
+          const { id } = extra || {};
+          if (id) {
+            dispatch({
+              type: 'DELETE_PHASE_CORRECTION_TRACE',
+              payload: { id },
+            });
             // remove keys from the highlighted list after delete
             remove();
           }

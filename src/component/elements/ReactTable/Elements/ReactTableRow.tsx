@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
 
-import { css, CSSObject } from '@emotion/react';
+import { css, CSSObject, SerializedStyles } from '@emotion/react';
 import { useMemo, useEffect, useCallback } from 'react';
-import { DropdownMenu } from 'react-science/ui';
 
 import { HighlightEventSource, useHighlight } from '../../../highlight/index';
-import { BaseRowStyle, ContextMenuProps } from '../ReactTable';
+import { ContextMenu } from '../../ContextMenuBluePrint';
+import { BaseRowStyle, TableContextMenuProps } from '../ReactTable';
 
 function getRowStyle(
   isActive: boolean,
   rowStyle: BaseRowStyle = {},
   disableDefaultRowStyle?: boolean,
-) {
+): SerializedStyles {
   const { hover = {}, active = {}, base = {}, activated = {} } = rowStyle;
 
   const hoverStyle = disableDefaultRowStyle
@@ -21,7 +21,7 @@ function getRowStyle(
     ? (active as CSSObject)
     : { backgroundColor: '#ff6f0070', ...active };
   const baseStyle = disableDefaultRowStyle
-    ? (base as CSSObject)
+    ? (base as object)
     : { backgroundColor: 'white', ...base };
 
   return css([
@@ -36,7 +36,7 @@ function getRowStyle(
 export interface ClickEvent {
   onClick?: (event: Event, data: unknown) => void;
 }
-interface ReactTableRowProps extends ClickEvent, ContextMenuProps {
+interface ReactTableRowProps extends ClickEvent, TableContextMenuProps {
   row: any;
   highlightedSource?: HighlightEventSource;
   isRowActive: boolean;
@@ -89,11 +89,11 @@ function ReactTableRow(props: ReactTableRowProps) {
     [onClick, row],
   );
   return (
-    <DropdownMenu
-      trigger="contextMenu"
+    <ContextMenu
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
       as="tr"
+      style={{ position: 'static' }}
       key={row.getRowProps().key}
       css={getRowStyle(
         highlight.isActive || isRowActive,
@@ -127,7 +127,7 @@ function ReactTableRow(props: ReactTableRowProps) {
           );
         }
       })}
-    </DropdownMenu>
+    </ContextMenu>
   );
 }
 

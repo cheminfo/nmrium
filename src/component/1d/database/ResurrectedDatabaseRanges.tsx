@@ -14,7 +14,7 @@ import { getYScale } from '../utilities/scale';
 const emptyData = { info: { originFrequency: 400 } };
 
 function ResurrectedDatabaseRanges() {
-  const { displayerKey, height, margin } = useChartData();
+  const { displayerKey, height, margin, yDomains } = useChartData();
   const verticalAlign = useVerticalAlign();
 
   const { info } = useSpectrum(emptyData) as Spectrum1D;
@@ -32,7 +32,7 @@ function ResurrectedDatabaseRanges() {
 
   const { ranges = [] } = highlight.sourceData.extra || {};
 
-  const yDomain: any[] = [0, 0];
+  const yDomain: number[] = [0, 0];
 
   const spectra = ranges.map((range) => {
     const { from, to } = range;
@@ -58,6 +58,7 @@ function ResurrectedDatabaseRanges() {
     margin: { top: 0, bottom: 0 },
     verticalAlign,
     yDomain,
+    yDomains,
   });
 
   const finalScaleX = scaleX();

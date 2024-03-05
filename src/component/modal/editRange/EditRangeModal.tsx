@@ -10,8 +10,8 @@ import { FaSearchPlus } from 'react-icons/fa';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
-import CloseButton from '../../elements/CloseButton';
-import SaveButton from '../../elements/SaveButton';
+import { CloseButton } from '../../elements/CloseButton';
+import { SaveButton } from '../../elements/SaveButton';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -22,8 +22,7 @@ import SignalsForm from './forms/components/SignalsForm';
 import editRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
-  width: 600px;
-  height: 500px;
+  min-height: 500px;
   padding: 5px;
 
   button:focus {
@@ -31,7 +30,6 @@ const styles = css`
   }
 
   .header {
-    height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
     align-items: center;
@@ -53,6 +51,10 @@ const styles = css`
         height: 16px;
       }
     }
+  }
+
+  .tabs .tab-list {
+    overflow-x: auto;
   }
 `;
 
@@ -228,10 +230,10 @@ function EditRangeModal({
         </span>
         <SaveButton
           onClick={() => formRef.current.submitForm()}
-          popupTitle="Save and Exit"
+          title="Save and Exit"
         />
 
-        <CloseButton onClick={handleOnClose} />
+        <CloseButton title="Close" onClick={handleOnClose} />
       </div>
       <Formik
         innerRef={formRef}

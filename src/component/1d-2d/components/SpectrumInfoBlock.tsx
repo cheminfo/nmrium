@@ -1,4 +1,5 @@
 import lodashGet from 'lodash/get';
+import { Spectrum } from 'nmr-load-save';
 import { CSSProperties } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
@@ -23,6 +24,25 @@ const styles: Record<'value' | 'label' | 'colorIndicator', CSSProperties> = {
   },
 };
 
+function getInfoValue(
+  spectrum: Spectrum,
+  field: { jpath: string[]; format: string },
+) {
+  const { jpath, format } = field;
+  const value = lodashGet(spectrum, jpath, '');
+
+  switch (typeof value) {
+    case 'number':
+      return formatNumber(value, format);
+    case 'string':
+      return value;
+    case 'boolean':
+      return value ? 'Yes' : 'No';
+    default:
+      return JSON.stringify(value);
+  }
+}
+
 function SpectrumInfoBlock() {
   const { margin } = useChartData();
   const spectrum = useSpectrum();
@@ -42,7 +62,6 @@ function SpectrumInfoBlock() {
       {fields
         .filter((field) => field.visible)
         .map((field, index) => {
-          const value = lodashGet(spectrum, field.jpath, '');
           return (
             <SVGGroup
               transform={`translate(0,${20 * (index + 1)})`}
@@ -53,9 +72,7 @@ function SpectrumInfoBlock() {
                 {field.label} :
               </text>
               <text alignmentBaseline="middle" style={styles.value}>
-                {field?.format && typeof value === 'number'
-                  ? formatNumber(value, field.format)
-                  : value}
+                {getInfoValue(spectrum, field)}
               </text>
             </SVGGroup>
           );

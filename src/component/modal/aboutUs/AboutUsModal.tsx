@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { SvgLogoNmrium } from 'cheminfo-font';
-import { Modal, Toolbar, useOnOff } from 'react-science/ui';
+import { Toolbar, useOnOff } from 'react-science/ui';
 
 import versionInfo from '../../../versionInfo';
 import Logo from '../../elements/Logo';
@@ -9,8 +10,10 @@ import Logo from '../../elements/Logo';
 import AboutUsZakodium from './AboutUsZakodium';
 
 const styles = css`
-  width: 40vw;
-  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  background-color: white;
 
   button:focus {
     outline: none;
@@ -66,28 +69,6 @@ const styles = css`
     height: 1px;
     margin: 10px 0;
   }
-
-  .header {
-    span {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-      user-select: none;
-    }
-
-    button {
-      background-color: transparent;
-      border: none;
-
-      svg {
-        height: 16px;
-      }
-    }
-  }
-
-  display: flex;
-  flex-direction: column;
-  user-select: none;
 `;
 
 function AboutUsModal() {
@@ -96,32 +77,21 @@ function AboutUsModal() {
     <>
       <Toolbar.Item
         onClick={openDialog}
-        titleOrientation="horizontal"
         id="logo"
         title="About NMRium"
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <SvgLogoNmrium />
-        </div>
-      </Toolbar.Item>
-      <Modal
-        hasCloseButton
+        icon={<SvgLogoNmrium />}
+      />
+      <Dialog
         isOpen={isOpenDialog}
-        onRequestClose={closeDialog}
-        maxWidth={1000}
+        onClose={closeDialog}
+        style={{
+          maxWidth: 1000,
+          width: '40vw',
+          minWidth: '500px',
+        }}
+        title="About NMRium"
       >
-        <div css={styles}>
-          <Modal.Header>
-            <div className="header">
-              <span>About NMRium</span>
-            </div>
-          </Modal.Header>
+        <DialogBody css={styles}>
           <div className="container">
             <div className="center-container">
               <Logo width={160} height={50} />
@@ -154,11 +124,19 @@ function AboutUsModal() {
                   <AboutUsZakodium />
                 </li>
                 <li>Universidad del Valle (Cali, Colombia).</li>
+                <li>
+                  This project has received funding from the European Union’s
+                  Horizon 2020 research and innovation programme under grant
+                  agreement No 957189. The project is part of BATTERY 2030+, the
+                  large-scale European research initiative for inventing the
+                  sustainable batteries of the future.
+                </li>
               </ul>
             </div>
+            <span className="separator" />
           </div>
-        </div>
-      </Modal>
+        </DialogBody>
+      </Dialog>
     </>
   );
 }

@@ -1,0 +1,93 @@
+{
+  "data": {
+    "source": {
+      "baseURL": "",
+      "entries": [
+        {
+          "relativePath": "data/oxfordInstruments/ethylCrotonate.zip"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "sourceSelector": {
+          "files": [
+            "data/oxfordInstruments/ethylCrotonate.zip/Ethyl Crotonate, 1H FID.jdx"
+          ]
+        },
+        "filters": [
+          {
+            "name": "digitalFilter",
+            "label": "Digital Filter",
+            "value": {
+              "digitalFilterValue": 0
+            },
+            "id": "00167756-e605-4129-ae90-7f17274ac7ee",
+            "flag": true,
+            "isDeleteAllow": false
+          },
+          {
+            "name": "apodization",
+            "label": "Apodization",
+            "value": {
+              "lineBroadening": 1,
+              "gaussBroadening": 0,
+              "lineBroadeningCenter": 0
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "zeroFilling",
+            "label": "Zero Filling",
+            "value": {
+              "nbPoints": 32768
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "backwardLinearPrediction",
+            "label": "Backward Linear Prediction Filter",
+            "value": {
+              "nbInputs": 16384
+            },
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "fft",
+            "label": "FFT",
+            "value": {},
+            "flag": true,
+            "isDeleteAllow": true
+          },
+          {
+            "name": "phaseCorrection",
+            "label": "Phase correction",
+            "value": {
+              "ph0": -128.9,
+              "ph1": 0,
+              "absolute": false
+            },
+            "flag": true,
+            "isDeleteAllow": true,
+            "id": "6ae7ba0d-db09-486c-9cbf-2ac7e57dbc3d"
+          },
+          {
+            "name": "shiftX",
+            "label": "Shift X",
+            "value": {
+              "shift": -0.10005791743496187
+            },
+            "id": "f86c9cbf-2ac7-457d-bc3d-9465b326c07b",
+            "flag": true,
+            "isDeleteAllow": true
+          }
+        ]
+      }
+    ],
+    "molecules": []
+  },
+  "version": 5
+}

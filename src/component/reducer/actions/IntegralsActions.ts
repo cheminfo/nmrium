@@ -1,7 +1,7 @@
 import { v4 } from '@lukeed/uuid';
 import { Draft, original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Spectrum1D } from 'nmr-load-save';
+import { IntegralsViewState, Spectrum1D } from 'nmr-load-save';
 import { Integral } from 'nmr-processing';
 
 import {
@@ -15,13 +15,13 @@ import {
   initSumOptions,
   setSumOptions,
 } from '../../../data/data1d/Spectrum1D/SumManager';
+import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
+import { setIntegralsViewProperty } from '../helper/setIntegralsViewProperty';
 import { ActionType } from '../types/ActionType';
-
-import { setIntegralsYDomain } from './DomainActions';
 
 type ChangeIntegralSumAction = ActionType<
   'CHANGE_INTEGRAL_SUM',
@@ -42,6 +42,13 @@ type ChangeIntegralRelativeValueAction = ActionType<
 >;
 type CutIntegralAction = ActionType<'CUT_INTEGRAL', { cutValue: number }>;
 
+type ToggleIntegralsViewAction = ActionType<
+  'TOGGLE_INTEGRALS_VIEW_PROPERTY',
+  {
+    key: keyof FilterType<IntegralsViewState, boolean>;
+  }
+>;
+
 export type IntegralsActions =
   | ChangeIntegralSumAction
   | AddIntegralAction
@@ -49,6 +56,7 @@ export type IntegralsActions =
   | ChangeIntegralAction
   | ChangeIntegralRelativeValueAction
   | CutIntegralAction
+  | ToggleIntegralsViewAction
   | ActionType<'CHANGE_INTEGRALS_SUM_FLAG'>;
 
 function handleChangeIntegralSum(
@@ -94,8 +102,8 @@ function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
   const integration = xyIntegration({ x, y: re }, { from, to, reverse: true });
   const integral = {
     id: v4(),
-    originFrom: from - shiftX,
-    originTo: to - shiftX,
+    originalFrom: from - shiftX,
+    originalTo: to - shiftX,
     from,
     to,
     integral: integration,
@@ -122,7 +130,6 @@ function handleAddIntegral(draft: Draft<State>, action: AddIntegralAction) {
     addIntegral(datum, { from, to });
     initiateIntergalSumOptions(datum, { molecules, nucleus });
     updateIntegralsRelativeValues(datum);
-    setIntegralsYDomain(draft, datum);
   }
 }
 
@@ -172,8 +179,8 @@ function handleChangeIntegral(
     if (integralIndex !== -1) {
       datum.integrals.values[integralIndex] = {
         ...integral,
-        originFrom: integral.from,
-        originTo: integral.to,
+        originalFrom: integral.from,
+        originalTo: integral.to,
         absolute: xyIntegration(
           { x, y: re },
           { from: integral.from, to: integral.to, reverse: true },
@@ -220,7 +227,22 @@ function handleCutIntegral(draft: Draft<State>, action: CutIntegralAction) {
   }
 
   updateIntegralsRelativeValues(spectrum);
-  setIntegralsYDomain(draft, spectrum);
+}
+
+function toggleIntegralsViewProperty(
+  draft: Draft<State>,
+  key: keyof FilterType<IntegralsViewState, boolean>,
+) {
+  setIntegralsViewProperty(draft, key, (flag) => !flag);
+}
+
+//action
+function handleToggleIntegralsViewProperty(
+  draft: Draft<State>,
+  action: ToggleIntegralsViewAction,
+) {
+  const { key } = action.payload;
+  toggleIntegralsViewProperty(draft, key);
 }
 
 export {
@@ -231,4 +253,5 @@ export {
   handleChangeIntegral,
   handleChangeIntegralsRelativeValue,
   handleChangeIntegralsSumFlag,
+  handleToggleIntegralsViewProperty,
 };

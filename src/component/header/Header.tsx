@@ -5,6 +5,7 @@ import {
   FaRegWindowMaximize,
   FaQuestionCircle,
   FaRegSave,
+  FaFilm,
 } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
@@ -32,6 +33,7 @@ import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
 import PhaseCorrectionPanel from './PhaseCorrectionPanel';
+import PhaseCorrectionTwoDimensionsPanel from './PhaseCorrectionTwoDimensionsPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
@@ -98,9 +100,11 @@ function HeaderInner(props: HeaderInnerProps) {
   } = usePreferences();
 
   const workspacesList = useWorkspacesList();
+
   const hideGeneralSettings = !!(
     general?.hideGeneralSettings && workspace.base
   );
+  const hideWorkspaces = !!(general?.hideWorkspaces && workspace.base);
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
@@ -110,6 +114,8 @@ function HeaderInner(props: HeaderInnerProps) {
         return <ZeroFillingOptionsPanel />;
       case options.phaseCorrection.id:
         return <PhaseCorrectionPanel />;
+      case options.phaseCorrectionTwoDimensions.id:
+        return <PhaseCorrectionTwoDimensionsPanel />;
       case options.peakPicking.id:
         return <AutoPeakPickingOptionPanel />;
       case options.rangePicking.id:
@@ -119,7 +125,7 @@ function HeaderInner(props: HeaderInnerProps) {
       case options.zonePicking.id:
         return <Zones2DOptionPanel />;
       default:
-        break;
+        return null;
     }
   }, [selectedOptionPanel]);
 
@@ -141,14 +147,16 @@ function HeaderInner(props: HeaderInnerProps) {
 
   return (
     <div css={styles}>
-      <Header style={{ leftStyle: { flex: 1 } }}>
+      <Header
+        style={{ leftStyle: { flex: 1 }, containerStyle: { padding: '2px' } }}
+      >
         <HeaderContainer
           style={{
             alignItems: 'center',
           }}
         >
           <div>
-            <Toolbar orientation="horizontal">
+            <Toolbar>
               <AboutUsModal />
             </Toolbar>
           </div>
@@ -161,41 +169,48 @@ function HeaderInner(props: HeaderInnerProps) {
             alignItems: 'center',
           }}
         >
-          {!hideGeneralSettings && (
-            <>
-              <DropDownButton
-                data={workspacesList}
-                selectedKey={workspace.current}
-                onSelect={changeWorkspaceHandler}
-                renderItem={renderItem}
-              />
-              <SaveButton />
-            </>
+          {!hideWorkspaces && (
+            <DropDownButton
+              data={workspacesList}
+              selectedKey={workspace.current}
+              onSelect={changeWorkspaceHandler}
+              renderItem={renderItem}
+            />
           )}
+          {!hideGeneralSettings && <SaveButton />}
           {!general?.hideLogs && <LogsHistoryModal />}
 
           <div>
-            <Toolbar orientation="horizontal">
+            <Toolbar>
+              {!general?.hideHelp && (
+                <Toolbar.Item
+                  id="user-manual"
+                  title="User manual"
+                  onClick={() => window.open(docsBaseUrl, '_blank')}
+                  icon={<FaQuestionCircle />}
+                />
+              )}
               <Toolbar.Item
                 id="user-manual"
-                title="User manual"
-                onClick={() => window.open(docsBaseUrl, '_blank')}
-              >
-                <FaQuestionCircle />
-              </Toolbar.Item>
+                title="NMRium channel"
+                onClick={() =>
+                  window.open('https://www.youtube.com/@nmrium', '_blank')
+                }
+                icon={<FaFilm />}
+              />
+
               {!hideGeneralSettings && (
                 <GeneralSettingsModal height={height / 2} />
               )}
 
-              {!isFullscreenEnabled && (
+              {!isFullscreenEnabled && !general?.hideMaximize && (
                 <Toolbar.Item
                   id="full-screen"
                   onClick={onEnableFullscreen}
                   title="Full Screen"
                   className="windowButton"
-                >
-                  <FaRegWindowMaximize />
-                </Toolbar.Item>
+                  icon={<FaRegWindowMaximize />}
+                />
               )}
             </Toolbar>
           </div>
