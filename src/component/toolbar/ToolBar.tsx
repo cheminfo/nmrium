@@ -225,7 +225,7 @@ export default function ToolBar() {
       title: options.multipleSpectraAnalysis.label,
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
-      condition: ftCounter > 1,
+      condition: ftCounter > 0,
     },
     {
       id: 'apodization',
