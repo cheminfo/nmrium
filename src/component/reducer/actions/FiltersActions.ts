@@ -280,7 +280,6 @@ function rollbackSpectrumByFilter(
       FiltersManager.reapplyFilters(datum, filters);
 
       draft.tempData = current(draft).data;
-
       // apply the current Filters
       if (applyFilter) {
         const { name, value } = datum.filters[filterIndex];
@@ -609,10 +608,10 @@ function handleApplyZeroFillingFilter(
         value: action.payload.options,
       },
     ];
-    FiltersManager.applyFilter(draft.data[index], filters, {
+    FiltersManager.applyFilter(draft.tempData[index], filters, {
       filterIndex: activeFilterIndex,
     });
-
+    draft.data[index] = draft.tempData[index];
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
         searchBy: 'name',
@@ -694,7 +693,7 @@ function handleApplyApodizationFilter(
     const activeFilterIndex = getActiveFilterIndex(draft);
 
     FiltersManager.applyFilter(
-      draft.data[index],
+      draft.tempData[index],
       [
         {
           name: apodization.id,
@@ -703,6 +702,7 @@ function handleApplyApodizationFilter(
       ],
       { filterIndex: activeFilterIndex },
     );
+    draft.data[index] = draft.tempData[index];
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
@@ -719,89 +719,110 @@ function handleApplyApodizationFilter(
 //action
 function handleApplyFFTFilter(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    const activeFilterIndex = getActiveFilterIndex(draft);
 
-    //apply filter into the spectrum
-    FiltersManager.applyFilter(
-      draft.data[index],
-      [{ name: fft.id, value: {} }],
-      { filterIndex: activeFilterIndex },
-    );
+  if (!activeSpectrum) return;
 
-    if (activeFilterIndex !== -1) {
-      rollbackSpectrumByFilter(draft, {
-        searchBy: 'name',
-        key: fft.id,
-      });
-    } else {
-      updateView(draft, fft.DOMAIN_UPDATE_RULES);
-    }
+  const { index } = activeSpectrum;
+  const activeFilterIndex = getActiveFilterIndex(draft);
 
-    //clear zoom history
-    draft.zoom.history[draft.view.spectra.activeTab] = [];
-    //hide filter options panel
-    draft.toolOptions.selectedOptionPanel = null;
+  //apply filter into the spectrum
+  FiltersManager.applyFilter(
+    activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
+    [{ name: fft.id, value: {} }],
+    { filterIndex: activeFilterIndex },
+  );
+
+  if (activeFilterIndex !== -1) {
+    draft.data[index] = draft.tempData[index];
   }
+
+  if (activeFilterIndex !== -1) {
+    rollbackSpectrumByFilter(draft, {
+      searchBy: 'name',
+      key: fft.id,
+      triggerSource: 'Apply',
+    });
+  } else {
+    updateView(draft, fft.DOMAIN_UPDATE_RULES);
+  }
+
+  //clear zoom history
+  draft.zoom.history[draft.view.spectra.activeTab] = [];
+
+  draft.toolOptions.selectedOptionPanel = null;
+  draft.toolOptions.selectedTool = 'zoom';
 }
 
 function handleApplyFFtDimension1Filter(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    const activeFilterIndex = getActiveFilterIndex(draft);
 
-    //apply filter into the spectrum
-    FiltersManager.applyFilter(
-      draft.data[index],
-      [{ name: fftDimension1.id, value: {} }],
-      { filterIndex: activeFilterIndex },
-    );
+  if (!activeSpectrum) return;
 
-    if (activeFilterIndex !== -1) {
-      rollbackSpectrumByFilter(draft, {
-        searchBy: 'name',
-        key: fftDimension1.id,
-      });
-    } else {
-      updateView(draft, fftDimension1.DOMAIN_UPDATE_RULES);
-    }
+  const { index } = activeSpectrum;
+  const activeFilterIndex = getActiveFilterIndex(draft);
+
+  //apply filter into the spectrum
+  FiltersManager.applyFilter(
+    activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
+    [{ name: fftDimension1.id, value: {} }],
+    { filterIndex: activeFilterIndex },
+  );
+
+  if (activeFilterIndex !== -1) {
+    draft.data[index] = draft.tempData[index];
   }
+
+  if (activeFilterIndex !== -1) {
+    rollbackSpectrumByFilter(draft, {
+      searchBy: 'name',
+      key: fftDimension1.id,
+      triggerSource: 'Apply',
+    });
+  } else {
+    updateView(draft, fftDimension1.DOMAIN_UPDATE_RULES);
+  }
+
   //clear zoom history
   draft.zoom.history[draft.view.spectra.activeTab] = [];
 
-  //hide filter options panel
   draft.toolOptions.selectedOptionPanel = null;
+  draft.toolOptions.selectedTool = 'zoom';
 }
 
 function handleApplyFFtDimension2Filter(draft: Draft<State>) {
   const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    const activeFilterIndex = getActiveFilterIndex(draft);
 
-    //apply filter into the spectrum
-    FiltersManager.applyFilter(
-      draft.data[index],
-      [{ name: fftDimension2.id, value: {} }],
-      { filterIndex: activeFilterIndex },
-    );
+  if (!activeSpectrum) return;
 
-    if (activeFilterIndex !== -1) {
-      rollbackSpectrumByFilter(draft, {
-        searchBy: 'name',
-        key: fftDimension2.id,
-      });
-    } else {
-      updateView(draft, fftDimension2.DOMAIN_UPDATE_RULES);
-    }
+  const { index } = activeSpectrum;
+  const activeFilterIndex = getActiveFilterIndex(draft);
+
+  //apply filter into the spectrum
+  FiltersManager.applyFilter(
+    activeFilterIndex !== -1 ? draft.tempData[index] : draft.data[index],
+    [{ name: fftDimension2.id, value: {} }],
+    { filterIndex: activeFilterIndex },
+  );
+
+  if (activeFilterIndex !== -1) {
+    draft.data[index] = draft.tempData[index];
   }
+
+  if (activeFilterIndex !== -1) {
+    rollbackSpectrumByFilter(draft, {
+      searchBy: 'name',
+      key: fftDimension2.id,
+      triggerSource: 'Apply',
+    });
+  } else {
+    updateView(draft, fftDimension2.DOMAIN_UPDATE_RULES);
+  }
+
   //clear zoom history
   draft.zoom.history[draft.view.spectra.activeTab] = [];
 
-  //hide filter options panel
   draft.toolOptions.selectedOptionPanel = null;
+  draft.toolOptions.selectedTool = 'zoom';
 }
 
 //action
@@ -817,7 +838,7 @@ function handleApplyManualPhaseCorrectionFilter(
     const activeFilterIndex = getActiveFilterIndex(draft);
 
     FiltersManager.applyFilter(
-      draft.data[index],
+      draft.tempData[index],
       [
         {
           name: phaseCorrection.id,
@@ -826,6 +847,7 @@ function handleApplyManualPhaseCorrectionFilter(
       ],
       { filterIndex: activeFilterIndex },
     );
+    draft.data[index] = draft.tempData[index];
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
@@ -958,7 +980,7 @@ function handleApplyAbsoluteFilter(draft: Draft<State>) {
     const activeFilterIndex = getActiveFilterIndex(draft);
 
     FiltersManager.applyFilter(
-      draft.data[index],
+      draft.tempData[index],
       [
         {
           name: phaseCorrection.id,
@@ -967,6 +989,7 @@ function handleApplyAbsoluteFilter(draft: Draft<State>) {
       ],
       { filterIndex: activeFilterIndex },
     );
+    draft.data[index] = draft.tempData[index];
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
@@ -988,7 +1011,7 @@ function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
     const activeFilterIndex = getActiveFilterIndex(draft);
 
     FiltersManager.applyFilter(
-      draft.data[index],
+      draft.tempData[index],
       [
         {
           name: phaseCorrection.id,
@@ -997,6 +1020,8 @@ function handleApplyAutoPhaseCorrectionFilter(draft: Draft<State>) {
       ],
       { filterIndex: activeFilterIndex },
     );
+
+    draft.data[index] = draft.tempData[index];
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
@@ -1017,11 +1042,12 @@ function handleBaseLineCorrectionFilter(
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
+    const { index } = activeSpectrum;
     const { zones } = draft.toolOptions.data.baselineCorrection;
     const { options } = action.payload;
     const activeFilterIndex = getActiveFilterIndex(draft);
     FiltersManager.applyFilter(
-      draft.data[activeSpectrum.index],
+      draft.tempData[index],
       [
         {
           name: baselineCorrection.id,
@@ -1034,6 +1060,7 @@ function handleBaseLineCorrectionFilter(
 
       { filterIndex: activeFilterIndex },
     );
+    draft.data[index] = draft.tempData[index];
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
@@ -1403,7 +1430,7 @@ function handleApplyManualTowDimensionsPhaseCorrectionFilter(
     const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
     FiltersManager.applyFilter(
-      draft.data[index],
+      draft.tempData[index],
       [
         {
           name: phaseCorrectionTwoDimensions.id,
@@ -1412,6 +1439,7 @@ function handleApplyManualTowDimensionsPhaseCorrectionFilter(
       ],
       { filterIndex: activeFilterIndex },
     );
+    draft.data[index] = draft.tempData[index];
 
     if (activeFilterIndex !== -1) {
       rollbackSpectrumByFilter(draft, {
