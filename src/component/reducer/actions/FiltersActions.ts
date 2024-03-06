@@ -741,6 +741,8 @@ function handleApplyFFTFilter(draft: Draft<State>) {
 
     //clear zoom history
     draft.zoom.history[draft.view.spectra.activeTab] = [];
+    //hide filter options panel
+    draft.toolOptions.selectedOptionPanel = null;
   }
 }
 
@@ -766,6 +768,11 @@ function handleApplyFFtDimension1Filter(draft: Draft<State>) {
       updateView(draft, fftDimension1.DOMAIN_UPDATE_RULES);
     }
   }
+  //clear zoom history
+  draft.zoom.history[draft.view.spectra.activeTab] = [];
+
+  //hide filter options panel
+  draft.toolOptions.selectedOptionPanel = null;
 }
 
 function handleApplyFFtDimension2Filter(draft: Draft<State>) {
@@ -790,6 +797,11 @@ function handleApplyFFtDimension2Filter(draft: Draft<State>) {
       updateView(draft, fftDimension2.DOMAIN_UPDATE_RULES);
     }
   }
+  //clear zoom history
+  draft.zoom.history[draft.view.spectra.activeTab] = [];
+
+  //hide filter options panel
+  draft.toolOptions.selectedOptionPanel = null;
 }
 
 //action
