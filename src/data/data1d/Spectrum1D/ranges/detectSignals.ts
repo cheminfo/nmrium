@@ -20,9 +20,15 @@ export default function detectSignals(
   if (toIndex - fromIndex >= MAX_LENGTH) {
     const ranges = xyAutoRangesPicking(data, {
       peakPicking: {
+        sgOptions: {
+          windowSize: 7,
+          polynomial: 3,
+        },
         to,
         from,
         frequency,
+        broadRatio: 0.0025,
+        smoothY: true,
       },
       ranges: {
         symRatio: 2.5,
