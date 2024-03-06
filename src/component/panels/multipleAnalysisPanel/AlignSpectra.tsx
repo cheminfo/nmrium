@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { REFERENCES } from '../../../data/constants/References';
 import { CalibrateOptions } from '../../../data/data1d/Spectrum1D/getReferenceShift';
 import { useDispatch } from '../../context/DispatchContext';
-import Button from '../../elements/Button';
+import ActionButtons from '../../elements/ActionButtons';
 import { InputStyle } from '../../elements/Input';
 import Label, { LabelStyle } from '../../elements/Label';
 import Message from '../../elements/Message';
@@ -202,12 +202,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
               </Label>
             </div>
             <div className="footer">
-              <Button.Done
-                style={{ padding: '5px 14px', fontSize: 14 }}
-                onClick={submitForm}
-              >
-                Done
-              </Button.Done>
+              <ActionButtons onDone={submitForm} onCancel={onClose} />
             </div>
           </>
         )}
