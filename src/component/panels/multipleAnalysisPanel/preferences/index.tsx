@@ -11,6 +11,7 @@ import { usePreferences } from '../../../context/PreferencesContext';
 import { GroupPane } from '../../../elements/GroupPane';
 import Label from '../../../elements/Label';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
+import useCheckExperimentalFeature from '../../../hooks/useCheckExperimentalFeature';
 import { usePanelPreferences } from '../../../hooks/usePanelPreferences';
 import { PreferencesContainer } from '../../extra/preferences/PreferencesContainer';
 
@@ -59,6 +60,7 @@ function MultipleSpectraAnalysisPreferences(
 
   const preferences = usePreferences();
   const columns = getMultipleSpectraAnalysisData(panelPreferences);
+  const isExperimental = useCheckExperimentalFeature();
 
   useImperativeHandle(ref, () => ({
     saveSetting() {
@@ -116,15 +118,17 @@ function MultipleSpectraAnalysisPreferences(
           >
             <AnalysisTablePreferences />
           </GroupPane>
-          <GroupPane
-            text="Execute code "
-            style={{
-              header: { color: 'black' },
-              container: { padding: '5px' },
-            }}
-          >
-            <MultipleAnalysisCodeEditor data={data} />
-          </GroupPane>
+          {isExperimental && (
+            <GroupPane
+              text="Execute code "
+              style={{
+                header: { color: 'black' },
+                container: { padding: '5px' },
+              }}
+            >
+              <MultipleAnalysisCodeEditor data={data} />
+            </GroupPane>
+          )}
         </>
       </Formik>
     </PreferencesContainer>
