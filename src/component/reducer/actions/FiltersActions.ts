@@ -17,7 +17,8 @@ import {
 } from 'nmr-processing';
 
 import { defaultApodizationOptions } from '../../../data/constants/DefaultApodizationOptions';
-import { getSlice, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { getProjection } from '../../../data/data2d/Spectrum2D/getMissingProjection';
 import { ExclusionZone } from '../../../data/types/data1d/ExclusionZone';
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
@@ -26,11 +27,19 @@ import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import nucleusToString from '../../utility/nucleusToString';
-import { getInitialState, State, TraceDirection } from '../Reducer';
+import {
+  getDefaultTwoDimensionsPhaseCorrectionTraceOptions,
+  getInitialState,
+  PhaseCorrectionTraceData,
+  State,
+  TraceDirection,
+  TwoDimensionPhaseCorrection,
+} from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
+import { findStrongestPeak } from '../helper/findStrongestPeak';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import getRange from '../helper/getRange';
-import { getStrongestPeak } from '../helper/getStrongestPeak';
+import { getSpectrum } from '../helper/getSpectrum';
 import { getTwoDimensionPhaseCorrectionOptions } from '../helper/getTwoDimensionPhaseCorrectionOptions';
 import { ActionType } from '../types/ActionType';
 
@@ -45,6 +54,7 @@ const {
   apodization,
   baselineCorrection,
   phaseCorrection,
+  phaseCorrectionTwoDimensions,
   zeroFilling,
   shiftX,
   shift2DX,
@@ -75,10 +85,12 @@ type ZeroFillingFilterLiveAction = ActionType<
 >;
 type ManualPhaseCorrectionFilterAction = ActionType<
   | 'APPLY_MANUAL_PHASE_CORRECTION_FILTER'
-  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER'
-  | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
-  | 'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
+  | 'CALCULATE_MANUAL_PHASE_CORRECTION_FILTER',
   { ph0: number; ph1: number }
+>;
+type ManualTwoDimensionsPhaseCorrectionFilterAction = ActionType<
+  'CALCULATE_TOW_DIMENSIONS_MANUAL_PHASE_CORRECTION_FILTER',
+  { ph0: number; ph1: number; applyOn2D?: boolean }
 >;
 
 type BaselineCorrectionFilterOptions = Omit<BaselineCorrectionOptions, 'zones'>;
@@ -163,12 +175,15 @@ export type FiltersActions =
   | DeletePhaseCorrectionTrace
   | SetOneDimensionPhaseCorrectionPivotPoint
   | SetTwoDimensionPhaseCorrectionPivotPoint
+  | ManualTwoDimensionsPhaseCorrectionFilterAction
   | ActionType<
       | 'APPLY_FFT_FILTER'
       | 'APPLY_FFT_DIMENSION_1_FILTER'
       | 'APPLY_FFT_DIMENSION_2_FILTER'
       | 'APPLY_AUTO_PHASE_CORRECTION_FILTER'
       | 'APPLY_ABSOLUTE_FILTER'
+      | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
+      | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
     >;
 
 function getFilterUpdateDomainRules(
@@ -334,6 +349,7 @@ function rollbackSpectrum(
     ? true
     : [
         phaseCorrection.id,
+        phaseCorrectionTwoDimensions.id,
         fft.id,
         shiftX.id,
         shift2DX.id,
@@ -353,10 +369,116 @@ function rollbackSpectrum(
   afterRollback(draft, filterKey);
 }
 
+function getTwoDimensionFilterOptions(
+  draft: Draft<State>,
+): TwoDimensionPhaseCorrection['traces'] | null {
+  const spectrum = getSpectrum(draft);
+  const phaseCorrectionFilter = spectrum.filters.find(
+    (filter) => filter.name === Tools.phaseCorrectionTwoDimensions.id,
+  );
+
+  if (!isSpectrum2D(spectrum)) {
+    return null;
+  }
+
+  const { value } = phaseCorrectionFilter || {};
+  let filterOptions = getDefaultTwoDimensionsPhaseCorrectionTraceOptions();
+  if (value) {
+    filterOptions = value;
+  }
+
+  return filterOptions;
+}
+
 function beforeRollback(draft: Draft<State>, filterKey) {
   const activeSpectrum = getActiveSpectrum(draft);
 
   switch (filterKey) {
+    case phaseCorrection.id: {
+      if (activeSpectrum) {
+        const spectrum = current(draft).data[activeSpectrum.index];
+
+        const phaseCorrectionFilter = spectrum.filters.find(
+          (filter) => filter.name === Tools.phaseCorrectionTwoDimensions.id,
+        );
+
+        if (isSpectrum1D(spectrum)) {
+          const { value: filterOptions } = phaseCorrectionFilter || {};
+          let pivotObj = {
+            value: 0,
+            index: 0,
+          };
+          if (typeof filterOptions?.pivot === 'number') {
+            const { pivot } = filterOptions;
+            const index = xFindClosestIndex(spectrum.data.re, pivot);
+            pivotObj = { value: pivot, index };
+          } else {
+            // look for the strongest peak to set it as a pivot
+            const peak = findStrongestPeak(spectrum.data);
+            if (peak) {
+              const { xValue, index } = peak;
+              pivotObj = { value: xValue, index };
+            }
+          }
+
+          draft.toolOptions.data.pivot = pivotObj;
+        }
+      }
+      break;
+    }
+
+    case phaseCorrectionTwoDimensions.id: {
+      if (activeSpectrum) {
+        const spectrum = current(draft).data[activeSpectrum.index];
+
+        const filterOptions = getTwoDimensionFilterOptions(draft);
+
+        if (!isSpectrum2D(spectrum) || !filterOptions) {
+          return;
+        }
+
+        for (const direction in filterOptions) {
+          const phaseOptions = draft.toolOptions.data
+            .twoDimensionPhaseCorrection.traces[
+            direction
+          ] as PhaseCorrectionTraceData;
+          const { ph0, ph1, pivot, spectra = [] } = filterOptions[direction];
+          phaseOptions.ph0 = ph0;
+          phaseOptions.ph1 = ph1;
+          phaseOptions.scaleRatio = 1;
+          phaseOptions.spectra = spectra.map((spectrum) => ({
+            ...spectrum,
+            id: spectrum?.id || v4(),
+          }));
+
+          const datum = getProjection(
+            (spectrum.data as NmrData2DFt).rr,
+            direction === 'horizontal' ? 0 : 1,
+          );
+
+          if (typeof pivot === 'number') {
+            const index = xFindClosestIndex(datum.x, pivot, {
+              sorted: false,
+            });
+            phaseOptions.pivot = { index, value: pivot };
+          } else {
+            const peak = findStrongestPeak(datum);
+
+            let pivotObj = {
+              value: 0,
+              index: 0,
+            };
+            if (peak) {
+              const { xValue, index } = peak;
+              pivotObj = { value: xValue, index };
+            }
+
+            phaseOptions.pivot = pivotObj;
+          }
+        }
+      }
+      break;
+    }
     case baselineCorrection.id: {
       if (activeSpectrum) {
         const datum = current(draft).data[activeSpectrum.index];
@@ -384,18 +506,9 @@ function beforeRollback(draft: Draft<State>, filterKey) {
   }
 }
 function afterRollback(draft: Draft<State>, filterKey) {
+  // const activeSpectrum = getActiveSpectrum(draft);
+
   switch (filterKey) {
-    case phaseCorrection.id: {
-      // look for the strongest peak to set it as a pivot
-      const { xValue, index } = getStrongestPeak(draft) || {
-        xValue: 0,
-        index: 0,
-      };
-
-      draft.toolOptions.data.pivot = { value: xValue, index };
-
-      break;
-    }
     case apodization.id: {
       draft.toolOptions.data.apodizationOptions = defaultApodizationOptions;
       break;
@@ -731,7 +844,7 @@ function handleAddPhaseCorrectionTrace(
     data: spectra,
   } = draft;
 
-  const { activeTraces, activeTraceDirection } =
+  const { activeTraces, traces, addTracesToBothDirections } =
     getTwoDimensionPhaseCorrectionOptions(draft);
 
   if (activeSpectrum?.id) {
@@ -742,15 +855,16 @@ function handleAddPhaseCorrectionTrace(
       const scale2dY = get2DYScale({ margin, height, yDomain });
       const xPPM = scale2dX.invert(x);
       const yPPM = scale2dY.invert(y);
-      const sliceData = getSlice(spectrum, {
-        x: xPPM,
-        y: yPPM,
-      });
-
-      if (sliceData) {
-        const { data } = sliceData[activeTraceDirection];
+      if (addTracesToBothDirections) {
+        for (const direction of Object.keys(traces)) {
+          traces[direction].spectra.push({
+            id: v4(),
+            x: xPPM,
+            y: yPPM,
+          });
+        }
+      } else {
         activeTraces.spectra.push({
-          data,
           id: v4(),
           x: xPPM,
           y: yPPM,
@@ -759,6 +873,12 @@ function handleAddPhaseCorrectionTrace(
     }
   }
 }
+//action
+function handleToggleAddTracesToBothDirections(draft: Draft<State>) {
+  const options = draft.toolOptions.data.twoDimensionPhaseCorrection;
+  options.addTracesToBothDirections = !options.addTracesToBothDirections;
+}
+
 //action
 function handleChangePhaseCorrectionDirection(
   draft: Draft<State>,
@@ -1210,33 +1330,85 @@ function handleSetTwoDimensionPhaseCorrectionPivotPoint(
 //action
 function handleCalculateManualTwoDimensionPhaseCorrection(
   draft: Draft<State>,
-  action: ManualPhaseCorrectionFilterAction,
+  action: ManualTwoDimensionsPhaseCorrectionFilterAction,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+  const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
+  const { ph0, ph1, applyOn2D = false } = action.payload;
+  activeTraces.ph0 = ph0;
+  activeTraces.ph1 = ph1;
+
+  if (!applyOn2D || !activeSpectrum) {
+    return;
+  }
+
+  const { index } = activeSpectrum;
+  const spectrum = draft.tempData[index];
+
+  if (!isSpectrum2D(spectrum)) {
+    return;
+  }
+
+  const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
+
+  const { data, info } = spectrum;
+  const _data = { data, info };
+  phaseCorrectionTwoDimensions.apply(_data, filterOptions);
+  draft.data[index].data = _data.data;
+}
+
+function getTwoDimensionsPhaseCorrectionOptions(draft: Draft<State>) {
+  const filterOptions =
+    draft.toolOptions.data.twoDimensionPhaseCorrection.traces;
+
+  const result = {};
+  for (const direction in filterOptions) {
+    const { ph0, ph1, pivot, spectra } = filterOptions[
+      direction
+    ] as PhaseCorrectionTraceData;
+    result[direction] = {
+      ph0,
+      ph1,
+      pivot: pivot?.value,
+      spectra: spectra.map(({ x, y }) => ({
+        x,
+        y,
+      })),
+    };
+  }
+  return result;
+}
+
+//action
+function handleApplyManualTowDimensionsPhaseCorrectionFilter(
+  draft: Draft<State>,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    const { activeTraces, activeTraceDirection } =
-      getTwoDimensionPhaseCorrectionOptions(draft);
-    const { ph0, ph1 } = action.payload;
-    activeTraces.ph0 = ph0;
-    activeTraces.ph1 = ph1;
+    draft.data = draft.tempData;
+    const activeFilterIndex = getActiveFilterIndex(draft);
+    const filterOptions = getTwoDimensionsPhaseCorrectionOptions(draft);
 
-    for (const spectrumTrace of activeTraces.spectra) {
-      const { x, y } = spectrumTrace;
-      const spectrumData = draft.data[index] as Spectrum2D;
-      const sliceData = getSlice(spectrumData, { x, y }, { sliceType: 'both' });
-      if (sliceData) {
-        const { data, info } = sliceData[activeTraceDirection];
-        const _data = {
-          data,
-          info,
-        };
-        phaseCorrection.apply(_data as unknown as Spectrum1D, { ph0, ph1 });
-        const { im: newIm, re: newRe } = _data.data;
+    FiltersManager.applyFilter(
+      draft.data[index],
+      [
+        {
+          name: phaseCorrectionTwoDimensions.id,
+          value: filterOptions,
+        },
+      ],
+      { filterIndex: activeFilterIndex },
+    );
 
-        spectrumTrace.data.im = newIm;
-        spectrumTrace.data.re = newRe;
-      }
+    if (activeFilterIndex !== -1) {
+      rollbackSpectrumByFilter(draft, {
+        searchBy: 'name',
+        key: phaseCorrectionTwoDimensions.id,
+        triggerSource: 'Apply',
+      });
+    } else {
+      updateView(draft, phaseCorrectionTwoDimensions.DOMAIN_UPDATE_RULES);
     }
   }
 }
@@ -1249,6 +1421,7 @@ export {
   handleApplyFFtDimension1Filter,
   handleApplyFFtDimension2Filter,
   handleApplyManualPhaseCorrectionFilter,
+  handleApplyManualTowDimensionsPhaseCorrectionFilter,
   handleApplyAutoPhaseCorrectionFilter,
   handleApplyAbsoluteFilter,
   handleCalculateManualPhaseCorrection,
@@ -1272,4 +1445,5 @@ export {
   handleSetOneDimensionPhaseCorrectionPivotPoint,
   handleSetTwoDimensionPhaseCorrectionPivotPoint,
   handleCalculateManualTwoDimensionPhaseCorrection,
+  handleToggleAddTracesToBothDirections,
 };

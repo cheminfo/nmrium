@@ -19,8 +19,8 @@ import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumR
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { FilterType } from '../../utility/filterType';
 import { booleanToString } from '../../utility/booleanToString';
+import { FilterType } from '../../utility/filterType';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 function RangesHeader({

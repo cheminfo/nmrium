@@ -1,5 +1,4 @@
 import { v4 } from '@lukeed/uuid';
-import { NmrData1D } from 'cheminfo-types';
 import { WebSource as Source } from 'filelist-utils';
 import { Draft, produce, original } from 'immer';
 import { buildCorrelationData, CorrelationData } from 'nmr-correlation';
@@ -50,7 +49,6 @@ export type SpectraDirection = 'RTL' | 'LTR';
 export type TraceDirection = 'vertical' | 'horizontal';
 export interface SpectrumTrace {
   id: string;
-  data: NmrData1D;
   x: number;
   y: number;
 }
@@ -66,7 +64,27 @@ export interface PhaseCorrectionTraceData {
 export interface TwoDimensionPhaseCorrection {
   traces: Record<TraceDirection, PhaseCorrectionTraceData>;
   activeTraceDirection: TraceDirection;
+  addTracesToBothDirections: boolean;
 }
+
+export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =
+  (): TwoDimensionPhaseCorrection['traces'] => {
+    const directions: [TraceDirection, TraceDirection] = [
+      'horizontal',
+      'vertical',
+    ];
+    const result = {};
+    for (const direction of directions) {
+      result[direction] = {
+        ph0: 0,
+        ph1: 0,
+        pivot: null,
+        spectra: [],
+        scaleRatio: 1,
+      };
+    }
+    return result as TwoDimensionPhaseCorrection['traces'];
+  };
 
 export function getDefaultViewState(): ViewState {
   return {
@@ -143,22 +161,8 @@ export const getInitialState = (): State => ({
       apodizationOptions: {} as ApodizationOptions,
       twoDimensionPhaseCorrection: {
         activeTraceDirection: 'horizontal',
-        traces: {
-          horizontal: {
-            ph0: 0,
-            ph1: 0,
-            pivot: null,
-            spectra: [],
-            scaleRatio: 1,
-          },
-          vertical: {
-            ph0: 0,
-            ph1: 0,
-            pivot: null,
-            spectra: [],
-            scaleRatio: 1,
-          },
-        },
+        addTracesToBothDirections: true,
+        traces: getDefaultTwoDimensionsPhaseCorrectionTraceOptions(),
       },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
@@ -495,6 +499,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
           action,
         );
+      case 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS':
+        return FiltersActions.handleToggleAddTracesToBothDirections(draft);
       case 'DELETE_PHASE_CORRECTION_TRACE':
         return FiltersActions.handleDeletePhaseCorrectionTrace(draft, action);
       case 'SET_ONE_DIMENSION_PIVOT_POINT':
@@ -511,6 +517,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleCalculateManualTwoDimensionPhaseCorrection(
           draft,
           action,
+        );
+      case 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER':
+        return FiltersActions.handleApplyManualTowDimensionsPhaseCorrectionFilter(
+          draft,
         );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectrumsActions.handleChangeSpectrumVisibilityById(

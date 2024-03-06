@@ -5,7 +5,11 @@ export function useActivePhaseTraces() {
   const {
     toolOptions: {
       data: {
-        twoDimensionPhaseCorrection: { traces, activeTraceDirection },
+        twoDimensionPhaseCorrection: {
+          traces,
+          activeTraceDirection,
+          addTracesToBothDirections,
+        },
       },
     },
   } = useChartData();
@@ -14,5 +18,6 @@ export function useActivePhaseTraces() {
     ...traces[activeTraceDirection],
     activeTraceDirection,
     color,
+    addTracesToBothDirections,
   };
 }

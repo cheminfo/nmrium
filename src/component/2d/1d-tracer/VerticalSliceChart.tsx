@@ -1,6 +1,8 @@
 import { NmrData1D } from 'cheminfo-types';
+import { Spectrum2D } from 'nmr-load-save';
 
 import { useChartData } from '../../context/ChartContext';
+import useSpectrum from '../../hooks/useSpectrum';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getSliceYScale, useScale2DY } from '../utilities/scale';
 
@@ -21,10 +23,17 @@ function usePath(data, props: usePathOptions) {
   const { reverse, width = 100, horizontalMargin = 10 } = props;
   const { mode } = useChartData();
   const scaleX = useScale2DY(reverse);
+  const spectrum = useSpectrum() as Spectrum2D;
+
+  if (!data || !spectrum) {
+    return '';
+  }
 
   const { x, re: y } = data;
 
-  const scaleY = getSliceYScale(y, width, mode, { margin: horizontalMargin });
+  const scaleY = getSliceYScale(spectrum.data, width, mode, {
+    margin: horizontalMargin,
+  });
 
   const pathBuilder = new PathBuilder();
 
