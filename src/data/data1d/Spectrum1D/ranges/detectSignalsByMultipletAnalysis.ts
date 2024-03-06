@@ -37,16 +37,28 @@ export function detectSignalsByMultipletAnalysis(data: DataXY, options: any) {
   }
   cs /= area;
 
-  const peaks = xyAutoPeaksPicking(dataRoi, { frequency });
+  const peaks = xyAutoPeaksPicking(data, {
+    from: data.x[fromIndex],
+    to: data.x[toIndex],
+    frequency,
+    minMaxRatio: 0.1,
+    broadWidth: 0.25,
+    broadRatio: 0.0025,
+    optimize: false,
+    smoothY: true,
+  });
 
-  const multiplicity = getMultiplicity(js, { cs, delta, peaks });
-
+  const { jCouplings, multiplicity } = getMultiplicity(js, {
+    cs,
+    delta,
+    peaks,
+  });
   return [
     {
       multiplicity,
       kind: 'signal',
       delta: cs,
-      js,
+      js: jCouplings,
       peaks,
       diaIDs: [],
     },
@@ -59,12 +71,21 @@ function getMultiplicity(
 ) {
   const { cs, delta, peaks } = options;
 
-  if (js?.length > 0) {
-    return js.map((j) => j.multiplicity).join('');
+  if (peaks.length > 1 && js?.length > 0) {
+    return {
+      jCouplings: js,
+      multiplicity: js.map((j) => j.multiplicity).join(''),
+    };
   }
   //check if the massive center is closer to the shift from multiplet-analysis,
   //if true, is it possibly a singlet.
-  return peaks.length === 1 && Math.abs(cs - delta) / cs < 1e-3 ? 's' : 'm';
+  if (peaks.length === 1 && js.length > 0) {
+    return { jCouplings: [], multiplicity: 'br s' };
+  }
+  return {
+    jCouplings: [],
+    multiplicity: Math.abs(cs - delta) / cs < 1e-3 ? 's' : 'm',
+  };
 }
 
 function joinCouplings(result: any) {
