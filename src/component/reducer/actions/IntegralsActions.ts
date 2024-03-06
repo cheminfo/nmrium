@@ -99,7 +99,7 @@ function addIntegral(datum: Spectrum1D, options: AddIntegralOptions) {
   const { x, re } = datum.data;
 
   const shiftX = getShiftX(datum);
-  const integration = xyIntegration({ x, y: re }, { from, to, reverse: true });
+  const integration = xyIntegration({ x, y: re }, { from, to });
   const integral = {
     id: v4(),
     originalFrom: from - shiftX,
@@ -183,7 +183,7 @@ function handleChangeIntegral(
         originalTo: integral.to,
         absolute: xyIntegration(
           { x, y: re },
-          { from: integral.from, to: integral.to, reverse: true },
+          { from: integral.from, to: integral.to },
         ),
       };
       updateIntegralsRelativeValues(datum);

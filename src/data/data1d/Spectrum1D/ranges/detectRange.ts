@@ -17,7 +17,7 @@ export function detectRange(
   const { from, to } = options;
   const { x, re: y } = spectrum.data;
 
-  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
+  const absolute = xyIntegration({ x, y }, { from, to });
   const min = xyMinYPoint({ x, y }, { from, to }).y;
   const max = xyMaxYPoint({ x, y }, { from, to }).y;
 

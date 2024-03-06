@@ -34,7 +34,7 @@ export function addRange(spectrum: Spectrum1D, options: RangeOptions) {
   const { x, re: y } = spectrum.data;
   const { nucleus, originFrequency: frequency } = spectrum.info;
 
-  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
+  const absolute = xyIntegration({ x, y }, { from, to });
 
   const signals =
     detectSignals(

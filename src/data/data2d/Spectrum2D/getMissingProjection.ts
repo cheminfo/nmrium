@@ -1,5 +1,5 @@
 import { NmrData2DFt } from 'cheminfo-types';
-import { zoneToX } from 'ml-spectra-processing';
+import { xSequentialFillFromTo } from 'ml-spectra-processing';
 import { Info1D, Info2D } from 'nmr-processing';
 
 import { UsedColors } from '../../../types/UsedColors';
@@ -29,7 +29,7 @@ export function getProjection(datum: NmrData2DFt['rr'], index: number) {
   }
 
   return {
-    x: zoneToX({ from, to }, nbPoints),
+    x: xSequentialFillFromTo({ from, to, size: nbPoints }),
     re: projection,
   };
 }

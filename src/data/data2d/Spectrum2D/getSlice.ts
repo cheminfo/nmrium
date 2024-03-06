@@ -4,7 +4,7 @@ import type {
   NmrData2DFid,
   NmrData2DFt,
 } from 'cheminfo-types';
-import { zoneToX } from 'ml-spectra-processing';
+import { xSequentialFillFromTo } from 'ml-spectra-processing';
 import type { Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { Info2D } from 'nmr-processing';
 
@@ -101,9 +101,9 @@ export function getSlice(
   return { horizontal, vertical };
 }
 
-function initiateData(from: number, to: number, length: number): NmrData1D {
+function initiateData(from: number, to: number, size: number): NmrData1D {
   return {
-    x: zoneToX({ from, to }, length),
+    x: xSequentialFillFromTo({ from, to, size }),
     re: new Float64Array(length),
   };
 }
