@@ -19,6 +19,15 @@ async function apodizationFilter(
   }
 
   await expect(nmrium.page.getByTestId('apodization-line')).toBeVisible();
+  await nmrium.page.fill(
+    '_react=ApodizationOptionsPanel >> [name="lineBroadening"]',
+    '2',
+  );
+  await nmrium.page
+    .locator(
+      '_react=ApodizationOptionsPanel >> [name="lineBroadening"].debounce-end',
+    )
+    .waitFor({ state: 'visible' });
 
   await nmrium.page.click('button >> text=Apply');
 
