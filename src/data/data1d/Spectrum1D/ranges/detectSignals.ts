@@ -6,7 +6,7 @@ import { detectSignalsByMultipletAnalysis } from './detectSignalsByMultipletAnal
 
 const MAX_LENGTH = 4092;
 export default function detectSignals(
-  data: DataXY,
+  data: DataXY<Float64Array>,
   options: {
     from: number;
     to: number;

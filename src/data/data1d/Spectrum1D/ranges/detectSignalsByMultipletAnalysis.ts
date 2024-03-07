@@ -6,7 +6,10 @@ import {
   xyAutoPeaksPicking,
 } from 'nmr-processing';
 
-export function detectSignalsByMultipletAnalysis(data: DataXY, options: any) {
+export function detectSignalsByMultipletAnalysis(
+  data: DataXY<Float64Array>,
+  options: any,
+) {
   const { fromIndex, toIndex, frequency } = options;
   const dataRoi = {
     x: data.x.slice(fromIndex, toIndex),
