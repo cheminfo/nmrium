@@ -5,8 +5,6 @@ import { useChartData } from '../context/ChartContext';
 import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
-import { positions, useModal } from '../elements/popup/Modal';
-import SaveAsModal from '../modal/SaveAsModal';
 import {
   copyPNGToClipboard,
   exportAsJSON,
@@ -14,9 +12,15 @@ import {
   exportAsSVG,
 } from '../utility/export';
 
+interface SaveOptions {
+  include: ExportOptions;
+  name: string;
+  compressed: boolean;
+  pretty: boolean;
+}
+
 export default function useExport() {
   const { rootRef } = useGlobal();
-  const modal = useModal();
   const alert = useAlert();
   const state = useChartData();
   const preferencesState = usePreferences();
@@ -88,13 +92,6 @@ export default function useExport() {
     }
   }, [rootRef, alert, state.data]);
 
-  interface SaveOptions {
-    include: ExportOptions;
-    name: string;
-    compressed: boolean;
-    pretty: boolean;
-  }
-
   const saveHandler = useCallback(
     (options: SaveOptions) => {
       async function handler() {
@@ -119,20 +116,12 @@ export default function useExport() {
     },
     [alert, preferencesState, state],
   );
-  const saveAsHandler = useCallback(async () => {
-    const fileName = state.data[0]?.info?.name;
-    modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
-      isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
-      width: 500,
-    });
-  }, [modal, saveHandler, state.data]);
 
   return {
     saveToClipboardHandler,
     saveAsJSONHandler,
     saveAsSVGHandler,
     saveAsPNGHandler,
-    saveAsHandler,
+    saveHandler,
   };
 }

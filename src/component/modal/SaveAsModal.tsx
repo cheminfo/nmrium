@@ -1,32 +1,27 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Field, Formik } from 'formik';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import { DataExportOptions } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import ActionButtons from '../elements/ActionButtons';
-import { CloseButton } from '../elements/CloseButton';
 import Label, { LabelStyle } from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
 
-import { ModalStyles } from './ModalStyle';
-
 const styles = css`
-  .inner-content {
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-right: 20px;
+    display: inline-block;
   }
 
-  .data-export-group {
-    label {
-      margin-right: 10px;
-      display: inline-block;
-    }
-
-    input[type='radio'] {
-      margin-right: 5px;
-    }
+  input[type='radio'] {
+    margin-right: 5px;
   }
 `;
 
@@ -45,7 +40,6 @@ export const labelStyle: LabelStyle = {
   label: {
     flex: 4,
     fontSize: '12px',
-    fontWeight: 'bold',
     color: '#232323',
   },
   wrapper: {
@@ -57,41 +51,44 @@ export const labelStyle: LabelStyle = {
 };
 
 interface SaveAsModalProps {
-  onClose?: (event?: MouseEvent) => void;
+  onCloseDialog: () => void;
   onSave: (element: any) => void;
-  name: string;
+  isOpen: boolean;
 }
 
-function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
+function SaveAsModal(props: SaveAsModalProps) {
+  const { onCloseDialog, onSave, isOpen } = props;
   const refForm = useRef<any>();
-  const { source } = useChartData();
+  const { source, data } = useChartData();
 
-  const handleSave = useCallback(() => {
+  const fileName = data[0]?.info?.name;
+
+  function handleSave() {
     refForm.current.submitForm();
-  }, []);
+  }
 
-  const submitHandler = useCallback(
-    (values) => {
-      onSave(values);
-      onClose?.();
-    },
-    [onClose, onSave],
-  );
+  function submitHandler(values) {
+    onSave(values);
+    onCloseDialog?.();
+  }
+
+  if (!isOpen) return;
 
   return (
-    <div css={[ModalStyles, styles]}>
-      <div className="header handle">
-        <span>Save as ... </span>
-        <CloseButton
-          title="Close"
-          onClick={() => onClose?.()}
-          className="close-bt"
-        />
-      </div>
-      <div className="inner-content">
+    <Dialog
+      isOpen
+      title="Save as ... "
+      onClose={onCloseDialog}
+      style={{ width: 500 }}
+    >
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
         <Formik
           innerRef={refForm}
-          initialValues={{ ...INITIAL_VALUE, name }}
+          initialValues={{ ...INITIAL_VALUE, name: fileName }}
           onSubmit={submitHandler}
         >
           <>
@@ -105,21 +102,29 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                 }}
               />
             </Label>
-            <Label style={labelStyle} title="Compressed">
+            <Label style={labelStyle} title="Compressed" htmlFor="compressed">
               <FormikCheckBox name="compressed" />
             </Label>
-            <Label style={labelStyle} title="Pretty Format">
+            <Label style={labelStyle} title="Pretty Format" htmlFor="pretty">
               <FormikCheckBox name="pretty" />
             </Label>
-            <Label style={labelStyle} title="Include view">
+            <Label
+              style={labelStyle}
+              title="Include view"
+              htmlFor="include.view"
+            >
               <FormikCheckBox name="include.view" />
             </Label>
-            <Label style={labelStyle} title="Include settings">
+            <Label
+              style={labelStyle}
+              title="Include settings"
+              htmlFor="include.settings"
+            >
               <FormikCheckBox name="include.settings" />
             </Label>
             <Label style={labelStyle} title="Include Data">
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="data-export-group">
+              <div css={styles}>
+                <div>
                   <label>
                     <Field
                       type="radio"
@@ -154,16 +159,16 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
             </Label>
           </>
         </Formik>
-      </div>
-      <div className="footer-container">
+      </DialogBody>
+      <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
           onDone={handleSave}
           doneLabel="Save"
-          onCancel={() => onClose?.()}
+          onCancel={() => onCloseDialog?.()}
         />
-      </div>
-    </div>
+      </DialogFooter>
+    </Dialog>
   );
 }
 

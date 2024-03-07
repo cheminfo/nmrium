@@ -1,4 +1,5 @@
 import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useOnOff } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import { useAssignmentData } from '../assignment/AssignmentsContext';
@@ -12,6 +13,7 @@ import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
+import SaveAsModal from '../modal/SaveAsModal';
 import { options } from '../toolbar/ToolTypes';
 
 interface KeysListenerTrackerProps {
@@ -34,6 +36,8 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
+  const [isSaveModalOpened, openSaveAsDialog, closeSaveAsDialog] =
+    useOnOff(false);
 
   const {
     handleChangeOption,
@@ -42,7 +46,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler, saveAsHandler } =
+  const { saveToClipboardHandler, saveAsJSONHandler, saveHandler } =
     useExport();
   const isToolVisible = useCheckToolsVisibility();
 
@@ -438,7 +442,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           switch (e.key) {
             case 's':
             case 'S':
-              void saveAsHandler();
+              openSaveAsDialog();
               e.preventDefault();
               break;
             default:
@@ -459,7 +463,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       handleFullZoomOut,
       isToolVisible,
       openLoader,
-      saveAsHandler,
+      openSaveAsDialog,
       saveAsJSONHandler,
       saveToClipboardHandler,
     ],
@@ -496,7 +500,13 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     return () => document.removeEventListener('keydown', handleOnKeyDown);
   }, [handleOnKeyDown]);
 
-  return null;
+  return (
+    <SaveAsModal
+      onSave={saveHandler}
+      isOpen={isSaveModalOpened}
+      onCloseDialog={closeSaveAsDialog}
+    />
+  );
 }
 
 function checkNotInputField(e: Event) {
