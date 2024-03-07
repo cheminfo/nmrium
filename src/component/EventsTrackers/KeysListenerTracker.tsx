@@ -46,8 +46,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler, saveHandler } =
-    useExport();
+  const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
@@ -501,11 +500,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   }, [handleOnKeyDown]);
 
   return (
-    <SaveAsModal
-      onSave={saveHandler}
-      isOpen={isSaveModalOpened}
-      onCloseDialog={closeSaveAsDialog}
-    />
+    <SaveAsModal isOpen={isSaveModalOpened} onCloseDialog={closeSaveAsDialog} />
   );
 }
 

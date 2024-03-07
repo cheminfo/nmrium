@@ -140,7 +140,6 @@ export default function ToolBar() {
     saveAsPNGHandler,
     saveAsJSONHandler,
     saveToClipboardHandler,
-    saveHandler,
   } = useExport();
 
   function importHandler(data) {
@@ -336,11 +335,7 @@ export default function ToolBar() {
         isOpen={dialog.metaImportation}
         onCloseDialog={closeDialog}
       />
-      <SaveAsModal
-        onSave={saveHandler}
-        isOpen={dialog.saveAs}
-        onCloseDialog={closeDialog}
-      />
+      <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
       <Toolbar vertical>
         {toolItems.map((item) => {
           const { id, icon, title, checkOptions, condition } = item;

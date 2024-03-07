@@ -10,6 +10,7 @@ import ActionButtons from '../elements/ActionButtons';
 import Label, { LabelStyle } from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
+import useExport from '../hooks/useExport';
 
 const styles = css`
   display: flex;
@@ -52,23 +53,19 @@ export const labelStyle: LabelStyle = {
 
 interface SaveAsModalProps {
   onCloseDialog: () => void;
-  onSave: (element: any) => void;
   isOpen: boolean;
 }
 
 function SaveAsModal(props: SaveAsModalProps) {
-  const { onCloseDialog, onSave, isOpen } = props;
+  const { onCloseDialog, isOpen } = props;
   const refForm = useRef<any>();
   const { source, data } = useChartData();
+  const { saveHandler } = useExport();
 
   const fileName = data[0]?.info?.name;
 
-  function handleSave() {
-    refForm.current.submitForm();
-  }
-
   function submitHandler(values) {
-    onSave(values);
+    saveHandler(values);
     onCloseDialog?.();
   }
 
@@ -163,7 +160,7 @@ function SaveAsModal(props: SaveAsModalProps) {
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={handleSave}
+          onDone={() => refForm.current.submitForm()}
           doneLabel="Save"
           onCancel={() => onCloseDialog?.()}
         />
