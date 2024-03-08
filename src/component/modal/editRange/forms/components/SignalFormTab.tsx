@@ -1,7 +1,11 @@
+/** @jsxImportSource @emotion/react */
+import { Tab, Tabs } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { useFormikContext, FieldArray } from 'formik';
 import { CSSProperties, memo } from 'react';
 
 import CouplingsTable from './CouplingsTable';
+import PeaksTable from './PeaksTable';
 
 const style: CSSProperties = {
   borderSpacing: '0',
@@ -22,18 +26,34 @@ function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
   const { values } = useFormikContext<{ activeTab: string }>();
 
   return (
-    <div style={style}>
-      <FieldArray
-        name={`signals.${values.activeTab}.js`}
-        render={({ push, remove }) => (
-          <CouplingsTable
-            push={push}
-            remove={remove}
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
-        )}
-      />
+    <div
+      style={style}
+      css={css`
+        div[role='tabpanel'] {
+          width: 100%;
+        }
+      `}
+    >
+      <Tabs vertical fill>
+        <Tab
+          id="couplings"
+          title="Couplings"
+          panel={
+            <FieldArray
+              name={`signals.${values.activeTab}.js`}
+              render={({ push, remove }) => (
+                <CouplingsTable
+                  push={push}
+                  remove={remove}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+          }
+        />
+        <Tab id="peaks" title="Peaks" panel={<PeaksTable />} />
+      </Tabs>
     </div>
   );
 }

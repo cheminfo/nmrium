@@ -5,6 +5,7 @@ import lodashGet from 'lodash/get';
 import { translateMultiplet } from 'nmr-processing';
 import { memo, useCallback } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { Toolbar } from 'react-science/ui';
 
 import { Multiplets } from '../../../../../data/constants/Multiplets';
 import Button from '../../../../elements/Button';
@@ -69,21 +70,21 @@ function CouplingsTable({
 
   return (
     <div>
-      <Button.Done
-        fill="outline"
-        style={{ overflow: 'auto' }}
-        onClick={() =>
-          push({
-            multiplicity: translateMultiplet('m'),
-            coupling: '',
-          })
-        }
-      >
-        <FaPlus title="Add new coupling" style={{ display: 'inline-block' }} />
-        <span style={{ display: 'inline-block', paddingLeft: '5px' }}>
-          Add New Coupling
-        </span>
-      </Button.Done>
+      <div style={{ padding: '5px 0', display: 'flex' }}>
+        <Toolbar>
+          <Toolbar.Item
+            icon={<FaPlus />}
+            title="Add a new coupling"
+            intent="success"
+            onClick={() =>
+              push({
+                multiplicity: translateMultiplet('m'),
+                coupling: '',
+              })
+            }
+          />
+        </Toolbar>
+      </div>
       <div style={{ maxHeight: '300px', overflow: 'auto' }}>
         <table css={CouplingsTableStyle}>
           <thead>
