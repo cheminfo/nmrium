@@ -43,13 +43,11 @@ function AboutPredictionModal() {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   return (
     <>
-      <Toolbar>
-        <Toolbar.Item
-          icon={<FaInfo />}
-          onClick={openDialog}
-          title="About Prediction"
-        />
-      </Toolbar>
+      <Toolbar.Item
+        icon={<FaInfo />}
+        onClick={openDialog}
+        title="About Prediction"
+      />
       <Dialog
         isOpen={isOpenDialog}
         onClose={closeDialog}

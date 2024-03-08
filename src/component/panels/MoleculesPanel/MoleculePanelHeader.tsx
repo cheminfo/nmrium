@@ -217,8 +217,8 @@ export default function MoleculePanelHeader({
 
   return (
     <PanelHeader>
-      {renderSource === 'predictionPanel' && <AboutPredictionModal />}
       <Toolbar>
+        {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
           <>
             <ToolbarPopoverItem
@@ -239,11 +239,6 @@ export default function MoleculePanelHeader({
               icon={<FaPlus />}
               onClick={onOpenMoleculeEditor}
             />
-          </>
-        )}
-
-        {renderSource === 'moleculePanel' && (
-          <>
             <Toolbar.Item
               title="Delete molecule"
               icon={<FaRegTrashAlt />}
@@ -255,7 +250,6 @@ export default function MoleculePanelHeader({
             )}
           </>
         )}
-
         <Toolbar.Item
           title="Float molecule"
           icon={<IoOpenOutline />}
