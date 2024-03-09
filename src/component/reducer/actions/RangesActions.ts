@@ -194,10 +194,11 @@ function handleAutoRangesDetection(
         integrationSum: 100,
         compile: true,
         frequencyCluster: 16,
-        clean: true,
+        clean: 0.3,
         keepPeaks: true,
       },
       peakPicking: {
+        broadWidth: 0.05,
         thresholdFactor: 8,
         minMaxRatio,
         direction: lookNegative ? 'both' : 'positive',
@@ -224,7 +225,7 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
     integrationSum: 100,
     compile: true,
     frequencyCluster: 16,
-    clean: true,
+    clean: 0.3,
     keepPeaks: true,
   };
   const {

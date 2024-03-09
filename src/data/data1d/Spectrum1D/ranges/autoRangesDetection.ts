@@ -6,12 +6,11 @@ const defaultPeakPickingOptions = {
   shape: { kind: 'lorentzian' },
   realTopDetection: true,
   maxCriteria: true,
-  smoothY: false,
+  smoothY: true,
   broadWidth: 0.25,
   broadRatio: 0.0025,
   integrationSum: 100,
   thresholdFactor: 5,
-  clean: true,
   sgOptions: { windowSize: 7, polynomial: 3 },
 };
 

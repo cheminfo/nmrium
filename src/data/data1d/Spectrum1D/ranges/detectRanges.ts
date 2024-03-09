@@ -12,7 +12,7 @@ interface DetectRangesOptions {
     integrationSum?: number; // default 100
     compile?: boolean; //default true
     frequencyCluster?: number; // default 16
-    clean?: boolean; // default true
+    clean?: number; // default 0.3
     keepPeaks?: boolean; //default true
   };
   peakPicking: {

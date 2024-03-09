@@ -1,4 +1,6 @@
 import { DataXY } from 'cheminfo-types';
+import { optimizePeaksWithLogs } from 'ml-gsd';
+import { xMaxValue } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import {
   NMRPeak1DWithShapeID,
@@ -15,6 +17,61 @@ export function detectSignalsByMultipletAnalysis(
     x: data.x.slice(fromIndex, toIndex),
     y: data.y.slice(fromIndex, toIndex),
   };
+  const from = data.x[fromIndex];
+  const to = data.x[toIndex];
+
+  const peaks = xyAutoPeaksPicking(data, {
+    from,
+    to,
+    frequency,
+    minMaxRatio: 0.1,
+    broadWidth: 0.25,
+    broadRatio: 0.0025,
+    optimize: true,
+    smoothY: true,
+  });
+
+  let cs = 0;
+  let area = 0;
+  for (const peak of peaks) {
+    cs += peak.x * peak.y;
+    area += peak.y;
+  }
+  cs /= area;
+
+  const initialWidth = Math.abs(peaks[0].x - (peaks.at(-1) || peaks[0]).x);
+  const { logs, optimizedPeaks } = optimizePeaksWithLogs(
+    dataRoi,
+    [
+      {
+        x: cs,
+        y: xMaxValue(dataRoi.y),
+        width: initialWidth,
+        parameters: {
+          width: { max: initialWidth * 4, min: initialWidth * 0.8 },
+        },
+      },
+    ],
+    { shape: { kind: 'pseudoVoigt' }, optimization: { kind: 'lm' } },
+  );
+
+  const log = logs.find((l) => l.message === 'optimization successful');
+
+  if (log) {
+    const { error } = log;
+    if (error < 0.2) {
+      return [
+        {
+          multiplicity: 's',
+          kind: 'signal',
+          delta: cs,
+          js: [],
+          peaks: optimizedPeaks,
+          diaIDs: [],
+        },
+      ];
+    }
+  }
 
   const result = analyseMultiplet(dataRoi, {
     frequency,
@@ -32,35 +89,12 @@ export function detectSignalsByMultipletAnalysis(
 
   const { delta, js } = joinCouplings(result);
 
-  let cs = 0;
-  let area = 0;
-  for (let i = 0; i < dataRoi.x.length; i++) {
-    cs += dataRoi.x[i] * dataRoi.y[i];
-    area += dataRoi.y[i];
-  }
-  cs /= area;
-
-  const peaks = xyAutoPeaksPicking(data, {
-    from: data.x[fromIndex],
-    to: data.x[toIndex],
-    frequency,
-    minMaxRatio: 0.1,
-    broadWidth: 0.25,
-    broadRatio: 0.0025,
-    optimize: false,
-    smoothY: true,
-  });
-
-  const { jCouplings, multiplicity } = getMultiplicity(js, {
-    cs,
-    delta,
-    peaks,
-  });
+  const { jCouplings, multiplicity } = getMultiplicity(js, peaks);
   return [
     {
       multiplicity,
       kind: 'signal',
-      delta: cs,
+      delta,
       js: jCouplings,
       peaks,
       diaIDs: [],
@@ -69,26 +103,33 @@ export function detectSignalsByMultipletAnalysis(
 }
 
 function getMultiplicity(
-  js,
-  options: { cs: number; delta: number; peaks: NMRPeak1DWithShapeID[] },
+  js: Array<{ value: number; multiplicity: 'string' }>,
+  peaks: NMRPeak1DWithShapeID[],
 ) {
-  const { cs, delta, peaks } = options;
-
-  if (peaks.length > 1 && js?.length > 0) {
+  if (peaks.length > 1) {
+    if (js?.length > 0) {
+      return {
+        jCouplings: js,
+        multiplicity: js.map((j) => j.multiplicity).join(''),
+      };
+    }
     return {
-      jCouplings: js,
-      multiplicity: js.map((j) => j.multiplicity).join(''),
+      jCouplings: [],
+      multiplicity: 'm',
     };
   }
-  //check if the massive center is closer to the shift from multiplet-analysis,
-  //if true, is it possibly a singlet.
-  if (peaks.length === 1 && js.length > 0) {
-    return { jCouplings: [], multiplicity: 'br s' };
+
+  if (peaks.length === 1) {
+    return {
+      jCouplings: [],
+      multiplicity: js.length > 0 ? 'br s' : 's',
+    };
+  } else {
+    return {
+      jCouplings: [],
+      multiplicity: 'm',
+    };
   }
-  return {
-    jCouplings: [],
-    multiplicity: Math.abs(cs - delta) / cs < 1e-3 ? 's' : 'm',
-  };
 }
 
 function joinCouplings(result: any) {
