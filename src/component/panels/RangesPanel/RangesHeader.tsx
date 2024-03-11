@@ -13,7 +13,7 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
@@ -35,7 +35,7 @@ function RangesHeader({
 }) {
   const dispatch = useDispatch();
   const modal = useModal();
-  const alert = useAlert();
+  const toaster = useToaster();
   const assignmentData = useAssignmentData();
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
@@ -116,7 +116,7 @@ function RangesHeader({
 
   function saveToClipboardHandler(value: string) {
     void rawWriteWithType(value, 'text/html').then(() =>
-      alert.success('Data copied to clipboard'),
+      toaster.show({ message: 'Data copied to clipboard', intent: 'success' }),
     );
   }
 

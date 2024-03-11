@@ -15,7 +15,7 @@ import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardCompon
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { booleanToString } from '../../utility/booleanToString';
@@ -56,7 +56,7 @@ function MultipleSpectraAnalysisPanelInner({
   ) as any;
 
   const settingRef = useRef<any>();
-  const alert = useAlert();
+  const toaster = useToaster();
   const dispatch = useDispatch();
 
   const settingsPanelHandler = useCallback(() => {
@@ -83,9 +83,9 @@ function MultipleSpectraAnalysisPanelInner({
     if (!data) return;
 
     void rawWriteWithType(data).then(() =>
-      alert.success('Data copied to clipboard'),
+      toaster.show({ message: 'Data copied to clipboard', intent: 'success' }),
     );
-  }, [alert, rawWriteWithType, spectra, spectraAnalysis, spectraPreferences]);
+  }, [rawWriteWithType, spectra, spectraAnalysis, spectraPreferences, toaster]);
 
   function handleSpectraCalibration() {
     setCalibration((value) => {

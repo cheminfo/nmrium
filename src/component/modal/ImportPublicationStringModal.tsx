@@ -7,11 +7,11 @@ import { useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
+import { useToaster } from '../context/ToasterContext';
 import Button from '../elements/Button';
 import { GroupPane } from '../elements/GroupPane';
 import ReactTable, { Column } from '../elements/ReactTable/ReactTable';
 import FormikTextarea from '../elements/formik/FormikTextarea';
-import { useAlert } from '../elements/popup/Alert';
 
 const validationSchema = yup.object({
   publicationText: yup.string().required(),
@@ -46,7 +46,7 @@ function ImportPublicationStringModal(
 
   const formRef = useRef<any>();
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const loggerRef = useRef<FifoLogger>(
     new FifoLogger({
@@ -88,9 +88,9 @@ function ImportPublicationStringModal(
 
   function publicationStringHandler({ publicationText }) {
     void (async () => {
-      const hideLoading = await alert.showLoading(
-        'Generate spectrum from publication string in progress',
-      );
+      const hideLoading = toaster.showLoading({
+        message: 'Generate spectrum from publication string in progress',
+      });
       const {
         ranges,
         info: { nucleus, solvent = '', frequency },

@@ -13,7 +13,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { LoaderProvider } from '../context/LoaderContext';
 import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
+import { useToaster } from '../context/ToasterContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
@@ -58,7 +58,7 @@ function DropZone(props) {
     usePreferences();
   const preferences = usePreferences();
   const isToolEnabled = useCheckToolsVisibility();
-  const alert = useAlert();
+  const toaster = useToaster();
   const { logger } = useLogger();
   const experimentalFeatures = useCheckExperimentalFeature();
   const [metaInformationFile, openMetaInformationDialog] =
@@ -109,7 +109,7 @@ function DropZone(props) {
         });
       }
     } catch (error: any) {
-      alert.error(error.message);
+      toaster.show({ message: error.message, intent: 'danger' });
       logger.error(error);
     } finally {
       dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });

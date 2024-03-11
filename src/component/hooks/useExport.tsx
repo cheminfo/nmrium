@@ -4,7 +4,7 @@ import { ExportOptions, toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
+import { useToaster } from '../context/ToasterContext';
 import {
   copyPNGToClipboard,
   exportAsJSON,
@@ -21,84 +21,82 @@ interface SaveOptions {
 
 export default function useExport() {
   const { rootRef } = useGlobal();
-  const alert = useAlert();
+  const toaster = useToaster();
   const state = useChartData();
   const preferencesState = usePreferences();
   const saveToClipboardHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
-      const hideLoading = await alert.showLoading(
-        'Exporting as NMRium process in progress',
-      );
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as NMRium process in progress',
+      });
       setTimeout(async () => {
         await copyPNGToClipboard(rootRef, 'nmrSVG');
         hideLoading();
-        alert.success('Image copied to clipboard');
+        toaster.show({
+          message: 'Image copied to clipboard',
+          intent: 'success',
+        });
       }, 0);
     }
-  }, [rootRef, alert, state]);
+  }, [state.data.length, rootRef, toaster]);
 
   const saveAsJSONHandler = useCallback(
     (spaceIndent = 0, isCompressed = true) => {
-      alert
-        .showLoading('Exporting as NMRium process in progress')
-        .then((hideLoading) => {
-          async function handle() {
-            //exported file name by default will be the first spectrum name
-            const fileName = state.data[0]?.info?.name;
-            const exportedData = toJSON(state, preferencesState, {
-              exportTarget: 'nmrium',
-              view: true,
-            });
-            await exportAsJSON(
-              exportedData,
-              fileName,
-              spaceIndent,
-              isCompressed,
-            );
-            hideLoading();
-          }
-          setTimeout(() => {
-            void handle();
-          }, 0);
-        })
-        .catch(reportError);
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as NMRium process in progress',
+      });
+
+      try {
+        void (async () => {
+          const fileName = state.data[0]?.info?.name;
+          const exportedData = toJSON(state, preferencesState, {
+            exportTarget: 'nmrium',
+            view: true,
+          });
+
+          await exportAsJSON(exportedData, fileName, spaceIndent, isCompressed);
+          hideLoading();
+        })();
+      } catch (error) {
+        reportError(error);
+      }
     },
-    [alert, preferencesState, state],
+    [preferencesState, state, toaster],
   );
 
   const saveAsSVGHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
-      const hideLoading = await alert.showLoading(
-        'Exporting as SVG process in progress',
-      );
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as SVG process in progress',
+      });
       setTimeout(() => {
         const fileName = state.data[0]?.info?.name;
         exportAsSVG(rootRef, 'nmrSVG', fileName);
         hideLoading();
       }, 0);
     }
-  }, [rootRef, alert, state.data]);
+  }, [state.data, rootRef, toaster]);
 
   const saveAsPNGHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
-      const hideLoading = await alert.showLoading(
-        'Exporting as PNG process in progress',
-      );
+      const hideLoading = toaster.showLoading({
+        message: 'Exporting as PNG process in progress',
+      });
       setTimeout(() => {
         const fileName = state.data[0]?.info?.name;
         exportAsPng(rootRef, 'nmrSVG', fileName);
         hideLoading();
       }, 0);
     }
-  }, [rootRef, alert, state.data]);
+  }, [state.data, rootRef, toaster]);
 
   const saveHandler = useCallback(
     (options: SaveOptions) => {
       async function handler() {
         const { name, pretty, compressed, include } = options;
-        const hideLoading = await alert.showLoading(
-          `Exporting as ${name}.nmrium process in progress`,
-        );
+        const hideLoading = toaster.showLoading({
+          message: `Exporting as ${name}.nmrium process in progress`,
+        });
         setTimeout(() => {
           void (async () => {
             const exportedData = toJSON(state, preferencesState, {
@@ -114,7 +112,7 @@ export default function useExport() {
 
       void handler();
     },
-    [alert, preferencesState, state],
+    [preferencesState, state, toaster],
   );
 
   return {

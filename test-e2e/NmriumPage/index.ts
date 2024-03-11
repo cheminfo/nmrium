@@ -193,7 +193,9 @@ export default class NmriumPage {
   }
 
   async dismissAlert(text: string) {
-    const alert = this.page.locator('_react=AlertBlock', { hasText: text });
+    const alert = this.page.locator('_react=ToasterProvider', {
+      hasText: text,
+    });
     await alert.locator('button').click();
   }
 }

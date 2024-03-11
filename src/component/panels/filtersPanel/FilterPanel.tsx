@@ -3,7 +3,7 @@
 import { css } from '@emotion/react';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/popup/Alert/Context';
+import { useToaster } from '../../context/ToasterContext';
 import { useModal } from '../../elements/popup/Modal/Context';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -13,16 +13,16 @@ import FiltersTable from './FiltersTable';
 export default function FiltersPanel() {
   const dispatch = useDispatch();
   const modal = useModal();
-  const alert = useAlert();
+  const toaster = useToaster();
 
   function handelDeleteFilter() {
     const buttons = [
       {
         text: 'Yes',
         handler: async () => {
-          const hideLoading = await alert.showLoading(
-            'Delete filters process in progress',
-          );
+          const hideLoading = toaster.showLoading({
+            message: 'Delete filters process in progress',
+          });
           dispatch({ type: 'DELETE_FILTER', payload: {} });
           hideLoading();
         },

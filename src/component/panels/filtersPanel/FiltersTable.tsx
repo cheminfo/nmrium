@@ -6,10 +6,10 @@ import { ObjectInspector } from 'react-inspector';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useToaster } from '../../context/ToasterContext';
 import Button from '../../elements/Button';
 import { ColumnWrapper } from '../../elements/ColumnWrapper';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -48,33 +48,31 @@ function FiltersTableInner({
 }: FiltersTableInnerProps) {
   const dispatch = useDispatch();
   const modal = useModal();
-  const alert = useAlert();
+  const toaster = useToaster();
   const selectedFilterIndex = useRef<number>();
 
   const handelFilterCheck = useCallback(
     (id, event) => {
       const { checked: enabled } = event.target;
-      void (async () => {
-        const hideLoading = await alert.showLoading(
-          `${enabled ? 'Enable' : 'Disable'} filter in progress`,
-        );
-        setTimeout(() => {
-          dispatch({ type: 'ENABLE_FILTER', payload: { id, enabled } });
-          hideLoading();
-        }, 0);
-      })();
+      const hideLoading = toaster.showLoading({
+        message: `${enabled ? 'Enable' : 'Disable'} filter in progress`,
+      });
+      setTimeout(() => {
+        dispatch({ type: 'ENABLE_FILTER', payload: { id, enabled } });
+        hideLoading();
+      }, 0);
     },
-    [alert, dispatch],
+    [dispatch, toaster],
   );
   const handelDeleteFilter = useCallback(
     ({ id, name, label }) => {
       const buttons = [
         {
           text: 'Yes',
-          handler: async () => {
-            const hideLoading = await alert.showLoading(
-              'Delete filter process in progress',
-            );
+          handler: () => {
+            const hideLoading = toaster.showLoading({
+              message: 'Delete filter process in progress',
+            });
             dispatch({ type: 'DELETE_FILTER', payload: { id } });
             hideLoading();
           },
@@ -85,10 +83,10 @@ function FiltersTableInner({
       if (spectraCounter > 1) {
         buttons.unshift({
           text: 'Yes, for all spectra',
-          handler: async () => {
-            const hideLoading = await alert.showLoading(
-              'Delete all spectra filter process in progress',
-            );
+          handler: () => {
+            const hideLoading = toaster.showLoading({
+              message: 'Delete all spectra filter process in progress',
+            });
             dispatch({
               type: 'DELETE_SPECTRA_FILTER',
               payload: { filterName: name },
@@ -111,7 +109,7 @@ function FiltersTableInner({
         { height: 'auto', width: 'auto' },
       );
     },
-    [alert, dispatch, modal, spectraCounter],
+    [dispatch, modal, spectraCounter, toaster],
   );
   const filterSnapShotHandler = useCallback(
     (filter, index) => {
@@ -119,17 +117,15 @@ function FiltersTableInner({
         selectedFilterIndex.current && index === selectedFilterIndex.current
           ? null
           : index;
-      void (async () => {
-        const hideLoading = await alert.showLoading(
-          'Filter snapshot process in progress',
-        );
-        setTimeout(() => {
-          dispatch({ type: 'SET_FILTER_SNAPSHOT', payload: filter });
-          hideLoading();
-        }, 0);
-      })();
+      const hideLoading = toaster.showLoading({
+        message: 'Filter snapshot process in progress',
+      });
+      setTimeout(() => {
+        dispatch({ type: 'SET_FILTER_SNAPSHOT', payload: filter });
+        hideLoading();
+      }, 0);
     },
-    [alert, dispatch],
+    [dispatch, toaster],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(

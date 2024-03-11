@@ -24,7 +24,7 @@ import {
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
 import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
@@ -85,7 +85,7 @@ function DatabasePanelInner({
   defaultDatabase,
 }: DatabaseInnerProps) {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
   const { item } = useAccordionContext('Databases');
 
   const format = useFormatNumberByNucleus(nucleus);
@@ -134,9 +134,11 @@ function DatabasePanelInner({
 
   useEffect(() => {
     const { solvent, searchKeywords } = keywords;
-    setTimeout(async () => {
+    setTimeout(() => {
       if (databaseInstance.current) {
-        const hideLoading = await alert.showLoading(`Preparing of the Result`);
+        const hideLoading = toaster.showLoading({
+          message: 'Preparing of the Result',
+        });
         if (solvent === '-1' && !searchKeywords) {
           const solvents = mapSolventsToSelect(
             databaseInstance.current.getSolvents(),
@@ -148,7 +150,7 @@ function DatabasePanelInner({
         hideLoading();
       }
     }, 0);
-  }, [alert, idCode, keywords, search]);
+  }, [idCode, keywords, search, toaster]);
 
   useEffect(() => {
     function handle(event) {
@@ -175,9 +177,11 @@ function DatabasePanelInner({
   }, [format, selectedTool]);
 
   useEffect(() => {
-    setTimeout(async () => {
+    setTimeout(() => {
       if (databaseInstance.current) {
-        const hideLoading = await alert.showLoading(`Loading the database`);
+        const hideLoading = toaster.showLoading({
+          message: 'Loading the database',
+        });
 
         databaseInstance.current = initiateDatabase(
           databaseDataRef.current,
@@ -187,7 +191,7 @@ function DatabasePanelInner({
         setKeywords({ ...emptyKeywords });
       }
     }, 0);
-  }, [alert, nucleus]);
+  }, [nucleus, toaster]);
 
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
@@ -197,7 +201,9 @@ function DatabasePanelInner({
         if (database?.url) {
           const { url, label } = database;
 
-          const hideLoading = await alert.showLoading(`load ${label} database`);
+          const hideLoading = toaster.showLoading({
+            message: `load ${label} database`,
+          });
 
           try {
             databaseDataRef.current = await fetch(url)
@@ -209,7 +215,10 @@ function DatabasePanelInner({
                 })),
               );
           } catch {
-            alert.error(`Failed to load ${url}`);
+            toaster.show({
+              message: `Failed to load ${url}`,
+              intent: 'danger',
+            });
           } finally {
             hideLoading();
           }
@@ -218,7 +227,9 @@ function DatabasePanelInner({
             ?.value as DatabaseNMREntry[];
         }
 
-        const hideLoading = await alert.showLoading(`Loading the database`);
+        const hideLoading = toaster.showLoading({
+          message: 'Loading the database',
+        });
 
         databaseInstance.current = initiateDatabase(
           databaseDataRef.current,
@@ -230,7 +241,7 @@ function DatabasePanelInner({
         hideLoading();
       }, 0);
     },
-    [alert, databases, nucleus],
+    [databases, nucleus, toaster],
   );
 
   useEffect(() => {
@@ -251,9 +262,9 @@ function DatabasePanelInner({
       if (jcampRelativeURL) {
         const url = new URL(jcampRelativeURL, baseURL);
         setTimeout(async () => {
-          const hideLoading = await alert.showLoading(
-            `load jcamp in progress...`,
-          );
+          const hideLoading = toaster.showLoading({
+            message: `load jcamp in progress...`,
+          });
           try {
             const { data } = await readFromWebSource({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
@@ -267,7 +278,7 @@ function DatabasePanelInner({
               });
             }
           } catch {
-            alert.error(`Failed to load Jcamp`);
+            toaster.show({ message: 'Failed to load Jcamp', intent: 'danger' });
           } finally {
             hideLoading();
           }
@@ -279,30 +290,33 @@ function DatabasePanelInner({
         });
       }
     },
-    [alert, dispatch, nucleus, result.data],
+    [dispatch, nucleus, result.data, toaster],
   );
   const saveHandler = useCallback(
     (row) => {
       if (row?.jcampURL) {
         setTimeout(async () => {
-          const hideLoading = await alert.showLoading(
-            `Download jcamp in progress...`,
-          );
+          const hideLoading = toaster.showLoading({
+            message: `Download jcamp in progress...`,
+          });
 
           try {
             await saveJcampAsJson(row, result);
             hideLoading();
           } catch {
-            alert.error(`Failed to download the jcamp`);
+            toaster.show({
+              message: 'Failed to download the jcamp',
+              intent: 'danger',
+            });
           } finally {
             hideLoading();
           }
         }, 0);
       } else {
-        alert.error(`No jcamp file to save`);
+        toaster.show({ message: 'No jcamp file to save', intent: 'danger' });
       }
     },
-    [alert, result],
+    [result, toaster],
   );
   const searchByStructureHandler = (idCodeValue: string) => {
     setIdCode(idCodeValue);

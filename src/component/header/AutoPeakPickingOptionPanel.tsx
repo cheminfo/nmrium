@@ -3,12 +3,12 @@ import { memo } from 'react';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
+import { useToaster } from '../context/ToasterContext';
 import Button from '../elements/Button';
 import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
-import { useAlert } from '../elements/popup/Alert';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
@@ -56,7 +56,7 @@ const INIT_VALUES = {
 function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
   const pointsNumber = useCheckPointsNumberInWindowArea();
-  const alert = useAlert();
+  const toaster = useToaster();
   function handlePeakPicking(values) {
     if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
@@ -64,9 +64,10 @@ function AutoPeakPickingOptionPanel() {
         payload: values,
       });
     } else {
-      alert.error(
-        `Auto peak picking only available for area more than ${MIN_AREA_POINTS} points`,
-      );
+      toaster.show({
+        message: `Auto peak picking only available for area more than ${MIN_AREA_POINTS} points`,
+        intent: 'danger',
+      });
     }
   }
 
