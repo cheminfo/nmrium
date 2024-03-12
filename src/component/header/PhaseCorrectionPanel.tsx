@@ -1,6 +1,8 @@
+import { Select } from '@blueprintjs/select';
 import { Spectrum1D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
-import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button, useSelect } from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -8,19 +10,11 @@ import ActionButtons from '../elements/ActionButtons';
 import Input, { InputStyle } from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Label from '../elements/Label';
-import Select from '../elements/Select';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-
-const selectStyle: CSSProperties = {
-  marginLeft: '5px',
-  marginRight: '10px',
-  border: 'none',
-  height: '20px',
-};
 
 const inputStyle: InputStyle = {
   input: {
@@ -32,24 +26,27 @@ const inputStyle: InputStyle = {
   },
 };
 
-const phaseCorrectionTypes = {
-  manual: 'manual',
-  automatic: 'automatic',
-  absolute: 'absolute',
+type PhaseCorrectionTypes = 'manual' | 'automatic' | 'absolute';
+
+interface AlgorithmItem {
+  label: string;
+  value: PhaseCorrectionTypes;
+}
+
+const defaultPhasingTypeItem: AlgorithmItem = {
+  label: 'Manual',
+  value: 'manual',
 };
 
-const algorithms = [
-  {
-    label: 'Manual',
-    value: phaseCorrectionTypes.manual,
-  },
+const algorithms: AlgorithmItem[] = [
+  defaultPhasingTypeItem,
   {
     label: 'Automatic',
-    value: phaseCorrectionTypes.automatic,
+    value: 'automatic',
   },
   {
-    label: 'Absolute',
-    value: phaseCorrectionTypes.absolute,
+    label: 'Convert to absolute spectrum',
+    value: 'absolute',
   },
 ];
 const emptyData = { datum: {}, filter: null };
@@ -71,13 +68,14 @@ export default function PhaseCorrectionPanel() {
 
   const ph0Ref = useRef<any>();
   const ph1Ref = useRef<any>();
+  const { value: phaseCorrectionTypeItem, ...defaultSelectProps } =
+    useSelect<AlgorithmItem>();
 
-  const [phaseCorrectionType, setPhaseCorrectionType] = useState(
-    phaseCorrectionTypes.manual,
-  );
+  const phaseCorrectionType = phaseCorrectionTypeItem || defaultPhasingTypeItem;
 
   useEffect(() => {
-    if (filter && phaseCorrectionType === phaseCorrectionTypes.manual) {
+    const type = phaseCorrectionTypeItem || defaultPhasingTypeItem;
+    if (filter && type?.value === 'manual') {
       valueRef.current = filter.value;
       setValue(filter.value);
     }
@@ -91,25 +89,25 @@ export default function PhaseCorrectionPanel() {
         ph1Ref.current.setValue(valueRef.current.ph1);
       }
     }
-  }, [filter, phaseCorrectionType]);
+  }, [filter, phaseCorrectionTypeItem]);
 
-  const handleApplyFilter = useCallback(() => {
-    switch (phaseCorrectionType) {
-      case phaseCorrectionTypes.automatic: {
+  function handleApplyFilter() {
+    switch (phaseCorrectionType?.value) {
+      case 'automatic': {
         dispatch({
           type: 'APPLY_AUTO_PHASE_CORRECTION_FILTER',
         });
         break;
       }
 
-      case phaseCorrectionTypes.manual: {
+      case 'manual': {
         dispatch({
           type: 'APPLY_MANUAL_PHASE_CORRECTION_FILTER',
           payload: value,
         });
         break;
       }
-      case phaseCorrectionTypes.absolute: {
+      case 'absolute': {
         dispatch({
           type: 'APPLY_ABSOLUTE_FILTER',
         });
@@ -118,7 +116,7 @@ export default function PhaseCorrectionPanel() {
       default:
         break;
     }
-  }, [dispatch, phaseCorrectionType, value]);
+  }
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
@@ -170,26 +168,28 @@ export default function PhaseCorrectionPanel() {
     [calcPhaseCorrectionHandler, updateInputRangeInitialValue],
   );
 
-  const handleCancelFilter = useCallback(() => {
+  function handleCancelFilter() {
     dispatch({
       type: 'RESET_SELECTED_TOOL',
     });
-  }, [dispatch]);
-
-  const onChangeHandler = useCallback((val) => {
-    setPhaseCorrectionType(val);
-  }, []);
+  }
 
   return (
     <HeaderContainer>
-      <Select
-        onChange={onChangeHandler}
-        items={algorithms}
-        defaultValue={phaseCorrectionTypes.manual}
-        style={selectStyle}
-      />
-
-      {phaseCorrectionType === phaseCorrectionTypes.manual && (
+      <div style={{ padding: '0 5px' }}>
+        <Select<AlgorithmItem>
+          items={algorithms}
+          filterable={false}
+          itemsEqual="value"
+          {...defaultSelectProps}
+        >
+          <Button
+            text={phaseCorrectionType.label}
+            rightIcon="double-caret-vertical"
+          />
+        </Select>
+      </div>
+      {phaseCorrectionType?.value === 'manual' && (
         <>
           <Label title="PH0 :" style={headerLabelStyle}>
             <Input
