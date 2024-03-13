@@ -17,6 +17,7 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
   zonesNoiseFactor: 1,
+  zonesMinMaxRatio: 0.05,
 };
 
 function Zones2DOptionPanel() {
@@ -62,6 +63,22 @@ function Zones2DOptionPanel() {
                 }}
                 min={0}
                 step={1}
+              />
+            </Label>
+            <Label
+              title="MinMaxRatio :"
+              htmlFor="livePreview"
+              style={headerLabelStyle}
+            >
+              <FormikInput
+                type="number"
+                name="zonesMinMaxRatio"
+                style={{
+                  input: { width: '50px', textAlign: 'center' },
+                  inputWrapper: { height: '100%' },
+                }}
+                min={0}
+                step={0.01}
               />
             </Label>
             <FormikOnChange

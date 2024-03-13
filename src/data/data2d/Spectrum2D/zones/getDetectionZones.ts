@@ -9,6 +9,7 @@ export interface DetectionZonesOptions {
     toY: number;
   };
   thresholdFactor: number;
+  maxPercentCutOff: number;
   tolerances?: number[];
   convolutionByFFT?: boolean;
   enhanceSymmetry?: boolean;
