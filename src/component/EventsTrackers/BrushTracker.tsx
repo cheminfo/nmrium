@@ -75,11 +75,13 @@ export function useBrushTracker() {
   return useContext(BrushContext);
 }
 
-interface Position {
+export interface Position {
   x: number;
   y: number;
 }
-export type OnClick = (element: React.MouseEvent & Position) => void;
+
+export type ClickOptions = React.MouseEvent & Position;
+export type OnClick = (element: ClickOptions) => void;
 export type { OnClick as OnDoubleClick };
 export type OnZoom = (
   event: Pick<React.WheelEvent, 'deltaY' | 'shiftKey' | 'deltaMode'> & Position,
