@@ -57,7 +57,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
   useEffect(() => {
     function handle(event) {
       if (info?.originFrequency && activeField) {
-        if (values.activeTab === 'addSignalTab') {
+        if (values.signalIndex === '-1') {
           newSignalFormRef.current.setValues({
             [activeField]:
               (event.range[1] - event.range[0]) / 2 + event.range[0],
@@ -89,15 +89,15 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
   }, [
     activeField,
     setFieldValue,
-    values.activeTab,
+    values.signalIndex,
     info,
-    preferences?.deltaHz?.format,
+    preferences.deltaHz.format,
   ]);
 
   useEffect(() => {
     function handle(event) {
       if (activeField) {
-        if (values.activeTab === 'addSignalTab') {
+        if (values.signalIndex === '-1') {
           newSignalFormRef.current.setValues({ [activeField]: event.xPPM });
         } else if (activeField.includes('delta')) {
           setFieldValue(activeField, event.xPPM);
@@ -111,7 +111,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
     return () => {
       Events.off('mouseClick', handle);
     };
-  }, [values.activeTab, activeField, setFieldValue]);
+  }, [values.signalIndex, activeField, setFieldValue]);
 
   const handleOnFocus = useCallback(
     (event) => {
@@ -122,7 +122,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
 
   const tapClickHandler = useCallback(
     ({ tabid }) => {
-      setFieldValue('activeTab', tabid);
+      setFieldValue('signalIndex', tabid);
     },
     [setFieldValue],
   );
@@ -139,10 +139,8 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
 
   useEffect(() => {
     setFieldValue(
-      'activeTab',
-      values.signals.length > 0
-        ? (values.signals.length - 1).toString()
-        : 'addSignalTab',
+      'signalIndex',
+      values.signals.length > 0 ? (values.signals.length - 1).toString() : '-1',
     );
   }, [setFieldValue, values.signals.length]);
 
@@ -210,7 +208,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
     <div>
       <SignalFormInfo />
       <Tabs
-        activeTab={values.activeTab}
+        activeTab={values.signalIndex}
         onClick={tapClickHandler}
         onDelete={handleDeleteSignal}
       >

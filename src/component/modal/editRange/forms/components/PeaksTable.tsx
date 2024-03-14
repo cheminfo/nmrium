@@ -1,7 +1,8 @@
 import { v4 } from '@lukeed/uuid';
 import { useFormikContext } from 'formik';
-import lodashGet from 'lodash/get';
-import { Peak1D } from 'nmr-processing';
+import { xFindClosestIndex } from 'ml-spectra-processing';
+import { Spectrum1D } from 'nmr-load-save';
+import { Peak1D, getShiftX } from 'nmr-processing';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
@@ -9,6 +10,7 @@ import { Toolbar } from 'react-science/ui';
 import Button from '../../../../elements/Button';
 import ReactTable, { Column } from '../../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../../elements/formik/FormikInput';
+import useSpectrum from '../../../../hooks/useSpectrum';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -22,40 +24,59 @@ const styles: Record<'input' | 'column', CSSProperties> = {
 
 export default function PeaksTable() {
   const { values, setFieldValue } = useFormikContext<any>();
-
-  const peaks = lodashGet(values, `signals[${values.activeTab}].peaks`, []);
+  const signal = values?.signals?.[values?.signalIndex] || {};
+  const peaks = signal?.peaks || [];
+  const delta = signal?.delta || 0;
+  const spectrum = useSpectrum() as Spectrum1D;
+  const {
+    data: { x, re },
+  } = spectrum;
+  const shiftX = getShiftX(spectrum);
 
   const addHandler = useCallback(
-    (data: readonly any[], index: number) => {
-      let columns: any[] = [];
+    (data: Peak1D[]) => {
+      const xIndex = xFindClosestIndex(x, delta, { sorted: false });
+
       const peak: Peak1D = {
         id: v4(),
-        x: 0,
-        y: 0,
-        originalX: 0,
-        width: 0,
+        x: delta,
+        y: xIndex !== -1 ? re[xIndex] : 0,
+        originalX: delta - shiftX,
+        width: 1,
       };
-      if (data && Array.isArray(data)) {
-        columns = [...data.slice(0, index), peak, ...data.slice(index)];
-      } else {
-        columns.push(peak);
-      }
-      void setFieldValue(`signals[${values.activeTab}].peaks`, columns);
+      void setFieldValue(`signals[${values?.signalIndex}].peaks`, [
+        ...data,
+        peak,
+      ]);
     },
-    [setFieldValue, values.activeTab],
+    [delta, re, setFieldValue, shiftX, values?.signalIndex, x],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const peaks = data.filter((_, columnIndex) => columnIndex !== index);
-      void setFieldValue(`signals[${values.activeTab}].peaks`, peaks);
+      void setFieldValue(`signals[${values?.signalIndex}].peaks`, peaks);
     },
-    [setFieldValue, values.activeTab],
+    [setFieldValue, values?.signalIndex],
   );
 
   function deleteAllHandler() {
-    void setFieldValue(`signals[${values.activeTab}].peaks`, []);
+    void setFieldValue(`signals[${values?.signalIndex}].peaks`, []);
   }
+
+  const changeDeltaHandler = useCallback(
+    (event, index: number) => {
+      const delta = Number(event.target.value);
+
+      const xIndex = xFindClosestIndex(x, delta, { sorted: false });
+
+      void setFieldValue(
+        `signals[${values?.signalIndex}].peaks.${index}.y`,
+        re[xIndex],
+      );
+    },
+    [re, setFieldValue, values?.signalIndex, x],
+  );
 
   const COLUMNS: Array<Column<any>> = useMemo(
     () => [
@@ -70,8 +91,23 @@ export default function PeaksTable() {
         Cell: ({ row }) => {
           return (
             <FormikInput
-              name={`signals.${values.activeTab}.peaks.${row.index}.x`}
+              name={`signals.${values?.signalIndex}.peaks.${row.index}.x`}
               style={{ input: styles.input }}
+              onChange={(event) => changeDeltaHandler(event, row.index)}
+              type="number"
+            />
+          );
+        },
+      },
+      {
+        Header: 'Intensity',
+        style: { padding: 0, ...styles.column },
+        Cell: ({ row }) => {
+          return (
+            <FormikInput
+              name={`signals.${values?.signalIndex}.peaks.${row.index}.y`}
+              style={{ input: styles.input }}
+              readOnly
             />
           );
         },
@@ -97,7 +133,7 @@ export default function PeaksTable() {
         },
       },
     ],
-    [deleteHandler, values.activeTab],
+    [changeDeltaHandler, deleteHandler, values?.signalIndex],
   );
 
   return (
@@ -108,7 +144,7 @@ export default function PeaksTable() {
             icon={<FaPlus />}
             title="Add a new peak"
             intent="success"
-            onClick={() => addHandler(peaks, 0)}
+            onClick={() => addHandler(peaks)}
           />
           <Toolbar.Item
             icon={<FaRegTrashAlt />}

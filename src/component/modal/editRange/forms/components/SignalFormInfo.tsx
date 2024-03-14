@@ -61,7 +61,7 @@ export function SignalFormInfo() {
             <InfoText value={ADD_SIGNAL_INFO_TEXT} />
           )}
         </div>
-      ) : values.activeTab === 'addSignalTab' ? (
+      ) : values.signalIndex === '-1' ? (
         <InfoText value={ADD_SIGNAL_INFO_TEXT} />
       ) : (
         <InfoText value={EDIT_SIGNAL_INFO_TEXT} />

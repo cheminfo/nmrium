@@ -51,7 +51,7 @@ function AddSignalFormTab(
     const _signals = values.signals.slice().concat(newSignal);
 
     void setFieldValue('signals', _signals);
-    void setFieldValue('activeTab', String(_signals.length - 1));
+    void setFieldValue('signalIndex', String(_signals.length - 1));
   }
 
   return (

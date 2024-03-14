@@ -64,7 +64,7 @@ function CouplingsTable({
 
   const couplingsList = lodashGet(
     values,
-    `signals[${values.activeTab}].js`,
+    `signals[${values.signalIndex}].js`,
     [],
   );
 
@@ -100,19 +100,19 @@ function CouplingsTable({
             {couplingsList.map((_coupling, i) => (
               <tr
                 // eslint-disable-next-line react/no-array-index-key
-                key={`editCouplings${values.activeTab}${i}`}
+                key={`editCouplings${values.signalIndex}${i}`}
               >
                 <td>{i + 1}</td>
                 <td>
                   <FormikSelect
                     className="select-box"
-                    name={`signals.${values.activeTab}.js.${i}.multiplicity`}
+                    name={`signals.${values.signalIndex}.js.${i}.multiplicity`}
                     items={Multiplets}
                     itemValueField="label"
                     onChange={(value) => {
                       multiplicityChangeHandler(
                         value,
-                        `signals.${values.activeTab}.js.${i}.coupling`,
+                        `signals.${values.signalIndex}.js.${i}.coupling`,
                       );
                     }}
                     style={{
@@ -122,7 +122,7 @@ function CouplingsTable({
                 </td>
                 <td>
                   <FormikInput
-                    name={`signals.${values.activeTab}.js.${i}.coupling`}
+                    name={`signals.${values.signalIndex}.js.${i}.coupling`}
                     type="number"
                     placeholder={'J (Hz)'}
                     disabled={!hasCouplingConstant(_coupling.multiplicity)}

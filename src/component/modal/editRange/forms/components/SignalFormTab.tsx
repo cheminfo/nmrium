@@ -23,7 +23,7 @@ interface SignalFormTabProps {
 }
 
 function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
-  const { values } = useFormikContext<{ activeTab: string }>();
+  const { values } = useFormikContext<{ signalIndex: string }>();
 
   return (
     <div
@@ -40,7 +40,7 @@ function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
           title="Couplings"
           panel={
             <FieldArray
-              name={`signals.${values.activeTab}.js`}
+              name={`signals.${values.signalIndex}.js`}
               render={({ push, remove }) => (
                 <CouplingsTable
                   push={push}
