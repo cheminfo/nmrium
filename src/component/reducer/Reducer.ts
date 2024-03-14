@@ -166,7 +166,7 @@ export const getInitialState = (): State => ({
       },
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
-      zonesMinMaxRatio: 0.05,
+      zonesMinMaxRatio: 0.03,
       activeFilterID: null,
       predictionIndex: 0,
     },
