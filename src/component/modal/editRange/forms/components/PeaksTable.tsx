@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Peak1D, getShiftX } from 'nmr-processing';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import { CSSProperties, useCallback, useMemo, useState } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
@@ -11,6 +11,7 @@ import Button from '../../../../elements/Button';
 import ReactTable, { Column } from '../../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import useSpectrum from '../../../../hooks/useSpectrum';
+import { useEvent } from '../../../../utility/Events';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -22,20 +23,44 @@ const styles: Record<'input' | 'column', CSSProperties> = {
   },
 };
 
-export default function PeaksTable() {
+interface PeaksTableProps {
+  index: number;
+}
+
+export default function PeaksTable(props: PeaksTableProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const signal = values?.signals?.[values?.signalIndex] || {};
   const peaks = signal?.peaks || [];
   const delta = signal?.delta || 0;
   const spectrum = useSpectrum() as Spectrum1D;
   const {
-    data: { x, re },
+    data: { x: xArray, re },
   } = spectrum;
   const shiftX = getShiftX(spectrum);
+  const [lastSelectedPeak, setLastSelectedPeak] = useState<Peak1D | null>(null);
+
+  useEvent({
+    onClick: (options) => {
+      if (`${props.index}` === values.signalIndex) {
+        const index = peaks.findIndex(
+          (peak) => peak.id === lastSelectedPeak?.id,
+        );
+        if (index !== -1) {
+          const delta = options.xPPM;
+          const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
+          void setFieldValue(`signals[${values?.signalIndex}].peaks.${index}`, {
+            ...peaks[index],
+            x: delta,
+            y: re[xIndex],
+          });
+        }
+      }
+    },
+  });
 
   const addHandler = useCallback(
     (data: Peak1D[]) => {
-      const xIndex = xFindClosestIndex(x, delta, { sorted: false });
+      const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
       const peak: Peak1D = {
         id: v4(),
@@ -48,34 +73,44 @@ export default function PeaksTable() {
         ...data,
         peak,
       ]);
+      setLastSelectedPeak(peak);
     },
-    [delta, re, setFieldValue, shiftX, values?.signalIndex, x],
+    [delta, re, setFieldValue, shiftX, values?.signalIndex, xArray],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
+      const lastPeakIndex = data.findIndex(
+        (peak) => peak.id === lastSelectedPeak?.id,
+      );
+
       const peaks = data.filter((_, columnIndex) => columnIndex !== index);
+
       void setFieldValue(`signals[${values?.signalIndex}].peaks`, peaks);
+      if (lastPeakIndex === index) {
+        setLastSelectedPeak(null);
+      }
     },
-    [setFieldValue, values?.signalIndex],
+    [lastSelectedPeak?.id, setFieldValue, values?.signalIndex],
   );
 
   function deleteAllHandler() {
     void setFieldValue(`signals[${values?.signalIndex}].peaks`, []);
+    setLastSelectedPeak(null);
   }
 
   const changeDeltaHandler = useCallback(
     (event, index: number) => {
       const delta = Number(event.target.value);
 
-      const xIndex = xFindClosestIndex(x, delta, { sorted: false });
+      const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
 
       void setFieldValue(
         `signals[${values?.signalIndex}].peaks.${index}.y`,
         re[xIndex],
       );
     },
-    [re, setFieldValue, values?.signalIndex, x],
+    [re, setFieldValue, values?.signalIndex, xArray],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(
@@ -123,7 +158,10 @@ export default function PeaksTable() {
               {!record?.name && (
                 <Button.Danger
                   fill="outline"
-                  onClick={() => deleteHandler(data, row.index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteHandler(data, row.index);
+                  }}
                 >
                   <FaRegTrashAlt />
                 </Button.Danger>
@@ -135,6 +173,14 @@ export default function PeaksTable() {
     ],
     [changeDeltaHandler, deleteHandler, values?.signalIndex],
   );
+
+  function selectRowHandler(data) {
+    setLastSelectedPeak((prevPeak) => (prevPeak?.id === data.id ? null : data));
+  }
+
+  function handleActiveRow(row) {
+    return row?.original.id === lastSelectedPeak?.id;
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -163,6 +209,8 @@ export default function PeaksTable() {
         <ReactTable
           data={peaks}
           columns={COLUMNS}
+          onClick={(e, rowData: any) => selectRowHandler(rowData.original)}
+          activeRow={handleActiveRow}
           emptyDataRowText="No peaks"
         />
       </div>
