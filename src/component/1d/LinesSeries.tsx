@@ -24,14 +24,20 @@ const style = css`
 `;
 
 function LinesSeries() {
-  const { data, displayerKey, xDomains, width, margin, height } =
-    useChartData();
+  const {
+    data,
+    displayerKey,
+    xDomains,
+    width,
+    margin,
+    height,
+    toolOptions: { selectedTool },
+  } = useChartData();
   const activeSpectra = useActiveSpectra();
   const { shiftY } = useScaleChecked();
   const verticalAlign = useVerticalAlign();
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.bottom - SPECTRA_BOTTOM_MARGIN;
-
   const spectra = (data?.filter(
     (d) => isSpectrum1D(d) && d.display.isVisible && xDomains[d.id],
   ) || []) as Spectrum1D[];
@@ -42,7 +48,7 @@ function LinesSeries() {
       {spectra.map((d, i) => (
         <g key={d.id}>
           <Line display={d.display} id={d.id} data={get1DDataXY(d)} index={i} />
-          {verticalAlign === 'stack' && (
+          {verticalAlign === 'stack' && selectedTool === 'zoom' && (
             <rect
               css={style}
               y={innerHeight - shiftY * i - BOX_SIZE / 2}
