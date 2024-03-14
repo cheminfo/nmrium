@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { zoomIdentity } from 'd3';
 import { Draft } from 'immer';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { BaselineCorrectionZone } from 'nmr-processing';
@@ -358,6 +359,28 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
 
     case '1D': {
       const activeSpectra = getActiveSpectra(draft);
+
+      if (selectedTool === 'zoom' && event.shiftKey) {
+        const scaleX = getXScale(draft);
+        const { x } = event as WheelEvent;
+        const scaleRatio = toScaleRatio(event, { invert: true });
+        const domain = zoomIdentity
+          .translate(x, 0)
+          .scale(scaleRatio)
+          .translate(-x, 0)
+          .rescaleX(scaleX)
+          .domain();
+        const {
+          originDomain: {
+            xDomain: [x1, x2],
+          },
+        } = draft;
+        draft.xDomain = [
+          domain[0] < x1 ? x1 : domain[0],
+          domain[1] > x2 ? x2 : domain[1],
+        ];
+        return;
+      }
 
       if (!activeSpectra) {
         // rescale the spectra
