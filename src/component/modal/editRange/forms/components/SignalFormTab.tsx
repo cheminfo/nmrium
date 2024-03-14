@@ -18,11 +18,10 @@ const style: CSSProperties = {
 };
 
 interface SignalFormTabProps {
-  onFocus: (element: any) => void;
-  onBlur?: () => void;
+  index: number;
 }
 
-function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
+function SignalFormTab({ index }: SignalFormTabProps) {
   const { values } = useFormikContext<{ signalIndex: string }>();
 
   return (
@@ -42,17 +41,12 @@ function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
             <FieldArray
               name={`signals.${values.signalIndex}.js`}
               render={({ push, remove }) => (
-                <CouplingsTable
-                  push={push}
-                  remove={remove}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                />
+                <CouplingsTable push={push} remove={remove} index={index} />
               )}
             />
           }
         />
-        <Tab id="peaks" title="Peaks" panel={<PeaksTable />} />
+        <Tab id="peaks" title="Peaks" panel={<PeaksTable index={index} />} />
       </Tabs>
     </div>
   );

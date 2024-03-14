@@ -1,11 +1,12 @@
 import { Formik, useFormikContext } from 'formik';
 import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { translateMultiplet } from 'nmr-processing';
-import { CSSProperties, forwardRef } from 'react';
+import { CSSProperties, useRef } from 'react';
 import * as Yup from 'yup';
 
 import Button from '../../../../elements/Button';
 import FormikInput from '../../../../elements/formik/FormikInput';
+import { useEvent } from '../../../../utility/Events';
 import { formatNumber } from '../../../../utility/formatNumber';
 
 const styles: Record<
@@ -28,18 +29,14 @@ const styles: Record<
 };
 
 interface AddSignalFormTabProps {
-  onFocus: (element: any) => void;
-  onBlur?: () => void;
   range: any;
   preferences: WorkSpacePanelPreferences['ranges'];
 }
 
-// TODO: this seems to be a hacky use of ref.
-function AddSignalFormTab(
-  { onFocus, onBlur, range, preferences }: AddSignalFormTabProps,
-  ref: any,
-) {
+export function AddSignalFormTab(props: AddSignalFormTabProps) {
+  const { range, preferences } = props;
   const { values, setFieldValue } = useFormikContext<any>();
+  const newSignalFormRef = useRef<any>();
 
   function saveHandler(val) {
     const newSignal = {
@@ -54,10 +51,28 @@ function AddSignalFormTab(
     void setFieldValue('signalIndex', String(_signals.length - 1));
   }
 
+  useEvent({
+    onClick: (options) => {
+      if (values.signalIndex === '-1') {
+        newSignalFormRef.current.setValues({ newSignalDelta: options.xPPM });
+      }
+    },
+    onBrushEnd: (options) => {
+      const {
+        range: [from, to],
+      } = options;
+      if (values.signalIndex === '-1') {
+        newSignalFormRef.current.setValues({
+          newSignalDelta: (to - from) / 2 + from,
+        });
+      }
+    },
+  });
+
   return (
     <div style={styles.container}>
       <Formik
-        innerRef={ref}
+        innerRef={newSignalFormRef}
         validationSchema={getSignalValidationSchema(range)}
         initialValues={{
           newSignalDelta: (range.from + range.to) / 2,
@@ -77,8 +92,6 @@ function AddSignalFormTab(
             name="newSignalDelta"
             type="number"
             placeholder={`𝛅(ppm)`}
-            onFocus={onFocus}
-            onBlur={onBlur}
             style={{
               input: {
                 height: '30px',
@@ -92,7 +105,7 @@ function AddSignalFormTab(
               marginTop: '20px',
               height: '30px',
             }}
-            onClick={() => ref.current.submitForm()}
+            onClick={() => newSignalFormRef.current.submitForm()}
           >
             Add a signal
           </Button.Done>
@@ -120,5 +133,3 @@ function getSignalValidationSchema(range) {
       .required(),
   });
 }
-
-export default forwardRef(AddSignalFormTab);

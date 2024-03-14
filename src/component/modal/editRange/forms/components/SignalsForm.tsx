@@ -12,7 +12,7 @@ import useSpectrum from '../../../../hooks/useSpectrum';
 import Events from '../../../../utility/Events';
 import { formatNumber } from '../../../../utility/formatNumber';
 
-import AddSignalFormTab from './AddSignalFormTab';
+import { AddSignalFormTab } from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
 import { SignalFormInfo } from './SignalFormInfo';
 import SignalFormTab from './SignalFormTab';
@@ -165,14 +165,14 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
                 <DeltaInput signal={signal} index={i} onFocus={handleOnFocus} />
               )}
             >
-              <SignalFormTab onFocus={handleOnFocus} />
+              <SignalFormTab index={i} />
             </Tab>
           ))
         : [];
 
     const addSignalTab = (
       <Tab
-        tabid="addSignalTab"
+        tabid="-1"
         canDelete={false}
         key="addSignalTab"
         tabstyles={newTabStyles}
@@ -192,12 +192,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
           </div>
         )}
       >
-        <AddSignalFormTab
-          onFocus={handleOnFocus}
-          range={range}
-          ref={newSignalFormRef}
-          preferences={preferences}
-        />
+        <AddSignalFormTab range={range} preferences={preferences} />
       </Tab>
     );
 
