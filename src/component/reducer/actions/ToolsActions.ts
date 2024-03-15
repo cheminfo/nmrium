@@ -518,6 +518,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
           if (zoomValue) {
             draft.xDomain = zoomValue.xDomain;
           } else {
+            draft.xDomain = xDomain;
             setZoom(draft, { scale: 0.8 });
           }
           break;
