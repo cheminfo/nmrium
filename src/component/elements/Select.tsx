@@ -66,6 +66,7 @@ const Select = forwardRef(function Select(
     itemTextField = 'label',
     returnValue = true,
     textRender,
+    ...otherProps
   } = props;
 
   const handleOnChanged = useCallback(
@@ -87,6 +88,7 @@ const Select = forwardRef(function Select(
       className={className}
       style={style}
       required
+      {...otherProps}
     >
       {placeholder && (
         <option value="" disabled>
