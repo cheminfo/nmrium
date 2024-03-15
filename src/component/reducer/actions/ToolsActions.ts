@@ -405,22 +405,21 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     case '2D': {
       const { shiftKey } = options;
 
-      if (selectedTool === 'zoom' && shiftKey) {
-        zoomWithScroll(draft, {
-          zoomOptions: options,
-          dimension: '2D',
-          direction: 'Both',
-        });
-        return;
-      }
-
-      // change the vertical scale for traces in 2D phase correction
-      if (
-        selectedTool === 'phaseCorrectionTwoDimensions' &&
-        trackID === 'CENTER_2D'
-      ) {
-        const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
-        activeTraces.scaleRatio *= scaleRatio;
+      if (trackID === 'CENTER_2D') {
+        // change the vertical scale for traces in 2D phase correction
+        if (selectedTool === 'phaseCorrectionTwoDimensions') {
+          const { activeTraces } = getTwoDimensionPhaseCorrectionOptions(draft);
+          activeTraces.scaleRatio *= scaleRatio;
+          return;
+        }
+        //zoom in/out in 2d
+        if (selectedTool === 'zoom' && shiftKey) {
+          zoomWithScroll(draft, {
+            zoomOptions: options,
+            dimension: '2D',
+            direction: 'Both',
+          });
+        }
       } else {
         // change the vertical scale of 1D traces
         const index =
@@ -440,9 +439,10 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     case '1D': {
       const activeSpectra = getActiveSpectra(draft);
       const { shiftKey } = options;
+
+      // Horizontal zoom in/out 1d spectra by mouse wheel
       if (selectedTool === 'zoom' && shiftKey) {
         zoomWithScroll(draft, { zoomOptions: options, dimension: '1D' });
-
         return;
       }
 
