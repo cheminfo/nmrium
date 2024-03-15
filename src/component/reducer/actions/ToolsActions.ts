@@ -1,4 +1,5 @@
 import { v4 } from '@lukeed/uuid';
+import { zoomIdentity } from 'd3';
 import { Draft } from 'immer';
 import { Spectrum, Spectrum1D, Spectrum2D } from 'nmr-load-save';
 import { BaselineCorrectionZone } from 'nmr-processing';
@@ -7,7 +8,8 @@ import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Nucleus } from '../../../data/types/common/Nucleus';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT, Layout } from '../../2d/utilities/DimensionLayout';
-import { get2DYScale } from '../../2d/utilities/scale';
+import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
+import { ZoomOptions } from '../../EventsTrackers/BrushTracker';
 import { defaultRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { Tool, options as Tools } from '../../toolbar/ToolTypes';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
@@ -83,7 +85,7 @@ type BrushEndAction = ActionType<'BRUSH_END', BrushBoundary>;
 
 type ZoomAction = ActionType<
   'SET_ZOOM',
-  { event: any; trackID?: Layout; selectedTool?: Tool }
+  { options: ZoomOptions; trackID?: Layout; selectedTool?: Tool }
 >;
 
 type ZoomOutAction = ActionType<
@@ -91,10 +93,7 @@ type ZoomOutAction = ActionType<
   { zoomType?: ZoomType; trackID?: Layout }
 >;
 type SetActiveTabAction = ActionType<'SET_ACTIVE_TAB', { tab?: Nucleus }>;
-type LevelChangeAction = ActionType<
-  'SET_2D_LEVEL',
-  { deltaY: number; shiftKey: boolean }
->;
+type LevelChangeAction = ActionType<'SET_2D_LEVEL', { options: ZoomOptions }>;
 
 export type ToolsActions =
   | ActionType<
@@ -323,16 +322,98 @@ function handleBrushEnd(draft: Draft<State>, action: BrushEndAction) {
   addToBrushHistory(draft, { trackID, xDomain: domainX, yDomain: domainY });
 }
 
+interface ZoomWithScroll1DOptions {
+  zoomOptions: ZoomOptions;
+  direction?: 'Horizontal';
+  dimension: '1D';
+}
+interface ZoomWithScroll2DOptions {
+  zoomOptions: ZoomOptions;
+  direction: 'Horizontal' | 'Vertical' | 'Both';
+  dimension: '2D';
+}
+
+function zoomWithScroll(
+  draft: Draft<State>,
+  options: ZoomWithScroll1DOptions | ZoomWithScroll2DOptions,
+) {
+  const { zoomOptions, direction = 'Horizontal', dimension } = options;
+
+  let scaleX;
+  let scaleY;
+
+  if (dimension === '1D') {
+    scaleX = getXScale(draft);
+  } else {
+    scaleX = get2DXScale(draft);
+    scaleY = get2DYScale(draft);
+  }
+
+  const scaleRatio = toScaleRatio(zoomOptions, { invert: true });
+
+  if (direction === 'Both' || direction === 'Horizontal') {
+    const { x } = zoomOptions;
+    const domain = zoomIdentity
+      .translate(x, 0)
+      .scale(scaleRatio)
+      .translate(-x, 0)
+      .rescaleX(scaleX)
+      .domain();
+    const {
+      originDomain: {
+        xDomain: [x1, x2],
+      },
+    } = draft;
+    draft.xDomain = [
+      domain[0] < x1 ? x1 : domain[0],
+      domain[1] > x2 ? x2 : domain[1],
+    ];
+  }
+
+  if (
+    dimension === '2D' &&
+    (direction === 'Both' || direction === 'Vertical')
+  ) {
+    const { y } = zoomOptions;
+    const domain = zoomIdentity
+      .translate(y, 0)
+      .scale(scaleRatio)
+      .translate(-y, 0)
+      .rescaleX(scaleY)
+      .domain();
+    const {
+      originDomain: {
+        yDomain: [x1, x2],
+      },
+    } = draft;
+    draft.yDomain = [
+      domain[0] < x1 ? x1 : domain[0],
+      domain[1] > x2 ? x2 : domain[1],
+    ];
+  }
+}
+
 function handleZoom(draft: Draft<State>, action: ZoomAction) {
-  const { event, trackID } = action.payload;
+  const { options, trackID } = action.payload;
   const {
     displayerMode,
     yDomains,
     toolOptions: { selectedTool },
   } = draft;
-  const scaleRatio = toScaleRatio(event);
+  const scaleRatio = toScaleRatio(options);
   switch (displayerMode) {
     case '2D': {
+      const { shiftKey } = options;
+
+      if (selectedTool === 'zoom' && shiftKey) {
+        zoomWithScroll(draft, {
+          zoomOptions: options,
+          dimension: '2D',
+          direction: 'Both',
+        });
+        return;
+      }
+
       // change the vertical scale for traces in 2D phase correction
       if (
         selectedTool === 'phaseCorrectionTwoDimensions' &&
@@ -348,7 +429,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
           const id = getSpectrumID(draft, index);
           if (id) {
             const domain = yDomains[id];
-            yDomains[id] = wheelZoom(event, domain);
+            yDomains[id] = wheelZoom(options, domain);
           }
         }
       }
@@ -358,17 +439,23 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
 
     case '1D': {
       const activeSpectra = getActiveSpectra(draft);
+      const { shiftKey } = options;
+      if (selectedTool === 'zoom' && shiftKey) {
+        zoomWithScroll(draft, { zoomOptions: options, dimension: '1D' });
+
+        return;
+      }
 
       if (!activeSpectra) {
         // rescale the spectra
         for (const key of Object.keys(yDomains)) {
           const domain = yDomains[key];
-          yDomains[key] = wheelZoom(event, domain);
+          yDomains[key] = wheelZoom(options, domain);
         }
         return;
       }
 
-      if (activeSpectra.length === 1 && event.shiftKey) {
+      if (activeSpectra.length === 1 && shiftKey) {
         switch (selectedTool) {
           case 'rangePicking': {
             setRangesViewProperty(
@@ -393,7 +480,7 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
         for (const activeSpectrum of activeSpectra) {
           const domain = yDomains?.[activeSpectrum?.id];
           if (domain) {
-            yDomains[activeSpectrum?.id] = wheelZoom(event, domain);
+            yDomains[activeSpectrum?.id] = wheelZoom(options, domain);
           }
         }
       }
@@ -431,6 +518,7 @@ function zoomOut(draft: Draft<State>, action: ZoomOutAction) {
           if (zoomValue) {
             draft.xDomain = zoomValue.xDomain;
           } else {
+            draft.xDomain = xDomain;
             setZoom(draft, { scale: 0.8 });
           }
           break;
@@ -620,7 +708,7 @@ function handelSetActiveTab(draft: Draft<State>, action: SetActiveTabAction) {
 }
 
 function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
-  const { deltaY, shiftKey } = action.payload;
+  const { deltaY, altKey } = action.payload.options;
   const {
     data,
     view: {
@@ -645,7 +733,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
     for (const spectrum of spectra as Spectrum2D[]) {
       const contourOptions = spectrum.display.contourOptions;
       const zoom = contoursManager(spectrum.id, levels, contourOptions);
-      levels[spectrum.id] = zoom.wheel(deltaY, shiftKey);
+      levels[spectrum.id] = zoom.wheel(deltaY, altKey);
     }
   } catch (error) {
     // TODO: handle error.

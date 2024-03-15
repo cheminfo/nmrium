@@ -293,8 +293,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   }, [dispatch]);
 
   const handleZoom = useCallback<OnZoom>(
-    (event) => {
-      dispatch({ type: 'SET_ZOOM', payload: { event } });
+    (options) => {
+      dispatch({ type: 'SET_ZOOM', payload: { options } });
     },
     [dispatch],
   );

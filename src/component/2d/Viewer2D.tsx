@@ -163,18 +163,19 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [DIMENSION, dispatch],
   );
 
-  const handleZoom: OnZoom = (event) => {
-    const { x: startX, y: startY, shiftKey } = event;
+  const handleZoom: OnZoom = (options) => {
+    const { x: startX, y: startY, shiftKey } = options;
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
       if (
+        (trackID === 'CENTER_2D' && shiftKey) ||
         trackID !== 'CENTER_2D' ||
         (selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey)
       ) {
-        dispatch({ type: 'SET_ZOOM', payload: { event, trackID } });
+        dispatch({ type: 'SET_ZOOM', payload: { options, trackID } });
       } else {
-        dispatch({ type: 'SET_2D_LEVEL', payload: event });
+        dispatch({ type: 'SET_2D_LEVEL', payload: { options } });
       }
     }
   };

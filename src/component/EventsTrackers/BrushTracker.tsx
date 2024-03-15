@@ -81,9 +81,12 @@ interface Position {
 }
 export type OnClick = (element: React.MouseEvent & Position) => void;
 export type { OnClick as OnDoubleClick };
-export type OnZoom = (
-  event: Pick<React.WheelEvent, 'deltaY' | 'shiftKey' | 'deltaMode'> & Position,
-) => void;
+export type ZoomOptions = Pick<
+  React.WheelEvent,
+  'deltaY' | 'shiftKey' | 'deltaMode' | 'altKey'
+> &
+  Position;
+export type OnZoom = (options: ZoomOptions) => void;
 export type OnBrush = (state: BrushTrackerContext) => void;
 
 interface BrushTrackerProps {
@@ -207,8 +210,8 @@ export function BrushTracker({
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;
 
-      const { deltaY, deltaX, shiftKey, deltaMode } = event;
-      onZoom({ deltaY: deltaY || deltaX, shiftKey, deltaMode, x, y });
+      const { deltaY, deltaX, shiftKey, altKey, deltaMode } = event;
+      onZoom({ deltaY: deltaY || deltaX, shiftKey, altKey, deltaMode, x, y });
     },
     [onZoom],
   );

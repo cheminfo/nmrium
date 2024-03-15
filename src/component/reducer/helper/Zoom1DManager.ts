@@ -1,6 +1,7 @@
 import { zoomIdentity, scaleLinear } from 'd3';
 import { Draft } from 'immer';
 
+import { ZoomOptions } from '../../EventsTrackers/BrushTracker';
 import { State } from '../Reducer';
 
 import { getActiveSpectrum } from './getActiveSpectrum';
@@ -14,27 +15,30 @@ export const ZOOM_TYPES = {
 
 export type ZoomType = keyof typeof ZOOM_TYPES;
 
-function toScaleRatio(event: WheelEvent, zoomOptions: ZoomOptions = {}) {
+function toScaleRatio(
+  options: ZoomOptions,
+  zoomOptions: ScaleRationOptions = {},
+) {
   const { factor = 1, invert = false } = zoomOptions;
 
   const deltaY =
-    Math.abs(event.deltaY) < 100 ? event.deltaY * 100 : event.deltaY;
+    Math.abs(options.deltaY) < 100 ? options.deltaY * 100 : options.deltaY;
   const delta = deltaY * (invert ? -0.001 : 0.001) * factor;
   const ratio = delta < 0 ? -1 / (delta - 1) : 1 + delta;
 
   return ratio;
 }
 
-interface ZoomOptions {
+interface ScaleRationOptions {
   factor?: number;
   invert?: boolean;
 }
 function wheelZoom(
-  event: WheelEvent,
+  options: ZoomOptions,
   domain: number[],
-  zoomOptions: ZoomOptions = {},
+  scaleOptions: ScaleRationOptions = {},
 ): number[] {
-  const ratio = toScaleRatio(event, zoomOptions);
+  const ratio = toScaleRatio(options, scaleOptions);
   const [min, max] = domain;
   return [min * ratio, max * ratio];
 }
