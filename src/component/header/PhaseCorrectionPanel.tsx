@@ -69,13 +69,13 @@ export default function PhaseCorrectionPanel() {
   const ph0Ref = useRef<any>();
   const ph1Ref = useRef<any>();
   const { value: phaseCorrectionTypeItem, ...defaultSelectProps } =
-    useSelect<AlgorithmItem>();
-
-  const phaseCorrectionType = phaseCorrectionTypeItem || defaultPhasingTypeItem;
+    useSelect<AlgorithmItem>({
+      defaultSelectedItem: defaultPhasingTypeItem,
+      itemTextKey: 'label',
+    });
 
   useEffect(() => {
-    const type = phaseCorrectionTypeItem || defaultPhasingTypeItem;
-    if (filter && type?.value === 'manual') {
+    if (filter && phaseCorrectionTypeItem?.value === 'manual') {
       valueRef.current = filter.value;
       setValue(filter.value);
     }
@@ -92,7 +92,7 @@ export default function PhaseCorrectionPanel() {
   }, [filter, phaseCorrectionTypeItem]);
 
   function handleApplyFilter() {
-    switch (phaseCorrectionType?.value) {
+    switch (phaseCorrectionTypeItem?.value) {
       case 'automatic': {
         dispatch({
           type: 'APPLY_AUTO_PHASE_CORRECTION_FILTER',
@@ -184,12 +184,12 @@ export default function PhaseCorrectionPanel() {
           {...defaultSelectProps}
         >
           <Button
-            text={phaseCorrectionType.label}
+            text={phaseCorrectionTypeItem?.label}
             rightIcon="double-caret-vertical"
           />
         </Select>
       </div>
-      {phaseCorrectionType?.value === 'manual' && (
+      {phaseCorrectionTypeItem?.value === 'manual' && (
         <>
           <Label title="PH0 :" style={headerLabelStyle}>
             <Input
