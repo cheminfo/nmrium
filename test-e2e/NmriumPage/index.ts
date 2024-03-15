@@ -119,13 +119,16 @@ export default class NmriumPage {
         .waitFor({ state: 'visible' });
     }
 
+    const selectLocator = this.page.getByRole('combobox');
     if (mode === 'automatic') {
-      const select = this.page.locator('select');
-      await select.selectOption('automatic');
+      await selectLocator.click();
+      await this.page.getByRole('option', { name: 'automatic' }).click();
     }
     if (mode === 'absolute') {
-      const select = this.page.locator('select');
-      await select.selectOption('absolute');
+      await selectLocator.click();
+      await this.page
+        .getByRole('option', { name: 'Convert to absolute spectrum' })
+        .click();
     }
     await this.page.click('button >> text=Apply', { delay: 200 });
 
