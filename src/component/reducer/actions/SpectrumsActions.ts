@@ -1,4 +1,4 @@
-import { DataXY, NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
+import { NmrData2DFid, NmrData2DFt } from 'cheminfo-types';
 import { Draft, original } from 'immer';
 import lodashGet from 'lodash/get';
 import omitBy from 'lodash/omitBy';
@@ -659,7 +659,7 @@ function handleSimulateSpectrum(
   const { x, y } = simulateSpectrum(spinSystem, {
     data,
     options,
-  }) as DataXY<Float64Array>;
+  });
 
   let spectrumIndex = -1;
   if (!keepSpectrum && draft.view.currentSimulatedSpectrumKey) {
