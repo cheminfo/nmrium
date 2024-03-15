@@ -168,11 +168,12 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
-      if (
-        (trackID === 'CENTER_2D' && shiftKey) ||
-        trackID !== 'CENTER_2D' ||
-        (selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey)
-      ) {
+      const isZoomWithScroll =
+        trackID === 'CENTER_2D' && shiftKey && selectedTool === 'zoom';
+      const isMouseOver1DTrace = trackID !== 'CENTER_2D';
+      const isTraceZoomActive =
+        selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey;
+      if (isZoomWithScroll || isMouseOver1DTrace || isTraceZoomActive) {
         dispatch({ type: 'SET_ZOOM', payload: { options, trackID } });
       } else {
         dispatch({ type: 'SET_2D_LEVEL', payload: { options } });
