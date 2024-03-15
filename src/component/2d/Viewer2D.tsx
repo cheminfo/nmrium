@@ -169,6 +169,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
     if (trackID) {
       if (
+        (trackID === 'CENTER_2D' && shiftKey) ||
         trackID !== 'CENTER_2D' ||
         (selectedTool === 'phaseCorrectionTwoDimensions' && !shiftKey)
       ) {
