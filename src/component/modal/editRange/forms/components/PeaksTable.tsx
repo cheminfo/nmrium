@@ -130,6 +130,7 @@ export default function PeaksTable(props: PeaksTableProps) {
               style={{ input: styles.input }}
               onChange={(event) => changeDeltaHandler(event, row.index)}
               type="number"
+              onClick={(e) => e.stopPropagation()}
             />
           );
         },
