@@ -188,7 +188,7 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
       const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
-        maxPercentCutOff: 0.05,
+        maxPercentCutOff: 0.03,
       };
 
       const zones = detectZones(original(datum), detectionOptions);

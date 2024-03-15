@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
   zonesNoiseFactor: 1,
-  zonesMinMaxRatio: 0.05,
+  zonesMinMaxRatio: 0.03,
 };
 
 function Zones2DOptionPanel() {
