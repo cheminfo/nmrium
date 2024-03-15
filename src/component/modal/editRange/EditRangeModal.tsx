@@ -242,7 +242,7 @@ function EditRangeModal({
         onSubmit={handleOnSave}
       >
         <>
-          <SignalsForm range={range} preferences={rangesPreferences} />
+          <SignalsForm range={range} />
           <FormikOnChange onChange={changeHandler} />
         </>
       </Formik>

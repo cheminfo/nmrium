@@ -1,16 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { Range } from 'nmr-processing';
-import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
+import { useCallback, useMemo, memo, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
-import useSpectrum from '../../../../hooks/useSpectrum';
-import Events from '../../../../utility/Events';
-import { formatNumber } from '../../../../utility/formatNumber';
 
 import { AddSignalFormTab } from './AddSignalFormTab';
 import DeltaInput from './DeltaInput';
@@ -31,13 +27,9 @@ const newTabStyles = css`
 
 interface SignalsFormProps {
   range: Range;
-  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
-function SignalsForm({ range, preferences }: SignalsFormProps) {
-  const newSignalFormRef = useRef<any>();
-  const [activeField, setActiveField] = useState<string | null>(null);
-
+function SignalsForm({ range }: SignalsFormProps) {
   const {
     values,
     setFieldValue,
@@ -51,74 +43,6 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
     ) => void;
     errors: any;
   } = useFormikContext<any>();
-
-  const { info }: { info: any } = useSpectrum({ info: {} });
-
-  useEffect(() => {
-    function handle(event) {
-      if (info?.originFrequency && activeField) {
-        if (values.signalIndex === '-1') {
-          newSignalFormRef.current.setValues({
-            [activeField]:
-              (event.range[1] - event.range[0]) / 2 + event.range[0],
-          });
-        } else if (activeField.includes('delta')) {
-          setFieldValue(
-            activeField,
-            (event.range[1] - event.range[0]) / 2 + event.range[0],
-          );
-        } else {
-          const value = Number(
-            formatNumber(
-              Math.abs(event.range[0] - event.range[1]) * info.originFrequency,
-              preferences.deltaHz.format,
-            ),
-          );
-          setFieldValue(activeField, value);
-        }
-      }
-
-      setActiveField(null);
-    }
-
-    Events.on('brushEnd', handle);
-
-    return () => {
-      Events.off('brushEnd', handle);
-    };
-  }, [
-    activeField,
-    setFieldValue,
-    values.signalIndex,
-    info,
-    preferences.deltaHz.format,
-  ]);
-
-  useEffect(() => {
-    function handle(event) {
-      if (activeField) {
-        if (values.signalIndex === '-1') {
-          newSignalFormRef.current.setValues({ [activeField]: event.xPPM });
-        } else if (activeField.includes('delta')) {
-          setFieldValue(activeField, event.xPPM);
-        }
-      }
-      setActiveField(null);
-    }
-
-    Events.on('mouseClick', handle);
-
-    return () => {
-      Events.off('mouseClick', handle);
-    };
-  }, [values.signalIndex, activeField, setFieldValue]);
-
-  const handleOnFocus = useCallback(
-    (event) => {
-      setActiveField(event.target.name);
-    },
-    [setActiveField],
-  );
 
   const tapClickHandler = useCallback(
     ({ tabid }) => {
@@ -161,9 +85,7 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
               tabid={`${i}`}
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : tabStyles}
               canDelete
-              render={() => (
-                <DeltaInput signal={signal} index={i} onFocus={handleOnFocus} />
-              )}
+              render={() => <DeltaInput signal={signal} index={i} />}
             >
               <SignalFormTab index={i} />
             </Tab>
@@ -192,12 +114,12 @@ function SignalsForm({ range, preferences }: SignalsFormProps) {
           </div>
         )}
       >
-        <AddSignalFormTab range={range} preferences={preferences} />
+        <AddSignalFormTab range={range} />
       </Tab>
     );
 
     return [...signalTabs, addSignalTab];
-  }, [handleOnFocus, preferences, range, tabContainsErrors, values.signals]);
+  }, [range, tabContainsErrors, values.signals]);
 
   return (
     <div>

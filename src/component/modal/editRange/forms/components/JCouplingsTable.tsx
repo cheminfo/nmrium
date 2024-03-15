@@ -11,6 +11,11 @@ import FormikInput from '../../../../elements/formik/FormikInput';
 import FormikSelect from '../../../../elements/formik/FormikSelect';
 import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { useEvent } from '../../../../utility/Events';
+import { formatNumber } from '../../../../utility/formatNumber';
+import useSpectrum from '../../../../hooks/useSpectrum';
+import { isSpectrum1D } from '../../../../../data/data1d/Spectrum1D';
+import { useChartData } from '../../../../context/ChartContext';
+import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
 
 const styles: Record<'input' | 'select' | 'column', CSSProperties> = {
   input: {
@@ -45,6 +50,13 @@ export default function JCouplingsTable(props: PeaksTableProps) {
   const [lastSelectedCouplingIndex, setLastSelectedCouplingIndex] = useState<
     number | null
   >(null);
+  const spectrum = useSpectrum();
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   useEvent({
     onClick: (options) => {
@@ -52,7 +64,8 @@ export default function JCouplingsTable(props: PeaksTableProps) {
         `${props.index}` === values.signalIndex &&
         typeof lastSelectedCouplingIndex === 'number'
       ) {
-        const x = options.xPPM;
+        const x = formatNumber(options.xPPM, rangesPreferences.deltaHz.format);
+
         void setFieldValue(
           getJCouplingKey(
             values.signalIndex,
@@ -70,15 +83,23 @@ export default function JCouplingsTable(props: PeaksTableProps) {
       } = options;
       if (
         `${props.index}` === values.signalIndex &&
-        typeof lastSelectedCouplingIndex === 'number'
+        typeof lastSelectedCouplingIndex === 'number' &&
+        isSpectrum1D(spectrum)
       ) {
+        const value = Number(
+          formatNumber(
+            Math.abs(to - from) * spectrum.info.originFrequency,
+            rangesPreferences.deltaHz.format,
+          ),
+        );
+
         void setFieldValue(
           getJCouplingKey(
             values.signalIndex,
             lastSelectedCouplingIndex,
             'coupling',
           ),
-          (to - from) / 2 + from,
+          value,
         );
       }
     },

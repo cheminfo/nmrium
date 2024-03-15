@@ -1,11 +1,12 @@
 import { Formik, useFormikContext } from 'formik';
-import { WorkSpacePanelPreferences } from 'nmr-load-save';
 import { translateMultiplet } from 'nmr-processing';
 import { CSSProperties, useRef } from 'react';
 import * as Yup from 'yup';
 
+import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikInput from '../../../../elements/formik/FormikInput';
+import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
 import { useEvent } from '../../../../utility/Events';
 import { formatNumber } from '../../../../utility/formatNumber';
 
@@ -30,13 +31,18 @@ const styles: Record<
 
 interface AddSignalFormTabProps {
   range: any;
-  preferences: WorkSpacePanelPreferences['ranges'];
 }
 
 export function AddSignalFormTab(props: AddSignalFormTabProps) {
-  const { range, preferences } = props;
+  const { range } = props;
   const { values, setFieldValue } = useFormikContext<any>();
   const newSignalFormRef = useRef<any>();
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   function saveHandler(val) {
     const newSignal = {
@@ -84,8 +90,8 @@ export function AddSignalFormTab(props: AddSignalFormTabProps) {
             Edit or select a delta value of new signal in range [
             {`${formatNumber(
               range.from,
-              preferences.from.format,
-            )} ppm - ${formatNumber(range.to, preferences.to.format)} ppm`}
+              rangesPreferences.from.format,
+            )} ppm - ${formatNumber(range.to, rangesPreferences.to.format)} ppm`}
             ]:
           </p>
           <FormikInput

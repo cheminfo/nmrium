@@ -7,11 +7,14 @@ import { CSSProperties, useCallback, useMemo, useState } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
+import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import ReactTable, { Column } from '../../../../elements/ReactTable/ReactTable';
 import FormikInput from '../../../../elements/formik/FormikInput';
+import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
 import useSpectrum from '../../../../hooks/useSpectrum';
 import { useEvent } from '../../../../utility/Events';
+import { formatNumber } from '../../../../utility/formatNumber';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -27,6 +30,16 @@ interface PeaksTableProps {
   index: number;
 }
 
+function getPeakKey(signalIndex: number, peakIndex, key?: keyof Peak1D) {
+  const path = `signals[${signalIndex}].peaks.${peakIndex}`;
+
+  if (!key) {
+    return path;
+  }
+
+  return `${path}.${key}`;
+}
+
 export default function PeaksTable(props: PeaksTableProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const signal = values?.signals?.[values?.signalIndex] || {};
@@ -37,23 +50,61 @@ export default function PeaksTable(props: PeaksTableProps) {
     data: { x: xArray, re },
   } = spectrum;
   const shiftX = getShiftX(spectrum);
-  const [lastSelectedPeak, setLastSelectedPeak] = useState<Peak1D | null>(null);
+  const [lastSelectedPeakIndex, setLastSelectedPeakIndex] = useState<
+    number | null
+  >(null);
+
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
+  const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
   useEvent({
     onClick: (options) => {
-      if (`${props.index}` === values.signalIndex) {
-        const index = peaks.findIndex(
-          (peak) => peak.id === lastSelectedPeak?.id,
+      if (
+        `${props.index}` === values.signalIndex &&
+        typeof lastSelectedPeakIndex === 'number'
+      ) {
+        const delta = formatNumber(
+          options.xPPM,
+          rangesPreferences.deltaPPM.format,
         );
-        if (index !== -1) {
-          const delta = options.xPPM;
-          const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
-          void setFieldValue(`signals[${values?.signalIndex}].peaks.${index}`, {
-            ...peaks[index],
+        const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
+        const intensity = formatNumber(
+          re[xIndex],
+          rangesPreferences.deltaPPM.format,
+        );
+        void setFieldValue(
+          getPeakKey(values?.signalIndex, lastSelectedPeakIndex),
+          {
+            ...peaks[lastSelectedPeakIndex],
             x: delta,
-            y: re[xIndex],
-          });
-        }
+            y: intensity,
+          },
+        );
+      }
+    },
+    onBrushEnd: (options) => {
+      const {
+        range: [from, to],
+      } = options;
+      if (
+        `${props.index}` === values.signalIndex &&
+        typeof lastSelectedPeakIndex === 'number'
+      ) {
+        const value = Number(
+          formatNumber(
+            (to - from) / 2 + from,
+            rangesPreferences.deltaPPM.format,
+          ),
+        );
+
+        void setFieldValue(
+          getPeakKey(values.signalIndex, lastSelectedPeakIndex, 'x'),
+          value,
+        );
       }
     },
   });
@@ -73,30 +124,26 @@ export default function PeaksTable(props: PeaksTableProps) {
         ...data,
         peak,
       ]);
-      setLastSelectedPeak(peak);
+      setLastSelectedPeakIndex(data?.length || 0);
     },
     [delta, re, setFieldValue, shiftX, values?.signalIndex, xArray],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
-      const lastPeakIndex = data.findIndex(
-        (peak) => peak.id === lastSelectedPeak?.id,
-      );
-
       const peaks = data.filter((_, columnIndex) => columnIndex !== index);
 
       void setFieldValue(`signals[${values?.signalIndex}].peaks`, peaks);
-      if (lastPeakIndex === index) {
-        setLastSelectedPeak(null);
+      if (lastSelectedPeakIndex === index) {
+        setLastSelectedPeakIndex(null);
       }
     },
-    [lastSelectedPeak?.id, setFieldValue, values?.signalIndex],
+    [lastSelectedPeakIndex, setFieldValue, values?.signalIndex],
   );
 
   function deleteAllHandler() {
     void setFieldValue(`signals[${values?.signalIndex}].peaks`, []);
-    setLastSelectedPeak(null);
+    setLastSelectedPeakIndex(null);
   }
 
   const changeDeltaHandler = useCallback(
@@ -175,12 +222,14 @@ export default function PeaksTable(props: PeaksTableProps) {
     [changeDeltaHandler, deleteHandler, values?.signalIndex],
   );
 
-  function selectRowHandler(data) {
-    setLastSelectedPeak((prevPeak) => (prevPeak?.id === data.id ? null : data));
+  function selectRowHandler(index) {
+    setLastSelectedPeakIndex((prevIndex) =>
+      prevIndex === index ? null : index,
+    );
   }
 
   function handleActiveRow(row) {
-    return row?.original.id === lastSelectedPeak?.id;
+    return row?.index === lastSelectedPeakIndex;
   }
 
   return (
@@ -210,7 +259,7 @@ export default function PeaksTable(props: PeaksTableProps) {
         <ReactTable
           data={peaks}
           columns={COLUMNS}
-          onClick={(e, rowData: any) => selectRowHandler(rowData.original)}
+          onClick={(e, rowData: any) => selectRowHandler(rowData.index)}
           activeRow={handleActiveRow}
           emptyDataRowText="No peaks"
         />
