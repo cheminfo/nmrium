@@ -13,8 +13,8 @@ import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLogger } from '../context/LoggerContext';
+import { useToaster } from '../context/ToasterContext';
 import Button from '../elements/Button';
-import { useAlert } from '../elements/popup/Alert';
 import PredictionPreferences from '../panels/predictionPanel/PredictionOptionsPanel';
 import { useStateWithLocalStorage } from '../utility/LocalStorage';
 
@@ -61,7 +61,7 @@ export function PredictSpectraModal({
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const refForm = useRef<any>();
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
   const [predictionPreferences, setPredictionPreferences] =
     useStateWithLocalStorage('nmrium-prediction-preferences');
 
@@ -101,9 +101,9 @@ export function PredictSpectraModal({
           onClose();
           closeDialog();
 
-          const hideLoading = await alert.showLoading(
-            `Predict ${predictedSpectra.join(',')} in progress`,
-          );
+          const hideLoading = toaster.showLoading({
+            message: `Predict ${predictedSpectra.join(',')} in progress`,
+          });
 
           try {
             const data = await predictSpectra(molfile, values.spectra);
@@ -117,7 +117,7 @@ export function PredictSpectraModal({
               },
             });
           } catch (error: any) {
-            alert.error(error?.message);
+            toaster.show({ message: error?.message, intent: 'danger' });
           } finally {
             hideLoading();
           }
@@ -125,14 +125,14 @@ export function PredictSpectraModal({
       })();
     },
     [
-      alert,
-      dispatch,
-      isApproved,
       molecule,
-      onClose,
-      logger,
       setPredictionPreferences,
+      isApproved,
+      onClose,
       closeDialog,
+      toaster,
+      dispatch,
+      logger,
     ],
   );
 

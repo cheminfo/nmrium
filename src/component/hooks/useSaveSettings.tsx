@@ -6,8 +6,8 @@ import { useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../context/PreferencesContext';
+import { useToaster } from '../context/ToasterContext';
 import FormikInput from '../elements/formik/FormikInput';
-import { useAlert } from '../elements/popup/Alert/Context';
 import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
 
 const schema = Yup.object().shape({
@@ -45,7 +45,7 @@ const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
 );
 
 export function useSaveSettings() {
-  const alert = useAlert();
+  const toaster = useToaster();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const settingsRef = useRef<Workspace>();
   const { dispatch, current } = usePreferences();
@@ -60,7 +60,10 @@ export function useSaveSettings() {
       },
     });
     closeDialog();
-    alert.success('Preferences saved successfully');
+    toaster.show({
+      message: 'Preferences saved successfully',
+      intent: 'success',
+    });
   }
 
   return {

@@ -5,13 +5,13 @@ import { useToggleAccordion } from 'react-science/ui';
 
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
+import { useToaster } from '../context/ToasterContext';
 import { TOOLS_PANELS_ACCORDION } from '../panels/Panels';
 import { options } from '../toolbar/ToolTypes';
 
 export default function useToolsFunctions() {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
 
   const { open: openPanel } = useToggleAccordion();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
@@ -33,9 +33,9 @@ export default function useToolsFunctions() {
           options.rangePicking.id,
         ].includes(selectedTool)
       ) {
-        alert.show(
-          `Press ${!invert ? 'Shift +' : ''} Left Mouse button to select zone`,
-        );
+        toaster.show({
+          message: `Press ${!invert ? 'Shift +' : ''} Left Mouse button to select zone`,
+        });
       }
 
       if (Object.keys(TOOLS_PANELS_ACCORDION).includes(selectedTool)) {
@@ -47,7 +47,7 @@ export default function useToolsFunctions() {
         payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
-    [alert, dispatch, invert, openPanel],
+    [dispatch, invert, openPanel, toaster],
   );
 
   const handleFullZoomOut = useCallback(() => {

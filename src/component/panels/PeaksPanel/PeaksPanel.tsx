@@ -11,7 +11,7 @@ import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
@@ -54,7 +54,7 @@ function PeaksPanelInner({
 
   const dispatch = useDispatch();
   const modal = useModal();
-  const alert = useAlert();
+  const toaster = useToaster();
   const isExperimental = useCheckExperimentalFeature();
 
   const settingRef = useRef<any>();
@@ -117,7 +117,10 @@ function PeaksPanelInner({
     if (filterPeaks.length <= 4) {
       dispatch({ type: 'OPTIMIZE_PEAKS', payload: { peaks: filterPeaks } });
     } else {
-      alert.error('optimization can be done on no more than 4 peaks');
+      toaster.show({
+        message: 'optimization can be done on no more than 4 peaks',
+        intent: 'danger',
+      });
     }
   };
 

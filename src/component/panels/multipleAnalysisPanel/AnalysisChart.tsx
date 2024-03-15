@@ -7,10 +7,10 @@ import { Axis, LineSeries, Plot } from 'react-plot';
 
 import { SpectraAnalysisData } from '../../../data/data1d/multipleSpectraAnalysis';
 import { useChartData } from '../../context/ChartContext';
+import { useToaster } from '../../context/ToasterContext';
 import Button from '../../elements/Button';
 import Input from '../../elements/Input';
 import Label from '../../elements/Label';
-import { useAlert } from '../../elements/popup/Alert';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import { copyPNGToClipboard } from '../../utility/export';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
@@ -97,7 +97,7 @@ function getAnalysisColumnsPaths(spectraAnalysisData: SpectraAnalysisData) {
 export default function AnalysisChart(props: PlotChartPros) {
   const { spectraAnalysisData } = props;
   const { data } = useChartData();
-  const alert = useAlert();
+  const toaster = useToaster();
   const chartParentRef = useRef<HTMLDivElement>(null);
   const [plotOptions, setPlotOptions] = useState<PlotAxisOptions>({
     xPath: '',
@@ -129,7 +129,7 @@ export default function AnalysisChart(props: PlotChartPros) {
         svgId,
         css({ text: { fill: 'black' } }),
       );
-      alert.success('Chart copied to clipboard');
+      toaster.show({ message: 'Chart copied to clipboard', intent: 'success' });
     }
   }
 

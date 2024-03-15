@@ -10,7 +10,7 @@ import { IoColorPaletteOutline } from 'react-icons/io5';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -54,7 +54,7 @@ function SpectraPanelHeaderInner({
   onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
-  const alert = useAlert();
+  const toaster = useToaster();
   const dispatch = useDispatch();
 
   const handleDelete = useCallback(() => {
@@ -100,7 +100,7 @@ function SpectraPanelHeaderInner({
         payload: { nucleus: missingNucleus },
       });
     } else {
-      alert.error('Nothing to calculate');
+      toaster.show({ message: 'Nothing to calculate', intent: 'danger' });
     }
   }
 

@@ -13,8 +13,8 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useToaster } from '../../context/ToasterContext';
 import { BaseContextMenuProps } from '../../elements/ContextMenuBluePrint';
-import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -56,7 +56,7 @@ function RangesTablePanelInner({
   const assignmentData = useAssignmentData();
 
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
   const [isFlipped, setFlipStatus] = useState(false);
 
   const settingRef = useRef<any>();
@@ -126,10 +126,10 @@ function RangesTablePanelInner({
         };
 
         await rawWriteWithType(JSON.stringify(dataToClipboard, undefined, 2));
-        alert.show('Data copied to clipboard');
+        toaster.show({ message: 'Data copied to clipboard' });
       }
     },
-    [data, rawWriteWithType, alert],
+    [data, rawWriteWithType, toaster],
   );
 
   const contextMenuSelectHandler = useCallback(
