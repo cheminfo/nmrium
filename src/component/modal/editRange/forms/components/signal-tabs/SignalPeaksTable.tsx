@@ -7,14 +7,16 @@ import { CSSProperties, useCallback, useMemo, useState } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
-import { useChartData } from '../../../../context/ChartContext';
-import Button from '../../../../elements/Button';
-import ReactTable, { Column } from '../../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../../elements/formik/FormikInput';
-import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
-import useSpectrum from '../../../../hooks/useSpectrum';
-import { useEvent } from '../../../../utility/Events';
-import { formatNumber } from '../../../../utility/formatNumber';
+import { useChartData } from '../../../../../context/ChartContext';
+import Button from '../../../../../elements/Button';
+import ReactTable, {
+  Column,
+} from '../../../../../elements/ReactTable/ReactTable';
+import FormikInput from '../../../../../elements/formik/FormikInput';
+import { usePanelPreferences } from '../../../../../hooks/usePanelPreferences';
+import useSpectrum from '../../../../../hooks/useSpectrum';
+import { useEvent } from '../../../../../utility/Events';
+import { formatNumber } from '../../../../../utility/formatNumber';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {
@@ -26,7 +28,7 @@ const styles: Record<'input' | 'column', CSSProperties> = {
   },
 };
 
-interface PeaksTableProps {
+interface SignalPeaksTableProps {
   index: number;
 }
 
@@ -40,7 +42,7 @@ function getPeakKey(signalIndex: number, peakIndex, key?: keyof Peak1D) {
   return `${path}.${key}`;
 }
 
-export default function PeaksTable(props: PeaksTableProps) {
+export function SignalPeaksTable(props: SignalPeaksTableProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const signal = values?.signals?.[values?.signalIndex] || {};
   const peaks = signal?.peaks || [];

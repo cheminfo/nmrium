@@ -8,10 +8,10 @@ import { FaPlus } from 'react-icons/fa';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 
-import { AddSignalFormTab } from './AddSignalFormTab';
-import DeltaInput from './DeltaInput';
-import { SignalFormInfo } from './SignalFormInfo';
-import SignalFormTab from './SignalFormTab';
+import { DeltaInput } from './DeltaInput';
+import { InfoBlock } from './InfoBlock';
+import { NewSignalTab } from './NewSignalTab';
+import SignalTab from './SignalTab';
 
 const tabStylesAddition = css`
   color: red;
@@ -29,7 +29,7 @@ interface SignalsFormProps {
   range: Range;
 }
 
-function SignalsForm({ range }: SignalsFormProps) {
+function SignalsContent({ range }: SignalsFormProps) {
   const {
     values,
     setFieldValue,
@@ -87,7 +87,7 @@ function SignalsForm({ range }: SignalsFormProps) {
               canDelete
               render={() => <DeltaInput signal={signal} index={i} />}
             >
-              <SignalFormTab index={i} />
+              <SignalTab index={i} />
             </Tab>
           ))
         : [];
@@ -114,7 +114,7 @@ function SignalsForm({ range }: SignalsFormProps) {
           </div>
         )}
       >
-        <AddSignalFormTab range={range} />
+        <NewSignalTab range={range} />
       </Tab>
     );
 
@@ -123,7 +123,7 @@ function SignalsForm({ range }: SignalsFormProps) {
 
   return (
     <div>
-      <SignalFormInfo />
+      <InfoBlock />
       <Tabs
         activeTab={values.signalIndex}
         onClick={tapClickHandler}
@@ -135,4 +135,4 @@ function SignalsForm({ range }: SignalsFormProps) {
   );
 }
 
-export default memo(SignalsForm);
+export default memo(SignalsContent);

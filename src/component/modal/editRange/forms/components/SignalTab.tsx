@@ -3,8 +3,8 @@ import { Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { CSSProperties, memo } from 'react';
 
-import JCouplingsTable from './JCouplingsTable';
-import PeaksTable from './PeaksTable';
+import { SignalJCouplingsTable } from './signal-tabs/SignalJCouplingsTable';
+import { SignalPeaksTable } from './signal-tabs/SignalPeaksTable';
 
 const style: CSSProperties = {
   borderSpacing: '0',
@@ -16,11 +16,11 @@ const style: CSSProperties = {
   textAlign: 'center',
 };
 
-interface SignalFormTabProps {
+interface SignalTabProps {
   index: number;
 }
 
-function SignalFormTab({ index }: SignalFormTabProps) {
+function SignalTab({ index }: SignalTabProps) {
   return (
     <div
       style={style}
@@ -34,12 +34,16 @@ function SignalFormTab({ index }: SignalFormTabProps) {
         <Tab
           id="couplings"
           title="Couplings"
-          panel={<JCouplingsTable index={index} />}
+          panel={<SignalJCouplingsTable index={index} />}
         />
-        <Tab id="peaks" title="Peaks" panel={<PeaksTable index={index} />} />
+        <Tab
+          id="peaks"
+          title="Peaks"
+          panel={<SignalPeaksTable index={index} />}
+        />
       </Tabs>
     </div>
   );
 }
 
-export default memo(SignalFormTab);
+export default memo(SignalTab);

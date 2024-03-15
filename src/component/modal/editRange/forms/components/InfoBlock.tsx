@@ -35,7 +35,7 @@ const InfoText = (props: { value: string; type?: 'info' | 'error' }) => {
   );
 };
 
-export function SignalFormInfo() {
+export function InfoBlock() {
   const {
     values,
     errors,

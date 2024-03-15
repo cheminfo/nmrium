@@ -4,18 +4,20 @@ import { CSSProperties, useCallback, useMemo, useState } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
-import { Multiplets } from '../../../../../data/constants/Multiplets';
-import Button from '../../../../elements/Button';
-import ReactTable, { Column } from '../../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../../elements/formik/FormikInput';
-import FormikSelect from '../../../../elements/formik/FormikSelect';
-import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
-import { useEvent } from '../../../../utility/Events';
-import { formatNumber } from '../../../../utility/formatNumber';
-import useSpectrum from '../../../../hooks/useSpectrum';
-import { isSpectrum1D } from '../../../../../data/data1d/Spectrum1D';
-import { useChartData } from '../../../../context/ChartContext';
-import { usePanelPreferences } from '../../../../hooks/usePanelPreferences';
+import { Multiplets } from '../../../../../../data/constants/Multiplets';
+import { isSpectrum1D } from '../../../../../../data/data1d/Spectrum1D';
+import { useChartData } from '../../../../../context/ChartContext';
+import Button from '../../../../../elements/Button';
+import ReactTable, {
+  Column,
+} from '../../../../../elements/ReactTable/ReactTable';
+import FormikInput from '../../../../../elements/formik/FormikInput';
+import FormikSelect from '../../../../../elements/formik/FormikSelect';
+import { usePanelPreferences } from '../../../../../hooks/usePanelPreferences';
+import useSpectrum from '../../../../../hooks/useSpectrum';
+import { hasCouplingConstant } from '../../../../../panels/extra/utilities/MultiplicityUtilities';
+import { useEvent } from '../../../../../utility/Events';
+import { formatNumber } from '../../../../../utility/formatNumber';
 
 const styles: Record<'input' | 'select' | 'column', CSSProperties> = {
   input: {
@@ -31,7 +33,7 @@ const styles: Record<'input' | 'select' | 'column', CSSProperties> = {
   },
 };
 
-interface PeaksTableProps {
+interface SignalJCouplingsTableProps {
   index: number;
 }
 
@@ -43,7 +45,7 @@ function getJCouplingKey(
   return `signals[${signalIndex}].js.${jIndex}.${jCouplingKey}`;
 }
 
-export default function JCouplingsTable(props: PeaksTableProps) {
+export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const signal = values?.signals?.[values?.signalIndex] || {};
   const jCouplings = signal?.js || [];

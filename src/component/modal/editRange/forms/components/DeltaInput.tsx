@@ -19,7 +19,7 @@ interface DeltaInputProps {
   index: number;
 }
 
-function DeltaInput({ signal, index }: DeltaInputProps) {
+export function DeltaInput({ signal, index }: DeltaInputProps) {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <span>𝛅: </span>
@@ -38,5 +38,3 @@ function DeltaInput({ signal, index }: DeltaInputProps) {
     </div>
   );
 }
-
-export default DeltaInput;

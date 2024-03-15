@@ -29,11 +29,11 @@ const styles: Record<
   },
 };
 
-interface AddSignalFormTabProps {
+interface NewSignalTabProps {
   range: any;
 }
 
-export function AddSignalFormTab(props: AddSignalFormTabProps) {
+export function NewSignalTab(props: NewSignalTabProps) {
   const { range } = props;
   const { values, setFieldValue } = useFormikContext<any>();
   const newSignalFormRef = useRef<any>();
