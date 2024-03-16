@@ -17,7 +17,7 @@ export type MatrixFilters = Array<{
 export function getDefaultMatrixFilters() {
   // get filters information & default options values
   return filterXY.anyOf
-    .filter(({ properties }) => properties.name.enum[0] !== 'equallySpaced')
+    .filter(({ properties }) => properties.name.const !== 'equallySpaced')
     .map(({ properties }) => {
       const options: FiltersObjectRecord = {};
       for (const [key, value] of Object.entries(
@@ -31,7 +31,7 @@ export function getDefaultMatrixFilters() {
       }
 
       return {
-        name: properties.name.enum[0] as FilterXYType['name'],
+        name: properties.name.const as FilterXYType['name'],
         options,
       };
     });
