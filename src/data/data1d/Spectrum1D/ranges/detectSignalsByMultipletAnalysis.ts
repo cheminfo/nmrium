@@ -31,6 +31,10 @@ export function detectSignalsByMultipletAnalysis(
     smoothY: true,
   });
 
+  if (peaks.length === 0) {
+    return [];
+  }
+
   let cs = 0;
   let area = 0;
   for (const peak of peaks) {

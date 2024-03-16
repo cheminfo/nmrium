@@ -16,7 +16,7 @@ const sidebarCss = css`
   height: 100%;
   bottom: 0;
   left: 0;
-  z-index: 1031;
+  z-index: 19;
 `;
 
 const sidebarOpenCss = css`
