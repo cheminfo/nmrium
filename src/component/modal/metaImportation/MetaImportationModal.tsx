@@ -17,12 +17,12 @@ import {
 } from '../../../data/parseMeta';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { useToaster } from '../../context/ToasterContext';
 import Button from '../../elements/Button';
 import Label from '../../elements/Label';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikSelect from '../../elements/formik/FormikSelect';
-import { useAlert } from '../../elements/popup/Alert/Context';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 
@@ -113,7 +113,7 @@ function InnerMetaImportationModal({
   file,
   onCloseDialog,
 }: InnerMetaImportationModalPropsProps) {
-  const alert = useAlert();
+  const toaster = useToaster();
   const dispatch = useDispatch();
 
   const formRef = useRef<FormikProps<any>>(null);
@@ -188,16 +188,20 @@ function InnerMetaImportationModal({
         if (Object.keys(compareResult).length > 0) {
           setCompareResults(compareResult);
         } else {
-          alert.error(
-            `No matches found:  Source field [${source}] => Target field [${target}]`,
-          );
+          toaster.show({
+            message: `No matches found:  Source field [${source}] => Target field [${target}]`,
+            intent: 'danger',
+          });
         }
       } catch (error: any) {
         if (error instanceof TargetPathError) {
           void formRef.current?.setFieldValue('target', null);
           formRef.current?.setFieldError('target', '');
         }
-        alert.error(error.message);
+        toaster.show({
+          message: error.message,
+          intent: 'danger',
+        });
       }
     }
   }

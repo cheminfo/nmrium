@@ -10,9 +10,9 @@ import { StateMoleculeExtended } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useLogger } from '../../context/LoggerContext';
+import { useToaster } from '../../context/ToasterContext';
 import Button from '../../elements/Button';
 import NextPrev from '../../elements/NextPrev';
-import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader';
@@ -40,7 +40,7 @@ export default function PredictionPanel() {
     view: { molecules: moleculesView, predictions },
   } = useChartData();
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
   const { logger } = useLogger();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molfile, setMolfile] = useState<string | null>(null);
@@ -89,9 +89,9 @@ export default function PredictionPanel() {
           }
         }
 
-        const hideLoading = await alert.showLoading(
-          `Predict ${predictedSpectra.join(',')} in progress`,
-        );
+        const hideLoading = toaster.showLoading({
+          message: `Predict ${predictedSpectra.join(',')} in progress`,
+        });
 
         try {
           const data = await predictSpectra(
@@ -112,12 +112,12 @@ export default function PredictionPanel() {
             openSpectraPanel();
           }
         } catch (error: any) {
-          alert.error(error.message);
+          toaster.show({ message: error.message, intent: 'danger' });
         } finally {
           hideLoading();
         }
       } else {
-        alert.error('No Molecule selected');
+        toaster.show({ message: 'No Molecule selected', intent: 'danger' });
       }
     })();
   }

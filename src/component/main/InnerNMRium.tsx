@@ -13,8 +13,8 @@ import { GlobalProvider } from '../context/GlobalContext';
 import { KeyModifiersProvider } from '../context/KeyModifierContext';
 import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
+import { ToasterProvider } from '../context/ToasterContext';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext';
-import { AlertProvider } from '../elements/popup/Alert';
 import { ModalProvider } from '../elements/popup/Modal';
 import { HighlightProvider } from '../highlight';
 import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
@@ -101,7 +101,7 @@ export function InnerNMRium({
         <PreferencesProvider value={preferencesState}>
           <LoggerProvider>
             <KeyModifiersProvider>
-              <AlertProvider wrapperRef={elementsWrapperRef.current}>
+              <ToasterProvider>
                 <NMRiumStateProvider
                   onChange={onChange}
                   nmriumData={nmriumData}
@@ -126,7 +126,7 @@ export function InnerNMRium({
                     </ModalProvider>
                   </TopicMoleculeProvider>
                 </NMRiumStateProvider>
-              </AlertProvider>
+              </ToasterProvider>
             </KeyModifiersProvider>
           </LoggerProvider>
         </PreferencesProvider>

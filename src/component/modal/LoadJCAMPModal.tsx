@@ -7,11 +7,11 @@ import { useRef } from 'react';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
+import { useToaster } from '../context/ToasterContext';
 import Button from '../elements/Button';
 import Label, { LabelStyle } from '../elements/Label';
 import FormikError from '../elements/formik/FormikError';
 import FormikInput from '../elements/formik/FormikInput';
-import { useAlert } from '../elements/popup/Alert/Context';
 
 const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 
@@ -47,15 +47,15 @@ interface LoadJCAMPModalProps {
 }
 export function LoadJCAMPModal({ onCloseDialog, isOpen }: LoadJCAMPModalProps) {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const toaster = useToaster();
   const ref = useRef<FormikProps<any>>(null);
 
   if (!isOpen) return;
 
   async function loadJCAMPHandler({ url }) {
-    const hidLoading = await alert.showLoading(
-      'Load JCAMP from external URL in progress ...',
-    );
+    const hidLoading = toaster.showLoading({
+      message: 'Load JCAMP from external URL in progress ...',
+    });
     const { pathname, origin } = new URL(url);
     try {
       const nmriumState = await readFromWebSource({
@@ -67,7 +67,7 @@ export function LoadJCAMPModal({ onCloseDialog, isOpen }: LoadJCAMPModalProps) {
         payload: { nmriumState, resetSourceObject: false },
       });
     } catch {
-      alert.error(`Failed to load ${url}`);
+      toaster.show({ message: `Failed to load ${url}`, intent: 'danger' });
     } finally {
       hidLoading();
       onCloseDialog?.();

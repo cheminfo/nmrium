@@ -18,7 +18,7 @@ import useSpectrum from '../../hooks/useSpectrum';
 import { hasCouplingConstant } from '../../panels/extra/utilities/MultiplicityUtilities';
 import { formatNumber } from '../../utility/formatNumber';
 
-import SignalsForm from './forms/components/SignalsForm';
+import SignalsContent from './forms/components/SignalsContent';
 import editRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
@@ -242,7 +242,7 @@ function EditRangeModal({
         onSubmit={handleOnSave}
       >
         <>
-          <SignalsForm range={range} preferences={rangesPreferences} />
+          <SignalsContent range={range} />
           <FormikOnChange onChange={changeHandler} />
         </>
       </Formik>

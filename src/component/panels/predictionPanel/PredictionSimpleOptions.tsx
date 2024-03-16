@@ -54,6 +54,7 @@ function PredictionSimpleOptions() {
       <div
         style={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'flex-end',
           flex: '1',
           height: '100%',

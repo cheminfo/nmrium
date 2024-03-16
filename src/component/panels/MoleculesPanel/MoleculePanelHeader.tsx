@@ -22,12 +22,12 @@ import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
+import { useToaster } from '../../context/ToasterContext';
 import { PreferencesButton } from '../../elements/PreferencesButton';
 import {
   ToolbarPopoverItem,
   ToolbarPopoverMenuItem,
 } from '../../elements/ToolbarPopoverItem';
-import { useAlert } from '../../elements/popup/Alert';
 import AboutPredictionModal from '../../modal/AboutPredictionModal';
 import PredictSpectraModal from '../../modal/PredictSpectraModal';
 import { copyPNGToClipboard, exportAsSVG } from '../../utility/export';
@@ -105,7 +105,7 @@ export default function MoleculePanelHeader({
   children,
 }: MoleculePanelHeaderProps) {
   const { rootRef } = useGlobal();
-  const alert = useAlert();
+  const toaster = useToaster();
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
   const moleculeKey = molecules?.[currentIndex]?.id;
@@ -117,8 +117,11 @@ export default function MoleculePanelHeader({
   const saveAsPNGHandler = useCallback(async () => {
     if (!rootRef) return;
     await copyPNGToClipboard(rootRef, `molSVG${currentIndex} `);
-    alert.success('MOL copied as PNG to clipboard');
-  }, [rootRef, alert, currentIndex]);
+    toaster.show({
+      message: 'MOL copied as PNG to clipboard',
+      intent: 'success',
+    });
+  }, [rootRef, currentIndex, toaster]);
 
   const {
     rawWriteWithType,
@@ -131,10 +134,13 @@ export default function MoleculePanelHeader({
   const saveAsMolHandler = useCallback(
     (molfile) => {
       void rawWriteWithType(molfile).then(() => {
-        alert.success('MOLFile copied to clipboard');
+        toaster.show({
+          message: 'MOLFile copied to clipboard',
+          intent: 'success',
+        });
       });
     },
-    [alert, rawWriteWithType],
+    [rawWriteWithType, toaster],
   );
 
   const exportHandler = useCallback(
@@ -217,8 +223,8 @@ export default function MoleculePanelHeader({
 
   return (
     <PanelHeader>
-      {renderSource === 'predictionPanel' && <AboutPredictionModal />}
       <Toolbar>
+        {renderSource === 'predictionPanel' && <AboutPredictionModal />}
         {renderSource === 'moleculePanel' && (
           <>
             <ToolbarPopoverItem

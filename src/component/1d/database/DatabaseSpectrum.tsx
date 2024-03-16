@@ -4,7 +4,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useVerticalAlign } from '../../hooks/useVerticalAlign';
@@ -19,7 +19,7 @@ function DatabaseSpectrum() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();
   const { scaleX } = useScaleChecked();
-  const alert = useAlert();
+  const toaster = useToaster();
   const { color, marginBottom } = usePanelPreferences('database');
   const { jcampURL: jcampRelativeURL = '', baseURL } =
     highlight?.sourceData?.extra || {};
@@ -68,7 +68,7 @@ function DatabaseSpectrum() {
         }
       } catch (error) {
         reportError(error);
-        alert.error('Failed to Load spectrum');
+        toaster.show({ message: 'Failed to Load spectrum', intent: 'danger' });
       }
     }, 250),
   );

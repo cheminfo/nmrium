@@ -293,8 +293,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   }, [dispatch]);
 
   const handleZoom = useCallback<OnZoom>(
-    (event) => {
-      dispatch({ type: 'SET_ZOOM', payload: { event } });
+    (options) => {
+      dispatch({ type: 'SET_ZOOM', payload: { options } });
     },
     [dispatch],
   );
@@ -305,12 +305,11 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
       const xPPM = scaleState.scaleX().invert(event.x);
 
-      const propagateEvent = () => {
-        Events.emit('mouseClick', {
-          ...event,
-          xPPM,
-        });
-      };
+      Events.emit('mouseClick', {
+        ...event,
+        xPPM,
+      });
+
       const keyModifiers = getModifiersKey(event as unknown as MouseEvent);
 
       switch (keyModifiers) {
@@ -322,9 +321,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 payload: event,
               });
               break;
-            case options.editRange.id:
-              propagateEvent();
-              break;
+
             case options.integral.id:
               dispatch({
                 type: 'CUT_INTEGRAL',

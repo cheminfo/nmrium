@@ -16,12 +16,12 @@ import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
 import { useDispatch } from '../../context/DispatchContext';
+import { useToaster } from '../../context/ToasterContext';
 import {
   ContextMenu,
   ContextMenuItem,
 } from '../../elements/ContextMenuBluePrint';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import { useAlert } from '../../elements/popup/Alert';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ExportAsJcampModal from '../../modal/ExportAsJcampModal';
 
@@ -114,7 +114,7 @@ export function SpectraTable(props: SpectraTableProps) {
     onChangeActiveSpectrum,
     nucleus,
   } = props;
-  const alert = useAlert();
+  const toaster = useToaster();
   const dispatch = useDispatch();
   const spectraPreferences = usePanelPreferences('spectra', nucleus);
   const activeSpectraObj = getActiveSpectraAsObject(activeSpectra);
@@ -191,7 +191,10 @@ export function SpectraTable(props: SpectraTableProps) {
                 2,
               ),
             );
-            alert.success('Data copied to clipboard');
+            toaster.show({
+              message: 'Data copied to clipboard',
+              intent: 'success',
+            });
           })();
           break;
         }
@@ -214,7 +217,10 @@ export function SpectraTable(props: SpectraTableProps) {
         case SpectraContextMenuOptionsKeys.CopyAsText: {
           const data = convertSpectrumToText(spectrum);
           void rawWriteWithType(data, 'text/plain').then(() =>
-            alert.success('Spectrum copied to clipboard'),
+            toaster.show({
+              message: 'Spectrum copied to clipboard',
+              intent: 'success',
+            }),
           );
           break;
         }
@@ -225,7 +231,7 @@ export function SpectraTable(props: SpectraTableProps) {
       }
     },
 
-    [alert, dispatch, rawWriteWithType],
+    [dispatch, rawWriteWithType, toaster],
   );
 
   function handleActiveRow(row) {

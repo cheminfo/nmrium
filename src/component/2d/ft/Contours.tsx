@@ -10,7 +10,7 @@ import {
 } from '../../../data/data2d/Spectrum2D/contours';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
@@ -113,10 +113,13 @@ function ContoursPaths({
 }
 
 function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
-  const alert = useAlert();
+  const toaster = useToaster();
   const debounceAlert = useRef(
     debounce(() => {
-      alert.error('Too many contour lines, only showing the first ones');
+      toaster.show({
+        message: 'Too many contour lines, only showing the first ones',
+        intent: 'danger',
+      });
     }, 2000),
   );
 

@@ -10,7 +10,7 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { DisplayerMode } from '../../reducer/Reducer';
 
@@ -36,7 +36,7 @@ export default function useAtomAssignment({
   zones,
   ranges,
 }: UseAtomAssignmentProps) {
-  const alert = useAlert();
+  const toaster = useToaster();
   const dispatch = useDispatch();
   const highlightData = useHighlightData();
   const assignments = useAssignmentData();
@@ -213,20 +213,21 @@ export default function useAtomAssignment({
             }
             activeAssignment.setActive(axis);
           } else {
-            alert.info(
-              'Not assigned! Different atom type or no attached hydrogens found!',
-            );
+            toaster.show({
+              message:
+                'Not assigned! Different atom type or no attached hydrogens found!',
+            });
           }
         }
       }
     },
     [
       activeAssignment,
-      alert,
       data,
       dispatch,
       displayerMode,
       nucleus,
+      toaster,
       toggleAssignment,
     ],
   );

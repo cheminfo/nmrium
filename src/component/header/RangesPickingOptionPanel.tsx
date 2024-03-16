@@ -2,11 +2,11 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
+import { useToaster } from '../context/ToasterContext';
 import Button from '../elements/Button';
 import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikInput from '../elements/formik/FormikInput';
-import { useAlert } from '../elements/popup/Alert';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
@@ -27,7 +27,7 @@ const initialValues = {
 function RangesPickingOptionPanel() {
   const dispatch = useDispatch();
   const pointsNumber = useCheckPointsNumberInWindowArea();
-  const alert = useAlert();
+  const toaster = useToaster();
 
   function handleRangesPicking(values) {
     if (pointsNumber > MIN_AREA_POINTS) {
@@ -36,9 +36,10 @@ function RangesPickingOptionPanel() {
         payload: values,
       });
     } else {
-      alert.error(
-        `Auto range picking only available for area more than ${MIN_AREA_POINTS} points`,
-      );
+      toaster.show({
+        message: `Auto range picking only available for area more than ${MIN_AREA_POINTS} points`,
+        intent: 'danger',
+      });
     }
   }
 

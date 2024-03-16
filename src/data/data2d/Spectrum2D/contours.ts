@@ -18,7 +18,7 @@ interface ContourOptions {
   negative: ContourItem;
 }
 interface WheelOptions {
-  shiftKey: boolean;
+  altKey: boolean;
   contourOptions: ContourOptions;
   currentLevel: Level;
 }
@@ -67,20 +67,20 @@ function contoursManager(
 
   const currentLevel = spectraLevels[spectrumID];
 
-  const wheel = (value, shiftKey) =>
-    prepareWheel(value, { shiftKey, contourOptions, currentLevel });
+  const wheel = (value, altKey) =>
+    prepareWheel(value, { altKey, contourOptions, currentLevel });
   const getLevel = () => currentLevel;
   const checkLevel = () => prepareCheckLevel(currentLevel, contourOptions);
   return { wheel, getLevel, checkLevel };
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
-  const { shiftKey, currentLevel, contourOptions } = options;
+  const { altKey, currentLevel, contourOptions } = options;
   const sign = Math.sign(value);
   const positiveBoundary = contourOptions.positive.contourLevels;
   const negativeBoundary = contourOptions.negative.contourLevels;
 
-  if (shiftKey) {
+  if (altKey) {
     if (
       (currentLevel.positive === positiveBoundary[0] && sign === -1) ||
       (currentLevel.positive >= positiveBoundary[1] && sign === 1)

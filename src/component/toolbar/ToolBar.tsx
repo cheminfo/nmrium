@@ -45,6 +45,7 @@ import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
+import SaveAsModal from '../modal/SaveAsModal';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
 
 import { options } from './ToolTypes';
@@ -101,6 +102,7 @@ export default function ToolBar() {
     loadJCAMP: false,
     importPublicationString: false,
     metaImportation: false,
+    saveAs: false,
   });
 
   const verticalAlign = useVerticalAlign();
@@ -138,7 +140,6 @@ export default function ToolBar() {
     saveAsPNGHandler,
     saveAsJSONHandler,
     saveToClipboardHandler,
-    saveAsHandler,
   } = useExport();
 
   function importHandler(data) {
@@ -171,7 +172,7 @@ export default function ToolBar() {
         saveAsJSONHandler();
         break;
       case 'advance_save':
-        void saveAsHandler();
+        openDialog('saveAs');
         break;
       case 'copy':
         void saveToClipboardHandler();
@@ -334,6 +335,7 @@ export default function ToolBar() {
         isOpen={dialog.metaImportation}
         onCloseDialog={closeDialog}
       />
+      <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
       <Toolbar vertical>
         {toolItems.map((item) => {
           const { id, icon, title, checkOptions, condition } = item;

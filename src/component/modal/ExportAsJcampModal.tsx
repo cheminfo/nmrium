@@ -10,10 +10,10 @@ import {
   ExportAsJcampOptions,
   exportAsJcamp,
 } from '../../data/SpectraManager';
+import { useToaster } from '../context/ToasterContext';
 import ActionButtons from '../elements/ActionButtons';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikSelect from '../elements/formik/FormikSelect';
-import { useAlert } from '../elements/popup/Alert';
 
 const initValues: ExportAsJcampOptions = {
   onlyReal: true,
@@ -58,22 +58,20 @@ interface ExportAsJCAMPProps {
 function ExportAsJcampModal(props: ExportAsJCAMPProps) {
   const { closeDialog, spectrum } = props;
   const refForm = useRef<FormikProps<any>>(null);
-  const alert = useAlert();
+  const toaster = useToaster();
 
   function submitHandler(options) {
-    void (async () => {
-      const hideLoading = await alert.showLoading(
-        'export as JCAMP-DX in progress',
-      );
-      try {
-        exportAsJcamp(spectrum, options);
-      } catch (error: any) {
-        alert.error(error.message);
-      } finally {
-        closeDialog?.();
-        hideLoading();
-      }
-    })();
+    const hideLoading = toaster.showLoading({
+      message: 'export as JCAMP-DX in progress',
+    });
+    try {
+      exportAsJcamp(spectrum, options);
+    } catch (error: any) {
+      toaster.show({ message: error.message, intent: 'danger' });
+    } finally {
+      closeDialog?.();
+      hideLoading();
+    }
   }
 
   return (

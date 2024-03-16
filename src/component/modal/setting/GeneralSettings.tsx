@@ -13,6 +13,7 @@ import {
   usePreferences,
   useWorkspacesList,
 } from '../../context/PreferencesContext';
+import { useToaster } from '../../context/ToasterContext';
 import ActionButtons from '../../elements/ActionButtons';
 import Button from '../../elements/Button';
 import Label from '../../elements/Label';
@@ -21,7 +22,6 @@ import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
-import { useAlert } from '../../elements/popup/Alert';
 import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import PredefinedWorkspaces from '../../workspaces';
@@ -111,7 +111,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     ...preferences
   } = usePreferences();
   const { saveSettings, SaveSettingsModal } = useSaveSettings();
-  const alert = useAlert();
+  const toaster = useToaster();
   const refForm = useRef<FormikProps<any>>(null);
   const workspaces = useWorkspacesList();
   const workspaceName = preferences.workspace.current;
@@ -215,7 +215,10 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
   function handleCopyWorkspace() {
     const data = { [workspaceName]: refForm.current?.values };
     void rawWriteWithType(JSON.stringify(data)).then(() => {
-      alert.success('Workspace copied to clipboard');
+      toaster.show({
+        message: 'Workspace copied to clipboard',
+        intent: 'success',
+      });
     });
   }
 
@@ -252,7 +255,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       const parseWorkspaces = JSON.parse(text);
       setWorkspaceSetting(parseWorkspaces);
     } catch {
-      alert.error('object parse error');
+      toaster.show({ message: 'object parse error', intent: 'danger' });
     }
 
     cleanShouldFallback();

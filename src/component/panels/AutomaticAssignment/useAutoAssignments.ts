@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useAlert } from '../../elements/popup/Alert';
+import { useToaster } from '../../context/ToasterContext';
 import { assert } from '../../utility/assert';
 
 export interface AutoAssignmentsData {
@@ -35,7 +35,7 @@ export function useAutoAssignments() {
   const dispatch = useDispatch();
   const { data, molecules } = useChartData();
   const originData = useRef<SpectraData[]>();
-  const alert = useAlert();
+  const toaster = useToaster();
   const [assignments, setAssignments] = useState<AutoAssignmentsData[]>([]);
 
   function restAssignments() {
@@ -49,7 +49,7 @@ export function useAutoAssignments() {
 
   function getAssignments() {
     void (async () => {
-      const hideLoading = await alert.showLoading('Auto Assignments');
+      const hideLoading = toaster.showLoading({ message: 'Auto Assignments' });
       const molecule = OCL.Molecule.fromMolfile(molecules[0]?.molfile || '');
       const spectra = mapSpectra(data) as SpectraData[];
 
@@ -71,9 +71,11 @@ export function useAutoAssignments() {
           payload: { assignments: result[0].assignment },
         });
       } else {
-        alert.error(
-          'Could not assign molecule, please check that all the ranges are defined correctly',
-        );
+        toaster.show({
+          message:
+            'Could not assign molecule, please check that all the ranges are defined correctly',
+          intent: 'danger',
+        });
       }
 
       setAssignments(result);

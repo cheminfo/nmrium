@@ -59,6 +59,7 @@
   "dependencies": {
     "@blueprintjs/core": "^5.10.0",
     "@blueprintjs/icons": "^5.8.0",
+    "@blueprintjs/select": "^5.1.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@lukeed/uuid": "^2.0.1",

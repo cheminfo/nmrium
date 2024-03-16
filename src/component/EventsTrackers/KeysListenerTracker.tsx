@@ -1,4 +1,5 @@
 import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useOnOff } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import { useAssignmentData } from '../assignment/AssignmentsContext';
@@ -6,12 +7,13 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
+import { useToaster } from '../context/ToasterContext';
 import { useModal } from '../elements/popup/Modal';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
+import SaveAsModal from '../modal/SaveAsModal';
 import { options } from '../toolbar/ToolTypes';
 
 interface KeysListenerTrackerProps {
@@ -31,9 +33,11 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   } = useChartData();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
-  const alert = useAlert();
+  const toaster = useToaster();
   const modal = useModal();
   const openLoader = useLoader();
+  const [isSaveModalOpened, openSaveAsDialog, closeSaveAsDialog] =
+    useOnOff(false);
 
   const {
     handleChangeOption,
@@ -42,8 +46,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler, saveAsHandler } =
-    useExport();
+  const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
@@ -159,9 +162,9 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               text: 'Yes, for all spectra',
               handler: async () => {
                 if (zone) {
-                  const hideLoading = await alert.showLoading(
-                    'Delete all spectra exclusion zones in progress',
-                  );
+                  const hideLoading = toaster.showLoading({
+                    message: 'Delete all spectra exclusion zones in progress',
+                  });
                   dispatch({
                     type: 'DELETE_EXCLUSION_ZONE',
                     payload: {
@@ -176,9 +179,9 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               text: 'Yes',
               handler: async () => {
                 if (spectrumID) {
-                  const hideLoading = await alert.showLoading(
-                    'Delete exclusion zones in progress',
-                  );
+                  const hideLoading = toaster.showLoading({
+                    message: 'Delete exclusion zones in progress',
+                  });
                   dispatch({
                     type: 'DELETE_EXCLUSION_ZONE',
                     payload: {
@@ -207,9 +210,9 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               text: 'Yes',
               handler: async () => {
                 if (zone) {
-                  const hideLoading = await alert.showLoading(
-                    'Delete all spectra exclusion zones in progress',
-                  );
+                  const hideLoading = toaster.showLoading({
+                    message: 'Delete all spectra exclusion zones in progress',
+                  });
                   dispatchPreferences({
                     type: 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
                     payload: {
@@ -275,7 +278,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       remove,
       assignmentData,
       modal,
-      alert,
+      toaster,
       dispatchPreferences,
       activeTab,
     ],
@@ -291,7 +294,9 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
               keyCode: num,
             },
           });
-          alert.show(`Configuration Reset, press '${num}' again to reload it.`);
+          toaster.show({
+            message: `Configuration Reset, press '${num}' again to reload it.`,
+          });
         } else if (!checkModifierKeyActivated(e)) {
           if (keysPreferences?.[num]) {
             dispatch({
@@ -307,14 +312,14 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
                 keyCode: num,
               },
             });
-            alert.show(
-              `Configuration saved, press '${num}' again to reload it.`,
-            );
+            toaster.show({
+              message: `Configuration saved, press '${num}' again to reload it.`,
+            });
           }
         }
       }
     },
-    [alert, data, dispatch, keysPreferences],
+    [data, dispatch, keysPreferences, toaster],
   );
 
   const toolsListenerHandler = useCallback(
@@ -438,7 +443,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           switch (e.key) {
             case 's':
             case 'S':
-              void saveAsHandler();
+              openSaveAsDialog();
               e.preventDefault();
               break;
             default:
@@ -446,11 +451,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
         }
       } catch (error: any) {
         reportError(error);
-        alert.error(error.message);
+        toaster.show({ message: error.message, intent: 'danger' });
       }
     },
     [
-      alert,
       alignSpectrumsVerticallyHandler,
       allow1DTool,
       changeDisplayViewModeHandler,
@@ -459,9 +463,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       handleFullZoomOut,
       isToolVisible,
       openLoader,
-      saveAsHandler,
+      openSaveAsDialog,
       saveAsJSONHandler,
       saveToClipboardHandler,
+      toaster,
     ],
   );
 
@@ -496,7 +501,9 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     return () => document.removeEventListener('keydown', handleOnKeyDown);
   }, [handleOnKeyDown]);
 
-  return null;
+  return (
+    <SaveAsModal isOpen={isSaveModalOpened} onCloseDialog={closeSaveAsDialog} />
+  );
 }
 
 function checkNotInputField(e: Event) {
