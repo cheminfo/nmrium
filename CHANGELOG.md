@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.51.0](https://github.com/cheminfo/nmrium/compare/v0.50.1...v0.51.0) (2024-03-16)
+
+
+### Features
+
+* edit range peaks ([#2953](https://github.com/cheminfo/nmrium/issues/2953)) ([bcddb6e](https://github.com/cheminfo/nmrium/commit/bcddb6e742b4bbbee7809bf70d5a9b43ae76efd3))
+* enable spectrum selection only when the zoom tool is activated ([#2957](https://github.com/cheminfo/nmrium/issues/2957)) ([a650eac](https://github.com/cheminfo/nmrium/commit/a650eac95897f03ad114eeb3d99c6abfeb233e96))
+* improve multiple spectra analysis ([#2946](https://github.com/cheminfo/nmrium/issues/2946)) ([acce39e](https://github.com/cheminfo/nmrium/commit/acce39e33f45a96360f42b4170ae26e0abb46c1c))
+* two dimensions phase correction filter ([#2930](https://github.com/cheminfo/nmrium/issues/2930)) ([adb8098](https://github.com/cheminfo/nmrium/commit/adb8098e2732ce925c6521945374afd66f10cce4))
+* zoom in/out with the mouse wheel ([#2964](https://github.com/cheminfo/nmrium/issues/2964)) ([a54569f](https://github.com/cheminfo/nmrium/commit/a54569f4f201978017bac9e09d5897867c7fb559))
+
+
+### Bug Fixes
+
+* clear zoom history and hide filter options panel when apply FFT ([#2947](https://github.com/cheminfo/nmrium/issues/2947)) ([e7fb21f](https://github.com/cheminfo/nmrium/commit/e7fb21fb04ae9fcb335dba51ae802017173be58b)), closes [#2923](https://github.com/cheminfo/nmrium/issues/2923)
+* do not raise an error if no 1D trace spectra are found ([#2944](https://github.com/cheminfo/nmrium/issues/2944)) ([c141116](https://github.com/cheminfo/nmrium/commit/c1411162d60146cc4da0217d3f4cc0769875c9c8))
+* improve peak picking ([#2949](https://github.com/cheminfo/nmrium/issues/2949)) ([f169495](https://github.com/cheminfo/nmrium/commit/f16949563927c0af0b2274dce87266b060ce9d67))
+* improve wrapping of small prediction panel toolbar ([#2954](https://github.com/cheminfo/nmrium/issues/2954)) ([31be6ba](https://github.com/cheminfo/nmrium/commit/31be6ba0cf16b5a217ea1088fe1224fa12088c13))
+* pass the data to the filter before the filter affects it ([#2948](https://github.com/cheminfo/nmrium/issues/2948)) ([d8341e9](https://github.com/cheminfo/nmrium/commit/d8341e94e107f46038d8d770b7ad860ddac48e9a))
+
 ## [0.50.1](https://github.com/cheminfo/nmrium/compare/v0.50.0...v0.50.1) (2024-02-26)
 
 
