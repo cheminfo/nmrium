@@ -17,10 +17,9 @@ const style: InputStyle = {
 interface DeltaInputProps {
   signal: any;
   index: number;
-  onFocus: (element: any) => void;
 }
 
-function DeltaInput({ signal, index, onFocus }: DeltaInputProps) {
+export function DeltaInput({ signal, index }: DeltaInputProps) {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <span>𝛅: </span>
@@ -28,7 +27,6 @@ function DeltaInput({ signal, index, onFocus }: DeltaInputProps) {
         name={`signals.${index}.delta`}
         type="number"
         placeholder={'J (Hz)'}
-        onFocus={onFocus}
         style={style}
         checkErrorAfterInputTouched={false}
       />
@@ -40,5 +38,3 @@ function DeltaInput({ signal, index, onFocus }: DeltaInputProps) {
     </div>
   );
 }
-
-export default DeltaInput;

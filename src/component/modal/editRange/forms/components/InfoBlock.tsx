@@ -35,7 +35,7 @@ const InfoText = (props: { value: string; type?: 'info' | 'error' }) => {
   );
 };
 
-export function SignalFormInfo() {
+export function InfoBlock() {
   const {
     values,
     errors,
@@ -61,7 +61,7 @@ export function SignalFormInfo() {
             <InfoText value={ADD_SIGNAL_INFO_TEXT} />
           )}
         </div>
-      ) : values.activeTab === 'addSignalTab' ? (
+      ) : values.signalIndex === '-1' ? (
         <InfoText value={ADD_SIGNAL_INFO_TEXT} />
       ) : (
         <InfoText value={EDIT_SIGNAL_INFO_TEXT} />
