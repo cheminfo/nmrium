@@ -190,18 +190,20 @@ function handleAutoRangesDetection(
     const { minMaxRatio, lookNegative } = action.payload;
 
     const detectionOptions: any = {
-      peakPicking: {
-        factorStd: 8,
+      rangePicking: {
         integrationSum: 100,
         compile: true,
         frequencyCluster: 16,
-        clean: true,
+        clean: 0.3,
         keepPeaks: true,
+      },
+      peakPicking: {
+        broadWidth: 0.05,
+        thresholdFactor: 8,
         minMaxRatio,
         direction: lookNegative ? 'both' : 'positive',
       },
     };
-
     detectRanges(datum, {
       ...detectionOptions,
       windowFromIndex,
@@ -216,12 +218,14 @@ function handleAutoRangesDetection(
 //action
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking = {
-    factorStd: 8,
+    thresholdFactor: 8,
     minMaxRatio: 0.05,
+  };
+  const rangePicking = {
     integrationSum: 100,
     compile: true,
     frequencyCluster: 16,
-    clean: true,
+    clean: 0.3,
     keepPeaks: true,
   };
   const {
@@ -233,7 +237,12 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   } = draft;
   for (const datum of data) {
     if (datum.info.dimension === 1) {
-      detectRanges(datum as Spectrum1D, { peakPicking, molecules, nucleus });
+      detectRanges(datum as Spectrum1D, {
+        peakPicking,
+        rangePicking,
+        molecules,
+        nucleus,
+      });
       handleUpdateCorrelations(draft);
     }
   }

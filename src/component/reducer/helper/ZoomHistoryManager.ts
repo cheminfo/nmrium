@@ -65,9 +65,8 @@ export function addToBrushHistory(
   const { displayerMode } = draft;
   const { trackID, xDomain, yDomain } = options;
   const brushHistory = zoomHistoryManager(
-    // eslint-disable-next-line unicorn/consistent-destructuring
     draft.zoom.history,
-    // eslint-disable-next-line unicorn/consistent-destructuring
+
     draft.view.spectra.activeTab,
   );
   if (displayerMode === '2D') {

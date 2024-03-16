@@ -6,10 +6,11 @@ const defaultPeakPickingOptions = {
   shape: { kind: 'lorentzian' },
   realTopDetection: true,
   maxCriteria: true,
-  smoothY: false,
+  smoothY: true,
+  broadWidth: 0.25,
+  broadRatio: 0.0025,
   integrationSum: 100,
-  factorStd: 5,
-  clean: true,
+  thresholdFactor: 5,
   sgOptions: { windowSize: 7, polynomial: 3 },
 };
 
@@ -23,7 +24,7 @@ export default function autoRangesDetection(
 
   const { originFrequency, nucleus } = spectrum.info;
 
-  const { windowFromIndex, windowToIndex, peakPicking } = options;
+  const { windowFromIndex, windowToIndex, peakPicking, rangePicking } = options;
 
   const peakPickingOptions = {
     ...defaultPeakPickingOptions,
@@ -38,6 +39,7 @@ export default function autoRangesDetection(
     frequencyCluster: 13,
     keepPeaks: true,
     clean: 0.3,
+    ...rangePicking,
   };
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {

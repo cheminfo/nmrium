@@ -15,7 +15,7 @@ export function changeRange(spectrum: Spectrum1D, range: Range) {
   const { originFrequency: frequency, nucleus } = spectrum.info;
 
   const index = spectrum.ranges.values.findIndex((i) => i.id === id);
-  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
+  const absolute = xyIntegration({ x, y }, { from, to });
 
   const signals = detectSignals(
     { x, y },

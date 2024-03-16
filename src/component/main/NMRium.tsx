@@ -7,7 +7,7 @@ import {
   ErrorBoundary,
   ErrorBoundaryPropsWithComponent,
 } from 'react-error-boundary';
-import { RootLayout } from 'react-science/ui';
+import { FullScreenProvider, RootLayout } from 'react-science/ui';
 
 import { BlobObject } from '../utility/export';
 
@@ -50,7 +50,11 @@ const NMRiumBase = forwardRef<NMRiumRef, NMRiumProps>(function NMRium(
     </ErrorBoundary>
   );
 
-  return <RootLayout style={{ width: '100%' }}>{children}</RootLayout>;
+  return (
+    <FullScreenProvider>
+      <RootLayout style={{ width: '100%' }}>{children}</RootLayout>
+    </FullScreenProvider>
+  );
 });
 
 export const NMRium = memo(NMRiumBase);

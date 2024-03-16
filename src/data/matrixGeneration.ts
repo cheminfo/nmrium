@@ -165,7 +165,7 @@ export function getMatrixFilters() {
   for (const filter of filterXY.anyOf) {
     const filterData = filter.properties;
     const filterProperties = filterData?.options;
-    const name = filterData.name.enum[0] as FilterXYType['name'];
+    const name = filterData.name.const as FilterXYType['name'];
 
     if (!IGNORED_FILERS.has(name)) {
       const properties = flattenFields(

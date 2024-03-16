@@ -8,14 +8,16 @@ import autoRangesDetection from './autoRangesDetection';
 interface DetectRangesOptions {
   windowFromIndex?: number;
   windowToIndex?: number;
-  peakPicking: {
-    factorStd?: number; // default 8
-    minMaxRatio?: number; // default 0.1
+  rangePicking: {
     integrationSum?: number; // default 100
     compile?: boolean; //default true
     frequencyCluster?: number; // default 16
-    clean?: boolean; // default true
+    clean?: number; // default 0.3
     keepPeaks?: boolean; //default true
+  };
+  peakPicking: {
+    thresholdFactor?: number; // default 8
+    minMaxRatio?: number; // default 0.1
     direction?: 'negative' | 'positive' | 'both'; //default positive
   };
   impurities?: {

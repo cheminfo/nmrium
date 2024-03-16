@@ -5,8 +5,7 @@ import {
   useImperativeHandle,
   ForwardedRef,
 } from 'react';
-import { useOnOff } from 'react-science/ui';
-import { useFullscreen } from 'react-use';
+import { useFullscreen } from 'react-science/ui';
 
 import { AssignmentProvider } from '../assignment';
 import { GlobalProvider } from '../context/GlobalContext';
@@ -45,13 +44,8 @@ export function InnerNMRium({
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWrapperRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const [enableFullscreen, , disableFullscreen, toggleFullscreen] =
-    useOnOff(false);
   const mainDivRef = useRef<HTMLDivElement>(null);
-
-  const isFullscreenEnabled = useFullscreen(rootRef, enableFullscreen, {
-    onClose: disableFullscreen,
-  });
+  const { isFullScreen } = useFullscreen();
 
   const [preferencesState, dispatchPreferences] = useReducer(
     preferencesReducer,
@@ -61,7 +55,7 @@ export function InnerNMRium({
 
   useEffect(() => {
     rootRef.current?.focus();
-  }, [isFullscreenEnabled]);
+  }, [isFullScreen]);
 
   useEffect(() => {
     dispatchPreferences({
@@ -112,8 +106,6 @@ export function InnerNMRium({
                         <AssignmentProvider>
                           <SpinnerProvider value={getSpinner}>
                             <InnerNMRiumContents
-                              isFullscreenEnabled={isFullscreenEnabled}
-                              toggleFullscreen={toggleFullscreen}
                               emptyText={emptyText}
                               mainDivRef={mainDivRef}
                               elementsWrapperRef={elementsWrapperRef}

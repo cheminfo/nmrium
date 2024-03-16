@@ -137,11 +137,8 @@ test('Automatic ranges detection should work', async ({ page }) => {
   );
 
   const rangesData = [
-    { s: '1.75 - 1.79', r: '0.51' },
-    { s: '1.95', r: '2.06' },
-    { s: '1.94', r: '2.06' },
-    { s: '2.15', r: '0.07' },
-    { s: '2.31 - 2.34', r: '1.01' },
+    { s: '1.72 - 1.82', r: '0.88' },
+    { s: '1.95', r: '1.99' },
   ];
 
   const testPromises: Array<Promise<void>> = [];
@@ -366,10 +363,10 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
     //open ranges panel
     await nmrium.clickPanel('Ranges');
-    await expect(nmrium.page.getByTestId('range')).toHaveCount(16);
+    await expect(nmrium.page.getByTestId('range')).toHaveCount(12);
     await expect(
       nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
-    ).toContainText('[ 16 ]');
+    ).toContainText('[ 12 ]');
   });
 
   await test.step("Check 13C spectrum's ranges", async () => {

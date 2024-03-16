@@ -7,7 +7,7 @@ import {
   FaRegSave,
   FaFilm,
 } from 'react-icons/fa';
-import { Toolbar } from 'react-science/ui';
+import { Toolbar, useFullscreen } from 'react-science/ui';
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
@@ -77,19 +77,12 @@ const styles = css`
 `;
 
 interface HeaderInnerProps {
-  onEnableFullscreen: () => void;
-  isFullscreenEnabled: boolean;
   selectedOptionPanel: string | null;
   height: number;
 }
 
 function HeaderInner(props: HeaderInnerProps) {
-  const {
-    isFullscreenEnabled,
-    onEnableFullscreen,
-    selectedOptionPanel,
-    height,
-  } = props;
+  const { selectedOptionPanel, height } = props;
 
   const {
     current: {
@@ -98,6 +91,7 @@ function HeaderInner(props: HeaderInnerProps) {
     workspace,
     dispatch,
   } = usePreferences();
+  const fullscreen = useFullscreen();
 
   const workspacesList = useWorkspacesList();
 
@@ -203,10 +197,10 @@ function HeaderInner(props: HeaderInnerProps) {
                 <GeneralSettingsModal height={height / 2} />
               )}
 
-              {!isFullscreenEnabled && !general?.hideMaximize && (
+              {!fullscreen.isFullScreen && !general?.hideMaximize && (
                 <Toolbar.Item
                   id="full-screen"
-                  onClick={onEnableFullscreen}
+                  onClick={fullscreen.toggle}
                   title="Full Screen"
                   className="windowButton"
                   icon={<FaRegWindowMaximize />}
@@ -254,13 +248,7 @@ function SaveButton() {
 
 const MemoizedHeader = memo(HeaderInner);
 
-export default function HeaderWrapper({
-  isFullscreenEnabled,
-  onEnableFullscreen,
-}: {
-  isFullscreenEnabled: HeaderInnerProps['isFullscreenEnabled'];
-  onEnableFullscreen: HeaderInnerProps['onEnableFullscreen'];
-}) {
+export default function HeaderWrapper() {
   const {
     toolOptions: { selectedOptionPanel },
     height,
@@ -269,8 +257,6 @@ export default function HeaderWrapper({
     <MemoizedHeader
       {...{
         selectedOptionPanel,
-        isFullscreenEnabled,
-        onEnableFullscreen,
         height,
       }}
     />

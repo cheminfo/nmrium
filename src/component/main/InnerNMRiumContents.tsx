@@ -2,6 +2,7 @@
 
 import { css } from '@emotion/react';
 import { MouseEvent, RefObject, useCallback } from 'react';
+import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import Viewer1D from '../1d/Viewer1D';
@@ -63,8 +64,6 @@ const containerStyles = css`
 `;
 
 interface InnerNMRiumContentsProps {
-  isFullscreenEnabled: boolean;
-  toggleFullscreen: () => void;
   emptyText: NMRiumProps['emptyText'];
   mainDivRef: RefObject<HTMLDivElement>;
   elementsWrapperRef: RefObject<HTMLDivElement>;
@@ -73,17 +72,11 @@ interface InnerNMRiumContentsProps {
 }
 
 export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
-  const {
-    isFullscreenEnabled,
-    toggleFullscreen,
-    emptyText,
-    mainDivRef,
-    elementsWrapperRef,
-    rootRef,
-    viewerRef,
-  } = props;
+  const { emptyText, mainDivRef, elementsWrapperRef, rootRef, viewerRef } =
+    props;
 
   const { displayerMode } = useChartData();
+  const { isFullScreen } = useFullscreen();
 
   const preventContextMenuHandler = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
@@ -113,10 +106,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
               width: '100%',
             }}
           >
-            <Header
-              isFullscreenEnabled={isFullscreenEnabled}
-              onEnableFullscreen={toggleFullscreen}
-            />
+            <Header />
 
             <div
               style={{
@@ -152,7 +142,7 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
 
               <div
                 ref={elementsWrapperRef}
-                key={String(isFullscreenEnabled)}
+                key={String(isFullScreen)}
                 id="main-wrapper"
                 style={{
                   position: 'absolute',
