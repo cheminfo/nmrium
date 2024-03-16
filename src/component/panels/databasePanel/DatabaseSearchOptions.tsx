@@ -146,7 +146,7 @@ export function DatabaseSearchOptions({
           canClear
         />
         <ToolBarButton
-          title="Search by stricture"
+          title="Search by substructure"
           icon={!idCode ? <BsHexagon /> : <BsHexagonFill />}
           intent="success"
           active={!!idCode}
