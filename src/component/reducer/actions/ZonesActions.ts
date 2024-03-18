@@ -42,13 +42,14 @@ interface DeleteSignal2DProps {
 
 type ChangeZonesFactorAction = ActionType<
   'CHANGE_ZONES_NOISE_FACTOR',
-  { zonesNoiseFactor: number }
+  { zonesNoiseFactor: number; zonesMinMaxRatio: number }
 >;
+
 type Add2dZoneAction = ActionType<'ADD_2D_ZONE', ZoneBoundary>;
 
 type AutoZonesDetectionAction = ActionType<
   'AUTO_ZONES_DETECTION',
-  { zonesNoiseFactor: number }
+  { zonesNoiseFactor: number; zonesMinMaxRatio: number }
 >;
 type ChangeZoneSignalDeltaAction = ActionType<
   'CHANGE_ZONE_SIGNAL_VALUE',
@@ -126,6 +127,7 @@ function handleChangeZonesFactor(
   action: ChangeZonesFactorAction,
 ) {
   draft.toolOptions.data.zonesNoiseFactor = action.payload.zonesNoiseFactor;
+  draft.toolOptions.data.zonesMinMaxRatio = action.payload.zonesMinMaxRatio;
 }
 
 //action
@@ -140,6 +142,7 @@ function handleAdd2dZone(draft: Draft<State>, action: Add2dZoneAction) {
     const zones = detectZonesManual(original(datum), {
       selectedZone: drawnZone,
       thresholdFactor: draft.toolOptions.data.zonesNoiseFactor,
+      maxPercentCutOff: draft.toolOptions.data.zonesMinMaxRatio,
       convolutionByFFT: false,
     });
 
@@ -158,12 +161,16 @@ function handleAutoZonesDetection(
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const { zonesNoiseFactor: thresholdFactor } = action.payload;
+    const {
+      zonesNoiseFactor: thresholdFactor,
+      zonesMinMaxRatio: maxPercentCutOff,
+    } = action.payload;
     const [fromX, toX] = draft.xDomain;
     const [fromY, toY] = draft.yDomain;
     const detectionOptions: DetectionZonesOptions = {
       selectedZone: { fromX, toX, fromY, toY },
       thresholdFactor,
+      maxPercentCutOff,
     };
     const datum = draft.data[index] as Spectrum2D;
     const zones = detectZones(original(datum), detectionOptions);
@@ -181,6 +188,7 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
       const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
+        maxPercentCutOff: 0.03,
       };
 
       const zones = detectZones(original(datum), detectionOptions);
