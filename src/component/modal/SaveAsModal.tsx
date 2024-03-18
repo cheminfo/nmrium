@@ -99,27 +99,19 @@ function SaveAsModal(props: SaveAsModalProps) {
                 }}
               />
             </Label>
-            <Label style={labelStyle} title="Compressed" htmlFor="compressed">
+            <Label style={labelStyle} title="Compressed">
               <FormikCheckBox name="compressed" />
             </Label>
-            <Label style={labelStyle} title="Pretty Format" htmlFor="pretty">
+            <Label style={labelStyle} title="Pretty format">
               <FormikCheckBox name="pretty" />
             </Label>
-            <Label
-              style={labelStyle}
-              title="Include view"
-              htmlFor="include.view"
-            >
+            <Label style={labelStyle} title="Include view">
               <FormikCheckBox name="include.view" />
             </Label>
-            <Label
-              style={labelStyle}
-              title="Include settings"
-              htmlFor="include.settings"
-            >
+            <Label style={labelStyle} title="Include settings">
               <FormikCheckBox name="include.settings" />
             </Label>
-            <Label style={labelStyle} title="Include Data">
+            <Label style={labelStyle} title="Include data">
               <div css={styles}>
                 <div>
                   <label>
@@ -128,7 +120,7 @@ function SaveAsModal(props: SaveAsModalProps) {
                       name="include.dataType"
                       value={DataExportOptions.ROW_DATA}
                     />
-                    Raw Data
+                    Raw data
                   </label>
                   <label
                     style={{
@@ -141,7 +133,7 @@ function SaveAsModal(props: SaveAsModalProps) {
                       value={DataExportOptions.DATA_SOURCE}
                       disabled={!source}
                     />
-                    Data Source
+                    Data source
                   </label>
                   <label>
                     <Field
@@ -149,7 +141,7 @@ function SaveAsModal(props: SaveAsModalProps) {
                       name="include.dataType"
                       value={DataExportOptions.NO_DATA}
                     />
-                    No Data
+                    No data
                   </label>
                 </div>
               </div>

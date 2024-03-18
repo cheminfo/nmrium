@@ -80,7 +80,7 @@ function AutoPeakPickingOptionPanel() {
       >
         {({ handleSubmit, isValid }) => (
           <>
-            <Label title="Direction : " shortTitle="" style={headerLabelStyle}>
+            <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
               <FormikSelect
                 name="direction"
                 items={LookFor}
@@ -88,8 +88,8 @@ function AutoPeakPickingOptionPanel() {
               />
             </Label>
             <Label
-              title="Max Number Of Peaks :"
-              shortTitle="Peaks number :"
+              title="Max number of peaks:"
+              shortTitle="Max peaks:"
               style={headerLabelStyle}
             >
               <FormikInput
@@ -101,8 +101,8 @@ function AutoPeakPickingOptionPanel() {
               />
             </Label>
             <Label
-              title="Noise factor :"
-              shortTitle="Noise :"
+              title="Noise factor:"
+              shortTitle="Noise:"
               style={headerLabelStyle}
             >
               <FormikInput
@@ -113,8 +113,8 @@ function AutoPeakPickingOptionPanel() {
               />
             </Label>
             <Label
-              title="Min Max Ratio :"
-              shortTitle="Ratio :"
+              title="Min/max Ratio:"
+              shortTitle="Ratio:"
               style={headerLabelStyle}
             >
               <FormikInput

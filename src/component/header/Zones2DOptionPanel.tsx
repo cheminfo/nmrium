@@ -49,11 +49,7 @@ function Zones2DOptionPanel() {
       >
         {({ handleSubmit, isValid }) => (
           <>
-            <Label
-              title="Noise factor :"
-              htmlFor="livePreview"
-              style={headerLabelStyle}
-            >
+            <Label title="Noise factor:" style={headerLabelStyle}>
               <FormikInput
                 type="number"
                 name="zonesNoiseFactor"
@@ -65,11 +61,7 @@ function Zones2DOptionPanel() {
                 step={1}
               />
             </Label>
-            <Label
-              title="MinMaxRatio :"
-              htmlFor="livePreview"
-              style={headerLabelStyle}
-            >
+            <Label title="Min/max ratio:" style={headerLabelStyle}>
               <FormikInput
                 type="number"
                 name="zonesMinMaxRatio"

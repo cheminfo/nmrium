@@ -140,7 +140,7 @@ export default function AnalysisChart(props: PlotChartPros) {
   return (
     <div>
       <div style={{ display: 'flex', padding: '5px' }}>
-        <Label title="X ">
+        <Label title="X">
           <Input
             name="xPath"
             style={{
@@ -151,7 +151,7 @@ export default function AnalysisChart(props: PlotChartPros) {
             onChange={handleChangeKey}
           />
         </Label>
-        <Label title="Y " style={{ container: { paddingLeft: '5px' } }}>
+        <Label title="Y" style={{ container: { paddingLeft: '5px' } }}>
           <Input
             name="yPath"
             style={{

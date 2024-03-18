@@ -4,7 +4,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import SpectraPanelHeader from './SpectraPanelHeader';
 import SpectraPreferences from './SpectraPreferences';
-import SpectrumsTabs from './SpectrumsTabs';
+import SpectraTabs from './SpectraTabs';
 
 const styles: CSSProperties = {
   overflow: 'hidden',
@@ -42,7 +42,7 @@ function SpectrumListPanel() {
       ) : (
         <>
           <SpectraPanelHeader onSettingClick={settingsPanelHandler} />
-          <SpectrumsTabs />
+          <SpectraTabs />
         </>
       )}
     </div>

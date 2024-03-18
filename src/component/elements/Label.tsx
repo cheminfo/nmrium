@@ -32,8 +32,11 @@ export default function Label(props: LabelProps) {
     ...otherProps
   } = props;
   return (
-    <div style={{ display: 'flex', alignItems: 'center', ...style?.container }}>
-      <label
+    <label
+      style={{ display: 'flex', alignItems: 'center', ...style?.container }}
+      {...otherProps}
+    >
+      <span
         className={className}
         style={{
           fontSize: '12px',
@@ -63,8 +66,8 @@ export default function Label(props: LabelProps) {
             color={{ base: 'gray', hover: 'black' }}
           />
         )}
-      </label>
+      </span>
       <div style={style?.wrapper}>{children}</div>
-    </div>
+    </label>
   );
 }

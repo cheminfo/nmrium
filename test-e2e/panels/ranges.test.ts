@@ -161,7 +161,7 @@ test('Multiplicity should be visible', async ({ page }) => {
   });
 
   // switch to 1H tab.
-  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
   await test.step('Apply auto ranges', async () => {
     //select range tool
@@ -193,11 +193,9 @@ test('Multiplicity should be visible', async ({ page }) => {
   });
   await test.step('Check that multiplicity tree btn save state', async () => {
     // Change spectra to 2D
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
-    );
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
     // Return to 1D spectra
-    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
     //open ranges panel
     await nmrium.clickPanel('Ranges');
@@ -219,7 +217,7 @@ test('Range state', async ({ page }) => {
   });
 
   // switch to 1H tab.
-  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
   await test.step('Apply auto ranges', async () => {
     //select range tool
@@ -360,7 +358,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
 
   await test.step("Check 1H spectrum's ranges", async () => {
     // switch to 1H tab.
-    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
     //open ranges panel
     await nmrium.clickPanel('Ranges');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(12);
@@ -371,7 +369,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
 
   await test.step("Check 13C spectrum's ranges", async () => {
     // switch to 13C tab.
-    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="13C"]');
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="13C"]');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(15);
     await expect(
       nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),
@@ -380,9 +378,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
 
   await test.step("Check 1H,1H spectrum's ranges", async () => {
     // switch to 1H,1H tab.
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
-    );
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
     //open zones panel
     await nmrium.clickPanel('Zones');
     await expect(nmrium.page.locator('.zone')).toHaveCount(41);
@@ -393,9 +389,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
 
   await test.step("Check 1H,13C spectrum's ranges", async () => {
     // switch to 1H,13C tab.
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,13C"]',
-    );
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,13C"]');
     await expect(nmrium.page.locator('.zone')).toHaveCount(15);
     await expect(
       nmrium.page.locator('_react=ZonesPanel >> _react=PanelHeader'),

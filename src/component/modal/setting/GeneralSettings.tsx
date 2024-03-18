@@ -278,7 +278,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         isOpen={isOpenDialog}
         onClose={closeDialog}
         style={{ maxWidth: 1000, width: '50vw', minWidth: 800 }}
-        title="General Settings"
+        title="General settings"
         icon="cog"
       >
         <div>
@@ -394,12 +394,12 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
                     <ImportationFiltersTabContent />
                   </div>
                 </Tab>
-                <Tab title="Title Block" tabid="title-block">
+                <Tab title="Title block" tabid="title-block">
                   <div className="inner-content">
                     <InfoBlockTabContent />
                   </div>
                 </Tab>
-                <Tab title="On Load Processing" tabid="on-load-processing">
+                <Tab title="Auto processing" tabid="on-load-processing">
                   <div className="inner-content">
                     <OnLoadProcessingTabContent />
                   </div>

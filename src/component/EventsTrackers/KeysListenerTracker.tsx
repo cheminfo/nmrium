@@ -42,7 +42,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   const {
     handleChangeOption,
     handleFullZoomOut,
-    alignSpectrumsVerticallyHandler,
+    alignSpectraVerticallyHandler,
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
@@ -398,7 +398,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
             }
             case 'c': {
               if (allow1DTool && isToolVisible('spectraCenterAlignments')) {
-                alignSpectrumsVerticallyHandler();
+                alignSpectraVerticallyHandler();
               }
               break;
             }
@@ -455,7 +455,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       }
     },
     [
-      alignSpectrumsVerticallyHandler,
+      alignSpectraVerticallyHandler,
       allow1DTool,
       changeDisplayViewModeHandler,
       dispatch,

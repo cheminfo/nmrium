@@ -18,8 +18,7 @@ function OnLoadProcessingTabContent() {
   return (
     <div>
       <Label
-        title="Enable auto processing"
-        htmlFor="onLoadProcessing.autoProcessing"
+        title="Enable auto processing on load"
         style={{ wrapper: { padding: '10px 0' } }}
       >
         <FormikCheckBox name="onLoadProcessing.autoProcessing" />

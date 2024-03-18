@@ -89,9 +89,9 @@ export default function useToolsFunctions() {
     setIsRealSpectrumShown(!isRealSpectrumShown);
   }, [dispatch, isRealSpectrumShown]);
 
-  const alignSpectrumsVerticallyHandler = useCallback(() => {
+  const alignSpectraVerticallyHandler = useCallback(() => {
     dispatch({
-      type: 'SET_SPECTRUMS_VERTICAL_ALIGN',
+      type: 'SET_SPECTRA_VERTICAL_ALIGN',
     });
   }, [dispatch]);
 
@@ -100,7 +100,7 @@ export default function useToolsFunctions() {
     handleFullZoomOut,
     changeDisplayViewModeHandler,
     changeSpectrumViewHandler,
-    alignSpectrumsVerticallyHandler,
+    alignSpectraVerticallyHandler,
     isRealSpectrumShown,
   };
 }

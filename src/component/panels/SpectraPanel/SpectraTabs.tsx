@@ -14,17 +14,17 @@ import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { SpectraTable } from './SpectraTable';
 import SpectrumSetting from './base/setting/SpectrumSetting';
 
-interface SpectrumsTabsInnerProps {
+interface SpectraTabsInnerProps {
   data: Spectrum[];
   activeTab: string;
   activeSpectra: Record<string, ActiveSpectrum[] | null>;
 }
 
-function SpectrumsTabsInner({
+function SpectraTabsInner({
   data,
   activeSpectra,
   activeTab,
-}: SpectrumsTabsInnerProps) {
+}: SpectraTabsInnerProps) {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [settingModalPosition, setSettingModalPosition] = useState<{
     x: number;
@@ -33,7 +33,7 @@ function SpectrumsTabsInner({
   const [isSettingModalDisplayed, setIsSettingModalDisplayed] = useState(false);
   const dispatch = useDispatch();
 
-  const spectrumsGroupByNucleus = useMemo(() => {
+  const spectraGroupByNucleus = useMemo(() => {
     if (!data) return [];
     const groupByNucleus = groupByInfoKey('nucleus');
     return groupByNucleus(data, true);
@@ -85,8 +85,8 @@ function SpectrumsTabsInner({
       `}
     >
       <Tabs key={activeTab} activeTab={activeTab} onClick={onTabChangeHandler}>
-        {spectrumsGroupByNucleus &&
-          Object.keys(spectrumsGroupByNucleus).map((nucleus) => (
+        {spectraGroupByNucleus &&
+          Object.keys(spectraGroupByNucleus).map((nucleus) => (
             <Tab
               render={({ title }) => <IsotopesViewer value={title} />}
               title={nucleus}
@@ -95,7 +95,7 @@ function SpectrumsTabsInner({
             >
               <SpectraTable
                 nucleus={nucleus}
-                data={spectrumsGroupByNucleus[nucleus]}
+                data={spectraGroupByNucleus[nucleus]}
                 activeSpectra={activeSpectra?.[nucleus] || null}
                 onChangeVisibility={handleChangeVisibility}
                 onChangeActiveSpectrum={handleChangeActiveSpectrum}
@@ -116,9 +116,9 @@ function SpectrumsTabsInner({
   );
 }
 
-const MemoizedSpectra = memo(SpectrumsTabsInner);
+const MemoizedSpectra = memo(SpectraTabsInner);
 
-export default function SpectrumsTabs() {
+export default function SpectraTabs() {
   const {
     data,
     view: {

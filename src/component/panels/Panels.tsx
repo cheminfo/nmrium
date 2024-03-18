@@ -15,7 +15,7 @@ import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel
 import MoleculePanel from './MoleculesPanel/MoleculePanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
-import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
+import SpectrumListPanel from './SpectraPanel/SpectrumListPanel';
 import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
@@ -72,13 +72,13 @@ const accordionItems: AccordionItem[] = [
     mode: '1D',
   },
   {
-    title: 'Multiple Spectra Analysis',
+    title: 'Multiple spectra analysis',
     component: <MultipleSpectraAnalysisPanel />,
     hidePreferenceKey: 'multipleSpectraAnalysisPanel',
     mode: null,
   },
   {
-    title: 'Matrix Generation',
+    title: 'Matrix generation',
     component: <MatrixGenerationPanel />,
     hidePreferenceKey: 'matrixGenerationPanel',
     mode: '1D',
@@ -108,7 +108,7 @@ const accordionItems: AccordionItem[] = [
     mode: null,
   },
   {
-    title: 'Automatic Assignment',
+    title: 'Automatic assignment',
     component: <AutomaticAssignment />,
     hidePreferenceKey: 'automaticAssignmentPanel',
     mode: null,
@@ -120,7 +120,7 @@ const accordionItems: AccordionItem[] = [
     mode: null,
   },
   {
-    title: 'Spectrum Simulation',
+    title: 'Spectrum simulation',
     component: <SpectrumSimulation />,
     hidePreferenceKey: 'simulationPanel',
     mode: '1D',

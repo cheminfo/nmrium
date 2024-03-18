@@ -193,7 +193,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
 
   return (
     <HeaderContainer style={{ padding: '0 5px' }}>
-      <Label title="Direction :" style={headerLabelStyle}>
+      <Label title="Direction:" style={headerLabelStyle}>
         <Toolbar>
           <Toolbar.Item
             css={css`
@@ -226,7 +226,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
         </Toolbar>
       </div>
 
-      <Label title="PH0 :" style={headerLabelStyle}>
+      <Label title="PH0:" style={headerLabelStyle}>
         <Input
           name="ph0"
           style={inputStyle}
@@ -236,7 +236,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
           debounceTime={250}
         />
       </Label>
-      <Label title="PH1 :" style={headerLabelStyle}>
+      <Label title="PH1:" style={headerLabelStyle}>
         <Input
           name="ph1"
           style={inputStyle}

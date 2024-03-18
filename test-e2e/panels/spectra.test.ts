@@ -28,7 +28,7 @@ test('Check if the color picker is visible after click on the ColorIndicator', a
 }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]');
+  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
   const sketchPicker = nmrium.page.locator('_react=ColorPicker');
 
   await expect(sketchPicker).toHaveCount(0);
@@ -81,7 +81,7 @@ test('Check change spectrum color, Should be white', async ({ page }) => {
 test('Should 2d deactivate spectrum', async ({ page }) => {
   const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
-  await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]');
+  await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
   const spectrumButtonLocator = nmrium.page.locator(
     '_react=SpectraTable >> _react=ReactTableRow >> nth=0',
   );
@@ -104,7 +104,7 @@ test('2d spectrum', async ({ page }) => {
     // Wait the spectrum to load
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
-    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
   });
   await test.step('Check two spectrum tabs', async () => {
     const Tabs = nmrium.page.locator('_react=SpectrumListPanel >> _react=Tab');
@@ -148,9 +148,7 @@ test('2d spectrum', async ({ page }) => {
     await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
   });
   await test.step('Change H1,H1 spectrum', async () => {
-    await nmrium.page.click(
-      '_react=SpectrumsTabs >> _react=Tab[tabid="1H,1H"]',
-    );
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H,1H"]');
     // Check top spectrum
     await expect(nmrium.page.locator('_react=Top1DChart')).toBeVisible();
 
@@ -202,7 +200,7 @@ test('2d spectrum', async ({ page }) => {
         '_react=ColorIndicator[display.negativeColor="#803e75ff"][display.positiveColor="#c10020ff"]',
       ),
     ).toBeVisible();
-    // Check that spectrums color changed
+    // Check that spectra color changed
     await expect(
       nmrium.page.locator(
         '_react=ContoursPaths[sign="positive"][color="#c10020ff"]',
@@ -217,7 +215,7 @@ test('2d spectrum', async ({ page }) => {
     await nmrium.viewer.locator.click({ force: true });
     await expect(nmrium.page.locator('_react=ColorPicker')).toBeHidden();
   });
-  await test.step('Check hide spectrums', async () => {
+  await test.step('Check hide spectra', async () => {
     // Hide positive spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',
@@ -267,7 +265,7 @@ test('2d spectrum', async ({ page }) => {
   });
   await test.step('Delete 1H tab', async () => {
     // Go to 1H tab
-    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
     await nmrium.page.click(
       '_react=AccordionItem[title="Spectra"] >> _react=ToolbarItem[id="delete-button"] >> nth=0',
@@ -326,7 +324,7 @@ test('show/hide spectrum', async ({ page }) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
     await expect(nmrium.page.getByTestId('spectrum-line')).toHaveCount(13);
   });
-  await test.step('Check hide spectrums', async () => {
+  await test.step('Check hide spectra', async () => {
     // Hide positive spectrum
     await nmrium.page.click(
       '_react=ShowHideSpectrumButton >> _react=FaEye >> nth=0',

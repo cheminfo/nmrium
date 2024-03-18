@@ -93,8 +93,8 @@ function ApodizationOptionsInnerPanel(
         {({ submitForm }) => (
           <>
             <Label
-              title="Line broadening : "
-              shortTitle="LB :"
+              title="Line broadening:"
+              shortTitle="LB:"
               style={headerLabelStyle}
             >
               <FormikInput
@@ -108,8 +108,8 @@ function ApodizationOptionsInnerPanel(
               />
             </Label>
             <Label
-              title="Gauss broadening :"
-              shortTitle="GB :"
+              title="Gauss broadening:"
+              shortTitle="GB:"
               style={headerLabelStyle}
             >
               <FormikInput
@@ -123,8 +123,8 @@ function ApodizationOptionsInnerPanel(
               />
             </Label>
             <Label
-              title="lineBroadeningCenter [0 - 1] : "
-              shortTitle="LB Center :"
+              title="Line broadening center [0 - 1]:"
+              shortTitle="LB center:"
               style={headerLabelStyle}
             >
               <FormikInput
@@ -137,11 +137,7 @@ function ApodizationOptionsInnerPanel(
                 debounceTime={250}
               />
             </Label>
-            <Label
-              title="Live preview "
-              htmlFor="livePreview"
-              style={{ label: { padding: '0 5px' } }}
-            >
+            <Label title="Live preview" style={{ label: { padding: '0 5px' } }}>
               <FormikCheckBox name="livePreview" />
             </Label>
 

@@ -194,7 +194,7 @@ function AlignSpectra({ onClose = () => null, nucleus }: AlignSpectraProps) {
                 </Label>
               </Label>
 
-              <Label title="Number of Peaks" style={labelStyle}>
+              <Label title="Number of peaks" style={labelStyle}>
                 <FormikInput name="nbPeaks" type="number" style={inputStyle} />
               </Label>
               <Label title="Target PPM" style={labelStyle}>

@@ -78,7 +78,7 @@ export function LoadJCAMPModal({ onCloseDialog, isOpen }: LoadJCAMPModalProps) {
     <Dialog
       isOpen
       onClose={onCloseDialog}
-      title="Load JCAMP Dialog"
+      title="Load JCAMP"
       style={{ minWidth: '400px' }}
     >
       <DialogBody

@@ -191,7 +191,7 @@ export default function PhaseCorrectionPanel() {
       </div>
       {phaseCorrectionTypeItem?.value === 'manual' && (
         <>
-          <Label title="PH0 :" style={headerLabelStyle}>
+          <Label title="PH0:" style={headerLabelStyle}>
             <Input
               name="ph0"
               style={inputStyle}
@@ -201,7 +201,7 @@ export default function PhaseCorrectionPanel() {
               debounceTime={250}
             />
           </Label>
-          <Label title="PH1 :" style={headerLabelStyle}>
+          <Label title="PH1:" style={headerLabelStyle}>
             <Input
               name="ph1"
               style={inputStyle}

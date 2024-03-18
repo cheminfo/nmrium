@@ -105,7 +105,7 @@ function MultipleSpectraAnalysisPreferences(
               container: { padding: '5px' },
             }}
           >
-            <Label title="Enable resort spectra" htmlFor="resortSpectra">
+            <Label title="Enable resort spectra">
               <FormikCheckBox name="resortSpectra" />
             </Label>
           </GroupPane>

@@ -26,7 +26,7 @@ import RangesTable from './RangesTable';
 
 const rangesContextMenuOptions: BaseContextMenuProps['options'] = [
   {
-    text: 'Copy to Clipboard',
+    text: 'Copy to clipboard',
     icon: <FaCopy />,
   },
 ];

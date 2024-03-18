@@ -39,7 +39,7 @@ function GeneralTabContent() {
   return (
     <>
       <GroupPane text="General">
-        <Label title="Opacity of dimmed spectra [ 0 - 1 ]" style={labelStyle}>
+        <Label title="Opacity of dimmed spectra [0 - 1]" style={labelStyle}>
           <FormikInput
             name="general.dimmedSpectraOpacity"
             checkValue={(value) => Number(value) >= 0 && Number(value) <= 1}
@@ -50,11 +50,7 @@ function GeneralTabContent() {
             style={{ inputWrapper: { width: 60 } }}
           />
         </Label>
-        <Label
-          title="Invert actions"
-          htmlFor="general.invert"
-          style={labelStyle}
-        >
+        <Label title="Invert actions" style={labelStyle}>
           <FormikCheckBox
             name="general.invert"
             style={{ container: { justifyContent: 'flex-start' } }}
@@ -62,11 +58,7 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Experimental features">
-        <Label
-          title="Enable experimental features"
-          htmlFor="display.general.experimentalFeatures.display"
-          style={labelStyle}
-        >
+        <Label title="Enable experimental features" style={labelStyle}>
           <FormikCheckBox
             name="display.general.experimentalFeatures.display"
             style={{ container: { justifyContent: 'flex-start' } }}
@@ -74,7 +66,7 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Rendering">
-        <Label title="Spectra rendering " style={labelStyle}>
+        <Label title="Spectra rendering" style={labelStyle}>
           <FormikSelect
             items={SHAPE_RENDERING}
             name="general.spectraRendering"
@@ -83,14 +75,14 @@ function GeneralTabContent() {
         </Label>
       </GroupPane>
       <GroupPane text="Logging settings">
-        <Label title="Level " style={labelStyle}>
+        <Label title="Level" style={labelStyle}>
           <FormikSelect
             items={LOGS_LEVELS}
             name="general.loggingLevel"
             style={{ width: '100px' }}
           />
         </Label>
-        <Label title="Popup logging level " style={labelStyle}>
+        <Label title="Popup logging level" style={labelStyle}>
           <FormikSelect
             items={LOGS_LEVELS}
             name="general.popupLoggingLevel"

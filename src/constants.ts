@@ -2,23 +2,23 @@ export const docsBaseUrl = 'https://docs.nmrium.org';
 
 export const helpList: Record<string, { text: string; url: string }> = {
   zoom: {
-    text: 'Zoom Tool',
+    text: 'Zoom tool',
     url: `${docsBaseUrl}/help/zoom-and-scale`,
   },
   peakPicking: {
-    text: 'peak picking tool',
+    text: 'Peak picking tool',
     url: `${docsBaseUrl}/help/peaks`,
   },
   integralPicking: {
-    text: 'integral tool',
+    text: 'Integral tool',
     url: `${docsBaseUrl}/help/integrations`,
   },
   fullScreen: {
-    text: 'Full Screen mode',
+    text: 'Full screen mode',
     url: `${docsBaseUrl}/help/general`,
   },
   loadSpectrum: {
-    text: 'load spectrums',
+    text: 'Load spectra',
     url: `${docsBaseUrl}/help/loading-a-spectrum`,
   },
 };

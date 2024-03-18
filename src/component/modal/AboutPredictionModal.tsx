@@ -46,12 +46,12 @@ function AboutPredictionModal() {
       <Toolbar.Item
         icon={<FaInfo />}
         onClick={openDialog}
-        title="About Prediction"
+        title="About prediction"
       />
       <Dialog
         isOpen={isOpenDialog}
         onClose={closeDialog}
-        title="About Prediction"
+        title="About prediction"
         style={{ width: '600px' }}
       >
         <DialogBody css={styles}>
