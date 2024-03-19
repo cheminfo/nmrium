@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.52.0](https://github.com/cheminfo/nmrium/compare/v0.51.0...v0.52.0) (2024-03-19)
+
+
+### Features
+
+* **zones:** add access to maxPercentCutOff option ([#2963](https://github.com/cheminfo/nmrium/issues/2963)) ([544c2cc](https://github.com/cheminfo/nmrium/commit/544c2ccbd44c63791838dbaf3853976b29d57567))
+
+
+### Bug Fixes
+
+* add missing dep ([#2972](https://github.com/cheminfo/nmrium/issues/2972)) ([72e969d](https://github.com/cheminfo/nmrium/commit/72e969d813557733c2cfce2d8b4a3905f5159c17))
+* add missing dep ([#2972](https://github.com/cheminfo/nmrium/issues/2972)) ([72e969d](https://github.com/cheminfo/nmrium/commit/72e969d813557733c2cfce2d8b4a3905f5159c17))
+* improve consistency of labels ([#2970](https://github.com/cheminfo/nmrium/issues/2970)) ([92fd75d](https://github.com/cheminfo/nmrium/commit/92fd75d14cc262bcfcf087e4f36ddee7f6becf8b))
+* set the size correctly for real part in slicing function ([#2973](https://github.com/cheminfo/nmrium/issues/2973)) ([47233fc](https://github.com/cheminfo/nmrium/commit/47233fcb5e76dc582254c346f39ccdc11ba7c94b))
+
 ## [0.51.0](https://github.com/cheminfo/nmrium/compare/v0.50.1...v0.51.0) (2024-03-16)
 
 
