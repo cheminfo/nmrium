@@ -22,6 +22,7 @@ import {
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
 import ActionsColumn from './TableColumns/ActionsColumn';
 import CouplingColumn from './TableColumns/CouplingColumn';
+import { RangeAssignmentColumn } from './TableColumns/RangeAssignmentColumn';
 import RangeAssignmentsColumn from './TableColumns/RangeAssignmentsColumn';
 import RangeColumn from './TableColumns/RangeColumn';
 import RelativeColumn from './TableColumns/RelativeColumn';
@@ -270,6 +271,11 @@ function RangesTableRow({
       )}
       {preferences.showAssignment && (
         <>
+          <RangeAssignmentColumn
+            row={rowData}
+            onHover={onHoverSignal}
+            rowSpanTags={rowSpanTags}
+          />
           <SignalAssignmentsColumn
             row={rowData}
             assignment={assignmentSignal}

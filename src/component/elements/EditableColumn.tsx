@@ -120,7 +120,7 @@ const EditableColumn = forwardRef(function EditableColumn(
               : {}),
           }}
         >
-          {value}
+          {value} &nbsp;
         </span>
       )}
       {enabled && (

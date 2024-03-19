@@ -122,6 +122,7 @@ function RangesTable({
           {preferences.coupling.show && <th>J (Hz)</th>}
           {preferences.showAssignment && (
             <>
+              <th title="Assignment">Assignment</th>
               <th title="Assign multiplets">
                 <FaLink style={{ fontSize: 10, margin: 'auto' }} />
               </th>
