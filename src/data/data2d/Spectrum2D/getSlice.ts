@@ -104,7 +104,7 @@ export function getSlice(
 function initiateData(from: number, to: number, size: number): NmrData1D {
   return {
     x: xSequentialFillFromTo({ from, to, size }),
-    re: new Float64Array(length),
+    re: new Float64Array(size),
   };
 }
 
