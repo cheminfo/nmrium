@@ -103,7 +103,7 @@ export default function MultipletAnalysisModal({
     <Dialog
       isOpen={isOpen}
       onClose={() => onClose()}
-      title="Analyse Multiplet"
+      title="Analyse multiplet"
       style={{ width: 900, height: 400 }}
     >
       <DialogBody css={styles}>

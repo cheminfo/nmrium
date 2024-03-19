@@ -16,7 +16,7 @@ import { getDefaultViewState, getInitialState, State } from '../Reducer';
 import { ActionType } from '../types/ActionType';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
-import { setSpectraMetaInfo } from './SpectrumsActions';
+import { setSpectraMetaInfo } from './SpectraActions';
 import { setActiveTab } from './ToolsActions';
 
 //TODO use viewState type instead of any { view?: ViewState }

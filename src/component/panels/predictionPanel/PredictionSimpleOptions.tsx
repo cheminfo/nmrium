@@ -67,7 +67,7 @@ function PredictionSimpleOptions() {
             name="frequency"
           />
         </Label>
-        <Label title="Line Width" style={labelStyle}>
+        <Label title="Line width" style={labelStyle}>
           <FormikInput
             name="1d.lineWidth"
             type="number"

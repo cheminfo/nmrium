@@ -82,18 +82,14 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
       >
         {({ submitForm }) => (
           <>
-            <Label title="Size:  " style={headerLabelStyle}>
+            <Label title="Size:" style={headerLabelStyle}>
               <FormikSelect
                 items={Sizes}
                 style={{ marginLeft: 10, marginRight: 10 }}
                 name="nbPoints"
               />
             </Label>
-            <Label
-              title="Live preview "
-              htmlFor="livePreview"
-              style={{ label: { padding: '0 5px' } }}
-            >
+            <Label title="Live preview" style={{ label: { padding: '0 5px' } }}>
               <FormikCheckBox name="livePreview" />
             </Label>
             <FormikOnChange

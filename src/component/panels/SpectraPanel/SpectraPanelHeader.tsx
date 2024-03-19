@@ -21,13 +21,13 @@ import DefaultPanelHeader, {
 } from '../header/DefaultPanelHeader';
 import { SpectraAutomaticPickingButton } from '../header/SpectraAutomaticPickingButton';
 
-function getMissingProjection(SpectrumsData, activeTab) {
+function getMissingProjection(spectraData, activeTab) {
   let nucleus = activeTab.split(',');
   nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
   const missingNucleus: string[] = [];
   for (const n of nucleus) {
-    const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
-    if (!hasSpectrums) {
+    const hasSpectra = spectraData.some((d) => d.info.nucleus === n);
+    if (!hasSpectra) {
       missingNucleus.push(n);
     }
   }
@@ -78,14 +78,14 @@ function SpectraPanelHeaderInner({
     });
   }, [activeSpectra?.length, dispatch, modal]);
 
-  function showAllSpectrumsHandler() {
+  function showAllSpectraHandler() {
     dispatch({
       type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: true },
     });
   }
 
-  function hideAllSpectrumsHandler() {
+  function hideAllSpectraHandler() {
     dispatch({
       type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
       payload: { nucleus: activeTab, flag: false },
@@ -126,13 +126,13 @@ function SpectraPanelHeaderInner({
       disabled: !hasActiveSpectra,
       icon: <FaEyeSlash />,
       title: 'Hide selected spectra',
-      onClick: hideAllSpectrumsHandler,
+      onClick: hideAllSpectraHandler,
     },
     {
       disabled: !hasActiveSpectra,
       icon: <FaEye />,
       title: 'Show selected spectra',
-      onClick: showAllSpectrumsHandler,
+      onClick: showAllSpectraHandler,
     },
   ];
 
@@ -185,7 +185,7 @@ function SpectraPanelHeaderInner({
 
 const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
 
-export default function SpectrumsTabs({
+export default function SpectraTabs({
   onSettingClick,
 }: SpectraPanelHeaderProps) {
   const {

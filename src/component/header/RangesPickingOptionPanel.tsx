@@ -52,14 +52,10 @@ function RangesPickingOptionPanel() {
       >
         {({ handleSubmit, isValid }) => (
           <>
-            <Label
-              title="Detect negative:"
-              htmlFor="lookNegative"
-              style={headerLabelStyle}
-            >
+            <Label title="Detect negative" style={headerLabelStyle}>
               <FormikCheckBox name="lookNegative" />
             </Label>
-            <Label title="Min Max Ratio:" style={headerLabelStyle}>
+            <Label title="Min/max ratio:" style={headerLabelStyle}>
               <FormikInput
                 type="number"
                 name="minMaxRatio"

@@ -97,7 +97,7 @@ function MultipleSpectraAnalysisPanelInner({
   let lefButtons: ToolbarItemProps[] = [
     {
       icon: <FaFileExport />,
-      title: 'Copy To Clipboard',
+      title: 'Copy to clipboard',
       onClick: copyToClipboardHandler,
     },
   ];

@@ -20,7 +20,7 @@ test('automatic assignment panel', async ({ page }) => {
     await nmrium.saveWorkspaceModal('test');
   });
   await test.step('check automatic assignment panel', async () => {
-    await nmrium.clickPanel('Automatic Assignment');
+    await nmrium.clickPanel('Automatic assignment');
     // Click on the automatic ranges button.
     await nmrium.page.click(
       '_react=AutomaticAssignment >> _react=SpectraAutomaticPickingButton',

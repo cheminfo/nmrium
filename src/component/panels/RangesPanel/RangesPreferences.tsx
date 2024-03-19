@@ -144,7 +144,7 @@ function RangesPreferences(props, ref) {
               fields={formatFields}
               renderBottom={() => (
                 <Label
-                  title="J Graph tolerance (Hz) :"
+                  title="J graph tolerance (Hz):"
                   style={formatFieldLabelStyle}
                 >
                   <div style={{ display: 'flex' }}>

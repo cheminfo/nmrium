@@ -139,17 +139,17 @@ function get2DDomain(state: State) {
     }
   }
 
-  const spectrumsIDs = new Set();
+  const spectraIDs = new Set();
 
   for (const n of nucleus) {
     const spectra = activeSpectra[n];
     if (spectra?.length === 1) {
-      spectrumsIDs.add(spectra[0].id);
+      spectraIDs.add(spectra[0].id);
     }
   }
 
   const filteredData = data
-    .filter((d) => spectrumsIDs.has(d.id) && d.info.dimension === 1)
+    .filter((d) => spectraIDs.has(d.id) && d.info.dimension === 1)
     .map((datum) => {
       return datum as Spectrum1D;
     });

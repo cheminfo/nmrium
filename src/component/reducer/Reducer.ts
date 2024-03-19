@@ -24,8 +24,8 @@ import * as MoleculeActions from './actions/MoleculeActions';
 import * as PeaksActions from './actions/PeaksActions';
 import * as PreferencesActions from './actions/PreferencesActions';
 import * as RangesActions from './actions/RangesActions';
+import * as SpectraActions from './actions/SpectraActions';
 import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
-import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
@@ -525,46 +525,40 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           draft,
         );
       case 'CHANGE_SPECTRUM_VISIBILITY':
-        return SpectrumsActions.handleChangeSpectrumVisibilityById(
-          draft,
-          action,
-        );
+        return SpectraActions.handleChangeSpectrumVisibilityById(draft, action);
       case 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS':
-        return SpectrumsActions.handleChangeSpectraVisibilityByNucleus(
+        return SpectraActions.handleChangeSpectraVisibilityByNucleus(
           draft,
           action,
         );
       case 'CHANGE_ACTIVE_SPECTRUM':
-        return SpectrumsActions.handleChangeActiveSpectrum(draft, action);
+        return SpectraActions.handleChangeActiveSpectrum(draft, action);
       case 'CHANGE_SPECTRUM_SETTING':
-        return SpectrumsActions.handleChangeSpectrumSetting(draft, action);
+        return SpectraActions.handleChangeSpectrumSetting(draft, action);
       case 'ALIGN_SPECTRA':
-        return SpectrumsActions.handleAlignSpectraHandler(draft, action);
+        return SpectraActions.handleAlignSpectraHandler(draft, action);
       case 'DELETE_SPECTRA':
-        return SpectrumsActions.handleDeleteSpectra(draft, action);
+        return SpectraActions.handleDeleteSpectra(draft, action);
       case 'ADD_MISSING_PROJECTION':
-        return SpectrumsActions.handleAddMissingProjectionHandler(
-          draft,
-          action,
-        );
+        return SpectraActions.handleAddMissingProjectionHandler(draft, action);
       case 'GENERATE_SPECTRUM_FROM_PUBLICATION_STRING':
-        return SpectrumsActions.handleGenerateSpectrumFromPublicationStringHandler(
+        return SpectraActions.handleGenerateSpectrumFromPublicationStringHandler(
           draft,
           action,
         );
       case 'IMPORT_SPECTRA_META_INFO':
-        return SpectrumsActions.handleImportSpectraMetaInfo(draft, action);
+        return SpectraActions.handleImportSpectraMetaInfo(draft, action);
       case 'TOGGLE_SPECTRA_LEGEND':
-        return SpectrumsActions.handleToggleSpectraLegend(draft);
+        return SpectraActions.handleToggleSpectraLegend(draft);
       case 'RECOLOR_SPECTRA_COLOR':
-        return SpectrumsActions.handleRecolorSpectraBasedOnDistinctValue(
+        return SpectraActions.handleRecolorSpectraBasedOnDistinctValue(
           draft,
           action,
         );
       case 'ORDER_SPECTRA':
-        return SpectrumsActions.handleOrderSpectra(draft, action);
+        return SpectraActions.handleOrderSpectra(draft, action);
       case 'SIMULATE_SPECTRUM':
-        return SpectrumsActions.handleSimulateSpectrum(draft, action);
+        return SpectraActions.handleSimulateSpectrum(draft, action);
 
       case 'SET_SELECTED_TOOL':
         return ToolsActions.setSelectedTool(draft, action);
@@ -585,8 +579,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ToolsActions.handleChangeSpectrumDisplayMode(draft);
       case 'BRUSH_END':
         return ToolsActions.handleBrushEnd(draft, action);
-      case 'SET_SPECTRUMS_VERTICAL_ALIGN':
-        return ToolsActions.setSpectrumsVerticalAlign(draft);
+      case 'SET_SPECTRA_VERTICAL_ALIGN':
+        return ToolsActions.setSpectraVerticalAlign(draft);
       case 'SET_ACTIVE_TAB':
         return ToolsActions.handelSetActiveTab(draft, action);
       case 'ADD_BASE_LINE_ZONE':

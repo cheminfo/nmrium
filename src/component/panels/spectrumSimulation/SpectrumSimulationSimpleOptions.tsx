@@ -48,7 +48,7 @@ export default function SpectrumSimulationSimpleOptions({
           name="options.frequency"
         />
       </Label>
-      <Label title="Line Width" style={labelStyle}>
+      <Label title="Line width" style={labelStyle}>
         <FormikInput
           name="options.lineWidth"
           type="number"

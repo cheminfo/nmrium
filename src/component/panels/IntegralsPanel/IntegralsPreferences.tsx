@@ -112,7 +112,7 @@ function IntegralsPreferences(props, ref) {
                       <FormikColorPickerDropdown name={`nuclei.${n}.color`} />
                     </div>
                   </Label>
-                  <Label title="stroke width :" style={formatFieldLabelStyle}>
+                  <Label title="Stroke width:" style={formatFieldLabelStyle}>
                     <div style={{ display: 'flex', padding: '2px 0' }}>
                       <div style={{ width: '23px' }} />
                       <FormikInput

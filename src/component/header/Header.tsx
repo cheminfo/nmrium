@@ -201,7 +201,7 @@ function HeaderInner(props: HeaderInnerProps) {
                 <Toolbar.Item
                   id="full-screen"
                   onClick={fullscreen.toggle}
-                  title="Full Screen"
+                  title="Full screen"
                   className="windowButton"
                   icon={<FaRegWindowMaximize />}
                 />

@@ -148,7 +148,6 @@ function InfoBlockTabContent() {
     <div>
       <Label
         title="Display spectrum info block"
-        htmlFor="infoBlock.visible"
         style={{ wrapper: { padding: '10px 0' } }}
       >
         <FormikCheckBox name="infoBlock.visible" />

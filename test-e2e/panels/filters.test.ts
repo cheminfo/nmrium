@@ -209,7 +209,7 @@ test('Exclusion zones', async ({ page }) => {
     await expect(nmrium.page.locator('#nmrSVG')).toBeVisible();
 
     // select the 1H tab
-    await nmrium.page.click('_react=SpectrumsTabs >> _react=Tab[tabid="1H"]');
+    await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
   });
 
   await test.step('activate exclusion zones tool', async () => {

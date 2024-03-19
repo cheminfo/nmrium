@@ -83,7 +83,7 @@ export default function ToolBar() {
     isRealSpectrumShown,
     changeSpectrumViewHandler,
     changeDisplayViewModeHandler,
-    alignSpectrumsVerticallyHandler,
+    alignSpectraVerticallyHandler,
     handleChangeOption,
     handleFullZoomOut,
   } = useToolsFunctions();
@@ -192,23 +192,23 @@ export default function ToolBar() {
     {
       id: 'zoomOut',
       title:
-        'Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )',
+        'Horizontal zoom out (Press f), Horizontal and Vertical zoom out, double click (Press ff)',
       onClick: handleFullZoomOut,
       icon: <FaExpand />,
     },
     {
       id: 'peakPicking',
-      title: `${options.peakPicking.label} ( Press p )`,
+      title: `${options.peakPicking.label} (Press p)`,
       icon: <SvgNmrPeakPicking />,
     },
     {
       id: 'integral',
-      title: `${options.integral.label} ( Press i )`,
+      title: `${options.integral.label} (Press i)`,
       icon: <SvgNmrIntegrate />,
     },
     {
       id: 'zonePicking',
-      title: `${options.zonePicking.label} ( Press r )`,
+      title: `${options.zonePicking.label} (Press r)`,
       icon: <FaDiceFour />,
     },
     {
@@ -218,7 +218,7 @@ export default function ToolBar() {
     },
     {
       id: 'rangePicking',
-      title: `${options.rangePicking.label} ( Press r )`,
+      title: `${options.rangePicking.label} (Press r)`,
       icon: <SvgNmrRangePicking />,
     },
     {
@@ -235,34 +235,34 @@ export default function ToolBar() {
     },
     {
       id: 'zeroFilling',
-      title: `${options.zeroFilling.label} ( Press z )`,
+      title: `${options.zeroFilling.label} (Press z)`,
       icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'phaseCorrection',
-      title: `${options.phaseCorrection.label} ( Press a )`,
+      title: `${options.phaseCorrection.label} (Press a)`,
       icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'phaseCorrectionTwoDimensions',
-      title: `${options.phaseCorrectionTwoDimensions.label} ( Press a )`,
+      title: `${options.phaseCorrectionTwoDimensions.label} (Press a)`,
       icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'baselineCorrection',
-      title: `${options.baselineCorrection.label} ( Press b )`,
+      title: `${options.baselineCorrection.label} (Press b)`,
       icon: <SvgNmrBaselineCorrection />,
     },
     {
       id: 'exclusionZones',
-      title: `${options.exclusionZones.label} ( Press e )`,
+      title: `${options.exclusionZones.label} (Press e)`,
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
       condition: ftCounter > 0,
     },
     {
       id: 'fft',
-      title: `${options.fft.label} ( Press t )`,
+      title: `${options.fft.label} (Press t)`,
       onClick: handleOnFFTFilter,
       icon: <SvgNmrFourierTransform />,
     },
@@ -294,7 +294,7 @@ export default function ToolBar() {
     },
     {
       id: 'spectraStackAlignments',
-      title: `${options.spectraStackAlignments.label} ( Press s )`,
+      title: `${options.spectraStackAlignments.label} (Press s)`,
       icon:
         verticalAlign === 'stack' ? (
           <SvgNmrOverlay3Aligned />
@@ -312,7 +312,7 @@ export default function ToolBar() {
     },
     {
       id: 'spectraCenterAlignments',
-      title: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'} ( Press c )`,
+      title: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'} (Press c)`,
       icon:
         verticalAlign === 'bottom' ? (
           <SvgNmrAlignCenter />
@@ -320,7 +320,7 @@ export default function ToolBar() {
           <SvgNmrAlignBottom />
         ),
       condition: ftCounter > 0 || fidCounter > 0,
-      onClick: alignSpectrumsVerticallyHandler,
+      onClick: alignSpectraVerticallyHandler,
     },
   ];
 

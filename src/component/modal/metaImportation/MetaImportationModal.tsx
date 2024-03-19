@@ -100,7 +100,7 @@ export function MetaImportationModal(props: MetaImportationModalPropsProps) {
   return (
     <Dialog
       isOpen
-      title="Import Meta Information"
+      title="Import meta information"
       style={{ width: 900, height: 600 }}
       onClose={onCloseDialog}
     >

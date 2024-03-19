@@ -75,7 +75,7 @@ enum SpectraContextMenuOptionsKeys {
 
 const Spectra2DContextMenuOptions: ContextMenuItem[] = [
   {
-    text: 'Copy to Clipboard',
+    text: 'Copy to clipboard',
     icon: <FaCopy />,
     data: { id: SpectraContextMenuOptionsKeys.CopyToClipboard },
   },

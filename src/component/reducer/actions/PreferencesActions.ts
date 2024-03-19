@@ -96,8 +96,8 @@ function handleSetKeyPreferences(
 
   if (activeTab) {
     const groupByNucleus = groupByInfoKey('nucleus');
-    const spectrumsGroupsList = groupByNucleus(data);
-    const spectra = spectrumsGroupsList[activeTab];
+    const spectraGroupsList = groupByNucleus(data);
+    const spectra = spectraGroupsList[activeTab];
     keysPreferences[keyCode] = {
       activeSpectrum,
       displayerMode,

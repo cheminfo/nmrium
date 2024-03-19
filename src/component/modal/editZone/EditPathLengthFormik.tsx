@@ -69,7 +69,7 @@ function EditPathLengthFormik({ signalIndex }: InputProps) {
     <div css={editPathLengthsStyles}>
       <p>Setting of the minimum and maximum path length (J coupling).</p>
       <div className="input-container">
-        <Label title="Min: ">
+        <Label title="Min:">
           <FormikNumberInput
             name={`signals[${signalIndex}].j.pathLength.from`}
             defaultValue={
@@ -90,7 +90,7 @@ function EditPathLengthFormik({ signalIndex }: InputProps) {
             pattern="[1-9]+"
           />
         </Label>
-        <Label title="Max: ">
+        <Label title="Max:">
           <FormikNumberInput
             name={`signals[${signalIndex}].j.pathLength.to`}
             defaultValue={

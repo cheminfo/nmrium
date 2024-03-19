@@ -161,11 +161,11 @@ function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
               <FormikInput name="1d.13C.to" type="number" style={inputStyle} />
             </Label>
           </Label>
-          <Label title="Line Width" style={labelStyle}>
+          <Label title="Line width" style={labelStyle}>
             <FormikInput name="1d.lineWidth" type="number" style={inputStyle} />
             <span style={{ paddingLeft: '0.4rem' }}> Hz </span>
           </Label>
-          <Label title="Number of Points" style={labelStyle}>
+          <Label title="Number of points" style={labelStyle}>
             <FormikSelect
               items={NUMBER_OF_POINTS_1D}
               name="1d.nbPoints"
@@ -179,7 +179,7 @@ function PredictionOptionsPanel(props: PredictionOptionsPanelProps, ref) {
             header: styles.groupHeader,
           }}
         >
-          <Label title="Number of Points" style={labelStyle}>
+          <Label title="Number of points" style={labelStyle}>
             <FormikSelect
               items={NUMBER_OF_POINTS_2D}
               name="2d.nbPoints.x"

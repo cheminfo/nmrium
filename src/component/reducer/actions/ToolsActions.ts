@@ -99,7 +99,7 @@ export type ToolsActions =
   | ActionType<
       | 'TOGGLE_REAL_IMAGINARY_VISIBILITY'
       | 'RESET_SELECTED_TOOL'
-      | 'SET_SPECTRUMS_VERTICAL_ALIGN'
+      | 'SET_SPECTRA_VERTICAL_ALIGN'
       | 'CHANGE_SPECTRUM_DISPLAY_VIEW_MODE'
       | 'SET_SPECTRA_SAME_TOP'
       | 'RESET_SPECTRA_SCALE'
@@ -215,7 +215,7 @@ function getSpectrumID(draft: Draft<State>, index): string | null {
   return null;
 }
 
-function setSpectrumsVerticalAlign(draft: Draft<State>) {
+function setSpectraVerticalAlign(draft: Draft<State>) {
   const currentVerticalAlign = getVerticalAlign(draft);
   const verticalAlign = ['stack', 'bottom'].includes(currentVerticalAlign)
     ? 'center'
@@ -619,18 +619,18 @@ function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
       const tabSpectra = dataGroupByTab[tabKey];
       const tabSpectraLength = tabSpectra.length;
       if (tabSpectraLength >= 2) {
-        const FTSpectrums = tabSpectra.filter((d) => !d.info.isFid);
-        if (FTSpectrums.length > 0) {
+        const FTSpectra = tabSpectra.filter((d) => !d.info.isFid);
+        if (FTSpectra.length > 0) {
           const selected =
             nucleusLength === 2 ||
-            (nucleusLength === 1 && tabSpectraLength !== FTSpectrums.length);
+            (nucleusLength === 1 && tabSpectraLength !== FTSpectra.length);
           const index = draft.data.findIndex(
-            (datum) => datum.id === FTSpectrums[0].id,
+            (datum) => datum.id === FTSpectra[0].id,
           );
           tabActiveSpectrum[tabKey] = [
-            { id: FTSpectrums[0].id, index, selected },
+            { id: FTSpectra[0].id, index, selected },
           ];
-        } else if (tabSpectraLength - FTSpectrums > 0) {
+        } else if (tabSpectraLength - FTSpectra > 0) {
           const id = tabSpectra[0].id;
           const index = draft.data.findIndex((datum) => datum.id === id);
           tabActiveSpectrum[tabKey] = [{ id, index, selected: true }];
@@ -759,7 +759,7 @@ export {
   resetSelectedTool,
   setSelectedTool,
   activateTool,
-  setSpectrumsVerticalAlign,
+  setSpectraVerticalAlign,
   handleChangeSpectrumDisplayMode,
   handleAddBaseLineZone,
   handleDeleteBaseLineZone,

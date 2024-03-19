@@ -127,7 +127,7 @@ function EditPeakShapeModal({
           onSubmit={changePeakShapeHandler}
         >
           <>
-            <Label title="kind : " style={labelStyle}>
+            <Label title="Kind:" style={labelStyle}>
               <Select
                 items={KINDS}
                 style={{ margin: 0, height: 30 }}
@@ -136,12 +136,12 @@ function EditPeakShapeModal({
               />
             </Label>
 
-            <Label title="fwhm: " style={labelStyle}>
+            <Label title="FWHM:" style={labelStyle}>
               <FormikInput name="fwhm" style={inputStyle} />
             </Label>
 
             {kind === 'pseudoVoigt' && (
-              <Label title="mu: " style={labelStyle}>
+              <Label title="Mu:" style={labelStyle}>
                 <FormikInput name="mu" style={inputStyle} />
               </Label>
             )}

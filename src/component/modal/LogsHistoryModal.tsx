@@ -167,7 +167,7 @@ export function LogsHistoryModal(props: LogsHistoryModalProps) {
           closeDialog();
           onClose?.();
         }}
-        title="Logs History"
+        title="Logs history"
         style={{ width: '50vw', height: '50vh' }}
       >
         <DialogBody

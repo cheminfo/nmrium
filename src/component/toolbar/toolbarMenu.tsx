@@ -11,7 +11,7 @@ import { ToolbarPopoverMenuItem } from '../elements/ToolbarPopoverItem';
 const IMPORT_MENU: ToolbarPopoverMenuItem[] = [
   {
     icon: <FaFile />,
-    text: 'Import from file system (Press Ctrl + O)',
+    text: 'Import from file system (Press Ctrl+o)',
     data: {
       id: 'importFile',
     },
@@ -56,14 +56,14 @@ const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   },
   {
     icon: <FaFileDownload />,
-    text: 'Save data ( Press Ctrl + S )',
+    text: 'Save data (Press Ctrl+s)',
     data: {
       id: 'json',
     },
   },
   {
     icon: <FaFileDownload />,
-    text: 'Save data as  ( Press Ctrl + Shift + S )',
+    text: 'Save data as (Press Ctrl+Shift+s)',
     data: {
       id: 'advance_save',
     },
@@ -77,7 +77,7 @@ const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
   },
   {
     icon: <FaCopy />,
-    text: 'Copy image to Clipboard ( Press Ctrl + C )',
+    text: 'Copy image to clipboard (Press Ctrl+c)',
     data: {
       id: 'copy',
     },

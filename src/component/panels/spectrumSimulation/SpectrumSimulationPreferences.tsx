@@ -66,7 +66,7 @@ function SpectrumSimulationPreferences(
               name="options.frequency"
             />
           </Label>
-          <Label title="Number of Points" style={labelStyle}>
+          <Label title="Number of points" style={labelStyle}>
             <FormikSelect
               items={SIMULATION_NUMBER_OF_POINTS}
               name="options.nbPoints"
@@ -87,7 +87,7 @@ function SpectrumSimulationPreferences(
             </Label>
           </Label>
 
-          <Label title="Line Width" style={labelStyle}>
+          <Label title="Line width" style={labelStyle}>
             <FormikInput
               name="options.lineWidth"
               type="number"

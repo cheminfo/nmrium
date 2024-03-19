@@ -58,7 +58,7 @@ function DatabasePreferences(props, ref) {
             <Label title="Color" style={formatFieldLabelStyle}>
               <FormikColorPickerDropdown name="color" />
             </Label>
-            <Label title="Margin bottom (px) :" style={formatFieldLabelStyle}>
+            <Label title="Margin bottom (px):" style={formatFieldLabelStyle}>
               <FormikInput
                 name="marginBottom"
                 type="number"

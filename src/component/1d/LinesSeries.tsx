@@ -44,7 +44,7 @@ function LinesSeries() {
 
   const { setActiveSpectrum } = useSetActiveSpectrumAction();
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="spectrums">
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="spectra">
       {spectra.map((d, i) => (
         <g key={d.id}>
           <Line display={d.display} id={d.id} data={get1DDataXY(d)} index={i} />
