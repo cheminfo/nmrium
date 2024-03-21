@@ -401,10 +401,10 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
     toolOptions: { selectedTool },
   } = draft;
   const scaleRatio = toScaleRatio(options);
+  const { altKey, shiftKey } = options;
+
   switch (displayerMode) {
     case '2D': {
-      const { shiftKey } = options;
-
       if (trackID === 'CENTER_2D') {
         // change the vertical scale for traces in 2D phase correction
         if (selectedTool === 'phaseCorrectionTwoDimensions') {
@@ -412,8 +412,9 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
           activeTraces.scaleRatio *= scaleRatio;
           return;
         }
+
         //zoom in/out in 2d
-        if (selectedTool === 'zoom' && shiftKey) {
+        if (shiftKey) {
           zoomWithScroll(draft, {
             zoomOptions: options,
             dimension: '2D',
@@ -438,24 +439,28 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
 
     case '1D': {
       const activeSpectra = getActiveSpectra(draft);
-      const { shiftKey } = options;
 
       // Horizontal zoom in/out 1d spectra by mouse wheel
-      if (selectedTool === 'zoom' && shiftKey) {
+      if (shiftKey) {
         zoomWithScroll(draft, { zoomOptions: options, dimension: '1D' });
         return;
       }
 
-      if (!activeSpectra) {
+      // rescale the spectra vertically
+      if (!activeSpectra || activeSpectra.length > 1) {
+        const keys = !activeSpectra
+          ? Object.keys(yDomains)
+          : activeSpectra.map(({ id }) => id);
         // rescale the spectra
-        for (const key of Object.keys(yDomains)) {
+        for (const key of keys) {
           const domain = yDomains[key];
           yDomains[key] = wheelZoom(options, domain);
         }
         return;
       }
 
-      if (activeSpectra.length === 1 && shiftKey) {
+      // rescale the integral in ranges and integrals
+      if (altKey) {
         switch (selectedTool) {
           case 'rangePicking': {
             setRangesViewProperty(
@@ -475,13 +480,6 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
           }
           default:
             break;
-        }
-      } else {
-        for (const activeSpectrum of activeSpectra) {
-          const domain = yDomains?.[activeSpectrum?.id];
-          if (domain) {
-            yDomains[activeSpectrum?.id] = wheelZoom(options, domain);
-          }
         }
       }
 
