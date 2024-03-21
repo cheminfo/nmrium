@@ -269,13 +269,15 @@ function RangesTableRow({
           format={preferences.coupling.format}
         />
       )}
+      {preferences.showAssignmentLabel && (
+        <RangeAssignmentColumn
+          row={rowData}
+          onHover={onHoverSignal}
+          rowSpanTags={rowSpanTags}
+        />
+      )}
       {preferences.showAssignment && (
         <>
-          <RangeAssignmentColumn
-            row={rowData}
-            onHover={onHoverSignal}
-            rowSpanTags={rowSpanTags}
-          />
           <SignalAssignmentsColumn
             row={rowData}
             assignment={assignmentSignal}
