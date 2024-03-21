@@ -105,7 +105,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
 
           // eslint-disable-next-line no-alert
-          alert(error.message);
+          window.alert(error.message);
           reportError(error);
         });
     }

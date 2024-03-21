@@ -213,7 +213,7 @@ async function copyPNGToClipboard(
   } catch (error) {
     if (error instanceof ReferenceError) {
       // eslint-disable-next-line no-alert
-      alert(
+      window.alert(
         'Your browser does not support this feature, please use Google Chrome or Firefox',
       );
     }
