@@ -12,6 +12,7 @@ export const defaultRangesViewState: RangesViewState = {
   showJGraph: false,
   displayingMode: 'spread',
   integralsScaleRatio: 1,
+  showAssignmentsLabels: false,
 };
 
 export function useActiveSpectrumRangesViewState() {

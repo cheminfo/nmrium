@@ -8,6 +8,7 @@ export const defaultZonesViewState: ZonesViewState = {
   showPeaks: true,
   showSignals: true,
   showZones: true,
+  showAssignmentsLabels: false,
 };
 
 export function useActiveSpectrumZonesViewState() {
