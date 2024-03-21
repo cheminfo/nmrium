@@ -88,7 +88,7 @@ export default function Test(props) {
       } catch (error) {
         reportError(error);
         // eslint-disable-next-line no-alert
-        alert('Invalid JSON file');
+        window.alert('Invalid JSON file');
       }
     })();
   }, []);
