@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.53.0](https://github.com/cheminfo/nmrium/compare/v0.52.0...v0.53.0) (2024-03-22)
+
+
+### Features
+
+* create and edit assignment labels for ranges ([#2971](https://github.com/cheminfo/nmrium/issues/2971)) ([31297a2](https://github.com/cheminfo/nmrium/commit/31297a2521d9b543b958894ad5402d7d42ee5f24))
+* set zoom in/out as the default behavior with Shift + scroll ([#2975](https://github.com/cheminfo/nmrium/issues/2975)) ([b5d28f6](https://github.com/cheminfo/nmrium/commit/b5d28f61f4e89648fa776f24d9114b8e7416c19f))
+
+
+### Bug Fixes
+
+* avoid reselecting the tool if it's already selected ([19f5857](https://github.com/cheminfo/nmrium/commit/19f585711b4145e5f2606801760cdc617c2a2809))
+* **Bruker 2D SER:** fix imaginary data ([#2977](https://github.com/cheminfo/nmrium/issues/2977)) ([0a6c21d](https://github.com/cheminfo/nmrium/commit/0a6c21de1972470763dc19c7cfa9b548e194dcd8))
+* ensure activeSpectrum and tempData are not null ([9e50f1c](https://github.com/cheminfo/nmrium/commit/9e50f1c22cbe1a1c7ba0f529c04f24fabb618256))
+* re-initialize FifoLogger instance when opening the modal ([73f2750](https://github.com/cheminfo/nmrium/commit/73f275063a7b13605753ac62fcff0bf6625e5223)), closes [#2981](https://github.com/cheminfo/nmrium/issues/2981)
+* spectra simulation options validation ([988dfec](https://github.com/cheminfo/nmrium/commit/988dfec1c29fcba5f0004de621fd087cd2e5c0be))
+* Y axis in 2D jcamp from jeol delta ([#2992](https://github.com/cheminfo/nmrium/issues/2992)) ([6f0f2c5](https://github.com/cheminfo/nmrium/commit/6f0f2c51d4bde54cfba5426c24d66071bd9ff2ef))
+
 ## [0.52.0](https://github.com/cheminfo/nmrium/compare/v0.51.0...v0.52.0) (2024-03-19)
 
 
