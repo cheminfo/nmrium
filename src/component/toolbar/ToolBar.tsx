@@ -43,7 +43,7 @@ import { useDialogToggle } from '../hooks/useDialogToggle';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
-import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
+import { ImportPublicationStringModal } from '../modal/ImportPublicationStringModal';
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
 import SaveAsModal from '../modal/SaveAsModal';
 import { MetaImportationModal } from '../modal/metaImportation/MetaImportationModal';
