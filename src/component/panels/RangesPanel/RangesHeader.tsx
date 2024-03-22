@@ -7,6 +7,7 @@ import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
+import { LuSubtitles } from 'react-icons/lu';
 import { ImLink } from 'react-icons/im';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
@@ -48,6 +49,7 @@ function RangesHeader({
     showIntegralsValues,
     showPeaks,
     displayingMode,
+    showAssignmentsLabels,
   } = useActiveSpectrumRangesViewState();
 
   function changeRangesSumHandler(options) {
@@ -108,6 +110,12 @@ function RangesHeader({
     dispatch({
       type: 'TOGGLE_RANGES_VIEW_PROPERTY',
       payload: { key: 'showJGraph' },
+    });
+  }
+  function handleShowAssignmentsLabel() {
+    dispatch({
+      type: 'TOGGLE_RANGES_VIEW_PROPERTY',
+      payload: { key: 'showAssignmentsLabels' },
     });
   }
 
@@ -186,6 +194,12 @@ function RangesHeader({
             ),
           },
           {
+            icon: <ImLink />,
+            title: 'Fixed integration sum',
+            onClick: changeSumConstantFlagHandler,
+            active: ranges?.options?.isSumConstant,
+          },
+          {
             disabled: !hasRanges,
             icon: <FaUnlink />,
             title: 'Remove all assignments',
@@ -219,12 +233,7 @@ function RangesHeader({
             onClick: handleShowIntegralsValues,
             active: showIntegralsValues,
           },
-          {
-            icon: <ImLink />,
-            title: 'Fixed integration sum',
-            onClick: changeSumConstantFlagHandler,
-            active: ranges?.options?.isSumConstant,
-          },
+
           {
             id: 'ranges-toggle-peaks',
             disabled: !hasRanges,
@@ -239,6 +248,13 @@ function RangesHeader({
             title: `${displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
             onClick: toggleDisplayingMode,
             active: displayingMode === 'spread',
+          },
+          {
+            disabled: !hasRanges,
+            icon: <LuSubtitles />,
+            title: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
+            onClick: handleShowAssignmentsLabel,
+            active: showAssignmentsLabels,
           },
         ]}
       />

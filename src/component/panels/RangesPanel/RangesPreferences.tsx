@@ -86,18 +86,24 @@ const formatFields: NucleusPreferenceField[] = [
   },
   {
     id: 12,
+    label: 'Assignment label :',
+    checkControllerName: 'showAssignmentLabel',
+    hideFormatField: true,
+  },
+  {
+    id: 13,
     label: 'Delete action :',
     checkControllerName: 'showDeleteAction',
     hideFormatField: true,
   },
   {
-    id: 13,
+    id: 14,
     label: 'Zoom action :',
     checkControllerName: 'showZoomAction',
     hideFormatField: true,
   },
   {
-    id: 14,
+    id: 15,
     label: 'Edit action :',
     checkControllerName: 'showEditAction',
     hideFormatField: true,

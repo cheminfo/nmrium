@@ -82,20 +82,21 @@ const getZoneDefaultValues = (nucleus?: string): PanelsPreferences['zones'] => {
   }
 
   if (is2DNucleus(nucleus)) {
-    const perferences2D = {
+    const preferences2D = {
       showSerialNumber: true,
       showKind: true,
       showDeleteAction: true,
       showZoomAction: true,
       showEditAction: true,
       showAssignment: true,
+      showAssignmentLabel: false,
     };
-    return { ...common, ...getPreferences(perferences2D, nucleus) };
+    return { ...common, ...getPreferences(preferences2D, nucleus) };
   } else {
-    const perferences1D = {
+    const preferences1D = {
       deltaPPM: { show: true, format: '0.00' },
     };
-    return { ...common, ...getPreferences(perferences1D, nucleus) };
+    return { ...common, ...getPreferences(preferences1D, nucleus) };
   }
 };
 
@@ -118,6 +119,7 @@ const getRangeDefaultValues = (
     showDeleteAction: true,
     showZoomAction: true,
     showEditAction: true,
+    showAssignmentLabel: false,
   };
 
   return getPreferences(preferences, nucleus);

@@ -20,6 +20,7 @@ import { useScaleX } from '../utilities/scale';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 import { Atoms } from './Atoms';
+import { AssignmentLabel } from './AssignmentLabel';
 
 const style = css`
   .target {
@@ -156,6 +157,7 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
         }}
       </ResizerWithScale>
 
+      <AssignmentLabel range={range} x={startX} />
       <Atoms range={range} x={startX} />
       <AssignmentActionsButtons
         isActive={!!(assignmentRange.isActive || rangeDiaIDs)}

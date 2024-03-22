@@ -16,6 +16,7 @@ import {
   updateRangesRelativeValues,
   changeRange,
   changeRangeRelativeValue,
+  isSpectrum1D,
 } from '../../../data/data1d/Spectrum1D';
 import {
   SetSumOptions,
@@ -132,7 +133,10 @@ type ToggleRangesViewAction = ActionType<
 >;
 
 type DeleteRangePeakAction = ActionType<'DELETE_RANGE_PEAK', { id: string }>;
-
+type ChangeRangeAssignmentLabelAction = ActionType<
+  'CHANGE_RANGE_ASSIGNMENT_LABEL',
+  { rangeID: string; value: string }
+>;
 export type RangesActions =
   | AutoRangesDetectionAction
   | DeleteRangeAction
@@ -150,6 +154,7 @@ export type RangesActions =
   | CutRangAction
   | ToggleRangesViewAction
   | DeleteRangePeakAction
+  | ChangeRangeAssignmentLabelAction
   | ActionType<
       | 'AUTO_RANGES_SPECTRA_PICKING'
       | 'CHANGE_RANGES_SUM_FLAG'
@@ -630,6 +635,28 @@ function handleDeleteRangePeak(
   }
 }
 
+function handleChangeRangeAssignmentLabel(
+  draft: Draft<State>,
+  action: ChangeRangeAssignmentLabelAction,
+) {
+  const { rangeID, value } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
+    const spectrum = draft.data[index];
+
+    if (isSpectrum1D(spectrum)) {
+      const range = spectrum.ranges.values.find(
+        (range) => range.id === rangeID,
+      );
+      if (range) {
+        range.assignment = value;
+      }
+    }
+  }
+}
+
 export {
   handleCutRange,
   handleAutoRangesDetection,
@@ -652,4 +679,5 @@ export {
   handleToggleRangesViewProperty,
   handleChangePeaksDisplayingMode,
   handleDeleteRangePeak,
+  handleChangeRangeAssignmentLabel,
 };
