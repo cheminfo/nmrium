@@ -17,8 +17,12 @@ const validationSchema = yup.object({
   publicationText: yup.string().required(),
 });
 
-interface ImportPublicationStringModalProps {
+interface InnerImportPublicationStringModalProps {
   onClose: () => void;
+}
+
+interface ImportPublicationStringModalProps
+  extends InnerImportPublicationStringModalProps {
   isOpen: boolean;
 }
 
@@ -39,10 +43,19 @@ const INITIAL_VALUES = {
     '1H NMR (CDCl3, 400MHz) δ 10.58 (b, 1H), 7.40 (d, 1H, J = 8.0 Hz), 6.19 (d, 1H, J = 7.6 Hz), 4.88 (s, 1H), 2.17 (s, 3H), 1.02 (s, 9H), 1.01 (s, 9H), 0.89 (s, 9H)',
 };
 
-function ImportPublicationStringModal(
+export function ImportPublicationStringModal(
   props: ImportPublicationStringModalProps,
 ) {
   const { onClose, isOpen } = props;
+  if (!isOpen) return;
+
+  return <InnerImportPublicationStringModal onClose={onClose} />;
+}
+
+function InnerImportPublicationStringModal(
+  props: InnerImportPublicationStringModalProps,
+) {
+  const { onClose } = props;
 
   const formRef = useRef<any>();
   const dispatch = useDispatch();
@@ -83,8 +96,6 @@ function ImportPublicationStringModal(
       }, 250),
     [],
   );
-
-  if (!isOpen) return;
 
   function publicationStringHandler({ publicationText }) {
     void (async () => {
@@ -196,5 +207,3 @@ function ImportPublicationStringModal(
     </Dialog>
   );
 }
-
-export default ImportPublicationStringModal;
