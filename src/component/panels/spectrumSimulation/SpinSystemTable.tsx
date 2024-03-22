@@ -74,7 +74,7 @@ export function SpinSystemTable(props: SpinSystemTableProps) {
         },
         Header: () => (
           <span>
-            J<sub>{label}-</sub>(Hz)
+            J<sub>{label}-X</sub>(Hz)
           </span>
         ),
       });
