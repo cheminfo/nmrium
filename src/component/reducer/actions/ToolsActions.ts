@@ -446,21 +446,8 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
         return;
       }
 
-      // rescale the spectra vertically
-      if (!activeSpectra || activeSpectra.length > 1) {
-        const keys = !activeSpectra
-          ? Object.keys(yDomains)
-          : activeSpectra.map(({ id }) => id);
-        // rescale the spectra
-        for (const key of keys) {
-          const domain = yDomains[key];
-          yDomains[key] = wheelZoom(options, domain);
-        }
-        return;
-      }
-
       // rescale the integral in ranges and integrals
-      if (altKey) {
+      if (altKey && activeSpectra?.length === 1) {
         switch (selectedTool) {
           case 'rangePicking': {
             setRangesViewProperty(
@@ -481,6 +468,16 @@ function handleZoom(draft: Draft<State>, action: ZoomAction) {
           default:
             break;
         }
+        return;
+      }
+
+      // reselect the spectra vertically
+      const keys = !activeSpectra
+        ? Object.keys(yDomains)
+        : activeSpectra.map(({ id }) => id);
+      for (const key of keys) {
+        const domain = yDomains[key];
+        yDomains[key] = wheelZoom(options, domain);
       }
 
       break;
