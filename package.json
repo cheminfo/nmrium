@@ -91,7 +91,7 @@
     "multiplet-analysis": "^2.1.2",
     "nmr-correlation": "^2.3.3",
     "nmr-load-save": "^0.29.1",
-    "nmr-processing": "^12.0.1",
+    "nmr-processing": "^12.0.2",
     "nmredata": "^0.9.9",
     "numeral": "^2.0.6",
     "openchemlib": "^8.9.0",
@@ -149,7 +149,7 @@
     "stylelint": "^16.2.1",
     "stylelint-config-standard": "^36.0.0",
     "typescript": "^5.4.3",
-    "vite": "^5.2.2",
+    "vite": "^5.2.3",
     "vitest": "^1.4.0"
   }
 }
