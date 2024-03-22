@@ -3,6 +3,7 @@ import lodashMap from 'lodash/map';
 import { useCallback, useRef, useState } from 'react';
 import { useToggleAccordion } from 'react-science/ui';
 
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
@@ -22,8 +23,16 @@ export default function useToolsFunctions() {
       general: { invert },
     },
   } = usePreferences();
+  const {
+    toolOptions: { selectedTool: previousSelectedTool },
+  } = useChartData();
   const handleChangeOption = useCallback(
     (selectedTool) => {
+      //avoid reselecting the tool if it's already selected
+      if (selectedTool === previousSelectedTool) {
+        return;
+      }
+
       if (
         [
           options.peakPicking.id,
@@ -47,7 +56,7 @@ export default function useToolsFunctions() {
         payload: { selectedTool: selectedTool || options.zoom.id },
       });
     },
-    [dispatch, invert, openPanel, toaster],
+    [dispatch, invert, openPanel, previousSelectedTool, toaster],
   );
 
   const handleFullZoomOut = useCallback(() => {
