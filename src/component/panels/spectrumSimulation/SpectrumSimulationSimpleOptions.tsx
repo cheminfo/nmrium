@@ -58,6 +58,8 @@ export default function SpectrumSimulationSimpleOptions({
               textAlign: 'center',
             },
           }}
+          step={0.1}
+          min={0.1}
         />
         <span style={{ padding: '0 5px' }}>Hz</span>
       </Label>

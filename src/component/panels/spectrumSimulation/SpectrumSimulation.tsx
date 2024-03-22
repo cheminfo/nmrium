@@ -22,6 +22,14 @@ import SpectrumSimulationPreferences, {
 import SpectrumSimulationSimpleOptions from './SpectrumSimulationSimpleOptions';
 import { SpinSystemTable } from './SpinSystemTable';
 
+const optionsSchema = Yup.object({
+  lineWidth: Yup.number().min(0.1).required(),
+});
+
+const optionsValidationSchema = Yup.object({
+  options: optionsSchema,
+});
+
 const validationSchema = Yup.object({
   data: Yup.array().of(
     Yup.array().of(
@@ -34,6 +42,7 @@ const validationSchema = Yup.object({
       }),
     ),
   ),
+  options: optionsSchema,
 });
 
 export default function SpectrumSimulation() {
@@ -110,6 +119,7 @@ export default function SpectrumSimulation() {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSubmit={() => {}}
       innerRef={formRef}
+      validationSchema={optionsValidationSchema}
     >
       {({ values }) => (
         <>
