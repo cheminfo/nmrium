@@ -1,166 +1,138 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Formik } from 'formik';
+import { Tolerance } from 'nmr-correlation';
+import { CSSProperties, useMemo } from 'react';
+import * as Yup from 'yup';
 
-import { CloseButton } from '../../elements/CloseButton';
+import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
+import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
+import FormikInput from '../../elements/formik/FormikInput';
+import { useChartData } from '../../context/ChartContext';
 
-const modalContainer = css`
-  width: 220px;
-  height: 270px;
-  padding: 5px;
-  text-align: center;
+const styles: Record<'input' | 'column', CSSProperties> = {
+  input: {
+    padding: '0.25rem 0.5rem',
+  },
+  column: {
+    padding: '2px',
+  },
+};
 
-  button {
-    flex: 2;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 30px;
-    margin: 0 auto;
-    margin-top: 15px;
-    display: block;
-    width: 20%;
-    color: white;
-    background-color: gray;
-  }
-
-  button:focus {
-    outline: none;
-  }
-
-  .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-
-    span {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-      user-select: none;
-    }
-
-    button {
-      height: 36px;
-      margin: 2px;
-      background-color: transparent;
-      border: none;
-
-      svg {
-        height: 16px;
-      }
-    }
-  }
-
-  table {
-    margin-top: 10px;
-    width: 100%;
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      appearance: none;
-    }
-
-    input {
-      width: 100px;
-      text-align: center;
-      border-radius: 5px;
-      border: 0.55px solid #c7c7c7;
-    }
-  }
-`;
-
-interface SetShiftToleranceModalProps {
-  onClose: () => void;
-  onSave?: (element: any) => void;
-  previousTolerance: any;
+interface ToleranceItem {
+  atom: string;
+  value: number;
 }
 
-export default function SetShiftToleranceModal({
-  onClose,
-  onSave,
-  previousTolerance,
-}: SetShiftToleranceModalProps) {
-  const [tolerance, setTolerance] = useState<any>();
-  const [isValid, setIsValid] = useState<Record<string, boolean>>({});
+interface SetShiftToleranceModalProps extends InnerSetShiftToleranceModalProps {
+  isOpen: boolean;
+}
+interface InnerSetShiftToleranceModalProps {
+  onClose: () => void;
+}
 
-  useEffect(() => {
-    if (previousTolerance) {
-      setTolerance(previousTolerance);
+const toleranceValidationSchema = Yup.array()
+  .of(Yup.object({ value: Yup.number().required() }))
+  .min(1);
 
-      setIsValid(
-        Object.fromEntries(
-          Object.keys(previousTolerance).map((atomType) => [atomType, true]),
-        ),
-      );
-    } else {
-      setTolerance(undefined);
+export function SetShiftToleranceModal(props: SetShiftToleranceModalProps) {
+  const { isOpen, ...otherPros } = props;
+
+  if (!isOpen) {
+    return;
+  }
+
+  return <InnerSetShiftToleranceModal {...otherPros} />;
+}
+
+function InnerSetShiftToleranceModal(props: InnerSetShiftToleranceModalProps) {
+  const { onClose } = props;
+  const { correlations } = useChartData();
+  const dispatch = useDispatch();
+
+  function onSaveHandler(data) {
+    const tolerance: Tolerance = {};
+    for (const { atom, value } of data) {
+      tolerance[atom] = value;
     }
-  }, [previousTolerance]);
-
-  function onSaveHandler() {
-    onSave?.(tolerance);
+    dispatch({
+      type: 'SET_CORRELATIONS_TOLERANCE',
+      payload: {
+        tolerance,
+      },
+    });
     onClose?.();
   }
 
-  function onChangeHandler(e, atomType: string) {
-    const value: string = e.target.value;
-    if (value.trim().length > 0) {
-      setTolerance({ ...tolerance, [atomType]: Number(value) });
-      setIsValid({ ...isValid, [atomType]: true });
-    } else {
-      setIsValid({ ...isValid, [atomType]: false });
-    }
-  }
+  const COLUMNS: Array<Column<ToleranceItem>> = useMemo(
+    () => [
+      {
+        Header: '#',
+        style: { width: '25px', textAlign: 'center', ...styles.column },
+        accessor: (_, index) => index + 1,
+      },
+      {
+        Header: 'Atom',
+        style: { width: '25px', textAlign: 'center', ...styles.column },
+        accessor: 'atom',
+      },
+      {
+        Header: 'Value',
+        style: { padding: 0, ...styles.column },
+        Cell: ({ row }) => {
+          return (
+            <FormikInput
+              name={`${row.index}.value`}
+              style={{ input: styles.input }}
+              type="number"
+              checkErrorAfterInputTouched={false}
+            />
+          );
+        },
+      },
+    ],
+    [],
+  );
+
+  const tolerances = correlations?.options?.tolerance || {};
+
+  const tolerancesData: ToleranceItem[] = Object.keys(tolerances).map(
+    (atom) => ({
+      atom,
+      value: tolerances[atom],
+    }),
+  );
 
   return (
-    <div css={modalContainer}>
-      <div className="header handle">
-        <span>Set Shift Tolerances</span>
-        <CloseButton title="Close" onClick={onClose} />
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Atom</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <Rows
-            onChange={onChangeHandler}
-            isValid={isValid}
-            tolerance={tolerance}
-          />
-        </tbody>
-      </table>
-      <button
-        type="button"
-        onClick={onSaveHandler}
-        disabled={Object.keys(isValid).some((atomType) => !isValid[atomType])}
+    <Dialog
+      isOpen
+      title="Shift tolerances"
+      onClose={onClose}
+      style={{ width: 400 }}
+    >
+      <Formik
+        initialValues={tolerancesData}
+        onSubmit={onSaveHandler}
+        validationSchema={toleranceValidationSchema}
       >
-        Set
-      </button>
-    </div>
+        {({ isValid, handleSubmit }) => (
+          <>
+            <DialogBody>
+              <ReactTable
+                data={tolerancesData}
+                columns={COLUMNS}
+                emptyDataRowText="No atoms"
+              />
+            </DialogBody>
+            <DialogFooter>
+              <Button.Done onClick={() => handleSubmit()} disabled={!isValid}>
+                Set shift tolerances
+              </Button.Done>
+            </DialogFooter>
+          </>
+        )}
+      </Formik>
+    </Dialog>
   );
-}
-
-function Rows({ tolerance, onChange, isValid }) {
-  return Object.keys(tolerance).map((atomType) => {
-    return (
-      <tr key={`tolerance_${atomType}`}>
-        <td>{atomType}</td>
-        <td>
-          <input
-            type="number"
-            onChange={(e) => onChange(e, atomType)}
-            defaultValue={tolerance[atomType]}
-            style={!isValid[atomType] ? { backgroundColor: 'orange' } : {}}
-          />
-        </td>
-      </tr>
-    );
-  });
 }

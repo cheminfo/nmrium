@@ -19,8 +19,8 @@ import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { useScaleX } from '../utilities/scale';
 
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
-import { Atoms } from './Atoms';
 import { AssignmentLabel } from './AssignmentLabel';
+import { Atoms } from './Atoms';
 
 const style = css`
   .target {

@@ -24,12 +24,13 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
 import { useModal } from '../../elements/popup/Modal';
+import { useDialogToggle } from '../../hooks/useDialogToggle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
-import SetShiftToleranceModal from './SetShiftTolerancesModal';
+import { SetShiftToleranceModal } from './SetShiftTolerancesModal';
 import {
   findSignalMatch1D,
   findSignalMatch2D,
@@ -86,6 +87,9 @@ function SummaryPanel() {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
+  const { dialog, openDialog, closeDialog } = useDialogToggle({
+    shiftToleranceModal: false,
+  });
 
   const [additionalColumnData, setAdditionalColumnData] = useState([]);
   const [
@@ -238,18 +242,6 @@ function SummaryPanel() {
     [dispatch],
   );
 
-  const handleOnSetShiftTolerance = useCallback(
-    (tolerance) => {
-      dispatch({
-        type: 'SET_CORRELATIONS_TOLERANCE',
-        payload: {
-          tolerance,
-        },
-      });
-    },
-    [dispatch],
-  );
-
   const showSetMolecularFormulaModal = useCallback(() => {
     modal.show(
       <SetMolecularFormulaModal
@@ -261,15 +253,15 @@ function SummaryPanel() {
     );
   }, [correlationsData, handleOnSetMolecularFormula, modal, molecules]);
 
-  const showSetShiftToleranceModal = useCallback(() => {
-    modal.show(
-      <SetShiftToleranceModal
-        onClose={() => modal.close()}
-        onSave={handleOnSetShiftTolerance}
-        previousTolerance={correlationsData.options.tolerance}
-      />,
-    );
-  }, [correlationsData, handleOnSetShiftTolerance, modal]);
+  // const showSetShiftToleranceModal = useCallback(() => {
+  //   modal.show(
+  //     <SetShiftToleranceModal
+  //       onClose={() => modal.close()}
+  //       onSavehandleOnSetShiftTolerance}
+  //       previousTolerance={correlationsData.options.tolerance}
+  //     />,
+  //   );
+  // }, [correlationsDatahandleOnSetShiftTolerance, modal]);
 
   const additionalColumnTypes = useMemo(() => {
     const columnTypes = ['H', 'H-H'].concat(
@@ -495,6 +487,10 @@ function SummaryPanel() {
   const total = correlationsData ? correlationsData.values.length : 0;
   return (
     <div css={panelStyle}>
+      <SetShiftToleranceModal
+        isOpen={dialog.shiftToleranceModal}
+        onClose={closeDialog}
+      />
       <DefaultPanelHeader
         total={total}
         counter={filteredCorrelationsData?.values.length}
@@ -513,7 +509,7 @@ function SummaryPanel() {
           {
             icon: <FaSlidersH />,
             title: 'Set shift tolerance',
-            onClick: showSetShiftToleranceModal,
+            onClick: () => openDialog('shiftToleranceModal'),
           },
         ]}
       >
