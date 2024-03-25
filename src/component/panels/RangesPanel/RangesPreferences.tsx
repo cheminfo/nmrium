@@ -86,11 +86,10 @@ const formatFields: NucleusPreferenceField[] = [
   },
   {
     id: 12,
-    label: 'Assignment :',
+    label: 'Assignment links :',
     checkControllerName: 'showAssignment',
     hideFormatField: true,
   },
-
   {
     id: 13,
     label: 'Delete action :',
