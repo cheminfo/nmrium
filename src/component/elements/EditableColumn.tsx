@@ -76,13 +76,14 @@ const EditableColumn = forwardRef(function EditableColumn(
     enableEdit(true);
   }
 
-  function editHandler(event: KeyboardEvent<HTMLInputElement>) {
+  function saveHandler(event: KeyboardEvent<HTMLInputElement>) {
     const valid = validate(val);
     setValid(valid);
     // when press Enter or Tab
     if (valid && ['Enter', 'Tab'].includes(event.key)) {
       onSave(event);
       enableEdit(false);
+      window.removeEventListener('mousedown', mouseClickCallback);
     }
     // close edit mode if press Enter, Tab or Escape
     if (['Escape'].includes(event.key)) {
@@ -142,7 +143,7 @@ const EditableColumn = forwardRef(function EditableColumn(
             value={val}
             type={type}
             onChange={handleChange}
-            onKeyUp={editHandler}
+            onKeyDown={saveHandler}
             onMouseDown={(e) => e.stopPropagation()}
             {...InputProps}
           />
