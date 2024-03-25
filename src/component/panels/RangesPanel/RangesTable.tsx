@@ -94,6 +94,9 @@ function RangesTable({
       <thead>
         <tr>
           {preferences.showSerialNumber && <th>#</th>}
+          {preferences.showAssignmentLabel && (
+            <th title="Assignment">Assignment</th>
+          )}
           {preferences.from.show && (
             <th id="from" {...onSort}>
               From
@@ -120,9 +123,7 @@ function RangesTable({
           {preferences.absolute.show && <th>Absolute</th>}
           {preferences.showMultiplicity && <th>Mult.</th>}
           {preferences.coupling.show && <th>J (Hz)</th>}
-          {preferences.showAssignmentLabel && (
-            <th title="Assignment">Assignment</th>
-          )}
+
           {preferences.showAssignment && (
             <>
               <th title="Assign multiplets">
