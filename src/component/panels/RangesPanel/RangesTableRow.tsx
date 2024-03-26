@@ -201,6 +201,13 @@ function RangesTableRow({
           {rowData.tableMetaInfo.rowIndex + 1}
         </td>
       )}
+      {preferences.showAssignmentLabel && (
+        <RangeAssignmentColumn
+          row={rowData}
+          onHover={onHoverRange}
+          rowSpanTags={rowSpanTags}
+        />
+      )}
 
       {preferences.from.show && (
         <RangeColumn
@@ -267,13 +274,6 @@ function RangesTableRow({
           row={rowData}
           onHover={onHoverSignal}
           format={preferences.coupling.format}
-        />
-      )}
-      {preferences.showAssignmentLabel && (
-        <RangeAssignmentColumn
-          row={rowData}
-          onHover={onHoverSignal}
-          rowSpanTags={rowSpanTags}
         />
       )}
       {preferences.showAssignment && (
