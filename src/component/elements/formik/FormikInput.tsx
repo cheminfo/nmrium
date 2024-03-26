@@ -26,7 +26,7 @@ function FormikInput(props: FormikInputProps & InputProps) {
     ...resProps
   } = props;
 
-  const { values, handleChange, errors, touched, setFieldValue } =
+  const { values, handleChange, errors, touched, setFieldValue, handleBlur } =
     useFormikContext();
 
   function changeHandler(e) {
@@ -51,6 +51,7 @@ function FormikInput(props: FormikInputProps & InputProps) {
       name={name}
       value={val}
       onChange={changeHandler}
+      onBlur={handleBlur}
       type={type}
       style={{
         ...style,

@@ -1,140 +1,185 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { useCallback, useEffect, useState } from 'react';
+import { Dialog, DialogBody, Tab, Tabs } from '@blueprintjs/core';
+import { Formik } from 'formik';
+import { CSSProperties, useState } from 'react';
+import * as Yup from 'yup';
 
-import { CloseButton } from '../../elements/CloseButton';
-import MolecularFormulaInput from '../../elements/MolecularFormulaInput';
+import getAtomsFromMF from '../../../data/utilities/getAtomsFromMF';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
 import MoleculeSelection from '../../elements/MoleculeSelection';
+import FormikError from '../../elements/formik/FormikError';
+import FormikInput from '../../elements/formik/FormikInput';
 
-const modalContainer = css`
-  overflow: auto;
-  width: 400px;
-  height: 550px;
-  padding: 5px;
-
-  button {
-    flex: 2;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 30px;
-    margin: 0 auto;
-    margin-top: 15px;
-    display: block;
-    width: 20%;
-    color: white;
-    background-color: gray;
+function isValidMf(value: string): boolean {
+  try {
+    getAtomsFromMF(value);
+    return true;
+  } catch {
+    return false;
   }
-
-  button:focus {
-    outline: none;
-  }
-
-  .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-
-    button {
-      height: 36px;
-      margin: 2px;
-      background-color: transparent;
-      border: none;
-
-      svg {
-        height: 16px;
-      }
-    }
-  }
-
-  .info {
-    margin-top: 0;
-    margin-bottom: 10px;
-    padding: 0 10px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .optional {
-    margin-top: 20px;
-    margin-bottom: 5px;
-    padding: 0 10px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  .optional2 {
-    margin-top: 5px;
-    margin-bottom: 25px;
-    padding: 0 10px;
-    width: 100%;
-    text-align: center;
-  }
-`;
-
-interface SetMolecularFormulaModalProps {
-  onClose: () => void;
-  onSave?: (element: any) => void;
-  molecules: any;
-  previousMF: any;
 }
 
-export default function SetMolecularFormulaModal({
-  onClose,
-  onSave,
-  molecules,
-  previousMF,
-}: SetMolecularFormulaModalProps) {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+const validationSchema = Yup.object({
+  mf: Yup.string()
+    .required()
+    .test('valid-mf', 'Enter a valid molecular formula', (value) =>
+      isValidMf(value),
+    ),
+});
 
-  useEffect(() => {
-    if (molecules && molecules.length > 0) {
-      setCurrentIndex(0);
-    }
-  }, [molecules]);
-
-  const onSaveHandlerMolecularFormulaInput = useCallback(
-    (mf) => {
-      onSave?.(mf);
-      onClose?.();
+const styles: Record<'container' | 'input' | 'error' | 'title', CSSProperties> =
+  {
+    input: {
+      padding: '0.5rem',
     },
-    [onClose, onSave],
-  );
+    container: {
+      padding: '0.5rem',
+    },
+    error: {
+      textAlign: 'center',
+      color: 'red',
+      fontSize: '0.9em',
+    },
+    title: {
+      textAlign: 'center',
+    },
+  };
 
-  const onSaveHandlerMoleculeSelection = useCallback(() => {
-    onSave?.(molecules[currentIndex].mf);
+interface InnerMolecularFormulaModalProps {
+  onClose: () => void;
+}
+interface MolecularFormulaModalProps extends InnerMolecularFormulaModalProps {
+  isOpen: boolean;
+}
+
+export function SetMolecularFormulaModal(props: MolecularFormulaModalProps) {
+  const { isOpen, ...otherProps } = props;
+
+  if (!isOpen) {
+    return;
+  }
+
+  return <InnerSetMolecularFormulaModal {...otherProps} />;
+}
+
+function InnerSetMolecularFormulaModal({
+  onClose,
+}: InnerMolecularFormulaModalProps) {
+  const dispatch = useDispatch();
+
+  function saveHandler(mf) {
+    dispatch({
+      type: 'SET_CORRELATIONS_MF',
+      payload: {
+        mf,
+      },
+    });
     onClose?.();
-  }, [currentIndex, molecules, onClose, onSave]);
-
-  const onChangeHandlerMoleculeSelection = useCallback((index) => {
-    setCurrentIndex(index);
-  }, []);
+  }
 
   return (
-    <div css={modalContainer}>
-      <div className="header handle">
-        <CloseButton title="Close" onClick={onClose} />
-      </div>
-      <div>
-        <p className="info">Please type in a molecular formula!</p>
-      </div>
-      <MolecularFormulaInput
-        onSave={onSaveHandlerMolecularFormulaInput}
-        previousMF={previousMF}
-      />
-      <div>
-        <p className="optional">OR</p>
-        <p className="optional2">Select a molecule as reference!</p>
-      </div>
+    <Dialog
+      isOpen
+      title="Molecular formula"
+      style={{ width: 400 }}
+      onClose={onClose}
+    >
+      <DialogBody>
+        <Tabs fill>
+          <Tab
+            id="manual"
+            title="Manual"
+            panel={<ManualFormula onSave={saveHandler} />}
+          />
+          <Tab
+            id="auto"
+            title="Auto"
+            panel={<AutoFormula onSave={saveHandler} />}
+          />
+        </Tabs>
+      </DialogBody>
+    </Dialog>
+  );
+}
+
+function ManualFormula(props) {
+  const { correlations } = useChartData();
+
+  function saveHandler(data) {
+    props?.onSave(data.mf);
+  }
+
+  return (
+    <div style={styles.container}>
+      <p>Please type in a molecular formula!</p>
+
+      <Formik
+        onSubmit={saveHandler}
+        initialValues={{ mf: correlations?.options?.mf }}
+        validationSchema={validationSchema}
+      >
+        {({ isValid, handleSubmit }) => (
+          <>
+            <FormikError name="mf">
+              <FormikInput
+                name="mf"
+                placeholder="Enter a molecular formula"
+                style={{ input: styles.input }}
+                checkErrorAfterInputTouched={false}
+              />
+            </FormikError>
+            <Button.Done
+              onClick={() => handleSubmit()}
+              disabled={!isValid}
+              style={{ marginTop: '10px' }}
+            >
+              Set molecular formula
+            </Button.Done>
+          </>
+        )}
+      </Formik>
+    </div>
+  );
+}
+
+function AutoFormula(props) {
+  const { molecules } = useChartData();
+
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  function onChangeHandlerMoleculeSelection(index) {
+    setCurrentIndex(index);
+  }
+
+  function saveHandler() {
+    const mf = molecules?.[currentIndex]?.mf;
+    props?.onSave(mf);
+  }
+
+  if (!molecules || molecules?.length === 0) {
+    return (
+      <p style={styles.error}>
+        You have to Select a spectrum and Add a molecule from the Structure
+        panel to select as a reference!
+      </p>
+    );
+  }
+
+  return (
+    <div style={styles.container}>
+      <p style={styles.title}>Select a molecule as reference!</p>
       <MoleculeSelection
         molecules={molecules}
         onChange={onChangeHandlerMoleculeSelection}
       />
-      <button type="button" onClick={onSaveHandlerMoleculeSelection}>
-        Set
-      </button>
+      <Button.Done
+        onClick={saveHandler}
+        disabled={!molecules?.[currentIndex]}
+        style={{ marginTop: '10px' }}
+      >
+        Set molecular formula
+      </Button.Done>
     </div>
   );
 }
