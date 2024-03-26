@@ -7,8 +7,8 @@ import lodashGet from 'lodash/get';
 import { RangesViewState } from 'nmr-load-save';
 import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
-import { LuSubtitles } from 'react-icons/lu';
 import { ImLink } from 'react-icons/im';
+import { LuSubtitles } from 'react-icons/lu';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';

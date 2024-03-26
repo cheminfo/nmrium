@@ -4,7 +4,6 @@ import { CSSProperties, ReactNode } from 'react';
 
 const styles: Record<'container' | 'text', CSSProperties> = {
   container: {
-    padding: '0.4rem',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -22,15 +21,13 @@ export interface FormikErrorProps {
 }
 
 function FormikError({ style, name, children }: FormikErrorProps) {
-  const { errors, isValid, dirty, touched } = useFormikContext();
+  const { errors, isValid, dirty } = useFormikContext();
 
   const errorText = lodashGet(errors, name);
-  const isTouched = lodashGet(touched, name);
-
   return (
     <div style={{ ...styles.container, ...style?.container }}>
       {children}
-      {!isValid && dirty && isTouched && (
+      {!isValid && dirty && (
         <span style={{ ...styles.text, ...style?.text }}>{errorText}</span>
       )}
     </div>

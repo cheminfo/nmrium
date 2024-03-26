@@ -26,7 +26,7 @@ function FormikInput(props: FormikInputProps & InputProps) {
     ...resProps
   } = props;
 
-  const { values, handleChange, errors, touched, setFieldValue } =
+  const { values, handleChange, errors, touched, setFieldValue, handleBlur } =
     useFormikContext();
 
   function changeHandler(e) {
@@ -37,7 +37,6 @@ function FormikInput(props: FormikInputProps & InputProps) {
       handleChange(e);
     }
   }
-
   let isInvalid = lodashGet(errors, name);
 
   if (checkErrorAfterInputTouched) {
@@ -46,11 +45,13 @@ function FormikInput(props: FormikInputProps & InputProps) {
 
   let val = value || lodashGet(values, name);
   val = mapValue ? mapValue(val) : val;
+
   return (
     <Input
       name={name}
       value={val}
       onChange={changeHandler}
+      onBlur={handleBlur}
       type={type}
       style={{
         ...style,

@@ -23,13 +23,13 @@ import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
-import { useModal } from '../../elements/popup/Modal';
+import { useDialogToggle } from '../../hooks/useDialogToggle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
-import SetMolecularFormulaModal from './SetMolecularFormulaModal';
-import SetShiftToleranceModal from './SetShiftTolerancesModal';
+import { SetMolecularFormulaModal } from './SetMolecularFormulaModal';
+import { SetShiftToleranceModal } from './SetShiftTolerancesModal';
 import {
   findSignalMatch1D,
   findSignalMatch2D,
@@ -72,7 +72,6 @@ const panelStyle = css`
 
 function SummaryPanel() {
   const {
-    molecules,
     correlations: correlationsData,
     data: spectraData,
     xDomain,
@@ -84,8 +83,11 @@ function SummaryPanel() {
   } = useChartData();
 
   const dispatch = useDispatch();
-  const modal = useModal();
   const assignmentData = useAssignmentData();
+  const { dialog, openDialog, closeDialog } = useDialogToggle({
+    shiftToleranceModal: false,
+    molecularFormula: false,
+  });
 
   const [additionalColumnData, setAdditionalColumnData] = useState([]);
   const [
@@ -225,51 +227,6 @@ function SummaryPanel() {
     xDomain,
     yDomain,
   ]);
-
-  const handleOnSetMolecularFormula = useCallback(
-    (mf) => {
-      dispatch({
-        type: 'SET_CORRELATIONS_MF',
-        payload: {
-          mf,
-        },
-      });
-    },
-    [dispatch],
-  );
-
-  const handleOnSetShiftTolerance = useCallback(
-    (tolerance) => {
-      dispatch({
-        type: 'SET_CORRELATIONS_TOLERANCE',
-        payload: {
-          tolerance,
-        },
-      });
-    },
-    [dispatch],
-  );
-
-  const showSetMolecularFormulaModal = useCallback(() => {
-    modal.show(
-      <SetMolecularFormulaModal
-        onClose={() => modal.close()}
-        onSave={handleOnSetMolecularFormula}
-        molecules={molecules}
-        previousMF={correlationsData.options.mf}
-      />,
-    );
-  }, [correlationsData, handleOnSetMolecularFormula, modal, molecules]);
-
-  const showSetShiftToleranceModal = useCallback(() => {
-    modal.show(
-      <SetShiftToleranceModal
-        onClose={() => modal.close()}
-        onSave={handleOnSetShiftTolerance}
-        previousTolerance={correlationsData.options.tolerance}
-      />,
-    );
-  }, [correlationsData, handleOnSetShiftTolerance, modal]);
 
   const additionalColumnTypes = useMemo(() => {
     const columnTypes = ['H', 'H-H'].concat(
@@ -495,6 +452,14 @@ function SummaryPanel() {
   const total = correlationsData ? correlationsData.values.length : 0;
   return (
     <div css={panelStyle}>
+      <SetMolecularFormulaModal
+        isOpen={dialog.molecularFormula}
+        onClose={closeDialog}
+      />
+      <SetShiftToleranceModal
+        isOpen={dialog.shiftToleranceModal}
+        onClose={closeDialog}
+      />
       <DefaultPanelHeader
         total={total}
         counter={filteredCorrelationsData?.values.length}
@@ -507,13 +472,13 @@ function SummaryPanel() {
         leftButtons={[
           {
             icon: <FaFlask />,
-            title: `Set molecular formula (${correlationsData.options.mf})`,
-            onClick: showSetMolecularFormulaModal,
+            title: `Set molecular formula (${correlationsData?.options?.mf || ''})`,
+            onClick: () => openDialog('molecularFormula'),
           },
           {
             icon: <FaSlidersH />,
             title: 'Set shift tolerance',
-            onClick: showSetShiftToleranceModal,
+            onClick: () => openDialog('shiftToleranceModal'),
           },
         ]}
       >
