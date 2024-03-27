@@ -9,6 +9,7 @@ import {
   Spectrum2D,
   Display1D,
   Display2D,
+  SpectraColors,
 } from 'nmr-load-save';
 import { Filters, FiltersManager, NMRRange } from 'nmr-processing';
 
@@ -125,10 +126,11 @@ type ImportSpectraMetaInfoAction = ActionType<
     spectraMeta: Record<string, Record<string, any>>;
   }
 >;
-type RecolorSpectraBasedOnDistinctValueAction = ActionType<
+type ReColorSpectraBasedOnDistinctValueAction = ActionType<
   'RECOLOR_SPECTRA_COLOR',
   {
     jpath?: string[];
+    customColors?: SpectraColors;
   }
 >;
 type OrderSpectraAction = ActionType<
@@ -156,7 +158,7 @@ export type SpectrumActions =
   | AlignSpectraAction
   | GenerateSpectrumFromPublicationStringAction
   | ImportSpectraMetaInfoAction
-  | RecolorSpectraBasedOnDistinctValueAction
+  | ReColorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction
   | SimulateSpectrumAction;
 
@@ -567,7 +569,7 @@ function handleToggleSpectraLegend(draft: Draft<State>) {
 //action
 function handleRecolorSpectraBasedOnDistinctValue(
   draft: Draft<State>,
-  action: RecolorSpectraBasedOnDistinctValueAction,
+  action: ReColorSpectraBasedOnDistinctValueAction,
 ) {
   const {
     data,
@@ -575,7 +577,7 @@ function handleRecolorSpectraBasedOnDistinctValue(
       spectra: { activeTab },
     },
   } = draft;
-  const { jpath = null } = action.payload;
+  const { jpath = null, customColors } = action.payload;
   const spectra = getSpectraByNucleus(activeTab, data);
   if (jpath) {
     //recolor spectra based on distinct value
@@ -612,11 +614,15 @@ function handleRecolorSpectraBasedOnDistinctValue(
         spectrum.display.color = get1DColor(spectrum, {
           usedColors,
           regenerate: true,
+          random: !customColors,
+          colors: customColors?.oneDimension || [],
         }).color;
       } else {
         const { positiveColor, negativeColor } = get2DColor(spectrum, {
           usedColors,
           regenerate: true,
+          random: !customColors,
+          colors: customColors?.twoDimensions || [],
         });
         spectrum.display.positiveColor = positiveColor;
         spectrum.display.negativeColor = negativeColor;

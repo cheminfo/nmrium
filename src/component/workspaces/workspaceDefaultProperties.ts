@@ -1,6 +1,8 @@
 import { WorkspacePreferences } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
 
+import { color2D } from '../../data/data2d/Spectrum2D/get2DColor';
+
 export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
   display: {
     general: {
@@ -204,38 +206,32 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       {
         jpath: ['info', 'experiment'],
         value: 'cosy',
-        positiveColor: 'darkblue',
-        negativeColor: 'blue',
+        ...color2D.cosy,
       },
       {
         jpath: ['info', 'experiment'],
         value: 'noesy',
-        positiveColor: 'pink',
-        negativeColor: 'yellow',
+        ...color2D.noesy,
       },
       {
         jpath: ['info', 'experiment'],
         value: 'roesy',
-        positiveColor: 'pink',
-        negativeColor: 'yellow',
+        ...color2D.roesy,
       },
       {
         jpath: ['info', 'experiment'],
         value: 'tocsy',
-        positiveColor: 'green',
-        negativeColor: 'yellow',
+        ...color2D.tocsy,
       },
       {
         jpath: ['info', 'experiment'],
         value: 'hsqc',
-        positiveColor: 'black',
-        negativeColor: 'yellow',
+        ...color2D.hsqc,
       },
       {
         jpath: ['info', 'experiment'],
         value: 'hmbc',
-        positiveColor: 'darkviolet',
-        negativeColor: 'yellow',
+        ...color2D.hmbc,
       },
     ],
   },
