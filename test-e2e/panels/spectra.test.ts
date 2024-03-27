@@ -563,7 +563,7 @@ test('Multiple spectra analysis', async ({ page }) => {
     expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
   });
   await test.step('Check Recolour BarButton', async () => {
-    await nmrium.clickToolByTitle('Recolor spectra');
+    await nmrium.clickToolByTitle('Default spectra recoloring');
     expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
 });
