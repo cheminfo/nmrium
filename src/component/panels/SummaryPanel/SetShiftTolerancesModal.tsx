@@ -5,11 +5,11 @@ import { Tolerance } from 'nmr-correlation';
 import { CSSProperties, useMemo } from 'react';
 import * as Yup from 'yup';
 
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
 import FormikInput from '../../elements/formik/FormikInput';
-import { useChartData } from '../../context/ChartContext';
 
 const styles: Record<'input' | 'column', CSSProperties> = {
   input: {

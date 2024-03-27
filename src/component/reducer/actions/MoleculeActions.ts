@@ -192,7 +192,7 @@ function handlePredictSpectraFromMolecule(
     action: predictionAction = 'save',
   } = action.payload;
   checkPredictions(predictedSpectra, options, molecule.molfile, logger);
-  const color = generateColor(false, draft.usedColors['1d']);
+  const color = generateColor({ usedColors: draft.usedColors['1d'] });
   const spectraIds: string[] = [];
   for (const spectrum of generateSpectra(
     predictedSpectra,

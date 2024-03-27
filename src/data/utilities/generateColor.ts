@@ -1,5 +1,3 @@
-import { Color2D } from 'nmr-load-save';
-
 export const COLORS: string[] = [
   '#C10020',
   '#007D34',
@@ -23,24 +21,6 @@ export const COLORS: string[] = [
   '#F13A13',
 ];
 
-const color2D: Record<string, Color2D> = {
-  cosy: { positiveColor: 'darkblue', negativeColor: 'blue' },
-  roesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
-  noesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
-  tocsy: { positiveColor: 'green', negativeColor: 'yellow' },
-  hsqc: { positiveColor: 'black', negativeColor: 'yellow' },
-  hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
-};
-
-export function generate2DColor(experiment: string, colors = []): Color2D {
-  if (!color2D[experiment]) {
-    const positiveColor = generateColor(false, colors);
-    const negativeColor = adjustAlpha(positiveColor, 50);
-    return { positiveColor, negativeColor };
-  }
-  return color2D[experiment];
-}
-
 function percentToHex(p: number): string {
   const percent = Math.max(0, Math.min(100, p));
   const intValue = Math.round((percent / 100) * 255);
@@ -52,11 +32,19 @@ export function adjustAlpha(color: string, factor: number): string {
   return color + percentToHex(factor);
 }
 
-export function generateColor(
-  isRandom = false,
-  usedColors: string[] = [],
-  opacity = 100,
-) {
+interface Options {
+  isRandom?: boolean;
+  usedColors?: string[];
+  opacity?: number;
+}
+
+export function generateColor(options: Options) {
+  const { isRandom = false, usedColors = [], opacity = 100 } = options;
+
+  if (opacity > 100 || opacity < 0) {
+    throw new Error(`Opacity value must be within the range of 0 to 100`);
+  }
+
   const resetColors = COLORS.filter((c) => !usedColors.includes(c));
   if (resetColors.length > 0 && !isRandom) {
     return resetColors[0] + percentToHex(opacity);

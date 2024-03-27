@@ -7,9 +7,11 @@ import {
   FaEyeSlash,
 } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
+import { MdFormatColorFill } from 'react-icons/md';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
@@ -56,6 +58,9 @@ function SpectraPanelHeaderInner({
   const modal = useModal();
   const toaster = useToaster();
   const dispatch = useDispatch();
+  const {
+    current: { spectraColors },
+  } = usePreferences();
 
   const handleDelete = useCallback(() => {
     modal.showConfirmDialog({
@@ -112,7 +117,13 @@ function SpectraPanelHeaderInner({
     dispatch({ type: 'RESET_SPECTRA_SCALE' });
   }
 
-  function reColorSpectraHandler() {
+  function defaultReColorSpectraHandler() {
+    dispatch({
+      type: 'RECOLOR_SPECTRA_COLOR',
+      payload: { customColors: spectraColors },
+    });
+  }
+  function distinctReColorSpectraHandler() {
     dispatch({
       type: 'RECOLOR_SPECTRA_COLOR',
       payload: {},
@@ -165,8 +176,13 @@ function SpectraPanelHeaderInner({
     },
     {
       icon: <IoColorPaletteOutline />,
-      title: 'Recolor spectra',
-      onClick: reColorSpectraHandler,
+      title: 'Default spectra recoloring',
+      onClick: defaultReColorSpectraHandler,
+    },
+    {
+      icon: <MdFormatColorFill />,
+      title: 'Distinct spectra recoloring',
+      onClick: distinctReColorSpectraHandler,
     },
   ]);
 
