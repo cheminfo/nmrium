@@ -1,5 +1,5 @@
 import { Spectrum1D } from 'nmr-load-save';
-import { useCallback, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 
 import { useBrushTracker } from '../../EventsTrackers/BrushTracker';
 import { useMouseTracker } from '../../EventsTrackers/MouseTracker';
@@ -10,10 +10,8 @@ import useSpectrum from '../../hooks/useSpectrum';
 
 const style: CSSProperties = {
   cursor: 'crosshair',
-  transformOrigin: 'bottom right',
   position: 'absolute',
-  top: '-18px',
-  left: '-30px',
+  paddingRight: '5px',
   pointerEvents: 'none',
   overflow: 'visible',
   userSelect: 'none',
@@ -31,16 +29,6 @@ function XLabelPointer() {
     (activeSpectrum as Spectrum1D)?.info.nucleus,
   );
 
-  const getXValue = useCallback(
-    (xVal) => {
-      if (activeSpectrum) {
-        const xInvert = scaleX().invert(xVal);
-        return format(xInvert);
-      }
-    },
-    [activeSpectrum, format, scaleX],
-  );
-
   if (
     !activeSpectrum ||
     brushState.step === 'brushing' ||
@@ -52,15 +40,17 @@ function XLabelPointer() {
   ) {
     return null;
   }
+
+  const x = scaleX().invert(position.x);
+
   return (
     <div
-      key="xLabelPointer"
       style={{
         ...style,
-        transform: `translate(${position.x}px, ${position.y}px)`,
+        transform: `translate(${position.x}px, ${position.y}px) translate(-100%,-100%)`,
       }}
     >
-      <span>{getXValue(position.x)}</span>
+      <span>{format(x)}</span>
     </div>
   );
 }

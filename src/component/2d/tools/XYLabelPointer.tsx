@@ -10,17 +10,12 @@ import { get1DYScale, useScale2DX, useScale2DY } from '../utilities/scale';
 
 const style: CSSProperties = {
   cursor: 'crosshair',
-  transformOrigin: 'bottom right',
   position: 'absolute',
-  top: '-18px',
-  left: '-88px',
+  paddingRight: '5px',
   fontWeight: 'bold',
   pointerEvents: 'none',
   overflow: 'visible',
   userSelect: 'none',
-  width: '85px',
-  textAlign: 'right',
-  zIndex: 9,
 };
 
 function XYLabelPointer({ layout, data1D }) {
@@ -46,7 +41,6 @@ function XYLabelPointer({ layout, data1D }) {
 
   const nuclei = activeTab.split(',');
   const [formatX, formatY] = useFormatNumberByNucleus(nuclei);
-  // const spectrum = useSpectrum();
   const scale2DX = useScale2DX();
   const scale2DY = useScale2DY();
 
@@ -140,10 +134,9 @@ function XYLabelPointer({ layout, data1D }) {
 
   return (
     <div
-      key="xLabelPointer"
       style={{
         ...style,
-        transform: `translate(${position.x}px, ${position.y}px)`,
+        transform: `translate(${position.x}px, ${position.y}px) translate(-100%,-100%)`,
       }}
     >
       <span>{formatY(getYValue())}</span>
