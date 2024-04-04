@@ -282,22 +282,44 @@ export default function ToolBar() {
     },
     {
       id: 'apodization',
-      tooltip: `${options.apodization.label} (Press a)`,
+      tooltip: (
+        <CustomToolTip title={options.apodization.label} shortcuts={['a']} />
+      ),
       icon: <SvgNmrApodization />,
     },
     {
       id: 'zeroFilling',
-      tooltip: `${options.zeroFilling.label} (Press z)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.zeroFilling.label}
+          shortcuts={['z']}
+          description="To improve spectrum quality by increasing the number of points per ppm, by default, the number of points is twice as many points as in the original FID "
+          link="https://docs.nmrium.org/20_1d-spectra/preprocessing/preprocessing#zero-filling"
+        />
+      ),
       icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'phaseCorrection',
-      tooltip: `${options.phaseCorrection.label} (Press a)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.phaseCorrection.label}
+          shortcuts={['a']}
+          description="To phase the spectrum after the FFT"
+          link="https://docs.nmrium.org/20_1d-spectra/phase/phase"
+        />
+      ),
       icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'phaseCorrectionTwoDimensions',
-      tooltip: `${options.phaseCorrectionTwoDimensions.label} (Press a)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.phaseCorrectionTwoDimensions.label}
+          shortcuts={['a']}
+          description="To phase the spectrum after the FFT"
+        />
+      ),
       icon: <SvgNmrPhaseCorrection />,
     },
     {
