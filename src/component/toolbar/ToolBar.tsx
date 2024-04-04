@@ -263,7 +263,14 @@ export default function ToolBar() {
     },
     {
       id: 'rangePicking',
-      tooltip: `${options.rangePicking.label} (Press r)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.rangePicking.label}
+          shortcuts={['r']}
+          description="You can detect ranges manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect ranges automatically."
+          link="https://docs.nmrium.org/20_1d-spectra/ranges/ranges"
+        />
+      ),
       icon: <SvgNmrRangePicking />,
     },
     {
