@@ -18,7 +18,7 @@ const styles: Record<
   },
   title: {
     fontSize: '0.9rem',
-    minWidth: '50%',
+    flex: 1,
     padding: '5px 0',
     textAlign: 'left',
     color: 'white',
