@@ -240,7 +240,14 @@ export default function ToolBar() {
     },
     {
       id: 'zonePicking',
-      tooltip: `${options.zonePicking.label} (Press r)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.zonePicking.label}
+          shortcuts={['r']}
+          description="You can detect zones manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect zones automatically"
+          link="https://docs.nmrium.org/30_2d-spectra/zones/zones"
+        />
+      ),
       icon: <FaDiceFour />,
     },
     {
