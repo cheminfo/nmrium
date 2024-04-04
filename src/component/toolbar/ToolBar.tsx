@@ -232,7 +232,7 @@ export default function ToolBar() {
         <CustomToolTip
           title={options.integral.label}
           shortcuts={['i']}
-          description="To calculate the integration, hold Shift and left-click, then drag over the signal range"
+          description="To calculate the integration, hold Shift and left-click, then drag over the signal range."
           link="https://docs.nmrium.org/help/integrations"
         />
       ),
@@ -244,7 +244,7 @@ export default function ToolBar() {
         <CustomToolTip
           title={options.zonePicking.label}
           shortcuts={['r']}
-          description="You can detect zones manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect zones automatically"
+          description="You can detect zones manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect zones automatically."
           link="https://docs.nmrium.org/30_2d-spectra/zones/zones"
         />
       ),
@@ -252,7 +252,13 @@ export default function ToolBar() {
     },
     {
       id: 'slicing',
-      tooltip: options.slicing.label,
+      tooltip: (
+        <CustomToolTip
+          title={options.slicing.label}
+          description="You can display the shift on the x-axis and the y-axis for each point of a 2D spectrum."
+          link="https://docs.nmrium.org/30_2d-spectra/slicing/slicing"
+        />
+      ),
       icon: <PiKnifeBold />,
     },
     {
