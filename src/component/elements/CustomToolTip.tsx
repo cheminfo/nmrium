@@ -69,7 +69,7 @@ export function CustomToolTip(props: ToolTipItem) {
   return (
     <div
       style={{
-        width: 300,
+        width: 250,
         padding: '0.5rem',
       }}
     >
