@@ -336,7 +336,14 @@ export default function ToolBar() {
     },
     {
       id: 'fft',
-      tooltip: `${options.fft.label} (Press t)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.fft.label}
+          shortcuts={['t']}
+          description="To process the FID to FT spectrum"
+          link="https://docs.nmrium.org/20_1d-spectra/ft/ft/"
+        />
+      ),
       onClick: handleOnFFTFilter,
       icon: <SvgNmrFourierTransform />,
     },
