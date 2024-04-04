@@ -228,7 +228,14 @@ export default function ToolBar() {
     },
     {
       id: 'integral',
-      tooltip: `${options.integral.label} (Press i)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.integral.label}
+          shortcuts={['i']}
+          description="To calculate the integration, hold Shift and left-click, then drag over the signal range"
+          link="https://docs.nmrium.org/help/integrations"
+        />
+      ),
       icon: <SvgNmrIntegrate />,
     },
     {
