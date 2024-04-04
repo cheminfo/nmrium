@@ -36,7 +36,7 @@ export function SpectraAutomaticPickingButton() {
   return (
     <Toolbar.Item
       icon={<SvgNmrRangePicking />}
-      title="Automatic ranges/zones picking for all spectra"
+      tooltip="Automatic ranges/zones picking for all spectra"
       onClick={automaticPickingHandler}
     />
   );

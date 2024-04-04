@@ -284,7 +284,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in integrals', async () => {
     await nmrium.clickPanel('Integrals');
     await nmrium.page.click(
-      '_react=IntegralPanel >> _react=ToolbarItem[title*="Change integration" i]',
+      '_react=IntegralPanel >> _react=ToolbarItem[tooltip*="Change integration" i]',
     );
     await expect(
       nmrium.page.locator('div[role="dialog"] >> #molSVG0'),
@@ -333,7 +333,7 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
   await test.step('Check molecules in ranges', async () => {
     await nmrium.clickPanel('Ranges');
     await nmrium.page.click(
-      '_react=ToolbarItem[title *= "Change ranges sum" i]',
+      '_react=ToolbarItem[tooltip *= "Change ranges sum" i]',
     );
     await nmrium.page
       .locator('div[role="dialog"]')
@@ -444,7 +444,9 @@ test('molecules 1H spectrum', async ({ page, browserName }) => {
     });
     await test.step('Delete the copy', async () => {
       // Delete molecule.
-      await nmrium.page.click('_react=ToolbarItem[title="Delete molecule" i]');
+      await nmrium.page.click(
+        '_react=ToolbarItem[tooltip="Delete molecule" i]',
+      );
       // Check deleted molecule.
       await expect(nmrium.page.locator('text=C6H6 - 78.11')).toHaveCount(2);
       // Check floated molecule.
@@ -630,7 +632,7 @@ test('check callbacks count on changing structures', async ({ page }) => {
 
 async function clickExportMenuOption(nmrium: NmriumPage, selector: string) {
   await nmrium.page.click(
-    '_react=MoleculePanelHeader >> _react=ToolbarItem[title="export as" i]',
+    '_react=MoleculePanelHeader >> _react=ToolbarItem[tooltip="export as" i]',
   );
   await nmrium.page.click(selector);
 }

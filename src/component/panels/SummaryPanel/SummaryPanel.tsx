@@ -472,12 +472,12 @@ function SummaryPanel() {
         leftButtons={[
           {
             icon: <FaFlask />,
-            title: `Set molecular formula (${correlationsData?.options?.mf || ''})`,
+            tooltip: `Set molecular formula (${correlationsData?.options?.mf || ''})`,
             onClick: () => openDialog('molecularFormula'),
           },
           {
             icon: <FaSlidersH />,
-            title: 'Set shift tolerance',
+            tooltip: 'Set shift tolerance',
             onClick: () => openDialog('shiftToleranceModal'),
           },
         ]}

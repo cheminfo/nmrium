@@ -240,13 +240,13 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         <Toolbar>
           <Toolbar.Item
             icon={<FaPlus />}
-            title="Add a new peak"
+            tooltip="Add a new peak"
             intent="success"
             onClick={() => addHandler(peaks)}
           />
           <Toolbar.Item
             icon={<FaRegTrashAlt />}
-            title="Delete all peaks"
+            tooltip="Delete all peaks"
             intent="danger"
             onClick={deleteAllHandler}
           />

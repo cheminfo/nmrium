@@ -118,14 +118,14 @@ function MatrixGenerationPanel() {
         leftButtons={[
           {
             icon: <SvgNmrExportAsMatrix />,
-            title: 'Export spectra as a matrix',
+            tooltip: 'Export spectra as a matrix',
             onClick: handleExportAsMatrix,
           },
         ]}
         rightButtons={[
           {
             onClick: () => formRef.current?.submitForm(),
-            title: 'Signal processing',
+            tooltip: 'Signal processing',
             id: 'save-button',
             intent: 'success',
             icon: <FaCheck />,

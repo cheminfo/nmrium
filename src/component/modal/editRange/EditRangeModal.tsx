@@ -230,10 +230,10 @@ function EditRangeModal({
         </span>
         <SaveButton
           onClick={() => formRef.current.submitForm()}
-          title="Save and Exit"
+          tooltip="Save and Exit"
         />
 
-        <CloseButton title="Close" onClick={handleOnClose} />
+        <CloseButton tooltip="Close" onClick={handleOnClose} />
       </div>
       <Formik
         innerRef={formRef}

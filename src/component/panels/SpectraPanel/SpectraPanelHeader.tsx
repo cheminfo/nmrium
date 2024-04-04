@@ -136,13 +136,13 @@ function SpectraPanelHeaderInner({
     {
       disabled: !hasActiveSpectra,
       icon: <FaEyeSlash />,
-      title: 'Hide selected spectra',
+      tooltip: 'Hide selected spectra',
       onClick: hideAllSpectraHandler,
     },
     {
       disabled: !hasActiveSpectra,
       icon: <FaEye />,
-      title: 'Show selected spectra',
+      tooltip: 'Show selected spectra',
       onClick: showAllSpectraHandler,
     },
   ];
@@ -150,7 +150,7 @@ function SpectraPanelHeaderInner({
   if (displayerMode === '2D' && activeSpectrum?.info.isFt) {
     leftButtons.push({
       icon: <FaCreativeCommonsSamplingPlus />,
-      title: 'Add missing projection',
+      tooltip: 'Add missing projection',
       onClick: addMissingProjectionHandler,
     });
   }
@@ -159,12 +159,12 @@ function SpectraPanelHeaderInner({
     leftButtons.push(
       {
         icon: <SvgNmrResetScale />,
-        title: 'Reset scale',
+        tooltip: 'Reset scale',
         onClick: resetScaleHandler,
       },
       {
         icon: <SvgNmrSameTop />,
-        title: 'Same top',
+        tooltip: 'Same top',
         onClick: setSameTopHandler,
       },
     );
@@ -176,12 +176,12 @@ function SpectraPanelHeaderInner({
     },
     {
       icon: <IoColorPaletteOutline />,
-      title: 'Default spectra recoloring',
+      tooltip: 'Default spectra recoloring',
       onClick: defaultReColorSpectraHandler,
     },
     {
       icon: <MdFormatColorFill />,
-      title: 'Distinct spectra recoloring',
+      tooltip: 'Distinct spectra recoloring',
       onClick: distinctReColorSpectraHandler,
     },
   ]);

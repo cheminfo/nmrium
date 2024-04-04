@@ -154,13 +154,13 @@ function IntegralPanelInner({
             },
             {
               icon: <ImLink />,
-              title: 'Fixed integration values',
+              tooltip: 'Fixed integration values',
               onClick: toggleConstantSumHandler,
               active: integrals?.options?.isSumConstant || false,
             },
             {
               icon: <SvgNmrIntegrate />,
-              title: `${booleanToString(!showIntegralsValues)} integrals values`,
+              tooltip: `${booleanToString(!showIntegralsValues)} integrals values`,
               onClick: handleShowIntegralsValues,
               active: showIntegralsValues,
             },

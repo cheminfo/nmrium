@@ -179,14 +179,14 @@ function HeaderInner(props: HeaderInnerProps) {
               {!general?.hideHelp && (
                 <Toolbar.Item
                   id="user-manual"
-                  title="User manual"
+                  tooltip="User manual"
                   onClick={() => window.open(docsBaseUrl, '_blank')}
                   icon={<FaQuestionCircle />}
                 />
               )}
               <Toolbar.Item
                 id="user-manual"
-                title="NMRium channel"
+                tooltip="NMRium channel"
                 onClick={() =>
                   window.open('https://www.youtube.com/@nmrium', '_blank')
                 }
@@ -201,7 +201,7 @@ function HeaderInner(props: HeaderInnerProps) {
                 <Toolbar.Item
                   id="full-screen"
                   onClick={fullscreen.toggle}
-                  title="Full screen"
+                  tooltip="Full screen"
                   className="windowButton"
                   icon={<FaRegWindowMaximize />}
                 />

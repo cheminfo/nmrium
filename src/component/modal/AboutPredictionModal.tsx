@@ -46,7 +46,7 @@ function AboutPredictionModal() {
       <Toolbar.Item
         icon={<FaInfo />}
         onClick={openDialog}
-        title="About prediction"
+        tooltip="About prediction"
       />
       <Dialog
         isOpen={isOpenDialog}

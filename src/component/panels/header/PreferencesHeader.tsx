@@ -15,8 +15,8 @@ function PreferencesHeader({ onClose, onSave }: PreferencesHeaderProps) {
         borderBottom: '0.55px solid rgb(240 240 240)',
       }}
     >
-      <CloseButton onClick={onClose} title="Close preferences" />
-      <SaveButton onClick={onSave} title="Save preferences" />
+      <CloseButton onClick={onClose} tooltip="Close preferences" />
+      <SaveButton onClick={onSave} tooltip="Save preferences" />
     </div>
   );
 }

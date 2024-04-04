@@ -113,7 +113,7 @@ function EditPeakShapeModal({
       <div className="header handle">
         <span>{`Peak Shape Edition ( ${valuePPM} PPM)`} </span>
         <CloseButton
-          title="Close"
+          tooltip="Close"
           onClick={() => onClose?.()}
           className="close-bt"
         />

@@ -240,13 +240,13 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         <Toolbar>
           <Toolbar.Item
             icon={<FaPlus />}
-            title="Add a new J coupling"
+            tooltip="Add a new J coupling"
             intent="success"
             onClick={() => addHandler(jCouplings)}
           />
           <Toolbar.Item
             icon={<FaRegTrashAlt />}
-            title="Delete all J couplings"
+            tooltip="Delete all J couplings"
             intent="danger"
             onClick={deleteAllHandler}
           />

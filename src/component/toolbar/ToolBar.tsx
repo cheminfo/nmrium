@@ -351,7 +351,7 @@ export default function ToolBar() {
               <ToolbarPopoverItem
                 key={id}
                 options={menuItems}
-                title={title}
+                tooltip={title}
                 id={id}
                 active={selectedTool === id}
                 icon={icon}
@@ -366,7 +366,7 @@ export default function ToolBar() {
             <Toolbar.Item
               key={id}
               onClick={onClick || (() => handleChange(id))}
-              title={title}
+              tooltip={title}
               id={id}
               active={selectedTool === id}
               icon={icon}

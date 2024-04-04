@@ -140,14 +140,14 @@ function PeaksPanelInner({
     {
       disabled,
       icon: <SvgNmrPeaks />,
-      title: `${booleanToString(!showPeaks)} peaks`,
+      tooltip: `${booleanToString(!showPeaks)} peaks`,
       onClick: () => toggleViewProperty('showPeaks'),
       active: showPeaks,
     },
     {
       disabled,
       icon: <SvgNmrPeaksTopLabels />,
-      title: `${displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
+      tooltip: `${displayingMode === 'spread' ? 'Single' : 'Spread'} mode`,
       onClick: toggleDisplayingMode,
       active: displayingMode === 'spread',
     },
@@ -158,20 +158,20 @@ function PeaksPanelInner({
       {
         disabled,
         icon: <SvgPeaks />,
-        title: `${booleanToString(!showPeaksShapes)} peaks shapes`,
+        tooltip: `${booleanToString(!showPeaksShapes)} peaks shapes`,
         onClick: () => toggleViewProperty('showPeaksShapes'),
         active: showPeaksShapes,
       },
       {
         disabled,
         icon: <SvgNmrFt />,
-        title: `${booleanToString(!showPeaksSum)} peaks sum`,
+        tooltip: `${booleanToString(!showPeaksSum)} peaks sum`,
         onClick: () => toggleViewProperty('showPeaksSum'),
         active: showPeaksSum,
       },
       {
         icon: <FaThinkPeaks />,
-        title: 'Optimize peaks',
+        tooltip: 'Optimize peaks',
         onClick: optimizePeaksHandler,
       },
     );

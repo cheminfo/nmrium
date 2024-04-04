@@ -141,7 +141,7 @@ export function PredictSpectraModal({
       <Toolbar>
         <Toolbar.Item
           icon={<SvgNmrFt />}
-          title="Predict spectra"
+          tooltip="Predict spectra"
           onClick={openDialog}
         />
       </Toolbar>

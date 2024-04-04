@@ -185,24 +185,24 @@ function ZonesPanelInner({
             {
               disabled: !zones.values || zones.values.length === 0,
               icon: <FaUnlink />,
-              title: 'Remove all assignments',
+              tooltip: 'Remove all assignments',
               onClick: handleOnRemoveAssignments,
             },
             {
               icon: <span>z</span>,
-              title: 'Show/Hide zones',
+              tooltip: 'Show/Hide zones',
               active: showZones,
               onClick: handleSetShowZones,
             },
             {
               icon: <span>s</span>,
-              title: 'Show/Hide signals',
+              tooltip: 'Show/Hide signals',
               active: showSignals,
               onClick: handleSetShowSignals,
             },
             {
               icon: <span>p</span>,
-              title: 'Show/Hide peaks',
+              tooltip: 'Show/Hide peaks',
               active: showPeaks,
               onClick: handleSetShowPeaks,
             },
