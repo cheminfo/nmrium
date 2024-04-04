@@ -375,7 +375,13 @@ export default function ToolBar() {
     },
     {
       id: 'spectraStackAlignments',
-      tooltip: `${options.spectraStackAlignments.label} (Press s)`,
+      tooltip: (
+        <CustomToolTip
+          title={options.spectraStackAlignments.label}
+          shortcuts={['s']}
+          description="To display the spectra in a stack mode."
+        />
+      ),
       icon:
         verticalAlign === 'stack' ? (
           <SvgNmrOverlay3Aligned />
