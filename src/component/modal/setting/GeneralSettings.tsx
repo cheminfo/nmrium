@@ -1,5 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter, Classes } from '@blueprintjs/core';
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Classes,
+  Tabs,
+  Tab,
+} from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { Workspace } from 'nmr-load-save';
@@ -17,8 +24,6 @@ import { useToaster } from '../../context/ToasterContext';
 import ActionButtons from '../../elements/ActionButtons';
 import Button from '../../elements/Button';
 import Label from '../../elements/Label';
-import Tab from '../../elements/Tab/Tab';
-import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
@@ -39,10 +44,6 @@ import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
 const styles = css`
-  .tab-content {
-    width: 100%;
-  }
-
   .section-header {
     font-size: 13px;
     color: #2ca8ff;
@@ -72,12 +73,6 @@ const styles = css`
       width: 260px;
     }
   }
-
-  .inner-content {
-    padding: 15px 30px;
-    width: 100%;
-    overflow: auto;
-  }
 `;
 
 function isRestButtonDisable(
@@ -103,7 +98,6 @@ interface GeneralSettingsModalProps {
 
 function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
-  const [activeTab, setActiveTab] = useState('general');
   const {
     dispatch,
     current: currentWorkspace,
@@ -141,11 +135,6 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     saveSettings(values);
     closeDialog?.();
   }
-
-  const tabChangeHandler = useCallback((tab) => {
-    setActiveTab(tab.tabid);
-  }, []);
-
   function addWorkSpaceHandler(name) {
     dispatch({
       type: 'ADD_WORKSPACE',
@@ -353,62 +342,73 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
               validate={handleDisabledRestButton}
             >
               <Tabs
-                position={PositionsEnum.LEFT}
-                activeTab={activeTab}
-                onClick={tabChangeHandler}
+                vertical
+                css={css`
+                  height: 100%;
+
+                  div[role='tabpanel'] {
+                    width: 100%;
+                    padding: 0.8rem;
+                    overflow: auto;
+                    max-height: 100%;
+                  }
+                `}
+                fill
               >
-                <Tab title="General" tabid="general">
-                  <div className="inner-content">
-                    <GeneralTabContent />
-                  </div>
-                </Tab>
+                <Tab
+                  title="General"
+                  id="general"
+                  panel={<GeneralTabContent />}
+                />
 
-                <Tab title="Formatting" tabid="formatting">
-                  <div className="inner-content">
-                    <FormattingTabContent />
-                  </div>
-                </Tab>
+                <Tab
+                  title="Formatting"
+                  id="formatting"
+                  panel={<FormattingTabContent />}
+                />
 
-                <Tab title="Panels" tabid="display">
-                  <div className="inner-content">
-                    <DisplayTabContent />
-                  </div>
-                </Tab>
+                <Tab
+                  title="Panels"
+                  id="display"
+                  panel={<DisplayTabContent />}
+                />
 
-                <Tab title="Tools" tabid="tools">
-                  <div className="inner-content">
-                    <ToolsTabContent />
-                  </div>
-                </Tab>
+                <Tab title="Tools" id="tools" panel={<ToolsTabContent />} />
 
-                <Tab title="Databases" tabid="databases">
-                  <div className="inner-content">
+                <Tab
+                  title="Databases"
+                  id="databases"
+                  panel={
                     <DatabasesTabContent
                       currentWorkspace={workspaceName}
                       originalWorkspaces={originalWorkspaces}
                     />
-                  </div>
-                </Tab>
-                <Tab title="Import filters" tabid="importation-filters">
-                  <div className="inner-content">
-                    <ImportationFiltersTabContent />
-                  </div>
-                </Tab>
-                <Tab title="Title block" tabid="title-block">
-                  <div className="inner-content">
-                    <InfoBlockTabContent />
-                  </div>
-                </Tab>
-                <Tab title="Auto processing" tabid="on-load-processing">
-                  <div className="inner-content">
-                    <OnLoadProcessingTabContent />
-                  </div>
-                </Tab>
-                <Tab title="Spectra colors" tabid="spectra-colors">
-                  <div className="inner-content">
-                    <SpectraColorsTabContent />
-                  </div>
-                </Tab>
+                  }
+                />
+
+                <Tab
+                  title="Import filters"
+                  id="importation-filters"
+                  panel={<ImportationFiltersTabContent />}
+                />
+
+                <Tab
+                  title="Title block"
+                  id="title-block"
+                  panel={<InfoBlockTabContent />}
+                />
+
+                <Tab
+                  title="Auto processing"
+                  id="on-load-processing"
+                  panel={<OnLoadProcessingTabContent />}
+                />
+
+                <Tab
+                  title="Spectra colors"
+                  id="spectra-colors"
+                  panel={<SpectraColorsTabContent />}
+                />
               </Tabs>
             </Formik>
           </div>

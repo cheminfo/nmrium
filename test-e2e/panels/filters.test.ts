@@ -217,7 +217,7 @@ test('Exclusion zones', async ({ page }) => {
     await nmrium.clickTool('general-settings');
 
     //click on the display tab
-    await nmrium.page.click('_react=Tab[tabid="tools"]');
+    await nmrium.page.getByRole('tablist').locator('text=tools').click();
 
     //enable exclusion zone tool
     await nmrium.page
