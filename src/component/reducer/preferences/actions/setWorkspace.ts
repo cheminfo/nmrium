@@ -23,15 +23,16 @@ export function setWorkspace(
     draft.workspace.current = workspaceKey;
   } else if (action.payload.workspaceSource === 'nmriumFile') {
     const workspaceData = { label: 'NMRium File', source: 'nmriumFile' };
-    draft.workspaces[WORKSPACES_KEYS.nmriumKey] = initWorkspace(
+    const workspaceKey = WORKSPACES_KEYS.nmriumKey;
+    draft.workspaces[workspaceKey] = initWorkspace(
       action.payload.data,
       workspaceData as any,
     );
-    draft.originalWorkspaces[WORKSPACES_KEYS.nmriumKey] = initWorkspace(
+    draft.originalWorkspaces[workspaceKey] = initWorkspace(
       action.payload.data,
       workspaceData as any,
     );
 
-    draft.workspace.current = WORKSPACES_KEYS.nmriumKey;
+    draft.workspace = { current: workspaceKey, base: workspaceKey };
   }
 }
