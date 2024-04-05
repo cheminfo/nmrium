@@ -314,12 +314,21 @@ export default function ToolBar() {
     },
     {
       id: 'baselineCorrection',
-      tooltip: `${options.baselineCorrection.label} (Press b)`,
+      tooltip: {
+        title: options.baselineCorrection.label,
+        shortcuts: ['b'],
+        description:
+          'To process the spectrum to be a straight line at zero absorbance.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/baseline/baseline',
+      },
       icon: <SvgNmrBaselineCorrection />,
     },
     {
       id: 'exclusionZones',
-      tooltip: `${options.exclusionZones.label} (Press e)`,
+      tooltip: {
+        title: options.exclusionZones.label,
+        shortcuts: ['e'],
+      },
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
       condition: ftCounter > 0,
@@ -379,13 +388,23 @@ export default function ToolBar() {
     },
     {
       id: 'realImaginary',
-      tooltip: isRealSpectrumShown ? 'Display real ' : 'Display imaginary',
+      tooltip: {
+        title: `Display ${isRealSpectrumShown ? 'real' : 'imaginary'}`,
+        description:
+          'To switch between imaginary and real part of the spectrum.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/views/views',
+      },
       icon: <SvgNmrRealImag />,
       onClick: changeSpectrumViewHandler,
     },
     {
       id: 'spectraCenterAlignments',
-      tooltip: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'} (Press c)`,
+      tooltip: {
+        title: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'}`,
+        shortcuts: ['c'],
+        description:
+          'To align the spectra in the centre or at the bottom of the displayer.',
+      },
       icon:
         verticalAlign === 'bottom' ? (
           <SvgNmrAlignCenter />
