@@ -11,6 +11,7 @@ export const possibleViews = {
   Prediction: memo(lazy(() => import('./Prediction'))),
   Simulation: memo(lazy(() => import('./Simulation'))),
   CustomWorkspace: memo(lazy(() => import('./CustomWorkspace'))),
+  BenchtopNMRWorkspace: memo(lazy(() => import('./BenchtopNMRWorkspace'))),
   SnapshotView: memo(lazy(() => import('./SnapshotView'))),
   WebSourceView: memo(lazy(() => import('./WebSourceView'))),
   AuoProcessingView: memo(lazy(() => import('./AuoProcessingView'))),

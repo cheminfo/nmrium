@@ -281,6 +281,10 @@
         "file": "./data/coffee/Coffee.json"
       },
       {
+        "title": "Benchtop NMR",
+        "view": "BenchtopNMRWorkspace"
+      },
+      {
         "file": "https://cheminfo.github.io/bruker-data-test/data/zipped/aspirin-1h.zip",
         "title": "NMR Load Save",
         "view": "WebSourceView"
