@@ -179,10 +179,7 @@ function SubTitles({ items }: { items: ToolTipItem[] }) {
         <li key={title}>
           <div style={styles.titleContainer}>
             <span style={{ ...styles.title, fontSize: '0.7rem' }}>{title}</span>
-            <ShortCuts
-              style={{ padding: '0.1rem', fontSize: '0.6rem' }}
-              shortcuts={shortcuts}
-            />
+            <ShortCuts style={{ padding: '0.1rem' }} shortcuts={shortcuts} />
           </div>
         </li>
       ))}
