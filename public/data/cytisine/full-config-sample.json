@@ -1,0 +1,704 @@
+{
+  "version": 6,
+  "data": {
+    "source": {
+      "entries": [
+        {
+          "baseURL": "",
+          "relativePath": "data/cytisine/1H_Cytisin_600MHz-R+I.dx"
+        }
+      ]
+    },
+    "spectra": [
+      {
+        "id": "0abwvynpah97",
+        "filters": [],
+        "display": {
+          "isVisible": true,
+          "isRealSpectrumVisible": true,
+          "isPeaksMarkersVisible": true,
+          "isVisibleInDomain": true,
+          "color": "#C10020"
+        },
+        "peaks": {
+          "values": [
+            {
+              "id": "28c268f5-5638-40da-bd9e-5bb9adf4a66c",
+              "originalX": 6.344901854818876,
+              "x": 6.344901854818876,
+              "y": 171813439,
+              "width": 0
+            },
+            {
+              "id": "68f55638-40da-4d9e-9bb9-adf4a66c52b9",
+              "originalX": 6.014742130306379,
+              "x": 6.014742130306379,
+              "y": 151333191,
+              "width": 0
+            }
+          ],
+          "options": {}
+        },
+        "signals": [],
+        "sourceSelector": {
+          "files": [
+            "data/cytisine/1H_Cytisin_600MHz-R+I.dx"
+          ]
+        },
+        "integrals": {
+          "values": [
+            {
+              "id": "3d437128-c268-4556-b840-dabd9e5bb9ad",
+              "originalFrom": 7.237773999785698,
+              "originalTo": 7.470590392018329,
+              "from": 7.237773999785698,
+              "to": 7.470590392018329,
+              "integral": 3.2331194960505742,
+              "absolute": 1597386.274605361,
+              "kind": "signal"
+            },
+            {
+              "id": "437128c2-68f5-4638-80da-bd9e5bb9adf4",
+              "originalFrom": 3.9646511815125987,
+              "originalTo": 4.176853000829707,
+              "from": 3.9646511815125987,
+              "to": 4.176853000829707,
+              "integral": 3.4309813707798167,
+              "absolute": 1695143.825276242,
+              "kind": "signal"
+            },
+            {
+              "id": "7128c268-f556-4840-9abd-9e5bb9adf4a6",
+              "originalFrom": 1.8717797868052872,
+              "originalTo": 2.1081463008569465,
+              "from": 1.8717797868052872,
+              "to": 2.1081463008569465,
+              "integral": 7.335899133169607,
+              "absolute": 3624445.246001261,
+              "kind": "signal"
+            }
+          ],
+          "options": {
+            "sum": 14,
+            "isSumConstant": true,
+            "sumAuto": true,
+            "mf": "C11H14N2O",
+            "moleculeId": "a673353d-6b70-4445-821c-af02e2032aa2"
+          }
+        },
+        "ranges": {
+          "values": [
+            {
+              "id": "adf4a66c-52b9-47de-a8a2-8c112ff16937",
+              "integration": 14,
+              "absolute": 51476.606383890976,
+              "signals": [
+                {
+                  "kind": "signal",
+                  "id": "b9adf4a6-6c52-4987-9e68-a28c112ff169",
+                  "peaks": [
+                    {
+                      "id": "3840dabd-9e5b-49ad-b4a6-6c52b987de68",
+                      "x": 5.354968795349658,
+                      "y": 20362992.463424526,
+                      "width": 0.843544849890218,
+                      "shape": {
+                        "fwhm": 0.9931981607020542,
+                        "kind": "gaussian"
+                      },
+                      "originalX": 5.354968795349658
+                    },
+                    {
+                      "id": "40dabd9e-5bb9-4df4-a66c-52b987de68a2",
+                      "x": 5.355657900939582,
+                      "y": 18745088.20173981,
+                      "width": 1.124726466521712,
+                      "shape": {
+                        "fwhm": 1.3242642142710794,
+                        "kind": "gaussian"
+                      },
+                      "originalX": 5.355657900939582
+                    },
+                    {
+                      "id": "dabd9e5b-b9ad-44a6-ac52-b987de68a28c",
+                      "x": 5.356613944004998,
+                      "y": 22250615.023500994,
+                      "width": 0.562363233260856,
+                      "shape": {
+                        "fwhm": 0.6621321071355397,
+                        "kind": "gaussian"
+                      },
+                      "originalX": 5.356613944004998
+                    },
+                    {
+                      "id": "bd9e5bb9-adf4-466c-92b9-87de68a28c11",
+                      "x": 5.356727150803319,
+                      "y": 23565781.487307966,
+                      "width": 0.41157372814727194,
+                      "shape": {
+                        "fwhm": 0.4845910325246573,
+                        "kind": "gaussian"
+                      },
+                      "originalX": 5.356727150803319
+                    },
+                    {
+                      "id": "9e5bb9ad-f4a6-4c52-b987-de68a28c112f",
+                      "x": 5.358487855176406,
+                      "y": 19671774.368065737,
+                      "width": 0.562363233260856,
+                      "shape": {
+                        "fwhm": 0.6621321071355397,
+                        "kind": "gaussian"
+                      },
+                      "originalX": 5.358487855176406
+                    },
+                    {
+                      "id": "5bb9adf4-a66c-42b9-87de-68a28c112ff1",
+                      "x": 5.357753950201999,
+                      "y": 18765325.134368837,
+                      "width": 1.124726466521712,
+                      "shape": {
+                        "fwhm": 1.3242642142710794,
+                        "kind": "gaussian"
+                      },
+                      "originalX": 5.357753950201999
+                    }
+                  ],
+                  "js": [],
+                  "multiplicity": "m",
+                  "delta": 5.356647950797433,
+                  "diaIDs": [],
+                  "originalDelta": 5.356647950797433
+                }
+              ],
+              "from": 5.2228859532711205,
+              "to": 5.4786438890233455,
+              "kind": "signal",
+              "originalFrom": 5.2228859532711205,
+              "originalTo": 5.4786438890233455
+            }
+          ],
+          "options": {
+            "sum": 14,
+            "isSumConstant": true,
+            "sumAuto": true,
+            "mf": "C11H14N2O",
+            "moleculeId": "a673353d-6b70-4445-821c-af02e2032aa2"
+          }
+        }
+      }
+    ],
+    "molecules": [
+      {
+        "molfile": "cytisine\nActelion Java MolfileCreator 2.0\n\n  0  0  0  0  0  0              0 V3000\nM  V30 BEGIN CTAB\nM  V30 COUNTS 14 16 0 0 0\nM  V30 BEGIN ATOM\nM  V30 1 N -0.6573 -0.3901 0 0\nM  V30 2 C -0.6573 1.1073 0 0\nM  V30 3 C -1.9721 -1.1285 0 0\nM  V30 4 C 0.6504 1.8526 0 0 CFG=1\nM  V30 5 C 0.6433 -1.1285 0 0\nM  V30 6 C -1.9721 1.8526 0 0\nM  V30 7 N 3.2587 1.8526 0 0\nM  V30 8 C 1.937 1.0652 0 0\nM  V30 9 C 1.937 -0.3691 0 0 CFG=2\nM  V30 10 C -3.2587 1.0723 0 0\nM  V30 11 C -3.2587 -0.3901 0 0\nM  V30 12 O -1.9721 -2.6469 0 0\nM  V30 13 C 1.9932 2.6469 0 0\nM  V30 14 C 3.2587 0.3338 0 0\nM  V30 END ATOM\nM  V30 BEGIN BOND\nM  V30 1 1 2 1\nM  V30 2 1 3 1\nM  V30 3 1 4 2\nM  V30 4 1 5 1\nM  V30 5 2 6 2\nM  V30 6 1 7 14\nM  V30 7 1 9 8 CFG=3\nM  V30 8 1 9 5\nM  V30 9 2 10 11\nM  V30 10 1 11 3\nM  V30 11 2 12 3\nM  V30 12 1 13 4\nM  V30 13 1 14 9\nM  V30 14 1 4 8 CFG=3\nM  V30 15 1 6 10\nM  V30 16 1 13 7\nM  V30 END BOND\nM  V30 BEGIN COLLECTION\nM  V30 MDLV30/STEABS ATOMS=(2 4 9)\nM  V30 END COLLECTION\nM  V30 END CTAB\nM  END\n",
+        "label": "Cytisine",
+        "id": "a673353d-6b70-4445-821c-af02e2032aa2"
+      }
+    ],
+    "correlations": {
+      "values": [
+        {
+          "id": "OWt6X8KV",
+          "atomType": "H",
+          "label": {
+            "origin": "H1"
+          },
+          "link": [
+            {
+              "id": "l0ffZbWN",
+              "experimentType": "1d",
+              "experimentID": "0abwvynpah97",
+              "atomType": [
+                "H"
+              ],
+              "signal": {
+                "kind": "signal",
+                "id": "b9adf4a6-6c52-4987-9e68-a28c112ff169",
+                "peaks": [
+                  {
+                    "id": "3840dabd-9e5b-49ad-b4a6-6c52b987de68",
+                    "x": 5.354968795349658,
+                    "y": 20362992.463424526,
+                    "width": 0.843544849890218,
+                    "shape": {
+                      "fwhm": 0.9931981607020542,
+                      "kind": "gaussian"
+                    },
+                    "originalX": 5.354968795349658
+                  },
+                  {
+                    "id": "40dabd9e-5bb9-4df4-a66c-52b987de68a2",
+                    "x": 5.355657900939582,
+                    "y": 18745088.20173981,
+                    "width": 1.124726466521712,
+                    "shape": {
+                      "fwhm": 1.3242642142710794,
+                      "kind": "gaussian"
+                    },
+                    "originalX": 5.355657900939582
+                  },
+                  {
+                    "id": "dabd9e5b-b9ad-44a6-ac52-b987de68a28c",
+                    "x": 5.356613944004998,
+                    "y": 22250615.023500994,
+                    "width": 0.562363233260856,
+                    "shape": {
+                      "fwhm": 0.6621321071355397,
+                      "kind": "gaussian"
+                    },
+                    "originalX": 5.356613944004998
+                  },
+                  {
+                    "id": "bd9e5bb9-adf4-466c-92b9-87de68a28c11",
+                    "x": 5.356727150803319,
+                    "y": 23565781.487307966,
+                    "width": 0.41157372814727194,
+                    "shape": {
+                      "fwhm": 0.4845910325246573,
+                      "kind": "gaussian"
+                    },
+                    "originalX": 5.356727150803319
+                  },
+                  {
+                    "id": "9e5bb9ad-f4a6-4c52-b987-de68a28c112f",
+                    "x": 5.358487855176406,
+                    "y": 19671774.368065737,
+                    "width": 0.562363233260856,
+                    "shape": {
+                      "fwhm": 0.6621321071355397,
+                      "kind": "gaussian"
+                    },
+                    "originalX": 5.358487855176406
+                  },
+                  {
+                    "id": "5bb9adf4-a66c-42b9-87de-68a28c112ff1",
+                    "x": 5.357753950201999,
+                    "y": 18765325.134368837,
+                    "width": 1.124726466521712,
+                    "shape": {
+                      "fwhm": 1.3242642142710794,
+                      "kind": "gaussian"
+                    },
+                    "originalX": 5.357753950201999
+                  }
+                ],
+                "js": [],
+                "multiplicity": "m",
+                "delta": 5.356647950797433,
+                "diaIDs": [],
+                "originalDelta": 5.356647950797433
+              },
+              "match": [],
+              "experimentLabel": "",
+              "pseudo": false,
+              "edited": {}
+            }
+          ],
+          "equivalence": 1,
+          "attachment": {},
+          "protonsCount": [],
+          "hybridization": [],
+          "pseudo": false,
+          "edited": {}
+        }
+      ],
+      "options": {
+        "tolerance": {
+          "C": 0.25,
+          "H": 0.02,
+          "N": 0.25,
+          "F": 0.25,
+          "Si": 0.25,
+          "P": 0.25
+        }
+      },
+      "state": {
+        "H": {
+          "current": 0,
+          "error": {
+            "notAttached": [
+              0
+            ]
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "display": {
+      "general": {
+        "hideGeneralSettings": false,
+        "experimentalFeatures": {
+          "display": false
+        },
+        "hidePanelOnLoad": false,
+        "hideLogs": false,
+        "hideHelp": false,
+        "hideMaximize": false,
+        "hideWorkspaces": false
+      },
+      "panels": {
+        "spectraPanel": {
+          "display": true,
+          "open": true
+        },
+        "informationPanel": {
+          "display": true,
+          "open": false
+        },
+        "integralsPanel": {
+          "display": true,
+          "open": false
+        },
+        "rangesPanel": {
+          "display": true,
+          "open": false
+        },
+        "structuresPanel": {
+          "display": true,
+          "open": false
+        },
+        "processingsPanel": {
+          "display": true,
+          "open": false
+        },
+        "zonesPanel": {
+          "display": true,
+          "open": false
+        },
+        "automaticAssignmentPanel": {
+          "display": false,
+          "open": false
+        },
+        "databasePanel": {
+          "display": false,
+          "open": false
+        },
+        "multipleSpectraAnalysisPanel": {
+          "display": false,
+          "open": false
+        },
+        "peaksPanel": {
+          "display": true,
+          "open": false
+        },
+        "predictionPanel": {
+          "display": false,
+          "open": false
+        },
+        "summaryPanel": {
+          "display": false,
+          "open": false
+        },
+        "simulationPanel": {
+          "display": false,
+          "open": false
+        }
+      },
+      "toolBarButtons": {
+        "baselineCorrection": true,
+        "exclusionZones": false,
+        "exportAs": true,
+        "fft": true,
+        "import": true,
+        "integral": true,
+        "multipleSpectraAnalysis": false,
+        "phaseCorrection": true,
+        "rangePicking": true,
+        "realImaginary": true,
+        "slicing": true,
+        "spectraCenterAlignments": true,
+        "spectraStackAlignments": true,
+        "apodization": true,
+        "zeroFilling": true,
+        "zonePicking": true,
+        "zoomOut": true,
+        "zoom": true,
+        "peakPicking": true,
+        "autoRangeAndZonePicking": true,
+        "fftDimension1": true,
+        "fftDimension2": true
+      }
+    },
+    "general": {
+      "dimmedSpectraOpacity": 0.5,
+      "verticalSplitterPosition": "560px",
+      "verticalSplitterCloseThreshold": 600,
+      "spectraRendering": "auto",
+      "loggingLevel": "info",
+      "popupLoggingLevel": "error",
+      "invert": false
+    },
+    "formatting": {
+      "nuclei": {
+        "1h": {
+          "name": "1H",
+          "ppm": "0.00",
+          "hz": "0.00"
+        },
+        "13c": {
+          "name": "13C",
+          "ppm": "0.00",
+          "hz": "0.00"
+        },
+        "15n": {
+          "name": "15N",
+          "ppm": "0.00",
+          "hz": "0.00"
+        },
+        "19f": {
+          "name": "19F",
+          "ppm": "0.00",
+          "hz": "0.00"
+        },
+        "29si": {
+          "name": "29Si",
+          "ppm": "0.00",
+          "hz": "0.00"
+        },
+        "31p": {
+          "name": "31P",
+          "ppm": "0.00",
+          "hz": "0.00"
+        }
+      },
+      "panels": {}
+    },
+    "databases": {
+      "defaultDatabase": "",
+      "data": [
+        {
+          "key": "toc",
+          "label": "Toc",
+          "url": "https://data.cheminfo.org/nmr/database/toc.json",
+          "enabled": true
+        }
+      ]
+    },
+    "nmrLoaders": {
+      "general": {
+        "keep1D": true,
+        "keep2D": true,
+        "onlyReal": false,
+        "dataSelection": "preferFT"
+      },
+      "bruker": {
+        "onlyFirstProcessedData": true
+      }
+    },
+    "infoBlock": {
+      "visible": false,
+      "fields": [
+        {
+          "label": "Name",
+          "jpath": [
+            "info",
+            "name"
+          ],
+          "visible": true,
+          "format": ""
+        },
+        {
+          "label": "Number of scans",
+          "jpath": [
+            "info",
+            "numberOfScans"
+          ],
+          "visible": true,
+          "format": "0"
+        },
+        {
+          "label": "Pulse sequence",
+          "jpath": [
+            "info",
+            "pulseSequence"
+          ],
+          "visible": true,
+          "format": ""
+        },
+        {
+          "label": "Frequency",
+          "jpath": [
+            "info",
+            "originFrequency"
+          ],
+          "visible": true,
+          "format": "0"
+        }
+      ]
+    },
+    "onLoadProcessing": {
+      "autoProcessing": true,
+      "filters": {
+        "1H": [
+          {
+            "name": "digitalFilter",
+            "label": "Digital Filter",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "apodization",
+            "label": "Apodization",
+            "value": {},
+            "flag": false
+          },
+          {
+            "name": "zeroFilling",
+            "label": "Zero Filling",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "fft",
+            "label": "FFT",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "phaseCorrection",
+            "label": "Phase correction",
+            "value": {},
+            "flag": true
+          }
+        ],
+        "13C": [
+          {
+            "name": "digitalFilter",
+            "label": "Digital Filter",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "apodization",
+            "label": "Apodization",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "zeroFilling",
+            "label": "Zero Filling",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "fft",
+            "label": "FFT",
+            "value": {},
+            "flag": true
+          },
+          {
+            "name": "phaseCorrection",
+            "label": "Phase correction",
+            "value": {},
+            "flag": true
+          }
+        ]
+      }
+    },
+    "spectraColors": {
+      "oneDimension": [],
+      "twoDimensions": [
+        {
+          "jpath": [
+            "info",
+            "experiment"
+          ],
+          "value": "cosy",
+          "positiveColor": "darkblue",
+          "negativeColor": "blue"
+        },
+        {
+          "jpath": [
+            "info",
+            "experiment"
+          ],
+          "value": "noesy",
+          "positiveColor": "pink",
+          "negativeColor": "yellow"
+        },
+        {
+          "jpath": [
+            "info",
+            "experiment"
+          ],
+          "value": "roesy",
+          "positiveColor": "pink",
+          "negativeColor": "yellow"
+        },
+        {
+          "jpath": [
+            "info",
+            "experiment"
+          ],
+          "value": "tocsy",
+          "positiveColor": "green",
+          "negativeColor": "yellow"
+        },
+        {
+          "jpath": [
+            "info",
+            "experiment"
+          ],
+          "value": "hsqc",
+          "positiveColor": "black",
+          "negativeColor": "yellow"
+        },
+        {
+          "jpath": [
+            "info",
+            "experiment"
+          ],
+          "value": "hmbc",
+          "positiveColor": "darkviolet",
+          "negativeColor": "yellow"
+        }
+      ]
+    },
+    "version": 2,
+    "label": "Simple NMR analysis",
+    "visible": true,
+    "source": "predefined"
+  },
+  "view": {
+    "molecules": {},
+    "ranges": {
+      "0abwvynpah97": {
+        "showPeaks": true,
+        "showMultiplicityTrees": true,
+        "showIntegrals": false,
+        "showIntegralsValues": true,
+        "showJGraph": false,
+        "displayingMode": "spread",
+        "integralsScaleRatio": 1,
+        "showAssignmentsLabels": false
+      }
+    },
+    "zones": {},
+    "peaks": {},
+    "integrals": {},
+    "spectra": {
+      "activeSpectra": {
+        "1H": [
+          {
+            "id": "0abwvynpah97",
+            "index": 0,
+            "selected": true
+          }
+        ]
+      },
+      "activeTab": "1H",
+      "showLegend": false,
+      "showSimilarityTree": false,
+      "selectReferences": {}
+    },
+    "zoom": {
+      "levels": {}
+    },
+    "verticalAlign": {
+      "1H": "bottom"
+    },
+    "predictions": {},
+    "currentSimulatedSpectrumKey": null
+  }
+}
