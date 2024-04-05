@@ -450,6 +450,9 @@ export default function ToolBar() {
                     <CustomToolTip {...tooltip} />
                   )
                 }
+                tooltipProps={{
+                  minimal: true,
+                }}
                 id={id}
                 active={selectedTool === id}
                 icon={icon}
@@ -472,7 +475,7 @@ export default function ToolBar() {
                 )
               }
               tooltipProps={{
-                minimal: typeof tooltip !== 'string',
+                minimal: true,
               }}
               id={id}
               active={selectedTool === id}
