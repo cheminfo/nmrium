@@ -49,7 +49,7 @@ const styles: Record<
   },
 };
 
-interface ToolTipItem {
+export interface ToolTipItem {
   title: string;
   shortcuts?: string[];
   subTitles?: ToolTipItem[];

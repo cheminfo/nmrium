@@ -29,7 +29,7 @@ import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
-import { CustomToolTip } from '../elements/CustomToolTip';
+import { CustomToolTip, ToolTipItem } from '../elements/CustomToolTip';
 import {
   ToolbarPopoverMenuItem,
   ToolbarPopoverItem,
@@ -52,17 +52,19 @@ import { MetaImportationModal } from '../modal/metaImportation/MetaImportationMo
 import { options } from './ToolTypes';
 import { EXPORT_MENU, IMPORT_MENU } from './toolbarMenu';
 
-interface BaseToolItem extends Pick<ToolbarItemProps, 'icon' | 'tooltip'> {
+interface BaseToolItem extends Pick<ToolbarItemProps, 'icon'> {
   id: keyof NMRiumToolBarPreferences;
   checkOptions?: CheckOptions;
   condition?: boolean;
 }
 interface ToolItem extends BaseToolItem {
   onClick?: () => void;
+  tooltip: string | ToolTipItem;
 }
 interface PopoverToolItem extends BaseToolItem {
   onClick: (data?: any) => void;
   menuItems: ToolbarPopoverMenuItem[];
+  tooltip: string | ToolTipItem;
 }
 
 function isPopoverToolItem(
@@ -185,92 +187,84 @@ export default function ToolBar() {
   const toolItems: Array<ToolItem | PopoverToolItem> = [
     {
       id: 'zoom',
-      tooltip: (
-        <CustomToolTip
-          title={options.zoom.label}
-          subTitles={[
-            { title: 'Vertical', shortcuts: ['Scroll wheel'] },
-            { title: 'Horizontal', shortcuts: ['Shift', 'Scroll wheel'] },
-            { title: 'Pan', shortcuts: ['Right mouse'] },
-          ]}
-        />
-      ),
+      tooltip: {
+        title: options.zoom.label,
+        subTitles: [
+          { title: 'Vertical', shortcuts: ['Scroll wheel'] },
+          { title: 'Horizontal', shortcuts: ['Shift', 'Scroll wheel'] },
+          { title: 'Pan', shortcuts: ['Right mouse'] },
+        ],
+      },
       icon: <FaSearchPlus />,
     },
     {
       id: 'zoomOut',
-      tooltip: (
-        <CustomToolTip
-          title="Zoom out"
-          subTitles={[
-            { title: 'Horizontal', shortcuts: ['f'] },
-            { title: 'Horizontal and Vertical', shortcuts: ['f', 'f'] },
-          ]}
-          description='You can zoom out by double click on the left mouse button and full zoom out by press key "f" or press key "f" twice to fit the spectra in the window.'
-          link="https://docs.nmrium.org/help/zoom-and-scale"
-        />
-      ),
+      tooltip: {
+        title: 'Zoom out',
+        subTitles: [
+          { title: 'Horizontal', shortcuts: ['f'] },
+          { title: 'Horizontal and Vertical', shortcuts: ['f', 'f'] },
+        ],
+        description:
+          'You can zoom out by double click on the left mouse button and full zoom out by press key "f" or press key "f" twice to fit the spectra in the window.',
+        link: 'https://docs.nmrium.org/help/zoom-and-scale',
+      },
       onClick: handleFullZoomOut,
       icon: <FaExpand />,
     },
     {
       id: 'peakPicking',
-      tooltip: (
-        <CustomToolTip
-          title={options.peakPicking.label}
-          shortcuts={['p']}
-          description="You can detect peaks manually or automatically in the spectrum."
-          link="https://docs.nmrium.org/20_1d-spectra/peaks/peaks"
-        />
-      ),
+      tooltip: {
+        title: options.peakPicking.label,
+        shortcuts: ['p'],
+        description:
+          'You can detect peaks manually or automatically in the spectrum.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/peaks/peaks',
+      },
 
       icon: <SvgNmrPeakPicking />,
     },
     {
       id: 'integral',
-      tooltip: (
-        <CustomToolTip
-          title={options.integral.label}
-          shortcuts={['i']}
-          description="To calculate the integration, hold Shift and left-click, then drag over the signal range."
-          link="https://docs.nmrium.org/help/integrations"
-        />
-      ),
+      tooltip: {
+        title: options.integral.label,
+        shortcuts: ['i'],
+        description:
+          'To calculate the integration, hold Shift and left-click, then drag over the signal range.',
+        link: 'https://docs.nmrium.org/help/integrations',
+      },
       icon: <SvgNmrIntegrate />,
     },
     {
       id: 'zonePicking',
-      tooltip: (
-        <CustomToolTip
-          title={options.zonePicking.label}
-          shortcuts={['r']}
-          description="You can detect zones manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect zones automatically."
-          link="https://docs.nmrium.org/30_2d-spectra/zones/zones"
-        />
-      ),
+      tooltip: {
+        title: options.zonePicking.label,
+        shortcuts: ['r'],
+        description:
+          'You can detect zones manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect zones automatically.',
+        link: 'https://docs.nmrium.org/30_2d-spectra/zones/zones',
+      },
       icon: <FaDiceFour />,
     },
     {
       id: 'slicing',
-      tooltip: (
-        <CustomToolTip
-          title={options.slicing.label}
-          description="You can display the shift on the x-axis and the y-axis for each point of a 2D spectrum."
-          link="https://docs.nmrium.org/30_2d-spectra/slicing/slicing"
-        />
-      ),
+      tooltip: {
+        title: options.slicing.label,
+        description:
+          'You can display the shift on the x-axis and the y-axis for each point of a 2D spectrum.',
+        link: 'https://docs.nmrium.org/30_2d-spectra/slicing/slicing',
+      },
       icon: <PiKnifeBold />,
     },
     {
       id: 'rangePicking',
-      tooltip: (
-        <CustomToolTip
-          title={options.rangePicking.label}
-          shortcuts={['r']}
-          description="You can detect ranges manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect ranges automatically."
-          link="https://docs.nmrium.org/20_1d-spectra/ranges/ranges"
-        />
-      ),
+      tooltip: {
+        title: options.rangePicking.label,
+        shortcuts: ['r'],
+        description:
+          'You can detect ranges manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect ranges automatically.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/ranges/ranges',
+      },
       icon: <SvgNmrRangePicking />,
     },
     {
@@ -282,44 +276,40 @@ export default function ToolBar() {
     },
     {
       id: 'apodization',
-      tooltip: (
-        <CustomToolTip title={options.apodization.label} shortcuts={['a']} />
-      ),
+      tooltip: {
+        title: options.apodization.label,
+        shortcuts: ['a'],
+      },
       icon: <SvgNmrApodization />,
     },
     {
       id: 'zeroFilling',
-      tooltip: (
-        <CustomToolTip
-          title={options.zeroFilling.label}
-          shortcuts={['z']}
-          description="To improve spectrum quality by increasing the number of points per ppm, by default, the number of points is twice as many points as in the original FID "
-          link="https://docs.nmrium.org/20_1d-spectra/preprocessing/preprocessing#zero-filling"
-        />
-      ),
+      tooltip: {
+        title: options.zeroFilling.label,
+        shortcuts: ['z'],
+        description:
+          'To improve spectrum quality by increasing the number of points per ppm, by default, the number of points is twice as many points as in the original FID.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/preprocessing/preprocessing#zero-filling',
+      },
       icon: <SvgNmrZeroFilling />,
     },
     {
       id: 'phaseCorrection',
-      tooltip: (
-        <CustomToolTip
-          title={options.phaseCorrection.label}
-          shortcuts={['a']}
-          description="To phase the spectrum after the FFT"
-          link="https://docs.nmrium.org/20_1d-spectra/phase/phase"
-        />
-      ),
+      tooltip: {
+        title: options.phaseCorrection.label,
+        shortcuts: ['a'],
+        description: 'To phase the spectrum after the FFT.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/phase/phase',
+      },
       icon: <SvgNmrPhaseCorrection />,
     },
     {
       id: 'phaseCorrectionTwoDimensions',
-      tooltip: (
-        <CustomToolTip
-          title={options.phaseCorrectionTwoDimensions.label}
-          shortcuts={['a']}
-          description="To phase the spectrum after the FFT"
-        />
-      ),
+      tooltip: {
+        title: options.phaseCorrectionTwoDimensions.label,
+        shortcuts: ['a'],
+        description: 'To phase the spectrum after the FFT.',
+      },
       icon: <SvgNmrPhaseCorrection />,
     },
     {
@@ -336,14 +326,12 @@ export default function ToolBar() {
     },
     {
       id: 'fft',
-      tooltip: (
-        <CustomToolTip
-          title={options.fft.label}
-          shortcuts={['t']}
-          description="To process the FID to FT spectrum"
-          link="https://docs.nmrium.org/20_1d-spectra/ft/ft/"
-        />
-      ),
+      tooltip: {
+        title: options.fft.label,
+        shortcuts: ['t'],
+        description: 'To process the FID to FT spectrum.',
+        link: 'https://docs.nmrium.org/20_1d-spectra/ft/ft/',
+      },
       onClick: handleOnFFTFilter,
       icon: <SvgNmrFourierTransform />,
     },
@@ -375,13 +363,11 @@ export default function ToolBar() {
     },
     {
       id: 'spectraStackAlignments',
-      tooltip: (
-        <CustomToolTip
-          title={options.spectraStackAlignments.label}
-          shortcuts={['s']}
-          description="To display the spectra in a stack mode."
-        />
-      ),
+      tooltip: {
+        title: options.spectraStackAlignments.label,
+        shortcuts: ['s'],
+        description: 'To display the spectra in a stack mode.',
+      },
       icon:
         verticalAlign === 'stack' ? (
           <SvgNmrOverlay3Aligned />
@@ -438,7 +424,13 @@ export default function ToolBar() {
               <ToolbarPopoverItem
                 key={id}
                 options={menuItems}
-                tooltip={tooltip}
+                tooltip={
+                  typeof tooltip === 'string' ? (
+                    tooltip
+                  ) : (
+                    <CustomToolTip {...tooltip} />
+                  )
+                }
                 id={id}
                 active={selectedTool === id}
                 icon={icon}
@@ -453,7 +445,13 @@ export default function ToolBar() {
             <Toolbar.Item
               key={id}
               onClick={onClick || (() => handleChange(id))}
-              tooltip={tooltip}
+              tooltip={
+                typeof tooltip === 'string' ? (
+                  tooltip
+                ) : (
+                  <CustomToolTip {...tooltip} />
+                )
+              }
               tooltipProps={{
                 minimal: typeof tooltip !== 'string',
               }}
