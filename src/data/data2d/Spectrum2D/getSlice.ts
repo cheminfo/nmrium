@@ -89,8 +89,8 @@ export function getSlice(
 
     if (imaginaryVerticalData) {
       infoY.isComplex = true;
+      dataY.im = new Float64Array(yLength);
       for (let i = 0; i < yLength; i++) {
-        dataY.im = new Float64Array(yLength);
         dataY.im[i] += imaginaryVerticalData.z[i][xIndex];
       }
     }
