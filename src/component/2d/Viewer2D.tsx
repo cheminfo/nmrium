@@ -184,7 +184,6 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const mouseClick: OnClick = useCallback(
     (event) => {
       const { x, y, shiftKey } = event;
-
       if (shiftKey) {
         switch (selectedTool) {
           case 'phaseCorrectionTwoDimensions':
