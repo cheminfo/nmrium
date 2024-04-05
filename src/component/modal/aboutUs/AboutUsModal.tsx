@@ -78,7 +78,7 @@ function AboutUsModal() {
       <Toolbar.Item
         onClick={openDialog}
         id="logo"
-        title="About NMRium"
+        tooltip="About NMRium"
         icon={<SvgLogoNmrium />}
       />
       <Dialog

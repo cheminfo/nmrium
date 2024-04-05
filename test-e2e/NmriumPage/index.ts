@@ -47,7 +47,7 @@ export default class NmriumPage {
     await this.page.click(`_react=ToolbarItem[id="${id}"] >> nth=0`);
   }
   public async clickToolByTitle(title: string) {
-    await this.page.click(`_react=ToolbarItem[title="${title}"] >> nth=0`);
+    await this.page.click(`_react=ToolbarItem[tooltip="${title}"] >> nth=0`);
   }
 
   public getToolbarLocatorByTitle(
@@ -56,7 +56,7 @@ export default class NmriumPage {
   ) {
     const { prefixSelectors = [], active, caseSensitive = false } = options;
     const selectors: string[] = [
-      `_react=ToolbarItem[title="${title}" ${caseSensitive ? '' : 'i'}]`,
+      `_react=ToolbarItem[tooltip="${title}" ${caseSensitive ? '' : 'i'}]`,
     ];
     const parentsSelectors: string[] = [''];
     for (const s of prefixSelectors.reverse()) {

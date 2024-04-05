@@ -254,7 +254,7 @@ test('Range state', async ({ page }) => {
 
     //show peaks
     await nmrium.page.click(
-      `_react=RangesPanel >> _react=ToolbarItem[title="Show peaks" i] >> nth=0`,
+      `_react=RangesPanel >> _react=ToolbarItem[tooltip="Show peaks" i] >> nth=0`,
     );
 
     //show integrals

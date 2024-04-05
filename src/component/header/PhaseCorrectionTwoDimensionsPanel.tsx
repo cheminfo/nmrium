@@ -199,7 +199,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
             css={css`
               border: 1px solid #f7f7f7;
             `}
-            title="Horizontal"
+            tooltip="Horizontal"
             icon={<FaRulerHorizontal />}
             active={activeTraceDirection === 'horizontal'}
             onClick={() => onChangeHandler('horizontal')}
@@ -208,7 +208,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
             css={css`
               border: 1px solid #f7f7f7;
             `}
-            title="Vertical"
+            tooltip="Vertical"
             icon={<FaRulerVertical />}
             active={activeTraceDirection === 'vertical'}
             onClick={() => onChangeHandler('vertical')}
@@ -218,7 +218,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
       <div style={{ paddingRight: '5px' }}>
         <Toolbar>
           <Toolbar.Item
-            title="Add the trace in both directions"
+            tooltip="Add the trace in both directions"
             icon={<MdLooksTwo />}
             active={addTracesToBothDirections}
             onClick={handleToggleAddTraceToBothDirections}

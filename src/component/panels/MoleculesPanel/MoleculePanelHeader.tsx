@@ -231,17 +231,17 @@ export default function MoleculePanelHeader({
               options={MOL_EXPORT_MENU}
               onClick={exportHandler}
               disabled={!hasMolecules}
-              title="Export As"
+              tooltip="Export As"
               icon={<FaFileExport />}
             />
 
             <Toolbar.Item
-              title="Paste molfile"
+              tooltip="Paste molfile"
               icon={<FaPaste />}
               onClick={handlePasteMolfileAction}
             />
             <Toolbar.Item
-              title="Add molecule"
+              tooltip="Add molecule"
               icon={<FaPlus />}
               onClick={onOpenMoleculeEditor}
             />
@@ -251,7 +251,7 @@ export default function MoleculePanelHeader({
         {renderSource === 'moleculePanel' && (
           <>
             <Toolbar.Item
-              title="Delete molecule"
+              tooltip="Delete molecule"
               icon={<FaRegTrashAlt />}
               onClick={handleDelete}
               disabled={!hasMolecules}
@@ -263,14 +263,14 @@ export default function MoleculePanelHeader({
         )}
 
         <Toolbar.Item
-          title="Float molecule"
+          tooltip="Float molecule"
           icon={<IoOpenOutline />}
           onClick={floatMoleculeHandler}
           active={moleculesView?.[moleculeKey]?.floating.visible || false}
           disabled={!hasMolecules}
         />
         <Toolbar.Item
-          title="Show atom number"
+          tooltip="Show atom number"
           icon={<p style={styles.atomLabel}>#</p>}
           onClick={showAtomNumbersHandler}
           active={moleculesView?.[moleculeKey]?.showAtomNumber || false}
@@ -285,7 +285,7 @@ export default function MoleculePanelHeader({
         </p>
       )}
       {onClickPreferences && (
-        <PreferencesButton title="Preferences" onClick={onClickPreferences} />
+        <PreferencesButton tooltip="Preferences" onClick={onClickPreferences} />
       )}
 
       <ClipboardFallbackModal

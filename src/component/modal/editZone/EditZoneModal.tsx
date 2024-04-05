@@ -146,9 +146,9 @@ function EditZoneModal({
             <span>{`Zone and Signal edition`}</span>
             <SaveButton
               onClick={() => formRef.current.submitForm()}
-              title="Save and exit"
+              tooltip="Save and exit"
             />
-            <CloseButton title="Close" onClick={handleOnClose} />
+            <CloseButton tooltip="Close" onClick={handleOnClose} />
           </div>
           <SignalsForm />
         </>

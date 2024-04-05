@@ -188,7 +188,7 @@ export default function EditLinkModal({
   return (
     <div css={modalContainer}>
       <div className="header handle">
-        <CloseButton title="Close" onClick={onClose} />
+        <CloseButton tooltip="Close" onClick={onClose} />
         <p className="header-info">{`${link.experimentType.toUpperCase()} signal at ${getLinkLabel()}`}</p>
       </div>
       {tabsContainer}

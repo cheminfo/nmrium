@@ -34,13 +34,13 @@ function AutomaticAssignment() {
           },
           {
             icon: <SvgNmrAssignment2 />,
-            title: 'Automatic assignment',
+            tooltip: 'Automatic assignment',
             onClick: getAssignments,
             disabled: !enabled,
           },
           {
             icon: <FaBolt />,
-            title: 'Reset assignment',
+            tooltip: 'Reset assignment',
             onClick: restAssignments,
           },
         ]}

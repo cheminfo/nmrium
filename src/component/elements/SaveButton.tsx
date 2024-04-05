@@ -3,7 +3,9 @@ import { ToolbarItemProps } from 'react-science/ui';
 
 import { ToolBarButton } from './ToolBarButton';
 
-export function SaveButton(props: Pick<ToolbarItemProps, 'onClick' | 'title'>) {
+export function SaveButton(
+  props: Pick<ToolbarItemProps, 'onClick' | 'tooltip'>,
+) {
   return (
     <ToolBarButton
       id="save-button"

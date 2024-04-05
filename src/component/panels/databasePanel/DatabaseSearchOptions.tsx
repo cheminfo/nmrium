@@ -89,7 +89,7 @@ export function DatabaseSearchOptions({
         }}
       >
         <ToolBarButton
-          title={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
+          tooltip={`${showSimilarityTree ? 'Hide' : 'Show'} similarity tree`}
           icon={<TbBinaryTree />}
           active={showSimilarityTree}
           onClick={handleShowSimilarityTree}
@@ -122,12 +122,12 @@ export function DatabaseSearchOptions({
           <CounterLabel
             value={formatCounterLabel(total || 0, result.data.length)}
           />
-          <PreferencesButton title="Preferences" onClick={onSettingClick} />
+          <PreferencesButton tooltip="Preferences" onClick={onSettingClick} />
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <ToolBarButton
-          title="Filter by select ranges"
+          tooltip="Filter by select ranges"
           icon={<FaICursor />}
           active={selectedTool === options.databaseRangesSelection.id}
           onClick={enableFilterHandler}
@@ -146,7 +146,7 @@ export function DatabaseSearchOptions({
           canClear
         />
         <ToolBarButton
-          title="Search by substructure"
+          tooltip="Search by substructure"
           icon={!idCode ? <BsHexagon /> : <BsHexagonFill />}
           intent="success"
           active={!!idCode}

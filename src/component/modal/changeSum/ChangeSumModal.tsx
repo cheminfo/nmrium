@@ -23,7 +23,7 @@ export default function ChangeSumModal(props: ChangeSumModalProps) {
       <Toolbar.Item
         disabled={disabled}
         icon={<SvgNmrSum />}
-        title={
+        tooltip={
           currentSum
             ? `Change ${sumType} sum (${currentSum.toFixed(2)})`
             : `Change ${sumType} sum`

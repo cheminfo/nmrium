@@ -4,7 +4,7 @@ import { ToolbarItemProps } from 'react-science/ui';
 import { ToolBarButton } from './ToolBarButton';
 
 export function CloseButton(
-  props: Pick<ToolbarItemProps, 'onClick' | 'title' | 'className'>,
+  props: Pick<ToolbarItemProps, 'onClick' | 'tooltip' | 'className'>,
 ) {
   return (
     <ToolBarButton

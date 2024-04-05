@@ -259,7 +259,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
       <Toolbar.Item
         id="general-settings"
         onClick={openDialog}
-        title="General settings"
+        tooltip="General settings"
         icon={<FaWrench />}
       />
 

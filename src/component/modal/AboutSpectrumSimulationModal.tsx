@@ -46,7 +46,7 @@ function AboutSpectrumSimulationModal() {
       <Toolbar>
         <Toolbar.Item
           onClick={openDialog}
-          title="About prediction"
+          tooltip="About prediction"
           icon={<FaInfo />}
         />
       </Toolbar>

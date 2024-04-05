@@ -97,7 +97,7 @@ function MultipleSpectraAnalysisPanelInner({
   let lefButtons: ToolbarItemProps[] = [
     {
       icon: <FaFileExport />,
-      title: 'Copy to clipboard',
+      tooltip: 'Copy to clipboard',
       onClick: copyToClipboardHandler,
     },
   ];
@@ -106,19 +106,19 @@ function MultipleSpectraAnalysisPanelInner({
     lefButtons = lefButtons.concat([
       {
         icon: <SvgNmrOverlay />,
-        title: 'Spectra calibration',
+        tooltip: 'Spectra calibration',
         onClick: handleSpectraCalibration,
         active: calibration,
       },
       {
         icon: <IoPulseOutline />,
-        title: 'Y spectra tracker',
+        tooltip: 'Y spectra tracker',
         onClick: showTrackerHandler,
         active: showLegend,
       },
       {
         icon: <FaChartBar />,
-        title: `${booleanToString(!showAnalysisChart)} analysis chart`,
+        tooltip: `${booleanToString(!showAnalysisChart)} analysis chart`,
         onClick: toggleAnalysisChart,
         active: showAnalysisChart,
       },

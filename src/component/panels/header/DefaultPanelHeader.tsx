@@ -95,7 +95,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
             <Toolbar.Item
               id="delete-button"
               onClick={onDelete}
-              title={deleteToolTip}
+              tooltip={deleteToolTip}
               icon={<FaRegTrashAlt />}
               intent="danger"
               disabled={!total || disableDelete}
@@ -106,7 +106,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
             <Toolbar.Item
               id="filter-button"
               onClick={handleFilter}
-              title={filterToolTip}
+              tooltip={filterToolTip}
               active={isFiltered}
               icon={<FaFilter />}
             />
@@ -119,7 +119,7 @@ function DefaultPanelHeader(props: DefaultPanelHeaderProps) {
       <Toolbar>{mapToolbarButtons(rightButtons)}</Toolbar>
       <CounterLabel value={formatCounterLabel(counter, total)} />
       {onSettingClick && (
-        <PreferencesButton title="Preferences" onClick={onSettingClick} />
+        <PreferencesButton tooltip="Preferences" onClick={onSettingClick} />
       )}
     </PanelHeader>
   );
@@ -131,7 +131,7 @@ function mapToolbarButtons(buttons: ToolbarItemProps[]) {
       // eslint-disable-next-line react/no-array-index-key
       <Fragment key={`${index}`}>{props.component}</Fragment>
     ) : (
-      <Toolbar.Item key={props.title} {...props} />
+      <Toolbar.Item key={props?.id || `${index}`} {...props} />
     ),
   );
 }
