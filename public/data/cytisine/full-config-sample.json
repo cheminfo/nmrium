@@ -327,15 +327,15 @@
   "settings": {
     "display": {
       "general": {
-        "hideGeneralSettings": false,
+        "hideGeneralSettings": true,
         "experimentalFeatures": {
           "display": false
         },
         "hidePanelOnLoad": false,
-        "hideLogs": false,
+        "hideLogs": true,
         "hideHelp": false,
         "hideMaximize": false,
-        "hideWorkspaces": false
+        "hideWorkspaces": true
       },
       "panels": {
         "spectraPanel": {
