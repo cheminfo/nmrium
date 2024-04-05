@@ -26,6 +26,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
 
   const { logger } = useLogger();
   const preferencesState = usePreferences();
+  const { dispatch: dispatchPreferences } = preferencesState;
 
   const [state, dispatchRaw] = useReducer(
     spectrumReducer,
@@ -99,6 +100,15 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
     if (nmriumData) {
       void readNMRiumObject(nmriumData)
         .then((nmriumState) => {
+          if (nmriumState?.settings) {
+            dispatchPreferences({
+              type: 'SET_WORKSPACE',
+              payload: {
+                data: nmriumState.settings,
+                workspaceSource: 'nmriumFile',
+              },
+            });
+          }
           dispatch({ type: 'INITIATE', payload: { nmriumState } });
         })
         .catch((error) => {
@@ -109,7 +119,7 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           reportError(error);
         });
     }
-  }, [nmriumData, dispatch]);
+  }, [nmriumData, dispatch, dispatchPreferences]);
 
   return (
     <DispatchProvider value={dispatch}>
