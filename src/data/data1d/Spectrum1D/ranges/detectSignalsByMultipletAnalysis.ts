@@ -8,6 +8,8 @@ import {
   xyAutoPeaksPicking,
 } from 'nmr-processing';
 
+import { getMassCenter } from './utils/getMassCenter';
+
 export function detectSignalsByMultipletAnalysis(
   data: DataXY<Float64Array>,
   options: any,
@@ -35,13 +37,10 @@ export function detectSignalsByMultipletAnalysis(
     return [];
   }
 
-  let cs = 0;
-  let area = 0;
-  for (const peak of peaks) {
-    cs += peak.x * peak.y;
-    area += peak.y;
-  }
-  cs /= area;
+  const cs = getMassCenter({
+    x: peaks.map((p) => p.x),
+    y: peaks.map((p) => p.y),
+  });
 
   const initialWidth = Math.abs(peaks[0].x - (peaks.at(-1) || peaks[0]).x);
   const { logs, optimizedPeaks } = optimizePeaksWithLogs(
