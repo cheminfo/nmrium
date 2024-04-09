@@ -17,6 +17,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import ActionsColumn from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
+import { ZoneAssignmentLabelColumn } from './TableColumns/ZoneAssignmentLabelColumn';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
 import { ZoneData } from './hooks/useMapZones';
 
@@ -74,6 +75,7 @@ function ZonesTableRow({
     showDeleteAction,
     showEditAction,
     showZoomAction,
+    showAssignmentLabel,
   } = usePanelPreferences('zones', nucleus);
 
   const rowSpanTags = useMemo(() => {
@@ -193,6 +195,7 @@ function ZonesTableRow({
       {...highlightZone.onHover}
     >
       {showSerialNumber && <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>}
+      {showAssignmentLabel && <ZoneAssignmentLabelColumn rowData={rowData} />}
       <SignalDeltaColumn
         rowData={rowData}
         onHoverSignalX={onHoverSignalX}

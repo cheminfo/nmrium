@@ -14,6 +14,7 @@ import {
   changeZoneSignal,
   detectZones,
   detectZonesManual,
+  isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D';
 import { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones';
 import {
@@ -106,6 +107,11 @@ type ToggleZonesViewAction = ActionType<
   }
 >;
 
+type ChangeZoneAssignmentLabelAction = ActionType<
+  'CHANGE_ZONE_ASSIGNMENT_LABEL',
+  { zoneID: string; value: string }
+>;
+
 export type ZonesActions =
   | AutoZonesDetectionAction
   | ChangeZonesFactorAction
@@ -119,6 +125,7 @@ export type ZonesActions =
   | SaveEditedZoneAction
   | UnlinkZoneAction
   | ToggleZonesViewAction
+  | ChangeZoneAssignmentLabelAction
   | ActionType<'AUTO_ZONES_SPECTRA_PICKING'>;
 
 //action
@@ -481,6 +488,26 @@ function handleToggleZonesViewProperty(
   togglePeaksViewProperty(draft, key);
 }
 
+function handleChangeZoneAssignmentLabel(
+  draft: Draft<State>,
+  action: ChangeZoneAssignmentLabelAction,
+) {
+  const { zoneID, value } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum?.id) return;
+
+  const { index } = activeSpectrum;
+  const spectrum = draft.data[index];
+
+  if (!isSpectrum2D(spectrum)) return;
+
+  const zone = spectrum.zones.values.find((zone) => zone.id === zoneID);
+  if (zone) {
+    zone.assignment = value;
+  }
+}
+
 export {
   handleAdd2dZone,
   handleAutoZonesDetection,
@@ -497,4 +524,5 @@ export {
   handleChangeZonesFactor,
   handleAutoSpectraZonesDetection,
   handleToggleZonesViewProperty,
+  handleChangeZoneAssignmentLabel,
 };

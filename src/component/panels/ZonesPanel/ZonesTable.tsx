@@ -98,6 +98,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
     showDeleteAction,
     showEditAction,
     showZoomAction,
+    showAssignmentLabel,
   } = usePanelPreferences('zones', nucleus);
 
   const showActions = showDeleteAction || showEditAction || showZoomAction;
@@ -116,6 +117,7 @@ function ZonesTable({ tableData, onUnlink, nucleus, info }: ZonesTableProps) {
         <thead>
           <tr>
             {showSerialNumber && <th rowSpan={2}>#</th>}
+            {showAssignmentLabel && <th rowSpan={2}>Assignment</th>}
             {(deltaX.show || deltaX.show) && <th colSpan={2}>δ (ppm)</th>}
             {showAssignment && (
               <>
