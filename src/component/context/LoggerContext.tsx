@@ -55,24 +55,32 @@ export function LoggerProvider({ children }: LoggerProviderProps) {
   const [isLogHistoryOpened, openLogHistory] = useState(false);
   const popupLoggingLevelRef = useRef<LogEntry['levelLabel']>();
 
-  const loggerRef = useRef<FifoLogger>(
-    new FifoLogger({
-      onChange: (log, logs) => {
-        if (
-          log &&
-          popupLoggingLevelRef.current &&
-          log.level === LOGGER_LEVELS[popupLoggingLevelRef.current]
-        ) {
-          openLogHistory(true);
-        }
-        if (log?.error) {
-          // eslint-disable-next-line no-console
-          console.error(log.error);
-        }
-        setLogsHistory(logs.slice());
-      },
-    }),
-  );
+  const loggerRef = useRef<FifoLogger>(new FifoLogger());
+
+  useEffect(() => {
+    function handleLogger({ detail: { logs } }) {
+      const log = logs.at(-1);
+      if (
+        log &&
+        popupLoggingLevelRef.current &&
+        log.level === LOGGER_LEVELS[popupLoggingLevelRef.current]
+      ) {
+        openLogHistory(true);
+      }
+      if (log?.error) {
+        // eslint-disable-next-line no-console
+        console.error(log.error);
+      }
+      setLogsHistory(logs.slice());
+    }
+    const loggerInstance = loggerRef.current;
+
+    loggerInstance.addEventListener('change', handleLogger);
+
+    return () => {
+      loggerInstance.removeEventListener('change', handleLogger);
+    };
+  }, []);
 
   useEffect(() => {
     if (loggingLevel) {

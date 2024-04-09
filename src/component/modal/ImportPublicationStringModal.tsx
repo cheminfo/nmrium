@@ -3,7 +3,7 @@ import { FifoLogger, LogEntry } from 'fifo-logger';
 import { Formik } from 'formik';
 import debounce from 'lodash/debounce';
 import { resurrect } from 'nmr-processing';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -61,13 +61,19 @@ function InnerImportPublicationStringModal(
   const dispatch = useDispatch();
   const toaster = useToaster();
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const loggerRef = useRef<FifoLogger>(
-    new FifoLogger({
-      onChange: (log, logs) => {
-        setLogs(logs.slice());
-      },
-    }),
-  );
+  const loggerRef = useRef<FifoLogger>(new FifoLogger());
+
+  useEffect(() => {
+    function handleLogs({ detail: { logs } }) {
+      setLogs(logs.slice());
+    }
+    const loggerInstance = loggerRef.current;
+    loggerInstance.addEventListener('change', handleLogs);
+
+    return () => {
+      loggerInstance.removeEventListener('change', handleLogs);
+    };
+  }, []);
 
   const COLUMNS: Array<Column<LogEntry>> = useMemo(
     () => [
