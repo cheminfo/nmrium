@@ -1,4 +1,4 @@
-import { DataXY } from 'cheminfo-types';
+import { DataXY, Logger } from 'cheminfo-types';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
@@ -10,15 +10,19 @@ export default function detectSignals(
   options: {
     from: number;
     to: number;
+    logger?: Logger;
     nucleus: string;
     frequency: number;
   },
 ) {
-  const { from, to, frequency, nucleus } = options;
+  const { from, to, frequency, nucleus, logger } = options;
 
   const { fromIndex, toIndex } = xGetFromToIndex(data.x, { from, to });
-  if (toIndex - fromIndex >= MAX_LENGTH) {
+
+  const size = toIndex - fromIndex;
+  if (size <= 16 || size >= MAX_LENGTH) {
     const ranges = xyAutoRangesPicking(data, {
+      logger,
       peakPicking: {
         sgOptions: {
           windowSize: 7,
