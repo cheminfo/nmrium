@@ -21,6 +21,9 @@ import { useScaleX } from '../utilities/scale';
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 import { AssignmentLabel } from './AssignmentLabel';
 import { Atoms } from './Atoms';
+import { useLogger } from '../../context/LoggerContext';
+import useSpectrum from '../../hooks/useSpectrum';
+import { isSpectrum1D, resizeRange } from '../../../data/data1d/Spectrum1D';
 
 const style = css`
   .target {
@@ -57,20 +60,26 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
 
   const scaleX = useScaleX();
   const dispatch = useDispatch();
+  const { logger } = useLogger();
+  const spectrum = useSpectrum();
   const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const isBlockedByEditing =
     selectedTool && selectedTool === options.editRange.id;
 
   function handleOnStopResizing(position) {
+    if (!spectrum || !isSpectrum1D(spectrum)) return;
+    const from = scaleX().invert(position.x2);
+    const to = scaleX().invert(position.x1);
+
+    const newRange = resizeRange(spectrum, { from, to, range, logger });
+
+    if (!newRange) return;
+
     dispatch({
       type: 'RESIZE_RANGE',
       payload: {
-        range: {
-          ...range,
-          from: scaleX().invert(position.x2),
-          to: scaleX().invert(position.x1),
-        },
+        range: newRange,
       },
     });
   }

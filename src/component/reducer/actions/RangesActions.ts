@@ -10,11 +10,9 @@ import {
   SIGNAL_INLCUDED_KINDS,
 } from '../../../data/constants/signalsKinds';
 import {
-  addRange,
   changeRangeSignal,
   detectRanges,
   updateRangesRelativeValues,
-  changeRange,
   changeRangeRelativeValue,
   isSpectrum1D,
 } from '../../../data/data1d/Spectrum1D';
@@ -34,7 +32,6 @@ import { RangeData } from '../../panels/RangesPanel/hooks/useMapRanges';
 import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
-import getRange from '../helper/getRange';
 import { getSpectrum } from '../helper/getSpectrum';
 import { setRangesViewProperty } from '../helper/setRangesViewProperty';
 import { ActionType } from '../types/ActionType';
@@ -110,8 +107,7 @@ type ChangeRangeSumAction = ActionType<
 type AddRangeAction = ActionType<
   'ADD_RANGE',
   {
-    startX: number;
-    endX: number;
+    range: Range;
   }
 >;
 type ChangeRangeRelativeValueAction = ActionType<
@@ -123,7 +119,10 @@ type ChangeRangeSignalValueAction = ActionType<
   { rangeID: string; signalID: string; value: number }
 >;
 type UpdateRangAction = ActionType<'UPDATE_RANGE', { range: Range }>;
-type CutRangAction = ActionType<'CUT_RANGE', { cutValue: number }>;
+type CutRangAction = ActionType<
+  'CUT_RANGE',
+  { ranges: Record<string, Range[]> }
+>;
 
 type ToggleRangesViewAction = ActionType<
   'TOGGLE_RANGES_VIEW_PROPERTY',
@@ -448,12 +447,17 @@ function handleSetDiaIDRange(draft: Draft<State>, action: SetDiaIDRangeAction) {
 
 //action
 function handleResizeRange(draft: Draft<State>, action: ResizeRangeAction) {
-  const activeSpectrum = getActiveSpectrum(draft);
-  if (activeSpectrum?.id) {
-    const { index } = activeSpectrum;
-    const { range } = action.payload;
-    changeRange(draft.data[index] as Spectrum1D, range);
-  }
+  const spectrum = getSpectrum(draft);
+
+  if (!spectrum) return;
+  const { range } = action.payload;
+
+  if (!range && !isSpectrum1D(spectrum)) return;
+
+  const index = spectrum.ranges.values.findIndex((i) => i.id === range.id);
+
+  spectrum.ranges.values[index] = range;
+  updateRangesRelativeValues(spectrum);
 }
 
 //action
@@ -488,8 +492,7 @@ function initiateRangeSumOptions(datum: Spectrum1D, options: SumParams) {
 
 //action
 function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
-  const { startX, endX } = action.payload;
-  const range = getRange(draft, { startX, endX });
+  const { range } = action.payload;
   const {
     data,
     view: {
@@ -500,12 +503,8 @@ function handleAddRange(draft: Draft<State>, action: AddRangeAction) {
   const activeSpectrum = getActiveSpectrum(draft);
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
-    const [from, to] = range;
     const datum = data[index] as Spectrum1D;
-    addRange(datum, {
-      from,
-      to,
-    });
+    datum.ranges.values.push(range);
     initiateRangeSumOptions(datum, {
       nucleus,
       molecules,
@@ -595,16 +594,15 @@ function handleToggleRangesViewProperty(
 }
 
 function handleCutRange(draft: Draft<State>, action: CutRangAction) {
-  const { cutValue } = action.payload;
+  const { ranges: cutRanges } = action.payload;
   const spectrum = getSpectrum(draft) as Spectrum1D;
   const ranges = spectrum.ranges.values;
 
   for (let i = 0; i < ranges.length; i++) {
-    const { to, from } = ranges[i];
-    if (cutValue > from && cutValue < to) {
+    const { id } = ranges[i];
+    if (cutRanges?.[id]) {
       ranges.splice(i, 1);
-      addRange(spectrum, { from, to: cutValue });
-      addRange(spectrum, { from: cutValue, to });
+      ranges.push(...cutRanges[id]);
     }
   }
 
