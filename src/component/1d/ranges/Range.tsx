@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-processing';
 
+import { isSpectrum1D, resizeRange } from '../../../data/data1d/Spectrum1D';
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
@@ -10,10 +11,12 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
+import { useLogger } from '../../context/LoggerContext';
 import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
+import useSpectrum from '../../hooks/useSpectrum';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { useScaleX } from '../utilities/scale';
@@ -21,9 +24,6 @@ import { useScaleX } from '../utilities/scale';
 import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 import { AssignmentLabel } from './AssignmentLabel';
 import { Atoms } from './Atoms';
-import { useLogger } from '../../context/LoggerContext';
-import useSpectrum from '../../hooks/useSpectrum';
-import { isSpectrum1D, resizeRange } from '../../../data/data1d/Spectrum1D';
 
 const style = css`
   .target {
