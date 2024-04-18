@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { Select } from '@blueprintjs/select';
 import { css } from '@emotion/react';
 import { NmrData2DFt } from 'cheminfo-types';
 import debounce from 'lodash/debounce';
@@ -7,7 +8,7 @@ import { Filters } from 'nmr-processing';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaRulerHorizontal, FaRulerVertical } from 'react-icons/fa';
 import { MdLooksTwo } from 'react-icons/md';
-import { Toolbar } from 'react-science/ui';
+import { Button, Toolbar, useSelect } from 'react-science/ui';
 
 import { useActivePhaseTraces } from '../2d/1d-tracer/phase-correction-traces/useActivePhaseTraces';
 import { useDispatch } from '../context/DispatchContext';
@@ -21,6 +22,25 @@ import { TraceDirection } from '../reducer/Reducer';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
+
+type PhaseCorrectionTypes = 'manual' | 'automatic';
+
+interface AlgorithmItem {
+  label: string;
+  value: PhaseCorrectionTypes;
+}
+
+const defaultPhasingTypeItem: AlgorithmItem = {
+  label: 'Manual',
+  value: 'manual',
+};
+const algorithms: AlgorithmItem[] = [
+  defaultPhasingTypeItem,
+  {
+    label: 'Automatic',
+    value: 'automatic',
+  },
+];
 
 const inputStyle: InputStyle = {
   input: {
@@ -62,8 +82,14 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   const ph0Ref = useRef<any>();
   const ph1Ref = useRef<any>();
 
+  const { value: phaseCorrectionTypeItem, ...defaultSelectProps } =
+    useSelect<AlgorithmItem>({
+      defaultSelectedItem: defaultPhasingTypeItem,
+      itemTextKey: 'label',
+    });
+
   useEffect(() => {
-    if (filter) {
+    if (filter && phaseCorrectionTypeItem?.value === 'manual') {
       const { value } = filter;
       const phaseOptions: PhaseOptions = defaultPhaseOptions;
 
@@ -75,7 +101,7 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
       setValue(phaseOptions);
       valueRef.current = phaseOptions;
     }
-  }, [filter]);
+  }, [filter, phaseCorrectionTypeItem?.value]);
 
   useEffect(() => {
     if (ph0Ref.current && ph1Ref.current) {
@@ -184,7 +210,23 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
   }
 
   function handleApplyFilter() {
-    dispatch({ type: 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER' });
+    switch (phaseCorrectionTypeItem?.value) {
+      case 'automatic': {
+        dispatch({
+          type: 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER',
+        });
+        break;
+      }
+
+      case 'manual': {
+        dispatch({
+          type: 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER',
+        });
+        break;
+      }
+      default:
+        break;
+    }
   }
 
   function handleToggleAddTraceToBothDirections() {
@@ -193,76 +235,92 @@ export default function PhaseCorrectionTwoDimensionsPanel() {
 
   return (
     <HeaderContainer style={{ padding: '0 5px' }}>
-      <Label title="Direction:" style={headerLabelStyle}>
-        <Toolbar>
-          <Toolbar.Item
-            css={css`
-              border: 1px solid #f7f7f7;
-            `}
-            tooltip="Horizontal"
-            icon={<FaRulerHorizontal />}
-            active={activeTraceDirection === 'horizontal'}
-            onClick={() => onChangeHandler('horizontal')}
+      <div style={{ padding: '0 5px' }}>
+        <Select<AlgorithmItem>
+          items={algorithms}
+          filterable={false}
+          itemsEqual="value"
+          {...defaultSelectProps}
+        >
+          <Button
+            text={phaseCorrectionTypeItem?.label}
+            rightIcon="double-caret-vertical"
           />
-          <Toolbar.Item
-            css={css`
-              border: 1px solid #f7f7f7;
-            `}
-            tooltip="Vertical"
-            icon={<FaRulerVertical />}
-            active={activeTraceDirection === 'vertical'}
-            onClick={() => onChangeHandler('vertical')}
-          />
-        </Toolbar>
-      </Label>
-      <div style={{ paddingRight: '5px' }}>
-        <Toolbar>
-          <Toolbar.Item
-            tooltip="Add the trace in both directions"
-            icon={<MdLooksTwo />}
-            active={addTracesToBothDirections}
-            onClick={handleToggleAddTraceToBothDirections}
-          />
-        </Toolbar>
+        </Select>
       </div>
+      {phaseCorrectionTypeItem?.value === 'manual' && (
+        <>
+          <Label title="Direction:" style={headerLabelStyle}>
+            <Toolbar>
+              <Toolbar.Item
+                css={css`
+                  border: 1px solid #f7f7f7;
+                `}
+                tooltip="Horizontal"
+                icon={<FaRulerHorizontal />}
+                active={activeTraceDirection === 'horizontal'}
+                onClick={() => onChangeHandler('horizontal')}
+              />
+              <Toolbar.Item
+                css={css`
+                  border: 1px solid #f7f7f7;
+                `}
+                tooltip="Vertical"
+                icon={<FaRulerVertical />}
+                active={activeTraceDirection === 'vertical'}
+                onClick={() => onChangeHandler('vertical')}
+              />
+            </Toolbar>
+          </Label>
+          <div style={{ paddingRight: '5px' }}>
+            <Toolbar>
+              <Toolbar.Item
+                tooltip="Add the trace in both directions"
+                icon={<MdLooksTwo />}
+                active={addTracesToBothDirections}
+                onClick={handleToggleAddTraceToBothDirections}
+              />
+            </Toolbar>
+          </div>
 
-      <Label title="PH0:" style={headerLabelStyle}>
-        <Input
-          name="ph0"
-          style={inputStyle}
-          onChange={handleInput}
-          value={value[activeTraceDirection].ph0}
-          type="number"
-          debounceTime={250}
-        />
-      </Label>
-      <Label title="PH1:" style={headerLabelStyle}>
-        <Input
-          name="ph1"
-          style={inputStyle}
-          onChange={handleInput}
-          value={value[activeTraceDirection].ph1}
-          type="number"
-          debounceTime={250}
-        />
-      </Label>
-      <InputRange
-        ref={ph0Ref}
-        name="ph0"
-        label="Change PH0 (click and drag)"
-        shortLabel="Ph0"
-        style={{ width: '20%' }}
-        onChange={handleRangeChange}
-      />
-      <InputRange
-        ref={ph1Ref}
-        name="ph1"
-        label="Change PH1 (click and drag)"
-        shortLabel="Ph1"
-        style={{ width: '20%' }}
-        onChange={handleRangeChange}
-      />
-
+          <Label title="PH0:" style={headerLabelStyle}>
+            <Input
+              name="ph0"
+              style={inputStyle}
+              onChange={handleInput}
+              value={value[activeTraceDirection].ph0}
+              type="number"
+              debounceTime={250}
+            />
+          </Label>
+          <Label title="PH1:" style={headerLabelStyle}>
+            <Input
+              name="ph1"
+              style={inputStyle}
+              onChange={handleInput}
+              value={value[activeTraceDirection].ph1}
+              type="number"
+              debounceTime={250}
+            />
+          </Label>
+          <InputRange
+            ref={ph0Ref}
+            name="ph0"
+            label="Change PH0 (click and drag)"
+            shortLabel="Ph0"
+            style={{ width: '20%' }}
+            onChange={handleRangeChange}
+          />
+          <InputRange
+            ref={ph1Ref}
+            name="ph1"
+            label="Change PH1 (click and drag)"
+            shortLabel="Ph1"
+            style={{ width: '20%' }}
+            onChange={handleRangeChange}
+          />
+        </>
+      )}
       <ActionButtons onDone={handleApplyFilter} onCancel={handleCancelFilter} />
     </HeaderContainer>
   );

@@ -524,6 +524,10 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return FiltersActions.handleApplyManualTowDimensionsPhaseCorrectionFilter(
           draft,
         );
+      case 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER':
+        return FiltersActions.handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
+          draft,
+        );
       case 'CHANGE_SPECTRUM_VISIBILITY':
         return SpectraActions.handleChangeSpectrumVisibilityById(draft, action);
       case 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS':

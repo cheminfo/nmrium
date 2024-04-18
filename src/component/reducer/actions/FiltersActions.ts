@@ -184,6 +184,7 @@ export type FiltersActions =
       | 'APPLY_ABSOLUTE_FILTER'
       | 'APPLY_MANUAL_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
       | 'TOGGLE_ADD_PHASE_CORRECTION_TRACE_TO_BOTH_DIRECTIONS'
+      | 'APPLY_AUTO_PHASE_CORRECTION_TOW_DIMENSION_FILTER'
     >;
 
 function getFilterUpdateDomainRules(
@@ -1516,6 +1517,43 @@ function handleApplyManualTowDimensionsPhaseCorrectionFilter(
   }
 }
 
+//action
+function handleApplyAutoPhaseCorrectionTwoDimensionsFilter(
+  draft: Draft<State>,
+) {
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum || !draft.tempData) {
+    return;
+  }
+
+  const { index } = activeSpectrum;
+  const activeFilterIndex = getActiveFilterIndex(draft);
+
+  FiltersManager.applyFilter(
+    draft.tempData[index],
+    [
+      {
+        name: phaseCorrectionTwoDimensions.id,
+        value: {},
+      },
+    ],
+    { filterIndex: activeFilterIndex },
+  );
+
+  draft.data[index] = draft.tempData[index];
+
+  if (activeFilterIndex !== -1) {
+    rollbackSpectrumByFilter(draft, {
+      searchBy: 'name',
+      key: phaseCorrectionTwoDimensions.id,
+      triggerSource: 'Apply',
+    });
+  } else {
+    updateView(draft, phaseCorrectionTwoDimensions.DOMAIN_UPDATE_RULES);
+  }
+}
+
 export {
   handleShiftSpectrumAlongXAxis,
   handleApplyZeroFillingFilter,
@@ -1549,4 +1587,5 @@ export {
   handleSetTwoDimensionPhaseCorrectionPivotPoint,
   handleCalculateManualTwoDimensionPhaseCorrection,
   handleToggleAddTracesToBothDirections,
+  handleApplyAutoPhaseCorrectionTwoDimensionsFilter,
 };
