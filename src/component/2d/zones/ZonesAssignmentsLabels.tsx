@@ -1,6 +1,6 @@
 import { Spectrum2D } from 'nmr-load-save';
 import { Zone, Zones as ZonesType } from 'nmr-processing';
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -231,10 +231,6 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     textRef.current,
   );
 
-  if (!assignment) {
-    return null;
-  }
-
   return (
     <g>
       <text
@@ -261,14 +257,14 @@ function ZonesAssignmentsLabelsInner({ zones, displayerKey }: ZonesInnerProps) {
       clipPath={`url(#${displayerKey}clip-chart-2d)`}
       className="2d-zones-assignments-labels"
     >
-      {zones.values.map((zone) => (
-        <AssignmentLabel key={zone.id} zone={zone} />
-      ))}
+      {zones.values
+        .filter((zone) => zone?.assignment)
+        .map((zone) => (
+          <AssignmentLabel key={zone.id} zone={zone} />
+        ))}
     </g>
   );
 }
-
-const MemoizedZonesAssignmentsLabels = memo(ZonesAssignmentsLabelsInner);
 
 const emptyData = { zones: {}, display: {} };
 
@@ -276,8 +272,9 @@ export default function ZonesAssignmentsLabels() {
   const { displayerKey } = useChartData();
 
   const { zones, display } = useSpectrum(emptyData) as Spectrum2D;
+  const { showAssignmentsLabels } = useActiveSpectrumZonesViewState();
 
-  if (!display.isVisible) return null;
+  if (!display.isVisible || !showAssignmentsLabels) return null;
 
-  return <MemoizedZonesAssignmentsLabels {...{ zones, displayerKey }} />;
+  return <ZonesAssignmentsLabelsInner {...{ zones, displayerKey }} />;
 }
