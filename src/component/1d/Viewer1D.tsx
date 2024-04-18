@@ -9,6 +9,8 @@ import {
 import { ResponsiveChart } from 'react-d3-utils';
 import { useOnOff } from 'react-science/ui';
 
+import { createRange, isSpectrum1D } from '../../data/data1d/Spectrum1D';
+import { cutRange } from '../../data/data1d/Spectrum1D/ranges/createRange';
 import BrushXY, { BRUSH_TYPE } from '../1d-2d/tools/BrushXY';
 import CrossLinePointer from '../1d-2d/tools/CrossLinePointer';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
@@ -23,9 +25,11 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useMapKeyModifiers } from '../context/KeyModifierContext';
+import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
+import useSpectrum from '../hooks/useSpectrum';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
@@ -73,8 +77,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const brushStartRef = useRef<number | null>(null);
   const verticalAlign = useVerticalAlign();
   const activeSpectrum = useActiveSpectrum();
+  const spectrum = useSpectrum();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
+  const { logger } = useLogger();
 
   const [scaleState, dispatchScale] = useReducer(
     scaleReducer,
@@ -139,6 +145,11 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
       const keyModifiers = getModifiersKey(brushData as unknown as MouseEvent);
 
+      const selectRange = getRange(state, {
+        startX: brushData.startX,
+        endX: brushData.endX,
+      });
+
       if (brushData.mouseButton === 'main') {
         const propagateEvent = () => {
           if (!scaleState.scaleX || !scaleState.scaleY) return;
@@ -165,12 +176,23 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 });
                 break;
               case options.rangePicking.id: {
-                if (!activeSpectrum) break;
+                if (!spectrum) break;
 
-                dispatch({
-                  type: 'ADD_RANGE',
-                  payload: brushData,
-                });
+                if (isSpectrum1D(spectrum)) {
+                  const [from, to] = selectRange;
+                  const range = createRange(spectrum, {
+                    from,
+                    to,
+                    logger,
+                  });
+
+                  if (!range) break;
+
+                  dispatch({
+                    type: 'ADD_RANGE',
+                    payload: { range },
+                  });
+                }
 
                 break;
               }
@@ -214,10 +236,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 });
                 break;
               case options.matrixGenerationExclusionZones.id: {
-                const [from, to] = getRange(state, {
-                  startX: brushData.startX,
-                  endX: brushData.endX,
-                });
+                const [from, to] = selectRange;
                 dispatchPreferences({
                   type: 'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
                   payload: {
@@ -272,14 +291,15 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     },
     [
       getModifiersKey,
+      state,
       selectedTool,
       scaleState,
       primaryKeyIdentifier,
       dispatch,
-      activeSpectrum,
+      spectrum,
+      logger,
       dispatchPreferences,
       activeTab,
-      state,
       xDomain,
       openAnalysisModal,
     ],
@@ -328,13 +348,19 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
                 payload: { cutValue: xPPM },
               });
               break;
-            case options.rangePicking.id:
-              dispatch({
-                type: 'CUT_RANGE',
-                payload: { cutValue: xPPM },
-              });
-              break;
+            case options.rangePicking.id: {
+              if (!spectrum) break;
 
+              if (isSpectrum1D(spectrum)) {
+                const cutRanges = cutRange(spectrum, xPPM);
+
+                dispatch({
+                  type: 'CUT_RANGE',
+                  payload: { ranges: cutRanges },
+                });
+              }
+              break;
+            }
             case options.phaseCorrection.id:
               dispatch({
                 type: 'SET_ONE_DIMENSION_PIVOT_POINT',
@@ -353,7 +379,14 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           break;
       }
     },
-    [dispatch, getModifiersKey, primaryKeyIdentifier, scaleState, selectedTool],
+    [
+      dispatch,
+      getModifiersKey,
+      primaryKeyIdentifier,
+      scaleState,
+      selectedTool,
+      spectrum,
+    ],
   );
 
   return (

@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-processing';
 
+import { isSpectrum1D, resizeRange } from '../../../data/data1d/Spectrum1D';
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
@@ -10,10 +11,12 @@ import {
 } from '../../assignment/AssignmentsContext';
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
+import { useLogger } from '../../context/LoggerContext';
 import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { useResizerStatus } from '../../hooks/useResizerStatus';
+import useSpectrum from '../../hooks/useSpectrum';
 import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { useScaleX } from '../utilities/scale';
@@ -57,20 +60,26 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
 
   const scaleX = useScaleX();
   const dispatch = useDispatch();
+  const { logger } = useLogger();
+  const spectrum = useSpectrum();
   const { showIntegralsValues } = useActiveSpectrumRangesViewState();
 
   const isBlockedByEditing =
     selectedTool && selectedTool === options.editRange.id;
 
   function handleOnStopResizing(position) {
+    if (!spectrum || !isSpectrum1D(spectrum)) return;
+    const from = scaleX().invert(position.x2);
+    const to = scaleX().invert(position.x1);
+
+    const newRange = resizeRange(spectrum, { from, to, range, logger });
+
+    if (!newRange) return;
+
     dispatch({
       type: 'RESIZE_RANGE',
       payload: {
-        range: {
-          ...range,
-          from: scaleX().invert(position.x2),
-          to: scaleX().invert(position.x1),
-        },
+        range: newRange,
       },
     });
   }
