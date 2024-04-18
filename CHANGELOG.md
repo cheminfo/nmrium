@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.54.0](https://github.com/cheminfo/nmrium/compare/v0.53.0...v0.54.0) (2024-04-18)
+
+
+### Features
+
+* automatic two dimensions phase correction ([#3022](https://github.com/cheminfo/nmrium/issues/3022)) ([690971f](https://github.com/cheminfo/nmrium/commit/690971f9dc0774379d97a655e20285bf3c20d297))
+* improve main toolbar tooltip ([#3008](https://github.com/cheminfo/nmrium/issues/3008)) ([dc5703c](https://github.com/cheminfo/nmrium/commit/dc5703c9a3bd93bcf619637bd9f85a21d08d127d))
+* improve spectra recoloring ([#2997](https://github.com/cheminfo/nmrium/issues/2997)) ([c446198](https://github.com/cheminfo/nmrium/commit/c446198ce3231c7d4ec47edc0fab4406e4e2a5c9))
+
+
+### Bug Fixes
+
+* add more gyromagnetic ratio constants ([#3006](https://github.com/cheminfo/nmrium/issues/3006)) ([cf9cb10](https://github.com/cheminfo/nmrium/commit/cf9cb10f274de3bfe8ce4c4cd1e227f996bf3d9f))
+* create a simple signal if data length is smaller than 7 points ([#3020](https://github.com/cheminfo/nmrium/issues/3020)) ([c0b406d](https://github.com/cheminfo/nmrium/commit/c0b406d0e43617e4de8e2a8a567a623c2aa7f726))
+* crosshair label position ([#3001](https://github.com/cheminfo/nmrium/issues/3001)) ([9381c21](https://github.com/cheminfo/nmrium/commit/9381c2183d98befa81ee5187800909c1377ebcff))
+* info pane appearance ([#3005](https://github.com/cheminfo/nmrium/issues/3005)) ([4fca536](https://github.com/cheminfo/nmrium/commit/4fca536605a16355545e7f8533ddf5a0fb05e8fc))
+* set the same workspace for the  base and current object, in case, the source is a nmriumFile ([cafc51a](https://github.com/cheminfo/nmrium/commit/cafc51a7af4ed5a7aba8eba1cf0836ed80ce7f81))
+* set the workspace settings from the nmrium object ([acb20a6](https://github.com/cheminfo/nmrium/commit/acb20a60618d06e4c8f1523c574ab874daf3eb02))
+* vertical slicing on phase correction ([#3015](https://github.com/cheminfo/nmrium/issues/3015)) ([e1c7b7c](https://github.com/cheminfo/nmrium/commit/e1c7b7c7e3be8aad1282d1bdd6194a9f5108b94e))
+
 ## [0.53.0](https://github.com/cheminfo/nmrium/compare/v0.52.0...v0.53.0) (2024-03-22)
 
 
