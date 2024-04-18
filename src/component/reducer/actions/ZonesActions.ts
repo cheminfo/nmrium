@@ -111,6 +111,10 @@ type ChangeZoneAssignmentLabelAction = ActionType<
   'CHANGE_ZONE_ASSIGNMENT_LABEL',
   { zoneID: string; value: string }
 >;
+type SetZoneAssignmentLabelCoordinationAction = ActionType<
+  'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
+  { zoneID: string; coordination: { x: number; y: number } }
+>;
 
 export type ZonesActions =
   | AutoZonesDetectionAction
@@ -126,6 +130,7 @@ export type ZonesActions =
   | UnlinkZoneAction
   | ToggleZonesViewAction
   | ChangeZoneAssignmentLabelAction
+  | SetZoneAssignmentLabelCoordinationAction
   | ActionType<'AUTO_ZONES_SPECTRA_PICKING'>;
 
 //action
@@ -461,22 +466,27 @@ function handleSaveEditedZone(
   }
 }
 
+function initializeZoneViewObject(draft: Draft<State>, spectrumID: string) {
+  const zonesView = draft.view.zones;
+
+  if (spectrumID in zonesView) return;
+
+  const defaultZonesView = { ...defaultZonesViewState };
+  zonesView[spectrumID] = defaultZonesView;
+}
+
 function togglePeaksViewProperty(
   draft: Draft<State>,
   key: keyof FilterType<ZonesViewState, boolean>,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
 
-  if (activeSpectrum?.id) {
-    const zonesView = draft.view.zones;
-    if (zonesView[activeSpectrum.id]) {
-      zonesView[activeSpectrum.id][key] = !zonesView[activeSpectrum.id][key];
-    } else {
-      const defaultZonesView = { ...defaultZonesViewState };
-      defaultZonesView[key] = !defaultZonesView[key];
-      zonesView[activeSpectrum.id] = defaultZonesView;
-    }
-  }
+  if (!activeSpectrum?.id) return;
+
+  initializeZoneViewObject(draft, activeSpectrum.id);
+
+  const zonesView = draft.view.zones;
+  zonesView[activeSpectrum.id][key] = !zonesView[activeSpectrum.id][key];
 }
 
 //action
@@ -508,6 +518,22 @@ function handleChangeZoneAssignmentLabel(
   }
 }
 
+function handleSetZoneAssignmentLabelCoordination(
+  draft: Draft<State>,
+  action: SetZoneAssignmentLabelCoordinationAction,
+) {
+  const { zoneID, coordination } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum) return;
+
+  initializeZoneViewObject(draft, activeSpectrum.id);
+
+  const zonesView = draft.view.zones;
+  zonesView[activeSpectrum.id].assignmentsLabelsCoordinates[zoneID] =
+    coordination;
+}
+
 export {
   handleAdd2dZone,
   handleAutoZonesDetection,
@@ -525,4 +551,5 @@ export {
   handleAutoSpectraZonesDetection,
   handleToggleZonesViewProperty,
   handleChangeZoneAssignmentLabel,
+  handleSetZoneAssignmentLabelCoordination,
 };

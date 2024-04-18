@@ -9,6 +9,7 @@ export const defaultZonesViewState: ZonesViewState = {
   showSignals: true,
   showZones: true,
   showAssignmentsLabels: false,
+  assignmentsLabelsCoordinates: {},
 };
 
 export function useActiveSpectrumZonesViewState() {
