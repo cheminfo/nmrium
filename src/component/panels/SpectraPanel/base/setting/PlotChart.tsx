@@ -28,7 +28,7 @@ export default function PlotChart({
 }: PlotChartPros) {
   return (
     <Plot width={180} height={220}>
-      {!hideHeading && <Heading title="Sanplot" />}
+      {!hideHeading && <Heading title="SAN plot" />}
       <LineSeries
         data={data.sanPlot?.[sign] || []}
         xAxis="x"
