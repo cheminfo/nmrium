@@ -21,7 +21,7 @@ function Spectrum2DHistogram({
   return (
     <div>
       <div style={{ textAlign: 'center', paddingBottom: 5, paddingTop: 5 }}>
-        San Plot
+        SAN plot
       </div>
 
       <div

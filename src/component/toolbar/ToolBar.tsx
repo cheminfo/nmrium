@@ -191,7 +191,7 @@ export default function ToolBar() {
         title: options.zoom.label,
         subTitles: [
           { title: 'Vertical', shortcuts: ['Scroll wheel'] },
-          { title: 'Horizontal', shortcuts: ['Shift', 'Scroll wheel'] },
+          { title: 'Horizontal', shortcuts: ['SHIFT', 'Scroll wheel'] },
           { title: 'Pan', shortcuts: ['Right mouse'] },
         ],
       },
@@ -206,7 +206,7 @@ export default function ToolBar() {
           { title: 'Horizontal and Vertical', shortcuts: ['f', 'f'] },
         ],
         description:
-          'You can zoom out by double click on the left mouse button and full zoom out by press key "f" or press key "f" twice to fit the spectra in the window.',
+          'Zoom out by double-clicking the left mouse button, and fully zoom out horizontally by pressing the key "f". Alternatively, press the key "ff" to fit the spectra horizontally and vertically.',
         link: 'https://docs.nmrium.org/help/zoom-and-scale',
       },
       onClick: handleFullZoomOut,
@@ -217,8 +217,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.peakPicking.label,
         shortcuts: ['p'],
-        description:
-          'You can detect peaks manually or automatically in the spectrum.',
+        description: 'Detect peaks manually or automatically in the spectrum.',
         link: 'https://docs.nmrium.org/20_1d-spectra/peaks/peaks',
       },
 
@@ -230,7 +229,7 @@ export default function ToolBar() {
         title: options.integral.label,
         shortcuts: ['i'],
         description:
-          'To calculate the integration, hold Shift and left-click, then drag over the signal range.',
+          'Manually integrate the spectrum. Click, drag, and release while holding SHIFT to draw the integral. Resize the integrals by moving the edges. Cut an integral with SHIFT + click.',
         link: 'https://docs.nmrium.org/help/integrations',
       },
       icon: <SvgNmrIntegrate />,
@@ -241,7 +240,7 @@ export default function ToolBar() {
         title: options.zonePicking.label,
         shortcuts: ['r'],
         description:
-          'You can detect zones manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect zones automatically.',
+          'Draw 2D zones by clicking, dragging, and releasing while holding SHIFT. Alternatively, detect zones automatically.',
         link: 'https://docs.nmrium.org/30_2d-spectra/zones/zones',
       },
       icon: <FaDiceFour />,
@@ -251,7 +250,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.slicing.label,
         description:
-          'You can display the shift on the x-axis and the y-axis for each point of a 2D spectrum.',
+          'Display the horizontal and vertical slices of the selected 2D spectrum at the level of the pointer.',
         link: 'https://docs.nmrium.org/30_2d-spectra/slicing/slicing',
       },
       icon: <PiKnifeBold />,
@@ -262,7 +261,7 @@ export default function ToolBar() {
         title: options.rangePicking.label,
         shortcuts: ['r'],
         description:
-          'You can detect ranges manually by selecting, holding Shift,left-click, dragging, and then releasing. Alternatively, detect ranges automatically.',
+          'Define ranges and analyse multiplet automatically or manually.  Click, drag, and release while holding SHIFT to draw the range. Ranges can be resized by moving the edges.',
         link: 'https://docs.nmrium.org/20_1d-spectra/ranges/ranges',
       },
       icon: <SvgNmrRangePicking />,
@@ -279,6 +278,8 @@ export default function ToolBar() {
       tooltip: {
         title: options.apodization.label,
         shortcuts: ['a'],
+        description:
+          'Apply mathematical function that the FID is multiplied by before Fourier Transform.',
       },
       icon: <SvgNmrApodization />,
     },
@@ -288,7 +289,7 @@ export default function ToolBar() {
         title: options.zeroFilling.label,
         shortcuts: ['z'],
         description:
-          'To improve spectrum quality by increasing the number of points per ppm, by default, the number of points is twice as many points as in the original FID.',
+          'Improve spectrum quality by increasing the number of points. By default, the number of points is twice as many as in the original FID.',
         link: 'https://docs.nmrium.org/20_1d-spectra/preprocessing/preprocessing#zero-filling',
       },
       icon: <SvgNmrZeroFilling />,
@@ -298,7 +299,8 @@ export default function ToolBar() {
       tooltip: {
         title: options.phaseCorrection.label,
         shortcuts: ['a'],
-        description: 'To phase the spectrum after the FFT.',
+        description:
+          'Correct the spectrum phase manually or automatically. For manual phase correction, define the pivot using SHIFT + click, then press the PH0 and PH1 button, and move the mouse horizontally.',
         link: 'https://docs.nmrium.org/20_1d-spectra/phase/phase',
       },
       icon: <SvgNmrPhaseCorrection />,
@@ -318,7 +320,7 @@ export default function ToolBar() {
         title: options.baselineCorrection.label,
         shortcuts: ['b'],
         description:
-          'To process the spectrum to be a straight line at zero absorbance.',
+          'Correct the baseline of the spectrum. You should draw zones corresponding to the noise using click, drag, release while pressing SHIFT.',
         link: 'https://docs.nmrium.org/20_1d-spectra/baseline/baseline',
       },
       icon: <SvgNmrBaselineCorrection />,
@@ -328,6 +330,8 @@ export default function ToolBar() {
       tooltip: {
         title: options.exclusionZones.label,
         shortcuts: ['e'],
+        description:
+          'Define exclusion zones by clicking, dragging, releasing while pressing SHIFT. This option is practical for excluding large peaks like solvents.',
       },
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
@@ -338,7 +342,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.fft.label,
         shortcuts: ['t'],
-        description: 'To process the FID to FT spectrum.',
+        description: 'Perform a Fourier transform on the FID.',
         link: 'https://docs.nmrium.org/20_1d-spectra/ft/ft/',
       },
       onClick: handleOnFFTFilter,
@@ -375,7 +379,8 @@ export default function ToolBar() {
       tooltip: {
         title: options.spectraStackAlignments.label,
         shortcuts: ['s'],
-        description: 'To display the spectra in a stack mode.',
+        description:
+          'Toggle between stack mode and all the spectra aligned at the bottom.',
       },
       icon:
         verticalAlign === 'stack' ? (
@@ -391,7 +396,7 @@ export default function ToolBar() {
       tooltip: {
         title: `Display ${isRealSpectrumShown ? 'real' : 'imaginary'}`,
         description:
-          'To switch between imaginary and real part of the spectrum.',
+          'Toggle between the imaginary and real parts of the spectrum.',
         link: 'https://docs.nmrium.org/20_1d-spectra/views/views',
       },
       icon: <SvgNmrRealImag />,
@@ -403,7 +408,7 @@ export default function ToolBar() {
         title: `Baseline ${verticalAlign === 'bottom' ? 'center' : 'bottom'}`,
         shortcuts: ['c'],
         description:
-          'To align the spectra in the centre or at the bottom of the displayer.',
+          'Toggle between alignment of the spectra in the center or at the bottom of the display.',
       },
       icon:
         verticalAlign === 'bottom' ? (
