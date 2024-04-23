@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { Spectrum2D } from 'nmr-load-save';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
+import { LuSubtitles } from 'react-icons/lu';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
@@ -10,6 +11,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
+import { booleanToString } from '../../utility/booleanToString';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -26,6 +28,7 @@ function ZonesPanelInner({
   showZones,
   showSignals,
   showPeaks,
+  showAssignmentsLabels,
 }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -156,8 +159,15 @@ function ZonesPanelInner({
     });
   };
 
-  const total = zones?.values?.length || 0;
+  function handleShowAssignmentsLabel() {
+    dispatch({
+      type: 'TOGGLE_ZONES_VIEW_PROPERTY',
+      payload: { key: 'showAssignmentsLabels' },
+    });
+  }
 
+  const total = zones?.values?.length || 0;
+  const hasZones = zones?.values && zones.values.length > 0;
   return (
     <div
       css={[
@@ -183,7 +193,7 @@ function ZonesPanelInner({
           onSettingClick={settingsPanelHandler}
           leftButtons={[
             {
-              disabled: !zones.values || zones.values.length === 0,
+              disabled: !hasZones,
               icon: <FaUnlink />,
               tooltip: 'Remove all assignments',
               onClick: handleOnRemoveAssignments,
@@ -205,6 +215,13 @@ function ZonesPanelInner({
               tooltip: 'Show/Hide peaks',
               active: showPeaks,
               onClick: handleSetShowPeaks,
+            },
+            {
+              disabled: !hasZones,
+              icon: <LuSubtitles />,
+              tooltip: `${booleanToString(!showAssignmentsLabels)} assignments labels`,
+              onClick: handleShowAssignmentsLabel,
+              active: showAssignmentsLabels,
             },
           ]}
         />

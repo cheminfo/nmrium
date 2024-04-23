@@ -14,6 +14,7 @@ import {
   changeZoneSignal,
   detectZones,
   detectZonesManual,
+  isSpectrum2D,
 } from '../../../data/data2d/Spectrum2D';
 import { DetectionZonesOptions } from '../../../data/data2d/Spectrum2D/zones/getDetectionZones';
 import {
@@ -106,6 +107,15 @@ type ToggleZonesViewAction = ActionType<
   }
 >;
 
+type ChangeZoneAssignmentLabelAction = ActionType<
+  'CHANGE_ZONE_ASSIGNMENT_LABEL',
+  { zoneID: string; value: string }
+>;
+type SetZoneAssignmentLabelCoordinationAction = ActionType<
+  'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION',
+  { zoneID: string; coordination: { x: number; y: number } }
+>;
+
 export type ZonesActions =
   | AutoZonesDetectionAction
   | ChangeZonesFactorAction
@@ -119,6 +129,8 @@ export type ZonesActions =
   | SaveEditedZoneAction
   | UnlinkZoneAction
   | ToggleZonesViewAction
+  | ChangeZoneAssignmentLabelAction
+  | SetZoneAssignmentLabelCoordinationAction
   | ActionType<'AUTO_ZONES_SPECTRA_PICKING'>;
 
 //action
@@ -454,22 +466,27 @@ function handleSaveEditedZone(
   }
 }
 
+function initializeZoneViewObject(draft: Draft<State>, spectrumID: string) {
+  const zonesView = draft.view.zones;
+
+  if (spectrumID in zonesView) return;
+
+  const defaultZonesView = { ...defaultZonesViewState };
+  zonesView[spectrumID] = defaultZonesView;
+}
+
 function togglePeaksViewProperty(
   draft: Draft<State>,
   key: keyof FilterType<ZonesViewState, boolean>,
 ) {
   const activeSpectrum = getActiveSpectrum(draft);
 
-  if (activeSpectrum?.id) {
-    const zonesView = draft.view.zones;
-    if (zonesView[activeSpectrum.id]) {
-      zonesView[activeSpectrum.id][key] = !zonesView[activeSpectrum.id][key];
-    } else {
-      const defaultZonesView = { ...defaultZonesViewState };
-      defaultZonesView[key] = !defaultZonesView[key];
-      zonesView[activeSpectrum.id] = defaultZonesView;
-    }
-  }
+  if (!activeSpectrum?.id) return;
+
+  initializeZoneViewObject(draft, activeSpectrum.id);
+
+  const zonesView = draft.view.zones;
+  zonesView[activeSpectrum.id][key] = !zonesView[activeSpectrum.id][key];
 }
 
 //action
@@ -479,6 +496,42 @@ function handleToggleZonesViewProperty(
 ) {
   const { key } = action.payload;
   togglePeaksViewProperty(draft, key);
+}
+
+function handleChangeZoneAssignmentLabel(
+  draft: Draft<State>,
+  action: ChangeZoneAssignmentLabelAction,
+) {
+  const { zoneID, value } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum?.id) return;
+
+  const { index } = activeSpectrum;
+  const spectrum = draft.data[index];
+
+  if (!isSpectrum2D(spectrum)) return;
+
+  const zone = spectrum.zones.values.find((zone) => zone.id === zoneID);
+  if (zone) {
+    zone.assignment = value;
+  }
+}
+
+function handleSetZoneAssignmentLabelCoordination(
+  draft: Draft<State>,
+  action: SetZoneAssignmentLabelCoordinationAction,
+) {
+  const { zoneID, coordination } = action.payload;
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum) return;
+
+  initializeZoneViewObject(draft, activeSpectrum.id);
+
+  const zonesView = draft.view.zones;
+  zonesView[activeSpectrum.id].assignmentsLabelsCoordinates[zoneID] =
+    coordination;
 }
 
 export {
@@ -497,4 +550,6 @@ export {
   handleChangeZonesFactor,
   handleAutoSpectraZonesDetection,
   handleToggleZonesViewProperty,
+  handleChangeZoneAssignmentLabel,
+  handleSetZoneAssignmentLabelCoordination,
 };

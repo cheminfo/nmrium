@@ -12,6 +12,7 @@ import { FidContainer } from './fid/FidContainer';
 import { FTContainer } from './ft/FTContainer';
 import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
+import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels';
 
 interface Chart2DProps {
   spectra?: Spectrum1D[];
@@ -67,6 +68,7 @@ function chart2DInner({
       <FTContainer spectra={spectra} />
       <FidContainer />
       <Zones />
+      <ZonesAssignmentsLabels />
       <IndicationLines axis="X" show />
       <IndicationLines axis="Y" show />
       <SpectrumInfoBlock />

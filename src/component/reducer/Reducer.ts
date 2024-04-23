@@ -698,6 +698,13 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
         return ZonesActions.handleToggleZonesViewProperty(draft, action);
       case 'SAVE_EDITED_ZONE':
         return ZonesActions.handleSaveEditedZone(draft, action);
+      case 'CHANGE_ZONE_ASSIGNMENT_LABEL':
+        return ZonesActions.handleChangeZoneAssignmentLabel(draft, action);
+      case 'SET_ZONE_ASSIGNMENT_LABEL_COORDINATION':
+        return ZonesActions.handleSetZoneAssignmentLabelCoordination(
+          draft,
+          action,
+        );
 
       case 'ORDER_MULTIPLE_SPECTRA_ANALYSIS':
         return SpectraAnalysisActions.handleOrderSpectra(draft, action);
