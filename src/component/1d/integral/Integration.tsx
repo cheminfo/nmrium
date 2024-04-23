@@ -9,12 +9,15 @@ interface IntegralProps {
   integral: IntegralData;
   nucleus: string;
   max: number;
+  from: number;
+  to: number;
 }
 
-export function Integration({ integral, nucleus, max }: IntegralProps) {
+export function Integration(props: IntegralProps) {
+  const { integral, nucleus, max, from, to } = props;
   const { x, y } = integral;
   const { scaleRatio } = useActiveSpectrumIntegralsViewState();
-  const path = useIntegralPath({ x, y, max, scaleRatio });
+  const path = useIntegralPath({ x, y, max, scaleRatio, from, to });
   const { showIntegralsValues } = useActiveSpectrumIntegralsViewState();
   const integralPreferences = usePanelPreferences('integrals', nucleus);
 
