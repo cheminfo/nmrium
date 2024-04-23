@@ -129,20 +129,59 @@ function useLinkPath(
     },
   ];
 
+  /**
+   * Zone coordination
+   *  xMid= x2-x1/2;
+   *  yMid= y2-y1/2;
+   * (x1,y1)     ----------  (xMid,y1)  ---------- (x2,y1)
+   *    |                                             |
+   *    |                                             |
+   * (x1,yMid)                                    (x2,yMid)
+   *    |                                             |
+   *    |                                             |
+   * (x1,y2)    ----------   (xMid,y2) ----------  (x2,y2)
+   *
+   */
+
   const targetPoints: Position[] = [
     {
+      //Left Top
+      x: scaleX(x1),
+      y: scaleY(y1),
+    },
+    {
+      //Center Top
       x: targetXCenter,
       y: scaleY(y1),
     },
     {
-      x: targetXCenter,
-      y: scaleY(y1) + targetHeight,
+      //Right Top
+      x: scaleX(x2),
+      y: scaleY(y1),
     },
     {
-      x: scaleX(x1) + targetWidth,
+      //Right Center
+      x: scaleX(x2),
       y: targetYCenter,
     },
     {
+      //Right Bottom
+      x: scaleX(x2),
+      y: scaleY(y2),
+    },
+    {
+      //Center Bottom
+      x: targetXCenter,
+      y: scaleY(y2),
+    },
+
+    {
+      //Left Bottom
+      x: scaleX(x1),
+      y: scaleY(y2),
+    },
+    {
+      //Left Center
       x: scaleX(x1),
       y: targetYCenter,
     },
