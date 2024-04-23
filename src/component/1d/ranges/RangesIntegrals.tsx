@@ -11,6 +11,8 @@ interface IntegralData {
   y: Float64Array;
   // eslint-disable-next-line react/no-unused-prop-types
   id: string;
+  from: number;
+  to: number;
 }
 
 interface IntegralProps extends IntegralData {
@@ -18,9 +20,16 @@ interface IntegralProps extends IntegralData {
 }
 
 function Integral(props: IntegralProps) {
-  const { x, y, max } = props;
+  const { x, y, max, from, to } = props;
   const { integralsScaleRatio } = useActiveSpectrumRangesViewState();
-  const path = useIntegralPath({ x, y, max, scaleRatio: integralsScaleRatio });
+  const path = useIntegralPath({
+    x,
+    y,
+    max,
+    scaleRatio: integralsScaleRatio,
+    from,
+    to,
+  });
 
   return (
     <path
@@ -36,7 +45,10 @@ function Integral(props: IntegralProps) {
 const emptyData = { ranges: {}, info: {}, display: {} };
 
 function RangesIntegrals() {
-  const { displayerKey } = useChartData();
+  const {
+    displayerKey,
+    xDomain: [from, to],
+  } = useChartData();
   const spectrum = useSpectrum(emptyData) as Spectrum1D;
   const integrals = useIntegrals();
   if (
@@ -51,7 +63,14 @@ function RangesIntegrals() {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {integrals.values.map((integral) => {
-        return <Integral key={integral.id} {...integral} max={integrals.max} />;
+        return (
+          <Integral
+            key={integral.id}
+            {...integral}
+            max={integrals.max}
+            {...{ from, to }}
+          />
+        );
       })}
     </g>
   );

@@ -20,11 +20,11 @@ export default function IntegralsSeries() {
     view: {
       spectra: { activeTab: nucleus },
     },
+    xDomain: [from, to],
   } = useChartData();
   const integrals = useIntegrals();
 
   if (!integrals) return null;
-
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="integrals">
       {integrals.values.map((integral) => (
@@ -33,6 +33,7 @@ export default function IntegralsSeries() {
           key={integral.id}
           integral={integral}
           max={integrals.max}
+          {...{ from, to }}
         />
       ))}
     </g>

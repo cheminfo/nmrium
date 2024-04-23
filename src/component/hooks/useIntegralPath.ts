@@ -25,10 +25,12 @@ interface UseIntegralPathOptions {
   y: Float64Array;
   max: number;
   scaleRatio: number;
+  from?: number;
+  to?: number;
 }
 
 export default function useIntegralPath(options: UseIntegralPathOptions) {
-  const { x, y, max, scaleRatio } = options;
+  const { x, y, max, scaleRatio, from, to } = options;
 
   const scaleX = useXScale();
   const scaleY = useIntegralYDomain(max, scaleRatio);
@@ -38,6 +40,8 @@ export default function useIntegralPath(options: UseIntegralPathOptions) {
     {
       nbPoints: 200,
       optimize: true,
+      from,
+      to,
     },
   );
 
