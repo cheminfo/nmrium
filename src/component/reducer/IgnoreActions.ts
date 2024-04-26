@@ -13,6 +13,7 @@ const ignoreActions = new Set<Partial<Action['type']>>([
   'SET_ONE_DIMENSION_PIVOT_POINT',
   'SET_TWO_DIMENSION_PIVOT_POINT',
   'SET_DIMENSIONS',
+  'SET_AXIS_DOMAIN',
   'SET_X_DOMAIN',
   'SET_Y_DOMAIN',
   'SET_ZOOM',

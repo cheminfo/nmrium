@@ -436,6 +436,8 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
           action,
         );
 
+      case 'SET_AXIS_DOMAIN':
+        return DomainActions.handleSetAxisDomain(draft, action);
       case 'SET_X_DOMAIN':
         return DomainActions.handleSetXDomain(draft, action);
       case 'SET_Y_DOMAIN':

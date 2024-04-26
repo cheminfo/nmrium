@@ -1,7 +1,7 @@
 import type { NmrData2DFt, NmrData2DFid } from 'cheminfo-types';
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D, XYAxisDomain } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
@@ -12,6 +12,10 @@ import { getActiveSpectra } from '../helper/getActiveSpectra';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
 
+type SetAxisDomainAction = ActionType<
+  'SET_AXIS_DOMAIN',
+  { axisDomain?: XYAxisDomain }
+>;
 type SetXDomainAction = ActionType<
   'SET_X_DOMAIN',
   { xDomain: [number, number] }
@@ -25,6 +29,7 @@ type MoveXAxisAction = ActionType<'MOVE', { shiftX: number; shiftY: number }>;
 export type DomainActions =
   | SetXDomainAction
   | SetYDomainAction
+  | SetAxisDomainAction
   | MoveXAxisAction;
 
 function getActiveData(draft: Draft<State>): Spectrum1D[] {
@@ -271,6 +276,25 @@ function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
   draft.yDomain = yDomain;
   addToBrushHistory(draft, { xDomain: draft.xDomain, yDomain });
 }
+//action
+function handleSetAxisDomain(draft: Draft<State>, action: SetAxisDomainAction) {
+  const { axisDomain: { x, y } = {} } = action.payload;
+  const {
+    originDomain: { xDomain, yDomain },
+    displayerMode,
+  } = draft;
+  const x1 = x?.from ?? xDomain[0];
+  const x2 = x?.to ?? xDomain[1];
+  const y1 = y?.from ?? yDomain[0];
+  const y2 = y?.to ?? yDomain[1];
+
+  if (displayerMode === '1D') {
+    draft.xDomain = [x1, x2];
+  } else {
+    draft.xDomain = [x1, x2];
+    draft.yDomain = [y1, y2];
+  }
+}
 
 function handleMoveOverXAxis(draft: Draft<State>, action: MoveXAxisAction) {
   const { shiftX, shiftY } = action.payload;
@@ -311,4 +335,5 @@ export {
   handleSetXDomain,
   handleSetYDomain,
   handleMoveOverXAxis,
+  handleSetAxisDomain,
 };
