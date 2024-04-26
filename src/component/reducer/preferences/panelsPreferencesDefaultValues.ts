@@ -14,6 +14,7 @@ const getSpectraDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['spectra'] => {
   const preferences: SpectraNucleusPreferences = {
+    axisDomain: {},
     columns: [
       {
         name: 'visible',

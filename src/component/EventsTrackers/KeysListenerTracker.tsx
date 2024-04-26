@@ -12,6 +12,7 @@ import { useModal } from '../elements/popup/Modal';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
+import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import SaveAsModal from '../modal/SaveAsModal';
 import { options } from '../toolbar/ToolTypes';
@@ -50,6 +51,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
+  const { axisDomain } = usePanelPreferences('spectra', activeTab);
 
   const mouseIsOverDisplayer = useRef(false);
   useEffect(() => {
@@ -439,6 +441,17 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
             default:
           }
         }
+
+        if (e.shiftKey) {
+          switch (e.key) {
+            case 'F': {
+              dispatch({ type: 'SET_AXIS_DOMAIN', payload: { axisDomain } });
+              break;
+            }
+            default:
+          }
+        }
+
         if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
           switch (e.key) {
             case 's':
@@ -457,6 +470,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     [
       alignSpectraVerticallyHandler,
       allow1DTool,
+      axisDomain,
       changeDisplayViewModeHandler,
       dispatch,
       handleChangeOption,
