@@ -1,7 +1,7 @@
 import {
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
-  SpectraNucleusPreferences,
+  SpectraPreferences,
 } from 'nmr-load-save';
 
 import { is2DNucleus } from '../../utility/nucleusToString';
@@ -13,8 +13,7 @@ function getPreferences<T>(data: T, nucleus?: string) {
 const getSpectraDefaultValues = (
   nucleus?: string,
 ): PanelsPreferences['spectra'] => {
-  const preferences: SpectraNucleusPreferences = {
-    axisDomain: {},
+  const preferences: SpectraPreferences = {
     columns: [
       {
         name: 'visible',

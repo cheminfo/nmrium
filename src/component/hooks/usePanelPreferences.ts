@@ -21,8 +21,6 @@ import {
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 
-const basePath = 'formatting.panels';
-
 type Panel =
   | 'spectra'
   | 'peaks'
@@ -82,7 +80,7 @@ function getPanelPreferences(
   nucleus?: string,
   returnOnlyNucleusPreferences = false,
 ) {
-  const panelPath = `${basePath}.${panelKey}`;
+  const panelPath = `panels.${panelKey}`;
   let path = panelPath;
 
   if (nucleus) {

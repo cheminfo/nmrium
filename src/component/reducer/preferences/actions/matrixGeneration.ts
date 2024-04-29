@@ -14,7 +14,7 @@ function addExclusionZone(
 ) {
   const { zone, range, nucleus } = action.payload;
   const currentWorkspacePreferences = getActiveWorkspace(draft);
-  const panels = currentWorkspacePreferences.formatting.panels;
+  const panels = currentWorkspacePreferences.panels;
 
   const exclusionZone = {
     id: v4(),
@@ -42,7 +42,7 @@ function addExclusionZone(
 function deleteExclusionZone(draft: Draft<PreferencesState>, action) {
   const { zone, nucleus } = action.payload;
   const currentWorkspacePreferences = getActiveWorkspace(draft);
-  const panels = currentWorkspacePreferences.formatting.panels;
+  const panels = currentWorkspacePreferences.panels;
 
   if (panels.matrixGeneration?.[nucleus]) {
     const options: MatrixOptions = panels.matrixGeneration[nucleus];
@@ -55,7 +55,7 @@ function deleteExclusionZone(draft: Draft<PreferencesState>, action) {
 function setMatrixGenerationOptions(draft: Draft<PreferencesState>, action) {
   const { options, nucleus } = action.payload;
   const currentWorkspacePreferences = getActiveWorkspace(draft);
-  const panels = currentWorkspacePreferences.formatting.panels;
+  const panels = currentWorkspacePreferences.panels;
 
   panels.matrixGeneration = { ...panels.matrixGeneration, [nucleus]: options };
 }

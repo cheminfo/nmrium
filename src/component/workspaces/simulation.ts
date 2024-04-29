@@ -31,43 +31,41 @@ export const simulation: InnerWorkspace = {
       zoom: true,
     },
   },
-  formatting: {
-    nuclei: {},
-    panels: {
-      spectra: {
-        nuclei: {
-          '1H': {
-            columns: [
-              {
-                name: 'visible',
-                label: '',
-                description: 'Show/Hide Spectrum',
-                visible: true,
-              },
-              {
-                label: 'Spectrum Name',
-                jpath: ['info', 'name'],
-                visible: true,
-              },
-              {
-                label: 'Frequency',
-                description: 'frequency',
-                jpath: ['info', 'originFrequency'],
-                visible: true,
-              },
-              {
-                jpath: ['info', 'nucleus'],
-                label: 'Experiment',
-                visible: true,
-              },
-              {
-                name: 'color',
-                label: '',
-                description: 'Spectrum Color',
-                visible: true,
-              },
-            ],
-          },
+  nuclei: [],
+  panels: {
+    spectra: {
+      nuclei: {
+        '1H': {
+          columns: [
+            {
+              name: 'visible',
+              label: '',
+              description: 'Show/Hide Spectrum',
+              visible: true,
+            },
+            {
+              label: 'Spectrum Name',
+              jpath: ['info', 'name'],
+              visible: true,
+            },
+            {
+              label: 'Frequency',
+              description: 'frequency',
+              jpath: ['info', 'originFrequency'],
+              visible: true,
+            },
+            {
+              jpath: ['info', 'nucleus'],
+              label: 'Experiment',
+              visible: true,
+            },
+            {
+              name: 'color',
+              label: '',
+              description: 'Spectrum Color',
+              visible: true,
+            },
+          ],
         },
       },
     },

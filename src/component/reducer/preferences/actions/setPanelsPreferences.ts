@@ -8,7 +8,7 @@ export function setPanelsPreferences(draft: Draft<PreferencesState>, action) {
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
     const { key, value } = action.payload;
-    const panels = currentWorkspacePreferences.formatting.panels;
+    const panels = currentWorkspacePreferences.panels;
 
     if (value?.nuclei) {
       const { nuclei, ...commonPreferences } = value;

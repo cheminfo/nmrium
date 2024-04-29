@@ -1,71 +1,51 @@
-import { Workspace } from 'nmr-load-save';
-import {
-  array,
-  lazy,
-  object,
-  string,
-  ValidationError,
-  type ObjectShape,
-  number,
-} from 'yup';
+import { array, object, string, ValidationError, number } from 'yup';
 
-const formattingElementValidation = (obj: Workspace): ObjectShape => {
-  return Object.fromEntries(
-    Object.keys(obj.formatting.nuclei).map((key) => [
-      key,
-      object().shape({
-        name: string().trim().required('Nucleus is a required field'),
-        ppm: string().trim().required('PPM format is a required field'),
-        hz: string().trim().required('Hz format  is a required field'),
-      }),
-    ]),
-  );
-};
+const nucleiValidation = array()
+  .of(
+    object().shape({
+      nucleus: string().trim().required('Nucleus is a required field'),
+      ppmFormat: string().trim().required('PPM format is a required field'),
+      hzFormat: string().trim().required('Hz format  is a required field'),
+    }),
+  )
+  .test('Unique', 'Nuclei need te be unique', function check(nuclei) {
+    if (!nuclei) return true;
 
-const formattingValidation = (obj: Workspace) =>
-  object().shape<any>({
-    nuclei: object()
-      .shape(formattingElementValidation(obj))
-      .test(
-        'Unique',
-        'Nuclei need te be unique',
-        function check(nuclei: Record<string, any>) {
-          const nucleusFrequencies: Record<
-            string,
-            { value: number; fields: string[] }
-          > = {};
-          for (const key of Object.keys(nuclei)) {
-            const _key = nuclei[key].name?.toLowerCase() || '';
-            if (_key) {
-              if (nucleusFrequencies[_key]) {
-                ++nucleusFrequencies[_key].value;
-                nucleusFrequencies[_key].fields.push(key);
-              } else {
-                nucleusFrequencies[_key] = { value: 1, fields: [key] };
-              }
-            }
-          }
+    const nucleusFrequencies: Record<
+      string,
+      { value: number; fieldsIndexes: number[] }
+    > = {};
+    let index = 0;
+    for (const nucleiPreferences of nuclei) {
+      const key = nucleiPreferences.nucleus?.toLowerCase() || '';
+      if (key) {
+        if (nucleusFrequencies[key]) {
+          ++nucleusFrequencies[key].value;
+          nucleusFrequencies[key].fieldsIndexes.push(index);
+        } else {
+          nucleusFrequencies[key] = { value: 1, fieldsIndexes: [index] };
+        }
+      }
+      index++;
+    }
 
-          const errors: ValidationError[] = [];
-          for (const key in nucleusFrequencies) {
-            const { value, fields } = nucleusFrequencies[key];
-            if (value > 1) {
-              for (const field of fields) {
-                errors.push(
-                  new ValidationError(
-                    `${key} nucleus must te be unique`,
-                    nuclei[key].name,
-                    // eslint-disable-next-line no-invalid-this
-                    `${this.path}.${field}.name`,
-                  ),
-                );
-              }
-            }
-          }
-
-          return new ValidationError(errors);
-        },
-      ),
+    const errors: ValidationError[] = [];
+    for (const key in nucleusFrequencies) {
+      const { value, fieldsIndexes } = nucleusFrequencies[key];
+      if (value > 1) {
+        for (const index of fieldsIndexes) {
+          errors.push(
+            new ValidationError(
+              `${key} nucleus must te be unique`,
+              nuclei[index].nucleus,
+              // eslint-disable-next-line no-invalid-this
+              `${this.path}.${index}.name`,
+            ),
+          );
+        }
+      }
+    }
+    return new ValidationError(errors);
   });
 
 const databasesValidation = object().shape({
@@ -103,12 +83,10 @@ const generalValidation = object({
   dimmedSpectraOpacity: number().required(),
 });
 
-export const validation: any = lazy((obj: Workspace) =>
-  object().shape({
-    formatting: formattingValidation(obj),
-    databases: databasesValidation,
-    infoBlock: infoBlockValidation,
-    general: generalValidation,
-    spectraColors: spectraColorsSchemaValidation,
-  }),
-);
+export const validation: any = object().shape({
+  nuclei: nucleiValidation,
+  databases: databasesValidation,
+  infoBlock: infoBlockValidation,
+  general: generalValidation,
+  spectraColors: spectraColorsSchemaValidation,
+});

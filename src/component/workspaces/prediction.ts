@@ -48,179 +48,177 @@ export const prediction: InnerWorkspace = {
       fftDimension2: true,
     },
   },
-  formatting: {
-    nuclei: {},
-    panels: {
-      spectra: {
-        nuclei: {
-          '1H,1H': {
-            columns: [
-              {
-                name: 'visible',
-                label: '',
-                description: 'Show/Hide Spectrum',
-                visible: true,
-              },
-              {
-                label: 'Spectrum Name',
-                jpath: ['info', 'name'],
-                visible: true,
-              },
-              {
-                label: 'Frequency',
-                description: 'frequency',
-                jpath: ['info', 'baseFrequency'],
-                visible: true,
-              },
-              {
-                label: 'Solvent',
-                jpath: ['info', 'solvent'],
-                visible: false,
-              },
-              {
-                jpath: ['info', 'pulseSequence'],
-                label: 'Pulse',
-                visible: true,
-              },
-              {
-                jpath: ['info', 'experiment'],
-                label: 'Experiment',
-                visible: true,
-              },
-              {
-                name: 'color',
-                label: '',
-                description: 'Spectrum Color',
-                visible: true,
-              },
-            ],
-          },
-          '1H,13C': {
-            columns: [
-              {
-                name: 'visible',
-                label: '',
-                description: 'Show/Hide Spectrum',
-                visible: true,
-              },
-              {
-                label: 'Spectrum Name',
-                jpath: ['info', 'name'],
-                visible: true,
-              },
-              {
-                label: 'Frequency',
-                description: 'frequency',
-                jpath: ['info', 'baseFrequency'],
-                visible: true,
-              },
-              {
-                label: 'Solvent',
-                jpath: ['info', 'solvent'],
-                visible: false,
-              },
-              {
-                jpath: ['info', 'pulseSequence'],
-                label: 'Pulse',
-                visible: true,
-              },
-              {
-                jpath: ['info', 'experiment'],
-                label: 'Experiment',
-                visible: true,
-              },
-              {
-                name: 'color',
-                label: '',
-                description: 'Spectrum Color',
-                visible: true,
-              },
-            ],
-          },
-          '1H': {
-            columns: [
-              {
-                name: 'visible',
-                label: '',
-                description: 'Show/Hide Spectrum',
-                visible: true,
-              },
-              {
-                label: 'Spectrum Name',
-                jpath: ['info', 'name'],
-                visible: true,
-              },
-              {
-                label: 'Frequency',
-                description: 'frequency',
-                jpath: ['info', 'baseFrequency'],
-                visible: true,
-              },
-              {
-                label: 'Solvent',
-                jpath: ['info', 'solvent'],
-                visible: false,
-              },
-              {
-                jpath: ['info', 'pulseSequence'],
-                label: 'Pulse',
-                visible: true,
-              },
-              {
-                jpath: ['info', 'experiment'],
-                label: 'Experiment',
-                visible: true,
-              },
-              {
-                name: 'color',
-                label: '',
-                description: 'Spectrum Color',
-                visible: true,
-              },
-            ],
-          },
-          '13C': {
-            columns: [
-              {
-                name: 'visible',
-                label: '',
-                description: 'Show/Hide Spectrum',
-                visible: true,
-              },
-              {
-                label: 'Spectrum Name',
-                jpath: ['info', 'name'],
-                visible: true,
-              },
-              {
-                label: 'Frequency',
-                description: 'frequency',
-                jpath: ['info', 'baseFrequency'],
-                visible: true,
-              },
-              {
-                label: 'Solvent',
-                jpath: ['info', 'solvent'],
-                visible: false,
-              },
-              {
-                jpath: ['info', 'pulseSequence'],
-                label: 'Pulse',
-                visible: true,
-              },
-              {
-                jpath: ['info', 'experiment'],
-                label: 'Experiment',
-                visible: true,
-              },
-              {
-                name: 'color',
-                label: '',
-                description: 'Spectrum Color',
-                visible: true,
-              },
-            ],
-          },
+  nuclei: [],
+  panels: {
+    spectra: {
+      nuclei: {
+        '1H,1H': {
+          columns: [
+            {
+              name: 'visible',
+              label: '',
+              description: 'Show/Hide Spectrum',
+              visible: true,
+            },
+            {
+              label: 'Spectrum Name',
+              jpath: ['info', 'name'],
+              visible: true,
+            },
+            {
+              label: 'Frequency',
+              description: 'frequency',
+              jpath: ['info', 'baseFrequency'],
+              visible: true,
+            },
+            {
+              label: 'Solvent',
+              jpath: ['info', 'solvent'],
+              visible: false,
+            },
+            {
+              jpath: ['info', 'pulseSequence'],
+              label: 'Pulse',
+              visible: true,
+            },
+            {
+              jpath: ['info', 'experiment'],
+              label: 'Experiment',
+              visible: true,
+            },
+            {
+              name: 'color',
+              label: '',
+              description: 'Spectrum Color',
+              visible: true,
+            },
+          ],
+        },
+        '1H,13C': {
+          columns: [
+            {
+              name: 'visible',
+              label: '',
+              description: 'Show/Hide Spectrum',
+              visible: true,
+            },
+            {
+              label: 'Spectrum Name',
+              jpath: ['info', 'name'],
+              visible: true,
+            },
+            {
+              label: 'Frequency',
+              description: 'frequency',
+              jpath: ['info', 'baseFrequency'],
+              visible: true,
+            },
+            {
+              label: 'Solvent',
+              jpath: ['info', 'solvent'],
+              visible: false,
+            },
+            {
+              jpath: ['info', 'pulseSequence'],
+              label: 'Pulse',
+              visible: true,
+            },
+            {
+              jpath: ['info', 'experiment'],
+              label: 'Experiment',
+              visible: true,
+            },
+            {
+              name: 'color',
+              label: '',
+              description: 'Spectrum Color',
+              visible: true,
+            },
+          ],
+        },
+        '1H': {
+          columns: [
+            {
+              name: 'visible',
+              label: '',
+              description: 'Show/Hide Spectrum',
+              visible: true,
+            },
+            {
+              label: 'Spectrum Name',
+              jpath: ['info', 'name'],
+              visible: true,
+            },
+            {
+              label: 'Frequency',
+              description: 'frequency',
+              jpath: ['info', 'baseFrequency'],
+              visible: true,
+            },
+            {
+              label: 'Solvent',
+              jpath: ['info', 'solvent'],
+              visible: false,
+            },
+            {
+              jpath: ['info', 'pulseSequence'],
+              label: 'Pulse',
+              visible: true,
+            },
+            {
+              jpath: ['info', 'experiment'],
+              label: 'Experiment',
+              visible: true,
+            },
+            {
+              name: 'color',
+              label: '',
+              description: 'Spectrum Color',
+              visible: true,
+            },
+          ],
+        },
+        '13C': {
+          columns: [
+            {
+              name: 'visible',
+              label: '',
+              description: 'Show/Hide Spectrum',
+              visible: true,
+            },
+            {
+              label: 'Spectrum Name',
+              jpath: ['info', 'name'],
+              visible: true,
+            },
+            {
+              label: 'Frequency',
+              description: 'frequency',
+              jpath: ['info', 'baseFrequency'],
+              visible: true,
+            },
+            {
+              label: 'Solvent',
+              jpath: ['info', 'solvent'],
+              visible: false,
+            },
+            {
+              jpath: ['info', 'pulseSequence'],
+              label: 'Pulse',
+              visible: true,
+            },
+            {
+              jpath: ['info', 'experiment'],
+              label: 'Experiment',
+              visible: true,
+            },
+            {
+              name: 'color',
+              label: '',
+              description: 'Spectrum Color',
+              visible: true,
+            },
+          ],
         },
       },
     },

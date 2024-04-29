@@ -66,17 +66,16 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
     popupLoggingLevel: 'error',
     invert: false,
   },
-  formatting: {
-    nuclei: {
-      '1h': { name: '1H', ppm: '0.00', hz: '0.00' },
-      '13c': { name: '13C', ppm: '0.00', hz: '0.00' },
-      '15n': { name: '15N', ppm: '0.00', hz: '0.00' },
-      '19f': { name: '19F', ppm: '0.00', hz: '0.00' },
-      '29si': { name: '29Si', ppm: '0.00', hz: '0.00' },
-      '31p': { name: '31P', ppm: '0.00', hz: '0.00' },
-    },
-    panels: {},
-  },
+  nuclei: [
+    { nucleus: '1H', ppmFormat: '0.00', hzFormat: '0.00' },
+    { nucleus: '13C', ppmFormat: '0.00', hzFormat: '0.00' },
+    { nucleus: '15N', ppmFormat: '0.00', hzFormat: '0.00' },
+    { nucleus: '19F', ppmFormat: '0.00', hzFormat: '0.00' },
+    { nucleus: '29Si', ppmFormat: '0.00', hzFormat: '0.00' },
+    { nucleus: '31P', ppmFormat: '0.00', hzFormat: '0.00' },
+  ],
+  panels: {},
+
   databases: {
     defaultDatabase: '',
     data: [

@@ -17,7 +17,7 @@ export function analyzeSpectra(
   action: AnalyzeSpectraAction,
 ) {
   const currentWorkspacePreferences = getActiveWorkspace(draft);
-  const panels = currentWorkspacePreferences.formatting.panels;
+  const panels = currentWorkspacePreferences.panels;
   const { start, end, nucleus, columnKey } = action.payload;
 
   if (!panels.multipleSpectraAnalysis) {
@@ -41,7 +41,7 @@ export function changeAnalysisColumnValueKey(
 ) {
   const { columnKey, valueKey, nucleus } = action.payload;
   const currentWorkspacePreferences = getActiveWorkspace(draft);
-  const panels = currentWorkspacePreferences.formatting.panels;
+  const panels = currentWorkspacePreferences.panels;
 
   MultipleAnalysis.changeColumnValueKey(
     panels.multipleSpectraAnalysis as any,
@@ -56,7 +56,7 @@ export function deleteAnalysisColumn(
 ) {
   const { columnKey, nucleus } = action.payload;
   const currentWorkspacePreferences = getActiveWorkspace(draft);
-  const panels = currentWorkspacePreferences.formatting.panels;
+  const panels = currentWorkspacePreferences.panels;
   MultipleAnalysis.deleteSpectraAnalysis(
     panels.multipleSpectraAnalysis as any,
     columnKey,
@@ -72,7 +72,7 @@ export function setSpectraAnalysisPanelsPreferences(
     const currentWorkspacePreferences = getActiveWorkspace(draft);
 
     const { nucleus, data } = action.payload;
-    const panels = currentWorkspacePreferences.formatting.panels;
+    const panels = currentWorkspacePreferences.panels;
 
     if (!panels?.multipleSpectraAnalysis) {
       panels.multipleSpectraAnalysis =

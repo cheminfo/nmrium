@@ -38,33 +38,31 @@ export const exercise: InnerWorkspace = {
     popupLoggingLevel: 'error',
     invert: false,
   },
-  formatting: {
-    nuclei: {},
-    panels: {
-      integrals: {
-        nuclei: {
-          '1H': {
-            showSerialNumber: true,
-            relative: { show: true, format: '0.00' },
-            absolute: { show: false, format: '0.00' },
-            from: { show: true, format: '0.00' },
-            to: { show: true, format: '0.00' },
-            color: 'black',
-            strokeWidth: 1,
-            showKind: false,
-            showDeleteAction: true,
-          },
-          '13C': {
-            showSerialNumber: true,
-            relative: { show: true, format: '0.00' },
-            absolute: { show: false, format: '0.00' },
-            from: { show: true, format: '0.00' },
-            to: { show: true, format: '0.00' },
-            color: 'black',
-            strokeWidth: 1,
-            showKind: false,
-            showDeleteAction: true,
-          },
+  nuclei: [],
+  panels: {
+    integrals: {
+      nuclei: {
+        '1H': {
+          showSerialNumber: true,
+          relative: { show: true, format: '0.00' },
+          absolute: { show: false, format: '0.00' },
+          from: { show: true, format: '0.00' },
+          to: { show: true, format: '0.00' },
+          color: 'black',
+          strokeWidth: 1,
+          showKind: false,
+          showDeleteAction: true,
+        },
+        '13C': {
+          showSerialNumber: true,
+          relative: { show: true, format: '0.00' },
+          absolute: { show: false, format: '0.00' },
+          from: { show: true, format: '0.00' },
+          to: { show: true, format: '0.00' },
+          color: 'black',
+          strokeWidth: 1,
+          showKind: false,
+          showDeleteAction: true,
         },
       },
     },

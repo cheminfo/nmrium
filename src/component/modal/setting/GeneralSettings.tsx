@@ -34,10 +34,10 @@ import PredefinedWorkspaces from '../../workspaces';
 import WorkspaceItem from './WorkspaceItem';
 import DatabasesTabContent from './settings-tabs/DatabasesTabContent';
 import DisplayTabContent from './settings-tabs/DisplayTabContent';
-import FormattingTabContent from './settings-tabs/FormattingTabContent';
 import GeneralTabContent from './settings-tabs/GeneralTabContent';
 import ImportationFiltersTabContent from './settings-tabs/ImportationFiltersTabContent';
 import InfoBlockTabContent from './settings-tabs/InfoBlockTabContent';
+import NucleiTabContent from './settings-tabs/NucleiTabContent';
 import OnLoadProcessingTabContent from './settings-tabs/OnLoadProcessingTabContent';
 import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent';
 import ToolsTabContent from './settings-tabs/ToolsTabContent';
@@ -361,11 +361,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
                   panel={<GeneralTabContent />}
                 />
 
-                <Tab
-                  title="Formatting"
-                  id="formatting"
-                  panel={<FormattingTabContent />}
-                />
+                <Tab title="Nuclei" id="nuclei" panel={<NucleiTabContent />} />
 
                 <Tab
                   title="Panels"

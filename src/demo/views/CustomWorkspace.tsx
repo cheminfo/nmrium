@@ -55,18 +55,18 @@ const customWorkspaces: CustomWorkspaces = {
       verticalSplitterCloseThreshold: 600,
       spectraRendering: 'auto',
       loggingLevel: 'info',
+      invert: false,
+      popupLoggingLevel: 'info',
     },
-    formatting: {
-      nuclei: {
-        '1h': { name: '1H', ppm: '0.00', hz: '0.00' },
-        '13c': { name: '13C', ppm: '0.00', hz: '0.00' },
-        '15n': { name: '15N', ppm: '0.00', hz: '0.00' },
-        '19f': { name: '19F', ppm: '0.00', hz: '0.00' },
-        '29si': { name: '29Si', ppm: '0.00', hz: '0.00' },
-        '31p': { name: '31P', ppm: '0.00', hz: '0.00' },
-      },
-      panels: {},
-    },
+    nuclei: [
+      { nucleus: '1H', ppmFormat: '0.00', hzFormat: '0.00' },
+      { nucleus: '13C', ppmFormat: '0.00', hzFormat: '0.00' },
+      { nucleus: '15N', ppmFormat: '0.00', hzFormat: '0.00' },
+      { nucleus: '19F', ppmFormat: '0.00', hzFormat: '0.00' },
+      { nucleus: '29Si', ppmFormat: '0.00', hzFormat: '0.00' },
+      { nucleus: '31P', ppmFormat: '0.00', hzFormat: '0.00' },
+    ],
+    panels: {},
     databases: {
       defaultDatabase: '',
       data: [
@@ -117,50 +117,53 @@ const customWorkspaces: CustomWorkspaces = {
       ],
     },
     onLoadProcessing: {
-      '1H': [
-        {
-          name: 'digitalFilter',
-          label: 'Digital Filter',
-          value: {},
-          flag: true,
-        },
-        { name: 'apodization', label: 'Apodization', value: {}, flag: false },
-        { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
-        {
-          name: 'fft',
-          label: 'Fast fourier transform',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'phaseCorrection',
-          label: 'Phase correction',
-          value: {},
-          flag: true,
-        },
-      ],
-      '13C': [
-        {
-          name: 'digitalFilter',
-          label: 'Digital Filter',
-          value: {},
-          flag: true,
-        },
-        { name: 'apodization', label: 'Apodization', value: {}, flag: true },
-        { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
-        {
-          name: 'fft',
-          label: 'Fast fourier transform',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'phaseCorrection',
-          label: 'Phase correction',
-          value: {},
-          flag: true,
-        },
-      ],
+      autoProcessing: true,
+      filters: {
+        '1H': [
+          {
+            name: 'digitalFilter',
+            label: 'Digital Filter',
+            value: {},
+            flag: true,
+          },
+          { name: 'apodization', label: 'Apodization', value: {}, flag: false },
+          { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
+          {
+            name: 'fft',
+            label: 'Fast fourier transform',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'phaseCorrection',
+            label: 'Phase correction',
+            value: {},
+            flag: true,
+          },
+        ],
+        '13C': [
+          {
+            name: 'digitalFilter',
+            label: 'Digital Filter',
+            value: {},
+            flag: true,
+          },
+          { name: 'apodization', label: 'Apodization', value: {}, flag: true },
+          { name: 'zeroFilling', label: 'Zero Filling', value: {}, flag: true },
+          {
+            name: 'fft',
+            label: 'Fast fourier transform',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'phaseCorrection',
+            label: 'Phase correction',
+            value: {},
+            flag: true,
+          },
+        ],
+      },
     },
     label: 'Metabolomics',
     version: 1,

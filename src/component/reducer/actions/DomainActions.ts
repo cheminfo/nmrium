@@ -1,7 +1,7 @@
 import type { NmrData2DFt, NmrData2DFid } from 'cheminfo-types';
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import { Spectrum1D, Spectrum2D, XYAxisDomain } from 'nmr-load-save';
+import { Spectrum1D, Spectrum2D, NucleiPreferences } from 'nmr-load-save';
 
 import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
@@ -14,7 +14,7 @@ import { ActionType } from '../types/ActionType';
 
 type SetAxisDomainAction = ActionType<
   'SET_AXIS_DOMAIN',
-  { axisDomain?: XYAxisDomain }
+  { nucleiPreferences: NucleiPreferences[] }
 >;
 type SetXDomainAction = ActionType<
   'SET_X_DOMAIN',
@@ -278,11 +278,33 @@ function handleSetYDomain(draft: Draft<State>, action: SetYDomainAction) {
 }
 //action
 function handleSetAxisDomain(draft: Draft<State>, action: SetAxisDomainAction) {
-  const { axisDomain: { x, y } = {} } = action.payload;
+  const { nucleiPreferences } = action.payload;
   const {
     originDomain: { xDomain, yDomain },
     displayerMode,
+    view: {
+      spectra: { activeTab },
+    },
   } = draft;
+
+  const axisDomain: {
+    x?: { from?: number; to?: number };
+    y?: { from?: number; to?: number };
+  } = {};
+
+  const [xNucleus, yNucleus] = activeTab?.split(',') || [];
+
+  for (const nuclei of nucleiPreferences) {
+    const { nucleus, axisFrom, axisTo } = nuclei;
+    if (nucleus?.toLowerCase() === xNucleus?.toLowerCase()) {
+      axisDomain.x = { from: axisFrom, to: axisTo };
+    }
+    if (nucleus?.toLowerCase() === yNucleus?.toLowerCase()) {
+      axisDomain.y = { from: axisFrom, to: axisTo };
+    }
+  }
+
+  const { x, y } = axisDomain;
   const x1 = x?.from ?? xDomain[0];
   const x2 = x?.to ?? xDomain[1];
   const y1 = y?.from ?? yDomain[0];
