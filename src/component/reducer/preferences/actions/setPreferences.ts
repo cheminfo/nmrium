@@ -4,19 +4,17 @@ import cloneDeep from 'lodash/cloneDeep';
 import { getLocalStorage, storeData } from '../../../utility/LocalStorage';
 import { PreferencesState } from '../preferencesReducer';
 import { getActiveWorkspace } from '../utilities/getActiveWorkspace';
-import { mapNucleiFormatting } from '../utilities/mapNucleiFormatting';
 
 export function setPreferences(draft: Draft<PreferencesState>, action) {
   const localData = getLocalStorage('nmr-general-settings');
   const currentWorkspacePreferences = getActiveWorkspace(draft);
 
   if (action.payload) {
-    const { formatting, ...restPreferences } = action.payload;
+    const preferences = action.payload;
 
     draft.workspaces[draft.workspace.current] = {
       ...currentWorkspacePreferences,
-      ...restPreferences,
-      formatting: mapNucleiFormatting(formatting),
+      ...preferences,
     };
   }
 

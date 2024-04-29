@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { Formik, FormikProps } from 'formik';
 import { PanelsPreferences, Workspace } from 'nmr-load-save';
 import {
@@ -14,10 +13,7 @@ import * as Yup from 'yup';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
-import { InputStyle } from '../../elements/Input';
-import Label from '../../elements/Label';
 import { Scroller } from '../../elements/Scroller';
-import FormikInput from '../../elements/formik/FormikInput';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
 import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
@@ -37,10 +33,6 @@ const groupPaneStyle: GroupPaneStyle = {
   container: {
     paddingBottom: '10px',
   },
-};
-
-const inputStyle: InputStyle = {
-  input: { padding: '5px' },
 };
 
 function validationColumns(obj) {
@@ -67,7 +59,7 @@ function validationColumns(obj) {
 }
 
 const spectraPreferencesValidation: any = Yup.lazy(
-  (obj: Workspace['formatting']['panels']['spectra']) =>
+  (obj: Workspace['panels']['spectra']) =>
     Yup.object().shape({
       nuclei: Yup.object().shape(validationColumns(obj)),
     }),
@@ -191,71 +183,12 @@ function SpectraPreferences(props, ref: any) {
                     datalist={datalist}
                   />
                 </GroupPane>
-                <AxisPreferences nucleus={n} />
               </NucleusGroup>
             </Scroller.Item>
           ))}
         </Scroller>
       </Formik>
     </PreferencesContainer>
-  );
-}
-
-interface AxisPreferencesProps {
-  nucleus: string;
-}
-
-const Container = styled.div`
-  display: flex;
-`;
-
-function AxisPreferences(props: AxisPreferencesProps) {
-  const { nucleus } = props;
-
-  if (nucleus.split(',').length === 1) {
-    return (
-      <GroupPane text="X axis" style={groupPaneStyle}>
-        <AxisFields nucleus={nucleus} axis="x" />
-      </GroupPane>
-    );
-  }
-
-  return (
-    <>
-      <GroupPane text="X axis " style={groupPaneStyle}>
-        <AxisFields nucleus={nucleus} axis="x" />
-      </GroupPane>
-      <GroupPane text="Y axis " style={groupPaneStyle}>
-        <AxisFields nucleus={nucleus} axis="y" />
-      </GroupPane>
-    </>
-  );
-}
-
-interface AxisFieldsProps extends AxisPreferencesProps {
-  axis: 'x' | 'y';
-}
-
-function AxisFields(props: AxisFieldsProps) {
-  const { nucleus, axis } = props;
-
-  return (
-    <Container>
-      <Label title="From:">
-        <FormikInput
-          type="number"
-          style={inputStyle}
-          name={`nuclei.${nucleus}.axisDomain.${axis}.from`}
-        />
-      </Label>
-      <Label title="To:" style={{ label: { paddingLeft: '5px' } }}>
-        <FormikInput
-          type="number"
-          style={inputStyle}
-          name={`nuclei.${nucleus}.axisDomain.${axis}.to`}
-        />
-      </Label>
-    </Container>
   );
 }
 

@@ -12,7 +12,6 @@ import { useModal } from '../elements/popup/Modal';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
-import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import SaveAsModal from '../modal/SaveAsModal';
 import { options } from '../toolbar/ToolTypes';
@@ -33,7 +32,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     },
   } = useChartData();
   const dispatch = useDispatch();
-  const { dispatch: dispatchPreferences } = usePreferences();
+  const {
+    dispatch: dispatchPreferences,
+    current: { nuclei },
+  } = usePreferences();
   const toaster = useToaster();
   const modal = useModal();
   const openLoader = useLoader();
@@ -51,7 +53,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   const isToolVisible = useCheckToolsVisibility();
 
   const { highlight, remove } = useHighlightData();
-  const { axisDomain } = usePanelPreferences('spectra', activeTab);
 
   const mouseIsOverDisplayer = useRef(false);
   useEffect(() => {
@@ -445,7 +446,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
         if (e.shiftKey) {
           switch (e.key) {
             case 'F': {
-              dispatch({ type: 'SET_AXIS_DOMAIN', payload: { axisDomain } });
+              dispatch({
+                type: 'SET_AXIS_DOMAIN',
+                payload: { nucleiPreferences: nuclei },
+              });
               break;
             }
             default:
@@ -470,12 +474,12 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     [
       alignSpectraVerticallyHandler,
       allow1DTool,
-      axisDomain,
       changeDisplayViewModeHandler,
       dispatch,
       handleChangeOption,
       handleFullZoomOut,
       isToolVisible,
+      nuclei,
       openLoader,
       openSaveAsDialog,
       saveAsJSONHandler,

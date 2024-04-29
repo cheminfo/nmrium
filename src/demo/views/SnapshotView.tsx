@@ -95,275 +95,268 @@ const customWorkspaces: CustomWorkspaces = {
       verticalSplitterCloseThreshold: 600,
       spectraRendering: 'auto',
       loggingLevel: 'info',
+      invert: false,
+      popupLoggingLevel: 'info',
     },
-    formatting: {
-      nuclei: {
-        '1h': {
-          name: '1H',
-          ppm: '0.00',
-          hz: '0.00',
-        },
-        '13c': {
-          name: '13C',
-          ppm: '0.00',
-          hz: '0.00',
-        },
-        '15n': {
-          name: '15N',
-          ppm: '0.00',
-          hz: '0.00',
-        },
-        '19f': {
-          name: '19F',
-          ppm: '0.00',
-          hz: '0.00',
-        },
-        '29si': {
-          name: '29Si',
-          ppm: '0.00',
-          hz: '0.00',
-        },
-        '31p': {
-          name: '31P',
-          ppm: '0.00',
-          hz: '0.00',
-        },
+    nuclei: [
+      {
+        nucleus: '1H',
+        ppmFormat: '0.00',
+        hzFormat: '0.00',
       },
-      panels: {
-        spectra: {
-          nuclei: {
-            '1H': {
-              columns: [
-                {
-                  name: 'visible',
-                  label: '',
-                  description: 'Show/Hide Spectrum',
-                  visible: true,
-                },
-                {
-                  name: 'name',
-                  label: 'Spectrum Name',
-                  description: 'Spectrum Name',
-                  jpath: ['info', 'name'],
-                  visible: true,
-                },
-                {
-                  name: 'solvent',
-                  label: 'Solvent',
-                  description: 'Solvent',
-                  jpath: ['info', 'solvent'],
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'pulseSequence'],
-                  label: 'Pulse',
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'experiment'],
-                  label: 'Experiment',
-                  visible: true,
-                },
-                {
-                  name: 'color',
-                  label: '',
-                  description: 'Spectrum Color',
-                  visible: true,
-                },
-              ],
-            },
-            '1H,1H': {
-              columns: [
-                {
-                  name: 'visible',
-                  label: '',
-                  description: 'Show/Hide Spectrum',
-                  visible: true,
-                },
-                {
-                  name: 'name',
-                  label: 'Spectrum Name',
-                  description: 'Spectrum Name',
-                  jpath: ['info', 'name'],
-                  visible: true,
-                },
-                {
-                  name: 'solvent',
-                  label: 'Solvent',
-                  description: 'Solvent',
-                  jpath: ['info', 'solvent'],
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'pulseSequence'],
-                  label: 'Pulse',
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'experiment'],
-                  label: 'Experiment',
-                  visible: true,
-                },
-                {
-                  name: 'color',
-                  label: '',
-                  description: 'Spectrum Color',
-                  visible: true,
-                },
-              ],
-            },
-            '1H,13C': {
-              columns: [
-                {
-                  name: 'visible',
-                  label: '',
-                  description: 'Show/Hide Spectrum',
-                  visible: true,
-                },
-                {
-                  name: 'name',
-                  label: 'Spectrum Name',
-                  description: 'Spectrum Name',
-                  jpath: ['info', 'name'],
-                  visible: true,
-                },
-                {
-                  name: 'solvent',
-                  label: 'Solvent',
-                  description: 'Solvent',
-                  jpath: ['info', 'solvent'],
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'pulseSequence'],
-                  label: 'Pulse',
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'experiment'],
-                  label: 'Experiment',
-                  visible: true,
-                },
-                {
-                  name: 'color',
-                  label: '',
-                  description: 'Spectrum Color',
-                  visible: true,
-                },
-              ],
-            },
-            '13C': {
-              columns: [
-                {
-                  name: 'visible',
-                  label: '',
-                  description: 'Show/Hide Spectrum',
-                  visible: true,
-                },
-                {
-                  name: 'name',
-                  label: 'Spectrum Name',
-                  description: 'Spectrum Name',
-                  jpath: ['info', 'name'],
-                  visible: true,
-                },
-                {
-                  name: 'solvent',
-                  label: 'Solvent',
-                  description: 'Solvent',
-                  jpath: ['info', 'solvent'],
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'pulseSequence'],
-                  label: 'Pulse',
-                  visible: false,
-                },
-                {
-                  jpath: ['info', 'experiment'],
-                  label: 'Experiment',
-                  visible: true,
-                },
-                {
-                  name: 'color',
-                  label: '',
-                  description: 'Spectrum Color',
-                  visible: true,
-                },
-              ],
-            },
+      {
+        nucleus: '13C',
+        ppmFormat: '0.00',
+        hzFormat: '0.00',
+      },
+      {
+        nucleus: '15N',
+        ppmFormat: '0.00',
+        hzFormat: '0.00',
+      },
+      {
+        nucleus: '19F',
+        ppmFormat: '0.00',
+        hzFormat: '0.00',
+      },
+      {
+        nucleus: '29Si',
+        ppmFormat: '0.00',
+        hzFormat: '0.00',
+      },
+      {
+        nucleus: '31P',
+        ppmFormat: '0.00',
+        hzFormat: '0.00',
+      },
+    ],
+    panels: {
+      spectra: {
+        nuclei: {
+          '1H': {
+            columns: [
+              {
+                name: 'visible',
+                label: '',
+                description: 'Show/Hide Spectrum',
+                visible: true,
+              },
+              {
+                label: 'Spectrum Name',
+                description: 'Spectrum Name',
+                jpath: ['info', 'name'],
+                visible: true,
+              },
+              {
+                label: 'Solvent',
+                description: 'Solvent',
+                jpath: ['info', 'solvent'],
+                visible: false,
+              },
+              {
+                jpath: ['info', 'pulseSequence'],
+                label: 'Pulse',
+                visible: false,
+              },
+              {
+                jpath: ['info', 'experiment'],
+                label: 'Experiment',
+                visible: true,
+              },
+              {
+                name: 'color',
+                label: '',
+                description: 'Spectrum Color',
+                visible: true,
+              },
+            ],
+          },
+          '1H,1H': {
+            columns: [
+              {
+                name: 'visible',
+                label: '',
+                description: 'Show/Hide Spectrum',
+                visible: true,
+              },
+              {
+                label: 'Spectrum Name',
+                description: 'Spectrum Name',
+                jpath: ['info', 'name'],
+                visible: true,
+              },
+              {
+                label: 'Solvent',
+                description: 'Solvent',
+                jpath: ['info', 'solvent'],
+                visible: false,
+              },
+              {
+                jpath: ['info', 'pulseSequence'],
+                label: 'Pulse',
+                visible: false,
+              },
+              {
+                jpath: ['info', 'experiment'],
+                label: 'Experiment',
+                visible: true,
+              },
+              {
+                name: 'color',
+                label: '',
+                description: 'Spectrum Color',
+                visible: true,
+              },
+            ],
+          },
+          '1H,13C': {
+            columns: [
+              {
+                name: 'visible',
+                label: '',
+                description: 'Show/Hide Spectrum',
+                visible: true,
+              },
+              {
+                label: 'Spectrum Name',
+                description: 'Spectrum Name',
+                jpath: ['info', 'name'],
+                visible: true,
+              },
+              {
+                label: 'Solvent',
+                description: 'Solvent',
+                jpath: ['info', 'solvent'],
+                visible: false,
+              },
+              {
+                jpath: ['info', 'pulseSequence'],
+                label: 'Pulse',
+                visible: false,
+              },
+              {
+                jpath: ['info', 'experiment'],
+                label: 'Experiment',
+                visible: true,
+              },
+              {
+                name: 'color',
+                label: '',
+                description: 'Spectrum Color',
+                visible: true,
+              },
+            ],
+          },
+          '13C': {
+            columns: [
+              {
+                name: 'visible',
+                label: '',
+                description: 'Show/Hide Spectrum',
+                visible: true,
+              },
+              {
+                label: 'Spectrum Name',
+                description: 'Spectrum Name',
+                jpath: ['info', 'name'],
+                visible: true,
+              },
+              {
+                label: 'Solvent',
+                description: 'Solvent',
+                jpath: ['info', 'solvent'],
+                visible: false,
+              },
+              {
+                jpath: ['info', 'pulseSequence'],
+                label: 'Pulse',
+                visible: false,
+              },
+              {
+                jpath: ['info', 'experiment'],
+                label: 'Experiment',
+                visible: true,
+              },
+              {
+                name: 'color',
+                label: '',
+                description: 'Spectrum Color',
+                visible: true,
+              },
+            ],
           },
         },
-        ranges: {
-          nuclei: {
-            '1H': {
-              from: {
-                show: false,
-                format: '0.00',
-              },
-              to: {
-                show: false,
-                format: '0.00',
-              },
-              absolute: {
-                show: false,
-                format: '0.00',
-              },
-              relative: {
-                show: true,
-                format: '0.00',
-              },
-              deltaPPM: {
-                show: true,
-                format: '0.00',
-              },
-              deltaHz: {
-                show: false,
-                format: '0.00',
-              },
-              coupling: {
-                show: false,
-                format: '0.00',
-              },
-              jGraphTolerance: 0.2,
-              showKind: false,
+      },
+      ranges: {
+        nuclei: {
+          '1H': {
+            from: {
+              show: false,
+              format: '0.00',
             },
-            '13C': {
-              from: {
-                show: false,
-                format: '0.00',
-              },
-              to: {
-                show: false,
-                format: '0.00',
-              },
-              absolute: {
-                show: false,
-                format: '0.00',
-              },
-              relative: {
-                show: true,
-                format: '0.00',
-              },
-              deltaPPM: {
-                show: true,
-                format: '0.00',
-              },
-              deltaHz: {
-                show: false,
-                format: '0.00',
-              },
-              coupling: {
-                show: true,
-                format: '0.00',
-              },
-              jGraphTolerance: 2,
-              showKind: true,
+            to: {
+              show: false,
+              format: '0.00',
             },
+            absolute: {
+              show: false,
+              format: '0.00',
+            },
+            relative: {
+              show: true,
+              format: '0.00',
+            },
+            deltaPPM: {
+              show: true,
+              format: '0.00',
+            },
+            deltaHz: {
+              show: false,
+              format: '0.00',
+            },
+            coupling: {
+              show: false,
+              format: '0.00',
+            },
+            jGraphTolerance: 0.2,
+            showKind: false,
+          },
+          '13C': {
+            from: {
+              show: false,
+              format: '0.00',
+            },
+            to: {
+              show: false,
+              format: '0.00',
+            },
+            absolute: {
+              show: false,
+              format: '0.00',
+            },
+            relative: {
+              show: true,
+              format: '0.00',
+            },
+            deltaPPM: {
+              show: true,
+              format: '0.00',
+            },
+            deltaHz: {
+              show: false,
+              format: '0.00',
+            },
+            coupling: {
+              show: true,
+              format: '0.00',
+            },
+            jGraphTolerance: 2,
+            showKind: true,
           },
         },
       },
     },
+
     databases: {
       defaultDatabase: '',
       data: [
@@ -412,70 +405,73 @@ const customWorkspaces: CustomWorkspaces = {
       ],
     },
     onLoadProcessing: {
-      '1H': [
-        {
-          name: 'digitalFilter',
-          label: 'Digital Filter',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'apodization',
-          label: 'Apodization',
-          value: {},
-          flag: false,
-        },
-        {
-          name: 'zeroFilling',
-          label: 'Zero Filling',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'fft',
-          label: 'Fast fourier transform',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'phaseCorrection',
-          label: 'Phase correction',
-          value: {},
-          flag: true,
-        },
-      ],
-      '13C': [
-        {
-          name: 'digitalFilter',
-          label: 'Digital Filter',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'apodization',
-          label: 'Apodization',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'zeroFilling',
-          label: 'Zero Filling',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'fft',
-          label: 'Fast fourier transform',
-          value: {},
-          flag: true,
-        },
-        {
-          name: 'phaseCorrection',
-          label: 'Phase correction',
-          value: {},
-          flag: true,
-        },
-      ],
+      autoProcessing: true,
+      filters: {
+        '1H': [
+          {
+            name: 'digitalFilter',
+            label: 'Digital Filter',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'apodization',
+            label: 'Apodization',
+            value: {},
+            flag: false,
+          },
+          {
+            name: 'zeroFilling',
+            label: 'Zero Filling',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'fft',
+            label: 'Fast fourier transform',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'phaseCorrection',
+            label: 'Phase correction',
+            value: {},
+            flag: true,
+          },
+        ],
+        '13C': [
+          {
+            name: 'digitalFilter',
+            label: 'Digital Filter',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'apodization',
+            label: 'Apodization',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'zeroFilling',
+            label: 'Zero Filling',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'fft',
+            label: 'Fast fourier transform',
+            value: {},
+            flag: true,
+          },
+          {
+            name: 'phaseCorrection',
+            label: 'Phase correction',
+            value: {},
+            flag: true,
+          },
+        ],
+      },
     },
     label: 'Snapshots',
     version: 1,
