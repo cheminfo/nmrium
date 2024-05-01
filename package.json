@@ -135,7 +135,7 @@
     "cspell": "^8.7.0",
     "eslint": "^8.57.0",
     "eslint-config-cheminfo-react": "^11.0.1",
-    "eslint-config-cheminfo-typescript": "^12.3.0",
+    "eslint-config-cheminfo-typescript": "^12.4.0",
     "modern-normalize": "^2.0.0",
     "postcss-styled-syntax": "^0.6.4",
     "prettier": "^3.2.5",

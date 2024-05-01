@@ -1,13 +1,8 @@
-import { ReactFragment } from 'react';
+import { ReactElement } from 'react';
 
 import useDraggable, { Position } from './useDraggable';
 
-type ChildType =
-  | React.ReactElement[]
-  | React.ReactElement
-  | ReactFragment
-  | boolean
-  | null;
+type ChildType = ReactElement[] | ReactElement | boolean | null;
 
 type PositionChangeHandler = (data: Position) => void;
 
