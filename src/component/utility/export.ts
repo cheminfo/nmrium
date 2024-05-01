@@ -143,6 +143,8 @@ function exportAsPng(
 }
 
 // hack way to copy the image to the clipboard
+// TODO: remove when Firefox widely supports ClipboardItem
+// https://caniuse.com/mdn-api_clipboarditem
 function copyDataURLClipboardFireFox(image) {
   const img = document.createElement('img');
   img.src = image;
@@ -155,6 +157,7 @@ function copyDataURLClipboardFireFox(image) {
   const range = document.createRange();
   range.selectNode(img);
   window.getSelection()?.addRange(range);
+  // eslint-disable-next-line deprecation/deprecation
   document.execCommand('Copy');
   img.remove();
 }

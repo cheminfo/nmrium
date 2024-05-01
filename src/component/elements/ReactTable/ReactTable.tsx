@@ -12,6 +12,7 @@ import {
   useLayoutEffect,
   useEffect,
   useMemo,
+  ReactElement,
 } from 'react';
 import {
   useTable,
@@ -45,7 +46,7 @@ import useRowSpan, {
 interface ExtraColumn<T extends object> {
   enableRowSpan?: boolean;
   style?: CSSProperties;
-  Cell?: (cell: CellProps<T>) => JSX.Element | string;
+  Cell?: (cell: CellProps<T>) => ReactElement | string;
 }
 
 export type Column<T extends object> = ReactColumn<T> &

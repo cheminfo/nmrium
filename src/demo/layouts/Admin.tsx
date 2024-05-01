@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { Suspense, useMemo, useState, useCallback } from 'react';
+import { Suspense, useMemo, useState, useCallback, ReactElement } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Sidebar from '../Sidebar';
@@ -38,7 +38,7 @@ export function Dashboard(props: DashboardProps) {
     [menuIsClosed],
   );
 
-  let rootRoute: JSX.Element | null = null;
+  let rootRoute: ReactElement | null = null;
   if (routesList.length > 0) {
     const route = routesList[0];
     const viewName = route.view || 'View';

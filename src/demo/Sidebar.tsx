@@ -118,15 +118,17 @@ function Sidebar(props) {
       <div css={sidebarWrapperCss} style={{ display: subDisplay }}>
         <Menu
           onClick={(e) => {
+            // TODO: use non-deprecated API of rc-menu
+            // @ts-expect-error This will be fixed by updating use of rc-menu
+            // eslint-disable-next-line deprecation/deprecation
+            const itemProps = e.item.props;
             navigate({
               pathname: `/SamplesDashboard/${Math.random()
                 .toString(36)
                 .replace('0.', '')}/${
-                // @ts-expect-error This will be fixed by updating use of rc-menu
-                (e.item.props.view || 'View') + getKey(e.item.props.file)
+                (itemProps.view || 'View') + getKey(itemProps.file)
               }`,
-              // @ts-expect-error This will be fixed by updating use of rc-menu
-              search: createSearchParams(e.item.props?.query || {}).toString(),
+              search: createSearchParams(itemProps?.query || {}).toString(),
             });
           }}
           mode="inline"

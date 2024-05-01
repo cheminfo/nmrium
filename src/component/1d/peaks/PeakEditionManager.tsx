@@ -41,7 +41,9 @@ interface PeaksEditionContextProps {
 }
 
 const peaksEditionContext: PeaksEditionContextProps = {
-  onEdit: () => {},
+  onEdit: () => {
+    // Empty default.
+  },
 };
 
 const PeaksEditionContext =
@@ -106,7 +108,7 @@ export function PeakEditionProvider({ children }) {
     [],
   );
 
-  const editiionManagerState = useMemo<PeaksEditionContextProps>(
+  const editionManagerState = useMemo<PeaksEditionContextProps>(
     () => ({ onEdit: handleOnEdit, id: peak?.id }),
     [peak?.id, handleOnEdit],
   );
@@ -114,7 +116,7 @@ export function PeakEditionProvider({ children }) {
   const { x, y } = getPosition();
 
   return (
-    <PeaksEditionContext.Provider value={editiionManagerState}>
+    <PeaksEditionContext.Provider value={editionManagerState}>
       <div
         onClick={() => setPeak(null)}
         onContextMenu={() => setPeak(null)}
