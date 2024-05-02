@@ -72,7 +72,9 @@ function findBestLink(
       const deltaLength = getDistance(a.x, a.y, b.x, b.y);
 
       const distance = Math.min(aLength, bLength);
-      const angle = getAngleFromSides(deltaLength, aLength, bLength);
+      const angle = Number(
+        getAngleFromSides(deltaLength, aLength, bLength).toFixed(1),
+      );
 
       result.push({ distance, angle, targetPoint, sourcePoint });
     }
@@ -85,7 +87,6 @@ function findBestLink(
       return a.distance - b.distance;
     }
   });
-
   return result[0];
 }
 
