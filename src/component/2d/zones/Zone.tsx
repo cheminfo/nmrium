@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { Zone as ZoneType } from 'nmr-processing';
 import { useState, useEffect } from 'react';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
+import { useShareData } from '../../context/ShareDataContext';
+import { SVGButton } from '../../elements/SVGButton';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import { useScale2DX, useScale2DY } from '../utilities/scale';
@@ -42,12 +45,25 @@ const stylesHighlighted = css`
   }
 `;
 
+const GroupContainer = styled.g`
+  .target {
+    visibility: hidden;
+  }
+
+  &:hover {
+    .target {
+      visibility: visible;
+    }
+  }
+`;
+
 interface ZoneProps {
   zoneData: ZoneType;
 }
 
 function Zone({ zoneData }: ZoneProps) {
   const { x, y, id, signals } = zoneData;
+  const { setData } = useShareData<{ id: string }>();
   const assignmentZone = useAssignment(id);
   const { showZones } = useActiveSpectrumZonesViewState();
   const highlightZone = useHighlight([assignmentZone.id], {
@@ -84,7 +100,20 @@ function Zone({ zoneData }: ZoneProps) {
       }}
     >
       {showZones && (
-        <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
+        <GroupContainer transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
+          <g
+            data-no-export="true"
+            transform="translate(-16 -16)"
+            className="target"
+          >
+            <SVGButton
+              icon="plus"
+              backgroundColor="green"
+              title="Add assignment label"
+              style={{ cursor: 'hand' }}
+              onClick={() => setData({ id })}
+            />
+          </g>
           <rect
             x="0"
             width={scaleX(x1) - scaleX(x2)}
@@ -94,7 +123,7 @@ function Zone({ zoneData }: ZoneProps) {
             stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
             strokeWidth={reduceOpacity ? '0' : '1'}
           />
-        </g>
+        </GroupContainer>
       )}
       {signals.map((_signal, i) => (
         <Signal key={String(id + i)} signal={_signal} />

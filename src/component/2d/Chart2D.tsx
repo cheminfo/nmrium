@@ -13,6 +13,7 @@ import { FTContainer } from './ft/FTContainer';
 import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
 import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels';
+import { ShareDataProvider } from '../context/ShareDataContext';
 
 interface Chart2DProps {
   spectra?: Spectrum1D[];
@@ -26,7 +27,7 @@ interface Chart2DInnerProps extends Chart2DProps {
   spectraRendering: SpectraRendering;
 }
 
-function chart2DInner({
+function Chart2DInner({
   spectra,
   width,
   height,
@@ -67,8 +68,10 @@ function chart2DInner({
       />
       <FTContainer spectra={spectra} />
       <FidContainer />
-      <Zones />
-      <ZonesAssignmentsLabels />
+      <ShareDataProvider>
+        <Zones />
+        <ZonesAssignmentsLabels />
+      </ShareDataProvider>
       <IndicationLines axis="X" show />
       <IndicationLines axis="Y" show />
       <SpectrumInfoBlock />
@@ -80,7 +83,7 @@ function chart2DInner({
   );
 }
 
-const MemoizedChart2D = memo(chart2DInner);
+const MemoizedChart2D = memo(Chart2DInner);
 
 export default function Chart2D({ spectra }: Chart2DProps) {
   const { width, height, margin, displayerKey } = useChartData();

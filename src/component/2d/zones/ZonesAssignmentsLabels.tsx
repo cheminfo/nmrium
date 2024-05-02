@@ -1,10 +1,15 @@
+import styled from '@emotion/styled';
 import { Spectrum2D } from 'nmr-load-save';
 import { Zone, Zones as ZonesType } from 'nmr-processing';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
+import { FieldEdition } from '../../1d-2d/FieldEdition';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
+import { useShareData } from '../../context/ShareDataContext';
+import { SVGButton } from '../../elements/SVGButton';
+import { SVGGroup } from '../../elements/SVGGroup';
 import useDraggable, { Position } from '../../elements/draggable/useDraggable';
 import { useHighlight } from '../../highlight';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
@@ -21,6 +26,8 @@ interface AssignmentLabelProps {
 }
 
 const distance = 30;
+const iconSize = 16;
+const LabelBoxPadding = { left: 35, right: 0, top: 15, bottom: 15 };
 
 interface TargetBoundary {
   x1: number;
@@ -85,7 +92,7 @@ function findBestLink(
 function useLinkPath(
   currentPosition: Position,
   targetBoundary: TargetBoundary,
-  sourceElement: SVGTextElement | null,
+  sourceElementBoundary: Boundary,
   options: { sideLength?: number; shift?: number } = {},
 ) {
   const { sideLength = 6, shift = 5 } = options;
@@ -95,9 +102,7 @@ function useLinkPath(
   const scaleX = useScale2DX();
   const scaleY = useScale2DY();
 
-  if (!sourceElement) return;
-
-  const { width, height } = sourceElement.getBBox();
+  const { width, height } = sourceElementBoundary;
   const centerX = width / 2;
   const centerY = height / 2;
   const leftX = x - centerX - shift;
@@ -192,7 +197,29 @@ function useLinkPath(
   return `${link.sourcePoint.a.x},${link.sourcePoint.a.y} ${link.sourcePoint.b.x},${link.sourcePoint.b.y} ${link.targetPoint.x},${link.targetPoint.y}`;
 }
 
-function AssignmentLabel(props: AssignmentLabelProps) {
+const GroupContainer = styled.g<{ isMoveActive: boolean }>(
+  ({ isMoveActive }) =>
+    !isMoveActive
+      ? `
+.target {
+  visibility: hidden;
+}
+
+&:hover {
+  .target {
+    visibility: visible;
+  }
+}
+`
+      : ``,
+);
+
+interface Boundary {
+  width: number;
+  height: number;
+}
+
+export function AssignmentLabel(props: AssignmentLabelProps) {
   const { zone } = props;
   const { id, x, y, assignment } = zone;
   const dispatch = useDispatch();
@@ -202,6 +229,21 @@ function AssignmentLabel(props: AssignmentLabelProps) {
   const scaleY = useScale2DY();
   const { viewerRef } = useGlobal();
   const textRef = useRef<SVGTextElement>(null);
+  const [labelBoundary, setLabelBoundary] = useState<Boundary>({
+    width: 0,
+    height: 0,
+  });
+  const [isMoveActive, setIsMoveActive] = useState(false);
+  const {
+    data: newAssignmentLabelState,
+    setData: updateNewAssignmentLabelState,
+  } = useShareData<{ id: string } | null>();
+
+  function dismissNewLabel() {
+    if (newAssignmentLabelState) {
+      updateNewAssignmentLabelState(null);
+    }
+  }
 
   let coordinate = {
     x: scaleX(x.to),
@@ -224,6 +266,13 @@ function AssignmentLabel(props: AssignmentLabelProps) {
     setCurrentPosition({ x: coordinate.x, y: coordinate.y });
   }, [coordinate.x, coordinate.y]);
 
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      const { width, height } = textRef.current.getBBox();
+      setLabelBoundary({ width, height });
+    }
+  }, [assignment]);
+
   const { onPointerDown } = useDraggable({
     position: coordinate,
     onChange: (dragEvent) => {
@@ -231,12 +280,14 @@ function AssignmentLabel(props: AssignmentLabelProps) {
       const boundary = textRef.current?.getBBox();
 
       if (!boundary) return;
-      const centerX = boundary.width / 2;
-      const centerY = boundary.height / 2;
+      const centerX = width / 2 + LabelBoxPadding.left;
+      const centerY = height + iconSize;
 
       switch (action) {
         case 'start': {
           setCurrentPosition({ x: position.x, y: position.y });
+          setIsMoveActive(true);
+
           break;
         }
         case 'move': {
@@ -257,6 +308,7 @@ function AssignmentLabel(props: AssignmentLabelProps) {
               },
             },
           });
+          setIsMoveActive(false);
           break;
         default:
           break;
@@ -267,26 +319,89 @@ function AssignmentLabel(props: AssignmentLabelProps) {
   const path = useLinkPath(
     currentPosition,
     { x1: x.to, x2: x.from, y1: y.from, y2: y.to },
-    textRef.current,
+    labelBoundary,
   );
 
+  if (!assignment && newAssignmentLabelState?.id !== id) {
+    return null;
+  }
+
+  function handleChange(value: string) {
+    dismissNewLabel();
+
+    dispatch({
+      type: 'CHANGE_ZONE_ASSIGNMENT_LABEL',
+      payload: {
+        value,
+        zoneID: id,
+      },
+    });
+  }
+
+  const { width, height } = labelBoundary;
+
   return (
-    <g>
-      <text
-        ref={textRef}
+    <GroupContainer isMoveActive={isMoveActive}>
+      <polygon points={path} fill={isActive ? '#ff6f0091' : 'black'} />
+
+      <g
         style={{
           transform: `translate(${currentPosition.x}px,${currentPosition.y}px)`,
-          cursor: 'hand',
         }}
-        onPointerDown={onPointerDown}
-        textAnchor="middle"
-        fill={isActive ? '#ff6f0091' : 'black'}
       >
-        {assignment}
-      </text>
-
-      <polygon points={path} fill={isActive ? '#ff6f0091' : 'black'} />
-    </g>
+        <rect
+          data-no-export="true"
+          fill="transparent"
+          x={-(width / 2 + LabelBoxPadding.left)}
+          width={width + LabelBoxPadding.left + LabelBoxPadding.right}
+          height={height + LabelBoxPadding.top + LabelBoxPadding.bottom}
+          y={-(height + LabelBoxPadding.top)}
+        />
+        <FieldEdition
+          onChange={handleChange}
+          inputType="text"
+          value={assignment || ''}
+          PopoverProps={{
+            position: 'top',
+            targetTagName: 'g',
+            ...(newAssignmentLabelState?.id === id
+              ? { isOpen: true, onClose: () => dismissNewLabel() }
+              : {}),
+          }}
+        >
+          <text
+            ref={textRef}
+            textAnchor="middle"
+            fill={isActive ? '#ff6f0091' : 'black'}
+            style={{ cursor: 'hand' }}
+          >
+            {assignment}
+          </text>
+        </FieldEdition>
+        <SVGGroup
+          space={2}
+          data-no-export="true"
+          transform={`translate(-${width / 2 + iconSize * 2 + 2} -${height + iconSize})`}
+          className="target"
+        >
+          <SVGButton
+            title="Move label"
+            size={iconSize}
+            icon="move"
+            onPointerDown={onPointerDown}
+            style={{ cursor: 'move' }}
+          />
+          <SVGButton
+            size={iconSize}
+            title="Remove label"
+            icon="cross"
+            backgroundColor="red"
+            style={{ cursor: 'hand' }}
+            onClick={() => handleChange('')}
+          />
+        </SVGGroup>
+      </g>
+    </GroupContainer>
   );
 }
 
@@ -296,11 +411,9 @@ function ZonesAssignmentsLabelsInner({ zones, displayerKey }: ZonesInnerProps) {
       clipPath={`url(#${displayerKey}clip-chart-2d)`}
       className="2d-zones-assignments-labels"
     >
-      {zones.values
-        .filter((zone) => zone?.assignment)
-        .map((zone) => (
-          <AssignmentLabel key={zone.id} zone={zone} />
-        ))}
+      {zones.values.map((zone) => (
+        <AssignmentLabel key={zone.id} zone={zone} />
+      ))}
     </g>
   );
 }
@@ -312,8 +425,13 @@ export default function ZonesAssignmentsLabels() {
 
   const { zones, display } = useSpectrum(emptyData) as Spectrum2D;
   const { showAssignmentsLabels } = useActiveSpectrumZonesViewState();
-
-  if (!display.isVisible || !showAssignmentsLabels) return null;
+  const { data: NewAssignmentLabelState } = useShareData();
+  if (
+    (!display.isVisible || !showAssignmentsLabels) &&
+    !NewAssignmentLabelState
+  ) {
+    return null;
+  }
 
   return <ZonesAssignmentsLabelsInner {...{ zones, displayerKey }} />;
 }
