@@ -62,7 +62,7 @@ interface ZoneProps {
 }
 
 function Zone({ zoneData }: ZoneProps) {
-  const { x, y, id, signals } = zoneData;
+  const { x, y, id, signals, assignment } = zoneData;
   const { setData } = useShareData<{ id: string }>();
   const assignmentZone = useAssignment(id);
   const { showZones } = useActiveSpectrumZonesViewState();
@@ -106,13 +106,15 @@ function Zone({ zoneData }: ZoneProps) {
             transform="translate(-16 -16)"
             className="target"
           >
-            <SVGButton
-              icon="plus"
-              backgroundColor="green"
-              title="Add assignment label"
-              style={{ cursor: 'hand' }}
-              onClick={() => setData({ id })}
-            />
+            {!assignment && (
+              <SVGButton
+                icon="plus"
+                backgroundColor="green"
+                title="Add assignment label"
+                style={{ cursor: 'hand' }}
+                onClick={() => setData({ id })}
+              />
+            )}
           </g>
           <rect
             x="0"
