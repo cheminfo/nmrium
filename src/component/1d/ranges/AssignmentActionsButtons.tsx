@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { FaLink, FaMinus } from 'react-icons/fa';
+import { LuLink, LuUnlink } from 'react-icons/lu';
 
 import Button, { ButtonProps } from '../../elements/Button';
 
@@ -15,6 +15,7 @@ export interface AssignmentActionsButtonsProps
   className?: string;
   onAssign: ButtonProps['onClick'];
   onUnAssign: ButtonProps['onClick'];
+  onAddAssignmentLabel?: ButtonProps['onClick'];
 }
 
 export function AssignmentActionsButtons(props: AssignmentActionsButtonsProps) {
@@ -22,6 +23,7 @@ export function AssignmentActionsButtons(props: AssignmentActionsButtonsProps) {
     isActive,
     onAssign,
     onUnAssign,
+    onAddAssignmentLabel,
     x = 0,
     y = 5,
     className = 'target',
@@ -30,8 +32,8 @@ export function AssignmentActionsButtons(props: AssignmentActionsButtonsProps) {
   return (
     <foreignObject
       width="16px"
-      height="34px"
-      x={x}
+      height="52px"
+      x={x - 16}
       y={y}
       className={className}
       data-no-export="true"
@@ -42,7 +44,7 @@ export function AssignmentActionsButtons(props: AssignmentActionsButtonsProps) {
         onClick={onAssign}
         {...otherProps}
       >
-        <FaLink style={styles.icon} />
+        <LuLink style={styles.icon} />
       </Button>
       {isActive && (
         <Button
@@ -51,7 +53,7 @@ export function AssignmentActionsButtons(props: AssignmentActionsButtonsProps) {
           onClick={onUnAssign}
           {...otherProps}
         >
-          <FaMinus style={styles.icon} />
+          <LuUnlink style={styles.icon} />
         </Button>
       )}
     </foreignObject>

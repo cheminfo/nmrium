@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { css } from '@emotion/react';
+import { Global, css } from '@emotion/react';
 import { MouseEvent, RefObject, useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
@@ -61,6 +61,12 @@ const containerStyles = css`
     -o-user-drag: none;
     user-select: none;
   }
+
+  .actions-buttons-popover {
+    background: transparent;
+    padding: 5px;
+    box-shadow: none;
+  }
 `;
 
 interface InnerNMRiumContentsProps {
@@ -90,6 +96,15 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
   return (
     <>
       <StateError />
+      <Global
+        styles={css`
+          .actions-buttons-popover {
+            border-radius: 10px;
+            padding: 5px;
+            background-color: white;
+          }
+        `}
+      />
       <div
         className="nmrium-container"
         ref={rootRef}

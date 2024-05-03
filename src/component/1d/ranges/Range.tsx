@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Range as RangeType } from 'nmr-processing';
+import { LuUnlink, LuLink } from 'react-icons/lu';
+import { PiTextTBold, PiTextTSlashBold } from 'react-icons/pi';
 
 import { isSpectrum1D, resizeRange } from '../../../data/data1d/Spectrum1D';
 import { isRangeAssigned } from '../../../data/data1d/Spectrum1D/isRangeAssigned';
@@ -12,6 +14,11 @@ import {
 import { filterForIDsWithAssignment } from '../../assignment/utilities/filterForIDsWithAssignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useLogger } from '../../context/LoggerContext';
+import { useShareData } from '../../context/ShareDataContext';
+import {
+  ActionsButtonsPopover,
+  ActionsButtonsPopoverProps,
+} from '../../elements/ActionsButtonsPopover';
 import { ResizerWithScale } from '../../elements/ResizerWithScale';
 import { HighlightEventSource, useHighlight } from '../../highlight';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
@@ -21,7 +28,6 @@ import { options } from '../../toolbar/ToolTypes';
 import { IntegralIndicator } from '../integral/IntegralIndicator';
 import { useScaleX } from '../utilities/scale';
 
-import { AssignmentActionsButtons } from './AssignmentActionsButtons';
 import { AssignmentLabel } from './AssignmentLabel';
 import { Atoms } from './Atoms';
 
@@ -45,7 +51,15 @@ interface RangeProps {
 }
 
 function Range({ range, selectedTool, relativeFormat }: RangeProps) {
-  const { id, integration, signals, from, to, diaIDs: rangeDiaIDs } = range;
+  const {
+    id,
+    integration,
+    signals,
+    from,
+    to,
+    diaIDs: rangeDiaIDs,
+    assignment,
+  } = range;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -117,7 +131,51 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
 
   const isAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
-  const startX = scaleX()(from) - 16;
+  const startX = scaleX()(from);
+  const { setData: addNewAssignmentLabel } = useShareData();
+
+  const isAssignmentActive = !!(assignmentRange.isActive || rangeDiaIDs);
+
+  function removeAssignemntlabel() {
+    dispatch({
+      type: 'CHANGE_RANGE_ASSIGNMENT_LABEL',
+      payload: {
+        value: '',
+        rangeID: id,
+      },
+    });
+  }
+
+  const actionsButtons: ActionsButtonsPopoverProps['buttons'] = [
+    {
+      icon: <LuLink />,
+      onClick: assignHandler,
+      intent: 'success',
+      title: 'Assign range',
+    },
+    {
+      icon: <LuUnlink />,
+      onClick: () => unAssignHandler(),
+      intent: 'danger',
+      title: 'Unassign range',
+      visible: isAssignmentActive,
+    },
+    {
+      icon: <PiTextTBold />,
+      onClick: () => addNewAssignmentLabel(range.id),
+      intent: 'success',
+      title: 'Add assignment label',
+      visible: !assignment,
+    },
+    {
+      icon: <PiTextTSlashBold />,
+      onClick: removeAssignemntlabel,
+      intent: 'danger',
+      title: 'Remove assignment label',
+      visible: !!assignment,
+    },
+  ];
+
   return (
     <g
       data-testid="range"
@@ -127,53 +185,54 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
       onMouseLeave={mouseLeaveHandler}
       {...(!assignmentRange.isActive && { css: style })}
     >
-      <ResizerWithScale
-        from={from}
-        to={to}
-        onEnd={handleOnStopResizing}
-        disabled={!isResizingActive}
+      <ActionsButtonsPopover
+        targetTagName="g"
+        {...(assignmentRange.isActive && { isOpen: true })}
+        buttons={actionsButtons}
       >
-        {({ x1, x2 }, isActive) => {
-          const width = x2 - x1;
-          return (
-            <g>
-              {isAssigned && !isHighlighted && !isActive && (
+        <ResizerWithScale
+          from={from}
+          to={to}
+          onEnd={handleOnStopResizing}
+          disabled={!isResizingActive}
+        >
+          {({ x1, x2 }, isActive) => {
+            const width = x2 - x1;
+            return (
+              <g>
+                {isAssigned && !isHighlighted && !isActive && (
+                  <rect
+                    width={width}
+                    height="10px"
+                    fill="#ffd700"
+                    opacity="0.35"
+                    data-no-export="true"
+                  />
+                )}
+
+                <AssignmentLabel range={range} width={width} />
+
                 <rect
                   width={width}
-                  height="10px"
-                  fill="#ffd700"
-                  opacity="0.35"
+                  height="100%"
+                  fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                   data-no-export="true"
                 />
-              )}
-              <rect
-                width={width}
-                height="100%"
-                fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
-                data-no-export="true"
-              />
 
-              {showIntegralsValues && (
-                <IntegralIndicator
-                  value={integration}
-                  format={relativeFormat}
-                  width={width}
-                  opacity={isNotSignal ? 0.5 : 1}
-                />
-              )}
-            </g>
-          );
-        }}
-      </ResizerWithScale>
-
-      <AssignmentLabel range={range} x={startX} />
+                {showIntegralsValues && (
+                  <IntegralIndicator
+                    value={integration}
+                    format={relativeFormat}
+                    width={width}
+                    opacity={isNotSignal ? 0.5 : 1}
+                  />
+                )}
+              </g>
+            );
+          }}
+        </ResizerWithScale>
+      </ActionsButtonsPopover>
       <Atoms range={range} x={startX} />
-      <AssignmentActionsButtons
-        isActive={!!(assignmentRange.isActive || rangeDiaIDs)}
-        x={startX}
-        onAssign={assignHandler}
-        onUnAssign={() => unAssignHandler()}
-      />
     </g>
   );
 }
