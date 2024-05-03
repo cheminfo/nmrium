@@ -24,7 +24,7 @@ export function setRangesViewProperty<T extends keyof RangesViewState>(
     | ((value: RangesViewState[T]) => RangesViewState[T])
     | RangesViewState[T],
 ) {
-  const viewData = draft.view.ranges;
+  const rangesView = draft.view.ranges;
 
   const activeSpectrum = getActiveSpectrum(draft);
 
@@ -32,13 +32,20 @@ export function setRangesViewProperty<T extends keyof RangesViewState>(
 
   const id = activeSpectrum.id;
 
-  if (viewData[id]) {
-    viewData[id][key] =
-      typeof value === 'function' ? value(viewData[id][key]) : value;
-  } else {
-    const defaultView = { ...defaultRangesViewState };
-    defaultView[key] =
-      typeof value === 'function' ? value(defaultView[key]) : value;
-    viewData[id] = defaultView;
-  }
+  initializeRangeViewObject(draft, id);
+
+  rangesView[id][key] =
+    typeof value === 'function' ? value(rangesView[id][key]) : value;
+}
+
+export function initializeRangeViewObject(
+  draft: Draft<State>,
+  spectrumID: string,
+) {
+  const rangesView = draft.view.ranges;
+
+  if (spectrumID in rangesView) return;
+
+  const defaultRangesView = { ...defaultRangesViewState };
+  rangesView[spectrumID] = defaultRangesView;
 }

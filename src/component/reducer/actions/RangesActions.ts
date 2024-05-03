@@ -33,7 +33,10 @@ import { FilterType } from '../../utility/filterType';
 import { State } from '../Reducer';
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { getSpectrum } from '../helper/getSpectrum';
-import { setRangesViewProperty } from '../helper/setRangesViewProperty';
+import {
+  initializeRangeViewObject,
+  setRangesViewProperty,
+} from '../helper/setRangesViewProperty';
 import { ActionType } from '../types/ActionType';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
@@ -644,13 +647,21 @@ function handleChangeRangeAssignmentLabel(
     const { index } = activeSpectrum;
     const spectrum = draft.data[index];
 
-    if (isSpectrum1D(spectrum)) {
-      const range = spectrum.ranges.values.find(
-        (range) => range.id === rangeID,
-      );
-      if (range) {
-        range.assignment = value;
-      }
+    if (!isSpectrum1D(spectrum)) {
+      return;
+    }
+
+    initializeRangeViewObject(draft, activeSpectrum.id);
+
+    const rangesView = draft.view.ranges[spectrum.id];
+
+    if (!rangesView.showAssignmentsLabels) {
+      rangesView.showAssignmentsLabels = true;
+    }
+
+    const range = spectrum.ranges.values.find((range) => range.id === rangeID);
+    if (range) {
+      range.assignment = value;
     }
   }
 }

@@ -3,6 +3,7 @@ import { Ranges as RangesProps } from 'nmr-processing';
 import { memo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
+import { ShareDataProvider } from '../../context/ShareDataContext';
 import { useActiveSpectrumRangesViewState } from '../../hooks/useActiveSpectrumRangesViewState';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useSpectrum from '../../hooks/useSpectrum';
@@ -25,17 +26,19 @@ function RangesInner({
   relativeFormat,
 }: RangesInnerProps) {
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
-      {ranges?.values?.map((range) => (
-        <Range
-          key={range.id}
-          range={range}
-          selectedTool={selectedTool}
-          showMultiplicityTrees={showMultiplicityTrees}
-          relativeFormat={relativeFormat}
-        />
-      ))}
-    </g>
+    <ShareDataProvider>
+      <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+        {ranges?.values?.map((range) => (
+          <Range
+            key={range.id}
+            range={range}
+            selectedTool={selectedTool}
+            showMultiplicityTrees={showMultiplicityTrees}
+            relativeFormat={relativeFormat}
+          />
+        ))}
+      </g>
+    </ShareDataProvider>
   );
 }
 
