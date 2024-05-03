@@ -511,10 +511,22 @@ function handleChangeZoneAssignmentLabel(
   const spectrum = draft.data[index];
 
   if (!isSpectrum2D(spectrum)) return;
+  initializeZoneViewObject(draft, activeSpectrum.id);
+
+  const zoneView = draft.view.zones[spectrum.id];
+
+  if (!zoneView.showAssignmentsLabels) {
+    zoneView.showAssignmentsLabels = true;
+  }
 
   const zone = spectrum.zones.values.find((zone) => zone.id === zoneID);
   if (zone) {
     zone.assignment = value;
+
+    if (!value) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete zoneView.assignmentsLabelsCoordinates[zoneID];
+    }
   }
 }
 
