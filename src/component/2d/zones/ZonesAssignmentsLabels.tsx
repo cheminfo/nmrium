@@ -202,6 +202,9 @@ const GroupContainer = styled.g<{ isMoveActive: boolean }>(
   ({ isMoveActive }) =>
     !isMoveActive
       ? `
+
+      pointer-events: bounding-box;
+
 .target {
   visibility: hidden;
 }
@@ -371,9 +374,10 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
           }}
         >
           <text
+            fontWeight={isActive ? 'bold' : 'normal'}
             ref={textRef}
             textAnchor="middle"
-            fill={isActive ? '#ff6f0091' : 'black'}
+            fill="black"
             style={{ cursor: 'hand' }}
           >
             {assignment}
