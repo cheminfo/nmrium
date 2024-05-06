@@ -18,17 +18,21 @@ export function SVGGroup(props: SVGGroupProps) {
 
   useLayoutEffect(() => {
     let shift = 0;
-    if (elementsRefs) {
-      for (const element of elementsRefs.current) {
-        if (element) {
-          const boundary = element.getBoundingClientRect();
-          if (direction === 'row') {
-            element.setAttribute('transform', `translate(${shift} 0)`);
-            shift += boundary.width + space;
-          } else {
-            element.setAttribute('transform', `translate(0 ${shift})`);
-            shift += boundary.height + space;
-          }
+    const elements = elementsRefs.current;
+
+    if (!elements) {
+      return;
+    }
+
+    for (const element of elements) {
+      if (element) {
+        const boundary = element.getBoundingClientRect();
+        if (direction === 'row') {
+          element.setAttribute('transform', `translate(${shift} 0)`);
+          shift += boundary.width + space;
+        } else {
+          element.setAttribute('transform', `translate(0 ${shift})`);
+          shift += boundary.height + space;
         }
       }
     }
@@ -41,7 +45,8 @@ export function SVGGroup(props: SVGGroupProps) {
       {Children.map(items, (child, index) => {
         return (
           <g
-            key={(child as ReactElement)?.key || `${index}`}
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${index}`}
             ref={(ref) => {
               if (ref) {
                 elementsRefs.current[index] = ref;
