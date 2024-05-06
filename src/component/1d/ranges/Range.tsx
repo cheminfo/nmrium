@@ -131,7 +131,6 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
 
   const isAssigned = isRangeAssigned(range);
   const isResizingActive = useResizerStatus('rangePicking');
-  const startX = scaleX()(from);
   const { setData: addNewAssignmentLabel } = useShareData();
 
   const isAssignmentActive = !!(assignmentRange.isActive || rangeDiaIDs);
@@ -210,14 +209,15 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
                   />
                 )}
 
-                <AssignmentLabel range={range} width={width} />
-
                 <rect
                   width={width}
                   height="100%"
                   fill={isHighlighted || isActive ? '#ff6f0057' : 'transparent'}
                   data-no-export="true"
                 />
+
+                <AssignmentLabel range={range} width={width} />
+                <Atoms range={range} x={width / 2} />
 
                 {showIntegralsValues && (
                   <IntegralIndicator
@@ -232,7 +232,6 @@ function Range({ range, selectedTool, relativeFormat }: RangeProps) {
           }}
         </ResizerWithScale>
       </ActionsButtonsPopover>
-      <Atoms range={range} x={startX} />
     </g>
   );
 }
