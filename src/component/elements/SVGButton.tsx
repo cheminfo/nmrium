@@ -1,22 +1,24 @@
 import { Icon, IconName, Tooltip, TooltipProps } from '@blueprintjs/core';
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 interface IconButtonProps extends React.SVGAttributes<SVGElement> {
   size?: number;
   padding?: number;
-  icon: IconName;
+  icon?: IconName;
   backgroundColor?: CSSProperties['backgroundColor'];
   color?: CSSProperties['color'];
   title?: string;
   tooltipProps?: TooltipProps;
+  renderIcon?: (props: Pick<IconButtonProps, 'color' | 'size'>) => ReactNode;
 }
 
 export function SVGButton(props: IconButtonProps) {
   const {
     size = 16,
-    padding = 6,
+    padding = 5,
     className,
     icon,
+    renderIcon,
     backgroundColor = 'gray',
     color = 'white',
     title,
@@ -44,7 +46,11 @@ export function SVGButton(props: IconButtonProps) {
           fill={backgroundColor}
         />
         <g transform={`translate(${padding / 2} ${padding / 2})`}>
-          <Icon tagName="g" icon={icon} size={size - padding} color={color} />
+          {typeof renderIcon === 'function' ? (
+            renderIcon({ size: size - padding, color })
+          ) : (
+            <Icon tagName="g" icon={icon} size={size - padding} color={color} />
+          )}
         </g>
       </svg>
     </Tooltip>

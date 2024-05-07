@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Zone as ZoneType } from 'nmr-processing';
 import { useState, useEffect } from 'react';
+import { PiTextTBold } from 'react-icons/pi';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment/AssignmentsContext';
@@ -108,7 +109,7 @@ function Zone({ zoneData }: ZoneProps) {
           >
             {!assignment && (
               <SVGButton
-                icon="plus"
+                renderIcon={(props) => <PiTextTBold {...props} />}
                 backgroundColor="green"
                 title="Add assignment label"
                 style={{ cursor: 'hand' }}
