@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Spectrum2D } from 'nmr-load-save';
 import { Zone, Zones as ZonesType } from 'nmr-processing';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { PiTextTSlash } from 'react-icons/pi';
 
 import { FieldEdition } from '../../1d-2d/FieldEdition';
 import { useChartData } from '../../context/ChartContext';
@@ -399,7 +400,7 @@ export function AssignmentLabel(props: AssignmentLabelProps) {
           <SVGButton
             size={iconSize}
             title="Remove label"
-            icon="cross"
+            renderIcon={(props) => <PiTextTSlash {...props} />}
             backgroundColor="red"
             style={{ cursor: 'hand' }}
             onClick={() => handleChange('')}
