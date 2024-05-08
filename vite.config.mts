@@ -15,19 +15,24 @@ export default () => {
 
   return defineConfig({
     base: './',
+    optimizeDeps: {
+      include: ['@blueprintjs'],
+    },
     esbuild: {
       jsx: 'automatic',
-      sourcemap: true,
+      sourcemap: 'inline',
     },
     build: {
-      sourcemap: true,
+      sourcemap: 'inline',
       rollupOptions: {
         plugins: process.env.ANALYZE ? [analyze()] : [],
         output: {
           manualChunks(id) {
+
             if (id.includes('node_modules/openchemlib/')) {
               return 'openchemlib';
             }
+
             if (id.includes('node_modules')) {
               return 'vendor';
             }
