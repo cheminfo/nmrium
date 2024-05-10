@@ -1,6 +1,13 @@
 import { useFormikContext } from 'formik';
 import { Jcoupling, Peak1D, translateMultiplet } from 'nmr-processing';
-import { CSSProperties, useCallback, useMemo, useState } from 'react';
+import {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
@@ -48,7 +55,6 @@ function getJCouplingKey(
 export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const signal = values?.signals?.[values?.signalIndex] || {};
-  const jCouplings = signal?.js || [];
   const [lastSelectedCouplingIndex, setLastSelectedCouplingIndex] = useState<
     number | null
   >(null);
@@ -59,14 +65,16 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     },
   } = useChartData();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const inputRef = useRef<HTMLInputElement[]>([]);
 
   useEvent({
-    onClick: (options) => {
+    onClick: ({ xPPM, shiftKey }) => {
       if (
         `${props.index}` === values.signalIndex &&
-        typeof lastSelectedCouplingIndex === 'number'
+        typeof lastSelectedCouplingIndex === 'number' &&
+        shiftKey
       ) {
-        const x = formatNumber(options.xPPM, rangesPreferences.deltaHz.format);
+        const x = formatNumber(xPPM, rangesPreferences.deltaHz.format);
 
         void setFieldValue(
           getJCouplingKey(
@@ -82,10 +90,12 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     onBrushEnd: (options) => {
       const {
         range: [from, to],
+        shiftKey,
       } = options;
       if (
         `${props.index}` === values.signalIndex &&
         typeof lastSelectedCouplingIndex === 'number' &&
+        shiftKey &&
         isSpectrum1D(spectrum)
       ) {
         const value = Number(
@@ -174,6 +184,13 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
                   value,
                   getJCouplingKey(values.signalIndex, row.index, 'coupling'),
                 );
+
+                if (
+                  hasCouplingConstant(row.original?.multiplicity) &&
+                  typeof lastSelectedCouplingIndex === 'number'
+                ) {
+                  inputRef.current[lastSelectedCouplingIndex].focus();
+                }
               }}
               style={styles.select}
               onClick={(e) => e.stopPropagation()}
@@ -187,12 +204,16 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         Cell: ({ row }) => {
           return (
             <FormikInput
+              ref={(ref) => {
+                if (ref) {
+                  inputRef.current[row.index] = ref;
+                }
+              }}
               name={getJCouplingKey(values.signalIndex, row.index, 'coupling')}
               type="number"
               placeholder={'J (Hz)'}
               style={{ input: styles.input }}
               disabled={!hasCouplingConstant(row.original?.multiplicity)}
-              onClick={(e) => e.stopPropagation()}
             />
           );
         },
@@ -221,7 +242,12 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         },
       },
     ],
-    [deleteHandler, multiplicityChangeHandler, values.signalIndex],
+    [
+      deleteHandler,
+      lastSelectedCouplingIndex,
+      multiplicityChangeHandler,
+      values.signalIndex,
+    ],
   );
 
   function selectRowHandler(index) {
@@ -230,9 +256,11 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
     );
   }
 
-  function handleActiveRow(row) {
-    return row?.index === lastSelectedCouplingIndex;
-  }
+  useEffect(() => {
+    if (typeof lastSelectedCouplingIndex === 'number') {
+      inputRef.current[lastSelectedCouplingIndex].focus();
+    }
+  }, [lastSelectedCouplingIndex, signal?.js]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -242,7 +270,7 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
             icon={<FaPlus />}
             tooltip="Add a new J coupling"
             intent="success"
-            onClick={() => addHandler(jCouplings)}
+            onClick={() => addHandler(signal?.js || [])}
           />
           <Toolbar.Item
             icon={<FaRegTrashAlt />}
@@ -259,10 +287,9 @@ export function SignalJCouplingsTable(props: SignalJCouplingsTableProps) {
         }}
       >
         <ReactTable
-          data={jCouplings}
+          data={signal?.js || []}
           columns={COLUMNS}
           onClick={(e, rowData: any) => selectRowHandler(rowData.index)}
-          activeRow={handleActiveRow}
           emptyDataRowText="No J Couplings"
         />
       </div>
