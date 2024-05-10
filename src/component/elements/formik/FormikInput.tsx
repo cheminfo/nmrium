@@ -1,5 +1,6 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
+import { ForwardedRef, forwardRef } from 'react';
 
 import Input, { InputProps } from '../Input';
 
@@ -12,7 +13,10 @@ interface FormikInputProps extends InputMapValueFunctions {
   checkErrorAfterInputTouched?: boolean;
 }
 
-function FormikInput(props: FormikInputProps & InputProps) {
+const FormikInput = forwardRef(function FormikInput(
+  props: FormikInputProps & InputProps,
+  ref: ForwardedRef<HTMLInputElement>,
+) {
   const {
     name,
     style = { label: {}, input: {}, inputWrapper: {} },
@@ -48,6 +52,7 @@ function FormikInput(props: FormikInputProps & InputProps) {
 
   return (
     <Input
+      ref={ref}
       name={name}
       value={val}
       onChange={changeHandler}
@@ -71,6 +76,6 @@ function FormikInput(props: FormikInputProps & InputProps) {
       {...resProps}
     />
   );
-}
+});
 
 export default FormikInput;
