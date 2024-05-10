@@ -1,6 +1,6 @@
 import { Formik, useFormikContext } from 'formik';
 import { translateMultiplet } from 'nmr-processing';
-import { CSSProperties, useRef } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../../../context/ChartContext';
@@ -36,7 +36,11 @@ interface NewSignalTabProps {
 export function NewSignalTab(props: NewSignalTabProps) {
   const { range } = props;
   const { values, setFieldValue } = useFormikContext<any>();
+  const [signalValue, setSignalValue] = useState<number>(
+    (range.from + range.to) / 2,
+  );
   const newSignalFormRef = useRef<any>();
+  const inputRef = useRef<HTMLInputElement>(null);
   const {
     view: {
       spectra: { activeTab },
@@ -58,22 +62,27 @@ export function NewSignalTab(props: NewSignalTabProps) {
   }
 
   useEvent({
-    onClick: (options) => {
-      if (values.signalIndex === '-1') {
-        newSignalFormRef.current.setValues({ newSignalDelta: options.xPPM });
+    onClick: ({ xPPM, shiftKey }) => {
+      if (values.signalIndex === '-1' && shiftKey) {
+        setSignalValue(xPPM);
       }
     },
     onBrushEnd: (options) => {
       const {
         range: [from, to],
+        shiftKey,
       } = options;
-      if (values.signalIndex === '-1') {
-        newSignalFormRef.current.setValues({
-          newSignalDelta: (to - from) / 2 + from,
-        });
+      if (values.signalIndex === '-1' && shiftKey) {
+        setSignalValue((to - from) / 2 + from);
       }
     },
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current?.select();
+    }, 50);
+  }, [signalValue]);
 
   return (
     <div style={styles.container}>
@@ -81,8 +90,9 @@ export function NewSignalTab(props: NewSignalTabProps) {
         innerRef={newSignalFormRef}
         validationSchema={getSignalValidationSchema(range)}
         initialValues={{
-          newSignalDelta: (range.from + range.to) / 2,
+          newSignalDelta: signalValue,
         }}
+        enableReinitialize
         onSubmit={saveHandler}
       >
         <div style={styles.innerContainer}>
@@ -95,6 +105,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
             ]:
           </p>
           <FormikInput
+            ref={inputRef}
             name="newSignalDelta"
             type="number"
             placeholder={`𝛅(ppm)`}
@@ -104,6 +115,7 @@ export function NewSignalTab(props: NewSignalTabProps) {
                 padding: '0.25rem 0.5rem',
               },
             }}
+            autoSelect
             checkErrorAfterInputTouched={false}
           />
           <Button.Done
