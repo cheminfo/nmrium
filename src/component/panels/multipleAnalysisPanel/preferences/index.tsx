@@ -105,8 +105,8 @@ function MultipleSpectraAnalysisPreferences(
               container: { padding: '5px' },
             }}
           >
-            <Label title="Enable resort spectra">
-              <FormikCheckBox name="resortSpectra" />
+            <Label title="Sort spectra when sorting columns">
+              <FormikCheckBox name="analysisOptions.resortSpectra" />
             </Label>
           </GroupPane>
           <GroupPane
