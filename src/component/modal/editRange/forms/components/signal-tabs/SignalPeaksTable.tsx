@@ -3,7 +3,14 @@ import { useFormikContext } from 'formik';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum1D } from 'nmr-load-save';
 import { Peak1D, getShiftX } from 'nmr-processing';
-import { CSSProperties, useCallback, useMemo, useState } from 'react';
+import {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Toolbar } from 'react-science/ui';
 
@@ -45,7 +52,6 @@ function getPeakKey(signalIndex: number, peakIndex, key?: keyof Peak1D) {
 export function SignalPeaksTable(props: SignalPeaksTableProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const signal = values?.signals?.[values?.signalIndex] || {};
-  const peaks = signal?.peaks || [];
   const delta = signal?.delta || 0;
   const spectrum = useSpectrum() as Spectrum1D;
   const {
@@ -62,17 +68,15 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     },
   } = useChartData();
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
-
+  const inputRef = useRef<HTMLInputElement[]>([]);
   useEvent({
-    onClick: (options) => {
+    onClick: ({ xPPM, shiftKey }) => {
       if (
         `${props.index}` === values.signalIndex &&
-        typeof lastSelectedPeakIndex === 'number'
+        typeof lastSelectedPeakIndex === 'number' &&
+        shiftKey
       ) {
-        const delta = formatNumber(
-          options.xPPM,
-          rangesPreferences.deltaPPM.format,
-        );
+        const delta = formatNumber(xPPM, rangesPreferences.deltaPPM.format);
         const xIndex = xFindClosestIndex(xArray, delta, { sorted: false });
         const intensity = formatNumber(
           re[xIndex],
@@ -81,7 +85,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         void setFieldValue(
           getPeakKey(values?.signalIndex, lastSelectedPeakIndex),
           {
-            ...peaks[lastSelectedPeakIndex],
+            ...signal?.peaks?.[lastSelectedPeakIndex],
             x: delta,
             y: intensity,
           },
@@ -91,10 +95,12 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
     onBrushEnd: (options) => {
       const {
         range: [from, to],
+        shiftKey,
       } = options;
       if (
         `${props.index}` === values.signalIndex &&
-        typeof lastSelectedPeakIndex === 'number'
+        typeof lastSelectedPeakIndex === 'number' &&
+        shiftKey
       ) {
         const value = Number(
           formatNumber(
@@ -126,7 +132,8 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         ...data,
         peak,
       ]);
-      setLastSelectedPeakIndex(data?.length || 0);
+      const rowIndex = data?.length || 0;
+      setLastSelectedPeakIndex(rowIndex);
     },
     [delta, re, setFieldValue, shiftX, values?.signalIndex, xArray],
   );
@@ -175,11 +182,15 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         Cell: ({ row }) => {
           return (
             <FormikInput
+              ref={(ref) => {
+                if (ref) {
+                  inputRef.current[row.index] = ref;
+                }
+              }}
               name={`signals.${values?.signalIndex}.peaks.${row.index}.x`}
               style={{ input: styles.input }}
               onChange={(event) => changeDeltaHandler(event, row.index)}
               type="number"
-              onClick={(e) => e.stopPropagation()}
             />
           );
         },
@@ -225,14 +236,15 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
   );
 
   function selectRowHandler(index) {
-    setLastSelectedPeakIndex((prevIndex) =>
-      prevIndex === index ? null : index,
-    );
+    setLastSelectedPeakIndex(index);
+    inputRef.current[index].select();
   }
 
-  function handleActiveRow(row) {
-    return row?.index === lastSelectedPeakIndex;
-  }
+  useEffect(() => {
+    if (typeof lastSelectedPeakIndex === 'number') {
+      inputRef.current[lastSelectedPeakIndex].focus();
+    }
+  }, [lastSelectedPeakIndex, signal?.peaks]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -242,7 +254,7 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
             icon={<FaPlus />}
             tooltip="Add a new peak"
             intent="success"
-            onClick={() => addHandler(peaks)}
+            onClick={() => addHandler(signal?.peaks || [])}
           />
           <Toolbar.Item
             icon={<FaRegTrashAlt />}
@@ -259,10 +271,9 @@ export function SignalPeaksTable(props: SignalPeaksTableProps) {
         }}
       >
         <ReactTable
-          data={peaks}
+          data={signal?.peaks || []}
           columns={COLUMNS}
           onClick={(e, rowData: any) => selectRowHandler(rowData.index)}
-          activeRow={handleActiveRow}
           emptyDataRowText="No peaks"
         />
       </div>
