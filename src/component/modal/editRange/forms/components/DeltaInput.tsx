@@ -5,8 +5,8 @@ import FormikInput from '../../../../elements/formik/FormikInput';
 
 const style: InputStyle = {
   input: {
-    width: '50px',
-    height: '26px',
+    width: '60px',
+    height: '30px',
   },
   inputWrapper: {
     borderWidth: 0,
@@ -26,7 +26,7 @@ export function DeltaInput({ signal, index }: DeltaInputProps) {
       <FormikInput
         name={`signals.${index}.delta`}
         type="number"
-        placeholder={'J (Hz)'}
+        placeholder={'Delta (PPM)'}
         style={style}
         checkErrorAfterInputTouched={false}
       />
