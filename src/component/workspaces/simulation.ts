@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const simulation: InnerWorkspace = {
-  version: 1,
   label: 'Simulation',
   general: {
     dimmedSpectraOpacity: 0.5,

@@ -4,6 +4,7 @@ import { memo } from 'react';
 import SpectrumInfoBlock from '../1d-2d/components/SpectrumInfoBlock';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { ShareDataProvider } from '../context/ShareDataContext';
 import { Margin } from '../reducer/Reducer';
 
 import XAxis from './XAxis';
@@ -13,7 +14,6 @@ import { FTContainer } from './ft/FTContainer';
 import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
 import ZonesAssignmentsLabels from './zones/ZonesAssignmentsLabels';
-import { ShareDataProvider } from '../context/ShareDataContext';
 
 interface Chart2DProps {
   spectra?: Spectrum1D[];

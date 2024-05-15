@@ -1,7 +1,9 @@
-import { getLocalStorage, getValue } from './LocalStorage';
+import { readSettings } from '../reducer/preferences/preferencesReducer';
+
+import { getValue } from './LocalStorage';
 
 function GetPreference(preferences, key) {
-  const localData = getLocalStorage('nmr-general-settings');
+  const localData = readSettings() || {};
   const val =
     getValue(preferences, `panels.[${key}]`) ||
     getValue(localData, `panels.[${key}]`);

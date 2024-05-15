@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const exercise: InnerWorkspace = {
-  version: 2,
   label: 'Exercise',
   display: {
     general: {

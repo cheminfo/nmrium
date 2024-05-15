@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const process1D: InnerWorkspace = {
-  version: 2,
   label: '1D multiple spectra analysis',
   visible: true,
   display: {

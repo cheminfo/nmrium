@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const prediction: InnerWorkspace = {
-  version: 1,
   label: 'Prediction',
   general: {
     dimmedSpectraOpacity: 0.5,

@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const basic: InnerWorkspace = {
-  version: 2,
   label: 'Simple NMR analysis',
   visible: true,
   display: {

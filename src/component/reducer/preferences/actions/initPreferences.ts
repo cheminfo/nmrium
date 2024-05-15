@@ -1,7 +1,6 @@
 import { Draft } from 'immer';
 
 import type { NMRiumWorkspace } from '../../../main';
-import { getLocalStorage } from '../../../utility/LocalStorage';
 import { PreferencesState, WORKSPACES_KEYS } from '../preferencesReducer';
 import { initWorkspace } from '../utilities/initWorkspace';
 import { mapWorkspaces } from '../utilities/mapWorkspaces';
@@ -15,12 +14,12 @@ function getWorkspace(
 
 export function initPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
-    const localData = getLocalStorage('nmr-general-settings');
     const {
       dispatch,
       workspace,
       customWorkspaces: cw,
       preferences,
+      currentWorkspace,
     } = action.payload;
     const customWorkspaces = mapWorkspaces(cw, { source: 'custom' });
 
@@ -53,7 +52,7 @@ export function initPreferences(draft: Draft<PreferencesState>, action) {
         base: _workspace,
       };
     } else {
-      const _workspace = getWorkspace(draft, localData.currentWorkspace);
+      const _workspace = getWorkspace(draft, currentWorkspace);
       draft.workspace = { current: _workspace, base: null };
     }
 
