@@ -10,6 +10,8 @@ import { useToaster } from '../context/ToasterContext';
 import FormikInput from '../elements/formik/FormikInput';
 import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
 
+import { useWorkspaceAction } from './useWorkspaceAction';
+
 const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
 });
@@ -48,17 +50,13 @@ export function useSaveSettings() {
   const toaster = useToaster();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const settingsRef = useRef<Workspace>();
-  const { dispatch, current } = usePreferences();
+  const { current } = usePreferences();
   const formRef = useRef<FormikProps<any>>(null);
+  const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
 
-  function addNewWorkspace({ workspaceName }) {
-    dispatch({
-      type: 'ADD_WORKSPACE',
-      payload: {
-        workspaceKey: workspaceName,
-        data: settingsRef.current,
-      },
-    });
+  function handleAddNewWorkspace({ workspaceName }) {
+    addNewWorkspace(workspaceName, settingsRef.current);
+
     closeDialog();
     toaster.show({
       message: 'Preferences saved successfully',
@@ -72,10 +70,8 @@ export function useSaveSettings() {
       if (current.source !== 'user') {
         openDialog();
       } else {
-        dispatch({
-          type: 'SET_PREFERENCES',
-          ...(values && { payload: values }),
-        });
+        saveWorkspace(values);
+
         closeDialog();
       }
     },
@@ -84,7 +80,11 @@ export function useSaveSettings() {
         message:
           'Please enter a new user workspace name in order to save your changes locally',
         render: (props) => (
-          <WorkspaceAddForm {...props} onSave={addNewWorkspace} ref={formRef} />
+          <WorkspaceAddForm
+            {...props}
+            onSave={handleAddNewWorkspace}
+            ref={formRef}
+          />
         ),
         buttons: [
           {

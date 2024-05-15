@@ -105,9 +105,6 @@ function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
               <FaTimes />
             </Button.Danger>
           )}
-          {item.version && !item.isReadOnly && (
-            <span style={styles.workspaceVersion}>V{item.version}</span>
-          )}
         </div>
       )}
     </div>

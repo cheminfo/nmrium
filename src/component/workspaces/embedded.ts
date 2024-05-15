@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const embedded: InnerWorkspace = {
-  version: 1,
   label: 'Embedded',
   display: {
     general: {

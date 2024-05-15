@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useMemo, useCallback, memo } from 'react';
+import { useMemo, memo } from 'react';
 import {
   FaRegWindowMaximize,
   FaQuestionCircle,
@@ -22,6 +22,7 @@ import DropDownButton, {
   DropDownListItem,
 } from '../elements/dropDownButton/DropDownButton';
 import { useSaveSettings } from '../hooks/useSaveSettings';
+import { useWorkspaceAction } from '../hooks/useWorkspaceAction';
 import { LogsHistoryModal } from '../modal/LogsHistoryModal';
 import AboutUsModal from '../modal/aboutUs/AboutUsModal';
 import GeneralSettingsModal from '../modal/setting/GeneralSettings';
@@ -89,8 +90,8 @@ function HeaderInner(props: HeaderInnerProps) {
       display: { general },
     },
     workspace,
-    dispatch,
   } = usePreferences();
+  const { setActiveWorkspace } = useWorkspaceAction();
   const fullscreen = useFullscreen();
 
   const workspacesList = useWorkspacesList();
@@ -123,17 +124,9 @@ function HeaderInner(props: HeaderInnerProps) {
     }
   }, [selectedOptionPanel]);
 
-  const changeWorkspaceHandler = useCallback(
-    (option: DropDownListItem) => {
-      dispatch({
-        type: 'SET_ACTIVE_WORKSPACE',
-        payload: {
-          workspace: option.key,
-        },
-      });
-    },
-    [dispatch],
-  );
+  function changeWorkspaceHandler(option: DropDownListItem) {
+    setActiveWorkspace(option.key);
+  }
 
   function renderItem(item) {
     return <WorkspaceItem item={item} />;

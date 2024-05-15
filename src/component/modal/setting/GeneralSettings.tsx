@@ -28,6 +28,7 @@ import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
 import { useSaveSettings } from '../../hooks/useSaveSettings';
+import { useWorkspaceAction } from '../../hooks/useWorkspaceAction';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import PredefinedWorkspaces from '../../workspaces';
 
@@ -104,6 +105,8 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     originalWorkspaces,
     ...preferences
   } = usePreferences();
+  const { addNewWorkspace, removeWorkspace, setActiveWorkspace } =
+    useWorkspaceAction();
   const { saveSettings, SaveSettingsModal } = useSaveSettings();
   const toaster = useToaster();
   const refForm = useRef<FormikProps<any>>(null);
@@ -136,14 +139,9 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     closeDialog?.();
   }
   function addWorkSpaceHandler(name) {
-    dispatch({
-      type: 'ADD_WORKSPACE',
-      payload: {
-        workspaceKey: name,
-        data: refForm.current?.values,
-      },
-    });
+    addNewWorkspace(name, refForm.current?.values);
   }
+
   async function applyPreferencesHandler() {
     const errors = await refForm.current?.validateForm();
     if (Object.keys(errors || {}).length > 0) {
@@ -160,21 +158,11 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
   }
 
   function deleteWorkSpaceHandler(key) {
-    dispatch({
-      type: 'REMOVE_WORKSPACE',
-      payload: {
-        workspace: key,
-      },
-    });
+    removeWorkspace(key);
   }
 
   function ChangeWorkspaceHandler(option: DropDownListItem) {
-    dispatch({
-      type: 'SET_ACTIVE_WORKSPACE',
-      payload: {
-        workspace: option.key,
-      },
-    });
+    setActiveWorkspace(option.key);
   }
 
   function renderItem(item) {

@@ -1,5 +1,7 @@
 import { Draft, produce } from 'immer';
 import {
+  CURRENT_EXPORT_VERSION,
+  migrateSettings,
   MultipleSpectraAnalysisPreferences,
   Workspace,
   WorkSpaceSource,
@@ -9,11 +11,7 @@ import { SplitPaneSize } from 'react-science/ui';
 
 import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import type { NMRiumWorkspace, NMRiumPreferences } from '../../main';
-import {
-  getLocalStorage,
-  removeData,
-  storeData,
-} from '../../utility/LocalStorage';
+import { getLocalStorage, storeData } from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
 import { ActionType } from '../types/ActionType';
 
@@ -39,12 +37,18 @@ import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPositi
 import { setWorkspace } from './actions/setWorkspace';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
 
-const LOCAL_STORAGE_VERSION = 17;
+const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 
 export const WORKSPACES_KEYS = {
   componentKey: `nmrium-component-workspace`,
   nmriumKey: `nmrium-file-workspace`,
 };
+
+export interface Settings {
+  version: number;
+  workspaces: Record<string, WorkspaceWithSource>;
+  currentWorkspace;
+}
 
 type InitPreferencesAction = ActionType<
   'INIT_PREFERENCES',
@@ -188,7 +192,7 @@ export interface PreferencesState {
 }
 
 export const preferencesInitialState: PreferencesState = {
-  version: LOCAL_STORAGE_VERSION,
+  version: CURRENT_EXPORT_VERSION,
   workspaces: {},
   originalWorkspaces: {},
   dispatch: () => null,
@@ -198,36 +202,33 @@ export const preferencesInitialState: PreferencesState = {
   },
 };
 
+export function readSettings(): Settings {
+  const localData = getLocalStorage(LOCAL_STORAGE_SETTINGS_KEY) || {
+    version: CURRENT_EXPORT_VERSION,
+    currentWorkspace: null,
+    workspaces: {},
+  };
+  return migrateSettings(localData);
+}
+
+export function updateSettings(settings: Settings) {
+  storeData(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings));
+}
+
 export function initPreferencesState(
   state: PreferencesState,
 ): PreferencesState {
-  const nmrLocalStorageVersion = getLocalStorage(
-    'nmr-local-storage-version',
-    false,
-  );
-
-  const localData = getLocalStorage('nmr-general-settings');
-
-  // remove old nmr-local-storage-version key
-  if (nmrLocalStorageVersion && localData?.version) {
-    removeData('nmr-local-storage-version');
-  }
-
+  const localData = getLocalStorage(LOCAL_STORAGE_SETTINGS_KEY);
+  const settings = readSettings();
   //  if the local setting version != current settings version number
-  if (!localData?.version || localData?.version !== LOCAL_STORAGE_VERSION) {
-    removeData('nmr-general-settings');
-
-    const data = {
-      version: LOCAL_STORAGE_VERSION,
-      workspaces: {},
-    };
-    storeData('nmr-general-settings', JSON.stringify(data));
+  if (localData?.version !== CURRENT_EXPORT_VERSION) {
+    updateSettings(settings);
   }
 
   const predefinedWorkspaces = mapWorkspaces(Workspaces as any, {
     source: 'predefined',
   });
-  const localWorkspaces = mapWorkspaces(localData?.workspaces || {}, {
+  const localWorkspaces = mapWorkspaces(settings?.workspaces || {}, {
     source: 'user',
   });
 
@@ -236,7 +237,7 @@ export function initPreferencesState(
     originalWorkspaces: { ...predefinedWorkspaces, ...localWorkspaces },
     workspaces: { ...predefinedWorkspaces, ...localWorkspaces },
     workspace: {
-      current: localData?.currentWorkspace || 'default',
+      current: settings?.currentWorkspace || 'default',
       base: null,
     },
   };

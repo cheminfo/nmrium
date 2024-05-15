@@ -20,6 +20,7 @@ import { defaultGetSpinner, SpinnerProvider } from '../loader/SpinnerContext';
 import preferencesReducer, {
   preferencesInitialState,
   initPreferencesState,
+  readSettings,
 } from '../reducer/preferences/preferencesReducer';
 import { getBlob } from '../utility/export';
 
@@ -58,12 +59,14 @@ export function InnerNMRium({
   }, [isFullScreen]);
 
   useEffect(() => {
+    const settings = readSettings();
     dispatchPreferences({
       type: 'INIT_PREFERENCES',
       payload: {
         preferences,
         workspace,
         customWorkspaces,
+        currentWorkspace: settings?.currentWorkspace,
         dispatch: dispatchPreferences,
       },
     });

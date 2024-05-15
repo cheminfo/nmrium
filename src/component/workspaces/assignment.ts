@@ -1,7 +1,6 @@
 import { InnerWorkspace } from 'nmr-load-save';
 
 export const assignment: InnerWorkspace = {
-  version: 2,
   label: 'NMR spectra assignment',
   visible: true,
   display: {
