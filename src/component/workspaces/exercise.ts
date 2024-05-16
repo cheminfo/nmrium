@@ -36,7 +36,7 @@ export const exercise: InnerWorkspace = {
     spectraRendering: 'auto',
     loggingLevel: 'info',
     popupLoggingLevel: 'error',
-    invert: false,
+    invert: true,
   },
   formatting: {
     nuclei: {},
