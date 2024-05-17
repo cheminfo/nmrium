@@ -1,3 +1,4 @@
+import { NmrData2DFt } from 'cheminfo-types';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { Spectrum2D } from 'nmr-load-save';
@@ -8,6 +9,7 @@ import {
   getDefaultContoursLevel,
   LevelSign,
 } from '../../../data/data2d/Spectrum2D/contours';
+import { calculateSanPlot } from '../../../data/utilities/calculateSanPlot';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
@@ -20,6 +22,7 @@ interface ContoursPathsProps {
   id: string;
   color: string;
   sign: LevelSign;
+  noise: number;
   spectrum: Spectrum2D;
   onTimeout: () => void;
 }
@@ -73,6 +76,7 @@ function ContoursPaths({
   id: spectrumID,
   sign,
   color,
+  noise,
   spectrum,
   onTimeout,
 }: ContoursPathsProps) {
@@ -84,6 +88,7 @@ function ContoursPaths({
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
       level,
+      noise,
       spectrum,
       sign === 'negative',
     );
@@ -91,7 +96,7 @@ function ContoursPaths({
       onTimeout();
     }
     return contours;
-  }, [spectrum, level, onTimeout, sign]);
+  }, [spectrum, level, onTimeout, sign, noise]);
 
   const path = usePath(spectrum, contours);
 
@@ -129,28 +134,33 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
-      {spectra?.map((spectrum) => (
-        <g key={spectrum.id}>
-          {spectrum.display.isPositiveVisible && (
-            <ContoursPaths
-              id={spectrum.id}
-              sign="positive"
-              spectrum={spectrum}
-              color={spectrum.display.positiveColor}
-              onTimeout={timeoutHandler}
-            />
-          )}
-          {spectrum.display.isNegativeVisible && (
-            <ContoursPaths
-              id={spectrum.id}
-              sign="negative"
-              spectrum={spectrum}
-              color={spectrum.display.negativeColor}
-              onTimeout={timeoutHandler}
-            />
-          )}
-        </g>
-      ))}
+      {spectra?.map((spectrum) => {
+        const noise = calculateSanPlot('2D', (spectrum.data as NmrData2DFt).rr);
+        return (
+          <g key={spectrum.id}>
+            {spectrum.display.isPositiveVisible && (
+              <ContoursPaths
+                id={spectrum.id}
+                sign="positive"
+                noise={noise.positive * 5}
+                spectrum={spectrum}
+                color={spectrum.display.positiveColor}
+                onTimeout={timeoutHandler}
+              />
+            )}
+            {spectrum.display.isNegativeVisible && (
+              <ContoursPaths
+                id={spectrum.id}
+                sign="negative"
+                noise={noise.positive * 5}
+                spectrum={spectrum}
+                color={spectrum.display.negativeColor}
+                onTimeout={timeoutHandler}
+              />
+            )}
+          </g>
+        );
+      })}
     </g>
   );
 }
