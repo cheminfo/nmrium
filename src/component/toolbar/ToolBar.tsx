@@ -29,6 +29,7 @@ import { Toolbar, ToolbarItemProps } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { CustomToolTip, ToolTipItem } from '../elements/CustomToolTip';
 import {
   ToolbarPopoverMenuItem,
@@ -118,6 +119,11 @@ export default function ToolBar() {
     ? EXPORT_MENU
     : EXPORT_MENU.filter((item) => item.id !== 'nmre');
 
+  const {
+    current: {
+      general: { invert },
+    },
+  } = usePreferences();
   const handleOnFFTFilter = useCallback(() => {
     dispatch({
       type: 'APPLY_FFT_FILTER',
@@ -228,8 +234,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.integral.label,
         shortcuts: ['i'],
-        description:
-          'Manually integrate the spectrum. Click, drag, and release while holding SHIFT to draw the integral. Resize the integrals by moving the edges. Cut an integral with SHIFT + click.',
+        description: `Manually integrate the spectrum. Click, drag, and release ${!invert ? 'while holding SHIFT' : ''} to draw the integral. Resize the integrals by moving the edges. Cut an integral with ${!invert ? 'SHIFT +' : ''} click.`,
         link: 'https://docs.nmrium.org/help/integrations',
       },
       icon: <SvgNmrIntegrate />,
