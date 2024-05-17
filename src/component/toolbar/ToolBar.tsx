@@ -244,8 +244,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.zonePicking.label,
         shortcuts: ['r'],
-        description:
-          'Draw 2D zones by clicking, dragging, and releasing while holding SHIFT. Alternatively, detect zones automatically.',
+        description: `Draw 2D zones by clicking, dragging, and releasing${!invert ? 'while holding SHIFT' : ''}. Alternatively, detect zones automatically.`,
         link: 'https://docs.nmrium.org/30_2d-spectra/zones/zones',
       },
       icon: <FaDiceFour />,
@@ -265,8 +264,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.rangePicking.label,
         shortcuts: ['r'],
-        description:
-          'Define ranges and analyse multiplet automatically or manually.  Click, drag, and release while holding SHIFT to draw the range. Ranges can be resized by moving the edges.',
+        description: `Define ranges and analyse multiplet automatically or manually.  Click, drag, and release ${!invert ? 'while holding SHIFT' : ''} to draw the range. Ranges can be resized by moving the edges.`,
         link: 'https://docs.nmrium.org/20_1d-spectra/ranges/ranges',
       },
       icon: <SvgNmrRangePicking />,
@@ -304,8 +302,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.phaseCorrection.label,
         shortcuts: ['a'],
-        description:
-          'Correct the spectrum phase manually or automatically. For manual phase correction, define the pivot using SHIFT + click, then press the PH0 and PH1 button, and move the mouse horizontally.',
+        description: `Correct the spectrum phase manually or automatically. For manual phase correction, define the pivot${!invert ? ' using SHIFT +' : ''} click, then press the PH0 and PH1 button, and move the mouse horizontally.`,
         link: 'https://docs.nmrium.org/20_1d-spectra/phase/phase',
       },
       icon: <SvgNmrPhaseCorrection />,
@@ -324,8 +321,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.baselineCorrection.label,
         shortcuts: ['b'],
-        description:
-          'Correct the baseline of the spectrum. You should draw zones corresponding to the noise using click, drag, release while pressing SHIFT.',
+        description: `Correct the baseline of the spectrum. You should draw zones corresponding to the noise using click, drag, release${!invert ? 'while holding SHIFT' : ''}.`,
         link: 'https://docs.nmrium.org/20_1d-spectra/baseline/baseline',
       },
       icon: <SvgNmrBaselineCorrection />,
@@ -335,8 +331,7 @@ export default function ToolBar() {
       tooltip: {
         title: options.exclusionZones.label,
         shortcuts: ['e'],
-        description:
-          'Define exclusion zones by clicking, dragging, releasing while pressing SHIFT. This option is practical for excluding large peaks like solvents.',
+        description: `Define exclusion zones by clicking, dragging, releasing${!invert ? ' while holding SHIFT' : ''}. This option is practical for excluding large peaks like solvents.`,
       },
       icon: <SvgNmrMultipleAnalysis />,
       checkOptions: { checkSpectrumType: false },
