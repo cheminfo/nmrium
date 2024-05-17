@@ -44,10 +44,7 @@ const style = css`
 `;
 
 const containerStyle = css`
-  border: 0.55px #e6e6e6 solid;
   display: flex;
-  flex: 1;
-  flex-direction: 'column';
   height: 100%;
 `;
 
