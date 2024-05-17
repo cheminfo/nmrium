@@ -2,8 +2,6 @@ import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { Spectrum2D } from 'nmr-load-save';
 
-import { calculateSanPlot } from '../../utilities/calculateSanPlot';
-
 interface Level {
   positive: number;
   negative: number;
@@ -158,6 +156,7 @@ function range(from: number, to: number, step: number) {
 
 function drawContours(
   level: number,
+  noise: number,
   spectrum: Spectrum2D,
   negative = false,
   quadrant = 'rr',
@@ -169,20 +168,26 @@ function drawContours(
   } = spectrum.display.contourOptions;
 
   if (negative) {
-    return getContours(zoom, {
+    const contours = getContours(zoom, {
+      noise,
       negative,
       nbLevels: numberOfNegativeLayer,
       data: spectrum.data[quadrant],
     });
+    return contours;
   }
 
-  return getContours(zoom, {
+  const contours = getContours(zoom, {
+    noise,
     nbLevels: numberOfPositiveLayer,
     data: spectrum.data[quadrant],
   });
+
+  return contours;
 }
 
 interface ContoursCalcOptions {
+  noise: number;
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
@@ -190,18 +195,21 @@ interface ContoursCalcOptions {
 }
 
 function getContours(zoomLevel: number, options: ContoursCalcOptions) {
-  const { negative = false, timeout = 2000, nbLevels, data } = options;
+  const { negative = false, timeout = 2000, nbLevels, data, noise } = options;
 
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
-
   const ys = getRange(data.minY, data.maxY, data.z.length);
+
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
-  const sanResult = calculateSanPlot('2D', data);
-  const median = sanResult.positive;
 
   const max = Math.max(Math.abs(data.maxZ), Math.abs(data.minZ));
 
-  let _range = getRange(median * 1 * 2 ** zoomLevel, max, nbLevels, 2);
+  let _range = getRange(
+    noise * 1 * 2 ** zoomLevel,
+    Math.min(noise * 1 * 2 ** (zoomLevel + nbLevels), max),
+    nbLevels,
+    2,
+  );
 
   if (negative) {
     _range = _range.map((value) => -value);
