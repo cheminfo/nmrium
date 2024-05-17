@@ -111,11 +111,13 @@ export default function NMRiumStateProvider(props: NMRiumStateProviderProps) {
           }
           dispatch({ type: 'INITIATE', payload: { nmriumState } });
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           dispatch({ type: 'SET_LOADING_FLAG', payload: { isLoading: false } });
 
-          // eslint-disable-next-line no-alert
-          window.alert(error.message);
+          if (error instanceof Error) {
+            // eslint-disable-next-line no-alert
+            window.alert(error.message);
+          }
           reportError(error);
         });
     }

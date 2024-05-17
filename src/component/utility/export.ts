@@ -180,6 +180,7 @@ async function copyBlobToClipboard(canvas: HTMLCanvasElement) {
       navigator.userAgent,
     );
     if (typeof ClipboardItem !== 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
       await writeImageToClipboard(b, isSafari).catch(reportError);
     } else {
       const png = canvas.toDataURL('image/png', 1);

@@ -48,7 +48,7 @@ export function useNavigatorPermission(
         setState(status.state);
         status.addEventListener('change', onPermissionChange);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         if (canceled) return;
 
         onError(error);
