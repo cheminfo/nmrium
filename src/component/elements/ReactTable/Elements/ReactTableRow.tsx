@@ -88,32 +88,35 @@ function ReactTableRow(props: ReactTableRowProps) {
     },
     [onClick, row],
   );
+
+  const { key: rowKey, ...otherKeyProps } = row.getRowProps();
   return (
     <ContextMenu
       options={contextMenu}
       onSelect={(selected) => onContextMenuSelect?.(selected, row.original)}
       as="tr"
       style={{ position: 'static' }}
-      key={row.getRowProps().key}
+      key={rowKey}
       css={getRowStyle(
         highlight.isActive || isRowActive,
         rowStyle,
         disableDefaultRowStyle,
       )}
-      {...row.getRowProps()}
+      {...otherKeyProps}
       {...highlight.onHover}
     >
       {row.cells.map((cell) => {
-        const { style, padding } = cell.column;
+        const { style, padding } = cell;
 
         if (cell.isRowSpanned) {
           return null;
         } else {
+          const { key: columnKey, ...otherColumnProps } = cell.getCellProps();
           return (
             <td
               rowSpan={cell.rowSpan}
-              key={cell.key}
-              {...cell.getCellProps()}
+              key={columnKey}
+              {...otherColumnProps}
               onContextMenu={(e) => {
                 e.preventDefault();
 
