@@ -70,7 +70,7 @@ function XAxis(props: XAxisProps) {
     // @ts-expect-error This line of code is actually well typed ...
     d3.select(refAxis.current).call(xAxis);
 
-    // @ts-expect-error ditto
+    // @ts-expect-error This line of code is actually well typed ...
     d3.select(refGrid.current).call(grid);
   }, [height, margin.bottom, margin.top, scaleX, show, xDomain]);
 

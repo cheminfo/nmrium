@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 
 import useSpectrum from './useSpectrum';
 
-export const MIN_AREA_POINTS = 5 as const;
+export const MIN_AREA_POINTS = 5;
 
 export function useCheckPointsNumberInWindowArea() {
   const state = useChartData();
