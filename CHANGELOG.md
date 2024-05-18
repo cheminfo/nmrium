@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.55.0](https://github.com/cheminfo/nmrium/compare/v0.54.0...v0.55.0) (2024-05-18)
+
+
+### Features
+
+* exercise workspace has invert by default ([#3047](https://github.com/cheminfo/nmrium/issues/3047)) ([ab72c58](https://github.com/cheminfo/nmrium/commit/ab72c582d369e4b13462aa5fc52c62293615ce9a))
+* implement settings migration ([cabfa87](https://github.com/cheminfo/nmrium/commit/cabfa876f1d7b53b857e1cb66f20ab46a1e006e9))
+* improve range assignment label addition and editing functionality ([021656c](https://github.com/cheminfo/nmrium/commit/021656cc6b2fa82e3474b353fb3c9277de6ee1a3))
+* improve zone assignment label addition and editing functionality ([#3034](https://github.com/cheminfo/nmrium/issues/3034)) ([d626f5e](https://github.com/cheminfo/nmrium/commit/d626f5e8c0f7e0c31732bfa1339616346c7bce1d))
+* map shortcut with Shift key based on invert flag ([#3049](https://github.com/cheminfo/nmrium/issues/3049)) ([65e7cb1](https://github.com/cheminfo/nmrium/commit/65e7cb15c78fc89674c51324b4d9597988c71f9b))
+* update nmr-load-save to version 0.32.0 ([cabfa87](https://github.com/cheminfo/nmrium/commit/cabfa876f1d7b53b857e1cb66f20ab46a1e006e9))
+* zone assignment label ([#3018](https://github.com/cheminfo/nmrium/issues/3018)) ([5c3c2a5](https://github.com/cheminfo/nmrium/commit/5c3c2a5ce34e73e7532fc109d7455b83a45eede1))
+* zoom out based on defined axis domain preferences ([d0bab9b](https://github.com/cheminfo/nmrium/commit/d0bab9b524bcb30cdd671b638b7ba7cb1025ec65)), closes [#3024](https://github.com/cheminfo/nmrium/issues/3024)
+
+
+### Bug Fixes
+
+* 0 value should be taken in account in the axis domain ([d0bab9b](https://github.com/cheminfo/nmrium/commit/d0bab9b524bcb30cdd671b638b7ba7cb1025ec65))
+* multiple spectra analysis sorting option ([bde952b](https://github.com/cheminfo/nmrium/commit/bde952bb813d0d344f45646f25ab0735a736f5e9))
+* react table warnings ([8dedfe5](https://github.com/cheminfo/nmrium/commit/8dedfe58bedb826e1ac67f790e14c7ac449c1253))
+* recalculate integral reducer points based on the zoom range ([95cd297](https://github.com/cheminfo/nmrium/commit/95cd29730eb6805c0abb335a960a25dffcd788a0)), closes [#3027](https://github.com/cheminfo/nmrium/issues/3027)
+* remove useless border and invalid flex config from DropZone wrapper ([#3053](https://github.com/cheminfo/nmrium/issues/3053)) ([a8a5697](https://github.com/cheminfo/nmrium/commit/a8a56978473bada380fc684f0716545e559c6984))
+
 ## [0.54.0](https://github.com/cheminfo/nmrium/compare/v0.53.0...v0.54.0) (2024-04-18)
 
 
