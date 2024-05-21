@@ -12,6 +12,7 @@ import { GlobalProvider } from '../context/GlobalContext';
 import { KeyModifiersProvider } from '../context/KeyModifierContext';
 import { LoggerProvider } from '../context/LoggerContext';
 import { PreferencesProvider } from '../context/PreferencesContext';
+import { PrepareExportProvider } from '../context/PrepareExportContext';
 import { ToasterProvider } from '../context/ToasterContext';
 import { TopicMoleculeProvider } from '../context/TopicMoleculeContext';
 import { ModalProvider } from '../elements/popup/Modal';
@@ -104,21 +105,23 @@ export function InnerNMRium({
                   nmriumData={nmriumData}
                 >
                   <TopicMoleculeProvider>
-                    <ModalProvider wrapperRef={elementsWrapperRef.current}>
-                      <HighlightProvider>
-                        <AssignmentProvider>
-                          <SpinnerProvider value={getSpinner}>
-                            <InnerNMRiumContents
-                              emptyText={emptyText}
-                              mainDivRef={mainDivRef}
-                              elementsWrapperRef={elementsWrapperRef}
-                              rootRef={rootRef}
-                              viewerRef={viewerRef}
-                            />
-                          </SpinnerProvider>
-                        </AssignmentProvider>
-                      </HighlightProvider>
-                    </ModalProvider>
+                    <PrepareExportProvider>
+                      <ModalProvider wrapperRef={elementsWrapperRef.current}>
+                        <HighlightProvider>
+                          <AssignmentProvider>
+                            <SpinnerProvider value={getSpinner}>
+                              <InnerNMRiumContents
+                                emptyText={emptyText}
+                                mainDivRef={mainDivRef}
+                                elementsWrapperRef={elementsWrapperRef}
+                                rootRef={rootRef}
+                                viewerRef={viewerRef}
+                              />
+                            </SpinnerProvider>
+                          </AssignmentProvider>
+                        </HighlightProvider>
+                      </ModalProvider>
+                    </PrepareExportProvider>
                   </TopicMoleculeProvider>
                 </NMRiumStateProvider>
               </ToasterProvider>

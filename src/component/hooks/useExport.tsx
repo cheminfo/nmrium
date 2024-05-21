@@ -4,6 +4,7 @@ import { ExportOptions, toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { usePrepareExport } from '../context/PrepareExportContext';
 import { useToaster } from '../context/ToasterContext';
 import {
   copyPNGToClipboard,
@@ -24,6 +25,8 @@ export default function useExport() {
   const toaster = useToaster();
   const state = useChartData();
   const preferencesState = usePreferences();
+  const { prepareExportStart, prepareExportEnd, waitForAllComponentsRendered } =
+    usePrepareExport();
   const saveToClipboardHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
       const hideLoading = toaster.showLoading({
@@ -64,18 +67,32 @@ export default function useExport() {
     [preferencesState, state, toaster],
   );
 
-  const saveAsSVGHandler = useCallback(async () => {
+  const saveAsSVGHandler = useCallback(() => {
     if (state.data.length > 0 && rootRef) {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as SVG process in progress',
       });
       setTimeout(() => {
-        const fileName = state.data[0]?.info?.name;
-        exportAsSVG(rootRef, 'nmrSVG', fileName);
-        hideLoading();
+        prepareExportStart();
+        void waitForAllComponentsRendered()
+          .then(() => {
+            const fileName = state.data[0]?.info?.name;
+            exportAsSVG(rootRef, 'nmrSVG', fileName);
+          })
+          .finally(() => {
+            hideLoading();
+            prepareExportEnd();
+          });
       }, 0);
     }
-  }, [state.data, rootRef, toaster]);
+  }, [
+    state.data,
+    rootRef,
+    toaster,
+    prepareExportStart,
+    waitForAllComponentsRendered,
+    prepareExportEnd,
+  ]);
 
   const saveAsPNGHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
