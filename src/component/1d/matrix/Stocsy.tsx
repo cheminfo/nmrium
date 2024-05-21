@@ -22,6 +22,14 @@ interface StocsyProps {
 const componentId = 'stocsy';
 
 export function Stocsy() {
+  const {
+    matrixGenerationOptions: { showStocsy },
+  } = useChartData();
+  if (!showStocsy) return null;
+
+  return <InnerStocsy />;
+}
+export function InnerStocsy() {
   const matrix = useMatrix();
   if (!matrix) return null;
   const { x, matrixY } = matrix;
@@ -62,7 +70,6 @@ const RenderStocsyAsCanvas = withExportRegister((props: StocsyProps) => {
       ctx.fillStyle = 'background-color: transparent';
     }
 
-    // Function to draw lines in a rectangle
     function drawLinesInRect(x1, x2, y1, y2, color) {
       if (!ctx) return;
       ctx.strokeStyle = color;

@@ -170,7 +170,7 @@ export default function ToolBar() {
   function exportHandler(data) {
     switch (data?.id) {
       case 'svg':
-        void saveAsSVGHandler();
+        saveAsSVGHandler();
         break;
       case 'png':
         void saveAsPNGHandler();

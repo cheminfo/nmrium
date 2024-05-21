@@ -21,6 +21,7 @@ import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { options } from '../../toolbar/ToolTypes';
+import { booleanToString } from '../../utility/booleanToString';
 import { exportAsMatrix } from '../../utility/export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
@@ -74,6 +75,7 @@ function MatrixGenerationPanel() {
     },
     xDomain,
     data,
+    matrixGenerationOptions: { showStocsy },
   } = useChartData();
 
   const formRef = useRef<FormikProps<any>>(null);
@@ -92,7 +94,10 @@ function MatrixGenerationPanel() {
     exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
   }
   function handleToggleStocsy() {
-    exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
+    dispatch({
+      type: 'TOGGLE_MATRIX_GENERATION_VIEW_PROPERTY',
+      payload: { key: 'showStocsy' },
+    });
   }
 
   function handleSave(options) {
@@ -127,8 +132,9 @@ function MatrixGenerationPanel() {
           },
           {
             icon: <IoAnalytics />,
-            tooltip: 'Toggle Stocsy',
-            onClick: handleExportAsMatrix,
+            tooltip: `${booleanToString(!showStocsy)} stocsy`,
+            onClick: handleToggleStocsy,
+            active: showStocsy,
           },
         ]}
         rightButtons={[

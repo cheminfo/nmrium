@@ -8,6 +8,7 @@ import { DomainActions } from '../reducer/actions/DomainActions';
 import { FiltersActions } from '../reducer/actions/FiltersActions';
 import { IntegralsActions } from '../reducer/actions/IntegralsActions';
 import { LoadActions } from '../reducer/actions/LoadActions';
+import { MatrixGenerationActions } from '../reducer/actions/MatrixGenerationActions';
 import { MoleculeActions } from '../reducer/actions/MoleculeActions';
 import { PeaksActions } from '../reducer/actions/PeaksActions';
 import { PreferencesActions } from '../reducer/actions/PreferencesActions';
@@ -35,6 +36,7 @@ export type Action =
   | ZonesActions
   | FiltersActions
   | CorrelationsActions
+  | MatrixGenerationActions
   | ActionType<'INITIALIZE_NMRIUM'>
   | ActionType<'SECRET_THROW_ERROR', { randomNumber: number }>;
 // // eslint-disable-next-line @typescript-eslint/ban-types
