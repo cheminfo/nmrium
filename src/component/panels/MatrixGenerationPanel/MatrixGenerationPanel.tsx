@@ -3,6 +3,7 @@ import { SvgNmrExportAsMatrix, SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Formik, FormikProps } from 'formik';
 import { useRef } from 'react';
 import { FaCheck } from 'react-icons/fa';
+import { IoAnalytics } from 'react-icons/io5';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -90,6 +91,9 @@ function MatrixGenerationPanel() {
   function handleExportAsMatrix() {
     exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
   }
+  function handleToggleStocsy() {
+    exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
+  }
 
   function handleSave(options) {
     dispatch({ type: 'APPLY_SIGNAL_PROCESSING_FILTER', payload: { options } });
@@ -119,6 +123,11 @@ function MatrixGenerationPanel() {
           {
             icon: <SvgNmrExportAsMatrix />,
             tooltip: 'Export spectra as a matrix',
+            onClick: handleExportAsMatrix,
+          },
+          {
+            icon: <IoAnalytics />,
+            tooltip: 'Toggle Stocsy',
             onClick: handleExportAsMatrix,
           },
         ]}

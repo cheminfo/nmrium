@@ -77,7 +77,10 @@ export function PrepareExportProvider(props: PrepareExportProviderProps) {
   }, []);
 
   const prepareExportEnd = useCallback(() => {
-    componentRefs.current.clear();
+    for (const key of componentRefs.current.keys()) {
+      componentRefs.current.set(key, false);
+    }
+
     setIsExporting(false);
   }, []);
 
@@ -86,7 +89,15 @@ export function PrepareExportProvider(props: PrepareExportProviderProps) {
       const loadPromise = checkComponents(componentRefs.current);
       const timeoutPromise = createTimeoutPromise(timeout);
 
-      Promise.race([loadPromise, timeoutPromise]).then(resolve).catch(reject);
+      Promise.race([loadPromise, timeoutPromise])
+        .then(resolve)
+        .catch((error: unknown) => {
+          if (error instanceof Error) {
+            reject(error);
+          } else {
+            reject(new Error('Unknown error occurred'));
+          }
+        });
     });
   }, [timeout]);
 
@@ -120,6 +131,8 @@ export function PrepareExportProvider(props: PrepareExportProviderProps) {
 const interval = 100;
 
 function checkComponents(componentsStatus: Map<string, boolean>) {
+  if (componentsStatus.size === 0) return Promise.resolve();
+
   return new Promise<void>((resolve) => {
     const checkInterval = setInterval(() => {
       const allLoaded = Array.from(componentsStatus.values()).every(Boolean);

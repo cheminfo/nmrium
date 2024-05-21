@@ -33,15 +33,28 @@ export default function useExport() {
         message: 'Exporting as NMRium process in progress',
       });
       setTimeout(async () => {
-        await copyPNGToClipboard(rootRef, 'nmrSVG');
-        hideLoading();
-        toaster.show({
-          message: 'Image copied to clipboard',
-          intent: 'success',
-        });
+        prepareExportStart();
+        try {
+          await waitForAllComponentsRendered();
+          await copyPNGToClipboard(rootRef, 'nmrSVG');
+          toaster.show({
+            message: 'Image copied to clipboard',
+            intent: 'success',
+          });
+        } finally {
+          hideLoading();
+          prepareExportEnd();
+        }
       }, 0);
     }
-  }, [state.data.length, rootRef, toaster]);
+  }, [
+    state.data.length,
+    rootRef,
+    toaster,
+    prepareExportStart,
+    waitForAllComponentsRendered,
+    prepareExportEnd,
+  ]);
 
   const saveAsJSONHandler = useCallback(
     (spaceIndent = 0, isCompressed = true) => {
@@ -72,17 +85,16 @@ export default function useExport() {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as SVG process in progress',
       });
-      setTimeout(() => {
-        prepareExportStart();
-        void waitForAllComponentsRendered()
-          .then(() => {
-            const fileName = state.data[0]?.info?.name;
-            exportAsSVG(rootRef, 'nmrSVG', fileName);
-          })
-          .finally(() => {
-            hideLoading();
-            prepareExportEnd();
-          });
+      void setTimeout(async () => {
+        try {
+          prepareExportStart();
+          await waitForAllComponentsRendered();
+          const fileName = state.data[0]?.info?.name;
+          exportAsSVG(rootRef, 'nmrSVG', fileName);
+        } finally {
+          hideLoading();
+          prepareExportEnd();
+        }
       }, 0);
     }
   }, [
@@ -99,13 +111,27 @@ export default function useExport() {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as PNG process in progress',
       });
-      setTimeout(() => {
-        const fileName = state.data[0]?.info?.name;
-        exportAsPng(rootRef, 'nmrSVG', fileName);
-        hideLoading();
+      void setTimeout(async () => {
+        try {
+          prepareExportStart();
+          await waitForAllComponentsRendered();
+
+          const fileName = state.data[0]?.info?.name;
+          exportAsPng(rootRef, 'nmrSVG', fileName);
+        } finally {
+          hideLoading();
+          prepareExportEnd();
+        }
       }, 0);
     }
-  }, [state.data, rootRef, toaster]);
+  }, [
+    state.data,
+    rootRef,
+    toaster,
+    prepareExportStart,
+    waitForAllComponentsRendered,
+    prepareExportEnd,
+  ]);
 
   const saveHandler = useCallback(
     (options: SaveOptions) => {
