@@ -78,6 +78,14 @@ function getIntegralYScale(options: IntegralYScaleOptions) {
     [height * 0.3, margin.top + height * 0.1],
   );
 }
+function getYScaleWithRation(options: IntegralYScaleOptions) {
+  const { height, margin, yDomain, scaleRatio } = options;
+  const [min, max] = yDomain;
+  return scaleLinear(
+    [min * scaleRatio, max * scaleRatio],
+    [height - margin.bottom, margin.top],
+  );
+}
 
 function reScaleY(scale: number, { domain, height, margin }) {
   const _scale = scaleLinear(domain, [height - margin.bottom, margin.top]);
@@ -119,4 +127,5 @@ export {
   getYScale,
   getIntegralYScale,
   reScaleY,
+  getYScaleWithRation,
 };
