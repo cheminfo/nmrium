@@ -81,8 +81,7 @@ function initMatrixGeneration(draft: Draft<PreferencesState>, nucleus: string) {
   const panels = currentWorkspacePreferences.panels;
 
   if (!panels.matrixGeneration?.[nucleus]) {
-    const options: MatrixGenerationOptions =
-      getMatrixGenerationDefaultOptions();
+    const options = getMatrixGenerationDefaultOptions();
 
     panels.matrixGeneration = {
       ...panels.matrixGeneration,
