@@ -20,6 +20,10 @@ export class PathBuilder {
   public toString() {
     return this.array.join(' ');
   }
+
+  public concatPath(pathBuilder: PathBuilder) {
+    return this.array.concat(pathBuilder.array).join(' ');
+  }
 }
 
 /**

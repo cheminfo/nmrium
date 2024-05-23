@@ -45,7 +45,7 @@ export function InnerStocsy({ scaleRatio, chemicalShift }) {
 
   const { x, matrixY } = matrix;
   const xIndex = xFindClosestIndex(x, chemicalShift ?? x[0], { sorted: false });
-  const { color, y } = matrixToStocsy(matrixY, 0);
+  const { color, y } = matrixToStocsy(matrixY, xIndex);
 
   return (
     <g>

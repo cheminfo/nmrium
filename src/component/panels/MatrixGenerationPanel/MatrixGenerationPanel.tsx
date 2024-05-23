@@ -4,6 +4,7 @@ import { Formik, FormikProps } from 'formik';
 import { useRef } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { IoAnalytics } from 'react-icons/io5';
+import { TbBrandGoogleAnalytics } from 'react-icons/tb';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -99,6 +100,12 @@ function MatrixGenerationPanel() {
       payload: { key: 'showStocsy', nucleus: activeTab },
     });
   }
+  function handleToggleBoxplot() {
+    dispatchPreferences({
+      type: 'TOGGLE_MATRIX_GENERATION_VIEW_PROPERTY',
+      payload: { key: 'showBoxPlot', nucleus: activeTab },
+    });
+  }
 
   function handleSave(options) {
     dispatch({ type: 'APPLY_SIGNAL_PROCESSING_FILTER', payload: { options } });
@@ -121,7 +128,8 @@ function MatrixGenerationPanel() {
     return null;
   }
 
-  const { showStocsy } = nucleusMatrixOptions || DEFAULT_MATRIX_OPTIONS;
+  const { showStocsy, showBoxPlot } =
+    nucleusMatrixOptions || DEFAULT_MATRIX_OPTIONS;
 
   return (
     <div css={tablePanelStyle}>
@@ -137,6 +145,12 @@ function MatrixGenerationPanel() {
             tooltip: `${booleanToString(!showStocsy)} stocsy`,
             onClick: handleToggleStocsy,
             active: showStocsy,
+          },
+          {
+            icon: <TbBrandGoogleAnalytics />,
+            tooltip: `${booleanToString(!showBoxPlot)} box plot`,
+            onClick: handleToggleBoxplot,
+            active: showBoxPlot,
           },
         ]}
         rightButtons={[

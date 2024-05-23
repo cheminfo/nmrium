@@ -10,6 +10,7 @@ import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';
 import JGraph from './jCouplingGraph/JGraph';
+import { Boxplot } from './matrix/Boxplot';
 import { Stocsy } from './matrix/Stocsy';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import MultiplicityTrees from './multiplicityTree/MultiplicityTrees';
@@ -63,6 +64,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <DatabaseElements />
         <PeaksShapes />
         <Stocsy />
+        <Boxplot />
         <SpectraTracker />
         <SpectrumInfoBlock />
 

@@ -1,0 +1,141 @@
+import { NumberArray } from 'cheminfo-types';
+import { matrixToBoxPlot } from 'nmr-processing';
+import { CSSProperties } from 'react';
+
+import { useChartData } from '../../context/ChartContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { PathBuilder } from '../../utility/PathBuilder';
+import { getYScaleWithRation } from '../utilities/scale';
+
+import { useMatrix } from './useMatrix';
+
+interface InnerBoxplotProps {
+  scaleRatio: number;
+}
+
+interface BaseRenderProps extends InnerBoxplotProps {
+  x: Float64Array | never[];
+  color: CSSProperties['color'];
+}
+
+interface RenderPathProps extends BaseRenderProps {
+  y: NumberArray;
+}
+
+interface RenderAreaProps extends BaseRenderProps {
+  y1: NumberArray;
+  y2: NumberArray;
+}
+
+interface UsePathLinePoints {
+  x: Float64Array | number[];
+  y: NumberArray;
+}
+interface UsePathAreaPoints {
+  x: Float64Array | number[];
+  y1: NumberArray;
+  y2: NumberArray;
+}
+
+function useYScale(scaleRatio: number) {
+  const { margin, height, yDomain } = useChartData();
+
+  return getYScaleWithRation({
+    height,
+    yDomain,
+    scaleRatio,
+    margin,
+  });
+}
+
+function usePath(pathPoints: UsePathLinePoints, scaleRatio: number) {
+  const { scaleX } = useScaleChecked();
+  const scaleY = useYScale(scaleRatio);
+
+  const pathBuilder = new PathBuilder();
+
+  pathBuilder.moveTo(scaleX()(pathPoints.x[0]), scaleY(pathPoints.y[0]));
+  for (let i = 1; i < pathPoints.x.length; i++) {
+    pathBuilder.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y[i]));
+  }
+  return pathBuilder.toString();
+}
+
+function useAreaPath(pathPoints: UsePathAreaPoints, scaleRatio: number) {
+  const { scaleX } = useScaleChecked();
+  const scaleY = useYScale(scaleRatio);
+
+  const pathBuilder = new PathBuilder();
+  const pathBuilder2 = new PathBuilder();
+
+  pathBuilder.moveTo(scaleX()(pathPoints.x[0]), scaleY(pathPoints.y1[0]));
+
+  for (let i = 1; i < pathPoints.x.length; i++) {
+    pathBuilder.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y1[i]));
+  }
+  for (let i = pathPoints.x.length - 1; i >= 0; i--) {
+    pathBuilder2.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y2[i]));
+  }
+
+  return pathBuilder.concatPath(pathBuilder2);
+}
+
+export function Boxplot() {
+  const {
+    view: {
+      spectra: { activeTab },
+    },
+  } = useChartData();
+  const options = usePanelPreferences('matrixGeneration', activeTab);
+
+  if (!options) return;
+
+  const { scaleRatio, showBoxPlot } = options;
+  if (!showBoxPlot) return null;
+
+  return <InnerBoxplot scaleRatio={scaleRatio} />;
+}
+export function InnerBoxplot(props: InnerBoxplotProps) {
+  const { scaleRatio } = props;
+  const matrix = useMatrix();
+
+  if (!matrix) return null;
+
+  const { x, matrixY } = matrix;
+  const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
+
+  return (
+    <g>
+      <RenderAreaPath
+        x={x}
+        y1={max}
+        y2={min}
+        color="black"
+        scaleRatio={scaleRatio}
+      />
+      <RenderAreaPath
+        x={x}
+        y1={q3}
+        y2={q1}
+        color="black"
+        scaleRatio={scaleRatio}
+      />
+
+      <RenderPath x={x} y={median} color="black" scaleRatio={scaleRatio} />
+    </g>
+  );
+}
+
+function RenderAreaPath(props: RenderAreaProps) {
+  const { x, y1, y2, scaleRatio, color } = props;
+  const areaPath = useAreaPath({ x, y1, y2 }, scaleRatio);
+
+  return <path d={areaPath} fill={color} opacity={0.2} />;
+}
+function RenderPath(props: RenderPathProps) {
+  const { x, y, scaleRatio, color } = props;
+  const areaPath = usePath({ x, y }, scaleRatio);
+
+  return <path d={areaPath} fill="transparent" stroke={color} />;
+}
