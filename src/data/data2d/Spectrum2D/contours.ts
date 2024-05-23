@@ -10,6 +10,7 @@ interface Level {
 interface ContourItem {
   contourLevels: [number, number];
   numberOfLayers: number;
+  numberOfZoomLevels: number;
 }
 interface ContourOptions {
   positive: ContourItem;
@@ -24,12 +25,14 @@ interface WheelOptions {
 type ContoursLevels = Record<string, Level>;
 const DEFAULT_CONTOURS_OPTIONS = {
   positive: {
-    contourLevels: [0, 21],
+    contourLevels: [0, 100],
     numberOfLayers: 10,
+    numberOfZoomLevels: 21,
   },
   negative: {
-    contourLevels: [0, 21],
+    contourLevels: [0, 100],
     numberOfLayers: 10,
+    numberOfZoomLevels: 21,
   },
 };
 type LevelSign = keyof Level;
@@ -74,9 +77,10 @@ function contoursManager(
 
 function prepareWheel(value: number, options: WheelOptions) {
   const { altKey, currentLevel, contourOptions } = options;
+
   const sign = Math.sign(value);
-  const positiveBoundary = contourOptions.positive.contourLevels;
-  const negativeBoundary = contourOptions.negative.contourLevels;
+  const positiveBoundary = [0, contourOptions.positive.numberOfZoomLevels];
+  const negativeBoundary = [0, contourOptions.positive.numberOfZoomLevels];
 
   if (altKey) {
     if (
@@ -107,12 +111,12 @@ function prepareWheel(value: number, options: WheelOptions) {
 function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
   const level = { ...currentLevel };
   for (const sign of LEVEL_SIGNS) {
-    const [min, max] = options[sign].contourLevels;
+    const { numberOfZoomLevels } = options[sign];
     //check if the level is out of the boundary
-    if (level[sign] > max) {
-      level[sign] = max;
-    } else if (level[sign] < min) {
-      level[sign] = min;
+    if (level[sign] > numberOfZoomLevels) {
+      level[sign] = numberOfZoomLevels;
+    } else if (level[sign] < 0) {
+      level[sign] = 0;
     }
   }
   return level;
@@ -120,26 +124,21 @@ function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
 
 function getRange(min: number, max: number, length: number, exp?: number) {
   if (exp !== undefined) {
-    const factors: number[] = [];
+    const factors = new Float64Array(length + 1);
 
-    factors[0] = 0;
-
-    for (let i = 1; i <= length; i++) {
+    for (let i = 1; i < length + 1; i++) {
       factors[i] = factors[i - 1] + (exp - 1) / exp ** i;
     }
-
     const lastFactor = factors[length];
-
-    const result = new Array(length);
+    const result = new Float64Array(length);
 
     for (let i = 0; i < length; i++) {
-      result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;
+      result[i] = (max - min) * (1 - factors[i] / lastFactor) + min;
     }
 
     return result;
   } else {
     const step = (max - min) / (length - 1);
-
     return range(min, max + step / 2, step);
   }
 }
@@ -163,31 +162,39 @@ function drawContours(
 ) {
   const zoom = level / 2 + 1;
   const {
-    positive: { numberOfLayers: numberOfPositiveLayer },
-    negative: { numberOfLayers: numberOfNegativeLayer },
+    positive: {
+      contourLevels: positiveBoundary,
+      numberOfLayers: numberOfPositiveLayer,
+    },
+    negative: {
+      contourLevels: negativeBoundary,
+      numberOfLayers: numberOfNegativeLayer,
+    },
   } = spectrum.display.contourOptions;
 
   if (negative) {
     const contours = getContours(zoom, {
       noise,
       negative,
+      boundary: negativeBoundary,
       nbLevels: numberOfNegativeLayer,
       data: spectrum.data[quadrant],
     });
     return contours;
   }
-
   const contours = getContours(zoom, {
     noise,
+    boundary: positiveBoundary,
     nbLevels: numberOfPositiveLayer,
     data: spectrum.data[quadrant],
   });
-
   return contours;
 }
 
 interface ContoursCalcOptions {
   noise: number;
+  zoomLevels?: number; //@TODO it would be required at the end.
+  boundary: [number, number];
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
@@ -195,18 +202,29 @@ interface ContoursCalcOptions {
 }
 
 function getContours(zoomLevel: number, options: ContoursCalcOptions) {
-  const { negative = false, timeout = 2000, nbLevels, data, noise } = options;
-
+  const {
+    boundary,
+    negative = false,
+    timeout = 2000,
+    nbLevels,
+    data,
+    noise,
+  } = options;
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
 
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
 
-  const max = Math.max(Math.abs(data.maxZ), Math.abs(data.minZ));
+  const dataMax = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
 
+  const max = (dataMax / 100) * boundary[1];
+  const min = Math.max(noise, (dataMax / 100) * boundary[0]);
+
+  const zoom = Math.max(0, zoomLevel * 2 - 1.3);
+  const minLevel = (max - min) / 1.25 ** zoom + min;
   let _range = getRange(
-    noise * 1 * 2 ** zoomLevel,
-    Math.min(noise * 1 * 2 ** (zoomLevel + nbLevels), max),
+    minLevel,
+    Math.min(max, (max - min) / 1.25 ** Math.max(0, zoom - 15) + min),
     nbLevels,
     2,
   );

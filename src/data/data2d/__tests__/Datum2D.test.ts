@@ -5,6 +5,7 @@ import { test, expect } from 'vitest';
 
 import { addJcamp } from '../../SpectraManager';
 import { drawContours } from '../Spectrum2D/contours';
+import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 test('Datum2D', () => {
   const jcamp = readFileSync(path.join(__dirname, './data/cosy.jdx'), 'utf8');
@@ -24,8 +25,9 @@ test('Datum2D', () => {
     },
     [],
   );
-  const positive = drawContours(10, spectra[0]);
-  const negative = drawContours(10, spectra[0], true);
+  const noise = calculateSanPlot('2D', spectra[0]).positive;
+  const positive = drawContours(10, noise, spectra[0]);
+  const negative = drawContours(10, noise, spectra[0], true);
   expect(positive.contours).toHaveLength(10);
   expect(positive.timeout).toBeFalsy();
   expect(negative.contours).toHaveLength(10);
