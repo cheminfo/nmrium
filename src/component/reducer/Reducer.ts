@@ -20,7 +20,6 @@ import * as DomainActions from './actions/DomainActions';
 import * as FiltersActions from './actions/FiltersActions';
 import * as IntegralsActions from './actions/IntegralsActions';
 import * as LoadActions from './actions/LoadActions';
-import * as MatrixGenerationActions from './actions/MatrixGenerationActions';
 import * as MoleculeActions from './actions/MoleculeActions';
 import * as PeaksActions from './actions/PeaksActions';
 import * as PreferencesActions from './actions/PreferencesActions';
@@ -71,6 +70,8 @@ export interface TwoDimensionPhaseCorrection {
 export interface MatrixGenerationOptions {
   showBoxPlot: boolean;
   showStocsy: boolean;
+  scaleRatio: number;
+  chemicalShift: number | null;
 }
 
 export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =
@@ -178,10 +179,6 @@ export const getInitialState = (): State => ({
     },
   },
   usedColors: { '1d': [], '2d': [] },
-  matrixGenerationOptions: {
-    showBoxPlot: false,
-    showStocsy: false,
-  },
 });
 
 export const initialState = getInitialState();
@@ -377,7 +374,6 @@ export interface State {
   usedColors: UsedColors;
 
   errorAction?: any; // should be an Error
-  matrixGenerationOptions: MatrixGenerationOptions;
 }
 
 export function initState(state: State): State {
@@ -731,12 +727,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
-      case 'TOGGLE_MATRIX_GENERATION_VIEW_PROPERTY':
-        return MatrixGenerationActions.toggleMatrixGenerationViewProperty(
-          draft,
-          action,
-        );
-
       case 'SECRET_THROW_ERROR': {
         throw new Error('Error thrown in main reducer');
       }

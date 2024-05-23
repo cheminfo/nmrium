@@ -1,4 +1,4 @@
-import { extent } from 'd3';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
 import { useEffect, useRef } from 'react';
 
@@ -8,67 +8,105 @@ import {
   withExportRegister,
 } from '../../context/PrepareExportContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { getYScaleWithRation } from '../utilities/scale';
 
 import { useMatrix } from './useMatrix';
 
 interface StocsyProps {
   x: Float64Array | never[];
-  y: Float64Array;
+  y: number[];
   color: string[];
-  yDomain: number[];
+  scaleRatio: number;
 }
+const circleRadius = 5;
 
 const componentId = 'stocsy';
 
 export function Stocsy() {
   const {
-    matrixGenerationOptions: { showStocsy },
+    view: {
+      spectra: { activeTab },
+    },
   } = useChartData();
+  const options = usePanelPreferences('matrixGeneration', activeTab);
+
+  if (!options) return;
+
+  const { scaleRatio, showStocsy, chemicalShift } = options;
   if (!showStocsy) return null;
 
-  return <InnerStocsy />;
+  return <InnerStocsy scaleRatio={scaleRatio} chemicalShift={chemicalShift} />;
 }
-export function InnerStocsy() {
+export function InnerStocsy({ scaleRatio, chemicalShift }) {
   const matrix = useMatrix();
+
   if (!matrix) return null;
+
   const { x, matrixY } = matrix;
+  const xIndex = xFindClosestIndex(x, chemicalShift ?? x[0], { sorted: false });
   const { color, y } = matrixToStocsy(matrixY, 0);
-  const yDomain = extent(y) as number[];
 
   return (
     <g>
-      <RenderStocsyAsCanvas x={x} y={y} color={color} yDomain={yDomain} />
-      <RenderStocsyAsSVG x={x} y={y} color={color} yDomain={yDomain} />
+      <StocsyIndexPoint
+        x={x}
+        y={y}
+        color={color}
+        scaleRatio={scaleRatio}
+        chemicalShift={chemicalShift}
+        xIndex={xIndex}
+      />
+
+      <RenderStocsyAsCanvas x={x} y={y} color={color} scaleRatio={scaleRatio} />
+      <RenderStocsyAsSVG x={x} y={y} color={color} scaleRatio={scaleRatio} />
     </g>
   );
 }
 
+function useYScale(scaleRatio: number) {
+  const { margin, height, yDomain } = useChartData();
+
+  return getYScaleWithRation({
+    height,
+    yDomain,
+    scaleRatio,
+    margin,
+  });
+}
+
+const StocsyIndexPoint = (
+  props: StocsyProps & { chemicalShift: number | null; xIndex: number },
+) => {
+  const { x, y, color, scaleRatio, chemicalShift, xIndex } = props;
+  const scaleY = useYScale(scaleRatio);
+  const { scaleX } = useScaleChecked();
+
+  const xPixel = scaleX()(chemicalShift ?? x[0]);
+  const yPixel = scaleY(y[xIndex]);
+  const colorValue = color[xIndex];
+
+  return (
+    <g transform={`translate(${xPixel} ${yPixel})`}>
+      <circle r={circleRadius} fill={colorValue} />
+    </g>
+  );
+};
+
 const RenderStocsyAsCanvas = withExportRegister((props: StocsyProps) => {
-  const { x, y, color, yDomain } = props;
+  const { x, y, color, scaleRatio } = props;
 
   const { width, margin, height } = useChartData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const scaleY = useYScale(scaleRatio);
   const { scaleX } = useScaleChecked();
 
-  const scaleY = getYScaleWithRation({
-    height,
-    yDomain,
-    scaleRatio: 1,
-    margin,
-  });
-
-  const { right, bottom } = margin;
-  const canvasWidth = width - right;
+  const { right, bottom, left } = margin;
+  const canvasWidth = width - right - left;
   const canvasHeight = height - bottom;
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-
-    if (ctx) {
-      ctx.fillStyle = 'background-color: transparent';
-    }
 
     function drawLinesInRect(x1, x2, y1, y2, color) {
       if (!ctx) return;
@@ -120,16 +158,9 @@ const RenderStocsyAsCanvas = withExportRegister((props: StocsyProps) => {
 }, componentId);
 
 const RenderStocsyAsSVG = withExport((props: StocsyProps) => {
-  const { x, y, color, yDomain } = props;
-  const { margin, height } = useChartData();
+  const { x, y, color, scaleRatio } = props;
+  const scaleY = useYScale(scaleRatio);
   const { scaleX } = useScaleChecked();
-
-  const scaleY = getYScaleWithRation({
-    height,
-    yDomain,
-    scaleRatio: 1,
-    margin,
-  });
 
   return Array.from(x).map((val, index) => {
     if (index === x.length - 1 || typeof val !== 'number') {

@@ -20,6 +20,7 @@ import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
+import { getMatrixGenerationDefaultOptions } from '../../reducer/preferences/panelsPreferencesDefaultValues';
 import { options } from '../../toolbar/ToolTypes';
 import { booleanToString } from '../../utility/booleanToString';
 import { exportAsMatrix } from '../../utility/export';
@@ -48,17 +49,17 @@ const inputStyle: InputStyle = {
 
 export const DEFAULT_MATRIX_FILTERS: MatrixFilter[] = getMatrixFilters();
 
-const DEFAULT_MATRIX_OPTIONS: Omit<MatrixOptions, 'range'> = {
-  filters: [],
-  exclusionsZones: [],
-  numberOfPoints: 1024,
-};
+const DEFAULT_MATRIX_OPTIONS = getMatrixGenerationDefaultOptions();
 
 function getMatrixOptions(
   options: Partial<MatrixOptions>,
   range: { from: number; to: number },
 ): MatrixOptions {
-  return { ...DEFAULT_MATRIX_OPTIONS, range, ...options };
+  return {
+    ...DEFAULT_MATRIX_OPTIONS.matrixOptions,
+    range,
+    ...options,
+  } as MatrixOptions;
 }
 
 export const GroupPanelStyle: GroupPaneStyle = {
@@ -68,14 +69,13 @@ export const GroupPanelStyle: GroupPaneStyle = {
 
 function MatrixGenerationPanel() {
   const dispatch = useDispatch();
-  const preferences = usePreferences();
+  const { dispatch: dispatchPreferences } = usePreferences();
   const {
     view: {
       spectra: { activeTab },
     },
     xDomain,
     data,
-    matrixGenerationOptions: { showStocsy },
   } = useChartData();
 
   const formRef = useRef<FormikProps<any>>(null);
@@ -85,7 +85,7 @@ function MatrixGenerationPanel() {
   );
   const spectraPreferences = usePanelPreferences('spectra', activeTab);
 
-  const matrixOptions = getMatrixOptions(nucleusMatrixOptions, {
+  const matrixOptions = getMatrixOptions(nucleusMatrixOptions.matrixOptions, {
     from: xDomain[0],
     to: xDomain[1],
   });
@@ -94,9 +94,9 @@ function MatrixGenerationPanel() {
     exportAsMatrix(data, spectraPreferences?.columns || [], 'Spectra Matrix');
   }
   function handleToggleStocsy() {
-    dispatch({
+    dispatchPreferences({
       type: 'TOGGLE_MATRIX_GENERATION_VIEW_PROPERTY',
-      payload: { key: 'showStocsy' },
+      payload: { key: 'showStocsy', nucleus: activeTab },
     });
   }
 
@@ -105,7 +105,7 @@ function MatrixGenerationPanel() {
   }
 
   function handleOnChange(options) {
-    preferences.dispatch({
+    dispatchPreferences({
       type: 'SET_MATRIX_GENERATION_OPTIONS',
       payload: { options, nucleus: activeTab },
     });
@@ -120,6 +120,8 @@ function MatrixGenerationPanel() {
   if (xDomain[0] === undefined || xDomain[1] === undefined) {
     return null;
   }
+
+  const { showStocsy } = nucleusMatrixOptions || DEFAULT_MATRIX_OPTIONS;
 
   return (
     <div css={tablePanelStyle}>

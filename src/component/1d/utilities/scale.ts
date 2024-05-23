@@ -83,7 +83,7 @@ function getYScaleWithRation(options: IntegralYScaleOptions) {
   const [min, max] = yDomain;
   return scaleLinear(
     [min * scaleRatio, max * scaleRatio],
-    [height - margin.bottom, margin.top],
+    [height - margin.bottom - SPECTRA_BOTTOM_MARGIN, margin.top],
   );
 }
 

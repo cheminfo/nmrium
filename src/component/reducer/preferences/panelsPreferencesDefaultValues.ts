@@ -1,9 +1,11 @@
 import {
+  MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   SpectraPreferences,
 } from 'nmr-load-save';
 
+import { DeepPartial } from '../../../data/types/common/DeepPartial';
 import { is2DNucleus } from '../../utility/nucleusToString';
 
 function getPreferences<T>(data: T, nucleus?: string) {
@@ -177,6 +179,26 @@ const getMultipleSpectraAnalysisDefaultValues = (
   return nucleus ? { [nucleus]: preferences } : {};
 };
 
+function getMatrixGenerationDefaultOptions(): DeepPartial<MatrixGenerationOptions> {
+  return {
+    matrixOptions: {
+      exclusionsZones: [],
+      filters: [],
+      numberOfPoints: 1024,
+    },
+    chemicalShift: null,
+    scaleRatio: 1,
+    showBoxPlot: false,
+    showStocsy: false,
+  };
+}
+
+const getMatrixGenerationDefaultValues = (
+  nucleus?: string,
+): PanelsPreferences['matrixGeneration'] => {
+  return nucleus ? { [nucleus]: getMatrixGenerationDefaultOptions() } : {};
+};
+
 export {
   getSpectraDefaultValues,
   getPeaksDefaultValues,
@@ -185,4 +207,6 @@ export {
   getZoneDefaultValues,
   databaseDefaultValues,
   getMultipleSpectraAnalysisDefaultValues,
+  getMatrixGenerationDefaultOptions,
+  getMatrixGenerationDefaultValues,
 };
