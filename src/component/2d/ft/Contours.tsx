@@ -142,7 +142,7 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
               <ContoursPaths
                 id={spectrum.id}
                 sign="positive"
-                noise={noise.positive * 5}
+                noise={noise.positive}
                 spectrum={spectrum}
                 color={spectrum.display.positiveColor}
                 onTimeout={timeoutHandler}
@@ -152,7 +152,7 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
               <ContoursPaths
                 id={spectrum.id}
                 sign="negative"
-                noise={noise.positive * 5}
+                noise={noise.positive}
                 spectrum={spectrum}
                 color={spectrum.display.negativeColor}
                 onTimeout={timeoutHandler}
