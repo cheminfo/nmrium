@@ -57,7 +57,12 @@ function getActiveData(draft: Draft<State>): Spectrum1D[] {
   return data as Spectrum1D[];
 }
 
-function getDomain(draft: Draft<State>) {
+interface GetDomainOptions {
+  domainSpectraScope?: 'visible' | 'all';
+}
+
+function getDomain(draft: Draft<State>, options: GetDomainOptions = {}) {
+  const { domainSpectraScope = 'visible' } = options;
   let xArray: number[] = [];
   let yArray: number[] = [];
   const yDomains: Record<string, number[]> = {};
@@ -74,7 +79,10 @@ function getDomain(draft: Draft<State>) {
 
       yDomains[id] = _extent;
       xDomains[id] = domain;
-      if (display.isVisible) {
+      if (
+        domainSpectraScope === 'all' ||
+        (domainSpectraScope === 'visible' && display.isVisible)
+      ) {
         xArray = xArray.concat(domain);
         yArray = yArray.concat(_extent);
       }
@@ -180,7 +188,7 @@ function get2DDomain(state: State) {
   };
 }
 
-export interface SetDomainOptions {
+export interface SetDomainOptions extends GetDomainOptions {
   updateYDomain?: boolean;
   isYDomainShared?: boolean;
   updateXDomain?: boolean;
@@ -191,12 +199,13 @@ function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
     updateYDomain = true,
     isYDomainShared = true,
     updateXDomain = true,
+    domainSpectraScope,
   } = options || {};
   let domain;
 
   if (draft.view.spectra.activeTab) {
     if (draft.displayerMode === '1D') {
-      domain = getDomain(draft);
+      domain = getDomain(draft, { domainSpectraScope });
     } else {
       domain = get2DDomain(draft);
     }

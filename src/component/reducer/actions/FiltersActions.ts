@@ -1279,7 +1279,7 @@ function handleSignalProcessingFilter(
   }
   const { updateXDomain, updateYDomain } = signalProcessing.DOMAIN_UPDATE_RULES;
 
-  setDomain(draft, { updateXDomain, updateYDomain });
+  setDomain(draft, { updateXDomain, updateYDomain, domainSpectraScope: 'all' });
 }
 
 //action
