@@ -55,9 +55,11 @@ function usePath(pathPoints: UsePathLinePoints, scaleRatio: number) {
 
   const pathBuilder = new PathBuilder();
 
-  pathBuilder.moveTo(scaleX()(pathPoints.x[0]), scaleY(pathPoints.y[0]));
+  const xScaler = scaleX();
+
+  pathBuilder.moveTo(xScaler(pathPoints.x[0]), scaleY(pathPoints.y[0]));
   for (let i = 1; i < pathPoints.x.length; i++) {
-    pathBuilder.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y[i]));
+    pathBuilder.lineTo(xScaler(pathPoints.x[i]), scaleY(pathPoints.y[i]));
   }
   return pathBuilder.toString();
 }
@@ -69,13 +71,15 @@ function useAreaPath(pathPoints: UsePathAreaPoints, scaleRatio: number) {
   const pathBuilder = new PathBuilder();
   const pathBuilder2 = new PathBuilder();
 
-  pathBuilder.moveTo(scaleX()(pathPoints.x[0]), scaleY(pathPoints.y1[0]));
+  const xScaler = scaleX();
+
+  pathBuilder.moveTo(xScaler(pathPoints.x[0]), scaleY(pathPoints.y1[0]));
 
   for (let i = 1; i < pathPoints.x.length; i++) {
-    pathBuilder.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y1[i]));
+    pathBuilder.lineTo(xScaler(pathPoints.x[i]), scaleY(pathPoints.y1[i]));
   }
   for (let i = pathPoints.x.length - 1; i >= 0; i--) {
-    pathBuilder2.lineTo(scaleX()(pathPoints.x[i]), scaleY(pathPoints.y2[i]));
+    pathBuilder2.lineTo(xScaler(pathPoints.x[i]), scaleY(pathPoints.y2[i]));
   }
 
   return pathBuilder.concatPath(pathBuilder2);
