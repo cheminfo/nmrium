@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import styled from '@emotion/styled';
 import { SvgNmrExportAsMatrix, SvgNmrMultipleAnalysis } from 'cheminfo-font';
 import { Formik, FormikProps } from 'formik';
 import { useRef } from 'react';
-import { FaCheck } from 'react-icons/fa';
 import { IoAnalytics } from 'react-icons/io5';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';
+import { Button } from 'react-science/ui';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -32,6 +33,14 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import { ExclusionsZonesTable } from './ExclusionsZonesTable';
 import { FiltersOptions } from './FiltersOptions';
+
+const StickyFooter = styled.div({
+  position: 'sticky',
+  padding: '5px',
+  bottom: 0,
+  width: '100%',
+  backgroundColor: 'white',
+});
 
 const schema = yup.object().shape({
   range: yup.object({
@@ -154,19 +163,10 @@ function MatrixGenerationPanel() {
             active: showBoxPlot,
           },
         ]}
-        rightButtons={[
-          {
-            onClick: () => formRef.current?.submitForm(),
-            tooltip: 'Signal processing',
-            id: 'save-button',
-            intent: 'success',
-            icon: <FaCheck />,
-          },
-        ]}
       />
 
-      <div className="inner-container">
-        <PreferencesContainer style={{ backgroundColor: 'white' }}>
+      <div className="inner-container" style={{ position: 'relative' }}>
+        <PreferencesContainer style={{ backgroundColor: 'white', padding: 0 }}>
           <Formik
             innerRef={formRef}
             onSubmit={handleSave}
@@ -236,6 +236,14 @@ function MatrixGenerationPanel() {
               <FormikOnChange onChange={handleOnChange} />
             </>
           </Formik>
+          <StickyFooter>
+            <Button
+              intent="success"
+              onClick={() => formRef.current?.submitForm()}
+            >
+              Generate matrix
+            </Button>
+          </StickyFooter>
         </PreferencesContainer>
       </div>
     </div>
