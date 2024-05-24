@@ -121,19 +121,15 @@ function RenderStocsyAsSVG(props: StocsyProps) {
 
   return Object.keys(data).map((color) => {
     const points = data[color];
-    const pointDiff = x[1] - x[0];
     const pathBuilder = new PathBuilder();
 
     pathBuilder.moveTo(xScaler(points[0].x), scaleY(points[0].y));
 
     for (let i = 1; i < points.length; i++) {
-      const segmentDiff = points[i].x - points[i - 1].x;
-      const sx = xScaler(points[i].x);
-      const sy = scaleY(points[i].y);
-      if (segmentDiff >= pointDiff) {
-        pathBuilder.moveTo(sx, sy);
-      } else {
-        pathBuilder.lineTo(sx, sy);
+      const point = points[i];
+      pathBuilder.lineTo(xScaler(points[i].x), scaleY(points[i].y));
+      if (point.endPath && i < points.length - 1) {
+        pathBuilder.moveTo(xScaler(points[i + 1].x), scaleY(points[i + 1].y));
       }
     }
     return (
