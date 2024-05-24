@@ -1,6 +1,7 @@
 import { NumberArray } from 'cheminfo-types';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
-import { CSSProperties } from 'react';
+import { CSSProperties, useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
@@ -85,6 +86,30 @@ function useAreaPath(pathPoints: UsePathAreaPoints, scaleRatio: number) {
   return pathBuilder.concatPath(pathBuilder2);
 }
 
+function useBoxPlot() {
+  const matrix = useMatrix();
+  const {
+    xDomain: [from, to],
+  } = useChartData();
+
+  return useMemo(() => {
+    if (!matrix) return null;
+    const { x, matrixY } = matrix;
+    const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
+    const fromIndex = xFindClosestIndex(x, from);
+    const toIndex = xFindClosestIndex(x, to);
+
+    return {
+      x: x.slice(fromIndex, toIndex),
+      max: max.slice(fromIndex, toIndex),
+      min: min.slice(fromIndex, toIndex),
+      median: median.slice(fromIndex, toIndex),
+      q1: q1.slice(fromIndex, toIndex),
+      q3: q3.slice(fromIndex, toIndex),
+    };
+  }, [from, matrix, to]);
+}
+
 export function Boxplot() {
   const {
     view: {
@@ -102,12 +127,11 @@ export function Boxplot() {
 }
 export function InnerBoxplot(props: InnerBoxplotProps) {
   const { scaleRatio } = props;
-  const matrix = useMatrix();
+  const data = useBoxPlot();
 
-  if (!matrix) return null;
+  if (!data) return null;
 
-  const { x, matrixY } = matrix;
-  const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
+  const { x, max, min, median, q1, q3 } = data;
 
   return (
     <g>
