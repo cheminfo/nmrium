@@ -20,6 +20,7 @@ import ToggleButton from '../../elements/ToggleButton';
 import FormikInput from '../../elements/formik/FormikInput';
 import FormikOnChange from '../../elements/formik/FormikOnChange';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility';
 import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { getMatrixGenerationDefaultOptions } from '../../reducer/preferences/panelsPreferencesDefaultValues';
 import { options } from '../../toolbar/ToolTypes';
@@ -78,7 +79,7 @@ function MatrixGenerationPanel() {
     xDomain,
     data,
   } = useChartData();
-
+  const { getToggleVisibilityButtons } = useToggleSpectraVisibility();
   const formRef = useRef<FormikProps<any>>(null);
   const nucleusMatrixOptions = usePanelPreferences(
     'matrixGeneration',
@@ -130,7 +131,6 @@ function MatrixGenerationPanel() {
 
   const { showStocsy, showBoxPlot } =
     nucleusMatrixOptions || DEFAULT_MATRIX_OPTIONS;
-
   return (
     <div css={tablePanelStyle}>
       <DefaultPanelHeader
@@ -140,6 +140,7 @@ function MatrixGenerationPanel() {
             tooltip: 'Export spectra as a matrix',
             onClick: handleExportAsMatrix,
           },
+          ...getToggleVisibilityButtons(),
           {
             icon: <IoAnalytics />,
             tooltip: `${booleanToString(!showStocsy)} stocsy`,
