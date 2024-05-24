@@ -99,19 +99,21 @@ function RenderStocsyAsSVG(props: StocsyProps) {
   const { scaleX } = useScaleChecked();
   const data = interpolatedColorsPoints({ x, y, color });
 
+  const xScaler = scaleX();
+
   return Object.keys(data).map((color) => {
     const points = data[color];
     const pointDiff = x[1] - x[0];
     const pathBuilder = new PathBuilder();
-    pathBuilder.moveTo(scaleX()(points[0].x), scaleY(points[0].y));
+    pathBuilder.moveTo(xScaler(points[0].x), scaleY(points[0].y));
 
     for (let i = 1; i < points.length; i++) {
       const segmentDiff = points[i].x - points[i - 1].x;
 
       if (segmentDiff >= pointDiff) {
-        pathBuilder.moveTo(scaleX()(points[i].x), scaleY(points[i].y));
+        pathBuilder.moveTo(xScaler(points[i].x), scaleY(points[i].y));
       } else {
-        pathBuilder.lineTo(scaleX()(points[i].x), scaleY(points[i].y));
+        pathBuilder.lineTo(xScaler(points[i].x), scaleY(points[i].y));
       }
     }
     return (
