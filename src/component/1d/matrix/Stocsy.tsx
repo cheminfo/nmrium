@@ -1,5 +1,6 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
+import { useMemo } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
@@ -17,10 +18,31 @@ interface StocsyProps {
 }
 
 interface StocsyIndexPointProps {
-  x: Float64Array | never[];
-  color: string[];
   chemicalShift: number | null;
-  xIndex: number;
+}
+
+function useStocsy(chemicalShift: number) {
+  const matrix = useMatrix();
+  const {
+    xDomain: [from, to],
+  } = useChartData();
+
+  return useMemo(() => {
+    if (!matrix) return null;
+
+    const { x, matrixY } = matrix;
+    const fromIndex = xFindClosestIndex(x, from);
+    const toIndex = xFindClosestIndex(x, to);
+
+    const cIndex = xFindClosestIndex(x, chemicalShift ?? x[0]);
+    const { color, y } = matrixToStocsy(matrixY, cIndex);
+
+    return {
+      x: x.slice(fromIndex, toIndex),
+      y: y.slice(fromIndex, toIndex),
+      color: color.slice(fromIndex, toIndex),
+    };
+  }, [chemicalShift, from, matrix, to]);
 }
 
 export function Stocsy() {
@@ -38,23 +60,15 @@ export function Stocsy() {
 
   return <InnerStocsy scaleRatio={scaleRatio} chemicalShift={chemicalShift} />;
 }
+
 export function InnerStocsy({ scaleRatio, chemicalShift }) {
-  const matrix = useMatrix();
+  const data = useStocsy(chemicalShift);
 
-  if (!matrix) return null;
-
-  const { x, matrixY } = matrix;
-  const xIndex = xFindClosestIndex(x, chemicalShift ?? x[0], { sorted: false });
-  const { color, y } = matrixToStocsy(matrixY, xIndex);
-
+  if (!data) return null;
+  const { x, y, color } = data;
   return (
     <g>
-      <StocsyIndexPoint
-        x={x}
-        color={color}
-        chemicalShift={chemicalShift}
-        xIndex={xIndex}
-      />
+      <StocsyIndexPoint chemicalShift={chemicalShift} />
 
       <RenderStocsyAsSVG x={x} y={y} color={color} scaleRatio={scaleRatio} />
     </g>
@@ -73,11 +87,15 @@ function useYScale(scaleRatio: number) {
 }
 
 function StocsyIndexPoint(props: StocsyIndexPointProps) {
-  const { x, color, chemicalShift, xIndex } = props;
+  const { chemicalShift } = props;
   const { scaleX } = useScaleChecked();
+  const {
+    xDomain: [from, to],
+  } = useChartData();
 
-  const xPixel = scaleX()(chemicalShift ?? x[0]);
-  const colorValue = color[xIndex];
+  if (!chemicalShift || chemicalShift < from || chemicalShift > to) return null;
+
+  const xPixel = scaleX()(chemicalShift);
 
   return (
     <g transform={`translate(${xPixel} 0)`}>
@@ -86,7 +104,7 @@ function StocsyIndexPoint(props: StocsyIndexPointProps) {
         y1={0}
         x2={-0.5}
         y2="100%"
-        stroke={colorValue}
+        stroke="red"
         strokeDasharray="5 2"
       />
     </g>
@@ -105,15 +123,17 @@ function RenderStocsyAsSVG(props: StocsyProps) {
     const points = data[color];
     const pointDiff = x[1] - x[0];
     const pathBuilder = new PathBuilder();
+
     pathBuilder.moveTo(xScaler(points[0].x), scaleY(points[0].y));
 
     for (let i = 1; i < points.length; i++) {
       const segmentDiff = points[i].x - points[i - 1].x;
-
+      const sx = xScaler(points[i].x);
+      const sy = scaleY(points[i].y);
       if (segmentDiff >= pointDiff) {
-        pathBuilder.moveTo(xScaler(points[i].x), scaleY(points[i].y));
+        pathBuilder.moveTo(sx, sy);
       } else {
-        pathBuilder.lineTo(xScaler(points[i].x), scaleY(points[i].y));
+        pathBuilder.lineTo(sx, sy);
       }
     }
     return (

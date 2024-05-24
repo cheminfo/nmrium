@@ -1,4 +1,5 @@
 import { Spectrum } from 'nmr-load-save';
+import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
@@ -46,15 +47,15 @@ function getX(spectra: Spectrum[]) {
 export function useMatrix() {
   const { displayerMode } = useChartData();
   const spectra = useSpectraByActiveNucleus();
-
-  if (displayerMode !== '1D') return null;
-
-  return {
-    x: getX(spectra) || [],
-    matrixY: spectra.map((spectrum) =>
-      isSpectrum1D(spectrum) ? spectrum.data.re : [],
-    ),
-  };
+  return useMemo(() => {
+    if (displayerMode !== '1D') return null;
+    return {
+      x: getX(spectra) || [],
+      matrixY: spectra.map((spectrum) =>
+        isSpectrum1D(spectrum) ? spectrum.data.re : [],
+      ),
+    };
+  }, [displayerMode, spectra]);
 }
 
 interface InterpolateColorsPointsOptions {
