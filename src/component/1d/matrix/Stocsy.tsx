@@ -1,3 +1,4 @@
+import { extent } from 'd3';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToStocsy } from 'nmr-processing';
 import { useMemo } from 'react';
@@ -15,6 +16,7 @@ interface StocsyProps {
   y: number[];
   color: string[];
   scaleRatio: number;
+  yDomain: number[];
 }
 
 interface StocsyIndexPointProps {
@@ -37,10 +39,13 @@ function useStocsy(chemicalShift: number) {
     const cIndex = xFindClosestIndex(x, chemicalShift ?? x[0]);
     const { color, y } = matrixToStocsy(matrixY, cIndex);
 
+    const yDomain = extent(y) as number[];
+
     return {
       x: x.slice(fromIndex, toIndex),
       y: y.slice(fromIndex, toIndex),
       color: color.slice(fromIndex, toIndex),
+      yDomain,
     };
   }, [chemicalShift, from, matrix, to]);
 }
@@ -65,18 +70,24 @@ export function InnerStocsy({ scaleRatio, chemicalShift }) {
   const data = useStocsy(chemicalShift);
 
   if (!data) return null;
-  const { x, y, color } = data;
+  const { x, y, color, yDomain } = data;
   return (
     <g>
       <StocsyIndexPoint chemicalShift={chemicalShift} />
 
-      <RenderStocsyAsSVG x={x} y={y} color={color} scaleRatio={scaleRatio} />
+      <RenderStocsyAsSVG
+        x={x}
+        y={y}
+        color={color}
+        scaleRatio={scaleRatio}
+        yDomain={yDomain}
+      />
     </g>
   );
 }
 
-function useYScale(scaleRatio: number) {
-  const { margin, height, yDomain } = useChartData();
+function useYScale(scaleRatio: number, yDomain: number[]) {
+  const { margin, height } = useChartData();
 
   return getYScaleWithRation({
     height,
@@ -112,8 +123,8 @@ function StocsyIndexPoint(props: StocsyIndexPointProps) {
 }
 
 function RenderStocsyAsSVG(props: StocsyProps) {
-  const { x, y, color, scaleRatio } = props;
-  const scaleY = useYScale(scaleRatio);
+  const { x, y, color, scaleRatio, yDomain } = props;
+  const scaleY = useYScale(scaleRatio, yDomain);
   const { scaleX } = useScaleChecked();
   const data = interpolatedColorsPoints({ x, y, color });
 

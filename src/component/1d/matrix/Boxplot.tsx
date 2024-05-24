@@ -1,4 +1,5 @@
 import { NumberArray } from 'cheminfo-types';
+import { extent } from 'd3';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
 import { CSSProperties, useMemo } from 'react';
@@ -18,6 +19,7 @@ interface InnerBoxplotProps {
 interface BaseRenderProps extends InnerBoxplotProps {
   x: Float64Array | never[];
   color: CSSProperties['color'];
+  yDomain: number[];
 }
 
 interface RenderPathProps extends BaseRenderProps {
@@ -39,8 +41,8 @@ interface UsePathAreaPoints {
   y2: NumberArray;
 }
 
-function useYScale(scaleRatio: number) {
-  const { margin, height, yDomain } = useChartData();
+function useYScale(scaleRatio: number, yDomain) {
+  const { margin, height } = useChartData();
 
   return getYScaleWithRation({
     height,
@@ -50,9 +52,9 @@ function useYScale(scaleRatio: number) {
   });
 }
 
-function usePath(pathPoints: UsePathLinePoints, scaleRatio: number) {
+function usePath(pathPoints: UsePathLinePoints, scaleRatio: number, yDomain) {
   const { scaleX } = useScaleChecked();
-  const scaleY = useYScale(scaleRatio);
+  const scaleY = useYScale(scaleRatio, yDomain);
 
   const pathBuilder = new PathBuilder();
 
@@ -65,9 +67,13 @@ function usePath(pathPoints: UsePathLinePoints, scaleRatio: number) {
   return pathBuilder.toString();
 }
 
-function useAreaPath(pathPoints: UsePathAreaPoints, scaleRatio: number) {
+function useAreaPath(
+  pathPoints: UsePathAreaPoints,
+  scaleRatio: number,
+  yDomain,
+) {
   const { scaleX } = useScaleChecked();
-  const scaleY = useYScale(scaleRatio);
+  const scaleY = useYScale(scaleRatio, yDomain);
 
   const pathBuilder = new PathBuilder();
   const pathBuilder2 = new PathBuilder();
@@ -98,6 +104,7 @@ function useBoxPlot() {
     const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
     const fromIndex = xFindClosestIndex(x, from);
     const toIndex = xFindClosestIndex(x, to);
+    const yDomain = extent(median) as number[];
 
     return {
       x: x.slice(fromIndex, toIndex),
@@ -106,6 +113,7 @@ function useBoxPlot() {
       median: median.slice(fromIndex, toIndex),
       q1: q1.slice(fromIndex, toIndex),
       q3: q3.slice(fromIndex, toIndex),
+      yDomain,
     };
   }, [from, matrix, to]);
 }
@@ -131,7 +139,7 @@ export function InnerBoxplot(props: InnerBoxplotProps) {
 
   if (!data) return null;
 
-  const { x, max, min, median, q1, q3 } = data;
+  const { x, max, min, median, q1, q3, yDomain } = data;
 
   return (
     <g>
@@ -141,6 +149,7 @@ export function InnerBoxplot(props: InnerBoxplotProps) {
         y2={min}
         color="black"
         scaleRatio={scaleRatio}
+        yDomain={yDomain}
       />
       <RenderAreaPath
         x={x}
@@ -148,22 +157,29 @@ export function InnerBoxplot(props: InnerBoxplotProps) {
         y2={q1}
         color="black"
         scaleRatio={scaleRatio}
+        yDomain={yDomain}
       />
 
-      <RenderPath x={x} y={median} color="black" scaleRatio={scaleRatio} />
+      <RenderPath
+        x={x}
+        y={median}
+        color="black"
+        scaleRatio={scaleRatio}
+        yDomain={yDomain}
+      />
     </g>
   );
 }
 
 function RenderAreaPath(props: RenderAreaProps) {
-  const { x, y1, y2, scaleRatio, color } = props;
-  const areaPath = useAreaPath({ x, y1, y2 }, scaleRatio);
+  const { x, y1, y2, scaleRatio, color, yDomain } = props;
+  const areaPath = useAreaPath({ x, y1, y2 }, scaleRatio, yDomain);
 
   return <path d={areaPath} fill={color} opacity={0.2} />;
 }
 function RenderPath(props: RenderPathProps) {
-  const { x, y, scaleRatio, color } = props;
-  const areaPath = usePath({ x, y }, scaleRatio);
+  const { x, y, scaleRatio, color, yDomain } = props;
+  const areaPath = usePath({ x, y }, scaleRatio, yDomain);
 
   return <path d={areaPath} fill="transparent" stroke={color} />;
 }
