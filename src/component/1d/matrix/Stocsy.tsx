@@ -9,10 +9,15 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScaleWithRation } from '../utilities/scale';
 
-import { interpolatedColorsPoints, useMatrix } from './useMatrix';
+import {
+  findXFromToIndex,
+  interpolatedColorsPoints,
+  sliceArray,
+  useMatrix,
+} from './useMatrix';
 
 interface StocsyProps {
-  x: Float64Array | never[];
+  x: Float64Array | number[];
   y: number[];
   color: string[];
   scaleRatio: number;
@@ -33,18 +38,16 @@ function useStocsy(chemicalShift: number) {
     if (!matrix) return null;
 
     const { x, matrixY } = matrix;
-    const fromIndex = xFindClosestIndex(x, from);
-    const toIndex = xFindClosestIndex(x, to);
 
     const cIndex = xFindClosestIndex(x, chemicalShift ?? x[0]);
     const { color, y } = matrixToStocsy(matrixY, cIndex);
 
     const yDomain = extent(y) as number[];
-
+    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
     return {
-      x: x.slice(fromIndex, toIndex),
-      y: y.slice(fromIndex, toIndex),
-      color: color.slice(fromIndex, toIndex),
+      x: sliceArray(x, { fromIndex, toIndex }),
+      y: sliceArray(y, { fromIndex, toIndex }),
+      color: sliceArray(color, { fromIndex, toIndex }),
       yDomain,
     };
   }, [chemicalShift, from, matrix, to]);
@@ -68,11 +71,12 @@ export function Stocsy() {
 
 export function InnerStocsy({ scaleRatio, chemicalShift }) {
   const data = useStocsy(chemicalShift);
+  const { displayerKey } = useChartData();
 
   if (!data) return null;
   const { x, y, color, yDomain } = data;
   return (
-    <g>
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       <StocsyIndexPoint chemicalShift={chemicalShift} />
 
       <RenderStocsyAsSVG

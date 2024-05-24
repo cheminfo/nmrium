@@ -1,3 +1,5 @@
+import { NumberArray } from 'cheminfo-types';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
@@ -9,6 +11,49 @@ interface MatrixColor {
   color: string;
   start: number;
   end: number;
+}
+
+export function findXFromToIndex(x, options: { from: number; to: number }) {
+  const { from, to } = options;
+  let fromIndex = xFindClosestIndex(x, from);
+  let toIndex = xFindClosestIndex(x, to);
+
+  if (fromIndex > 0) {
+    for (let i = fromIndex; i >= 0; i--) {
+      if (x[i] <= from) {
+        fromIndex = i;
+        break;
+      }
+    }
+  }
+  if (toIndex < x.length) {
+    for (let i = toIndex; i < x.length; i++) {
+      if (x[i] >= to) {
+        toIndex = i;
+        break;
+      }
+    }
+  }
+  return { fromIndex, toIndex };
+}
+
+export function sliceArray(
+  array: number[] | Float64Array | NumberArray,
+  options: {
+    fromIndex: number;
+    toIndex: number;
+  },
+) {
+  const { fromIndex, toIndex } = options;
+  const resultLength = toIndex - fromIndex + 2;
+  const result = new Array(resultLength);
+  result[0] = array[0];
+  for (let i = 0; i < toIndex - fromIndex; i++) {
+    result[i + 1] = array[fromIndex + i];
+  }
+  result[resultLength - 1] = array.at(-1);
+
+  return result;
 }
 
 export function interpolateNumber(
@@ -59,7 +104,7 @@ export function useMatrix() {
 }
 
 interface InterpolateColorsPointsOptions {
-  x: Float64Array | never[];
+  x: Float64Array | number[];
   y: number[];
   color: string[];
 }

@@ -1,6 +1,5 @@
 import { NumberArray } from 'cheminfo-types';
 import { extent } from 'd3';
-import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
 import { CSSProperties, useMemo } from 'react';
 
@@ -10,14 +9,14 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScaleWithRation } from '../utilities/scale';
 
-import { useMatrix } from './useMatrix';
+import { findXFromToIndex, sliceArray, useMatrix } from './useMatrix';
 
 interface InnerBoxplotProps {
   scaleRatio: number;
 }
 
 interface BaseRenderProps extends InnerBoxplotProps {
-  x: Float64Array | never[];
+  x: Float64Array | number[];
   color: CSSProperties['color'];
   yDomain: number[];
 }
@@ -102,17 +101,16 @@ function useBoxPlot() {
     if (!matrix) return null;
     const { x, matrixY } = matrix;
     const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
-    const fromIndex = xFindClosestIndex(x, from);
-    const toIndex = xFindClosestIndex(x, to);
+    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
     const yDomain = extent(median) as number[];
 
     return {
-      x: x.slice(fromIndex, toIndex),
-      max: max.slice(fromIndex, toIndex),
-      min: min.slice(fromIndex, toIndex),
-      median: median.slice(fromIndex, toIndex),
-      q1: q1.slice(fromIndex, toIndex),
-      q3: q3.slice(fromIndex, toIndex),
+      x: sliceArray(x, { fromIndex, toIndex }),
+      max: sliceArray(max, { fromIndex, toIndex }),
+      min: sliceArray(min, { fromIndex, toIndex }),
+      median: sliceArray(median, { fromIndex, toIndex }),
+      q1: sliceArray(q1, { fromIndex, toIndex }),
+      q3: sliceArray(q3, { fromIndex, toIndex }),
       yDomain,
     };
   }, [from, matrix, to]);
@@ -136,13 +134,14 @@ export function Boxplot() {
 export function InnerBoxplot(props: InnerBoxplotProps) {
   const { scaleRatio } = props;
   const data = useBoxPlot();
+  const { displayerKey } = useChartData();
 
   if (!data) return null;
 
   const { x, max, min, median, q1, q3, yDomain } = data;
 
   return (
-    <g>
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       <RenderAreaPath
         x={x}
         y1={max}
