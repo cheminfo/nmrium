@@ -5,7 +5,7 @@ import { Formik, FormikProps } from 'formik';
 import { useRef } from 'react';
 import { IoAnalytics } from 'react-icons/io5';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';
-import { Button } from 'react-science/ui';
+import { Button, TooltipHelpContent } from 'react-science/ui';
 import * as yup from 'yup';
 
 import { getMatrixFilters, MatrixFilter } from '../../../data/matrixGeneration';
@@ -152,13 +152,28 @@ function MatrixGenerationPanel() {
           ...getToggleVisibilityButtons(),
           {
             icon: <IoAnalytics />,
-            tooltip: `${booleanToString(!showStocsy)} stocsy`,
+            tooltip: (
+              <TooltipHelpContent
+                title={`${booleanToString(!showStocsy)} stocsy`}
+                subTitles={[
+                  { title: 'Vertical zoom', shortcuts: ['Alt', 'scroll'] },
+                  { title: 'Stocsy index', shortcuts: ['Shift', 'click'] },
+                ]}
+              />
+            ),
             onClick: handleToggleStocsy,
             active: showStocsy,
           },
           {
             icon: <TbBrandGoogleAnalytics />,
-            tooltip: `${booleanToString(!showBoxPlot)} box plot`,
+            tooltip: (
+              <TooltipHelpContent
+                title={`${booleanToString(!showBoxPlot)} box plot`}
+                subTitles={[
+                  { title: 'Vertical zoom', shortcuts: ['Alt', 'scroll'] },
+                ]}
+              />
+            ),
             onClick: handleToggleBoxplot,
             active: showBoxPlot,
           },
@@ -241,7 +256,7 @@ function MatrixGenerationPanel() {
               intent="success"
               onClick={() => formRef.current?.submitForm()}
             >
-              Generate matrix
+              Update processing
             </Button>
           </StickyFooter>
         </PreferencesContainer>
