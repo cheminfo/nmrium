@@ -1,5 +1,6 @@
 import { NumberArray } from 'cheminfo-types';
 import { extent } from 'd3';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { matrixToBoxPlot } from 'nmr-processing';
 import { CSSProperties, useMemo } from 'react';
 
@@ -9,7 +10,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScaleWithRation } from '../utilities/scale';
 
-import { findXFromToIndex, getXDomainArray, useMatrix } from './useMatrix';
+import { getXDomainArray, useMatrix } from './useMatrix';
 
 interface InnerBoxplotProps {
   scaleRatio: number;
@@ -101,7 +102,9 @@ function useBoxPlot() {
     if (!matrix) return null;
     const { x, matrixY } = matrix;
     const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
-    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
+    const fromIndex = xFindClosestIndex(x, from);
+    const toIndex = xFindClosestIndex(x, to);
+
     const yDomain = extent(median) as number[];
 
     return {

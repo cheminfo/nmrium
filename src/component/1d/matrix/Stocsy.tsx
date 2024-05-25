@@ -9,12 +9,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScaleWithRation } from '../utilities/scale';
 
-import {
-  findXFromToIndex,
-  getXDomainArray,
-  groupPointsByColor,
-  useMatrix,
-} from './useMatrix';
+import { getXDomainArray, groupPointsByColor, useMatrix } from './useMatrix';
 
 interface StocsyProps {
   x: Float64Array | number[];
@@ -43,7 +38,8 @@ function useStocsy(chemicalShift: number) {
     const { color, y } = matrixToStocsy(matrixY, cIndex);
 
     const yDomain = extent(y) as number[];
-    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
+    const fromIndex = xFindClosestIndex(x, from);
+    const toIndex = xFindClosestIndex(x, to);
     return {
       x: getXDomainArray(x, { fromIndex, toIndex }),
       y: getXDomainArray(y, { fromIndex, toIndex }),

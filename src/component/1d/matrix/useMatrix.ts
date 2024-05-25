@@ -1,35 +1,10 @@
 import { NumberArray } from 'cheminfo-types';
-import { xFindClosestIndex } from 'ml-spectra-processing';
 import { Spectrum } from 'nmr-load-save';
 import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
-
-export function findXFromToIndex(x, options: { from: number; to: number }) {
-  const { from, to } = options;
-  let fromIndex = xFindClosestIndex(x, from);
-  let toIndex = xFindClosestIndex(x, to);
-
-  if (fromIndex > 0) {
-    for (let i = fromIndex; i >= 0; i--) {
-      if (x[i] <= from) {
-        fromIndex = i;
-        break;
-      }
-    }
-  }
-  if (toIndex < x.length) {
-    for (let i = toIndex; i < x.length; i++) {
-      if (x[i] >= to) {
-        toIndex = i;
-        break;
-      }
-    }
-  }
-  return { fromIndex, toIndex };
-}
 
 /**
  * This method will slice the array from the fromIndex to the toIndex and add the first and last element of the original array
@@ -49,6 +24,8 @@ export function getXDomainArray(
 ) {
   let { fromIndex, toIndex } = options;
   if (fromIndex > 0) fromIndex--;
+  if (toIndex < array.length) toIndex++;
+  // because slice does not include the last index we need to add one
   if (toIndex < array.length) toIndex++;
   if (fromIndex > 0 || toIndex < array.length) {
     return array.slice(fromIndex, toIndex);
