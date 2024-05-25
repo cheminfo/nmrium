@@ -101,16 +101,19 @@ function useBoxPlot() {
     if (!matrix) return null;
     const { x, matrixY } = matrix;
     const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
-    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
+    let { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
     const yDomain = extent(median) as number[];
 
+    if (fromIndex > 0) fromIndex--;
+    if (toIndex < x.length) toIndex++;
+
     return {
-      x: sliceArray(x, { fromIndex, toIndex }),
-      max: sliceArray(max, { fromIndex, toIndex }),
-      min: sliceArray(min, { fromIndex, toIndex }),
-      median: sliceArray(median, { fromIndex, toIndex }),
-      q1: sliceArray(q1, { fromIndex, toIndex }),
-      q3: sliceArray(q3, { fromIndex, toIndex }),
+      x: x.slice(fromIndex, toIndex),
+      max: max.slice(fromIndex, toIndex),
+      min: min.slice(fromIndex, toIndex),
+      median: median.slice(fromIndex, toIndex),
+      q1: q1.slice(fromIndex, toIndex),
+      q3: q3.slice(fromIndex, toIndex),
       yDomain,
     };
   }, [from, matrix, to]);

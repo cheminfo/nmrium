@@ -43,11 +43,13 @@ function useStocsy(chemicalShift: number) {
     const { color, y } = matrixToStocsy(matrixY, cIndex);
 
     const yDomain = extent(y) as number[];
-    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
+    let { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
+    if (fromIndex > 0) fromIndex--;
+    if (toIndex < x.length) toIndex++;
     return {
-      x: sliceArray(x, { fromIndex, toIndex }),
-      y: sliceArray(y, { fromIndex, toIndex }),
-      color: sliceArray(color, { fromIndex, toIndex }),
+      x: x.slice(fromIndex, toIndex),
+      y: y.slice(fromIndex, toIndex),
+      color: color.slice(fromIndex, toIndex),
       yDomain,
     };
   }, [chemicalShift, from, matrix, to]);

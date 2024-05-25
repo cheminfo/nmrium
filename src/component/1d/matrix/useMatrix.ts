@@ -37,51 +37,6 @@ export function findXFromToIndex(x, options: { from: number; to: number }) {
   return { fromIndex, toIndex };
 }
 
-export function sliceArray(
-  array: number[] | Float64Array | NumberArray,
-  options: {
-    fromIndex: number;
-    toIndex: number;
-  },
-) {
-  const { fromIndex, toIndex } = options;
-  const resultLength = toIndex - fromIndex + 2;
-  const result = new Array(resultLength);
-  result[0] = array[0];
-  for (let i = 0; i < toIndex - fromIndex; i++) {
-    result[i + 1] = array[fromIndex + i];
-  }
-  result[resultLength - 1] = array.at(-1);
-
-  return result;
-}
-
-export function interpolateNumber(
-  inputRange: [number, number],
-  outputRange: [number, number],
-) {
-  return (value) =>
-    outputRange[0] +
-    ((value - inputRange[0]) * (outputRange[1] - outputRange[0])) /
-      (inputRange[1] - inputRange[0]);
-}
-
-export function mapMatrixColors(colors) {
-  if (colors.length === 0) return [];
-
-  const result: MatrixColor[] = [];
-  let start = 0;
-
-  for (let i = 1; i <= colors.length; i++) {
-    if (colors[i] !== colors[start]) {
-      result.push({ color: colors[start], start, end: i - 1 });
-      start = i;
-    }
-  }
-
-  return result;
-}
-
 function getX(spectra: Spectrum[]) {
   const spectrum = spectra?.[0];
 
