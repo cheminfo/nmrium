@@ -9,7 +9,11 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScaleWithRation } from '../utilities/scale';
 
-import { sliceArray, groupPointsByColor, useMatrix } from './useMatrix';
+import {
+  sliceArrayForDomain,
+  groupPointsByColor,
+  useMatrix,
+} from './useMatrix';
 
 interface StocsyProps {
   x: Float64Array | number[];
@@ -62,9 +66,9 @@ function useSliceStocsyData(options?: StocsyData | null) {
     const fromIndex = xFindClosestIndex(x, from);
     const toIndex = xFindClosestIndex(x, to);
     return {
-      x: sliceArray(x, { fromIndex, toIndex }),
-      y: sliceArray(y, { fromIndex, toIndex }),
-      color: sliceArray(color, { fromIndex, toIndex }),
+      x: sliceArrayForDomain(x, { fromIndex, toIndex }),
+      y: sliceArrayForDomain(y, { fromIndex, toIndex }),
+      color: sliceArrayForDomain(color, { fromIndex, toIndex }),
     };
   }, [from, options, to]);
 }

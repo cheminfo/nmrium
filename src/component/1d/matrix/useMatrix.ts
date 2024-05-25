@@ -15,7 +15,7 @@ import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
  * @param options
  * @returns
  */
-export function sliceArray<T extends string[] | NumberArray>(
+export function sliceArrayForDomain<T extends string[] | NumberArray>(
   array: T,
   options: {
     fromIndex: number;
