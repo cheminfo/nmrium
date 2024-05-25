@@ -109,7 +109,7 @@ interface InterpolateColorsPointsOptions {
   color: string[];
 }
 
-export function interpolatedColorsPoints(data: InterpolateColorsPointsOptions) {
+export function groupPointsByColor(data: InterpolateColorsPointsOptions) {
   const groups: Record<
     string,
     Array<{ x: number; y: number; endPath: boolean }>

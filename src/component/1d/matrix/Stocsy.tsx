@@ -11,7 +11,7 @@ import { getYScaleWithRation } from '../utilities/scale';
 
 import {
   findXFromToIndex,
-  interpolatedColorsPoints,
+  groupPointsByColor,
   sliceArray,
   useMatrix,
 } from './useMatrix';
@@ -130,12 +130,12 @@ function RenderStocsyAsSVG(props: StocsyProps) {
   const { x, y, color, scaleRatio, yDomain } = props;
   const scaleY = useYScale(scaleRatio, yDomain);
   const { scaleX } = useScaleChecked();
-  const data = interpolatedColorsPoints({ x, y, color });
+  const colorGroups = groupPointsByColor({ x, y, color });
 
   const xScaler = scaleX();
 
-  return Object.keys(data).map((color) => {
-    const points = data[color];
+  return Object.keys(colorGroups).map((color) => {
+    const points = colorGroups[color];
     const pathBuilder = new PathBuilder();
 
     pathBuilder.moveTo(xScaler(points[0].x), scaleY(points[0].y));
