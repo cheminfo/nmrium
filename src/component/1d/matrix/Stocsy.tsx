@@ -11,8 +11,8 @@ import { getYScaleWithRation } from '../utilities/scale';
 
 import {
   findXFromToIndex,
+  getXDomainArray,
   groupPointsByColor,
-  sliceArray,
   useMatrix,
 } from './useMatrix';
 
@@ -43,13 +43,11 @@ function useStocsy(chemicalShift: number) {
     const { color, y } = matrixToStocsy(matrixY, cIndex);
 
     const yDomain = extent(y) as number[];
-    let { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
-    if (fromIndex > 0) fromIndex--;
-    if (toIndex < x.length) toIndex++;
+    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
     return {
-      x: x.slice(fromIndex, toIndex),
-      y: y.slice(fromIndex, toIndex),
-      color: color.slice(fromIndex, toIndex),
+      x: getXDomainArray(x, { fromIndex, toIndex }),
+      y: getXDomainArray(y, { fromIndex, toIndex }),
+      color: getXDomainArray(color, { fromIndex, toIndex }),
       yDomain,
     };
   }, [chemicalShift, from, matrix, to]);

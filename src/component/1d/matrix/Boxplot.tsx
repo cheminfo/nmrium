@@ -9,7 +9,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { PathBuilder } from '../../utility/PathBuilder';
 import { getYScaleWithRation } from '../utilities/scale';
 
-import { findXFromToIndex, sliceArray, useMatrix } from './useMatrix';
+import { findXFromToIndex, getXDomainArray, useMatrix } from './useMatrix';
 
 interface InnerBoxplotProps {
   scaleRatio: number;
@@ -101,19 +101,16 @@ function useBoxPlot() {
     if (!matrix) return null;
     const { x, matrixY } = matrix;
     const { max, min, median, q1, q3 } = matrixToBoxPlot(matrixY);
-    let { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
+    const { fromIndex, toIndex } = findXFromToIndex(x, { from, to });
     const yDomain = extent(median) as number[];
 
-    if (fromIndex > 0) fromIndex--;
-    if (toIndex < x.length) toIndex++;
-
     return {
-      x: x.slice(fromIndex, toIndex),
-      max: max.slice(fromIndex, toIndex),
-      min: min.slice(fromIndex, toIndex),
-      median: median.slice(fromIndex, toIndex),
-      q1: q1.slice(fromIndex, toIndex),
-      q3: q3.slice(fromIndex, toIndex),
+      x: getXDomainArray(x, { fromIndex, toIndex }),
+      max: getXDomainArray(max, { fromIndex, toIndex }),
+      min: getXDomainArray(min, { fromIndex, toIndex }),
+      median: getXDomainArray(median, { fromIndex, toIndex }),
+      q1: getXDomainArray(q1, { fromIndex, toIndex }),
+      q3: getXDomainArray(q3, { fromIndex, toIndex }),
       yDomain,
     };
   }, [from, matrix, to]);

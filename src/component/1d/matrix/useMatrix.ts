@@ -7,12 +7,6 @@ import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 
-interface MatrixColor {
-  color: string;
-  start: number;
-  end: number;
-}
-
 export function findXFromToIndex(x, options: { from: number; to: number }) {
   const { from, to } = options;
   let fromIndex = xFindClosestIndex(x, from);
@@ -35,6 +29,31 @@ export function findXFromToIndex(x, options: { from: number; to: number }) {
     }
   }
   return { fromIndex, toIndex };
+}
+
+/**
+ * This method will slice the array from the fromIndex to the toIndex and add the first and last element of the original array
+ * if needed
+ * It will also add one extra point at the beginning or the end if the fromIndex or toIndex is not the first or the last point of the array
+ *
+ * @param array
+ * @param options
+ * @returns
+ */
+export function getXDomainArray(
+  array: NumberArray | string[],
+  options: {
+    fromIndex: number;
+    toIndex: number;
+  },
+) {
+  let { fromIndex, toIndex } = options;
+  if (fromIndex > 0) fromIndex--;
+  if (toIndex < array.length) toIndex++;
+  if (fromIndex > 0 || toIndex < array.length) {
+    return array.slice(fromIndex, toIndex);
+  }
+  return array;
 }
 
 function getX(spectra: Spectrum[]) {
