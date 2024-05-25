@@ -23,11 +23,15 @@ interface StocsyIndexPointProps {
   chemicalShift: number | null;
 }
 
-function useStocsy(chemicalShift: number) {
+interface StocsyData {
+  x: Float64Array | number[];
+  y: number[];
+  color: string[];
+  yDomain: number[];
+}
+
+function useStocsy(chemicalShift: number): StocsyData | null {
   const matrix = useMatrix();
-  const {
-    xDomain: [from, to],
-  } = useChartData();
 
   return useMemo(() => {
     if (!matrix) return null;
@@ -36,17 +40,33 @@ function useStocsy(chemicalShift: number) {
 
     const cIndex = xFindClosestIndex(x, chemicalShift ?? x[0]);
     const { color, y } = matrixToStocsy(matrixY, cIndex);
-
     const yDomain = extent(y) as number[];
+    return {
+      color,
+      y,
+      yDomain,
+      x,
+    };
+  }, [chemicalShift, matrix]);
+}
+
+function useSliceStocsyData(options?: StocsyData | null) {
+  const {
+    xDomain: [from, to],
+  } = useChartData();
+  return useMemo(() => {
+    if (!options) return null;
+
+    const { color, y, x } = options;
+
     const fromIndex = xFindClosestIndex(x, from);
     const toIndex = xFindClosestIndex(x, to);
     return {
       x: sliceArray(x, { fromIndex, toIndex }),
       y: sliceArray(y, { fromIndex, toIndex }),
       color: sliceArray(color, { fromIndex, toIndex }),
-      yDomain,
     };
-  }, [chemicalShift, from, matrix, to]);
+  }, [from, options, to]);
 }
 
 export function Stocsy() {
@@ -66,11 +86,13 @@ export function Stocsy() {
 }
 
 export function InnerStocsy({ scaleRatio, chemicalShift }) {
-  const data = useStocsy(chemicalShift);
+  const stocsyData = useStocsy(chemicalShift);
+  const data = useSliceStocsyData(stocsyData);
   const { displayerKey } = useChartData();
 
-  if (!data) return null;
-  const { x, y, color, yDomain } = data;
+  if (!data || !stocsyData) return null;
+  const { yDomain } = stocsyData;
+  const { x, y, color } = data;
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       <StocsyIndexPoint chemicalShift={chemicalShift} />
