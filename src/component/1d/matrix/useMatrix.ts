@@ -15,20 +15,20 @@ import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
  * @param options
  * @returns
  */
-export function getXDomainArray(
-  array: NumberArray | string[],
+export function sliceArray<T extends string[] | NumberArray>(
+  array: T,
   options: {
     fromIndex: number;
     toIndex: number;
   },
-) {
+): T {
   let { fromIndex, toIndex } = options;
   if (fromIndex > 0) fromIndex--;
   if (toIndex < array.length) toIndex++;
   // because slice does not include the last index we need to add one
   if (toIndex < array.length) toIndex++;
   if (fromIndex > 0 || toIndex < array.length) {
-    return array.slice(fromIndex, toIndex);
+    return array.slice(fromIndex, toIndex) as T;
   }
   return array;
 }
