@@ -146,7 +146,12 @@ function MatrixGenerationPanel() {
         leftButtons={[
           {
             icon: <SvgNmrExportAsMatrix />,
-            tooltip: 'Export spectra as a matrix',
+            tooltip: (
+              <TooltipHelpContent
+                title="Export spectra as a matrix"
+                description="Export the matrix as a tab-delimited file. The first row contains meta information labels followed by the chemical shifts. Next rows contains the meta information and the intensities of the spectra."
+              />
+            ),
             onClick: handleExportAsMatrix,
           },
           ...getToggleVisibilityButtons(),
@@ -154,11 +159,13 @@ function MatrixGenerationPanel() {
             icon: <IoAnalytics />,
             tooltip: (
               <TooltipHelpContent
-                title={`${booleanToString(!showStocsy)} stocsy`}
+                title={`${booleanToString(!showStocsy)} STOCSY`}
                 subTitles={[
-                  { title: 'Vertical zoom', shortcuts: ['Alt', 'scroll'] },
-                  { title: 'Stocsy index', shortcuts: ['Shift', 'click'] },
+                  { title: 'Vertical zoom', shortcuts: ['⌥', 'Scroll wheel'] },
+                  { title: 'STOCSY pivot', shortcuts: ['⇧', 'click'] },
                 ]}
+                description="Statistical Total Correlation Spectroscopy (STOCSY) is a method to identify correlations between signals."
+                link="https://doi.org/10.1021/ac048630x"
               />
             ),
             onClick: handleToggleStocsy,
@@ -170,8 +177,9 @@ function MatrixGenerationPanel() {
               <TooltipHelpContent
                 title={`${booleanToString(!showBoxPlot)} box plot`}
                 subTitles={[
-                  { title: 'Vertical zoom', shortcuts: ['Alt', 'scroll'] },
+                  { title: 'Vertical zoom', shortcuts: ['⌥', 'Scroll wheel'] },
                 ]}
+                description="Display box plot like information. Light grey for min/max, dark grey for 1st/3rd quartile, and black for median."
               />
             ),
             onClick: handleToggleBoxplot,

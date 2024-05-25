@@ -197,8 +197,8 @@ export default function ToolBar() {
         title: options.zoom.label,
         subTitles: [
           { title: 'Vertical', shortcuts: ['Scroll wheel'] },
-          { title: 'Horizontal', shortcuts: ['SHIFT', 'Scroll wheel'] },
-          { title: 'Pan', shortcuts: ['Right mouse'] },
+          { title: 'Horizontal', shortcuts: ['⇧', 'Scroll wheel'] },
+          { title: 'Pan', shortcuts: ['Right button'] },
         ],
       },
       icon: <FaSearchPlus />,
