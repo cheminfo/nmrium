@@ -1236,7 +1236,7 @@ function handleDeleteSpectraFilter(
     }
 
     resetSelectedTool(draft);
-    setDomain(draft);
+    setDomain(draft, { domainSpectraScope: 'all' });
     setMode(draft);
   }
 }
