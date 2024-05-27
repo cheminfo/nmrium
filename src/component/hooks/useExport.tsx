@@ -4,7 +4,6 @@ import { ExportOptions, toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { usePrepareExport } from '../context/PrepareExportContext';
 import { useToaster } from '../context/ToasterContext';
 import {
   copyPNGToClipboard,
@@ -25,36 +24,21 @@ export default function useExport() {
   const toaster = useToaster();
   const state = useChartData();
   const preferencesState = usePreferences();
-  const { prepareExportStart, prepareExportEnd, waitForAllComponentsRendered } =
-    usePrepareExport();
   const saveToClipboardHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as NMRium process in progress',
       });
       setTimeout(async () => {
-        prepareExportStart();
-        try {
-          await waitForAllComponentsRendered();
-          await copyPNGToClipboard(rootRef, 'nmrSVG');
-          toaster.show({
-            message: 'Image copied to clipboard',
-            intent: 'success',
-          });
-        } finally {
-          hideLoading();
-          prepareExportEnd();
-        }
+        await copyPNGToClipboard(rootRef, 'nmrSVG');
+        toaster.show({
+          message: 'Image copied to clipboard',
+          intent: 'success',
+        });
+        hideLoading();
       }, 0);
     }
-  }, [
-    state.data.length,
-    rootRef,
-    toaster,
-    prepareExportStart,
-    waitForAllComponentsRendered,
-    prepareExportEnd,
-  ]);
+  }, [state.data.length, rootRef, toaster]);
 
   const saveAsJSONHandler = useCallback(
     (spaceIndent = 0, isCompressed = true) => {
@@ -86,25 +70,12 @@ export default function useExport() {
         message: 'Exporting as SVG process in progress',
       });
       void setTimeout(async () => {
-        try {
-          prepareExportStart();
-          await waitForAllComponentsRendered();
-          const fileName = state.data[0]?.info?.name;
-          exportAsSVG(rootRef, 'nmrSVG', fileName);
-        } finally {
-          hideLoading();
-          prepareExportEnd();
-        }
+        const fileName = state.data[0]?.info?.name;
+        exportAsSVG(rootRef, 'nmrSVG', fileName);
+        hideLoading();
       }, 0);
     }
-  }, [
-    state.data,
-    rootRef,
-    toaster,
-    prepareExportStart,
-    waitForAllComponentsRendered,
-    prepareExportEnd,
-  ]);
+  }, [state.data, rootRef, toaster]);
 
   const saveAsPNGHandler = useCallback(async () => {
     if (state.data.length > 0 && rootRef) {
@@ -112,26 +83,12 @@ export default function useExport() {
         message: 'Exporting as PNG process in progress',
       });
       void setTimeout(async () => {
-        try {
-          prepareExportStart();
-          await waitForAllComponentsRendered();
-
-          const fileName = state.data[0]?.info?.name;
-          exportAsPng(rootRef, 'nmrSVG', fileName);
-        } finally {
-          hideLoading();
-          prepareExportEnd();
-        }
+        const fileName = state.data[0]?.info?.name;
+        exportAsPng(rootRef, 'nmrSVG', fileName);
+        hideLoading();
       }, 0);
     }
-  }, [
-    state.data,
-    rootRef,
-    toaster,
-    prepareExportStart,
-    waitForAllComponentsRendered,
-    prepareExportEnd,
-  ]);
+  }, [state.data, rootRef, toaster]);
 
   const saveHandler = useCallback(
     (options: SaveOptions) => {
