@@ -88,6 +88,8 @@ function initMatrixGeneration(draft: Draft<PreferencesState>, nucleus: string) {
       [nucleus]: options,
     };
   }
+
+  return panels.matrixGeneration;
 }
 
 function addExclusionZone(
@@ -140,6 +142,20 @@ function toggleMatrixGenerationViewProperty(
   matrixGeneration[key] = !matrixGeneration[key];
 }
 
+function resetDefaultViewMatrixGenerationOptions(
+  draft: Draft<PreferencesState>,
+  action: ToggleMatrixGenerationViewAction,
+) {
+  const { nucleus } = action.payload;
+
+  const matrixGeneration = initMatrixGeneration(draft, nucleus);
+  const currentOptions = getMatrixGenerationPanelOptions(draft, nucleus);
+  const { matrixOptions } = currentOptions;
+  const { matrixOptions: defaultMatrixOptions, ...vewOptions } =
+    getMatrixGenerationDefaultOptions();
+  matrixGeneration[nucleus] = { matrixOptions, ...vewOptions };
+}
+
 function changeMatrixGenerationScale(
   draft: Draft<PreferencesState>,
   action: ChangeMatrixGenerationScaleAction,
@@ -174,4 +190,5 @@ export {
   toggleMatrixGenerationViewProperty,
   changeMatrixGenerationScale,
   changeMatrixGenerationStocsyChemicalShift,
+  resetDefaultViewMatrixGenerationOptions,
 };

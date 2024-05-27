@@ -322,7 +322,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       if (
         (showBoxPlot || showStocsy) &&
         options.altKey &&
-        selectedTool === 'zoom'
+        (selectedTool === 'zoom' ||
+          selectedTool === 'matrixGenerationExclusionZones')
       ) {
         //change the matrix generation vertical scale
         dispatchPreferences({

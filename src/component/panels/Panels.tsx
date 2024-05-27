@@ -11,7 +11,7 @@ import { DisplayerMode } from '../reducer/Reducer';
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment';
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
-import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
+import { MatrixGenerationPanel } from './MatrixGenerationPanel/MatrixGenerationPanel';
 import MoleculePanel from './MoleculesPanel/MoleculePanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';

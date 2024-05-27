@@ -1,10 +1,13 @@
 import { NumberArray } from 'cheminfo-types';
 import { Spectrum } from 'nmr-load-save';
+import { Filters } from 'nmr-processing';
 import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
+
+const { signalProcessing } = Filters;
 
 /**
  * This method will slice the array from the fromIndex to the toIndex and add the first and last element of the original array
@@ -45,11 +48,23 @@ export function useMatrix() {
   const spectra = useSpectraByActiveNucleus();
   return useMemo(() => {
     if (displayerMode !== '1D') return null;
+
+    const matrixY: Float64Array[] = [];
+    for (let i = 0; i < spectra.length; i++) {
+      const spectrum = spectra[i];
+      const filter = spectrum.filters.find(
+        (filter) => filter.name === signalProcessing.id,
+      );
+      if (isSpectrum1D(spectrum) && filter?.flag) {
+        matrixY[i] = spectrum.data.re;
+      }
+    }
+
+    if (matrixY.length === 0) return null;
+
     return {
       x: getX(spectra) || [],
-      matrixY: spectra.map((spectrum) =>
-        isSpectrum1D(spectrum) ? spectrum.data.re : [],
-      ),
+      matrixY,
     };
   }, [displayerMode, spectra]);
 }
