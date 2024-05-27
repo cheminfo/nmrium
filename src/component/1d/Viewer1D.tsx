@@ -29,6 +29,7 @@ import { useLogger } from '../context/LoggerContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
+import { usePanelPreferences } from '../hooks/usePanelPreferences';
 import useSpectrum from '../hooks/useSpectrum';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
 import Spinner from '../loader/Spinner';
@@ -80,6 +81,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const spectrum = useSpectrum();
   const dispatch = useDispatch();
   const { dispatch: dispatchPreferences } = usePreferences();
+  const { showBoxPlot, showStocsy } = usePanelPreferences(
+    'matrixGeneration',
+    activeTab,
+  );
   const { logger } = useLogger();
 
   const [scaleState, dispatchScale] = useReducer(
@@ -314,9 +319,29 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const handleZoom = useCallback<OnZoom>(
     (options) => {
-      dispatch({ type: 'SET_ZOOM', payload: { options } });
+      if (
+        (showBoxPlot || showStocsy) &&
+        options.altKey &&
+        (selectedTool === 'zoom' ||
+          selectedTool === 'matrixGenerationExclusionZones')
+      ) {
+        //change the matrix generation vertical scale
+        dispatchPreferences({
+          type: 'CHANGE_MATRIX_GENERATION_SCALE',
+          payload: { nucleus: activeTab, zoomOptions: options },
+        });
+      } else {
+        dispatch({ type: 'SET_ZOOM', payload: { options } });
+      }
     },
-    [dispatch],
+    [
+      activeTab,
+      dispatch,
+      dispatchPreferences,
+      selectedTool,
+      showBoxPlot,
+      showStocsy,
+    ],
   );
 
   const mouseClick = useCallback<OnClick>(
@@ -361,12 +386,12 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               }
               break;
             }
-            case options.phaseCorrection.id:
-              dispatch({
-                type: 'SET_ONE_DIMENSION_PIVOT_POINT',
-                payload: {
-                  value: event.x,
-                },
+            case options.zoom.id:
+              if (!showStocsy || !event.shiftKey) break;
+
+              dispatchPreferences({
+                type: 'CHANGE_MATRIX_GENERATION_STOCSY_CHEMICAL_SHIFT',
+                payload: { nucleus: activeTab, chemicalShift: xPPM },
               });
 
               break;
@@ -380,11 +405,14 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       }
     },
     [
+      activeTab,
       dispatch,
+      dispatchPreferences,
       getModifiersKey,
       primaryKeyIdentifier,
       scaleState,
       selectedTool,
+      showStocsy,
       spectrum,
     ],
   );

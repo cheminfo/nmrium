@@ -31,11 +31,11 @@ export default function useExport() {
       });
       setTimeout(async () => {
         await copyPNGToClipboard(rootRef, 'nmrSVG');
-        hideLoading();
         toaster.show({
           message: 'Image copied to clipboard',
           intent: 'success',
         });
+        hideLoading();
       }, 0);
     }
   }, [state.data.length, rootRef, toaster]);
@@ -64,12 +64,12 @@ export default function useExport() {
     [preferencesState, state, toaster],
   );
 
-  const saveAsSVGHandler = useCallback(async () => {
+  const saveAsSVGHandler = useCallback(() => {
     if (state.data.length > 0 && rootRef) {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as SVG process in progress',
       });
-      setTimeout(() => {
+      void setTimeout(async () => {
         const fileName = state.data[0]?.info?.name;
         exportAsSVG(rootRef, 'nmrSVG', fileName);
         hideLoading();
@@ -82,7 +82,7 @@ export default function useExport() {
       const hideLoading = toaster.showLoading({
         message: 'Exporting as PNG process in progress',
       });
-      setTimeout(() => {
+      void setTimeout(async () => {
         const fileName = state.data[0]?.info?.name;
         exportAsPng(rootRef, 'nmrSVG', fileName);
         hideLoading();

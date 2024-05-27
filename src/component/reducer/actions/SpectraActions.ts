@@ -64,6 +64,7 @@ type ChangeSpectraVisibilityByNucleusAction = ActionType<
   {
     nucleus: Nucleus;
     flag: boolean;
+    mode?: 'selected' | 'all';
   }
 >;
 type ChangeActiveSpectrumAction = ActionType<
@@ -276,10 +277,14 @@ function handleChangeSpectraVisibilityByNucleus(
   draft: Draft<State>,
   action: ChangeSpectraVisibilityByNucleusAction,
 ) {
-  const { nucleus, flag } = action.payload;
+  const { nucleus, flag, mode = 'all' } = action.payload;
   const activeSpectra = getActiveSpectraAsObject(draft);
   for (const datum of getSpectraByNucleus(nucleus, draft.data)) {
-    if (activeSpectra && datum.id in activeSpectra) {
+    if (mode === 'selected') {
+      if (activeSpectra && datum.id in activeSpectra) {
+        setVisible(datum, flag);
+      }
+    } else {
       setVisible(datum, flag);
     }
   }

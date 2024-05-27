@@ -203,7 +203,10 @@ function initData(
     const state = getInitialState();
     return produce(state, (initialDraft) => {
       setData(initialDraft, action.payload);
-      setActiveTab(initialDraft, { tab: viewState?.spectra?.activeTab || '' });
+      setActiveTab(initialDraft, {
+        tab: viewState?.spectra?.activeTab || '',
+        domainOptions: { domainSpectraScope: 'all' },
+      });
       initialDraft.width = draft.width;
       initialDraft.height = draft.height;
       setPreferences(initialDraft, viewState);
@@ -246,7 +249,7 @@ function handleLoadDropFiles(draft: Draft<State>, action: LoadDropFilesAction) {
     return initData(draft, action);
   } else {
     setData(draft, payload);
-    setActiveTab(draft);
+    setActiveTab(draft, { domainOptions: { domainSpectraScope: 'all' } });
     changeSpectrumVerticalAlignment(draft, { verticalAlign: 'auto-check' });
 
     // set source undefined when dragging and dropping a spectra file to prevent export spectra with the data source.

@@ -1,11 +1,7 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
 import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
 import { memo, useCallback } from 'react';
-import {
-  FaCreativeCommonsSamplingPlus,
-  FaEye,
-  FaEyeSlash,
-} from 'react-icons/fa';
+import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { MdFormatColorFill } from 'react-icons/md';
 
@@ -16,6 +12,7 @@ import { useToaster } from '../../context/ToasterContext';
 import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
+import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility';
 import { DisplayerMode } from '../../reducer/Reducer';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import DefaultPanelHeader, {
@@ -58,6 +55,7 @@ function SpectraPanelHeaderInner({
   const modal = useModal();
   const toaster = useToaster();
   const dispatch = useDispatch();
+  const { getToggleVisibilityButtons } = useToggleSpectraVisibility('selected');
   const {
     current: { spectraColors },
   } = usePreferences();
@@ -82,20 +80,6 @@ function SpectraPanelHeaderInner({
       ],
     });
   }, [activeSpectra?.length, dispatch, modal]);
-
-  function showAllSpectraHandler() {
-    dispatch({
-      type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
-      payload: { nucleus: activeTab, flag: true },
-    });
-  }
-
-  function hideAllSpectraHandler() {
-    dispatch({
-      type: 'CHANGE_SPECTRA_VISIBILITY_BY_NUCLEUS',
-      payload: { nucleus: activeTab, flag: false },
-    });
-  }
 
   function addMissingProjectionHandler() {
     const missingNucleus = getMissingProjection(data, activeTab);
@@ -132,20 +116,8 @@ function SpectraPanelHeaderInner({
   const hasActiveSpectra = activeSpectra && activeSpectra?.length > 0;
   const spectraLengthPerTab = getSpectraByNucleus(activeTab, data)?.length;
 
-  let leftButtons: ToolbarItemProps[] = [
-    {
-      disabled: !hasActiveSpectra,
-      icon: <FaEyeSlash />,
-      tooltip: 'Hide selected spectra',
-      onClick: hideAllSpectraHandler,
-    },
-    {
-      disabled: !hasActiveSpectra,
-      icon: <FaEye />,
-      tooltip: 'Show selected spectra',
-      onClick: showAllSpectraHandler,
-    },
-  ];
+  let leftButtons: ToolbarItemProps[] =
+    getToggleVisibilityButtons(!hasActiveSpectra);
 
   if (displayerMode === '2D' && activeSpectrum?.info.isFt) {
     leftButtons.push({

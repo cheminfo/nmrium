@@ -67,6 +67,13 @@ export interface TwoDimensionPhaseCorrection {
   addTracesToBothDirections: boolean;
 }
 
+export interface MatrixGenerationOptions {
+  showBoxPlot: boolean;
+  showStocsy: boolean;
+  scaleRatio: number;
+  chemicalShift: number | null;
+}
+
 export const getDefaultTwoDimensionsPhaseCorrectionTraceOptions =
   (): TwoDimensionPhaseCorrection['traces'] => {
     const directions: [TraceDirection, TraceDirection] = [
@@ -720,7 +727,6 @@ function innerSpectrumReducer(draft: Draft<State>, action: Action) {
 
       case 'SET_AUTOMATIC_ASSIGNMENTS':
         return AssignmentsActions.handleSetAutomaticAssignments(draft, action);
-
       case 'SECRET_THROW_ERROR': {
         throw new Error('Error thrown in main reducer');
       }

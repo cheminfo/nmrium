@@ -10,6 +10,8 @@ import XAxis from './XAxis';
 import DatabaseElements from './database/DatabaseElements';
 import IntegralsSeries from './integral/IntegralsSeries';
 import JGraph from './jCouplingGraph/JGraph';
+import { Boxplot } from './matrix/Boxplot';
+import { Stocsy } from './matrix/Stocsy';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import MultiplicityTrees from './multiplicityTree/MultiplicityTrees';
 import { PeakEditionProvider } from './peaks/PeakEditionManager';
@@ -61,8 +63,11 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
         <ExclusionZonesAnnotations />
         <DatabaseElements />
         <PeaksShapes />
+        <Stocsy />
+        <Boxplot />
         <SpectraTracker />
         <SpectrumInfoBlock />
+
         <SimilarityTree />
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis showGrid mode={mode} />

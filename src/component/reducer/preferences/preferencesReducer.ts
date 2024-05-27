@@ -9,7 +9,6 @@ import {
 import { Reducer } from 'react';
 import { SplitPaneSize } from 'react-science/ui';
 
-import { MatrixOptions } from '../../../data/types/data1d/MatrixOptions';
 import type { NMRiumWorkspace, NMRiumPreferences } from '../../main';
 import { getLocalStorage, storeData } from '../../utility/LocalStorage';
 import Workspaces from '../../workspaces';
@@ -28,6 +27,10 @@ import {
   setMatrixGenerationOptions,
   addExclusionZone,
   deleteExclusionZone,
+  MatrixGenerationActions,
+  toggleMatrixGenerationViewProperty,
+  changeMatrixGenerationScale,
+  changeMatrixGenerationStocsyChemicalShift,
 } from './actions/matrixGeneration';
 import { removeWorkspace } from './actions/removeWorkspace';
 import { setActiveWorkspace } from './actions/setActiveWorkspace';
@@ -100,25 +103,7 @@ export type SetSpectraAnalysisPanelPreferencesAction = ActionType<
   'SET_SPECTRA_ANALYSIS_PREFERENCES',
   { nucleus: string; data: MultipleSpectraAnalysisPreferences }
 >;
-export type setMatrixGenerationOptionsAction = ActionType<
-  'SET_MATRIX_GENERATION_OPTIONS',
-  { nucleus: string; options: MatrixOptions }
->;
-export type addMatrixGenerationExclusionZoneAction = ActionType<
-  'ADD_MATRIX_GENERATION_EXCLUSION_ZONE',
-  {
-    zone: {
-      from: number;
-      to: number;
-    };
-    range: { from: number; to: number };
-    nucleus: string;
-  }
->;
-export type deleteMatrixGenerationExclusionZoneAction = ActionType<
-  'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE',
-  { zone: { id: string; from: number; to: number }; nucleus: string }
->;
+
 export type SetVerticalSplitterPositionAction = ActionType<
   'SET_VERTICAL_SPLITTER_POSITION',
   { value: SplitPaneSize }
@@ -136,9 +121,7 @@ type PreferencesActions =
   | ChangeAnalysisColumnValueKeyAction
   | DeleteAnalysisColumn
   | SetSpectraAnalysisPanelPreferencesAction
-  | setMatrixGenerationOptionsAction
-  | addMatrixGenerationExclusionZoneAction
-  | deleteMatrixGenerationExclusionZoneAction
+  | MatrixGenerationActions
   | SetVerticalSplitterPositionAction;
 
 export const WORKSPACES: Array<{
@@ -278,8 +261,14 @@ function innerPreferencesReducer(
       return addExclusionZone(draft, action);
     case 'DELETE_MATRIX_GENERATION_EXCLUSION_ZONE':
       return deleteExclusionZone(draft, action);
+    case 'TOGGLE_MATRIX_GENERATION_VIEW_PROPERTY':
+      return toggleMatrixGenerationViewProperty(draft, action);
     case 'SET_VERTICAL_SPLITTER_POSITION':
       return setVerticalSplitterPosition(draft, action);
+    case 'CHANGE_MATRIX_GENERATION_SCALE':
+      return changeMatrixGenerationScale(draft, action);
+    case 'CHANGE_MATRIX_GENERATION_STOCSY_CHEMICAL_SHIFT':
+      return changeMatrixGenerationStocsyChemicalShift(draft, action);
 
     default:
       return draft;

@@ -1,5 +1,6 @@
 import has from 'lodash/has';
 import {
+  MatrixGenerationOptions,
   MultipleSpectraAnalysisPreferences,
   PanelsPreferences,
   Workspace,
@@ -8,7 +9,6 @@ import {
 import { useMemo } from 'react';
 
 import { getDefaultPredictionOptions } from '../../data/PredictionManager';
-import { MatrixOptions } from '../../data/types/data1d/MatrixOptions';
 import { usePreferences } from '../context/PreferencesContext';
 import {
   getIntegralDefaultValues,
@@ -18,6 +18,7 @@ import {
   databaseDefaultValues,
   getMultipleSpectraAnalysisDefaultValues,
   getSpectraDefaultValues,
+  getMatrixGenerationDefaultValues,
 } from '../reducer/preferences/panelsPreferencesDefaultValues';
 import { getValue } from '../utility/LocalStorage';
 
@@ -50,6 +51,8 @@ function getDefaultPreferences(panelKey: Panel, nucleus?: string) {
       return getMultipleSpectraAnalysisDefaultValues(nucleus);
     case 'prediction':
       return getDefaultPredictionOptions();
+    case 'matrixGeneration':
+      return getMatrixGenerationDefaultValues(nucleus);
 
     default:
       return {};
@@ -124,7 +127,7 @@ export function usePanelPreferences<T extends Panel>(
   panelKey: T,
   nucleus: string,
 ): T extends 'matrixGeneration'
-  ? MatrixOptions
+  ? MatrixGenerationOptions
   : T extends 'multipleSpectraAnalysis'
     ? MultipleSpectraAnalysisPreferences
     : WorkSpacePanelPreferences[T];

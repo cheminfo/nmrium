@@ -20,6 +20,10 @@ export class PathBuilder {
   public toString() {
     return this.array.join(' ');
   }
+
+  public concatPath(pathBuilder: PathBuilder) {
+    return this.array.concat(pathBuilder.array).join(' ');
+  }
 }
 
 /**
@@ -27,5 +31,7 @@ export class PathBuilder {
  * This assumes that the viewport has pixel coordinates (so the max values are outside of the visible area)
  */
 function clamp(value: number) {
-  return Math.max(-1e5, Math.min(1e5, value));
+  if (value < -1e5) return -1e5;
+  if (value > 1e5) return 1e5;
+  return value;
 }
