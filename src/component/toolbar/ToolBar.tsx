@@ -24,13 +24,17 @@ import {
   FaFileExport,
 } from 'react-icons/fa';
 import { PiKnifeBold } from 'react-icons/pi';
-import { Toolbar, ToolbarItemProps } from 'react-science/ui';
+import {
+  Toolbar,
+  ToolbarItemProps,
+  TooltipItem,
+  TooltipHelpContent,
+} from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { CustomToolTip, ToolTipItem } from '../elements/CustomToolTip';
 import {
   ToolbarPopoverMenuItem,
   ToolbarPopoverItem,
@@ -60,12 +64,12 @@ interface BaseToolItem extends Pick<ToolbarItemProps, 'icon'> {
 }
 interface ToolItem extends BaseToolItem {
   onClick?: () => void;
-  tooltip: string | ToolTipItem;
+  tooltip: string | TooltipItem;
 }
 interface PopoverToolItem extends BaseToolItem {
   onClick: (data?: any) => void;
   menuItems: ToolbarPopoverMenuItem[];
-  tooltip: string | ToolTipItem;
+  tooltip: string | TooltipItem;
 }
 
 function isPopoverToolItem(
@@ -452,7 +456,7 @@ export default function ToolBar() {
                   typeof tooltip === 'string' ? (
                     tooltip
                   ) : (
-                    <CustomToolTip {...tooltip} />
+                    <TooltipHelpContent {...tooltip} />
                   )
                 }
                 tooltipProps={{
@@ -476,7 +480,7 @@ export default function ToolBar() {
                 typeof tooltip === 'string' ? (
                   tooltip
                 ) : (
-                  <CustomToolTip {...tooltip} />
+                  <TooltipHelpContent {...tooltip} />
                 )
               }
               tooltipProps={{
