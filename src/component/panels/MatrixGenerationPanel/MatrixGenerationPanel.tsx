@@ -387,13 +387,19 @@ function ExclusionZonesGroupHeaderContent() {
   } = useChartData();
   const { handleChangeOption } = useToolsFunctions();
 
+  function handleToggleExclusionZoneTool() {
+    if (selectedTool !== options.matrixGenerationExclusionZones.id) {
+      handleChangeOption(options.matrixGenerationExclusionZones.id);
+    } else {
+      handleChangeOption(options.zoom.id);
+    }
+  }
+
   return (
     <Toolbar>
       <Toolbar.Item
         tooltip="Select exclusions zones"
-        onClick={() =>
-          handleChangeOption(options.matrixGenerationExclusionZones.id)
-        }
+        onClick={handleToggleExclusionZoneTool}
         icon={<SvgNmrMultipleAnalysis />}
         active={selectedTool === options.matrixGenerationExclusionZones.id}
       />

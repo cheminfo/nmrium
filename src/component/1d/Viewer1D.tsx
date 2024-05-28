@@ -360,20 +360,20 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       switch (keyModifiers) {
         case primaryKeyIdentifier: {
           switch (selectedTool) {
-            case options.peakPicking.id:
+            case 'peakPicking':
               dispatch({
                 type: 'ADD_PEAK',
                 payload: event,
               });
               break;
 
-            case options.integral.id:
+            case 'integral':
               dispatch({
                 type: 'CUT_INTEGRAL',
                 payload: { cutValue: xPPM },
               });
               break;
-            case options.rangePicking.id: {
+            case 'rangePicking': {
               if (!spectrum) break;
 
               if (isSpectrum1D(spectrum)) {
@@ -386,7 +386,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               }
               break;
             }
-            case options.zoom.id:
+            case 'zoom':
+            case 'matrixGenerationExclusionZones':
               if (!showStocsy || !event.shiftKey) break;
 
               dispatchPreferences({
