@@ -57,7 +57,6 @@ export function SpectraColumnsManager({
           return (
             <FormikInput
               name={`nuclei.${nucleus}.columns.${row.index}.label`}
-              style={inputStyle}
             />
           );
         },
