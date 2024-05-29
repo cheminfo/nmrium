@@ -1,13 +1,13 @@
-import { Formik, FormikProps } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { PanelsPreferences, Workspace } from 'nmr-load-save';
 import {
   useImperativeHandle,
-  useRef,
   memo,
   forwardRef,
   useCallback,
   useMemo,
 } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext';
@@ -16,12 +16,24 @@ import { GroupPane, GroupPaneStyle } from '../../elements/GroupPane';
 import { Scroller } from '../../elements/Scroller';
 import useNucleus from '../../hooks/useNucleus';
 import { usePanelPreferencesByNuclei } from '../../hooks/usePanelPreferences';
-import { convertPathArrayToString } from '../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../utility/getSpectraObjectPaths';
 import { NucleusGroup } from '../extra/preferences/NucleusGroup';
 import { PreferencesContainer } from '../extra/preferences/PreferencesContainer';
 
 import { SpectraColumnsManager } from './base/SpectraColumnsManager';
+
+function replaceNucleusKeys(
+  data: PanelsPreferences['spectra'],
+  searchValue: string,
+  replaceValue: string,
+) {
+  const nuclei = {};
+
+  for (const key in data.nuclei) {
+    nuclei[key.replace(searchValue, replaceValue)] = data.nuclei[key];
+  }
+  return { ...data, nuclei };
+}
 
 const groupPaneStyle: GroupPaneStyle = {
   header: {
@@ -66,7 +78,6 @@ const spectraPreferencesValidation: any = Yup.lazy(
 );
 
 function SpectraPreferences(props, ref: any) {
-  const formRef = useRef<FormikProps<any>>(null);
   const {
     data,
     view: {
@@ -77,77 +88,94 @@ function SpectraPreferences(props, ref: any) {
   const nuclei = useNucleus();
 
   const preferencesByNuclei = usePanelPreferencesByNuclei('spectra', nuclei);
-
+  const methods = useForm({
+    defaultValues: replaceNucleusKeys(preferencesByNuclei, ',', '_'),
+    resolver: yupResolver(spectraPreferencesValidation),
+  });
+  const {
+    handleSubmit,
+    getValues,
+    reset,
+    formState: { isValid },
+  } = methods;
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
     [data],
   );
 
-  function saveHandler(values) {
-    preferences.dispatch({
-      type: 'SET_PANELS_PREFERENCES',
-      payload: { key: 'spectra', value: values },
-    });
-  }
+  const saveHandler = useCallback(
+    (values) => {
+      preferences.dispatch({
+        type: 'SET_PANELS_PREFERENCES',
+        payload: {
+          key: 'spectra',
+          value: replaceNucleusKeys(values, '_', ','),
+        },
+      });
+      return true;
+    },
+    [preferences],
+  );
 
   useImperativeHandle(
     ref,
     () => ({
       saveSetting: () => {
-        if (!formRef.current) return;
-
-        void formRef.current.submitForm();
-        return formRef.current?.isValid;
+        void handleSubmit(saveHandler)();
+        return isValid;
       },
     }),
-    [],
+    [handleSubmit, isValid, saveHandler],
   );
 
-  const handleAdd = useCallback((nucleus, index) => {
-    if (!formRef.current) return;
-    const data: PanelsPreferences['spectra'] = formRef.current.values;
-    let columns = data.nuclei[nucleus]?.columns || [];
+  const handleAdd = useCallback(
+    (nucleus, index) => {
+      const data: PanelsPreferences['spectra'] = getValues();
+      let columns = data.nuclei[nucleus]?.columns || [];
 
-    columns = [
-      ...columns.slice(0, index),
-      {
-        jpath: [],
-        label: '',
-        visible: true,
-      },
-      ...columns.slice(index),
-    ];
-
-    void formRef.current.setValues({
-      ...data,
-      nuclei: {
-        ...data.nuclei,
-        [nucleus]: {
-          ...data[nucleus],
-          columns,
+      columns = [
+        ...columns.slice(0, index),
+        {
+          jpath: [],
+          label: '',
+          visible: true,
         },
-      },
-    });
-  }, []);
+        ...columns.slice(index),
+      ];
 
-  const handleDelete = useCallback((nucleus, index) => {
-    if (!formRef.current) return;
-
-    const data: PanelsPreferences['spectra'] = formRef.current.values;
-    const columns = data.nuclei[nucleus]?.columns.filter(
-      (_, columnIndex) => columnIndex !== index,
-    );
-    void formRef.current.setValues({
-      ...data,
-      nuclei: {
-        ...data.nuclei,
-        [nucleus]: {
-          ...data[nucleus],
-          columns,
+      reset({
+        ...data,
+        nuclei: {
+          ...data.nuclei,
+          [nucleus]: {
+            ...data[nucleus],
+            columns,
+          },
         },
-      },
-    });
-  }, []);
+      });
+    },
+    [getValues, reset],
+  );
+
+  const handleDelete = useCallback(
+    (nucleus, index) => {
+      const data: PanelsPreferences['spectra'] = getValues();
+      const columns = data.nuclei[nucleus]?.columns.filter(
+        (_, columnIndex) => columnIndex !== index,
+      );
+      reset({
+        ...data,
+        nuclei: {
+          ...data.nuclei,
+          [nucleus]: {
+            ...data[nucleus],
+            columns,
+          },
+        },
+      });
+    },
+    [getValues, reset],
+  );
   const mapOnChangeValueHandler = useCallback(
     (key) => {
       const path = paths?.[key];
@@ -159,27 +187,19 @@ function SpectraPreferences(props, ref: any) {
     },
     [paths],
   );
-  const mapValue = useCallback((value) => convertPathArrayToString(value), []);
-
   return (
     <PreferencesContainer>
-      <Formik
-        innerRef={formRef}
-        onSubmit={saveHandler}
-        initialValues={preferencesByNuclei}
-        validationSchema={spectraPreferencesValidation}
-      >
+      <FormProvider {...methods}>
         <Scroller scrollTo={activeTab}>
           {nuclei?.map((n) => (
             <Scroller.Item key={n} elementKey={n}>
               <NucleusGroup nucleus={n}>
                 <GroupPane text="General" style={groupPaneStyle}>
                   <SpectraColumnsManager
-                    nucleus={n}
+                    nucleus={n.replace(',', '_')}
                     onAdd={handleAdd}
                     onDelete={handleDelete}
                     mapOnChangeValue={mapOnChangeValueHandler}
-                    mapValue={mapValue}
                     datalist={datalist}
                   />
                 </GroupPane>
@@ -187,7 +207,7 @@ function SpectraPreferences(props, ref: any) {
             </Scroller.Item>
           ))}
         </Scroller>
-      </Formik>
+      </FormProvider>
     </PreferencesContainer>
   );
 }

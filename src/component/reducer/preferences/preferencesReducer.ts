@@ -67,7 +67,7 @@ type SetPreferencesAction =
   | ActionType<'SET_PREFERENCES'>;
 type SetPanelsPreferencesAction = ActionType<
   'SET_PANELS_PREFERENCES',
-  { key: string; value: string }
+  { key: string; value: any }
 >;
 
 export type SetWorkspaceAction = ActionType<
