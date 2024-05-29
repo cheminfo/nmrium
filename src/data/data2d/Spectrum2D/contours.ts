@@ -10,7 +10,7 @@ interface Level {
 interface ContourItem {
   contourLevels: [number, number];
   numberOfLayers: number;
-  numberOfZoomLevels: number;
+  // numberOfZoomLevels: number;
 }
 interface ContourOptions {
   positive: ContourItem;
@@ -25,30 +25,37 @@ interface WheelOptions {
 type ContoursLevels = Record<string, Level>;
 const DEFAULT_CONTOURS_OPTIONS = {
   positive: {
-    contourLevels: [0, 100],
+    contourLevels: [0, 31],
     numberOfLayers: 10,
-    numberOfZoomLevels: 31,
+    // numberOfZoomLevels: 31,
   },
   negative: {
-    contourLevels: [0, 100],
+    contourLevels: [0, 31],
     numberOfLayers: 10,
-    numberOfZoomLevels: 31,
+    // numberOfZoomLevels: 31,
   },
 };
 type LevelSign = keyof Level;
+type ZoomLevel = Record<'positive' | 'negative', { min; max; level }>;
+const MAX_CONTOURS_LEVEL = 100;
+const MIN_CONTOURS_LEVEL = 0;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
 interface ReturnContoursManager {
-  wheel: (value: number, shift: boolean) => Level;
+  wheel: (value: number, shift: boolean) => ZoomLevel;
   getLevel: () => Level;
   checkLevel: () => Level;
 }
 
 function getDefaultContoursLevel(options: ContourOptions) {
-  const defaultLevel: Level = { negative: 10, positive: 10 };
+  const defaultLevel: ZoomLevel = {
+    negative: { level: 0, min: 0, max: 31 },
+    positive: { level: 0, min: 0, max: 31 },
+  };
   for (const sign of LEVEL_SIGNS) {
-    const max = options[sign].numberOfZoomLevels;
-    defaultLevel[sign] = Math.round(max * 0.7);
+    const [min, max] = options[sign].contourLevels;
+    const level = Math.round((max - min) * 0.7 + min);
+    defaultLevel[sign].level = level;
   }
   return defaultLevel;
 }
@@ -62,12 +69,14 @@ function contoursManager(
   const contourOptions = { ...options };
 
   if (!state?.[spectrumID]) {
-    const defaultLevel = getDefaultContoursLevel(contourOptions);
-    spectraLevels[spectrumID] = defaultLevel;
+    const {
+      positive: { level: pLevel },
+      negative: { level: nLevel },
+    } = getDefaultContoursLevel(contourOptions);
+    spectraLevels[spectrumID] = { positive: pLevel, negative: nLevel };
   }
 
   const currentLevel = spectraLevels[spectrumID];
-
   const wheel = (value, altKey) =>
     prepareWheel(value, { altKey, contourOptions, currentLevel });
   const getLevel = () => currentLevel;
@@ -75,47 +84,129 @@ function contoursManager(
   return { wheel, getLevel, checkLevel };
 }
 
-function prepareWheel(value: number, options: WheelOptions) {
+function prepareWheel(value: number, options: WheelOptions): ZoomLevel {
   const { altKey, currentLevel, contourOptions } = options;
+  const {
+    positive: {
+      contourLevels: [pMin, pMax],
+    },
+    negative: {
+      contourLevels: [nMin, nMax],
+    },
+  } = contourOptions;
+  const { positive: pLevel, negative: nLevel } = currentLevel;
+  const positiveNumberOfZoomLevels = pMax - pMin;
+  const negativeNumberZoomLevels = nMax - nMin;
 
+  // const numberOfZoomLevels =
   const sign = Math.sign(value);
-  const positiveBoundary = [0, contourOptions.positive.numberOfZoomLevels];
-  const negativeBoundary = [0, contourOptions.positive.numberOfZoomLevels];
+  const data: ZoomLevel = {
+    positive: {
+      level: pLevel,
+      min: pMin,
+      max: pMax,
+    },
+    negative: {
+      level: nLevel,
+      min: nMin,
+      max: nMax,
+    },
+  };
   if (altKey) {
     if (
-      (currentLevel.positive === positiveBoundary[0] && sign === -1) ||
-      (currentLevel.positive >= positiveBoundary[1] && sign === 1)
+      (pLevel === MIN_CONTOURS_LEVEL && sign === 1) ||
+      (pLevel >= MAX_CONTOURS_LEVEL && sign === -1)
     ) {
-      return currentLevel;
+      return data;
     }
-    currentLevel.positive += sign;
   } else {
     if (
-      (currentLevel.positive > positiveBoundary[0] && sign === -1) ||
-      (currentLevel.positive < positiveBoundary[1] && sign === 1)
+      (pLevel > MIN_CONTOURS_LEVEL && sign === 1) ||
+      (pLevel < MAX_CONTOURS_LEVEL && sign === -1)
     ) {
-      currentLevel.positive += sign;
+      const level = pLevel - sign;
+      let min = checkMinValue(level, sign, pMin, pMax);
+      let max = checkMaxValue(level, sign, pMin, pMax);
+      const diff = max - min;
+      if (diff < positiveNumberOfZoomLevels) {
+        if (min === 0) {
+          max = positiveNumberOfZoomLevels;
+        }
+
+        if (max === 100) {
+          min = max - positiveNumberOfZoomLevels;
+        }
+      }
+
+      data.positive = { level, min, max };
     }
 
     if (
-      (currentLevel.negative > negativeBoundary[0] && sign === -1) ||
-      (currentLevel.negative < negativeBoundary[1] && sign === 1)
+      (nLevel > MIN_CONTOURS_LEVEL && sign === 1) ||
+      (nLevel < MAX_CONTOURS_LEVEL && sign === -1)
     ) {
-      currentLevel.negative += sign;
+      const level = nLevel - sign;
+      let min = checkMinValue(level, sign, nMin, nMax);
+      let max = checkMaxValue(level, sign, nMin, nMax);
+
+      const diff = max - min;
+      if (diff < negativeNumberZoomLevels) {
+        if (min === 0) {
+          max = negativeNumberZoomLevels;
+        }
+
+        if (max === 100) {
+          min = max - negativeNumberZoomLevels;
+        }
+      }
+
+      data.negative = { level, min, max };
     }
   }
-  return currentLevel;
+  return data;
+}
+
+function checkMaxValue(level, sign, min, max) {
+  if (level >= MAX_CONTOURS_LEVEL) {
+    return MAX_CONTOURS_LEVEL;
+  }
+
+  if (level >= min && level <= max) {
+    return max;
+  }
+  const newMax = max - sign * (max - min);
+
+  if (newMax >= MAX_CONTOURS_LEVEL) {
+    return MAX_CONTOURS_LEVEL;
+  }
+  return newMax;
+}
+function checkMinValue(level, sign, min, max) {
+  if (level < MIN_CONTOURS_LEVEL) {
+    return MIN_CONTOURS_LEVEL;
+  }
+
+  if (level >= min && level <= max) {
+    return min;
+  }
+  const newMin = min - sign * (max - min);
+
+  if (newMin < MIN_CONTOURS_LEVEL) {
+    return MIN_CONTOURS_LEVEL;
+  }
+
+  return newMin;
 }
 
 function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
   const level = { ...currentLevel };
   for (const sign of LEVEL_SIGNS) {
-    const { numberOfZoomLevels } = options[sign];
+    const [min, max] = options[sign].contourLevels;
     //check if the level is out of the boundary
-    if (level[sign] > numberOfZoomLevels) {
-      level[sign] = numberOfZoomLevels;
-    } else if (level[sign] < 0) {
-      level[sign] = 0;
+    if (level[sign] > max) {
+      level[sign] = max;
+    } else if (level[sign] < min) {
+      level[sign] = min;
     }
   }
   return level;
@@ -199,7 +290,13 @@ interface ContoursCalcOptions {
   data: NmrData2DFt['rr'];
 }
 
-function getContours(zoomLevel: number, options: ContoursCalcOptions) {
+function getContours(
+  zoomLevel: number,
+  options: ContoursCalcOptions,
+): {
+  contours: Float64Array;
+  timeout: boolean;
+} {
   const {
     boundary,
     negative = false,
@@ -208,6 +305,7 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
     data,
     noise,
   } = options;
+  const numberOfZoomLevels = boundary[1] - boundary[0];
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
 
@@ -219,12 +317,12 @@ function getContours(zoomLevel: number, options: ContoursCalcOptions) {
   const min = Math.max(noise, (dataMax / 100) * boundary[0]);
 
   const minLevel = (max - min) / 1.25 ** zoomLevel + min;
-  let _range = getRange(
-    minLevel,
-    Math.min(max, (max - min) / 1.25 ** Math.max(0, zoomLevel - 15) + min),
-    nbLevels,
-    2,
+  const maxLevel = Math.min(
+    max,
+    (max - min) / 1.25 ** Math.max(0, zoomLevel - numberOfZoomLevels) + min,
   );
+
+  let _range = getRange(minLevel, maxLevel, nbLevels, 2);
 
   if (negative) {
     _range = _range.map((value) => -value);

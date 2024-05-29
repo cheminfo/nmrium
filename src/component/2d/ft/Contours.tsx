@@ -69,7 +69,7 @@ const useContoursLevel = (spectrum: Spectrum2D, sign: LevelSign) => {
   } = spectrum;
   const defaultLevel = getDefaultContoursLevel(contourOptions);
   const level = levels?.[id]?.[sign];
-  return typeof level !== 'number' ? defaultLevel[sign] : level;
+  return typeof level !== 'number' ? defaultLevel[sign].level : level;
 };
 
 function ContoursPaths({
