@@ -1,3 +1,4 @@
+import { FormGroup } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import { Spectrum1D } from 'nmr-load-save';
 import { Filters } from 'nmr-processing';
@@ -7,24 +8,12 @@ import { Button, useSelect } from 'react-science/ui';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
-import Input, { InputStyle } from '../elements/Input';
 import InputRange from '../elements/InputRange';
-import Label from '../elements/Label';
+import { NumberInput2 } from '../elements/NumberInput2';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 
-import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
-
-const inputStyle: InputStyle = {
-  input: {
-    width: '70px',
-    textAlign: 'center',
-  },
-  inputWrapper: {
-    height: '100%',
-  },
-};
 
 type PhaseCorrectionTypes = 'manual' | 'automatic' | 'absolute';
 
@@ -141,18 +130,18 @@ export default function PhaseCorrectionPanel() {
   }, []);
 
   const handleInput = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      if (e.target) {
-        const newValue = { ...valueRef.current, [name]: Number(value) };
+    (valueAsNumber, valueAsString, element) => {
+      const { name } = element;
 
-        if (String(value).trim() !== '-') {
-          calcPhaseCorrectionHandler(newValue, name);
-        }
-        updateInputRangeInitialValue(newValue);
-        valueRef.current = newValue;
-        setValue(valueRef.current);
-      }
+      if (Number.isNaN(valueAsNumber)) return;
+
+      const newValue = { ...valueRef.current, [name]: Number(valueAsNumber) };
+
+      calcPhaseCorrectionHandler(newValue, name);
+
+      updateInputRangeInitialValue(newValue);
+      valueRef.current = newValue;
+      setValue(valueRef.current);
     },
     [calcPhaseCorrectionHandler, updateInputRangeInitialValue],
   );
@@ -191,26 +180,32 @@ export default function PhaseCorrectionPanel() {
       </div>
       {phaseCorrectionTypeItem?.value === 'manual' && (
         <>
-          <Label title="PH0:" style={headerLabelStyle}>
-            <Input
+          <FormGroup
+            label="PH0:"
+            inline
+            style={{ paddingLeft: '5px', margin: 0 }}
+          >
+            <NumberInput2
               name="ph0"
-              style={inputStyle}
-              onChange={handleInput}
+              onValueChange={handleInput}
               value={value.ph0}
-              type="number"
               debounceTime={250}
+              style={{ width: 50 }}
             />
-          </Label>
-          <Label title="PH1:" style={headerLabelStyle}>
-            <Input
+          </FormGroup>
+          <FormGroup
+            label="PH1:"
+            inline
+            style={{ paddingLeft: '5px', margin: 0 }}
+          >
+            <NumberInput2
               name="ph1"
-              style={inputStyle}
-              onChange={handleInput}
+              onValueChange={handleInput}
               value={value.ph1}
-              type="number"
               debounceTime={250}
+              style={{ width: 50 }}
             />
-          </Label>
+          </FormGroup>
           <InputRange
             ref={ph0Ref}
             name="ph0"
