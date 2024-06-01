@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.56.0](https://github.com/cheminfo/nmrium/compare/v0.55.0...v0.56.0) (2024-06-01)
+
+
+### Features
+
+* generate and display  stocsy and boxplot ([#3055](https://github.com/cheminfo/nmrium/issues/3055)) ([83ff531](https://github.com/cheminfo/nmrium/commit/83ff53108a2c2555fafaf227fb632a8e8270adae))
+
+
+### Bug Fixes
+
+* select stocsy pivot point when the  exclusion zones tool selected ([c527775](https://github.com/cheminfo/nmrium/commit/c527775296149c1f5e38e12cda8a57bc0a99062c))
+* set minimum width and height for the database molecule structure ([#3069](https://github.com/cheminfo/nmrium/issues/3069)) ([4ce0d2b](https://github.com/cheminfo/nmrium/commit/4ce0d2b363b73d561a0ba2e5810c84d28bedf341))
+* toggle the matrix generation exclusion zones tool ([c527775](https://github.com/cheminfo/nmrium/commit/c527775296149c1f5e38e12cda8a57bc0a99062c))
+
 ## [0.55.0](https://github.com/cheminfo/nmrium/compare/v0.54.0...v0.55.0) (2024-05-18)
 
 
