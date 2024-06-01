@@ -128,7 +128,7 @@ const databaseTableColumns = (
       const { idCode, coordinates } = row.original?.ocl || {};
       const smiles = row.original?.smiles;
       return (
-        <ResponsiveChart>
+        <ResponsiveChart minWidth={50} minHeight={23}>
           {({ width, height }) => {
             if (idCode && coordinates) {
               return (
@@ -227,7 +227,7 @@ function DatabaseTable({
       columns={tableColumns}
       highlightedSource={HighlightEventSource.DATABASE}
       groupKey="index"
-      approxItemHeight={23.5}
+      approxItemHeight={23}
       enableVirtualScroll
       totalCount={totalCount}
       disableDefaultRowStyle
