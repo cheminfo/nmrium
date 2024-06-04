@@ -148,6 +148,13 @@ type SimulateSpectrumAction = ActionType<
   } & SpectrumSimulationOptions
 >;
 
+type UpdateSpectrumMetaAction = ActionType<
+  'UPDATE_SPECTRUM_META',
+  {
+    meta: Record<string, string>;
+  }
+>;
+
 export type SpectrumActions =
   | ActionType<'TOGGLE_SPECTRA_LEGEND'>
   | ChangeSpectrumVisibilityByIdAction
@@ -161,7 +168,8 @@ export type SpectrumActions =
   | ImportSpectraMetaInfoAction
   | ReColorSpectraBasedOnDistinctValueAction
   | OrderSpectraAction
-  | SimulateSpectrumAction;
+  | SimulateSpectrumAction
+  | UpdateSpectrumMetaAction;
 
 const { applyFilter } = FiltersManager;
 function checkIsVisible2D(datum: Spectrum2D): boolean {
@@ -710,6 +718,20 @@ function handleSimulateSpectrum(
     setActiveTab(draft);
   }
 }
+function handleUpdateSpectrumMeta(
+  draft: Draft<State>,
+  action: UpdateSpectrumMetaAction,
+) {
+  const {
+    payload: { meta },
+  } = action;
+
+  const activeSpectrum = getActiveSpectrum(draft);
+
+  if (!activeSpectrum) return null;
+
+  draft.data[activeSpectrum.index].customInfo = meta;
+}
 
 export {
   handleChangeSpectrumVisibilityById,
@@ -726,4 +748,5 @@ export {
   handleOrderSpectra,
   handleSimulateSpectrum,
   setSpectraMetaInfo,
+  handleUpdateSpectrumMeta,
 };
