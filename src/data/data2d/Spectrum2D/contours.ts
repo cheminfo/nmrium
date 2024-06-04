@@ -49,12 +49,11 @@ interface ReturnContoursManager {
 
 function getDefaultContoursLevel(options: ContourOptions) {
   const defaultLevel: ZoomLevel = {
-    negative: { level: 0, min: 0, max: 31 },
-    positive: { level: 0, min: 0, max: 31 },
+    negative: { level: 100, min: 0, max: 100 },
+    positive: { level: 100, min: 0, max: 100 },
   };
   for (const sign of LEVEL_SIGNS) {
-    const [min, max] = options[sign].contourLevels;
-    const level = Math.round((max - min) * 0.7 + min);
+    const level = options[sign].contourLevels[1];
     defaultLevel[sign].level = level;
   }
   return defaultLevel;
@@ -98,7 +97,6 @@ function prepareWheel(value: number, options: WheelOptions): ZoomLevel {
   const positiveNumberOfZoomLevels = pMax - pMin;
   const negativeNumberZoomLevels = nMax - nMin;
 
-  // const numberOfZoomLevels =
   const sign = Math.sign(value);
   const data: ZoomLevel = {
     positive: {
@@ -154,7 +152,6 @@ function prepareWheel(value: number, options: WheelOptions): ZoomLevel {
         if (min === 0) {
           max = negativeNumberZoomLevels;
         }
-
         if (max === 100) {
           min = max - negativeNumberZoomLevels;
         }
@@ -271,12 +268,14 @@ function drawContours(
     });
     return contours;
   }
+  console.time('positive');
   const contours = getContours(level, {
     noise,
     boundary: positiveBoundary,
     nbLevels: numberOfPositiveLayer,
     data: spectrum.data[quadrant],
   });
+  console.timeEnd('positive');
   return contours;
 }
 
@@ -291,7 +290,7 @@ interface ContoursCalcOptions {
 }
 
 function getContours(
-  zoomLevel: number,
+  level: number,
   options: ContoursCalcOptions,
 ): {
   contours: Float64Array;
@@ -305,7 +304,20 @@ function getContours(
     data,
     noise,
   } = options;
-  const numberOfZoomLevels = boundary[1] - boundary[0];
+  const range = boundary[1] - boundary[0];
+  const factor = 35 / 100;
+  const numberOfZoomLevels = range * factor;
+
+  const zoomLevel = (level / 100) * 35;
+
+  if (!negative) {
+    console.log({
+      level,
+      zoomLevel,
+      boundary,
+      numberOfZoomLevels,
+    });
+  }
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
 
@@ -313,14 +325,12 @@ function getContours(
 
   const dataMax = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
 
-  const max = (dataMax / 100) * boundary[1];
-  const min = Math.max(noise, (dataMax / 100) * boundary[0]);
+  const max = dataMax; //(dataMax / 100) * boundary[1];
+  const min = noise; //Math.max(noise, (dataMax / 100) * boundary[0]);
 
-  const minLevel = (max - min) / 1.25 ** zoomLevel + min;
-  const maxLevel = Math.min(
-    max,
-    (max - min) / 1.25 ** Math.max(0, zoomLevel - numberOfZoomLevels) + min,
-  );
+  const minLevel = (max - min) / 1.25 ** (35 - boundary[0] * factor) + min;
+  const maxLevel =
+    (max - min) / 1.25 ** Math.max(0, 35 - boundary[1] * factor) + min;
 
   let _range = getRange(minLevel, maxLevel, nbLevels, 2);
 
