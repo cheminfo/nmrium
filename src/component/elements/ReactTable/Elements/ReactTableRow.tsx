@@ -106,12 +106,15 @@ function ReactTableRow(props: ReactTableRowProps) {
       {...highlight.onHover}
     >
       {row.cells.map((cell) => {
-        const { style, padding } = cell;
-
-        if (cell.isRowSpanned) {
+        const {
+          column: { style },
+          isRowSpanned,
+        } = cell;
+        if (isRowSpanned) {
           return null;
         } else {
           const { key: columnKey, ...otherColumnProps } = cell.getCellProps();
+
           return (
             <td
               rowSpan={cell.rowSpan}
@@ -122,7 +125,7 @@ function ReactTableRow(props: ReactTableRowProps) {
 
                 return false;
               }}
-              style={{ padding, ...style }}
+              style={style}
               onClick={clickHandler}
             >
               {cell.render('Cell')}
