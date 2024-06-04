@@ -1,15 +1,21 @@
 import lodashGet from 'lodash/get';
-import { PanelPreferencesType } from 'nmr-load-save';
+import { NMRiumPanelPreferences, PanelPreferencesType } from 'nmr-load-save';
 import { useCallback, memo, ReactElement, CSSProperties } from 'react';
-import { Accordion } from 'react-science/ui';
+import { FaRegEdit } from 'react-icons/fa';
+import {
+  Accordion,
+  AccordionItemProps,
+  Toolbar,
+  ToolbarItemProps,
+} from 'react-science/ui';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
+import { useDialogToggle } from '../hooks/useDialogToggle';
 import { DisplayerMode } from '../reducer/Reducer';
 
 import AutomaticAssignment from './AutomaticAssignment/AutomaticAssignment';
-import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
 import { MatrixGenerationPanel } from './MatrixGenerationPanel/MatrixGenerationPanel';
 import MoleculePanel from './MoleculesPanel/MoleculePanel';
@@ -20,12 +26,15 @@ import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
+import { InformationEditionModal } from './informationPanel/InformationEditionModal';
+import { InformationPanel } from './informationPanel/InformationPanel';
 import MultipleSpectraAnalysisPanel from './multipleAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PredictionPane from './predictionPanel/PredictionPanel';
 import SpectrumSimulation from './spectrumSimulation/SpectrumSimulation';
 
-interface AccordionItem {
-  title: string;
+interface AccordionItem
+  extends Omit<AccordionItemProps, 'children' | 'defaultOpened'> {
+  id?: keyof NMRiumPanelPreferences;
   component: ReactElement;
   style?: CSSProperties;
   hidePreferenceKey: string;
@@ -41,6 +50,7 @@ const accordionItems: AccordionItem[] = [
     mode: null,
   },
   {
+    id: 'informationPanel',
     title: 'Information',
     component: <InformationPanel />,
     style: { overflow: 'hidden' },
@@ -166,6 +176,10 @@ function usePanelPreferences(): (item: AccordionItem) => PanelPreferencesType {
 function PanelsInner({ displayerMode: displayedMode }) {
   const getPanelPreferences = usePanelPreferences();
   const isExperimental = useCheckExperimentalFeature();
+  const { dialog, openDialog, closeDialog } = useDialogToggle({
+    informationModal: false,
+  });
+
   const check = useCallback(
     (item) => {
       const panelOptions = getPanelPreferences(item);
@@ -180,26 +194,54 @@ function PanelsInner({ displayerMode: displayedMode }) {
     [displayedMode, getPanelPreferences, isExperimental],
   );
 
-  const isOpened = useCallback(
-    (item: AccordionItem) => {
-      const panelOptions = getPanelPreferences(item);
-      return panelOptions?.display && panelOptions?.open;
-    },
-    [getPanelPreferences],
-  );
+  function isOpened(item: AccordionItem) {
+    const panelOptions = getPanelPreferences(item);
+    return panelOptions?.display && panelOptions?.open;
+  }
+
+  const toolbars: Partial<
+    Record<keyof NMRiumPanelPreferences, ToolbarItemProps[]>
+  > = {
+    informationPanel: [
+      {
+        icon: <FaRegEdit />,
+        onClick: ({ event }) => {
+          event.stopPropagation();
+          openDialog('informationModal');
+        },
+      },
+    ],
+  };
 
   return (
     <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
+      <InformationEditionModal
+        isOpen={dialog.informationModal}
+        onCloseDialog={closeDialog}
+      />
       <Accordion>
         {accordionItems.map((item) => {
+          const { title, component, id } = item;
+          let toolbar;
+
+          if (id && toolbars[id]) {
+            toolbar = (
+              <Toolbar>
+                {toolbars[id]?.map((options, index) => (
+                  <Toolbar.Item key={index} {...options} />
+                ))}
+              </Toolbar>
+            );
+          }
           return (
             check(item) && (
               <Accordion.Item
-                key={item.title}
-                title={item.title}
+                key={title}
+                title={title}
                 defaultOpened={isOpened(item)}
+                toolbar={toolbar}
               >
-                {item.component}
+                {component}
               </Accordion.Item>
             )
           );

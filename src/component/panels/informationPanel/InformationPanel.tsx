@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { InfoPanel, InfoPanelData } from 'react-science/ui';
 
-import useSpectrum from '../hooks/useSpectrum';
+import useSpectrum from '../../hooks/useSpectrum';
 
 const emptyData = { info: {}, meta: {} };
 
-export default function InformationPanel() {
+export function InformationPanel() {
   const { info, meta, customInfo } = useSpectrum(emptyData);
   const data: InfoPanelData[] = useMemo(
     () => [
