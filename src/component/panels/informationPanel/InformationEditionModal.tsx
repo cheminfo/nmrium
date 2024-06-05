@@ -3,14 +3,14 @@ import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { useCallback, useMemo, useRef } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 import { Column } from 'react-table';
 import { array, object, string } from 'yup';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { InputStyle } from '../../elements/Input';
 import ReactTable from '../../elements/ReactTable/ReactTable';
+import { tableInputStyle } from '../../elements/ReactTable/Style';
 import FormikInput from '../../elements/formik/FormikInput';
 import useSpectrum from '../../hooks/useSpectrum';
 import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
@@ -68,18 +68,6 @@ export function InformationEditionModal(props: InformationEditionModalProps) {
   );
 }
 
-const inputStyles: InputStyle = {
-  input: {
-    width: '100%',
-    padding: '0.4rem 0.5rem',
-    backgroundColor: 'transparent',
-  },
-  inputWrapper: {
-    borderRadius: 0,
-    borderWidth: 0,
-  },
-};
-
 function InnerInformationPanel(props: InnerInformationPanelProps) {
   const { metaInfo = [], onCloseDialog } = props;
   const dispatch = useDispatch();
@@ -121,7 +109,9 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         Header: 'Key',
         style: { padding: 0 },
         Cell: ({ row }) => {
-          return <FormikInput name={`${row.index}.key`} style={inputStyles} />;
+          return (
+            <FormikInput name={`${row.index}.key`} style={tableInputStyle} />
+          );
         },
       },
       {
@@ -129,7 +119,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
         style: { padding: 0 },
         Cell: ({ row }) => {
           return (
-            <FormikInput name={`${row.index}.value`} style={inputStyles} />
+            <FormikInput name={`${row.index}.value`} style={tableInputStyle} />
           );
         },
       },
@@ -142,6 +132,19 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
                 small
+                outlined
+                intent="success"
+                tooltipProps={{ content: '', disabled: true }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addHandler(data, row.index + 1);
+                }}
+              >
+                <FaPlus />
+              </Button>
+              <Button
+                small
+                outlined
                 intent="danger"
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={(e) => {
@@ -151,16 +154,6 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
               >
                 <FaRegTrashAlt />
               </Button>
-              <Button
-                small
-                intent="success"
-                tooltipProps={{ content: '', disabled: true }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addHandler(data, row.index + 1);
-                }}
-                icon="plus"
-              />
             </div>
           );
         },
@@ -187,6 +180,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
               <div style={{ padding: '5px 0', display: 'flex' }}>
                 <Button
                   intent="success"
+                  outlined
                   onClick={() => addHandler(values)}
                   tooltipProps={{ content: '', disabled: true }}
                 >
@@ -199,11 +193,11 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                 columns={COLUMNS}
                 emptyDataRowText="No meta"
                 style={{
-                  'thead tr th': { backgroundColor: 'white', zIndex: 1 },
+                  'thead tr th': { zIndex: 1 },
                   td: { padding: 0 },
                 }}
                 rowStyle={{
-                  hover: { backgroundColor: '#f2f2f2' },
+                  hover: { backgroundColor: '#f7f7f7' },
                   active: { backgroundColor: '#f5f5f5' },
                 }}
               />

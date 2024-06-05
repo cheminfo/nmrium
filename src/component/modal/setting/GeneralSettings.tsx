@@ -59,11 +59,6 @@ const styles = css`
     margin-right: 10px;
   }
 
-  .input {
-    font-size: 14px;
-    padding: 3px;
-  }
-
   .checkbox-label {
     min-width: 300px;
     display: inline-block;

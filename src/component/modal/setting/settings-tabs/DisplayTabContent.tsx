@@ -107,7 +107,14 @@ const COLUMNS: Array<CustomColumn<ListItem>> = [
 function DisplayTabContent() {
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
-      <ReactTable columns={COLUMNS} data={LIST} />
+      <ReactTable
+        columns={COLUMNS}
+        data={LIST}
+        rowStyle={{
+          hover: { backgroundColor: '#f7f7f7' },
+          active: { backgroundColor: '#f5f5f5' },
+        }}
+      />
     </div>
   );
 }
