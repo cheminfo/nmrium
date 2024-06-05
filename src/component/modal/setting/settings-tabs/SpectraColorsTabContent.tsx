@@ -1,7 +1,9 @@
+import { Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { SpectraColors, Workspace } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { Button } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
 import { GroupPane } from '../../../elements/GroupPane';
@@ -11,7 +13,6 @@ import FormikColorPickerDropdown from '../../../elements/formik/FormikColorPicke
 import FormikInput from '../../../elements/formik/FormikInput';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
-import { Button } from 'react-science/ui';
 
 const colorInputStyle: CSSProperties = {
   minWidth: '80px',
@@ -143,7 +144,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
 
     const operationsField = {
       Header: '',
-      style: { width: '70px' },
+      style: { width: '60px' },
       id: 'operation-button',
       Cell: ({ data, row }) => {
         const record: any = row.original;
@@ -156,7 +157,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
               tooltipProps={{ content: '', disabled: true }}
               onClick={() => onAdd(data, row.index + 1, baseObjectPath)}
             >
-              <FaPlus />
+              <FaPlus className={Classes.ICON} />
             </Button>
             {!record?.name && (
               <Button
@@ -166,7 +167,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => onDelete(data, row.index, baseObjectPath)}
               >
-                <FaRegTrashAlt />
+                <FaRegTrashAlt className={Classes.ICON} />
               </Button>
             )}
           </div>

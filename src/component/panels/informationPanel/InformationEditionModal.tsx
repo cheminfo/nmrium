@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Classes, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { Formik, FormikProps } from 'formik';
 import { useCallback, useMemo, useRef } from 'react';
@@ -125,7 +125,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
       },
       {
         Header: '',
-        style: { width: '70px' },
+        style: { width: '60px' },
         id: 'action-button',
         Cell: ({ data, row }) => {
           return (
@@ -140,7 +140,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                   addHandler(data, row.index + 1);
                 }}
               >
-                <FaPlus />
+                <FaPlus className={Classes.ICON} />
               </Button>
               <Button
                 small
@@ -152,7 +152,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
                   deleteHandler(data, row.index);
                 }}
               >
-                <FaRegTrashAlt />
+                <FaRegTrashAlt className={Classes.ICON} />
               </Button>
             </div>
           );
@@ -180,6 +180,7 @@ function InnerInformationPanel(props: InnerInformationPanelProps) {
               <div style={{ padding: '5px 0', display: 'flex' }}>
                 <Button
                   intent="success"
+                  small
                   outlined
                   onClick={() => addHandler(values)}
                   tooltipProps={{ content: '', disabled: true }}

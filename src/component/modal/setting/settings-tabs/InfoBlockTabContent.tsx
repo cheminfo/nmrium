@@ -1,3 +1,4 @@
+import { Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
@@ -105,7 +106,7 @@ function InfoBlockTabContent() {
       },
       {
         Header: '',
-        style: { width: '70px' },
+        style: { width: '60px' },
         id: 'add-button',
         Cell: ({ data, row }) => {
           const record: any = row.original;
@@ -118,7 +119,7 @@ function InfoBlockTabContent() {
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, row.index + 1)}
               >
-                <FaPlus />
+                <FaPlus className={Classes.ICON} />
               </Button>
               {!record?.name && (
                 <Button
@@ -128,7 +129,7 @@ function InfoBlockTabContent() {
                   tooltipProps={{ content: '', disabled: true }}
                   onClick={() => deleteHandler(data, row.index)}
                 >
-                  <FaRegTrashAlt />
+                  <FaRegTrashAlt className={Classes.ICON} />
                 </Button>
               )}
             </div>
