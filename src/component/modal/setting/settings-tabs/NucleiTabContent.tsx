@@ -1,3 +1,4 @@
+import { Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { NucleiPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
@@ -112,7 +113,7 @@ function NucleiTabContent() {
 
       {
         Header: '',
-        style: { width: '70px' },
+        style: { width: '60px' },
         id: 'add-button',
         Cell: ({ data, row }) => {
           return (
@@ -124,7 +125,7 @@ function NucleiTabContent() {
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, row.index + 1)}
               >
-                <FaPlus />
+                <FaPlus className={Classes.ICON} />
               </Button>
               <Button
                 small
@@ -133,7 +134,7 @@ function NucleiTabContent() {
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => deleteHandler(data, row.index)}
               >
-                <FaRegTrashAlt />
+                <FaRegTrashAlt className={Classes.ICON} />
               </Button>
             </div>
           );
