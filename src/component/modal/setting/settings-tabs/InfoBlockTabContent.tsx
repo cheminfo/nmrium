@@ -1,26 +1,18 @@
 import { useFormikContext } from 'formik';
-import { CSSProperties, useCallback, useMemo } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { useCallback, useMemo } from 'react';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { Button } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
-import Button from '../../../elements/Button';
 import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import { GroupPane } from '../../../elements/GroupPane';
 import Label from '../../../elements/Label';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
+import { tableInputStyle } from '../../../elements/ReactTable/Style';
 import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
 import FormikInput from '../../../elements/formik/FormikInput';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
-
-const styles: Record<'input' | 'column', CSSProperties> = {
-  input: {
-    width: '100%',
-  },
-  column: {
-    padding: '2px',
-  },
-};
 
 function InfoBlockTabContent() {
   const { values, setFieldValue } = useFormikContext();
@@ -62,29 +54,27 @@ function InfoBlockTabContent() {
     () => [
       {
         Header: '#',
-        style: { width: '25px', ...styles.column },
+        style: { width: '25px', textAlign: 'center' },
         accessor: (_, index) => index + 1,
       },
       {
         Header: 'Label',
-        style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`infoBlock.fields.${row.index}.label`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
             />
           );
         },
       },
       {
         Header: 'Field',
-        style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`infoBlock.fields.${row.index}.jpath`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
               mapOnChangeValue={(key) => paths?.[key] || key}
               mapValue={(paths) => convertPathArrayToString(paths)}
               datalist={datalist}
@@ -94,19 +84,18 @@ function InfoBlockTabContent() {
       },
       {
         Header: 'Format',
-        style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`infoBlock.fields.${row.index}.format`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
             />
           );
         },
       },
       {
         Header: 'Visible',
-        style: { width: '30px', ...styles.column },
+        style: { width: '30px' },
         Cell: ({ row }) => (
           <CheckBoxCell
             name={`infoBlock.fields.${row.index}.visible`}
@@ -116,25 +105,31 @@ function InfoBlockTabContent() {
       },
       {
         Header: '',
-        style: { width: '70px', ...styles.column },
+        style: { width: '70px' },
         id: 'add-button',
         Cell: ({ data, row }) => {
           const record: any = row.original;
           return (
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Button.Done
-                fill="outline"
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <Button
+                small
+                intent="success"
+                outlined
+                tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, row.index + 1)}
               >
                 <FaPlus />
-              </Button.Done>
+              </Button>
               {!record?.name && (
-                <Button.Danger
-                  fill="outline"
+                <Button
+                  small
+                  outlined
+                  intent="danger"
+                  tooltipProps={{ content: '', disabled: true }}
                   onClick={() => deleteHandler(data, row.index)}
                 >
-                  <FaTimes />
-                </Button.Danger>
+                  <FaRegTrashAlt />
+                </Button>
               )}
             </div>
           );
@@ -166,8 +161,12 @@ function InfoBlockTabContent() {
       >
         <ReactTable
           style={{
-            'table, table td, table th': { border: 'none' },
-            'table thead': { borderBottom: '1px solid #f9f9f9' },
+            'thead tr th': { zIndex: 1 },
+            td: { padding: 0 },
+          }}
+          rowStyle={{
+            hover: { backgroundColor: '#f7f7f7' },
+            active: { backgroundColor: '#f5f5f5' },
           }}
           data={fields}
           columns={COLUMNS}
@@ -183,9 +182,15 @@ function FieldsBlockHeader({ onAdd, text }) {
     <div className="section-header" style={{ display: 'flex' }}>
       <p style={{ flex: 1 }}>{text}</p>
 
-      <Button.Done fill="outline" size="xSmall" onClick={onAdd}>
+      <Button
+        outlined
+        small
+        intent="success"
+        tooltipProps={{ content: '', disabled: true }}
+        onClick={onAdd}
+      >
         Add Field
-      </Button.Done>
+      </Button>
     </div>
   );
 }

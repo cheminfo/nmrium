@@ -1,31 +1,21 @@
 import { useFormikContext } from 'formik';
 import { SpectraColors, Workspace } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
 import { useChartData } from '../../../context/ChartContext';
-import Button from '../../../elements/Button';
 import { GroupPane } from '../../../elements/GroupPane';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
+import { tableInputStyle } from '../../../elements/ReactTable/Style';
 import FormikColorPickerDropdown from '../../../elements/formik/FormikColorPickerDropdown';
 import FormikInput from '../../../elements/formik/FormikInput';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
-
-const styles: Record<'input' | 'column', CSSProperties> = {
-  input: {
-    width: '100%',
-  },
-  column: {
-    padding: '2px',
-  },
-};
+import { Button } from 'react-science/ui';
 
 const colorInputStyle: CSSProperties = {
-  padding: 0,
   minWidth: '80px',
   width: '80px',
-  ...styles.column,
 };
 
 type SpectraColorsKeys = keyof SpectraColors;
@@ -116,20 +106,19 @@ function SpectraColorsFields(props: SpectraColorsProps) {
 
   const COLUMNS: Array<Column<any>> = useMemo(() => {
     const objectPath = getObjectKey(baseObjectPath);
-    const baseColumns = [
+    const baseColumns: Array<Column<any>> = [
       {
         Header: '#',
-        style: { width: '25px', ...styles.column },
+        style: { width: '25px', textAlign: 'center' },
         accessor: (_, index) => index + 1,
       },
       {
         Header: 'Field',
-        style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`${objectPath}.${row.index}.jpath`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
               mapOnChangeValue={(key) => {
                 return paths?.[key.toString().trim()] || key;
               }}
@@ -141,12 +130,11 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       },
       {
         Header: 'Value',
-        style: { padding: 0, ...styles.column },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`${objectPath}.${row.index}.value`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
             />
           );
         },
@@ -155,25 +143,31 @@ function SpectraColorsFields(props: SpectraColorsProps) {
 
     const operationsField = {
       Header: '',
-      style: { width: '70px', ...styles.column },
+      style: { width: '70px' },
       id: 'operation-button',
       Cell: ({ data, row }) => {
         const record: any = row.original;
         return (
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <Button.Done
-              fill="outline"
+          <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+            <Button
+              small
+              outlined
+              intent="success"
+              tooltipProps={{ content: '', disabled: true }}
               onClick={() => onAdd(data, row.index + 1, baseObjectPath)}
             >
               <FaPlus />
-            </Button.Done>
+            </Button>
             {!record?.name && (
-              <Button.Danger
-                fill="outline"
+              <Button
+                small
+                outlined
+                intent="danger"
+                tooltipProps={{ content: '', disabled: true }}
                 onClick={() => onDelete(data, row.index, baseObjectPath)}
               >
-                <FaTimes />
-              </Button.Danger>
+                <FaRegTrashAlt />
+              </Button>
             )}
           </div>
         );
@@ -232,8 +226,12 @@ function SpectraColorsFields(props: SpectraColorsProps) {
     >
       <ReactTable
         style={{
-          'table, table td, table th': { border: 'none' },
-          'table thead': { borderBottom: '1px solid #f9f9f9' },
+          'thead tr th': { zIndex: 1 },
+          td: { padding: 0 },
+        }}
+        rowStyle={{
+          hover: { backgroundColor: '#f7f7f7' },
+          active: { backgroundColor: '#f5f5f5' },
         }}
         data={data}
         columns={COLUMNS}
@@ -248,9 +246,15 @@ function FieldsBlockHeader({ onAdd, text }) {
     <div className="section-header" style={{ display: 'flex' }}>
       <p style={{ flex: 1 }}>{text}</p>
 
-      <Button.Done fill="outline" size="xSmall" onClick={onAdd}>
+      <Button
+        small
+        outlined
+        intent="success"
+        tooltipProps={{ content: '', disabled: true }}
+        onClick={onAdd}
+      >
         Add custom color
-      </Button.Done>
+      </Button>
     </div>
   );
 }

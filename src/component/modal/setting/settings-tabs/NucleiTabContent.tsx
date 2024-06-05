@@ -1,21 +1,13 @@
 import { useFormikContext } from 'formik';
 import { NucleiPreferences } from 'nmr-load-save';
-import { CSSProperties, useCallback, useMemo } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { useCallback, useMemo } from 'react';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { Button } from 'react-science/ui';
 
-import Button from '../../../elements/Button';
 import { GroupPane } from '../../../elements/GroupPane';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
+import { tableInputStyle } from '../../../elements/ReactTable/Style';
 import FormikInput from '../../../elements/formik/FormikInput';
-
-const styles: Record<'input' | 'column', CSSProperties> = {
-  input: {
-    width: '100%',
-  },
-  column: {
-    padding: '2px',
-  },
-};
 
 function NucleiTabContent() {
   const { values, setFieldValue } = useFormikContext();
@@ -52,53 +44,53 @@ function NucleiTabContent() {
     () => [
       {
         Header: '#',
-        style: { width: '25px', ...styles.column },
+        style: { width: '25px', textAlign: 'center' },
         accessor: (_, index) => index + 1,
       },
       {
         Header: 'Nucleus',
-        style: { padding: 0, ...styles.column },
+        style: { padding: 0 },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`nuclei.${row.index}.nucleus`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
             />
           );
         },
       },
       {
         Header: 'δ (ppm)',
-        style: { padding: 0, ...styles.column },
+        style: { padding: 0 },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`nuclei.${row.index}.ppmFormat`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
             />
           );
         },
       },
       {
         Header: 'Coupling (Hz)',
-        style: { padding: 0, ...styles.column },
+        style: { padding: 0 },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`nuclei.${row.index}.hzFormat`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
             />
           );
         },
       },
       {
         Header: 'Axis from',
-        style: { padding: 0, ...styles.column },
+        style: { padding: 0 },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`nuclei.${row.index}.axisFrom`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
               type="number"
             />
           );
@@ -106,12 +98,12 @@ function NucleiTabContent() {
       },
       {
         Header: 'Axis to',
-        style: { padding: 0, ...styles.column },
+        style: { padding: 0 },
         Cell: ({ row }) => {
           return (
             <FormikInput
               name={`nuclei.${row.index}.axisTo`}
-              style={{ input: styles.input }}
+              style={tableInputStyle}
               type="number"
             />
           );
@@ -120,23 +112,29 @@ function NucleiTabContent() {
 
       {
         Header: '',
-        style: { width: '70px', ...styles.column },
+        style: { width: '70px' },
         id: 'add-button',
         Cell: ({ data, row }) => {
           return (
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Button.Done
-                fill="outline"
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <Button
+                small
+                outlined
+                intent="success"
+                tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, row.index + 1)}
               >
                 <FaPlus />
-              </Button.Done>
-              <Button.Danger
-                fill="outline"
+              </Button>
+              <Button
+                small
+                outlined
+                intent="danger"
+                tooltipProps={{ content: '', disabled: true }}
                 onClick={() => deleteHandler(data, row.index)}
               >
-                <FaTimes />
-              </Button.Danger>
+                <FaRegTrashAlt />
+              </Button>
             </div>
           );
         },
@@ -160,8 +158,12 @@ function NucleiTabContent() {
       >
         <ReactTable
           style={{
-            'table, table td, table th': { border: 'none' },
-            'table thead': { borderBottom: '1px solid #f9f9f9' },
+            'thead tr th': { zIndex: 1 },
+            td: { padding: 0 },
+          }}
+          rowStyle={{
+            hover: { backgroundColor: '#f7f7f7' },
+            active: { backgroundColor: '#f5f5f5' },
           }}
           data={fields}
           columns={COLUMNS}
@@ -177,9 +179,15 @@ function FieldsBlockHeader({ onAdd, text }) {
     <div className="section-header" style={{ display: 'flex' }}>
       <p style={{ flex: 1 }}>{text}</p>
 
-      <Button.Done fill="outline" size="xSmall" onClick={onAdd}>
+      <Button
+        small
+        outlined
+        intent="success"
+        tooltipProps={{ content: '', disabled: true }}
+        onClick={onAdd}
+      >
         Add nuclei preferences
-      </Button.Done>
+      </Button>
     </div>
   );
 }

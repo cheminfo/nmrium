@@ -116,10 +116,24 @@ function ImportationFiltersTabContent() {
   return (
     <>
       <GroupPane text="General">
-        <ReactTable columns={COLUMNS} data={GENERAL_LIST} />
+        <ReactTable
+          columns={COLUMNS}
+          data={GENERAL_LIST}
+          rowStyle={{
+            hover: { backgroundColor: '#f7f7f7' },
+            active: { backgroundColor: '#f5f5f5' },
+          }}
+        />
       </GroupPane>
       <GroupPane text="Bruker">
-        <ReactTable columns={COLUMNS} data={BRUKER_LIST} />
+        <ReactTable
+          columns={COLUMNS}
+          data={BRUKER_LIST}
+          rowStyle={{
+            hover: { backgroundColor: '#f7f7f7' },
+            active: { backgroundColor: '#f5f5f5' },
+          }}
+        />
       </GroupPane>
     </>
   );

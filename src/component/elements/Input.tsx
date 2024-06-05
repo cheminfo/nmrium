@@ -62,6 +62,7 @@ export interface InputProps
   onClear?: () => void;
   datalist?: string[];
   debounceTime?: number;
+  small?: boolean;
 }
 
 const Input = forwardRef(
@@ -83,6 +84,7 @@ const Input = forwardRef(
       onClear,
       datalist = [],
       debounceTime = 0,
+      small = false,
       ...otherProps
     } = props;
 
@@ -152,6 +154,7 @@ const Input = forwardRef(
           style={{
             ...styles.input,
             ...style?.input,
+            padding: !small ? '0.4rem' : '0 0.4rem',
           }}
           type={type}
           value={mapValue(value)}

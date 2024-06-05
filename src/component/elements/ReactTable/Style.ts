@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { InputStyle } from '../Input';
 
 const ReactTableStyle = css`
   border-spacing: 0;
@@ -34,4 +35,15 @@ const ReactTableStyle = css`
   }
 `;
 
-export { ReactTableStyle };
+const tableInputStyle: InputStyle = {
+  input: {
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
+  inputWrapper: {
+    borderRadius: 0,
+    borderWidth: 0,
+  },
+};
+
+export { ReactTableStyle, tableInputStyle };

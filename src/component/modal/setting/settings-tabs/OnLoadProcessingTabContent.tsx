@@ -78,7 +78,16 @@ function FiltersTable({ data, nucleus }) {
       ),
     },
   ];
-  return <ReactTable columns={COLUMNS} data={data} />;
+  return (
+    <ReactTable
+      columns={COLUMNS}
+      data={data}
+      rowStyle={{
+        hover: { backgroundColor: '#f7f7f7' },
+        active: { backgroundColor: '#f5f5f5' },
+      }}
+    />
+  );
 }
 
 export default OnLoadProcessingTabContent;

@@ -1,4 +1,6 @@
-import { array, object, string, ValidationError, number } from 'yup';
+import { array, object, string, number } from 'yup';
+
+import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
 
 const nucleiValidation = array()
   .of(
@@ -9,43 +11,8 @@ const nucleiValidation = array()
     }),
   )
   .test('Unique', 'Nuclei need te be unique', function check(nuclei) {
-    if (!nuclei) return true;
-
-    const nucleusFrequencies: Record<
-      string,
-      { value: number; fieldsIndexes: number[] }
-    > = {};
-    let index = 0;
-    for (const nucleiPreferences of nuclei) {
-      const key = nucleiPreferences.nucleus?.toLowerCase() || '';
-      if (key) {
-        if (nucleusFrequencies[key]) {
-          ++nucleusFrequencies[key].value;
-          nucleusFrequencies[key].fieldsIndexes.push(index);
-        } else {
-          nucleusFrequencies[key] = { value: 1, fieldsIndexes: [index] };
-        }
-      }
-      index++;
-    }
-
-    const errors: ValidationError[] = [];
-    for (const key in nucleusFrequencies) {
-      const { value, fieldsIndexes } = nucleusFrequencies[key];
-      if (value > 1) {
-        for (const index of fieldsIndexes) {
-          errors.push(
-            new ValidationError(
-              `${key} nucleus must te be unique`,
-              nuclei[index].nucleus,
-              // eslint-disable-next-line no-invalid-this
-              `${this.path}.${index}.name`,
-            ),
-          );
-        }
-      }
-    }
-    return new ValidationError(errors);
+    // eslint-disable-next-line no-invalid-this
+    return checkUniqueByKey(nuclei, 'nucleus', this);
   });
 
 const databasesValidation = object().shape({
