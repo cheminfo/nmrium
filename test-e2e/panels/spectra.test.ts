@@ -553,7 +553,7 @@ test('Multiple spectra analysis', async ({ page }) => {
       button: 'right',
     });
     await nmrium.page.click('text="Recolor based on distinct value"');
-    expect(await nmrium.getNumberOfDistinctColors()).toBe(1);
+    expect(await nmrium.getNumberOfDistinctColors()).toBe(13);
   });
   await test.step('Check recolour based on solvent', async () => {
     await nmrium.page.click('_react=SpectraTable >> text="Solvent"', {
