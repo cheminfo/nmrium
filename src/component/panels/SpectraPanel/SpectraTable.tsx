@@ -255,7 +255,7 @@ export function SpectraTable(props: SpectraTableProps) {
           id: name,
         });
       } else {
-        const pathString = Array.isArray(path) ? path.join('.') : '';
+        const pathString = pathToString(path);
         let style: CSSProperties = columnStyle;
         let cellRender: Column<Spectrum>['Cell'] | null = null;
         if (pathString === 'info.name') {
@@ -275,7 +275,7 @@ export function SpectraTable(props: SpectraTableProps) {
 
         const cell: Column<Spectrum> = {
           Header: () => <ColumnHeader label={col.label} col={col} />,
-          accessor: (row) => lodashGet(row, path, ''),
+          accessor: (row) => getValue(row, path),
           ...(cellRender && { Cell: cellRender }),
           id: `${index}`,
           style,
@@ -385,4 +385,26 @@ function convertSpectrumToText(spectrum: Spectrum) {
     lines.push(`${x[i]}\t${re[i]}`);
   }
   return lines.join('\n');
+}
+
+function pathToString(path: string[]) {
+  return Array.isArray(path) ? path.join('.') : '';
+}
+
+function getValue(row, path) {
+  const value = lodashGet(row, path, '');
+  const pathString = pathToString(path);
+
+  if (
+    Array.isArray(value) &&
+    ['info.baseFrequency', 'info.originFrequency'].includes(pathString)
+  ) {
+    return value[0];
+  }
+
+  if (Array.isArray(value)) {
+    return value.join(',');
+  }
+
+  return value;
 }
