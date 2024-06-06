@@ -10,6 +10,7 @@ import {
   Display1D,
   Display2D,
   SpectraColors,
+  Color2D,
 } from 'nmr-load-save';
 import { Filters, FiltersManager, NMRRange } from 'nmr-processing';
 
@@ -51,6 +52,10 @@ import {
   setMargin,
   resetSelectedTool,
 } from './ToolsActions';
+import {
+  adjustAlpha,
+  generateColor,
+} from '../../../data/utilities/generateColor';
 
 type ChangeSpectrumVisibilityByIdAction = ActionType<
   'CHANGE_SPECTRUM_VISIBILITY',
@@ -579,6 +584,23 @@ function handleToggleSpectraLegend(draft: Draft<State>) {
   draft.view.spectra.showLegend = !draft.view.spectra.showLegend;
 }
 
+function groupSpectraByClass(spectra: Spectrum[], jpath: string | string[]) {
+  const spectraByClass: Record<string, Spectrum[]> = {};
+  for (const spectrum of spectra) {
+    const key = String(lodashGet(spectrum, jpath, ''))
+      .toLowerCase()
+      .trim()
+      .replace(/\r?\n|\r/, '');
+
+    if (spectraByClass[key]) {
+      spectraByClass[key].push(spectrum);
+    } else {
+      spectraByClass[key] = [spectrum];
+    }
+  }
+  return spectraByClass;
+}
+
 //action
 function handleRecolorSpectraBasedOnDistinctValue(
   draft: Draft<State>,
@@ -591,38 +613,48 @@ function handleRecolorSpectraBasedOnDistinctValue(
     },
   } = draft;
   const { jpath = null, customColors } = action.payload;
-  const spectra = getSpectraByNucleus(activeTab, data);
+  const spectraByNucleus = getSpectraByNucleus(activeTab, data);
   if (jpath) {
     //recolor spectra based on distinct value
 
-    const spectraByClass: Record<string, Spectrum> = {};
-    for (const spectrum of spectra) {
-      const key = String(lodashGet(spectrum, jpath, ''))
-        .toLowerCase()
-        .trim()
-        .replace(/\r?\n|\r/, '');
+    const spectraByClass = groupSpectraByClass(spectraByNucleus, jpath);
 
-      if (spectraByClass[key]) {
-        if (isSpectrum1D(spectrum)) {
-          spectrum.display.color = (
-            spectraByClass[key] as Spectrum1D
-          ).display.color;
-        } else {
-          spectrum.display.positiveColor = (
-            spectraByClass[key] as Spectrum2D
-          ).display.positiveColor;
-          spectrum.display.negativeColor = (
-            spectraByClass[key] as Spectrum2D
-          ).display.negativeColor;
+    const usedColors: string[] = [];
+    for (const spectra of Object.values(spectraByClass)) {
+      let color: string | Color2D;
+      if (isSpectrum1D(spectra[0])) {
+        color = spectra[0].display.color;
+        if (usedColors.includes(color)) {
+          color = generateColor({ usedColors });
         }
+        usedColors.push(color);
       } else {
-        spectraByClass[key] = spectrum;
+        const { positiveColor: pColor, negativeColor: nColor } =
+          spectra[0].display;
+        color = { positiveColor: pColor, negativeColor: nColor };
+
+        if (usedColors.includes(pColor)) {
+          const positiveColor = generateColor({
+            usedColors,
+          });
+          const negativeColor = adjustAlpha(positiveColor, 50);
+          color = { positiveColor, negativeColor };
+        }
+        usedColors.push(color.positiveColor);
+      }
+
+      for (const spectrum of spectra) {
+        if (typeof color === 'string') {
+          spectrum.display = { ...spectrum.display, color };
+        } else {
+          spectrum.display = { ...spectrum.display, ...color };
+        }
       }
     }
   } else {
     //reset spectra colors
     const usedColors = { '1d': [], '2d': [] };
-    for (const spectrum of spectra) {
+    for (const spectrum of spectraByNucleus) {
       if (isSpectrum1D(spectrum)) {
         spectrum.display.color = get1DColor(spectrum, {
           usedColors,
