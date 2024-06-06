@@ -107,10 +107,8 @@ function generateName(
   options: { frequency: number | number[]; experiment: string },
 ) {
   const { frequency, experiment } = options;
-  const freq = Array.isArray(frequency)
-    ? frequency.map((f) => `${f}MHz`).join('_')
-    : `${frequency}MHz`;
-  return name || `${experiment.toUpperCase()}_${freq}_${v4()}`;
+  const freq = Array.isArray(frequency) ? frequency[0] : frequency;
+  return name || `${experiment.toUpperCase()}_${freq}MHz`;
 }
 
 export function generateSpectra(
