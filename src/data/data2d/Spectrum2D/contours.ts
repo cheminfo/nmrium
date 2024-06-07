@@ -3,16 +3,18 @@ import { Conrec } from 'ml-conrec';
 import { Spectrum2D } from 'nmr-load-save';
 
 interface Level {
-  positive: number;
-  negative: number;
+  positive: ContourLevels;
+  negative: ContourLevels;
 }
 
+type ContourLevels = [number, number];
 interface ContourItem {
-  contourLevels: [number, number];
+  contourLevels: ContourLevels;
   numberOfLayers: number;
   numberOfZoomLevels: number;
 }
 interface ContourOptions {
+  noise: { positive: number; negative: number };
   positive: ContourItem;
   negative: ContourItem;
 }
@@ -23,18 +25,19 @@ interface WheelOptions {
 }
 
 type ContoursLevels = Record<string, Level>;
-const DEFAULT_CONTOURS_OPTIONS = {
-  positive: {
-    contourLevels: [0, 100],
-    numberOfLayers: 10,
-    numberOfZoomLevels: 35,
-  },
-  negative: {
-    contourLevels: [0, 100],
-    numberOfLayers: 10,
-    numberOfZoomLevels: 35,
-  },
-};
+const DEFAULT_CONTOURS_OPTIONS: Pick<ContourOptions, 'positive' | 'negative'> =
+  {
+    positive: {
+      contourLevels: [15, 100],
+      numberOfLayers: 10,
+      numberOfZoomLevels: 35,
+    },
+    negative: {
+      contourLevels: [15, 100],
+      numberOfLayers: 10,
+      numberOfZoomLevels: 35,
+    },
+  };
 type LevelSign = keyof Level;
 
 const LEVEL_SIGNS: Readonly<[LevelSign, LevelSign]> = ['positive', 'negative'];
@@ -44,11 +47,22 @@ interface ReturnContoursManager {
   checkLevel: () => Level;
 }
 
-function getDefaultContoursLevel(options: ContourOptions) {
-  const defaultLevel: Level = { negative: 10, positive: 10 };
+function getDefaultContoursLevel(
+  spectrum: Spectrum2D,
+  noise: number,
+  quadrant = 'rr',
+) {
+  const { positive, negative } = DEFAULT_CONTOURS_OPTIONS;
+  const defaultLevel: Level = {
+    negative: [0, 100],
+    positive: [0, 100],
+  };
+  console.log(defaultLevel);
+  const data = spectrum.data[quadrant];
+  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
   for (const sign of LEVEL_SIGNS) {
-    const max = options[sign].numberOfZoomLevels;
-    defaultLevel[sign] = Math.round(max * 0.7);
+    //@ts-expect-error to check why of this error
+    defaultLevel[sign][0] = (100 * Math.log(max / noise)) / Math.log(1.25) / 35;
   }
   return defaultLevel;
 }
@@ -61,10 +75,10 @@ function contoursManager(
   const spectraLevels = { ...state };
   const contourOptions = { ...options };
 
-  if (!state?.[spectrumID]) {
-    const defaultLevel = getDefaultContoursLevel(contourOptions);
-    spectraLevels[spectrumID] = defaultLevel;
-  }
+  // if (!state?.[spectrumID]) {
+  //   const defaultLevel = getDefaultContoursLevel(contourOptions);
+  //   spectraLevels[spectrumID] = defaultLevel;
+  // }
 
   const currentLevel = spectraLevels[spectrumID];
 
@@ -96,15 +110,13 @@ function prepareWheel(value: number, options: WheelOptions) {
     ) {
       return currentLevel;
     }
-    currentLevel.positive += sign;
-    contourOptions.positive.contourLevels[0] -= sign * 2;
+    contourOptions.positive.contourLevels[0] += sign * 2;
   } else {
     if (
       (minPositiveLevel > 0 && sign === -1) ||
       (minPositiveLevel < maxPositiveLevel - positive.numberOfLayers &&
         sign === 1)
     ) {
-      currentLevel.positive += sign;
       contourOptions.positive.contourLevels[0] += sign * 2;
     }
 
@@ -113,7 +125,6 @@ function prepareWheel(value: number, options: WheelOptions) {
       (minNegativeLevel < maxNegativeLevel - negative.numberOfLayers &&
         sign === 1)
     ) {
-      currentLevel.negative += sign;
       contourOptions.negative.contourLevels[0] += sign * 2;
     }
   }
@@ -169,7 +180,6 @@ function range(from: number, to: number, step: number) {
 }
 
 function drawContours(
-  level: number,
   noise: number,
   spectrum: Spectrum2D,
   negative = false,
@@ -187,7 +197,7 @@ function drawContours(
   } = spectrum.display.contourOptions;
 
   if (negative) {
-    const contours = getContours(level, {
+    const contours = getContours({
       noise,
       negative,
       boundary: negativeBoundary,
@@ -196,7 +206,7 @@ function drawContours(
     });
     return contours;
   }
-  const contours = getContours(level, {
+  const contours = getContours({
     noise,
     boundary: positiveBoundary,
     nbLevels: numberOfPositiveLayer,
@@ -215,10 +225,7 @@ interface ContoursCalcOptions {
   data: NmrData2DFt['rr'];
 }
 
-function getContours(
-  level: number,
-  options: ContoursCalcOptions,
-): {
+function getContours(options: ContoursCalcOptions): {
   contours: Float64Array;
   timeout: boolean;
 } {
@@ -232,7 +239,7 @@ function getContours(
   const factor = 35 / 100;
 
   if (!negative) {
-    console.log(boundary, level);
+    console.log(boundary);
 
     // console.log({
     //   level,
@@ -247,8 +254,8 @@ function getContours(
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
 
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = (max / 1.25 ** (100 - boundary[0])) * factor;
-  const maxLevel = (max / 1.25 ** Math.max(0, 100 - boundary[1])) * factor;
+  const minLevel = max / 1.25 ** ((100 - boundary[0]) * factor);
+  const maxLevel = max / 1.25 ** (Math.max(0, 100 - boundary[1]) * factor);
 
   let _range = getRange(minLevel, maxLevel, nbLevels, 2);
 

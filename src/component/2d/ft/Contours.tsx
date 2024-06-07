@@ -57,17 +57,19 @@ function usePath(
   return pathBuilder.toString();
 }
 
-const useContoursLevel = (spectrum: Spectrum2D, sign: LevelSign) => {
+const useContoursLevel = (
+  spectrum: Spectrum2D,
+  sign: LevelSign,
+  noise: number,
+  quadrant = 'rr',
+) => {
   const {
     view: {
       zoom: { levels },
     },
   } = useChartData();
-  const {
-    id,
-    display: { contourOptions },
-  } = spectrum;
-  const defaultLevel = getDefaultContoursLevel(contourOptions);
+  const { id } = spectrum;
+  const defaultLevel = getDefaultContoursLevel(spectrum, noise, quadrant);
   const level = levels?.[id]?.[sign];
   return typeof level !== 'number' ? defaultLevel[sign] : level;
 };
@@ -83,11 +85,10 @@ function ContoursPaths({
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
 
-  const level = useContoursLevel(spectrum, sign);
+  const level = useContoursLevel(spectrum, sign, noise);
 
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
-      level,
       noise,
       spectrum,
       sign === 'negative',
@@ -96,7 +97,7 @@ function ContoursPaths({
       onTimeout();
     }
     return contours;
-  }, [spectrum, level, onTimeout, sign, noise]);
+  }, [spectrum, onTimeout, sign, noise]);
 
   const path = usePath(spectrum, contours);
 
