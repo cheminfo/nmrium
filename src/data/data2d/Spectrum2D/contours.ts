@@ -27,12 +27,12 @@ const DEFAULT_CONTOURS_OPTIONS = {
   positive: {
     contourLevels: [0, 100],
     numberOfLayers: 10,
-    numberOfZoomLevels: 31,
+    numberOfZoomLevels: 35,
   },
   negative: {
     contourLevels: [0, 100],
     numberOfLayers: 10,
-    numberOfZoomLevels: 31,
+    numberOfZoomLevels: 35,
   },
 };
 type LevelSign = keyof Level;
@@ -79,29 +79,42 @@ function prepareWheel(value: number, options: WheelOptions) {
   const { altKey, currentLevel, contourOptions } = options;
 
   const sign = Math.sign(value);
-  const positiveBoundary = [0, contourOptions.positive.numberOfZoomLevels];
-  const negativeBoundary = [0, contourOptions.positive.numberOfZoomLevels];
+
+  const { positive, negative } = contourOptions;
+  const {
+    contourLevels: [minPositiveLevel, maxPositiveLevel],
+  } = positive;
+  const {
+    contourLevels: [minNegativeLevel, maxNegativeLevel],
+  } = negative;
+
   if (altKey) {
     if (
-      (currentLevel.positive === positiveBoundary[0] && sign === -1) ||
-      (currentLevel.positive >= positiveBoundary[1] && sign === 1)
+      (minPositiveLevel === 0 && sign === -1) ||
+      (minPositiveLevel >= maxPositiveLevel - positive.numberOfLayers &&
+        sign === 1)
     ) {
       return currentLevel;
     }
     currentLevel.positive += sign;
+    contourOptions.positive.contourLevels[0] -= sign * 2;
   } else {
     if (
-      (currentLevel.positive > positiveBoundary[0] && sign === -1) ||
-      (currentLevel.positive < positiveBoundary[1] && sign === 1)
+      (minPositiveLevel > 0 && sign === -1) ||
+      (minPositiveLevel < maxPositiveLevel - positive.numberOfLayers &&
+        sign === 1)
     ) {
       currentLevel.positive += sign;
+      contourOptions.positive.contourLevels[0] += sign * 2;
     }
 
     if (
-      (currentLevel.negative > negativeBoundary[0] && sign === -1) ||
-      (currentLevel.negative < negativeBoundary[1] && sign === 1)
+      (minNegativeLevel > 0 && sign === -1) ||
+      (minNegativeLevel < maxNegativeLevel - negative.numberOfLayers &&
+        sign === 1)
     ) {
       currentLevel.negative += sign;
+      contourOptions.negative.contourLevels[0] += sign * 2;
     }
   }
   return currentLevel;
@@ -110,12 +123,15 @@ function prepareWheel(value: number, options: WheelOptions) {
 function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
   const level = { ...currentLevel };
   for (const sign of LEVEL_SIGNS) {
-    const { numberOfZoomLevels } = options[sign];
+    const {
+      numberOfLayers,
+      contourLevels: [min, max],
+    } = options[sign];
     //check if the level is out of the boundary
-    if (level[sign] > numberOfZoomLevels) {
-      level[sign] = numberOfZoomLevels;
-    } else if (level[sign] < 0) {
-      level[sign] = 0;
+    if (min > max - numberOfLayers) {
+      options[sign].contourLevels[0] = max - numberOfLayers;
+    } else if (min < 0) {
+      options[sign].contourLevels[0] = 0;
     }
   }
   return level;
@@ -199,32 +215,42 @@ interface ContoursCalcOptions {
   data: NmrData2DFt['rr'];
 }
 
-function getContours(zoomLevel: number, options: ContoursCalcOptions) {
+function getContours(
+  level: number,
+  options: ContoursCalcOptions,
+): {
+  contours: Float64Array;
+  timeout: boolean;
+} {
   const {
     boundary,
     negative = false,
     timeout = 2000,
     nbLevels,
     data,
-    noise,
   } = options;
+  const factor = 35 / 100;
+
+  if (!negative) {
+    console.log(boundary, level);
+
+    // console.log({
+    //   level,
+    //   zoomLevel,
+    //   boundary,
+    //   numberOfZoomLevels,
+    // });
+  }
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
 
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
 
-  const dataMax = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
+  const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
+  const minLevel = (max / 1.25 ** (100 - boundary[0])) * factor;
+  const maxLevel = (max / 1.25 ** Math.max(0, 100 - boundary[1])) * factor;
 
-  const max = (dataMax / 100) * boundary[1];
-  const min = Math.max(noise, (dataMax / 100) * boundary[0]);
-
-  const minLevel = (max - min) / 1.25 ** zoomLevel + min;
-  let _range = getRange(
-    minLevel,
-    Math.min(max, (max - min) / 1.25 ** Math.max(0, zoomLevel - 15) + min),
-    nbLevels,
-    2,
-  );
+  let _range = getRange(minLevel, maxLevel, nbLevels, 2);
 
   if (negative) {
     _range = _range.map((value) => -value);
