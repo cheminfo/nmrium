@@ -729,6 +729,7 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
       const contourOptions = spectrum.display.contourOptions;
       const zoom = contoursManager(spectrum.id, levels, contourOptions);
       levels[spectrum.id] = zoom.wheel(deltaY, altKey);
+      zoom.checkLevel();
     }
   } catch (error) {
     // TODO: handle error.
