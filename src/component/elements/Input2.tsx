@@ -110,8 +110,8 @@ function getIcon(leftIcon) {
   return leftIcon;
 }
 
-function getClasses(isDebounced: boolean, className = '') {
-  const classes = ['text-input', className];
+function getClasses(isDebounced: boolean) {
+  const classes = ['text-input'];
   if (isDebounced) {
     classes.push('debounce-end');
   }
@@ -129,7 +129,6 @@ function InnerInput<FilterItem extends string>(
     checkValue,
     value: externalValue,
     getFilterValue = (item) => item,
-    className = '',
     FilterItems = [],
     leftIcon,
     autoSelect = false,
@@ -174,14 +173,14 @@ function InnerInput<FilterItem extends string>(
   }
 
   const icon = getIcon(leftIcon);
-  const classes = getClasses(isDebounced, className);
+  const classes = getClasses(isDebounced);
 
   return (
     <Suggest
       inputProps={{
         placeholder: '',
         leftIcon: icon,
-        className: classes,
+        inputClassName: classes,
         inputRef: innerRef,
         ...otherInputProps,
       }}

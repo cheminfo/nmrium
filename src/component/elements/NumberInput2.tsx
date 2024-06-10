@@ -89,8 +89,8 @@ function getIcon(leftIcon) {
   return leftIcon;
 }
 
-function getClasses(isDebounced: boolean, className = '') {
-  const classes = ['text-input', className];
+function getClasses(isDebounced: boolean) {
+  const classes = ['numeric-input'];
   if (isDebounced) {
     classes.push('debounce-end');
   }
@@ -104,7 +104,6 @@ function InnerNumberInput(props: NumberInput2Props, ref) {
     onValueChange,
     checkValue,
     value: externalValue,
-    className = '',
     leftIcon,
     autoSelect = false,
     ...otherInputProps
@@ -118,12 +117,12 @@ function InnerNumberInput(props: NumberInput2Props, ref) {
   });
 
   const icon = getIcon(leftIcon);
-  const classes = getClasses(isDebounced, className);
+  const classes = getClasses(isDebounced);
 
   return (
     <NumericInput
       leftIcon={icon}
-      className={classes}
+      inputClassName={classes}
       inputRef={ref}
       onValueChange={handleValueChange}
       value={value}
