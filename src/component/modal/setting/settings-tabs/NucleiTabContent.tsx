@@ -1,19 +1,32 @@
 import { Classes } from '@blueprintjs/core';
-import { useFormikContext } from 'formik';
 import { NucleiPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { GroupPane } from '../../../elements/GroupPane';
+import { Input2 } from '../../../elements/Input2';
+import { NumberInput2 } from '../../../elements/NumberInput2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { tableInputStyle } from '../../../elements/ReactTable/Style';
-import FormikInput from '../../../elements/formik/FormikInput';
+import { useFormValidateField } from '../../../elements/useFormValidateField';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
+
+function getKeyPath<T extends keyof NucleiPreferences>(
+  index: number,
+  key: T,
+): `nuclei.${number}.${T}` {
+  return `nuclei.${index}.${key}`;
+}
 
 function NucleiTabContent() {
-  const { values, setFieldValue } = useFormikContext();
+  const { control, setValue } = useFormContext<WorkspaceWithSource>();
+  const isValid = useFormValidateField();
 
-  const fields = (values as any)?.nuclei || [];
+  const fields: NucleiPreferences[] =
+    useWatch({
+      name: 'nuclei',
+    }) || [];
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {
@@ -28,17 +41,17 @@ function NucleiTabContent() {
       } else {
         columns.push(emptyField);
       }
-      void setFieldValue('nuclei', columns);
+      setValue('nuclei', columns);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      void setFieldValue('nuclei', _fields);
+      setValue('nuclei', _fields);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(
@@ -52,10 +65,26 @@ function NucleiTabContent() {
         Header: 'Nucleus',
         style: { padding: 0 },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'nucleus');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`nuclei.${row.index}.nucleus`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    {...field}
+                    onChange={(v, e) => field.onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -64,10 +93,26 @@ function NucleiTabContent() {
         Header: 'δ (ppm)',
         style: { padding: 0 },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'ppmFormat');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`nuclei.${row.index}.ppmFormat`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    {...field}
+                    onChange={(v, e) => field.onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -76,10 +121,26 @@ function NucleiTabContent() {
         Header: 'Coupling (Hz)',
         style: { padding: 0 },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'hzFormat');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`nuclei.${row.index}.hzFormat`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    {...field}
+                    onChange={(v, e) => field.onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -88,11 +149,31 @@ function NucleiTabContent() {
         Header: 'Axis from',
         style: { padding: 0 },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'axisFrom');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`nuclei.${row.index}.axisFrom`}
-              style={tableInputStyle}
-              type="number"
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <NumberInput2
+                    allowNumericCharactersOnly
+                    value={field.value}
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    onValueChange={(valueAsNumber, valueAsString, element) =>
+                      field.onChange(valueAsNumber)
+                    }
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                    fill
+                  />
+                );
+              }}
             />
           );
         },
@@ -101,11 +182,31 @@ function NucleiTabContent() {
         Header: 'Axis to',
         style: { padding: 0 },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'axisTo');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`nuclei.${row.index}.axisTo`}
-              style={tableInputStyle}
-              type="number"
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <NumberInput2
+                    allowNumericCharactersOnly
+                    value={field.value}
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    onValueChange={(valueAsNumber, valueAsString, element) =>
+                      field.onChange(valueAsNumber)
+                    }
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                    fill
+                  />
+                );
+              }}
             />
           );
         },
@@ -114,7 +215,7 @@ function NucleiTabContent() {
       {
         Header: '',
         style: { width: '60px' },
-        id: 'add-button',
+        id: 'op-buttons',
         Cell: ({ data, row }) => {
           return (
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
@@ -141,7 +242,7 @@ function NucleiTabContent() {
         },
       },
     ],
-    [addHandler, deleteHandler],
+    [addHandler, control, deleteHandler, isValid],
   );
 
   return (

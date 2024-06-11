@@ -8,11 +8,17 @@ import {
   Tab,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik, FormikProps } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Workspace } from 'nmr-load-save';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form';
 import { FaBolt, FaPaste, FaRegCopy, FaWrench } from 'react-icons/fa';
-import { Toolbar, useOnOff } from 'react-science/ui';
+import { Button, Toolbar, useOnOff } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
@@ -22,13 +28,13 @@ import {
 } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
 import ActionButtons from '../../elements/ActionButtons';
-import Button from '../../elements/Button';
 import Label from '../../elements/Label';
 import DropDownButton, {
   DropDownListItem,
 } from '../../elements/dropDownButton/DropDownButton';
 import { useSaveSettings } from '../../hooks/useSaveSettings';
 import { useWorkspaceAction } from '../../hooks/useWorkspaceAction';
+import { WorkspaceWithSource } from '../../reducer/preferences/preferencesReducer';
 import { getPreferencesByWorkspace } from '../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import PredefinedWorkspaces from '../../workspaces';
 
@@ -52,23 +58,6 @@ const styles = css`
     border-bottom: 0.55px solid #f9f9f9;
     padding: 6px 2px;
   }
-
-  .label {
-    font-size: 12px;
-    font-weight: bold;
-    margin-right: 10px;
-  }
-
-  .checkbox-label {
-    min-width: 300px;
-    display: inline-block;
-  }
-
-  .help-checkbox-element {
-    .checkbox-label {
-      width: 260px;
-    }
-  }
 `;
 
 function isRestButtonDisable(
@@ -88,12 +77,45 @@ function isRestButtonDisable(
     );
   }
 }
+
+interface BasseGeneralModalProps {
+  onCloseDialog: () => void;
+  onSave: (values?: Partial<Workspace>) => void;
+}
+interface InnerGeneralSettingsModalProps extends BasseGeneralModalProps {
+  height?: number;
+}
 interface GeneralSettingsModalProps {
   height?: number;
 }
 
-function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
+function GeneralSettingsModal(props: GeneralSettingsModalProps) {
+  const { ...otherProps } = props;
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
+  const { saveSettings, SaveSettingsModal } = useSaveSettings();
+
+  return (
+    <>
+      <Toolbar.Item
+        id="general-settings"
+        onClick={openDialog}
+        tooltip="General settings"
+        icon={<FaWrench />}
+      />
+      <SaveSettingsModal />
+      {isOpenDialog && (
+        <InnerGeneralSettingsModal
+          {...otherProps}
+          onCloseDialog={closeDialog}
+          onSave={saveSettings}
+        />
+      )}
+    </>
+  );
+}
+
+function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
+  const { height, onCloseDialog, onSave } = props;
   const {
     dispatch,
     current: currentWorkspace,
@@ -102,15 +124,14 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
   } = usePreferences();
   const { addNewWorkspace, removeWorkspace, setActiveWorkspace } =
     useWorkspaceAction();
-  const { saveSettings, SaveSettingsModal } = useSaveSettings();
-  const toaster = useToaster();
-  const refForm = useRef<FormikProps<any>>(null);
   const workspaces = useWorkspacesList();
   const workspaceName = preferences.workspace.current;
-  const [isRestDisabled, setRestDisabled] = useState(
-    isRestButtonDisable(currentWorkspace, workspaceName, originalWorkspaces),
-  );
   const pastRef = useRef<Record<string, Workspace> | null>(null);
+  const methods = useForm<WorkspaceWithSource>({
+    defaultValues: currentWorkspace,
+    resolver: yupResolver(validation),
+  });
+  const { reset, getValues } = methods;
 
   const workspacesList = useMemo(() => {
     return workspaces.concat([
@@ -121,35 +142,8 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     ]);
   }, [workspaces]);
 
-  const handleReset = () => {
-    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
-      workspaceName,
-      originalWorkspaces,
-    );
-    void refForm.current?.setValues(workSpaceDisplayPreferences);
-  };
-
-  function submitHandler(values) {
-    saveSettings(values);
-    closeDialog?.();
-  }
   function addWorkSpaceHandler(name) {
-    addNewWorkspace(name, refForm.current?.values);
-  }
-
-  async function applyPreferencesHandler() {
-    const errors = await refForm.current?.validateForm();
-    if (Object.keys(errors || {}).length > 0) {
-      refForm.current?.handleSubmit();
-    } else {
-      dispatch({
-        type: 'APPLY_General_PREFERENCES',
-        payload: {
-          data: refForm.current?.values,
-        },
-      });
-      closeDialog?.();
-    }
+    addNewWorkspace(name, getValues());
   }
 
   function deleteWorkSpaceHandler(key) {
@@ -170,35 +164,11 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     );
   }
 
-  function handleDisabledRestButton(values) {
-    setRestDisabled(
-      isRestButtonDisable(values, workspaceName, originalWorkspaces),
-    );
-  }
-
-  const {
-    readText,
-    rawWriteWithType,
-    shouldFallback,
-    cleanShouldFallback,
-    text,
-  } = useClipboard();
-
-  function handleCopyWorkspace() {
-    const data = { [workspaceName]: refForm.current?.values };
-    void rawWriteWithType(JSON.stringify(data)).then(() => {
-      toaster.show({
-        message: 'Workspace copied to clipboard',
-        intent: 'success',
-      });
-    });
-  }
-
   const setWorkspaceSetting = useCallback(
     (inputWorkspace) => {
       const parseWorkspaceName = Object.keys(inputWorkspace)[0];
       if (preferences.workspace.current === parseWorkspaceName) {
-        void refForm.current?.setValues(inputWorkspace[parseWorkspaceName]);
+        reset(inputWorkspace[parseWorkspaceName]);
       } else if (preferences.workspaces[parseWorkspaceName]) {
         pastRef.current = inputWorkspace;
         dispatch({
@@ -210,7 +180,7 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         });
       }
     },
-    [dispatch, preferences.workspace, preferences.workspaces],
+    [dispatch, preferences.workspace, preferences.workspaces, reset],
   );
 
   useEffect(() => {
@@ -220,35 +190,11 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
     }
   }, [setWorkspaceSetting]);
 
-  function handlePastWorkspace(text: string | undefined) {
-    if (!text) return;
-
-    try {
-      const parseWorkspaces = JSON.parse(text);
-      setWorkspaceSetting(parseWorkspaces);
-    } catch {
-      toaster.show({ message: 'object parse error', intent: 'danger' });
-    }
-
-    cleanShouldFallback();
-  }
-
-  function handlePastWorkspaceAction() {
-    void readText().then(handlePastWorkspace);
-  }
-
   return (
-    <>
-      <Toolbar.Item
-        id="general-settings"
-        onClick={openDialog}
-        tooltip="General settings"
-        icon={<FaWrench />}
-      />
-
+    <FormProvider {...methods}>
       <Dialog
-        isOpen={isOpenDialog}
-        onClose={closeDialog}
+        isOpen
+        onClose={onCloseDialog}
         style={{ maxWidth: 1000, width: '50vw', minWidth: 800 }}
         title="General settings"
         icon="cog"
@@ -271,42 +217,11 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
                 onSelect={ChangeWorkspaceHandler}
               />
             </Label>
-            <Button.Action
-              size="xSmall"
-              onClick={handleReset}
-              toolTip="Reset workspace preferences"
-              tooltipOrientation="horizontal"
-              style={{
-                marginLeft: '10px',
-              }}
-              disabled={isRestDisabled}
-            >
-              <FaBolt />
-            </Button.Action>
-            <Button.Done
-              size="xSmall"
-              fill="outline"
-              onClick={handleCopyWorkspace}
-              toolTip="Copy workspace preferences"
-              tooltipOrientation="horizontal"
-              style={{
-                marginLeft: '10px',
-              }}
-            >
-              <FaRegCopy />
-            </Button.Done>
-            <Button.Action
-              size="xSmall"
-              fill="outline"
-              onClick={handlePastWorkspaceAction}
-              toolTip="Past workspace preferences"
-              tooltipOrientation="horizontal"
-              style={{
-                marginLeft: '10px',
-              }}
-            >
-              <FaPaste />
-            </Button.Action>
+            <WorkSpaceActionsButtons
+              onPast={(workspaceSettings) =>
+                setWorkspaceSetting(workspaceSettings)
+              }
+            />
           </div>
         </div>
         <DialogBody
@@ -316,102 +231,165 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
           `}
         >
           <div css={styles} style={{ height }}>
-            <Formik
-              enableReinitialize
-              innerRef={refForm}
-              initialValues={currentWorkspace}
-              validationSchema={validation}
-              onSubmit={submitHandler}
-              validate={handleDisabledRestButton}
+            <Tabs
+              vertical
+              css={css`
+                height: 100%;
+
+                div[role='tabpanel'] {
+                  width: 100%;
+                  padding: 0.8rem;
+                  overflow: auto;
+                  max-height: 100%;
+                }
+              `}
+              fill
             >
-              <Tabs
-                vertical
-                css={css`
-                  height: 100%;
+              <Tab title="General" id="general" panel={<GeneralTabContent />} />
 
-                  div[role='tabpanel'] {
-                    width: 100%;
-                    padding: 0.8rem;
-                    overflow: auto;
-                    max-height: 100%;
-                  }
-                `}
-                fill
-              >
-                <Tab
-                  title="General"
-                  id="general"
-                  panel={<GeneralTabContent />}
-                />
+              <Tab title="Nuclei" id="nuclei" panel={<NucleiTabContent />} />
 
-                <Tab title="Nuclei" id="nuclei" panel={<NucleiTabContent />} />
+              <Tab title="Panels" id="display" panel={<DisplayTabContent />} />
 
-                <Tab
-                  title="Panels"
-                  id="display"
-                  panel={<DisplayTabContent />}
-                />
+              <Tab title="Tools" id="tools" panel={<ToolsTabContent />} />
 
-                <Tab title="Tools" id="tools" panel={<ToolsTabContent />} />
+              <Tab
+                title="Databases"
+                id="databases"
+                panel={
+                  <DatabasesTabContent
+                    currentWorkspace={workspaceName}
+                    originalWorkspaces={originalWorkspaces}
+                  />
+                }
+              />
 
-                <Tab
-                  title="Databases"
-                  id="databases"
-                  panel={
-                    <DatabasesTabContent
-                      currentWorkspace={workspaceName}
-                      originalWorkspaces={originalWorkspaces}
-                    />
-                  }
-                />
+              <Tab
+                title="Import filters"
+                id="importation-filters"
+                panel={<ImportationFiltersTabContent />}
+              />
 
-                <Tab
-                  title="Import filters"
-                  id="importation-filters"
-                  panel={<ImportationFiltersTabContent />}
-                />
+              <Tab
+                title="Title block"
+                id="title-block"
+                panel={<InfoBlockTabContent />}
+              />
 
-                <Tab
-                  title="Title block"
-                  id="title-block"
-                  panel={<InfoBlockTabContent />}
-                />
+              <Tab
+                title="Auto processing"
+                id="on-load-processing"
+                panel={<OnLoadProcessingTabContent />}
+              />
 
-                <Tab
-                  title="Auto processing"
-                  id="on-load-processing"
-                  panel={<OnLoadProcessingTabContent />}
-                />
-
-                <Tab
-                  title="Spectra colors"
-                  id="spectra-colors"
-                  panel={<SpectraColorsTabContent />}
-                />
-              </Tabs>
-            </Formik>
+              <Tab
+                title="Spectra colors"
+                id="spectra-colors"
+                panel={<SpectraColorsTabContent />}
+              />
+            </Tabs>
+            {/* </Formik> */}
           </div>
         </DialogBody>
         <DialogFooter>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ActionButtons
-              style={{ flexDirection: 'row-reverse', margin: 0 }}
-              onDone={() => refForm.current?.submitForm()}
-              doneLabel="Apply and Save"
-              onCancel={() => {
-                closeDialog?.();
-              }}
-            />
-            <Button.Secondary
-              style={{ margin: '0 10px' }}
-              onClick={applyPreferencesHandler}
-            >
-              Apply
-            </Button.Secondary>
-          </div>
+          <DialogActionButtons onCloseDialog={onCloseDialog} onSave={onSave} />
         </DialogFooter>
       </Dialog>
-      <SaveSettingsModal />
+    </FormProvider>
+  );
+}
+
+function WorkSpaceActionsButtons(props) {
+  const {
+    readText,
+    rawWriteWithType,
+    shouldFallback,
+    cleanShouldFallback,
+    text,
+  } = useClipboard();
+  const toaster = useToaster();
+  const { reset } = useFormContext<WorkspaceWithSource>();
+  const values = useWatch();
+  const {
+    originalWorkspaces,
+    workspace: { current: workspaceName },
+  } = usePreferences();
+
+  function handleReset() {
+    const workSpaceDisplayPreferences = getPreferencesByWorkspace(
+      workspaceName,
+      originalWorkspaces,
+    );
+    reset(workSpaceDisplayPreferences);
+  }
+
+  function handlePastWorkspace(text: string | undefined) {
+    if (!text) return;
+
+    try {
+      const parseWorkspaces = JSON.parse(text);
+      props.onPast(parseWorkspaces);
+    } catch {
+      toaster.show({ message: 'object parse error', intent: 'danger' });
+    }
+
+    cleanShouldFallback();
+  }
+
+  function handlePastWorkspaceAction() {
+    void readText().then(handlePastWorkspace);
+  }
+
+  function handleCopyWorkspace() {
+    const data = { [workspaceName]: values };
+    void rawWriteWithType(JSON.stringify(data)).then(() => {
+      toaster.show({
+        message: 'Workspace copied to clipboard',
+        intent: 'success',
+      });
+    });
+  }
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-start',
+        padding: '0 3px',
+      }}
+    >
+      <Button
+        small
+        outlined
+        intent="primary"
+        onClick={handleReset}
+        tooltipProps={{ content: 'Reset workspace preferences', compact: true }}
+        disabled={isRestButtonDisable(
+          values,
+          workspaceName,
+          originalWorkspaces,
+        )}
+      >
+        <FaBolt className={Classes.ICON} />
+      </Button>
+      <Button
+        small
+        outlined
+        onClick={handleCopyWorkspace}
+        tooltipProps={{ content: 'Copy workspace preferences', compact: true }}
+        css={css({ margin: '0 5px' })}
+      >
+        <FaRegCopy className={Classes.ICON} />
+      </Button>
+      <Button
+        small
+        outlined
+        intent="success"
+        onClick={handlePastWorkspaceAction}
+        tooltipProps={{ content: 'Past workspace preferences', compact: true }}
+      >
+        <FaPaste className={Classes.ICON} />
+      </Button>
 
       <ClipboardFallbackModal
         mode={shouldFallback}
@@ -420,7 +398,57 @@ function GeneralSettingsModal({ height }: GeneralSettingsModalProps) {
         text={text}
         label="Workspace"
       />
-    </>
+    </div>
+  );
+}
+
+function DialogActionButtons(props: BasseGeneralModalProps) {
+  const { onSave, onCloseDialog } = props;
+  const {
+    handleSubmit,
+    formState: { isValid },
+  } = useFormContext<WorkspaceWithSource>();
+  const { dispatch } = usePreferences();
+
+  const values = useWatch();
+
+  function submitHandler(values) {
+    onSave(values);
+    onCloseDialog?.();
+  }
+
+  function applyPreferencesHandler() {
+    if (!isValid) {
+      return handleSubmit(submitHandler)();
+    }
+
+    dispatch({
+      type: 'APPLY_General_PREFERENCES',
+      payload: {
+        data: values as any,
+      },
+    });
+    props.onCloseDialog?.();
+  }
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <ActionButtons
+        style={{ flexDirection: 'row-reverse', margin: 0 }}
+        onDone={() => handleSubmit(submitHandler)()}
+        doneLabel="Apply and Save"
+        onCancel={() => {
+          props.onCloseDialog?.();
+        }}
+      />
+      <Button
+        intent="primary"
+        css={css({ margin: '0 10px' })}
+        onClick={applyPreferencesHandler}
+      >
+        Apply
+      </Button>
+    </div>
   );
 }
 

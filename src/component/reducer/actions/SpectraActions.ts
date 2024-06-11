@@ -32,6 +32,10 @@ import {
 } from '../../../data/data2d/Spectrum2D';
 import { contoursManager } from '../../../data/data2d/Spectrum2D/contours';
 import { Nuclei, Nucleus } from '../../../data/types/common/Nucleus';
+import {
+  adjustAlpha,
+  generateColor,
+} from '../../../data/utilities/generateColor';
 import groupByInfoKey from '../../utility/GroupByInfoKey';
 import { getSpectraByNucleus } from '../../utility/getSpectraByNucleus';
 import { State } from '../Reducer';
@@ -52,10 +56,6 @@ import {
   setMargin,
   resetSelectedTool,
 } from './ToolsActions';
-import {
-  adjustAlpha,
-  generateColor,
-} from '../../../data/utilities/generateColor';
 
 type ChangeSpectrumVisibilityByIdAction = ActionType<
   'CHANGE_SPECTRUM_VISIBILITY',

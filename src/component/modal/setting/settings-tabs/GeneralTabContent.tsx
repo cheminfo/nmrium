@@ -1,9 +1,13 @@
+import { Checkbox } from '@blueprintjs/core';
+import { Controller, useFormContext } from 'react-hook-form';
+
 import { LOGGER_LEVELS } from '../../../context/LoggerContext';
 import { GroupPane } from '../../../elements/GroupPane';
 import Label, { LabelStyle } from '../../../elements/Label';
-import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
-import FormikInput from '../../../elements/formik/FormikInput';
-import FormikSelect from '../../../elements/formik/FormikSelect';
+import { NumberInput2 } from '../../../elements/NumberInput2';
+import Select from '../../../elements/Select';
+import { useFormValidateField } from '../../../elements/useFormValidateField';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const labelStyle: LabelStyle = {
   label: { flex: 6 },
@@ -11,7 +15,12 @@ const labelStyle: LabelStyle = {
   container: { paddingBottom: '5px' },
 };
 
-const SHAPE_RENDERING = [
+interface SelectItem {
+  label: string;
+  value: string;
+}
+
+const SHAPE_RENDERING: SelectItem[] = [
   {
     label: 'Auto',
     value: 'auto',
@@ -36,57 +45,114 @@ const LOGS_LEVELS = Object.keys(LOGGER_LEVELS).map((level) => ({
 }));
 
 function GeneralTabContent() {
+  const { register, control } = useFormContext<WorkspaceWithSource>();
+  const isValid = useFormValidateField();
+
   return (
     <>
       <GroupPane text="General">
         <Label title="Opacity of dimmed spectra [0 - 1]" style={labelStyle}>
-          <FormikInput
+          <Controller
+            control={control}
             name="general.dimmedSpectraOpacity"
-            checkValue={(value) => Number(value) >= 0 && Number(value) <= 1}
-            type="number"
-            step={0.1}
-            min={0}
-            max={1}
-            style={{ inputWrapper: { width: 60 } }}
+            render={({ field }) => {
+              return (
+                <NumberInput2
+                  {...field}
+                  allowNumericCharactersOnly
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  onValueChange={(valueAsNumber, valueAsString, element) => {
+                    field.onChange(valueAsString);
+                  }}
+                  intent={!isValid(field.name) ? 'danger' : 'none'}
+                  style={{ width: 60 }}
+                  stepSize={0.1}
+                  min={0}
+                  max={1}
+                />
+              );
+            }}
           />
         </Label>
         <Label title="Invert actions" style={labelStyle}>
-          <FormikCheckBox
-            name="general.invert"
-            style={{ container: { justifyContent: 'flex-start' } }}
-          />
+          <Checkbox style={{ margin: 0 }} {...register(`general.invert`)} />
         </Label>
       </GroupPane>
       <GroupPane text="Experimental features">
         <Label title="Enable experimental features" style={labelStyle}>
-          <FormikCheckBox
-            name="display.general.experimentalFeatures.display"
-            style={{ container: { justifyContent: 'flex-start' } }}
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(`display.general.experimentalFeatures.display`)}
           />
         </Label>
       </GroupPane>
       <GroupPane text="Rendering">
         <Label title="Spectra rendering" style={labelStyle}>
-          <FormikSelect
-            items={SHAPE_RENDERING}
+          <Controller
+            control={control}
             name="general.spectraRendering"
-            style={{ width: '150px' }}
+            render={({ field }) => {
+              return (
+                <Select
+                  items={SHAPE_RENDERING}
+                  key={field.value}
+                  defaultValue={field.value}
+                  onChange={field.onChange}
+                  style={{
+                    width: '150px',
+                    ...(!isValid('general.spectraRendering') && {
+                      border: '1px solid red',
+                    }),
+                  }}
+                />
+              );
+            }}
           />
         </Label>
       </GroupPane>
       <GroupPane text="Logging settings">
         <Label title="Level" style={labelStyle}>
-          <FormikSelect
-            items={LOGS_LEVELS}
+          <Controller
+            control={control}
             name="general.loggingLevel"
-            style={{ width: '100px' }}
+            render={({ field }) => {
+              return (
+                <Select
+                  items={LOGS_LEVELS}
+                  key={field.value}
+                  defaultValue={field.value}
+                  onChange={field.onChange}
+                  style={{
+                    width: '100px',
+                    ...(!isValid('general.loggingLevel') && {
+                      border: '1px solid red',
+                    }),
+                  }}
+                />
+              );
+            }}
           />
         </Label>
         <Label title="Popup logging level" style={labelStyle}>
-          <FormikSelect
-            items={LOGS_LEVELS}
+          <Controller
+            control={control}
             name="general.popupLoggingLevel"
-            style={{ width: '100px' }}
+            render={({ field }) => {
+              return (
+                <Select
+                  items={LOGS_LEVELS}
+                  key={field.value}
+                  defaultValue={field.value}
+                  onChange={field.onChange}
+                  style={{
+                    width: '100px',
+                    ...(!isValid('general.popupLoggingLevel') && {
+                      border: '1px solid red',
+                    }),
+                  }}
+                />
+              );
+            }}
           />
         </Label>
       </GroupPane>

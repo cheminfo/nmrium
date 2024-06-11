@@ -5,9 +5,9 @@ import { checkUniqueByKey } from '../../utility/checkUniqueByKey';
 const nucleiValidation = array()
   .of(
     object().shape({
-      nucleus: string().trim().required('Nucleus is a required field'),
-      ppmFormat: string().trim().required('PPM format is a required field'),
-      hzFormat: string().trim().required('Hz format  is a required field'),
+      nucleus: string().required('Nucleus is a required field'),
+      ppmFormat: string().required('PPM format is a required field'),
+      hzFormat: string().required('Hz format  is a required field'),
     }),
   )
   .test('Unique', 'Nuclei need te be unique', function check(nuclei) {
@@ -47,7 +47,7 @@ const spectraColorsSchemaValidation = object({
   ),
 });
 const generalValidation = object({
-  dimmedSpectraOpacity: number().required(),
+  dimmedSpectraOpacity: number().min(0).max(1).required(),
 });
 
 export const validation: any = object().shape({

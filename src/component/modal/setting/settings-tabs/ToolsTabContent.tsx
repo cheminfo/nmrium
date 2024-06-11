@@ -1,119 +1,138 @@
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import { Checkbox } from '@blueprintjs/core';
+import { NMRiumToolBarPreferences } from 'nmr-load-save';
+import { useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
+
 import ReactTable from '../../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 interface ListItem {
   label: string;
-  name: string;
+  name: keyof NMRiumToolBarPreferences;
 }
+
+type ToolPathType = `display.toolBarButtons.${keyof NMRiumToolBarPreferences}`;
+
 const LIST: ListItem[] = [
   {
     label: 'Zoom in',
-    name: 'toolBarButtons.zoom',
+    name: 'zoom',
   },
   {
     label: 'Zoom out',
-    name: 'toolBarButtons.zoomOut',
+    name: 'zoomOut',
   },
   {
     label: 'Import',
-    name: 'toolBarButtons.import',
+    name: 'import',
   },
   {
     label: 'Export As',
-    name: 'toolBarButtons.exportAs',
+    name: 'exportAs',
   },
   {
     label: 'Stack Alignments',
-    name: 'toolBarButtons.spectraStackAlignments',
+    name: 'spectraStackAlignments',
   },
   {
     label: 'Center Alignments',
-    name: 'toolBarButtons.spectraCenterAlignments',
+    name: 'spectraCenterAlignments',
   },
   {
     label: 'Real/Imaginary ',
-    name: 'toolBarButtons.realImaginary',
+    name: 'realImaginary',
   },
   {
     label: 'Peak picking',
-    name: 'toolBarButtons.peakPicking',
+    name: 'peakPicking',
   },
   {
     label: 'Integral',
-    name: 'toolBarButtons.integral',
+    name: 'integral',
   },
   {
     label: 'Zone Picking',
-    name: 'toolBarButtons.zonePicking',
+    name: 'zonePicking',
   },
   {
     label: 'Range picking',
-    name: 'toolBarButtons.rangePicking',
+    name: 'rangePicking',
   },
   {
     label: 'Slicing',
-    name: 'toolBarButtons.slicing',
+    name: 'slicing',
   },
   {
     label: 'Apodization',
-    name: 'toolBarButtons.apodization',
+    name: 'apodization',
   },
   {
     label: 'Zero filling',
-    name: 'toolBarButtons.zeroFilling',
+    name: 'zeroFilling',
   },
   {
     label: 'Fourier transform',
-    name: 'toolBarButtons.fft',
+    name: 'fft',
   },
   {
     label: 'Phase correction',
-    name: 'toolBarButtons.phaseCorrection',
+    name: 'phaseCorrection',
   },
   {
     label: 'Baseline correction',
-    name: 'toolBarButtons.baselineCorrection',
+    name: 'baselineCorrection',
   },
   {
     label: 'Exclusion zones',
-    name: 'toolBarButtons.exclusionZones',
+    name: 'exclusionZones',
   },
   {
     label: 'Multiple spectra analysis',
-    name: 'toolBarButtons.multipleSpectraAnalysis',
+    name: 'multipleSpectraAnalysis',
   },
   {
     label: 'Auto range and zone picking',
-    name: 'toolBarButtons.autoRangeAndZonePicking',
-  },
-];
-
-const COLUMNS: Array<CustomColumn<ListItem>> = [
-  {
-    index: 1,
-    Header: '#',
-    accessor: (_, index) => index + 1,
-  },
-  {
-    index: 1,
-    Header: 'Tool',
-    accessor: 'label',
-    style: { width: '60%' },
-  },
-  {
-    index: 2,
-    Header: 'Active',
-    Cell: ({ row }) => (
-      <CheckBoxCell
-        name={`display.${row.original.name}`}
-        defaultValue={false}
-      />
-    ),
+    name: 'autoRangeAndZonePicking',
   },
 ];
 
 function ToolsTabContent() {
+  const { register } = useFormContext<WorkspaceWithSource>();
+
+  const COLUMNS: Array<CustomColumn<ListItem>> = useMemo(
+    () => [
+      {
+        index: 1,
+        Header: '#',
+        accessor: (_, index) => index + 1,
+      },
+      {
+        index: 1,
+        Header: 'Tool',
+        accessor: 'label',
+        style: { width: '60%' },
+      },
+      {
+        index: 2,
+        Header: 'Active',
+        style: { textAlign: 'center' },
+        Cell: ({ row }) => {
+          const name: ToolPathType = `display.toolBarButtons.${row.original.name}`;
+
+          return (
+            <Checkbox
+              style={{ margin: 0 }}
+              {...register(name)}
+              defaultChecked={false}
+            />
+          );
+        },
+      },
+    ],
+    [register],
+  );
+
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <ReactTable

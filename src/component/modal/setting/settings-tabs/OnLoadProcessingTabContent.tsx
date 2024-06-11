@@ -1,27 +1,33 @@
-import { Tab, Tabs } from '@blueprintjs/core';
-import { useFormikContext } from 'formik';
+import { Checkbox, Tab, Tabs } from '@blueprintjs/core';
 import { WorkspacePreferences } from 'nmr-load-save';
 import { BaseFilter } from 'nmr-processing';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import IsotopesViewer from '../../../elements/IsotopesViewer';
 import Label from '../../../elements/Label';
 import ReactTable from '../../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
-import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 function OnLoadProcessingTabContent() {
-  const { values } = useFormikContext<WorkspacePreferences>();
-  const isExperimentalFeatures =
-    values.display?.general?.experimentalFeatures?.display || false;
+  const { register, control } = useFormContext<WorkspacePreferences>();
 
+  const isExperimentalFeatures =
+    useWatch({
+      control,
+      name: 'display.general.experimentalFeatures.display',
+    }) || false;
   return (
     <div>
       <Label
         title="Enable auto processing on load"
         style={{ wrapper: { padding: '10px 0' } }}
       >
-        <FormikCheckBox name="onLoadProcessing.autoProcessing" />
+        <Checkbox
+          style={{ margin: 0 }}
+          {...register('onLoadProcessing.autoProcessing')}
+          defaultChecked={false}
+        />
       </Label>
       {isExperimentalFeatures && <AutoProcessingFilters />}
     </div>
@@ -29,8 +35,8 @@ function OnLoadProcessingTabContent() {
 }
 
 function AutoProcessingFilters() {
-  const { values } = useFormikContext<WorkspacePreferences>();
-  const autoProcessingFilters = values?.onLoadProcessing?.filters || {};
+  const { getValues } = useFormContext<WorkspaceWithSource>();
+  const autoProcessingFilters = getValues('onLoadProcessing.filters') || {};
   const tabItems = Object.keys(autoProcessingFilters).map((nucleus) => ({
     id: nucleus,
     title: <IsotopesViewer value={nucleus} />,
@@ -55,6 +61,8 @@ function AutoProcessingFilters() {
 }
 
 function FiltersTable({ data, nucleus }) {
+  const { register } = useFormContext();
+
   const COLUMNS: Array<CustomColumn<BaseFilter>> = [
     {
       index: 1,
@@ -71,9 +79,10 @@ function FiltersTable({ data, nucleus }) {
       index: 2,
       Header: 'Enable',
       Cell: ({ row }) => (
-        <CheckBoxCell
-          name={`onLoadProcessing.filters.${nucleus}.${row.index}.flag`}
-          defaultValue={false}
+        <Checkbox
+          style={{ margin: 0 }}
+          {...register(`onLoadProcessing.filters.${nucleus}.${row.index}.flag`)}
+          defaultChecked={false}
         />
       ),
     },

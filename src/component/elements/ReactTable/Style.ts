@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+
 import { InputStyle } from '../Input';
 
 const ReactTableStyle = css`
