@@ -30,12 +30,12 @@ const DEFAULT_CONTOURS_OPTIONS: Pick<ContourOptions, 'positive' | 'negative'> =
     positive: {
       contourLevels: [15, 100],
       numberOfLayers: 10,
-      numberOfZoomLevels: 35,
+      numberOfZoomLevels: 10,
     },
     negative: {
       contourLevels: [15, 100],
       numberOfLayers: 10,
-      numberOfZoomLevels: 35,
+      numberOfZoomLevels: 10,
     },
   };
 type LevelSign = keyof Level;
@@ -98,14 +98,14 @@ function prepareWheel(value: number, options: WheelOptions) {
     ) {
       return currentLevel;
     }
-    contourOptions.positive.contourLevels[0] += sign * 2;
+    contourOptions.positive.contourLevels[0] += sign * 3;
   } else {
     if (
       (minPositiveLevel > 0 && sign === -1) ||
       (minPositiveLevel <= maxPositiveLevel - positive.numberOfLayers &&
         sign === 1)
     ) {
-      contourOptions.positive.contourLevels[0] += sign * 2;
+      contourOptions.positive.contourLevels[0] += sign * 3;
     }
 
     if (
@@ -113,10 +113,9 @@ function prepareWheel(value: number, options: WheelOptions) {
       (minNegativeLevel <= maxNegativeLevel - negative.numberOfLayers &&
         sign === 1)
     ) {
-      contourOptions.negative.contourLevels[0] += sign * 2;
+      contourOptions.negative.contourLevels[0] += sign * 3;
     }
   }
-  console.log(JSON.stringify(contourOptions.positive.contourLevels));
   return currentLevel;
 }
 
@@ -129,7 +128,6 @@ function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
     } = options[sign];
     //check if the level is out of the boundary
     if (min >= max - numberOfLayers) {
-      console.log('pasa');
       const newMin = Math.min(100 - numberOfLayers, Math.max(0, min));
       options[sign].contourLevels = [newMin, newMin + numberOfLayers];
     } else if (min < 0) {
@@ -146,8 +144,7 @@ function getRange(min: number, max: number, length: number, exp?: number) {
     for (let i = 1; i < length + 1; i++) {
       factors[i] = factors[i - 1] + (exp - 1) / exp ** i;
     }
-    console.log(factors);
-    const lastFactor = factors[length];
+    const lastFactor = factors[length - 1];
     const result = new Float64Array(length);
     for (let i = 0; i < length; i++) {
       result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;
@@ -179,12 +176,10 @@ function drawContours(
     positive: {
       contourLevels: positiveBoundary,
       numberOfLayers: numberOfPositiveLayer,
-      numberOfZoomLevels: positiveNbZoomLevels,
     },
     negative: {
       contourLevels: negativeBoundary,
       numberOfLayers: numberOfNegativeLayer,
-      numberOfZoomLevels: negativeNbZoomLevels,
     },
   } = spectrum.display.contourOptions;
 
@@ -193,7 +188,6 @@ function drawContours(
       noise,
       negative,
       boundary: negativeBoundary,
-      nbZoomLevels: negativeNbZoomLevels,
       nbLevels: numberOfNegativeLayer,
       data: spectrum.data[quadrant],
     });
@@ -202,7 +196,6 @@ function drawContours(
   const contours = getContours({
     noise,
     boundary: positiveBoundary,
-    nbZoomLevels: negativeNbZoomLevels,
     nbLevels: numberOfPositiveLayer,
     data: spectrum.data[quadrant],
   });
@@ -216,7 +209,6 @@ interface ContoursCalcOptions {
   negative?: boolean;
   timeout?: number;
   nbLevels: number;
-  nbZoomLevels;
   data: NmrData2DFt['rr'];
 }
 
@@ -228,26 +220,19 @@ function getContours(options: ContoursCalcOptions): {
     boundary,
     negative = false,
     timeout = 2000,
-    nbZoomLevels,
     nbLevels,
     data,
   } = options;
-  const factor = nbZoomLevels / 100;
-
-  if (!negative) {
-    console.log(boundary);
-  }
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
-
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
 
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = max / 1.25 ** ((100 - boundary[0]) * factor);
-  const maxLevel = max / 1.25 ** (Math.max(0, 100 - boundary[1]) * factor);
+  const minLevel = (max * (2 ** (boundary[0] / 10) - 1)) / (2 ** 10 - 1);
+  const maxLevel = (max * (2 ** (boundary[1] / 10) - 1)) / (2 ** 10 - 1);
 
-  let _range = getRange(minLevel, maxLevel, nbLevels, 1.25);
-
+  const diffRange = boundary[1] - boundary[0];
+  let _range = getRange(minLevel, maxLevel, Math.min(nbLevels, diffRange), 2);
   if (negative) {
     _range = _range.map((value) => -value);
   }
