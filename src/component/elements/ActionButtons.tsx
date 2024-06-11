@@ -1,6 +1,5 @@
+import { Button } from '@blueprintjs/core';
 import { CSSProperties, MouseEvent } from 'react';
-
-import Button from './Button';
 
 interface ActionButtonsProps {
   onDone: (event?: MouseEvent) => void;
@@ -20,8 +19,10 @@ export default function ActionButtons(props: ActionButtonsProps) {
   } = props;
   return (
     <div style={{ margin: '0 10px', display: 'flex', ...style }}>
-      <Button.Done
+      <Button
+        intent="success"
         onClick={onDone}
+        small
         style={
           style?.flexDirection === 'row-reverse'
             ? {
@@ -31,20 +32,23 @@ export default function ActionButtons(props: ActionButtonsProps) {
         }
       >
         {doneLabel}
-      </Button.Done>
-      <Button.Danger
-        fill="outline"
+      </Button>
+      <Button
+        small
+        outlined
+        intent="danger"
         onClick={onCancel}
         style={
           !style.flexDirection || style.flexDirection === 'row'
             ? {
                 marginLeft: '10px',
+                margin: '10px',
               }
             : {}
         }
       >
         {cancelLabel}
-      </Button.Danger>
+      </Button>
     </div>
   );
 }

@@ -1,29 +1,39 @@
-import { Classes } from '@blueprintjs/core';
-import { useFormikContext } from 'formik';
+import { Checkbox, Classes } from '@blueprintjs/core';
+import { InfoBlockField } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import { GroupPane } from '../../../elements/GroupPane';
+import { Input2 } from '../../../elements/Input2';
 import Label from '../../../elements/Label';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { tableInputStyle } from '../../../elements/ReactTable/Style';
-import FormikCheckBox from '../../../elements/formik/FormikCheckBox';
-import FormikInput from '../../../elements/formik/FormikInput';
+import { useFormValidateField } from '../../../elements/useFormValidateField';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
 
+function getKeyPath<T extends keyof InfoBlockField>(
+  index: number,
+  key: T,
+): `infoBlock.fields.${number}.${T}` {
+  return `infoBlock.fields.${index}.${key}`;
+}
+
 function InfoBlockTabContent() {
-  const { values, setFieldValue } = useFormikContext();
+  const { control, setValue, register } = useFormContext<WorkspaceWithSource>();
+  const isValid = useFormValidateField();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
     [data],
   );
-
-  const fields = (values as any)?.infoBlock.fields;
+  const fields: InfoBlockField[] =
+    useWatch<WorkspaceWithSource>({
+      name: 'infoBlock.fields',
+    }) || [];
 
   const addHandler = useCallback(
     (data: readonly any[], index: number) => {
@@ -38,17 +48,17 @@ function InfoBlockTabContent() {
       } else {
         columns.push(emptyField);
       }
-      void setFieldValue('infoBlock.fields', columns);
+      setValue('infoBlock.fields', columns);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      void setFieldValue('infoBlock.fields', _fields);
+      setValue('infoBlock.fields', _fields);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(
@@ -61,10 +71,26 @@ function InfoBlockTabContent() {
       {
         Header: 'Label',
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'label');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`infoBlock.fields.${row.index}.label`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    {...field}
+                    onChange={(v, e) => field.onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -72,13 +98,31 @@ function InfoBlockTabContent() {
       {
         Header: 'Field',
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'jpath');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`infoBlock.fields.${row.index}.jpath`}
-              style={tableInputStyle}
-              mapOnChangeValue={(key) => paths?.[key] || key}
-              mapValue={(paths) => convertPathArrayToString(paths)}
-              datalist={datalist}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    FilterItems={datalist}
+                    onChange={(key) =>
+                      field.onChange(() => {
+                        return paths?.[key] || key;
+                      })
+                    }
+                    value={convertPathArrayToString(field.value)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -86,21 +130,37 @@ function InfoBlockTabContent() {
       {
         Header: 'Format',
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'format');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`infoBlock.fields.${row.index}.format`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    {...field}
+                    onChange={(v, e) => field.onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
       },
       {
         Header: 'Visible',
-        style: { width: '30px' },
+        style: { width: '30px', textAlign: 'center' },
         Cell: ({ row }) => (
-          <CheckBoxCell
-            name={`infoBlock.fields.${row.index}.visible`}
-            defaultValue
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(getKeyPath(row.index, 'visible'))}
           />
         ),
       },
@@ -137,7 +197,7 @@ function InfoBlockTabContent() {
         },
       },
     ],
-    [addHandler, datalist, deleteHandler, paths],
+    [addHandler, control, datalist, deleteHandler, isValid, paths, register],
   );
 
   return (
@@ -146,7 +206,7 @@ function InfoBlockTabContent() {
         title="Display spectrum info block"
         style={{ wrapper: { padding: '10px 0' } }}
       >
-        <FormikCheckBox name="infoBlock.visible" />
+        <Checkbox style={{ margin: 0 }} {...register('infoBlock.visible')} />
       </Label>
 
       <GroupPane

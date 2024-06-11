@@ -4,12 +4,12 @@ import { SpectraTableColumn } from 'nmr-load-save';
 import { useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { Button } from 'react-science/ui';
 
 import { InputStyle } from '../../../elements/Input';
 import { Input2 } from '../../../elements/Input2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
-import { Button } from 'react-science/ui';
 
 const inputStyle: InputStyle = {
   input: {

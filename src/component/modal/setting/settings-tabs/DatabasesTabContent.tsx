@@ -1,47 +1,28 @@
 /** @jsxImportSource @emotion/react */
-import { Classes } from '@blueprintjs/core';
+import { Checkbox, Classes, Radio } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { v4 } from '@lukeed/uuid';
-import { Field, useFormikContext } from 'formik';
-import { CustomWorkspaces } from 'nmr-load-save';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import { CustomWorkspaces, Database } from 'nmr-load-save';
+import { useCallback, useMemo } from 'react';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt, FaLink } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
 import { GroupPane } from '../../../elements/GroupPane';
+import { Input2 } from '../../../elements/Input2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { tableInputStyle } from '../../../elements/ReactTable/Style';
-import FormikInput from '../../../elements/formik/FormikInput';
+import { useFormValidateField } from '../../../elements/useFormValidateField';
 import type { NMRiumWorkspace } from '../../../main';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument';
 
-const style: Record<
-  'table' | 'th' | 'input' | 'labelCol' | 'serialCol' | 'checkbox',
-  CSSProperties
-> = {
-  table: {
-    width: '100%',
-  },
-  th: {
-    fontSize: '12px',
-  },
-  input: {
-    width: '100%',
-  },
-  labelCol: {
-    width: '30%',
-  },
-  serialCol: {
-    width: '5%',
-  },
-  checkbox: {
-    display: 'block',
-    margin: '0 auto',
-    width: 'fit-content',
-  },
-};
+function getKeyPath<T extends keyof Database>(
+  index: number,
+  key: T,
+): `databases.data.${number}.${T}` {
+  return `databases.data.${index}.${key}`;
+}
 
 interface DatabasesTabContentProps {
   currentWorkspace: NMRiumWorkspace;
@@ -52,8 +33,13 @@ function DatabasesTabContent({
   currentWorkspace,
   originalWorkspaces,
 }: DatabasesTabContentProps) {
-  const { values, setFieldValue } = useFormikContext();
-  const databases = (values as any).databases?.data || [];
+  const { setValue, register, control } = useFormContext<WorkspaceWithSource>();
+  const isValid = useFormValidateField();
+
+  const databases: Database[] =
+    useWatch<WorkspaceWithSource>({
+      name: 'databases.data',
+    }) || [];
 
   const addHandler = useCallback(
     (data: readonly any[], index = 0) => {
@@ -69,17 +55,17 @@ function DatabasesTabContent({
       } else {
         databases.push(emptyField);
       }
-      void setFieldValue('databases.data', databases);
+      setValue('databases.data', databases);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const deleteHandler = useCallback(
     (data, index: number) => {
       const databases = data.filter((_, columnIndex) => columnIndex !== index);
-      void setFieldValue('databases.data', databases);
+      setValue('databases.data', databases);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const COLUMNS: Array<Column<any>> = useMemo(
@@ -93,10 +79,29 @@ function DatabasesTabContent({
         Header: 'Label',
         style: { minWidth: '150px' },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'label');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`databases.data.${row.index}.label`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                const { onChange, value, ...otherProps } = field;
+
+                return (
+                  <Input2
+                    {...otherProps}
+                    value={value}
+                    onChange={(v, e) => onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -105,40 +110,68 @@ function DatabasesTabContent({
         Header: 'URL',
         style: { width: '100%' },
         Cell: ({ row }) => {
+          const name = getKeyPath(row.index, 'url');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`databases.data.${row.index}.url`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                const { onChange, value, ...otherProps } = field;
+                return (
+                  <Input2
+                    {...otherProps}
+                    value={value || ''}
+                    onChange={(v, e) => onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
       },
       {
         Header: 'Enabled',
-        style: { width: '30px' },
+        style: { width: '30px', textAlign: 'center' },
+
         Cell: ({ row }) => (
-          <CheckBoxCell
-            name={`databases.data.${row.index}.enabled`}
-            defaultValue
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(getKeyPath(row.index, 'enabled'))}
           />
         ),
       },
       {
         Header: 'Auto Load',
-        style: { width: '30px' },
+        style: { width: '30px', textAlign: 'center' },
         Cell: ({ row }) => (
-          <Field
-            style={style.checkbox}
-            type="radio"
+          <Controller
+            control={control}
             name="databases.defaultDatabase"
-            value={row.original.key}
+            render={({ field }) => {
+              const { onChange, value } = field;
+              return (
+                <Radio
+                  value={row.original.key}
+                  style={{ margin: 0 }}
+                  checked={value === row.original.key}
+                  onChange={onChange}
+                />
+              );
+            }}
           />
         ),
       },
       {
         Header: '',
         style: { maxWidth: '100px', width: '85px' },
-        id: 'add-button',
+        id: 'op-buttons',
         Cell: ({ data, row }) => {
           const { index, original: record } = row;
           return (
@@ -188,7 +221,7 @@ function DatabasesTabContent({
         },
       },
     ],
-    [addHandler, deleteHandler],
+    [addHandler, control, deleteHandler, isValid, register],
   );
 
   function resetHandler() {
@@ -198,45 +231,35 @@ function DatabasesTabContent({
     );
     const database = workSpaceDisplayPreferences.databases.data;
 
-    void setFieldValue('databases.data', database);
+    setValue('databases.data', database);
   }
-
   return (
-    <fieldset
-      onClick={(e: any) => {
-        if (e.target.checked) {
-          e.target.checked = false;
-          void setFieldValue('databases.defaultDatabase', '');
-        }
+    <GroupPane
+      text="Databases"
+      renderHeader={(text) => {
+        return (
+          <DataBaseHeader
+            text={text}
+            onReset={resetHandler}
+            onAdd={() => addHandler(databases)}
+          />
+        );
       }}
     >
-      <GroupPane
-        text="Databases"
-        renderHeader={(text) => {
-          return (
-            <DataBaseHeader
-              text={text}
-              onReset={resetHandler}
-              onAdd={() => addHandler(databases)}
-            />
-          );
+      <ReactTable
+        style={{
+          'thead tr th': { zIndex: 1 },
+          td: { padding: 0 },
         }}
-      >
-        <ReactTable
-          style={{
-            'thead tr th': { zIndex: 1 },
-            td: { padding: 0 },
-          }}
-          rowStyle={{
-            hover: { backgroundColor: '#f7f7f7' },
-            active: { backgroundColor: '#f5f5f5' },
-          }}
-          data={databases}
-          columns={COLUMNS}
-          emptyDataRowText="No Fields"
-        />
-      </GroupPane>
-    </fieldset>
+        rowStyle={{
+          hover: { backgroundColor: '#f7f7f7' },
+          active: { backgroundColor: '#f5f5f5' },
+        }}
+        data={databases}
+        columns={COLUMNS}
+        emptyDataRowText="No Fields"
+      />
+    </GroupPane>
   );
 }
 

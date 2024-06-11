@@ -1,8 +1,14 @@
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import { Checkbox } from '@blueprintjs/core';
+import { useMemo } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+
+import { Keys } from '../../../../data/types/common/Keys';
 import { GroupPane } from '../../../elements/GroupPane';
+import { Input2 } from '../../../elements/Input2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import FormikInput from '../../../elements/formik/FormikInput';
-import FormikSelect from '../../../elements/formik/FormikSelect';
+import Select from '../../../elements/Select';
+import { useFormValidateField } from '../../../elements/useFormValidateField';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const DataSelectionOptions = [
   { label: 'FT', value: 'ft' },
@@ -14,8 +20,9 @@ const DataSelectionOptions = [
 
 interface BaseListItem {
   label: string;
-  name: string;
+  name: Partial<Keys<Pick<WorkspaceWithSource, 'nmrLoaders'>>>;
 }
+
 interface BasicListItem extends BaseListItem {
   fieldType: 'input' | 'checkbox';
 }
@@ -29,90 +36,132 @@ type ListItem = BasicListItem | SelectListItem;
 const GENERAL_LIST: ListItem[] = [
   {
     label: 'Keep 1D',
-    name: 'general.keep1D',
+    name: 'nmrLoaders.general.keep1D',
     fieldType: 'checkbox',
   },
   {
     label: 'Keep 2D',
-    name: 'general.keep2D',
+    name: 'nmrLoaders.general.keep2D',
     fieldType: 'checkbox',
   },
   {
     label: 'Only Real',
-    name: 'general.onlyReal',
+    name: 'nmrLoaders.general.onlyReal',
     fieldType: 'checkbox',
   },
   {
     label: 'Data Selection',
-    name: 'general.dataSelection',
+    name: 'nmrLoaders.general.dataSelection',
     fieldType: 'select',
     options: DataSelectionOptions,
   },
 ];
+
 const BRUKER_LIST: ListItem[] = [
   {
     label: 'Processing Numbers',
-    name: 'bruker.processingNumbers',
+    name: 'nmrLoaders.bruker.processingNumbers',
     fieldType: 'input',
   },
   {
     label: 'Experiment Numbers',
-    name: 'bruker.experimentNumbers',
+    name: 'nmrLoaders.bruker.experimentNumbers',
     fieldType: 'input',
   },
   {
     label: 'Only First Processed Data',
-    name: 'bruker.onlyFirstProcessedData',
+    name: 'nmrLoaders.bruker.onlyFirstProcessedData',
     fieldType: 'checkbox',
-  },
-];
-const COLUMNS: Array<Column<ListItem>> = [
-  {
-    Header: '#',
-    style: { width: '10px' },
-    accessor: (_, index) => index + 1,
-  },
-  {
-    Header: 'Feature',
-    accessor: 'label',
-    style: { width: '70%' },
-  },
-  {
-    Header: ' ',
-    Cell: ({ row }) => {
-      const fieldType = row.original.fieldType;
-      switch (fieldType) {
-        case 'checkbox':
-          return (
-            <CheckBoxCell
-              name={`nmrLoaders.${row.original.name}`}
-              defaultValue={false}
-            />
-          );
-        case 'input':
-          return (
-            <FormikInput
-              name={`nmrLoaders.${row.original.name}`}
-              type="string"
-              style={{ input: { width: '100%', padding: 0 } }}
-            />
-          );
-        case 'select':
-          return (
-            <FormikSelect
-              name={`nmrLoaders.${row.original.name}`}
-              style={{ width: '100%' }}
-              items={row.original.options}
-            />
-          );
-        default:
-          return <span />;
-      }
-    },
   },
 ];
 
 function ImportationFiltersTabContent() {
+  const { register, control } = useFormContext<WorkspaceWithSource>();
+  const isValid = useFormValidateField();
+
+  const COLUMNS: Array<Column<ListItem>> = useMemo(
+    () => [
+      {
+        Header: '#',
+        style: { width: '10px' },
+        accessor: (_, index) => index + 1,
+      },
+      {
+        Header: 'Feature',
+        accessor: 'label',
+        style: { width: '70%' },
+      },
+      {
+        Header: ' ',
+        style: { textAlign: 'center' },
+        Cell: ({ row }) => {
+          const fieldType = row.original.fieldType;
+          const name = row.original.name;
+          switch (fieldType) {
+            case 'checkbox':
+              return <Checkbox style={{ margin: 0 }} {...register(name)} />;
+            case 'input': {
+              const isNotValid = !isValid(name);
+
+              return (
+                <Controller
+                  control={control}
+                  name={name}
+                  render={({ field }) => {
+                    const { onChange, value, ...otherProps } = field;
+                    return (
+                      <Input2
+                        {...otherProps}
+                        value={value as string}
+                        fill
+                        onChange={(v, e) => onChange(e)}
+                        style={{
+                          ...(!isNotValid && { boxShadow: 'none' }),
+                          backgroundColor: 'transparent',
+                        }}
+                        intent={isNotValid ? 'danger' : 'none'}
+                      />
+                    );
+                  }}
+                />
+              );
+            }
+
+            case 'select': {
+              const data = row.original;
+              return (
+                <Controller
+                  control={control}
+                  name={name}
+                  render={({ field }) => {
+                    const { onChange, value, ...otherProps } = field;
+
+                    return (
+                      <Select
+                        {...otherProps}
+                        items={data.options}
+                        key={value as string}
+                        defaultValue={value as string}
+                        onChange={field.onChange}
+                        style={{
+                          width: '100%',
+                          ...(!isValid(name) && { border: '1px solid red' }),
+                        }}
+                      />
+                    );
+                  }}
+                />
+              );
+            }
+            default:
+              return <span />;
+          }
+        },
+      },
+    ],
+    [control, isValid, register],
+  );
+
   return (
     <>
       <GroupPane text="General">

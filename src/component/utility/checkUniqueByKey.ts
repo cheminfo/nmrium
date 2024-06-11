@@ -45,5 +45,10 @@ export function checkUniqueByKey<T>(
       }
     }
   }
-  return new ValidationError(errors);
+
+  if (errors.length > 0) {
+    return new ValidationError(errors);
+  }
+
+  return true;
 }

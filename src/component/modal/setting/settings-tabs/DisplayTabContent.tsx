@@ -1,10 +1,15 @@
-import { CheckBoxCell } from '../../../elements/CheckBoxCell';
+import { Checkbox } from '@blueprintjs/core';
+import { NMRiumPanelPreferences } from 'nmr-load-save';
+import { useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
+
 import ReactTable from '../../../elements/ReactTable/ReactTable';
 import { CustomColumn } from '../../../elements/ReactTable/utility/addCustomColumn';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 interface ListItem {
   label: string;
-  name: string;
+  name: `panels.${keyof NMRiumPanelPreferences}`;
   hideOpenOption?: boolean;
 }
 const LIST: ListItem[] = [
@@ -70,41 +75,49 @@ const LIST: ListItem[] = [
   },
 ];
 
-const COLUMNS: Array<CustomColumn<ListItem>> = [
-  {
-    index: 1,
-    Header: '#',
-    accessor: (_, index) => index + 1,
-  },
-  {
-    index: 1,
-    Header: 'Feature',
-    accessor: 'label',
-    style: { width: '60%' },
-  },
-  {
-    index: 2,
-    Header: 'Active',
-    Cell: ({ row }) => (
-      <CheckBoxCell
-        name={`display.${row.original.name}.display`}
-        defaultValue={false}
-      />
-    ),
-  },
-  {
-    index: 3,
-    Header: 'Open on load',
-    Cell: ({ row }) => (
-      <CheckBoxCell
-        name={`display.${row.original.name}.open`}
-        defaultValue={false}
-      />
-    ),
-  },
-];
-
 function DisplayTabContent() {
+  const { register } = useFormContext<WorkspaceWithSource>();
+
+  const COLUMNS: Array<CustomColumn<ListItem>> = useMemo(
+    () => [
+      {
+        index: 1,
+        Header: '#',
+        accessor: (_, index) => index + 1,
+      },
+      {
+        index: 1,
+        Header: 'Feature',
+        accessor: 'label',
+        style: { width: '60%' },
+      },
+      {
+        index: 2,
+        Header: 'Active',
+        style: { textAlign: 'center' },
+        Cell: ({ row }) => (
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(`display.${row.original.name}.display`)}
+            defaultChecked={false}
+          />
+        ),
+      },
+      {
+        index: 3,
+        Header: 'Open on load',
+        style: { textAlign: 'center' },
+        Cell: ({ row }) => (
+          <Checkbox
+            style={{ margin: 0 }}
+            {...register(`display.${row.original.name}.open`)}
+          />
+        ),
+      },
+    ],
+    [register],
+  );
+
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <ReactTable

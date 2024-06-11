@@ -1,16 +1,16 @@
 import { Classes } from '@blueprintjs/core';
-import { useFormikContext } from 'formik';
-import { SpectraColors, Workspace } from 'nmr-load-save';
+import { SpectraColors } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button } from 'react-science/ui';
+import { Button, ColorPickerDropdown } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
 import { GroupPane } from '../../../elements/GroupPane';
+import { Input2 } from '../../../elements/Input2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { tableInputStyle } from '../../../elements/ReactTable/Style';
-import FormikColorPickerDropdown from '../../../elements/formik/FormikColorPickerDropdown';
-import FormikInput from '../../../elements/formik/FormikInput';
+import { useFormValidateField } from '../../../elements/useFormValidateField';
+import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
 
@@ -21,18 +21,27 @@ const colorInputStyle: CSSProperties = {
 
 type SpectraColorsKeys = keyof SpectraColors;
 
-function getObjectKey(key: SpectraColorsKeys) {
+function getObjectKey(
+  key: SpectraColorsKeys,
+): `spectraColors.${SpectraColorsKeys}` {
   return `spectraColors.${key}`;
 }
 
+function getKeyPath(key: SpectraColorsKeys, index: number, fieldKey: string) {
+  return `${getObjectKey(key)}.${index}.${fieldKey}`;
+}
+
 function SpectraColorsTabContent() {
-  const { values, setFieldValue } = useFormikContext<Workspace>();
+  const { setValue } = useFormContext<WorkspaceWithSource>();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
     [data],
   );
-  const { oneDimension = [], twoDimensions = [] } = values?.spectraColors || {};
+  const { oneDimension = [], twoDimensions = [] }: SpectraColors =
+    useWatch<WorkspaceWithSource>({
+      name: 'spectraColors',
+    }) || {};
 
   const addHandler = useCallback(
     (data: readonly any[], index: number, key: SpectraColorsKeys) => {
@@ -40,12 +49,12 @@ function SpectraColorsTabContent() {
       const emptyField =
         key === 'oneDimension'
           ? {
-              value: null,
+              value: '',
               jpath: ['info', 'experiment'],
               color: 'red',
             }
           : {
-              value: null,
+              value: '',
               jpath: ['info', 'experiment'],
               positiveColor: 'red',
               negativeColor: 'blue',
@@ -55,17 +64,17 @@ function SpectraColorsTabContent() {
       } else {
         columns.push(emptyField);
       }
-      void setFieldValue(getObjectKey(key), columns);
+      setValue(getObjectKey(key), columns);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   const deleteHandler = useCallback(
     (data, index: number, key: SpectraColorsKeys) => {
       const _fields = data.filter((_, columnIndex) => columnIndex !== index);
-      void setFieldValue(getObjectKey(key), _fields);
+      setValue(getObjectKey(key), _fields);
     },
-    [setFieldValue],
+    [setValue],
   );
 
   return (
@@ -104,9 +113,10 @@ interface SpectraColorsProps {
 function SpectraColorsFields(props: SpectraColorsProps) {
   const { onAdd, onDelete, datalist, paths, data, baseObjectPath, groupLabel } =
     props;
+  const { control } = useFormContext();
+  const isValid = useFormValidateField();
 
   const COLUMNS: Array<Column<any>> = useMemo(() => {
-    const objectPath = getObjectKey(baseObjectPath);
     const baseColumns: Array<Column<any>> = [
       {
         Header: '#',
@@ -116,15 +126,31 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       {
         Header: 'Field',
         Cell: ({ row }) => {
+          const name = getKeyPath(baseObjectPath, row.index, 'jpath');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`${objectPath}.${row.index}.jpath`}
-              style={tableInputStyle}
-              mapOnChangeValue={(key) => {
-                return paths?.[key.toString().trim()] || key;
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    FilterItems={datalist}
+                    onChange={(value) =>
+                      field.onChange(() => {
+                        return paths?.[value.toString().trim()] || value;
+                      })
+                    }
+                    value={convertPathArrayToString(field.value)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
               }}
-              mapValue={(paths) => convertPathArrayToString(paths)}
-              datalist={datalist}
             />
           );
         },
@@ -132,10 +158,26 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       {
         Header: 'Value',
         Cell: ({ row }) => {
+          const name = getKeyPath(baseObjectPath, row.index, 'value');
+          const isNotValid = !isValid(name);
+
           return (
-            <FormikInput
-              name={`${objectPath}.${row.index}.value`}
-              style={tableInputStyle}
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <Input2
+                    {...field}
+                    onChange={(v, e) => field.onChange(e)}
+                    style={{
+                      ...(!isNotValid && { boxShadow: 'none' }),
+                      backgroundColor: 'transparent',
+                    }}
+                    intent={isNotValid ? 'danger' : 'none'}
+                  />
+                );
+              }}
             />
           );
         },
@@ -179,11 +221,23 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       const colorField = {
         Header: 'Color',
         style: colorInputStyle,
-        Cell: ({ row }) => (
-          <FormikColorPickerDropdown
-            name={`${objectPath}.${row.index}.color`}
-          />
-        ),
+        Cell: ({ row }) => {
+          const name = getKeyPath(baseObjectPath, row.index, 'color');
+          return (
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <ColorPickerDropdown
+                    onChangeComplete={({ hex }) => field.onChange(hex)}
+                    color={{ hex: field.value }}
+                  />
+                );
+              }}
+            />
+          );
+        },
       };
 
       return [...baseColumns, colorField, operationsField];
@@ -193,25 +247,49 @@ function SpectraColorsFields(props: SpectraColorsProps) {
       {
         Header: 'Positive color',
         style: colorInputStyle,
-        Cell: ({ row }) => (
-          <FormikColorPickerDropdown
-            name={`${objectPath}.${row.index}.positiveColor`}
-          />
-        ),
+        Cell: ({ row }) => {
+          const name = getKeyPath(baseObjectPath, row.index, 'positiveColor');
+          return (
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <ColorPickerDropdown
+                    onChangeComplete={({ hex }) => field.onChange(hex)}
+                    color={{ hex: field.value }}
+                  />
+                );
+              }}
+            />
+          );
+        },
       },
       {
         Header: 'Negative color',
         style: colorInputStyle,
-        Cell: ({ row }) => (
-          <FormikColorPickerDropdown
-            name={`${objectPath}.${row.index}.negativeColor`}
-          />
-        ),
+        Cell: ({ row }) => {
+          const name = getKeyPath(baseObjectPath, row.index, 'negativeColor');
+          return (
+            <Controller
+              control={control}
+              name={name}
+              render={({ field }) => {
+                return (
+                  <ColorPickerDropdown
+                    onChangeComplete={({ hex }) => field.onChange(hex)}
+                    color={{ hex: field.value }}
+                  />
+                );
+              }}
+            />
+          );
+        },
       },
     ];
 
     return [...baseColumns, ...colorFields, operationsField];
-  }, [baseObjectPath, datalist, onAdd, onDelete, paths]);
+  }, [baseObjectPath, control, datalist, isValid, onAdd, onDelete, paths]);
 
   return (
     <GroupPane
