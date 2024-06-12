@@ -68,6 +68,7 @@ const getIntegralDefaultValues = (
     strokeWidth: 1,
     showKind: true,
     showDeleteAction: true,
+    isSumConstant: true,
   };
 
   return getPreferences(preferences, nucleus);
@@ -122,6 +123,7 @@ const getRangeDefaultValues = (
     showZoomAction: true,
     showEditAction: true,
     showAssignmentLabel: false,
+    isSumConstant: true,
   };
 
   return getPreferences(preferences, nucleus);

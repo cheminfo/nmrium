@@ -122,6 +122,7 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
         format: '0',
       },
     ],
+    position: { x: 0, y: 0 },
   },
   onLoadProcessing: {
     autoProcessing: true,

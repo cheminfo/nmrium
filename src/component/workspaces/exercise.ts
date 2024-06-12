@@ -51,6 +51,7 @@ export const exercise: InnerWorkspace = {
           strokeWidth: 1,
           showKind: false,
           showDeleteAction: true,
+          isSumConstant: true,
         },
         '13C': {
           showSerialNumber: true,
@@ -62,6 +63,7 @@ export const exercise: InnerWorkspace = {
           strokeWidth: 1,
           showKind: false,
           showDeleteAction: true,
+          isSumConstant: true,
         },
       },
     },
