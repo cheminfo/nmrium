@@ -11,6 +11,7 @@ import { NumberInput2 } from '../../../elements/NumberInput2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
+import { Section } from '../GeneralSettings';
 
 function getKeyPath<T extends keyof NucleiPreferences>(
   index: number,
@@ -278,7 +279,7 @@ function NucleiTabContent() {
 
 function FieldsBlockHeader({ onAdd, text }) {
   return (
-    <div className="section-header" style={{ display: 'flex' }}>
+    <Section>
       <p style={{ flex: 1 }}>{text}</p>
 
       <Button
@@ -290,7 +291,7 @@ function FieldsBlockHeader({ onAdd, text }) {
       >
         Add nuclei preferences
       </Button>
-    </div>
+    </Section>
   );
 }
 

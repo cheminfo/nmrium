@@ -6,7 +6,7 @@ import { Keys } from '../../../../data/types/common/Keys';
 import { GroupPane } from '../../../elements/GroupPane';
 import { Input2 } from '../../../elements/Input2';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import Select from '../../../elements/Select';
+import { Select2 } from '../../../elements/Select2';
 import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
@@ -137,16 +137,14 @@ function ImportationFiltersTabContent() {
                     const { onChange, value, ...otherProps } = field;
 
                     return (
-                      <Select
+                      <Select2
                         {...otherProps}
                         items={data.options}
-                        key={value as string}
-                        defaultValue={value as string}
-                        onChange={field.onChange}
-                        style={{
-                          width: '100%',
-                          ...(!isValid(name) && { border: '1px solid red' }),
-                        }}
+                        itemTextKey="label"
+                        itemValueKey="value"
+                        selectedItemValue={field.value}
+                        onItemSelect={(item) => field.onChange(item.value)}
+                        fill
                       />
                     );
                   }}

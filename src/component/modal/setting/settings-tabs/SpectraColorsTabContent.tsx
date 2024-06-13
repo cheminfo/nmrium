@@ -13,6 +13,7 @@ import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
+import { Section } from '../GeneralSettings';
 
 const colorInputStyle: CSSProperties = {
   minWidth: '80px',
@@ -322,7 +323,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
 
 function FieldsBlockHeader({ onAdd, text }) {
   return (
-    <div className="section-header" style={{ display: 'flex' }}>
+    <Section>
       <p style={{ flex: 1 }}>{text}</p>
 
       <Button
@@ -334,7 +335,7 @@ function FieldsBlockHeader({ onAdd, text }) {
       >
         Add custom color
       </Button>
-    </div>
+    </Section>
   );
 }
 

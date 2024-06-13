@@ -5,7 +5,7 @@ import { LOGGER_LEVELS } from '../../../context/LoggerContext';
 import { GroupPane } from '../../../elements/GroupPane';
 import Label, { LabelStyle } from '../../../elements/Label';
 import { NumberInput2 } from '../../../elements/NumberInput2';
-import Select from '../../../elements/Select';
+import { Select2 } from '../../../elements/Select2';
 import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
@@ -93,17 +93,12 @@ function GeneralTabContent() {
             name="general.spectraRendering"
             render={({ field }) => {
               return (
-                <Select
+                <Select2<SelectItem>
                   items={SHAPE_RENDERING}
-                  key={field.value}
-                  defaultValue={field.value}
-                  onChange={field.onChange}
-                  style={{
-                    width: '150px',
-                    ...(!isValid('general.spectraRendering') && {
-                      border: '1px solid red',
-                    }),
-                  }}
+                  itemTextKey="label"
+                  itemValueKey="value"
+                  selectedItemValue={field.value}
+                  onItemSelect={(item) => field.onChange(item.value)}
                 />
               );
             }}
@@ -117,17 +112,12 @@ function GeneralTabContent() {
             name="general.loggingLevel"
             render={({ field }) => {
               return (
-                <Select
+                <Select2<SelectItem>
                   items={LOGS_LEVELS}
-                  key={field.value}
-                  defaultValue={field.value}
-                  onChange={field.onChange}
-                  style={{
-                    width: '100px',
-                    ...(!isValid('general.loggingLevel') && {
-                      border: '1px solid red',
-                    }),
-                  }}
+                  itemTextKey="label"
+                  itemValueKey="value"
+                  selectedItemValue={field.value}
+                  onItemSelect={(item) => field.onChange(item.value)}
                 />
               );
             }}
@@ -139,17 +129,12 @@ function GeneralTabContent() {
             name="general.popupLoggingLevel"
             render={({ field }) => {
               return (
-                <Select
+                <Select2<SelectItem>
                   items={LOGS_LEVELS}
-                  key={field.value}
-                  defaultValue={field.value}
-                  onChange={field.onChange}
-                  style={{
-                    width: '100px',
-                    ...(!isValid('general.popupLoggingLevel') && {
-                      border: '1px solid red',
-                    }),
-                  }}
+                  itemTextKey="label"
+                  itemValueKey="value"
+                  selectedItemValue={field.value}
+                  onItemSelect={(item) => field.onChange(item.value)}
                 />
               );
             }}
