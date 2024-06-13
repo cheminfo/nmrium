@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useLayoutEffect, useRef } from 'react';
 
 import {
   DropDownListItem,
@@ -9,18 +8,6 @@ import {
 } from './DropDownButton';
 
 const styles = {
-  container: css`
-    background-color: white;
-    position: absolute;
-    height: auto;
-    z-index: 99999999999999;
-    box-shadow:
-      0 19px 38px rgb(0 0 0 / 30%),
-      0 15px 12px rgb(0 0 0 / 22%);
-    border-radius: 10px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  `,
   ul: css`
     list-style-type: none;
     padding: 0;
@@ -37,8 +24,7 @@ const styles = {
     }
 
     &:hover {
-      background-color: gray;
-      color: white;
+      background-color: #f6f6f6;
     }
   `,
   label: css`
@@ -61,27 +47,8 @@ function DropDownList({
   labelKey,
   visibleKey,
 }: InnerDropDownListProps<DropDownListItem>) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const container = ref.current;
-    if (container) {
-      const { right } = container.getBoundingClientRect();
-      const innerWidth = window.innerWidth - 30;
-      if (right > innerWidth) {
-        container.style.left = `-${right - innerWidth}px`;
-      }
-    }
-
-    return () => {
-      if (container) {
-        container.style.left = '0px';
-      }
-    };
-  }, []);
-
   return (
-    <div css={styles.container} ref={ref}>
+    <div>
       <ul css={styles.ul}>
         {data.map((item, index) => (
           <li
@@ -94,6 +61,7 @@ function DropDownList({
             style={{
               display:
                 !(visibleKey in item) || item[visibleKey] ? 'block' : 'none',
+              cursor: 'pointer',
             }}
           >
             {renderItem?.(item) || (
