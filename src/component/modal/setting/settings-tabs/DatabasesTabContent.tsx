@@ -16,6 +16,7 @@ import type { NMRiumWorkspace } from '../../../main';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace';
 import { isGoogleDocument } from '../../../utility/isGoogleDocument';
+import { Section } from '../GeneralSettings';
 
 function getKeyPath<T extends keyof Database>(
   index: number,
@@ -265,7 +266,7 @@ function DatabasesTabContent({
 
 function DataBaseHeader({ onReset, onAdd, text }) {
   return (
-    <div className="section-header" style={{ display: 'flex' }}>
+    <Section>
       <p style={{ flex: 1 }}>{text}</p>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button
@@ -288,7 +289,7 @@ function DataBaseHeader({ onReset, onAdd, text }) {
           Add Database
         </Button>
       </div>
-    </div>
+    </Section>
   );
 }
 

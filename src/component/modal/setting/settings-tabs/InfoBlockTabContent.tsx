@@ -14,6 +14,7 @@ import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
+import { Section } from '../GeneralSettings';
 
 function getKeyPath<T extends keyof InfoBlockField>(
   index: number,
@@ -240,7 +241,7 @@ function InfoBlockTabContent() {
 
 function FieldsBlockHeader({ onAdd, text }) {
   return (
-    <div className="section-header" style={{ display: 'flex' }}>
+    <Section>
       <p style={{ flex: 1 }}>{text}</p>
 
       <Button
@@ -252,7 +253,7 @@ function FieldsBlockHeader({ onAdd, text }) {
       >
         Add Field
       </Button>
-    </div>
+    </Section>
   );
 }
 

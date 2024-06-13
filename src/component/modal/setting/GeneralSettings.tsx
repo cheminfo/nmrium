@@ -8,6 +8,7 @@ import {
   Tab,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Workspace } from 'nmr-load-save';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -50,14 +51,13 @@ import SpectraColorsTabContent from './settings-tabs/SpectraColorsTabContent';
 import ToolsTabContent from './settings-tabs/ToolsTabContent';
 import { validation } from './settingsValidation';
 
-const styles = css`
-  .section-header {
-    font-size: 13px;
-    color: #2ca8ff;
-    margin-bottom: 10px;
-    border-bottom: 0.55px solid #f9f9f9;
-    padding: 6px 2px;
-  }
+export const Section = styled.div`
+  display: flex;
+  font-size: 13px;
+  color: #2ca8ff;
+  margin-bottom: 10px;
+  border-bottom: 0.55px solid #f9f9f9;
+  padding: 6px 2px;
 `;
 
 function isRestButtonDisable(
@@ -120,11 +120,12 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
     dispatch,
     current: currentWorkspace,
     originalWorkspaces,
+    workspaces,
     ...preferences
   } = usePreferences();
   const { addNewWorkspace, removeWorkspace, setActiveWorkspace } =
     useWorkspaceAction();
-  const workspaces = useWorkspacesList();
+  const baseWorkspaces = useWorkspacesList();
   const workspaceName = preferences.workspace.current;
   const pastRef = useRef<Record<string, Workspace> | null>(null);
   const methods = useForm<WorkspaceWithSource>({
@@ -134,13 +135,13 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
   const { reset, getValues } = methods;
 
   const workspacesList = useMemo(() => {
-    return workspaces.concat([
+    return baseWorkspaces.concat([
       {
         key: 'new',
         label: 'Custom workspace',
       } as any,
     ]);
-  }, [workspaces]);
+  }, [baseWorkspaces]);
 
   function addWorkSpaceHandler(name) {
     addNewWorkspace(name, getValues());
@@ -152,6 +153,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
 
   function ChangeWorkspaceHandler(option: DropDownListItem) {
     setActiveWorkspace(option.key);
+    reset(workspaces[option.key]);
   }
 
   function renderItem(item) {
@@ -169,7 +171,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
       const parseWorkspaceName = Object.keys(inputWorkspace)[0];
       if (preferences.workspace.current === parseWorkspaceName) {
         reset(inputWorkspace[parseWorkspaceName]);
-      } else if (preferences.workspaces[parseWorkspaceName]) {
+      } else if (workspaces[parseWorkspaceName]) {
         pastRef.current = inputWorkspace;
         dispatch({
           type: 'SET_WORKSPACE',
@@ -180,7 +182,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
         });
       }
     },
-    [dispatch, preferences.workspace, preferences.workspaces, reset],
+    [dispatch, preferences.workspace, workspaces, reset],
   );
 
   useEffect(() => {
@@ -230,7 +232,7 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
             background-color: white;
           `}
         >
-          <div css={styles} style={{ height }}>
+          <div style={{ height }}>
             <Tabs
               vertical
               css={css`
@@ -288,7 +290,6 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
                 panel={<SpectraColorsTabContent />}
               />
             </Tabs>
-            {/* </Formik> */}
           </div>
         </DialogBody>
         <DialogFooter>
