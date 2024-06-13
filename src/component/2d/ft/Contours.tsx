@@ -22,7 +22,6 @@ interface ContoursPathsProps {
   id: string;
   color: string;
   sign: LevelSign;
-  noise: number;
   spectrum: Spectrum2D;
   onTimeout: () => void;
 }
@@ -60,7 +59,6 @@ function usePath(
 const useContoursLevel = (
   spectrum: Spectrum2D,
   sign: LevelSign,
-  noise: number,
   quadrant = 'rr',
 ) => {
   const {
@@ -69,27 +67,26 @@ const useContoursLevel = (
     },
   } = useChartData();
   const { id } = spectrum;
-  const defaultLevel = getDefaultContoursLevel(spectrum, noise, quadrant);
+  const defaultLevel = getDefaultContoursLevel(spectrum, quadrant);
   const level = levels?.[id]?.[sign];
-  return typeof level !== 'number' ? defaultLevel[sign] : level;
+  return level ?? defaultLevel[sign];
 };
 
 function ContoursPaths({
   id: spectrumID,
   sign,
   color,
-  noise,
   spectrum,
   onTimeout,
 }: ContoursPathsProps) {
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
 
-  const level = useContoursLevel(spectrum, sign, noise);
+  const level = useContoursLevel(spectrum, sign);
 
   const contours = useMemo(() => {
     const { contours, timeout } = drawContours(
-      noise,
+      level,
       spectrum,
       sign === 'negative',
     );
@@ -97,7 +94,7 @@ function ContoursPaths({
       onTimeout();
     }
     return contours;
-  }, [spectrum, onTimeout, sign, noise]);
+  }, [spectrum, level, onTimeout, sign]);
 
   const path = usePath(spectrum, contours);
 

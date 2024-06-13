@@ -726,10 +726,9 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
 
   try {
     for (const spectrum of spectra as Spectrum2D[]) {
-      const contourOptions = spectrum.display.contourOptions;
-      const zoom = contoursManager(spectrum.id, levels, contourOptions);
+      const zoom = contoursManager(spectrum, levels);
       levels[spectrum.id] = zoom.wheel(deltaY, altKey);
-      zoom.checkLevel();
+      levels[spectrum.id] = zoom.checkLevel();
     }
   } catch (error) {
     // TODO: handle error.

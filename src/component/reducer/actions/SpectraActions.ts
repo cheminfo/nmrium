@@ -462,11 +462,7 @@ function handleChangeSpectrumSetting(
     spectrum.display = display;
     if (isSpectrum2D(spectrum)) {
       const contoursLevels = draft.view.zoom.levels;
-      const { checkLevel } = contoursManager(
-        spectrum.id,
-        contoursLevels,
-        spectrum.display.contourOptions,
-      );
+      const { checkLevel } = contoursManager(spectrum, contoursLevels);
       contoursLevels[spectrum.id] = checkLevel();
     }
   }
