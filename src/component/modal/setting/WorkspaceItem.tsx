@@ -1,16 +1,9 @@
 import { WorkSpaceSource } from 'nmr-load-save';
 import { CSSProperties, useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
-
-import Button from '../../elements/Button';
+import { Button } from 'react-science/ui';
 
 const styles: Record<
-  | 'container'
-  | 'workspaceName'
-  | 'workspaceVersion'
-  | 'readOnly'
-  | 'newContainer'
-  | 'input',
+  'container' | 'workspaceName' | 'readOnly' | 'newContainer' | 'input',
   CSSProperties
 > = {
   container: {
@@ -21,12 +14,8 @@ const styles: Record<
   workspaceName: {
     flex: '1',
     textAlign: 'left',
-    fontSize: '11px',
-    padding: '5px',
-  },
-  workspaceVersion: {
-    fontSize: '9px',
-    padding: '5px',
+    fontSize: '12px',
+    padding: '0.5rem',
   },
   readOnly: {
     fontSize: '9px',
@@ -85,13 +74,14 @@ function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
             onClick={(e) => e.stopPropagation()}
             onChange={onTextChange}
           />
-          <Button.Done
+          <Button
+            intent="success"
             onClick={addHandler}
             disabled={!name}
             style={{ fontSize: '11px' }}
           >
             Save
-          </Button.Done>
+          </Button>
         </div>
       ) : (
         <div style={styles.container}>
@@ -101,9 +91,13 @@ function WorkspaceItem({ item, onSave, onDelete }: WorkspaceItemProps) {
             <span style={styles.readOnly}>Read Only</span>
           )}
           {item.source === 'user' && onDelete && (
-            <Button.Danger onClick={deleteHandler} size="xSmall" fill="clear">
-              <FaTimes />
-            </Button.Danger>
+            <Button
+              minimal
+              intent="danger"
+              onClick={deleteHandler}
+              small
+              icon="cross"
+            />
           )}
         </div>
       )}

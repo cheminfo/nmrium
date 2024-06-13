@@ -360,7 +360,6 @@ function WorkSpaceActionsButtons(props) {
       }}
     >
       <Button
-        small
         outlined
         intent="primary"
         onClick={handleReset}
@@ -374,7 +373,6 @@ function WorkSpaceActionsButtons(props) {
         <FaBolt className={Classes.ICON} />
       </Button>
       <Button
-        small
         outlined
         onClick={handleCopyWorkspace}
         tooltipProps={{ content: 'Copy workspace preferences', compact: true }}
@@ -383,7 +381,6 @@ function WorkSpaceActionsButtons(props) {
         <FaRegCopy className={Classes.ICON} />
       </Button>
       <Button
-        small
         outlined
         intent="success"
         onClick={handlePastWorkspaceAction}
