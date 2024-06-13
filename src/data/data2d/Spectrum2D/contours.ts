@@ -1,6 +1,10 @@
 import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { xMaxAbsoluteValue } from 'ml-spectra-processing';
+import {
+  xMaxAbsoluteValue,
+  xMedian,
+  matrixToArray,
+} from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
@@ -174,12 +178,11 @@ function getRange(min: number, max: number, length: number, exp?: number) {
     for (let i = 1; i < length + 1; i++) {
       factors[i] = factors[i - 1] + (exp - 1) / exp ** i;
     }
-    const lastFactor = factors[length];
+    const lastFactor = factors[length - 1];
     const result = new Float64Array(length);
     for (let i = 0; i < length; i++) {
       result[i] = (max - min) * (1 - factors[i] / lastFactor) + min;
     }
-
     return result;
   } else {
     const step = (max - min) / (length - 1);
@@ -236,10 +239,13 @@ function getContours(options: ContoursCalcOptions): {
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
-
+  console.log(xMedian(matrixToArray(data.z)));
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = (max * (2 ** (boundary[0] / 10) - 1)) / (2 ** 10 - 1);
-  const maxLevel = (max * (2 ** (boundary[1] / 10) - 1)) / (2 ** 10 - 1);
+  const factor = 15;
+  const minLevel =
+    (max * (2 ** ((boundary[0] * factor) / 100) - 1)) / (2 ** factor - 1);
+  const maxLevel =
+    (max * (2 ** ((boundary[1] * factor) / 100) - 1)) / (2 ** factor - 1);
 
   const diffRange = boundary[1] - boundary[0];
 

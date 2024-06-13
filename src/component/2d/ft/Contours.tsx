@@ -1,4 +1,3 @@
-import { NmrData2DFt } from 'cheminfo-types';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import { Spectrum2D } from 'nmr-load-save';
@@ -9,7 +8,6 @@ import {
   getDefaultContoursLevel,
   LevelSign,
 } from '../../../data/data2d/Spectrum2D/contours';
-import { calculateSanPlot } from '../../../data/utilities/calculateSanPlot';
 import { useChartData } from '../../context/ChartContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
