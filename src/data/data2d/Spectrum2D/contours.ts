@@ -142,7 +142,7 @@ function prepareWheel(value: number, options: WheelOptions) {
       contourOptions.negative.contourLevels[0] += sign * 2;
     }
   }
-  contourOptions.negative.contourLevels[0] =
+  currentLevel.negative.contourLevels[0] =
     contourOptions.negative.contourLevels[0];
   currentLevel.positive.contourLevels[0] =
     contourOptions.positive.contourLevels[0];
