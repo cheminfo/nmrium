@@ -1,7 +1,8 @@
 import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
-import { xMaxAbsoluteValue, xNoiseSanPlot } from 'ml-spectra-processing';
+import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
+import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 interface Level {
   positive: ContourItem;
@@ -47,7 +48,7 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const { data, info } = spectrum;
 
   const quadrantData = data[quadrant];
-  const { noise = xNoiseSanPlot(quadrantData) } = info;
+  const { noise = calculateSanPlot('2D', quadrantData) } = info;
 
   const { positive, negative } = noise;
 
@@ -119,7 +120,6 @@ function prepareWheel(value: number, options: WheelOptions) {
     ) {
       return currentLevel;
     }
-    currentLevel.positive.contourLevels[0] += sign * 2;
     contourOptions.positive.contourLevels[0] += sign * 2;
   } else {
     if (
@@ -127,7 +127,6 @@ function prepareWheel(value: number, options: WheelOptions) {
       (minPositiveLevel <= maxPositiveLevel - positive.numberOfLayers &&
         sign === 1)
     ) {
-      currentLevel.positive.contourLevels[0] += sign * 2;
       contourOptions.positive.contourLevels[0] += sign * 2;
     }
 
@@ -136,11 +135,13 @@ function prepareWheel(value: number, options: WheelOptions) {
       (minNegativeLevel <= maxNegativeLevel - negative.numberOfLayers &&
         sign === 1)
     ) {
-      currentLevel.negative.contourLevels[0] += sign * 2;
       contourOptions.negative.contourLevels[0] += sign * 2;
     }
   }
-
+  contourOptions.negative.contourLevels[0] =
+    contourOptions.negative.contourLevels[0];
+  currentLevel.positive.contourLevels[0] =
+    contourOptions.positive.contourLevels[0];
   return currentLevel;
 }
 

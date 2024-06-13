@@ -67,9 +67,8 @@ const useContoursLevel = (
     },
   } = useChartData();
   const { id } = spectrum;
-  const defaultLevel = getDefaultContoursLevel(spectrum, quadrant);
   const level = levels?.[id]?.[sign];
-  return level ?? defaultLevel[sign];
+  return level ?? getDefaultContoursLevel(spectrum, quadrant)[sign];
 };
 
 function ContoursPaths({
@@ -81,7 +80,6 @@ function ContoursPaths({
 }: ContoursPathsProps) {
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
-
   const level = useContoursLevel(spectrum, sign);
 
   const contours = useMemo(() => {
@@ -133,14 +131,12 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
       {spectra?.map((spectrum) => {
-        const noise = calculateSanPlot('2D', (spectrum.data as NmrData2DFt).rr);
         return (
           <g key={spectrum.id}>
             {spectrum.display.isPositiveVisible && (
               <ContoursPaths
                 id={spectrum.id}
                 sign="positive"
-                noise={noise.positive}
                 spectrum={spectrum}
                 color={spectrum.display.positiveColor}
                 onTimeout={timeoutHandler}
@@ -150,7 +146,6 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
               <ContoursPaths
                 id={spectrum.id}
                 sign="negative"
-                noise={noise.positive}
                 spectrum={spectrum}
                 color={spectrum.display.negativeColor}
                 onTimeout={timeoutHandler}
