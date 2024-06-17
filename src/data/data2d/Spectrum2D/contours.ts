@@ -1,10 +1,6 @@
 import { NmrData2DFt } from 'cheminfo-types';
-import { Conrec } from 'ml-conrec';
-import {
-  xMaxAbsoluteValue,
-  xMedian,
-  matrixToArray,
-} from 'ml-spectra-processing';
+import { Conrec, DrawContourResult } from 'ml-conrec';
+import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
@@ -183,7 +179,7 @@ function getRange(min: number, max: number, length: number, exp?: number) {
     for (let i = 0; i < length; i++) {
       result[i] = (max - min) * (1 - factors[i] / lastFactor) + min;
     }
-    return result;
+    return Array.from(result);
   } else {
     const step = (max - min) / (length - 1);
     return range(min, max + step / 2, step);
@@ -208,13 +204,12 @@ function drawContours(
 ) {
   const { contourLevels, numberOfLayers } = level;
 
-  const contours = getContours({
+  return getContours({
     negative,
     boundary: contourLevels,
     nbLevels: numberOfLayers,
     data: spectrum.data[quadrant],
   });
-  return contours;
 }
 
 interface ContoursCalcOptions {
@@ -225,10 +220,7 @@ interface ContoursCalcOptions {
   data: NmrData2DFt['rr'];
 }
 
-function getContours(options: ContoursCalcOptions): {
-  contours: Float64Array;
-  timeout: boolean;
-} {
+function getContours(options: ContoursCalcOptions) {
   const {
     boundary,
     negative = false,
@@ -251,15 +243,16 @@ function getContours(options: ContoursCalcOptions): {
   }
 
   if (_range.every((r) => r === 0)) {
+    const emptyLine: number[] = [];
     return {
-      contours: _range.map((r) => ({ zValue: r, lines: [] })),
+      contours: _range.map((r) => ({ zValue: r, lines: emptyLine })),
       timeout: false,
     };
   }
 
   return conrec.drawContour({
     contourDrawer: 'basic',
-    levels: _range,
+    levels: Array.from(_range),
     timeout,
   });
 }
