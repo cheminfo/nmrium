@@ -241,11 +241,8 @@ function getContours(options: ContoursCalcOptions): {
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
   console.log(xMedian(matrixToArray(data.z)));
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const factor = 15;
-  const minLevel =
-    (max * (2 ** ((boundary[0] * factor) / 100) - 1)) / (2 ** factor - 1);
-  const maxLevel =
-    (max * (2 ** ((boundary[1] * factor) / 100) - 1)) / (2 ** factor - 1);
+  const minLevel = (max * (2 ** (boundary[0] / 10) - 1)) / (2 ** 10 - 1);
+  const maxLevel = (max * (2 ** (boundary[1] / 10) - 1)) / (2 ** 10 - 1);
 
   const diffRange = boundary[1] - boundary[0];
 
