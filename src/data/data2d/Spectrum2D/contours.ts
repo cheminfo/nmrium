@@ -1,5 +1,5 @@
 import { NmrData2DFt } from 'cheminfo-types';
-import { Conrec, DrawContourResult } from 'ml-conrec';
+import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
@@ -48,6 +48,8 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   const { data, info } = spectrum;
 
   const quadrantData = data[quadrant];
+
+  //@ts-expect-error will be included in nexts versions
   const { noise = calculateSanPlot('2D', quadrantData) } = info;
 
   const { positive, negative } = noise;
