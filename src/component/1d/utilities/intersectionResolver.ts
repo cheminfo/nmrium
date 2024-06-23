@@ -60,7 +60,7 @@ function resolveGroupsIntersection(
   const { maxIteration = 3, groupMargin = 0 } = options;
   let iteration = 1;
   let hasIntersection = true;
-  const newGroups = JSON.parse(JSON.stringify(groups));
+  const newGroups = structuredClone(groups);
 
   while (iteration < maxIteration && hasIntersection) {
     iteration++;

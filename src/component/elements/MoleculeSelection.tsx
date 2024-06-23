@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
-import MF from 'react-mf/lib/components/MF';
+import { MF } from 'react-mf';
 import { MolfileSvgRenderer } from 'react-ocl/full';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';

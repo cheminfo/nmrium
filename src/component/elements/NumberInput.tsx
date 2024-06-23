@@ -28,7 +28,7 @@ const NumberInput = forwardRef(
       value: valueProp,
       style = {},
       onChange,
-      pattern = '^\\d*.\\d*$',
+      pattern = String.raw`^\d*.\d*$`,
       step = 'any',
       min = 'any',
       max = 'any',

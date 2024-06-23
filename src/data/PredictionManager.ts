@@ -117,7 +117,7 @@ export function generateSpectra(
   color: string,
   logger: Logger,
 ): Spectrum[] {
-  const options: PredictionOptions = JSON.parse(JSON.stringify(inputOptions));
+  const options: PredictionOptions = structuredClone(inputOptions);
 
   checkFromTo(predictedSpectra, options, logger);
   const spectra: Spectrum[] = [];

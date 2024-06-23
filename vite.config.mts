@@ -15,9 +15,6 @@ export default () => {
 
   return defineConfig({
     base: './',
-    optimizeDeps: {
-      include: ['@blueprintjs'],
-    },
     esbuild: {
       jsx: 'automatic',
       sourcemap: 'inline',
