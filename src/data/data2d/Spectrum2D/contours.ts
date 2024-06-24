@@ -211,7 +211,6 @@ function getContours(options: ContoursCalcOptions) {
     nbLevels,
     data,
   } = options;
-  console.log('entra', boundary);
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
