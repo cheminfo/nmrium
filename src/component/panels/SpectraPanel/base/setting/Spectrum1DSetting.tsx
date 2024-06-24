@@ -2,6 +2,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { ColorPicker } from 'react-science/ui';
 
 import { COLORS } from '../../../../../data/utilities/generateColor';
+import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha';
 
 import Spectrum1DHistogram from './Spectrum1DHistogram';
 
@@ -28,8 +29,8 @@ function Spectrum1DSetting({
             const { value, onChange } = field;
             return (
               <ColorPicker
-                onChangeComplete={({ hex }) => {
-                  onChange(hex);
+                onChangeComplete={(color) => {
+                  onChange(colorToHexWithAlpha(color));
                   void handleSubmit(onSubmit)();
                 }}
                 color={{ hex: value || '#000' }}

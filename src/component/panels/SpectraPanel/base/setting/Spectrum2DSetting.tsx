@@ -15,6 +15,7 @@ import { ColorPicker } from 'react-science/ui';
 import { COLORS } from '../../../../../data/utilities/generateColor';
 import { NumberInput2 } from '../../../../elements/NumberInput2';
 import { useFormValidateField } from '../../../../elements/useFormValidateField';
+import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha';
 
 import Spectrum2DHistogram from './Spectrum2DHistogram';
 
@@ -83,8 +84,8 @@ function Settings(props: SettingsProps) {
           const { value, onChange } = field;
           return (
             <ColorPicker
-              onChangeComplete={({ hex }) => {
-                onChange(hex);
+              onChangeComplete={(color) => {
+                onChange(colorToHexWithAlpha(color));
 
                 void handleSubmit(onSubmit)();
               }}
