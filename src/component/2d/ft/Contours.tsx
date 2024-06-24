@@ -60,12 +60,9 @@ const useContoursLevel = (
   quadrant = 'rr',
 ) => {
   const {
-    view: {
-      zoom: { levels },
-    },
-  } = useChartData();
-  const { id } = spectrum;
-  const level = levels?.[id]?.[sign];
+    display: { contourOptions },
+  } = spectrum;
+  const level = contourOptions[sign];
   return level ?? getDefaultContoursLevel(spectrum, quadrant)[sign];
 };
 

@@ -2,6 +2,7 @@ import { NmrData2DFt } from 'cheminfo-types';
 import { Conrec } from 'ml-conrec';
 import { xMaxAbsoluteValue } from 'ml-spectra-processing';
 import { Spectrum2D } from 'nmr-load-save';
+
 import { calculateSanPlot } from '../../utilities/calculateSanPlot';
 
 interface Level {
@@ -21,7 +22,6 @@ interface ContourOptions {
 interface WheelOptions {
   altKey: boolean;
   contourOptions: ContourOptions;
-  currentLevel: Level;
 }
 
 type ContoursLevels = Record<string, Level>;
@@ -79,30 +79,18 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
   return defaultLevel;
 }
 
-function contoursManager(
-  spectrum: Spectrum2D,
-  state: any,
-): ReturnContoursManager {
-  const { id: spectrumID } = spectrum;
-  const spectraLevels = { ...state };
+function contoursManager(spectrum: Spectrum2D): ReturnContoursManager {
   const contourOptions = { ...spectrum.display.contourOptions };
 
-  if (!state?.[spectrumID]) {
-    const defaultLevel = getDefaultContoursLevel(spectrum);
-    spectraLevels[spectrumID] = defaultLevel;
-  }
-
-  const currentLevel = spectraLevels[spectrumID];
-
   const wheel = (value, altKey) =>
-    prepareWheel(value, { altKey, contourOptions, currentLevel });
-  const getLevel = () => currentLevel;
-  const checkLevel = () => prepareCheckLevel(currentLevel, contourOptions);
+    prepareWheel(value, { altKey, contourOptions });
+  const getLevel = () => contourOptions;
+  const checkLevel = () => prepareCheckLevel(contourOptions);
   return { wheel, getLevel, checkLevel };
 }
 
 function prepareWheel(value: number, options: WheelOptions) {
-  const { altKey, currentLevel, contourOptions } = options;
+  const { altKey, contourOptions } = options;
 
   const sign = Math.sign(value);
 
@@ -120,7 +108,7 @@ function prepareWheel(value: number, options: WheelOptions) {
       (minPositiveLevel >= maxPositiveLevel - positive.numberOfLayers &&
         sign === 1)
     ) {
-      return currentLevel;
+      return contourOptions;
     }
     contourOptions.positive.contourLevels[0] += sign * 2;
   } else {
@@ -140,15 +128,10 @@ function prepareWheel(value: number, options: WheelOptions) {
       contourOptions.negative.contourLevels[0] += sign * 2;
     }
   }
-  currentLevel.negative.contourLevels[0] =
-    contourOptions.negative.contourLevels[0];
-  currentLevel.positive.contourLevels[0] =
-    contourOptions.positive.contourLevels[0];
-  return currentLevel;
+  return contourOptions;
 }
 
-function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
-  const level = { ...currentLevel };
+function prepareCheckLevel(options: ContourOptions) {
   for (const sign of LEVEL_SIGNS) {
     const {
       numberOfLayers,
@@ -162,11 +145,9 @@ function prepareCheckLevel(currentLevel: Level, options: ContourOptions) {
     } else if (min < 0) {
       options[sign].contourLevels[0] = 0;
     }
-
-    level[sign].contourLevels = [min, max];
-    level[sign].numberOfLayers = numberOfLayers;
   }
-  return level;
+
+  return options;
 }
 
 function getRange(min: number, max: number, length: number, exp?: number) {
@@ -230,6 +211,7 @@ function getContours(options: ContoursCalcOptions) {
     nbLevels,
     data,
   } = options;
+  console.log('entra', boundary);
   const xs = getRange(data.minX, data.maxX, data.z[0].length);
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });

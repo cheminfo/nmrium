@@ -708,7 +708,6 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
     data,
     view: {
       spectra: { activeTab },
-      zoom: { levels },
     },
   } = draft;
   const activeSpectra = getActiveSpectra(draft) || [];
@@ -726,9 +725,8 @@ function levelChangeHandler(draft: Draft<State>, action: LevelChangeAction) {
 
   try {
     for (const spectrum of spectra as Spectrum2D[]) {
-      const zoom = contoursManager(spectrum, levels);
+      const zoom = contoursManager(spectrum);
       zoom.wheel(deltaY, altKey);
-      levels[spectrum.id] = zoom.checkLevel();
     }
   } catch (error) {
     // TODO: handle error.
