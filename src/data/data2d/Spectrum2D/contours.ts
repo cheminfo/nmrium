@@ -152,10 +152,10 @@ function getRange(min: number, max: number, length: number, exp?: number) {
     for (let i = 1; i < length + 1; i++) {
       factors[i] = factors[i - 1] + (exp - 1) / exp ** i;
     }
-    const lastFactor = factors[length - 1];
+    const scaleFactor = factors[length - 1];
     const result = new Float64Array(length);
     for (let i = 0; i < length; i++) {
-      result[i] = (max - min) * (1 - factors[i] / lastFactor) + min;
+      result[i] = (max - min) * (1 - factors[i] / scaleFactor) + min;
     }
     return Array.from(result);
   } else {
@@ -236,10 +236,12 @@ function getContours(options: ContoursCalcOptions) {
 }
 
 /**
- * calculate the value in the Z matrix based in the max value and the contour level (0-100).
+ * calculate the intensity value in the Z matrix based in the max value of Z matrix
+ * and the contour level (0-100).
+ * max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1)
  * @param level - integer of the contour level
  * @param max - max value of the Z matrix
- * @param invert - if it is true it calculates the contour level
+ * @param invert - if it is true it calculates the contour level.
  */
 function calculateValueOfLevel(level: number, max: number, invert = false) {
   if (invert) {
