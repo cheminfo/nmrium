@@ -30,7 +30,7 @@ import WorkspaceItem from '../modal/setting/WorkspaceItem';
 import { options } from '../toolbar/ToolTypes';
 
 import ApodizationOptionsPanel from './ApodizationOptionsPanel';
-import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
+import { AutoPeakPickingOptionPanel } from './AutoPeakPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import { HeaderContainer } from './HeaderContainer';
 import PhaseCorrectionPanel from './PhaseCorrectionPanel';

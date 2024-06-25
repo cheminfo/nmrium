@@ -1,14 +1,14 @@
-import { Formik } from 'formik';
-import { memo } from 'react';
+import { Button } from '@blueprintjs/core';
+import { yupResolver } from '@hookform/resolvers/yup';
+import has from 'lodash/has';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useToaster } from '../context/ToasterContext';
-import Button from '../elements/Button';
-import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
-import FormikInput from '../elements/formik/FormikInput';
-import FormikSelect from '../elements/formik/FormikSelect';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller';
+import { Select2Controller } from '../elements/Select2Controller';
 import {
   MIN_AREA_POINTS,
   useCheckPointsNumberInWindowArea,
@@ -17,15 +17,9 @@ import {
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const inputStyle: InputStyle = {
-  input: {
-    width: '60px',
-    textAlign: 'center',
-  },
-  inputWrapper: { height: '100%' },
-};
+type Direction = 'positive' | 'negative' | 'both';
 
-const LookFor = [
+const LookFor: Array<{ label: string; value: Direction }> = [
   {
     label: 'Positive',
     value: 'positive',
@@ -40,23 +34,43 @@ const LookFor = [
   },
 ];
 
+interface AutoPeakPickingOptions {
+  maxNumberOfPeaks: number;
+  minMaxRatio: number;
+  noiseFactor: number;
+  direction: Direction;
+}
+
 const validationSchema = Yup.object().shape({
   maxNumberOfPeaks: Yup.number().min(0).required(),
   minMaxRatio: Yup.number().min(0).required(),
   noiseFactor: Yup.number().min(0).required(),
+  direction: Yup.mixed<Direction>()
+    .oneOf(['both', 'negative', 'positive'])
+    .required(),
 });
 
-const INIT_VALUES = {
+const INIT_VALUES: AutoPeakPickingOptions = {
   maxNumberOfPeaks: 50,
   minMaxRatio: 0.1,
   noiseFactor: 3,
   direction: 'positive',
 };
 
-function AutoPeakPickingOptionPanel() {
+export function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
   const pointsNumber = useCheckPointsNumberInWindowArea();
   const toaster = useToaster();
+  const {
+    handleSubmit,
+    formState: { isValid, errors },
+    control,
+  } = useForm<AutoPeakPickingOptions>({
+    defaultValues: INIT_VALUES,
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange',
+  });
+
   function handlePeakPicking(values) {
     if (pointsNumber > MIN_AREA_POINTS) {
       dispatch({
@@ -73,70 +87,69 @@ function AutoPeakPickingOptionPanel() {
 
   return (
     <HeaderContainer>
-      <Formik
-        initialValues={INIT_VALUES}
-        onSubmit={handlePeakPicking}
-        validationSchema={validationSchema}
+      <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
+        <Select2Controller
+          control={control}
+          name="direction"
+          selectProps={{
+            items: LookFor,
+          }}
+        />
+      </Label>
+      <Label
+        title="Max number of peaks:"
+        shortTitle="Max peaks:"
+        style={headerLabelStyle}
       >
-        {({ handleSubmit, isValid }) => (
-          <>
-            <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
-              <FormikSelect
-                name="direction"
-                items={LookFor}
-                style={{ width: '85px' }}
-              />
-            </Label>
-            <Label
-              title="Max number of peaks:"
-              shortTitle="Max peaks:"
-              style={headerLabelStyle}
-            >
-              <FormikInput
-                type="number"
-                name="maxNumberOfPeaks"
-                style={inputStyle}
-                min={0}
-                step={1}
-              />
-            </Label>
-            <Label
-              title="Noise factor:"
-              shortTitle="Noise:"
-              style={headerLabelStyle}
-            >
-              <FormikInput
-                type="number"
-                name="noiseFactor"
-                style={inputStyle}
-                min={0}
-              />
-            </Label>
-            <Label
-              title="Min/max Ratio:"
-              shortTitle="Ratio:"
-              style={headerLabelStyle}
-            >
-              <FormikInput
-                type="number"
-                name="minMaxRatio"
-                style={inputStyle}
-                step={0.01}
-                min={0}
-              />
-            </Label>
-            <Button.Done
-              onClick={() => handleSubmit()}
-              style={{ margin: '0 10px' }}
-              disabled={!isValid}
-            >
-              Apply
-            </Button.Done>
-          </>
-        )}
-      </Formik>
+        <NumberInput2Controller
+          control={control}
+          name="maxNumberOfPeaks"
+          inputProps={{
+            min: 0,
+            stepSize: 1,
+            intent: has(errors, 'maxNumberOfPeaks') ? 'danger' : 'none',
+            style: { width: '60px' },
+          }}
+        />
+      </Label>
+      <Label title="Noise factor:" shortTitle="Noise:" style={headerLabelStyle}>
+        <NumberInput2Controller
+          control={control}
+          name="noiseFactor"
+          inputProps={{
+            min: 0,
+            stepSize: 1,
+            intent: has(errors, 'noiseFactor') ? 'danger' : 'none',
+            style: { width: '60px' },
+          }}
+        />
+      </Label>
+      <Label
+        title="Min/max Ratio:"
+        shortTitle="Ratio:"
+        style={headerLabelStyle}
+      >
+        <NumberInput2Controller
+          control={control}
+          name="minMaxRatio"
+          inputProps={{
+            min: 0,
+            stepSize: 0.01,
+            majorStepSize: 0.01,
+            minorStepSize: 0.01,
+            intent: has(errors, 'minMaxRatio') ? 'danger' : 'none',
+            style: { width: '60px' },
+          }}
+        />
+      </Label>
+      <Button
+        intent="success"
+        onClick={() => handleSubmit(handlePeakPicking)()}
+        style={{ margin: '0 10px' }}
+        disabled={!isValid}
+      >
+        Apply
+      </Button>
     </HeaderContainer>
   );
 }
-
-export default memo(AutoPeakPickingOptionPanel);
