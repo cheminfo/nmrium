@@ -58,13 +58,8 @@ function getDefaultContoursLevel(spectrum: Spectrum2D, quadrant = 'rr') {
     Math.abs(quadrantData.minZ),
     Math.abs(quadrantData.maxZ),
   );
-
-  const minLevel = Math.ceil(
-    10 *
-      Math.log2(
-        1 + (3 * xMaxAbsoluteValue([positive, negative]) * (2 ** 10 - 1)) / max,
-      ),
-  );
+  const value = 3 * xMaxAbsoluteValue([positive, negative]);
+  const minLevel = calculateValueOfLevel(value, max, true);
 
   const defaultLevel: ContourOptions = {
     negative: {
@@ -215,8 +210,8 @@ function getContours(options: ContoursCalcOptions) {
   const ys = getRange(data.minY, data.maxY, data.z.length);
   const conrec = new Conrec(data.z, { xs, ys, swapAxes: false });
   const max = Math.max(Math.abs(data.minZ), Math.abs(data.maxZ));
-  const minLevel = (max * (2 ** (boundary[0] / 10) - 1)) / (2 ** 10 - 1);
-  const maxLevel = (max * (2 ** (boundary[1] / 10) - 1)) / (2 ** 10 - 1);
+  const minLevel = calculateValueOfLevel(boundary[0], max);
+  const maxLevel = calculateValueOfLevel(boundary[1], max);
 
   const diffRange = boundary[1] - boundary[0];
 
@@ -238,6 +233,20 @@ function getContours(options: ContoursCalcOptions) {
     levels: Array.from(_range),
     timeout,
   });
+}
+
+/**
+ * calculate the value in the Z matrix based in the max value and the contour level (0-100).
+ * @param level - integer of the contour level
+ * @param max - max value of the Z matrix
+ * @param invert - if it is true it calculates the contour level
+ */
+function calculateValueOfLevel(level: number, max: number, invert = false) {
+  if (invert) {
+    return Math.ceil(10 * Math.log2(1 + (level * (2 ** 10 - 1)) / max));
+  }
+
+  return (max * (2 ** (level / 10) - 1)) / (2 ** 10 - 1);
 }
 
 export {
