@@ -6,18 +6,19 @@ import { useSelect } from 'react-science/ui';
 import { FilterType } from '../utility/filterType';
 
 type SelectOptions<T> = Parameters<typeof useSelect<T>>[0] & {
-  itemTextKey: keyof FilterType<T, string>;
+  itemTextKey?: keyof FilterType<T, string>;
   itemValueKey?: keyof T;
   selectedItemValue?: T[keyof T];
 };
 
 type ReturnedUseSelectOptions = ReturnType<typeof useSelect>;
 
-type Select2Props<T> = Omit<
-  SelectProps<T>,
-  keyof Omit<ReturnedUseSelectOptions, 'onItemSelect' | 'value'>
-> &
-  SelectOptions<T> & { selectedButtonProps?: Omit<ButtonProps, 'text'> };
+export type Select2Props<T extends SelectDefaultItem = SelectDefaultItem> =
+  Omit<
+    SelectProps<T>,
+    keyof Omit<ReturnedUseSelectOptions, 'onItemSelect' | 'value'>
+  > &
+    SelectOptions<T> & { selectedButtonProps?: Omit<ButtonProps, 'text'> };
 
 export function getDefaultSelectedItem<T>(
   items: T[],
@@ -27,17 +28,19 @@ export function getDefaultSelectedItem<T>(
   return items.find((item) => itemValueKey && item[itemValueKey] === value);
 }
 
-interface DefaultItem {
+export interface SelectDefaultItem {
   label: string;
   value: string;
 }
 
-export function Select2<T extends DefaultItem>(props: Select2Props<T>) {
+export function Select2<T extends SelectDefaultItem = SelectDefaultItem>(
+  props: Select2Props<T>,
+) {
   const {
     items,
     defaultSelectedItem,
-    itemTextKey,
-    itemValueKey,
+    itemTextKey = 'label',
+    itemValueKey = 'value',
     selectedItemValue,
     onItemSelect,
     selectedButtonProps,
@@ -54,7 +57,7 @@ export function Select2<T extends DefaultItem>(props: Select2Props<T>) {
     defaultSelectedItem:
       defaultSelectedItem ??
       getDefaultSelectedItem(items, itemValueKey, selectedItemValue),
-    itemTextKey,
+    itemTextKey: itemTextKey as keyof FilterType<T, string>,
   });
 
   useEffect(() => {
