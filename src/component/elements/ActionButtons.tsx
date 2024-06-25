@@ -22,7 +22,6 @@ export default function ActionButtons(props: ActionButtonsProps) {
       <Button
         intent="success"
         onClick={onDone}
-        small
         style={
           style?.flexDirection === 'row-reverse'
             ? {
@@ -34,7 +33,6 @@ export default function ActionButtons(props: ActionButtonsProps) {
         {doneLabel}
       </Button>
       <Button
-        small
         outlined
         intent="danger"
         onClick={onCancel}
@@ -42,7 +40,6 @@ export default function ActionButtons(props: ActionButtonsProps) {
           !style.flexDirection || style.flexDirection === 'row'
             ? {
                 marginLeft: '10px',
-                margin: '10px',
               }
             : {}
         }
