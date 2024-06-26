@@ -11,7 +11,10 @@ interface NumberInput2ControllerProps<
 export function NumberInput2Controller<
   TFieldValues extends FieldValues = FieldValues,
 >(props: NumberInput2ControllerProps<TFieldValues>) {
-  const { inputProps, ...controllerProps } = props;
+  const {
+    inputProps: { onValueChange, ...otherInputProps } = {},
+    ...controllerProps
+  } = props;
 
   return (
     <Controller
@@ -20,10 +23,11 @@ export function NumberInput2Controller<
         return (
           <NumberInput2
             {...field}
-            onValueChange={(valueAsNumber, valueAsString) => {
+            onValueChange={(valueAsNumber, valueAsString, event) => {
               field.onChange(valueAsString);
+              onValueChange?.(valueAsNumber, valueAsString, event);
             }}
-            {...inputProps}
+            {...otherInputProps}
           />
         );
       }}
