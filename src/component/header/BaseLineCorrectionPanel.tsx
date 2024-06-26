@@ -1,16 +1,18 @@
-import { Formik } from 'formik';
+import { Checkbox } from '@blueprintjs/core';
+import { Select } from '@blueprintjs/select';
+import { yupResolver } from '@hookform/resolvers/yup';
+import has from 'lodash/has';
 import { Filter, Filters, BaselineCorrectionOptions } from 'nmr-processing';
-import { useState, memo, useRef } from 'react';
+import { memo, useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Button, useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
-import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
-import Select from '../elements/Select';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikInput from '../elements/formik/FormikInput';
-import FormikOnChange from '../elements/formik/FormikOnChange';
+import { NumberInput2 } from '../elements/NumberInput2';
+import { SelectDefaultItem } from '../elements/Select2';
 import { useFilter } from '../hooks/useFilter';
 
 import { headerLabelStyle } from './Header';
@@ -20,28 +22,35 @@ interface BaseLineCorrectionInnerPanelProps {
   filter: Filter | null;
 }
 
-const getAlgorithmsList = () => {
-  return ['airPLS', 'Polynomial'].map((val) => ({
-    label: val,
-    value: val.toLowerCase(),
-  }));
-};
+const algorithmsList = ['airPLS', 'Polynomial'].map((val) => ({
+  label: val,
+  value: val.toLowerCase(),
+}));
 
-const inputStyle: InputStyle = {
-  input: { width: '50px', textAlign: 'center' },
-  inputWrapper: { height: '100%' },
-};
+interface BaseOptions {
+  algorithm: string;
+  livePreview: boolean;
+}
+interface AirplsOptions extends BaseOptions {
+  maxIterations: number;
+  tolerance: number;
+}
+interface PolynomialOptions extends BaseOptions {
+  degree: number;
+}
 
-const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
+const getData = (algorithm, filterValues: BaselineCorrectionOptions) => {
   const { zones, algorithm: baseAlgorithm, ...other } = filterValues;
   switch (algorithm) {
     case 'airpls': {
       const validation = Yup.object().shape({
+        algorithm: Yup.string().required(),
+        livePreview: Yup.boolean().required(),
         maxIterations: Yup.number().integer().min(1).required(),
         tolerance: Yup.number().moreThan(0).required(),
       });
       return {
-        validation,
+        resolver: yupResolver(validation),
         values: {
           algorithm,
           livePreview: true,
@@ -54,11 +63,13 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
     case 'autoPolynomial':
     case 'polynomial': {
       const validation = Yup.object().shape({
+        algorithm: Yup.string().required(),
+        livePreview: Yup.boolean().required(),
         degree: Yup.number().integer().min(1).max(6).required(),
       });
 
       return {
-        validation,
+        resolver: yupResolver(validation),
         values: {
           algorithm,
           livePreview: true,
@@ -69,7 +80,11 @@ const formData = (algorithm, filterValues: BaselineCorrectionOptions) => {
     }
     default:
       return {
-        validation: {},
+        resolver: yupResolver(
+          Yup.object({
+            livePreview: Yup.boolean().required(),
+          }),
+        ),
         values: { livePreview: true },
       };
   }
@@ -82,14 +97,23 @@ function BaseLineCorrectionInnerPanel(
   const previousPreviewRef = useRef<boolean>(true);
   const { algorithm: baseAlgorithm = 'polynomial' } =
     props?.filter?.value || {};
-
-  const [algorithm, setAlgorithm] = useState(baseAlgorithm);
+  const {
+    value: algorithm,
+    onItemSelect,
+    ...defaultSelectProps
+  } = useSelect<SelectDefaultItem>({
+    defaultSelectedItem: algorithmsList.find(
+      (item) => item.value === baseAlgorithm,
+    ),
+    itemTextKey: 'label',
+  });
 
   const handleApplyFilter = (
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
   ) => {
     const { livePreview, ...options } = values;
+
     switch (triggerSource) {
       case 'onChange': {
         if (livePreview || previousPreviewRef !== livePreview) {
@@ -125,81 +149,150 @@ function BaseLineCorrectionInnerPanel(
     });
   };
 
-  function handleChangeAlgorithm(selectedAlgorithm) {
-    setAlgorithm(selectedAlgorithm);
+  const { resolver, values } = getData(
+    algorithm?.value,
+    props?.filter?.value || {},
+  );
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    register,
+    reset,
+  } = useForm<AirplsOptions | PolynomialOptions>({
+    defaultValues: values,
+    resolver: resolver as any,
+  });
+
+  function submitHandler() {
+    void handleSubmit((values) => handleApplyFilter(values, 'onChange'))();
   }
 
-  const form = formData(algorithm, props?.filter?.value || {});
+  const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
+    register(`livePreview`);
 
   return (
     <HeaderContainer>
       <Label title="Algorithm: " style={headerLabelStyle}>
         <Select
-          items={getAlgorithmsList()}
-          value={algorithm}
-          onChange={handleChangeAlgorithm}
-        />
+          items={algorithmsList}
+          filterable={false}
+          itemsEqual="value"
+          onItemSelect={(item) => {
+            onItemSelect(item);
+            const { values } = getData(item.value, props?.filter?.value || {});
+            reset(values);
+          }}
+          {...defaultSelectProps}
+        >
+          <Button text={algorithm?.label} rightIcon="double-caret-vertical" />
+        </Select>
       </Label>
 
-      <Formik
-        onSubmit={(values) => handleApplyFilter(values)}
-        initialValues={form.values}
-        validationSchema={form.validation}
-        enableReinitialize
-      >
-        {({ submitForm }) => (
-          <>
-            {algorithm && algorithm === 'airpls' && (
-              <div style={{ display: 'flex' }}>
-                <Label title="Max iterations:" style={headerLabelStyle}>
-                  <FormikInput
-                    type="number"
-                    name="maxIterations"
-                    debounceTime={250}
-                    style={inputStyle}
-                  />
-                </Label>
-                <Label title="Tolerance:" style={headerLabelStyle}>
-                  <FormikInput
-                    type="number"
-                    name="tolerance"
-                    debounceTime={250}
-                    style={inputStyle}
-                  />
-                </Label>
-              </div>
-            )}
+      {algorithm && algorithm?.value === 'airpls' && (
+        <div style={{ display: 'flex' }}>
+          <Label title="Max iterations:" style={headerLabelStyle}>
+            <Controller
+              control={control}
+              name="maxIterations"
+              render={({ field }) => {
+                const { name, value } = field;
 
-            {algorithm &&
-              ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-                <Label
-                  title="Degree [1 - 6]:"
-                  shortTitle="Degree:"
-                  style={headerLabelStyle}
-                >
-                  <FormikInput
-                    type="number"
-                    name="degree"
+                return (
+                  <NumberInput2
+                    name={name}
+                    value={value}
+                    min={0}
+                    stepSize={1}
+                    intent={has(errors, 'maxIterations') ? 'danger' : 'none'}
+                    style={{ width: '60px' }}
+                    debounceTime={250}
+                    onValueChange={(valueAsNumber, valueAsString) => {
+                      field.onChange(valueAsString);
+                      submitHandler();
+                    }}
+                  />
+                );
+              }}
+            />
+          </Label>
+          <Label title="Tolerance:" style={headerLabelStyle}>
+            <Controller
+              control={control}
+              name="tolerance"
+              render={({ field }) => {
+                const { name, value } = field;
+
+                return (
+                  <NumberInput2
+                    name={name}
+                    value={value}
+                    min={0}
+                    stepSize={0.001}
+                    majorStepSize={0.001}
+                    minorStepSize={0.001}
+                    intent={has(errors, 'tolerance') ? 'danger' : 'none'}
+                    style={{ width: '60px' }}
+                    debounceTime={250}
+                    onValueChange={(valueAsNumber, valueAsString) => {
+                      field.onChange(valueAsString);
+                      submitHandler();
+                    }}
+                  />
+                );
+              }}
+            />
+          </Label>
+        </div>
+      )}
+
+      {algorithm &&
+        ['autoPolynomial', 'polynomial'].includes(algorithm?.value) && (
+          <Label
+            title="Degree [1 - 6]:"
+            shortTitle="Degree:"
+            style={headerLabelStyle}
+          >
+            <Controller
+              control={control}
+              name="degree"
+              render={({ field }) => {
+                const { name, value } = field;
+                return (
+                  <NumberInput2
+                    name={name}
+                    value={value}
                     min={1}
                     max={6}
-                    style={inputStyle}
+                    intent={has(errors, 'degree') ? 'danger' : 'none'}
+                    style={{ width: '60px' }}
                     debounceTime={250}
+                    onValueChange={(valueAsNumber, valueAsString) => {
+                      field.onChange(valueAsString);
+                      submitHandler();
+                    }}
                   />
-                </Label>
-              )}
-
-            <Label title="Live preview" style={headerLabelStyle}>
-              <FormikCheckBox name="livePreview" />
-            </Label>
-
-            <FormikOnChange
-              onChange={(values) => handleApplyFilter(values, 'onChange')}
-              enableOnload
+                );
+              }}
             />
-            <ActionButtons onDone={submitForm} onCancel={handleCancelFilter} />
-          </>
+          </Label>
         )}
-      </Formik>
+
+      <Label title="Live preview" style={headerLabelStyle}>
+        <Checkbox
+          style={{ margin: 0 }}
+          {...otherLivePreviewRegisterOptions}
+          onChange={(event) => {
+            void onLivePreviewChange(event);
+            submitHandler();
+          }}
+        />
+      </Label>
+      <ActionButtons
+        onDone={() => handleSubmit((values) => handleApplyFilter(values))()}
+        onCancel={handleCancelFilter}
+      />
     </HeaderContainer>
   );
 }
