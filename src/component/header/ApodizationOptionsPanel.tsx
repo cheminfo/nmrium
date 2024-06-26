@@ -1,33 +1,35 @@
-import { Formik } from 'formik';
-import { Filters, Filter, ApodizationOptions } from 'nmr-processing';
+import { Checkbox } from '@blueprintjs/core';
+import { yupResolver } from '@hookform/resolvers/yup';
+import has from 'lodash/has';
+import {
+  Filters,
+  Filter,
+  ApodizationOptions as BaseApodizationOptions,
+} from 'nmr-processing';
 import { useRef, memo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
-import { InputStyle } from '../elements/Input';
 import Label from '../elements/Label';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikInput from '../elements/formik/FormikInput';
-import FormikOnChange from '../elements/formik/FormikOnChange';
+import { NumberInput2 } from '../elements/NumberInput2';
 import { useFilter } from '../hooks/useFilter';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const inputStyle: InputStyle = {
-  input: { width: '60px', textAlign: 'center' },
-  inputWrapper: { height: '100%' },
-};
-
 const validationSchema = Yup.object().shape({
   lineBroadening: Yup.number().required(),
   gaussBroadening: Yup.number().required(),
   lineBroadeningCenter: Yup.number().required().min(0).max(1),
+  livePreview: Yup.boolean().required(),
 });
 
-const initialValues: ApodizationOptions & { livePreview: boolean } = {
+type ApodizationOptions = BaseApodizationOptions & { livePreview: boolean };
+
+const initialValues: ApodizationOptions = {
   ...defaultApodizationOptions,
   livePreview: true,
 };
@@ -83,72 +85,122 @@ function ApodizationOptionsInnerPanel(
     formData = { ...initialValues, ...props.filter.value, livePreview: true };
   }
 
+  const {
+    handleSubmit,
+    register,
+    control,
+    formState: { isValid, errors },
+  } = useForm<ApodizationOptions>({
+    defaultValues: formData,
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange',
+  });
+
+  function submitHandler() {
+    void handleSubmit((values) => handleApplyFilter(values, 'onChange'))();
+  }
+
+  const { onChange: onLivePreviewChange, ...otherLivePreviewOptions } =
+    register('livePreview');
+
   return (
     <HeaderContainer>
-      <Formik
-        onSubmit={(values) => handleApplyFilter(values)}
-        initialValues={formData}
-        validationSchema={validationSchema}
+      <Label title="Line broadening:" shortTitle="LB:" style={headerLabelStyle}>
+        <Controller
+          control={control}
+          name="lineBroadening"
+          render={({ field }) => {
+            const { onChange, ...otherFieldProps } = field;
+            return (
+              <NumberInput2
+                {...otherFieldProps}
+                debounceTime={250}
+                min={0}
+                max={1}
+                stepSize={0.1}
+                intent={has(errors, 'lineBroadening') ? 'danger' : 'none'}
+                style={{ width: '60px' }}
+                onValueChange={(valueAsNumber, valueAsString) => {
+                  onChange(valueAsString);
+                  submitHandler();
+                }}
+              />
+            );
+          }}
+        />
+      </Label>
+      <Label
+        title="Gauss broadening:"
+        shortTitle="GB:"
+        style={headerLabelStyle}
       >
-        {({ submitForm }) => (
-          <>
-            <Label
-              title="Line broadening:"
-              shortTitle="LB:"
-              style={headerLabelStyle}
-            >
-              <FormikInput
-                type="number"
-                name="lineBroadening"
+        <Controller
+          control={control}
+          name="gaussBroadening"
+          render={({ field }) => {
+            const { onChange, ...otherFieldProps } = field;
+            return (
+              <NumberInput2
+                {...otherFieldProps}
+                debounceTime={250}
                 min={0}
                 max={1}
-                step={0.1}
-                style={inputStyle}
-                debounceTime={250}
+                stepSize={0.1}
+                intent={has(errors, 'gaussBroadening') ? 'danger' : 'none'}
+                style={{ width: '60px' }}
+                onValueChange={(valueAsNumber, valueAsString) => {
+                  onChange(valueAsString);
+                  submitHandler();
+                }}
               />
-            </Label>
-            <Label
-              title="Gauss broadening:"
-              shortTitle="GB:"
-              style={headerLabelStyle}
-            >
-              <FormikInput
-                type="number"
-                name="gaussBroadening"
+            );
+          }}
+        />
+      </Label>
+      <Label
+        title="Line broadening center [0 - 1]:"
+        shortTitle="LB center:"
+        style={headerLabelStyle}
+      >
+        <Controller
+          control={control}
+          name="lineBroadeningCenter"
+          render={({ field }) => {
+            const { onChange, ...otherFieldProps } = field;
+            return (
+              <NumberInput2
+                {...otherFieldProps}
+                debounceTime={250}
                 min={0}
                 max={1}
-                step={0.1}
-                style={inputStyle}
-                debounceTime={250}
+                stepSize={0.1}
+                intent={has(errors, 'lineBroadeningCenter') ? 'danger' : 'none'}
+                style={{ width: '60px' }}
+                onValueChange={(valueAsNumber, valueAsString) => {
+                  onChange(valueAsString);
+                  submitHandler();
+                }}
               />
-            </Label>
-            <Label
-              title="Line broadening center [0 - 1]:"
-              shortTitle="LB center:"
-              style={headerLabelStyle}
-            >
-              <FormikInput
-                type="number"
-                name="lineBroadeningCenter"
-                min={0}
-                max={1}
-                step={0.1}
-                style={inputStyle}
-                debounceTime={250}
-              />
-            </Label>
-            <Label title="Live preview" style={{ label: { padding: '0 5px' } }}>
-              <FormikCheckBox name="livePreview" />
-            </Label>
+            );
+          }}
+        />
+      </Label>
+      <Label title="Live preview" style={{ label: { padding: '0 5px' } }}>
+        <Checkbox
+          {...otherLivePreviewOptions}
+          onChange={(event) => {
+            void onLivePreviewChange(event);
+            submitHandler();
+          }}
+          style={{ margin: 0 }}
+        />
+      </Label>
 
-            <FormikOnChange
-              onChange={(values) => handleApplyFilter(values, 'onChange')}
-              enableOnload
-            />
-            <ActionButtons onDone={submitForm} onCancel={handleCancelFilter} />
-          </>
-        )}
-      </Formik>
+      <ActionButtons
+        disabledDone={!isValid}
+        onDone={() => handleSubmit((values) => handleApplyFilter(values))()}
+        onCancel={handleCancelFilter}
+      />
     </HeaderContainer>
   );
 }
