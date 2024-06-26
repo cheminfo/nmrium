@@ -7,6 +7,7 @@ interface ActionButtonsProps {
   doneLabel?: string;
   cancelLabel?: string;
   style?: CSSProperties;
+  disabledDone?: boolean;
 }
 
 export default function ActionButtons(props: ActionButtonsProps) {
@@ -16,10 +17,12 @@ export default function ActionButtons(props: ActionButtonsProps) {
     doneLabel = 'Apply',
     cancelLabel = 'Cancel',
     style = {},
+    disabledDone = false,
   } = props;
   return (
     <div style={{ margin: '0 10px', display: 'flex', ...style }}>
       <Button
+        disabled={disabledDone}
         intent="success"
         onClick={onDone}
         style={
