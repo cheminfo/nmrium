@@ -1,6 +1,5 @@
 import { Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import has from 'lodash/has';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -63,7 +62,7 @@ export function AutoPeakPickingOptionPanel() {
   const toaster = useToaster();
   const {
     handleSubmit,
-    formState: { isValid, errors },
+    formState: { isValid },
     control,
   } = useForm<AutoPeakPickingOptions>({
     defaultValues: INIT_VALUES,
@@ -104,24 +103,18 @@ export function AutoPeakPickingOptionPanel() {
         <NumberInput2Controller
           control={control}
           name="maxNumberOfPeaks"
-          inputProps={{
-            min: 0,
-            stepSize: 1,
-            intent: has(errors, 'maxNumberOfPeaks') ? 'danger' : 'none',
-            style: { width: '60px' },
-          }}
+          min={0}
+          stepSize={1}
+          style={{ width: '60px' }}
         />
       </Label>
       <Label title="Noise factor:" shortTitle="Noise:" style={headerLabelStyle}>
         <NumberInput2Controller
           control={control}
           name="noiseFactor"
-          inputProps={{
-            min: 0,
-            stepSize: 1,
-            intent: has(errors, 'noiseFactor') ? 'danger' : 'none',
-            style: { width: '60px' },
-          }}
+          min={0}
+          stepSize={1}
+          style={{ width: '60px' }}
         />
       </Label>
       <Label
@@ -132,14 +125,11 @@ export function AutoPeakPickingOptionPanel() {
         <NumberInput2Controller
           control={control}
           name="minMaxRatio"
-          inputProps={{
-            min: 0,
-            stepSize: 0.01,
-            majorStepSize: 0.01,
-            minorStepSize: 0.01,
-            intent: has(errors, 'minMaxRatio') ? 'danger' : 'none',
-            style: { width: '60px' },
-          }}
+          min={0}
+          stepSize={0.01}
+          majorStepSize={0.01}
+          minorStepSize={0.01}
+          style={{ width: '60px' }}
         />
       </Label>
       <Button
