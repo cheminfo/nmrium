@@ -28,12 +28,11 @@ interface BaseInputProps {
   ) => void;
 }
 
-export interface Input2Props<FilterItem>
+export interface Input2Props<FilterItem extends string = string>
   extends Omit<InputGroupProps, 'onChange' | 'inputRef'>,
     BaseInputProps {
   getFilterValue?: (item: FilterItem) => string;
-  FilterItems?: FilterItem[];
-  format?: () => (element: string) => number | string;
+  filterItems?: FilterItem[];
 }
 
 function useInput(props: UseInputProps) {
@@ -119,7 +118,7 @@ function getClasses(isDebounced: boolean) {
   return classes.join(' ');
 }
 
-function InnerInput<FilterItem extends string>(
+function InnerInput<FilterItem extends string = string>(
   props: Input2Props<FilterItem>,
   ref,
 ) {
@@ -128,8 +127,8 @@ function InnerInput<FilterItem extends string>(
     onChange,
     checkValue,
     value: externalValue,
-    getFilterValue = (item) => item,
-    FilterItems = [],
+    getFilterValue = (item: FilterItem) => item,
+    filterItems,
     leftIcon,
     autoSelect = false,
     ...otherInputProps
@@ -188,20 +187,24 @@ function InnerInput<FilterItem extends string>(
       query={value}
       onQueryChange={handleChange}
       popoverProps={{ disabled: true }}
-      {...(FilterItems.length > 0 && {
-        items: FilterItems,
-        itemRenderer: renderItem,
-        onItemSelect: handleItemSelect,
-        inputValueRenderer: getFilterValue,
-        itemPredicate,
-        popoverProps: { minimal: true, placement: 'bottom' },
-        popoverContentProps: {
-          style: { maxHeight: '250px', overflowY: 'auto', overflowX: 'hidden' },
-        },
-        noResults: (
-          <MenuItem disabled text="No results." roleStructure="listoption" />
-        ),
-      })}
+      {...(filterItems &&
+        filterItems.length > 0 && {
+          items: filterItems,
+          itemRenderer: renderItem,
+          onItemSelect: handleItemSelect,
+          inputValueRenderer: getFilterValue,
+          itemPredicate,
+          popoverProps: { minimal: true, placement: 'bottom' },
+          popoverContentProps: {
+            style: {
+              maxHeight: '250px',
+              overflowY: 'auto',
+            },
+          },
+          noResults: (
+            <MenuItem disabled text="No results." roleStructure="listoption" />
+          ),
+        })}
       closeOnSelect
       resetOnQuery
     />
