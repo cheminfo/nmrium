@@ -1,15 +1,14 @@
 import { Classes } from '@blueprintjs/core';
 import { NucleiPreferences } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { GroupPane } from '../../../elements/GroupPane';
-import { Input2 } from '../../../elements/Input2';
-import { NumberInput2 } from '../../../elements/NumberInput2';
+import { Input2Controller } from '../../../elements/Input2Controller';
+import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { Section } from '../GeneralSettings';
 
@@ -22,7 +21,6 @@ function getKeyPath<T extends keyof NucleiPreferences>(
 
 function NucleiTabContent() {
   const { control, setValue } = useFormContext<WorkspaceWithSource>();
-  const isValid = useFormValidateField();
 
   const fields: NucleiPreferences[] =
     useWatch({
@@ -67,25 +65,12 @@ function NucleiTabContent() {
         style: { padding: 0 },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'nucleus');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -95,25 +80,12 @@ function NucleiTabContent() {
         style: { padding: 0 },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'ppmFormat');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -123,25 +95,13 @@ function NucleiTabContent() {
         style: { padding: 0 },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'hzFormat');
-          const isNotValid = !isValid(name);
 
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -151,30 +111,13 @@ function NucleiTabContent() {
         style: { padding: 0 },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'axisFrom');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <NumberInput2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <NumberInput2
-                    allowNumericCharactersOnly
-                    value={field.value}
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    onValueChange={(valueAsNumber, valueAsString, element) =>
-                      field.onChange(valueAsNumber)
-                    }
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                    fill
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
+              fill
             />
           );
         },
@@ -184,30 +127,14 @@ function NucleiTabContent() {
         style: { padding: 0 },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'axisTo');
-          const isNotValid = !isValid(name);
 
           return (
-            <Controller
+            <NumberInput2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <NumberInput2
-                    allowNumericCharactersOnly
-                    value={field.value}
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    onValueChange={(valueAsNumber, valueAsString, element) =>
-                      field.onChange(valueAsNumber)
-                    }
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                    fill
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
+              fill
             />
           );
         },
@@ -243,7 +170,7 @@ function NucleiTabContent() {
         },
       },
     ],
-    [addHandler, control, deleteHandler, isValid],
+    [addHandler, control, deleteHandler],
   );
 
   return (

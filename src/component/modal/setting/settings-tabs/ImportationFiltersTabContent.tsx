@@ -4,10 +4,9 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { Keys } from '../../../../data/types/common/Keys';
 import { GroupPane } from '../../../elements/GroupPane';
-import { Input2 } from '../../../elements/Input2';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import { Select2 } from '../../../elements/Select2';
-import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const DataSelectionOptions = [
@@ -77,7 +76,6 @@ const BRUKER_LIST: ListItem[] = [
 
 function ImportationFiltersTabContent() {
   const { register, control } = useFormContext<WorkspaceWithSource>();
-  const isValid = useFormValidateField();
 
   const COLUMNS: Array<Column<ListItem>> = useMemo(
     () => [
@@ -101,28 +99,12 @@ function ImportationFiltersTabContent() {
             case 'checkbox':
               return <Checkbox style={{ margin: 0 }} {...register(name)} />;
             case 'input': {
-              const isNotValid = !isValid(name);
-
               return (
-                <Controller
+                <Input2Controller
                   control={control}
                   name={name}
-                  render={({ field }) => {
-                    const { onChange, value, ...otherProps } = field;
-                    return (
-                      <Input2
-                        {...otherProps}
-                        value={value as string}
-                        fill
-                        onChange={(v, e) => onChange(e)}
-                        style={{
-                          ...(!isNotValid && { boxShadow: 'none' }),
-                          backgroundColor: 'transparent',
-                        }}
-                        intent={isNotValid ? 'danger' : 'none'}
-                      />
-                    );
-                  }}
+                  noShadowBox
+                  style={{ backgroundColor: 'transparent' }}
                 />
               );
             }
@@ -157,7 +139,7 @@ function ImportationFiltersTabContent() {
         },
       },
     ],
-    [control, isValid, register],
+    [control, register],
   );
 
   return (

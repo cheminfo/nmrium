@@ -1,15 +1,15 @@
 import { Classes } from '@blueprintjs/core';
 import { SpectraColors } from 'nmr-load-save';
 import { CSSProperties, useCallback, useMemo } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import { Button, ColorPickerDropdown } from 'react-science/ui';
+import { Button } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
+import { ColorPickerDropdownController } from '../../../elements/ColorPickerDropdownController';
 import { GroupPane } from '../../../elements/GroupPane';
-import { Input2 } from '../../../elements/Input2';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
@@ -115,7 +115,6 @@ function SpectraColorsFields(props: SpectraColorsProps) {
   const { onAdd, onDelete, datalist, paths, data, baseObjectPath, groupLabel } =
     props;
   const { control } = useFormContext();
-  const isValid = useFormValidateField();
 
   const COLUMNS: Array<Column<any>> = useMemo(() => {
     const baseColumns: Array<Column<any>> = [
@@ -128,30 +127,15 @@ function SpectraColorsFields(props: SpectraColorsProps) {
         Header: 'Field',
         Cell: ({ row }) => {
           const name = getKeyPath(baseObjectPath, row.index, 'jpath');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    filterItems={datalist}
-                    onChange={(value) =>
-                      field.onChange(() => {
-                        return paths?.[value.toString().trim()] || value;
-                      })
-                    }
-                    value={convertPathArrayToString(field.value)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              filterItems={datalist}
+              mapOnChangeValue={(value) => paths?.[value.trim()] || value}
+              mapValue={convertPathArrayToString}
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -160,25 +144,13 @@ function SpectraColorsFields(props: SpectraColorsProps) {
         Header: 'Value',
         Cell: ({ row }) => {
           const name = getKeyPath(baseObjectPath, row.index, 'value');
-          const isNotValid = !isValid(name);
 
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -225,18 +197,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
         Cell: ({ row }) => {
           const name = getKeyPath(baseObjectPath, row.index, 'color');
           return (
-            <Controller
-              control={control}
-              name={name}
-              render={({ field }) => {
-                return (
-                  <ColorPickerDropdown
-                    onChangeComplete={({ hex }) => field.onChange(hex)}
-                    color={{ hex: field.value }}
-                  />
-                );
-              }}
-            />
+            <ColorPickerDropdownController control={control} name={name} />
           );
         },
       };
@@ -251,18 +212,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
         Cell: ({ row }) => {
           const name = getKeyPath(baseObjectPath, row.index, 'positiveColor');
           return (
-            <Controller
-              control={control}
-              name={name}
-              render={({ field }) => {
-                return (
-                  <ColorPickerDropdown
-                    onChangeComplete={({ hex }) => field.onChange(hex)}
-                    color={{ hex: field.value }}
-                  />
-                );
-              }}
-            />
+            <ColorPickerDropdownController control={control} name={name} />
           );
         },
       },
@@ -272,25 +222,14 @@ function SpectraColorsFields(props: SpectraColorsProps) {
         Cell: ({ row }) => {
           const name = getKeyPath(baseObjectPath, row.index, 'negativeColor');
           return (
-            <Controller
-              control={control}
-              name={name}
-              render={({ field }) => {
-                return (
-                  <ColorPickerDropdown
-                    onChangeComplete={({ hex }) => field.onChange(hex)}
-                    color={{ hex: field.value }}
-                  />
-                );
-              }}
-            />
+            <ColorPickerDropdownController control={control} name={name} />
           );
         },
       },
     ];
 
     return [...baseColumns, ...colorFields, operationsField];
-  }, [baseObjectPath, control, datalist, isValid, onAdd, onDelete, paths]);
+  }, [baseObjectPath, control, datalist, onAdd, onDelete, paths]);
 
   return (
     <GroupPane

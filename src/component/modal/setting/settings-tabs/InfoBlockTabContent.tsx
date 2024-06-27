@@ -1,16 +1,15 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
 import { InfoBlockField } from 'nmr-load-save';
 import { useCallback, useMemo } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { useChartData } from '../../../context/ChartContext';
 import { GroupPane } from '../../../elements/GroupPane';
-import { Input2 } from '../../../elements/Input2';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import Label from '../../../elements/Label';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 import { getSpectraObjectPaths } from '../../../utility/getSpectraObjectPaths';
@@ -25,7 +24,6 @@ function getKeyPath<T extends keyof InfoBlockField>(
 
 function InfoBlockTabContent() {
   const { control, setValue, register } = useFormContext<WorkspaceWithSource>();
-  const isValid = useFormValidateField();
   const { data } = useChartData();
   const { datalist, paths } = useMemo(
     () => getSpectraObjectPaths(data),
@@ -73,25 +71,12 @@ function InfoBlockTabContent() {
         Header: 'Label',
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'label');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -100,30 +85,15 @@ function InfoBlockTabContent() {
         Header: 'Field',
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'jpath');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    filterItems={datalist}
-                    onChange={(key) =>
-                      field.onChange(() => {
-                        return paths?.[key] || key;
-                      })
-                    }
-                    value={convertPathArrayToString(field.value)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
+              filterItems={datalist}
+              mapOnChangeValue={(value) => paths?.[value.trim()] || value}
+              mapValue={convertPathArrayToString}
             />
           );
         },
@@ -132,25 +102,12 @@ function InfoBlockTabContent() {
         Header: 'Format',
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'format');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -198,7 +155,7 @@ function InfoBlockTabContent() {
         },
       },
     ],
-    [addHandler, control, datalist, deleteHandler, isValid, paths, register],
+    [addHandler, control, datalist, deleteHandler, paths, register],
   );
 
   return (
