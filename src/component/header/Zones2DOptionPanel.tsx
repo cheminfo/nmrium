@@ -1,12 +1,11 @@
 import { Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import has from 'lodash/has';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import Label from '../elements/Label';
-import { NumberInput2 } from '../elements/NumberInput2';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
@@ -42,7 +41,7 @@ function Zones2DOptionPanel() {
 
   const {
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
     control,
   } = useForm<ZoneDetectionOptions>({
     defaultValues: initialValues,
@@ -53,47 +52,27 @@ function Zones2DOptionPanel() {
   return (
     <HeaderContainer>
       <Label title="Noise factor:" style={headerLabelStyle}>
-        <Controller
+        <NumberInput2Controller
           control={control}
           name="zonesNoiseFactor"
-          render={({ field }) => {
-            return (
-              <NumberInput2
-                {...field}
-                min={0}
-                stepSize={1}
-                intent={has(errors, 'zonesNoiseFactor') ? 'danger' : 'none'}
-                style={{ width: '50px' }}
-                debounceTime={250}
-                onValueChange={(valueAsNumber, valueAsString) => {
-                  field.onChange(valueAsString);
-                }}
-              />
-            );
-          }}
+          min={0}
+          stepSize={1}
+          debounceTime={250}
+          style={{ width: '50px' }}
         />
       </Label>
       <Label title="Min/max ratio:" style={headerLabelStyle}>
-        <Controller
+        <NumberInput2Controller
           control={control}
           name="zonesMinMaxRatio"
-          render={({ field }) => {
-            return (
-              <NumberInput2
-                {...field}
-                min={0}
-                stepSize={0.01}
-                majorStepSize={0.01}
-                minorStepSize={0.01}
-                intent={has(errors, 'zonesMinMaxRatio') ? 'danger' : 'none'}
-                style={{ width: '50px' }}
-                debounceTime={250}
-                onValueChange={(valueAsNumber, valueAsString) => {
-                  field.onChange(valueAsString);
-                  void handleSubmit(handleChangeNoiseFactory)();
-                }}
-              />
-            );
+          min={0}
+          stepSize={0.01}
+          majorStepSize={0.01}
+          minorStepSize={0.01}
+          debounceTime={250}
+          style={{ width: '50px' }}
+          onValueChange={() => {
+            void handleSubmit(handleChangeNoiseFactory)();
           }}
         />
       </Label>
