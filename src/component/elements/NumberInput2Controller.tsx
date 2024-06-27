@@ -4,22 +4,32 @@ import { NumberInput2, NumberInput2Props } from './NumberInput2';
 
 interface NumberInput2ControllerProps<
   TFieldValues extends FieldValues = FieldValues,
-> extends Omit<ControllerProps<TFieldValues>, 'render'> {
-  inputProps?: NumberInput2Props;
+> extends Omit<NumberInput2Props, 'name'>,
+    Pick<ControllerProps<TFieldValues>, 'control' | 'name'> {
+  controllerProps?: Omit<ControllerProps<TFieldValues>, 'render'>;
+  noShadowBox?: boolean;
 }
 
 export function NumberInput2Controller<
   TFieldValues extends FieldValues = FieldValues,
 >(props: NumberInput2ControllerProps<TFieldValues>) {
   const {
-    inputProps: { onValueChange, ...otherInputProps } = {},
-    ...controllerProps
+    controllerProps,
+    onValueChange,
+    name,
+    control,
+    intent = 'none',
+    noShadowBox = false,
+    style,
+    ...otherInputProps
   } = props;
 
   return (
     <Controller
+      name={name}
+      control={control}
       {...controllerProps}
-      render={({ field }) => {
+      render={({ field, fieldState: { invalid } }) => {
         return (
           <NumberInput2
             {...field}
@@ -28,6 +38,11 @@ export function NumberInput2Controller<
               onValueChange?.(valueAsNumber, valueAsString, event);
             }}
             {...otherInputProps}
+            style={{
+              ...style,
+              ...(noShadowBox && !invalid && { boxShadow: 'none' }),
+            }}
+            intent={invalid ? 'danger' : intent}
           />
         );
       }}
