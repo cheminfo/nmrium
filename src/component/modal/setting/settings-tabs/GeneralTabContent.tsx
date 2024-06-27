@@ -4,9 +4,8 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { LOGGER_LEVELS } from '../../../context/LoggerContext';
 import { GroupPane } from '../../../elements/GroupPane';
 import Label, { LabelStyle } from '../../../elements/Label';
-import { NumberInput2 } from '../../../elements/NumberInput2';
+import { NumberInput2Controller } from '../../../elements/NumberInput2Controller';
 import { Select2 } from '../../../elements/Select2';
-import { useFormValidateField } from '../../../elements/useFormValidateField';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 
 const labelStyle: LabelStyle = {
@@ -46,32 +45,18 @@ const LOGS_LEVELS = Object.keys(LOGGER_LEVELS).map((level) => ({
 
 function GeneralTabContent() {
   const { register, control } = useFormContext<WorkspaceWithSource>();
-  const isValid = useFormValidateField();
 
   return (
     <>
       <GroupPane text="General">
         <Label title="Opacity of dimmed spectra [0 - 1]" style={labelStyle}>
-          <Controller
+          <NumberInput2Controller
             control={control}
             name="general.dimmedSpectraOpacity"
-            render={({ field }) => {
-              return (
-                <NumberInput2
-                  {...field}
-                  allowNumericCharactersOnly
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  onValueChange={(valueAsNumber, valueAsString, element) => {
-                    field.onChange(valueAsString);
-                  }}
-                  intent={!isValid(field.name) ? 'danger' : 'none'}
-                  style={{ width: 60 }}
-                  stepSize={0.1}
-                  min={0}
-                  max={1}
-                />
-              );
-            }}
+            min={0}
+            max={1}
+            stepSize={0.1}
+            style={{ width: 60 }}
           />
         </Label>
         <Label title="Invert actions" style={labelStyle}>
@@ -92,13 +77,15 @@ function GeneralTabContent() {
             control={control}
             name="general.spectraRendering"
             render={({ field }) => {
+              const { value, onChange } = field;
+
               return (
                 <Select2<SelectItem>
                   items={SHAPE_RENDERING}
                   itemTextKey="label"
                   itemValueKey="value"
-                  selectedItemValue={field.value}
-                  onItemSelect={(item) => field.onChange(item.value)}
+                  selectedItemValue={value}
+                  onItemSelect={(item) => onChange(item.value)}
                 />
               );
             }}
@@ -111,13 +98,15 @@ function GeneralTabContent() {
             control={control}
             name="general.loggingLevel"
             render={({ field }) => {
+              const { value, onChange } = field;
+
               return (
                 <Select2<SelectItem>
                   items={LOGS_LEVELS}
                   itemTextKey="label"
                   itemValueKey="value"
-                  selectedItemValue={field.value}
-                  onItemSelect={(item) => field.onChange(item.value)}
+                  selectedItemValue={value}
+                  onItemSelect={(item) => onChange(item.value)}
                 />
               );
             }}
@@ -128,13 +117,14 @@ function GeneralTabContent() {
             control={control}
             name="general.popupLoggingLevel"
             render={({ field }) => {
+              const { value, onChange } = field;
               return (
                 <Select2<SelectItem>
                   items={LOGS_LEVELS}
                   itemTextKey="label"
                   itemValueKey="value"
-                  selectedItemValue={field.value}
-                  onItemSelect={(item) => field.onChange(item.value)}
+                  selectedItemValue={value}
+                  onItemSelect={(item) => onChange(item.value)}
                 />
               );
             }}

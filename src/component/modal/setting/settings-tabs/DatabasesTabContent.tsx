@@ -9,9 +9,8 @@ import { FaPlus, FaRegTrashAlt, FaLink } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { GroupPane } from '../../../elements/GroupPane';
-import { Input2 } from '../../../elements/Input2';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
-import { useFormValidateField } from '../../../elements/useFormValidateField';
 import type { NMRiumWorkspace } from '../../../main';
 import { WorkspaceWithSource } from '../../../reducer/preferences/preferencesReducer';
 import { getPreferencesByWorkspace } from '../../../reducer/preferences/utilities/getPreferencesByWorkspace';
@@ -35,7 +34,6 @@ function DatabasesTabContent({
   originalWorkspaces,
 }: DatabasesTabContentProps) {
   const { setValue, register, control } = useFormContext<WorkspaceWithSource>();
-  const isValid = useFormValidateField();
 
   const databases: Database[] =
     useWatch<WorkspaceWithSource>({
@@ -81,28 +79,12 @@ function DatabasesTabContent({
         style: { minWidth: '150px' },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'label');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                const { onChange, value, ...otherProps } = field;
-
-                return (
-                  <Input2
-                    {...otherProps}
-                    value={value}
-                    onChange={(v, e) => onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -112,27 +94,12 @@ function DatabasesTabContent({
         style: { width: '100%' },
         Cell: ({ row }) => {
           const name = getKeyPath(row.index, 'url');
-          const isNotValid = !isValid(name);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                const { onChange, value, ...otherProps } = field;
-                return (
-                  <Input2
-                    {...otherProps}
-                    value={value || ''}
-                    onChange={(v, e) => onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              noShadowBox
+              style={{ backgroundColor: 'transparent' }}
             />
           );
         },
@@ -222,7 +189,7 @@ function DatabasesTabContent({
         },
       },
     ],
-    [addHandler, control, deleteHandler, isValid, register],
+    [addHandler, control, deleteHandler, register],
   );
 
   function resetHandler() {
