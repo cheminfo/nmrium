@@ -1,6 +1,5 @@
 import { Checkbox, Button } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import has from 'lodash/has';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -37,7 +36,7 @@ function RangesPickingOptionPanel() {
     handleSubmit,
     register,
     control,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<AutoRangesOptions>({
     defaultValues: initialValues,
     resolver: yupResolver(validationSchema),
@@ -73,15 +72,11 @@ function RangesPickingOptionPanel() {
         <NumberInput2Controller
           control={control}
           name="minMaxRatio"
-          inputProps={{
-            allowNumericCharactersOnly: true,
-            min: 0,
-            stepSize: 0.01,
-            majorStepSize: 0.01,
-            minorStepSize: 0.01,
-            intent: has(errors, 'minMaxRatio') ? 'danger' : 'none',
-            style: { width: '70px' },
-          }}
+          min={0}
+          stepSize={0.01}
+          majorStepSize={0.01}
+          minorStepSize={0.01}
+          style={{ width: '70px' }}
         />
       </Label>
 
