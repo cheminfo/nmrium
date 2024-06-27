@@ -1,13 +1,12 @@
 import { Checkbox, Classes } from '@blueprintjs/core';
-import lodashGet from 'lodash/get';
 import { SpectraTableColumn } from 'nmr-load-save';
 import { useMemo } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from 'react-science/ui';
 
 import { InputStyle } from '../../../elements/Input';
-import { Input2 } from '../../../elements/Input2';
+import { Input2Controller } from '../../../elements/Input2Controller';
 import ReactTable, { Column } from '../../../elements/ReactTable/ReactTable';
 import { convertPathArrayToString } from '../../../utility/convertPathArrayToString';
 
@@ -38,7 +37,7 @@ interface SpectraColumnsManagerProps {
   onAdd: (nucleus: string, index: number) => void;
   onDelete: (nucleus: string, index: number) => void;
   datalist?: string[];
-  mapOnChangeValue: (value: string | number) => string;
+  mapOnChangeValue: (value: string) => string;
 }
 
 export function SpectraColumnsManager({
@@ -48,12 +47,7 @@ export function SpectraColumnsManager({
   datalist,
   mapOnChangeValue,
 }: SpectraColumnsManagerProps) {
-  const {
-    control,
-    getValues,
-    register,
-    formState: { errors },
-  } = useFormContext();
+  const { control, getValues, register } = useFormContext();
 
   const COLUMNS: Array<Column<SpectraTableColumn>> = useMemo(
     () => [
@@ -67,25 +61,12 @@ export function SpectraColumnsManager({
         style: { padding: 0 },
         Cell: ({ row }) => {
           const name = getObjectKey(nucleus, row.index, 'label');
-          const isNotValid = lodashGet(errors, name, false);
-
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    {...field}
-                    onChange={(v, e) => field.onChange(e)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              style={{ backgroundColor: 'transparent' }}
+              noShadowBox
             />
           );
         },
@@ -109,27 +90,15 @@ export function SpectraColumnsManager({
             );
           }
           const name = getObjectKey(nucleus, row.index, 'jpath');
-          const isNotValid = lodashGet(errors, name, false);
           return (
-            <Controller
+            <Input2Controller
               control={control}
               name={name}
-              render={({ field }) => {
-                return (
-                  <Input2
-                    FilterItems={datalist}
-                    onChange={(value) =>
-                      field.onChange(mapOnChangeValue(value))
-                    }
-                    value={convertPathArrayToString(field.value)}
-                    style={{
-                      ...(!isNotValid && { boxShadow: 'none' }),
-                      backgroundColor: 'transparent',
-                    }}
-                    intent={isNotValid ? 'danger' : 'none'}
-                  />
-                );
-              }}
+              filterItems={datalist}
+              mapOnChangeValue={mapOnChangeValue}
+              mapValue={convertPathArrayToString}
+              style={{ backgroundColor: 'transparent' }}
+              noShadowBox
             />
           );
         },
@@ -177,16 +146,7 @@ export function SpectraColumnsManager({
         },
       },
     ],
-    [
-      control,
-      datalist,
-      errors,
-      mapOnChangeValue,
-      nucleus,
-      onAdd,
-      onDelete,
-      register,
-    ],
+    [control, datalist, mapOnChangeValue, nucleus, onAdd, onDelete, register],
   );
 
   return (
