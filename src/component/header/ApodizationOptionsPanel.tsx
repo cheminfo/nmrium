@@ -1,20 +1,19 @@
 import { Checkbox } from '@blueprintjs/core';
 import { yupResolver } from '@hookform/resolvers/yup';
-import has from 'lodash/has';
 import {
   Filters,
   Filter,
   ApodizationOptions as BaseApodizationOptions,
 } from 'nmr-processing';
 import { useRef, memo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { defaultApodizationOptions } from '../../data/constants/DefaultApodizationOptions';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
-import { NumberInput2 } from '../elements/NumberInput2';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller';
 import { useFilter } from '../hooks/useFilter';
 
 import { headerLabelStyle } from './Header';
@@ -89,7 +88,7 @@ function ApodizationOptionsInnerPanel(
     handleSubmit,
     register,
     control,
-    formState: { isValid, errors },
+    formState: { isValid },
   } = useForm<ApodizationOptions>({
     defaultValues: formData,
     resolver: yupResolver(validationSchema),
@@ -106,26 +105,16 @@ function ApodizationOptionsInnerPanel(
   return (
     <HeaderContainer>
       <Label title="Line broadening:" shortTitle="LB:" style={headerLabelStyle}>
-        <Controller
+        <NumberInput2Controller
           control={control}
           name="lineBroadening"
-          render={({ field }) => {
-            const { onChange, ...otherFieldProps } = field;
-            return (
-              <NumberInput2
-                {...otherFieldProps}
-                debounceTime={250}
-                min={0}
-                max={1}
-                stepSize={0.1}
-                intent={has(errors, 'lineBroadening') ? 'danger' : 'none'}
-                style={{ width: '60px' }}
-                onValueChange={(valueAsNumber, valueAsString) => {
-                  onChange(valueAsString);
-                  submitHandler();
-                }}
-              />
-            );
+          debounceTime={250}
+          min={0}
+          max={1}
+          stepSize={0.1}
+          style={{ width: '60px' }}
+          onValueChange={() => {
+            submitHandler();
           }}
         />
       </Label>
@@ -134,26 +123,16 @@ function ApodizationOptionsInnerPanel(
         shortTitle="GB:"
         style={headerLabelStyle}
       >
-        <Controller
+        <NumberInput2Controller
           control={control}
           name="gaussBroadening"
-          render={({ field }) => {
-            const { onChange, ...otherFieldProps } = field;
-            return (
-              <NumberInput2
-                {...otherFieldProps}
-                debounceTime={250}
-                min={0}
-                max={1}
-                stepSize={0.1}
-                intent={has(errors, 'gaussBroadening') ? 'danger' : 'none'}
-                style={{ width: '60px' }}
-                onValueChange={(valueAsNumber, valueAsString) => {
-                  onChange(valueAsString);
-                  submitHandler();
-                }}
-              />
-            );
+          debounceTime={250}
+          min={0}
+          max={1}
+          stepSize={0.1}
+          style={{ width: '60px' }}
+          onValueChange={() => {
+            submitHandler();
           }}
         />
       </Label>
@@ -162,26 +141,16 @@ function ApodizationOptionsInnerPanel(
         shortTitle="LB center:"
         style={headerLabelStyle}
       >
-        <Controller
+        <NumberInput2Controller
           control={control}
           name="lineBroadeningCenter"
-          render={({ field }) => {
-            const { onChange, ...otherFieldProps } = field;
-            return (
-              <NumberInput2
-                {...otherFieldProps}
-                debounceTime={250}
-                min={0}
-                max={1}
-                stepSize={0.1}
-                intent={has(errors, 'lineBroadeningCenter') ? 'danger' : 'none'}
-                style={{ width: '60px' }}
-                onValueChange={(valueAsNumber, valueAsString) => {
-                  onChange(valueAsString);
-                  submitHandler();
-                }}
-              />
-            );
+          debounceTime={250}
+          min={0}
+          max={1}
+          stepSize={0.1}
+          style={{ width: '60px' }}
+          onValueChange={() => {
+            submitHandler();
           }}
         />
       </Label>
