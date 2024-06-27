@@ -109,7 +109,7 @@ function InfoBlockTabContent() {
               render={({ field }) => {
                 return (
                   <Input2
-                    FilterItems={datalist}
+                    filterItems={datalist}
                     onChange={(key) =>
                       field.onChange(() => {
                         return paths?.[key] || key;

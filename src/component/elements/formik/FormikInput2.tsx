@@ -8,15 +8,13 @@ export interface InputMapValueFunctions {
   mapOnChangeValue?: (value: string | number) => any;
   mapValue?: (value: any) => string | number;
 }
-interface FormikInputProps<FilterType>
-  extends Input2Props<FilterType>,
-    InputMapValueFunctions {
+interface FormikInputProps extends Input2Props, InputMapValueFunctions {
   name: string;
   checkErrorAfterInputTouched?: boolean;
 }
 
 const FormikInput2 = forwardRef(function FormikInput2(
-  props: FormikInputProps<string>,
+  props: FormikInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const {

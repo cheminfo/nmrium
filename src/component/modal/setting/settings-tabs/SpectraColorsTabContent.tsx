@@ -137,7 +137,7 @@ function SpectraColorsFields(props: SpectraColorsProps) {
               render={({ field }) => {
                 return (
                   <Input2
-                    FilterItems={datalist}
+                    filterItems={datalist}
                     onChange={(value) =>
                       field.onChange(() => {
                         return paths?.[value.toString().trim()] || value;
