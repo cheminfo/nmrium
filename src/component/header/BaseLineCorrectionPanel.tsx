@@ -1,17 +1,16 @@
 import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import { yupResolver } from '@hookform/resolvers/yup';
-import has from 'lodash/has';
 import { Filter, Filters, BaselineCorrectionOptions } from 'nmr-processing';
 import { memo, useRef } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Button, useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
-import { NumberInput2 } from '../elements/NumberInput2';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller';
 import { SelectDefaultItem } from '../elements/Select2';
 import { useFilter } from '../hooks/useFilter';
 
@@ -154,13 +153,9 @@ function BaseLineCorrectionInnerPanel(
     props?.filter?.value || {},
   );
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    register,
-    reset,
-  } = useForm<AirplsOptions | PolynomialOptions>({
+  const { handleSubmit, control, register, reset } = useForm<
+    AirplsOptions | PolynomialOptions
+  >({
     defaultValues: values,
     resolver: resolver as any,
   });
@@ -193,54 +188,30 @@ function BaseLineCorrectionInnerPanel(
       {algorithm && algorithm?.value === 'airpls' && (
         <div style={{ display: 'flex' }}>
           <Label title="Max iterations:" style={headerLabelStyle}>
-            <Controller
+            <NumberInput2Controller
               control={control}
               name="maxIterations"
-              render={({ field }) => {
-                const { name, value } = field;
-
-                return (
-                  <NumberInput2
-                    name={name}
-                    value={value}
-                    min={0}
-                    stepSize={1}
-                    intent={has(errors, 'maxIterations') ? 'danger' : 'none'}
-                    style={{ width: '60px' }}
-                    debounceTime={250}
-                    onValueChange={(valueAsNumber, valueAsString) => {
-                      field.onChange(valueAsString);
-                      submitHandler();
-                    }}
-                  />
-                );
+              min={0}
+              stepSize={1}
+              style={{ width: '60px' }}
+              debounceTime={250}
+              onValueChange={() => {
+                submitHandler();
               }}
             />
           </Label>
           <Label title="Tolerance:" style={headerLabelStyle}>
-            <Controller
+            <NumberInput2Controller
               control={control}
               name="tolerance"
-              render={({ field }) => {
-                const { name, value } = field;
-
-                return (
-                  <NumberInput2
-                    name={name}
-                    value={value}
-                    min={0}
-                    stepSize={0.001}
-                    majorStepSize={0.001}
-                    minorStepSize={0.001}
-                    intent={has(errors, 'tolerance') ? 'danger' : 'none'}
-                    style={{ width: '60px' }}
-                    debounceTime={250}
-                    onValueChange={(valueAsNumber, valueAsString) => {
-                      field.onChange(valueAsString);
-                      submitHandler();
-                    }}
-                  />
-                );
+              min={0}
+              stepSize={0.001}
+              majorStepSize={0.001}
+              minorStepSize={0.001}
+              style={{ width: '60px' }}
+              debounceTime={250}
+              onValueChange={() => {
+                submitHandler();
               }}
             />
           </Label>
@@ -254,26 +225,15 @@ function BaseLineCorrectionInnerPanel(
             shortTitle="Degree:"
             style={headerLabelStyle}
           >
-            <Controller
+            <NumberInput2Controller
               control={control}
               name="degree"
-              render={({ field }) => {
-                const { name, value } = field;
-                return (
-                  <NumberInput2
-                    name={name}
-                    value={value}
-                    min={1}
-                    max={6}
-                    intent={has(errors, 'degree') ? 'danger' : 'none'}
-                    style={{ width: '60px' }}
-                    debounceTime={250}
-                    onValueChange={(valueAsNumber, valueAsString) => {
-                      field.onChange(valueAsString);
-                      submitHandler();
-                    }}
-                  />
-                );
+              min={1}
+              max={6}
+              style={{ width: '60px' }}
+              debounceTime={250}
+              onValueChange={() => {
+                submitHandler();
               }}
             />
           </Label>
