@@ -18,7 +18,7 @@ import FormikSelect from '../../elements/formik/FormikSelect';
 
 const NUMBER_OF_POINTS_1D = generateNumbersPowerOfX(12, 19);
 const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
-  format: (value) => value,
+  format: String,
 });
 
 const predictionFormValidation = Yup.object().shape({

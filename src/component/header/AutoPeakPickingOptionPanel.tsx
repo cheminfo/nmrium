@@ -87,13 +87,7 @@ export function AutoPeakPickingOptionPanel() {
   return (
     <HeaderContainer>
       <Label title="Direction:" shortTitle="" style={headerLabelStyle}>
-        <Select2Controller
-          control={control}
-          name="direction"
-          selectProps={{
-            items: LookFor,
-          }}
-        />
+        <Select2Controller control={control} name="direction" items={LookFor} />
       </Label>
       <Label
         title="Max number of peaks:"

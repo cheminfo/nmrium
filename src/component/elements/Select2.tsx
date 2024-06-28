@@ -1,15 +1,23 @@
 import { Button, ButtonProps } from '@blueprintjs/core';
 import { Select, SelectProps } from '@blueprintjs/select';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useSelect } from 'react-science/ui';
 
 import { FilterType } from '../utility/filterType';
 
-type SelectOptions<T> = Parameters<typeof useSelect<T>>[0] & {
+interface ItemOptions<T> {
+  renderItem?: (item: T) => ReactNode;
+  defaultSelectedItem?: T;
+}
+
+interface ItemSelectOptions<T extends SelectDefaultItem = SelectDefaultItem> {
   itemTextKey?: keyof FilterType<T, string>;
   itemValueKey?: keyof T;
   selectedItemValue?: T[keyof T];
-};
+}
+
+type SelectOptions<T extends SelectDefaultItem = SelectDefaultItem> =
+  ItemOptions<T> & ItemSelectOptions;
 
 type ReturnedUseSelectOptions = ReturnType<typeof useSelect>;
 
@@ -20,17 +28,15 @@ export type Select2Props<T extends SelectDefaultItem = SelectDefaultItem> =
   > &
     SelectOptions<T> & { selectedButtonProps?: Omit<ButtonProps, 'text'> };
 
-export function getDefaultSelectedItem<T>(
-  items: T[],
-  itemValueKey?: keyof T,
-  value?: any,
-) {
+export function getDefaultSelectedItem<
+  T extends SelectDefaultItem = SelectDefaultItem,
+>(items: T[], itemValueKey?: keyof T, value?: any) {
   return items.find((item) => itemValueKey && item[itemValueKey] === value);
 }
 
 export interface SelectDefaultItem {
   label: string;
-  value: string;
+  value: any;
 }
 
 export function Select2<T extends SelectDefaultItem = SelectDefaultItem>(
@@ -68,7 +74,7 @@ export function Select2<T extends SelectDefaultItem = SelectDefaultItem>(
   }, [defaultSelectedItem, itemValueKey, items, selectedItemValue, setValue]);
 
   return (
-    <Select<T>
+    <Select
       items={items}
       filterable={false}
       onItemSelect={(item, event) => {
