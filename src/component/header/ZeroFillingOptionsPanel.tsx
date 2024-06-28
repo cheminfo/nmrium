@@ -1,22 +1,21 @@
+import { Checkbox } from '@blueprintjs/core';
 import { NmrData1D } from 'cheminfo-types';
-import { Formik } from 'formik';
 import { Filters } from 'nmr-processing';
 import { memo, useRef } from 'react';
+import { useForm } from 'react-hook-form';
 
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useDispatch } from '../context/DispatchContext';
 import ActionButtons from '../elements/ActionButtons';
 import Label from '../elements/Label';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikOnChange from '../elements/formik/FormikOnChange';
-import FormikSelect from '../elements/formik/FormikSelect';
+import { Select2Controller } from '../elements/Select2Controller';
 import { useFilter } from '../hooks/useFilter';
 import useSpectrum from '../hooks/useSpectrum';
 
 import { headerLabelStyle } from './Header';
 import { HeaderContainer } from './HeaderContainer';
 
-const Sizes = generateNumbersPowerOfX(8, 21);
+const sizes = generateNumbersPowerOfX(8, 21);
 
 function useInitZeroFillingSize() {
   const filter = useFilter(Filters.zeroFilling.id);
@@ -33,6 +32,9 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
   const { size } = props;
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(true);
+  const { handleSubmit, register, control } = useForm({
+    defaultValues: { nbPoints: size, livePreview: true },
+  });
 
   function handleApplyFilter(
     values,
@@ -74,32 +76,40 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     });
   }
 
+  const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
+    register('livePreview');
+
+  function submitHandler(triggerSource: 'apply' | 'onChange' = 'apply') {
+    void handleSubmit((values) => handleApplyFilter(values, triggerSource))();
+  }
+
   return (
     <HeaderContainer>
-      <Formik
-        onSubmit={(values) => handleApplyFilter(values)}
-        initialValues={{ nbPoints: size, livePreview: true }}
-      >
-        {({ submitForm }) => (
-          <>
-            <Label title="Size:" style={headerLabelStyle}>
-              <FormikSelect
-                items={Sizes}
-                style={{ marginLeft: 10, marginRight: 10 }}
-                name="nbPoints"
-              />
-            </Label>
-            <Label title="Live preview" style={{ label: { padding: '0 5px' } }}>
-              <FormikCheckBox name="livePreview" />
-            </Label>
-            <FormikOnChange
-              onChange={(values) => handleApplyFilter(values, 'onChange')}
-              enableOnload
-            />
-            <ActionButtons onDone={submitForm} onCancel={handleCancelFilter} />
-          </>
-        )}
-      </Formik>
+      <Label title="Size:" style={headerLabelStyle}>
+        <Select2Controller
+          control={control}
+          name="nbPoints"
+          items={sizes}
+          onItemSelect={() => {
+            submitHandler('onChange');
+          }}
+        />
+      </Label>
+      <Label title="Live preview" style={{ label: { padding: '0 5px' } }}>
+        <Checkbox
+          style={{ margin: 0 }}
+          {...otherLivePreviewRegisterOptions}
+          onChange={(event) => {
+            void onLivePreviewChange(event);
+            submitHandler('onChange');
+          }}
+        />
+      </Label>
+
+      <ActionButtons
+        onDone={() => submitHandler()}
+        onCancel={handleCancelFilter}
+      />
     </HeaderContainer>
   );
 }
