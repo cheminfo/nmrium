@@ -46,7 +46,7 @@ export function initSumOptions(
 }
 
 export function getSum(mf: string | null | undefined, nucleus: string) {
-  const defaultSum = 100;
+  const defaultSum = 1;
 
   if (!mf || !nucleus) return defaultSum;
 
