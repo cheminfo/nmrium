@@ -230,6 +230,18 @@
         "title": "Test low resolution"
       },
       {
+        "file": "./data/tests/simulated2D/simulated.json",
+        "title": "Simulated 2D zero shift"
+      },
+      {
+        "file": "./data/tests/simulated2D/simulated-shift100.json",
+        "title": "Simulated 2D positive shift"
+      },
+      {
+        "file": "./data/tests/simulated2D/simulated-shift-100.json",
+        "title": "Simulated 2D negative shift"
+      },
+      {
         "file": "./data/tests/triangle/high-res.json",
         "title": "Test high resolution"
       }

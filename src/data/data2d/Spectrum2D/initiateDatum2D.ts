@@ -5,7 +5,7 @@ import { FiltersManager } from 'nmr-processing';
 import { UsedColors } from '../../../types/UsedColors';
 import { initiateFilters } from '../../initiateFilters';
 
-import { DEFAULT_CONTOURS_OPTIONS } from './contours';
+import { DEFAULT_CONTOURS_OPTIONS, getDefaultContoursLevel } from './contours';
 import { get2DColor } from './get2DColor';
 import { initiateZones } from './zones/initiateZones';
 
@@ -29,7 +29,10 @@ export function initiateDatum2D(
     isPositiveVisible: true,
     isNegativeVisible: true,
     isVisible: true,
-    contourOptions: DEFAULT_CONTOURS_OPTIONS,
+    contourOptions:
+      'rr' in spectrum.data
+        ? getDefaultContoursLevel(spectrum)
+        : DEFAULT_CONTOURS_OPTIONS,
     dimension: 2,
     ...spectrum.display,
     ...get2DColor(spectrum, { usedColors, colors }),

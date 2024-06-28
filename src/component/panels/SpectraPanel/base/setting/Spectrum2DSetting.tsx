@@ -1,11 +1,21 @@
 /** @jsxImportSource @emotion/react */
+import { RangeSlider } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik } from 'formik';
+import debounce from 'lodash/debounce';
+import { useMemo } from 'react';
+import {
+  Controller,
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form';
+import { ColorPicker } from 'react-science/ui';
 
-import FormikColorPicker from '../../../../elements/formik/FormikColorPicker';
-import FormikInput from '../../../../elements/formik/FormikInput';
-import FormikOnChange from '../../../../elements/formik/FormikOnChange';
-import FormikSlider from '../../../../elements/formik/FormikSlider';
+import { COLORS } from '../../../../../data/utilities/generateColor';
+import { NumberInput2 } from '../../../../elements/NumberInput2';
+import { useFormValidateField } from '../../../../elements/useFormValidateField';
+import { colorToHexWithAlpha } from '../../../../utility/colorToHexWithAlpha';
 
 import Spectrum2DHistogram from './Spectrum2DHistogram';
 
@@ -27,49 +37,119 @@ function Spectrum2DSetting({
   onSubmit,
 }: Spectrum2DSettingProps) {
   const { positiveColor, negativeColor } = SpectrumData.display;
+  const methods = useForm({ defaultValues: SpectrumData.display });
+
   return (
-    <Formik onSubmit={onSubmit} initialValues={SpectrumData.display}>
-      <>
-        <div>
-          <div css={style(positiveColor)}>
-            <span style={{ padding: '0 10px' }}>Positive</span>
-            <FormikColorPicker name="positiveColor" />
-            <div style={{ padding: '5px' }}>
-              <span className="label">contour Levels [ min - max ]</span>
-              <FormikSlider
-                name="contourOptions.positive.contourLevels"
-                debounceTime={100}
-              />
-              <span className="label">number of Layers </span>
-              <FormikInput
-                name="contourOptions.positive.numberOfLayers"
-                type="number"
-                debounceTime={250}
-              />
-            </div>
-          </div>
-          <div css={style(negativeColor)}>
-            <span style={{ padding: '0 10px' }}>Negative</span>
-            <FormikColorPicker name="negativeColor" />
-            <div style={{ padding: '5px' }}>
-              <span className="label">contour Levels [ min - max ]</span>
-              <FormikSlider
-                name="contourOptions.negative.contourLevels"
-                debounceTime={100}
-              />
-              <span className="label">number of Layers </span>
-              <FormikInput
-                name="contourOptions.negative.numberOfLayers"
-                type="number"
-                debounceTime={250}
-              />
-            </div>
-          </div>
-          <Spectrum2DHistogram data={SpectrumData.data} />
+    <FormProvider {...methods}>
+      <div>
+        <div css={style(positiveColor)}>
+          <span style={{ padding: '0 10px' }}>Positive</span>
+          <Settings sign="positive" onSubmit={onSubmit} />
         </div>
-        <FormikOnChange onChange={onSubmit} />
-      </>
-    </Formik>
+        <div css={style(negativeColor)}>
+          <span style={{ padding: '0 10px' }}>Negative</span>
+          <Settings sign="negative" onSubmit={onSubmit} />
+        </div>
+        <Spectrum2DHistogram data={SpectrumData.data} />
+      </div>
+    </FormProvider>
+  );
+}
+
+interface SettingsProps {
+  sign: 'positive' | 'negative';
+  onSubmit: (values: any) => void;
+}
+
+function Settings(props: SettingsProps) {
+  const { sign, onSubmit } = props;
+  const { control, handleSubmit } = useFormContext();
+  const isValid = useFormValidateField();
+  const progressColor = useWatch({ name: `${sign}Color` });
+
+  const debounceOnSubmit = useMemo(
+    () =>
+      debounce((onSubmit) => {
+        void handleSubmit(onSubmit)();
+      }, 250),
+    [handleSubmit],
+  );
+
+  return (
+    <>
+      <Controller
+        name={`${sign}Color`}
+        control={control}
+        render={({ field }) => {
+          const { value, onChange } = field;
+          return (
+            <ColorPicker
+              onChangeComplete={(color) => {
+                onChange(colorToHexWithAlpha(color));
+
+                void handleSubmit(onSubmit)();
+              }}
+              color={{ hex: value || '#000' }}
+              presetColors={COLORS}
+              style={{ boxShadow: 'none' }}
+            />
+          );
+        }}
+      />
+      <div style={{ padding: '5px' }}>
+        <span className="label">contour Levels [ min - max ]</span>
+        <Controller
+          name={`contourOptions.${sign}.contourLevels`}
+          control={control}
+          render={({ field }) => {
+            const { value, onChange } = field;
+
+            return (
+              <RangeSlider
+                min={0}
+                max={100}
+                stepSize={1}
+                labelStepSize={10}
+                onChange={(e) => {
+                  onChange(e);
+                  debounceOnSubmit(onSubmit);
+                }}
+                value={value}
+                showTrackFill
+                css={css`
+                  width: 90%;
+
+                  [class*='slider-progress']:nth-child(2) {
+                    background-color: ${progressColor};
+                  }
+                `}
+              />
+            );
+          }}
+        />
+        <span className="label">number of Layers </span>
+        <Controller
+          control={control}
+          name={`contourOptions.${sign}.numberOfLayers`}
+          rules={{ required: true }}
+          render={({ field }) => {
+            return (
+              <NumberInput2
+                {...field}
+                onValueChange={(valueAsNumber) => {
+                  field.onChange(valueAsNumber);
+                  void handleSubmit(onSubmit)();
+                }}
+                intent={!isValid(field.name) ? 'danger' : 'none'}
+                style={{ width: 60 }}
+                min={0}
+                debounceTime={250}
+              />
+            );
+          }}
+        />
+      </div>
+    </>
   );
 }
 

@@ -54,19 +54,16 @@ function usePath(
   return pathBuilder.toString();
 }
 
-const useContoursLevel = (spectrum: Spectrum2D, sign: LevelSign) => {
+const useContoursLevel = (
+  spectrum: Spectrum2D,
+  sign: LevelSign,
+  quadrant = 'rr',
+) => {
   const {
-    view: {
-      zoom: { levels },
-    },
-  } = useChartData();
-  const {
-    id,
     display: { contourOptions },
   } = spectrum;
-  const defaultLevel = getDefaultContoursLevel(contourOptions);
-  const level = levels?.[id]?.[sign];
-  return typeof level !== 'number' ? defaultLevel[sign] : level;
+  const level = contourOptions[sign];
+  return level ?? getDefaultContoursLevel(spectrum, quadrant)[sign];
 };
 
 function ContoursPaths({
@@ -78,7 +75,6 @@ function ContoursPaths({
 }: ContoursPathsProps) {
   const activeSpectrum = useActiveSpectrum();
   const preferences = usePreferences();
-
   const level = useContoursLevel(spectrum, sign);
 
   const contours = useMemo(() => {
@@ -129,28 +125,30 @@ function ContoursInner({ spectra, displayerKey }: ContoursInnerProps) {
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
-      {spectra?.map((spectrum) => (
-        <g key={spectrum.id}>
-          {spectrum.display.isPositiveVisible && (
-            <ContoursPaths
-              id={spectrum.id}
-              sign="positive"
-              spectrum={spectrum}
-              color={spectrum.display.positiveColor}
-              onTimeout={timeoutHandler}
-            />
-          )}
-          {spectrum.display.isNegativeVisible && (
-            <ContoursPaths
-              id={spectrum.id}
-              sign="negative"
-              spectrum={spectrum}
-              color={spectrum.display.negativeColor}
-              onTimeout={timeoutHandler}
-            />
-          )}
-        </g>
-      ))}
+      {spectra?.map((spectrum) => {
+        return (
+          <g key={spectrum.id}>
+            {spectrum.display.isPositiveVisible && (
+              <ContoursPaths
+                id={spectrum.id}
+                sign="positive"
+                spectrum={spectrum}
+                color={spectrum.display.positiveColor}
+                onTimeout={timeoutHandler}
+              />
+            )}
+            {spectrum.display.isNegativeVisible && (
+              <ContoursPaths
+                id={spectrum.id}
+                sign="negative"
+                spectrum={spectrum}
+                color={spectrum.display.negativeColor}
+                onTimeout={timeoutHandler}
+              />
+            )}
+          </g>
+        );
+      })}
     </g>
   );
 }
