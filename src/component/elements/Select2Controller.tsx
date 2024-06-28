@@ -1,28 +1,40 @@
 import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
 
-import { Select2, Select2Props } from './Select2';
+import { Select2, Select2Props, SelectDefaultItem } from './Select2';
 
-type Select2ControllerProps<TFieldValues extends FieldValues = FieldValues> = {
-  selectProps?: Omit<Select2Props<any>, 'onItemSelect' | 'selectedItemValue'>;
-} & Omit<ControllerProps<TFieldValues>, 'render'>;
+type Select2ControllerProps<
+  T extends SelectDefaultItem = SelectDefaultItem,
+  TFieldValues extends FieldValues = FieldValues,
+> = {
+  controllerProps?: Omit<ControllerProps<TFieldValues>, 'render'>;
+} & Pick<ControllerProps<TFieldValues>, 'control' | 'name'> &
+  Omit<Select2Props<T>, 'onItemSelect' | 'selectedItemValue'> &
+  Partial<Pick<Select2Props<T>, 'onItemSelect'>>;
 
 export function Select2Controller<
+  T extends SelectDefaultItem = SelectDefaultItem,
   TFieldValues extends FieldValues = FieldValues,
->(props: Select2ControllerProps<TFieldValues>) {
+>(props: Select2ControllerProps<T, TFieldValues>) {
   const {
-    selectProps: { items, ...otherSelectProps } = { items: [] },
-    ...controllerProps
+    name,
+    control,
+    controllerProps = {},
+    onItemSelect,
+    ...otherSelectProps
   } = props;
   return (
     <Controller
+      name={name}
+      control={control}
       {...controllerProps}
       render={({ field }) => {
         return (
-          <Select2
-            itemTextKey="label"
+          <Select2<T>
             selectedItemValue={field.value}
-            onItemSelect={(item) => field.onChange(item.value)}
-            items={items}
+            onItemSelect={(item, event) => {
+              field.onChange(item.value);
+              onItemSelect?.(item, event);
+            }}
             {...otherSelectProps}
           />
         );
