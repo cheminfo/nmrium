@@ -55,8 +55,7 @@ interface KeyModifierProviderProps {
   children: ReactNode;
 }
 
-const isMac =
-  navigator !== undefined && navigator.userAgent.toLowerCase().includes('mac');
+const isMac = globalThis.navigator?.userAgent?.toLowerCase().includes('mac');
 
 export function getModifiers(event: KeyboardEvent | MouseEvent) {
   const { shiftKey, altKey, metaKey } = event;

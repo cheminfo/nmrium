@@ -128,8 +128,7 @@ function flattenFields(
       if (_keysPathObject?.type === 'list') {
         const previousKey = _keysPath.slice(0, -1).join('.');
         properties[previousKey] = _keysPathObject;
-        (properties[previousKey] as ListField).properties[_keysPath.join('.')] =
-          fieldData;
+        _keysPathObject.properties[_keysPath.join('.')] = fieldData;
       } else if (data[fieldKey].enum) {
         const { enum: choices, ...restProps } = fieldData;
         properties[_keysPath.join('.')] = {

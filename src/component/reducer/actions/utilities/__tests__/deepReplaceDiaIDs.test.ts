@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import path from 'node:path';
 
 import { produce } from 'immer';
 import { describe, it, expect } from 'vitest';
@@ -36,7 +36,7 @@ describe('deepReplaceDiaIDs', () => {
 
   it('deepReplaceDiaIDs', () => {
     const data = JSON.parse(
-      readFileSync(join(__dirname, 'data/test.json'), 'utf8'),
+      readFileSync(path.join(__dirname, 'data/test.json'), 'utf8'),
     );
     const mappings = {
       'did@`@fTeYWaj@@@GzP`HeT': 'Hello World',
