@@ -238,6 +238,10 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
               css={css`
                 height: 100%;
 
+                div[role='tablist'] {
+                  gap: 0;
+                }
+
                 div[role='tabpanel'] {
                   width: 100%;
                   padding: 0.8rem;
@@ -245,7 +249,6 @@ function InnerGeneralSettingsModal(props: InnerGeneralSettingsModalProps) {
                   max-height: 100%;
                 }
               `}
-              fill
             >
               <Tab title="General" id="general" panel={<GeneralTabContent />} />
 
