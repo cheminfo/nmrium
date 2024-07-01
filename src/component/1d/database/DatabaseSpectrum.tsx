@@ -1,3 +1,4 @@
+import { extent } from 'd3';
 import throttle from 'lodash/throttle';
 import { readFromWebSource, Spectrum1D } from 'nmr-load-save';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -7,14 +8,12 @@ import { useScaleChecked } from '../../context/ScaleContext';
 import { useToaster } from '../../context/ToasterContext';
 import { HighlightEventSource, useHighlightData } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useVerticalAlign } from '../../hooks/useVerticalAlign';
 import { spinnerContext } from '../../loader/SpinnerContext';
 import { PathBuilder } from '../../utility/PathBuilder';
-import { getYScale } from '../utilities/scale';
+import { getYScaleWithRation } from '../utilities/scale';
 
 function DatabaseSpectrum() {
-  const { displayerKey, height, yDomain, yDomains, margin } = useChartData();
-  const verticalAlign = useVerticalAlign();
+  const { displayerKey, height, margin } = useChartData();
   const [path, setPath] = useState<string>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const { highlight } = useHighlightData();
@@ -26,23 +25,18 @@ function DatabaseSpectrum() {
   const getSpinner = useContext(spinnerContext);
 
   const scaleY = useCallback(
-    () =>
-      getYScale({
-        height,
-        margin: { top: margin.top, bottom: margin.bottom + marginBottom },
-        verticalAlign,
+    (yDomain: number[]) =>
+      getYScaleWithRation({
         yDomain,
-        yDomains,
+        height,
+        margin: {
+          ...margin,
+          bottom: margin.bottom + marginBottom,
+          top: margin.top,
+        },
+        scaleRatio: 1,
       }),
-    [
-      verticalAlign,
-      height,
-      margin.bottom,
-      margin.top,
-      marginBottom,
-      yDomain,
-      yDomains,
-    ],
+    [height, margin, marginBottom],
   );
 
   const loadSpectrum = useRef(
@@ -57,9 +51,11 @@ function DatabaseSpectrum() {
         const spectrum = data?.spectra?.[0] || null;
         if (spectrum) {
           const pathBuilder = new PathBuilder();
-          const finalScaleX = scaleX();
-          const finalScaleY = scaleY();
           const { x, re: y } = (spectrum as Spectrum1D).data;
+          const yDomain = extent(y) as number[];
+          const finalScaleX = scaleX();
+          const finalScaleY = scaleY(yDomain);
+
           pathBuilder.moveTo(finalScaleX(x[0]), finalScaleY(y[0]));
           for (let i = 1; i < x.length; i++) {
             pathBuilder.lineTo(finalScaleX(x[i]), finalScaleY(y[i]));
