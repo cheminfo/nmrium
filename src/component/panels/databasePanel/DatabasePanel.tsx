@@ -7,7 +7,7 @@ import {
   readFromWebSource,
   serializeNmriumState,
 } from 'nmr-load-save';
-import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
+import { mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { useAccordionContext, useOnOff } from 'react-science/ui';
@@ -20,6 +20,7 @@ import {
   prepareData,
   DATA_BASES,
   LocalDatabase,
+  DatabaseNMREntry,
 } from '../../../data/data1d/database';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -257,8 +258,12 @@ function DatabasePanelInner({
   const resurrectHandler = useCallback(
     (rowData) => {
       const { index, baseURL, jcampURL: jcampRelativeURL } = rowData;
-      const { ranges, solvent, names = [] } = result.data[index];
-
+      const {
+        ranges,
+        solvent,
+        names = [],
+        id: spectrumID,
+      } = result.data[index];
       if (jcampRelativeURL) {
         const url = new URL(jcampRelativeURL, baseURL);
         setTimeout(async () => {
@@ -269,9 +274,9 @@ function DatabasePanelInner({
             const { data } = await readFromWebSource({
               entries: [{ baseURL: url.origin, relativePath: url.pathname }],
             });
-
             const spectrum = data?.spectra?.[0] || null;
-            if (spectrum && isSpectrum1D(spectrum)) {
+            if (spectrum && isSpectrum1D(spectrum) && spectrumID) {
+              spectrum.id = spectrumID;
               dispatch({
                 type: 'RESURRECTING_SPECTRUM_FROM_JCAMP',
                 payload: { ranges, spectrum },
@@ -318,9 +323,21 @@ function DatabasePanelInner({
     },
     [result, toaster],
   );
+  const removeHandler = useCallback(
+    (row) => {
+      const { spectrumID: id } = row;
+      if (!id) {
+        return;
+      }
+
+      dispatch({ type: 'DELETE_SPECTRA', payload: { id } });
+    },
+    [dispatch],
+  );
   const searchByStructureHandler = (idCodeValue: string) => {
     setIdCode(idCodeValue);
   };
+
   return (
     <div
       css={[
@@ -373,6 +390,7 @@ function DatabasePanelInner({
               data={tableData}
               totalCount={result.data.length}
               onAdd={resurrectHandler}
+              onRemove={removeHandler}
               onSave={saveHandler}
             />
           ) : (

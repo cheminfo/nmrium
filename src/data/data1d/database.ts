@@ -3,18 +3,22 @@ import {
   protonImpurities,
   carbonImpurities,
   Jcoupling,
-  DatabaseNMREntry,
+  DatabaseNMREntry as BaseDatabaseNMREntry,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';
 
+export interface DatabaseNMREntry extends BaseDatabaseNMREntry {
+  spectrumID: string;
+}
 export interface DataBaseSignal {
   assignment: string;
   delta: number;
 }
 
 export interface DataBaseBasic {
+  spectrumID: string;
   index: number;
   names: string[];
   solvent: string;
@@ -41,7 +45,10 @@ export const DATA_BASES: LocalDatabase[] = [
   {
     key: 'local_solvent',
     label: 'Solvent database',
-    value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
+    value: prepareDataBase([
+      ...protonImpurities,
+      ...carbonImpurities,
+    ] as DatabaseNMREntry[]),
   },
 ];
 
@@ -170,13 +177,14 @@ export function prepareData(data: DatabaseNMREntry[]): PrepareDataResult[] {
   let index = 0;
   for (const item of data) {
     const ids: string[] = [];
-    const { ranges, ...restItemKeys } = item;
+    const { ranges, id: spectrumID, ...restItemKeys } = item;
     if (!ranges) {
-      ids.push(v4());
+      ids.push(spectrumID);
       result.push({
         ...restItemKeys,
         index,
         id: ids,
+        spectrumID,
         ranges: [],
       } as PrepareDataResult);
     } else {
@@ -195,6 +203,7 @@ export function prepareData(data: DatabaseNMREntry[]): PrepareDataResult[] {
             index,
             id: ids,
             ranges,
+            spectrumID,
           };
           result.push(data as unknown as PrepareDataResult);
         }
