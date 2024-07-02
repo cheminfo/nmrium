@@ -15,6 +15,7 @@ export interface DataBaseSignal {
 }
 
 export interface DataBaseBasic {
+  spectrumID: string;
   index: number;
   names: string[];
   solvent: string;
@@ -170,13 +171,14 @@ export function prepareData(data: DatabaseNMREntry[]): PrepareDataResult[] {
   let index = 0;
   for (const item of data) {
     const ids: string[] = [];
-    const { ranges, ...restItemKeys } = item;
+    const { ranges, id: spectrumID, ...restItemKeys } = item;
     if (!ranges) {
-      ids.push(v4());
+      ids.push(spectrumID);
       result.push({
         ...restItemKeys,
         index,
         id: ids,
+        spectrumID,
         ranges: [],
       } as PrepareDataResult);
     } else {
@@ -195,6 +197,7 @@ export function prepareData(data: DatabaseNMREntry[]): PrepareDataResult[] {
             index,
             id: ids,
             ranges,
+            spectrumID,
           };
           result.push(data as unknown as PrepareDataResult);
         }

@@ -48,7 +48,7 @@ import {
 import { getActiveSpectrum } from '../helper/getActiveSpectrum';
 import { ActionType } from '../types/ActionType';
 
-import { setDomain, setMode } from './DomainActions';
+import { SetDomainOptions, setDomain, setMode } from './DomainActions';
 import { rollbackSpectrumByFilter } from './FiltersActions';
 import {
   setTab,
@@ -96,6 +96,7 @@ type DeleteSpectraAction = ActionType<
   'DELETE_SPECTRA',
   {
     id?: string;
+    domainOptions?: SetDomainOptions;
   }
 >;
 type AddMissingProjectionAction = ActionType<
@@ -470,7 +471,7 @@ function handleChangeSpectrumSetting(
 //action
 function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
   const state = original(draft) as State;
-  const { id: spectraId } = action?.payload || {};
+  const { id: spectraId, domainOptions } = action?.payload || {};
   if (spectraId) {
     const index = state.data.findIndex((d) => d.id === spectraId);
     draft.data.splice(index, 1);
@@ -489,6 +490,7 @@ function handleDeleteSpectra(draft: Draft<State>, action: DeleteSpectraAction) {
   setActiveTab(draft, {
     tab: draft.view.spectra.activeTab,
     refreshActiveTab: true,
+    domainOptions,
   });
 }
 

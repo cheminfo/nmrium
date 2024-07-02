@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
+import { Classes } from '@blueprintjs/core';
 import lodashGet from 'lodash/get';
 import { useMemo, memo, CSSProperties } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
-import { FaDownload, FaPlus } from 'react-icons/fa';
+import { FaDownload, FaMinus, FaPlus } from 'react-icons/fa';
 import { IdcodeSvgRenderer, SmilesSvgRenderer } from 'react-ocl/full';
+import { Button } from 'react-science/ui';
 
 import { PrepareDataResult } from '../../../data/data1d/database';
-import Button from '../../elements/Button';
 import { ColumnWrapper } from '../../elements/ColumnWrapper';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import addCustomColumn, {
@@ -14,11 +15,15 @@ import addCustomColumn, {
 } from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightEventSource } from '../../highlight';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import { formatNumber } from '../../utility/formatNumber';
 
-interface DatabaseTableProps {
-  data: any;
+interface ToggleEvent {
   onAdd: (row: any) => void;
+  onRemove: (row: any) => void;
+}
+interface DatabaseTableProps extends ToggleEvent {
+  data: any;
   onSave: (row: any) => void;
   totalCount: number;
 }
@@ -160,6 +165,7 @@ const databaseTableColumns = (
 function DatabaseTable({
   data,
   onAdd,
+  onRemove,
   onSave,
   totalCount,
 }: DatabaseTableProps) {
@@ -185,29 +191,29 @@ function DatabaseTable({
             <ColumnWrapper
               style={{ display: 'flex', justifyContent: 'space-evenly' }}
             >
-              <Button.Done
-                style={{ padding: '0.25rem', fontSize: '0.7rem' }}
-                fill="outline"
-                onClick={() => onAdd(row.original)}
-              >
-                <FaPlus />
-              </Button.Done>
+              <ToggleBtn
+                onAdd={onAdd}
+                onRemove={onRemove}
+                data={row.original}
+              />
+
               {databasePreferences?.allowSaveAsNMRium && (
-                <Button.Action
-                  style={{ padding: '0.25rem', fontSize: '0.7rem' }}
-                  fill="outline"
+                <Button
+                  small
+                  outlined
+                  tooltipProps={{ content: '', disabled: true }}
                   onClick={() => onSave(row.original)}
                   disabled={!jcampURL}
                 >
-                  <FaDownload />
-                </Button.Action>
+                  <FaDownload className={Classes.ICON} />
+                </Button>
               )}
             </ColumnWrapper>
           );
         },
       },
     ],
-    [databasePreferences?.allowSaveAsNMRium, onAdd, onSave],
+    [databasePreferences?.allowSaveAsNMRium, onAdd, onRemove, onSave],
   );
 
   const tableColumns = useMemo(() => {
@@ -232,6 +238,38 @@ function DatabaseTable({
       totalCount={totalCount}
       disableDefaultRowStyle
     />
+  );
+}
+
+interface ToggleBtnProps extends ToggleEvent {
+  data: PrepareDataResult;
+}
+
+export function ToggleBtn(props: ToggleBtnProps) {
+  const { onAdd, onRemove, data } = props;
+  const spectra = useSpectraByActiveNucleus();
+  const isAdded = spectra.some((spectrum) => spectrum.id === data.spectrumID);
+
+  return (
+    <Button
+      small
+      intent={isAdded ? 'danger' : 'success'}
+      outlined
+      tooltipProps={{ content: '', disabled: true }}
+      onClick={() => {
+        if (isAdded) {
+          onRemove(data);
+        } else {
+          onAdd(data);
+        }
+      }}
+    >
+      {isAdded ? (
+        <FaMinus className={Classes.ICON} />
+      ) : (
+        <FaPlus className={Classes.ICON} />
+      )}
+    </Button>
   );
 }
 
