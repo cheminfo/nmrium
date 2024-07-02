@@ -9,6 +9,7 @@ import {
 } from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
 import { State } from '../Reducer';
 import { setZoom } from '../helper/Zoom1DManager';
+import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { ActionType } from '../types/ActionType';
 
 import { setDomain } from './DomainActions';
@@ -46,8 +47,22 @@ function handleResurrectSpectrumFromJcamp(
   };
 
   draft.data.push(spectrum);
+
   setDomain(draft, { isYDomainShared: false });
+
+  //rescale the vertical zoom
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
+
+  //keep the last horizontal zoom
+  const zoomHistory = zoomHistoryManager(
+    draft.zoom.history,
+    draft.view.spectra.activeTab,
+  );
+  const zoomValue = zoomHistory.getLast();
+  if (zoomValue) {
+    draft.xDomain = zoomValue.xDomain;
+    draft.yDomain = zoomValue.yDomain;
+  }
 }
 
 function handleResurrectSpectrumFromRanges(
@@ -56,10 +71,22 @@ function handleResurrectSpectrumFromRanges(
 ) {
   const { ranges, info } = action.payload;
   const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
-  if (datum) {
-    draft.data.push(datum);
-    setDomain(draft, { isYDomainShared: false });
-    setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+  if (!datum) return;
+
+  draft.data.push(datum);
+  setDomain(draft, { isYDomainShared: false });
+  //rescale the vertical zoom
+  setZoom(draft, { scale: 0.8, spectrumID: datum.id });
+
+  //keep the last horizontal zoom
+  const zoomHistory = zoomHistoryManager(
+    draft.zoom.history,
+    draft.view.spectra.activeTab,
+  );
+  const zoomValue = zoomHistory.getLast();
+  if (zoomValue) {
+    draft.xDomain = zoomValue.xDomain;
+    draft.yDomain = zoomValue.yDomain;
   }
 }
 
