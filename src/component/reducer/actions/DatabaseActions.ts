@@ -46,7 +46,7 @@ function handleResurrectSpectrumFromJcamp(
   };
 
   draft.data.push(spectrum);
-  setDomain(draft);
+  setDomain(draft, { isYDomainShared: false });
   setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
 

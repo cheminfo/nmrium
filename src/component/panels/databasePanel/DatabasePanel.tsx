@@ -7,7 +7,7 @@ import {
   readFromWebSource,
   serializeNmriumState,
 } from 'nmr-load-save';
-import { mapRanges } from 'nmr-processing';
+import { DatabaseNMREntry, mapRanges } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import { useAccordionContext, useOnOff } from 'react-science/ui';
@@ -20,7 +20,6 @@ import {
   prepareData,
   DATA_BASES,
   LocalDatabase,
-  DatabaseNMREntry,
 } from '../../../data/data1d/database';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -330,7 +329,13 @@ function DatabasePanelInner({
         return;
       }
 
-      dispatch({ type: 'DELETE_SPECTRA', payload: { id } });
+      dispatch({
+        type: 'DELETE_SPECTRA',
+        payload: {
+          id,
+          domainOptions: { isYDomainShared: false, updateYDomain: false },
+        },
+      });
     },
     [dispatch],
   );

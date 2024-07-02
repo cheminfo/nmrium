@@ -3,15 +3,12 @@ import {
   protonImpurities,
   carbonImpurities,
   Jcoupling,
-  DatabaseNMREntry as BaseDatabaseNMREntry,
+  DatabaseNMREntry,
 } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { MoleculesDB } from 'openchemlib-utils';
 import { filter } from 'smart-array-filter';
 
-export interface DatabaseNMREntry extends BaseDatabaseNMREntry {
-  spectrumID: string;
-}
 export interface DataBaseSignal {
   assignment: string;
   delta: number;
@@ -45,10 +42,7 @@ export const DATA_BASES: LocalDatabase[] = [
   {
     key: 'local_solvent',
     label: 'Solvent database',
-    value: prepareDataBase([
-      ...protonImpurities,
-      ...carbonImpurities,
-    ] as DatabaseNMREntry[]),
+    value: prepareDataBase([...protonImpurities, ...carbonImpurities]),
   },
 ];
 

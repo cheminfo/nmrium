@@ -248,8 +248,7 @@ interface ToggleBtnProps extends ToggleEvent {
 export function ToggleBtn(props: ToggleBtnProps) {
   const { onAdd, onRemove, data } = props;
   const spectra = useSpectraByActiveNucleus();
-  const isAdded =
-    spectra.some((spectrum) => spectrum.id === data.spectrumID) ;
+  const isAdded = spectra.some((spectrum) => spectrum.id === data.spectrumID);
 
   return (
     <Button
