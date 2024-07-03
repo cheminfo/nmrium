@@ -36,7 +36,9 @@ async function shiftX(nmrium: NmriumPage) {
   const peakLocator = nmrium.page.locator(FIRST_PEAK_ANNOTATION_SELECTOR);
 
   await peakLocator.click();
-  const peakInputLocator = nmrium.page.locator('_react=PeakEditionField');
+  const peakInputLocator = nmrium.page.locator(
+    '_react=PeakEditionField >> input',
+  );
   await peakInputLocator.pressSequentially('10');
   await peakInputLocator.press('Enter');
 
