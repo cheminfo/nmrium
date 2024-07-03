@@ -1,18 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { Popover, PopoverProps } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { ReactNode, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import FormikInput from '../elements/formik/FormikInput';
+import { Input2Controller } from '../elements/Input2Controller';
+import { NumberInput2Controller } from '../elements/NumberInput2Controller';
 
 type InputType = 'number' | 'text';
 
-interface FieldEditionsProps {
+interface FieldProps {
   value: number | string;
   inputType?: InputType;
   onChange: (value: any) => void;
+}
+interface FieldEditionsProps extends FieldProps {
   children: ReactNode;
   PopoverProps?: PopoverProps;
 }
@@ -39,7 +43,7 @@ export function FieldEdition(props: FieldEditionsProps) {
   const { value, inputType = 'text', onChange, children, PopoverProps } = props;
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleOnSubmit({ value: newValue }) {
+  function handleChange({ value: newValue }) {
     onChange(newValue);
     setIsOpen(false);
   }
@@ -56,33 +60,58 @@ export function FieldEdition(props: FieldEditionsProps) {
       onClose={() => setIsOpen(false)}
       onInteraction={() => setIsOpen(true)}
       content={
-        <Formik
-          initialValues={{ value }}
-          onSubmit={handleOnSubmit}
-          validationSchema={validationSchema(inputType)}
-        >
-          {({ submitForm }) => (
-            <FormikInput
-              type={inputType}
-              style={{
-                input: {
-                  height: `${InputDimension.height}px`,
-                  padding: '5px',
-                  outline: 'none',
-                },
-              }}
-              name="value"
-              autoSelect
-              onKeyDown={(e) => keyDownCheck(e) && submitForm()}
-              onClick={stopPropagation}
-              onMouseDown={stopPropagation}
-            />
-          )}
-        </Formik>
+        <Field onChange={handleChange} value={value} inputType={inputType} />
       }
       {...PopoverProps}
     >
       {children}
     </Popover>
+  );
+}
+
+function Field(props: FieldProps) {
+  const { value, inputType = 'text', onChange } = props;
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: { value },
+    resolver: yupResolver(validationSchema(inputType)),
+  });
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (keyDownCheck(event)) {
+      void handleSubmit(onChange)();
+    }
+  }
+
+  const style = {
+    height: `${InputDimension.height}px`,
+    outline: 'none',
+  };
+
+  if (inputType === 'number') {
+    return (
+      <NumberInput2Controller
+        name="value"
+        control={control}
+        style={style}
+        onKeyDown={handleKeyDown}
+        onClick={stopPropagation}
+        onMouseDown={stopPropagation}
+        autoFocus
+        buttonPosition="none"
+      />
+    );
+  }
+
+  return (
+    <Input2Controller
+      name="value"
+      control={control}
+      style={style}
+      onKeyDown={handleKeyDown}
+      onClick={stopPropagation}
+      onMouseDown={stopPropagation}
+      autoFocus
+    />
   );
 }
