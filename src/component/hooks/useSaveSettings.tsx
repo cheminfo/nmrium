@@ -1,13 +1,14 @@
 import { Dialog } from '@blueprintjs/core';
-import { Formik, FormikProps } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Workspace } from 'nmr-load-save';
-import { useRef, forwardRef } from 'react';
+import { useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import { useOnOff } from 'react-science/ui';
 import * as Yup from 'yup';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
-import FormikInput from '../elements/formik/FormikInput';
+import { Input2Controller } from '../elements/Input2Controller';
 import ConfirmationDialog from '../elements/popup/Modal/ConfirmDialog';
 
 import { useWorkspaceAction } from './useWorkspaceAction';
@@ -16,42 +17,49 @@ const schema = Yup.object().shape({
   workspaceName: Yup.string().required(),
 });
 
-const WorkspaceAddForm = forwardRef<FormikProps<any>, any>(
-  ({ className, message, onSave }, ref) => {
-    return (
-      <div className={className}>
-        <p style={{ paddingBottom: '10px' }}>{message}</p>
-        <Formik
-          initialValues={{ workspaceName: '' }}
-          validationSchema={schema}
-          onSubmit={onSave}
-          innerRef={ref}
-        >
-          <FormikInput
-            name="workspaceName"
-            placeholder="Enter workspace Name"
-            style={{
-              input: {
-                padding: '0.5em',
-                width: '90%',
-                fontWeight: 'normal',
-                color: 'black',
-              },
-            }}
-            autoFocus
-          />
-        </Formik>
-      </div>
-    );
-  },
-);
+function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
+  if (event.key === 'Enter') {
+    return true;
+  } else if (event.key === 'Escape') {
+    return false;
+  }
+}
+
+function WorkspaceAddForm(props) {
+  const { className, message, control, onEnter } = props;
+
+  return (
+    <div className={className}>
+      <p style={{ paddingBottom: '10px' }}>{message}</p>
+      <Input2Controller
+        control={control}
+        name="workspaceName"
+        placeholder="Enter workspace Name"
+        style={{
+          width: '90%',
+          borderRadius: '5px',
+        }}
+        autoFocus
+        large
+        onKeyDown={(event) => {
+          if (keyDownCheck(event)) {
+            onEnter();
+          }
+        }}
+      />
+    </div>
+  );
+}
 
 export function useSaveSettings() {
   const toaster = useToaster();
   const [isOpenDialog, openDialog, closeDialog] = useOnOff(false);
   const settingsRef = useRef<Workspace>();
   const { current } = usePreferences();
-  const formRef = useRef<FormikProps<any>>(null);
+  const { handleSubmit, control, reset } = useForm({
+    defaultValues: { workspaceName: '' },
+    resolver: yupResolver(schema),
+  });
   const { saveWorkspace, addNewWorkspace } = useWorkspaceAction();
 
   function handleAddNewWorkspace({ workspaceName }) {
@@ -64,17 +72,19 @@ export function useSaveSettings() {
     });
   }
 
-  return {
-    saveSettings: (values?: Partial<Workspace>) => {
-      settingsRef.current = values as Workspace;
-      if (current.source !== 'user') {
-        openDialog();
-      } else {
-        saveWorkspace(values);
+  function saveSettings(values?: Partial<Workspace>) {
+    settingsRef.current = values as Workspace;
+    if (current.source !== 'user') {
+      reset({ workspaceName: '' });
+      openDialog();
+    } else {
+      saveWorkspace(values);
 
-        closeDialog();
-      }
-    },
+      closeDialog();
+    }
+  }
+  return {
+    saveSettings,
     SaveSettingsModal: () => {
       const alertConfig: any = {
         message:
@@ -82,15 +92,17 @@ export function useSaveSettings() {
         render: (props) => (
           <WorkspaceAddForm
             {...props}
-            onSave={handleAddNewWorkspace}
-            ref={formRef}
+            onEnter={() => {
+              void handleSubmit(handleAddNewWorkspace)();
+            }}
+            control={control}
           />
         ),
         buttons: [
           {
             text: 'Save',
             handler: () => {
-              void formRef.current?.submitForm();
+              void handleSubmit(handleAddNewWorkspace)();
             },
             preventClose: true,
           },
