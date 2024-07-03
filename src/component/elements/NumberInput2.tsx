@@ -1,5 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Classes, NumericInput, NumericInputProps } from '@blueprintjs/core';
+import {
+  Classes,
+  HTMLInputProps,
+  NumericInput,
+  NumericInputProps,
+} from '@blueprintjs/core';
 import debounce from 'lodash/debounce';
 import {
   useEffect,
@@ -17,7 +22,7 @@ interface ValueProps
 }
 type UseInputProps = Omit<ValueProps, 'name'>;
 export interface NumberInput2Props
-  extends Omit<NumericInputProps, 'value' | 'onValueChange'>,
+  extends Omit<HTMLInputProps & NumericInputProps, 'value' | 'onValueChange'>,
     ValueProps {
   format?: () => (element: string) => number | string;
   autoSelect?: boolean;
