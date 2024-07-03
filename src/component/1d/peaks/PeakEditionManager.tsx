@@ -1,4 +1,4 @@
-import { Formik } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   ReactNode,
   createContext,
@@ -7,12 +7,13 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import FormikInput from '../../elements/formik/FormikInput';
+import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
 import { useActiveSpectrum } from '../../hooks/useActiveSpectrum';
 
 const validationSchema = Yup.object({
@@ -150,6 +151,10 @@ interface PeakFieldProps {
 
 function PeakEditionField({ value, onClose }: PeakFieldProps) {
   const dispatch = useDispatch();
+  const { control, handleSubmit } = useForm({
+    defaultValues: { value },
+    resolver: yupResolver(validationSchema),
+  });
 
   function keyDownCheck(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
@@ -159,7 +164,7 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
       return false;
     }
   }
-  function hanldeOnSubmit({ value: newValue }) {
+  function handleOnSubmit({ value: newValue }) {
     if (value) {
       const shift = newValue - value;
       dispatch({ type: 'SHIFT_SPECTRUM', payload: { shift } });
@@ -168,29 +173,23 @@ function PeakEditionField({ value, onClose }: PeakFieldProps) {
   }
 
   return (
-    <Formik
-      initialValues={{ value }}
-      onSubmit={hanldeOnSubmit}
-      validationSchema={validationSchema}
-    >
-      {({ submitForm }) => (
-        <FormikInput
-          type="number"
-          style={{
-            input: {
-              height: `${InputDimension.height}px`,
-              padding: '5px',
-              outline: 'none',
-            },
-          }}
-          name="value"
-          autoSelect
-          onKeyDown={(e) => keyDownCheck(e) && submitForm()}
-          onClick={stopPropagation}
-          onMouseDown={stopPropagation}
-        />
-      )}
-    </Formik>
+    <NumberInput2Controller
+      control={control}
+      name="value"
+      style={{
+        height: `${InputDimension.height}px`,
+        outline: 'none',
+      }}
+      autoSelect
+      onKeyDown={(e) => {
+        if (keyDownCheck(e)) {
+          void handleSubmit(handleOnSubmit)();
+        }
+      }}
+      onClick={stopPropagation}
+      onMouseDown={stopPropagation}
+      buttonPosition="none"
+    />
   );
 }
 
