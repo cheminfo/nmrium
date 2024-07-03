@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.57.0](https://github.com/cheminfo/nmrium/compare/v0.56.0...v0.57.0) (2024-07-03)
+
+
+### Features
+
+* edit meta info ([965f316](https://github.com/cheminfo/nmrium/commit/965f316a875ba9307f46398162adaf636cb430dc))
+* improve database ([#3102](https://github.com/cheminfo/nmrium/issues/3102)) ([d33a9f0](https://github.com/cheminfo/nmrium/commit/d33a9f0f75c3cd92b02da16e1f9a73385c9e057d))
+* improve recolor by distinct value ([#3082](https://github.com/cheminfo/nmrium/issues/3082)) ([5c52a37](https://github.com/cheminfo/nmrium/commit/5c52a370e2bfa88f0dac3b93a099fcbd2310d723))
+
+
+### Bug Fixes
+
+* calculate of decimal digits in getDecimalsCount function ([53568de](https://github.com/cheminfo/nmrium/commit/53568dec78b8c06347902313927de6475e8f19fd))
+* improve speed of contour plot ([#3050](https://github.com/cheminfo/nmrium/issues/3050)) ([1b62142](https://github.com/cheminfo/nmrium/commit/1b62142ff692e6d2019319128e211fcbcfea72a4))
+* load raw bruker data from nmredata ([#3098](https://github.com/cheminfo/nmrium/issues/3098)) ([addb7bc](https://github.com/cheminfo/nmrium/commit/addb7bc6eef2d279936749e8539317c9d22cd56c))
+* predicted spectrum name and frequency ([#3081](https://github.com/cheminfo/nmrium/issues/3081)) ([67ad22c](https://github.com/cheminfo/nmrium/commit/67ad22c68af4375b24332b48b6f887c5a3552ed1))
+* radio button ([258efc7](https://github.com/cheminfo/nmrium/commit/258efc7779cb625f35309d6de847c6a7c8dd84bb))
+* update dependencies ([#3099](https://github.com/cheminfo/nmrium/issues/3099)) ([a6319a2](https://github.com/cheminfo/nmrium/commit/a6319a2d8e02c46473807a7b4069a3e0de1af589))
+* useForm types ([258efc7](https://github.com/cheminfo/nmrium/commit/258efc7779cb625f35309d6de847c6a7c8dd84bb))
+
 ## [0.56.0](https://github.com/cheminfo/nmrium/compare/v0.55.0...v0.56.0) (2024-06-01)
 
 
