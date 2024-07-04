@@ -152,25 +152,24 @@ function DatabasesTabContent({
             >
               <Button
                 small
-                outlined
-                intent="danger"
-                tooltipProps={{ content: '', disabled: true }}
-                onClick={() => deleteHandler(data, index)}
-              >
-                <FaRegTrashAlt className={Classes.ICON} />
-              </Button>
-
-              <Button
-                small
                 intent="success"
                 outlined
                 tooltipProps={{ content: '', disabled: true }}
                 onClick={() => addHandler(data, index + 1)}
+              >
+                <FaPlus className={Classes.ICON} />
+              </Button>
+              <Button
+                small
+                outlined
+                intent="danger"
+                tooltipProps={{ content: '', disabled: true }}
+                onClick={() => deleteHandler(data, index)}
                 css={css`
                   margin: 0 3px;
                 `}
               >
-                <FaPlus className={Classes.ICON} />
+                <FaRegTrashAlt className={Classes.ICON} />
               </Button>
 
               {isGoogleDocument(record.url) && (
