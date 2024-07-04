@@ -35,7 +35,7 @@ export default function ChangeSumModal(props: ChangeSumModalProps) {
         <Dialog
           isOpen
           onClose={closeDialog}
-          style={{ width: 500, height: 400 }}
+          style={{ width: 500 }}
           title={
             currentSum
               ? `Set new ${sumType} sum (Current: ${currentSum.toFixed(2)})`

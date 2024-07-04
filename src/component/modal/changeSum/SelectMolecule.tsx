@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useState, useEffect, useMemo } from 'react';
-import { useController } from 'react-hook-form';
+import { ControllerProps, FieldValues, useController } from 'react-hook-form';
 
 import getAtom from '../../../data/utilities/getAtom';
 import { useChartData } from '../../context/ChartContext';
@@ -40,12 +40,9 @@ const styles = css`
   }
 `;
 
-interface SelectMoleculeProps {
-  name: string;
-  control: any;
-}
-
-export default function SelectMolecule(props: SelectMoleculeProps) {
+export default function SelectMolecule<
+  FieldType extends FieldValues = FieldValues,
+>(props: Pick<ControllerProps<FieldType>, 'control' | 'name'>) {
   const { name, control } = props;
   const [currentIndex, setCurrentIndex] = useState<number>();
   const {

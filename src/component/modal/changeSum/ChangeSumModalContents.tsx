@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Button, DialogBody, DialogFooter, Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,8 +10,6 @@ import * as Yup from 'yup';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import { NumberInput2Controller } from '../../elements/NumberInput2Controller';
-import Tab from '../../elements/Tab/Tab';
-import Tabs from '../../elements/Tab/Tabs';
 
 import SelectMolecule from './SelectMolecule';
 
@@ -23,7 +21,7 @@ function getValidationSchema(option: SumSetOption) {
   }
 
   return Yup.object({
-    sum: Yup.number().required(),
+    sum: Yup.number().min(0).required(),
   });
 }
 
@@ -90,8 +88,8 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
     }
   }, [panels?.structuresPanel, reset, sumOptions]);
 
-  function onTabChangeHandler(tab) {
-    setActiveOption(tab.tabid);
+  function onTabChangeHandler(tabKey) {
+    setActiveOption(tabKey);
   }
   function saveHandler(values) {
     switch (setOption) {
@@ -120,32 +118,47 @@ export function ChangeSumModalContents(props: ChangeSumModalContentsProps) {
     <>
       <DialogBody
         css={css`
-          padding: 0;
+          padding: 5px;
           background-color: white;
+
+          [role='tablist'] {
+            border-bottom: 1px solid #f0f0f0;
+          }
         `}
       >
-        <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
+        <Tabs
+          selectedTabId={setOption}
+          onChange={onTabChangeHandler}
+          renderActiveTabPanelOnly
+        >
           {isStructurePanelVisible && (
-            <Tab title="Auto" tabid="auto">
-              <SelectMolecule control={control} name="molecule" />
-            </Tab>
+            <Tab
+              title="Auto"
+              id="auto"
+              panel={<SelectMolecule control={control} name="molecule" />}
+            />
           )}
+          <Tab
+            title="Manual"
+            id="manual"
+            panel={
+              <ManualContainer>
+                <NumberInput2Controller
+                  name="sum"
+                  control={control}
+                  placeholder="Enter the new value"
+                  onKeyDown={(event) => {
+                    if (event.key !== 'Enter') return;
 
-          <Tab title="Manual" tabid="manual">
-            <ManualContainer>
-              <NumberInput2Controller
-                name="sum"
-                control={control}
-                placeholder="Enter the new value"
-                onKeyDown={(event) => {
-                  if (event.key !== 'Enter') return;
-
-                  void handleSubmit(saveHandler)();
-                }}
-                style={{ width: '250px' }}
-              />
-            </ManualContainer>
-          </Tab>
+                    void handleSubmit(saveHandler)();
+                  }}
+                  style={{ width: '250px' }}
+                  autoFocus
+                  min={0}
+                />
+              </ManualContainer>
+            }
+          />
         </Tabs>
       </DialogBody>
       <DialogFooter>
