@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useFormikContext } from 'formik';
 import { useCallback, useState, useEffect, useMemo } from 'react';
+import { useController } from 'react-hook-form';
 
 import getAtom from '../../../data/utilities/getAtom';
 import { useChartData } from '../../context/ChartContext';
@@ -42,14 +42,16 @@ const styles = css`
 
 interface SelectMoleculeProps {
   name: string;
+  control: any;
 }
 
 export default function SelectMolecule(props: SelectMoleculeProps) {
+  const { name, control } = props;
   const [currentIndex, setCurrentIndex] = useState<number>();
-  const { setFieldValue, errors, values } = useFormikContext<{
-    molecule: { mf: string; id: string } | null;
-    sum: number;
-  }>();
+  const {
+    field: { onChange, value },
+    fieldState: { invalid },
+  } = useController({ name, control });
   const {
     molecules,
     view: {
@@ -70,21 +72,19 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
   const setValue = useCallback(
     (index: number) => {
       setCurrentIndex(index);
-      void setFieldValue(props.name, molecules[index]);
+      onChange(molecules[index]);
     },
-    [molecules, props.name, setFieldValue],
+    [molecules, onChange],
   );
 
   useEffect(() => {
     if (molecules && molecules.length > 0) {
-      const index = values[props.name]
-        ? molecules.findIndex(
-            (molecule) => molecule.id === values[props.name].id,
-          )
+      const index = value
+        ? molecules.findIndex((molecule) => molecule.id === value.id)
         : -1;
       setValue(index !== -1 ? index : 0);
     }
-  }, [molecules, props.name, setValue, values]);
+  }, [molecules, setValue, value]);
 
   const onChangeMoleculeSelectionHandler = useCallback(
     (index) => {
@@ -111,10 +111,7 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
           </div>
         </div>
       ) : (
-        <p
-          className="empty"
-          style={{ color: errors[props.name] ? 'red' : 'black' }}
-        >
+        <p className="empty" style={{ color: invalid ? 'red' : 'black' }}>
           You have to Select a spectrum and Add a molecule from the Structure
           panel to select as a reference!
         </p>
