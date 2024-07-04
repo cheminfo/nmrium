@@ -184,7 +184,7 @@ function InnerInput<FilterItem extends string = string>(
         ...otherInputProps,
       }}
       items={[]}
-      query={value}
+      query={value || ''}
       onQueryChange={handleChange}
       popoverProps={{ disabled: true }}
       {...(filterItems &&
