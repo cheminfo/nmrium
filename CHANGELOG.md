@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.57.1](https://github.com/cheminfo/nmrium/compare/v0.57.0...v0.57.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* set query value to an empty string when it is null in the suggest input ([75108c6](https://github.com/cheminfo/nmrium/commit/75108c68b73f69be456afe72869976a9714bc1ea))
+
 ## [0.57.0](https://github.com/cheminfo/nmrium/compare/v0.56.0...v0.57.0) (2024-07-03)
 
 
