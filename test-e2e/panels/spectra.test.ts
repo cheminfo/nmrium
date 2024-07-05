@@ -360,19 +360,20 @@ test('Export source from 1H spectrum', async ({ page }) => {
     await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
   });
   await test.step('Check include data options', async () => {
-    const fields = nmrium.page.locator('_react=SaveAsModal >> _react=Field');
+    const fields = nmrium.page.locator(
+      '_react=SaveAsModal >> input[type="radio"]',
+    );
     await expect(fields).toHaveCount(3);
 
     const disabledFields = nmrium.page.locator(
-      '_react=SaveAsModal >> _react=Field[disabled=true]',
+      '_react=SaveAsModal >> input[type="radio"][disabled]',
     );
     await expect(disabledFields).toHaveCount(0);
   });
   await test.step('Check export Raw Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.page.click(
-      '_react=SaveAsModal >> _react=Field[value="ROW_DATA"]',
-    );
+
+    await nmrium.page.click('_react=SaveAsModal >> text="Raw data" ');
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
     const stream = await download.createReadStream();
@@ -395,9 +396,9 @@ test('Export source from 1H spectrum', async ({ page }) => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
     await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
-    await nmrium.page.click(
-      '_react=SaveAsModal >> _react=Field[value="DATA_SOURCE"]',
-    );
+
+    await nmrium.page.click('_react=SaveAsModal >> text="Data source" ');
+
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
     const stream = await download.createReadStream();
@@ -419,9 +420,7 @@ test('Export source from 1H spectrum', async ({ page }) => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
     await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save data as');
-    await nmrium.page.click(
-      '_react=SaveAsModal >> _react=Field[value="NO_DATA"]',
-    );
+    await nmrium.page.click('_react=SaveAsModal >> text="No data" ');
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
     const stream = await download.createReadStream();
@@ -452,19 +451,19 @@ test('Export source from imported spectrum', async ({ page }) => {
     await nmrium.page.click('_react=ToolbarPopoverItem  >> text=Save data as');
   });
   await test.step('Check include data options', async () => {
-    const fields = nmrium.page.locator('_react=SaveAsModal >>_react=Field');
+    const fields = nmrium.page.locator(
+      '_react=SaveAsModal >> input[type="radio"]',
+    );
     await expect(fields).toHaveCount(3);
     const disabledFields = nmrium.page.locator(
-      '_react=SaveAsModal >>_react=Field[disabled=true]',
+      '_react=SaveAsModal >> input[type="radio"][disabled]',
     );
     await expect(disabledFields).toHaveCount(1);
     await expect(disabledFields).toHaveAttribute('value', 'DATA_SOURCE');
   });
   await test.step('Check export Raw Data', async () => {
     const downloadPromise = nmrium.page.waitForEvent('download');
-    await nmrium.page.click(
-      '_react=SaveAsModal >> _react=Field[value="ROW_DATA"]',
-    );
+    await nmrium.page.click('_react=SaveAsModal >> text="Raw data"');
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
     const stream = await download.createReadStream();
@@ -487,9 +486,7 @@ test('Export source from imported spectrum', async ({ page }) => {
     const downloadPromise = nmrium.page.waitForEvent('download');
     await nmrium.clickTool('exportAs');
     await nmrium.page.click('_react=ToolbarPopoverItem >> text=Save data as');
-    await nmrium.page.click(
-      '_react=SaveAsModal >> _react=Field[value="NO_DATA"]',
-    );
+    await nmrium.page.click('_react=SaveAsModal >> text="No data"');
     await nmrium.page.click('_react=SaveAsModal >> button >> text=Save');
     const download = await downloadPromise;
     const stream = await download.createReadStream();
