@@ -1,3 +1,7 @@
+/** @jsxImportSource @emotion/react */
+
+import { FormGroup } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { Controller, ControllerProps, FieldValues } from 'react-hook-form';
 
 import { Input2, Input2Props } from './Input2';
@@ -13,6 +17,7 @@ interface Input2ControllerProps<TFieldValues extends FieldValues = FieldValues>
     InputMapValueFunctions {
   controllerProps?: Omit<ControllerProps<TFieldValues>, 'render'>;
   noShadowBox?: boolean;
+  enableErrorMessage?: boolean;
 }
 
 export function Input2Controller<
@@ -27,7 +32,9 @@ export function Input2Controller<
     mapOnChangeValue,
     mapValue,
     noShadowBox = false,
+    enableErrorMessage = false,
     style,
+    fill,
     ...otherInputProps
   } = props;
 
@@ -36,10 +43,11 @@ export function Input2Controller<
       name={name}
       control={control}
       {...controllerProps}
-      render={({ field, fieldState: { invalid } }) => {
+      render={({ field, fieldState: { invalid, error } }) => {
         const { value: originValue, ...otherFieldProps } = field;
         const value = mapValue?.(originValue) || originValue;
-        return (
+
+        const inputComponent = (
           <Input2
             value={value}
             {...otherFieldProps}
@@ -56,9 +64,31 @@ export function Input2Controller<
               ...(noShadowBox && !invalid && { boxShadow: 'none' }),
             }}
             intent={invalid ? 'danger' : intent}
+            fill={fill}
             {...otherInputProps}
           />
         );
+
+        if (enableErrorMessage && error?.message) {
+          return (
+            <FormGroup
+              fill={fill}
+              {...(fill && {
+                css: css`
+                  div {
+                    flex: 1;
+                  }
+                `,
+              })}
+              helperText={error.message}
+              intent={invalid ? 'danger' : intent}
+            >
+              {inputComponent}
+            </FormGroup>
+          );
+        }
+
+        return inputComponent;
       }}
     />
   );
