@@ -1,17 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Formik, FormikProps } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { readFromWebSource } from 'nmr-load-save';
-import { useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useToaster } from '../context/ToasterContext';
-import Button from '../elements/Button';
+import { Input2Controller } from '../elements/Input2Controller';
 import Label, { LabelStyle } from '../elements/Label';
-import FormikError from '../elements/formik/FormikError';
-import FormikInput from '../elements/formik/FormikInput';
 
 const allowedExtensions = new Set(['dx', 'jdx', 'jcamp']);
 
@@ -39,18 +37,28 @@ const loadFormValidation = Yup.object({
 
 const labelStyle: LabelStyle = {
   wrapper: { display: 'flex', height: '100%', flex: 1 },
+  container: { alignItems: 'flex-start' },
+  label: { paddingTop: '5px' },
 };
 
-interface LoadJCAMPModalProps {
+interface InnerLoadJCAMPModalProps {
   onCloseDialog: () => void;
+}
+interface LoadJCAMPModalProps extends InnerLoadJCAMPModalProps {
   isOpen: boolean;
 }
 export function LoadJCAMPModal({ onCloseDialog, isOpen }: LoadJCAMPModalProps) {
+  if (!isOpen) return;
+
+  return <InnerLoadJCAMPModal onCloseDialog={onCloseDialog} />;
+}
+function InnerLoadJCAMPModal({ onCloseDialog }: InnerLoadJCAMPModalProps) {
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const ref = useRef<FormikProps<any>>(null);
-
-  if (!isOpen) return;
+  const { handleSubmit, control } = useForm({
+    defaultValues: { url: '' },
+    resolver: yupResolver(loadFormValidation),
+  });
 
   async function loadJCAMPHandler({ url }) {
     const hidLoading = toaster.showLoading({
@@ -79,43 +87,31 @@ export function LoadJCAMPModal({ onCloseDialog, isOpen }: LoadJCAMPModalProps) {
       isOpen
       onClose={onCloseDialog}
       title="Load JCAMP"
-      style={{ minWidth: '400px' }}
+      style={{ minWidth: 400 }}
     >
       <DialogBody
         css={css`
           background-color: white;
         `}
       >
-        <Formik
-          initialValues={{ url: '' }}
-          validationSchema={loadFormValidation}
-          onSubmit={loadJCAMPHandler}
-          innerRef={ref}
-        >
-          <Label title="URL" style={labelStyle}>
-            <FormikError name="url" style={{ container: { flex: 1 } }}>
-              <FormikInput
-                name="url"
-                type="string"
-                style={{
-                  input: {
-                    padding: '0.8em',
-                    textAlign: 'left',
-                    width: '100%',
-                  },
-                  inputWrapper: { width: '100%' },
-                }}
-                placeholder="Enter URL to JCAMP-DX file"
-              />
-            </FormikError>
-          </Label>
-        </Formik>
+        <Label title="URL" style={labelStyle}>
+          <Input2Controller
+            name="url"
+            control={control}
+            fill
+            placeholder="Enter URL to JCAMP-DX file"
+            enableErrorMessage
+          />
+        </Label>
       </DialogBody>
       <DialogFooter>
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button.Done onClick={() => ref.current?.submitForm()}>
+          <Button
+            intent="success"
+            onClick={() => void handleSubmit(loadJCAMPHandler)()}
+          >
             Load
-          </Button.Done>
+          </Button>
         </div>
       </DialogFooter>
     </Dialog>
