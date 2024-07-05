@@ -11,7 +11,10 @@ interface Input2ControllerProps<TFieldValues extends FieldValues = FieldValues>
   extends Omit<Input2Props, 'name'>,
     Pick<ControllerProps<TFieldValues>, 'control' | 'name'>,
     InputMapValueFunctions {
-  controllerProps?: Omit<ControllerProps<TFieldValues>, 'render'>;
+  controllerProps?: Omit<
+    ControllerProps<TFieldValues>,
+    'control' | 'name' | 'render'
+  >;
   noShadowBox?: boolean;
 }
 
