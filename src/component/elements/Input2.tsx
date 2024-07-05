@@ -131,6 +131,7 @@ function InnerInput<FilterItem extends string = string>(
     filterItems,
     leftIcon,
     autoSelect = false,
+    fill,
     ...otherInputProps
   } = props;
 
@@ -186,6 +187,7 @@ function InnerInput<FilterItem extends string = string>(
       items={[]}
       query={value || ''}
       onQueryChange={handleChange}
+      fill={fill}
       popoverProps={{ disabled: true }}
       {...(filterItems &&
         filterItems.length > 0 && {
