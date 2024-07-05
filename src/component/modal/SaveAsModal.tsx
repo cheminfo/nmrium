@@ -1,30 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import {
+  Checkbox,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Radio,
+  RadioGroup,
+} from '@blueprintjs/core';
 import { css } from '@emotion/react';
-import { Field, Formik } from 'formik';
-import { useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { DataExportOptions } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import ActionButtons from '../elements/ActionButtons';
+import { Input2Controller } from '../elements/Input2Controller';
 import Label, { LabelStyle } from '../elements/Label';
-import FormikCheckBox from '../elements/formik/FormikCheckBox';
-import FormikInput from '../elements/formik/FormikInput';
 import useExport from '../hooks/useExport';
-
-const styles = css`
-  display: flex;
-  flex-direction: column;
-
-  label {
-    margin-right: 20px;
-    display: inline-block;
-  }
-
-  input[type='radio'] {
-    margin-right: 5px;
-  }
-`;
 
 const INITIAL_VALUE = {
   name: '',
@@ -40,7 +31,6 @@ const INITIAL_VALUE = {
 export const labelStyle: LabelStyle = {
   label: {
     flex: 4,
-    fontSize: '12px',
     color: '#232323',
   },
   wrapper: {
@@ -51,14 +41,22 @@ export const labelStyle: LabelStyle = {
   container: { padding: '5px 0' },
 };
 
-interface SaveAsModalProps {
+interface InnerSaveAsModalProps {
   onCloseDialog: () => void;
+}
+interface SaveAsModalProps extends InnerSaveAsModalProps {
   isOpen: boolean;
 }
 
 function SaveAsModal(props: SaveAsModalProps) {
   const { onCloseDialog, isOpen } = props;
-  const refForm = useRef<any>();
+
+  if (!isOpen) return;
+
+  return <InnerSaveAsModal onCloseDialog={onCloseDialog} />;
+}
+function InnerSaveAsModal(props: InnerSaveAsModalProps) {
+  const { onCloseDialog } = props;
   const { source, data } = useChartData();
   const { saveHandler } = useExport();
 
@@ -69,90 +67,73 @@ function SaveAsModal(props: SaveAsModalProps) {
     onCloseDialog?.();
   }
 
-  if (!isOpen) return;
-
+  const { handleSubmit, control, register } = useForm({
+    defaultValues: { ...INITIAL_VALUE, name: fileName },
+  });
   return (
     <Dialog
       isOpen
       title="Save as ... "
       onClose={onCloseDialog}
-      style={{ width: 500 }}
+      style={{ width: 600 }}
     >
       <DialogBody
         css={css`
           background-color: white;
         `}
       >
-        <Formik
-          innerRef={refForm}
-          initialValues={{ ...INITIAL_VALUE, name: fileName }}
-          onSubmit={submitHandler}
-        >
-          <>
-            <Label style={labelStyle} title="Name">
-              <FormikInput
-                name="name"
-                className="name"
-                style={{
-                  inputWrapper: { width: '100%' },
-                  input: { padding: '5px', textAlign: 'left' },
-                }}
-              />
-            </Label>
-            <Label style={labelStyle} title="Compressed">
-              <FormikCheckBox name="compressed" />
-            </Label>
-            <Label style={labelStyle} title="Pretty format">
-              <FormikCheckBox name="pretty" />
-            </Label>
-            <Label style={labelStyle} title="Include view">
-              <FormikCheckBox name="include.view" />
-            </Label>
-            <Label style={labelStyle} title="Include settings">
-              <FormikCheckBox name="include.settings" />
-            </Label>
-            <Label style={labelStyle} title="Include data">
-              <div css={styles}>
-                <div>
-                  <label>
-                    <Field
-                      type="radio"
-                      name="include.dataType"
-                      value={DataExportOptions.ROW_DATA}
-                    />
-                    Raw data
-                  </label>
-                  <label
-                    style={{
-                      color: source ? 'black' : 'lightgray',
-                    }}
-                  >
-                    <Field
-                      type="radio"
-                      name="include.dataType"
-                      value={DataExportOptions.DATA_SOURCE}
-                      disabled={!source}
-                    />
-                    Data source
-                  </label>
-                  <label>
-                    <Field
-                      type="radio"
-                      name="include.dataType"
-                      value={DataExportOptions.NO_DATA}
-                    />
-                    No data
-                  </label>
-                </div>
-              </div>
-            </Label>
-          </>
-        </Formik>
+        <Label style={labelStyle} title="Name">
+          <Input2Controller
+            name="name"
+            control={control}
+            fill
+            controllerProps={{ rules: { required: true } }}
+          />
+        </Label>
+        <Label style={labelStyle} title="Compressed">
+          <Checkbox style={{ margin: 0 }} {...register(`compressed`)} />
+        </Label>
+        <Label style={labelStyle} title="Pretty format">
+          <Checkbox style={{ margin: 0 }} {...register(`pretty`)} />
+        </Label>
+        <Label style={labelStyle} title="Include view">
+          <Checkbox style={{ margin: 0 }} {...register(`include.view`)} />
+        </Label>
+        <Label style={labelStyle} title="Include settings">
+          <Checkbox style={{ margin: 0 }} {...register(`include.settings`)} />
+        </Label>
+        <Label style={labelStyle} title="Include data">
+          <Controller
+            name="include.dataType"
+            control={control}
+            render={({ field }) => {
+              const { value, onChange, ...otherFieldProps } = field;
+              return (
+                <RadioGroup
+                  inline
+                  onChange={onChange}
+                  selectedValue={value}
+                  {...otherFieldProps}
+                >
+                  <Radio label="Raw data" value={DataExportOptions.ROW_DATA} />
+                  <Radio
+                    label="Data source"
+                    value={DataExportOptions.DATA_SOURCE}
+                    disabled={!source}
+                  />
+                  <Radio label="No data" value={DataExportOptions.NO_DATA} />
+                </RadioGroup>
+              );
+            }}
+          />
+        </Label>
       </DialogBody>
       <DialogFooter>
         <ActionButtons
           style={{ flexDirection: 'row-reverse', margin: 0 }}
-          onDone={() => refForm.current.submitForm()}
+          onDone={() => {
+            void handleSubmit(submitHandler)();
+          }}
           doneLabel="Save"
           onCancel={() => onCloseDialog?.()}
         />
