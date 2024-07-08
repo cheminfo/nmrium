@@ -13,7 +13,7 @@ import {
 } from '../../../data/molecules/Molecule';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import NextPrev from '../../elements/NextPrev';
+import { NextPrev } from '../../elements/NextPrev';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import { DisplayerMode } from '../../reducer/Reducer';
@@ -109,10 +109,13 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
     setCurrentIndex(index);
   }
 
+  const lastIndex = molecules?.length > 0 ? molecules.length - 1 : 0;
+  const activeIndex = currentIndex > lastIndex ? lastIndex : currentIndex;
+
   return (
     <div css={styles.panel}>
       <MoleculePanelHeader
-        currentIndex={currentIndex}
+        currentIndex={activeIndex}
         moleculesView={moleculesView}
         molecules={molecules}
         onOpenMoleculeEditor={() => openMoleculeEditor()}
@@ -126,7 +129,7 @@ function MoleculePanelInner(props: MoleculePanelInnerProps) {
               return (
                 <NextPrev
                   onChange={(slideIndex) => setCurrentIndex(slideIndex)}
-                  defaultIndex={currentIndex}
+                  index={currentIndex}
                 >
                   {molecules && molecules.length > 0 ? (
                     molecules.map((mol: StateMoleculeExtended, index) => (

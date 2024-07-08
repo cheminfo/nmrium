@@ -12,7 +12,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useLogger } from '../../context/LoggerContext';
 import { useToaster } from '../../context/ToasterContext';
 import Button from '../../elements/Button';
-import NextPrev from '../../elements/NextPrev';
+import { NextPrev } from '../../elements/NextPrev';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useMoleculeEditor } from '../../modal/MoleculeStructureEditorModal';
 import MoleculeHeader from '../MoleculesPanel/MoleculeHeader';
@@ -174,7 +174,7 @@ export default function PredictionPanel() {
                         setCurrentIndex(slideIndex);
                         setMolfile(molecules[slideIndex].molfile);
                       }}
-                      defaultIndex={currentIndex}
+                      index={currentIndex}
                       style={{
                         arrowContainer: {
                           top: '40px',

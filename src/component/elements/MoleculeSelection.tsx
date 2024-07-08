@@ -6,7 +6,7 @@ import { MolfileSvgRenderer } from 'react-ocl/full';
 
 import { StateMoleculeExtended } from '../../data/molecules/Molecule';
 
-import NextPrev from './NextPrev';
+import { NextPrev } from './NextPrev';
 
 const toolbarStyle = css`
   display: flex;
@@ -100,7 +100,7 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
         </p>
       </div>
       <div css={moleculeContainerStyle}>
-        <NextPrev defaultIndex={currentIndex} onChange={onChangeHandler}>
+        <NextPrev index={currentIndex} onChange={onChangeHandler}>
           {molecules?.map((mol, index) => (
             <div key={mol.id} className="slider">
               <div>

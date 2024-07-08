@@ -1,15 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  useState,
-  Children,
-  useMemo,
-  useEffect,
-  useCallback,
-  memo,
-  CSSProperties,
-  ReactElement,
-} from 'react';
+import styled from '@emotion/styled';
+import { Children, CSSProperties, ReactElement } from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
 
@@ -60,149 +52,158 @@ function Arrow({ direction, onClick, style = {} }: ArrowProps) {
   );
 }
 
+const Container = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  display: block;
+`;
+const TransformController = styled.div<{
+  translation: number;
+  slidersWidth: number;
+}>(
+  ({ translation, slidersWidth }) => `transform: translateX(-${translation}px);
+  transition: transform ease-out ${transition}s;
+  height: 100%;
+  width: ${slidersWidth}px;
+  display: flex;
+`,
+);
+
 const transition = 0.45;
 
 interface NextPrevProps {
   children: ReactElement | ReactElement[];
   loop?: boolean;
-  defaultIndex?: number;
-  onChange?: (element: number) => void;
+  index: number;
+  onChange: (element: number) => void;
   style?: { arrowContainer?: CSSProperties };
 }
 
-function NextPrev(props: NextPrevProps) {
+export function NextPrev(props: NextPrevProps) {
   const {
     children,
     loop = false,
-    defaultIndex = 0,
+    index = 0,
     onChange = () => null,
     style = {},
   } = props;
   const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const [activeIndex, setActiveIndex] = useState(0);
-  useEffect(() => {
-    setActiveIndex(defaultIndex);
-  }, [defaultIndex]);
+  const slidersCount = Children.count(children);
+  const lastIndex = slidersCount > 0 ? slidersCount - 1 : 0;
+  const activeIndex = index > lastIndex ? lastIndex : index;
 
-  const Sliders = useMemo(
-    () =>
-      Children.map(children, (child: ReactElement) => {
-        return (
-          <div
-            key={child.key}
-            css={css`
-              width: ${width}px;
-              height: 100%;
-            `}
-          >
-            {child}
-          </div>
-        );
-      }),
-    [children, width],
-  );
+  function nextHandler() {
+    if (index === lastIndex) {
+      onChange(index);
 
-  const nextHandler = useCallback(() => {
-    setActiveIndex((preActiveIndex) => {
-      if (Sliders && preActiveIndex === Sliders.length - 1) {
-        onChange(preActiveIndex);
-
-        if (loop) {
-          return 0;
-        } else {
-          return preActiveIndex;
-        }
+      if (loop) {
+        return 0;
+      } else {
+        return index;
       }
+    }
 
-      const nextIndex = preActiveIndex + 1;
-      onChange(nextIndex);
+    const nextIndex = index + 1;
+    onChange(nextIndex);
+  }
 
-      return nextIndex;
-    });
-  }, [Sliders, loop, onChange]);
-
-  const prevHandler = useCallback(() => {
-    setActiveIndex((preActiveIndex) => {
-      if (preActiveIndex === 0) {
-        onChange(preActiveIndex);
-        if (loop) {
-          return 0;
-        } else {
-          return preActiveIndex;
-        }
+  function prevHandler() {
+    if (index === 0) {
+      onChange(index);
+      if (loop) {
+        return 0;
+      } else {
+        return index;
       }
-      const prevIndex = preActiveIndex - 1;
+    }
+    const prevIndex = index - 1;
 
-      onChange(prevIndex);
+    onChange(prevIndex);
+  }
 
-      return prevIndex;
-    });
-  }, [loop, onChange]);
-
-  if (!width && !Sliders) return null;
+  if (!width && slidersCount === 0) return null;
 
   const translation = width * activeIndex;
-  const slidersWidth = width * (Sliders ? Sliders.length : 1);
+  const slidersWidth = width * slidersCount;
 
   return (
-    <div
-      css={css`
-        position: relative;
-        height: 100%;
-        width: 100%;
-        margin: 0 auto;
-        overflow: hidden;
-        display: block;
-      `}
-      ref={ref}
-    >
-      <div
-        css={css`
-          transform: translateX(-${translation}px);
-          transition: transform ease-out ${transition}s;
-          height: 100%;
-          width: ${slidersWidth}px;
-          display: flex;
-        `}
+    <Container ref={ref}>
+      <TransformController
+        translation={translation}
+        slidersWidth={slidersWidth}
       >
-        {Sliders}
-      </div>
-
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          padding: '0 10px',
-          justifyContent: 'space-between',
-          width: '100%',
-          display: 'flex',
-          pointerEvents: 'none',
-          ...style?.arrowContainer,
-        }}
-      >
-        <Arrow
-          direction="left"
-          onClick={prevHandler}
-          style={{
-            ...(activeIndex === 0 && {
-              visibility: 'hidden',
-              pointerEvents: 'none',
-            }),
-          }}
-        />
-        <Arrow
-          direction="right"
-          onClick={nextHandler}
-          style={{
-            ...((!Sliders || activeIndex === Sliders.length - 1) && {
-              visibility: 'hidden',
-              pointerEvents: 'none',
-            }),
-          }}
-        />
-      </div>
-    </div>
+        {Children.map(children, (child: ReactElement) => {
+          return (
+            <div
+              key={child.key}
+              css={css`
+                width: ${width}px;
+                height: 100%;
+              `}
+            >
+              {child}
+            </div>
+          );
+        })}
+      </TransformController>
+      <SliderControllers
+        onNext={nextHandler}
+        onPrevious={prevHandler}
+        activeIndex={activeIndex}
+        lastIndex={lastIndex}
+        style={style?.arrowContainer}
+      />
+    </Container>
   );
 }
 
-export default memo(NextPrev);
+interface SliderControllersProps {
+  onNext: ArrowProps['onClick'];
+  onPrevious: ArrowProps['onClick'];
+  activeIndex: number;
+  lastIndex: number;
+  style?: CSSProperties;
+}
+
+function SliderControllers(props: SliderControllersProps) {
+  const { onNext, onPrevious, activeIndex, lastIndex, style } = props;
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: '50%',
+        padding: '0 10px',
+        justifyContent: 'space-between',
+        width: '100%',
+        display: 'flex',
+        pointerEvents: 'none',
+        ...style,
+      }}
+    >
+      <Arrow
+        direction="left"
+        onClick={onPrevious}
+        style={{
+          ...(activeIndex === 0 && {
+            visibility: 'hidden',
+            pointerEvents: 'none',
+          }),
+        }}
+      />
+      <Arrow
+        direction="right"
+        onClick={onNext}
+        style={{
+          ...(activeIndex === lastIndex && {
+            visibility: 'hidden',
+            pointerEvents: 'none',
+          }),
+        }}
+      />
+    </div>
+  );
+}
