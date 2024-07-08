@@ -48,8 +48,10 @@ export function Input2Controller<
       {...controllerProps}
       render={({ field, fieldState: { invalid, error } }) => {
         const { value: originValue, ...otherFieldProps } = field;
-        const value = mapValue?.(originValue) || originValue;
-
+        let value: string = originValue;
+        if (typeof mapValue === 'function') {
+          value = mapValue(originValue);
+        }
         const inputComponent = (
           <Input2
             value={value}
