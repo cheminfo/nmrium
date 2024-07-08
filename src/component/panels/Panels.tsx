@@ -11,6 +11,7 @@ import {
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { useDialogToggle } from '../hooks/useDialogToggle';
 import { DisplayerMode } from '../reducer/Reducer';
@@ -199,20 +200,6 @@ function PanelsInner({ displayerMode: displayedMode }) {
     return panelOptions?.display && panelOptions?.open;
   }
 
-  const toolbars: Partial<
-    Record<keyof NMRiumPanelPreferences, ToolbarItemProps[]>
-  > = {
-    informationPanel: [
-      {
-        icon: <FaRegEdit />,
-        onClick: ({ event }) => {
-          event.stopPropagation();
-          openDialog('informationModal');
-        },
-      },
-    ],
-  };
-
   return (
     <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
       <InformationEditionModal
@@ -224,13 +211,14 @@ function PanelsInner({ displayerMode: displayedMode }) {
           const { title, component, id } = item;
           let toolbar;
 
-          if (id && toolbars[id]) {
+          if (id === 'informationPanel') {
             toolbar = (
-              <Toolbar>
-                {toolbars[id]?.map((options, index) => (
-                  <Toolbar.Item key={index} {...options} />
-                ))}
-              </Toolbar>
+              <InformationPanelToolBar
+                onEdit={({ event }) => {
+                  event.stopPropagation();
+                  openDialog('informationModal');
+                }}
+              />
             );
           }
           return (
@@ -248,6 +236,29 @@ function PanelsInner({ displayerMode: displayedMode }) {
         })}
       </Accordion>
     </div>
+  );
+}
+
+function InformationPanelToolBar(props: {
+  onEdit: ToolbarItemProps['onClick'];
+}) {
+  const { onEdit } = props;
+  const activeSpectrum = useActiveSpectrum();
+
+  return (
+    <Toolbar>
+      <Toolbar.Item
+        disabled={!activeSpectrum}
+        tooltipProps={{ intent: !activeSpectrum ? 'danger' : 'none' }}
+        icon={<FaRegEdit />}
+        onClick={onEdit}
+        tooltip={
+          !activeSpectrum
+            ? 'Select a spectrum to edit its meta information'
+            : 'Edit spectrum meta information'
+        }
+      />
+    </Toolbar>
   );
 }
 
