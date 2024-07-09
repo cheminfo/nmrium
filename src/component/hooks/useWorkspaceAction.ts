@@ -83,21 +83,19 @@ export function useWorkspaceAction() {
   }
 
   function saveWorkspace(data?: Partial<Workspace>) {
-    if (data) {
-      const settings = readSettings() || {
-        version: 0,
-        currentWorkspace: null,
-        workspaces: {},
-      };
+    const settings = readSettings() || {
+      version: 0,
+      currentWorkspace: null,
+      workspaces: {},
+    };
+    updateSettings({
+      ...settings,
+      workspaces: {
+        ...settings.workspaces,
+        [workspace.current]: data ?? current,
+      },
+    } as Settings);
 
-      updateSettings({
-        ...settings,
-        workspaces: {
-          ...settings.workspaces,
-          [workspace.current]: data,
-        },
-      } as Settings);
-    }
     dispatch({
       type: 'SET_PREFERENCES',
       ...(data && { payload: data }),
