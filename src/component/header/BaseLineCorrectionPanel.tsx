@@ -2,7 +2,7 @@ import { Checkbox } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Filter, Filters, BaselineCorrectionOptions } from 'nmr-processing';
-import { memo, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, useSelect } from 'react-science/ui';
 import * as Yup from 'yup';
@@ -107,6 +107,23 @@ function BaseLineCorrectionInnerPanel(
     itemTextKey: 'label',
   });
 
+  const onChange = useCallback(
+    (values) => {
+      const { livePreview, ...options } = values;
+
+      if (livePreview || previousPreviewRef !== livePreview) {
+        dispatch({
+          type: 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
+          payload: {
+            options,
+            livePreview,
+          },
+        });
+      }
+    },
+    [dispatch],
+  );
+
   const handleApplyFilter = (
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
@@ -115,15 +132,7 @@ function BaseLineCorrectionInnerPanel(
 
     switch (triggerSource) {
       case 'onChange': {
-        if (livePreview || previousPreviewRef !== livePreview) {
-          dispatch({
-            type: 'CALCULATE_BASE_LINE_CORRECTION_FILTER',
-            payload: {
-              options,
-              livePreview,
-            },
-          });
-        }
+        onChange(values);
         break;
       }
 
@@ -166,6 +175,10 @@ function BaseLineCorrectionInnerPanel(
 
   const { onChange: onLivePreviewChange, ...otherLivePreviewRegisterOptions } =
     register(`livePreview`);
+
+  useEffect(() => {
+    void handleSubmit((values) => onChange(values))();
+  }, [handleSubmit, onChange]);
 
   return (
     <HeaderContainer>
