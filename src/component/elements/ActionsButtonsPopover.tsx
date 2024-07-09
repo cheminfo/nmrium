@@ -1,20 +1,35 @@
 /** @jsxImportSource @emotion/react */
 import { Popover, PopoverProps } from '@blueprintjs/core';
-import { css } from '@emotion/react';
+import { css, Interpolation, Theme } from '@emotion/react';
+import { CSSProperties, Fragment } from 'react';
 import { Button, ButtonProps } from 'react-science/ui';
 
 export interface ActionsButtonsPopoverProps
   extends Omit<PopoverProps, 'interactionKind' | 'content'> {
   buttons: Array<
-    Pick<ButtonProps, 'icon' | 'onClick' | 'intent' | 'disabled'> & {
+    Pick<
+      ButtonProps,
+      'icon' | 'onClick' | 'intent' | 'disabled' | 'onPointerDown' | 'style'
+    > & {
       title?: string;
       visible?: boolean;
+      css?: Interpolation<Theme>;
     }
   >;
+  contentStyle?: CSSProperties;
+  direction?: 'column' | 'row';
+  space?: number;
 }
 
 export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
-  const { buttons, children, ...otherProps } = props;
+  const {
+    buttons,
+    children,
+    space,
+    direction = 'column',
+    contentStyle = {},
+    ...otherProps
+  } = props;
 
   return (
     <Popover
@@ -25,7 +40,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
       enforceFocus={false}
       content={
         <div
-          style={{ display: 'flex', flexDirection: 'column' }}
+          style={{ display: 'flex', flexDirection: direction, ...contentStyle }}
           css={css`
             button,
             a[role='button'] {
@@ -39,18 +54,24 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
         >
           {buttons
             .filter((button) => button?.visible !== false)
-            .map(({ icon, onClick, intent, title, disabled }, index) => {
-              return (
+            .map(({ title, ...otherProps }, index, array) => (
+              <Fragment key={title || index}>
                 <Button
-                  disabled={disabled}
-                  key={title || index}
-                  icon={icon}
-                  onClick={onClick}
                   tooltipProps={{ content: title || '', compact: true }}
-                  intent={intent}
+                  {...otherProps}
                 />
-              );
-            })}
+                {index < array.length - 1 && (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <div
+                    key={`spacer-${index}`}
+                    style={{
+                      margin:
+                        direction === 'row' ? `0 ${space}px` : `${space}px 0`,
+                    }}
+                  />
+                )}
+              </Fragment>
+            ))}
         </div>
       }
       {...otherProps}
