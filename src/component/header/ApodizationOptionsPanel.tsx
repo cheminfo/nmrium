@@ -5,7 +5,7 @@ import {
   Filter,
   ApodizationOptions as BaseApodizationOptions,
 } from 'nmr-processing';
-import { useRef, memo } from 'react';
+import { useRef, memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -43,6 +43,20 @@ function ApodizationOptionsInnerPanel(
   const dispatch = useDispatch();
   const previousPreviewRef = useRef<boolean>(initialValues.livePreview);
 
+  const onChange = useCallback(
+    (values) => {
+      const { livePreview, ...options } = values;
+
+      if (livePreview || previousPreviewRef.current !== livePreview) {
+        dispatch({
+          type: 'CALCULATE_APODIZATION_FILTER',
+          payload: { livePreview, options },
+        });
+      }
+    },
+    [dispatch],
+  );
+
   function handleApplyFilter(
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
@@ -50,12 +64,7 @@ function ApodizationOptionsInnerPanel(
     const { livePreview, ...options } = values;
     switch (triggerSource) {
       case 'onChange': {
-        if (livePreview || previousPreviewRef.current !== livePreview) {
-          dispatch({
-            type: 'CALCULATE_APODIZATION_FILTER',
-            payload: { livePreview, options },
-          });
-        }
+        onChange(values);
         break;
       }
 
@@ -101,6 +110,10 @@ function ApodizationOptionsInnerPanel(
 
   const { onChange: onLivePreviewChange, ...otherLivePreviewOptions } =
     register('livePreview');
+
+  useEffect(() => {
+    void handleSubmit((values) => onChange(values))();
+  }, [handleSubmit, onChange]);
 
   return (
     <HeaderContainer>
