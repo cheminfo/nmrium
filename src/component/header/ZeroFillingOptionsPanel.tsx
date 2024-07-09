@@ -1,7 +1,7 @@
 import { Checkbox } from '@blueprintjs/core';
 import { NmrData1D } from 'cheminfo-types';
 import { Filters } from 'nmr-processing';
-import { memo, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
@@ -36,6 +36,23 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     defaultValues: { nbPoints: size, livePreview: true },
   });
 
+  const onChange = useCallback(
+    (values) => {
+      const { livePreview, ...options } = values;
+
+      if (livePreview || previousPreviewRef !== livePreview) {
+        dispatch({
+          type: 'CALCULATE_ZERO_FILLING_FILTER',
+          payload: {
+            options,
+            livePreview,
+          },
+        });
+      }
+    },
+    [dispatch],
+  );
+
   function handleApplyFilter(
     values,
     triggerSource: 'apply' | 'onChange' = 'apply',
@@ -43,15 +60,7 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
     const { livePreview, ...options } = values;
     switch (triggerSource) {
       case 'onChange': {
-        if (livePreview || previousPreviewRef !== livePreview) {
-          dispatch({
-            type: 'CALCULATE_ZERO_FILLING_FILTER',
-            payload: {
-              options,
-              livePreview,
-            },
-          });
-        }
+        onChange(values);
         break;
       }
 
@@ -82,6 +91,10 @@ function ZeroFillingOptionsInnerPanel(props: { size: number }) {
   function submitHandler(triggerSource: 'apply' | 'onChange' = 'apply') {
     void handleSubmit((values) => handleApplyFilter(values, triggerSource))();
   }
+
+  useEffect(() => {
+    void handleSubmit((values) => onChange(values))();
+  }, [handleSubmit, onChange]);
 
   return (
     <HeaderContainer>
