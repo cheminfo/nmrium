@@ -22,6 +22,7 @@ import {
   setSpectraAnalysisPanelsPreferences,
 } from './actions/analyzeSpectra';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences';
+import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition';
 import { initPreferences } from './actions/initPreferences';
 import {
   setMatrixGenerationOptions,
@@ -39,6 +40,7 @@ import { setPreferences } from './actions/setPreferences';
 import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition';
 import { setWorkspace } from './actions/setWorkspace';
 import { mapWorkspaces } from './utilities/mapWorkspaces';
+import { toggleInformationBlock } from './actions/toggleInformationBlock';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 
@@ -108,6 +110,18 @@ export type SetVerticalSplitterPositionAction = ActionType<
   'SET_VERTICAL_SPLITTER_POSITION',
   { value: SplitPaneSize }
 >;
+export type ChangeInformationBlockPosition = ActionType<
+  'CHANGE_INFORMATION_BLOCK_POSITION',
+  {
+    coordination: { x: number; y: number };
+  }
+>;
+export type ToggleInformationBlock = ActionType<
+  'TOGGLE_INFORMATION_BLOCK',
+  {
+    visible?: boolean;
+  }
+>;
 
 type PreferencesActions =
   | InitPreferencesAction
@@ -122,7 +136,9 @@ type PreferencesActions =
   | DeleteAnalysisColumn
   | SetSpectraAnalysisPanelPreferencesAction
   | MatrixGenerationActions
-  | SetVerticalSplitterPositionAction;
+  | SetVerticalSplitterPositionAction
+  | ChangeInformationBlockPosition
+  | ToggleInformationBlock;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -269,6 +285,10 @@ function innerPreferencesReducer(
       return changeMatrixGenerationScale(draft, action);
     case 'CHANGE_MATRIX_GENERATION_STOCSY_CHEMICAL_SHIFT':
       return changeMatrixGenerationStocsyChemicalShift(draft, action);
+    case 'CHANGE_INFORMATION_BLOCK_POSITION':
+      return changeInformationBlockPosition(draft, action);
+    case 'TOGGLE_INFORMATION_BLOCK':
+      return toggleInformationBlock(draft, action);
 
     default:
       return draft;
