@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.58.0](https://github.com/cheminfo/nmrium/compare/v0.57.1...v0.58.0) (2024-07-10)
+
+
+### Features
+
+* improve info block ([b838b34](https://github.com/cheminfo/nmrium/commit/b838b3432c4af5a1396397b1dde986388cba06a0))
+* move the title block ([b838b34](https://github.com/cheminfo/nmrium/commit/b838b3432c4af5a1396397b1dde986388cba06a0))
+
+
+### Bug Fixes
+
+* apply apodization on the fly when opening its options panel ([506bc4b](https://github.com/cheminfo/nmrium/commit/506bc4bc6c6743a72a325f30c4bfe801bedf6c09))
+* apply baseline correction on the fly when opening its options panel ([1b8ebdc](https://github.com/cheminfo/nmrium/commit/1b8ebdc32b80d9935724a0f49f202dd0fe68ca5b))
+* apply zero filling on the fly when opening its options panel ([d43911d](https://github.com/cheminfo/nmrium/commit/d43911d786b46eab03a1347f3c4c3ace79d24903))
+* correctly handle optional mapValue function ([106f2c9](https://github.com/cheminfo/nmrium/commit/106f2c94c948ce5199eec8adbd09dff1856606a2))
+* read title file in bruker pdata ([#3114](https://github.com/cheminfo/nmrium/issues/3114)) ([f4a18b5](https://github.com/cheminfo/nmrium/commit/f4a18b5ad3a7ce2bfb03d2e6b8ecb2a12dc35e17))
+* save preferences in the local storage ([6f0ac78](https://github.com/cheminfo/nmrium/commit/6f0ac783c4835b6eff71139dd0ee9d686bc3e15b))
+
 ## [0.57.1](https://github.com/cheminfo/nmrium/compare/v0.57.0...v0.57.1) (2024-07-04)
 
 
