@@ -23,7 +23,7 @@ function isRandomColorGeneration(
   return 'random' in options;
 }
 
-export const COLORS: Readonly<string[]> = [
+export const COLORS: readonly string[] = [
   '#C10020',
   '#007D34',
   '#803E75',

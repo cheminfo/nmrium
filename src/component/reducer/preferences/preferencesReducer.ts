@@ -39,8 +39,8 @@ import { setPanelsPreferences } from './actions/setPanelsPreferences';
 import { setPreferences } from './actions/setPreferences';
 import { setVerticalSplitterPosition } from './actions/setVerticalSplitterPosition';
 import { setWorkspace } from './actions/setWorkspace';
-import { mapWorkspaces } from './utilities/mapWorkspaces';
 import { toggleInformationBlock } from './actions/toggleInformationBlock';
+import { mapWorkspaces } from './utilities/mapWorkspaces';
 
 const LOCAL_STORAGE_SETTINGS_KEY = 'nmr-general-settings';
 

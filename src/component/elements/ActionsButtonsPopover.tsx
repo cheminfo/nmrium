@@ -61,7 +61,7 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
                   {...otherProps}
                 />
                 {index < array.length - 1 && (
-                  // eslint-disable-next-line react/no-array-index-key
+                   
                   <div
                     key={`spacer-${index}`}
                     style={{
