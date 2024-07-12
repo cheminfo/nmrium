@@ -61,7 +61,6 @@ export function ActionsButtonsPopover(props: ActionsButtonsPopoverProps) {
                   {...otherProps}
                 />
                 {index < array.length - 1 && (
-                   
                   <div
                     key={`spacer-${index}`}
                     style={{
