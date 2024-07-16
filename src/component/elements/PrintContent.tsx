@@ -211,11 +211,14 @@ function appendPrintPageStyle(document: Document, style: Style = {}) {
   const styleElement = document.createElement('style');
 
   styleElement.textContent = `
+      @media print {
+
     @page {
       size: ${size} ${layout};
       padding: ${typeof padding === 'string' ? padding : `${padding}cm`};
       margin: ${typeof margin === 'string' ? margin : `${margin}cm`};
     }
+}
   `;
   document.head.append(styleElement);
 }
