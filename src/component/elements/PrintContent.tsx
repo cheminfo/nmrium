@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import {
   Dialog,
   DialogBody,
@@ -8,14 +7,8 @@ import {
   RadioGroup,
   Tag,
 } from '@blueprintjs/core';
-import {
-  CSSProperties,
-  ReactNode,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { css } from '@emotion/react';
+import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -157,7 +150,7 @@ export function PrintContent(props: PrintFrameProps) {
     return () => {
       window.removeEventListener('keydown', handleKeyDow);
     };
-  }, []);
+  }, [printPageOptions]);
 
   if (!pageOptions) {
     return (
@@ -209,7 +202,7 @@ export function InnerPrintFrame(props: PrintFrameProps) {
   const { width, height } =
     pageSizes.find((pageItem) => pageItem.name === size)?.[layout] || {};
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const contentWindow = frameRef.current?.contentWindow;
     if (!contentWindow) return;
     const document = contentWindow.document;
@@ -232,7 +225,7 @@ export function InnerPrintFrame(props: PrintFrameProps) {
       contentWindow.removeEventListener('afterprint', handleAfterPrint);
       contentWindow.removeEventListener('beforeprint', handleBeforePrint);
     };
-  }, [layout, onAfterPrint, padding, size]);
+  }, [layout, onBeforePrint, onAfterPrint, padding, size]);
 
   return (
     <iframe ref={frameRef} style={{ width: 0, height: 0, border: 'none' }}>
@@ -366,7 +359,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
     onCloseDialog?.();
   }
 
-  const { handleSubmit, control, register, watch } = useForm<PrintPagOptions>({
+  const { handleSubmit, control, watch } = useForm<PrintPagOptions>({
     defaultValues: { ...INITIAL_VALUE },
   });
 

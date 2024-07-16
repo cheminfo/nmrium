@@ -103,7 +103,6 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
   const dispatch = useDispatch();
   function handleBeforePrint(size) {
     beforePrintSize.current = size;
-    console.log(size);
   }
 
   function handleAfterPrint() {
@@ -202,6 +201,7 @@ function PrintWrapper(
 
   useLayoutEffect(() => {
     onBeforePrint({ width, height });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />;
