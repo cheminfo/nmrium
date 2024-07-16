@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import {
-  Checkbox,
   Dialog,
   DialogBody,
   DialogFooter,
@@ -8,7 +8,6 @@ import {
   RadioGroup,
   Tag,
 } from '@blueprintjs/core';
-import { css } from '@emotion/react';
 import {
   CSSProperties,
   ReactNode,
@@ -18,8 +17,10 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-import Label, { LabelStyle } from '../elements/Label';
 import { Controller, useForm } from 'react-hook-form';
+
+import Label, { LabelStyle } from '../elements/Label';
+
 import ActionButtons from './ActionButtons';
 import { NumberInput2Controller } from './NumberInput2Controller';
 import { Select2Controller } from './Select2Controller';
@@ -158,7 +159,7 @@ export function PrintContent(props: PrintFrameProps) {
     };
   }, []);
 
-  if (!pageOptions)
+  if (!pageOptions) {
     return (
       <PrintPageOptionsModal
         isOpen={isPageOptionModalOpened}
@@ -171,6 +172,7 @@ export function PrintContent(props: PrintFrameProps) {
         }}
       />
     );
+  }
 
   return (
     <InnerPrintFrame

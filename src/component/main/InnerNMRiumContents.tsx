@@ -12,6 +12,8 @@ import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
 import { PrintContent } from '../elements/PrintContent';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
@@ -23,8 +25,6 @@ import { SplitPaneWrapper } from './SplitPaneWrapper';
 import { StateError } from './StateError';
 
 import { NMRiumProps } from '.';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
 
 const viewerContainerStyle = css`
   border: 0.55px #e6e6e6 solid;
