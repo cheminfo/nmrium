@@ -1,10 +1,35 @@
-import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react';
+/** @jsxImportSource @emotion/react */
+import {
+  Checkbox,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Radio,
+  RadioGroup,
+  Tag,
+} from '@blueprintjs/core';
+import { css } from '@emotion/react';
+import {
+  CSSProperties,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
+import Label, { LabelStyle } from '../elements/Label';
+import { Controller, useForm } from 'react-hook-form';
+import ActionButtons from './ActionButtons';
+import { NumberInput2Controller } from './NumberInput2Controller';
+import { Select2Controller } from './Select2Controller';
 
-interface PrintFrameProps extends Pick<CSSProperties, 'padding'> {
+type Layout = 'portrait' | 'landscape';
+interface PrintFrameProps {
   children: ReactNode;
-  size: PageSizeName;
-  layout?: 'portrait' | 'landscape';
+  onAfterPrint?: () => void;
+  onBeforePrint?: () => void;
+  printPageOptions?: Partial<PrintPagOptions>;
 }
 
 const pageSizeNames = [
@@ -93,14 +118,36 @@ const pageSizes: PageSize[] = [
   },
 ];
 
+function getSizesList(layout: Layout) {
+  const output: Array<{ label: string; value: string }> = [];
+
+  for (const item of pageSizes) {
+    const { name, ...otherKeys } = item;
+    const { width, height } = otherKeys[layout];
+    output.push({ label: `${name} (${width} cm x ${height} cm)`, value: name });
+  }
+
+  return output;
+}
+
 export function PrintContent(props: PrintFrameProps) {
-  const [print, togglePrint] = useState(false);
+  // const [print, togglePrint] = useState(false);
+  const [isPageOptionModalOpened, togglePageOptionDialog] =
+    useState<boolean>(false);
+  const [pageOptions, setPageOptions] =
+    useState<Partial<PrintPagOptions> | null>();
+
+  const { onBeforePrint, onAfterPrint, children, printPageOptions } = props;
 
   useEffect(() => {
     function handleKeyDow(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
         event.preventDefault();
-        togglePrint(true);
+        if (!printPageOptions) {
+          togglePageOptionDialog(true);
+        } else {
+          setPageOptions(printPageOptions);
+        }
       }
     }
 
@@ -111,37 +158,56 @@ export function PrintContent(props: PrintFrameProps) {
     };
   }, []);
 
-  if (!print) return;
+  if (!pageOptions)
+    return (
+      <PrintPageOptionsModal
+        isOpen={isPageOptionModalOpened}
+        onCloseDialog={() => {
+          togglePageOptionDialog(false);
+        }}
+        onPrint={(options) => {
+          togglePageOptionDialog(false);
+          setPageOptions(options);
+        }}
+      />
+    );
 
   return (
     <InnerPrintFrame
-      {...props}
+      printPageOptions={pageOptions}
       onAfterPrint={() => {
-        togglePrint(false);
+        setPageOptions(null);
+        onAfterPrint?.();
       }}
-    />
+      onBeforePrint={() => {
+        onBeforePrint?.();
+      }}
+    >
+      {children}
+    </InnerPrintFrame>
   );
 }
 
-interface InnerPrintFrameProps extends PrintFrameProps {
-  onAfterPrint: () => void;
-}
-
-export function InnerPrintFrame(props: InnerPrintFrameProps) {
+export function InnerPrintFrame(props: PrintFrameProps) {
   const {
     children,
     onAfterPrint,
+    onBeforePrint,
+    printPageOptions = {},
+  } = props;
+
+  const {
     size = 'A4',
     padding = 0,
-    layout = 'portrait',
-  } = props;
+    layout = 'landscape',
+  } = printPageOptions || {};
 
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [content, setContent] = useState<HTMLElement>();
   const { width, height } =
     pageSizes.find((pageItem) => pageItem.name === size)?.[layout] || {};
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const contentWindow = frameRef.current?.contentWindow;
     if (!contentWindow) return;
     const document = contentWindow.document;
@@ -152,13 +218,17 @@ export function InnerPrintFrame(props: InnerPrintFrameProps) {
     appendPrintPageStyle(document, { size, layout, padding });
 
     function handleAfterPrint() {
-      onAfterPrint();
+      onAfterPrint?.();
     }
-
+    function handleBeforePrint() {
+      onBeforePrint?.();
+    }
+    contentWindow.addEventListener('beforeprint', handleBeforePrint);
     contentWindow.addEventListener('afterprint', handleAfterPrint);
 
     return () => {
       contentWindow.removeEventListener('afterprint', handleAfterPrint);
+      contentWindow.removeEventListener('beforeprint', handleBeforePrint);
     };
   }, [layout, onAfterPrint, padding, size]);
 
@@ -243,4 +313,118 @@ function transferStyles(targetDocument: Document) {
       console.error('Error transferring styles:', error);
     }
   }
+}
+
+interface InnerPrintOptionsModalProps {
+  onCloseDialog: () => void;
+  onPrint: (options) => void;
+}
+interface PrintOptionsModalProps extends InnerPrintOptionsModalProps {
+  isOpen: boolean;
+}
+
+function PrintPageOptionsModal(props: PrintOptionsModalProps) {
+  const { isOpen, ...otherProps } = props;
+
+  if (!isOpen) return;
+
+  return <InnerPrintOptionsModal {...otherProps} />;
+}
+
+const labelStyle: LabelStyle = {
+  label: {
+    flex: 4,
+    color: '#232323',
+  },
+  wrapper: {
+    flex: 8,
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  container: { padding: '5px 0' },
+};
+
+interface PrintPagOptions {
+  size: PageSizeName;
+  layout: Layout;
+  padding: number;
+}
+
+const INITIAL_VALUE: PrintPagOptions = {
+  size: 'A4',
+  layout: 'landscape',
+  padding: 0,
+};
+
+function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
+  const { onCloseDialog, onPrint } = props;
+
+  function submitHandler(values) {
+    onPrint(values);
+    onCloseDialog?.();
+  }
+
+  const { handleSubmit, control, register, watch } = useForm<PrintPagOptions>({
+    defaultValues: { ...INITIAL_VALUE },
+  });
+
+  const layout = watch('layout');
+  const sizesList = getSizesList(layout);
+  return (
+    <Dialog
+      isOpen
+      title="Print options"
+      onClose={onCloseDialog}
+      style={{ width: 600 }}
+    >
+      <DialogBody
+        css={css`
+          background-color: white;
+        `}
+      >
+        <Label style={labelStyle} title="Size">
+          <Select2Controller control={control} name="size" items={sizesList} />
+        </Label>
+        <Label style={labelStyle} title="Layout">
+          <Controller
+            name="layout"
+            control={control}
+            render={({ field }) => {
+              const { value, onChange, ...otherFieldProps } = field;
+              return (
+                <RadioGroup
+                  inline
+                  onChange={onChange}
+                  selectedValue={value}
+                  {...otherFieldProps}
+                >
+                  <Radio label="Portrait" value="portrait" />
+                  <Radio label="Landscape" value="landscape" />
+                </RadioGroup>
+              );
+            }}
+          />
+        </Label>
+
+        <Label style={labelStyle} title="Padding">
+          <NumberInput2Controller
+            name="padding"
+            control={control}
+            min={0}
+            rightElement={<Tag>cm</Tag>}
+          />
+        </Label>
+      </DialogBody>
+      <DialogFooter>
+        <ActionButtons
+          style={{ flexDirection: 'row-reverse', margin: 0 }}
+          onDone={() => {
+            void handleSubmit(submitHandler)();
+          }}
+          doneLabel="Save"
+          onCancel={() => onCloseDialog?.()}
+        />
+      </DialogFooter>
+    </Dialog>
+  );
 }
