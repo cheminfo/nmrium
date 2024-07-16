@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
 import { Global, css } from '@emotion/react';
-import { MouseEvent, RefObject, useCallback, useEffect, useState } from 'react';
+import { MouseEvent, RefObject, useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
+import { PrintContent } from '../elements/PrintContent';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
@@ -64,12 +65,6 @@ const containerStyles = css`
     padding: 5px;
     box-shadow: none;
   }
-
-  @page {
-    size: a4 landscape;
-    margin: 0;
-    padding: 0;
-  }
 `;
 
 interface InnerNMRiumContentsProps {
@@ -95,29 +90,6 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
     [],
   );
 
-  const [printFlag, setPrintFlag] = useState(false);
-
-  useEffect(() => {
-    function handleAfterPrint() {
-      setPrintFlag(false);
-    }
-
-    function handleKeyDow(event) {
-      if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
-        event.preventDefault();
-        setPrintFlag(true);
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDow);
-    window.addEventListener('afterprint', handleAfterPrint);
-
-    return () => {
-      window.removeEventListener('afterprint', handleAfterPrint);
-      window.removeEventListener('keydown', handleKeyDow);
-    };
-  }, []);
-
   return (
     <>
       <StateError />
@@ -137,67 +109,55 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
         onContextMenu={preventContextMenuHandler}
         style={{ height: '100%', width: '100%' }}
       >
-        {!printFlag && (
-          <DropZone>
+        <DropZone>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'white',
+              width: '100%',
+            }}
+          >
+            <Header />
+
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: 'white',
-                width: '100%',
+                flexDirection: 'row',
+                height: '100%',
               }}
             >
-              <Header />
+              <ToolBar />
+              <SplitPaneWrapper>
+                <div css={viewerContainerStyle}>
+                  <KeysListenerTracker mainDivRef={mainDivRef} />
+
+                  <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+                </div>
+                <Panels />
+              </SplitPaneWrapper>
 
               <div
+                ref={elementsWrapperRef}
+                key={String(isFullScreen)}
+                id="main-wrapper"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  height: '100%',
+                  position: 'absolute',
+                  pointerEvents: 'none',
+                  zIndex: 10,
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
                 }}
-              >
-                <ToolBar />
-                <SplitPaneWrapper>
-                  <div css={viewerContainerStyle}>
-                    <KeysListenerTracker mainDivRef={mainDivRef} />
-
-                    <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-                  </div>
-                  <Panels />
-                </SplitPaneWrapper>
-
-                <div
-                  ref={elementsWrapperRef}
-                  key={String(isFullScreen)}
-                  id="main-wrapper"
-                  style={{
-                    position: 'absolute',
-                    pointerEvents: 'none',
-                    zIndex: 10,
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                  }}
-                />
-              </div>
+              />
             </div>
-          </DropZone>
-        )}
-        {printFlag && (
-          <NMRiumViewer
-            emptyText={emptyText}
-            viewerRef={viewerRef}
-            style={{
-              width: '297mm',
-              height: '210mm',
-              padding: '0.5cm',
-            }}
-            onRender={() => {
-              window.print();
-            }}
-          />
-        )}
+          </div>
+        </DropZone>
+        <div />
+        <PrintContent size="A4" layout="landscape">
+          <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
+        </PrintContent>
       </div>
     </>
   );

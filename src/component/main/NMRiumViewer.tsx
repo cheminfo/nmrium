@@ -19,11 +19,11 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
   const { displayerMode, width, height } = useChartData();
   const renderDimension = useDeferredValue({ width, height });
   useEffect(() => {
-    if (typeof onRender !== 'function') {
-      return;
-    }
+    function handleRenderComplete() {
+      if (typeof onRender !== 'function') {
+        return;
+      }
 
-    requestAnimationFrame(() => {
       setTimeout(() => {
         if (
           renderDimension.width !== width ||
@@ -32,7 +32,13 @@ export function NMRiumViewer(props: NMRiumViewerProps) {
           onRender();
         }
       }, 0);
-    });
+    }
+
+    const animationFrameId = requestAnimationFrame(handleRenderComplete);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [onRender, width, height, renderDimension.width, renderDimension.height]);
 
   return (
