@@ -125,7 +125,6 @@ function getSizesList(layout: Layout) {
 }
 
 export function PrintContent(props: PrintFrameProps) {
-  // const [print, togglePrint] = useState(false);
   const [isPageOptionModalOpened, togglePageOptionDialog] =
     useState<boolean>(false);
   const [pageOptions, setPageOptions] =
@@ -233,7 +232,11 @@ export function InnerPrintFrame(props: PrintFrameProps) {
         createPortal(
           <RenderContainer
             onRenderComplete={() => frameRef.current?.contentWindow?.print()}
-            style={{ width: `${width}cm`, height: `${height}cm`, padding }}
+            style={{
+              width: `${width}cm`,
+              height: `${height}cm`,
+              padding: `${padding}cm`,
+            }}
           >
             {children}
           </RenderContainer>,
@@ -272,16 +275,15 @@ interface Style extends Pick<CSSProperties, 'margin' | 'padding'> {
   size?: string;
 }
 function appendPrintPageStyle(document: Document, style: Style = {}) {
-  const { layout = 'landscape', size = 'A4', margin = 0, padding = 0 } = style;
+  const { layout = 'landscape', size = 'A4' } = style;
   const styleElement = document.createElement('style');
-
   styleElement.textContent = `
       @media print {
 
     @page {
       size: ${size} ${layout};
-      padding: ${typeof padding === 'string' ? padding : `${padding}cm`};
-      margin: ${typeof margin === 'string' ? margin : `${margin}cm`};
+      padding:0;
+      margin:0;
     }
 }
   `;
@@ -416,7 +418,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
           onDone={() => {
             void handleSubmit(submitHandler)();
           }}
-          doneLabel="Save"
+          doneLabel="Print"
           onCancel={() => onCloseDialog?.()}
         />
       </DialogFooter>
