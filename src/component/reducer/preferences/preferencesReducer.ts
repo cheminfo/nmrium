@@ -3,6 +3,7 @@ import {
   CURRENT_EXPORT_VERSION,
   migrateSettings,
   MultipleSpectraAnalysisPreferences,
+  PrintPageOptions,
   Workspace,
   WorkSpaceSource,
 } from 'nmr-load-save';
@@ -23,6 +24,7 @@ import {
 } from './actions/analyzeSpectra';
 import { applyGeneralPreferences } from './actions/applyGeneralPreferences';
 import { changeInformationBlockPosition } from './actions/changeInformationBlockPosition';
+import { changePrintPageSettings } from './actions/changePrintPageSettings';
 import { initPreferences } from './actions/initPreferences';
 import {
   setMatrixGenerationOptions,
@@ -122,6 +124,10 @@ export type ToggleInformationBlock = ActionType<
     visible?: boolean;
   }
 >;
+export type ChangePrintPageSettingsAction = ActionType<
+  'CHANGE_PRINT_PAGE_SETTINGS',
+  PrintPageOptions
+>;
 
 type PreferencesActions =
   | InitPreferencesAction
@@ -138,7 +144,8 @@ type PreferencesActions =
   | MatrixGenerationActions
   | SetVerticalSplitterPositionAction
   | ChangeInformationBlockPosition
-  | ToggleInformationBlock;
+  | ToggleInformationBlock
+  | ChangePrintPageSettingsAction;
 
 export const WORKSPACES: Array<{
   key: NMRiumWorkspace;
@@ -289,6 +296,8 @@ function innerPreferencesReducer(
       return changeInformationBlockPosition(draft, action);
     case 'TOGGLE_INFORMATION_BLOCK':
       return toggleInformationBlock(draft, action);
+    case 'CHANGE_PRINT_PAGE_SETTINGS':
+      return changePrintPageSettings(draft, action);
 
     default:
       return draft;

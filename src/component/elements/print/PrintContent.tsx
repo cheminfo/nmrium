@@ -8,6 +8,7 @@ import {
   Tag,
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
+import { PageSizeName, PrintPageOptions } from 'nmr-load-save';
 import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
@@ -20,28 +21,20 @@ import { Select2Controller } from '../Select2Controller';
 import { PrintProvider } from './PrintProvider';
 
 type Layout = 'portrait' | 'landscape';
-interface PrintFrameProps {
+
+interface BasePrintProps {
+  onPrint: (options: PrintPageOptions) => void;
+  defaultPrintPageOptions: Partial<PrintPageOptions>;
+}
+interface InnerPrintFrameProps {
   children: ReactNode;
   onAfterPrint?: () => void;
   onBeforePrint?: () => void;
-  printPageOptions?: Partial<PrintPagOptions>;
+  printPageOptions?: Partial<PrintPageOptions>;
 }
-
-const pageSizeNames = [
-  'Letter',
-  'Legal',
-  'Tabloid',
-  'Executive',
-  'Statement',
-  'Folio',
-  'A3',
-  'A4',
-  'A5',
-  'B4',
-  'B5',
-] as const;
-
-type PageSizeName = (typeof pageSizeNames)[number];
+interface PrintFrameProps
+  extends InnerPrintFrameProps,
+    Partial<BasePrintProps> {}
 
 interface PageSize {
   name: PageSizeName;
@@ -131,7 +124,14 @@ export function PrintContent(props: PrintFrameProps) {
   const [pageOptions, setPageOptions] =
     useState<Partial<PrintPagOptions> | null>();
 
-  const { onBeforePrint, onAfterPrint, children, printPageOptions } = props;
+  const {
+    onBeforePrint,
+    onAfterPrint,
+    children,
+    printPageOptions,
+    defaultPrintPageOptions,
+    onPrint,
+  } = props;
 
   useEffect(() => {
     function handleKeyDow(event: KeyboardEvent) {
@@ -161,8 +161,10 @@ export function PrintContent(props: PrintFrameProps) {
         }}
         onPrint={(options) => {
           togglePageOptionDialog(false);
+          onPrint?.(options);
           setPageOptions(options);
         }}
+        defaultPrintPageOptions={defaultPrintPageOptions || {}}
       />
     );
   }
@@ -183,7 +185,7 @@ export function PrintContent(props: PrintFrameProps) {
   );
 }
 
-export function InnerPrintFrame(props: PrintFrameProps) {
+export function InnerPrintFrame(props: InnerPrintFrameProps) {
   const {
     children,
     onAfterPrint,
@@ -315,9 +317,8 @@ function transferStyles(targetDocument: Document) {
   }
 }
 
-interface InnerPrintOptionsModalProps {
+interface InnerPrintOptionsModalProps extends BasePrintProps {
   onCloseDialog: () => void;
-  onPrint: (options) => void;
 }
 interface PrintOptionsModalProps extends InnerPrintOptionsModalProps {
   isOpen: boolean;
@@ -357,7 +358,7 @@ const INITIAL_VALUE: PrintPagOptions = {
 };
 
 function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
-  const { onCloseDialog, onPrint } = props;
+  const { onCloseDialog, onPrint, defaultPrintPageOptions } = props;
 
   function submitHandler(values) {
     onPrint(values);
@@ -365,7 +366,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
   }
 
   const { handleSubmit, control, watch } = useForm<PrintPagOptions>({
-    defaultValues: { ...INITIAL_VALUE },
+    defaultValues: { ...INITIAL_VALUE, ...defaultPrintPageOptions },
   });
 
   const layout = watch('layout');

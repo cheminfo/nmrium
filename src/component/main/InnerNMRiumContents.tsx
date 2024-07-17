@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
 import { Global, css } from '@emotion/react';
-import { MouseEvent, RefObject, useCallback } from 'react';
+import { PrintPageOptions } from 'nmr-load-save';
+import { MouseEvent, ReactNode, RefObject, useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
+import { usePreferences } from '../context/PreferencesContext';
 import { PrintContent } from '../elements/print/PrintContent';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
@@ -155,10 +157,35 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
           </div>
         </DropZone>
         <div />
-        <PrintContent>
+        <PrintWrapper>
           <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
-        </PrintContent>
+        </PrintWrapper>
       </div>
     </>
+  );
+}
+
+interface PrintWrapperProps {
+  children: ReactNode;
+}
+
+function PrintWrapper(props: PrintWrapperProps) {
+  const { children } = props;
+  const {
+    current: { printPageOptions },
+    dispatch,
+  } = usePreferences();
+
+  function handleSavePrintOptions(options: PrintPageOptions) {
+    dispatch({ type: 'CHANGE_PRINT_PAGE_SETTINGS', payload: options });
+  }
+
+  return (
+    <PrintContent
+      defaultPrintPageOptions={printPageOptions}
+      onPrint={handleSavePrintOptions}
+    >
+      {children}
+    </PrintContent>
   );
 }
