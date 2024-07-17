@@ -287,7 +287,7 @@ function appendPrintPageStyle(document: Document, style: Style = {}) {
 
     @page {
       size: ${size} ${layout};
-      margin:0;
+      padding:0;
       margin:0;
     }
 }

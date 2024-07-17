@@ -235,4 +235,5 @@ export const workspaceDefaultProperties: Required<WorkspacePreferences> = {
       },
     ],
   },
+  printPageOptions: {},
 };
