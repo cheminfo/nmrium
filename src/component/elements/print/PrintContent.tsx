@@ -12,11 +12,12 @@ import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
 
-import Label, { LabelStyle } from '../elements/Label';
+import ActionButtons from '../ActionButtons';
+import Label, { LabelStyle } from '../Label';
+import { NumberInput2Controller } from '../NumberInput2Controller';
+import { Select2Controller } from '../Select2Controller';
 
-import ActionButtons from './ActionButtons';
-import { NumberInput2Controller } from './NumberInput2Controller';
-import { Select2Controller } from './Select2Controller';
+import { PrintProvider } from './PrintProvider';
 
 type Layout = 'portrait' | 'landscape';
 interface PrintFrameProps {
@@ -192,13 +193,13 @@ export function InnerPrintFrame(props: PrintFrameProps) {
 
   const {
     size = 'A4',
-    padding = 0,
+    margin = 0,
     layout = 'landscape',
   } = printPageOptions || {};
 
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [content, setContent] = useState<HTMLElement>();
-  const { width, height } =
+  const { width = 0, height = 0 } =
     pageSizes.find((pageItem) => pageItem.name === size)?.[layout] || {};
 
   useEffect(() => {
@@ -209,7 +210,7 @@ export function InnerPrintFrame(props: PrintFrameProps) {
     setContent(document.body);
 
     transferStyles(document);
-    appendPrintPageStyle(document, { size, layout, padding });
+    appendPrintPageStyle(document, { size, layout, margin });
 
     function handleAfterPrint() {
       onAfterPrint?.();
@@ -224,25 +225,27 @@ export function InnerPrintFrame(props: PrintFrameProps) {
       contentWindow.removeEventListener('afterprint', handleAfterPrint);
       contentWindow.removeEventListener('beforeprint', handleBeforePrint);
     };
-  }, [layout, onBeforePrint, onAfterPrint, padding, size]);
+  }, [layout, onBeforePrint, onAfterPrint, margin, size]);
 
   return (
-    <iframe ref={frameRef} style={{ width: 0, height: 0, border: 'none' }}>
-      {content &&
-        createPortal(
-          <RenderContainer
-            onRenderComplete={() => frameRef.current?.contentWindow?.print()}
-            style={{
-              width: `${width}cm`,
-              height: `${height}cm`,
-              padding: `${padding}cm`,
-            }}
-          >
-            {children}
-          </RenderContainer>,
-          content,
-        )}
-    </iframe>
+    <PrintProvider width={width} height={height} margin={margin}>
+      <iframe ref={frameRef} style={{ width: 0, height: 0, border: 'none' }}>
+        {content &&
+          createPortal(
+            <RenderContainer
+              onRenderComplete={() => frameRef.current?.contentWindow?.print()}
+              style={{
+                width: `${width - margin}cm`,
+                height: `${height - margin}cm`,
+                margin: `${margin}cm`,
+              }}
+            >
+              {children}
+            </RenderContainer>,
+            content,
+          )}
+      </iframe>
+    </PrintProvider>
   );
 }
 
@@ -282,7 +285,7 @@ function appendPrintPageStyle(document: Document, style: Style = {}) {
 
     @page {
       size: ${size} ${layout};
-      padding:0;
+      margin:0;
       margin:0;
     }
 }
@@ -338,19 +341,19 @@ const labelStyle: LabelStyle = {
     display: 'flex',
     justifyContent: 'flex-start',
   },
-  container: { padding: '5px 0' },
+  container: { margin: '5px 0' },
 };
 
 interface PrintPagOptions {
   size: PageSizeName;
   layout: Layout;
-  padding: number;
+  margin: number;
 }
 
 const INITIAL_VALUE: PrintPagOptions = {
   size: 'A4',
   layout: 'landscape',
-  padding: 0,
+  margin: 0,
 };
 
 function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
@@ -403,9 +406,9 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
           />
         </Label>
 
-        <Label style={labelStyle} title="Padding">
+        <Label style={labelStyle} title="margin">
           <NumberInput2Controller
-            name="padding"
+            name="margin"
             control={control}
             min={0}
             rightElement={<Tag>cm</Tag>}

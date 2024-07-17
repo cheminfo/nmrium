@@ -1,20 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
 import { Global, css } from '@emotion/react';
-import {
-  MouseEvent,
-  RefObject,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-} from 'react';
+import { MouseEvent, RefObject, useCallback } from 'react';
 import { useFullscreen } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import KeysListenerTracker from '../EventsTrackers/KeysListenerTracker';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { PrintContent } from '../elements/PrintContent';
+import { PrintContent } from '../elements/print/PrintContent';
 import Header from '../header/Header';
 import DropZone from '../loader/DropZone';
 import Panels from '../panels/Panels';
@@ -98,22 +90,6 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
     [],
   );
 
-  const beforePrintSize = useRef<{ width: number; height: number } | null>();
-
-  const dispatch = useDispatch();
-  function handleBeforePrint(size) {
-    beforePrintSize.current = size;
-  }
-
-  function handleAfterPrint() {
-    if (!beforePrintSize.current) return;
-    dispatch({
-      type: 'SET_DIMENSIONS',
-      payload: { ...beforePrintSize.current },
-    });
-    beforePrintSize.current = null;
-  }
-
   return (
     <>
       <StateError />
@@ -179,30 +155,10 @@ export function InnerNMRiumContents(props: InnerNMRiumContentsProps) {
           </div>
         </DropZone>
         <div />
-        <PrintContent onAfterPrint={handleAfterPrint}>
-          <PrintWrapper
-            emptyText={emptyText}
-            onBeforePrint={handleBeforePrint}
-            viewerRef={viewerRef}
-          />
+        <PrintContent>
+          <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />
         </PrintContent>
       </div>
     </>
   );
-}
-
-function PrintWrapper(
-  props: Pick<InnerNMRiumContentsProps, 'emptyText' | 'viewerRef'> & {
-    onBeforePrint: (size) => void;
-  },
-) {
-  const { emptyText, viewerRef, onBeforePrint } = props;
-  const { width, height } = useChartData();
-
-  useLayoutEffect(() => {
-    onBeforePrint({ width, height });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return <NMRiumViewer emptyText={emptyText} viewerRef={viewerRef} />;
 }
