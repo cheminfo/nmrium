@@ -14,6 +14,7 @@ import { useToaster } from '../context/ToasterContext';
 import ActionButtons from '../elements/ActionButtons';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikSelect from '../elements/formik/FormikSelect';
+import useSpectrum from '../hooks/useSpectrum';
 
 const initValues: ExportAsJcampOptions = {
   onlyReal: true,
@@ -50,12 +51,31 @@ const DATA_STAGES = Object.keys(DataExportStage).map((key) => ({
   value: DataExportStage[key],
 }));
 
-interface ExportAsJCAMPProps {
+interface InnerExportAsJCAMPProps {
   closeDialog: () => void;
-  spectrum: Spectrum;
+  spectrum?: Spectrum;
+}
+interface ExportAsJCAMPProps extends InnerExportAsJCAMPProps {
+  exportActiveSpectrum?: boolean;
 }
 
 function ExportAsJcampModal(props: ExportAsJCAMPProps) {
+  const { spectrum, exportActiveSpectrum = false } = props;
+  const activeSpectrum = useSpectrum();
+
+  if (!exportActiveSpectrum && !spectrum) {
+    return null;
+  }
+
+  if (exportActiveSpectrum && !activeSpectrum) return null;
+
+  const currentSpectrum = exportActiveSpectrum ? activeSpectrum : spectrum;
+
+  if (!currentSpectrum) return null;
+
+  return <InnerExportAsJcampModal spectrum={currentSpectrum} {...props} />;
+}
+function InnerExportAsJcampModal(props: Required<InnerExportAsJCAMPProps>) {
   const { closeDialog, spectrum } = props;
   const refForm = useRef<FormikProps<any>>(null);
   const toaster = useToaster();

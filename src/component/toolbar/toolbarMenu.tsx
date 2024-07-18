@@ -82,6 +82,6 @@ const EXPORT_MENU: ToolbarPopoverMenuItem[] = [
       id: 'copy',
     },
   },
-] as const;
+];
 
 export { EXPORT_MENU, IMPORT_MENU };
