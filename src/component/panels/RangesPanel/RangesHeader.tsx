@@ -35,6 +35,7 @@ import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import { booleanToString } from '../../utility/booleanToString';
 import { FilterType } from '../../utility/filterType';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import { useState } from 'react';
 
 type ExportRangesType = 'publicationString' | 'rangesToTSV';
 interface ExportData {
@@ -76,6 +77,7 @@ function RangesHeader({
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
+  const [acs, setACS] = useState<string>();
 
   const {
     showMultiplicityTrees,
@@ -173,14 +175,7 @@ function RangesHeader({
         couplingFormat: rangesPreferences.coupling.format,
         observedFrequency, //400
       });
-      modal.show(
-        <CopyClipboardModal
-          text={result}
-          onCopyClick={saveToClipboardHandler}
-          onClose={() => modal.close()}
-        />,
-        {},
-      );
+      setACS(result);
     }
   }
 
@@ -220,6 +215,12 @@ function RangesHeader({
   const total = ranges?.values?.length || 0;
   return (
     <div>
+      <CopyClipboardModal
+        text={acs}
+        title="Publication string"
+        onCopyClick={saveToClipboardHandler}
+        onClose={() => setACS('')}
+      />
       <DefaultPanelHeader
         total={total}
         counter={filterCounter}
