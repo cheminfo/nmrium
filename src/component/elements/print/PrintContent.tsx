@@ -452,7 +452,7 @@ function InnerPrintOptionsModal(props: InnerPrintOptionsModalProps) {
           />
         </Label>
 
-        <Label style={labelStyle} title="margin">
+        <Label style={labelStyle} title="Margin">
           <NumberInput2Controller
             name="margin"
             control={control}
