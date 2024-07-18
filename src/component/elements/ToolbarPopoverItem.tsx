@@ -5,25 +5,44 @@ import {
   ToolbarItemProps,
 } from 'react-science/ui';
 
-export interface ToolbarPopoverMenuItem extends MenuItemProps {
-  data?: object;
+export interface ToolbarPopoverMenuItem<T = object> extends MenuItemProps {
+  data?: T;
 }
 
-interface ToolbarPopoverItemProps
+interface ToolbarPopoverItemProps<T = object>
   extends Omit<
       BaseToolbarPopoverItemProps,
       'onClick' | 'content' | 'itemProps'
     >,
-    ToolbarItemProps {
-  options: ToolbarPopoverMenuItem[];
-  onClick: (data?: object) => void;
+    Pick<
+      ToolbarItemProps,
+      'tooltip' | 'icon' | 'tooltipProps' | 'active' | 'id'
+    > {
+  itemProps?: Omit<ToolbarItemProps, 'onClick' | 'disabled'>;
+  options: Array<ToolbarPopoverMenuItem<T>>;
+  onClick: (data?: T) => void;
 }
 
-export function ToolbarPopoverItem(props: ToolbarPopoverItemProps) {
-  const { options, onClick, ...itemProps } = props;
+export function ToolbarPopoverItem<T = object>(
+  props: ToolbarPopoverItemProps<T>,
+) {
+  const {
+    options,
+    onClick,
+    icon,
+    tooltip,
+    tooltipProps,
+    active,
+    id,
+    itemProps,
+    disabled,
+    ...otherPopoverItemProps
+  } = props;
 
   return (
     <Toolbar.PopoverItem
+      disabled={disabled}
+      {...otherPopoverItemProps}
       content={
         <Menu>
           {options.map((option) => {
@@ -38,7 +57,15 @@ export function ToolbarPopoverItem(props: ToolbarPopoverItemProps) {
           })}
         </Menu>
       }
-      itemProps={itemProps}
+      itemProps={{
+        icon,
+        tooltip,
+        tooltipProps,
+        active,
+        id,
+        disabled,
+        ...itemProps,
+      }}
     />
   );
 }
