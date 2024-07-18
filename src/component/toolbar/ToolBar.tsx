@@ -22,6 +22,7 @@ import {
   FaDiceFour,
   FaFileImport,
   FaFileExport,
+  FaDownload,
 } from 'react-icons/fa';
 import { PiKnifeBold } from 'react-icons/pi';
 import {
@@ -39,6 +40,7 @@ import {
   ToolbarPopoverMenuItem,
   ToolbarPopoverItem,
 } from '../elements/ToolbarPopoverItem';
+import { useActiveSpectrum } from '../hooks/useActiveSpectrum';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import {
   CheckOptions,
@@ -49,6 +51,7 @@ import { useDialogToggle } from '../hooks/useDialogToggle';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { useVerticalAlign } from '../hooks/useVerticalAlign';
+import ExportAsJcampModal from '../modal/ExportAsJcampModal';
 import { ImportPublicationStringModal } from '../modal/ImportPublicationStringModal';
 import { LoadJCAMPModal } from '../modal/LoadJCAMPModal';
 import SaveAsModal from '../modal/SaveAsModal';
@@ -76,6 +79,23 @@ function isPopoverToolItem(
   item: ToolItem | PopoverToolItem,
 ): item is PopoverToolItem {
   return !!(item as PopoverToolItem)?.menuItems;
+}
+
+function useExportList() {
+  const isExperimentalFeature = useCheckExperimentalFeature();
+  const spectrum = useActiveSpectrum();
+  const exportMenu = isExperimentalFeature
+    ? EXPORT_MENU
+    : EXPORT_MENU.filter((item) => item.id !== 'nmre');
+
+  if (spectrum) {
+    exportMenu.push({
+      icon: <FaDownload />,
+      text: 'Export as JCAMP-DX',
+      data: { id: 'exportAsJcamp' },
+    });
+  }
+  return exportMenu;
 }
 
 export default function ToolBar() {
@@ -109,6 +129,7 @@ export default function ToolBar() {
     importPublicationString: false,
     metaImportation: false,
     saveAs: false,
+    exportAsJcamp: false,
   });
 
   const verticalAlign = useVerticalAlign();
@@ -119,9 +140,7 @@ export default function ToolBar() {
     ? IMPORT_MENU
     : IMPORT_MENU.filter((item) => item.id !== 'importPublicationString');
 
-  const exportMenu = isExperimentalFeature
-    ? EXPORT_MENU
-    : EXPORT_MENU.filter((item) => item.id !== 'nmre');
+  const exportMenu = useExportList();
 
   const {
     current: {
@@ -187,6 +206,9 @@ export default function ToolBar() {
         break;
       case 'copy':
         void saveToClipboardHandler();
+        break;
+      case 'exportAsJcamp':
+        openDialog('exportAsJcamp');
         break;
 
       default:
@@ -424,7 +446,6 @@ export default function ToolBar() {
       onClick: alignSpectraVerticallyHandler,
     },
   ];
-
   return (
     <>
       <LoadJCAMPModal isOpen={dialog.loadJCAMP} onCloseDialog={closeDialog} />
@@ -436,6 +457,9 @@ export default function ToolBar() {
         isOpen={dialog.metaImportation}
         onCloseDialog={closeDialog}
       />
+      {dialog.exportAsJcamp && (
+        <ExportAsJcampModal exportActiveSpectrum closeDialog={closeDialog} />
+      )}
       <SaveAsModal isOpen={dialog.saveAs} onCloseDialog={closeDialog} />
       <Toolbar vertical>
         {toolItems.map((item) => {
