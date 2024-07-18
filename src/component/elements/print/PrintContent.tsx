@@ -9,7 +9,14 @@ import {
 } from '@blueprintjs/core';
 import { css } from '@emotion/react';
 import { PageSizeName, PrintPageOptions } from 'nmr-load-save';
-import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -19,6 +26,8 @@ import { NumberInput2Controller } from '../NumberInput2Controller';
 import { Select2Controller } from '../Select2Controller';
 
 import { PrintProvider } from './PrintProvider';
+
+const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 type Layout = 'portrait' | 'landscape';
 
@@ -168,7 +177,6 @@ export function PrintContent(props: PrintFrameProps) {
       />
     );
   }
-
   return (
     <InnerPrintFrame
       printPageOptions={pageOptions}
@@ -204,7 +212,14 @@ export function InnerPrintFrame(props: InnerPrintFrameProps) {
   const { width = 0, height = 0 } =
     pageSizes.find((pageItem) => pageItem.name === size)?.[layout] || {};
 
-  useEffect(() => {
+  const handleAfterPrint = useCallback(() => {
+    onAfterPrint?.();
+  }, [onAfterPrint]);
+  const handleBeforePrint = useCallback(() => {
+    onBeforePrint?.();
+  }, [onBeforePrint]);
+
+  const load = useCallback(() => {
     const contentWindow = frameRef.current?.contentWindow;
     if (!contentWindow) return;
     const document = contentWindow.document;
@@ -214,28 +229,58 @@ export function InnerPrintFrame(props: InnerPrintFrameProps) {
     transferStyles(document);
     appendPrintPageStyle(document, { size, layout, margin });
 
-    function handleAfterPrint() {
-      onAfterPrint?.();
-    }
-    function handleBeforePrint() {
-      onBeforePrint?.();
-    }
-    contentWindow.addEventListener('beforeprint', handleBeforePrint);
     contentWindow.addEventListener('afterprint', handleAfterPrint);
+    contentWindow.addEventListener('beforeprint', handleBeforePrint);
+
+    return contentWindow;
+  }, [handleAfterPrint, handleBeforePrint, layout, margin, size]);
+
+  useEffect(() => {
+    const contentWindow = frameRef.current?.contentWindow;
+
+    if (!isFirefox) {
+      load();
+    }
 
     return () => {
+      if (!contentWindow) return;
+
       contentWindow.removeEventListener('afterprint', handleAfterPrint);
       contentWindow.removeEventListener('beforeprint', handleBeforePrint);
     };
-  }, [layout, onBeforePrint, onAfterPrint, margin, size]);
+  }, [
+    onBeforePrint,
+    onAfterPrint,
+    handleBeforePrint,
+    handleAfterPrint,
+    size,
+    layout,
+    margin,
+    load,
+  ]);
 
   return (
     <PrintProvider width={width} height={height} margin={margin}>
-      <iframe ref={frameRef} style={{ width: 0, height: 0, border: 'none' }}>
+      <iframe
+        ref={frameRef}
+        style={{
+          width: 0,
+          height: 0,
+          border: 'none',
+        }}
+        onLoad={() => {
+          if (isFirefox) {
+            load();
+          }
+        }}
+      >
         {content &&
           createPortal(
             <RenderContainer
-              onRenderComplete={() => frameRef.current?.contentWindow?.print()}
+              onRenderComplete={() => {
+                frameRef.current?.contentWindow?.focus();
+                frameRef.current?.contentWindow?.print();
+              }}
               style={{
                 width: `${width - margin}cm`,
                 height: `${height - margin}cm`,
