@@ -198,7 +198,7 @@ test('Multiplicity should be visible', async ({ page }) => {
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
 
     //open ranges panel
-    await nmrium.clickPanel('Ranges');
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
 
     // Check that MultiplicityTree btn still on
     await expect(
@@ -360,7 +360,7 @@ test('Auto peak picking on all spectra', async ({ page }) => {
     // switch to 1H tab.
     await nmrium.page.click('_react=SpectraTabs >> _react=Tab[tabid="1H"]');
     //open ranges panel
-    await nmrium.clickPanel('Ranges');
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
     await expect(nmrium.page.getByTestId('range')).toHaveCount(12);
     await expect(
       nmrium.page.locator('_react=RangesPanel >> _react=PanelHeader'),

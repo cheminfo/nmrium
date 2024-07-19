@@ -34,13 +34,13 @@ test('process 1d FID 13c spectrum', async ({ page }) => {
     await nmrium.clickPanel('Integrals');
   });
   await test.step('Ranges panel settings', async () => {
-    await nmrium.clickPanel('Ranges');
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
     await nmrium.page.click(
-      '_react=AccordionItem[title="Ranges"] >> _react=PreferencesButton >> nth=0',
+      '_react=AccordionItem[title="Ranges / Multiplet analysis"] >> _react=PreferencesButton >> nth=0',
     );
     await nmrium.page.click(
-      '_react=AccordionItem[title="Ranges"] >> _react=ToolbarItem[id="save-button"] >> nth=0',
+      '_react=AccordionItem[title="Ranges / Multiplet analysis"] >> _react=ToolbarItem[id="save-button"] >> nth=0',
     );
-    await nmrium.clickPanel('Ranges');
+    await nmrium.clickPanel('Ranges / Multiplet analysis');
   });
 });
