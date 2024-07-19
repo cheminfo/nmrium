@@ -91,7 +91,7 @@
     "ml-tree-similarity": "^2.2.0",
     "multiplet-analysis": "^2.1.2",
     "nmr-correlation": "^2.3.3",
-    "nmr-load-save": "^0.34.2",
+    "nmr-load-save": "^0.35.0",
     "nmr-processing": "^12.8.0",
     "nmredata": "^0.9.11",
     "numeral": "^2.0.6",

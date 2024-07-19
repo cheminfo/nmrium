@@ -15,6 +15,7 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useMapKeyModifiers } from '../context/KeyModifierContext';
+import { usePrintPage } from '../elements/print';
 import Spinner from '../loader/Spinner';
 import { options } from '../toolbar/ToolTypes';
 
@@ -284,10 +285,13 @@ interface ViewerResponsiveWrapperProps {
 export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
   const dispatch = useDispatch();
   const { width, height, children } = props;
+  const printOptions = usePrintPage();
 
   useEffect(() => {
-    dispatch({ type: 'SET_DIMENSIONS', payload: { width, height } });
-  }, [width, height, dispatch]);
+    if (!printOptions) {
+      dispatch({ type: 'SET_DIMENSIONS', payload: { width, height } });
+    }
+  }, [width, height, dispatch, printOptions]);
 
   return children;
 }
