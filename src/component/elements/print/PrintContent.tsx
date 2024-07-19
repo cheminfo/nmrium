@@ -178,18 +178,32 @@ export function PrintContent(props: PrintFrameProps) {
     );
   }
   return (
-    <InnerPrintFrame
-      printPageOptions={pageOptions}
-      onAfterPrint={() => {
-        setPageOptions(null);
-        onAfterPrint?.();
-      }}
-      onBeforePrint={() => {
-        onBeforePrint?.();
-      }}
-    >
-      {children}
-    </InnerPrintFrame>
+    <>
+      <div
+        style={{
+          backgroundColor: 'white',
+          opacity: 0.5,
+          left: 0,
+          top: 0,
+          position: 'fixed',
+          width: '100%',
+          height: '100%',
+          zIndex: 10,
+        }}
+      />
+      <InnerPrintFrame
+        printPageOptions={pageOptions}
+        onAfterPrint={() => {
+          setPageOptions(null);
+          onAfterPrint?.();
+        }}
+        onBeforePrint={() => {
+          onBeforePrint?.();
+        }}
+      >
+        {children}
+      </InnerPrintFrame>
+    </>
   );
 }
 
