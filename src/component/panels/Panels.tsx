@@ -77,7 +77,7 @@ const accordionItems: AccordionItem[] = [
     mode: '1D',
   },
   {
-    title: 'Ranges',
+    title: 'Ranges / Multiplet analysis',
     component: <RangesPanel />,
     hidePreferenceKey: 'rangesPanel',
     mode: '1D',
@@ -142,7 +142,7 @@ export const TOOLS_PANELS_ACCORDION: Record<string, string> = {
   null: 'Spectra',
   peakPicking: 'Peaks',
   integral: 'Integrals',
-  rangePicking: 'Ranges',
+  rangePicking: 'Ranges / Multiplet analysis',
   zonePicking: 'Zones',
   multipleSpectraAnalysis: 'Multiple Spectra Analysis',
 };
