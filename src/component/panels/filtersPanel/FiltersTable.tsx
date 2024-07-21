@@ -1,16 +1,17 @@
-import { Checkbox } from '@blueprintjs/core';
+/** @jsxImportSource @emotion/react */
+import { Checkbox, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
 import { Filter } from 'nmr-processing';
-import { useMemo, useCallback, memo, useRef } from 'react';
+import { useMemo, useCallback, memo, useRef, useState, ReactNode } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
+import { Button, useOnOff } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useToaster } from '../../context/ToasterContext';
-import Button from '../../elements/Button';
 import { ColumnWrapper } from '../../elements/ColumnWrapper';
 import ReactTable, { Column } from '../../elements/ReactTable/ReactTable';
-import { useModal } from '../../elements/popup/Modal';
 import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
 import useSpectrum from '../../hooks/useSpectrum';
 
@@ -47,9 +48,17 @@ function FiltersTableInner({
   activeFilterID,
 }: FiltersTableInnerProps) {
   const dispatch = useDispatch();
-  const modal = useModal();
   const toaster = useToaster();
   const selectedFilterIndex = useRef<number>();
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
+  const [confirmDialogContent, setConfirmDialogContent] = useState<{
+    message: ReactNode;
+    buttons: Array<{
+      text: string;
+      handler?: () => void;
+    }>;
+  }>({ message: '', buttons: [] });
 
   const handelFilterCheck = useCallback(
     (id, event) => {
@@ -67,6 +76,7 @@ function FiltersTableInner({
   const handelDeleteFilter = useCallback(
     ({ id, name, label }) => {
       const buttons = [
+        { text: 'No' },
         {
           text: 'Yes',
           handler: () => {
@@ -75,13 +85,13 @@ function FiltersTableInner({
             });
             dispatch({ type: 'DELETE_FILTER', payload: { id } });
             hideLoading();
+            closeConfirmDialog();
           },
         },
-        { text: 'No' },
       ];
 
       if (spectraCounter > 1) {
-        buttons.unshift({
+        buttons.push({
           text: 'Yes, for all spectra',
           handler: () => {
             const hideLoading = toaster.showLoading({
@@ -92,24 +102,23 @@ function FiltersTableInner({
               payload: { filterName: name },
             });
             hideLoading();
+            closeConfirmDialog();
           },
         });
       }
 
-      modal.showConfirmDialog(
-        {
-          message: (
-            <span>
-              You are about to delete this processing step
-              <span style={{ color: 'black' }}> {label} </span> , Are you sure?
-            </span>
-          ),
-          buttons,
-        },
-        { height: 'auto', width: 'auto' },
-      );
+      setConfirmDialogContent({
+        message: (
+          <span>
+            You are about to delete this processing step
+            <span style={{ color: 'black' }}> {label} </span> , Are you sure?
+          </span>
+        ),
+        buttons,
+      });
+      openConfirmDialog();
     },
-    [dispatch, modal, spectraCounter, toaster],
+    [dispatch, spectraCounter, toaster, closeConfirmDialog, openConfirmDialog],
   );
   const filterSnapShotHandler = useCallback(
     (filter, index) => {
@@ -177,13 +186,14 @@ function FiltersTableInner({
           const { isDeleteAllow } = row.original;
           return (
             <ColumnWrapper>
-              <Button.Danger
-                fill="outline"
+              <Button
+                intent="danger"
+                minimal
                 onClick={() => handelDeleteFilter(row.original)}
                 disabled={!isDeleteAllow}
               >
                 <FaRegTrashAlt />
-              </Button.Danger>
+              </Button>
             </ColumnWrapper>
           );
         },
@@ -208,15 +218,45 @@ function FiltersTableInner({
   }
 
   return (
-    <ReactTable
-      rowStyle={handleRowStyle}
-      data={filters}
-      columns={COLUMNS}
-      emptyDataRowText="No Filters"
-      onClick={(e, data: any) =>
-        filterSnapShotHandler(data.original, data.index)
-      }
-    />
+    <>
+      <Dialog
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        title=" "
+        isCloseButtonShown={false}
+        css={css`
+          .bp5-dialog-header {
+            background-color: red;
+            min-height: 0px;
+          }
+        `}
+      >
+        <DialogBody>{confirmDialogContent.message}</DialogBody>
+        <DialogFooter
+          minimal
+          actions={confirmDialogContent.buttons.map((option, i) => (
+            <Button
+              key={option.text}
+              intent={i === 0 ? 'danger' : 'primary'}
+              text={option.text}
+              onClick={() => {
+                option.handler?.();
+                closeConfirmDialog();
+              }}
+            />
+          ))}
+        />
+      </Dialog>
+      <ReactTable
+        rowStyle={handleRowStyle}
+        data={filters}
+        columns={COLUMNS}
+        emptyDataRowText="No Filters"
+        onClick={(e, data: any) =>
+          filterSnapShotHandler(data.original, data.index)
+        }
+      />
+    </>
   );
 }
 

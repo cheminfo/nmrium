@@ -9,6 +9,7 @@ import { rangesToACS } from 'nmr-processing';
 import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 import { LuSubtitles } from 'react-icons/lu';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import { ClipboardFallbackModal } from '../../../utils/clipboard/clipboardComponents';
 import { useClipboard } from '../../../utils/clipboard/clipboardHooks';
@@ -39,6 +40,14 @@ function RangesHeader({
   const toaster = useToaster();
   const assignmentData = useAssignmentData();
 
+  const [
+    removeAssignmentsDialogIsOpen,
+    openRemoveAssignmentsDialog,
+    closeRemoveAssignmentsDialog,
+  ] = useOnOff();
+  const [deleteAllDialogIsOpen, openDeleteAllDialog, closeDeleteAllDialog] =
+    useOnOff();
+
   const currentSum = lodashGet(ranges, 'options.sum', null);
   const rangesPreferences = usePanelPreferences('ranges', activeTab);
 
@@ -55,35 +64,6 @@ function RangesHeader({
   function changeRangesSumHandler(options) {
     dispatch({ type: 'CHANGE_RANGE_SUM', payload: { options } });
     modal.close();
-  }
-
-  function removeAssignments() {
-    onUnlink();
-  }
-
-  function handleOnRemoveAssignments() {
-    modal.showConfirmDialog({
-      message: 'All assignments will be removed. Are you sure?',
-      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
-    });
-  }
-
-  function handleDeleteAll() {
-    modal.showConfirmDialog({
-      message: 'All ranges will be deleted. Are You sure?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            dispatch({
-              type: 'DELETE_RANGE',
-              payload: { assignmentData },
-            });
-          },
-        },
-        { text: 'No' },
-      ],
-    });
   }
 
   function handleSetShowMultiplicityTrees() {
@@ -166,10 +146,39 @@ function RangesHeader({
   const total = ranges?.values?.length || 0;
   return (
     <div>
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={deleteAllDialogIsOpen}
+        onClose={closeDeleteAllDialog}
+        onConfirm={() => {
+          dispatch({
+            type: 'DELETE_RANGE',
+            payload: { assignmentData },
+          });
+          closeDeleteAllDialog();
+        }}
+      >
+        All ranges will be deleted. Are You sure?
+      </ConfirmDialog>
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={removeAssignmentsDialogIsOpen}
+        onClose={closeRemoveAssignmentsDialog}
+        onConfirm={() => {
+          onUnlink();
+          closeRemoveAssignmentsDialog();
+        }}
+      >
+        All assignments will be removed. Are you sure?
+      </ConfirmDialog>
       <DefaultPanelHeader
         total={total}
         counter={filterCounter}
-        onDelete={handleDeleteAll}
+        onDelete={openDeleteAllDialog}
         deleteToolTip="Delete All Ranges"
         onFilter={onFilterActivated}
         filterToolTip={
@@ -203,7 +212,7 @@ function RangesHeader({
             disabled: !hasRanges,
             icon: <FaUnlink />,
             tooltip: 'Remove all assignments',
-            onClick: handleOnRemoveAssignments,
+            onClick: openRemoveAssignmentsDialog,
           },
           {
             disabled: !hasRanges,

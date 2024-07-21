@@ -6,10 +6,10 @@ import { Spectrum1D } from 'nmr-load-save';
 import { Info1D, Integrals } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { ImLink } from 'react-icons/im';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumIntegralsViewState } from '../../hooks/useActiveSpectrumIntegralsViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
@@ -36,10 +36,11 @@ function IntegralPanelInner({
 }: IntegralPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
   const dispatch = useDispatch();
   const { showIntegralsValues } = useActiveSpectrumIntegralsViewState();
 
-  const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
 
@@ -49,18 +50,6 @@ function IntegralPanelInner({
       payload: { key: 'showIntegralsValues' },
     });
   }
-
-  const yesHandler = useCallback(() => {
-    dispatch({ type: 'DELETE_INTEGRAL', payload: {} });
-  }, [dispatch]);
-
-  const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All records will be deleted, Are You sure?',
-      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
-    });
-  }, [modal, yesHandler]);
-
   const changeIntegralSumHandler = useCallback(
     (options) => {
       dispatch({ type: 'CHANGE_INTEGRAL_SUM', payload: { options } });
@@ -130,11 +119,24 @@ function IntegralPanelInner({
           `,
       ]}
     >
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        onConfirm={() => {
+          dispatch({ type: 'DELETE_INTEGRAL', payload: {} });
+          closeConfirmDialog();
+        }}
+      >
+        All records will be deleted, Are You sure?
+      </ConfirmDialog>
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
           counter={filteredData?.length}
-          onDelete={handleDeleteAll}
+          onDelete={openConfirmDialog}
           deleteToolTip="Delete All Integrals"
           onFilter={handleOnFilter}
           filterToolTip={

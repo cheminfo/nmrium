@@ -6,6 +6,7 @@ import {
   Link,
 } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
@@ -33,6 +34,8 @@ function CorrelationTableRow({
   const contextRef = useRef<any>();
   const modal = useModal();
 
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
   const highlightIDsRow = useMemo(() => {
     if (correlation.pseudo === true) {
       return [];
@@ -218,23 +221,7 @@ function CorrelationTableRow({
             {
               label: `delete ${correlation.label.origin}`,
               onClick: () => {
-                modal.showConfirmDialog({
-                  message: `All signals of ${correlation.label.origin} (${(
-                    getCorrelationDelta(correlation) as number
-                  ).toFixed(2)}) will be deleted. Are you sure?`,
-                  buttons: [
-                    {
-                      text: 'Yes',
-                      handler: () => {
-                        onEditCorrelationTableCellHandler(
-                          [correlation],
-                          'removeAll',
-                        );
-                      },
-                    },
-                    { text: 'No' },
-                  ],
-                });
+                openConfirmDialog();
                 highlightRow.hide();
               },
             },
@@ -246,6 +233,7 @@ function CorrelationTableRow({
     modal,
     onEditCorrelationTableCellHandler,
     correlations,
+    openConfirmDialog,
   ]);
 
   const contextMenuHandler = useCallback(
@@ -261,6 +249,21 @@ function CorrelationTableRow({
 
   return (
     <tr style={styleRow}>
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        onConfirm={() => {
+          onEditCorrelationTableCellHandler([correlation], 'removeAll');
+          closeConfirmDialog();
+        }}
+      >
+        All signals of {correlation.label.origin}
+        {(getCorrelationDelta(correlation) as number)?.toFixed(2)} will be
+        deleted. Are you sure?
+      </ConfirmDialog>
       <td
         title={t}
         {...{

@@ -4,11 +4,11 @@ import { Spectrum2D } from 'nmr-load-save';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import { FaUnlink } from 'react-icons/fa';
 import { LuSubtitles } from 'react-icons/lu';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import { useAssignmentData } from '../../assignment/AssignmentsContext';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumZonesViewState } from '../../hooks/useActiveSpectrumZonesViewState';
 import useSpectrum from '../../hooks/useSpectrum';
 import { booleanToString } from '../../utility/booleanToString';
@@ -35,9 +35,15 @@ function ZonesPanelInner({
   const assignmentData = useAssignmentData();
 
   const dispatch = useDispatch();
-  const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
+  const [
+    removeAssignmentsDialogIsOpen,
+    openRemoveAssignmentsDialog,
+    closeRemoveAssignmentsDialog,
+  ] = useOnOff();
+  const [deleteAllDialogIsOpen, openDeleteAllDialog, closeDeleteAllDialog] =
+    useOnOff();
 
   const tableData = useMemo(() => {
     const isInView = (xFrom, xTo, yFrom, yTo) => {
@@ -105,32 +111,6 @@ function ZonesPanelInner({
     [assignmentData, dispatch],
   );
 
-  const removeAssignments = useCallback(() => {
-    unlinkZoneHandler();
-  }, [unlinkZoneHandler]);
-
-  const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All assignments will be removed. Are you sure?',
-      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
-    });
-  }, [removeAssignments, modal]);
-
-  const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All zones will be deleted. Are You sure?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            dispatch({ type: 'DELETE_2D_ZONE', payload: { assignmentData } });
-          },
-        },
-        { text: 'No' },
-      ],
-    });
-  }, [assignmentData, dispatch, modal]);
-
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
@@ -180,11 +160,37 @@ function ZonesPanelInner({
           `,
       ]}
     >
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={deleteAllDialogIsOpen}
+        onClose={closeDeleteAllDialog}
+        onConfirm={() => {
+          dispatch({ type: 'DELETE_2D_ZONE', payload: { assignmentData } });
+          closeDeleteAllDialog();
+        }}
+      >
+        All zones will be deleted. Are You sure?
+      </ConfirmDialog>
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={removeAssignmentsDialogIsOpen}
+        onClose={closeRemoveAssignmentsDialog}
+        onConfirm={() => {
+          unlinkZoneHandler();
+          closeRemoveAssignmentsDialog();
+        }}
+      >
+        All assignments will be removed. Are you sure?
+      </ConfirmDialog>
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
           counter={tableData?.length}
-          onDelete={handleDeleteAll}
+          onDelete={openDeleteAllDialog}
           deleteToolTip="Delete All Zones"
           onFilter={handleOnFilter}
           filterToolTip={
@@ -196,7 +202,7 @@ function ZonesPanelInner({
               disabled: !hasZones,
               icon: <FaUnlink />,
               tooltip: 'Remove all assignments',
-              onClick: handleOnRemoveAssignments,
+              onClick: openRemoveAssignmentsDialog,
             },
             {
               icon: <span>z</span>,

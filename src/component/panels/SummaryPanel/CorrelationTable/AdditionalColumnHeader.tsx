@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
@@ -20,6 +21,9 @@ function AdditionalColumnHeader({
 }) {
   const contextRef = useRef<any>();
   const modal = useModal();
+
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
 
   const highlightIDsAdditionalColumn = useMemo(() => {
     if (correlation.pseudo === true) {
@@ -138,20 +142,7 @@ function AdditionalColumnHeader({
             {
               label: `delete all (${correlation.label.origin})`,
               onClick: () => {
-                modal.showConfirmDialog({
-                  message: `All signals of ${correlation.label.origin} (${(
-                    getCorrelationDelta(correlation) as number
-                  ).toFixed(2)}) will be deleted. Are you sure?`,
-                  buttons: [
-                    {
-                      text: 'Yes',
-                      handler: () => {
-                        onEdit([correlation], 'removeAll');
-                      },
-                    },
-                    { text: 'No' },
-                  ],
-                });
+                openConfirmDialog();
                 highlightAdditionalColumn.hide();
               },
             },
@@ -163,6 +154,7 @@ function AdditionalColumnHeader({
     highlightAdditionalColumn,
     modal,
     onEdit,
+    openConfirmDialog,
   ]);
 
   const contextMenuHandler = useCallback(
@@ -177,6 +169,21 @@ function AdditionalColumnHeader({
 
   return (
     <th {...thProps} title={title === false ? undefined : title}>
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        onConfirm={() => {
+          onEdit([correlation], 'removeAll');
+          closeConfirmDialog();
+        }}
+      >
+        All signals of {correlation.label.origin}
+        {(getCorrelationDelta(correlation) as number)?.toFixed(2)} will be
+        deleted. Are you sure?
+      </ConfirmDialog>
       <div
         style={{ display: 'block' }}
         onContextMenu={(e) => {

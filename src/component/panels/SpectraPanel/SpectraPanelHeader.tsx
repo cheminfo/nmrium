@@ -1,15 +1,15 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
 import { ActiveSpectrum, Spectrum, Spectrum2D } from 'nmr-load-save';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import { FaCreativeCommonsSamplingPlus } from 'react-icons/fa';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { MdFormatColorFill } from 'react-icons/md';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectra } from '../../hooks/useActiveSpectra';
 import useSpectrum from '../../hooks/useSpectrum';
 import { useToggleSpectraVisibility } from '../../hooks/useToggleSpectraVisibility';
@@ -52,7 +52,6 @@ function SpectraPanelHeaderInner({
   displayerMode,
   onSettingClick,
 }: SpectraPanelHeaderInnerProps) {
-  const modal = useModal();
   const toaster = useToaster();
   const dispatch = useDispatch();
   const { getToggleVisibilityButtons } = useToggleSpectraVisibility('selected');
@@ -60,26 +59,8 @@ function SpectraPanelHeaderInner({
     current: { spectraColors },
   } = usePreferences();
 
-  const handleDelete = useCallback(() => {
-    modal.showConfirmDialog({
-      message: (
-        <span>
-          You are about to delete
-          <span style={{ color: 'black' }}> {activeSpectra?.length} </span>
-          spectra, Are you sure?
-        </span>
-      ),
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            dispatch({ type: 'DELETE_SPECTRA', payload: {} });
-          },
-        },
-        { text: 'No' },
-      ],
-    });
-  }, [activeSpectra?.length, dispatch, modal]);
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
 
   function addMissingProjectionHandler() {
     const missingNucleus = getMissingProjection(data, activeTab);
@@ -159,15 +140,34 @@ function SpectraPanelHeaderInner({
   ]);
 
   return (
-    <DefaultPanelHeader
-      onDelete={handleDelete}
-      total={data?.length}
-      counter={spectraLengthPerTab}
-      deleteToolTip="Delete selected spectra"
-      disableDelete={!hasActiveSpectra}
-      onSettingClick={onSettingClick}
-      leftButtons={leftButtons}
-    />
+    <>
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        onConfirm={() => {
+          dispatch({ type: 'DELETE_SPECTRA', payload: {} });
+          closeConfirmDialog();
+        }}
+      >
+        <span>
+          You are about to delete
+          <span style={{ color: 'black' }}> {activeSpectra?.length} </span>
+          spectra, Are you sure?
+        </span>
+      </ConfirmDialog>
+      <DefaultPanelHeader
+        onDelete={openConfirmDialog}
+        total={data?.length}
+        counter={spectraLengthPerTab}
+        deleteToolTip="Delete selected spectra"
+        disableDelete={!hasActiveSpectra}
+        onSettingClick={onSettingClick}
+        leftButtons={leftButtons}
+      />
+    </>
   );
 }
 

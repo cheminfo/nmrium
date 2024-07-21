@@ -1,5 +1,15 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
-import { useOnOff } from 'react-science/ui';
+/** @jsxImportSource @emotion/react */
+import { Dialog, DialogBody, DialogFooter } from '@blueprintjs/core';
+import { css } from '@emotion/react';
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Button, useOnOff } from 'react-science/ui';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import { useAssignmentData } from '../assignment/AssignmentsContext';
@@ -8,7 +18,6 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useToaster } from '../context/ToasterContext';
-import { useModal } from '../elements/popup/Modal';
 import { HighlightEventSource, useHighlightData } from '../highlight/index';
 import { useCheckToolsVisibility } from '../hooks/useCheckToolsVisibility';
 import useExport from '../hooks/useExport';
@@ -22,7 +31,15 @@ interface KeysListenerTrackerProps {
 
 function KeysListenerTracker(props: KeysListenerTrackerProps) {
   const { mainDivRef } = props;
-
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
+  const [confirmDialogContent, setConfirmDialogContent] = useState<{
+    message: string;
+    buttons: Array<{
+      text: string;
+      handler?: () => void;
+    }>;
+  }>({ message: '', buttons: [] });
   const {
     keysPreferences,
     displayerMode,
@@ -37,7 +54,6 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
     current: { nuclei },
   } = usePreferences();
   const toaster = useToaster();
-  const modal = useModal();
   const openLoader = useLoader();
   const [isSaveModalOpened, openSaveAsDialog, closeSaveAsDialog] =
     useOnOff(false);
@@ -161,26 +177,10 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
           const { zone, spectrumID } = extra || {};
 
           const buttons = [
-            {
-              text: 'Yes, for all spectra',
-              handler: async () => {
-                if (zone) {
-                  const hideLoading = toaster.showLoading({
-                    message: 'Delete all spectra exclusion zones in progress',
-                  });
-                  dispatch({
-                    type: 'DELETE_EXCLUSION_ZONE',
-                    payload: {
-                      zone,
-                    },
-                  });
-                  hideLoading();
-                }
-              },
-            },
+            { text: 'No' },
             {
               text: 'Yes',
-              handler: async () => {
+              handler: () => {
                 if (spectrumID) {
                   const hideLoading = toaster.showLoading({
                     message: 'Delete exclusion zones in progress',
@@ -193,25 +193,45 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
                     },
                   });
                   hideLoading();
+                  closeConfirmDialog();
                 }
               },
             },
-            { text: 'No' },
+            {
+              text: 'Yes, for all spectra',
+              handler: () => {
+                if (zone) {
+                  const hideLoading = toaster.showLoading({
+                    message: 'Delete all spectra exclusion zones in progress',
+                  });
+                  dispatch({
+                    type: 'DELETE_EXCLUSION_ZONE',
+                    payload: {
+                      zone,
+                    },
+                  });
+                  hideLoading();
+                  closeConfirmDialog();
+                }
+              },
+            },
           ];
 
-          modal.showConfirmDialog({
+          setConfirmDialogContent({
             message: 'Are you sure you want to delete the exclusion zone/s?',
             buttons,
           });
+          openConfirmDialog();
           break;
         }
         case HighlightEventSource.MATRIX_GENERATION_EXCLUSION_ZONE: {
           const { zone } = extra || {};
 
           const buttons = [
+            { text: 'No' },
             {
               text: 'Yes',
-              handler: async () => {
+              handler: () => {
                 if (zone) {
                   const hideLoading = toaster.showLoading({
                     message: 'Delete all spectra exclusion zones in progress',
@@ -224,18 +244,18 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
                     },
                   });
                   hideLoading();
+                  closeConfirmDialog();
                 }
               },
             },
-            { text: 'No' },
           ];
 
-          modal.showConfirmDialog({
+          setConfirmDialogContent({
             message:
               'Are you sure you want to delete the Matrix generation exclusion zones?',
             buttons,
           });
-
+          openConfirmDialog();
           break;
         }
         case HighlightEventSource.MULTIPLE_ANALYSIS_ZONE: {
@@ -280,10 +300,12 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
       dispatch,
       remove,
       assignmentData,
-      modal,
       toaster,
       dispatchPreferences,
       activeTab,
+      openConfirmDialog,
+      closeConfirmDialog,
+      setConfirmDialogContent,
     ],
   );
 
@@ -520,7 +542,67 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
   }, [handleOnKeyDown]);
 
   return (
-    <SaveAsModal isOpen={isSaveModalOpened} onCloseDialog={closeSaveAsDialog} />
+    <>
+      <Dialog
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        title=" "
+        isCloseButtonShown={false}
+        css={css`
+          .bp5-dialog-header {
+            background-color: red;
+            min-height: 0px;
+          }
+        `}
+      >
+        <DialogBody>{confirmDialogContent.message}</DialogBody>
+        <DialogFooter
+          minimal
+          actions={confirmDialogContent.buttons.map((option, i) => (
+            <Button
+              key={option.text}
+              intent={i === 0 ? 'danger' : 'primary'}
+              text={option.text}
+              onClick={() => {
+                option.handler?.();
+                closeConfirmDialog();
+              }}
+            />
+          ))}
+        />
+      </Dialog>
+      <Dialog>
+        <DialogBody>
+          <div
+            style={{
+              display: 'block',
+              borderRadius: '5px',
+              minWidth: '400px',
+              borderTop: '10px solid #ed0000',
+            }}
+          >
+            <div className="buttons-container">
+              {confirmDialogContent.buttons.map((option) => (
+                <button
+                  key={option.text}
+                  type="button"
+                  onClick={() => {
+                    option.handler?.();
+                    closeConfirmDialog();
+                  }}
+                >
+                  {option.text}
+                </button>
+              ))}
+            </div>
+          </div>
+        </DialogBody>
+      </Dialog>
+      <SaveAsModal
+        isOpen={isSaveModalOpened}
+        onCloseDialog={closeSaveAsDialog}
+      />
+    </>
   );
 }
 

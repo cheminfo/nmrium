@@ -6,13 +6,13 @@ import { PeaksViewState, Spectrum1D } from 'nmr-load-save';
 import { Info1D, Peak1D, Peaks } from 'nmr-processing';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import { FaThinkPeaks } from 'react-icons/fa';
+import { ConfirmDialog, useOnOff } from 'react-science/ui';
 
 import isInRange from '../../../data/utilities/isInRange';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { useToaster } from '../../context/ToasterContext';
-import { useModal } from '../../elements/popup/Modal';
 import { useActiveSpectrumPeaksViewState } from '../../hooks/useActiveSpectrumPeaksViewState';
 import useCheckExperimentalFeature from '../../hooks/useCheckExperimentalFeature';
 import { useFormatNumberByNucleus } from '../../hooks/useFormatNumberByNucleus';
@@ -51,24 +51,14 @@ function PeaksPanelInner({
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
   const format = useFormatNumberByNucleus(info.nucleus);
+  const [confirmDialogIsOpen, openConfirmDialog, closeConfirmDialog] =
+    useOnOff();
 
   const dispatch = useDispatch();
-  const modal = useModal();
   const toaster = useToaster();
   const isExperimental = useCheckExperimentalFeature();
 
   const settingRef = useRef<any>();
-
-  const yesHandler = useCallback(() => {
-    dispatch({ type: 'DELETE_PEAK', payload: {} });
-  }, [dispatch]);
-
-  const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog({
-      message: 'All records will be deleted, Are You sure?',
-      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
-    });
-  }, [modal, yesHandler]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -191,11 +181,24 @@ function PeaksPanelInner({
           `,
       ]}
     >
+      <ConfirmDialog
+        saveText="Yes"
+        cancelText="No"
+        headerColor="red"
+        isOpen={confirmDialogIsOpen}
+        onClose={closeConfirmDialog}
+        onConfirm={() => {
+          dispatch({ type: 'DELETE_PEAK', payload: {} });
+          closeConfirmDialog();
+        }}
+      >
+        All records will be deleted, Are You sure?
+      </ConfirmDialog>
       {!isFlipped && (
         <DefaultPanelHeader
           total={total}
           counter={filteredPeaks?.length}
-          onDelete={handleDeleteAll}
+          onDelete={openConfirmDialog}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
           filterToolTip={
