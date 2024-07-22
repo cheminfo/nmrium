@@ -551,7 +551,7 @@ function KeysListenerTracker(props: KeysListenerTrackerProps) {
         css={css`
           .bp5-dialog-header {
             background-color: red;
-            min-height: 0px;
+            min-height: 0;
           }
         `}
       >
